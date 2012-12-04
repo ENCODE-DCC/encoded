@@ -7,5 +7,6 @@ downloads/
 eggs/
 extends/
 parts/
+*.DS_Store
 *.egg-info
 *.pyc
