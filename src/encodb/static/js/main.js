@@ -2,6 +2,9 @@ require.config({
     paths: {
         app: 'app',
 
+        // Plugins
+        text: 'vendor/text',
+
         // Libraries
         backbone: 'vendor/backbone.min',
         bootstrap: 'vendor/bootstrap.min',
