@@ -1,6 +1,7 @@
 require.config({
     paths: {
         app: 'app',
+        base: 'base',
 
         // Plugins
         text: 'vendor/text',
