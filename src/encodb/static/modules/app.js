@@ -1,5 +1,5 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'home'],
-function app(exports, $, _, Backbone, home) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'home', 'antibodies'],
+function app(exports, $, _, Backbone, home, antibodies) {
 
     exports.start = function start() {
         exports.router = new exports.Router();
@@ -37,11 +37,17 @@ function app(exports, $, _, Backbone, home) {
     exports.Router = Backbone.Router.extend({
 
         routes: {
-            '': 'routeHome'
+            '': 'routeHome',
+            'antibodies/': 'routeAntibodies'
         },
 
         routeHome: function routeHome() {
             var view = new home.HomeView({el: $('#content')});
+            view.render();
+        },
+
+        routeAntibodies: function routeAntibodies() {
+            var view = new antibodies.AntibodiesHomeView({el: $('#content')});
             view.render();
         }
 

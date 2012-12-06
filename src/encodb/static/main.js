@@ -1,5 +1,6 @@
 require.config({
     paths: {
+        antibodies: 'modules/antibodies',
         app: 'modules/app',
         base: 'modules/base',
         home: 'modules/home',
