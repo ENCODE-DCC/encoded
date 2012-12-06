@@ -1,5 +1,4 @@
-define([
-'exports', 'jquery', 'underscore', 'backbone'],
+define(['exports', 'jquery', 'underscore', 'backbone'],
 function base(exports, $, _, Backbone) {
 
     // Base View class implements conventions for rendering views.
