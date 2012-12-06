@@ -1,18 +1,18 @@
 require.config({
     paths: {
-        app: 'app',
-        base: 'base',
-        home: 'home',
+        app: 'modules/app',
+        base: 'modules/base',
+        home: 'modules/home',
 
         // Plugins
-        text: 'vendor/text',
+        text: 'libs/text',
 
         // Libraries
-        backbone: 'vendor/backbone.min',
-        bootstrap: 'vendor/bootstrap.min',
-        jquery: 'vendor/jquery.min',
-        modernizr: 'vendor/modernizr.min',
-        underscore: 'vendor/underscore.min'
+        backbone: 'libs/backbone.min',
+        bootstrap: 'libs/bootstrap.min',
+        jquery: 'libs/jquery.min',
+        modernizr: 'libs/modernizr.min',
+        underscore: 'libs/underscore.min'
     },
 
     shim: {
