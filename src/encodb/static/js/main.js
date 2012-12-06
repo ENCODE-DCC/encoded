@@ -2,6 +2,7 @@ require.config({
     paths: {
         app: 'app',
         base: 'base',
+        home: 'home',
 
         // Plugins
         text: 'vendor/text',
