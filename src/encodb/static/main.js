@@ -4,6 +4,7 @@ require.config({
         app: 'modules/app',
         base: 'modules/base',
         home: 'modules/home',
+        navbar: 'modules/navbar',
 
         // Plugins
         text: 'libs/text',

@@ -1,9 +1,11 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'home', 'antibodies'],
-function app(exports, $, _, Backbone, home, antibodies) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'home', 'antibodies', 'navbar'],
+function app(exports, $, _, Backbone, home, antibodies, navbar) {
 
     exports.start = function start() {
         exports.router = new exports.Router();
         exports.setupNavigation();
+        var navbar_view = new navbar.NavBarView({el: $('#navbar')});
+        navbar_view.render();
     };
 
     exports.setupNavigation = function setupNavigation() {
