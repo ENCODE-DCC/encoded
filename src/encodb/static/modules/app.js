@@ -1,11 +1,23 @@
 define(['exports', 'jquery', 'underscore', 'backbone', 'home', 'antibodies', 'navbar'],
 function app(exports, $, _, Backbone, home, antibodies, navbar) {
 
+    exports.Config = Backbone.Model.extend({
+        title: 'ENCODE 3',
+        global_sections: [
+            {id: 'home', title: 'Home', url: '/'},
+            {id: 'antibodies', title: 'Antibodies registry', url: '/antibodies/'}
+        ],
+        user_actions: [
+            {id: 'login', title: 'Log in', url: '#login'}
+        ]
+    });
+
     exports.start = function start() {
+        exports.config = new exports.Config();
         exports.router = new exports.Router();
         exports.setupNavigation();
-        var navbar_view = new navbar.NavBarView({el: $('#navbar')});
-        navbar_view.render();
+        exports.navbar_view = new navbar.NavBarView({model: exports.config, el: $('#navbar')});
+        exports.navbar_view.render();
     };
 
     exports.setupNavigation = function setupNavigation() {
@@ -44,13 +56,13 @@ function app(exports, $, _, Backbone, home, antibodies, navbar) {
         },
 
         routeHome: function routeHome() {
-            var view = new home.HomeView({el: $('#content')});
-            view.render();
+            exports.content_view = new home.HomeView({el: $('#content')});
+            exports.content_view.render();
         },
 
         routeAntibodies: function routeAntibodies() {
-            var view = new antibodies.AntibodiesHomeView({el: $('#content')});
-            view.render();
+            exports.content_view = new antibodies.AntibodiesHomeView({el: $('#content')});
+            exports.content_view.render();
         }
 
     });

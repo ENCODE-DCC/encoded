@@ -5,14 +5,17 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </a>
-        <a class="brand" href="/">ENCODE 3</a>
+        <a class="brand" href="/">{model.title}</a>
         <div class="nav-collapse collapse">
-            <ul id="globalnav"class="nav">
-                <li class="active"><a href="/">Home</a></li>
-                <li><a href="/antibodies/">Antibodies registry</a></li>
+            <ul id="global-sections"class="nav">
+            <?js _.each(view.global_sections(), function (action) { ?>
+                <li class="{action.class}"><a href="{action.url}">{action.title}</a></li>
+            <?js }); ?>
             </ul>
             <ul id="user-actions" class="nav pull-right">
-                <li><a href="#user-action-login">Log in</a></li>
+            <?js _.each(view.user_actions(), function (action) { ?>
+                <li class="{action.class}"><a href="{action.url}">{action.title}</a></li>
+            <?js }); ?>
             </ul>
         </div><!--/.nav-collapse -->
     </div>

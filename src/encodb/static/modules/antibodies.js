@@ -4,6 +4,7 @@ function antibodies(exports, $, _, base, home_template) {
 
     // The antibodies home screen
     exports.AntibodiesHomeView = base.View.extend({
+        section_id: 'antibodies',
         template: _.template(home_template)
     });
 
