@@ -1,5 +1,6 @@
 .installed.cfg
 .mr.developer.cfg
+.sass-cache/
 bin/
 develop/
 develop-eggs/
