@@ -22,7 +22,7 @@ Both can be installed via Ruby gems:
 
     $ gem install sass
 
-    $ gem install Compass
+    $ gem install compass
 
 **Compiling "on the fly"**
 
