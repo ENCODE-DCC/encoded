@@ -1,4 +1,6 @@
-require.config({
+requirejs.config({
+    baseUrl: '/static',
+
     paths: {
         antibodies: 'modules/antibodies',
         app: 'modules/app',
@@ -39,8 +41,8 @@ require.config({
     }
 });
 
-define(['jquery', 'app', 'bootstrap', 'modernizr'],
-function module($, app) {
+if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'modernizr'],
+function main($, app) {
 
     // Treat the jQuery ready function as the entry point to the application.
     // Inside this function, kick-off all initialization, everything up to this
