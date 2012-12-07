@@ -21,6 +21,7 @@ Notes on SASS/Compass
 Both can be installed via Ruby gems:
 
     $ gem install sass
+
     $ gem install Compass
 
 **Compiling "on the fly"**
