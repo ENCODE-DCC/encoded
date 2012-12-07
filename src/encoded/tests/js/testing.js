@@ -1,4 +1,4 @@
-// Signame main.js to avoid application startup. It is included to avoid
+// Signal main.js to avoid application startup. It is included to avoid
 // duplicating requirejs configuration.
 var TESTRUNNER = true;
 
@@ -9,7 +9,8 @@ requirejs.config({
         jquery: 'libs/jquery.min',
         // Jasmine
         jasmine: '/tests/js/libs/jasmine/jasmine',
-        jasmine_html: '/tests/js/libs/jasmine/jasmine-html'
+        jasmine_html: '/tests/js/libs/jasmine/jasmine-html',
+        jasmine_jquery: '/tests/js/libs/jasmine-jquery'
     },
 
     shim: {
@@ -19,6 +20,10 @@ requirejs.config({
 
         jasmine_html: {
             deps: ['jasmine']
+        },
+
+        jasmine_jquery: {
+            deps: ['jasmine', 'jquery']
         }
     }
 });
