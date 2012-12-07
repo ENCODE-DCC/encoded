@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='encodb',
+    name='encoded',
     version='0.1',
     description='Metadata database for ENCODE',
     long_description=open('README.rst').read() + '\n\n' +
