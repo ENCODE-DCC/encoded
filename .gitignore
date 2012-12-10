@@ -11,3 +11,5 @@ parts/
 *.DS_Store
 *.egg-info
 *.pyc
+src/encoded/static/css/bootstrap.css
+src/encoded/static/css/responsive.css
