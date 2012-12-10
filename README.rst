@@ -14,7 +14,7 @@ Run the Jasmine tests at http://localhost:8080/test_runner.html.
 
 Notes on SASS/Compass
 ---------------------------------
-`SASS <http://sass-lang.com/>`_ and `Compass <http://compass-style.org/>`_ are being used.
+`SASS <http://sass-lang.com/>`_ and `Compass <http://compass-style.org/>`_ are being used. Before running to app, you need to builld the css files by starting 'compass watch' or doing a 'compass compile' (see below).
 
 **Installing**
 
