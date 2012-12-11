@@ -15,6 +15,9 @@ Browse to the interface at http://localhost:6543/.
 
 Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
 
+Run the Pyramid tests with::
+
+    $ bin/test
 
 Notes on SASS/Compass
 ---------------------------------
