@@ -2,14 +2,18 @@
 ENCODE Metadata Database
 ========================
 
-To run the front end:
+First run buildout::
 
-    $ cd src/encoded
-    $ python -m SimpleHTTPServer 8080
+    $ python2.7 bootstrap.py
+    $ bin/buildout
 
-Browse to the interface at http://localhost:8080/.
+To start the application::
 
-Run the Jasmine tests at http://localhost:8080/test_runner.html.
+    $ bin/pserve development.cfg
+
+Browse to the interface at http://localhost:6543/.
+
+Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
 
 
 Notes on SASS/Compass
