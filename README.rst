@@ -20,26 +20,31 @@ Run the Pyramid tests with::
     $ bin/test
 
 Notes on SASS/Compass
----------------------------------
+=====================
+
 `SASS <http://sass-lang.com/>`_ and `Compass <http://compass-style.org/>`_ are being used. Before running to app, you need to builld the css files by starting 'compass watch' or doing a 'compass compile' (see below).
 
-**Installing**
+Installing
+----------
 
-Both can be installed via Ruby gems:
+Both can be installed via Ruby gems::
 
     $ gem install sass
-
     $ gem install compass
 
-**Compiling "on the fly"**
+Compiling "on the fly"
+----------------------
 
-Compass can watch for any changes made to .scss files and instantly compile them to .css. To start this, from the root of the project (where config.rb is) do:
+Compass can watch for any changes made to .scss files and instantly compile them to .css. To start this, from the root of the project (where config.rb is) do::
 
     $ compass watch
     
 You can specify whether the compiled CSS is minified or not in config.rb. (Currently, it is set to minify.)
 
-**Force compiling**
+Force compiling
+---------------
+
+::
 
     $ compass compile
 
@@ -47,6 +52,6 @@ Again, you can specify whether the compiled CSS is minified or not in config.rb.
 
 Also see the `Compass Command Line Documentation <http://compass-style.org/help/tutorials/command-line/>`_ and the `Configuration Reference <http://compass-style.org/help/tutorials/configuration-reference/>`_.
 
-And of course:
+And of course::
 
     $ compass help
