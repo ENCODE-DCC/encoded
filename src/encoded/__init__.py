@@ -16,5 +16,5 @@ def main(global_config, **settings):
     config.add_static_view('tests/js', 'tests/js', cache_max_age=STATIC_MAX_AGE)
     for pattern, name in routes.items():
         config.add_route(name, pattern)
-    config.scan()
+    config.scan(ignore='encoded.tests')
     return config.make_wsgi_app()
