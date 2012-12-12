@@ -9,7 +9,7 @@ First run buildout::
 
 To start the application::
 
-    $ bin/pserve development.cfg
+    $ bin/pserve development.ini
 
 Browse to the interface at http://localhost:6543/.
 
