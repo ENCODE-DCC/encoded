@@ -10,7 +10,6 @@
 
 // Core variables and mixins
 @import "variables"; // Modify this for custom colors, font-sizes, etc
-@import "main"; // Custom styles
 @import "mixins";
 
 // CSS Reset
@@ -59,6 +58,9 @@
 @import "accordion";
 @import "carousel";
 @import "hero-unit";
+
+// Custom styles and overrides
+@import "main";
 
 // Utility classes
 @import "utilities"; // Has to be last to override when necessary
