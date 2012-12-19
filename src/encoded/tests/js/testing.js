@@ -28,17 +28,23 @@ requirejs.config({
     }
 });
 
-require(['jquery', 'jasmine', 'jasmine_html', 'main',
-    '/tests/js/specs/testing_spec.js'],
+TESTS = [
+    '/tests/js/specs/testing_spec.js'
+];
+
+require(['jquery', 'jasmine', 'jasmine_html', 'main'],
 function ($, jasmine) {
-    $(function ready() {
-        var jasmineEnv = jasmine.getEnv();
-        jasmineEnv.updateInterval = 1000;
-        var htmlReporter = new jasmine.HtmlReporter();
-        jasmineEnv.addReporter(htmlReporter);
-        jasmineEnv.specFilter = function(spec) {
-             return htmlReporter.specFilter(spec);
-        };
-        jasmineEnv.execute();
+    // Defer import until after main is loaded to avoid module loading errors.
+    require(TESTS, function () {
+        $(function ready() {
+            var jasmineEnv = jasmine.getEnv();
+            jasmineEnv.updateInterval = 1000;
+            var htmlReporter = new jasmine.HtmlReporter();
+            jasmineEnv.addReporter(htmlReporter);
+            jasmineEnv.specFilter = function(spec) {
+                 return htmlReporter.specFilter(spec);
+            };
+            jasmineEnv.execute();
+        });
     });
 });
