@@ -8,21 +8,30 @@ function antibodies(exports, $, _, app, base, navbar_template) {
 
         initialize: function () {
             // TODO: re-renders more than necessary, should split into subviews.
-            app.router.on('all', this.render, this);
+            this.listenTo(app.router, 'all', this.on_route);
         },
 
         // Preprocess the global_sections adding an active class to the current section
         global_sections: function global_sections() {
+            var view = this;
             return _(this.model.global_sections).map(function (action) {
                 return _.extend(action, {
-                    'class': app.content_view.section_id === action.id ? 'active': ''
+                    'class': view.current_route === action.id ? 'active': ''
                 });
             });
         },
 
         user_actions: function user_actions() {
             return this.model.user_actions;
+        },
+
+        on_route: function on_route(evt) {
+            this.current_route = evt.substring(evt.indexOf(':')+1);
+            this.render();
         }
+
+    }, {
+        slot_name: 'navbar'
     });
 
     return exports;
