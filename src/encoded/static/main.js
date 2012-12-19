@@ -4,6 +4,7 @@ requirejs.config({
     paths: {
         antibodies: 'modules/antibodies',
         app: 'modules/app',
+        assert: 'modules/assert',
         base: 'modules/base',
         home: 'modules/home',
         navbar: 'modules/navbar',
