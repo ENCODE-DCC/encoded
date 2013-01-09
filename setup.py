@@ -8,7 +8,9 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 requires = [
     'SQLAlchemy',
     'pyramid',
+    'pyramid_tm',
     'setuptools',
+    'zope.sqlalchemy',
     ]
 
 tests_require = [
