@@ -2,8 +2,6 @@ from pkg_resources import resource_filename
 from pyramid.response import FileResponse
 from pyramid.view import view_config
 
-
-index_html = resource_filename('encoded', 'index.html')
 favicon_ico = resource_filename('encoded', 'static/img/favicon.ico')
 
 MODELS = [
@@ -24,28 +22,17 @@ MODELS = [
 uuid_model = {model['uuid']: model for model in MODELS}
 
 
-@view_config(route_name='fallback', request_method='GET')
-def html_page(request):
-    path = request.matchdict['path']
-    if path and path[0] == 'api':
-        raise KeyError(request.path_info)
-    subreq = request.copy()
-    subreq.path_info = '/api' + request.path_info
-    response = request.invoke_subrequest(subreq)
-    return FileResponse(index_html, request=request)
-
-
-@view_config(route_name='home', renderer='json')
+@view_config(route_name='home')
 def home(request):
     return {}
 
 
-@view_config(route_name='antibodies', renderer='json')
+@view_config(route_name='antibodies')
 def antibodies(request):
     return MODELS
 
 
-@view_config(route_name='antibody', renderer='json')
+@view_config(route_name='antibody')
 def antibody(request):
     antibody_id = request.matchdict['antibody']
     model = uuid_model[antibody_id]

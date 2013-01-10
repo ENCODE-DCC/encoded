@@ -1,6 +1,5 @@
 from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
-from .renderers import json_renderer
 from .storage import DBSession
 STATIC_MAX_AGE = 0
 
@@ -24,17 +23,15 @@ def main(global_config, **settings):
     engine = engine_from_config(settings, 'sqlalchemy.')
     DBSession.configure(bind=engine)
 
-    # Custom renderer with support for uuids
-    config.add_renderer('json', json_renderer)
+    # Render an HTML page to browsers and a JSON document for API clients
+    config.add_renderer(None, 'encoded.renderers.PageOrJSON')
 
     # Static resources
     config.add_static_view('static', 'static', cache_max_age=STATIC_MAX_AGE)
     config.add_static_view('tests/js', 'tests/js', cache_max_age=STATIC_MAX_AGE)
     config.add_route('favicon', 'favicon.ico')
 
-    config.include(api_routes, route_prefix='/api')
-
-    config.add_route('fallback', '*path')
+    config.include(api_routes)
 
     config.scan(ignore='encoded.tests')
     return config.make_wsgi_app()
