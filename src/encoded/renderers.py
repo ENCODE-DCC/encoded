@@ -48,8 +48,8 @@ class PageOrJSON:
         if format is None:
             vary = request.response.vary or ()
             request.response.vary = vary + ('Accept',)
-            if request.accept == 'application/json':
-                format = 'json'
+            mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
+            format = mime_type.split('/', 1)[1]
         else:
             format = format.lower()
 
