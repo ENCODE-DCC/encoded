@@ -41,6 +41,7 @@ def configure_engine(settings):
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
+    return engine
 
 
 def main(global_config, **settings):

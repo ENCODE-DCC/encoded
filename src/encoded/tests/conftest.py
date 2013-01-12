@@ -27,7 +27,7 @@ def dummy_request():
     return DummyRequest()
 
 
-@fixture
+@fixture(scope='session')
 def testapp():
     '''WSGI application level functional testing.
     '''
@@ -44,17 +44,21 @@ def transaction(request):
     return transaction
 
 
-@fixture
-def session(request):
-    from encoded.storage import Base, DBSession
-    from sqlalchemy import create_engine
-    engine = create_engine(settings['sqlalchemy.url'])
-    Base.metadata.create_all(engine)
-    DBSession.configure(bind=engine)
+@fixture(scope='session')
+def engine(request):
+    from encoded.storage import Base
+    from encoded import configure_engine
+    engine = configure_engine(settings)
 
     def truncate_all():
         for table in reversed(Base.metadata.sorted_tables):
             engine.execute(table.delete())
 
     request.addfinalizer(truncate_all)
+    return engine
+
+
+@fixture
+def session(engine, transaction):
+    from encoded.storage import DBSession
     return DBSession()

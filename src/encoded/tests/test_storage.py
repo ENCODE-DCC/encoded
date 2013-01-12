@@ -1,4 +1,4 @@
-def test_storage_creation(session, transaction):
+def test_storage_creation(session):
     from encoded.storage import (
         Statement,
         CurrentStatement,
@@ -9,7 +9,7 @@ def test_storage_creation(session, transaction):
     assert session.query(TransactionRecord).count() == 0
 
 
-def test_transaction_record(session, transaction):
+def test_transaction_record(session):
     from encoded.storage import (
         Resource,
         Statement,
@@ -30,7 +30,7 @@ def test_transaction_record(session, transaction):
     assert statement.tid == record.tid
 
 
-def test_current_statement(session, transaction):
+def test_current_statement(session):
     from encoded.storage import (
         CurrentStatement,
         Resource,
@@ -56,7 +56,7 @@ def test_current_statement(session, transaction):
     assert statement.tid == record.tid
 
 
-def test_current_statement_update(session, transaction):
+def test_current_statement_update(session):
     from encoded.storage import (
         CurrentStatement,
         Resource,
