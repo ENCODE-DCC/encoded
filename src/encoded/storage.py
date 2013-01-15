@@ -106,10 +106,7 @@ class Statement(Base):
     transaction = orm.relationship('TransactionRecord')
 
     def __json__(self, request=None):
-        return {
-            'class': self.predicate,
-            'properties': self.object,
-            }
+        return self.object
 
 
 class CurrentStatement(Base):
