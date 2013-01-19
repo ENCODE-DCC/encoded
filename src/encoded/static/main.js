@@ -13,7 +13,7 @@ requirejs.config({
         text: 'libs/text',
 
         // Libraries
-        backbone: 'libs/backbone.min',
+        backbone: 'libs/backbone',
         bootstrap: 'libs/bootstrap.min',
         jquery: 'libs/jquery.min',
         modernizr: 'libs/modernizr.min',

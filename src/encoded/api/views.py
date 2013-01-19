@@ -39,7 +39,8 @@ def antibodies(request):
     result = {
         'class': ['collection:antibodies', 'collection'],
         'properties': {
-            'title': 'Antibodies',
+            'title': 'Antibodies registry',
+            'description': 'Listing of antibodies returned from server',
             },
         'entities': items,
         'actions': {
