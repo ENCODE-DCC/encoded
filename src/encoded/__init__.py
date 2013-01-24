@@ -1,4 +1,5 @@
 from pyramid.config import Configurator
+from pyramid.settings import asbool
 from sqlalchemy import engine_from_config
 from .storage import (
     Base,
@@ -44,6 +45,12 @@ def configure_engine(settings):
     return engine
 
 
+def load_sample_data(app):
+    from .tests.sample_data import load_antibodies
+    from webtest import TestApp
+    load_antibodies(TestApp(app))
+
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -58,4 +65,9 @@ def main(global_config, **settings):
     config.include(static_resources)
     config.include(tests_js)
 
-    return config.make_wsgi_app()
+    app = config.make_wsgi_app()
+
+    if asbool(settings.get('load_sample_data', False)):
+        load_sample_data(app)
+
+    return app

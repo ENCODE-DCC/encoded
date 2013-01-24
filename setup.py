@@ -7,6 +7,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 requires = [
     'SQLAlchemy',
+    'WebTest',
     'pyramid',
     'pyramid_tm',
     'setuptools',
@@ -15,7 +16,6 @@ requires = [
 
 tests_require = [
     'pytest',
-    'WebTest',
 ]
 
 setup(
