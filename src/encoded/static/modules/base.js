@@ -144,7 +144,13 @@ function base(exports, $, _, Backbone, assert) {
         return view;
     };
 
-    exports.Model = Backbone.Model.extend({});
+    exports.Model = Backbone.Model.extend({
+        url: function url() {
+            var base = _.result(this, 'urlRoot') || _.result(this.collection, 'url') || urlError();
+            if (this.isNew()) return base;
+            return base + (base.charAt(base.length - 1) === '/' ? '' : '/') + encodeURIComponent(this.id) + (_.result(this, 'urlTrail') || '');
+        }
+    });
 
     exports.Collection = Backbone.Collection.extend({});
 

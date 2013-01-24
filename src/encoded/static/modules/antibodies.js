@@ -18,8 +18,9 @@ function antibodies(exports, $, _, base, home_template, row_template) {
     });
 
     exports.Antibodies = base.Model.extend({
-        id: 'antibodies/',
+        id: 'antibodies',
         urlRoot: '/',
+        urlTrail: '/',
         initialize: function initialize(attrs, options) {
             if (attrs === undefined) {
                 this.deferred = this.fetch();
