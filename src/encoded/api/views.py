@@ -9,15 +9,13 @@ from ..storage import (
 @view_config(route_name='home', request_method='GET')
 def home(request):
     result = {
-        'class': ['portal'],
-        'properties': {
-            'title': 'Home',
-            'portal_title': 'ENCODE 3',
+        'title': 'Home',
+        'portal_title': 'ENCODE 3',
+        '_links': {
+            'self': {'href': request.route_path('home')},
+            'profile': {'href': '/profiles/portal'},
+            # 'login': {'href': request.route_path('login')},
             },
-        'links': [
-            {'rel': ['self'], 'href': request.route_url('home')},
-            # {'rel': ['login'], 'href': request.route_url('login')},
-            ],
         }
     return result
 
@@ -26,33 +24,33 @@ def home(request):
 def antibodies(request):
     session = DBSession()
     query = session.query(CurrentStatement).filter(CurrentStatement.predicate == 'antibody')
-    collection_uri = request.route_url('antibodies')
-    items = [{
-        'rel': ['item'],
-        'class': ['antibody'],
-        'properties': model.statement,
-        'links': [
-            {'rel': ['self'], 'href': request.route_url('antibody', antibody=model.rid)},
-            {'rel': ['collection'], 'href': collection_uri},
-            ],
-        } for model in query.all()]
+    collection_uri = request.route_path('antibodies')
+    items = []
+    for model in query.all():
+        item = model.statement.__json__()
+        item['_links'] = {
+            'self': {'href': request.route_path('antibody', antibody=model.rid)},
+            'collection': {'href': collection_uri},
+            }
+        items.append(item)
     result = {
-        'class': ['collection:antibodies', 'collection'],
-        'properties': {
-            'title': 'Antibodies registry',
-            'description': 'Listing of antibodies returned from server',
+        'title': 'Antibodies registry',
+        'description': 'Listing of antibodies returned from server',
+        '_embedded': {
+            'item': items,
             },
-        'entities': items,
-        'actions': {
-            'name': 'add-antibody',
-            'title': 'Add antibody',
-            'method': 'POST',
-            'type': 'application/json',
-            'href': collection_uri,
-        },
-        'links': [
-            {'rel': ['self'], 'href': collection_uri},
-            ],
+        '_links': {
+            'self': {'href': collection_uri},
+            '/rels/actions': [
+                {
+                    'name': 'add-antibody',
+                    'title': 'Add antibody',
+                    'method': 'POST',
+                    'type': 'application/json',
+                    'href': collection_uri,
+                    }
+                ],
+            },
         }
     return result
 
@@ -62,14 +60,17 @@ def create_antibody(request):
     session = DBSession()
     resource = Resource({'antibody': request.json_body})
     session.add(resource)
-    item_uri = request.route_url('antibody', antibody=resource.rid)
+    item_uri = request.route_path('antibody', antibody=resource.rid)
     request.response.status = 201
     request.response.location = item_uri
     result = {
-        'class': ['result:success', 'result'],
-        'entities': [
-            {'rel': ['item'], 'href': item_uri},
-            ],
+        'result': 'success',
+        '_links': {
+            'profile': {'href': '/profiles/result'},
+            'item': [
+                {'href': item_uri},
+                ],
+            },
         }
     return result
 
@@ -79,21 +80,21 @@ def antibody(request):
     key = (request.matchdict['antibody'], 'antibody')
     session = DBSession()
     model = session.query(CurrentStatement).get(key)
-    item_uri = request.route_url('antibody', antibody=model.rid)
-    collection_uri = request.route_url('antibodies')
-    result = {
-        'class': ['antibody'],
-        'properties': model.statement,
-        'actions': {
-            'name': 'save',
-            'title': 'Save',
-            'method': 'POST',
-            'type': 'application/json',
-            'href': collection_uri,
-        },
-        'links': [
-            {'rel': ['self'], 'href': item_uri},
-            {'rel': ['collection'], 'href': collection_uri},
+    item_uri = request.route_path('antibody', antibody=model.rid)
+    collection_uri = request.route_path('antibodies')
+    result = model.statement.__json__()
+    result['_links'] = {
+        '/rels/actions': [
+            {
+                'name': 'save',
+                'title': 'Save',
+                'method': 'POST',
+                'type': 'application/json',
+                'href': item_uri,
+                },
             ],
+        'self': {'href': item_uri},
+        'collection': {'href': collection_uri},
+        'profile': {'href': '/profiles/antibody'},
         }
     return result
