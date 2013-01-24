@@ -3,18 +3,32 @@ define(['exports', 'jquery', 'underscore', 'base',
     'text!templates/antibodies/row.html'],
 function antibodies(exports, $, _, base, home_template, row_template) {
 
-    exports.Antibody = base.Model.extend();
-
-    exports.Antibodies = base.Model.extend({
-        id: 'antibodies/',
-        urlRoot: '/',
-        initialize: function initialize() {
-            this.deferred = this.fetch();
+    exports.Antibody = base.Model.extend({
+        initialize: function initialize(data, options) {
+            var self_href = _.find(this.links, function (item) {
+                return item.rel == 'self';
+            }).href;
+            this.id = self_href.substr(self_href.lastIndexOf('/') + 1);
         },
         parse: function parse(data) {
             this.actions = data.actions;
             this.links = data.links;
-            this.items = new exports.AntibodyCollection(data.entities);
+            return data.properties;
+        }
+    });
+
+    exports.Antibodies = base.Model.extend({
+        id: 'antibodies/',
+        urlRoot: '/',
+        initialize: function initialize(attrs, options) {
+            if (attrs === undefined) {
+                this.deferred = this.fetch();
+            }
+        },
+        parse: function parse(data) {
+            this.actions = data.actions;
+            this.links = data.links;
+            this.items = new exports.AntibodyCollection(data, {parse: true});
             return data.properties;
         }
     });
@@ -22,6 +36,15 @@ function antibodies(exports, $, _, base, home_template, row_template) {
     exports.AntibodyCollection = base.SirenCollection.extend({
         model: exports.Antibody,
         url: '/antibodies/'
+    });
+
+    exports.AntibodyRowView = base.View.extend({
+        tagName: 'tr',
+        initialize: function initialize(options) {
+            var model = options.model;
+            this.deferred = model.deferred;
+        },
+        template: _.template(row_template)
     });
 
     // The antibodies home screen
@@ -34,10 +57,14 @@ function antibodies(exports, $, _, base, home_template, row_template) {
             $.when(model.deferred).done(_.bind(function () {
                 this.title = model.title;
                 this.description = model.description;
-                this.rows = _.map(model.items, _.bind(function (item) {
-                    return new this.row(item);
+                this.rows = model.items.map(_.bind(function (item) {
+                    var subview = new this.row({model: item});
+                    $.when(subview.deferred).then(function () {
+                        subview.render();
+                    });
+                    return subview;
                 }, this));
-                $.when.apply($, _.pluck(this.rows, 'promises')).then(function () {
+                $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
                     deferred.resolve();
                 });
             }, this));
@@ -56,14 +83,6 @@ function antibodies(exports, $, _, base, home_template, row_template) {
     }, {
         route_name: 'antibodies',
         model_factory: exports.Antibodies
-    });
-
-    exports.AntibodyRowView= base.View.extend({
-        initialize: function initialize(options) {
-            var model = options.model;
-            this.deferred = model.deferred;
-        },
-        template: _.template(row_template)
     });
 
     return exports;
