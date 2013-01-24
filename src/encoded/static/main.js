@@ -14,6 +14,7 @@ requirejs.config({
 
         // Libraries
         backbone: 'libs/backbone',
+        'backbone.hal': 'libs/backbone.hal',
         bootstrap: 'libs/bootstrap.min',
         jquery: 'libs/jquery.min',
         modernizr: 'libs/modernizr.min',
