@@ -14,11 +14,11 @@ def test_antibody_creation(testapp):
     res = testapp.post_json('/antibodies/', new_antibody, status=201)
     assert res.location
     assert res.json['_links']['profile'] == {'href': '/profiles/result'}
-    assert res.json['_links']['item'] == [{'href': urlparse(res.location).path}]
+    assert res.json['_links']['items'] == [{'href': urlparse(res.location).path}]
     res = testapp.get(res.location, headers={'Accept': 'application/json'}, status=200)
     assert res.json['_links']['profile'] == {'href': '/profiles/antibody'}
     data = dict(res.json)
     del data['_links']
     assert data == new_antibody
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
-    assert len(res.json['_embedded']['item']) == 1
+    assert len(res.json['_embedded']['items']) == 1

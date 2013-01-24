@@ -37,7 +37,7 @@ def antibodies(request):
         'title': 'Antibodies registry',
         'description': 'Listing of antibodies returned from server',
         '_embedded': {
-            'item': items,
+            'items': items,
             },
         '_links': {
             'self': {'href': collection_uri},
@@ -67,7 +67,7 @@ def create_antibody(request):
         'result': 'success',
         '_links': {
             'profile': {'href': '/profiles/result'},
-            'item': [
+            'items': [
                 {'href': item_uri},
                 ],
             },
