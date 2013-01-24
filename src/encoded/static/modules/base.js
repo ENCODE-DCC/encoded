@@ -1,5 +1,5 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'assert'],
-function base(exports, $, _, Backbone, assert) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'backbone.hal', 'assert'],
+function base(exports, $, _, Backbone, HAL, assert) {
 
     // Underscore template settings
     // `{model.title}` for escaped text
@@ -144,22 +144,9 @@ function base(exports, $, _, Backbone, assert) {
         return view;
     };
 
-    exports.Model = Backbone.Model.extend({
-        url: function url() {
-            var base = _.result(this, 'urlRoot') || _.result(this.collection, 'url') || urlError();
-            if (this.isNew()) return base;
-            return base + (base.charAt(base.length - 1) === '/' ? '' : '/') + encodeURIComponent(this.id) + (_.result(this, 'urlTrail') || '');
-        }
-    });
+    exports.Model = HAL.Model.extend({});
 
-    exports.Collection = Backbone.Collection.extend({});
-
-    exports.SirenCollection = Backbone.Collection.extend({
-        parse: function parse(data) {
-            _.extend(this, data);
-            return data.entities;
-        }
-    });
+    exports.Collection = HAL.Collection.extend({});
 
     return exports;
 });

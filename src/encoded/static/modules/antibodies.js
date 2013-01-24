@@ -4,37 +4,9 @@ define(['exports', 'jquery', 'underscore', 'base',
 function antibodies(exports, $, _, base, home_template, row_template) {
 
     exports.Antibody = base.Model.extend({
-        initialize: function initialize(data, options) {
-            var self_href = _.find(this.links, function (item) {
-                return item.rel == 'self';
-            }).href;
-            this.id = self_href.substr(self_href.lastIndexOf('/') + 1);
-        },
-        parse: function parse(data) {
-            this.actions = data.actions;
-            this.links = data.links;
-            return data.properties;
-        }
     });
 
-    exports.Antibodies = base.Model.extend({
-        id: 'antibodies',
-        urlRoot: '/',
-        urlTrail: '/',
-        initialize: function initialize(attrs, options) {
-            if (attrs === undefined) {
-                this.deferred = this.fetch();
-            }
-        },
-        parse: function parse(data) {
-            this.actions = data.actions;
-            this.links = data.links;
-            this.items = new exports.AntibodyCollection(data, {parse: true});
-            return data.properties;
-        }
-    });
-
-    exports.AntibodyCollection = base.SirenCollection.extend({
+    exports.AntibodyCollection = base.Collection.extend({
         model: exports.Antibody,
         url: '/antibodies/'
     });
@@ -52,13 +24,13 @@ function antibodies(exports, $, _, base, home_template, row_template) {
     var AntibodiesHomeView = exports.AntibodiesHomeView = base.View.extend({
         row: exports.AntibodyRowView,
         initialize: function initialize(options) {
-            var model = options.model,
+            var collection = options.model,
                 deferred = $.Deferred();
             this.deferred = deferred;
-            $.when(model.deferred).done(_.bind(function () {
-                this.title = model.title;
-                this.description = model.description;
-                this.rows = model.items.map(_.bind(function (item) {
+            $.when(collection.fetch()).done(_.bind(function () {
+                this.title = collection.title;
+                this.description = collection.description;
+                this.rows = collection.map(_.bind(function (item) {
                     var subview = new this.row({model: item});
                     $.when(subview.deferred).then(function () {
                         subview.render();
@@ -83,7 +55,7 @@ function antibodies(exports, $, _, base, home_template, row_template) {
 
     }, {
         route_name: 'antibodies',
-        model_factory: exports.Antibodies
+        model_factory: exports.AntibodyCollection
     });
 
     return exports;
