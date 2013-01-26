@@ -1,7 +1,7 @@
 routes = {
     '': 'home',
     'antibodies/': 'antibodies',
-    'antibodies/{antibody}': 'antibody',
+    'antibodies/{name}': 'antibody',
     }
 
 
