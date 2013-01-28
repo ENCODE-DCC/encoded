@@ -18,21 +18,23 @@ def includeme(config):
     config.scan('.views')
 
 
-class CollectionViewsMeta(type):
-    def __init__(cls, name, bases, dct):
-        super(CollectionViewsMeta, cls).__init__(name, bases, dct)
-        if bases == (object, ):
-            return
-        view_config(route_name=cls.collection, request_method='GET', attr='list', _depth=1)(cls)
-        view_config(route_name=cls.collection, request_method='POST', attr='create', _depth=1)(cls)
-        view_config(route_name=cls.item_type, request_method='GET', attr='get', _depth=1)(cls)
-
-
 class CollectionViews(object):
-    __metaclass__ = CollectionViewsMeta
     collection = None
     item_type = None
     properties = None
+
+    @classmethod
+    def config(cls, **settings):
+        settings['_depth'] = settings.get('_depth', 0) + 1
+
+        def decorate(wrapped):
+            assert issubclass(wrapped, cls), "Can only configure %s" % cls.__name__
+            view_config(route_name=wrapped.collection, request_method='GET', attr='list', **settings)(wrapped)
+            view_config(route_name=wrapped.collection, request_method='POST', attr='create', **settings)(wrapped)
+            view_config(route_name=wrapped.item_type, request_method='GET', attr='get', **settings)(wrapped)
+            return wrapped
+
+        return decorate
 
     def __init__(self, request):
         self.request = request

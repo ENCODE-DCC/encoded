@@ -16,6 +16,7 @@ def home(request):
     return result
 
 
+@CollectionViews.config()
 class Antibodies(CollectionViews):
     collection = 'antibodies'
     item_type = 'antibody'
