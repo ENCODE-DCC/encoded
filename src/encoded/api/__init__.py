@@ -23,9 +23,9 @@ class CollectionViewsMeta(type):
         super(CollectionViewsMeta, cls).__init__(name, bases, dct)
         if bases == (object, ):
             return
-        view_config(route_name=cls.collection, request_method='GET', attr='list')(cls)
-        view_config(route_name=cls.collection, request_method='POST', attr='create')(cls)
-        view_config(route_name=cls.item_type, request_method='GET', attr='get')(cls)
+        view_config(route_name=cls.collection, request_method='GET', attr='list', _depth=1)(cls)
+        view_config(route_name=cls.collection, request_method='POST', attr='create', _depth=1)(cls)
+        view_config(route_name=cls.item_type, request_method='GET', attr='get', _depth=1)(cls)
 
 
 class CollectionViews(object):
@@ -76,7 +76,6 @@ class CollectionViews(object):
         return result
 
     def create(self):
-        import pytest; pytest.set_trace()
         session = DBSession()
         resource = Resource({self.item_type: self.request.json_body})
         session.add(resource)
