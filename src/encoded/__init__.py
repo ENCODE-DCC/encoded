@@ -46,9 +46,10 @@ def configure_engine(settings):
 
 
 def load_sample_data(app):
-    from .tests.sample_data import load_antibodies
+    from .tests.sample_data import load_all
     from webtest import TestApp
-    load_antibodies(TestApp(app))
+    testapp = TestApp(app)
+    load_all(testapp)
 
 
 def main(global_config, **settings):

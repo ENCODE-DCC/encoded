@@ -22,3 +22,8 @@ def test_antibody_creation(testapp):
     assert data == new_antibody
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
     assert len(res.json['_embedded']['items']) == 1
+
+
+def test_sample_data(testapp):
+    from .sample_data import load_all
+    load_all(testapp)

@@ -2,8 +2,9 @@
 
 ORGANISMS = [
     {
+    '_uuid': '4826a8a7-8b48-4d34-b8de-9f07d95f9ba5',
     '_links': {
-        'self': {'href': '/organisms/human'},
+        'self': {'href': '/organisms/{_uuid}', 'templated': True},
         },
     'organism_name': 'human',
     'genus': 'Homo',
@@ -16,13 +17,15 @@ ORGANISMS = [
 
 TARGETS = [
     {
+    '_uuid': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
     '_links': {
-        'self': {'href': '/targets/tbd'},
-        'organism': {'href': '/organisms/human'},
+        'self': {'href': '/targets/{_uuid}', 'templated': True},
+        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
         },
     'target_term_id': '468',
     'target_label': 'ATF4',
     'organism_name': 'human',  # link to organism
+    'organism_uuid': '4826a8a7-8b48-4d34-b8de-9f07d95f9ba5',  # looked up on insert?
     'target_symbol': None,
     'target_gene_name': 'ATF4',
     'target_class': 'generated',
@@ -44,8 +47,9 @@ TARGETS = [
 
 SOURCES = [
     {
+    '_uuid': '3aa827c3-92f8-41fa-9608-201558f7a1c4',
     '_links': {
-        'self': {'href': '/sources/sigma'},
+        'self': {'href': '/sources/{_uuid}', 'templated': True},
         },
     'source_name': 'sigma',
     'source_title': 'Sigma-Aldrich',
@@ -55,15 +59,17 @@ SOURCES = [
 
 ANTIBODIES = [
     {
+    '_uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
     '_links': {
-        'self': {'href': '/antibodies/s123'},
-        'source': {'href': '/sources/sigma'},
+        'self': {'href': '/antibodies/{_uuid}', 'templated': True},
+        'source': {'href': '/sources/{source_uuid}', 'templated': True},
         },
     'antibody_term_id': 'tbd-taxonomic-id',
     'antibody_name': 's123',
     'clonality': 'Monoclonal',
     'host_orgnamism': 'Mouse',
     'source_name': 'Sigma-Aldrich',  # PK
+    'source_uuid': '3aa827c3-92f8-41fa-9608-201558f7a1c4',
     'product_id': 'WH0000468M1',  # PK
     'lot_id': 'CB191-2B3',  # PK
     'url': 'http://www.sigmaaldrich.com/catalog/product/sigma/wh0000468m1?lang=en&region=US',
@@ -82,11 +88,14 @@ ANTIBODIES = [
 
 VALIDATIONS = [
     {
+    '_uuid': 'c4da2e0c-149f-4aee-ac21-8690dfdadb1f',
     '_links': {
-        'self': {'href': '/antibodies/s123/validations/v456'},
-        'antibody': {'href': '/antibodies/sigma'},
-        'target': {'href': '/targets/tbd'},
+        'self': {'href': '/validations/{_uuid}', 'templated': True},
+        'antibody': {'href': '/antibodies/{antibody_uuid}', 'templated': True},
+        'target': {'href': '/targets/{target_uuid}', 'templated': True},
         },
+    'antibody_uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
+    'target_uuid': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
     'method': '',
     'doc': '',
     'caption': '',
@@ -97,16 +106,30 @@ VALIDATIONS = [
 
 APPROVALS = [
     {
+    '_uuid': 'a8f94078-2d3b-4647-91a2-8ec91b096708',
     '_links': {
-        'self': {'href': '/antibodies/Sigma-Aldrich,WH0000468M1,CB191-2B3/approvals/tbd'},
-        'antibody': {'href': '/antibodies/Sigma-Aldrich,WH0000468M1,CB191-2B3'},
-        'target': {'href': '/targets/tbd'},
+        'self': {'href': '/approvals/{_uuid}', 'templated': True},
+        'antibody': {'href': '/antibodies/{antibody_uuid}', 'templated': True},
+        'target': {'href': '/targets/{target_uuid}', 'templated': True},
         'validations': [],
         },
+    'antibody_uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
+    'target_uuid': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
+    'validation_uuids': [
+        'c4da2e0c-149f-4aee-ac21-8690dfdadb1f',
+        ],
     },
 ]
 
 
-def load_antibodies(testapp):
-    for item in ANTIBODIES:
-        testapp.post_json('/antibodies/', item, status=201)
+def load_all(testapp):
+    for url, collection in [
+        ('/organisms/', ORGANISMS),
+        ('/targets/', TARGETS),
+        ('/sources/', SOURCES),
+        ('/antibodies/', ANTIBODIES),
+        ('/validations/', VALIDATIONS),
+        ('/approvals/', APPROVALS),
+        ]:
+        for item in collection:
+            testapp.post_json(url, item, status=201)

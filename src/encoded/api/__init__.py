@@ -5,16 +5,21 @@ from ..storage import (
     Resource,
     )
 
-routes = {
-    '': 'home',
-    'antibodies/': 'antibodies',
-    'antibodies/{name}': 'antibody',
-    }
+collections = [
+    ('antibodies', 'antibody'),
+    ('organisms', 'organism'),
+    ('sources', 'source'),
+    ('targets', 'target'),
+    ('validations', 'validation'),
+    ('approvals', 'approval'),
+    ]
 
 
 def includeme(config):
-    for pattern, name in routes.items():
-        config.add_route(name, pattern)
+    config.add_route('home', '')
+    for collection, item_type in collections:
+        config.add_route(collection, '/%s/' % collection)
+        config.add_route(item_type, '/%s/{name}' % collection)
     config.scan('.views')
 
 
@@ -79,7 +84,9 @@ class CollectionViews(object):
 
     def create(self):
         session = DBSession()
-        resource = Resource({self.item_type: self.request.json_body})
+        item = self.request.json_body
+        rid = item.get('_uuid', None)
+        resource = Resource({self.item_type: item}, rid)
         session.add(resource)
         item_uri = self.item_uri(resource.rid)
         self.request.response.status = 201
