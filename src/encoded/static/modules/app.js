@@ -3,7 +3,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, navbar) {
 
     var routes = {
         home: '',
-        antibodies: 'antibodies/'
+        antibodies: 'antibodies/',
+        antibody: 'antibodies/:name'
     };
 
     var slots = {

@@ -1,7 +1,8 @@
 define(['exports', 'jquery', 'underscore', 'base',
     'text!templates/antibodies/home.html',
+    'text!templates/antibodies/item.html',
     'text!templates/antibodies/row.html'],
-function antibodies(exports, $, _, base, home_template, row_template) {
+function antibodies(exports, $, _, base, home_template, item_template, row_template) {
 
     exports.Antibody = base.Model.extend({
     });
@@ -56,6 +57,17 @@ function antibodies(exports, $, _, base, home_template, row_template) {
     }, {
         route_name: 'antibodies',
         model_factory: exports.AntibodyCollection
+    });
+
+    exports.AntibodyView = base.View.extend({
+        initialize: function initialize(options) {
+            var model = options.model;
+            this.deferred = model.deferred;
+        },
+        template: _.template(item_template)
+    }, {
+        route_name: 'antibody',
+        model_factory: exports.Antibody
     });
 
     return exports;
