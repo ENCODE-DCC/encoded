@@ -11,9 +11,15 @@ function base(exports, $, _, Backbone, HAL, assert) {
           evaluate : /<\?js\s+(.+?)\?>/g
     };
 
-    // See: http://stackoverflow.com/questions/1606797/use-of-apply-with-new-operator-is-this-possible
-    function newCall(Cls, args) {
-        return new (Function.prototype.bind.apply(Cls, args))();
+    // See: https://gist.github.com/4659318
+    // Works with function or class
+    function new_(factory, args) {
+        var obj = Object.create(factory.prototype);
+        var result = factory.apply(obj, args);
+        if (result === undefined) {
+          result = obj;
+        }
+        return result;
     }
 
     // The view registry allows for a Pyramid like pattern of view registration.
@@ -66,11 +72,11 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 var options = {},
                     deferred;
                 if (model_factory) {
-                    options.model = new newCall(model_factory, arguments);
+                    options.model = new_(model_factory, [null, {route_args: arguments}]);
                     // possibly redundant
                     deferred = options.model.deferred;
                 }
-                view = new view_factory(options);
+                view = new_(view_factory, [options]);
                 if (view.deferred !== undefined) deferred = view.deferred;
                 $.when(deferred).done(_.bind(function () {
                     this.switch_to(view);
