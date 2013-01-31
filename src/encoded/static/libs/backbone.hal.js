@@ -30,7 +30,7 @@
       },
 
       isNew: function() {
-        return !(this.links.self);
+        return this.links.self || Model.__super__.isNew.call(this);
       }
     });
 
