@@ -5,6 +5,13 @@ define(['exports', 'jquery', 'underscore', 'base',
 function antibodies(exports, $, _, base, home_template, item_template, row_template) {
 
     exports.Antibody = base.Model.extend({
+        urlRoot: '/antibodies/',
+        initialize: function initialize(attrs, options) {
+            if (options && options.route_args) {
+                this.id = options.route_args[0];
+                this.deferred = this.fetch();
+            }
+        }
     });
 
     exports.AntibodyCollection = base.Collection.extend({
