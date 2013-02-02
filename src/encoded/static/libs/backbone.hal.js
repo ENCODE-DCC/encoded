@@ -30,7 +30,7 @@
       },
 
       isNew: function() {
-        return this.links.self || Model.__super__.isNew.call(this);
+        return this.links.self ? true : Model.__super__.isNew.call(this);
       }
     });
 
