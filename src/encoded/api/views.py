@@ -17,9 +17,9 @@ def home(request):
 
 
 @CollectionViews.config()
-class Antibodies(CollectionViews):
-    collection = 'antibodies'
-    item_type = 'antibody'
+class AntibodyLots(CollectionViews):
+    collection = 'antibody-lots'
+    item_type = 'antibody_lot'
     properties = {
         'title': 'Antibodies registry',
         'description': 'Listing of antibodies returned from server',
@@ -69,8 +69,8 @@ class Validations(CollectionViews):
 
 @CollectionViews.config()
 class Approvals(CollectionViews):
-    collection = 'approvals'
-    item_type = 'approval'
+    collection = 'antibodies'
+    item_type = 'antibody_approval'
     properties = {
         'title': 'Antibody approvals',
         'description': 'Listing of approvals returned from server',

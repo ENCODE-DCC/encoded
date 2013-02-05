@@ -57,7 +57,7 @@ SOURCES = [
     },
 ]
 
-ANTIBODIES = [
+ANTIBODY_LOTS = [
     {
     '_uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
     '_links': {
@@ -104,7 +104,7 @@ VALIDATIONS = [
     },
 ]
 
-APPROVALS = [
+ANTIBODY_APPROVALS = [
     {
     '_uuid': 'a8f94078-2d3b-4647-91a2-8ec91b096708',
     '_links': {
@@ -127,9 +127,9 @@ def load_all(testapp):
         ('/organisms/', ORGANISMS),
         ('/targets/', TARGETS),
         ('/sources/', SOURCES),
-        ('/antibodies/', ANTIBODIES),
+        ('/antibody-lots/', ANTIBODY_LOTS),
         ('/validations/', VALIDATIONS),
-        ('/approvals/', APPROVALS),
+        ('/antibodies/', ANTIBODY_APPROVALS),
         ]:
         for item in collection:
             testapp.post_json(url, item, status=201)

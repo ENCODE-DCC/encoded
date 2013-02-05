@@ -6,12 +6,12 @@ from ..storage import (
     )
 
 collections = [
-    ('antibodies', 'antibody'),
+    ('antibodies', 'antibody_approval'),
     ('organisms', 'organism'),
     ('sources', 'source'),
     ('targets', 'target'),
     ('validations', 'validation'),
-    ('approvals', 'approval'),
+    ('antibody-lots', 'antibody_lot'),
     ]
 
 

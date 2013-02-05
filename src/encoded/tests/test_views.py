@@ -8,7 +8,7 @@ def test_antibodies_html(testapp):
     assert res.body.startswith('<!DOCTYPE html>')
 
 
-def test_antibody_creation(testapp):
+def test_antibody_approval_creation(testapp):
     from urlparse import urlparse
     new_antibody = {'foo': 'bar'}
     res = testapp.post_json('/antibodies/', new_antibody, status=201)
@@ -16,7 +16,7 @@ def test_antibody_creation(testapp):
     assert res.json['_links']['profile'] == {'href': '/profiles/result'}
     assert res.json['_links']['items'] == [{'href': urlparse(res.location).path}]
     res = testapp.get(res.location, headers={'Accept': 'application/json'}, status=200)
-    assert res.json['_links']['profile'] == {'href': '/profiles/antibody'}
+    assert res.json['_links']['profile'] == {'href': '/profiles/antibody_approval'}
     data = dict(res.json)
     del data['_links']
     assert data == new_antibody
