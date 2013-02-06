@@ -91,7 +91,7 @@ VALIDATIONS = [
     '_uuid': 'c4da2e0c-149f-4aee-ac21-8690dfdadb1f',
     '_links': {
         'self': {'href': '/validations/{_uuid}', 'templated': True},
-        'antibody': {'href': '/antibodies/{antibody_uuid}', 'templated': True},
+        'antibody_lot': {'href': '/antibodies/{antibody_uuid}', 'templated': True},
         'target': {'href': '/targets/{target_uuid}', 'templated': True},
         },
     'antibody_uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
@@ -109,11 +109,11 @@ ANTIBODY_APPROVALS = [
     '_uuid': 'a8f94078-2d3b-4647-91a2-8ec91b096708',
     '_links': {
         'self': {'href': '/approvals/{_uuid}', 'templated': True},
-        'antibody': {'href': '/antibodies/{antibody_uuid}', 'templated': True},
+        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
         'target': {'href': '/targets/{target_uuid}', 'templated': True},
         'validations': [],
         },
-    'antibody_uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
+    'antibody_lot_uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
     'target_uuid': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
     'validation_uuids': [
         'c4da2e0c-149f-4aee-ac21-8690dfdadb1f',

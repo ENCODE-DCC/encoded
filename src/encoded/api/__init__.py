@@ -27,6 +27,8 @@ class CollectionViews(object):
     collection = None
     item_type = None
     properties = None
+    links = None
+    embedded = None
 
     @classmethod
     def config(cls, **settings):
@@ -48,6 +50,9 @@ class CollectionViews(object):
     def item_uri(self, name):
         return self.request.route_path(self.item_type, name=name)
 
+    def embedded(self, model, item):
+        return None
+
     def list(self):
         session = DBSession()
         query = session.query(CurrentStatement).filter(CurrentStatement.predicate == self.item_type)
@@ -58,6 +63,9 @@ class CollectionViews(object):
                 'self': {'href': self.item_uri(model.rid)},
                 'collection': {'href': self.collection_uri},
                 }
+            embedded = self.embedded(model, item)
+            if embedded is not None:
+                item['_embedded'] = embedded
             items.append(item)
         result = {
             '_embedded': {

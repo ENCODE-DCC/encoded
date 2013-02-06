@@ -8,7 +8,7 @@ def test_antibodies_html(testapp):
     assert res.body.startswith('<!DOCTYPE html>')
 
 
-def test_antibody_approval_creation(testapp):
+def _test_antibody_approval_creation(testapp):
     from urlparse import urlparse
     new_antibody = {'foo': 'bar'}
     res = testapp.post_json('/antibodies/', new_antibody, status=201)
@@ -27,3 +27,10 @@ def test_antibody_approval_creation(testapp):
 def test_sample_data(testapp):
     from .sample_data import load_all
     load_all(testapp)
+    res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
+    assert len(res.json['_embedded']['items']) == 1
+
+
+def test_load_workbook(testapp):
+    from ..loadxl import load_all
+    load_all(testapp, 'AntibodySubmissionsENCODE3.xlsx')
