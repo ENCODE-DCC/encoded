@@ -54,6 +54,13 @@ class Targets(CollectionViews):
         'title': 'Antibody targets',
         'description': 'Listing of targets returned from server',
         }
+    links = {
+        'self': {'href': '/targets/{_uuid}', 'templated': True},
+        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
+        }
+    embedded = {
+        'organism': '/organisms/{organism_uuid}',
+        }
 
 
 # The following should really be child collections.
@@ -77,26 +84,10 @@ class AntibodyApprovals(CollectionViews):
         }
     links = {
         'self': {'href': '/approvals/{_uuid}', 'templated': True},
-        'antibody_lot': {'href': '/antibodies/{antibody_uuid}', 'templated': True},
+        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
         'target': {'href': '/targets/{target_uuid}', 'templated': True},
-        'validations': [],
         }
-
-    def embedded(self, model, item):
-        embedded = {}
-        expand = {
-            'antibody_lot': '/antibody-lots/{antibody_lot_uuid}',
-            'target': '/targets/{target_uuid}',
-            }
-        for rel, path in expand.items():
-            subreq = self.request.copy()
-            subreq.override_renderer = 'null_renderer'
-            subreq.path_info = path.format(**item)
-            response = self.request.invoke_subrequest(subreq)
-            embedded[rel] = response
-        return embedded
-
-    _embedded = {
-        'antibody_lot': {'href': '/antibodies/{antibody_uuid}', 'templated': True},
-        'target': {'href': '/targets/{target_uuid}', 'templated': True},
+    embedded = {
+        'antibody_lot': '/antibody-lots/{antibody_lot_uuid}',
+        'target': '/targets/{target_uuid}',
         }
