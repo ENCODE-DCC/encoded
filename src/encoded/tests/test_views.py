@@ -34,21 +34,6 @@ def test_antibody_lots_html(testapp):
     assert res.body.startswith('<!DOCTYPE html>')
 
 
-def test_approvals_html(testapp):
-    res = testapp.get('/approvals/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
-
-
-def test_target_uuid_html(testapp):
-    res = testapp.get('/targets/dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
-
-
-def test_antibody_uuid_html(testapp):
-    res = testapp.get('/antibodies/c4da2e0c-149f-4aee-ac21-8690dfdadb1f/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
-
-
 def _test_antibody_approval_creation(testapp):
     from urlparse import urlparse
     new_antibody = {'foo': 'bar'}
