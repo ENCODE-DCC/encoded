@@ -68,10 +68,35 @@ class Validations(CollectionViews):
 
 
 @CollectionViews.config()
-class Approvals(CollectionViews):
+class AntibodyApprovals(CollectionViews):
     collection = 'antibodies'
     item_type = 'antibody_approval'
     properties = {
         'title': 'Antibody approvals',
         'description': 'Listing of approvals returned from server',
+        }
+    links = {
+        'self': {'href': '/approvals/{_uuid}', 'templated': True},
+        'antibody_lot': {'href': '/antibodies/{antibody_uuid}', 'templated': True},
+        'target': {'href': '/targets/{target_uuid}', 'templated': True},
+        'validations': [],
+        }
+
+    def embedded(self, model, item):
+        embedded = {}
+        expand = {
+            'antibody_lot': '/antibody-lots/{antibody_lot_uuid}',
+            'target': '/targets/{target_uuid}',
+            }
+        for rel, path in expand.items():
+            subreq = self.request.copy()
+            subreq.override_renderer = 'null_renderer'
+            subreq.path_info = path.format(**item)
+            response = self.request.invoke_subrequest(subreq)
+            embedded[rel] = response
+        return embedded
+
+    _embedded = {
+        'antibody_lot': {'href': '/antibodies/{antibody_uuid}', 'templated': True},
+        'target': {'href': '/targets/{target_uuid}', 'templated': True},
         }

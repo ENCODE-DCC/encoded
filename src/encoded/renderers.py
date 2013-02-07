@@ -21,6 +21,18 @@ def uuid_adapter(obj, request):
 json_renderer.add_adapter(uuid.UUID, uuid_adapter)
 
 
+class NullRenderer:
+    def __init__(self, info):
+        pass
+
+    def __call__(self, value, system):
+        request = system.get('request')
+        if request is None:
+            return value
+        request.response = value
+        return None
+
+
 class PageRenderer:
     def __init__(self, info):
         self.page = resource_string('encoded', 'index.html')

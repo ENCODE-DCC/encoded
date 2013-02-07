@@ -11,6 +11,7 @@ requires = [
     'pyramid',
     'pyramid_tm',
     'setuptools',
+    'xlrd',
     'zope.sqlalchemy',
     ]
 

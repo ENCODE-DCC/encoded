@@ -52,6 +52,13 @@ def load_sample_data(app):
     load_all(testapp)
 
 
+def load_workbook(app, workbook_filename):
+    from .loadxl import load_all
+    from webtest import TestApp
+    testapp = TestApp(app)
+    load_all(testapp, workbook_filename)
+
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -61,6 +68,7 @@ def main(global_config, **settings):
 
     # Render an HTML page to browsers and a JSON document for API clients
     config.add_renderer(None, 'encoded.renderers.PageOrJSON')
+    config.add_renderer('null_renderer', 'encoded.renderers.NullRenderer')
     config.include('.api')
 
     config.include(static_resources)
@@ -70,5 +78,9 @@ def main(global_config, **settings):
 
     if asbool(settings.get('load_sample_data', False)):
         load_sample_data(app)
+
+    workbook_filename = settings.get('load_workbook', '')
+    if workbook_filename:
+        load_workbook(app, workbook_filename)
 
     return app
