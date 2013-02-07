@@ -1,4 +1,8 @@
+from PIL import Image
+from base64 import b64encode
 import datetime
+import mimetypes
+from pkg_resources import resource_stream
 import xlrd
 # http://www.lexicon.net/sjmachin/xlrd.html
 
@@ -126,6 +130,15 @@ def multi_tuple_index(data, *attrs):
     return index
 
 
+def image_data_uri(stream):
+    im = Image.open(stream)
+    im.verify()
+    mime_type, _ = mimetypes.guess_type('name.%s' % im.format)
+    stream.seek(0, 0)
+    data = b64encode(stream.read())
+    return 'data:%s;base64,%s' % (mime_type, data)
+
+
 def load_all(testapp, filename):
     sheets = [content_type for content_type, url in TYPE_URL]
     alldata = extract(filename, sheets)
@@ -149,6 +162,11 @@ def load_all(testapp, filename):
 
     for uuid, value in alldata['validation'].iteritems():
         value['target_uuid'] = target_index[(value.pop('target_label'), value.pop('organism_name'))]
+        filename = value.pop('document_filename')
+        value['document'] = {
+            'download': filename,
+            'href': image_data_uri(resource_stream('encoded', 'tests/data/validation-docs/' + filename)),
+            }
 
     for uuid, value in alldata['antibody_approval'].iteritems():
         value['antibody_lot_uuid'] = antibody_lot_index[(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
