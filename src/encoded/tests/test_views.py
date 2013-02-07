@@ -3,8 +3,49 @@ def test_home_html(testapp):
     assert res.body.startswith('<!DOCTYPE html>')
 
 
+## these could all be tested with ?format=json as well.
 def test_antibodies_html(testapp):
     res = testapp.get('/antibodies/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_targets_html(testapp):
+    res = testapp.get('/targets/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_organisms_html(testapp):
+    res = testapp.get('/organisms/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_sources_html(testapp):
+    res = testapp.get('/sources/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_validations_html(testapp):
+    res = testapp.get('/validations/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_antibody_lots_html(testapp):
+    res = testapp.get('/antibody-lots/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_approvals_html(testapp):
+    res = testapp.get('/approvals/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_target_uuid_html(testapp):
+    res = testapp.get('/targets/dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_antibody_uuid_html(testapp):
+    res = testapp.get('/antibodies/c4da2e0c-149f-4aee-ac21-8690dfdadb1f/', status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
 

@@ -1,10 +1,12 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'navbar'],
-function app(exports, $, _, Backbone, base, home, antibodies, navbar) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'targets','navbar'],
+function app(exports, $, _, Backbone, base, home, antibodies, targets, navbar) {
 
     var routes = {
         home: '',
         antibodies: 'antibodies/',
-        antibody: 'antibodies/:name'
+        antibody: 'antibodies/:name',
+        targets: 'targets/',
+        target: 'targets/:name'
     };
 
     var slots = {
@@ -65,7 +67,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, navbar) {
         title: 'ENCODE 3',
         global_sections: [
             {id: 'home', title: 'Home', url: '/'},
-            {id: 'antibodies', title: 'Antibodies registry', url: '/antibodies/'}
+            {id: 'antibodies', title: 'Antibodies registry', url: '/antibodies/'},
+            {id: 'targets', title: 'Targets', url: '/targets/'}
         ],
         user_actions: [
             {id: 'login', title: 'Log in', url: '#login'}
