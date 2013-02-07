@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="../../css/style.css">
+        <style>
+            body {
+                padding-top: 60px;
+                padding-bottom: 40px;
+            }
+        </style>
+        <link rel="stylesheet" href="../../css/responsive.css">
+        <script data-main="/static/main" src="../../libs/require.min.js"></script>
+    </head>
+    <body>
+		<div class="navbar navbar-fixed-top navbar-inverse">
+			<div class="navbar-inner">
+				<div class="container">
+ 
+				<!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				</a>
+ 
+				<!-- Be sure to leave the brand out there if you want it shown -->
+				<a class="brand" href="#">ENCODE</a>
+ 
+					<!-- Everything you want hidden at 940px or less, place within here -->
+					<div class="nav-collapse collapse">
+					<!-- .nav, .navbar-search, .navbar-form, etc -->
+						<ul class="nav">
+							<li class="divider-vertical"></li>
+							<li><a href="#">Antibodies</a></li>
+							<li><a href="#">Experiments</a></li>
+							<li><a href="#">Biosamples</a></li>
+		        		</ul>
+					</div>
+ 
+				</div>
+			</div>
+		</div>
+        
+        <div id="content" class="container">
+        
+        	<header class="row">
+        		<div class="span12">
+        			<h2>Antibody Registration</h2>
+        		</div>
+        	</header>
+        	
+        	<section class="row">
+        		<div class="span12">
+        		<form class="form-horizontal">
+        			<div class="control-group">
+						<label class="control-label" for="source-name">Source name (vendor):</label>
+						<div class="controls">
+							<input type="text" id="source-name">
+						</div>
+					</div>
+        			<div class="control-group">
+						<label class="control-label" for="product-id">Product ID:</label>
+						<div class="controls">
+							<input type="text" id="product-id">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="product-url">Product URL:</label>
+						<div class="controls">
+							<input type="text" id="product-url">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="lot-id">Lot ID:</label>
+						<div class="controls">
+							<input type="text" id="lot-id">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="target-label">Target label:</label>
+						<div class="controls">
+							<input type="text" id="target-label">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="host">Host:</label>
+						<div class="controls">
+							<select id="host">
+								<option>Select...</option>
+								<option>Mouse</option>
+								<option>Sheep</option>
+								<option>Goat</option>
+								<option>Rabbit</option>
+								<option>Rat</option>
+							</select>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="clonality">Clonality:</label>
+						<div class="controls">
+							<select id="clonality">
+								<option>Select...</option>
+								<option>monoclonal</option>
+								<option>polyclonal</option>
+							</select>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="purification">Purification:</label>
+						<div class="controls">
+							<select id="purification">
+								<option>Select...</option>
+								<option>IEC Ion Exchange Chromatography (IEC)</option>
+								<option>Immobilized Metal Chelate Chromatography (IMAC)</option>
+								<option>Thiophilic Adsorption (T-Gel)</option>
+								<option>Melon Gel Chromatography</option>
+								<option>Antigen-specific Affinty Purification</option>
+								<option>Protein A Affinity Purification</option>
+								<option>Protein G Affinity Purification</option>
+								<option>Protien A/G Affinity Purification</option>
+								<option>Protein L Affinity Purification</option>
+							</select>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="isotype">Isotype:</label>
+						<div class="controls">
+							<select id="isotype">
+								<option>Select...</option>     
+								<option>IgA</option>
+								<option>IgD</option>
+								<option>IgE</option>
+								<option>IgG</option>
+								<option>IgM</option>
+							</select>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="antigen-description">Antigen description:</label>
+						<div class="controls">
+							<textarea id="antigen-description" rows="3"></textarea>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="antigen-sequence">Antigen sequence:</label>
+						<div class="controls">
+							<textarea id="antigen-sequence" rows="3"></textarea>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="references">References:</label>
+						<div class="controls">
+							<input type="text" id="references">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for=""></label>
+						<div class="controls">
+							<button class="btn" type="submit">Submit</button> 
+							<a href="#" class="cancel-link">Cancel</a>
+						</div>
+					</div>
+        		</form>
+        		</div>
+        	</section>
+        	
+        </div><!-- #content -->
+        <footer>
+        <!-- some footer content -->
+        </footer>
+        
+        <!-- needed scripts linked to for now - remove for production b/c requireJS -->
+        <script src="../../libs/jquery.min.js"></script>
+        <script src="../../libs/bootstrap.min.js"></script>
+        <script src="../../libs/modernizr.min.js"></script>
+    </body>
+</html>
