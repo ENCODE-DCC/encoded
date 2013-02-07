@@ -74,4 +74,5 @@ def test_sample_data(testapp):
 
 def test_load_workbook(testapp):
     from ..loadxl import load_all
-    load_all(testapp, 'AntibodySubmissionsENCODE3.xlsx')
+    from pkg_resources import resource_filename
+    load_all(testapp, resource_filename('encoded', 'tests/data/AntibodySubmissionsENCODE3.xlsx'))
