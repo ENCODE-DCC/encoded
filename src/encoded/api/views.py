@@ -55,7 +55,6 @@ class Targets(CollectionViews):
         'description': 'Listing of targets returned from server',
         }
     links = {
-        'self': {'href': '/targets/{_uuid}', 'templated': True},
         'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
         }
     embedded = {
@@ -83,7 +82,6 @@ class AntibodyApprovals(CollectionViews):
         'description': 'Listing of approvals returned from server',
         }
     links = {
-        'self': {'href': '/approvals/{_uuid}', 'templated': True},
         'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
         'target': {'href': '/targets/{target_uuid}', 'templated': True},
         }
