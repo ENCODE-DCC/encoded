@@ -1,3 +1,4 @@
+from pyramid.threadlocal import manager
 from pyramid.view import view_config
 from ..storage import (
     DBSession,
@@ -24,10 +25,19 @@ def includeme(config):
 
 
 def include(request, path):
-    # Possibly cache on root request
+    # Should really be more careful about what gets included instead.
+    # Cache cut response time from ~800ms to ~420ms.
+    cache = None
+    if manager.stack:
+        cache = manager.stack[0].setdefault('encoded_include_cache', {})
+        result = cache.get(path, None)
+        if result is not None:
+            return result
     subreq = request.blank(path)
     subreq.override_renderer = 'null_renderer'
     result = request.invoke_subrequest(subreq)
+    if cache is not None:
+        cache[path] = result
     return result
 
 
