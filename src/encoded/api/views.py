@@ -17,6 +17,16 @@ def home(request):
 
 
 @CollectionViews.config()
+class UsersCollectionViews(CollectionViews):
+    collection = 'users'
+    item_type = 'user'
+    properties = {
+        'title': 'ENCODE DCC Users',
+        'description': 'List of current ENCODE DCC Users',
+        }
+
+
+@CollectionViews.config()
 class AntibodyLots(CollectionViews):
     collection = 'antibody-lots'
     item_type = 'antibody_lot'

@@ -34,6 +34,11 @@ def test_antibody_lots_html(testapp):
     assert res.body.startswith('<!DOCTYPE html>')
 
 
+def test_user_html(testapp):
+    res = testapp.get('/users/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
 def _test_antibody_approval_creation(testapp):
     from urlparse import urlparse
     new_antibody = {'foo': 'bar'}

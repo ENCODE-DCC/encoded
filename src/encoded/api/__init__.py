@@ -7,6 +7,7 @@ from ..storage import (
     )
 
 collections = [
+    ('users', 'user'),
     ('antibodies', 'antibody_approval'),
     ('organisms', 'organism'),
     ('sources', 'source'),

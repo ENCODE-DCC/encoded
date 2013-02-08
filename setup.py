@@ -14,6 +14,7 @@ requires = [
     'setuptools',
     'xlrd',
     'zope.sqlalchemy',
+    'pyramid_persona',
     ]
 
 tests_require = [

@@ -1,6 +1,11 @@
 from pyramid.config import Configurator
 from pyramid.settings import asbool
+from pyramid.authentication import AuthTktAuthenticationPolicy
 from sqlalchemy import engine_from_config
+from .authz import (
+    groupfinder,
+    RootFactory
+    )
 from .storage import (
     Base,
     DBSession,
@@ -62,7 +67,18 @@ def load_workbook(app, workbook_filename):
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    config = Configurator(settings=settings)
+
+    secret_key = settings.get('persona.secret', '')
+    authn_policy = AuthTktAuthenticationPolicy(
+        secret_key,
+        callback=groupfinder,
+    )
+
+    config = Configurator(
+        settings=settings,
+        authentication_policy=authn_policy,
+    )
+    config.include('pyramid_persona')
     config.include('pyramid_tm')
     configure_engine(settings)
 
