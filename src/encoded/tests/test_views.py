@@ -3,8 +3,34 @@ def test_home_html(testapp):
     assert res.body.startswith('<!DOCTYPE html>')
 
 
+## these could all be tested with ?format=json as well.
 def test_antibodies_html(testapp):
     res = testapp.get('/antibodies/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_targets_html(testapp):
+    res = testapp.get('/targets/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_organisms_html(testapp):
+    res = testapp.get('/organisms/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_sources_html(testapp):
+    res = testapp.get('/sources/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_validations_html(testapp):
+    res = testapp.get('/validations/', status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+def test_antibody_lots_html(testapp):
+    res = testapp.get('/antibody-lots/', status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
 
@@ -33,4 +59,5 @@ def test_sample_data(testapp):
 
 def test_load_workbook(testapp):
     from ..loadxl import load_all
-    load_all(testapp, 'AntibodySubmissionsENCODE3.xlsx')
+    from pkg_resources import resource_filename
+    load_all(testapp, resource_filename('encoded', 'tests/data/AntibodySubmissionsENCODE3.xlsx'))

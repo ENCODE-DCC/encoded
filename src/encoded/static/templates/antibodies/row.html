@@ -1,8 +1,7 @@
-<td><a href="{model.url()}">{properties._uuid}</a></td>
 <td>{model.embedded.antibody_lot.antibody_accession}</td>
 <td>{model.embedded.target.target_label}</td>
-<td>{model.embedded.antibody_lot.source_uuid}</td>
+<td>{model.embedded.antibody_lot._embedded.source.source_name}</td>
 <td>{model.embedded.antibody_lot.product_id}</td>
 <td>{model.embedded.antibody_lot.lot_id}</td>
-<td>{model.embedded.target.organism_uuid}</td>
-<td>{properties.approval_status}</td>
+<td>{model.embedded.target._embedded.organism.organism_name}</td>
+<td><a href="{model.url()}">{properties.approval_status}</a></td>

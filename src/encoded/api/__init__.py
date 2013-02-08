@@ -1,3 +1,4 @@
+from pyramid.threadlocal import manager
 from pyramid.view import view_config
 from ..storage import (
     DBSession,
@@ -23,11 +24,32 @@ def includeme(config):
     config.scan('.views')
 
 
+def include(request, path):
+    # Should really be more careful about what gets included instead.
+    # Cache cut response time from ~800ms to ~420ms.
+    cache = None
+    if manager.stack:
+        cache = manager.stack[0].setdefault('encoded_include_cache', {})
+        result = cache.get(path, None)
+        if result is not None:
+            return result
+    subreq = request.blank(path)
+    subreq.override_renderer = 'null_renderer'
+    result = request.invoke_subrequest(subreq)
+    if cache is not None:
+        cache[path] = result
+    return result
+
+
 class CollectionViews(object):
     collection = None
     item_type = None
     properties = None
-    links = None
+    links = {
+        'self': {'href': '/{collection}/{_uuid}', 'templated': True},
+        'collection': {'href': '/{collection}/', 'templated': True},
+        'profile': {'href': '/profiles/{item_type}', 'templated': True},
+        }
     embedded = None
 
     @classmethod
@@ -50,23 +72,56 @@ class CollectionViews(object):
     def item_uri(self, name):
         return self.request.route_path(self.item_type, name=name)
 
-    def embedded(self, model, item):
-        return None
+    def expand_embedded(self, model, item):
+        if self.embedded is None:
+            return None
+        objects = {}
+        for rel, value in self.embedded.items():
+            if isinstance(value, basestring):
+                value = include(self.request, value.format(
+                    collection_uri=self.collection_uri,
+                    item_type=self.item_type,
+                    collection=self.collection,
+                    **item))
+            objects[rel] = value
+        return objects
+
+    def expand_links(self, model, item):
+        # This should probably go on a metaclass
+        merged_links = {}
+        for cls in reversed(type(self).mro()):
+            merged_links.update(vars(cls).get('links', {}))
+        links = {}
+        for rel, value in merged_links.items():
+            if value is None:
+                continue
+            if isinstance(value, list):
+                raise NotImplemented()
+            if value.get('templated', False):
+                value = value.copy()
+                del value['templated']
+                value['href'] = value['href'].format(
+                    collection_uri=self.collection_uri,
+                    item_type=self.item_type,
+                    collection=self.collection,
+                    **item)
+            links[rel] = value
+        return links
+
+    def make_item(self, model):
+        item = model.statement.__json__()
+        links = self.expand_links(model, item)
+        if links is not None:
+            item['_links'] = links
+        embedded = self.expand_embedded(model, item)
+        if embedded is not None:
+            item['_embedded'] = embedded
+        return item
 
     def list(self):
         session = DBSession()
         query = session.query(CurrentStatement).filter(CurrentStatement.predicate == self.item_type)
-        items = []
-        for model in query.all():
-            item = model.statement.__json__()
-            item['_links'] = {
-                'self': {'href': self.item_uri(model.rid)},
-                'collection': {'href': self.collection_uri},
-                }
-            embedded = self.embedded(model, item)
-            if embedded is not None:
-                item['_embedded'] = embedded
-            items.append(item)
+        items = [self.make_item(model) for model in query.all()]
         result = {
             '_embedded': {
                 'items': items,
@@ -85,7 +140,7 @@ class CollectionViews(object):
                 },
             }
 
-        if self.properties:
+        if self.properties is not None:
             result.update(self.properties)
 
         return result
@@ -114,20 +169,5 @@ class CollectionViews(object):
         key = (self.request.matchdict['name'], self.item_type)
         session = DBSession()
         model = session.query(CurrentStatement).get(key)
-        item_uri = self.item_uri(model.rid)
-        result = model.statement.__json__()
-        result['_links'] = {
-            '/rels/actions': [
-                {
-                    'name': 'save',
-                    'title': 'Save',
-                    'method': 'POST',
-                    'type': 'application/json',
-                    'href': item_uri,
-                    },
-                ],
-            'self': {'href': item_uri},
-            'collection': {'href': self.collection_uri},
-            'profile': {'href': '/profiles/' + self.item_type},
-            }
-        return result
+        item = self.make_item(model)
+        return item

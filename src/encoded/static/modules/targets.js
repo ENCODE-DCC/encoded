@@ -1,11 +1,11 @@
 define(['exports', 'jquery', 'underscore', 'base',
-    'text!templates/antibodies/home.html',
-    'text!templates/antibodies/item.html',
-    'text!templates/antibodies/row.html'],
-function antibodies(exports, $, _, base, home_template, item_template, row_template) {
+    'text!templates/targets/home.html',
+    'text!templates/targets/item.html',
+    'text!templates/targets/row.html'],
+function targets(exports, $, _, base, home_template, item_template, row_template) {
 
-    exports.Antibody = base.Model.extend({
-        urlRoot: '/antibodies/',
+    exports.Target = base.Model.extend({
+        urlRoot: '/targets/',
         initialize: function initialize(attrs, options) {
             if (options && options.route_args) {
                 this.id = options.route_args[0];
@@ -14,26 +14,23 @@ function antibodies(exports, $, _, base, home_template, item_template, row_templ
         }
     });
 
-    exports.AntibodyCollection = base.Collection.extend({
-        model: exports.Antibody,
-        url: '/antibodies/'
+    exports.TargetCollection = base.Collection.extend({
+        model: exports.Target,
+        url: '/targets/'
     });
 
-    exports.AntibodyRowView = base.View.extend({
+    exports.TargetRowView = base.View.extend({
         tagName: 'tr',
         initialize: function initialize(options) {
             var model = options.model;
             this.deferred = model.deferred;
         },
-        update: function update() {
-            this.$el.attr('data-href', this.model.url());
-        },
         template: _.template(row_template)
     });
 
-    // The antibodies home screen
-    var AntibodiesHomeView = exports.AntibodiesHomeView = base.View.extend({
-        row: exports.AntibodyRowView,
+    // The targets home screen
+    var targetsHomeView = exports.targetsHomeView = base.View.extend({
+        row: exports.TargetRowView,
         initialize: function initialize(options) {
             var collection = options.model,
                 deferred = $.Deferred();
@@ -56,7 +53,7 @@ function antibodies(exports, $, _, base, home_template, item_template, row_templ
         },
         template: _.template(home_template),
         render: function render() {
-            AntibodiesHomeView.__super__.render.apply(this, arguments);
+            targetsHomeView.__super__.render.apply(this, arguments);
             var table = this.$el.find('tbody');
             _.each(this.rows, function (view) {
                 table.append(view.el);
@@ -65,24 +62,19 @@ function antibodies(exports, $, _, base, home_template, item_template, row_templ
         }
 
     }, {
-        route_name: 'antibodies',
-        model_factory: exports.AntibodyCollection
+        route_name: 'targets',
+        model_factory: exports.TargetCollection
     });
 
-    exports.AntibodyView = base.View.extend({
+    exports.TargetView = base.View.extend({
         initialize: function initialize(options) {
             var model = options.model;
             this.deferred = model.deferred;
         },
         template: _.template(item_template)
     }, {
-        route_name: 'antibody',
-        model_factory: exports.Antibody
-    });
-
-    // Make the rows clickable
-    $(document).on('click', 'tr[data-href]', function click(evt) {
-        Backbone.history.navigate($(this).attr("data-href"), true);
+        route_name: 'target',
+        model_factory: exports.Target
     });
 
     return exports;
