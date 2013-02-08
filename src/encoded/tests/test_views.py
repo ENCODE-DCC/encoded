@@ -61,3 +61,5 @@ def test_load_workbook(testapp):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
     load_all(testapp, resource_filename('encoded', 'tests/data/AntibodySubmissionsENCODE3.xlsx'))
+    res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
+    assert res.json['_embedded']['items']
