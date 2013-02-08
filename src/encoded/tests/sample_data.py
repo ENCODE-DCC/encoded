@@ -88,6 +88,15 @@ SOURCES = [
     'source_title': 'Sigma-Aldrich',
     'url': 'http://www.sigmaaldrich.com',
     },
+    {
+    '_uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
+    '_links': {
+        'self': {'href': '/sources/{_uuid}', 'templated': True},
+        },
+    'source_name': 'gingeras',
+    'source_title': 'Gingeras Lab',
+    'url': 'http://www.gingeraslab.edu',
+    },
 ]
 
 ANTIBODY_LOTS = [
@@ -100,7 +109,7 @@ ANTIBODY_LOTS = [
     'antibody_term_id': 'tbd-taxonomic-id',
     'antibody_name': 's123',
     'clonality': 'Monoclonal',
-    'host_orgnamism': 'Mouse',
+    'host_orgnanism': 'Mouse',
     'source_name': 'Sigma-Aldrich',  # PK
     'source_uuid': '3aa827c3-92f8-41fa-9608-201558f7a1c4',
     'product_id': 'WH0000468M1',  # PK
@@ -154,6 +163,36 @@ ANTIBODY_APPROVALS = [
     },
 ]
 
+BIOSAMPLES = [
+    {
+    '_uuid': 'bc29323-eab3-41fb-a41e-35552686b67d',
+    '_links': {
+        'self': {'href': '/biosamples/{_uuid}', 'templated': True},
+        'source': {'href': '/sources/{source_uuid}', 'templated': True},
+        },
+    'biosample_ontology': 'UBERON',
+    'biosample_term_id': 'U:349829',
+    'biosample_term': 'Liver',
+    'biosample_type': 'Tissue',
+    'antibody_accession': 'ENCBS001ZZZ',
+    'source_name': 'Gingeras',
+    'source_uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
+    'product_id': 'fridge1a',
+    'lot_id': '1',
+    'treatment': None,
+    'donor_uuids': ['a59b301a-782f-449e-bce4-9f0a6141b97b'],
+    'is_pooled': False,
+    'related_uuids': [],
+    'protocol_uuids': [
+        'b55b330f-a34a-4bda-b87c-11c863a5ad1e',
+        '68b7342a-2d31-4ad7-bbeb-0196993f1752',
+        'dfa2a44e-7583-41f2-bc40-fe7c073af2a9',
+    ],
+    'submitted_by': 'Gingeras-Hapless-Postdoc',
+    'date_created': '2009-2-08',
+    'created_by': 'Cherry-Chan',
+    }
+]
 
 def load_all(testapp):
     for url, collection in [
