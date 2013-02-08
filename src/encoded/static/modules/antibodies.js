@@ -80,5 +80,10 @@ function antibodies(exports, $, _, base, home_template, item_template, row_templ
         model_factory: exports.Antibody
     });
 
+    // Make the rows clickable
+    $(document).on('click', 'tr[data-href]', function click(evt) {
+        Backbone.history.navigate($(this).attr("data-href"), true);
+    });
+
     return exports;
 });
