@@ -132,8 +132,11 @@ function base(exports, $, _, Backbone, HAL, assert) {
         // Views should define their own `template`
         template: undefined,
 
+        update: function update() {},
+
         // Render the view
         render: function render() {
+            this.update();
             var properties = this.model && this.model.toJSON();
             this.$el.html(this.template({model: this.model, properties: properties, view: this, '_': _}));
             return this;

@@ -25,6 +25,9 @@ function antibodies(exports, $, _, base, home_template, item_template, row_templ
             var model = options.model;
             this.deferred = model.deferred;
         },
+        update: function update() {
+            this.$el.attr('data-href', this.model.url());
+        },
         template: _.template(row_template)
     });
 
