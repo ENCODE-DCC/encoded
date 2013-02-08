@@ -199,11 +199,11 @@ $navbarInverseBackground:                #111111 !default;
 $navbarInverseBackgroundHighlight:       #222222 !default;
 $navbarInverseBorder:                    #252525 !default;
 
-$navbarInverseText:                      $grayLight !default;
-$navbarInverseLinkColor:                 $grayLight !default;
+$navbarInverseText:                      $white !default;
+$navbarInverseLinkColor:                 $white !default;
 $navbarInverseLinkColorHover:            $white !default;
 $navbarInverseLinkColorActive:           $navbarInverseLinkColorHover !default;
-$navbarInverseLinkBackgroundHover:       transparent !default;
+$navbarInverseLinkBackgroundHover:       #000 !default;
 $navbarInverseLinkBackgroundActive:      $navbarInverseBackground !default;
 
 $navbarInverseSearchBackground:          lighten($navbarInverseBackground, 25%) !default;
