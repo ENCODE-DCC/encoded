@@ -11,6 +11,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="stylesheet" href="../../css/style.css">
+        <link rel="stylesheet" href="../lib/chosen/chosen.css">
+        
         <style>
             body {
                 padding-top: 60px;
@@ -45,7 +47,6 @@
 							<li><a href="#">Biosamples</a></li>
 		        		</ul>
 					</div>
- 
 				</div>
 			</div>
 		</div>
@@ -94,7 +95,7 @@
 					<div class="control-group">
 						<label class="control-label" for="host">Host:</label>
 						<div class="controls">
-							<select id="host">
+							<select id="host" class="chzn-select">
 								<option>Select...</option>
 								<option>Mouse</option>
 								<option>Sheep</option>
@@ -182,5 +183,9 @@
         <script src="../../libs/jquery.min.js"></script>
         <script src="../../libs/bootstrap.min.js"></script>
         <script src="../../libs/modernizr.min.js"></script>
+        <script src="../lib/chosen/chosen.jquery.js"></script>
+        <script>
+        	$(".chzn-select").chosen();
+        </script>
     </body>
 </html>
