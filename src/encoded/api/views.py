@@ -24,6 +24,12 @@ class AntibodyLots(CollectionViews):
         'title': 'Antibodies registry',
         'description': 'Listing of antibodies returned from server',
         }
+    links = {
+        'source': {'href': '/sources/{source_uuid}', 'templated': True},
+        }
+    embedded = {
+        'source': '/sources/{source_uuid}',
+        }
 
 
 @CollectionViews.config()
@@ -70,6 +76,14 @@ class Validations(CollectionViews):
     properties = {
         'title': 'Antibody validations',
         'description': 'Listing of validations returned from server',
+        }
+    links = {
+        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
+        'target': {'href': '/targets/{target_uuid}', 'templated': True},
+        }
+    embedded = {
+        'antibody_lot': '/antibody-lots/{antibody_lot_uuid}',
+        'target': '/targets/{target_uuid}',
         }
 
 
