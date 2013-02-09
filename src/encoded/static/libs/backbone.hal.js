@@ -18,19 +18,35 @@
 
       parse: function(attrs) {
         if (!attrs) attrs = {};
-        this.links = attrs._links || {};
+        this._links = attrs._links || {};
         delete attrs._links;
-        this.embedded = attrs._embedded || {};
+        this.links = {};
+        _.each(this._links, _.bind(function (obj, rel) {
+          if (rel == 'self') {
+            // pass
+          } else if (_.isArray(obj)) {
+            this.links[rel] = _.map(obj, _.bind(function (obj) {
+              var new_obj = new this.constructor();
+              new_obj.url = rel.href;
+              return new_obj;
+            }, this));
+          } else {
+            var new_obj = new this.constructor();
+            new_obj.url = rel.href;
+            this.links[rel] = new_obj;
+          }
+        }, this));
+        this._embedded = attrs._embedded || {};
         delete attrs._embedded;
         return attrs;
       },
 
       url: function() {
-        return this.links.self ? this.links.self.href : Model.__super__.url.call(this);
+        return this._links.self ? this._links.self.href : Model.__super__.url.call(this);
       },
 
       isNew: function() {
-        return this.links.self ? true : Model.__super__.isNew.call(this);
+        return this._links.self ? true : Model.__super__.isNew.call(this);
       }
     });
 
@@ -43,15 +59,15 @@
       parse: function(obj) {
         var items;
         if (!obj) obj = {};
-        this.links = obj._links || {};
+        this._links = obj._links || {};
         delete obj._links;
-        this.embedded = obj._embedded || {};
+        this._embedded = obj._embedded || {};
         delete obj._embedded;
         this.attributes = obj;
         if (this.itemRel !== undefined) {
-          items = this.embedded[this.itemRel];
+          items = this._embedded[this.itemRel];
         } else {
-          items = this.embedded.items;
+          items = this._embedded.items;
         }
         return items;
       },
@@ -67,7 +83,7 @@
       },
 
       url: function() {
-        return this.links.self ? this.links.self.href : Collection.__super__.url.call(this);
+        return this._links.self ? this._links.self.href : Collection.__super__.url.call(this);
       }
 
     });

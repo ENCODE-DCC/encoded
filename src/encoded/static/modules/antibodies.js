@@ -4,6 +4,12 @@ define(['exports', 'jquery', 'underscore', 'base',
     'text!templates/antibodies/row.html'],
 function antibodies(exports, $, _, base, home_template, item_template, row_template) {
 
+    exports.antibody_factory = function antibody_factory(attrs, options) {
+        var new_obj = new base.Model(attrs, options);
+        new_obj.url = '/antibodies/' + options.route_args[0];
+        new_obj.deferred = new_obj.fetch();
+    };
+
     exports.Antibody = base.Model.extend({
         urlRoot: '/antibodies/',
         initialize: function initialize(attrs, options) {
@@ -15,7 +21,7 @@ function antibodies(exports, $, _, base, home_template, item_template, row_templ
     });
 
     exports.AntibodyCollection = base.Collection.extend({
-        model: exports.Antibody,
+        model: base.Model,
         url: '/antibodies/'
     });
 
@@ -77,7 +83,7 @@ function antibodies(exports, $, _, base, home_template, item_template, row_templ
         template: _.template(item_template)
     }, {
         route_name: 'antibody',
-        model_factory: exports.Antibody
+        model_factory: exports.antibody_factory
     });
 
     // Make the rows clickable

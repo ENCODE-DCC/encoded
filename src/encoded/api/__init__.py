@@ -96,10 +96,39 @@ class CollectionViews(object):
             if value is None:
                 continue
             if isinstance(value, list):
-                raise NotImplemented()
-            if value.get('templated', False):
+                out = []
+                for member in value:
+                    if not member.get('templated', False):
+                        out.append(member)
+                        continue
+                    templated = member.copy()
+                    del templated['templated']
+                    repeat = templated.pop('repeat', None)
+                    if repeat:
+                        ns = item.copy()
+                        repeat_name, repeater = repeat.split()
+                        for repeat_value in item[repeater]:
+                            ns[repeat_name] = repeat_value
+                            templated['href'] = member['href'].format(
+                                collection_uri=self.collection_uri,
+                                item_type=self.item_type,
+                                collection=self.collection,
+                                **ns)
+                            out.append(templated)
+                    else:
+                        ns = item
+                        ns[repeat_name] = repeat_value
+                        templated['href'] = member['href'].format(
+                            collection_uri=self.collection_uri,
+                            item_type=self.item_type,
+                            collection=self.collection,
+                            **ns)
+                        out.append(templated)
+                value = out
+            elif value.get('templated', False):
                 value = value.copy()
                 del value['templated']
+                assert not value.get('repeat')
                 value['href'] = value['href'].format(
                     collection_uri=self.collection_uri,
                     item_type=self.item_type,
