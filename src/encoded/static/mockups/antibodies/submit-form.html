@@ -46,6 +46,11 @@
 							<li><a href="#">Experiments</a></li>
 							<li><a href="#">Biosamples</a></li>
 		        		</ul>
+		        		<ul id="user-actions" class="nav pull-right">
+				
+							<li><button class="btn btn-primary">Log In</button></li>
+						<?js }); ?>
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -65,37 +70,37 @@
         			<div class="control-group">
 						<label class="control-label" for="source-name">Source name (vendor):</label>
 						<div class="controls">
-							<input type="text" id="source-name">
+							<input type="text" id="source-name" class="input-xlarge">
 						</div>
 					</div>
         			<div class="control-group">
 						<label class="control-label" for="product-id">Product ID:</label>
 						<div class="controls">
-							<input type="text" id="product-id">
+							<input type="text" id="product-id" class="input-xlarge">
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="product-url">Product URL:</label>
 						<div class="controls">
-							<input type="text" id="product-url">
+							<input type="text" id="product-url" class="input-xlarge">
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="lot-id">Lot ID:</label>
 						<div class="controls">
-							<input type="text" id="lot-id">
+							<input type="text" id="lot-id" class="input-xlarge">
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="target-label">Target label:</label>
 						<div class="controls">
-							<input type="text" id="target-label">
+							<input type="text" id="target-label" class="input-xlarge">
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="host">Host:</label>
 						<div class="controls">
-							<select id="host" class="chzn-select">
+							<select id="host" class="input-xlarge">
 								<option>Select...</option>
 								<option>Mouse</option>
 								<option>Sheep</option>
@@ -108,7 +113,7 @@
 					<div class="control-group">
 						<label class="control-label" for="clonality">Clonality:</label>
 						<div class="controls">
-							<select id="clonality">
+							<select id="clonality" class="input-xlarge">
 								<option>Select...</option>
 								<option>monoclonal</option>
 								<option>polyclonal</option>
@@ -118,7 +123,7 @@
 					<div class="control-group">
 						<label class="control-label" for="purification">Purification:</label>
 						<div class="controls">
-							<select id="purification">
+							<select id="purification" class="input-xlarge">
 								<option>Select...</option>
 								<option>IEC Ion Exchange Chromatography (IEC)</option>
 								<option>Immobilized Metal Chelate Chromatography (IMAC)</option>
@@ -135,7 +140,7 @@
 					<div class="control-group">
 						<label class="control-label" for="isotype">Isotype:</label>
 						<div class="controls">
-							<select id="isotype">
+							<select id="isotype" class="input-xlarge">
 								<option>Select...</option>     
 								<option>IgA</option>
 								<option>IgD</option>
@@ -148,19 +153,19 @@
 					<div class="control-group">
 						<label class="control-label" for="antigen-description">Antigen description:</label>
 						<div class="controls">
-							<textarea id="antigen-description" rows="3"></textarea>
+							<textarea id="antigen-description" rows="3" class="input-xlarge"></textarea>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="antigen-sequence">Antigen sequence:</label>
 						<div class="controls">
-							<textarea id="antigen-sequence" rows="3"></textarea>
+							<textarea id="antigen-sequence" rows="3" class="input-xlarge"></textarea>
 						</div>
 					</div>
 					<div class="control-group">
 						<label class="control-label" for="references">References:</label>
 						<div class="controls">
-							<input type="text" id="references">
+							<input type="text" id="references" class="input-xlarge">
 						</div>
 					</div>
 					<div class="control-group">
@@ -183,9 +188,8 @@
         <script src="../../libs/jquery.min.js"></script>
         <script src="../../libs/bootstrap.min.js"></script>
         <script src="../../libs/modernizr.min.js"></script>
-        <script src="../lib/chosen/chosen.jquery.js"></script>
         <script>
-        	$(".chzn-select").chosen();
+        	// initializers
         </script>
     </body>
 </html>
