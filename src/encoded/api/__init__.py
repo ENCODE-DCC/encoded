@@ -7,14 +7,17 @@ from ..storage import (
     )
 
 collections = [
-    ('users', 'user'),
     ('antibodies', 'antibody_approval'),
     ('organisms', 'organism'),
     ('sources', 'source'),
     ('targets', 'target'),
     ('validations', 'validation'),
     ('antibody-lots', 'antibody_lot'),
-    ]
+    ('biosamples', 'biosample'),
+    ('labs', 'lab'),
+    ('awards', 'award'),
+    ('users', 'user'),
+]
 
 
 def includeme(config):

@@ -1,6 +1,6 @@
 define(['exports', 'jquery', 'underscore', 'app', 'base',
     'text!templates/navbar.html'],
-function antibodies(exports, $, _, app, base, navbar_template) {
+function navbar(exports, $, _, app, base, navbar_template) {
 
     // The top navbar
     exports.NavBarView = base.View.extend({

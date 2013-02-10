@@ -164,6 +164,21 @@ class TransactionRecord(Base):
         nullable=False, server_default=func.now())
 
 
+class UserMap(Base):
+    __tablename__ = 'user_map'
+    id = Column(types.Integer, autoincrement=True, primary_key=True)
+    persona_email = Column(types.Text, index=True, unique=True)
+    userid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
+
+    user = orm.relationship('Resource',
+        lazy='joined', foreign_keys=[userid])
+    # might have to be deferred
+
+    def __init__(self, persona_email, uuid):
+        self.persona_email = persona_email
+        self.userid = uuid
+
+
 @event.listens_for(Statement, 'before_insert')
 def set_tid(mapper, connection, target):
     if target.tid is not None:

@@ -17,12 +17,32 @@ def home(request):
 
 
 @CollectionViews.config()
-class UsersCollectionViews(CollectionViews):
+class Users(CollectionViews):
     collection = 'users'
     item_type = 'user'
     properties = {
         'title': 'ENCODE DCC Users',
         'description': 'List of current ENCODE DCC Users',
+        }
+
+
+@CollectionViews.config()
+class Labs(CollectionViews):
+    collection = 'labs'
+    item_type = 'lab'
+    properties = {
+        'title': 'Labs',
+        'description': 'Listing of labs returned from server',
+        }
+
+
+@CollectionViews.config()
+class Awards(CollectionViews):
+    collection = 'awards'
+    item_type = 'award'
+    properties = {
+        'title': 'Awards (Grants)',
+        'description': 'Listing of awards (aka grants) returned from server',
         }
 
 
@@ -57,8 +77,18 @@ class Sources(CollectionViews):
     collection = 'sources'
     item_type = 'source'
     properties = {
-        'title': 'Antibody sources',
+        'title': 'Sources',
         'description': 'Listing of sources returned from server',
+        }
+
+
+@CollectionViews.config()
+class Biosamples(CollectionViews):
+    collection = 'biosamples'
+    item_type = 'biosample'
+    properties = {
+        'title': 'Biosamples',
+        'description': 'Listing of biosamples returned from server',
         }
 
 

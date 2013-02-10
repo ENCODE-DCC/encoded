@@ -5,6 +5,7 @@ from .storage import (
     DBSession,
     CurrentStatement,
     Resource,
+    UserMap
     )
 
 
@@ -19,7 +20,7 @@ class RootFactory(object):
 
 def groupfinder(userid, request):
     session = DBSession()
-    query = session.query(CurrentStatement).filter(CurrentStatement.predicate == 'user')
+    query = session.query(UserMap).filter(UserMap.persona_email == userid)
     try:
         query.one()
         return ['g:admin']  # return ['g:%s' % g for g in user.groups]

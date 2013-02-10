@@ -51,10 +51,10 @@ def configure_engine(settings):
 
 
 def load_sample_data(app):
-    from .tests.sample_data import load_all
+    from .tests.sample_data import load_sample
     from webtest import TestApp
     testapp = TestApp(app)
-    load_all(testapp)
+    load_sample(testapp)
 
 
 def load_workbook(app, workbook_filename):

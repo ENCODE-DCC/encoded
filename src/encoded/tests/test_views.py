@@ -56,10 +56,12 @@ def _test_antibody_approval_creation(testapp):
 
 
 def test_sample_data(testapp):
-    from .sample_data import load_all
-    load_all(testapp)
-    res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
+    from .sample_data import test_load_all
+    test_load_all(testapp)
+    res = testapp.get('/biosamples/', headers={'Accept': 'application/json'}, status=200)
     assert len(res.json['_embedded']['items']) == 1
+    res = testapp.get('/users/', headers={'Accept': 'application/json'}, status=200)
+    assert len(res.json['_embedded']['items']) == 3
 
 
 def test_load_workbook(testapp):
