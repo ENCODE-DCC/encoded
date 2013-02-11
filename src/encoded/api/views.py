@@ -98,6 +98,9 @@ class AntibodyApprovals(CollectionViews):
     links = {
         'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
         'target': {'href': '/targets/{target_uuid}', 'templated': True},
+        'validations': [
+            {'href': '/validations/{validation_uuid}', 'templated': True, 'repeat': 'validation_uuid validation_uuids'},
+            ],
         }
     embedded = {
         'antibody_lot': '/antibody-lots/{antibody_lot_uuid}',

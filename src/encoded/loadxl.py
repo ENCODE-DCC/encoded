@@ -72,7 +72,7 @@ def iter_rows(sheet, headers=None, hints=None, start=1):
         headers = [sheet.cell_value(0, col).lower().strip() for col in range(sheet.ncols)]
     for row in xrange(start, sheet.nrows):
         yield dict((name, cell_value(sheet, row, col, hints.get(name)))
-            for col, name in enumerate(headers) if name is not None)
+            for col, name in enumerate(headers) if name)
 
 
 def extract(filename, sheets):
