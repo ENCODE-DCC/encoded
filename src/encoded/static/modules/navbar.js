@@ -1,6 +1,6 @@
-define(['exports', 'jquery', 'underscore', 'app', 'base',
+define(['exports', 'jquery', 'underscore', 'app', 'base', 'navigator',
     'text!templates/navbar.html'],
-function navbar(exports, $, _, app, base, navbar_template) {
+function navbar(exports, $, _, app, base, navigator, navbar_template) {
 
     // The top navbar
     exports.NavBarView = base.View.extend({
@@ -33,6 +33,9 @@ function navbar(exports, $, _, app, base, navbar_template) {
     }, {
         slot_name: 'navbar'
     });
+
+    // below is just a reminder to implement this somewhere.
+    $('#signout').click(function() { navigator.id.logout(); return false;});
 
     return exports;
 });

@@ -40,6 +40,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
             if (callback) $.when(callback.apply(this, args)).done(_.bind(function () {
                 this.trigger.apply(this, ['route:' + name].concat(args));
                 Backbone.history.trigger('route', this, name, args);
+                console.log("routed: "+name);
             }, this)).fail(_.bind(function () {
                 console.log("route failed...");
             }, this));
@@ -93,6 +94,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 if (!route_name) return;
                 assert(!view_registry.views[route_name], 'route already defined for ' + route_name);
                 view_registry.views[route_name] = view_factory;
+                console.log("Adding view for: "+ route_name);
             });
             this.deferred = null;
         },
@@ -116,6 +118,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
         switch_to: function switch_to(view, no_render) {
             var slot_name = Object.getPrototypeOf(view).constructor.slot_name;
             var current_view = this.current_views[slot_name];
+            console.log("switching to view: "+slot_name);
             if (!no_render) view.render();
             if (current_view) current_view.remove();
             if (!no_render) this.slots[slot_name].html(view.el);

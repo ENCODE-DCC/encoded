@@ -21,7 +21,7 @@ requirejs.config({
         jquery: 'libs/jquery.min',
         modernizr: 'libs/modernizr.min',
         underscore: 'libs/underscore.min',
-        'navigator': 'https://login.persona.org/include.js'  // mozilla persona include, this should be fetched remotely
+        'navigator': 'https://login.persona.org/include'  // mozilla persona include, this should be fetched remotely
     },
 
     shim: {

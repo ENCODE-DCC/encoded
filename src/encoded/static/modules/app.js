@@ -1,12 +1,14 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'targets','navbar'],
-function app(exports, $, _, Backbone, base, home, antibodies, targets, navbar) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'login', 'antibodies', 'targets','navbar'],
+function app(exports, $, _, Backbone, base, home, login, antibodies, targets, navbar) {
 
     var routes = {
         home: '',
         antibodies: 'antibodies/',
         antibody: 'antibodies/:name',
         targets: 'targets/',
-        target: 'targets/:name'
+        target: 'targets/:name',
+        login: '#login'
+        //logout: '#logout'
     };
 
     var slots = {
@@ -71,7 +73,7 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, navbar) {
             {id: 'targets', title: 'Targets', url: '/targets/'}
         ],
         user_actions: [
-            {id: 'signin', title: 'Log in', url: '#login'}
+            {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'}
         ]
     });
 
