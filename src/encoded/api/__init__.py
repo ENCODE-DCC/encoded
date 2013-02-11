@@ -109,6 +109,7 @@ class CollectionViews(object):
                         repeat_name, repeater = repeat.split()
                         for repeat_value in item[repeater]:
                             ns[repeat_name] = repeat_value
+                            templated = templated.copy()
                             templated['href'] = member['href'].format(
                                 collection_uri=self.collection_uri,
                                 item_type=self.item_type,
