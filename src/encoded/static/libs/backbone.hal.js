@@ -21,18 +21,18 @@
         this._links = attrs._links || {};
         delete attrs._links;
         this.links = {};
-        _.each(this._links, _.bind(function (obj, rel) {
+        _.each(this._links, _.bind(function (value, rel) {
           if (rel == 'self') {
             // pass
-          } else if (_.isArray(obj)) {
-            this.links[rel] = _.map(obj, _.bind(function (obj) {
+          } else if (_.isArray(value)) {
+            this.links[rel] = _.map(value, _.bind(function (value) {
               var new_obj = new this.constructor();
-              new_obj.url = rel.href;
+              new_obj.url = value.href;
               return new_obj;
             }, this));
           } else {
             var new_obj = new this.constructor();
-            new_obj.url = rel.href;
+            new_obj.url = value.href;
             this.links[rel] = new_obj;
           }
         }, this));
