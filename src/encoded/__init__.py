@@ -68,17 +68,19 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
 
+    config = Configurator(
+        settings=settings,
+        root_factory=RootFactory,
+    )
+    config.include('pyramid_persona')
     secret_key = settings.get('persona.secret', '')
     authn_policy = AuthTktAuthenticationPolicy(
         secret_key,
         callback=groupfinder,
     )
 
-    config = Configurator(
-        settings=settings,
-        authentication_policy=authn_policy,
-    )
-    config.include('pyramid_persona')
+    config.set_authentication_policy(authn_policy)
+
     config.include('pyramid_tm')
     configure_engine(settings)
 
