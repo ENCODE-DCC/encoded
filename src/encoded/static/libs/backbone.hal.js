@@ -25,9 +25,9 @@
           if (rel == 'self') {
             // pass
           } else if (_.isArray(value)) {
-            this.links[rel] = _.map(value, _.bind(function (value) {
+            this.links[rel] = _.map(value, _.bind(function (list_value) {
               var new_obj = new this.constructor();
-              new_obj.url = value.href;
+              new_obj.url = list_value.href;
               return new_obj;
             }, this));
           } else {
