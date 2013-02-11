@@ -128,3 +128,19 @@ table tbody tr td { color: #333; padding: 9px 10px; vertical-align: top; border:
 
 /* Global Styles */
 .cancel-link {margin-left: 20px;}
+
+#layout {
+	height: auto !important;
+    margin: 0 auto -72px;
+    min-height: 100%;
+}
+
+#content {
+	padding-top: 60px;
+}
+
+@include sticky-footer(72px, "#layout", "#layout-footer", "#footer");
+
+#footer {
+	background-color: #777;
+}

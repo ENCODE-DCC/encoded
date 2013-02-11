@@ -13,16 +13,11 @@
         <link rel="stylesheet" href="../../css/style.css">
         <link rel="stylesheet" href="../lib/chosen/chosen.css">
         
-        <style>
-            body {
-                padding-top: 60px;
-                padding-bottom: 40px;
-            }
-        </style>
         <link rel="stylesheet" href="../../css/responsive.css">
         <script data-main="/static/main" src="../../libs/require.min.js"></script>
     </head>
     <body>
+    <div id="layout">
 		<div class="navbar navbar-fixed-top navbar-inverse">
 			<div class="navbar-inner">
 				<div class="container">
@@ -47,9 +42,7 @@
 							<li><a href="#">Biosamples</a></li>
 		        		</ul>
 		        		<ul id="user-actions" class="nav pull-right">
-				
 							<li><button class="btn btn-primary">Log In</button></li>
-						<?js }); ?>
 						</ul>
 					</div>
 				</div>
@@ -180,9 +173,11 @@
         	</section>
         	
         </div><!-- #content -->
-        <footer>
-        <!-- some footer content -->
-        </footer>
+    <div id='layout-footer'></div>
+	</div><!-- #layout -->
+	<footer id="footer">
+	This is the footer.
+	</footer>
         
         <!-- needed scripts linked to for now - remove for production b/c requireJS -->
         <script src="../../libs/jquery.min.js"></script>
