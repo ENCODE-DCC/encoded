@@ -49,7 +49,7 @@ input.search-query {
 
 /* Modals */
 .modal {
-	border: 9px solid #333;
+  border: 9px solid #333;
   border: 9px solid rgba(0,0,0,.4);
   *border: 9px solid #333; /* IE6-7 */
   @include border-radius(6px);
@@ -105,13 +105,13 @@ table tbody tr td { color: #333; padding: 9px 10px; vertical-align: top; border:
 
 .navbar-inverse .nav > li > a {
     @include transition-property(background-color);
-    @include transition-duration(0.25s);
+    @include transition-duration(0.2s);
   	@include transition-timing-function(ease-in-out);
 }
 
 .navbar-inverse .brand {
     @include transition-property(text-shadow);
-    @include transition-duration(0.3s);
+    @include transition-duration(0.2s);
   	@include transition-timing-function(ease-in-out);
 }
 
@@ -129,7 +129,10 @@ table tbody tr td { color: #333; padding: 9px 10px; vertical-align: top; border:
 /* Global Styles */
 .cancel-link {margin-left: 20px;}
 
-$footerHeight: 72px;
+$footerHeight: 				100px;
+$footerBackground:          #16242f !default;
+$footerBackgroundHighlight: #1b2a35 !default;
+$footerBorder:              #252525 !default;
 
 #layout {
 	height: auto !important;
@@ -144,11 +147,19 @@ $footerHeight: 72px;
 @include sticky-footer($footerHeight, "#layout", "#layout-footer", "#footer");
 
 #footer {
-	background-color: #777;
+	border-top: $navbarInverseBorder;
+	@include background-image(linear-gradient($footerBackgroundHighlight, $footerBackground));
+	padding: 15px;
+	color: $white;
+	text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
 }
 
+.controls-highlight {
+	background-color: $red;
+	border: 1px solid darken($red, 5%);
+}
 #submit-controls {
 	padding: 5px;
-	background-color: #fbfbfb;
+	background-color: #f8f8fc;
 	@include border-radius($baseBorderRadius);
 }
