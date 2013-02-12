@@ -42,21 +42,20 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
             var request_params = {}; // could be site name
             navigator.id.request(request_params);
 
-            console.log('Loggin in... ');
-            var formValues = {
-                assertion: this.model.assertion,
-                came_from: this.model.came_from
-            };
+            console.log('Logging in... ');
 
             navigator.id.watch({
-                loggedInUser: this.model.user,
-                onlogin: function(formValues) {
-                    if (formValues['assertion']) {
+                loggedInUser: 'hitz@stanford.edu',
+                onlogin: function(assertion) {
+                    if (assertion) {
                         $.ajax({
-                            url:url,
+                            url:'/login',
                             type:'POST',
                             dataType:"json",
-                            data: formValues,
+                            data: {
+                                assertion: assertion,
+                                came_from: "/"
+                            },
                             headers: { "X-Genuine-Request": "Bonafide ENCODE3 Submission"},
                             success:function (data) {
                                 console.log(["Login request details: ", data]);
@@ -67,9 +66,23 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                                 else { // If not, send them back to the home page
                                     window.location.replace('/');
                                 }
+                            },
+                            error: function(xhr, status, err) {
+                                alert("Login failure: "+err+" ("+status+")");
                             }
                         });
                     }
+                },
+                onlogout: function() {
+                    $.ajax({
+                        url: '/logout',
+                        type: 'POST',
+                        data: { came_from: "/" },
+                        success: function () { window.location.reload(); },
+                        error: function(xhr, status, err) {
+                            alert("Logout failure: "+err+" ("+status+")");
+                        }
+                    });
                 }
             });
         }
