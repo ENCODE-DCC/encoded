@@ -133,13 +133,19 @@ def multi_tuple_index(data, *attrs):
     return index
 
 
-def image_data_uri(stream):
+def image_data(stream, filename=None):
+    data = {}
+    if filename is not None:
+        data['download'] = filename
     im = Image.open(stream)
     im.verify()
+    data['width'], data['height'] = im.size
     mime_type, _ = mimetypes.guess_type('name.%s' % im.format)
+    data['type'] = mime_type
     stream.seek(0, 0)
-    data = b64encode(stream.read())
-    return 'data:%s;base64,%s' % (mime_type, data)
+    encoded_data = b64encode(stream.read())
+    data['href'] = 'data:%s;base64,%s' % (mime_type, encoded_data)
+    return data
 
 
 def load_all(testapp, filename):
@@ -173,10 +179,10 @@ def load_all(testapp, filename):
     for uuid, value in alldata['validation'].iteritems():
         value['target_uuid'] = target_index[(value.pop('target_label'), value.pop('organism_name'))]
         filename = value.pop('document_filename')
-        value['document'] = {
-            'download': filename,
-            'href': image_data_uri(resource_stream('encoded', 'tests/data/validation-docs/' + filename)),
-            }
+        value['document'] = image_data(
+            resource_stream('encoded', 'tests/data/validation-docs/' + filename),
+            filename,
+            )
 
     for uuid, value in list(alldata['antibody_approval'].iteritems()):
         try:
