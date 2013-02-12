@@ -16,6 +16,8 @@
         
         <link rel="stylesheet" href="../lib/responsive-tables.css">
         
+        <link rel="stylesheet" href="../lib/tablesorter/themes/custom/style.css">
+        
         <script data-main="/static/main" src="../../libs/require.min.js"></script>
     </head>
     <body>
@@ -66,7 +68,7 @@
         	<div id="main" class="row">
         		<div class="span12">
         		
-        		<table class="responsive">
+        		<table id="antibodies-summary" class="responsive tablesorter">
 					<thead>
 						<tr>
 							<th>Accession</th>
@@ -1528,8 +1530,13 @@
         <script src="../../libs/bootstrap.min.js"></script>
         <script src="../../libs/modernizr.min.js"></script>
         <script src="../lib/responsive-tables.js"></script>
+        <script src="../lib/tablesorter/jquery.tablesorter.min.js"></script>
         <script>
-        	// initializers
+        	$(document).ready(function() { 
+   				 // call the tablesorter plugin (http://tablesorter.com)
+    			$("#antibodies-summary").tablesorter( {sortList: [[0,0], [1,0]]} ); 
+			});
+			
         </script>
     </body>
 </html>
