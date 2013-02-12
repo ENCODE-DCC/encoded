@@ -118,9 +118,11 @@ class CurrentStatement(Base):
         ForeignKey('statements.sid'),
         nullable=False)
     statement = orm.relationship('Statement',
-        lazy='joined', foreign_keys=[sid])
+        lazy='joined',
+        primaryjoin="CurrentStatement.sid==Statement.sid")
     history = orm.relationship('Statement',
-        foreign_keys=[Statement.rid, Statement.predicate],
+        primaryjoin="""and_(CurrentStatement.rid==Statement.rid,
+            CurrentStatement.predicate==Statement.predicate)""",
         order_by=Statement.sid)
     resource = orm.relationship('Resource')
 
