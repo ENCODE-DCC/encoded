@@ -8,11 +8,15 @@
     root.HAL = factory(Backbone, _);
   }
 }(this, function(Backbone, _) {
-    var Collection, Model;
+    var Collection, Model, exports = {};
 
-    Model = Backbone.Model.extend({
+    Model = exports.Model = Backbone.Model.extend({
 
       constructor: function (attrs, options) {
+        if (options.url) this.url = options.url;
+        if (!attrs && exports.resource_cache) {
+          attrs = exports.resource_cache[options.url];
+        }
         Model.__super__.constructor.call(this, this.parse(_.clone(attrs)), options);
       },
 
@@ -20,25 +24,28 @@
         if (!attrs) attrs = {};
         this._links = attrs._links || {};
         delete attrs._links;
+        this._embedded = attrs._embedded || {};
+        delete attrs._embedded;
+        this.makeLinks();
+        return attrs;
+      },
+
+      makeLinks: function() {
         this.links = {};
+        if (this._embedded.resouce_cache) {
+          exports.resource_cache = this._embedded.resources;
+        }
         _.each(this._links, _.bind(function (value, rel) {
           if (rel == 'self') {
             // pass
           } else if (_.isArray(value)) {
             this.links[rel] = _.map(value, _.bind(function (list_value) {
-              var new_obj = new this.constructor();
-              new_obj.url = list_value.href;
-              return new_obj;
+              return new this.constructor(null, {url: list_value.href});
             }, this));
           } else {
-            var new_obj = new this.constructor();
-            new_obj.url = value.href;
-            this.links[rel] = new_obj;
+            this.links[rel] = new this.constructor(null, {url: value.href});
           }
         }, this));
-        this._embedded = attrs._embedded || {};
-        delete attrs._embedded;
-        return attrs;
       },
 
       url: function() {
@@ -50,7 +57,9 @@
       }
     });
 
-    Collection = Backbone.Collection.extend({
+    Collection = exports.Collection = Backbone.Collection.extend({
+
+      itemRel: 'items',
 
       constructor: function (obj, options) {
         Collection.__super__.constructor.call(this, this.parse(_.clone(obj)), options);
@@ -64,12 +73,10 @@
         this._embedded = obj._embedded || {};
         delete obj._embedded;
         this.attributes = obj;
-        if (this.itemRel !== undefined) {
-          items = this._embedded[this.itemRel];
-        } else {
-          items = this._embedded.items;
-        }
-        return items;
+        exports.resource_cache = this._embedded.resources;
+        return _.map(this._links[this.itemRel], function(item) {
+          return exports.resource_cache[item.href];
+        });
       },
 
       reset: function(obj, options) {
@@ -88,9 +95,6 @@
 
     });
 
-    return {
-      Model: Model,
-      Collection: Collection
-    };
+    return exports;
 
 }));

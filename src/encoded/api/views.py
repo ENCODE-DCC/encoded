@@ -27,9 +27,7 @@ class AntibodyLots(CollectionViews):
     links = {
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
         }
-    embedded = {
-        'source': '/sources/{source_uuid}',
-        }
+    embedded = set(['source'])
 
 
 @CollectionViews.config()
@@ -61,11 +59,9 @@ class Targets(CollectionViews):
         'description': 'Listing of targets returned from server',
         }
     links = {
-        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
+        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
         }
-    embedded = {
-        'organism': '/organisms/{organism_uuid}',
-        }
+    embedded = set(['organism'])
 
 
 # The following should really be child collections.
@@ -78,13 +74,10 @@ class Validations(CollectionViews):
         'description': 'Listing of validations returned from server',
         }
     links = {
-        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
-        'target': {'href': '/targets/{target_uuid}', 'templated': True},
+        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True, 'embedded': True},
+        'target': {'href': '/targets/{target_uuid}', 'templated': True, 'embedded': True},
         }
-    embedded = {
-        'antibody_lot': '/antibody-lots/{antibody_lot_uuid}',
-        'target': '/targets/{target_uuid}',
-        }
+    embedded = set(['antibody_lot', 'target'])
 
 
 @CollectionViews.config()
@@ -96,13 +89,10 @@ class AntibodyApprovals(CollectionViews):
         'description': 'Listing of approvals returned from server',
         }
     links = {
-        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
-        'target': {'href': '/targets/{target_uuid}', 'templated': True},
+        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True, 'embedded': True},
+        'target': {'href': '/targets/{target_uuid}', 'templated': True, 'embedded': True},
         'validations': [
             {'href': '/validations/{validation_uuid}', 'templated': True, 'repeat': 'validation_uuid validation_uuids'},
             ],
         }
-    embedded = {
-        'antibody_lot': '/antibody-lots/{antibody_lot_uuid}',
-        'target': '/targets/{target_uuid}',
-        }
+    embedded = set(['antibody_lot', 'target'])

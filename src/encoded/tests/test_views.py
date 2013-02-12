@@ -47,14 +47,14 @@ def _test_antibody_approval_creation(testapp):
     del data['_links']
     assert data == new_antibody
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
-    assert len(res.json['_embedded']['items']) == 1
+    assert len(res.json['_links']['items']) == 1
 
 
 def test_sample_data(testapp):
     from .sample_data import load_all
     load_all(testapp)
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
-    assert len(res.json['_embedded']['items']) == 1
+    assert len(res.json['_links']['items']) == 1
 
 
 def test_load_workbook(testapp):
@@ -62,4 +62,4 @@ def test_load_workbook(testapp):
     from pkg_resources import resource_filename
     load_all(testapp, resource_filename('encoded', 'tests/data/AntibodySubmissionsENCODE3.xlsx'))
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
-    assert res.json['_embedded']['items']
+    assert res.json['_links']['items']

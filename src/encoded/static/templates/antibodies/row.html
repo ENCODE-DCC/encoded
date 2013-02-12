@@ -1,7 +1,7 @@
-<td>{model._embedded.antibody_lot.antibody_accession}</td>
-<td>{model._embedded.target.target_label}</td>
-<td>{model._embedded.antibody_lot._embedded.source.source_name}</td>
-<td>{model._embedded.antibody_lot.product_id}</td>
-<td>{model._embedded.antibody_lot.lot_id}</td>
-<td>{model._embedded.target._embedded.organism.organism_name}</td>
-<td><a href="{model.url()}">{properties.approval_status}</a></td>
+<td>{model.links.antibody_lot.get('antibody_accession')}</td>
+<td>{model.links.target.get('target_label')}</td>
+<td>{model.links.antibody_lot.links.source.get('source_name')}</td>
+<td>{model.links.antibody_lot.get('product_id')}</td>
+<td>{model.links.antibody_lot.get('lot_id')}</td>
+<td>{model.links.target.links.organism.get('organism_name')}</td>
+<td><a href="{model.url()}">{model.get('approval_status')}</a></td>
