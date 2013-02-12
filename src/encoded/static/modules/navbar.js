@@ -32,7 +32,14 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
         },
 
         events: {
-            "click #signin": "signin"
+            "click #signin": "signin",
+            "click #signout": "signout"
+        },
+
+        signout: function(event) {
+            console.log('Loggin out (persona)');
+            navigator.id.logout();
+            return false;
         },
 
         signin:function (event) {
@@ -40,9 +47,9 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
             $('.alert-error').hide(); // Hide any errors on a new submit
 
             var request_params = {}; // could be site name
+            console.log('Logging in (persona) ');
             navigator.id.request(request_params);
 
-            console.log('Logging in... ');
 
             navigator.id.watch({
                 loggedInUser: 'hitz@stanford.edu',
@@ -91,8 +98,6 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
         slot_name: 'navbar'
     });
 
-    // below is just a reminder to implement this somewhere.
-    $('#signout').click(function() { navigator.id.logout(); return false;});
 
     return exports;
 });

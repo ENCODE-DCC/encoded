@@ -1,3 +1,8 @@
 <td><a href="{model.url()}">{properties.target_label}</a></td>
-<td><a href="{model.url()}">{properties.target_gene_name}</a></td>
+<td>{properties.target_gene_name}</td>
+<td>{model._embedded.organism.organism_name}</td>
+<td>{properties.target_class}</td>
+<td><a href="http://www.uniprot.org/{properties.target_term_uniprot}">{properties.target_term_uniprot}</a></td>
+<td><a href="http://www.genecards.org/{properties.target_term_geneid}">{properties.target_term_geneid}</a></td>
+<td>{properties.project}</td>
 

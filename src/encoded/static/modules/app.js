@@ -73,8 +73,9 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, navbar) {
             {id: 'targets', title: 'Targets', url: '/targets/'}
         ],
         user_actions: [
-            {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'}
-        ]
+            {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'},
+            {id: 'signout', title: 'Log out', url: '#logout', bypass: 'true'}
+       ]
     });
 
     return exports;
