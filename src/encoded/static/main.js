@@ -21,7 +21,8 @@ requirejs.config({
         jquery: 'libs/jquery.min',
         modernizr: 'libs/modernizr.min',
         underscore: 'libs/underscore.min',
-        'navigator': 'https://login.persona.org/include'  // mozilla persona include, this should be fetched remotely
+        'navigator': 'libs/include.orig'
+        //'navigator': 'https://login.persona.org/include'  // mozilla persona include, this should be fetched remotely
     },
 
     shim: {
@@ -34,8 +35,8 @@ requirejs.config({
             deps: ['jquery']
         },
 
-        persona: {
-            deps: ['jquery', 'navigator']
+        'navigator': {
+            exports: 'navigator'
         },
         // Modernizr loads later than normal with Require.js, so don't use the
         // new HTML5 elements in the HTML file itself.

@@ -1,5 +1,5 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'login', 'antibodies', 'targets','navbar'],
-function app(exports, $, _, Backbone, base, home, login, antibodies, targets, navbar) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'targets','navbar'],
+function app(exports, $, _, Backbone, base, home, antibodies, targets, navbar) {
 
     var routes = {
         home: '',
@@ -7,7 +7,7 @@ function app(exports, $, _, Backbone, base, home, login, antibodies, targets, na
         antibody: 'antibodies/:name',
         targets: 'targets/',
         target: 'targets/:name',
-        login: '#login'
+        //login: '#login'
         //logout: '#logout'
     };
 
