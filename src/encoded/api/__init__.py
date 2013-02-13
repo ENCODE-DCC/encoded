@@ -154,7 +154,13 @@ class CollectionViews(object):
             item['_links'] = links
         return item
 
+    def no_body_needed(self):
+        # No need for request data when rendering the single page html
+        return self.request.environ.get('encoded.format') == 'html'
+
     def list(self):
+        if self.no_body_needed():
+            return {}
         session = DBSession()
         query = session.query(CurrentStatement).filter(CurrentStatement.predicate == self.item_type)
         items = []
@@ -212,6 +218,8 @@ class CollectionViews(object):
         key = (self.request.matchdict['name'], self.item_type)
         session = DBSession()
         model = session.query(CurrentStatement).get(key)
+        if self.no_body_needed():
+            return {}
         result = self.make_item(model)
         maybe_include_embedded(self.request, result)
         return result
