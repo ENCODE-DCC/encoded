@@ -168,8 +168,7 @@ class TransactionRecord(Base):
 
 class UserMap(Base):
     __tablename__ = 'user_map'
-    id = Column(types.Integer, autoincrement=True, primary_key=True)
-    persona_email = Column(types.Text, index=True, unique=True)
+    persona_email = Column(types.Text, primary_key=True)
     userid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
 
     user = orm.relationship('Resource',

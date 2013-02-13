@@ -39,7 +39,6 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
         signout: function(event) {
             console.log('Loggin out (persona)');
             navigator.id.logout();
-            return false;
         },
 
         signin:function (event) {
@@ -65,13 +64,16 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                             },
                             headers: { "X-Genuine-Request": "Bonafide ENCODE3 Submission"},
                             success:function (data) {
-                                console.log(["Login request details: ", data]);
+                                console.log("Login request headers: "+data["headers"]);
+                                console.log("Login info "+data["info"]);
 
                                 if(data.error) {  // If there is an error, show the error messages
                                     $('.alert-error').text(data.error.text).show();
                                 }
                                 else { // If not, send them back to the home page
                                     window.location.replace('/');
+                                    $("#signout").parent().show();
+                                    $("#signin").parent().hide();
                                 }
                             },
                             error: function(xhr, status, err) {
@@ -85,7 +87,10 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                         url: '/logout',
                         type: 'POST',
                         data: { came_from: "/" },
-                        success: function () { window.location.reload(); },
+                        success: function () {
+                            $("#signout").parent().hide();
+                            $("#signin").parent().show();
+                            window.location.reload(); },
                         error: function(xhr, status, err) {
                             alert("Logout failure: "+err+" ("+status+")");
                         }

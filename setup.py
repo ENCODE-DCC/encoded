@@ -14,7 +14,8 @@ requires = [
     'setuptools',
     'xlrd',
     'zope.sqlalchemy',
-    'pyramid_persona',
+    'PyBrowserID',
+    ##'requests>=1.0',
     ]
 
 tests_require = [

@@ -1,5 +1,8 @@
 from pyramid.threadlocal import manager
 from pyramid.view import view_config
+from ..authz import (
+    RootFactory
+    )
 from ..storage import (
     DBSession,
     CurrentStatement,
@@ -21,10 +24,11 @@ collections = [
 
 
 def includeme(config):
+    # RootFactory is just a stub for later
     config.add_route('home', '')
     for collection, item_type in collections:
-        config.add_route(collection, '/%s/' % collection)
-        config.add_route(item_type, '/%s/{name}' % collection)
+        config.add_route(collection, '/%s/' % collection, factory=RootFactory)
+        config.add_route(item_type, '/%s/{name}' % collection, factory=RootFactory)
     config.scan('.views')
 
 
@@ -64,6 +68,7 @@ class CollectionViews(object):
             assert issubclass(wrapped, cls), "Can only configure %s" % cls.__name__
             view_config(route_name=wrapped.collection, request_method='GET', attr='list', **settings)(wrapped)
             view_config(route_name=wrapped.collection, request_method='POST', attr='create', **settings)(wrapped)
+            ## add permission = allowed.
             view_config(route_name=wrapped.item_type, request_method='GET', attr='get', **settings)(wrapped)
             return wrapped
 

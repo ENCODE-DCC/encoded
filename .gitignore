@@ -19,3 +19,4 @@ src/encoded/static/scss/_variables.original.scss
 +.pydevproject
 development.log
 src/encoded/tests/data/*.db
+~$*
