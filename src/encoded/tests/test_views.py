@@ -34,8 +34,42 @@ def test_antibody_lots_html(testapp):
     assert res.body.startswith('<!DOCTYPE html>')
 
 
+def test_bad_audience(testapp, dummy_request):
+    import requests
+
+    data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Fsomeaudience').json()
+    assertion = data['assertion']
+
+    res = testapp.post_json('/login', params={'assertion': assertion, 'came_from': '/'}, status=400)
+
+
+def test_login_cycle(testapp, dummy_request):
+    import requests
+    from pyramid.security import authenticated_userid
+    import sys
+
+    data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Flocalhost:6543').json()
+    email = data['email']
+    assertion = data['assertion']
+
+    sys.stderr.write("assertion\n==================\n")
+    sys.stderr.write(assertion)
+    res = testapp.post_json('/login', params={'assertion': assertion, 'came_from': '/'}, status=400)
+
+    sys.stderr.write("\nRESPONSE\n==================\n")
+    sys.stderr.write(res)
+    assert res.json_body['status'] == "okay"
+    assert testapp.security_policy.remembered == email
+    assert authenticated_userid == email
+
+    from pyramid.security import authenticated_userid
+    res2 = testapp.get('/users/', status=200)
+    assert authenticated_userid == email
+    assert res2.body.startswith('<!DOCTYPE html>')
+
+
 def test_user_html(testapp):
-    res = testapp.get('/users/', status=200)
+    res = testapp.get('/users/', status=401)
     assert res.body.startswith('<!DOCTYPE html>')
 
 

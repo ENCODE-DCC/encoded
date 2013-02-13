@@ -67,10 +67,11 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                             url:'/login',
                             type:'POST',
                             dataType:"json",
-                            data: {
-                                assertion: assertion,
-                                came_from: "/"
-                            },
+                            data: JSON.stringify({
+                                "assertion": assertion,
+                                "came_from": "/"
+                            }),
+                            contentType: 'application/json',
                             headers: { "X-Genuine-Request": "Bonafide ENCODE3 Submission"},
                             success:function (data) {
                                 console.log("Login request headers: "+data["headers"]);
@@ -80,11 +81,11 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                                 if(data.error) {  // If there is an error, show the error messages
                                     $('.alert-error').text(data.error.text).show();
                                 }
-                                else if (data.info.status != 'okay') {
+                                else if (data.status != 'okay') {
                                     $('.alert-error').text('This seems impossible, but Persona returned your status as something other than ok').show();
                                 }
                                 else { // If not, send them back to the home page
-                                    app.user.email = data.info.email;
+                                    app.user.email = data.email;
                                     //_each(app.Config.user_actions(), function(action) {
                                     //    action = action._extend({'class': hide});
                                     //});
@@ -94,7 +95,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                                 }
                             },
                             error: function(xhr, status, err) {
-                                alert("Login failure: "+err+" ("+status+")");
+                                $('.alert-error').text("Login failure: "+err+" ("+status+")").show();
                             }
                         });
                     }
@@ -104,7 +105,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                     $.ajax({
                         url: '/logout',
                         type: 'POST',
-                        data: { came_from: "/" },
+                        data: JSON.stringify({ came_from: "/" }),
                         success: function () {
                             console.log('reloading after persona logout');
                             app.user = { email: undefined };

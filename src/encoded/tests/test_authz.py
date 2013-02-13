@@ -29,11 +29,12 @@ class ViewTests(unittest.TestCase):
         request.params['came_from'] = '/'
         response = login(request)
 
-        self.assertEqual(response['info']['status'], "okay")
-        self.assertEqual(response['info']['audience'], self.config.get_settings()['persona.audiences'])
-        self.assertEqual(response['info']['email'], email)
-        self.assertEqual(response['info']['issuer'], 'login.persona.org')
+        self.assertEqual(response['status'], "okay")
+        self.assertEqual(response['audience'], self.config.get_settings()['persona.audiences'])
+        self.assertEqual(response['email'], email)
+        self.assertEqual(response['issuer'], 'login.persona.org')
         self.assertEqual(self.security_policy.remembered, email)
+
 
     def test_login_fails_with_bad_audience(self):
         from ..authz import login

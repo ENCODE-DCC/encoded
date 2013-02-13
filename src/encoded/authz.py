@@ -82,38 +82,38 @@ def verify_login(request):
     a HTTPBadRequest"""
     verifier = request.registry['persona.verifier']
     try:
-        data = verifier.verify(request.POST['assertion'])
+        ##data = verifier.verify(request.POST['assertion'])
+        data = verifier.verify(request.json_body['assertion'])
     except KeyError as e:
         logger.info('verify_login called wtih no assertion: %s', e)
-        raise HTTPBadRequest('No assertion')
+        raise HTTPBadRequest('No assertion: (req: %s)' % request.json_body)
     except (ValueError, browserid.errors.TrustError) as e:
         logger.info('Failed persona login: %s (%s)', e, type(e).__name__)
-        raise HTTPBadRequest('Invalid assertion')
+        raise HTTPBadRequest('Invalid assertion: %s (%s)' % (e, type(e).__name__))
     return data
 
 
 def login(request):
     """View to check the persona assertion and remember the user"""
     try:
-        from_url = request.POST['came_from']
+        from_url = request.json_body['came_from']
     except KeyError as e:
         logger.info('/login has no came_from post: %s', e)
-        from_url = '/'
     data = verify_login(request)
-    headers = remember(request, data['email'])
-    #logger.info(json.dumps({'info': data, 'headers': headers}))
-    return {'info': data, 'headers': headers}
+    request.response.content_type = 'application/json'
+    request.response.headers = remember(request, data['email'])
+    return data
 
 
 def logout(request):
     """View to forget the user"""
     try:
-        from_url = request.POST['came_from']
+        from_url = request.json_body['came_from']
     except KeyError as e:
         logger.info('/logout has no came_from post: %s', e)
-        from_url = '/'
-    headers = forget(request)
-    return headers
+    request.response.content_type = 'application/json'
+    request.response.headers = forget(request)
+    return {'email': None}
 
 
 class RootFactory(object):
