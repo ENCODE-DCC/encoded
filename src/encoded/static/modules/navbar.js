@@ -52,7 +52,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
 
 
             navigator.id.watch({
-                loggedInUser: null,
+                loggedInUser: app.user,
                 onlogin: function(assertion) {
                     if (assertion) {
                         $.ajax({
@@ -72,8 +72,14 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                                 if(data.error) {  // If there is an error, show the error messages
                                     $('.alert-error').text(data.error.text).show();
                                 }
+                                else if (data.info.status != 'okay') {
+                                    $('.alert-error').text('This seems impossible, but Persona returned your status as something other than ok').show();
+                                }
                                 else { // If not, send them back to the home page
                                     //window.location.replace('/');
+                                    app.user.email = data.info.email;
+                                    //window.location.replace('app.current_url') // or something
+                                    // but have to pass  user data to it!
                                     $("#signout").parent().show();
                                     $("#signin").parent().hide();
                                 }

@@ -37,6 +37,9 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
             view_registry.switch_to(navbar_view, true);
             this.setupNavigation();
             this.trigger('started');
+            this.user = {
+                email: null
+            };
         },
 
         setupNavigation: function setupNavigation() {
