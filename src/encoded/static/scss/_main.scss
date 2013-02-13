@@ -74,6 +74,7 @@ table {
   border-spacing: 2px !important;
   border-collapse: separate;
   font-size: 0.92em;
+  width: 100%;
 }
 
 table thead, table tfoot { background: $tableHeadFootBackgroundColor; }
@@ -188,4 +189,17 @@ table.tablesorter thead tr .headerSortDown {
 }
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
 background-color: darken($tableHeadFootBackgroundColor, 10%);
+}
+
+/* Table Controls */
+#table-controls {
+	overflow: hidden;
+}
+
+#table-controls button {
+	float: left;
+}
+
+#table-controls #filter-input {
+	float: right;
 }

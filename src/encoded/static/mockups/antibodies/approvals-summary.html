@@ -66,7 +66,10 @@
         	<div id="main" class="row">
         		<div class="span12">
         		
-        		<input type="text" id="filter-table" placeholder="Search...">
+        		<section id="table-controls">
+        			<button class="btn btn-primary">+ Add Antibody</button>
+        			<input type="text" id="filter-input" placeholder="Filter by...">
+        		</section>
         		
         		<table id="antibodies-summary" class="responsive tablesorter">
 					<thead>
@@ -1539,7 +1542,7 @@
 			});
 			
 			$(function(){ 
-        		$("#filter-table").table_filter({'table':'#antibodies-summary'});
+        		$("#filter-input").table_filter({'table':'#antibodies-summary'});
     		});	
         </script>
     </body>
