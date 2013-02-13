@@ -16,8 +16,6 @@
         
         <link rel="stylesheet" href="../lib/responsive-tables.css">
         
-        <link rel="stylesheet" href="../lib/tablesorter/themes/custom/style.css">
-        
         <script data-main="/static/main" src="../../libs/require.min.js"></script>
     </head>
     <body>
@@ -67,6 +65,8 @@
         	
         	<div id="main" class="row">
         		<div class="span12">
+        		
+        		<input type="text" id="filter-table">
         		
         		<table id="antibodies-summary" class="responsive tablesorter">
 					<thead>
@@ -1531,12 +1531,16 @@
         <script src="../../libs/modernizr.min.js"></script>
         <script src="../lib/responsive-tables.js"></script>
         <script src="../lib/tablesorter/jquery.tablesorter.min.js"></script>
+        <script src="../lib/tablesorter/jquery.table_filter.min.js"></script>
         <script>
         	$(document).ready(function() { 
    				 // call the tablesorter plugin (http://tablesorter.com)
     			$("#antibodies-summary").tablesorter( {sortList: [[0,0], [1,0]]} ); 
 			});
 			
+			$(function(){ 
+        		$("#filter-table").table_filter({'table':'#antibodies-summary'});
+    		});	
         </script>
     </body>
 </html>
