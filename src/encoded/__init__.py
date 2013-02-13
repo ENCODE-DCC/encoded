@@ -74,6 +74,7 @@ def main(global_config, **settings):
     config.add_renderer(None, 'encoded.renderers.PageOrJSON')
     config.add_renderer('null_renderer', 'encoded.renderers.NullRenderer')
     config.include('.api')
+    config.include('.authz')
 
     config.include(static_resources)
     config.include(tests_js)

@@ -84,18 +84,20 @@ SOURCES = [
     '_links': {
         'self': {'href': '/sources/{_uuid}', 'templated': True},
         },
-    'source_name': 'sigma',
-    'source_title': 'Sigma-Aldrich',
+    'alias': 'sigma',
+    'source_name': 'Sigma-Aldrich',
     'url': 'http://www.sigmaaldrich.com',
+    'created_by': 'SAMPLE DATA',
     },
     {
     '_uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
     '_links': {
         'self': {'href': '/sources/{_uuid}', 'templated': True},
         },
-    'source_name': 'gingeras',
-    'source_title': 'Gingeras Lab',
+    'alias': 'gingeras',
+    'source_name': 'Gingeras Lab',
     'url': 'http://www.gingeraslab.edu',
+    'created_by': 'SAMPLE DATA',
     },
 ]
 

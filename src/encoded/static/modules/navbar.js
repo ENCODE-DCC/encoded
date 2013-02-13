@@ -37,6 +37,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
         },
 
         signout: function(event) {
+            event.preventDefault();
             console.log('Loggin out (persona)');
             navigator.id.logout();
         },
@@ -51,7 +52,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
 
 
             navigator.id.watch({
-                loggedInUser: 'hitz@stanford.edu',
+                loggedInUser: null,
                 onlogin: function(assertion) {
                     if (assertion) {
                         $.ajax({
@@ -65,13 +66,14 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                             headers: { "X-Genuine-Request": "Bonafide ENCODE3 Submission"},
                             success:function (data) {
                                 console.log("Login request headers: "+data["headers"]);
-                                console.log("Login info "+data["info"]);
+                                console.log("Login info:");
+                                console.log(data["info"]);
 
                                 if(data.error) {  // If there is an error, show the error messages
                                     $('.alert-error').text(data.error.text).show();
                                 }
                                 else { // If not, send them back to the home page
-                                    window.location.replace('/');
+                                    //window.location.replace('/');
                                     $("#signout").parent().show();
                                     $("#signin").parent().hide();
                                 }
@@ -83,6 +85,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                     }
                 },
                 onlogout: function() {
+                    console.log("Persona thinks we need to log out");
                     $.ajax({
                         url: '/logout',
                         type: 'POST',
