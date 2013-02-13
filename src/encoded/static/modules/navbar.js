@@ -29,6 +29,14 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
         on_route: function on_route(evt) {
             this.current_route = evt.substring(evt.indexOf(':')+1);
             this.render();
+            if (app.user.email) {
+                $("#signout").text("Log out: "+app.user.email);
+                $("#signout").parent().show();
+                $("#signin").parent().hide();
+            } else {
+                $("#signin").parent().show();
+                $("#signout").parent().hide();
+            }
         },
 
         events: {
@@ -52,7 +60,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
 
 
             navigator.id.watch({
-                loggedInUser: app.user,
+                loggedInUser: app.user.email,
                 onlogin: function(assertion) {
                     if (assertion) {
                         $.ajax({
@@ -76,12 +84,13 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                                     $('.alert-error').text('This seems impossible, but Persona returned your status as something other than ok').show();
                                 }
                                 else { // If not, send them back to the home page
-                                    //window.location.replace('/');
                                     app.user.email = data.info.email;
-                                    //window.location.replace('app.current_url') // or something
-                                    // but have to pass  user data to it!
-                                    $("#signout").parent().show();
-                                    $("#signin").parent().hide();
+                                    //_each(app.Config.user_actions(), function(action) {
+                                    //    action = action._extend({'class': hide});
+                                    //});
+                                    app.router.trigger('login');
+                                    // possibly this should trigger on navbar view directly
+                                    //Backbone.history.navigate(location.href, {trigger: true, replace: true});
                                 }
                             },
                             error: function(xhr, status, err) {
@@ -97,10 +106,13 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                         type: 'POST',
                         data: { came_from: "/" },
                         success: function () {
-                            $("#signout").parent().hide();
-                            $("#signin").parent().show();
-                            window.location.reload(); },
-                        error: function(xhr, status, err) {
+                            console.log('reloading after persona logout');
+                            app.user = { email: undefined };
+                            app.router.trigger('logout');
+                            //Backbone.history.navigate(location.href, {trigger: true, replace: true});
+                            //window.location.reload();
+                        },
+                       error: function(xhr, status, err) {
                             alert("Logout failure: "+err+" ("+status+")");
                         }
                     });

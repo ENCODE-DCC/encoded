@@ -40,9 +40,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
             if (callback) $.when(callback.apply(this, args)).done(_.bind(function () {
                 this.trigger.apply(this, ['route:' + name].concat(args));
                 Backbone.history.trigger('route', this, name, args);
-                console.log("routed: "+name);
-                console.log(location.href);
-                console.log(Backbone.history);
+                console.log("routed: "+location.href);
             }, this)).fail(_.bind(function () {
                 console.log("route failed...");
             }, this));

@@ -22,6 +22,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
 
         navbar_view: undefined,
 
+        user: { email: undefined },
+
         start: function start() {
             this.config = new exports.Config();
             var view_registry = this.view_registry = base.View.view_registry;
@@ -37,9 +39,6 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
             view_registry.switch_to(navbar_view, true);
             this.setupNavigation();
             this.trigger('started');
-            this.user = {
-                email: null
-            };
         },
 
         setupNavigation: function setupNavigation() {
