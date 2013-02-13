@@ -2,4 +2,9 @@
 <p class="description">{properties.description}</p>
 <p>Approval status: {properties.approval_status}</p>
 <pre>{JSON.stringify(properties, null, 4)}</pre>
+<h2>Antibody lot</h2>
+<pre>{JSON.stringify(model.links.antibody_lot.toJSON(), null, 4)}</pre>
+<h2>Target</h2>
+<pre>{JSON.stringify(model.links.target.toJSON(), null, 4)}</pre>
+<h2>Validations</h2>
 <div class='validations'></div>
