@@ -156,9 +156,12 @@ $footerBorder:              #252525 !default;
 #footer {
 	border-top: $navbarInverseBorder;
 	@include background-image(linear-gradient($footerBackgroundHighlight, $footerBackground));
-	padding: 15px;
 	color: $white;
 	text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
+}
+
+#footer .container {
+	padding: 15px;
 }
 
 .controls-highlight {
@@ -172,9 +175,6 @@ $footerBorder:              #252525 !default;
 }
 
 /* Table Sorting */
-/* tables */
-
-
 table.tablesorter thead tr .header {
 	background-image: url(../img/bg.gif);
 	background-repeat: no-repeat;
