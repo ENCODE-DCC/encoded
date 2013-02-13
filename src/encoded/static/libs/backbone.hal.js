@@ -32,7 +32,7 @@
 
       makeLinks: function() {
         this.links = {};
-        if (this._embedded.resouce_cache) {
+        if (this._embedded.resources) {
           exports.resource_cache = this._embedded.resources;
         }
         _.each(this._links, _.bind(function (value, rel) {
