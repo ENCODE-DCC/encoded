@@ -191,6 +191,10 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 background-color: darken($tableHeadFootBackgroundColor, 10%);
 }
 
+.tablesorter thead tr th {
+	padding-right: 16px;
+}
+
 /* Table Controls */
 #table-controls {
 	overflow: hidden;
