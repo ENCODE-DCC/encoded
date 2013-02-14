@@ -1,8 +1,12 @@
 <h1>{model.attributes.title}</h1>
 <p class="title">{model.attributes.description}</p>
-<p>Items: {model.length}</p>
 <table>
     <thead>
+        <tr class="nosort table-controls">
+            <th colspan="7">
+                <input type="text" class="table-filter" placeholder="Filter by..." style="float:right">
+            </th>
+        </tr>
         <tr>
             <th>Accession</th>
             <th>Target label</th>
@@ -15,4 +19,9 @@
     </thead>
     <tbody>
     </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="7">{model.length} items.</th>
+        </tr>
+    </tfoot>
 </table>
