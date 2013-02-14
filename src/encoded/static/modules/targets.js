@@ -1,8 +1,8 @@
-define(['exports', 'jquery', 'underscore', 'base',
+define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter',
     'text!templates/targets/home.html',
     'text!templates/targets/item.html',
     'text!templates/targets/row.html'],
-function targets(exports, $, _, base, home_template, item_template, row_template) {
+function targets(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template) {
 
     exports.Target = base.Model.extend({
         urlRoot: '/targets/',
@@ -54,10 +54,13 @@ function targets(exports, $, _, base, home_template, item_template, row_template
         template: _.template(home_template),
         render: function render() {
             targetsHomeView.__super__.render.apply(this, arguments);
-            var table = this.$el.find('tbody');
+            var $table = this.$el.find('table');
+            var $tbody = $table.children('tbody:first');
             _.each(this.rows, function (view) {
-                table.append(view.el);
+                $tbody.append(view.el);
             });
+
+            $table.table_sorter().table_filter();
             return this;
         }
 
