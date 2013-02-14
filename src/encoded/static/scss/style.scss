@@ -65,7 +65,7 @@
 @import "compass/typography/text/force-wrap";
 
 // Custom styles and overrides
-@import "main";
+@import "main"; // bootstrap over-rides and main styles for ENCODE site and apps
 
 // Utility classes
 @import "utilities"; // Has to be last to override when necessary
