@@ -249,6 +249,16 @@ USERS = [
 
 
 def test_load_all(testapp):
+
+    from pyramid.security import Everyone
+    from pyramid import testing
+
+    security_policy = testing.setUp().testing_securitypolicy(userid=Everyone, permissive=True)
+    #import sys
+    #sys.stderr.write(testapp.app.registry.settings.items())
+    testapp.app.registry.settings['authentication_policy'] = security_policy
+    testapp.app.registry.settings['authorization_policy'] = security_policy
+
     for url, collection in [
         ('/organisms/', ORGANISMS),
         ('/targets/', TARGETS),
@@ -270,7 +280,7 @@ def load_sample(testapp):
         ('/organisms/', ORGANISMS),
         ('/sources/', SOURCES),
         ('/biosamples/', BIOSAMPLES),
-        ('/users/', USERS),
+#        ('/users/', USERS),
         ('/labs/', LABS),
         ('/awards/', AWARDS),
         ]:

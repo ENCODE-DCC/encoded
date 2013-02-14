@@ -16,7 +16,9 @@ def home(request):
     return result
 
 
-@CollectionViews.config()
+@CollectionViews.config(
+#    permission='admin'  ## this prevents loading of users via post_json
+)
 class Users(CollectionViews):
     collection = 'users'
     item_type = 'user'

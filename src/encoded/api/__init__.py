@@ -68,7 +68,6 @@ class CollectionViews(object):
             assert issubclass(wrapped, cls), "Can only configure %s" % cls.__name__
             view_config(route_name=wrapped.collection, request_method='GET', attr='list', **settings)(wrapped)
             view_config(route_name=wrapped.collection, request_method='POST', attr='create', **settings)(wrapped)
-            ## add permission = allowed.
             view_config(route_name=wrapped.item_type, request_method='GET', attr='get', **settings)(wrapped)
             return wrapped
 

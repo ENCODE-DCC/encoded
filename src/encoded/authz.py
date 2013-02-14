@@ -93,6 +93,9 @@ def verify_login(request):
     return data
 
 
+    ''' in a perfect world these would inherit from Classes shared by api module'''
+
+
 def login(request):
     """View to check the persona assertion and remember the user"""
     try:
@@ -100,8 +103,8 @@ def login(request):
     except KeyError as e:
         logger.info('/login has no came_from post: %s', e)
     data = verify_login(request)
-    request.response.content_type = 'application/json'
     request.response.headers = remember(request, data['email'])
+    request.response.content_type = 'application/json'
     return data
 
 
@@ -111,8 +114,8 @@ def logout(request):
         from_url = request.json_body['came_from']
     except KeyError as e:
         logger.info('/logout has no came_from post: %s', e)
-    request.response.content_type = 'application/json'
     request.response.headers = forget(request)
+    request.response.content_type = 'application/json'
     return {'email': None}
 
 
