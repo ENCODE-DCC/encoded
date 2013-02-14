@@ -14,7 +14,7 @@
             </ul>
             <ul id="user-actions" class="nav pull-right">
             <?js _.each(view.user_actions(), function (action) { ?>
-                <li class="{action.class}"><a href="{action.url}">{action.title}</a></li>
+                <li class="{action.class}"><a data-bypass="{action.bypass}" href="{action.url}" id="{action.id}">{action.title}</a></li>
             <?js }); ?>
             </ul>
         </div><!--/.nav-collapse -->

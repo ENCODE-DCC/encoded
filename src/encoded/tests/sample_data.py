@@ -84,18 +84,20 @@ SOURCES = [
     '_links': {
         'self': {'href': '/sources/{_uuid}', 'templated': True},
         },
-    'source_name': 'sigma',
-    'source_title': 'Sigma-Aldrich',
+    'alias': 'sigma',
+    'source_name': 'Sigma-Aldrich',
     'url': 'http://www.sigmaaldrich.com',
+    'created_by': 'SAMPLE DATA',
     },
     {
     '_uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
     '_links': {
         'self': {'href': '/sources/{_uuid}', 'templated': True},
         },
-    'source_name': 'gingeras',
-    'source_title': 'Gingeras Lab',
+    'alias': 'gingeras',
+    'source_name': 'Gingeras Lab',
     'url': 'http://www.gingeraslab.edu',
+    'created_by': 'SAMPLE DATA',
     },
 ]
 
@@ -165,7 +167,7 @@ ANTIBODY_APPROVALS = [
 
 BIOSAMPLES = [
     {
-    '_uuid': 'bc29323-eab3-41fb-a41e-35552686b67d',
+    '_uuid': '7c245cea-7d59-45fb-9ebe-f0454c5fe950',
     '_links': {
         'self': {'href': '/biosamples/{_uuid}', 'templated': True},
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
@@ -194,7 +196,69 @@ BIOSAMPLES = [
     }
 ]
 
-def load_all(testapp):
+AWARDS = [
+    {
+    '_uuid': '529e3e74-3caa-4842-ae64-18c8720e610e',
+    'name': 'ENCODE3-DCC',
+    },
+    {
+    '_uuid': 'fae1bd8b-0d90-4ada-b51f-0ecc413e904d',
+    'name': 'Myers',
+    },
+]
+
+LABS = [
+    {
+    '_uuid': '2c334112-288e-4d45-9154-3f404c726daf',
+    'name': 'Cherry Lab',
+    'instituition': 'Stanford University'
+    },
+    {
+    '_uuid': 'b635b4ed-dba3-4672-ace9-11d76a8d03af',
+    'name': 'Myers Lab',
+    'instituition': 'HudsonAlpha Institute for Biotechnology'
+    },
+]
+
+USERS = [
+    {
+    '_uuid': 'e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
+    'full_name': 'Benjamin Hitz',
+    'email': 'hitz@stanford.edu',
+    'role': 'admin',
+    'award_uuids': ['529e3e74-3caa-4842-ae64-18c8720e610e'],
+    'lab_uuids': ['2c334112-288e-4d45-9154-3f404c726daf'],
+    },
+    {
+    '_uuid': '1e945b04-aa54-4732-8b81-b41d4565f5f9',
+    'full_name': 'Cricket Sloan',
+    'email': 'cricket@stanford.edu',
+    'role': 'wrangler',
+    'award_uuids': ['529e3e74-3caa-4842-ae64-18c8720e610e'],
+    'lab_uuids': ['2c334112-288e-4d45-9154-3f404c726daf'],
+    },
+    {
+    '_uuid': 'bb319896-3f78-4e24-b6e1-e4961822bc9b',
+    'full_name': 'Florencia Pauli-Behn',
+    'email': 'paulibehn@hudsonalpha.org',
+    'role': 'submitter',
+    'award_uuids': ['fae1bd8b-0d90-4ada-b51f-0ecc413e904d'],
+    'lab_uuids': ['b635b4ed-dba3-4672-ace9-11d76a8d03af'],
+    },
+]
+
+
+def test_load_all(testapp):
+
+    from pyramid.security import Everyone
+    from pyramid import testing
+
+    security_policy = testing.setUp().testing_securitypolicy(userid=Everyone, permissive=True)
+    #import sys
+    #sys.stderr.write(testapp.app.registry.settings.items())
+    testapp.app.registry.settings['authentication_policy'] = security_policy
+    testapp.app.registry.settings['authorization_policy'] = security_policy
+
     for url, collection in [
         ('/organisms/', ORGANISMS),
         ('/targets/', TARGETS),
@@ -202,6 +266,23 @@ def load_all(testapp):
         ('/antibody-lots/', ANTIBODY_LOTS),
         ('/validations/', VALIDATIONS),
         ('/antibodies/', ANTIBODY_APPROVALS),
+        ('/biosamples/', BIOSAMPLES),
+        ('/users/', USERS),
+        ('/labs/', LABS),
+        ('/awards/', AWARDS),
+        ]:
+        for item in collection:
+            testapp.post_json(url, item, status=201)
+
+
+def load_sample(testapp):
+    for url, collection in [
+        ('/organisms/', ORGANISMS),
+        ('/sources/', SOURCES),
+        ('/biosamples/', BIOSAMPLES),
+        ('/users/', USERS),
+        ('/labs/', LABS),
+        ('/awards/', AWARDS),
         ]:
         for item in collection:
             testapp.post_json(url, item, status=201)

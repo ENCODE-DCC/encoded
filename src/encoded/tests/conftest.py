@@ -6,6 +6,9 @@ from pytest import fixture
 
 settings = {
     'sqlalchemy.url': 'sqlite://',
+    'persona.secret': 'GLIDING LIKE A WHALE',
+    'persona.audiences': 'http://localhost:6543',
+    'persona.siteName': 'ENCODE DCC Submission',
     }
 
 import logging

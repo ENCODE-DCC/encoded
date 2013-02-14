@@ -1,5 +1,5 @@
-from pyramid.config import Configurator
 from pyramid.settings import asbool
+from pyramid.config import Configurator
 from sqlalchemy import engine_from_config
 from .storage import (
     Base,
@@ -46,10 +46,10 @@ def configure_engine(settings):
 
 
 def load_sample_data(app):
-    from .tests.sample_data import load_all
+    from .tests.sample_data import load_sample
     from webtest import TestApp
     testapp = TestApp(app)
-    load_all(testapp)
+    load_sample(testapp)
 
 
 def load_workbook(app, workbook_filename):
@@ -62,7 +62,11 @@ def load_workbook(app, workbook_filename):
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
-    config = Configurator(settings=settings)
+
+    config = Configurator(
+        settings=settings,
+    )
+
     config.include('pyramid_tm')
     configure_engine(settings)
 
@@ -71,6 +75,7 @@ def main(global_config, **settings):
     config.add_renderer('null_renderer', 'encoded.renderers.NullRenderer')
     config.scan('encoded.renderers')
     config.include('.api')
+    config.include('.authz')
 
     config.include(static_resources)
     config.include(tests_js)

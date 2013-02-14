@@ -1,5 +1,8 @@
 from pyramid.threadlocal import manager
 from pyramid.view import view_config
+from ..authz import (
+    RootFactory
+    )
 from ..storage import (
     DBSession,
     CurrentStatement,
@@ -13,14 +16,19 @@ collections = [
     ('targets', 'target'),
     ('validations', 'validation'),
     ('antibody-lots', 'antibody_lot'),
-    ]
+    ('biosamples', 'biosample'),
+    ('labs', 'lab'),
+    ('awards', 'award'),
+    ('users', 'user'),
+]
 
 
 def includeme(config):
+    # RootFactory is just a stub for later
     config.add_route('home', '')
     for collection, item_type in collections:
-        config.add_route(collection, '/%s/' % collection)
-        config.add_route(item_type, '/%s/{name}' % collection)
+        config.add_route(collection, '/%s/' % collection, factory=RootFactory)
+        config.add_route(item_type, '/%s/{name}' % collection, factory=RootFactory)
     config.scan('.views')
 
 

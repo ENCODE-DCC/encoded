@@ -1,12 +1,16 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'targets','navbar'],
-function app(exports, $, _, Backbone, base, home, antibodies, targets, navbar) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'targets', 'sources', 'navbar'],
+function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, navbar) {
 
     var routes = {
         home: '',
         antibodies: 'antibodies/',
         antibody: 'antibodies/:name',
         targets: 'targets/',
-        target: 'targets/:name'
+        target: 'targets/:name',
+        sources: 'sources/',
+        source: 'sources/:name'
+        //login: '#login'
+        //logout: '#logout'
     };
 
     var slots = {
@@ -17,6 +21,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, navbar) {
     _.extend(exports, Backbone.Events, {
 
         navbar_view: undefined,
+
+        user: { email: undefined },
 
         start: function start() {
             this.config = new exports.Config();
@@ -67,12 +73,14 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, navbar) {
         title: 'ENCODE 3',
         global_sections: [
             {id: 'home', title: 'Home', url: '/'},
-            {id: 'antibodies', title: 'Antibodies registry', url: '/antibodies/'},
-            {id: 'targets', title: 'Targets', url: '/targets/'}
-        ],
+            {id: 'antibodies', title: 'Antibodies', url: '/antibodies/'},
+            {id: 'targets', title: 'Targets', url: '/targets/'},
+            {id: 'sources', title: 'Sources', url: '/sources/'}
+       ],
         user_actions: [
-            {id: 'login', title: 'Log in', url: '#login'}
-        ]
+            {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'},
+            {id: 'signout', title: 'Log out', url: '#logout', bypass: 'true'}
+       ]
     });
 
     return exports;

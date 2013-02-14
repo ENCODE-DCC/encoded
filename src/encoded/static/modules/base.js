@@ -40,6 +40,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
             if (callback) $.when(callback.apply(this, args)).done(_.bind(function () {
                 this.trigger.apply(this, ['route:' + name].concat(args));
                 Backbone.history.trigger('route', this, name, args);
+                console.log("routed: "+location.href);
             }, this)).fail(_.bind(function () {
                 console.log("route failed...");
             }, this));
@@ -93,6 +94,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 if (!route_name) return;
                 assert(!view_registry.views[route_name], 'route already defined for ' + route_name);
                 view_registry.views[route_name] = view_factory;
+                console.log("Adding view for: "+ route_name);
             });
             this.deferred = null;
         },

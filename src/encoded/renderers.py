@@ -88,7 +88,7 @@ class PageOrJSON:
             original_vary = request.response.vary or ()
             request.response.vary = original_vary + vary
 
-        format = request.environ.get('encoded.format', 'html')
+        format = request.environ.get('encoded.format', 'json')
         if format == 'json':
             return self.json_renderer(value, system)
         else:

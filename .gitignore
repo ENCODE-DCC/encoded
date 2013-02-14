@@ -17,3 +17,6 @@ src/encoded/static/css/style.css
 src/encoded/static/scss/_variables.original.scss
 +.project
 +.pydevproject
+development.log
+src/encoded/tests/data/*.db
+~$*
