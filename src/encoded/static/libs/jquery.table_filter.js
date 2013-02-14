@@ -8,12 +8,14 @@
  * Copyright 2012 Efe Amadasun [ efeamadasun@gmail.com ]
  *
  * USAGE:
- * 
- * <input type="text" class="f_txt"/>
- * <table class="f_tbl">...</table>
- * 
- * $(function(){ 
- * 	  $(".f_txt").table_filter({'table':'.f_tbl'});
+ *
+ * <div class="f_tbl">
+ * <input type="text" class="table-filter"/>
+ * <table>...</table>
+ * </class>
+ *
+ * $(function(){
+ *   $(".f_tbl").table_filter();
  * });
  *
  * ADDITIONAL SETTINGS:
@@ -23,13 +25,16 @@
  * False - filters out rows that do not match the filter text
  *
  * enable_space (boolean) - default: False
- * True - it uses space in filter text as delimiters. e.g. if filter text = "good boy", it 
+ * True - it uses space in filter text as delimiters. e.g. if filter text = "good boy", it
  *        will search rows for "good" and "boy" seperately
  * False - it will not use space as a delimiter. e.g. "good boy" will be treated as one word.
  *
+ * filter_selector (string) - default: 'input.table-filter'
+ * Allows override of the filter selector.
+ *
  * cell_selector (string) - default: 'td'
  * Allows override of the cell selector, so that only certain cells will be filtered.
- * Example setting to only filter on the first column: {'cell_selector':'td:first-child'} 
+ * Example setting to only filter on the first column: {'cell_selector':'td:first-child'}
  *
  */
 
@@ -42,7 +47,7 @@
 			
 			'filter_inverse': false,
 			'enable_space': false,
-			'table': '',
+			'filter_selector': 'input.table-filter',
 			'cell_selector': 'td'
 
 		}, options);
@@ -50,22 +55,26 @@
 		//return element, to maintain chainability
 		return this.each(function () {
 			var $this = $(this);
+			var $tbody = $this.find('tbody:first');
+			var $input = $this.find(settings.filter_selector);
 
-			$this.bind("keyup", function () { 
+			$input.bind("keyup", function () {
 
 				//set filter text, and filterable table rows
-				var txt = $this.val().toLowerCase();
-				var obj = $(settings.table).find("tr:not(:has('th'))");
+				var txt = $input.val().toLowerCase();
+				var $rows = $tbody.children("tr");
 
-				$.each(obj, function () {
+				$rows.each(function () {
 					//default visibilty for rows is set based on filter_inverse value
+					var $row = $(this);
 					var show_tr = (settings.filter_inverse) ? true : false;
-					var inner_obj = $(this).find(settings.cell_selector);
+					var $cells = $row.find(settings.cell_selector);
 
-					$.each(inner_obj, function () {
-						var td_txt = $.trim($(this).text()).toLowerCase();
+					$cells.each(function () {
+						var $cell = $(this);
+						var td_txt = $.trim($cell.text()).toLowerCase();
 						
-						//if space is enabled as a delimiter, split the TD text value 
+						//if space is enabled as a delimiter, split the TD text value
 						//and check the individual values against the filter text.
 						if(settings.enable_space){
 
@@ -90,18 +99,20 @@
 					});
 
 					if(show_tr){
-						$(this).show();
+						$(this).show().removeClass('hidden');
 					}
 					else{
-						$(this).hide();
+						$(this).hide().addClass('hidden');
 					}
 
 				});
 
 				//display all rows if filter text is empty
-				if($.trim(txt) == ""){
-					$(settings.table).find("tr").show();
+				if($.trim(txt) === ""){
+					$tbody.children("tr").show().removeClass('hidden');
 				}
+
+				$tbody.setoddeven();
 
 			});
 
