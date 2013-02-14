@@ -14,7 +14,20 @@
         <link rel="stylesheet" href="../lib/chosen/chosen.css">
         
         <link rel="stylesheet" href="../../css/responsive.css">
+        
+        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+       
+       <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700' rel='stylesheet' type='text/css'>
+       <link href='http://fonts.googleapis.com/css?family=Francois+One|Oswald:400,700|Magra:400,700|Raleway:400,700|Nunito:400,700' rel='stylesheet' type='text/css'>
+        
         <script data-main="/static/main" src="../../libs/require.min.js"></script>
+        
+        <style>
+        	h1,h2,h3,h4,h5,h6 {
+        		font-family: 'Marga', sans-serif;
+        		font-weight: bold;
+        	}
+        </style>
     </head>
     <body>
     <div id="layout">
@@ -59,6 +72,8 @@
         	
         	<section class="row">
         		<div class="span12">
+        		
+        		<div class="panel">
         		<form class="form-horizontal">
         			<div class="control-group">
 						<label class="control-label" for="source-name">Source name (vendor):</label>
@@ -161,14 +176,14 @@
 							<input type="text" id="references" class="input-xlarge">
 						</div>
 					</div>
-					<!-- <div class="control-group">
+					<div class="control-group">
 						<div class="controls">
 							<label class="control-label alert" for="negative-submission">
 								<input type="checkbox" id="negative-submission">
 								 Negative submission? <a href="#">What is this?</a>
 							</label>
 						</div>
-					</div> -->
+					</div>
 					<div class="control-group" id="submit-controls">
 						<label class="control-label" for=""></label>
 						<div class="controls">
@@ -177,11 +192,13 @@
 						</div>
 					</div>
         		</form>
+        		</div><!-- .panel -->
+        		
         		</div>
         	</section>
         	
         </div><!-- #content -->
-    <div id='layout-footer'></div>
+    	<div id="layout-footer"></div>
 	</div><!-- #layout -->
 	
 	<footer id="footer">
