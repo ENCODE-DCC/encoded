@@ -195,13 +195,21 @@ $footerBorder:              #252525 !default;
 	text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
 }
 
+// fix footer width for small screens
+@media (max-width: 767px) {
+	#footer {
+		margin-left: -20px;
+    	margin-right: -20px;
+	}
+}
+
 #footer .container {
 	padding: 15px;
 }
 
 #submit-controls {
 	padding: 5px;
-	background-color: #fff;
+	background-color: #ecf1f5;
 	@include border-radius($baseBorderRadius);
 }
 
@@ -213,6 +221,8 @@ $footerBorder:              #252525 !default;
 }
 
 //.display-label, .display-values { margin-top: 5px;}
+
+
 
 .data-display .row {margin-top: 12px;}
 
