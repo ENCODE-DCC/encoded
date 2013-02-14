@@ -122,16 +122,13 @@ background-color: darken($tableHeadFootBackgroundColor, 10%);
 }
 
 /* Table Controls */
-#table-controls {
-	overflow: hidden;
-}
-
-#table-controls button {
+table thead tr th button {
 	float: left;
 }
 
-#table-controls #filter-input {
+.table-filter {
 	float: right;
+	margin-bottom: 0;
 }
 
 
