@@ -280,7 +280,7 @@ def load_sample(testapp):
         ('/organisms/', ORGANISMS),
         ('/sources/', SOURCES),
         ('/biosamples/', BIOSAMPLES),
-#        ('/users/', USERS),
+        ('/users/', USERS),
         ('/labs/', LABS),
         ('/awards/', AWARDS),
         ]:

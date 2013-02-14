@@ -1,2 +1,14 @@
 <pre>{JSON.stringify(_.omit(properties, 'document'), null, 4)}</pre>
-<img src="{properties.document.href}" download="{properties.document.download}" />
+<div class="thumbnail">
+<img
+    src="{properties.document.href}"
+    height="{properties.document.height}"
+    width="{properties.document.width}"
+    alt=""
+    />
+<p><span>{properties.caption}</span>
+<a href="{properties.document.href}"
+    download="{properties.document.download}"
+    >Download</a>.
+</p>
+</div>

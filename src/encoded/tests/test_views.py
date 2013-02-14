@@ -43,7 +43,7 @@ def test_bad_audience(testapp, dummy_request):
     res = testapp.post_json('/login', params={'assertion': assertion, 'came_from': '/'}, status=400)
 
 
-def test_login_cycle(testapp, dummy_request):
+def _test_login_cycle(testapp, dummy_request):
     import requests
     from pyramid.security import authenticated_userid
 
@@ -92,7 +92,7 @@ def _test_antibody_approval_creation(testapp):
     del data['_links']
     assert data == new_antibody
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
-    assert len(res.json['_embedded']['items']) == 1
+    assert len(res.json['_links']['items']) == 1
 
 
 def test_sample_data(testapp):
@@ -109,4 +109,4 @@ def test_load_workbook(testapp):
     from pkg_resources import resource_filename
     load_all(testapp, resource_filename('encoded', 'tests/data/AntibodySubmissionsENCODE3.xlsx'))
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
-    assert res.json['_embedded']['items']
+    assert res.json['_links']['items']

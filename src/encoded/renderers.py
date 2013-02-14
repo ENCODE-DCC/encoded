@@ -1,5 +1,12 @@
 from pkg_resources import resource_string
-from pyramid.threadlocal import get_current_request
+from pyramid.events import (
+    ContextFound,
+    subscriber,
+    )
+from pyramid.threadlocal import (
+    get_current_request,
+    manager,
+    )
 import pyramid.renderers
 import uuid
 
@@ -22,6 +29,8 @@ json_renderer.add_adapter(uuid.UUID, uuid_adapter)
 
 
 class NullRenderer:
+    '''Sets result value directly as response.
+    '''
     def __init__(self, info):
         pass
 
@@ -43,6 +52,27 @@ class PageRenderer:
         return self.page
 
 
+@subscriber(ContextFound)
+def choose_format(event):
+    if len(manager.stack) != 1:
+        return
+    # Discriminate based on Accept header or format parameter
+    request = event.request
+    if request.method != 'GET':
+        request.environ['encoded.format'] = 'json'
+        return
+
+    format = request.params.get('format')
+    if format is None:
+        request.environ['encoded.vary'] = ('Accept',)
+        mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
+        format = mime_type.split('/', 1)[1]
+    else:
+        format = format.lower()
+
+    request.environ['encoded.format'] = format
+
+
 class PageOrJSON:
     '''Vary response based on accept header or format parameter
     '''
@@ -52,19 +82,13 @@ class PageOrJSON:
 
     def __call__(self, value, system):
         request = system.get('request')
-        if request is None or request.method != 'GET':
-            return self.json_renderer(value, system)
 
-        # Discriminate based on Accept header or format parameter
-        format = request.params.get('format')
-        if format is None:
-            vary = request.response.vary or ()
-            request.response.vary = vary + ('Accept',)
-            mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
-            format = mime_type.split('/', 1)[1]
-        else:
-            format = format.lower()
+        vary = request.environ.get('encoded.vary', None)
+        if vary is not None:
+            original_vary = request.response.vary or ()
+            request.response.vary = original_vary + vary
 
+        format = request.environ.get('encoded.format', 'json')
         if format == 'json':
             return self.json_renderer(value, system)
         else:

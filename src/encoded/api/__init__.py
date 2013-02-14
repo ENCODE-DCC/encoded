@@ -32,21 +32,32 @@ def includeme(config):
     config.scan('.views')
 
 
-def include(request, path):
+def embed(request, path, result=None):
     # Should really be more careful about what gets included instead.
     # Cache cut response time from ~800ms to ~420ms.
-    cache = None
+    embedded = None
     if manager.stack:
-        cache = manager.stack[0].setdefault('encoded_include_cache', {})
-        result = cache.get(path, None)
-        if result is not None:
-            return result
+        embedded = manager.stack[0].setdefault('encoded_embedded', {})
+    if result is not None:
+        embedded[path] = result
+        return result
+    result = embedded.get(path, None)
+    if result is not None:
+        return result
     subreq = request.blank(path)
     subreq.override_renderer = 'null_renderer'
     result = request.invoke_subrequest(subreq)
-    if cache is not None:
-        cache[path] = result
+    if embedded is not None:
+        embedded[path] = result
     return result
+
+
+def maybe_include_embedded(request, result):
+    if len(manager.stack) != 1:
+        return
+    embedded = manager.stack[0].get('encoded_embedded', None)
+    if embedded:
+        result['_embedded'] = {'resources': embedded}
 
 
 class CollectionViews(object):
@@ -58,7 +69,7 @@ class CollectionViews(object):
         'collection': {'href': '/{collection}/', 'templated': True},
         'profile': {'href': '/profiles/{item_type}', 'templated': True},
         }
-    embedded = None
+    embedded = {}
 
     @classmethod
     def config(cls, **settings):
@@ -80,19 +91,9 @@ class CollectionViews(object):
     def item_uri(self, name):
         return self.request.route_path(self.item_type, name=name)
 
-    def expand_embedded(self, model, item):
-        if self.embedded is None:
-            return None
-        objects = {}
-        for rel, value in self.embedded.items():
-            if isinstance(value, basestring):
-                value = include(self.request, value.format(
-                    collection_uri=self.collection_uri,
-                    item_type=self.item_type,
-                    collection=self.collection,
-                    **item))
-            objects[rel] = value
-        return objects
+    def maybe_embed(self, rel, href):
+        if rel in self.embedded:
+            embed(self.request, href)
 
     def expand_links(self, model, item):
         # This should probably go on a metaclass
@@ -100,49 +101,57 @@ class CollectionViews(object):
         for cls in reversed(type(self).mro()):
             merged_links.update(vars(cls).get('links', {}))
         links = {}
-        for rel, value in merged_links.items():
-            if value is None:
+        for rel, value_template in merged_links.items():
+            if value_template is None:
                 continue
-            if isinstance(value, list):
+            if isinstance(value_template, list):
                 out = []
-                for member in value:
-                    if not member.get('templated', False):
-                        out.append(member)
+                for member in value_template:
+                    value = member.copy()
+                    templated = value.pop('templated', False)
+                    repeat = value.pop('repeat', None)
+                    if not templated:
+                        out.append(value)
+                        self.maybe_embed(rel, value['href'])
                         continue
-                    templated = member.copy()
-                    del templated['templated']
-                    repeat = templated.pop('repeat', None)
                     if repeat:
                         ns = item.copy()
                         repeat_name, repeater = repeat.split()
                         for repeat_value in item[repeater]:
                             ns[repeat_name] = repeat_value
-                            templated = templated.copy()
-                            templated['href'] = member['href'].format(
+                            value = value.copy()
+                            value['href'] = member['href'].format(
                                 collection_uri=self.collection_uri,
                                 item_type=self.item_type,
                                 collection=self.collection,
                                 **ns)
-                            out.append(templated)
+                            out.append(value)
+                            self.maybe_embed(rel, value['href'])
                     else:
                         ns = item
                         ns[repeat_name] = repeat_value
-                        templated['href'] = member['href'].format(
+                        value['href'] = member['href'].format(
                             collection_uri=self.collection_uri,
                             item_type=self.item_type,
                             collection=self.collection,
                             **ns)
-                        out.append(templated)
+                        out.append(value)
+                        self.maybe_embed(rel, value['href'])
                 value = out
-            elif value.get('templated', False):
-                value = value.copy()
+            elif value_template.get('templated', False):
+                value = value_template.copy()
                 del value['templated']
-                assert not value.get('repeat')
+                assert 'repeat' not in value
                 value['href'] = value['href'].format(
                     collection_uri=self.collection_uri,
                     item_type=self.item_type,
                     collection=self.collection,
                     **item)
+                self.maybe_embed(rel, value['href'])
+            else:
+                assert 'repeat' not in value
+                value = value_template
+                self.maybe_embed(rel, value['href'])
             links[rel] = value
         return links
 
@@ -151,21 +160,30 @@ class CollectionViews(object):
         links = self.expand_links(model, item)
         if links is not None:
             item['_links'] = links
-        embedded = self.expand_embedded(model, item)
-        if embedded is not None:
-            item['_embedded'] = embedded
         return item
 
+    def no_body_needed(self):
+        # No need for request data when rendering the single page html
+        return self.request.environ.get('encoded.format') == 'html'
+
     def list(self):
+        if self.no_body_needed():
+            return {}
         session = DBSession()
         query = session.query(CurrentStatement).filter(CurrentStatement.predicate == self.item_type)
-        items = [self.make_item(model) for model in query.all()]
+        items = []
+        for model in query.all():
+            item = self.make_item(model)
+            item_uri = item['_links']['self']['href']
+            embed(self.request, item_uri, item)
+            items.append({'href': item_uri})
         result = {
             '_embedded': {
                 'items': items,
                 },
             '_links': {
                 'self': {'href': self.collection_uri},
+                'items': items,
                 '/rels/actions': [
                     {
                         'name': 'add-antibody',
@@ -181,6 +199,7 @@ class CollectionViews(object):
         if self.properties is not None:
             result.update(self.properties)
 
+        maybe_include_embedded(self.request, result)
         return result
 
     def create(self):
@@ -207,5 +226,8 @@ class CollectionViews(object):
         key = (self.request.matchdict['name'], self.item_type)
         session = DBSession()
         model = session.query(CurrentStatement).get(key)
-        item = self.make_item(model)
-        return item
+        if self.no_body_needed():
+            return {}
+        result = self.make_item(model)
+        maybe_include_embedded(self.request, result)
+        return result

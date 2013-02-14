@@ -49,7 +49,7 @@ input.search-query {
 
 /* Modals */
 .modal {
-	border: 9px solid #333;
+  border: 9px solid #333;
   border: 9px solid rgba(0,0,0,.4);
   *border: 9px solid #333; /* IE6-7 */
   @include border-radius(6px);
@@ -63,6 +63,9 @@ input.search-query {
 
 /* Tables */
 /* Modified version of Foundation tables */
+
+$tableHeadFootBackgroundColor: #f5f5f5;
+
 table { 
   background: #fff;
   margin: 0 0 18px; 
@@ -71,9 +74,10 @@ table {
   border-spacing: 2px !important;
   border-collapse: separate;
   font-size: 0.92em;
+  width: 100%;
 }
 
-table thead, table tfoot { background: #f5f5f5; }
+table thead, table tfoot { background: $tableHeadFootBackgroundColor; }
 
 table thead tr th,
 table tfoot tr th,
@@ -97,7 +101,10 @@ table tbody tr:nth-child(even) { background: #f9f9f9; }
 table tbody tr td { color: #333; padding: 9px 10px; vertical-align: top; border: none; }
 
 /* NavBar */
-/* .navbar-inverse .brand {font-weight: bold;} */
+.navbar-inverse .navbar-inner {
+    border: none;
+    border-bottom: 3px solid $linkColor;
+}
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -105,13 +112,13 @@ table tbody tr td { color: #333; padding: 9px 10px; vertical-align: top; border:
 
 .navbar-inverse .nav > li > a {
     @include transition-property(background-color);
-    @include transition-duration(0.25s);
+    @include transition-duration(0.2s);
   	@include transition-timing-function(ease-in-out);
 }
 
 .navbar-inverse .brand {
     @include transition-property(text-shadow);
-    @include transition-duration(0.3s);
+    @include transition-duration(0.2s);
   	@include transition-timing-function(ease-in-out);
 }
 
@@ -129,7 +136,10 @@ table tbody tr td { color: #333; padding: 9px 10px; vertical-align: top; border:
 /* Global Styles */
 .cancel-link {margin-left: 20px;}
 
-$footerHeight: 72px;
+$footerHeight: 				100px;
+$footerBackground:          #16242f !default;
+$footerBackgroundHighlight: #1b2a35 !default;
+$footerBorder:              #252525 !default;
 
 #layout {
 	height: auto !important;
@@ -144,11 +154,56 @@ $footerHeight: 72px;
 @include sticky-footer($footerHeight, "#layout", "#layout-footer", "#footer");
 
 #footer {
-	background-color: #777;
+	border-top: $navbarInverseBorder;
+	@include background-image(linear-gradient($footerBackgroundHighlight, $footerBackground));
+	color: $white;
+	text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
 }
 
+#footer .container {
+	padding: 15px;
+}
+
+.controls-highlight {
+	background-color: $red;
+	border: 1px solid darken($red, 5%);
+}
 #submit-controls {
 	padding: 5px;
-	background-color: #fbfbfb;
+	background-color: #f8f8fc;
 	@include border-radius($baseBorderRadius);
+}
+
+/* Table Sorting */
+table.tablesorter thead tr .header {
+	background-image: url(../img/bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(../img/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(../img/desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: darken($tableHeadFootBackgroundColor, 10%);
+}
+
+.tablesorter thead tr th {
+	padding-right: 16px;
+}
+
+/* Table Controls */
+#table-controls {
+	overflow: hidden;
+}
+
+#table-controls button {
+	float: left;
+}
+
+#table-controls #filter-input {
+	float: right;
 }

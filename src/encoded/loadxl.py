@@ -133,13 +133,19 @@ def multi_tuple_index(data, *attrs):
     return index
 
 
-def image_data_uri(stream):
+def image_data(stream, filename=None):
+    data = {}
+    if filename is not None:
+        data['download'] = filename
     im = Image.open(stream)
     im.verify()
+    data['width'], data['height'] = im.size
     mime_type, _ = mimetypes.guess_type('name.%s' % im.format)
+    data['type'] = mime_type
     stream.seek(0, 0)
-    data = b64encode(stream.read())
-    return 'data:%s;base64,%s' % (mime_type, data)
+    encoded_data = b64encode(stream.read())
+    data['href'] = 'data:%s;base64,%s' % (mime_type, encoded_data)
+    return data
 
 
 def load_all(testapp, filename):
@@ -170,27 +176,44 @@ def load_all(testapp, filename):
 
     antibody_lot_index = tuple_index(alldata['antibody_lot'], 'product_id', 'lot_id')
 
-    for uuid, value in alldata['validation'].iteritems():
-        value['target_uuid'] = target_index[(value.pop('target_label'), value.pop('organism_name'))]
-        filename = value.pop('document_filename')
-        value['document'] = {
-            'download': filename,
-            'href': image_data_uri(resource_stream('encoded', 'tests/data/validation-docs/' + filename)),
-            }
+    for uuid, value in list(alldata['validation'].iteritems()):
+        key = (value.pop('target_label'), value.pop('organism_name'))
+        try:
+            value['target_uuid'] = target_index[key]
+        except KeyError:
+            logger.warn('Unable to find target: %s for validation: %s' % (key, uuid))
+            del alldata['validation'][uuid]
+        else:
+            filename = value.pop('document_filename')
+            try:
+                value['document'] = image_data(
+                    resource_stream('encoded', 'tests/data/validation-docs/' + filename),
+                    filename,
+                    )
+            except IOError:
+                logger.debug('Referenced filename missing for %s: %s' % (uuid, filename))
 
     for uuid, value in list(alldata['antibody_approval'].iteritems()):
         try:
             value['antibody_lot_uuid'] = antibody_lot_index[(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
-            #value['validation_uuids'] = validation_index.get((value['antibody_lot_uuid'], value['target_label'], value['organism_name']), [])
-            value['validation_uuids'] = []
-            filenames = (value.pop('validation_filenames') or '').split(';')
-            for filename in filenames:
-                validation_uuids = validation_index.get(filename, [])
-                value['validation_uuids'].extend(validation_uuids)
+        except KeyError:
+            logger.debug('Missing/skipped antibody_lot reference for antibody_approval: %s' % uuid)
+            del alldata['antibody_approval'][uuid]
+            continue
+
+        #value['validation_uuids'] = validation_index.get((value['antibody_lot_uuid'], value['target_label'], value['organism_name']), [])
+        value['validation_uuids'] = []
+        filenames = (value.pop('validation_filenames') or '').split(';')
+        for filename in filenames:
+            validation_uuids = validation_index.get(filename, [])
+            value['validation_uuids'].extend(validation_uuids)
+
+        try:
             value['target_uuid'] = target_index[(value.pop('target_label'), value.pop('organism_name'))]
         except KeyError:
-            logger.debug('Missing/skipped reference for antibody_approval: %s' % uuid)
+            logger.debug('Missing/skipped target reference for antibody_approval: %s' % uuid)
             del alldata['antibody_approval'][uuid]
+            continue
 
     for content_type, url in TYPE_URL:
         collection = alldata[content_type]
