@@ -100,6 +100,41 @@ table tbody tr.alt { background: #f9f9f9; }
 table tbody tr:nth-child(even) { background: #f9f9f9; }
 table tbody tr td { color: #333; padding: 9px 10px; vertical-align: top; border: none; }
 
+/* Table Sorting */
+table.tablesorter thead tr .header {
+	background-image: url(../img/bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(../img/asc.gif);
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(../img/desc.gif);
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: darken($tableHeadFootBackgroundColor, 10%);
+}
+
+.tablesorter thead tr th {
+	padding-right: 16px;
+}
+
+/* Table Controls */
+#table-controls {
+	overflow: hidden;
+}
+
+#table-controls button {
+	float: left;
+}
+
+#table-controls #filter-input {
+	float: right;
+}
+
+
 /* NavBar */
 .navbar-inverse .navbar-inner {
     border: none;
@@ -164,46 +199,28 @@ $footerBorder:              #252525 !default;
 	padding: 15px;
 }
 
-.controls-highlight {
-	background-color: $red;
-	border: 1px solid darken($red, 5%);
-}
 #submit-controls {
 	padding: 5px;
-	background-color: #f8f8fc;
+	background-color: #fff;
 	@include border-radius($baseBorderRadius);
 }
 
-/* Table Sorting */
-table.tablesorter thead tr .header {
-	background-image: url(../img/bg.gif);
-	background-repeat: no-repeat;
-	background-position: center right;
-	cursor: pointer;
-}
-table.tablesorter thead tr .headerSortUp {
-	background-image: url(../img/asc.gif);
-}
-table.tablesorter thead tr .headerSortDown {
-	background-image: url(../img/desc.gif);
-}
-table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
-background-color: darken($tableHeadFootBackgroundColor, 10%);
+.panel {
+    //border-radius: 5px 5px 5px 5px;
+    //box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.13);
+    //margin: 10px 0;
+    //padding: 14px 10px 10px;
 }
 
-.tablesorter thead tr th {
-	padding-right: 16px;
-}
+//.display-label, .display-values { margin-top: 5px;}
 
-/* Table Controls */
-#table-controls {
-	overflow: hidden;
-}
+.data-display .row {margin-top: 12px;}
 
-#table-controls button {
-	float: left;
+.display-label {
+  font-weight: bold;
+  text-align: right;
 }
-
-#table-controls #filter-input {
-	float: right;
+.display-values {
+	word-wrap: break-word;
+	overflow-wrap: break-word;
 }
