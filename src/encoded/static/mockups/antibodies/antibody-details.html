@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Submit Antibody | ENCODE 3</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="../../css/style.css">
+        <link rel="stylesheet" href="../lib/chosen/chosen.css">
+        
+        <link rel="stylesheet" href="../../css/responsive.css">
+        
+        <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css'>
+       
+       <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700' rel='stylesheet' type='text/css'>
+       <link href='http://fonts.googleapis.com/css?family=Francois+One|Oswald:400,700|Magra:400,700|Raleway:400,700|Nunito:400,700' rel='stylesheet' type='text/css'>
+        
+        <script data-main="/static/main" src="../../libs/require.min.js"></script>
+        
+        <style>
+        	h1,h2,h3,h4,h5,h6 {
+        		font-family: 'Marga', sans-serif;
+        		font-weight: bold;
+        	}
+        </style>
+    </head>
+    <body>
+    <div id="layout">
+		<div class="navbar navbar-fixed-top navbar-inverse">
+			<div class="navbar-inner">
+				<div class="container">
+ 
+				<!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				</a>
+ 
+				<!-- Be sure to leave the brand out there if you want it shown -->
+				<a class="brand" href="#">ENCODE 3</a>
+ 
+					<!-- Everything you want hidden at 940px or less, place within here -->
+					<div class="nav-collapse collapse">
+					<!-- .nav, .navbar-search, .navbar-form, etc -->
+						<ul class="nav">
+							<li class="divider-vertical"></li>
+							<li><a href="#">Antibodies</a></li>
+							<li><a href="#">Experiments</a></li>
+							<li><a href="#">Biosamples</a></li>
+		        		</ul>
+		        		<ul id="user-actions" class="nav pull-right">
+							<li><button class="btn btn-primary">Log In</button></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+        
+        <div id="content" class="container">
+        
+        	<header class="row">
+        		<div class="span12">
+        			<h2>Antibody Registration</h2>
+        		</div>
+        	</header>
+        	
+        	<div class="row">
+        		<div class="span12">
+        		
+        		<div class="panel data-display">
+        			<div class="row">
+						<label class="span2 display-label" for="source-name">Source name (vendor):</label>
+						<div class="controls">
+							<span id="source-name" class="span10 display-values"><a href="#">Abnova Corporation</a></span>
+						</div>
+					</div>
+        			<div class="row">
+						<label class="span2 display-label" for="product-id">Product ID:</label>
+						<div class="controls">
+							<span id="product-id" class="span10 display-values"><a href="#">H00001386-M02</a></span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="span2 display-label" for="lot-id">Lot ID:</label>
+						<div class="controls">
+							<span id="lot-id" class="span10 display-values"><a href="#">P37345098</a></span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="span2 display-label" for="target-label">Target label:</label>
+						<div class="controls">
+							<span id="target-label" class="span10 display-values">SomLab3e</span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="span2 display-label" for="host">Host:</label>
+						<div class="controls">
+							<span id="host" class="span10 display-values">Mouse</span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="span2 display-label" for="clonality">Clonality:</label>
+						<div class="controls">
+							<span id="clonality" class="span10 display-values">Monoclonal</span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="span2 display-label" for="purification">Purification:</label>
+						<div class="controls">
+							<span id="purification" class="span10 display-values">A/G protein Affinity</span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="span2 display-label" for="isotype">Isotype:</label>
+						<div class="controls">
+							<span id="isotype" class="span10 display-values">IgG</span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="span2 display-label" for="antigen-description">Antigen description:</label>
+						<div class="controls">
+							<span id="antigen-description" class="span10 display-values">
+								ATF2 (AAH26175, 1 a.a. ~ 209 a.a) full-length recombinant protein with GST tag. MW of the GST tag alone is 26 KDa.
+							</span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="span2 display-label" for="antigen-sequence">Antigen sequence:</label>
+						<div class="controls">
+							<span id="antigen-description" class="span10 display-values">						MKFKLHVNSARQYKDLWNMSDDKPFLCTAPGCGQRFTNEDHLAVHKHKHEMTLKFGPARNDSVIVADQTPTPTRFLKNCEEVGLFNELASPFENEFKKASEDDIKKMPLDLSPLATPIIRSKIEEPSVVETTHQDSPLPHPESTTSDEKEVPLAQTAQPTSAIVRPASLQVPNVLLTSSDSSVIIQQAVPSPTSSTVITQAPSSNRPIV
+							</span>
+						</div>
+					</div>
+					<div class="row">
+						<label class="span2 display-label" for="references">References:</label>
+						<div class="controls">
+							<div id="references" class="span10 display-values references-list">
+							
+							</div>
+						</div>
+					</div>
+					<div class="row" id="submit-controls">
+						<label class="span2 display-label" for=""></label>
+						<div class="controls">
+							<button class="btn" type="submit">Edit</button>
+						</div>
+					</div>
+
+        		</div><!-- .panel -->
+        		
+        		</div>
+        	</div>
+        	
+        </div><!-- #content -->
+    	<div id="layout-footer"></div>
+	</div><!-- #layout -->
+	
+	<footer id="footer">
+		<div class="container">
+			<p>This is the footer.</p>
+		</div>
+	</footer>
+        
+        <!-- needed scripts linked to for now - remove for production b/c requireJS -->
+        <script src="../../libs/jquery.min.js"></script>
+        <script src="../../libs/bootstrap.min.js"></script>
+        <script src="../../libs/modernizr.min.js"></script>
+        <script>
+        	// initializers
+        </script>
+    </body>
+</html>
