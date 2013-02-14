@@ -82,7 +82,7 @@ def extract(filename, sheets):
         data = alldata[name] = {}
         sheet = book.sheet_by_name(name)
         for row in iter_rows(sheet):
-            uuid = row['%s_uuid' % name]
+            uuid = row.pop('%s_uuid' % name)
             if not uuid:
                 continue
             row['_uuid'] = uuid
@@ -161,10 +161,10 @@ def load_all(testapp, filename):
     for uuid, value in alldata['target'].iteritems():
         value['organism_uuid'] = organism_index[value.pop('organism_name')]
         aliases = value.pop('target_aliases') or ''
-        alias_source = value['target_alias_source']
+        alias_source = value.pop('target_alias_source')
         value['dbxref'] = [
             {'db': alias_source, 'id': alias.strip()}
-            for alias in aliases.split(';')]
+            for alias in aliases.split(';') if alias]
 
     for uuid, value in list(alldata['antibody_lot'].iteritems()):
         source = value.pop('source')
@@ -173,6 +173,11 @@ def load_all(testapp, filename):
         except KeyError:
             logger.warn('Unable to find source: %s (%s)' % (source, uuid))
             del alldata['antibody_lot'][uuid]
+        aliases = value.pop('antibody_alias') or ''
+        alias_source = value.pop('antibody_alias_source')
+        value['dbxref'] = [
+            {'db': alias_source, 'id': alias.strip()}
+            for alias in aliases.split(';') if alias]
 
     antibody_lot_index = tuple_index(alldata['antibody_lot'], 'product_id', 'lot_id')
 
