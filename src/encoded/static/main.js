@@ -22,8 +22,10 @@ requirejs.config({
         jquery: 'libs/jquery.min',
         modernizr: 'libs/modernizr.min',
         underscore: 'libs/underscore.min',
-        'navigator': 'libs/include.orig'
+        'navigator': 'libs/include.orig',
         //'navigator': 'https://login.persona.org/include'  // mozilla persona include, this should be fetched remotely
+        table_filter: 'libs/jquery.table_filter',
+        table_sorter: 'libs/table_sorter'
     },
 
     shim: {
@@ -43,6 +45,14 @@ requirejs.config({
         // new HTML5 elements in the HTML file itself.
         modernizr: {
             exports: 'Modernizr'
+        },
+
+        table_filter: {
+            deps: ['jquery', 'table_sorter']
+        },
+
+        table_sorter: {
+            deps: ['jquery']
         },
 
         underscore: {
