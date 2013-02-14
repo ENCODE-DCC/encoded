@@ -58,7 +58,6 @@
         			<h2>Antibody Registration</h2>
         			<section class="page-data">
 						<p class="title">Listing of approvals returned from server</p>
-						<p>Items: 204</p>
 					</section>
         		</div>
         	</header>
@@ -66,13 +65,14 @@
         	<div id="main" class="row">
         		<div class="span12">
         		
-        		<section id="table-controls">
-        			<button class="btn btn-primary">+ Add Antibody</button>
-        			<input type="text" id="filter-input" placeholder="Filter by...">
-        		</section>
-        		
-        		<table id="antibodies-summary" class="responsive tablesorter">
+        		<table id="antibodies-summary" class="responsive">
 					<thead>
+						<tr class="nosort table-controls">
+							<th colspan="7">
+								<button class="btn btn-primary">+ Add Antibody</button>
+								<input type="text" class="table-filter" placeholder="Filter by..." style="float:right">
+							</th>
+						</tr>
 						<tr>
 							<th>Accession</th>
 							<th>Target label</th>
@@ -1513,6 +1513,11 @@
 					<td>mouse</td>
 					<td><a href="/antibodies/a9a27a34-5e5b-4add-8209-2a842fba7164">PENDING</a></td>
 					</tr></tbody>
+					<tfoot>
+						<tr>
+							<th colspan="7">204 items.</th>
+						</tr>
+					</tfoot>
 					</table>
         		
         		</div>
@@ -1533,17 +1538,12 @@
         <script src="../../libs/bootstrap.min.js"></script>
         <script src="../../libs/modernizr.min.js"></script>
         <script src="../lib/responsive-tables.js"></script>
-        <script src="../lib/tablesorter/jquery.tablesorter.min.js"></script>
-        <script src="../lib/jquery.table_filter.min.js"></script>
+        <script src="../../libs/table_sorter.js"></script>
+        <script src="../../libs/jquery.table_filter.js"></script>
         <script>
         	$(document).ready(function() { 
-   				 // call the tablesorter plugin (http://tablesorter.com)
-    			$("#antibodies-summary").tablesorter( {sortList: [[0,0], [1,0]]} ); 
+    			$("#antibodies-summary").table_sorter().table_filter();
 			});
-			
-			$(function(){ 
-        		$("#filter-input").table_filter({'table':'#antibodies-summary'});
-    		});	
         </script>
     </body>
 </html>
