@@ -1,28 +1,19 @@
 /********* Table sorter script *************/
 /*
- * For all table elements with 'listing' class,
- * when user clicks on a th without 'nosort' class,
- * it sort table values using the td class with 'sortabledata-mydata' name,
+ * Apply sorting controls to a table.
+ * When user clicks on a th without 'nosort' class,
+ * it sort table values using the td 'data-sortabledata' attribute,
  * or the td text content
  *
  */
 (function($) {
 
-function sortabledataclass(cell){
-    var re, matches;
-	
-    re = new RegExp("sortabledata-([^ ]*)","g");
-	matches = re.exec(cell.attr('class'));
-	if (matches) { return matches[1]; }
-    else { return null; }
-}
-
 function sortable(cell) {
     // convert a cell a to something sortable
 
-	// use sortabledata-xxx cell class if it is defined
-	var text = sortabledataclass(cell);
-	if (text === null) { text = cell.text(); }
+	// use data-sortabledata attribute if it is defined
+	var text = cell.attr('data-sortabledata');
+	if (text === undefined) { text = cell.text(); }
 
 	// A number, but not a date?
     if (text.charAt(4) !== '-' && text.charAt(7) !== '-' && !isNaN(parseFloat(text))) {
@@ -35,16 +26,17 @@ function sort() {
     var th, colnum, table, tbody, reverse, index, data, usenumbers, tsorted;
 
 	th = $(this).closest('th');
-    colnum = $('th', $(this).closest('thead')).index(th);
+    colnum = $('th', $(this).closest('tr')).index(th);
     table = $(this).parents('table:first');
     tbody = table.find('tbody:first');
     tsorted = parseInt(table.attr('sorted') || '-1', 10);
     reverse = tsorted === colnum;
 
     $(this).parent().find('th:not(.nosort) .sortdirection')
-        .html('&#x2003;');
-    $(this).children('.sortdirection').html(
-        reverse ? '&#x25b2;' : '&#x25bc;');
+        .removeClass('icon-chevron-up icon-chevron-down');
+    $(this).children('.sortdirection')
+        .removeClass('icon-chevron-up icon-chevron-down')
+        .addClass(reverse ? 'icon-chevron-up' : 'icon-chevron-down');
 
     index = $(this).parent().children('th').index(this),
     data = [],
@@ -73,30 +65,35 @@ function sort() {
 
         // appending the tr nodes in sorted order will remove them from their old ordering
         tbody.append($.map(data, function(a) { return a[3]; }));
-        // jquery :odd and :even are 0 based
-        tbody.each(setoddeven);
     }
 }
 
-function setoddeven() {
-    var tbody = $(this);
-    // jquery :odd and :even are 0 based
-    tbody.find('tr').removeClass('odd').removeClass('even')
-        .filter(':odd').addClass('even').end()
-        .filter(':even').addClass('odd');
-}
+// jQuery plugins
+// --------------
 
-$(function() {
+$.fn.setoddeven = function() {
+    return this.each(function() {
+        // jquery :odd and :even are 0 based
+        $(this).children(':not(.hidden)').removeClass('odd even')
+            .filter(':odd').addClass('even').end()
+            .filter(':even').addClass('odd');
+    });
+};
+
+$.fn.table_sorter = function () {
     // set up blank spaceholder gif
-    var blankarrow = $('<span>&#x2003;</span>').addClass('sortdirection');
+    var blankarrow = $('<i></i>').addClass('sortdirection icon-').css({float: 'right', 'margin-left': '1em'});
     // all listing tables not explicitly nosort, all sortable th cells
     // give them a pointer cursor and  blank cell and click event handler
     // the first one of the cells gets a up arrow instead.
-    $('table.listing:not(.nosort) thead th:not(.nosort)')
-        .append(blankarrow.clone())
-        .css('cursor', 'pointer')
-        .click(sort);
-    $('table.listing:not(.nosort) tbody').each(setoddeven);
-});
+    return this.each(function () {
+        var $this = jQuery(this);
+        $this.find('thead tr:not(.nosort) th:not(.nosort)')
+            .append(blankarrow.clone())
+            .css('cursor', 'pointer')
+            .click(sort);
+        $this.find('tbody').setoddeven();
+    });
+};
 
 })(jQuery);
