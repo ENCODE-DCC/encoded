@@ -1,3 +1,4 @@
+from pyramid.exceptions import NotFound
 from pyramid.threadlocal import manager
 from pyramid.view import view_config
 from ..authz import (
@@ -226,6 +227,8 @@ class CollectionViews(object):
         key = (self.request.matchdict['name'], self.item_type)
         session = DBSession()
         model = session.query(CurrentStatement).get(key)
+        if model is None:
+            raise NotFound()
         if self.no_body_needed():
             return {}
         result = self.make_item(model)
