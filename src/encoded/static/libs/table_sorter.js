@@ -23,22 +23,23 @@ function sortable(cell) {
 }
 
 function sort() {
-    var th, colnum, table, tbody, reverse, index, data, usenumbers, tsorted;
+    var th, colnum, table, tbody, reverse, index, data, usenumbers, tsorted, $this;
 
-	th = $(this).closest('th');
-    colnum = $('th', $(this).closest('tr')).index(th);
-    table = $(this).parents('table:first');
+    $this = $(this);
+	th = $this.closest('th');
+    colnum = $('th', $this.closest('tr')).index(th);
+    table = $this.parents('table:first');
     tbody = table.find('tbody:first');
     tsorted = parseInt(table.attr('sorted') || '-1', 10);
     reverse = tsorted === colnum;
 
-    $(this).parent().find('th:not(.nosort) .sortdirection')
+    $this.parent().find('th:not(.nosort) .sortdirection')
         .removeClass('icon-chevron-up icon-chevron-down');
-    $(this).children('.sortdirection')
+    $this.children('.sortdirection')
         .removeClass('icon-chevron-up icon-chevron-down')
         .addClass(reverse ? 'icon-chevron-up' : 'icon-chevron-down');
 
-    index = $(this).parent().children('th').index(this),
+    index = $this.parent().children('th').index(this),
     data = [],
     usenumbers = true;
     tbody.find('tr').each(function() {
@@ -66,6 +67,8 @@ function sort() {
         // appending the tr nodes in sorted order will remove them from their old ordering
         tbody.append($.map(data, function(a) { return a[3]; }));
     }
+
+    tbody.setoddeven();
 }
 
 // jQuery plugins
