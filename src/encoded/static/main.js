@@ -24,6 +24,7 @@ requirejs.config({
         underscore: 'libs/underscore.min',
         'navigator': 'libs/include.orig',
         //'navigator': 'https://login.persona.org/include'  // mozilla persona include, this should be fetched remotely
+        stickyheader: 'libs/sticky_header',
         table_filter: 'libs/jquery.table_filter',
         table_sorter: 'libs/table_sorter'
     },
@@ -47,6 +48,10 @@ requirejs.config({
             exports: 'Modernizr'
         },
 
+        stickyheader: {
+            deps: ['jquery']
+        },
+
         table_filter: {
             deps: ['jquery', 'table_sorter']
         },
@@ -61,7 +66,7 @@ requirejs.config({
     }
 });
 
-if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'modernizr'],
+if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'modernizr', 'stickyheader'],
 function main($, app) {
 
     // Treat the jQuery ready function as the entry point to the application.
