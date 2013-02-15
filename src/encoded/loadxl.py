@@ -185,12 +185,17 @@ def load_all(testapp, filename):
     antibody_lot_index = tuple_index(alldata['antibody_lot'], 'product_id', 'lot_id')
 
     for uuid, value in list(alldata['validation'].iteritems()):
+        if value['antibody_lot_uuid'] is None:
+            logger.warn('Missing antibody_lot_uuid for validation: %s' % uuid)
+            del alldata['validation'][uuid]
+            continue
         key = (value.pop('target_label'), value.pop('organism_name'))
         try:
             value['target_uuid'] = target_index[key]
         except KeyError:
             logger.warn('Unable to find target: %s for validation: %s' % (key, uuid))
             del alldata['validation'][uuid]
+            continue
         else:
             filename = value.pop('document_filename')
             try:
@@ -214,8 +219,11 @@ def load_all(testapp, filename):
         filenames = (value.pop('validation_filenames') or '').split(';')
         for filename in filenames:
             validation_uuids = validation_index.get(filename, [])
-            value['validation_uuids'].extend(validation_uuids)
-
+            for validation_uuid in validation_uuids:
+                if alldata['validation'].get(validation_uuid, None) is None:
+                    logger.debug('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
+                else:
+                    value['validation_uuids'].append(validation_uuid)
         try:
             value['target_uuid'] = target_index[(value.pop('target_label'), value.pop('organism_name'))]
         except KeyError:
