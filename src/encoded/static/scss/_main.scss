@@ -247,7 +247,7 @@ $footerBorder:              #252525 !default;
   // Move over all input controls and content
   .data-values {
     // Super jank IE7 fix to ensure the inputs in .input-append and input-prepend
-    // don't inherit the margin of the parent, in this case .controls
+    // do not inherit the margin of the parent, in this case .controls
     *display: inline-block;
     *padding-left: 20px;
     margin-left: $horizontalComponentOffset;
@@ -330,7 +330,7 @@ $footerBorder:              #252525 !default;
   figcaption { color: $errorText; }
 }
 
-.type-validation.view-detail.status-pending{
+.type-validation.view-detail.status-pending {
   figure { border-color: $infoBorder; background-color: $infoBackground; }
   figcaption { color: $infoText; }
 }
@@ -341,4 +341,28 @@ $footerBorder:              #252525 !default;
 
 .validation-meta-data {
 	margin: 15px 15px 15px 0;
+}
+
+.validation-status {
+	margin-bottom: 10px;
+	font-weight: bold;
+	font-size: 1.5em;
+}
+
+.validation-status .approved {
+	color: $successText;
+	top: -5px;
+	position: relative;
+}
+
+.validation-status .pending, .validation-status .pending  { // use with icon-tasks or maybe icon-inbox
+	color: $infoText;
+	top: -5px;
+	position: relative;
+}
+
+.validation-status .rejected {  // use with icon-thumbs-down
+	color: $errorText;
+	top: -5px;
+	position: relative;
 }
