@@ -4,4 +4,5 @@
 <td>{model.links.antibody_lot.get('product_id')}</td>
 <td>{model.links.antibody_lot.get('lot_id')}</td>
 <td>{model.links.target.links.organism.get('organism_name')}</td>
+<td>{model.links.validations.length}</td>
 <td><a href="{model.url()}">{model.get('approval_status')}</a></td>

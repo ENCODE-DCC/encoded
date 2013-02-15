@@ -118,6 +118,13 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
             // XXX .fail(...)
         },
         template: _.template(item_template),
+        update: function update() {
+            var source = this.model.links.antibody_lot.links.source,
+                title = source.get('source_name') + ' - ' + source.get('product_id'),
+                lot_id = source.get('lot_id');
+            if (lot_id) title += ' - ' + lot_id;
+            this.title = title;
+        },
         render: function render() {
             AntibodyView.__super__.render.apply(this, arguments);
             var div = this.$el.find('div.validations');
