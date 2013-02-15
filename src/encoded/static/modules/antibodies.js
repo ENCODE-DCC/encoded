@@ -80,9 +80,17 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
     });
 
     exports.ValidationView = base.View.extend({
+        tagName: 'section',
+        attributes: {'class': 'type-validation view-detail container'},
         initialize: function initialize(options) {
             var model = options.model;
             this.deferred = model.deferred;
+        },
+        update: function update() {
+            var status = this.model.get('validation_status');
+            if (status) {
+                this.$el.addClass('status-' + status.toLowerCase());
+            }
         },
         template: _.template(validation_template)
     });

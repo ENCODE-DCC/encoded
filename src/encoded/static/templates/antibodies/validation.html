@@ -1,14 +1,25 @@
-<pre>{JSON.stringify(_.omit(properties, 'document'), null, 4)}</pre>
-<div class="thumbnail">
-<img
-    src="{properties.document.href}"
-    height="{properties.document.height}"
-    width="{properties.document.width}"
-    alt=""
-    />
-<p><span>{properties.caption}</span>
-<a href="{properties.document.href}"
-    download="{properties.document.download}"
-    >Download</a>.
-</p>
+<div class="row">
+    <div class="span6">
+        <figure>
+            <img
+                class="validation-img"
+                src="{properties.document.href}"
+                height="{properties.document.height}"
+                width="{properties.document.width}"
+                alt=""
+                />
+            <figcaption>
+                <span>{properties.validation_status}</span>
+            </figcaption>
+        </figure>
+    </div>
+    <div class="span6">
+        <div class="validation-meta-data">
+            <p><b>Method:</b> <span>{properties.method}</span></p>
+            <p><b>Species/Target:</b> <span>{model.links.target.links.organism.get('organism_name')}</span></p>
+            <p><span>{properties.caption}</span></p>
+            <p><b>Submitter:</b> <span>{properties.submitted_by}</span></p>
+            <p><b>Approver:</b> <span>{properties.validated_by}</span></p>
+        </div>
+    </div>
 </div>
