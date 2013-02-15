@@ -227,7 +227,7 @@ $footerBorder:              #252525 !default;
 .data-display {
   // Increase spacing between groups
   .data-group {
-    margin-bottom: $baseLineHeight;
+    margin-bottom: 7px;
     @include clearfix();
   }
   // Float the labels left
