@@ -49,6 +49,9 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
             // method, to be processed by the router.  If the link has a data-bypass
             // attribute, bypass the delegation completely.
             $(document).on('click', 'a:not([data-bypass])', function click(evt) {
+                if (evt.which > 1 || evt.shiftKey || evt.altKey || evt.metaKey) {
+                    return;
+                }
                 // Get the absolute anchor href.
                 var href = {prop: $(this).prop("href"), attr: $(this).attr("href")};
                 // Get the absolute root.
