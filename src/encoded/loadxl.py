@@ -118,10 +118,13 @@ def multi_index(data, attribute):
 
 def tuple_index(data, *attrs):
     index = {}
-    for uuid, value in data.iteritems():
+    for uuid, value in list(data.iteritems()):
         index_value = tuple(value[attr] for attr in attrs)
-        assert index_value not in index, index_value
-        index[index_value] = uuid
+        if index_value in index:
+            logger.warn('Duplicate values for %s, %s: %r' % (index[index_value], uuid, index_value))
+            del[data[uuid]]
+        else:
+            index[index_value] = uuid
     return index
 
 
