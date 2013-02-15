@@ -135,7 +135,9 @@ table thead tr th button {
 /* NavBar */
 .navbar-inverse .navbar-inner {
     border: none;
-    border-bottom: 3px solid $linkColor;
+    border-bottom: 2px solid #4e7294;
+    background: #0a253d url("../mockups/img/navbg.png") repeat-x;
+    @include box-shadow(0px 0px 30px 2px rgba(170, 170, 170, .9));
 }
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {
@@ -154,10 +156,6 @@ table thead tr th button {
   	@include transition-timing-function(ease-in-out);
 }
 
-/* .navbar-inverse .nav > li > a:hover {
-    background-color: #303030;
-} */
-
 .navbar-inverse .brand:hover {
     @include text-shadow(0px 0px 8px rgba(255, 255, 255, 0.8));
 }
@@ -166,12 +164,19 @@ table thead tr th button {
 
 
 /* Global Styles */
+
+body {
+	background-color: #e8ecef;
+}
+
 .cancel-link {margin-left: 20px;}
 
-$footerHeight: 				100px;
-$footerBackground:          #16242f !default;
-$footerBackgroundHighlight: #1b2a35 !default;
-$footerBorder:              #252525 !default;
+$footerHeight: 				200px;
+$footerTopHeight: 			79px; // 1px less than total height
+$footerBottomHeight:		$footerHeight - $footerTopHeight;
+$footerBackground:          #0f2a42 !default;
+$footerBackgroundHighlight: #294b6a !default;
+$footerBorder:              #0f2a42 !default;
 
 #layout {
 	height: auto !important;
@@ -183,14 +188,25 @@ $footerBorder:              #252525 !default;
 	padding-top: 50px;
 }
 
-@include sticky-footer($footerHeight, "#layout", "#layout-footer", "#footer");
+@include sticky-footer($footerHeight, "#layout", "#layout-footer", "#page-footer");
 
-#footer {
-	border-top: $navbarInverseBorder;
-	@include background-image(linear-gradient($footerBackgroundHighlight, $footerBackground));
+#page-footer #footer-top {
+	height: $footerTopHeight;
+	border-bottom: 1px solid $footerBackground;
+	@include background-image(linear-gradient($footerBackground, $footerBackgroundHighlight));
+	color: $white;
+	text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
+	text-align: center;
+	line-height: $footerTopHeight;
+}
+
+#page-footer #footer-bottom {
+	height: $footerBottomHeight;
+	background-color: #33587b;
 	color: $white;
 	text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
 }
+
 
 // fix footer width for small screens
 @media (max-width: 767px) {
@@ -201,20 +217,22 @@ $footerBorder:              #252525 !default;
 }
 
 #footer .container {
-	padding: 15px;
+	// padding: 15px;
 }
 
 #submit-controls {
 	padding: 5px;
-	background-color: #ecf1f5;
+	background-color: #f7fbfe;
 	@include border-radius($baseBorderRadius);
 }
 
 .panel {
-    //border-radius: 5px 5px 5px 5px;
-    //box-shadow: 0 0 10px 4px rgba(0, 0, 0, 0.13);
-    //margin: 10px 0;
-    //padding: 14px 10px 10px;
+	background-color: #fff;
+	border: 1px solid #ced5dc;
+    @include border-radius($baseBorderRadius);
+    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+    margin: 10px 0 20px;
+    padding: 14px 10px 10px;
 }
 
 
@@ -301,11 +319,21 @@ $footerBorder:              #252525 !default;
     
 /* Validation Details Page */
 .type-validation.view-detail {
-	background-color: #fdfdfd;
-	margin-bottom: 20px;
-	@include border-radius($baseBorderRadius);
-	@include box-shadow(0 0 4px 1px rgba(0, 0, 0, 0.1));
+	background-color: #fff;
+	border: 1px solid #ced5dc;
+    @include border-radius($baseBorderRadius);
+    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+	margin-bottom: 20px;	
+	
+		header {
+			margin: 0 15px;
+			
+			h3 {
+				margin-bottom: 0;
+			}
+	}
 }
+
 
 .type-validation.view-detail figure {
 	@include border-radius($baseBorderRadius);
@@ -344,7 +372,7 @@ $footerBorder:              #252525 !default;
 }
 
 .validation-status {
-	margin-bottom: 10px;
+	margin-bottom: 8px;
 	font-weight: bold;
 	font-size: 1.5em;
 }
