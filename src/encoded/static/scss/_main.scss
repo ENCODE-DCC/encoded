@@ -224,6 +224,13 @@ $footerBorder:              #252525 !default;
    Used for displaying Read Only data in a form type layout 
    E.g. Key/value pairs */
 
+.validation-status-labels, .validation-status-labels .label {
+	font-weight: bold;
+	font-size: 1.2em;
+	float: right;
+}
+
+
 .data-display {
   // Increase spacing between groups
   .data-group {
@@ -280,6 +287,9 @@ $footerBorder:              #252525 !default;
       padding-top: 0;
       text-align: left;
     }
+    .data-group {
+    	margin-bottom: 15px;
+    }
     // Move over all input controls and content
     .data-values, label {
       margin-left: 0;
@@ -287,9 +297,8 @@ $footerBorder:              #252525 !default;
       margin-bottom: 0;
     }
   }
-
 }
-
+    
 /* Validation Details Page */
 .validation {
 	background-color: #fdfdfd;
