@@ -69,12 +69,41 @@ function targets(exports, $, _, base, table_sorter, table_filter, home_template,
         model_factory: exports.TargetCollection
     });
 
-    exports.TargetView = base.View.extend({
+    var targetView = exports.TargetView = base.View.extend({
         initialize: function initialize(options) {
             var model = options.model;
             this.deferred = model.deferred;
         },
-        template: _.template(item_template)
+        template: _.template(item_template),
+        render: function render() {
+            targetView.__super__.render.apply(this,arguments);
+            var $data_display = this.$el.find("#target-data");
+            var props = this.model.toJSON();
+            var display_map = [
+                { 'Target Name': props.target_label },
+                { 'Target Gene': props.target_gene_name },
+                { 'UniProt Id' : props.taret_term_uniprot},
+                { 'Species': this.model.links.organism.get('organism_name') },
+                { 'Target Class': props.target_class || 'None'},
+                { 'Project' : props.project },
+                { 'Created By' : props.created_by + ' ( ' + props['lab pi'] + '-' + props.grant + ' )'},
+                { 'Date Created' : props.date_created }
+            ];
+            _.each(display_map, function(entry) {
+                label = _.keys(entry)[0];
+                data = _.values(entry)[0];
+                var $group = $(document.createElement('div')).addClass('data-group');
+                var $label = $(document.createElement('label')).addClass('data-label').attr('for','source-name');
+                $label.text(label+":");
+                var data_id = label.toLowerCase().replace(/[\s_]+/g,'-');
+                var $values = $(document.createElement('div')).addClass('data-values');
+                var $value = $(document.createElement('span')).attr('id','data_id').addClass('data-point').text(data);
+                $values.html($value);
+                $group.html($label);
+                $group.append($values);
+                $data_display.append($group);
+            });
+        }
     }, {
         route_name: 'target',
         model_factory: exports.Target
