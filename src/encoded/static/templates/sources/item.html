@@ -5,6 +5,26 @@
 </header>
 <div class="row">
     <div class="span12">
-        <div class="panel data-display" id="source-data"></div>
+        <div class="panel data-display" id="source-data">
+        <div class="data-group">
+            <label class="data-label" for="source-name">Source Name:</label>
+            <div class="data-values">
+                <span id="source-name" class="data-point">
+                    <a href="{properties.url}">{properties.source_name}</a>
+                </span>
+            </div>
+        </div>
+        <div class="data-group">
+            <label class="data-label" for="alias">Alias:</label>
+            <div class="data-values">
+                <span id="alias" class="data-point">{properties.alias}</span></div>
+            </div>
+        <div class="data-group">
+                <label class="data-label" for="date-created">{properties.date_created}</label>
+                <div class="data-values">
+                    <span id="date-created" class="data-point"></span>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

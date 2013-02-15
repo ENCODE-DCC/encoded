@@ -87,7 +87,6 @@ SOURCES = [
     'alias': 'sigma',
     'source_name': 'Sigma-Aldrich',
     'url': 'http://www.sigmaaldrich.com',
-    'created_by': 'SAMPLE DATA',
     },
     {
     '_uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
@@ -97,7 +96,6 @@ SOURCES = [
     'alias': 'gingeras',
     'source_name': 'Gingeras Lab',
     'url': 'http://www.gingeraslab.edu',
-    'created_by': 'SAMPLE DATA',
     },
 ]
 
