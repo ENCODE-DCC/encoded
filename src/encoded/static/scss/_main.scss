@@ -290,3 +290,40 @@ $footerBorder:              #252525 !default;
 
 }
 
+/* Validation Details Page */
+.validation {
+	background-color: #fdfdfd;
+	margin-bottom: 20px;
+	@include border-radius($baseBorderRadius);
+	@include box-shadow(0 0 4px 1px rgba(0, 0, 0, 0.1));
+}
+
+.validation figure {
+	@include border-radius($baseBorderRadius);
+	padding: 10px;
+	border: 1px solid;
+	text-align: center;
+}
+
+.validation figcaption {
+	font-weight: bold;
+	text-align: center;
+	padding: 5px;
+}
+
+figure.approved { border-color: $successBorder; background-color: $successBackground; }
+figcaption.approved { color: $successText; }
+
+figure.rejected { border-color: $errorBorder; background-color: $errorBackground; }
+figcaption.rejected { color: $errorText; }
+
+figure.pending { border-color: $infoBorder; background-color: $infoBackground; }
+figcaption.pending { color: $infoText; }
+
+.validation-img {
+	max-height: 360px;
+}
+
+.validation-meta-data {
+	margin: 15px 15px 15px 0;
+}
