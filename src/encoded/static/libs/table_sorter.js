@@ -22,8 +22,8 @@ function sortable(cell) {
     return text.toLowerCase();
 }
 
-function sort() {
-    var th, colnum, table, tbody, reverse, index, data, usenumbers, tsorted, $this;
+function sort(event, options) {
+    var th, colnum, table, tbody, index, data, usenumbers, tsorted, $this;
 
     $this = $(this);
 	th = $this.closest('th');
@@ -31,7 +31,11 @@ function sort() {
     table = $this.parents('table:first');
     tbody = table.find('tbody:first');
     tsorted = parseInt(table.attr('sorted') || '-1', 10);
-    reverse = tsorted === colnum;
+    if (options && options.reverse !== undefined) {
+        reverse = options.reverse;
+    } else {
+        reverse = tsorted === colnum;
+    }
 
     $this.parent().find('th:not(.nosort) .sortdirection')
         .removeClass('icon-chevron-up icon-chevron-down');
@@ -96,6 +100,9 @@ $.fn.table_sorter = function () {
             .css('cursor', 'pointer')
             .click(sort);
         $this.find('tbody').setoddeven();
+        $this.find('.sort-initial:first').each(function () {
+                _.bind(sort, this)(null, {reverse: $(this).hasClass('sort-initial-reverse')});
+            });
     });
 };
 
