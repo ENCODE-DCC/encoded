@@ -34,6 +34,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
         },
         update: function update() {
             this.$el.attr('data-href', this.model.url());
+            this.$el.css('cursor', 'pointer');
         },
         template: _.template(row_template)
     });
@@ -140,6 +141,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
 
     // Make the rows clickable
     $(document).on('click', 'tr[data-href]', function click(evt) {
+        // XXX Should probably redispatch to a real link for cmd-click to work
         Backbone.history.navigate($(this).attr("data-href"), true);
     });
 
