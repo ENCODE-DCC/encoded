@@ -13,3 +13,7 @@ Feature: Antibodies
         And I should see an element with the css selector "table.sticky-area"
         And I should see an element with the css selector "table.sticky-area > tbody > tr"
         And I should see at least 100 elements with the css selector "table.sticky-area > tbody > tr"
+        And I should see an element with the css selector "a[href='/antibodies/d6947988-8fea-4c13-b2ec-2381e7f7a84f']"
+        When I click the link to "/antibodies/d6947988-8fea-4c13-b2ec-2381e7f7a84f"
+        Then I should see an element with the css selector "#content[class='container']"
+        And I should see an element with the css selector "div[class='panel data-display']"

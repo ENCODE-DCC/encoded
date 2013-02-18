@@ -16,4 +16,4 @@ Feature: Sources
         And I should see an element with the css selector "a[href='/sources/3aa827c3-92f8-41fa-9608-201558f7a1c4']"
         When I click the link to "/sources/3aa827c3-92f8-41fa-9608-201558f7a1c4"
         Then I should see an element with the css selector "#content[class='container']"
-        And I should see an element with the css selector "#souce-data[class='panel data-display'"
+        And I should see an element with the css selector "#source-data[class='panel data-display']"
