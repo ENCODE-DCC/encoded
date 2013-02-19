@@ -230,7 +230,7 @@ def load_all(testapp, filename, docsdir):
 
         #value['validation_uuids'] = validation_index.get((value['antibody_lot_uuid'], value['target_label'], value['organism_name']), [])
         value['validation_uuids'] = []
-        filenames = (value.pop('validation_filenames') or '').split(';')
+        filenames = [v.strip() for v in (value.pop('validation_filenames') or '').split(';') if v]
         for filename in filenames:
             validation_uuids = validation_index.get(filename, [])
             for validation_uuid in validation_uuids:
