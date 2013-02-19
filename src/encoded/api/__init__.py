@@ -224,21 +224,9 @@ class CollectionViews(object):
         return result
 
     def get(self):
-<<<<<<< HEAD
         key = (self.request.matchdict['name'], self.item_type)
         session = DBSession()
         model = session.query(CurrentStatement).get(key)
-=======
-
-        query = es_query.IdsQuery(self.request.matchdict['uuid'], self.item_type)
-        try:
-            find = self.request.es.search(query)
-            assert len(find) <= 1
-            model = find.next()
-        except StopIteration:
-            model = None
-
->>>>>>> 98181ef... new behaving tests
         if model is None:
             raise NotFound()
         if self.no_body_needed():
