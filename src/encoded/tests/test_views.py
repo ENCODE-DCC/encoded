@@ -108,6 +108,8 @@ def test_sample_data(testapp):
 def test_load_workbook(testapp):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
-    load_all(testapp, resource_filename('encoded', 'tests/data/AntibodySubmissionsENCODE3.xlsx'))
+    workbook = resource_filename('encoded', 'tests/data/AntibodySubmissionsENCODE3.xlsx')
+    docsdir = resource_filename('encoded', 'tests/data/validation-docs/')
+    load_all(testapp, workbook, docsdir)
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
     assert res.json['_links']['items']

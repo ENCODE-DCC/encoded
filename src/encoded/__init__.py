@@ -52,11 +52,11 @@ def load_sample_data(app):
     load_sample(testapp)
 
 
-def load_workbook(app, workbook_filename):
+def load_workbook(app, workbook_filename, docsdir):
     from .loadxl import load_all
     from webtest import TestApp
     testapp = TestApp(app)
-    load_all(testapp, workbook_filename)
+    load_all(testapp, workbook_filename, docsdir)
 
 
 def main(global_config, **settings):
@@ -86,7 +86,8 @@ def main(global_config, **settings):
         load_sample_data(app)
 
     workbook_filename = settings.get('load_workbook', '')
+    docsdir = settings.get('load_docsdir', None)
     if workbook_filename:
-        load_workbook(app, workbook_filename)
+        load_workbook(app, workbook_filename, docsdir)
 
     return app

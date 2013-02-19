@@ -3,6 +3,7 @@ from base64 import b64encode
 import datetime
 import logging
 import mimetypes
+import os.path
 from pkg_resources import resource_stream
 import xlrd
 # http://www.lexicon.net/sjmachin/xlrd.html
@@ -145,13 +146,17 @@ def image_data(stream, filename=None):
     data['width'], data['height'] = im.size
     mime_type, _ = mimetypes.guess_type('name.%s' % im.format)
     data['type'] = mime_type
-    stream.seek(0, 0)
-    encoded_data = b64encode(stream.read())
-    data['href'] = 'data:%s;base64,%s' % (mime_type, encoded_data)
+    data['href'] = data_uri(stream, mime_type)
     return data
 
 
-def load_all(testapp, filename):
+def data_uri(stream, mime_type):
+    stream.seek(0, 0)
+    encoded_data = b64encode(stream.read())
+    return 'data:%s;base64,%s' % (mime_type, encoded_data)
+
+
+def load_all(testapp, filename, docsdir):
     sheets = [content_type for content_type, url in TYPE_URL]
     alldata = extract(filename, sheets)
 
@@ -199,12 +204,21 @@ def load_all(testapp, filename):
         else:
             filename = value.pop('document_filename')
             try:
-                value['document'] = image_data(
-                    resource_stream('encoded', 'tests/data/validation-docs/' + filename),
-                    filename,
-                    )
+                stream = open(os.path.join(docsdir, filename), 'rb')
             except IOError:
                 logger.debug('Referenced filename missing for %s: %s' % (uuid, filename))
+            else:
+                if filename.endswith('.png') or filename.endswith('.jpg'):
+                    value['document'] = image_data(stream, filename)
+                elif filename.endswith('.pdf'):
+                    mime_type = 'application/pdf'
+                    value['document'] = {
+                        'download': filename,
+                        'type': mime_type,
+                        'href': data_uri(stream, mime_type),
+                        }
+                else:
+                    raise ValueError("Unknown file type for %s" % filename)
 
     for uuid, value in list(alldata['antibody_approval'].iteritems()):
         try:
