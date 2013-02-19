@@ -1,6 +1,6 @@
 <header class="row">
     <div class="span12">
-        <h2>{model.links.antibody_lot.links.source.get('source_name')} - {model.links.antibody_lot.get('product_id')} - Lot#{model.links.antibody_lot.get('lot_id')}</h2>
+        <h2>Antibody {model.links.antibody_lot.get('antibody_accession')} for {model.links.target.links.organism.get('organism_name')}</h2>
     </div>
 </header>
 
