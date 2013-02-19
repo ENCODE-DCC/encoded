@@ -155,6 +155,55 @@ function base(exports, $, _, Backbone, HAL, assert) {
         return view;
     };
 
+    exports.RowView = exports.View.extend({
+        tagName: 'tr',
+        initialize: function initialize(options) {
+            var model = options.model;
+            this.deferred = model.deferred;
+        },
+        update: function update() {
+            this.$el.attr('data-href', this.model.url());
+            this.$el.css('cursor', 'pointer');
+        }
+    });
+
+    var TableView = exports.TableView = exports.View.extend({
+        //row: undefined,  should be set in subclass
+
+        initialize: function initialize(options, type) {
+            var collection = options.model,
+                deferred = $.Deferred();
+            this.deferred = deferred;
+            $.when(collection.fetch()).done(_.bind(function () {
+                this.title = collection.title;
+                this.description = collection.description;
+                this.rows = collection.map(_.bind(function (item) {
+                    var subview = new this.row({model: item});
+                    $.when(subview.deferred).then(function () {
+                        subview.render();
+                    });
+                    return subview;
+                }, this));
+                $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
+                    deferred.resolve();
+                });
+            }, this));
+            // XXX .fail(...)
+        },
+
+        render: function render() {
+            TableView.__super__.render.apply(this, arguments);
+            var $table = this.$el.find('table');
+            var $tbody = $table.children('tbody:first');
+            _.each(this.rows, function (view) {
+                $tbody.append(view.el);
+            });
+
+            $table.table_sorter().table_filter();
+            return this;
+        }
+    });
+
     exports.Model = HAL.Model.extend({});
 
     exports.Collection = HAL.Collection.extend({});

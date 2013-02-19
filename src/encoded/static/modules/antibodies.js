@@ -26,54 +26,14 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
         url: '/antibodies/'
     });
 
-    exports.AntibodyRowView = base.View.extend({
-        tagName: 'tr',
-        initialize: function initialize(options) {
-            var model = options.model;
-            this.deferred = model.deferred;
-        },
-        update: function update() {
-            this.$el.attr('data-href', this.model.url());
-            this.$el.css('cursor', 'pointer');
-        },
+    exports.AntibodyRowView = base.RowView.extend({
         template: _.template(row_template)
     });
 
     // The antibodies home screen
-    var AntibodiesHomeView = exports.AntibodiesHomeView = base.View.extend({
+    var AntibodiesHomeView = exports.AntibodiesHomeView = base.TableView.extend({
         row: exports.AntibodyRowView,
-        initialize: function initialize(options) {
-            var collection = options.model,
-                deferred = $.Deferred();
-            this.deferred = deferred;
-            $.when(collection.fetch()).done(_.bind(function () {
-                this.title = collection.title;
-                this.description = collection.description;
-                this.rows = collection.map(_.bind(function (item) {
-                    var subview = new this.row({model: item});
-                    $.when(subview.deferred).then(function () {
-                        subview.render();
-                    });
-                    return subview;
-                }, this));
-                $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
-                    deferred.resolve();
-                });
-            }, this));
-            // XXX .fail(...)
-        },
         template: _.template(home_template),
-        render: function render() {
-            AntibodiesHomeView.__super__.render.apply(this, arguments);
-            var $table = this.$el.find('table');
-            var $tbody = $table.children('tbody:first');
-            _.each(this.rows, function (view) {
-                $tbody.append(view.el);
-            });
-
-            $table.table_sorter().table_filter();
-            return this;
-        }
 
     }, {
         route_name: 'antibodies',
