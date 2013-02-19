@@ -29,7 +29,7 @@ def includeme(config):
     config.add_route('home', '')
     for collection, item_type in collections:
         config.add_route(collection, '/%s/' % collection, factory=RootFactory)
-        config.add_route(item_type, '/%s/{uuid}' % collection, factory=RootFactory)
+        config.add_route(item_type, '/%s/{path_segment}' % collection, factory=RootFactory)
     config.scan('.views')
 
 
@@ -90,7 +90,7 @@ class CollectionViews(object):
         self.collection_uri = request.route_path(self.collection)
 
     def item_uri(self, name):
-        return self.request.route_path(self.item_type, uuid=name)
+        return self.request.route_path(self.item_type, path_segment=name)
 
     def maybe_embed(self, rel, href):
         if rel in self.embedded:
@@ -224,7 +224,7 @@ class CollectionViews(object):
         return result
 
     def get(self):
-        key = (self.request.matchdict['name'], self.item_type)
+        key = (self.request.matchdict['path_segment'], self.item_type)
         session = DBSession()
         model = session.query(CurrentStatement).get(key)
         if model is None:
