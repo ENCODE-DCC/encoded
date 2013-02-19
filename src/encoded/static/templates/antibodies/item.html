@@ -1,10 +1,10 @@
 <header class="row">
     <div class="span12">
-        <h2>Antibody {model.links.antibody_lot.get('antibody_accession')} for {model.links.target.links.organism.get('organism_name')}</h2>
+        <h2>Approval for {model.links.antibody_lot.get('antibody_accession')}</h2>
+        <h3>Antibody against {model.links.target.links.organism.get('organism_name')} {model.links.target.get('target_label')}  <span class="label label-info">{properties.approval_status}</span><h3>
     </div>
 </header>
 
-<span class="label label-info">{properties.approval_status}</span> for <em>{model.links.target.links.organism.get('organism_name')} {model.links.target.get('target_label')}</em>
 
 <div class="row">
     <div class="span12">

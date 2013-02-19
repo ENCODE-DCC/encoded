@@ -23,8 +23,8 @@ class Users(CollectionViews):
     collection = 'users'
     item_type = 'user'
     properties = {
-        'title': 'ENCODE DCC Users',
-        'description': 'List of current ENCODE DCC Users',
+        'title': 'DCC Users',
+        'description': 'Listing of current ENCODE DCC users',
         }
 
 
@@ -34,7 +34,7 @@ class Labs(CollectionViews):
     item_type = 'lab'
     properties = {
         'title': 'Labs',
-        'description': 'Listing of labs returned from server',
+        'description': 'Listing of ENCODE DCC labs',
         }
 
 
@@ -44,7 +44,7 @@ class Awards(CollectionViews):
     item_type = 'award'
     properties = {
         'title': 'Awards (Grants)',
-        'description': 'Listing of awards (aka grants) returned from server',
+        'description': 'Listing of awards (aka grants)',
         }
 
 
@@ -53,8 +53,8 @@ class AntibodyLots(CollectionViews):
     collection = 'antibody-lots'
     item_type = 'antibody_lot'
     properties = {
-        'title': 'Antibodies registry',
-        'description': 'Listing of antibodies returned from server',
+        'title': 'Antibodies Registry',
+        'description': 'Listing of ENCODE antibodies',
         }
     links = {
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
@@ -68,7 +68,7 @@ class Organisms(CollectionViews):
     item_type = 'organism'
     properties = {
         'title': 'Organisms',
-        'description': 'Listing of organisms returned from server',
+        'description': 'Listing of all registered organisms',
         }
 
 
@@ -78,7 +78,7 @@ class Sources(CollectionViews):
     item_type = 'source'
     properties = {
         'title': 'Sources',
-        'description': 'Listing of sources returned from server',
+        'description': 'Listing of sources and vendors for ENCODE material',
         }
 
 
@@ -88,7 +88,7 @@ class Biosamples(CollectionViews):
     item_type = 'biosample'
     properties = {
         'title': 'Biosamples',
-        'description': 'Listing of biosamples returned from server',
+        'description': 'Listing of ENCODE3 biosamples',
         }
 
 
@@ -97,8 +97,8 @@ class Targets(CollectionViews):
     collection = 'targets'
     item_type = 'target'
     properties = {
-        'title': 'Antibody targets',
-        'description': 'Listing of targets returned from server',
+        'title': 'Targets',
+        'description': 'Listing of ENCODE3 targets',
         }
     links = {
         'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
@@ -112,8 +112,8 @@ class Validations(CollectionViews):
     collection = 'validations'
     item_type = 'validation'
     properties = {
-        'title': 'Antibody validations',
-        'description': 'Listing of validations returned from server',
+        'title': 'Antibody Validations',
+        'description': 'Listing of antibody validation documents',
         }
     links = {
         'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True, 'embedded': True},
@@ -127,8 +127,8 @@ class AntibodyApprovals(CollectionViews):
     collection = 'antibodies'
     item_type = 'antibody_approval'
     properties = {
-        'title': 'Antibody approvals',
-        'description': 'Listing of approvals returned from server',
+        'title': 'Antibody Approvals',
+        'description': 'cricket needs to give a sentence',
         }
     links = {
         'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True, 'embedded': True},
