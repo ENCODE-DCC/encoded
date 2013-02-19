@@ -167,9 +167,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
         }
     });
 
-    var TableView = exports.TableView = exports.View.extend({
-        //row: undefined,  should be set in subclass
-
+    exports.CollectionView = exports.View.extend({
         initialize: function initialize(options, type) {
             var collection = options.model,
                 deferred = $.Deferred();
@@ -178,6 +176,9 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 this.title = collection.title;
                 this.description = collection.description;
                 this.rows = collection.map(_.bind(function (item) {
+                    //if (item) {
+                    //    item.deferred = item.fetch();
+                    //}
                     var subview = new this.row({model: item});
                     $.when(subview.deferred).then(function () {
                         subview.render();
@@ -189,8 +190,11 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 });
             }, this));
             // XXX .fail(...)
-        },
+        }
+    });
 
+    var TableView = exports.TableView = exports.CollectionView.extend({
+        //row: undefined,  should be set in subclass
         render: function render() {
             TableView.__super__.render.apply(this, arguments);
             var $table = this.$el.find('table');
