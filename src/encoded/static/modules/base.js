@@ -176,9 +176,6 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 this.title = collection.title;
                 this.description = collection.description;
                 this.rows = collection.map(_.bind(function (item) {
-                    //if (item) {
-                    //    item.deferred = item.fetch();
-                    //}
                     var subview = new this.row({model: item});
                     $.when(subview.deferred).then(function () {
                         subview.render();
