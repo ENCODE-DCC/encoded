@@ -4,11 +4,11 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
     var routes = {
         home: '',
         antibodies: 'antibodies/',
-        antibody: 'antibodies/:name',
+        antibody: 'antibodies/:uuid',
         targets: 'targets/',
-        target: 'targets/:name',
+        target: 'targets/:uuid',
         sources: 'sources/',
-        source: 'sources/:name'
+        source: 'sources/:uuid'
         //login: '#login'
         //logout: '#logout'
     };

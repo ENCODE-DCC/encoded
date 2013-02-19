@@ -29,7 +29,7 @@ def includeme(config):
     config.add_route('home', '')
     for collection, item_type in collections:
         config.add_route(collection, '/%s/' % collection, factory=RootFactory)
-        config.add_route(item_type, '/%s/{name}' % collection, factory=RootFactory)
+        config.add_route(item_type, '/%s/{uuid}' % collection, factory=RootFactory)
     config.scan('.views')
 
 
@@ -90,7 +90,7 @@ class CollectionViews(object):
         self.collection_uri = request.route_path(self.collection)
 
     def item_uri(self, name):
-        return self.request.route_path(self.item_type, name=name)
+        return self.request.route_path(self.item_type, uuid=name)
 
     def maybe_embed(self, rel, href):
         if rel in self.embedded:
@@ -224,9 +224,21 @@ class CollectionViews(object):
         return result
 
     def get(self):
+<<<<<<< HEAD
         key = (self.request.matchdict['name'], self.item_type)
         session = DBSession()
         model = session.query(CurrentStatement).get(key)
+=======
+
+        query = es_query.IdsQuery(self.request.matchdict['uuid'], self.item_type)
+        try:
+            find = self.request.es.search(query)
+            assert len(find) <= 1
+            model = find.next()
+        except StopIteration:
+            model = None
+
+>>>>>>> 98181ef... new behaving tests
         if model is None:
             raise NotFound()
         if self.no_body_needed():
