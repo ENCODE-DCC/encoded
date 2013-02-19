@@ -42,7 +42,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
 
     exports.ValidationView = base.View.extend({
         tagName: 'section',
-        attributes: {'class': 'type-validation view-detail container'},
+        attributes: {'class': 'type-validation view-detail panel'},
         initialize: function initialize(options) {
             var model = options.model;
             this.deferred = model.deferred;

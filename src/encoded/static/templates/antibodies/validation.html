@@ -1,42 +1,44 @@
-<div class="row">
-    <div class="span6">
-        <figure>
-            <a  href="{properties.document.href}">
-                <?js if (properties.document.type.indexOf('image/') == 0) { ?>
-                    <img
-                        class="validation-img"
-                        src="{properties.document.href}"
-                        height="{properties.document.height}"
-                        width="{properties.document.width}"
-                        alt=""
-                        />
-                <?js } else { ?>
-                    <img
-                        class="validation-img validation-file"
-                        src="/static/img/file.svg"
-                        height="100"
-                        width="100"
-                        alt=""
-                        />
-                <?js } ?>
-            </a>
-            <figcaption>
-                <span>{properties.validation_status}</span>
-            </figcaption>
-        </figure>
-    </div>
-    <div class="span6">
-        <div class="validation-meta-data">
-            <p><b>Method:</b> <span>{properties.validation_method}</span></p>
-            <p><b>Target species:</b> <span>{model.links.target.links.organism.get('organism_name')}</span></p>
-            <p><span>{properties.caption}</span></p>
-            <p><b>Submitter / Lab / Grant:</b> <span>{properties.submitted_by} / {properties.submitted_by_pi} / {properties.submitted_by_grant}</span></p>
-            <p><b>Approver:</b> <span>{properties.validated_by}</span></p>
-            <p><b>Image:</b> <span class="label label-info">{properties.validation_status}</span>
-            <p><b>Download:</b>
-                <a  href="{properties.document.href}"
-                    download="{properties.document.download}"
-                    >{properties.document.download}</a>
-        </div>
-    </div>
+<div class="container">
+	<div class="row">
+		<div class="span6">
+			<figure>
+				<a  href="{properties.document.href}">
+					<?js if (properties.document.type.indexOf('image/') == 0) { ?>
+						<img
+							class="validation-img"
+							src="{properties.document.href}"
+							height="{properties.document.height}"
+							width="{properties.document.width}"
+							alt=""
+							/>
+					<?js } else { ?>
+						<img
+							class="validation-img validation-file"
+							src="/static/img/file.svg"
+							height="100"
+							width="100"
+							alt=""
+							/>
+					<?js } ?>
+				</a>
+				<figcaption>
+					<span>{properties.validation_status}</span>
+				</figcaption>
+			</figure>
+		</div>
+		<div class="span6">
+			<div class="validation-meta-data">
+				<p><b>Method:</b> <span>{properties.validation_method}</span></p>
+				<p><b>Target species:</b> <span>{model.links.target.links.organism.get('organism_name')}</span></p>
+				<p><span>{properties.caption}</span></p>
+				<p><b>Submitter / Lab / Grant:</b> <span>{properties.submitted_by} / {properties.submitted_by_pi} / {properties.submitted_by_grant}</span></p>
+				<p><b>Approver:</b> <span>{properties.validated_by}</span></p>
+				<p><b>Image:</b> <span class="label label-info">{properties.validation_status}</span>
+				<p><b>Download:</b>
+					<a  href="{properties.document.href}"
+						download="{properties.document.download}"
+						>{properties.document.download}</a>
+			</div>
+		</div>
+	</div>
 </div>

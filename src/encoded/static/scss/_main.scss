@@ -319,12 +319,6 @@ $footerBorder:              #0f2a42 !default;
     
 /* Validation Details Page */
 .type-validation.view-detail {
-	background-color: #fff;
-	border: 1px solid #ced5dc;
-    @include border-radius($baseBorderRadius);
-    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
-	margin-bottom: 20px;	
-	
 		header {
 			margin: 0 15px;
 			

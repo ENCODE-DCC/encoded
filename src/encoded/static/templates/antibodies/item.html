@@ -6,77 +6,73 @@
 </header>
 
 
-<div class="row">
-    <div class="span12">
 
-    <div class="panel data-display">
 
-        <div class="data-group">
-            <label class="data-label" for="source-name">Source name (vendor):</label>
-            <div class="data-values">
-                <span id="source-name" class="data-point"><a href="{_.result(model.links.antibody_lot.links.source, 'url')}">{model.links.antibody_lot.links.source.get('source_name')}</a></span>
-            </div>
-        </div>
-        <div class="data-group">
-            <label class="data-label" for="product-id">Product ID:</label>
-            <div class="data-values">
-                <span id="product-id" class="data-point"><a href="{_.result(model.links.antibody_lot, 'url')}">{model.links.antibody_lot.get('product_id')}</a></span>
-            </div>
-        </div>
-        <div class="data-group">
-            <label class="data-label" for="lot-id">Lot ID:</label>
-            <div class="data-values">
-                <span id="lot-id" class="data-point"><a href="{_.result(model.links.antibody_lot, 'url')}">{model.links.antibody_lot.get('lot_id')}</a></span>
-            </div>
-        </div>
-        <div class="data-group">
-            <label class="data-label" for="target-label">Target:</label>
-            <div class="data-values">
-                <span id="target-label" class="data-point">{model.links.target.get('target_label')}</span>
-            </div>
-        </div>
-        <div class="data-group">
-            <label class="data-label" for="host">Host:</label>
-            <div class="data-values">
-                <span id="host" class="data-point">{model.links.antibody_lot.get('host_organism')}</span>
-            </div>
-        </div>
-        <div class="data-group">
-            <label class="data-label" for="clonality">Clonality:</label>
-            <div class="data-values">
-                <span id="clonality" class="data-point">{model.links.antibody_lot.get('clonality')}</span>
-            </div>
-        </div>
-        <div class="data-group">
-            <label class="data-label" for="purification">Purification:</label>
-            <div class="data-values">
-                <span id="purification" class="data-point">{model.links.antibody_lot.get('purification')}</span>
-            </div>
-        </div>
-        <div class="data-group">
-            <label class="data-label" for="isotype">Isotype:</label>
-            <div class="data-values">
-                <span id="isotype" class="data-point">{model.links.antibody_lot.get('isotype')}</span>
-            </div>
-        </div>
-        <div class="data-group">
-            <label class="data-label" for="antigen-description">Antigen description:</label>
-            <div class="data-values">
-                <span id="antigen-description" class="data-point">{model.links.antibody_lot.get('antigen_description')}</span>
-            </div>
-        </div>
-        <!--
-        <div class="data-group">
-            <label class="data-label" for="antigen-sequence">Antigen sequence:</label>
-            <div class="data-values">
-                <span id="antigen-sequence" class="data-point">MISSING</span>
-            </div>
-        </div>
-        -->
+<div class="panel data-display">
 
-    </div><!-- .panel -->
+	<div class="data-group">
+		<label class="data-label" for="source-name">Source name (vendor):</label>
+		<div class="data-values">
+			<span id="source-name" class="data-point"><a href="{_.result(model.links.antibody_lot.links.source, 'url')}">{model.links.antibody_lot.links.source.get('source_name')}</a></span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="product-id">Product ID:</label>
+		<div class="data-values">
+			<span id="product-id" class="data-point"><a href="{_.result(model.links.antibody_lot, 'url')}">{model.links.antibody_lot.get('product_id')}</a></span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="lot-id">Lot ID:</label>
+		<div class="data-values">
+			<span id="lot-id" class="data-point"><a href="{_.result(model.links.antibody_lot, 'url')}">{model.links.antibody_lot.get('lot_id')}</a></span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="target-label">Target:</label>
+		<div class="data-values">
+			<span id="target-label" class="data-point">{model.links.target.get('target_label')}</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="host">Host:</label>
+		<div class="data-values">
+			<span id="host" class="data-point">{model.links.antibody_lot.get('host_organism')}</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="clonality">Clonality:</label>
+		<div class="data-values">
+			<span id="clonality" class="data-point">{model.links.antibody_lot.get('clonality')}</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="purification">Purification:</label>
+		<div class="data-values">
+			<span id="purification" class="data-point">{model.links.antibody_lot.get('purification')}</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="isotype">Isotype:</label>
+		<div class="data-values">
+			<span id="isotype" class="data-point">{model.links.antibody_lot.get('isotype')}</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="antigen-description">Antigen description:</label>
+		<div class="data-values">
+			<span id="antigen-description" class="data-point">{model.links.antibody_lot.get('antigen_description')}</span>
+		</div>
+	</div>
+	<!--
+	<div class="data-group">
+		<label class="data-label" for="antigen-sequence">Antigen sequence:</label>
+		<div class="data-values">
+			<span id="antigen-sequence" class="data-point">MISSING</span>
+		</div>
+	</div>
+	-->
 
-    </div>
-</div>
+</div><!-- .data-display -->
 
-<div class="validations row"></div>
+<div class="validations"></div>
