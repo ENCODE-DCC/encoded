@@ -184,11 +184,9 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
                     deferred.resolve();
                 });
-                console.log("first deferred");
+
             }, this));
             $.when(collection.fetch()).done(_.bind(function () {
-                this.title = collection.title;
-                this.description = collection.description;
                 this.rows = collection.map(_.bind(this.render_subviews, this));
                 $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
                     deferred2.resolve();
@@ -196,7 +194,11 @@ function base(exports, $, _, Backbone, HAL, assert) {
             }, this));
             deferred2.done(_.bind(function()  {
                 console.log("2nd deferred");
-                this.render();
+                if (deferred.state() === 'resolved') {
+                    this.render();
+                } else {
+                    deferred.resolve();
+                }
                 var $table = this.$el.find('table');
                 $("#table-count").text(function(index, text) {
                     return $("#collection-table > tbody > tr").length;
