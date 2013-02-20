@@ -1,14 +1,18 @@
-from pyramid.view import view_config
+from cornice import Service
 from . import CollectionViews
 
+# renderer = None here to use our default registered renderer
+# cornice's json support predates the pyramid 1.4 stuff.
+home = Service(name='home', path='', renderer=None)
 
-@view_config(route_name='home', request_method='GET')
-def home(request):
+
+@home.get()
+def get_home(request):
     result = {
         'title': 'Home',
         'portal_title': 'ENCODE 3',
         '_links': {
-            'self': {'href': request.route_path('home')},
+            'self': {'href': request.route_path(home.path)},  # See http://git.io/_OKINA
             'profile': {'href': '/profiles/portal'},
             # 'login': {'href': request.route_path('login')},
             },

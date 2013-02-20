@@ -9,6 +9,7 @@ requires = [
     'Pillow',
     'SQLAlchemy',
     'WebTest',
+    'cornice',
     'pyramid',
     'pyramid_tm',
     'setuptools',

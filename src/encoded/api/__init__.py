@@ -26,7 +26,7 @@ collections = [
 
 def includeme(config):
     # RootFactory is just a stub for later
-    config.add_route('home', '')
+    config.include('cornice')
     for collection, item_type in collections:
         config.add_route(collection, '/%s/' % collection, factory=RootFactory)
         config.add_route(item_type, '/%s/{path_segment}' % collection, factory=RootFactory)
