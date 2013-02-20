@@ -1,7 +1,10 @@
 <td><a href="{model.url()}">{properties.target_label}</a></td>
-<td>{properties.target_gene_name}</td>
 <td>{model.links.organism.get('organism_name')}</td>
-<td>{properties.target_class}</td>
-<td><a href="http://www.uniprot.org/uniprot/{properties.target_term_uniprot}">{properties.target_term_uniprot}</a></td>
+<td>
+<?js if(properties.target_term_uniprot) { // probably string together a big list here with |s ?>
+    <a href="http://www.uniprot.org/uniprot/{properties.target_term_uniprot}">{properties.target_term_uniprot}</a> (UniProt)</td>
+<?js } else { ?>
+    <em>None submitted</em>
+<?js } ?>
 <td>{properties.project}</td>
 

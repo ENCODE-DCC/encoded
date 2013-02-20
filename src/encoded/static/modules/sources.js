@@ -1,5 +1,5 @@
 define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter',
-    'text!templates/sources/home.html',
+    'text!templates/sort_filter_table.html',
     'text!templates/sources/item.html',
     'text!templates/sources/row.html'],
 function sources(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template) {
@@ -22,7 +22,9 @@ function sources(exports, $, _, base, table_sorter, table_filter, home_template,
     // The sources home screen
     var sourcesHomeView = exports.sourcesHomeView = base.TableView.extend({
         template: _.template(home_template),
-        row_template: _.template(row_template)
+        row_template: _.template(row_template),
+        table_header: [ 'Source (Vendor)',
+                       'Alias' ]
 
     }, {
         route_name: 'sources',

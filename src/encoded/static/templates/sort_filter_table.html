@@ -3,24 +3,22 @@
 <table class="sticky-area" id="collection-table">
     <thead class="sticky-header">
         <tr class="nosort table-controls">
-            <th colspan="8">
-                <span id="table-count" class="label label-warning" style="padding: 1em 2em; margin-right: 1em;">Loading...</span>Antibody Approvals
+            <th colspan="{view.table_header.length}">
+                <span id="table-count" class="label label-warning" style="padding: 1em 2em; margin-right: 1em;">Loading...</span>Sources
                 <input name="table-filter" type="text" class="table-filter" placeholder="Filter by..." style="float:right">
             </th>
         </tr>
         <tr>
-            <th>Accession</th>
-            <th class="sort-initial">Target</th>
-            <th>Species</th>
-            <th>Source</th>
-            <th>Product ID</th>
-            <th>Lot ID</th>
-            <th>Validations</th>
-            <th>Status</th>
+        <?js _.each(view.table_header, function (header) { ?>
+             <th>{header}</th>
+        <?js }); ?>
         </tr>
     </thead>
     <tbody>
     </tbody>
     <tfoot>
+        <tr>
+            <th colspan="{view.table_header.length}" style="display: none;" >{model.length} Sources.</th>
+        </tr>
     </tfoot>
 </table>

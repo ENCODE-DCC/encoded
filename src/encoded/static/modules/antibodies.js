@@ -1,5 +1,5 @@
 define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter',
-    'text!templates/antibodies/home.html',
+    'text!templates/sort_filter_table.html',
     'text!templates/antibodies/item.html',
     'text!templates/antibodies/row.html',
     'text!templates/antibodies/validation.html'],
@@ -37,9 +37,17 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
 
     // The antibodies home screen
     var AntibodiesHomeView = exports.AntibodiesHomeView = base.TableView.extend({
-        //row: exports.AntibodyRowView,
         template: _.template(home_template),
-        row_template: _.template(row_template)
+        row_template: _.template(row_template),
+        table_header: [ 'Accession',
+                        'Target',
+                        'Species',
+                        'Source',
+                        'Product ID',
+                        'Lot ID',
+                        'Validations',
+                        'Status'
+                       ]
 
     }, {
         route_name: 'antibodies',
