@@ -157,10 +157,13 @@ function base(exports, $, _, Backbone, HAL, assert) {
 
     exports.RowView = exports.View.extend({
         tagName: 'tr',
+
         initialize: function initialize(options) {
             var model = options.model;
             this.deferred = model.deferred;
+            this.template = options.template;
         },
+
         update: function update() {
             this.$el.attr('data-href', this.model.url());
             this.$el.css('cursor', 'pointer');
@@ -205,8 +208,10 @@ function base(exports, $, _, Backbone, HAL, assert) {
            // XXX .fail(...)
         },
 
+        row: exports.RowView,
+
         render_subviews: function (item) {
-            var subview = new this.row({model: item});
+            var subview = new this.row({model: item, template: this.row_template});
             $.when(subview.deferred).then(function () {
                 subview.render();
             });

@@ -115,9 +115,7 @@
 
 				$tbody.setoddeven();
 				$counter.text(function(index, text) {
-					$rows = $("#collection-table > tbody > tr");
-					return $rows.not('.hidden').length;
-//                    return $rows.not("[class='odd hidden'],[class='even hidden']").length;
+					return $tbody.children().not(".hidden").length;
                 });
 
 

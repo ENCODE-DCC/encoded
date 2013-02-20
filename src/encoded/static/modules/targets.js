@@ -19,15 +19,10 @@ function targets(exports, $, _, base, table_sorter, table_filter, home_template,
         url: '/targets/'
     });
 
-    exports.TargetRowView = base.RowView.extend(
-    {
-        template: _.template(row_template)
-    });
-
     // The targets home screen
     var targetHomeView = base.TableView.extend({
-        row: exports.TargetRowView,
-        template: _.template(home_template)
+        template: _.template(home_template),
+        row_template: _.template(row_template)
     },
     {
         route_name: 'targets',

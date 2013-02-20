@@ -31,14 +31,15 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
         url: '/antibodies/'
     });
 
-    exports.AntibodyRowView = base.RowView.extend({
-        template: _.template(row_template)
-    });
+    //exports.AntibodyRowView = base.RowView.extend({
+    //    template: _.template(row_template)
+    //});
 
     // The antibodies home screen
     var AntibodiesHomeView = exports.AntibodiesHomeView = base.TableView.extend({
-        row: exports.AntibodyRowView,
-        template: _.template(home_template)
+        //row: exports.AntibodyRowView,
+        template: _.template(home_template),
+        row_template: _.template(row_template)
 
     }, {
         route_name: 'antibodies',
