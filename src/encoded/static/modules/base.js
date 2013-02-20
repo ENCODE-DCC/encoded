@@ -190,6 +190,17 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 });
                 console.log("2nd deferred");
                 this.render();
+                var $table = this.$el.find('table');
+                $("#table-count").text(function(index, text) {
+                    return $("#collection-table > tbody > tr").length;
+                });
+                $("#table-count").removeClass("label-warning").addClass("label-invert");
+                $table.table_sorter().table_filter();
+                $("input.table-filter").bind("keyup", function() {
+                    $("#table-count").text(function(index, text) {
+                        return $("#collection-table > tbody > tr").length;
+                    });
+                });
             }, this));
            // XXX .fail(...)
         },
@@ -206,7 +217,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
     var TableView = exports.TableView = exports.CollectionView.extend({
         //row: undefined,  should be set in subclass
         render: function render() {
-            console.log("Rendering table for "+this.collection);
+            console.log("Rendering table for "+this.model.attributes.title);
             TableView.__super__.render.apply(this, arguments);
             var $table = this.$el.find('table');
             var $tbody = $table.children('tbody:first');
@@ -214,7 +225,6 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 $tbody.append(view.el);
             });
 
-            $table.table_sorter().table_filter();
             return this;
         }
     });

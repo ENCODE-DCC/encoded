@@ -1,9 +1,10 @@
 <h1>{model.attributes.title}</h1>
 <p class="title">{model.attributes.description}</p>
-<table class="sticky-area">
+<table class="sticky-area" id="collection-table">
     <thead class="sticky-header">
         <tr class="nosort table-controls">
-            <th colspan="8">
+            <th colspan="4"><span id="table-count" class="label label-warning" style="padding: 1em 2em; margin-right: 1em;">Loading...</span>Antibody Approvals</th>
+            <th colspan="4">
                 <input type="text" class="table-filter" placeholder="Filter by..." style="float:right">
             </th>
         </tr>
@@ -21,8 +22,5 @@
     <tbody>
     </tbody>
     <tfoot>
-        <tr>
-            <th colspan="8">{model.length} Antibody Approvals</th>
-        </tr>
     </tfoot>
 </table>
