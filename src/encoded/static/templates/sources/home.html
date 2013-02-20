@@ -1,10 +1,11 @@
 <h1>{model.attributes.title}</h1>
 <p class="title">{model.attributes.description}</p>
-<table class="sticky-area">
+<table class="sticky-area" id="collection-table">
     <thead class="sticky-header">
         <tr class="nosort table-controls">
-            <th colspan="2">
-                <input type="text" class="table-filter" placeholder="Filter by..." style="float:right">
+            <th><span id="table-count" class="label label-warning" style="padding: 1em 2em; margin-right: 1em;">Loading...</span>Sources</th>
+            <th>
+                <input name="table-filter" type="text" class="table-filter" placeholder="Filter by..." style="float:right">
             </th>
         </tr>
         <tr>
@@ -16,7 +17,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <th colspan="2">{model.length} Sources.</th>
+            <th colspan="2" style="display: none;">{model.length} Sources.</th>
         </tr>
     </tfoot>
 </table>
