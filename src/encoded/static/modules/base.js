@@ -170,8 +170,10 @@ function base(exports, $, _, Backbone, HAL, assert) {
     exports.CollectionView = exports.View.extend({
         initialize: function initialize(options, type) {
             var collection = options.model,
-                deferred = $.Deferred();
+                deferred = $.Deferred(),
+                deferred2 = $.Deferred();
             this.deferred = deferred;
+            this.deferred2 = deferred2;
             $.when(collection.fetch({data: {limit: 30}})).done(_.bind(function () {
                 this.title = collection.title;
                 this.description = collection.description;
@@ -186,8 +188,10 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 this.description = collection.description;
                 this.rows = collection.map(_.bind(this.render_subviews, this));
                 $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
-                    deferred.resolve();
+                    deferred2.resolve();
                 });
+            }, this));
+            deferred2.done(_.bind(function()  {
                 console.log("2nd deferred");
                 this.render();
                 var $table = this.$el.find('table');
@@ -196,8 +200,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 });
                 $("#table-count").removeClass("label-warning").addClass("label-invert");
                 $table.table_sorter().table_filter();
-                //$("input.table-filter").bind("keyup", function() {
-                //});
+
             }, this));
            // XXX .fail(...)
         },
