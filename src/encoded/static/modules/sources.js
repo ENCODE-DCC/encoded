@@ -24,7 +24,10 @@ function sources(exports, $, _, base, table_sorter, table_filter, home_template,
         template: _.template(home_template),
         row_template: _.template(row_template),
         table_header: [ 'Source (Vendor)',
-                       'Alias' ]
+                       'Alias'
+                      ],
+        sort_initial: 0  // oh the index hack it burns
+
 
     }, {
         route_name: 'sources',

@@ -47,7 +47,8 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
                         'Lot ID',
                         'Validations',
                         'Status'
-                       ]
+                       ],
+        sort_initial: 1  // oh the index hack it burns
 
     }, {
         route_name: 'antibodies',

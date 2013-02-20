@@ -26,7 +26,10 @@ function targets(exports, $, _, base, table_sorter, table_filter, home_template,
         table_header: [ 'Target',
                         'Species',
                         'External Resources',
-                        'Project' ]
+                        'Project'
+                        ],
+        sort_initial: 0  // oh the index hack it burns
+
 
     },
     {
