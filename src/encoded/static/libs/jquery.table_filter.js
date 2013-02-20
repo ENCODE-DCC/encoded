@@ -44,7 +44,7 @@
 
 		//set default plugin values
 		var settings = $.extend({
-			
+
 			'filter_inverse': false,
 			'enable_space': false,
 			'filter_selector': 'input.table-filter',
@@ -57,6 +57,7 @@
 			var $this = $(this);
 			var $tbody = $this.find('tbody:first');
 			var $input = $this.find(settings.filter_selector);
+			var $counter = $this.find('#table-count');
 
 			$input.bind("keyup", function () {
 
@@ -73,7 +74,7 @@
 					$cells.each(function () {
 						var $cell = $(this);
 						var td_txt = $.trim($cell.text()).toLowerCase();
-						
+
 						//if space is enabled as a delimiter, split the TD text value
 						//and check the individual values against the filter text.
 						if(settings.enable_space){
@@ -113,6 +114,11 @@
 				}
 
 				$tbody.setoddeven();
+				$counter.text(function(index, text) {
+					$rows = $("#collection-table > tbody > tr");
+                    return $rows.not("[class='odd hidden'],[class='even hidden']").length;
+                });
+
 
 			});
 

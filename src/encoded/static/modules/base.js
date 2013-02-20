@@ -196,11 +196,8 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 });
                 $("#table-count").removeClass("label-warning").addClass("label-invert");
                 $table.table_sorter().table_filter();
-                $("input.table-filter").bind("keyup", function() {
-                    $("#table-count").text(function(index, text) {
-                        return $("#collection-table > tbody > tr").length;
-                    });
-                });
+                //$("input.table-filter").bind("keyup", function() {
+                //});
             }, this));
            // XXX .fail(...)
         },
@@ -231,7 +228,16 @@ function base(exports, $, _, Backbone, HAL, assert) {
 
     exports.Model = HAL.Model.extend({});
 
-    exports.Collection = HAL.Collection.extend({});
+    exports.Collection = HAL.Collection.extend({
+        search: function(letters) {
+            if(letters === "") return this;
+
+            var pattern = new RegExp(letters,"gi");
+            return _(this.filter(function(data) {
+                return pattern.test(data.get());
+            }));
+        }
+    });
 
     return exports;
 });
