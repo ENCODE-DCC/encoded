@@ -11,7 +11,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
         return new_obj;
     };
 
-    exports.Antibody = base.Model.extend({
+    var Antibody = exports.Antibody = base.Model.extend({
         urlRoot: '/antibodies/',
         initialize: function initialize(attrs, options) {
             if (options && options.route_args) {
@@ -21,7 +21,12 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
         }
     });
 
-    exports.AntibodyCollection = base.Collection.extend({
+    var AntibodyCollection = exports.AntibodyCollection = base.Collection.extend({
+        fetch: function fetch(options) {
+
+            return AntibodyCollection.__super__.fetch.apply(this, arguments);
+        },
+
         model: base.Model,
         url: '/antibodies/'
     });
@@ -33,7 +38,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
     // The antibodies home screen
     var AntibodiesHomeView = exports.AntibodiesHomeView = base.TableView.extend({
         row: exports.AntibodyRowView,
-        template: _.template(home_template),
+        template: _.template(home_template)
 
     }, {
         route_name: 'antibodies',

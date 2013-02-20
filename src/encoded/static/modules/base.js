@@ -172,27 +172,41 @@ function base(exports, $, _, Backbone, HAL, assert) {
             var collection = options.model,
                 deferred = $.Deferred();
             this.deferred = deferred;
-            $.when(collection.fetch()).done(_.bind(function () {
+            $.when(collection.fetch({data: {limit: 30}})).done(_.bind(function () {
                 this.title = collection.title;
                 this.description = collection.description;
-                this.rows = collection.map(_.bind(function (item) {
-                    var subview = new this.row({model: item});
-                    $.when(subview.deferred).then(function () {
-                        subview.render();
-                    });
-                    return subview;
-                }, this));
+                this.rows = collection.map(_.bind(this.render_subviews, this));
                 $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
                     deferred.resolve();
                 });
+                console.log("first deferred");
             }, this));
-            // XXX .fail(...)
+            $.when(collection.fetch()).done(_.bind(function () {
+                this.title = collection.title;
+                this.description = collection.description;
+                this.rows = collection.map(_.bind(this.render_subviews, this));
+                $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
+                    deferred.resolve();
+                });
+                console.log("2nd deferred");
+                this.render();
+            }, this));
+           // XXX .fail(...)
+        },
+
+        render_subviews: function (item) {
+            var subview = new this.row({model: item});
+            $.when(subview.deferred).then(function () {
+                subview.render();
+            });
+            return subview;
         }
     });
 
     var TableView = exports.TableView = exports.CollectionView.extend({
         //row: undefined,  should be set in subclass
         render: function render() {
+            console.log("Rendering table for "+this.collection);
             TableView.__super__.render.apply(this, arguments);
             var $table = this.$el.find('table');
             var $tbody = $table.children('tbody:first');
