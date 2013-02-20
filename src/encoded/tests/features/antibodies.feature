@@ -20,6 +20,7 @@ Feature: Antibodies
         When I visit "/antibodies/643fd427-99d2-4759-a18d-85c0c89da0ab"
         Then I should see an element with the css selector "#content[class='container']"
         And I should see an element with the css selector "div[class='panel data-display']"
-        And I should see an element with the css selector "div[class='validations row']"
+        And I should see an element with the css selector "div[class='validations']"
+        And I should see at least 2 elements with the css selector "section"
         And I should see at least 2 elements with the css selector "figure"
         And I should see at least 2 elements with the css selector "img[class='validation-img']"
