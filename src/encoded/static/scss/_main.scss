@@ -131,6 +131,20 @@ table thead tr th button {
 	margin-bottom: 0 !important;
 }
 
+#table-count {
+	padding: 0.6em 2em; 
+	margin-right: 1em;
+}
+
+.spinner-warning {
+	padding: 0.6em 2em 0.6em 30px !important;
+	background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
+	background-position: 7px 6px;
+}
+
+
+
+
 
 /* NavBar */
 .navbar-inverse .navbar-inner {

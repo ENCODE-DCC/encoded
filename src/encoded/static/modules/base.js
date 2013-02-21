@@ -203,7 +203,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 $("#table-count").text(function(index, text) {
                     return $("#collection-table > tbody > tr").length;
                 });
-                $("#table-count").removeClass("label-warning").addClass("label-invert");
+             $("#table-count").removeClass("label-warning").removeClass("spinner-warning").addClass("label-invert");
                 $table.table_sorter().table_filter();
 
             }, this));
