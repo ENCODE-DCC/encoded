@@ -10,6 +10,10 @@ from ..storage import (
     Resource,
     )
 
+import logging
+
+logger = logging.getLogger('encoded')
+
 collections = [
     ('antibodies', 'antibody_approval'),
     ('organisms', 'organism'),
@@ -177,6 +181,11 @@ class CollectionViews(object):
         session = DBSession()
         query = session.query(CurrentStatement).filter(CurrentStatement.predicate == self.item_type).limit(nrows)
         items = []
+        import timeit
+        n = 1000
+        T = timeit.Timer(query.all)
+        logger.warning("Time for %d %s (%s) %f sec" % (n, self.item_type, ['all', nrows][bool(nrows)], T.timeit(number=n)))
+
         for model in query.all():
             item = self.make_item(model)
             item_uri = item['_links']['self']['href']
