@@ -21,9 +21,8 @@ def get_home(request):
     return result
 
 
-@CollectionViews.config(
 #    permission='admin'  ## this prevents loading of users via post_json
-)
+@resource(path='/users/{path_segment}', collection_path='/users/', renderer=None)
 class Users(CollectionViews):
     collection = 'users'
     item_type = 'user'
@@ -43,7 +42,7 @@ class Labs(CollectionViews):
         }
 
 
-@CollectionViews.config()
+@resource(path='/awards/{path_segment}', collection_path='/awards/', renderer=None)
 class Awards(CollectionViews):
     collection = 'awards'
     item_type = 'award'
@@ -53,7 +52,7 @@ class Awards(CollectionViews):
         }
 
 
-@CollectionViews.config()
+@resource(path='/antibody-lots/{path_segment}', collection_path='/antibody-lots/', renderer=None)
 class AntibodyLots(CollectionViews):
     collection = 'antibody-lots'
     item_type = 'antibody_lot'
@@ -67,7 +66,7 @@ class AntibodyLots(CollectionViews):
     embedded = set(['source'])
 
 
-@CollectionViews.config()
+@resource(path='/organisms/{path_segment}', collection_path='/organisms/', renderer=None)
 class Organisms(CollectionViews):
     collection = 'organisms'
     item_type = 'organism'
@@ -77,7 +76,7 @@ class Organisms(CollectionViews):
         }
 
 
-@CollectionViews.config()
+@resource(path='/sources/{path_segment}', collection_path='/sources/', renderer=None)
 class Sources(CollectionViews):
     collection = 'sources'
     item_type = 'source'
@@ -87,7 +86,7 @@ class Sources(CollectionViews):
         }
 
 
-@CollectionViews.config()
+@resource(path='/biosamples/{path_segment}', collection_path='/biosamples/', renderer=None)
 class Biosamples(CollectionViews):
     collection = 'biosamples'
     item_type = 'biosample'
@@ -97,7 +96,7 @@ class Biosamples(CollectionViews):
         }
 
 
-@CollectionViews.config()
+@resource(path='/targets/{path_segment}', collection_path='/targets/', renderer=None)
 class Targets(CollectionViews):
     collection = 'targets'
     item_type = 'target'
@@ -112,7 +111,7 @@ class Targets(CollectionViews):
 
 
 # The following should really be child collections.
-@CollectionViews.config()
+@resource(path='/validations/{path_segment}', collection_path='/validations/', renderer=None)
 class Validations(CollectionViews):
     collection = 'validations'
     item_type = 'validation'
@@ -127,7 +126,7 @@ class Validations(CollectionViews):
     embedded = set(['antibody_lot', 'target'])
 
 
-@CollectionViews.config()
+@resource(path='/antibodies/{path_segment}', collection_path='/antibodies/', renderer=None)
 class AntibodyApprovals(CollectionViews):
     collection = 'antibodies'
     item_type = 'antibody_approval'

@@ -1,34 +1,15 @@
 from pyramid.exceptions import NotFound
 from pyramid.threadlocal import manager
-from pyramid.view import view_config
-from ..authz import (
-    RootFactory
-    )
 from ..storage import (
     DBSession,
     CurrentStatement,
     Resource,
     )
 
-collections = [
-    ('antibodies', 'antibody_approval'),
-    ('organisms', 'organism'),
-    ('sources', 'source'),
-    ('targets', 'target'),
-    ('validations', 'validation'),
-    ('antibody-lots', 'antibody_lot'),
-    ('biosamples', 'biosample'),
-    ('awards', 'award'),
-    ('users', 'user'),
-]
-
 
 def includeme(config):
     # RootFactory is just a stub for later
     config.include('cornice')
-    for collection, item_type in collections:
-        config.add_route(collection, '/%s/' % collection, factory=RootFactory)
-        config.add_route(item_type, '/%s/{path_segment}' % collection, factory=RootFactory)
     config.scan('.views')
 
 
@@ -71,19 +52,6 @@ class CollectionViews(object):
         'profile': {'href': '/profiles/{item_type}', 'templated': True},
         }
     embedded = {}
-
-    @classmethod
-    def config(cls, **settings):
-        settings['_depth'] = settings.get('_depth', 0) + 1
-
-        def decorate(wrapped):
-            assert issubclass(wrapped, cls), "Can only configure %s" % cls.__name__
-            view_config(route_name=wrapped.collection, request_method='GET', attr='collection_get', **settings)(wrapped)
-            view_config(route_name=wrapped.collection, request_method='POST', attr='collection_post', **settings)(wrapped)
-            view_config(route_name=wrapped.item_type, request_method='GET', attr='get', **settings)(wrapped)
-            return wrapped
-
-        return decorate
 
     def __init__(self, request):
         self.request = request
