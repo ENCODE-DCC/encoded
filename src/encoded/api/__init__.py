@@ -18,9 +18,13 @@ collections = [
     ('validations', 'validation'),
     ('antibody-lots', 'antibody_lot'),
     ('biosamples', 'biosample'),
+    ('donors', 'donor'),
     ('labs', 'lab'),
     ('awards', 'award'),
     ('users', 'user'),
+    ('submitters', 'submitter'),
+    ('colleagues', 'colleague'),
+    ('documents', 'document'),
 ]
 
 

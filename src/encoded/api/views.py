@@ -29,6 +29,46 @@ class Users(CollectionViews):
 
 
 @CollectionViews.config()
+class Donors(CollectionViews):
+    collection = 'donors'
+    item_type = 'donor'
+    properties = {
+        'title': 'Donors',
+        'description': 'Listing Biosample Donors',
+        }
+
+
+@CollectionViews.config()
+class Documents(CollectionViews):
+    collection = 'documents'
+    item_type = 'document'
+    properties = {
+        'title': 'Documents',
+        'description': 'Listing of Biosample Documents',
+        }
+
+
+@CollectionViews.config()
+class Colleagues(CollectionViews):
+    collection = 'colleagues'
+    item_type = 'colleague'
+    properties = {
+        'title': 'Colleagues',
+        'description': 'Listing of ENCODE DCC Colleagues',
+        }
+
+
+@CollectionViews.config()
+class Submitters(CollectionViews):
+    collection = 'submitters'
+    item_type = 'submitter'
+    properties = {
+        'title': 'Submitters',
+        'description': 'Listing of ENCODE DCC Submitters',
+        }
+
+
+@CollectionViews.config()
 class Labs(CollectionViews):
     collection = 'labs'
     item_type = 'lab'

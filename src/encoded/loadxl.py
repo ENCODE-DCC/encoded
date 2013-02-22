@@ -83,7 +83,17 @@ def extract(filename, sheets):
         data = alldata[name] = {}
         sheet = book.sheet_by_name(name)
         for row in iter_rows(sheet):
-            uuid = row.pop('%s_uuid' % name)
+            try:
+                # cricket method
+                uuid = row.pop('%s_uuid' % name)
+            except KeyError:
+                # drew method
+                try:
+                    uuid = row.pop('guid')
+                except KeyError:
+                    # esther method, exceept where she put in extraneious (uuid)
+                    uuid = row.pop('%s_no' % name)
+
             if not uuid:
                 continue
             row['_uuid'] = uuid
@@ -97,7 +107,15 @@ TYPE_URL = [
     ('antibody_lot', '/antibody-lots/'),
     ('validation', '/validations/'),
     ('antibody_approval', '/antibodies/'),
-    ]
+    ('donor', '/donors/'),
+    ('document', '/documents/'),
+    ('biosample', '/biosamples/'),
+    ('submitter', '/submitters/'),
+    ('colleague', '/users/'),
+    ('lab', '/labs/'),
+    ('award', '/awards/'),
+    #('institute', '/institutes/'),
+   ]
 
 
 def value_index(data, attribute):
@@ -165,11 +183,36 @@ def load_all(testapp, filename, docsdir):
     target_index = tuple_index(alldata['target'], 'target_label', 'organism_name')
     # validation_index = multi_tuple_index(alldata['validation'], 'antibody_lot_uuid', 'target_label', 'organism_name')
     validation_index = multi_index(alldata['validation'], 'document_filename')
+    # hacked because we don't really have grant/award data
+    submitter_index = multi_tuple_index(alldata['submitter'], 'last_name', 'lab_name')
+    ### note needs first name too, eventually!!!
+    ##colleague_index = tuple_index(alldata['colleague'], 'last_name', 'first_name')
+    ##lab_index = value_index(alldata['lab'], 'lab_name')
+    ##award_index = multi_index(alldata['award'], 'pi_last_name')
+    # note I have two because of lack of univocity
 
     for uuid, value in alldata['target'].iteritems():
         value['organism_uuid'] = organism_index[value.pop('organism_name')]
         aliases = value.pop('target_aliases') or ''
         alias_source = value.pop('target_alias_source')
+
+        creator = value.get('created_by', None)
+        pi = value.get('lab_pi', None)
+        try:
+            submitter_uuids = submitter_index[(creator, pi)]
+            #del value['created_by'] not sure I should delete these yet
+            #del value['lab_pi']
+        except KeyError:
+            submitter_uuids = []
+
+        value['creator_uuids'] = []
+        for submitter_uuid in submitter_uuids:
+                if alldata['submitter'].get(submitter_uuid, None) is None:
+                    logger.debug('Missing/skipped submitter reference %s for target: %s' % (submitter_uuid, uuid))
+                else:
+                    value['creator_uuids'].append(submitter_uuid)
+
+        ## TODO below should be merged with uniprotID/GeneID dbxref
         value['dbxref'] = [
             {'db': alias_source, 'id': alias.strip()}
             for alias in aliases.split(';') if alias]
@@ -186,6 +229,22 @@ def load_all(testapp, filename, docsdir):
         value['dbxref'] = [
             {'db': alias_source, 'id': alias.strip()}
             for alias in aliases.split(';') if alias]
+
+        submitter = value.get('submitted_by', None)
+        pi = value.get('submitted_by_pi', None)
+        try:
+            submitter_uuids = submitter_index[(submitter, pi)]
+            #del value['created_by'] not sure I should delete these yet
+            #del value['lab_pi']
+        except KeyError:
+            submitter_uuids = []
+
+        value['submitter_uuids'] = []
+        for submitter_uuid in submitter_uuids:
+                if alldata['submitter'].get(submitter_uuid, None) is None:
+                    logger.debug('Missing/skipped submitter reference %s for source: %s' % (submitter_uuid, uuid))
+                else:
+                    value['submitter_uuids'].append(submitter_uuid)
 
     antibody_lot_index = tuple_index(alldata['antibody_lot'], 'product_id', 'lot_id')
 
