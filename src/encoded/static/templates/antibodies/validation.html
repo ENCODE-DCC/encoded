@@ -2,6 +2,7 @@
 	<div class="row">
 		<div class="span6">
 			<figure>
+				<?js if (properties.document) { ?>
 				<a  href="{properties.document.href}">
 					<?js if (properties.document.type.indexOf('image/') == 0) { ?>
 						<img
@@ -21,6 +22,15 @@
 							/>
 					<?js } ?>
 				</a>
+				<?js } else { ?>
+						<img
+							class="validation-img validation-file"
+							src="/static/img/file-broken.png"
+							alt="validation image not found"
+							height="100"
+							width="100"
+						/>
+				<?js } ?>
 				<figcaption>
 					<span>{properties.validation_status}</span>
 				</figcaption>
@@ -35,9 +45,13 @@
 				<p><b>Approver:</b> <span>{properties.validated_by}</span></p>
 				<p><b>Image:</b> <span class="label label-info">{properties.validation_status}</span>
 				<p><b>Download:</b>
+					<?js if (properties.document) { ?>
 					<a  href="{properties.document.href}"
 						download="{properties.document.download}"
 						>{properties.document.download}</a>
+					<?js } else { ?>
+					<em>Document not available</em>
+					<?js } ?>
 			</div>
 		</div>
 	</div>

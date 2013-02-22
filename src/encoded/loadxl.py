@@ -208,7 +208,7 @@ def load_all(testapp, filename, docsdir):
         value['creator_uuids'] = []
         for submitter_uuid in submitter_uuids:
                 if alldata['submitter'].get(submitter_uuid, None) is None:
-                    logger.debug('Missing/skipped submitter reference %s for target: %s' % (submitter_uuid, uuid))
+                    logger.warning('Missing/skipped submitter reference %s for target: %s' % (submitter_uuid, uuid))
                 else:
                     value['creator_uuids'].append(submitter_uuid)
 
@@ -242,7 +242,7 @@ def load_all(testapp, filename, docsdir):
         value['submitter_uuids'] = []
         for submitter_uuid in submitter_uuids:
                 if alldata['submitter'].get(submitter_uuid, None) is None:
-                    logger.debug('Missing/skipped submitter reference %s for source: %s' % (submitter_uuid, uuid))
+                    logger.warning('Missing/skipped submitter reference %s for source: %s' % (submitter_uuid, uuid))
                 else:
                     value['submitter_uuids'].append(submitter_uuid)
 
@@ -265,7 +265,7 @@ def load_all(testapp, filename, docsdir):
             try:
                 stream = open(os.path.join(docsdir, filename), 'rb')
             except IOError:
-                logger.debug('Referenced filename missing for %s: %s' % (uuid, filename))
+                logger.warning('Referenced filename missing for %s: %s' % (uuid, filename))
             else:
                 if filename.endswith('.png') or filename.endswith('.jpg'):
                     value['document'] = image_data(stream, filename)
@@ -283,7 +283,7 @@ def load_all(testapp, filename, docsdir):
         try:
             value['antibody_lot_uuid'] = antibody_lot_index[(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
         except KeyError:
-            logger.debug('Missing/skipped antibody_lot reference for antibody_approval: %s' % uuid)
+            logger.warning('Missing/skipped antibody_lot reference for antibody_approval: %s' % uuid)
             del alldata['antibody_approval'][uuid]
             continue
 
@@ -294,13 +294,13 @@ def load_all(testapp, filename, docsdir):
             validation_uuids = validation_index.get(filename, [])
             for validation_uuid in validation_uuids:
                 if alldata['validation'].get(validation_uuid, None) is None:
-                    logger.debug('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
+                    logger.warning('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
                 else:
                     value['validation_uuids'].append(validation_uuid)
         try:
             value['target_uuid'] = target_index[(value.pop('target_label'), value.pop('organism_name'))]
         except KeyError:
-            logger.debug('Missing/skipped target reference for antibody_approval: %s' % uuid)
+            logger.warning('Missing/skipped target reference for antibody_approval: %s' % uuid)
             del alldata['antibody_approval'][uuid]
             continue
 
