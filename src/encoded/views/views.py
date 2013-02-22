@@ -128,7 +128,7 @@ class AntibodyApprovals(CollectionViews):
     item_type = 'antibody_approval'
     properties = {
         'title': 'Antibody Approvals',
-        'description': 'cricket needs to give a sentence',
+        'description': 'Listing of validation approvals for ENCODE antibodies',
         }
     links = {
         'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True, 'embedded': True},
