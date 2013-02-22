@@ -43,7 +43,6 @@ def maybe_include_embedded(request, result):
 
 
 class CollectionViews(object):
-    _services = None
     collection = None
     item_type = None
     properties = None
@@ -56,15 +55,10 @@ class CollectionViews(object):
 
     def __init__(self, request):
         self.request = request
-        if self._services is not None:
-            self.collection_uri = request.route_path('/%s/' % self.collection)
-        else:
-            self.collection_uri = request.route_path(self.collection)
+        self.collection_uri = request.route_path('/%s/' % self.collection)
 
     def item_uri(self, name):
-        if self._services is not None:
-            return self.request.route_path('/%s/{path_segment}' % self.collection, path_segment=name)
-        return self.request.route_path(self.item_type, path_segment=name)
+        return self.request.route_path('/%s/{path_segment}' % self.collection, path_segment=name)
 
     def maybe_embed(self, rel, href):
         if rel in self.embedded:
