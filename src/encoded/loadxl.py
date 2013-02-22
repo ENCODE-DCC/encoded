@@ -206,7 +206,7 @@ def load_all(testapp, filename, docsdir):
             try:
                 stream = open(os.path.join(docsdir, filename), 'rb')
             except IOError:
-                logger.debug('Referenced filename missing for %s: %s' % (uuid, filename))
+                logger.warn('Referenced filename missing for %s: %s' % (uuid, filename))
             else:
                 if filename.endswith('.png') or filename.endswith('.jpg'):
                     value['document'] = image_data(stream, filename)
@@ -224,7 +224,7 @@ def load_all(testapp, filename, docsdir):
         try:
             value['antibody_lot_uuid'] = antibody_lot_index[(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
         except KeyError:
-            logger.debug('Missing/skipped antibody_lot reference for antibody_approval: %s' % uuid)
+            logger.warn('Missing/skipped antibody_lot reference for antibody_approval: %s' % uuid)
             del alldata['antibody_approval'][uuid]
             continue
 
@@ -235,13 +235,13 @@ def load_all(testapp, filename, docsdir):
             validation_uuids = validation_index.get(filename, [])
             for validation_uuid in validation_uuids:
                 if alldata['validation'].get(validation_uuid, None) is None:
-                    logger.debug('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
+                    logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
                 else:
                     value['validation_uuids'].append(validation_uuid)
         try:
             value['target_uuid'] = target_index[(value.pop('target_label'), value.pop('organism_name'))]
         except KeyError:
-            logger.debug('Missing/skipped target reference for antibody_approval: %s' % uuid)
+            logger.warn('Missing/skipped target reference for antibody_approval: %s' % uuid)
             del alldata['antibody_approval'][uuid]
             continue
 
