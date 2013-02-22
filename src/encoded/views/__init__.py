@@ -1,3 +1,4 @@
+from cornice.resource import view
 from pyramid.exceptions import NotFound
 from pyramid.threadlocal import manager
 from ..storage import (
@@ -177,9 +178,10 @@ class CollectionViews(object):
         maybe_include_embedded(self.request, result)
         return result
 
+    @view(validators=('validate_collection_post',))
     def collection_post(self):
         session = DBSession()
-        item = self.request.json_body
+        item = self.request.validated
         rid = item.get('_uuid', None)
         resource = Resource({self.item_type: item}, rid)
         session.add(resource)
@@ -196,6 +198,9 @@ class CollectionViews(object):
                 },
             }
         return result
+
+    def validate_collection_post(self, request):
+        request.validated = request.json_body
 
     def get(self):
         key = (self.request.matchdict['path_segment'], self.item_type)
