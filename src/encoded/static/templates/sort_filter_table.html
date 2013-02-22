@@ -1,0 +1,26 @@
+<h1>{model.attributes.title}</h1>
+<p class="title">{model.attributes.description}</p>
+<table class="sticky-area" id="collection-table">
+    <thead class="sticky-header">
+        <tr class="nosort table-controls">
+            <th colspan="{view.table_header.length}">
+                <span id="table-count" class="label label-warning spinner-warning">Loading...</span>
+                <input disabled="" name="table-filter" type="text" class="table-filter" placeholder="Filter by...">
+            </th>
+        </tr>
+        <tr>
+        <?js _.each(view.table_header, function (header, index) { ?>
+            <?js if( view.sort_initial != null  && index==view.sort_initial) { ?>
+                <th class="sort-initial">{header}</th>
+            <?js } else { ?> <th>{header}</th> <?js } ?>
+        <?js }); ?>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+    <tfoot>
+        <tr>
+            <th colspan="{view.table_header.length}">{model.length} Rows.</th>
+        </tr>
+    </tfoot>
+</table>

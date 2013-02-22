@@ -170,10 +170,14 @@ class CollectionViews(object):
         return self.request.environ.get('encoded.format') == 'html'
 
     def collection_get(self):
+        try:
+            nrows = self.request.params['limit']
+        except KeyError:
+            nrows = None
         if self.no_body_needed():
             return {}
         session = DBSession()
-        query = session.query(CurrentStatement).filter(CurrentStatement.predicate == self.item_type)
+        query = session.query(CurrentStatement).filter(CurrentStatement.predicate == self.item_type).limit(nrows)
         items = []
         for model in query.all():
             item = self.make_item(model)

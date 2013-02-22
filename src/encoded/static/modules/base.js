@@ -157,10 +157,13 @@ function base(exports, $, _, Backbone, HAL, assert) {
 
     exports.RowView = exports.View.extend({
         tagName: 'tr',
+
         initialize: function initialize(options) {
             var model = options.model;
             this.deferred = model.deferred;
+            this.template = options.template;
         },
+
         update: function update() {
             this.$el.attr('data-href', this.model.url());
             this.$el.css('cursor', 'pointer');
@@ -170,32 +173,59 @@ function base(exports, $, _, Backbone, HAL, assert) {
     exports.CollectionView = exports.View.extend({
         initialize: function initialize(options, type) {
             var collection = options.model,
-                deferred = $.Deferred();
+                deferred = $.Deferred(),
+                deferred2 = $.Deferred();
             this.deferred = deferred;
-            $.when(collection.fetch()).done(_.bind(function () {
+            this.deferred2 = deferred2;
+            $.when(collection.fetch({data: {limit: 30}})).done(_.bind(function () {
                 this.title = collection.title;
                 this.description = collection.description;
-                this.rows = collection.map(_.bind(function (item) {
-                    //if (item) {
-                    //    item.deferred = item.fetch();
-                    //}
-                    var subview = new this.row({model: item});
-                    $.when(subview.deferred).then(function () {
-                        subview.render();
-                    });
-                    return subview;
-                }, this));
+                this.rows = collection.map(_.bind(this.render_subviews, this));
                 $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
                     deferred.resolve();
                 });
+
             }, this));
-            // XXX .fail(...)
+            $.when(collection.fetch()).done(_.bind(function () {
+                this.rows = collection.map(_.bind(this.render_subviews, this));
+                $.when.apply($, _.pluck(this.rows, 'deferred')).then(function () {
+                    deferred2.resolve();
+                });
+            }, this));
+            deferred2.done(_.bind(function()  {
+                console.log("2nd deferred");
+                if (deferred.state() === 'resolved') {
+                    this.render();
+                } else {
+                    deferred.resolve();
+                }
+                var $table = this.$el.find('table');
+                $("#table-count").text(function(index, text) {
+                    return $("#collection-table > tbody > tr").length;
+                });
+             $("#table-count").removeClass("label-warning").removeClass("spinner-warning").addClass("label-invert");
+             	$(".table-filter").removeAttr("disabled");
+                $table.table_sorter().table_filter();
+
+            }, this));
+           // XXX .fail(...)
+        },
+
+        row: exports.RowView,
+
+        render_subviews: function (item) {
+            var subview = new this.row({model: item, template: this.row_template});
+            $.when(subview.deferred).then(function () {
+                subview.render();
+            });
+            return subview;
         }
     });
 
     var TableView = exports.TableView = exports.CollectionView.extend({
         //row: undefined,  should be set in subclass
         render: function render() {
+            console.log("Rendering table for "+this.model.attributes.title);
             TableView.__super__.render.apply(this, arguments);
             var $table = this.$el.find('table');
             var $tbody = $table.children('tbody:first');
@@ -203,14 +233,22 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 $tbody.append(view.el);
             });
 
-            $table.table_sorter().table_filter();
             return this;
         }
     });
 
     exports.Model = HAL.Model.extend({});
 
-    exports.Collection = HAL.Collection.extend({});
+    exports.Collection = HAL.Collection.extend({
+        search: function(letters) {
+            if(letters === "") return this;
+
+            var pattern = new RegExp(letters,"gi");
+            return _(this.filter(function(data) {
+                return pattern.test(data.get());
+            }));
+        }
+    });
 
     return exports;
 });
