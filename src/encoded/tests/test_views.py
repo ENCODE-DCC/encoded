@@ -108,13 +108,13 @@ def test_sample_data(testapp):
 def test_load_workbook(testapp):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
-    workbook = resource_filename('encoded', 'tests/data/AntibodySubmissionsENCODE3.xlsx')
+    workbook = resource_filename('encoded', 'tests/data/ENCODE_DCC_TestMetadata.xlsx')
     docsdir = resource_filename('encoded', 'tests/data/validation-docs/')
     load_all(testapp, workbook, docsdir)
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
     assert res.json['_links']['items']
-    assert len(res.json['_links']['items']) > 30
-    res = testapp.get('/antibodies/?limit=30', headers={'Accept': 'application/json'}, status=200)
+    assert len(res.json['_links']['items']) == 21
+    res = testapp.get('/antibodies/?limit=10', headers={'Accept': 'application/json'}, status=200)
     assert res.json['_links']['items']
-    assert len(res.json['_links']['items']) == 30
+    assert len(res.json['_links']['items']) == 10
 
