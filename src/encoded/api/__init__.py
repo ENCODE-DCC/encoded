@@ -18,7 +18,6 @@ collections = [
     ('validations', 'validation'),
     ('antibody-lots', 'antibody_lot'),
     ('biosamples', 'biosample'),
-    ('labs', 'lab'),
     ('awards', 'award'),
     ('users', 'user'),
 ]
@@ -62,12 +61,13 @@ def maybe_include_embedded(request, result):
 
 
 class CollectionViews(object):
+    _services = None
     collection = None
     item_type = None
     properties = None
     links = {
-        'self': {'href': '/{collection}/{_uuid}', 'templated': True},
-        'collection': {'href': '/{collection}/', 'templated': True},
+        'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
+        'collection': {'href': '{collection_uri}', 'templated': True},
         'profile': {'href': '/profiles/{item_type}', 'templated': True},
         }
     embedded = {}
@@ -78,8 +78,8 @@ class CollectionViews(object):
 
         def decorate(wrapped):
             assert issubclass(wrapped, cls), "Can only configure %s" % cls.__name__
-            view_config(route_name=wrapped.collection, request_method='GET', attr='list', **settings)(wrapped)
-            view_config(route_name=wrapped.collection, request_method='POST', attr='create', **settings)(wrapped)
+            view_config(route_name=wrapped.collection, request_method='GET', attr='collection_get', **settings)(wrapped)
+            view_config(route_name=wrapped.collection, request_method='POST', attr='collection_post', **settings)(wrapped)
             view_config(route_name=wrapped.item_type, request_method='GET', attr='get', **settings)(wrapped)
             return wrapped
 
@@ -87,9 +87,14 @@ class CollectionViews(object):
 
     def __init__(self, request):
         self.request = request
-        self.collection_uri = request.route_path(self.collection)
+        if self._services is not None:
+            self.collection_uri = request.route_path('/%s/' % self.collection)
+        else:
+            self.collection_uri = request.route_path(self.collection)
 
     def item_uri(self, name):
+        if self._services is not None:
+            return self.request.route_path('/%s/{path_segment}' % self.collection, path_segment=name)
         return self.request.route_path(self.item_type, path_segment=name)
 
     def maybe_embed(self, rel, href):
@@ -124,7 +129,6 @@ class CollectionViews(object):
                             value['href'] = member['href'].format(
                                 collection_uri=self.collection_uri,
                                 item_type=self.item_type,
-                                collection=self.collection,
                                 **ns)
                             out.append(value)
                             self.maybe_embed(rel, value['href'])
@@ -134,7 +138,6 @@ class CollectionViews(object):
                         value['href'] = member['href'].format(
                             collection_uri=self.collection_uri,
                             item_type=self.item_type,
-                            collection=self.collection,
                             **ns)
                         out.append(value)
                         self.maybe_embed(rel, value['href'])
@@ -146,7 +149,6 @@ class CollectionViews(object):
                 value['href'] = value['href'].format(
                     collection_uri=self.collection_uri,
                     item_type=self.item_type,
-                    collection=self.collection,
                     **item)
                 self.maybe_embed(rel, value['href'])
             else:
@@ -167,7 +169,7 @@ class CollectionViews(object):
         # No need for request data when rendering the single page html
         return self.request.environ.get('encoded.format') == 'html'
 
-    def list(self):
+    def collection_get(self):
         if self.no_body_needed():
             return {}
         session = DBSession()
@@ -203,7 +205,7 @@ class CollectionViews(object):
         maybe_include_embedded(self.request, result)
         return result
 
-    def create(self):
+    def collection_post(self):
         session = DBSession()
         item = self.request.json_body
         rid = item.get('_uuid', None)

@@ -1,4 +1,5 @@
 from cornice import Service
+from cornice.resource import resource
 from . import CollectionViews
 
 # renderer = None here to use our default registered renderer
@@ -32,7 +33,7 @@ class Users(CollectionViews):
         }
 
 
-@CollectionViews.config()
+@resource(path='/labs/{path_segment}', collection_path='/labs/', renderer=None)
 class Labs(CollectionViews):
     collection = 'labs'
     item_type = 'lab'
