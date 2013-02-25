@@ -4,11 +4,16 @@ import datetime
 import logging
 import mimetypes
 import os.path
-from pkg_resources import resource_stream
 import xlrd
 # http://www.lexicon.net/sjmachin/xlrd.html
 
 logger = logging.getLogger('encoded')
+
+
+def resolve_dotted(value, name):
+    for key in name.split('.'):
+        value = value[key]
+    return value
 
 
 def convert(type_, value):
@@ -90,20 +95,20 @@ def extract(filename, sheets):
             data[uuid] = row
     return alldata
 
-TYPE_URL = [
-    ('organism', '/organisms/'),
-    ('source', '/sources/'),
-    ('target', '/targets/'),
-    ('antibody_lot', '/antibody-lots/'),
-    ('validation', '/validations/'),
-    ('antibody_approval', '/antibodies/'),
-    ]
+TYPE_URL = {
+    'organism': '/organisms/',
+    'source': '/sources/',
+    'target': '/targets/',
+    'antibody_lot': '/antibody-lots/',
+    'validation': '/validations/',
+    'antibody_approval': '/antibodies/',
+    }
 
 
 def value_index(data, attribute):
     index = {}
     for uuid, value in data.iteritems():
-        index_value = value[attribute]
+        index_value = resolve_dotted(value, attribute)
         assert index_value not in index, index_value
         index[index_value] = uuid
     return index
@@ -112,7 +117,7 @@ def value_index(data, attribute):
 def multi_index(data, attribute):
     index = {}
     for uuid, value in data.iteritems():
-        index_value = value[attribute]
+        index_value = resolve_dotted(value, attribute)
         index.setdefault(index_value, []).append(uuid)
     return index
 
@@ -120,7 +125,7 @@ def multi_index(data, attribute):
 def tuple_index(data, *attrs):
     index = {}
     for uuid, value in list(data.iteritems()):
-        index_value = tuple(value[attr] for attr in attrs)
+        index_value = tuple(resolve_dotted(value, attr) for attr in attrs)
         if index_value in index:
             logger.warn('Duplicate values for %s, %s: %r' % (index[index_value], uuid, index_value))
             del[data[uuid]]
@@ -132,7 +137,7 @@ def tuple_index(data, *attrs):
 def multi_tuple_index(data, *attrs):
     index = {}
     for uuid, value in data.iteritems():
-        index_value = tuple(value[attr] for attr in attrs)
+        index_value = tuple(resolve_dotted(value, attr) for attr in attrs)
         index.setdefault(index_value, []).append(uuid)
     return index
 
@@ -156,96 +161,132 @@ def data_uri(stream, mime_type):
     return 'data:%s;base64,%s' % (mime_type, encoded_data)
 
 
+def post_collection(testapp, alldata, content_type):
+    url = TYPE_URL[content_type]
+    collection = alldata[content_type]
+    for uuid, value in list(collection.iteritems()):
+        try:
+            testapp.post_json(url, value, status=201)
+        except Exception as e:
+            logger.warn('Error submitting %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, value))
+            del alldata[content_type][uuid]
+            continue
+
+
 def load_all(testapp, filename, docsdir):
-    sheets = [content_type for content_type, url in TYPE_URL]
+    sheets = [content_type for content_type in TYPE_URL]
     alldata = extract(filename, sheets)
 
-    organism_index = value_index(alldata['organism'], 'organism_name')
-    source_index = value_index(alldata['source'], 'source_name')
-    target_index = tuple_index(alldata['target'], 'target_label', 'organism_name')
-    # validation_index = multi_tuple_index(alldata['validation'], 'antibody_lot_uuid', 'target_label', 'organism_name')
-    validation_index = multi_index(alldata['validation'], 'document_filename')
+    content_type = 'organism'
+    post_collection(testapp, alldata, content_type)
+    organism_index = value_index(alldata[content_type], 'organism_name')
 
-    for uuid, value in alldata['target'].iteritems():
-        value['organism_uuid'] = organism_index[value.pop('organism_name')]
-        aliases = value.pop('target_aliases') or ''
-        alias_source = value.pop('target_alias_source')
-        value['dbxref'] = [
-            {'db': alias_source, 'id': alias.strip()}
-            for alias in aliases.split(';') if alias]
+    content_type = 'source'
+    post_collection(testapp, alldata, content_type)
+    source_index = value_index(alldata[content_type], 'source_name')
 
-    for uuid, value in list(alldata['antibody_lot'].iteritems()):
-        source = value.pop('source')
+    content_type = 'target'
+    for uuid, value in list(alldata[content_type].iteritems()):
+        original = value.copy()
         try:
-            value['source_uuid'] = source_index[source]
-        except KeyError:
-            logger.warn('Unable to find source: %s (%s)' % (source, uuid))
-            del alldata['antibody_lot'][uuid]
-        aliases = value.pop('antibody_alias') or ''
-        alias_source = value.pop('antibody_alias_source')
-        value['dbxref'] = [
-            {'db': alias_source, 'id': alias.strip()}
-            for alias in aliases.split(';') if alias]
+            value['organism_uuid'] = organism_index[value.pop('organism_name')]
+            aliases = value.pop('target_aliases') or ''
+            alias_source = value.pop('target_alias_source')
+            value['dbxref'] = [
+                {'db': alias_source, 'id': alias.strip()}
+                for alias in aliases.split(';') if alias]
+        except Exception as e:
+            logger.warn('Error processing %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
+            del alldata[content_type][uuid]
+            continue
 
+    post_collection(testapp, alldata, content_type)
+    target_index = tuple_index(alldata[content_type], 'target_label', 'organism_uuid')
+
+    content_type = 'antibody_lot'
+    for uuid, value in list(alldata[content_type].iteritems()):
+        original = value.copy()
+        try:
+            source = value.pop('source')
+            try:
+                value['source_uuid'] = source_index[source]
+            except KeyError:
+                raise ValueError('Unable to find source: %s' % source)
+            aliases = value.pop('antibody_alias') or ''
+            alias_source = value.pop('antibody_alias_source')
+            value['dbxref'] = [
+                {'db': alias_source, 'id': alias.strip()}
+                for alias in aliases.split(';') if alias]
+        except Exception as e:
+            logger.warn('Error processing %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
+            del alldata[content_type][uuid]
+            continue
+
+    post_collection(testapp, alldata, 'antibody_lot')
     antibody_lot_index = tuple_index(alldata['antibody_lot'], 'product_id', 'lot_id')
 
-    for uuid, value in list(alldata['validation'].iteritems()):
-        if value['antibody_lot_uuid'] is None:
-            logger.warn('Missing antibody_lot_uuid for validation: %s' % uuid)
-            del alldata['validation'][uuid]
-            continue
-        key = (value.pop('target_label'), value.pop('organism_name'))
+    content_type = 'validation'
+    for uuid, value in list(alldata[content_type].iteritems()):
+        original = value.copy()
         try:
-            value['target_uuid'] = target_index[key]
-        except KeyError:
-            logger.warn('Unable to find target: %s for validation: %s' % (key, uuid))
-            del alldata['validation'][uuid]
-            continue
-        else:
-            filename = value.pop('document_filename')
+            if value['antibody_lot_uuid'] is None:
+                raise ValueError('Missing antibody_lot_uuid')
             try:
-                stream = open(os.path.join(docsdir, filename), 'rb')
-            except IOError:
-                logger.warn('Referenced filename missing for %s: %s' % (uuid, filename))
+                organism_uuid = organism_index[value.pop('organism_name')]
+                key = (value.pop('target_label'), organism_uuid)
+                value['target_uuid'] = target_index[key]
+            except KeyError:
+                raise ValueError('Unable to find target: %s' % key)
+
+            filename = value.pop('document_filename')
+            stream = open(os.path.join(docsdir, filename), 'rb')
+            _, ext = os.path.splitext(filename.lower())
+            if ext in ('.png', '.jpg', '.tiff'):
+                value['document'] = image_data(stream, filename)
+            elif ext == '.pdf':
+                mime_type = 'application/pdf'
+                value['document'] = {
+                    'download': filename,
+                    'type': mime_type,
+                    'href': data_uri(stream, mime_type),
+                    }
             else:
-                if filename.endswith('.png') or filename.endswith('.jpg'):
-                    value['document'] = image_data(stream, filename)
-                elif filename.endswith('.pdf'):
-                    mime_type = 'application/pdf'
-                    value['document'] = {
-                        'download': filename,
-                        'type': mime_type,
-                        'href': data_uri(stream, mime_type),
-                        }
-                else:
-                    raise ValueError("Unknown file type for %s" % filename)
-
-    for uuid, value in list(alldata['antibody_approval'].iteritems()):
-        try:
-            value['antibody_lot_uuid'] = antibody_lot_index[(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
-        except KeyError:
-            logger.warn('Missing/skipped antibody_lot reference for antibody_approval: %s' % uuid)
-            del alldata['antibody_approval'][uuid]
+                raise ValueError("Unknown file type for %s" % filename)
+        except Exception as e:
+            logger.warn('Error processing %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
+            del alldata[content_type][uuid]
             continue
 
-        #value['validation_uuids'] = validation_index.get((value['antibody_lot_uuid'], value['target_label'], value['organism_name']), [])
-        value['validation_uuids'] = []
-        filenames = [v.strip() for v in (value.pop('validation_filenames') or '').split(';') if v]
-        for filename in filenames:
-            validation_uuids = validation_index.get(filename, [])
-            for validation_uuid in validation_uuids:
-                if alldata['validation'].get(validation_uuid, None) is None:
-                    logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
-                else:
-                    value['validation_uuids'].append(validation_uuid)
+    post_collection(testapp, alldata, content_type)
+    # validation_index = multi_tuple_index(alldata['validation'], 'antibody_lot_uuid', 'target_label', 'organism_name')
+    validation_index = multi_index(alldata[content_type], 'document.download')
+
+    content_type = 'antibody_approval'
+    for uuid, value in list(alldata[content_type].iteritems()):
+        original = value.copy()
         try:
-            value['target_uuid'] = target_index[(value.pop('target_label'), value.pop('organism_name'))]
-        except KeyError:
-            logger.warn('Missing/skipped target reference for antibody_approval: %s' % uuid)
-            del alldata['antibody_approval'][uuid]
+            try:
+                value['antibody_lot_uuid'] = antibody_lot_index[(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
+            except KeyError:
+                raise ValueError('Missing/skipped antibody_lot reference')
+
+            value['validation_uuids'] = []
+            filenames = [v.strip() for v in (value.pop('validation_filenames') or '').split(';') if v]
+            for filename in filenames:
+                validation_uuids = validation_index.get(filename, [])
+                for validation_uuid in validation_uuids:
+                    if alldata['validation'].get(validation_uuid, None) is None:
+                        logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
+                    else:
+                        value['validation_uuids'].append(validation_uuid)
+            try:
+                organism_uuid = organism_index[value.pop('organism_name')]
+                value['target_uuid'] = target_index[(value.pop('target_label'), organism_uuid)]
+            except KeyError:
+                raise ValueError('Missing/skipped target reference')
+        except Exception as e:
+            logger.warn('Error processing %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
+            del alldata[content_type][uuid]
             continue
 
-    for content_type, url in TYPE_URL:
-        collection = alldata[content_type]
-        for item in collection.itervalues():
-            testapp.post_json(url, item, status=201)
+    post_collection(testapp, alldata, content_type)
