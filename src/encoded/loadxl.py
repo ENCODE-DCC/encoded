@@ -19,12 +19,14 @@ TYPE_URL = {
      'donor': '/donors/',
      'document': '/documents/',
      'biosample': '/biosamples/',
+     'document':  '/documents/',
      'submitter': '/submitters/',
      'colleague': '/users/',
      'lab': '/labs/',
      'award': '/awards/',
     ##{ 'institute': '/institutes/'),
    }
+
 
 def resolve_dotted(value, name):
     for key in name.split('.'):
@@ -181,13 +183,16 @@ def data_uri(stream, mime_type):
 def post_collection(testapp, alldata, content_type):
     url = TYPE_URL[content_type]
     collection = alldata[content_type]
+    nload = 0
     for uuid, value in list(collection.iteritems()):
         try:
             testapp.post_json(url, value, status=201)
+            nload += 1
         except Exception as e:
             logger.warn('Error submitting %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, value))
             del alldata[content_type][uuid]
             continue
+    logger.info('Loaded %d %s out of %d' % (nload, content_type, len(collection)))
 
 
 def load_all(testapp, filename, docsdir):
@@ -213,12 +218,20 @@ def load_all(testapp, filename, docsdir):
     ##award_index = multi_index(alldata['award'], 'pi_last_name')
 
     content_type = 'organism'
-    post_collection(testapp, alldata, content_type)
     organism_index = value_index(alldata[content_type], 'organism_name')
+
+    content_type = 'donor'
+    post_collection(testapp, alldata, content_type)
 
     content_type = 'source'
     post_collection(testapp, alldata, content_type)
     source_index = value_index(alldata[content_type], 'source_name')
+
+    content_type = 'biosample'
+    post_collection(testapp, alldata, content_type)
+
+    content_type = 'document'
+    post_collection(testapp, alldata, content_type)
 
     content_type = 'target'
     for uuid, value in list(alldata[content_type].iteritems()):
