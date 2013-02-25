@@ -142,6 +142,11 @@ table thead tr th button {
 	background-position: 7px 6px;
 }
 
+// initial state is hidden (see template; class=hide)
+#total-records {
+	font-weight: normal;
+}
+
 
 
 
@@ -408,4 +413,5 @@ h3 .label {
 	line-height: 20px;
 	position: relative;
 	top: -3px;
+	left: 15px;
 }

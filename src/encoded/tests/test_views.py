@@ -113,7 +113,7 @@ def test_load_workbook(testapp):
     load_all(testapp, workbook, docsdir)
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
     assert res.json['_links']['items']
-    assert len(res.json['_links']['items']) == 21
+    assert len(res.json['_links']['items']) == 16
     res = testapp.get('/antibodies/?limit=10', headers={'Accept': 'application/json'}, status=200)
     assert res.json['_links']['items']
     assert len(res.json['_links']['items']) == 10

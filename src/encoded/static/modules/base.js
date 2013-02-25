@@ -207,6 +207,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 });
              $("#table-count").removeClass("label-warning").removeClass("spinner-warning").addClass("label-invert");
              	$(".table-filter").removeAttr("disabled");
+             	$("#total-records").removeClass("hide");
                 $table.table_sorter().table_filter();
 
             }, this));

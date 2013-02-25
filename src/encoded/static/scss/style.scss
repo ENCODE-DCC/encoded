@@ -58,12 +58,17 @@
 @import "accordion";
 @import "carousel";
 @import "hero-unit";
+
+// Compass
 @import "compass/css3/text-shadow";
 @import "compass/css3/box-shadow";
 @import "compass/css3/transition";
 @import "compass/layout/sticky-footer";
 @import "compass/css3/images";
 @import "compass/typography/text/force-wrap";
+
+// Font Awesome
+@import "fontawesome";
 
 // Custom styles and overrides
 @import "main"; // bootstrap over-rides and main styles for ENCODE site and apps

@@ -5,7 +5,7 @@
         <tr class="nosort table-controls">
          <?js if(view.table_header.length > 0) { ?>
             <th colspan="{view.table_header.length}">
-                <span id="table-count" class="label label-warning spinner-warning">Loading...</span>
+                <span id="table-count" class="label label-warning spinner-warning">Loading...</span><span id="total-records" class="hide">of {model.length} records</span>
                 <input disabled="" name="table-filter" type="text" class="table-filter" placeholder="Filter by...">
             </th>
         </tr>
@@ -28,7 +28,7 @@
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="{view.table_header.length}">{model.length} Rows.</td>
+            <td colspan="{view.table_header.length}"><!-- {model.length} Rows. --></td>
         </tr>
     </tfoot>
 </table>
