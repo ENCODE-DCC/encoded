@@ -10,6 +10,24 @@ import xlrd
 
 logger = logging.getLogger('encoded')
 
+TYPE_URL = [
+    ('organism', '/organisms/'),
+    ('source', '/sources/'),
+    ('target', '/targets/'),
+    ('antibody_lot', '/antibody-lots/'),
+    ('validation', '/validations/'),
+    ('antibody_approval', '/antibodies/'),
+    ('donor', '/donors/'),
+    ('document', '/documents/'),
+    ('biosample', '/biosamples/'),
+    ('submitter', '/submitters/'),
+    ('colleague', '/users/'),
+    ('lab', '/labs/'),
+    ('award', '/awards/'),
+    ##('institute', '/institutes/'),
+   ]
+
+
 
 def convert(type_, value):
     if type_ is None:
@@ -99,23 +117,6 @@ def extract(filename, sheets):
             row['_uuid'] = uuid
             data[uuid] = row
     return alldata
-
-TYPE_URL = [
-    ('organism', '/organisms/'),
-    ('source', '/sources/'),
-    ('target', '/targets/'),
-    ('antibody_lot', '/antibody-lots/'),
-    ('validation', '/validations/'),
-    ('antibody_approval', '/antibodies/'),
-    ('donor', '/donors/'),
-    ('document', '/documents/'),
-    ('biosample', '/biosamples/'),
-    ('submitter', '/submitters/'),
-    ('colleague', '/users/'),
-    ('lab', '/labs/'),
-    ('award', '/awards/'),
-    #('institute', '/institutes/'),
-   ]
 
 
 def value_index(data, attribute):
