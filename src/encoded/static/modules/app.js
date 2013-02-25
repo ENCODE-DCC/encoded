@@ -1,14 +1,22 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'targets', 'sources', 'navbar'],
-function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, navbar) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'targets', 'sources', 'navbar', 'generic'],
+function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, navbar, generic) {
 
     var routes = {
-        home: '',
-        antibodies: 'antibodies/',
-        antibody: 'antibodies/:uuid',
-        targets: 'targets/',
-        target: 'targets/:uuid',
-        sources: 'sources/',
-        source: 'sources/:uuid'
+        home: [''],
+        antibodies: ['antibodies/'],
+        antibody: ['antibodies/:uuid'],
+        targets: ['targets/'],
+        target: ['targets/:uuid'],
+        sources: ['sources/'],
+        source: ['sources/:uuid'],
+        generics: [
+            'biosamples/',
+            'labs/'
+        ],
+        generic: [
+            'biosamples/:uuid',
+            'labs/:uuid'
+        ]
         //login: '#login'
         //logout: '#logout'
     };
@@ -27,8 +35,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
         start: function start() {
             this.config = new exports.Config();
             var view_registry = this.view_registry = base.View.view_registry;
-            _(routes).each(function (pattern, route_name) {
-                view_registry.add_route(route_name, pattern);
+            _(routes).each(function (patterns, route_name) {
+                view_registry.add_route(route_name, patterns);
             });
             _(slots).each(function (selector, slot_name) {
                 view_registry.add_slot(slot_name, selector);
@@ -39,6 +47,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
             view_registry.switch_to(navbar_view, true);
             this.setupNavigation();
             this.trigger('started');
+            console.log(view_registry);
+            console.log(this.router);
         },
 
         setupNavigation: function setupNavigation() {

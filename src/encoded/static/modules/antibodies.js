@@ -31,10 +31,6 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
         url: '/antibodies/'
     });
 
-    //exports.AntibodyRowView = base.RowView.extend({
-    //    template: _.template(row_template)
-    //});
-
     // The antibodies home screen
     var AntibodiesHomeView = exports.AntibodiesHomeView = base.TableView.extend({
         template: _.template(home_template),
@@ -74,6 +70,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
     var AntibodyView = exports.AntibodyView = base.View.extend({
         validation: exports.ValidationView,
         initialize: function initialize(options) {
+            debugger;
             var model = options.model,
                 deferred = $.Deferred();
             this.deferred = deferred;

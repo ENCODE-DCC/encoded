@@ -37,6 +37,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
           if (!callback) callback = this[name];
           Backbone.history.route(route, _.bind(function(fragment) {
             var args = this._extractParameters(route, fragment);
+            args.push(fragment.replace(/\/.*/g, '/'));
             if (callback) $.when(callback.apply(this, args)).done(_.bind(function () {
                 this.trigger.apply(this, ['route:' + name].concat(args));
                 Backbone.history.trigger('route', this, name, args);
@@ -56,13 +57,13 @@ function base(exports, $, _, Backbone, HAL, assert) {
             this.slots[slot_name] = $(selector);
         },
 
-        add_route: function add_route(route_name, pattern) {
-            this.routes[route_name] = pattern;
+        add_route: function add_route(route_name, patterns) {
+            this.routes[route_name] = patterns;
         },
 
-        add_view: function add_view(route_name, view_factory) {
-            this.views[route_name] = view_factory;
-        },
+        //add_view: function add_view(route_name, view_factory) {
+        //    this.views[route_name] = view_factory;
+        //},
 
         defer: function defer(view) {
             this.deferred.push(view);
@@ -102,9 +103,11 @@ function base(exports, $, _, Backbone, HAL, assert) {
         make_router: function make_router(routes) {
             this.process_deferred();
             var router = this.router = new DeferredRouter();
-            var rev_routes = _(this.routes).map(function (pattern, route_name) {
-                return {route_name: route_name, pattern: pattern};
-            }).reverse();
+            var rev_routes = _(_(this.routes).map(function (patterns, route_name) {
+                return _(patterns).map(function (patt) {
+                    return { route_name: route_name, pattern: patt };
+                });
+            })).flatten().reverse();
             var view_registry = this;
             _(rev_routes).each(function (route) {
                 var view_factory = view_registry.views[route.route_name];
@@ -133,9 +136,8 @@ function base(exports, $, _, Backbone, HAL, assert) {
 
         // Views should define their own `template`
         template: undefined,
-
+        // surprisingly this function is necessary...
         update: function update() {},
-
         // Render the view
         render: function render() {
             this.update();

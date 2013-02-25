@@ -82,7 +82,6 @@ class PageOrJSON:
 
     def __call__(self, value, system):
         request = system.get('request')
-
         vary = request.environ.get('encoded.vary', None)
         if vary is not None:
             original_vary = request.response.vary or ()

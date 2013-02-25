@@ -2,6 +2,7 @@ requirejs.config({
     baseUrl: '/static',
 
     paths: {
+        generic: 'modules/generic',
         antibodies: 'modules/antibodies',
         targets: 'modules/targets',
         sources: 'modules/sources',
