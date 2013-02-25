@@ -11,15 +11,15 @@
 <div class="panel data-display">
 
 	<div class="data-group">
-		<label class="data-label" for="source-name">Source name (vendor):</label>
+		<label class="data-label" for="source-name">Source (vendor):</label>
 		<div class="data-values">
-			<span id="source-name" class="data-point"><a href="{_.result(model.links.antibody_lot.links.source, 'url')}">{model.links.antibody_lot.links.source.get('source_name')}</a></span>
+			<span id="source-name" class="data-point"><a href="{model.links.antibody_lot.links.source.get('url')}"> {model.links.antibody_lot.links.source.get('source_name')} <span class="icon-external-link"></span></a></span>
 		</div>
 	</div>
 	<div class="data-group">
 		<label class="data-label" for="product-id">Product ID:</label>
 		<div class="data-values">
-			<span id="product-id" class="data-point"><a href="{_.result(model.links.antibody_lot, 'url')}">{model.links.antibody_lot.get('product_id')}</a></span>
+			<span id="product-id" class="data-point"><a href="{model.links.antibody_lot.get('url')}">{model.links.antibody_lot.get('product_id')} <span class="icon-external-link"></span></a></span>
 		</div>
 	</div>
 	<div class="data-group">
