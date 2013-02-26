@@ -1,5 +1,5 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'targets', 'sources', 'navbar', 'generic'],
-function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, navbar, generic) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'biosamples', 'targets', 'sources', 'navbar', 'generic'],
+function app(exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, navbar, generic) {
 
     var routes = {
         home: [''],
@@ -9,8 +9,9 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
         target: ['targets/:uuid'],
         sources: ['sources/'],
         source: ['sources/:uuid'],
+        biosamples: ['biosamples/'],
+        biosample: ['biosample/:uuid'],
         generics: [
-            'biosamples/',
             'labs/',
             'users/',
             'documents/',
@@ -19,7 +20,6 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
 //            'institutes/'
         ],
         generic: [
-            'biosamples/:uuid',
             'labs/:uuid',
             'users/:uuid',
             'documents/:uuid',
@@ -97,6 +97,7 @@ function app(exports, $, _, Backbone, base, home, antibodies, targets, sources, 
         global_sections: [
             {id: 'home', title: 'Home', url: '/'},
             {id: 'antibodies', title: 'Antibodies', url: '/antibodies/'},
+            {id: 'biosamples', title: 'Biosamples', url: '/biosamples/'},
             {id: 'targets', title: 'Targets', url: '/targets/'},
             {id: 'sources', title: 'Sources', url: '/sources/'}
        ],
