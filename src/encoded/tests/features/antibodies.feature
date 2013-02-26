@@ -12,6 +12,7 @@ Feature: Antibodies
         And I should see an element with the css selector "#content.container"
         And I should see an element with the css selector "table.sticky-area"
         And I should see an element with the css selector "table.sticky-area > tbody > tr"
+        # sometimes this next test fails... possibly due to timing
         And I should see at least 100 elements with the css selector "table.sticky-area > tbody > tr"
         And I should see an element with the css selector "a[href='/antibodies/d6947988-8fea-4c13-b2ec-2381e7f7a84f']"
         When I fill in "table-filter" with "mouse"
