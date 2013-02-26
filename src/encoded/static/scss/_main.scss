@@ -100,7 +100,7 @@ table tbody tr.alt { background: #f9f9f9; }
 /* table tbody tr:nth-child(even) { background: #f9f9f9; } */
 table tbody tr td { color: #333; padding: 9px 10px; vertical-align: top; border: none; }
 
-/* Table Sorting */
+/* Table Sorting 
 table.tablesorter thead tr .header {
 	background-image: url(../img/bg.gif);
 	background-repeat: no-repeat;
@@ -119,6 +119,18 @@ background-color: darken($tableHeadFootBackgroundColor, 10%);
 
 .tablesorter thead tr th {
 	padding-right: 16px;
+}
+
+*/
+
+table thead tr th {
+	 padding-right: 30px;
+}
+
+.sortdirection {
+	float: right;
+    margin-right: -22px;
+    margin-top: 2px;  
 }
 
 /* Table Controls */
@@ -225,6 +237,14 @@ $footerBorder:              #0f2a42 !default;
 	color: $white;
 	text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
 }
+
+/*
+#page-footer {
+	background-color: #E8ECEF;
+	-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
+	box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8); 
+}
+*/
 
 
 // fix footer width for small screens
