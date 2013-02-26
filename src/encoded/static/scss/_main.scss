@@ -219,6 +219,14 @@ $footerBorder:              #0f2a42 !default;
 	padding-top: 50px;
 }
 
+// top padding for small screens
+@media (max-width: 979px) {
+	#content {
+			padding-top: 0;
+	}
+}
+
+
 @include sticky-footer($footerHeight, "#layout", "#layout-footer", "#page-footer");
 
 #page-footer #footer-top {
@@ -247,7 +255,7 @@ $footerBorder:              #0f2a42 !default;
 */
 
 
-// fix footer width for small screens
+// fix footer width for small screens + content margin fix
 @media (max-width: 767px) {
 	#footer {
 		margin-left: -20px;
