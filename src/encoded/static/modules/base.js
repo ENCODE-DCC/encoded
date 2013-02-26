@@ -61,10 +61,6 @@ function base(exports, $, _, Backbone, HAL, assert) {
             this.routes[route_name] = patterns;
         },
 
-        //add_view: function add_view(route_name, view_factory) {
-        //    this.views[route_name] = view_factory;
-        //},
-
         defer: function defer(view) {
             this.deferred.push(view);
         },

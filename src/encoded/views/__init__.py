@@ -22,8 +22,6 @@ collections = [
     ('labs', 'lab'),
     ('awards', 'award'),
     ('users', 'user'),
-    ('submitters', 'submitter'),
-    ('colleagues', 'colleague'),
     ('documents', 'document'),
 ]
 
