@@ -11,3 +11,11 @@ def should_see_element_with_css_and_text(context, css, text):
     elements = context.browser.find_by_css(css)
     assert len(elements) == 1
     assert elements.first.text == text
+
+
+@when(u'I click the element with the css selector "{css}"')
+@persona_vars
+def click_element(context, css):
+    elements = context.browser.find_by_css(css)
+    assert len(elements) == 1
+    elements.first.click()

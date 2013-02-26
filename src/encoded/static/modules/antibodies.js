@@ -114,11 +114,5 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
         model_factory: exports.antibody_factory
     });
 
-    // Make the rows clickable
-    $(document).on('click', 'tr[data-href]', function click(evt) {
-        // XXX Should probably redispatch to a real link for cmd-click to work
-        Backbone.history.navigate($(this).attr("data-href"), true);
-    });
-
-    return exports;
+     return exports;
 });

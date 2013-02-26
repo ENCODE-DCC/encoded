@@ -235,7 +235,27 @@ function base(exports, $, _, Backbone, HAL, assert) {
             });
 
             return this;
+        },
+
+        events: {
+            "click td": "link"
+        },
+
+        link: function(event) {
+            console.log("table cell clicked");
+            $td = $(event.currentTarget);
+            $anchs = $td.children("a");
+            if ($anchs.length == 1) {
+                $anchs[0].click();
+                return;
+            } else if ($anchs.length) {
+                // can't pick anchor so do nothing
+                return;
+            }
+
+            Backbone.history.navigate($td.parents("tr[data-href]").attr("data-href"), true);
         }
+
     });
 
     exports.Model = HAL.Model.extend({});
