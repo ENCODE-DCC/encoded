@@ -1,5 +1,9 @@
-from cornice.resource import view
+from ..resource import view
 from pyramid.exceptions import NotFound
+from pyramid.security import (
+    Allow,
+    Everyone,
+    )
 from pyramid.threadlocal import manager
 from ..storage import (
     DBSession,
@@ -9,8 +13,6 @@ from ..storage import (
 
 
 def includeme(config):
-    # RootFactory is just a stub for later
-    config.include('cornice')
     config.scan('.views')
 
 
@@ -43,8 +45,6 @@ def maybe_include_embedded(request, result):
 
 
 class CollectionViews(object):
-    collection = None
-    item_type = None
     properties = None
     links = {
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
@@ -53,12 +53,20 @@ class CollectionViews(object):
         }
     embedded = {}
 
+    __acl__ = [
+            (Allow, Everyone, 'list'),
+            (Allow, Everyone, 'add'),
+            (Allow, Everyone, 'view'),
+            (Allow, Everyone, 'edit'),
+            ]
+
     def __init__(self, request):
         self.request = request
-        self.collection_uri = request.route_path('/%s/' % self.collection)
+        self.collection_uri = request.route_path(self.__collection_route__)
+        self.item_type = self.__route__
 
     def item_uri(self, name):
-        return self.request.route_path('/%s/{path_segment}' % self.collection, path_segment=name)
+        return self.request.route_path(self.__route__, path_segment=name)
 
     def maybe_embed(self, rel, href):
         if rel in self.embedded:
@@ -132,6 +140,7 @@ class CollectionViews(object):
         # No need for request data when rendering the single page html
         return self.request.environ.get('encoded.format') == 'html'
 
+    @view(permission='list')
     def collection_get(self):
         try:
             nrows = self.request.params['limit']
@@ -172,7 +181,7 @@ class CollectionViews(object):
         maybe_include_embedded(self.request, result)
         return result
 
-    @view(validators=('validate_collection_post',))
+    @view(validators=('validate_collection_post',), permission='add')
     def collection_post(self):
         session = DBSession()
         item = self.request.validated
@@ -193,9 +202,10 @@ class CollectionViews(object):
             }
         return result
 
-    def validate_collection_post(self, request):
-        request.validated = request.json_body
+    def validate_collection_post(self):
+        self.request.validated = self.request.json_body
 
+    @view(permission='view')
     def get(self):
         key = (self.request.matchdict['path_segment'], self.item_type)
         session = DBSession()
