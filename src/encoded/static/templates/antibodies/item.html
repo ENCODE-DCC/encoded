@@ -31,7 +31,7 @@
 	<div class="data-group">
 		<label class="data-label" for="target-label">Target:</label>
 		<div class="data-values">
-			<span id="target-label" class="data-point">{model.links.target.get('target_label')}</span>
+			<span id="target-label" class="data-point"><a href="{_.result(model.links.target, 'url')}">{model.links.target.get('target_label')}</a></span>
 		</div>
 	</div>
 	<div class="data-group">

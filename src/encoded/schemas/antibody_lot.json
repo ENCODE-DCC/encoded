@@ -1,0 +1,211 @@
+{
+    "title": "", 
+    "description": "", 
+    "default": null, 
+    "type": [
+        "object", 
+        "null"
+    ], 
+    "properties": {
+        "_uuid": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "antibody_accession": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "antibody_description": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "antigen_description": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "antigen_sequence": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "clonality": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "dbxref": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "items": {
+                "title": "", 
+                "description": "", 
+                "default": null, 
+                "type": [
+                    "object", 
+                    "null"
+                ], 
+                "properties": {
+                    "db": {
+                        "title": "", 
+                        "description": "", 
+                        "default": null, 
+                        "type": [
+                            "string", 
+                            "null"
+                        ]
+                    }, 
+                    "id": {
+                        "title": "", 
+                        "description": "", 
+                        "default": null, 
+                        "type": [
+                            "string", 
+                            "null"
+                        ]
+                    }
+                }
+            }, 
+            "type": [
+                "array", 
+                "null"
+            ]
+        }, 
+        "host_organism": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "is_obsolete": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "isotype": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "lot_id": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "product_id": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "purification": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "source_uuid": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "submittd_by": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "submitted_by_grant": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "submitted_by_pi": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "target_label": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }, 
+        "url": {
+            "title": "", 
+            "description": "", 
+            "default": null, 
+            "type": [
+                "string", 
+                "null"
+            ]
+        }
+    }
+}

@@ -1,0 +1,83 @@
+{
+    "default": null,
+    "description": "",
+    "properties": {
+        "_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "antibody_lot_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "approval_status": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "project": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "target_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "ucsc alias for cricket reference": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "validation_uuids": {
+            "default": null,
+            "description": "",
+            "items": {
+                "default": null,
+                "description": "",
+                "title": "",
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "title": "",
+            "type": [
+                "array",
+                "null"
+            ]
+        }
+    },
+    "title": "",
+    "type": [
+        "object",
+        "null"
+    ]
+}

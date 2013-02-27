@@ -73,6 +73,7 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
                     return;
                 }
                 // Get the absolute anchor href.
+                console.log("anchor link clicked");
                 var href = {prop: $(this).prop("href"), attr: $(this).attr("href")};
                 // Get the absolute root.
                 var root = location.protocol + "//" + location.host + '/';
@@ -81,7 +82,6 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
                     // Stop the default event to ensure the link will not cause a page
                     // refresh.
                     evt.preventDefault();
-
                     // `Backbone.history.navigate` is sufficient for all Routers and will
                     // trigger the correct events. The Router's internal `navigate` method
                     // calls this anyways.  The fragment is sliced from the root.
@@ -89,7 +89,6 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
                 }
             });
         }
-
     });
 
     exports.Config = Backbone.Model.extend({

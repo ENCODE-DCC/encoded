@@ -89,9 +89,9 @@ $.fn.setoddeven = function() {
 
 $.fn.table_sorter = function () {
     // set up blank spaceholder gif
-    var blankarrow = $('<i></i>').addClass('sortdirection icon-').css({float: 'right', 'margin-left': '1em'});
+    var blankarrow = $('<i></i>').addClass('sortdirection icon-');
     // all listing tables not explicitly nosort, all sortable th cells
-    // give them a pointer cursor and  blank cell and click event handler
+    // give them a pointer cursor and blank cell and click event handler
     // the first one of the cells gets a up arrow instead.
     return this.each(function () {
         var $this = jQuery(this);

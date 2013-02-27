@@ -1,0 +1,202 @@
+{
+    "default": null,
+    "description": "",
+    "properties": {
+        "_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "antibody_lot_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "caption": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "date_validated": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "document": {
+            "default": null,
+            "description": "",
+            "properties": {
+                "download": {
+                    "default": null,
+                    "description": "",
+                    "title": "",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "height": {
+                    "default": null,
+                    "description": "",
+                    "title": "",
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                },
+                "href": {
+                    "default": null,
+                    "description": "",
+                    "title": "",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "type": {
+                    "default": null,
+                    "description": "",
+                    "title": "",
+                    "type": [
+                        "string",
+                        "null"
+                    ]
+                },
+                "width": {
+                    "default": null,
+                    "description": "",
+                    "title": "",
+                    "type": [
+                        "integer",
+                        "null"
+                    ]
+                }
+            },
+            "title": "",
+            "type": [
+                "object",
+                "null"
+            ]
+        },
+        "is_current": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "boolean",
+                "null"
+            ]
+        },
+        "lot_id": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "product_id": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "reference": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "submitted_by": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "submitted_by_grant": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "submitted_by_pi": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "target_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "validated_by": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "validation_method": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "validation_status": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        }
+    },
+    "title": "",
+    "type": [
+        "object",
+        "null"
+    ]
+}
