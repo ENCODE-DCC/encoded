@@ -1,57 +1,53 @@
-from pyramid.view import view_config
+from ..resource import resource
 from . import CollectionViews
 
 
-@view_config(route_name='home', request_method='GET')
-def home(request):
-    result = {
-        'title': 'Home',
-        'portal_title': 'ENCODE 3',
-        '_links': {
-            'self': {'href': request.route_path('home')},
-            'profile': {'href': '/profiles/portal'},
-            # 'login': {'href': request.route_path('login')},
-            },
-        }
-    return result
+@resource(pattern='')
+class Home(object):
+    def __init__(self, request):
+        self.request = request
+
+    def get(self):
+        request = self.request
+        result = {
+            'title': 'Home',
+            'portal_title': 'ENCODE 3',
+            '_links': {
+                'self': {'href': request.route_path(self.__route__)},  # See http://git.io/_OKINA
+                'profile': {'href': '/profiles/portal'},
+                # 'login': {'href': request.route_path('login')},
+                },
+            }
+        return result
 
 
-@CollectionViews.config(
 #    permission='admin'  ## this prevents loading of users via post_json
-)
-class Users(CollectionViews):
-    collection = 'users'
-    item_type = 'user'
+@resource(pattern='/users/{path_segment}', collection_pattern='/users/')
+class User(CollectionViews):
     properties = {
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
         }
 
 
-@CollectionViews.config()
-class Labs(CollectionViews):
-    collection = 'labs'
-    item_type = 'lab'
+@resource(pattern='/labs/{path_segment}', collection_pattern='/labs/')
+class Lab(CollectionViews):
     properties = {
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
         }
 
 
-@CollectionViews.config()
-class Awards(CollectionViews):
-    collection = 'awards'
-    item_type = 'award'
+@resource(pattern='/awards/{path_segment}', collection_pattern='/awards/')
+class Award(CollectionViews):
     properties = {
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
         }
 
 
-@CollectionViews.config()
+@resource(name='antibody_lot', pattern='/antibody-lots/{path_segment}', collection_pattern='/antibody-lots/')
 class AntibodyLots(CollectionViews):
-    collection = 'antibody-lots'
-    item_type = 'antibody_lot'
     properties = {
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
@@ -62,39 +58,32 @@ class AntibodyLots(CollectionViews):
     embedded = set(['source'])
 
 
-@CollectionViews.config()
-class Organisms(CollectionViews):
-    collection = 'organisms'
-    item_type = 'organism'
+@resource(pattern='/organisms/{path_segment}', collection_pattern='/organisms/')
+class Organism(CollectionViews):
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
         }
 
 
-@CollectionViews.config()
-class Sources(CollectionViews):
-    collection = 'sources'
-    item_type = 'source'
+@resource(pattern='/sources/{path_segment}', collection_pattern='/sources/')
+class Source(CollectionViews):
     properties = {
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
         }
 
 
-@CollectionViews.config()
-class Biosamples(CollectionViews):
-    collection = 'biosamples'
-    item_type = 'biosample'
+@resource(pattern='/biosamples/{path_segment}', collection_pattern='/biosamples/')
+class Biosample(CollectionViews):
     properties = {
         'title': 'Biosamples',
         'description': 'Listing of ENCODE3 biosamples',
         }
 
 
-@CollectionViews.config()
-class Targets(CollectionViews):
-    collection = 'targets'
+@resource(pattern='/targets/{path_segment}', collection_pattern='/targets/')
+class Target(CollectionViews):
     item_type = 'target'
     properties = {
         'title': 'Targets',
@@ -107,10 +96,8 @@ class Targets(CollectionViews):
 
 
 # The following should really be child collections.
-@CollectionViews.config()
-class Validations(CollectionViews):
-    collection = 'validations'
-    item_type = 'validation'
+@resource(pattern='/validations/{path_segment}', collection_pattern='/validations/')
+class Validation(CollectionViews):
     properties = {
         'title': 'Antibody Validations',
         'description': 'Listing of antibody validation documents',
@@ -122,10 +109,8 @@ class Validations(CollectionViews):
     embedded = set(['antibody_lot', 'target'])
 
 
-@CollectionViews.config()
-class AntibodyApprovals(CollectionViews):
-    collection = 'antibodies'
-    item_type = 'antibody_approval'
+@resource(name='antibody_approval', pattern='/antibodies/{path_segment}', collection_pattern='/antibodies/')
+class AntibodyApproval(CollectionViews):
     properties = {
         'title': 'Antibody Approvals',
         'description': 'Listing of validation approvals for ENCODE antibodies',

@@ -3,6 +3,11 @@ def test_home_html(testapp):
     assert res.body.startswith('<!DOCTYPE html>')
 
 
+def test_home_json(testapp):
+    res = testapp.get('/', headers={'Accept': 'application/json'}, status=200)
+    assert res.json_body['title'] == 'Home'
+
+
 ## these could all be tested with ?format=json as well.
 def test_antibodies_html(testapp):
     res = testapp.get('/antibodies/', status=200)

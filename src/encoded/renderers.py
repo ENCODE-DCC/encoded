@@ -1,6 +1,6 @@
 from pkg_resources import resource_string
 from pyramid.events import (
-    ContextFound,
+    NewRequest,
     subscriber,
     )
 from pyramid.threadlocal import (
@@ -12,6 +12,8 @@ import uuid
 
 
 class JSON(pyramid.renderers.JSON):
+    '''Provide easier access to the configured serializer
+    '''
     def dumps(self, value):
         request = get_current_request()
         default = json_renderer._make_default(request)
@@ -52,13 +54,15 @@ class PageRenderer:
         return self.page
 
 
-@subscriber(ContextFound)
+@subscriber(NewRequest)
 def choose_format(event):
-    if len(manager.stack) != 1:
+    # Ignore subrequests
+    if len(manager.stack) > 1:
         return
+
     # Discriminate based on Accept header or format parameter
     request = event.request
-    if request.method != 'GET':
+    if request.method not in ('GET', 'HEAD'):
         request.environ['encoded.format'] = 'json'
         return
 
@@ -69,6 +73,8 @@ def choose_format(event):
         format = mime_type.split('/', 1)[1]
     else:
         format = format.lower()
+        if format not in ('html', 'json'):
+            format = 'html'
 
     request.environ['encoded.format'] = format
 

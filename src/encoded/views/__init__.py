@@ -1,35 +1,18 @@
+from ..resource import view
 from pyramid.exceptions import NotFound
-from pyramid.threadlocal import manager
-from pyramid.view import view_config
-from ..authz import (
-    RootFactory
+from pyramid.security import (
+    Allow,
+    Everyone,
     )
+from pyramid.threadlocal import manager
 from ..storage import (
     DBSession,
     CurrentStatement,
     Resource,
     )
 
-collections = [
-    ('antibodies', 'antibody_approval'),
-    ('organisms', 'organism'),
-    ('sources', 'source'),
-    ('targets', 'target'),
-    ('validations', 'validation'),
-    ('antibody-lots', 'antibody_lot'),
-    ('biosamples', 'biosample'),
-    ('labs', 'lab'),
-    ('awards', 'award'),
-    ('users', 'user'),
-]
-
 
 def includeme(config):
-    # RootFactory is just a stub for later
-    config.add_route('home', '')
-    for collection, item_type in collections:
-        config.add_route(collection, '/%s/' % collection, factory=RootFactory)
-        config.add_route(item_type, '/%s/{path_segment}' % collection, factory=RootFactory)
     config.scan('.views')
 
 
@@ -62,35 +45,28 @@ def maybe_include_embedded(request, result):
 
 
 class CollectionViews(object):
-    collection = None
-    item_type = None
     properties = None
     links = {
-        'self': {'href': '/{collection}/{_uuid}', 'templated': True},
-        'collection': {'href': '/{collection}/', 'templated': True},
+        'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
+        'collection': {'href': '{collection_uri}', 'templated': True},
         'profile': {'href': '/profiles/{item_type}', 'templated': True},
         }
     embedded = {}
 
-    @classmethod
-    def config(cls, **settings):
-        settings['_depth'] = settings.get('_depth', 0) + 1
-
-        def decorate(wrapped):
-            assert issubclass(wrapped, cls), "Can only configure %s" % cls.__name__
-            view_config(route_name=wrapped.collection, request_method='GET', attr='list', **settings)(wrapped)
-            view_config(route_name=wrapped.collection, request_method='POST', attr='create', **settings)(wrapped)
-            view_config(route_name=wrapped.item_type, request_method='GET', attr='get', **settings)(wrapped)
-            return wrapped
-
-        return decorate
+    __acl__ = [
+            (Allow, Everyone, 'list'),
+            (Allow, Everyone, 'add'),
+            (Allow, Everyone, 'view'),
+            (Allow, Everyone, 'edit'),
+            ]
 
     def __init__(self, request):
         self.request = request
-        self.collection_uri = request.route_path(self.collection)
+        self.collection_uri = request.route_path(self.__collection_route__)
+        self.item_type = self.__route__
 
     def item_uri(self, name):
-        return self.request.route_path(self.item_type, path_segment=name)
+        return self.request.route_path(self.__route__, path_segment=name)
 
     def maybe_embed(self, rel, href):
         if rel in self.embedded:
@@ -124,7 +100,6 @@ class CollectionViews(object):
                             value['href'] = member['href'].format(
                                 collection_uri=self.collection_uri,
                                 item_type=self.item_type,
-                                collection=self.collection,
                                 **ns)
                             out.append(value)
                             self.maybe_embed(rel, value['href'])
@@ -134,7 +109,6 @@ class CollectionViews(object):
                         value['href'] = member['href'].format(
                             collection_uri=self.collection_uri,
                             item_type=self.item_type,
-                            collection=self.collection,
                             **ns)
                         out.append(value)
                         self.maybe_embed(rel, value['href'])
@@ -146,7 +120,6 @@ class CollectionViews(object):
                 value['href'] = value['href'].format(
                     collection_uri=self.collection_uri,
                     item_type=self.item_type,
-                    collection=self.collection,
                     **item)
                 self.maybe_embed(rel, value['href'])
             else:
@@ -167,7 +140,8 @@ class CollectionViews(object):
         # No need for request data when rendering the single page html
         return self.request.environ.get('encoded.format') == 'html'
 
-    def list(self):
+    @view(permission='list')
+    def collection_get(self):
         try:
             nrows = self.request.params['limit']
         except KeyError:
@@ -207,9 +181,10 @@ class CollectionViews(object):
         maybe_include_embedded(self.request, result)
         return result
 
-    def create(self):
+    @view(validators=('validate_collection_post',), permission='add')
+    def collection_post(self):
         session = DBSession()
-        item = self.request.json_body
+        item = self.request.validated
         rid = item.get('_uuid', None)
         resource = Resource({self.item_type: item}, rid)
         session.add(resource)
@@ -227,6 +202,10 @@ class CollectionViews(object):
             }
         return result
 
+    def validate_collection_post(self):
+        self.request.validated = self.request.json_body
+
+    @view(permission='view')
     def get(self):
         key = (self.request.matchdict['path_segment'], self.item_type)
         session = DBSession()
