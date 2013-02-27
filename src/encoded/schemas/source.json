@@ -1,0 +1,47 @@
+{
+    "default": null,
+    "description": "",
+    "properties": {
+        "_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "alias": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "source_name": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "url": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        }
+    },
+    "title": "",
+    "type": [
+        "object",
+        "null"
+    ]
+}

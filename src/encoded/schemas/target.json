@@ -1,0 +1,146 @@
+{
+    "default": null,
+    "description": "",
+    "properties": {
+        "_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "created_by": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "date_created": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "dbxref": {
+            "default": null,
+            "description": "",
+            "items": {
+                "default": null,
+                "description": "",
+                "title": "",
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "title": "",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "grant": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "is_current": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "boolean",
+                "null"
+            ]
+        },
+        "lab_pi": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "organism_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "project": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "target_class": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "target_gene_name": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "target_label": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "target_term_geneid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "target_term_uniprot": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        }
+    },
+    "title": "",
+    "type": [
+        "object",
+        "null"
+    ]
+}
