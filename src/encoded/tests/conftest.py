@@ -9,7 +9,8 @@ settings = {
     'persona.secret': 'GLIDING LIKE A WHALE',
     'persona.audiences': 'http://localhost:6543',
     'persona.siteName': 'ENCODE DCC Submission',
-    }
+    'load_test_only': True,
+}
 
 import logging
 

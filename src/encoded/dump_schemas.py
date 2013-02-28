@@ -12,7 +12,7 @@ TYPE_URL = {
     'antibody_lot': '/antibody-lots/',
     'validation': '/validations/',
     'antibody_approval': '/antibodies/',
-    }
+}
 
 SKIP = ['_embedded', '_links']
 
@@ -23,7 +23,7 @@ json_format = {
     'sort_keys': True,
     'indent': 4,
     'separators': (',', ': '),
-    }
+}
 
 for item in TYPE_URL.keys():
     fn = outdir + item + ".json"
@@ -44,13 +44,12 @@ for item in TYPE_URL.keys():
         fh = open(fn, "w")
     except:
         sys.stdout.write("Could not open %s\n" % fn)
-        break
+        continue
 
     fh.write(json.dumps(basic_schema(individual),
-        sort_keys=json_format['sort_keys'],
-        indent=json_format['indent'],
-        separators=json_format['separators'],
-        )
+                        sort_keys=json_format['sort_keys'],
+                        indent=json_format['indent'],
+                        separators=json_format['separators'],
+                        )
     )
     fh.close()
-

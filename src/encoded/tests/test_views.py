@@ -113,9 +113,11 @@ def test_sample_data(testapp):
 def test_load_workbook(testapp):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
-    workbook = resource_filename('encoded', 'tests/data/ENCODE_DCC_TestMetadata.xlsx')
+    workbook = resource_filename('encoded', 'tests/data//master_encode3_interface_submissions.xlsx')
     docsdir = resource_filename('encoded', 'tests/data/validation-docs/')
-    load_all(testapp, workbook, docsdir)
+    from conftest import settings
+    load_test_all = settings.get('load_test_all', False)
+    load_all(testapp, workbook, docsdir, test=load_test_all)
     res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
     assert res.json['_links']['items']
     assert len(res.json['_links']['items']) == 16

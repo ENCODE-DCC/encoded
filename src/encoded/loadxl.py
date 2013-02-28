@@ -8,24 +8,29 @@ import xlrd
 # http://www.lexicon.net/sjmachin/xlrd.html
 
 logger = logging.getLogger('encoded')
+logger.setLevel(logging.WARNING)  #doesn't work to shut off sqla INFO
 
 TYPE_URL = {
-     'organism': '/organisms/',
-     'source': '/sources/',
-     'target': '/targets/',
-     'antibody_lot': '/antibody-lots/',
-     'validation': '/validations/',
-     'antibody_approval': '/antibodies/',
-     'donor': '/donors/',
-     'document': '/documents/',
-     'biosample': '/biosamples/',
-     'document':  '/documents/',
-     'submitter': '/submitters/',
-     'colleague': '/users/',
-     'lab': '/labs/',
-     'award': '/awards/',
+    'organism': '/organisms/',
+    'source': '/sources/',
+    'target': '/targets/',
+    'antibody_lot': '/antibody-lots/',
+    'validation': '/validations/',
+    'antibody_approval': '/antibodies/',
+    'donor': '/donors/',
+    'document': '/documents/',
+    'biosample': '/biosamples/',
+    'document':  '/documents/',
+    'submitter': '/submitters/',
+    'colleague': '/users/',
+    'lab': '/labs/',
+    'award': '/awards/',
     ##{ 'institute': '/institutes/'),
-   }
+}
+
+
+class IndexContainer:
+    indices = {}
 
 
 def resolve_dotted(value, name):
@@ -96,31 +101,48 @@ def iter_rows(sheet, headers=None, hints=None, start=1):
         headers = [sheet.cell_value(0, col).lower().strip() for col in range(sheet.ncols)]
     for row in xrange(start, sheet.nrows):
         yield dict((name, cell_value(sheet, row, col, hints.get(name)))
-            for col, name in enumerate(headers) if name)
+                   for col, name in enumerate(headers) if name)
 
 
-def extract(filename, sheets):
-    alldata = {}
+def extract(filename, sheets, test=False):
+    alldata = {
+        'COUNTS': {}
+    }
     book = xlrd.open_workbook(filename)
     for name in sheets:
         data = alldata[name] = {}
-        sheet = book.sheet_by_name(name)
+        try:
+            sheet = book.sheet_by_name(name)
+        except xlrd.XLRDError, e:
+            logging.warn(e)
+            alldata['COUNTS'][name] = 0
+            continue
+
         for row in iter_rows(sheet):
+            if test:
+                try:
+                    if not row.pop(test):
+                        continue
+                except KeyError:
+                    ## row doesn't have test marking assume it's to be always loaded
+                    pass
             try:
                 # cricket method
                 uuid = row.pop('%s_uuid' % name)
             except KeyError:
-                # drew method
-                try:
-                    uuid = row.pop('guid')
-                except KeyError:
-                    # esther method, exceept where she put in extraneious (uuid)
-                    uuid = row.pop('%s_no' % name)
+                uuid = None
 
             if not uuid:
                 continue
             row['_uuid'] = uuid
+
+            for col, value in row.iteritems():
+                if col.find('_list') < 0:
+                    continue
+                row[col] = [v.strip() for v in (value or '').split(';') if v]
+
             data[uuid] = row
+        alldata['COUNTS'][name] = len(data.keys())
     return alldata
 
 
@@ -185,40 +207,66 @@ def post_collection(testapp, alldata, content_type):
     collection = alldata[content_type]
     nload = 0
     for uuid, value in list(collection.iteritems()):
+
         try:
             testapp.post_json(url, value, status=201)
             nload += 1
         except Exception as e:
-            logger.warn('Error submitting %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, value))
+            logger.warn('Error SUBMITTING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, value))
             del alldata[content_type][uuid]
             continue
-    logger.info('Loaded %d %s out of %d' % (nload, content_type, len(collection)))
+    logger.warn('Loaded %d %s out of %d' % (nload, content_type, alldata['COUNTS'][content_type]))
 
 
-def load_all(testapp, filename, docsdir):
+def assign_submitter(data, dtype, indices, last_name, pi_last_name, project):
+
+    try:
+        data['submitter_uuid'] = indices['colleague'][last_name]
+        data['lab_uuid'] = indices['lab'][pi_last_name]
+        data['award_uuid'] = indices['award'][(pi_last_name, project)]
+
+    except KeyError:
+        raise ValueError('No submitter/lab found for %s: %s (%s) (%s)' %
+                        (dtype, last_name, pi_last_name, project))
+
+
+def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
-    alldata = extract(filename, sheets)
+    alldata = extract(filename, sheets, test=test)
 
-    content_type = 'submitter'
-    post_collection(testapp, alldata, content_type)
-    # hacked because we don't really have grant/award data
-    submitter_index = multi_tuple_index(alldata['submitter'], 'last_name', 'lab_name')
-    ### note needs first name too, eventually!!!
-
-    content_type = 'colleague'
-    post_collection(testapp, alldata, content_type)
-    ##colleague_index = tuple_index(alldata['colleague'], 'last_name', 'first_name')
-
-    content_type = 'lab'
-    post_collection(testapp, alldata, content_type)
-    ##lab_index = value_index(alldata['lab'], 'lab_name')
+    indices = IndexContainer().indices
 
     content_type = 'award'
     post_collection(testapp, alldata, content_type)
-    ##award_index = multi_index(alldata['award'], 'pi_last_name')
+    award_id_index = value_index(alldata['award'], 'award_number')
+    award_index = tuple_index(alldata['award'], 'pi_last_name', 'project')
+    indices['award_id'] = award_id_index
+    indices['award'] = award_index
+
+    content_type = 'lab'
+    for uuid, value in list(alldata[content_type].iteritems()):
+        try:
+            assert type(value) == dict
+        except:
+            raise AttributeError("Bad lab: %s: %s" % (uuid, value))
+
+        value['pi_name'] = value.get('lab_name', '').split('.')[1]
+        ## no error trapping!
+
+    post_collection(testapp, alldata, content_type)
+    lab_index = value_index(alldata['lab'], 'lab_name')
+    lab_pi_index = value_index(alldata['lab'], 'pi_name')
+    ## should actually use the tuple_index if we had all 3 parts of lab name.
+    indices['lab'] = lab_pi_index
+
+    content_type = 'colleague'
+    post_collection(testapp, alldata, content_type)
+    colleague_index = value_index(alldata['colleague'], 'last_name')
+    indices['colleague'] = colleague_index
 
     content_type = 'organism'
     organism_index = value_index(alldata[content_type], 'organism_name')
+    indices['organism'] = organism_index
 
     content_type = 'donor'
     post_collection(testapp, alldata, content_type)
@@ -238,29 +286,19 @@ def load_all(testapp, filename, docsdir):
         original = value.copy()
         try:
             value['organism_uuid'] = organism_index[value.pop('organism_name')]
-            aliases = value.pop('target_aliases') or ''
+            aliases = value.pop('target_aliases') or ''  # needs to be _list!
             alias_source = value.pop('target_alias_source')
             value['dbxref'] = [
                 {'db': alias_source, 'id': alias.strip()}
                 for alias in aliases.split(';') if alias]
 
-            creator = value.get('created_by', None)
-            pi = value.get('lab_pi', None)
-
-            try:
-                submitter_uuids = submitter_index[(creator, pi)]
-            except KeyError:
-                raise ValueError('No submitter found for target: %s (%s)' % (creator, pi))
-
-            value['creator_uuids'] = []
-            for submitter_uuid in submitter_uuids:
-                if alldata['submitter'].get(submitter_uuid, None) is None:
-                    logger.warning('Missing/skipped submitter reference %s for target: %s' % (submitter_uuid, uuid))
-                else:
-                    value['creator_uuids'].append(submitter_uuid)
+            value = assign_submitter(value, content_type, indices,
+                                     value.get('created_by', None),
+                                     value.get('lab_pi', None),
+                                     value.get('grant', None).split('-')[-1])
 
         except Exception as e:
-            logger.warn('Error processing %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
+            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
             del alldata[content_type][uuid]
             continue
 
@@ -282,22 +320,13 @@ def load_all(testapp, filename, docsdir):
                 {'db': alias_source, 'id': alias.strip()}
                 for alias in aliases.split(';') if alias]
 
-            submitter = value.get('submitted_by', None)
-            pi = value.get('submitted_by_pi', None)
-            try:
-                submitter_uuids = submitter_index[(submitter, pi)]
-            except KeyError:
-                raise ValueError('No submitter found for antibody-lot: %s (%s)' % (submitter, pi))
-
-            value['submitter_uuids'] = []
-            for submitter_uuid in submitter_uuids:
-                if alldata['submitter'].get(submitter_uuid, None) is None:
-                    logger.warning('Missing/skipped submitter reference %s for source: %s' % (submitter_uuid, uuid))
-                else:
-                    value['submitter_uuids'].append(submitter_uuid)
+            assign_submitter(value, content_type, indices,
+                             value.get('submitted_by', None),
+                             value.get('submitted_by_pi', None),
+                             value.get('submitted_by_grant', None).split('-')[-1])
 
         except Exception as e:
-            logger.warn('Error processing %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
+            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
             del alldata[content_type][uuid]
             continue
 
@@ -328,11 +357,17 @@ def load_all(testapp, filename, docsdir):
                     'download': filename,
                     'type': mime_type,
                     'href': data_uri(stream, mime_type),
-                    }
+                }
             else:
                 raise ValueError("Unknown file type for %s" % filename)
+
+            assign_submitter(value, content_type, indices,
+                             value.get('submitted_by', None),
+                             value.get('submitted_by_pi', None),
+                             value.get('submitted_by_grant', None).split('-')[-1])
+
         except Exception as e:
-            logger.warn('Error processing %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
+            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
             del alldata[content_type][uuid]
             continue
 
@@ -365,7 +400,7 @@ def load_all(testapp, filename, docsdir):
                 raise ValueError('Missing/skipped target reference')
 
         except Exception as e:
-            logger.warn('Error processing %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
+            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
             del alldata[content_type][uuid]
             continue
 
