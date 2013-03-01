@@ -109,9 +109,9 @@ class Target(CollectionViews):
         'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True, 'embedded': True},
         'lab': {'href': '/labs/{lab_uuid}', 'templated': True, 'embedded': True},
-        'award': {'href': '/awards/{lab_uuid}', 'templated': True, 'embedded': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True, 'embedded': True},
     }
-    embedded = set(['organism', 'submitter','lab','award'])
+    embedded = set(['organism', 'submitter', 'lab', 'award'])
 
 
 # The following should really be child collections.
@@ -120,12 +120,15 @@ class Validation(CollectionViews):
     properties = {
         'title': 'Antibody Validations',
         'description': 'Listing of antibody validation documents',
-        }
+    }
     links = {
         'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True, 'embedded': True},
         'target': {'href': '/targets/{target_uuid}', 'templated': True, 'embedded': True},
-        }
-    embedded = set(['antibody_lot', 'target'])
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True, 'embedded': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True, 'embedded': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True, 'embedded': True},
+    }
+    embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
 
 
 @resource(name='antibody_approval', pattern='/antibodies/{path_segment}', collection_pattern='/antibodies/')
@@ -133,12 +136,12 @@ class AntibodyApproval(CollectionViews):
     properties = {
         'title': 'Antibody Approvals',
         'description': 'Listing of validation approvals for ENCODE antibodies',
-        }
+    }
     links = {
         'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True, 'embedded': True},
         'target': {'href': '/targets/{target_uuid}', 'templated': True, 'embedded': True},
         'validations': [
             {'href': '/validations/{validation_uuid}', 'templated': True, 'repeat': 'validation_uuid validation_uuids'},
             ],
-        }
+    }
     embedded = set(['antibody_lot', 'target'])

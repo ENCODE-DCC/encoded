@@ -47,7 +47,7 @@
                 <div class="data-group">
                 <label class="data-label" for="created-by">Submitter / Lab / Grant:</label>
                 <div class="data-values">
-                <span id="created-by" class="data-point">{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {properties.lab_pi} / {properties.project}</span>
+                <span id="created-by" class="data-point">{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {properties.lab_pi} / {model.links.award.get('project')}</span>
                 </div>
                 </div>
                 <div class="data-group">
