@@ -197,13 +197,13 @@ table thead tr th button {
 /* Global Styles */
 
 body {
-	background-color: #e8ecef;
+	background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat;
 }
 
 .cancel-link {margin-left: 20px;}
 
-$footerHeight: 				200px;
-$footerTopHeight: 			79px; // 1px less than total height
+$footerHeight: 				150px;
+$footerTopHeight: 			109px; // 1px less than total height
 $footerBottomHeight:		$footerHeight - $footerTopHeight;
 $footerBackground:          #0f2a42 !default;
 $footerBackgroundHighlight: #294b6a !default;
@@ -231,28 +231,52 @@ $footerBorder:              #0f2a42 !default;
 
 #page-footer #footer-top {
 	height: $footerTopHeight;
-	border-bottom: 1px solid $footerBackground;
-	@include background-image(linear-gradient($footerBackground, $footerBackgroundHighlight));
-	color: $white;
-	text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
-	text-align: center;
-	line-height: $footerTopHeight;
+	// border-bottom: 1px solid $footerBackground;
+	// @include background-image(linear-gradient($footerBackground, $footerBackgroundHighlight));
+	// color: $white;
+	//text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
+	// text-align: center;
+	// line-height: $footerTopHeight;
+	#su-logo {
+		float: left;
+		margin-top: 35px;
+	}
+	#som-logo {
+		float: right;
+		margin-top: 35px;
+	}
+	#footer-links {
+		height: $footerTopHeight;
+		margin: 0 auto;
+		display: inline-block;
+		ul {
+			margin: 0;
+			list-style: none;
+			li {
+				line-height: $footerTopHeight;
+				margin-right: 15px;
+				float: left;
+			}
+		}
+	}
 }
 
 #page-footer #footer-bottom {
 	height: $footerBottomHeight;
-	background-color: #33587b;
-	color: $white;
-	text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
+	line-height: $footerBottomHeight;
+	text-align: center;
+	// background-color: #33587b;
+	// color: $white;
+	text-shadow: 0 -1px rgba(255, 255, 255, 0.3);
 }
 
-/*
+
 #page-footer {
+	color: rgb(111, 111, 111);
 	background-color: #E8ECEF;
 	-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 	box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 }
-*/
 
 
 // fix footer width for small screens + content margin fix
