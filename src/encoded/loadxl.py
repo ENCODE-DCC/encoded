@@ -348,9 +348,13 @@ def load_all(testapp, filename, docsdir, test=False):
         try:
             if value['antibody_lot_uuid'] is None:
                 raise ValueError('Missing antibody_lot_uuid')
+            organism_name = value.pop('organism_name')
             try:
-                organism_uuid = organism_index[value.pop('organism_name')]
-                key = (value.pop('target_label'), organism_uuid)
+                organism_uuid = organism_index[organism_name]
+            except KeyError:
+                raise ValueError('Unable to find organism: %s' % organism_name)
+            key = (value.pop('target_label'), organism_uuid)
+            try:
                 value['target_uuid'] = target_index[key]
             except KeyError:
                 raise ValueError('Unable to find target: %s' % key)
