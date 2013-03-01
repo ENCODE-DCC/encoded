@@ -2,14 +2,14 @@ from pyramid.exceptions import NotFound
 from pyramid.security import (
     Allow,
     Everyone,
-    )
+)
 from pyramid.threadlocal import manager
 from ..resource import view
 from ..storage import (
     DBSession,
     CurrentStatement,
     Resource,
-    )
+)
 
 
 def includeme(config):
@@ -54,15 +54,15 @@ class CollectionViews(object):
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
         'collection': {'href': '{collection_uri}', 'templated': True},
         'profile': {'href': '/profiles/{item_type}', 'templated': True},
-        }
+    }
     embedded = {}
 
     __acl__ = [
-            (Allow, Everyone, 'list'),
-            (Allow, Everyone, 'add'),
-            (Allow, Everyone, 'view'),
-            (Allow, Everyone, 'edit'),
-            ]
+        (Allow, Everyone, 'list'),
+        (Allow, Everyone, 'add'),
+        (Allow, Everyone, 'view'),
+        (Allow, Everyone, 'edit'),
+    ]
 
     def __init__(self, request):
         self.request = request
@@ -163,7 +163,7 @@ class CollectionViews(object):
         result = {
             '_embedded': {
                 'items': items,
-                },
+            },
             '_links': {
                 'self': {'href': self.collection_uri},
                 'items': items,
@@ -174,10 +174,10 @@ class CollectionViews(object):
                         'method': 'POST',
                         'type': 'application/json',
                         'href': self.collection_uri,
-                        }
-                    ],
-                },
-            }
+                    }
+                ],
+            },
+        }
 
         if self.properties is not None:
             result.update(self.properties)
@@ -201,9 +201,9 @@ class CollectionViews(object):
                 'profile': {'href': '/profiles/result'},
                 'items': [
                     {'href': item_uri},
-                    ],
-                },
-            }
+                ],
+            },
+        }
         return result
 
     def validate_collection_post(self):

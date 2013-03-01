@@ -17,8 +17,8 @@ class Home(object):
                 'self': {'href': request.route_path(self.__route__)},  # See http://git.io/_OKINA
                 'profile': {'href': '/profiles/portal'},
                 # 'login': {'href': request.route_path('login')},
-                },
-            }
+            },
+        }
         return result
 
 
@@ -28,7 +28,7 @@ class User(CollectionViews):
     properties = {
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
-        }
+    }
 
 
 @resource(pattern='/donors/{path_segment}', collection_pattern='/donors/')
@@ -36,7 +36,7 @@ class Donor(CollectionViews):
     properties = {
         'title': 'Donors',
         'description': 'Listing Biosample Donors',
-        }
+    }
 
 
 @resource(pattern='/documents/{path_segment}', collection_pattern='/documents/')
@@ -44,7 +44,7 @@ class Document(CollectionViews):
     properties = {
         'title': 'Documents',
         'description': 'Listing of Biosample Documents',
-        }
+    }
 
 
 @resource(pattern='/labs/{path_segment}', collection_pattern='/labs/')
@@ -52,7 +52,7 @@ class Lab(CollectionViews):
     properties = {
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
-        }
+    }
 
 
 @resource(pattern='/awards/{path_segment}', collection_pattern='/awards/')
@@ -60,7 +60,7 @@ class Award(CollectionViews):
     properties = {
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
-        }
+    }
 
 
 @resource(name='antibody_lot', pattern='/antibody-lots/{path_segment}', collection_pattern='/antibody-lots/')
@@ -68,10 +68,10 @@ class AntibodyLots(CollectionViews):
     properties = {
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
-        }
+    }
     links = {
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
-        }
+    }
     embedded = set(['source'])
 
 
@@ -81,7 +81,7 @@ class Organism(CollectionViews):
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
-        }
+    }
 
 
 @resource(pattern='/sources/{path_segment}', collection_pattern='/sources/')
@@ -89,7 +89,7 @@ class Source(CollectionViews):
     properties = {
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
-        }
+    }
 
 
 @resource(pattern='/biosamples/{path_segment}', collection_pattern='/biosamples/')
