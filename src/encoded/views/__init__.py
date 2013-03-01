@@ -30,7 +30,10 @@ def embed(request, path, result=None):
         return result
     subreq = request.blank(path)
     subreq.override_renderer = 'null_renderer'
-    result = request.invoke_subrequest(subreq)
+    try:
+        result = request.invoke_subrequest(subreq)
+    except NotFound:
+        raise KeyError(path)
     if embedded is not None:
         embedded[path] = result
     return result
