@@ -121,7 +121,7 @@ def extract(filename, sheets, test=False):
         for row in iter_rows(sheet):
             if test:
                 try:
-                    if not row.pop(test):
+                    if not row.pop('test'):
                         continue
                 except KeyError:
                     ## row doesn't have test marking assume it's to be always loaded
@@ -220,6 +220,13 @@ def post_collection(testapp, alldata, content_type):
 
 def assign_submitter(data, dtype, indices, last_name, pi_last_name, project):
 
+    if not project:
+        raise KeyError
+    if not pi_last_name:
+        pi_last_name = project
+    if not last_name:
+        last_name = project
+
     try:
         data['submitter_uuid'] = indices['colleague'][last_name]
         data['lab_uuid'] = indices['lab'][pi_last_name]
@@ -265,6 +272,7 @@ def load_all(testapp, filename, docsdir, test=False):
     indices['colleague'] = colleague_index
 
     content_type = 'organism'
+    post_collection(testapp, alldata, content_type)
     organism_index = value_index(alldata[content_type], 'organism_name')
     indices['organism'] = organism_index
 
@@ -324,6 +332,7 @@ def load_all(testapp, filename, docsdir, test=False):
                              value.get('submitted_by', None),
                              value.get('submitted_by_pi', None),
                              value.get('submitted_by_grant', None).split('-')[-1])
+
 
         except Exception as e:
             logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))

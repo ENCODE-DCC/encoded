@@ -100,7 +100,7 @@ def _test_antibody_approval_creation(testapp):
     assert len(res.json['_links']['items']) == 1
 
 
-def test_sample_data(testapp):
+def __test_sample_data(testapp):
 
     from .sample_data import test_load_all
     test_load_all(testapp)
@@ -110,17 +110,23 @@ def test_sample_data(testapp):
     assert len(res.json['_embedded']['items']) == 2
 
 
-def test_load_workbook(testapp):
+def test_load_workbook(testapp, collection_test):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
+    assert type(collection_test) == dict
     workbook = resource_filename('encoded', 'tests/data//master_encode3_interface_submissions.xlsx')
     docsdir = resource_filename('encoded', 'tests/data/validation-docs/')
     from conftest import settings
-    load_test_all = settings.get('load_test_all', False)
-    load_all(testapp, workbook, docsdir, test=load_test_all)
-    res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
-    assert res.json['_links']['items']
-    assert len(res.json['_links']['items']) == 16
+    load_test_only = settings.get('load_test_only', False)
+    assert load_test_only
+    load_all(testapp, workbook, docsdir, test=load_test_only)
+    for content_type, expect in collection_test.iteritems():
+        url = '/'+content_type+'/'
+        res = testapp.get(url, headers={'Accept': 'application/json'}, status=200)
+        assert res.json['_links']['items']
+        assert len(res.json['_links']['items']) == expect
+
+    # test limit
     res = testapp.get('/antibodies/?limit=10', headers={'Accept': 'application/json'}, status=200)
     assert res.json['_links']['items']
     assert len(res.json['_links']['items']) == 10

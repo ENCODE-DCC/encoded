@@ -10,6 +10,7 @@ settings = {
     'persona.audiences': 'http://localhost:6543',
     'persona.siteName': 'ENCODE DCC Submission',
     'load_test_only': True,
+    'load_sample_data': False,
 }
 
 import logging
@@ -39,6 +40,20 @@ def testapp():
     from webtest import TestApp
     app = main({}, **settings)
     return TestApp(app)
+
+
+@fixture
+def collection_test():
+    return {
+        'awards': 37,
+        'labs': 41,
+        'users': 80,
+        'sources': 29,
+        'targets': 19,
+        'antibody-lots': 18,
+        'validations': 31,
+        'antibodies': 25,
+    }
 
 
 @fixture
