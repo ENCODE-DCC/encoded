@@ -276,6 +276,13 @@ $footerBorder:              #0f2a42 !default;
 	background-color: #E8ECEF;
 	-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 	box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
+	text-align: center;
+	a {
+		color: rgb(111, 111, 111);
+	}
+	a:hover {
+		text-decoration: underline;
+	}
 }
 
 
