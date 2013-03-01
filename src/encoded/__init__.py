@@ -31,6 +31,9 @@ def tests_js(config):
 
 def configure_engine(settings):
     engine_url = settings.get('sqlalchemy.url')
+    if not engine_url:
+        # Already setup by test fixture
+        return None
     engine_opts = {}
     # http://docs.sqlalchemy.org/en/rel_0_8/dialects/sqlite.html#using-a-memory-database-in-multiple-threads
     if engine_url == 'sqlite://':
