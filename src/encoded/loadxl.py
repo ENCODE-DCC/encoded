@@ -301,9 +301,9 @@ def load_all(testapp, filename, docsdir, test=False):
                 for alias in aliases.split(';') if alias]
 
             value = assign_submitter(value, content_type, indices,
-                                     value.get('created_by', None),
+                                     value.pop('created_by'),
                                      value.get('lab_pi', None),
-                                     value.get('grant', None).split('-')[-1])
+                                     value.pop('grant').split('-')[-1])
 
         except Exception as e:
             logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
@@ -329,9 +329,9 @@ def load_all(testapp, filename, docsdir, test=False):
                 for alias in aliases.split(';') if alias]
 
             assign_submitter(value, content_type, indices,
-                             value.get('submitted_by', None),
+                             value.pop('submitted_by'),
                              value.get('submitted_by_pi', None),
-                             value.get('submitted_by_grant', None).split('-')[-1])
+                             value.pop('submitted_by_grant').split('-')[-1])
 
 
         except Exception as e:
@@ -371,9 +371,9 @@ def load_all(testapp, filename, docsdir, test=False):
                 raise ValueError("Unknown file type for %s" % filename)
 
             assign_submitter(value, content_type, indices,
-                             value.get('submitted_by', None),
+                             value.pop('submitted_by'),
                              value.get('submitted_by_pi', None),
-                             value.get('submitted_by_grant', None).split('-')[-1])
+                             value.pop('submitted_by_grant').split('-')[-1])
 
         except Exception as e:
             logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
