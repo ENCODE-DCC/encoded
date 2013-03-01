@@ -1,4 +1,16 @@
 from collections import OrderedDict
+from pkg_resources import resource_stream
+import json
+import jsonschema
+
+
+class SchemaValidator(jsonschema.Draft4Validator):
+    pass
+
+
+def load_schema(filename):
+    schema = json.load(resource_stream(__name__,  'schemas/' + filename))
+    return SchemaValidator(schema)
 
 
 def basic_schema(value, null_type='string', template=None, nullable=all,

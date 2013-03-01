@@ -123,3 +123,16 @@ def test_load_workbook(testapp):
     assert res.json['_links']['items']
     assert len(res.json['_links']['items']) == 30
 
+
+def test_organisms_post(testapp):
+    from .sample_data import ORGANISMS as items
+    url = '/organisms/'
+    for item in items:
+        testapp.post_json(url, item, status=201)
+
+
+def test_organisms_post_bad_json(testapp):
+    items = [{'foo': 'bar'}]
+    url = '/organisms/'
+    for item in items:
+        testapp.post_json(url, item, status=422)

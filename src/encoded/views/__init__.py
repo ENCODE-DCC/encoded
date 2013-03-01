@@ -1,10 +1,10 @@
-from ..resource import view
 from pyramid.exceptions import NotFound
 from pyramid.security import (
     Allow,
     Everyone,
     )
 from pyramid.threadlocal import manager
+from ..resource import view
 from ..storage import (
     DBSession,
     CurrentStatement,
@@ -48,6 +48,7 @@ def maybe_include_embedded(request, result):
 
 
 class CollectionViews(object):
+    schema = None
     properties = None
     links = {
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
@@ -206,7 +207,14 @@ class CollectionViews(object):
         return result
 
     def validate_collection_post(self):
-        self.request.validated = self.request.json_body
+        data = self.request.json_body
+        if self.schema is None:
+            self.request.validated = data
+            return
+        for error in self.schema.iter_errors(data):
+            self.request.errors.add('body', list(error.path), error.message)
+        if not self.request.errors:
+            self.request.validated = self.schema.serialize(data)
 
     @view(permission='view')
     def get(self):
