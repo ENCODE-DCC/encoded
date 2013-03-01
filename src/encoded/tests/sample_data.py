@@ -2,16 +2,10 @@
 
 ORGANISMS = [
     {
-    '_uuid': '4826a8a7-8b48-4d34-b8de-9f07d95f9ba5',
-    '_links': {
-        'self': {'href': '/organisms/{_uuid}', 'templated': True},
-        },
+    '_uuid': '7745b647-ff15-4ff3-9ced-b897d4e2983c',
     'organism_name': 'human',
-    'genus': 'Homo',
-    'species': 'sapiens',
+    'scientific_name': 'Homo sapiens',
     'taxon_id': 9606,
-    'strain': None,  # Strains and individuals feel like different types
-    'individual': None,
     },
 ]
 
@@ -25,7 +19,7 @@ TARGETS = [
     'target_term_id': '786', # changed to HNGC
     'target_label': 'ATF4',
     'organism_name': 'human',  # link to organism
-    'organism_uuid': '4826a8a7-8b48-4d34-b8de-9f07d95f9ba5',  # looked up on insert?
+    'organism_uuid': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
     'target_symbol': 'ATF4',
     'target_gene_name': 'ATF4', # totally redundant column
     'target_class': 'generated',
@@ -53,7 +47,7 @@ TARGETS = [
     'target_term_id': '4764',
     'target_label': 'H3K4me3',
     'organism_name': 'human',  # link to organism
-    'organism_uuid': '4826a8a7-8b48-4d34-b8de-9f07d95f9ba5',  # looked up on insert?
+    'organism_uuid': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
     'target_symbol': 'H3F3A',
     'target_gene_name': 'H3F3A',
     'target_class': 'generated',

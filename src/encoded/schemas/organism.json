@@ -1,74 +1,39 @@
 {
-    "default": null,
+    "title": "Organism",
     "description": "",
+    "type": "object",
+    "additionalProperties": false,
     "properties": {
         "_uuid": {
-            "default": null,
             "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "genus": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "individual": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "title": "Organism name",
+            "type": "string"
         },
         "organism_name": {
-            "default": null,
+            "title": "Organism name",
             "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string"
         },
-        "species": {
-            "default": null,
+        "scientific_name": {
+            "title": "Scientific name",
             "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "strain": {
             "default": null,
-            "description": "",
-            "title": "",
             "type": [
                 "string",
                 "null"
             ]
         },
         "taxon_id": {
-            "default": null,
+            "title": "Taxon ID",
             "description": "",
-            "title": "",
+            "default": null,
             "type": [
                 "integer",
                 "null"
             ]
-        }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+        },
+        "required": [
+            "organism_name"
+        ]
+    }
 }

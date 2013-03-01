@@ -9,6 +9,7 @@ requires = [
     'Pillow',
     'SQLAlchemy',
     'WebTest',
+    'jsonschema',
     'pyramid',
     'pyramid_tm',
     'setuptools',

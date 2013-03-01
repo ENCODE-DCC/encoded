@@ -1,4 +1,5 @@
 from ..resource import resource
+from ..schema_utils import load_schema
 from . import CollectionViews
 
 
@@ -76,6 +77,7 @@ class AntibodyLots(CollectionViews):
 
 @resource(pattern='/organisms/{path_segment}', collection_pattern='/organisms/')
 class Organism(CollectionViews):
+    schema = load_schema('organism.json')
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
