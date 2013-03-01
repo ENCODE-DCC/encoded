@@ -24,7 +24,7 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'users/:uuid',
             'documents/:uuid',
             'donors/:uuid',
-            'award/:uuid',
+            'awards/:uuid',
 //            'institutes/:uuid'
         ]
         //login: '#login'

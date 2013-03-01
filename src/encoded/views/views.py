@@ -95,7 +95,7 @@ class Biosample(CollectionViews):
     properties = {
         'title': 'Biosamples',
         'description': 'Listing of ENCODE3 biosamples',
-        }
+    }
 
 
 @resource(pattern='/targets/{path_segment}', collection_pattern='/targets/')
@@ -104,11 +104,14 @@ class Target(CollectionViews):
     properties = {
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
-        }
+    }
     links = {
         'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
-        }
-    embedded = set(['organism'])
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True, 'embedded': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True, 'embedded': True},
+        'award': {'href': '/awards/{lab_uuid}', 'templated': True, 'embedded': True},
+    }
+    embedded = set(['organism', 'submitter','lab','award'])
 
 
 # The following should really be child collections.

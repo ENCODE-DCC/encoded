@@ -49,3 +49,4 @@ Feature: Targets
         When I click the link to "/targets/a1b236fc-38d5-4af5-a140-ede8bb6327c8"
         Then I should see an element with the css selector "#content[class='container']"
         And I should see an element with the css selector "#target-data[class='panel data-display']"
+        And I should see "B. Ren / Ren / ENCODE2"

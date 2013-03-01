@@ -46,3 +46,4 @@ Feature: Antibodies
         And I should see at least 2 elements with the css selector "section"
         And I should see at least 2 elements with the css selector "figure"
         And I should see at least 2 elements with the css selector "img.validation-img"
+        And I should see "Y. Shen / Ren / ENCODE2"
