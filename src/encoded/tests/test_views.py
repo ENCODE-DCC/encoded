@@ -116,8 +116,8 @@ def test_load_workbook(testapp, collection_test):
     assert type(collection_test) == dict
     workbook = resource_filename('encoded', 'tests/data//master_encode3_interface_submissions.xlsx')
     docsdir = resource_filename('encoded', 'tests/data/validation-docs/')
-    from conftest import settings
-    load_test_only = settings.get('load_test_only', False)
+    from conftest import app_settings
+    load_test_only = app_settings.get('load_test_only', False)
     assert load_test_only
     load_all(testapp, workbook, docsdir, test=load_test_only)
     for content_type, expect in collection_test.iteritems():
