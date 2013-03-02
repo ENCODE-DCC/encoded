@@ -272,6 +272,13 @@ def load_all(testapp, filename, docsdir, test=False):
     indices['colleague'] = colleague_index
 
     content_type = 'organism'
+    for uuid, value in list(alldata[content_type].iteritems()):
+        try:
+            value['taxon_id'] = int(value['taxon_id'])
+        except Exception as e:
+            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
+            del alldata[content_type][uuid]
+            continue
     post_collection(testapp, alldata, content_type)
     organism_index = value_index(alldata[content_type], 'organism_name')
     indices['organism'] = organism_index
