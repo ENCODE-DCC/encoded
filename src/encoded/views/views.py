@@ -25,6 +25,7 @@ class Home(object):
 #    permission='admin'  ## this prevents loading of users via post_json
 @resource(pattern='/users/{path_segment}', collection_pattern='/users/')
 class User(CollectionViews):
+    schema = load_schema('colleague.json')
     properties = {
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
@@ -49,6 +50,7 @@ class Document(CollectionViews):
 
 @resource(pattern='/labs/{path_segment}', collection_pattern='/labs/')
 class Lab(CollectionViews):
+    schema = load_schema('lab.json')
     properties = {
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
@@ -57,6 +59,7 @@ class Lab(CollectionViews):
 
 @resource(pattern='/awards/{path_segment}', collection_pattern='/awards/')
 class Award(CollectionViews):
+    schema = load_schema('award.json')
     properties = {
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
@@ -86,6 +89,7 @@ class Organism(CollectionViews):
 
 @resource(pattern='/sources/{path_segment}', collection_pattern='/sources/')
 class Source(CollectionViews):
+    schema = load_schema('source.json')
     properties = {
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',

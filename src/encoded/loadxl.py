@@ -21,7 +21,6 @@ TYPE_URL = {
     'document': '/documents/',
     'biosample': '/biosamples/',
     'document':  '/documents/',
-    'submitter': '/submitters/',
     'colleague': '/users/',
     'lab': '/labs/',
     'award': '/awards/',

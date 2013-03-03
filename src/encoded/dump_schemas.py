@@ -5,13 +5,19 @@ from encoded.schema_utils import basic_schema
 
 
 BASE_URL = "http://localhost:6543"
-TYPE_URL = {
+'''TYPE_URL = {
     'organism': '/organisms/',
     'source': '/sources/',
     'target': '/targets/',
     'antibody_lot': '/antibody-lots/',
     'validation': '/validations/',
     'antibody_approval': '/antibodies/',
+}'''
+TYPE_URL = {
+    'colleague': '/users/',
+    'lab': '/labs/',
+    'award': '/awards/',
+    ##{ 'institute': '/institutes/'),
 }
 
 SKIP = ['_embedded', '_links']
