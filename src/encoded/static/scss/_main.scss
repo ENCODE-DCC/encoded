@@ -197,7 +197,7 @@ table thead tr th button {
 /* Global Styles */
 
 body {
-	background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat;
+	background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat fixed;
 }
 
 .cancel-link {margin-left: 20px;}
@@ -226,8 +226,10 @@ $footerBorder:              #0f2a42 !default;
 	}
 }
 
+// if icon class put on <a> tag clear default content
+a.icon-external-link:before		{ content: none; }
 // add external-link icon - modified from _FontAwesome.scss
-.icon-external-link:after		{ content: " \f036"; }
+a.icon-external-link:after		{ content: " \f036"; }
 // remove external-link icon if there is no text in link <a></a>
 // won't work in =<IE8
 a.icon-external-link:empty:after {
@@ -281,10 +283,12 @@ a.icon-external-link:empty:after {
 
 #page-footer {
 	color: rgb(111, 111, 111);
-	background-color: #E8ECEF;
-	-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
-	box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
+	//background-color: #E8ECEF;
+	//-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
+	//box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 	text-align: center;
+	background: linear-gradient(#FFFFFF 0px, #E8ECEF 50%) repeat scroll 0 0 transparent;
+    border-top: 1px solid #C4C1C1;
 	a {
 		color: rgb(111, 111, 111);
 	}
