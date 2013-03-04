@@ -226,6 +226,14 @@ $footerBorder:              #0f2a42 !default;
 	}
 }
 
+// add external-link icon - modified from _FontAwesome.scss
+.icon-external-link:after		{ content: " \f036"; }
+// remove external-link icon if there is no text in link <a></a>
+// won't work in =<IE8
+a.icon-external-link:empty:after {
+	content: none;
+}
+
 
 @include sticky-footer($footerHeight, "#layout", "#layout-footer", "#page-footer");
 
