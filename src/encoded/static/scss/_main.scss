@@ -203,7 +203,7 @@ body {
 .cancel-link {margin-left: 20px;}
 
 $footerHeight: 				150px;
-$footerTopHeight: 			109px; // 1px less than total height
+$footerTopHeight: 			110px;
 $footerBottomHeight:		$footerHeight - $footerTopHeight;
 $footerBackground:          #0f2a42 !default;
 $footerBackgroundHighlight: #294b6a !default;
@@ -241,6 +241,7 @@ a.icon-external-link:empty:after {
 
 #page-footer #footer-top {
 	height: $footerTopHeight;
+	border-top: 1px solid #C4C1C1;
 	// border-bottom: 1px solid $footerBackground;
 	// @include background-image(linear-gradient($footerBackground, $footerBackgroundHighlight));
 	// color: $white;
@@ -288,7 +289,7 @@ a.icon-external-link:empty:after {
 	//box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 	text-align: center;
 	background: linear-gradient(#FFFFFF 0px, #E8ECEF 50%) repeat scroll 0 0 transparent;
-    border-top: 1px solid #C4C1C1;
+    //border-top: 1px solid #C4C1C1;
 	a {
 		color: rgb(111, 111, 111);
 	}
@@ -322,7 +323,7 @@ a.icon-external-link:empty:after {
     @include border-radius($baseBorderRadius);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin: 10px 0 20px;
-    padding: 14px 10px 10px;
+    padding: 15px 30px;
 }
 
 
@@ -421,6 +422,7 @@ a.icon-external-link:empty:after {
 
 .type-validation.view-detail figure {
 	@include border-radius($baseBorderRadius);
+	margin: 14px;
 	padding: 10px;
 	border: 1px solid;
 	text-align: center;
