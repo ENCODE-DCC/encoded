@@ -10,10 +10,12 @@ requires = [
     'SQLAlchemy',
     'WebTest',
     'jsonschema',
+    'loremipsum',
     'pyramid',
     'pyramid_tm',
     'setuptools',
     'xlrd',
+    'xlutils',
     'zope.sqlalchemy',
     'PyBrowserID',
     ##'requests>=1.0',
@@ -42,6 +44,9 @@ setup(
         'test': tests_require,
         },
     entry_points='''
+        [console_scripts]
+        extract_test_data = encoded.commands.extract_test_data:main
+
         [paste.app_factory]
         main = encoded:main
         ''',
