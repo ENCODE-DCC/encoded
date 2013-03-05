@@ -229,24 +229,24 @@ $footerBorder:              #0f2a42 !default;
 // if icon class put on <a> tag clear default content
 // add external-link icon - modified from _FontAwesome.scss
 a.external-link:after		{
-    content: " \f036";
-  font-family: FontAwesome;
-  font-weight: normal;
-  font-style: normal;
-  text-decoration: inherit;
-  -webkit-font-smoothing: antialiased;
+	content: " \f036";
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-style: normal;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
 
-  /* sprites.less reset */
-  display: inline;
-  width: auto;
-  height: auto;
-  line-height: normal;
-  vertical-align: baseline;
-  background-image: none;
-  background-position: 0% 0%;
-  background-repeat: repeat;
-  margin-top: 0;
-    }
+	/* sprites.less reset */
+	display: inline;
+	width: auto;
+	height: auto;
+	line-height: normal;
+	vertical-align: baseline;
+	background-image: none;
+	background-position: 0% 0%;
+	background-repeat: repeat;
+	margin-top: 0;
+}
 // remove external-link icon if there is no text in link <a></a>
 // won't work in =<IE8
 a.external-link:empty:after {
