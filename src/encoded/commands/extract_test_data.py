@@ -111,6 +111,7 @@ class Anonymize(BaseFilter):
             generated = "%s.%s@%s.%s" % \
                 tuple(random.choice(self.random_words) for n in range(4))
             if generated not in self.generated_emails:
+                self.generated_emails.add(generated)
                 return generated
 
     def _replace_emails(self, matchobj):
@@ -134,6 +135,7 @@ class Anonymize(BaseFilter):
                     tuple(random.choice(self.random_words).capitalize()
                         for n in range(2))
             if generated not in self.generated_names:
+                self.generated_names.add(generated)
                 return generated
 
     def _replace_name(self, name):
