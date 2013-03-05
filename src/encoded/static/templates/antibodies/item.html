@@ -1,9 +1,7 @@
-<?js var something = 'foo'; ?>
-
-<header class="row {something}">
+<header class="row">
     <div class="span12">
         <h2>Approval for {model.links.antibody_lot.get('antibody_accession')}</h2>
-        <h3>Antibody against {model.links.target.links.organism.get('organism_name')} {model.links.target.get('target_label')}  <span class="label label-info">{properties.approval_status}</span><h3>
+        <h3>Antibody against {model.links.target.links.organism.get('organism_name')} {model.links.target.get('target_label')}  <span id="approval-status" class="label {status}">{properties.approval_status}</span><h3>
     </div>
 </header>
 
@@ -12,13 +10,13 @@
 	<div class="data-group">
 		<label class="data-label" for="source-name">Source (vendor):</label>
 		<div class="data-values">
-			<span id="source-name" class="data-point"><a href="{model.links.antibody_lot.links.source.get('url')}"> {model.links.antibody_lot.links.source.get('source_name')} <span class="icon-external-link"></span></a></span>
+			<span id="source-name" class="data-point"><a href="{model.links.antibody_lot.links.source.get('url')}"> {model.links.antibody_lot.links.source.get('source_name')}</a></span>
 		</div>
 	</div>
 	<div class="data-group">
 		<label class="data-label" for="product-id">Product ID:</label>
 		<div class="data-values">
-			<span id="product-id" class="data-point"><a href="{model.links.antibody_lot.get('url')}">{model.links.antibody_lot.get('product_id')} <span class="icon-external-link"></span></a></span>
+			<span id="product-id" class="data-point"><a href="{model.links.antibody_lot.get('url')}">{model.links.antibody_lot.get('product_id')}</a></span>
 		</div>
 	</div>
 	<div class="data-group">

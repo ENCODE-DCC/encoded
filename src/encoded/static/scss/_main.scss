@@ -226,9 +226,9 @@ $footerBorder:              #0f2a42 !default;
 	}
 }
 
-// if icon class put on <a> tag clear default content
-// add external-link icon - modified from _FontAwesome.scss
-a.external-link:after		{
+
+// add external-link icon to all offsite links (in .panel's) - modified from _FontAwesome.scss
+.panel a[href^="http"]:after		{
 	content: " \f036";
 	font-family: FontAwesome;
 	font-weight: normal;
@@ -248,10 +248,12 @@ a.external-link:after		{
 	margin-top: 0;
 }
 // remove external-link icon if there is no text in link <a></a>
-// won't work in =<IE8
-a.external-link:empty:after {
+// Note doesn't work in =<IE8, oh well
+a[href^="http"]:empty:after {
 	content: none;
 }
+
+// clear offline 
 
 
 @include sticky-footer($footerHeight, "#layout", "#layout-footer", "#page-footer");
