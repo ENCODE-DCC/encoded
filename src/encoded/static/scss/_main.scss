@@ -227,12 +227,29 @@ $footerBorder:              #0f2a42 !default;
 }
 
 // if icon class put on <a> tag clear default content
-a.icon-external-link:before		{ content: none; }
 // add external-link icon - modified from _FontAwesome.scss
-a.icon-external-link:after		{ content: " \f036"; }
+a.external-link:after		{
+    content: " \f036";
+  font-family: FontAwesome;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  -webkit-font-smoothing: antialiased;
+
+  /* sprites.less reset */
+  display: inline;
+  width: auto;
+  height: auto;
+  line-height: normal;
+  vertical-align: baseline;
+  background-image: none;
+  background-position: 0% 0%;
+  background-repeat: repeat;
+  margin-top: 0;
+    }
 // remove external-link icon if there is no text in link <a></a>
 // won't work in =<IE8
-a.icon-external-link:empty:after {
+a.external-link:empty:after {
 	content: none;
 }
 
