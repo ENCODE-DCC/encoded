@@ -23,9 +23,9 @@
         <div class="nav-collapse collapse">
             <ul id="global-sections" class="nav">
             
-                <li class=""><a href="/">Home</a></li>
-            
                 <li class=""><a href="/antibodies/">Antibodies</a></li>
+                
+                <li class="active"><a href="/antibodies/">Biosamples</a></li>
             
                 <li class=""><a href="/targets/">Targets</a></li>
             
@@ -45,13 +45,11 @@
 </div>
 			<div id="content" class="container"><div><header class="row">
     <div class="span12">
-        <h4>Biosample </h4>
+        <h5>Biosample</h5>
         <h2>BSENC000AAC</h2>
+        <h4>Total RNA isolated from a normal human fetal cerebellum.</h4>
     </div>
 </header>
-
-
-
 
 <div class="panel data-display">
 
@@ -79,51 +77,156 @@
 			<span id="target-label" class="data-point">cerebellum</span>
 		</div>
 	</div>
+	<div class="data-group">
+		<label class="data-label" for="host">Source:</label>
+		<div class="data-values">
+			<span id="host" class="data-point"><a href="#external_source_url">American Type Culture Collection (ATCC)</a></span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="clonality">Product ID:</label>
+		<div class="data-values">
+			<span id="clonality" class="data-point"><a href="#external_product_url">CCL-226</a></span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="purification">Lot ID:</label>
+		<div class="data-values">
+			<span id="purification" class="data-point">unknown</span>
+		</div>
+	</div>
 	
-	<h3>Donor Information</h3>
+	<div class="data-group">
+		<label class="data-label" for="purification">Biosample type:</label>
+		<div class="data-values">
+			<span id="purification" class="data-point">primary cell line</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="purification">Passage number:</label>
+		<div class="data-values">
+			<span id="purification" class="data-point">unknown</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="purification">Culture start date:</label>
+		<div class="data-values">
+			<span id="purification" class="data-point">unknown</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="purification">Culture harvest date:</label>
+		<div class="data-values">
+			<span id="purification" class="data-point">unknown</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="purification">Submitter:</label>
+		<div class="data-values">
+			<span id="purification" class="data-point">Carrie Davis (Gingeras lab)</span>
+		</div>
+	</div>
 	
-	<div class="data-group">
-		<label class="data-label" for="host">Host:</label>
+	<hr>
+	
+	<section id="donor-info">
+		<h4>Donor Information</h4>
+			<div class="data-group">
+		<label class="data-label" for="isotype">Donor ID:</label>
 		<div class="data-values">
-			<span id="host" class="data-point">goat</span>
+			<span id="isotype" class="data-point">ATCC_CCL-266</span>
 		</div>
 	</div>
 	<div class="data-group">
-		<label class="data-label" for="clonality">Clonality:</label>
+		<label class="data-label" for="antigen-description">Age:</label>
 		<div class="data-values">
-			<span id="clonality" class="data-point">polyclonal</span>
+			<span id="antigen-description" class="data-point">fetal</span>
 		</div>
 	</div>
 	<div class="data-group">
-		<label class="data-label" for="purification">Purification:</label>
+		<label class="data-label" for="antigen-sequence">Sex:</label>
 		<div class="data-values">
-			<span id="purification" class="data-point"></span>
+			<span id="antigen-sequence" class="data-point">unknown</span>
 		</div>
 	</div>
 	<div class="data-group">
-		<label class="data-label" for="isotype">Isotype:</label>
+		<label class="data-label" for="antigen-sequence">Strain:</label>
 		<div class="data-values">
-			<span id="isotype" class="data-point"></span>
+			<span id="antigen-sequence" class="data-point">C3H</span>
 		</div>
 	</div>
 	<div class="data-group">
-		<label class="data-label" for="antigen-description">Antigen description:</label>
+		<label class="data-label" for="antigen-sequence">Health status:</label>
 		<div class="data-values">
-			<span id="antigen-description" class="data-point">Raised against e-GFP tagged transcription factor.</span>
+			<span id="antigen-sequence" class="data-point">sarcoma</span>
 		</div>
 	</div>
-	<!--
 	<div class="data-group">
-		<label class="data-label" for="antigen-sequence">Antigen sequence:</label>
+		<label class="data-label" for="antigen-sequence">Species:</label>
 		<div class="data-values">
-			<span id="antigen-sequence" class="data-point">MISSING</span>
+			<span id="antigen-sequence" class="data-point">mouse</span>
 		</div>
 	</div>
-	-->
+	</section><!-- #donor-info -->
+	
+	<hr>
+	
+	<section id="treatment-details">
+		<h4>Treatment Details</h4>
+			<div class="data-group">
+		<label class="data-label" for="isotype">Treatment:</label>
+		<div class="data-values">
+			<span id="isotype" class="data-point">EqS_2.0pct_60hr</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="antigen-description">Type:</label>
+		<div class="data-values">
+			<span id="antigen-description" class="data-point">differentiation</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="antigen-sequence">Document:</label>
+		<div class="data-values">
+			<span id="antigen-sequence" class="data-point">missing</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="antigen-sequence">Condition:</label>
+		<div class="data-values">
+			<span id="antigen-sequence" class="data-point">insulin</span>
+		</div>
+	</div>
+	<div class="data-group">
+		<label class="data-label" for="antigen-sequence">Duration:</label>
+		<div class="data-values">
+			<span id="antigen-sequence" class="data-point">60 hours</span>
+		</div>
+	</div>
+	</section><!-- #treatment-details -->
+	
+</div><!-- .data-display -->
+	
+<h3>Protocols</h3>
+<div class="panel data-display">
+	
+</div><!-- .data-display -->
+	
+<h3>Supporting Documents</h3>
+<div class="panel data-display">
 
 </div><!-- .data-display -->
 
-<div class="validations"></div>
+<h3>Database Cross-Reference</h3>
+<div class="panel data-display">
+
+</div><!-- .data-display -->
+
+<h3>Related Biosamples</h3>
+<div class="panel data-display">
+
+</div><!-- .data-display -->
+
 </div></div>
             <div id="error" class="alert alert-error" style="display:none;"></div>
 			<div id="layout-footer"></div>
