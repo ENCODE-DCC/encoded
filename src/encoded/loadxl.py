@@ -129,7 +129,11 @@ def extract(filename, sheets, test=False):
                 # cricket method
                 uuid = row.pop('%s_uuid' % name)
             except KeyError:
-                uuid = None
+                # new method
+                try:
+                    uuid = row.pop('uuid')
+                except KeyError:
+                    uuid = None
 
             if not uuid:
                 continue
@@ -138,7 +142,7 @@ def extract(filename, sheets, test=False):
             for col, value in row.iteritems():
                 if col.find('_list') < 0:
                     continue
-                row[col] = [v.strip() for v in (value or '').split(';') if v]
+                row[col] = [v.strip() for v in (str(value) or '').split(';') if v]
 
             data[uuid] = row
         alldata['COUNTS'][name] = len(data.keys())
@@ -217,23 +221,40 @@ def post_collection(testapp, alldata, content_type):
     logger.warn('Loaded %d %s out of %d' % (nload, content_type, alldata['COUNTS'][content_type]))
 
 
-def assign_submitter(data, dtype, indices, last_name, pi_last_name, project):
+def assign_submitter(data, dtype, indices, fks):
 
-    if not project:
-        raise KeyError
-    if not pi_last_name:
-        pi_last_name = project
-    if not last_name:
-        last_name = project
+    if not fks.get('award_no', None):
+        if not fks.get('project', None):
+            raise KeyError
+        if not fks.get('pi_last_name', None):
+            fks['pi_last_name'] = fks.get('project', None)
+
+        try:
+            if not fks.get(['last_name'], None):
+                fks['last_name'] = fks.get('project', None)
+        except Exception as e:
+            raise ValueError('Bad submitter keys %s: %s due to: %s' %
+                        (dtype, fks, e))
 
     try:
-        data['submitter_uuid'] = indices['colleague'][last_name]
-        data['lab_uuid'] = indices['lab'][pi_last_name]
-        data['award_uuid'] = indices['award'][(pi_last_name, project)]
+        try:
+            data['submitter_uuid'] = indices['email'][fks['email']]
+        except:
+            data['submitter_uuid'] = indices['colleague'][fks['last_name']]
 
-    except KeyError:
-        raise ValueError('No submitter/lab found for %s: %s (%s) (%s)' %
-                        (dtype, last_name, pi_last_name, project))
+        try:
+            data['lab_uuid'] = indices['lab_name'][fks['lab_name']]
+        except:
+            data['lab_uuid'] = indices['lab_pi'][fks['pi_last_name']]
+
+        try:
+            data['award_uuid'] = indices['award_id'][fks['award_no']]
+        except:
+            data['award_uuid'] = indices['award'][(fks['pi_last_name'], fks['project'])]
+
+    except Exception as ef:
+        raise ValueError('No submitter/lab found for %s: %s due to %s' %
+                        (dtype, fks, ef))
 
 
 def load_all(testapp, filename, docsdir, test=False):
@@ -244,7 +265,7 @@ def load_all(testapp, filename, docsdir, test=False):
 
     content_type = 'award'
     post_collection(testapp, alldata, content_type)
-    award_id_index = value_index(alldata['award'], 'award_number')
+    award_id_index = value_index(alldata['award'], 'number')
     award_index = tuple_index(alldata['award'], 'pi_last_name', 'project')
     indices['award_id'] = award_id_index
     indices['award'] = award_index
@@ -256,19 +277,22 @@ def load_all(testapp, filename, docsdir, test=False):
         except:
             raise AttributeError("Bad lab: %s: %s" % (uuid, value))
 
-        value['pi_name'] = value.get('lab_name', '').split('.')[1]
+        value['pi_name'] = value.get('name', '').split('.')[1]
         ## no error trapping!
 
     post_collection(testapp, alldata, content_type)
-    lab_index = value_index(alldata['lab'], 'lab_name')
+    lab_index = value_index(alldata['lab'], 'name')
     lab_pi_index = value_index(alldata['lab'], 'pi_name')
     ## should actually use the tuple_index if we had all 3 parts of lab name.
-    indices['lab'] = lab_pi_index
+    indices['lab_pi'] = lab_pi_index
+    indices['lab_name'] = lab_index
 
     content_type = 'colleague'
     post_collection(testapp, alldata, content_type)
     colleague_index = value_index(alldata['colleague'], 'last_name')
+    email_index = value_index(alldata['colleague'], 'email')
     indices['colleague'] = colleague_index
+    indices['email'] = email_index
 
     content_type = 'organism'
     for uuid, value in list(alldata[content_type].iteritems()):
@@ -307,9 +331,11 @@ def load_all(testapp, filename, docsdir, test=False):
                 for alias in aliases.split(';') if alias]
 
             value = assign_submitter(value, content_type, indices,
-                                     value.pop('created_by'),
-                                     value.get('lab_pi', None),
-                                     value.pop('grant').split('-')[-1])
+                                     {'email': value.pop('submitted_by_colleague_email'),
+                                      'lab_name': value.pop('submitted_by_lab_name'),
+                                      'award_no': value.pop('submitted_by_award_number')
+                                     }
+                                    )
 
         except Exception as e:
             logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
@@ -335,9 +361,11 @@ def load_all(testapp, filename, docsdir, test=False):
                 for alias in aliases.split(';') if alias]
 
             assign_submitter(value, content_type, indices,
-                             value.pop('submitted_by'),
-                             value.get('submitted_by_pi', None),
-                             value.pop('submitted_by_grant').split('-')[-1])
+                                    {'email': value.pop('submitted_by_colleague_email'),
+                                      'lab_name': value.pop('submitted_by_lab_name'),
+                                      'award_no': value.pop('submitted_by_award_number')
+                                     }
+                                    )
 
 
         except Exception as e:
@@ -381,9 +409,11 @@ def load_all(testapp, filename, docsdir, test=False):
                 raise ValueError("Unknown file type for %s" % filename)
 
             assign_submitter(value, content_type, indices,
-                             value.pop('submitted_by'),
-                             value.get('submitted_by_pi', None),
-                             value.pop('submitted_by_grant').split('-')[-1])
+                             { 'last_name': value.pop('submitted_by'),
+                               'pi_last_name': value.get('submitted_by_pi', None),
+                               'project': value.pop('submitted_by_grant').split('-')[-1]
+                             }
+                            )
 
         except Exception as e:
             logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))

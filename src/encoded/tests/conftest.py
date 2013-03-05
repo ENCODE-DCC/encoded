@@ -50,9 +50,9 @@ def testapp_setup(request, connection, check_constraints):
 def collection_test():
     return {
         'awards': 37,
-        'labs': 41,
+        'labs': 42,
         'users': 80,
-        'sources': 29,
+        'sources': 50,
         'targets': 19,
         'antibody-lots': 18,
         'validations': 31,
