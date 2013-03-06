@@ -74,6 +74,24 @@
                 "null"
             ]
         },
+        "lab_uuids": {
+            "default": null,
+            "description": "",
+            "items": {
+                "default": null,
+                "description": "",
+                "title": "",
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "title": "",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
         "last_name": {
             "default": null,
             "description": "",
