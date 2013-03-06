@@ -210,7 +210,7 @@ def post_collection(testapp, alldata, content_type):
     collection = alldata[content_type]
     nload = 0
     for uuid, value in list(collection.iteritems()):
-
+        value = dict((k, v) for k, v in value.iteritems() if v is not None)
         try:
             res = testapp.post_json(url, value, status=[201, 422])
             nload += 1
