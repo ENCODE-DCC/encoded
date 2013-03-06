@@ -18,8 +18,8 @@ def test_html(testapp, url):
 
 
 @pytest.mark.parametrize('url', COLLECTION_URLS)
-def test_json(testapp, url):
-    res = testapp.get(url, headers={'Accept': 'application/json'}, status=200)
+def test_json(jsontestapp, url):
+    res = jsontestapp.get(url, status=200)
     assert res.json['_links']
 
 

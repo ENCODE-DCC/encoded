@@ -36,14 +36,11 @@ def dummy_request():
 
 
 @fixture(scope='session')
-def testapp_setup(request, connection, check_constraints):
+def app(request, connection, check_constraints):
     '''WSGI application level functional testing.
     '''
     from encoded import main
-    from webtest import TestApp
-    app = main({}, **app_settings)
-
-    return TestApp(app)
+    return main({}, **app_settings)
 
 
 @fixture
@@ -61,8 +58,18 @@ def collection_test():
 
 
 @fixture
-def testapp(request, testapp_setup, external_tx):
-    return testapp_setup
+def testapp(request, app, external_tx):
+    from webtest import TestApp
+    return TestApp(app)
+
+
+@fixture
+def jsontestapp(request, app, external_tx):
+    '''TestApp with JSON accept header.
+    '''
+    from webtest import TestApp
+    environ = {'HTTP_ACCEPT': 'application/json'}
+    return TestApp(app, environ)
 
 
 # http://docs.sqlalchemy.org/en/rel_0_8/orm/session.html#joining-a-session-into-an-external-transaction
