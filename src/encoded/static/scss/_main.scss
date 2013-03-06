@@ -197,13 +197,13 @@ table thead tr th button {
 /* Global Styles */
 
 body {
-	background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat;
+	background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat fixed;
 }
 
 .cancel-link {margin-left: 20px;}
 
 $footerHeight: 				150px;
-$footerTopHeight: 			109px; // 1px less than total height
+$footerTopHeight: 			110px;
 $footerBottomHeight:		$footerHeight - $footerTopHeight;
 $footerBackground:          #0f2a42 !default;
 $footerBackgroundHighlight: #294b6a !default;
@@ -227,10 +227,38 @@ $footerBorder:              #0f2a42 !default;
 }
 
 
+// add external-link icon to all offsite links (in .panel's) - modified from _FontAwesome.scss
+.panel a[href^="http"]:after		{
+	content: " \f036";
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-style: normal;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
+
+	/* sprites.less reset */
+	display: inline;
+	width: auto;
+	height: auto;
+	line-height: normal;
+	vertical-align: baseline;
+	background-image: none;
+	background-position: 0% 0%;
+	background-repeat: repeat;
+	margin-top: 0;
+}
+// remove external-link icon if there is no text in link <a></a>
+// Note doesn't work in =<IE8, oh well
+a[href^="http"]:empty:after {
+	content: none;
+}
+
+
 @include sticky-footer($footerHeight, "#layout", "#layout-footer", "#page-footer");
 
 #page-footer #footer-top {
 	height: $footerTopHeight;
+	border-top: 1px solid #C4C1C1;
 	// border-bottom: 1px solid $footerBackground;
 	// @include background-image(linear-gradient($footerBackground, $footerBackgroundHighlight));
 	// color: $white;
@@ -273,9 +301,18 @@ $footerBorder:              #0f2a42 !default;
 
 #page-footer {
 	color: rgb(111, 111, 111);
-	background-color: #E8ECEF;
-	-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
-	box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
+	//background-color: #E8ECEF;
+	//-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
+	//box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
+	text-align: center;
+	background: linear-gradient(#FFFFFF 0px, #E8ECEF 50%) repeat scroll 0 0 transparent;
+    //border-top: 1px solid #C4C1C1;
+	a {
+		color: rgb(111, 111, 111);
+	}
+	a:hover {
+		text-decoration: underline;
+	}
 }
 
 
@@ -303,9 +340,10 @@ $footerBorder:              #0f2a42 !default;
     @include border-radius($baseBorderRadius);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin: 10px 0 20px;
-    padding: 14px 10px 10px;
+    padding: 15px 30px;
 }
 
+.panel h3, .panel h4 {color: #4E7294;}
 
 
 
@@ -319,6 +357,18 @@ $footerBorder:              #0f2a42 !default;
 	float: right;
 }
 
+@each $item in label, badge {
+	// Approved (green)
+	.#{$item}.status-approved          { background-color: $successText; }
+	.#{$item}.status-aproved[href]     { background-color: darken($successText, 10%); }
+	// In Progress (turquoise)
+	.#{$item}.status-in-progress		{ background-color: $infoText; }
+	.#{$item}.status-in-progress[href] { background-color: darken($infoText, 10%); }
+	// Rejected (red)
+	.#{$item}.status-rejected         { background-color: $errorText; }
+	.#{$item}.status-rejected[href]   { background-color: darken($errorText, 10%); }
+	// Pending (gray) is the default if no class given
+}
 
 .data-display {
   // Increase spacing between groups
@@ -402,6 +452,7 @@ $footerBorder:              #0f2a42 !default;
 
 .type-validation.view-detail figure {
 	@include border-radius($baseBorderRadius);
+	margin: 14px;
 	padding: 10px;
 	border: 1px solid;
 	text-align: center;
