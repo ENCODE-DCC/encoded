@@ -126,8 +126,9 @@ def test_organisms_post(testapp):
         testapp.post_json(url, item, status=201)
 
 
-def test_organisms_post_bad_json(testapp):
+def test_organisms_post_bad_json(jsontestapp):
     items = [{'foo': 'bar'}]
     url = '/organisms/'
     for item in items:
-        testapp.post_json(url, item, status=422)
+        res = jsontestapp.post_json(url, item, status=422)
+        assert res.json['errors']
