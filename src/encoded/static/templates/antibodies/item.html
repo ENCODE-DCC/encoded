@@ -1,7 +1,7 @@
 <header class="row">
     <div class="span12">
         <h2>Approval for {model.links.antibody_lot.get('antibody_accession')}</h2>
-        <h3>Antibody against {model.links.target.links.organism.get('organism_name')} {model.links.target.get('target_label')}  <span id="approval-status" class="label {status}">{properties.approval_status}</span><h3>
+        <h3>Antibody against {model.links.target.links.organism.get('organism_name')} {model.links.target.get('target_label')}  <span id="approval-status" class="label status-{properties.approval_status.toLowerCase()}">{properties.approval_status}</span><h3>
     </div>
 </header>
 

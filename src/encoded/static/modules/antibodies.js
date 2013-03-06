@@ -72,6 +72,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
     });
 
     var AntibodyView = exports.AntibodyView = base.View.extend({
+        attributes: {'class': 'type-antibody_approval view-detail'},
         validation: exports.ValidationView,
         initialize: function initialize(options) {
             var model = options.model,
@@ -100,6 +101,10 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
                 lot_id = source.get('lot_id');
             if (lot_id) title += ' - ' + lot_id;
             this.title = title;
+            var status = this.model.get('approval_status');
+            if (status) {
+                this.$el.addClass('status-' + status.toLowerCase());
+            }
         },
         render: function render() {
             AntibodyView.__super__.render.apply(this, arguments);

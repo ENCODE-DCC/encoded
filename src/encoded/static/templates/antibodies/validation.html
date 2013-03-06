@@ -33,7 +33,7 @@
 				<p><span>{properties.caption}</span></p>
 				<p><b>Submitter / Lab / Grant:</b> <span>{properties.submitted_by} / {properties.submitted_by_pi} / {properties.submitted_by_grant}</span></p>
 				<p><b>Approver:</b> <span>{properties.validated_by}</span></p>
-				<p><b>Image:</b> <span class="label label-info">{properties.validation_status}</span>
+				<p><b>Image:</b> <span class="label status-{properties.validation_status.toLowerCase()}">{properties.validation_status}</span>
 				<p><b>Download:</b>
 					<a  href="{properties.document.href}"
 						download="{properties.document.download}"
