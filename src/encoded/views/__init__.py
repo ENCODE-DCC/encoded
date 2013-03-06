@@ -109,7 +109,6 @@ class CollectionViews(object):
                             self.maybe_embed(rel, value['href'])
                     else:
                         ns = item
-                        ns[repeat_name] = repeat_value
                         value['href'] = member['href'].format(
                             collection_uri=self.collection_uri,
                             item_type=self.item_type,
