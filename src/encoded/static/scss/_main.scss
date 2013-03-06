@@ -253,8 +253,6 @@ a[href^="http"]:empty:after {
 	content: none;
 }
 
-// clear offline 
-
 
 @include sticky-footer($footerHeight, "#layout", "#layout-footer", "#page-footer");
 
@@ -359,6 +357,18 @@ a[href^="http"]:empty:after {
 	float: right;
 }
 
+@each $item in label, badge {
+	// Approved (green)
+	.#{$item}.status-approved          { background-color: $successText; }
+	.#{$item}.status-aproved[href]     { background-color: darken($successText, 10%); }
+	// In Progress (turquoise)
+	.#{$item}.status-in-progress		{ background-color: $infoText; }
+	.#{$item}.status-in-progress[href] { background-color: darken($infoText, 10%); }
+	// Rejected (red)
+	.#{$item}.status-rejected         { background-color: $errorText; }
+	.#{$item}.status-rejected[href]   { background-color: darken($errorText, 10%); }
+	// Pending (gray) is the default if no class given
+}
 
 .data-display {
   // Increase spacing between groups
