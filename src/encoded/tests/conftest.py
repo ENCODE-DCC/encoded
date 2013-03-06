@@ -53,10 +53,10 @@ def collection_test():
         'labs': 42,
         'users': 80,
         'sources': 50,
-        'targets': 19,
+        'targets': 21,
         'antibody-lots': 18,
-        'validations': 31,
-        'antibodies': 25,
+        'validations': 21,
+        'antibodies': 20,
     }
 
 

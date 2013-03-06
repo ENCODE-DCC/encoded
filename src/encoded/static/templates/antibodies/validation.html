@@ -41,7 +41,7 @@
 				<p><b>Method:</b> <span>{properties.validation_method}</span></p>
 				<p><b>Target species:</b> <span>{model.links.target.links.organism.get('organism_name')}</span></p>
 				<p><span>{properties.caption}</span></p>
-				<p><b>Submitter / Lab / Grant:</b> <span>{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {properties.submitted_by_pi} / {model.links.award.get('project')}</span></p>
+				<p><b>Submitter / Lab / Grant:</b> <span>{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('pi_name')} / {model.links.award.get('project')}</span></p>
 				<p><b>Approver:</b> <span>{properties.validated_by}</span></p>
 				<p><b>Image:</b> <span class="label label-info">{properties.validation_status}</span>
 				<p><b>Download:</b>

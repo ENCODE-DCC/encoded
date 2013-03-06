@@ -230,7 +230,7 @@ def assign_submitter(data, dtype, indices, fks):
             fks['pi_last_name'] = fks.get('project', None)
 
         try:
-            if not fks.get(['last_name'], None):
+            if not fks.get('last_name', None):
                 fks['last_name'] = fks.get('project', None)
         except Exception as e:
             raise ValueError('Bad submitter keys %s: %s due to: %s' %
@@ -391,7 +391,7 @@ def load_all(testapp, filename, docsdir, test=False):
             try:
                 value['target_uuid'] = target_index[key]
             except KeyError:
-                raise ValueError('Unable to find target: %s' % key)
+                raise ValueError('Unable to find target: %r' % (key,))
 
             filename = value.pop('document_filename')
             stream = open(os.path.join(docsdir, filename), 'rb')
@@ -411,10 +411,12 @@ def load_all(testapp, filename, docsdir, test=False):
             assign_submitter(value, content_type, indices,
                              { 'last_name': value.pop('submitted_by'),
                                'pi_last_name': value.get('submitted_by_pi', None),
-                               'project': value.pop('submitted_by_grant').split('-')[-1]
+                               'project': value.pop('validated_by', None)
                              }
                             )
 
+            check_lot = alldata['antibody_lot'][value['antibody_lot_uuid']]
+            # should raise key errors if not present.
         except Exception as e:
             logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
             del alldata[content_type][uuid]
