@@ -1,3 +1,6 @@
+import pytest
+
+
 def test_home_html(testapp):
     res = testapp.get('/', status=200)
     assert res.body.startswith('<!DOCTYPE html>')
@@ -39,6 +42,8 @@ def test_antibody_lots_html(testapp):
     assert res.body.startswith('<!DOCTYPE html>')
 
 
+@pytest.mark.persona
+@pytest.mark.slow
 def test_bad_audience(testapp, dummy_request):
     import requests
 
@@ -110,6 +115,7 @@ def __test_sample_data(testapp):
     assert len(res.json['_embedded']['items']) == 2
 
 
+@pytest.mark.slow
 def test_load_workbook(testapp, collection_test):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
