@@ -21,3 +21,4 @@ src/encoded/static/scss/_variables.original.scss
 src/encoded/tests/data/*.db
 ~$*
 ENCODE_DCC_TestMetadata.xlsx
+.~*#
