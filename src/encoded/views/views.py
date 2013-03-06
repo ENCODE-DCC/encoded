@@ -30,10 +30,17 @@ class User(CollectionViews):
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
     }
+    links = {
+        'labs': [
+            {'href': '/labs/{lab_uuid}', 'templated': True, 'embedded': True,
+             'repeat': 'lab_uuid lab_uuids'}
+        ]
+    }
 
 
 @resource(pattern='/donors/{path_segment}', collection_pattern='/donors/')
 class Donor(CollectionViews):
+    ## schema = load_schema('donor.json') Doesn't exist yet
     properties = {
         'title': 'Donors',
         'description': 'Listing Biosample Donors',
@@ -55,6 +62,12 @@ class Lab(CollectionViews):
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
     }
+    links = {
+        'awards': [
+            {'href': '/awards/{award_uuid}', 'templated': True, 'embedded': True,
+             'repeat': 'award_uuid award_uuids'}
+        ]
+    }
 
 
 @resource(pattern='/awards/{path_segment}', collection_pattern='/awards/')
@@ -68,6 +81,7 @@ class Award(CollectionViews):
 
 @resource(name='antibody_lot', pattern='/antibody-lots/{path_segment}', collection_pattern='/antibody-lots/')
 class AntibodyLots(CollectionViews):
+    #schema = load_schema('antibody_lot.json')
     properties = {
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
@@ -98,6 +112,7 @@ class Source(CollectionViews):
 
 @resource(pattern='/biosamples/{path_segment}', collection_pattern='/biosamples/')
 class Biosample(CollectionViews):
+    #schema = load_schema('biosample.json')
     properties = {
         'title': 'Biosamples',
         'description': 'Listing of ENCODE3 biosamples',
@@ -106,7 +121,7 @@ class Biosample(CollectionViews):
 
 @resource(pattern='/targets/{path_segment}', collection_pattern='/targets/')
 class Target(CollectionViews):
-    item_type = 'target'
+    #schema = load_schema('target.json')
     properties = {
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
@@ -123,6 +138,7 @@ class Target(CollectionViews):
 # The following should really be child collections.
 @resource(pattern='/validations/{path_segment}', collection_pattern='/validations/')
 class Validation(CollectionViews):
+    #schema = load_schema('validation.json')
     properties = {
         'title': 'Antibody Validations',
         'description': 'Listing of antibody validation documents',
@@ -139,6 +155,7 @@ class Validation(CollectionViews):
 
 @resource(name='antibody_approval', pattern='/antibodies/{path_segment}', collection_pattern='/antibodies/')
 class AntibodyApproval(CollectionViews):
+    #schema = load_schema('antibody_approval.json')
     properties = {
         'title': 'Antibody Approvals',
         'description': 'Listing of validation approvals for ENCODE antibodies',

@@ -276,9 +276,22 @@ def load_all(testapp, filename, docsdir, test=False):
             assert type(value) == dict
         except:
             raise AttributeError("Bad lab: %s: %s" % (uuid, value))
-
+        original = value.copy()
         value['pi_name'] = value.get('name', '').split('.')[1]
         ## no error trapping!
+
+        value['award_uuids'] = []
+        for award_id in value.get('award_number_list', []):
+            award_uuid = indices['award_id'].get(award_id)  # singletons???
+            if alldata['award'].get(award_uuid, None) is None:
+                logger.warn('Missing/skipped award reference %s for lab: %s' % (award_uuid, uuid))
+            else:
+                value['award_uuids'].append(award_uuid)
+
+        if not value['award_uuids']:
+            logger.warn('PROCESSING %s %s: (no awards) Value:\n%r\n' % (content_type, uuid, original))
+            #del alldata[content_type][uuid]
+            continue
 
     post_collection(testapp, alldata, content_type)
     lab_index = value_index(alldata['lab'], 'name')
@@ -288,6 +301,27 @@ def load_all(testapp, filename, docsdir, test=False):
     indices['lab_name'] = lab_index
 
     content_type = 'colleague'
+    for uuid, value in list(alldata[content_type].iteritems()):
+        try:
+            assert type(value) == dict
+        except:
+            raise AttributeError("Bad colleague: %s: %s" % (uuid, value))
+        original = value.copy()
+
+        value['lab_uuids'] = []
+        for lab_name in value.get('lab_name_list', []):
+            lab_uuid = indices['lab_name'].get(lab_name)  # singletons???
+            if alldata['lab'].get(lab_uuid, None) is None:
+                logger.warn('Missing/skipped lab reference %s for lab: %s' % (lab_uuid, uuid))
+            else:
+                value['lab_uuids'].append(lab_uuid)
+
+        if not value['lab_uuids']:
+            logger.warn('PROCESSING %s %s: (no labs) Value:\n%r\n' % (content_type, uuid, original))
+            #del alldata[content_type][uuid]
+            continue
+
+
     post_collection(testapp, alldata, content_type)
     colleague_index = value_index(alldata['colleague'], 'last_name')
     email_index = value_index(alldata['colleague'], 'email')
