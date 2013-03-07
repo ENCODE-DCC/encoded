@@ -31,6 +31,72 @@ function base(exports, $, _, Backbone, HAL, assert) {
         this.views = {};
     };
 
+    // Cached regex for stripping a leading hash/slash and trailing space.
+    var routeStripper = /^[#\/]|\s+$/g;
+
+    // Cached regex for removing a trailing slash.
+    var trailingSlash = /\/$/;
+
+    var OverlayHistory = exports.overlayHistory = Backbone.History.extend({
+        path: '',
+        constructor: function() {
+            OverlayHistory.__super__.constructor.apply(this, arguments);
+            this.overlay_handlers = [];
+        },
+        // Add a route to be tested when the overlay changes. Routes added later
+        // may override previous routes.
+        routeOverlay: function(route, callback) {
+          this.overlay_handlers.unshift({route: route, callback: callback});
+        },
+        getFragment: function(fragment, forcePushState) {
+          if (fragment == null) {
+            if (this._hasPushState || !this._wantsHashChange || forcePushState) {
+              fragment = this.location.pathname;
+              var root = this.root.replace(trailingSlash, '');
+              if (!fragment.indexOf(root)) fragment = fragment.substr(root.length);
+              var hash = this.getHash();
+              if (hash) fragment = fragment + '#' + hash;
+            } else {
+              fragment = this.getHash();
+            }
+          }
+          return fragment.replace(routeStripper, '');
+        },
+        loadOverlay: function(overlay) {
+            _.any(this.overlay_handlers, function(handler) {
+                if (handler.route.test(overlay)) {
+                    handler.callback(overlay);
+                    return true;
+                }
+            });
+        },
+        loadUrl: function(fragmentOverride) {
+            var fragment = this.fragment = this.getFragment(fragmentOverride);
+            var hash_pos = fragment.indexOf('#');
+            var overlay, path;
+            if (hash_pos >= 0) {
+                overlay = fragment.substr(hash_pos + 1);
+                path = fragment.substr(0, hash_pos);
+            } else {
+                overlay = '';
+                path = fragment;
+            }
+            if (path === this.path) {
+                this.loadOverlay(overlay);
+                return true;
+            }
+            this.path = path;
+            var matched = _.any(this.handlers, _.bind(function(handler) {
+                if (handler.route.test(path)) {
+                    handler.callback(path);
+                    return true;
+                }
+            }, this));
+            if (matched) this.once('route', _.bind(this.loadOverlay, this, overlay));
+            return matched;
+        }
+    });
+
     var DeferredRouter = exports.DeferredRouter = Backbone.Router.extend({
         route: function(route, name, callback) {
           if (!_.isRegExp(route)) route = this._routeToRegExp(route);
@@ -44,6 +110,22 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 console.log("routed: "+location.href);
             }, this)).fail(_.bind(function () {
                 console.log("route failed...");
+            }, this));
+          }, this));
+          return this;
+        },
+        routeOverlay: function(route, name, callback) {
+          if (!_.isRegExp(route)) route = this._routeToRegExp(route);
+          if (!callback) callback = this[name];
+          Backbone.history.routeOverlay(route, _.bind(function(fragment) {
+            var args = this._extractParameters(route, fragment);
+            args.push(fragment.replace(/\/.*/g, '/'));
+            if (callback) $.when(callback.apply(this, args)).done(_.bind(function () {
+                this.trigger.apply(this, ['overlay:' + name].concat(args));
+                Backbone.history.trigger('overlay', this, name, args);
+                console.log("overlay: "+location.href);
+            }, this)).fail(_.bind(function () {
+                console.log("overlay failed...");
             }, this));
           }, this));
           return this;
@@ -97,6 +179,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
         },
 
         make_router: function make_router(routes) {
+            Backbone.history = new OverlayHistory();
             this.process_deferred();
             var router = this.router = new DeferredRouter();
             var rev_routes = _(_(this.routes).map(function (patterns, route_name) {
