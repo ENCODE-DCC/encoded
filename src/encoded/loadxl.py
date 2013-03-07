@@ -237,24 +237,64 @@ def assign_submitter(data, dtype, indices, fks):
                         (dtype, fks, e))
 
     try:
-        try:
-            data['submitter_uuid'] = indices['email'][fks['email']]
-        except:
-            data['submitter_uuid'] = indices['colleague'][fks['last_name']]
-
-        try:
-            data['lab_uuid'] = indices['lab_name'][fks['lab_name']]
-        except:
-            data['lab_uuid'] = indices['lab_pi'][fks['pi_last_name']]
-
-        try:
-            data['award_uuid'] = indices['award_id'][fks['award_no']]
-        except:
-            data['award_uuid'] = indices['award'][(fks['pi_last_name'], fks['project'])]
+        data['submitter_uuid'] = indices['colleague'][fks['email']]
+        data['lab_uuid'] = indices['lab'][fks['lab_name']]
+        data['award_uuid'] = indices['award'][(fks['pi_last_name'], fks['project'])]
 
     except Exception as ef:
         raise ValueError('No submitter/lab found for %s: %s due to %s' %
                         (dtype, fks, ef))
+
+
+def parse_decorator_factory(content_type, index_type):
+
+    def parse_sheet(parse_type):
+
+        def wrapped(testapp, alldata, indices, content_type):
+
+            for uuid, value in list(alldata[content_type].iteritems()):
+
+                try:  # one big error handle
+                    assert type(value) == dict
+                    original = value.copy()
+                    # the wrapped function
+                    parse_type(testapp, alldata, content_type, indices, uuid, value)
+
+                except Exception as e:
+                    logger.warn('PROCESSING %s %s: %s Value:\n%r\n' % (content_type, uuid, e, original))
+                    del alldata[content_type][uuid]
+                    continue
+
+            post_collection(testapp, alldata, content_type)
+            for itype, cols in list(index_type.iteritems()):
+                if index_type == 'multi':
+                    my_index = multi_index(alldata[content_type], cols)
+                elif index_type == 'tuple':
+                    my_index = tuple_index(alldata[content_type], cols)
+                else:
+                    my_index = value_index(alldata[content_type], cols)
+                indices[content_type] = my_index  # one each
+
+        return wrapped
+
+    return parse_sheet
+
+
+@parse_decorator_factory('award', {'value': 'number'})
+def parse_award(testapp, alldata, content_type, indices, uuid, value):
+    pass
+
+
+@parse_decorator_factory('lab', {'value': 'name'})
+def parse_lab(testapp, alldata, content_type, indices, uuid, value):
+
+    value['award_uuids'] = []
+    for award_id in value.get('award_number_list', []):
+        award_uuid = indices['award'].get(award_id)  # singletons???
+        if alldata['award'].get(award_uuid, None) is None:
+            logger.warn('Missing/skipped award reference %s for lab: %s' % (award_uuid, uuid))
+        else:
+            value['award_uuids'].append(award_uuid)
 
 
 def load_all(testapp, filename, docsdir, test=False):
@@ -263,42 +303,22 @@ def load_all(testapp, filename, docsdir, test=False):
 
     indices = IndexContainer().indices
 
-    content_type = 'award'
-    post_collection(testapp, alldata, content_type)
-    award_id_index = value_index(alldata['award'], 'number')
+    parse_award(testapp, alldata, indices, 'award')
+    '''award_id_index = value_index(alldata['award'], 'number')
     award_index = tuple_index(alldata['award'], 'pi_last_name', 'project')
     indices['award_id'] = award_id_index
     indices['award'] = award_index
+    '''
 
-    content_type = 'lab'
-    for uuid, value in list(alldata[content_type].iteritems()):
-        try:
-            assert type(value) == dict
-        except:
-            raise AttributeError("Bad lab: %s: %s" % (uuid, value))
-        original = value.copy()
-        value['pi_name'] = value.get('name', '').split('.')[1]
-        ## no error trapping!
+    parse_lab(testapp, alldata, indices, 'lab')
 
-        value['award_uuids'] = []
-        for award_id in value.get('award_number_list', []):
-            award_uuid = indices['award_id'].get(award_id)  # singletons???
-            if alldata['award'].get(award_uuid, None) is None:
-                logger.warn('Missing/skipped award reference %s for lab: %s' % (award_uuid, uuid))
-            else:
-                value['award_uuids'].append(award_uuid)
-
-        if not value['award_uuids']:
-            logger.warn('PROCESSING %s %s: (no awards) Value:\n%r\n' % (content_type, uuid, original))
-            #del alldata[content_type][uuid]
-            continue
-
-    post_collection(testapp, alldata, content_type)
+    '''post_collection(testapp, alldata, content_type)
     lab_index = value_index(alldata['lab'], 'name')
     lab_pi_index = value_index(alldata['lab'], 'pi_name')
     ## should actually use the tuple_index if we had all 3 parts of lab name.
     indices['lab_pi'] = lab_pi_index
     indices['lab_name'] = lab_index
+    '''
 
     content_type = 'colleague'
     for uuid, value in list(alldata[content_type].iteritems()):
@@ -310,7 +330,7 @@ def load_all(testapp, filename, docsdir, test=False):
 
         value['lab_uuids'] = []
         for lab_name in value.get('lab_name_list', []):
-            lab_uuid = indices['lab_name'].get(lab_name)  # singletons???
+            lab_uuid = indices['lab'].get(lab_name)  # singletons???
             if alldata['lab'].get(lab_uuid, None) is None:
                 logger.warn('Missing/skipped lab reference %s for lab: %s' % (lab_uuid, uuid))
             else:
