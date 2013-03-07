@@ -53,7 +53,7 @@ class CollectionViews(object):
     links = {
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
         'collection': {'href': '{collection_uri}', 'templated': True},
-        'profile': {'href': '/profiles/{item_type}', 'templated': True},
+        'profile': {'href': '/profiles/{item_type}.json', 'templated': True},
     }
     embedded = {}
 
