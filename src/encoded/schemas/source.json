@@ -1,47 +1,31 @@
 {
-    "default": null,
-    "description": "",
+    "title": "Source",
+    "description": "Vendor of antibodies",
+    "type": "object",
     "properties": {
         "_uuid": {
-            "default": null,
+            "title": "UUID",
             "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string",
+            "format": "uuid"
         },
         "alias": {
-            "default": null,
+            "title": "Alias",
             "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string"
         },
         "source_name": {
-            "default": null,
+            "title": "Source Name",
             "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string"
         },
         "url": {
-            "default": null,
+            "title": "URL",
             "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string"
         }
     },
-    "title": "",
-    "type": [
-        "object",
-        "null"
+    "required": [
+        "source_name"
     ]
 }
