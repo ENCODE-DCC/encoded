@@ -166,10 +166,10 @@ def multi_index(data, attribute):
     return index
 
 
-def tuple_index(data, *attrs):
+def tuple_index(data, tup):
     index = {}
     for uuid, value in list(data.iteritems()):
-        index_value = tuple(resolve_dotted(value, attr) for attr in attrs)
+        index_value = tuple(resolve_dotted(value, attr) for attr in tup)
         if index_value in index:
             logger.warn('Duplicate values for %s, %s: %r' % (index[index_value], uuid, index_value))
             del[data[uuid]]
@@ -223,6 +223,7 @@ def post_collection(testapp, alldata, content_type):
 
 def assign_submitter(data, dtype, indices, fks):
 
+    '''
     if not fks.get('award_no', None):
         if not fks.get('project', None):
             raise KeyError
@@ -235,11 +236,12 @@ def assign_submitter(data, dtype, indices, fks):
         except Exception as e:
             raise ValueError('Bad submitter keys %s: %s due to: %s' %
                         (dtype, fks, e))
+    '''
 
     try:
         data['submitter_uuid'] = indices['colleague'][fks['email']]
         data['lab_uuid'] = indices['lab'][fks['lab_name']]
-        data['award_uuid'] = indices['award'][(fks['pi_last_name'], fks['project'])]
+        data['award_uuid'] = indices['award'][fks['award_no']]
 
     except Exception as ef:
         raise ValueError('No submitter/lab found for %s: %s due to %s' %
@@ -250,7 +252,7 @@ def parse_decorator_factory(content_type, index_type):
 
     def parse_sheet(parse_type):
 
-        def wrapped(testapp, alldata, indices, content_type):
+        def wrapped(testapp, alldata, indices, content_type, docsdir):
 
             for uuid, value in list(alldata[content_type].iteritems()):
 
@@ -258,7 +260,7 @@ def parse_decorator_factory(content_type, index_type):
                     assert type(value) == dict
                     original = value.copy()
                     # the wrapped function
-                    parse_type(testapp, alldata, content_type, indices, uuid, value)
+                    parse_type(testapp, alldata, content_type, indices, uuid, value, docsdir)
 
                 except Exception as e:
                     logger.warn('PROCESSING %s %s: %s Value:\n%r\n' % (content_type, uuid, e, original))
@@ -267,9 +269,9 @@ def parse_decorator_factory(content_type, index_type):
 
             post_collection(testapp, alldata, content_type)
             for itype, cols in list(index_type.iteritems()):
-                if index_type == 'multi':
+                if itype == 'multi':
                     my_index = multi_index(alldata[content_type], cols)
-                elif index_type == 'tuple':
+                elif itype == 'tuple':
                     my_index = tuple_index(alldata[content_type], cols)
                 else:
                     my_index = value_index(alldata[content_type], cols)
@@ -281,12 +283,12 @@ def parse_decorator_factory(content_type, index_type):
 
 
 @parse_decorator_factory('award', {'value': 'number'})
-def parse_award(testapp, alldata, content_type, indices, uuid, value):
+def parse_award(testapp, alldata, content_type, indices, uuid, value, docsdir):
     pass
 
 
 @parse_decorator_factory('lab', {'value': 'name'})
-def parse_lab(testapp, alldata, content_type, indices, uuid, value):
+def parse_lab(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
     value['award_uuids'] = []
     for award_id in value.get('award_number_list', []):
@@ -297,22 +299,153 @@ def parse_lab(testapp, alldata, content_type, indices, uuid, value):
             value['award_uuids'].append(award_uuid)
 
 
+@parse_decorator_factory('colleague', {'value': 'email'})
+def parse_colleague(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    value['lab_uuids'] = []
+    for lab_name in value.get('lab_name_list', []):
+        lab_uuid = indices['lab'].get(lab_name)  # singletons???
+        if alldata['lab'].get(lab_uuid, None) is None:
+            logger.warn('Missing/skipped lab reference %s for lab: %s' % (lab_uuid, uuid))
+        else:
+            value['lab_uuids'].append(lab_uuid)
+
+
+@parse_decorator_factory('organism', {'value': 'organism_name'})
+def parse_organism(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    value['taxon_id'] = int(value['taxon_id'])
+
+
+@parse_decorator_factory('source', {'value': 'source_name'})
+def parse_source(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    pass
+
+
+@parse_decorator_factory('target', {'tuple': ('target_label', 'organism_uuid')})
+def parse_target(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    value['organism_uuid'] = indices['organism'][value.pop('organism_name')]
+    aliases = value.pop('target_aliases') or ''  # needs to be _list!
+    alias_source = value.pop('target_alias_source')
+    value['dbxref'] = [
+        {'db': alias_source, 'id': alias.strip()}
+        for alias in aliases.split(';') if alias]
+
+    value = assign_submitter(value, content_type, indices,
+                             {
+                             'email': value.pop('submitted_by_colleague_email'),
+                             'lab_name': value.pop('submitted_by_lab_name'),
+                             'award_no': value.pop('submitted_by_award_number')
+                             }
+                             )
+
+
+@parse_decorator_factory('antibody_lot', {'tuple': ('product_id', 'lot_id')})
+def parse_antibody_lot(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    source = value.pop('source')
+    try:
+        value['source_uuid'] = indices['source'][source]
+    except KeyError:
+        raise ValueError('Unable to find source: %s' % source)
+    aliases = value.pop('antibody_alias') or ''
+    alias_source = value.pop('antibody_alias_source')
+    value['dbxref'] = [
+        {'db': alias_source, 'id': alias.strip()}
+        for alias in aliases.split(';') if alias]
+
+    assign_submitter(value, content_type, indices,
+                     {
+                     'email': value.pop('submitted_by_colleague_email'),
+                     'lab_name': value.pop('submitted_by_lab_name'),
+                     'award_no': value.pop('submitted_by_award_number')
+                     }
+                     )
+
+
+@parse_decorator_factory('validation', {'multi': 'document.download'})
+def parse_validation(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+        organism_name = value.pop('organism_name')
+        try:
+            organism_uuid = indices['organism'][organism_name]
+        except KeyError:
+            raise ValueError('Unable to find organism: %s' % organism_name)
+        key = (value.pop('target_label'), organism_uuid)
+        try:
+            value['target_uuid'] = indices['target'][key]
+        except KeyError:
+            raise ValueError('Unable to find target: %r' % (key,))
+
+        filename = value.pop('document_filename')
+        stream = open(os.path.join(docsdir, filename), 'rb')
+        _, ext = os.path.splitext(filename.lower())
+        if ext in ('.png', '.jpg', '.tiff'):
+            value['document'] = image_data(stream, filename)
+        elif ext == '.pdf':
+            mime_type = 'application/pdf'
+            value['document'] = {
+                'download': filename,
+                'type': mime_type,
+                'href': data_uri(stream, mime_type),
+            }
+        else:
+            raise ValueError("Unknown file type for %s" % filename)
+
+        assign_submitter(value, content_type, indices,
+                         {
+                         'last_name': value.pop('submitted_by'),
+                         'pi_last_name': value.get('submitted_by_pi', None),
+                         'project': value.pop('validated_by', None)
+                         }
+                         )
+        try:
+            check_lot = alldata['antibody_lot'][value['antibody_lot_uuid']]
+        except KeyError:
+            raise ValueError('Antibody lot %s not present' % (value['antibody_lot_uuid']))
+
+
+@parse_decorator_factory('antibody_approval', {})
+def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    try:
+        value['antibody_lot_uuid'] = indices['antibody_lot'][(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
+    except KeyError:
+        raise ValueError('Missing/skipped antibody_lot reference')
+
+    value['validation_uuids'] = []
+    filenames = [v.strip() for v in (value.pop('validation_filenames') or '').split(';') if v]
+    for filename in filenames:
+        validation_uuids = indices['validation'].get(filename, [])
+        for validation_uuid in validation_uuids:
+            if alldata['validation'].get(validation_uuid, None) is None:
+                logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
+            else:
+                value['validation_uuids'].append(validation_uuid)
+    try:
+        organism_uuid = indices['organism'][value.pop('organism_name')]
+        value['target_uuid'] = indices['target'][(value.pop('target_label'), organism_uuid)]
+    except KeyError:
+        raise ValueError('Missing/skipped target reference')
+
+
+
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
     alldata = extract(filename, sheets, test=test)
 
     indices = IndexContainer().indices
 
-    parse_award(testapp, alldata, indices, 'award')
+    parse_award(testapp, alldata, indices, 'award', docsdir)
     '''award_id_index = value_index(alldata['award'], 'number')
     award_index = tuple_index(alldata['award'], 'pi_last_name', 'project')
     indices['award_id'] = award_id_index
     indices['award'] = award_index
     '''
 
-    parse_lab(testapp, alldata, indices, 'lab')
+    parse_lab(testapp, alldata, indices, 'lab', docsdir)
 
-    '''post_collection(testapp, alldata, content_type)
+    '''
     lab_index = value_index(alldata['lab'], 'name')
     lab_pi_index = value_index(alldata['lab'], 'pi_name')
     ## should actually use the tuple_index if we had all 3 parts of lab name.
@@ -320,193 +453,55 @@ def load_all(testapp, filename, docsdir, test=False):
     indices['lab_name'] = lab_index
     '''
 
-    content_type = 'colleague'
-    for uuid, value in list(alldata[content_type].iteritems()):
-        try:
-            assert type(value) == dict
-        except:
-            raise AttributeError("Bad colleague: %s: %s" % (uuid, value))
-        original = value.copy()
+    parse_colleague(testapp, alldata, indices, 'colleague', docsdir)
 
-        value['lab_uuids'] = []
-        for lab_name in value.get('lab_name_list', []):
-            lab_uuid = indices['lab'].get(lab_name)  # singletons???
-            if alldata['lab'].get(lab_uuid, None) is None:
-                logger.warn('Missing/skipped lab reference %s for lab: %s' % (lab_uuid, uuid))
-            else:
-                value['lab_uuids'].append(lab_uuid)
-
-        if not value['lab_uuids']:
-            logger.warn('PROCESSING %s %s: (no labs) Value:\n%r\n' % (content_type, uuid, original))
-            #del alldata[content_type][uuid]
-            continue
-
-
-    post_collection(testapp, alldata, content_type)
+    '''
     colleague_index = value_index(alldata['colleague'], 'last_name')
     email_index = value_index(alldata['colleague'], 'email')
     indices['colleague'] = colleague_index
     indices['email'] = email_index
+    '''
 
-    content_type = 'organism'
-    for uuid, value in list(alldata[content_type].iteritems()):
-        try:
-            value['taxon_id'] = int(value['taxon_id'])
-        except Exception as e:
-            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
-            del alldata[content_type][uuid]
-            continue
-    post_collection(testapp, alldata, content_type)
+    parse_organism(testapp, alldata, indices, 'organism', docsdir)
+
+    '''
     organism_index = value_index(alldata[content_type], 'organism_name')
     indices['organism'] = organism_index
+    '''
+
+    parse_source(testapp, alldata, indices, 'source', docsdir)
+
+    '''
+    source_index = value_index(alldata[content_type], 'source_name')
 
     content_type = 'donor'
     post_collection(testapp, alldata, content_type)
 
-    content_type = 'source'
-    post_collection(testapp, alldata, content_type)
-    source_index = value_index(alldata[content_type], 'source_name')
 
     content_type = 'biosample'
     post_collection(testapp, alldata, content_type)
 
     content_type = 'document'
     post_collection(testapp, alldata, content_type)
+    '''
 
-    content_type = 'target'
-    for uuid, value in list(alldata[content_type].iteritems()):
-        original = value.copy()
-        try:
-            value['organism_uuid'] = organism_index[value.pop('organism_name')]
-            aliases = value.pop('target_aliases') or ''  # needs to be _list!
-            alias_source = value.pop('target_alias_source')
-            value['dbxref'] = [
-                {'db': alias_source, 'id': alias.strip()}
-                for alias in aliases.split(';') if alias]
+    parse_target(testapp, alldata, indices, 'target', docsdir)
 
-            value = assign_submitter(value, content_type, indices,
-                                     {'email': value.pop('submitted_by_colleague_email'),
-                                      'lab_name': value.pop('submitted_by_lab_name'),
-                                      'award_no': value.pop('submitted_by_award_number')
-                                     }
-                                    )
-
-        except Exception as e:
-            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
-            del alldata[content_type][uuid]
-            continue
-
-    post_collection(testapp, alldata, content_type)
+    '''
     target_index = tuple_index(alldata[content_type], 'target_label', 'organism_uuid')
+    '''
 
-    content_type = 'antibody_lot'
-    for uuid, value in list(alldata[content_type].iteritems()):
-        original = value.copy()
-        try:
-            source = value.pop('source')
-            try:
-                value['source_uuid'] = source_index[source]
-            except KeyError:
-                raise ValueError('Unable to find source: %s' % source)
-            aliases = value.pop('antibody_alias') or ''
-            alias_source = value.pop('antibody_alias_source')
-            value['dbxref'] = [
-                {'db': alias_source, 'id': alias.strip()}
-                for alias in aliases.split(';') if alias]
+    parse_antibody_lot(testapp, alldata, indices, 'antibody_lot', docsdir)
 
-            assign_submitter(value, content_type, indices,
-                                    {'email': value.pop('submitted_by_colleague_email'),
-                                      'lab_name': value.pop('submitted_by_lab_name'),
-                                      'award_no': value.pop('submitted_by_award_number')
-                                     }
-                                    )
-
-
-        except Exception as e:
-            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
-            del alldata[content_type][uuid]
-            continue
-
-    post_collection(testapp, alldata, 'antibody_lot')
+    '''
     antibody_lot_index = tuple_index(alldata['antibody_lot'], 'product_id', 'lot_id')
+    '''
 
-    content_type = 'validation'
-    for uuid, value in list(alldata[content_type].iteritems()):
-        original = value.copy()
-        try:
-            if value['antibody_lot_uuid'] is None:
-                raise ValueError('Missing antibody_lot_uuid')
-            organism_name = value.pop('organism_name')
-            try:
-                organism_uuid = organism_index[organism_name]
-            except KeyError:
-                raise ValueError('Unable to find organism: %s' % organism_name)
-            key = (value.pop('target_label'), organism_uuid)
-            try:
-                value['target_uuid'] = target_index[key]
-            except KeyError:
-                raise ValueError('Unable to find target: %r' % (key,))
+    parse_validation(testapp, alldata, indices, 'validation', docsdir)
 
-            filename = value.pop('document_filename')
-            stream = open(os.path.join(docsdir, filename), 'rb')
-            _, ext = os.path.splitext(filename.lower())
-            if ext in ('.png', '.jpg', '.tiff'):
-                value['document'] = image_data(stream, filename)
-            elif ext == '.pdf':
-                mime_type = 'application/pdf'
-                value['document'] = {
-                    'download': filename,
-                    'type': mime_type,
-                    'href': data_uri(stream, mime_type),
-                }
-            else:
-                raise ValueError("Unknown file type for %s" % filename)
-
-            assign_submitter(value, content_type, indices,
-                             { 'last_name': value.pop('submitted_by'),
-                               'pi_last_name': value.get('submitted_by_pi', None),
-                               'project': value.pop('validated_by', None)
-                             }
-                            )
-
-            check_lot = alldata['antibody_lot'][value['antibody_lot_uuid']]
-            # should raise key errors if not present.
-        except Exception as e:
-            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
-            del alldata[content_type][uuid]
-            continue
-
-    post_collection(testapp, alldata, content_type)
-    # validation_index = multi_tuple_index(alldata['validation'], 'antibody_lot_uuid', 'target_label', 'organism_name')
+    '''
+    validation_index = multi_tuple_index(alldata['validation'], 'antibody_lot_uuid', 'target_label', 'organism_name')
     validation_index = multi_index(alldata[content_type], 'document.download')
+    '''
 
-    content_type = 'antibody_approval'
-    for uuid, value in list(alldata[content_type].iteritems()):
-        original = value.copy()
-        try:
-            try:
-                value['antibody_lot_uuid'] = antibody_lot_index[(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
-            except KeyError:
-                raise ValueError('Missing/skipped antibody_lot reference')
-
-            value['validation_uuids'] = []
-            filenames = [v.strip() for v in (value.pop('validation_filenames') or '').split(';') if v]
-            for filename in filenames:
-                validation_uuids = validation_index.get(filename, [])
-                for validation_uuid in validation_uuids:
-                    if alldata['validation'].get(validation_uuid, None) is None:
-                        logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
-                    else:
-                        value['validation_uuids'].append(validation_uuid)
-            try:
-                organism_uuid = organism_index[value.pop('organism_name')]
-                value['target_uuid'] = target_index[(value.pop('target_label'), organism_uuid)]
-            except KeyError:
-                raise ValueError('Missing/skipped target reference')
-
-        except Exception as e:
-            logger.warn('Error PROCESSING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, original))
-            del alldata[content_type][uuid]
-            continue
-
-    post_collection(testapp, alldata, content_type)
+    parse_antibody_approval(testapp, alldata, indices, 'antibody_approval', docsdir)

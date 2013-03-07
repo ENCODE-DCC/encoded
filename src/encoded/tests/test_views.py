@@ -1,3 +1,5 @@
+import pytest
+
 def test_home_html(testapp):
     res = testapp.get('/', status=200)
     assert res.body.startswith('<!DOCTYPE html>')
@@ -43,7 +45,10 @@ def test_bad_audience(testapp, dummy_request):
     import requests
 
     data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Fsomeaudience').json()
-    assertion = data['assertion']
+    try:
+        assertion = data['assertion']
+    except KeyError:
+        pytest.skip(data.get('message', "Unknown persona error"))
 
     res = testapp.post_json('/login', params={'assertion': assertion, 'came_from': '/'}, status=400)
 
@@ -57,8 +62,7 @@ def _test_login_cycle(testapp, dummy_request):
         email = data['email']
         assertion = data['assertion']
     except KeyError:
-        import sys
-        sys.stderr.write("Something is foul with personatestuser: %s" % data)
+        pytest.skip(data.get('message', "Unknown persona error"))
 
     res = testapp.post_json('/login', params={'assertion': assertion, 'came_from': '/'}, status=200)
 
