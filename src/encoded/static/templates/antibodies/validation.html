@@ -10,7 +10,15 @@
 							src="{properties.document.href}"
 							height="{properties.document.height}"
 							width="{properties.document.width}"
-							alt=""
+							alt="Validation Image"
+							/>
+					<?js } else if (properties.document.type == "application/pdf"){ ?>
+						<img
+							class="validation-img validation-file"
+							src="/static/img/file-pdf.svg"
+							height="100"
+							width="100"
+							alt="Validation PDF Icon"
 							/>
 					<?js } else { ?>
 						<img
@@ -18,7 +26,7 @@
 							src="/static/img/file.svg"
 							height="100"
 							width="100"
-							alt=""
+							alt=" Validation Icon"
 							/>
 					<?js } ?>
 				</a>
@@ -29,6 +37,7 @@
 							alt="validation image not found"
 							height="100"
 							width="100"
+							alt="Validation File Broken Icon"
 						/>
 				<?js } ?>
 				<figcaption>
