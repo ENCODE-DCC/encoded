@@ -47,8 +47,8 @@
 		</div>
 		<div class="span5">
 			<div class="validation-meta-data">
-				<p><b>Method:</b> <span>{properties.validation_method}</span></p>
-				<p><b>Target species:</b> <span>{model.links.target.links.organism.get('organism_name')}</span></p>
+				<h3>Method: <span>{properties.validation_method}</span></h3>
+				<h4>Target species: <span>{model.links.target.links.organism.get('organism_name')}</span></h4>
 				<p><span>{properties.caption}</span></p>
 				<p><b>Submitter / Lab / Grant:</b> <span>{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('name')} / {model.links.award.get('project')}</span></p>
 				<p><b>Approver:</b> <span>{properties.validated_by}</span></p>

@@ -343,9 +343,9 @@ a[href^="http"]:empty:after {
     padding: 15px 30px;
 }
 
-.panel h3, .panel h4 {color: #4E7294;}
+.panel h3, .panel h4 {color: #0A253D;}
 
-
+.view-detail h3 { line-height: 24.5px; }
 
 /* Data Display - Based on Bootstrap Forms Layout
    Used for displaying Read Only data in a form type layout
