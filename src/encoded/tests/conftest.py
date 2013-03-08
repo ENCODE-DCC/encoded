@@ -55,10 +55,10 @@ def collection_test():
         'validations': 19,
         'antibodies': 23,
         'donors': 79,
-        'documents': 122,
+        'documents': 30,
         'treatments': 6,
         'constructs': 5,
-        'biosamples': 136
+        'biosamples': 131
     }
 
 

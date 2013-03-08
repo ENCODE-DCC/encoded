@@ -10,14 +10,16 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
         sources: ['sources/'],
         source: ['sources/:uuid'],
         biosamples: ['biosamples/'],
-        biosample: ['biosample/:uuid'],
+        //biosample: ['biosamples/:uuid'],
         generics: [
             'labs/',
             'users/',
             'documents/',
             'donors/',
-            'awards/'
-//            'institutes/'
+            'awards/',
+            'treatments/',
+            'constructs/',
+            'organisms/'
         ],
         generic: [
             'labs/:uuid',
@@ -25,7 +27,10 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'documents/:uuid',
             'donors/:uuid',
             'awards/:uuid',
-//            'institutes/:uuid'
+            'treatments/:uuid',
+            'constructs/:uuid',
+            'organisms/:uuid',
+            'biosamples/:uuid'
         ]
         //login: '#login'
         //logout: '#logout'

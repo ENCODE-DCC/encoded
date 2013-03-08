@@ -1,43 +1,44 @@
 <header class="row">
     <div class="span12">
-        <h2>Antibody Target</h2>
+        <h2>Biosample</h2>
     </div>
 </header>
 <div class="row">
     <div class="span12">
         <div class="panel data-display" id="target-data">
             <div class="data-group">
-                <label class="data-label" for="target-name">Target Name:</label>
+                <label class="data-label" for="accession">Accession number:</label>
                 <div class="data-values">
-                <span id="target-name" class="data-point">{properties.target_label}</span>
+                <span id="accession" class="data-point">{properties.accession}</span>
                 </div>
                 </div>
                 <div class="data-group">
-                <label class="data-label" for="target-gene">Target Gene:</label>
+                <label class="data-label" for="description">Description:</label>
                 <div class="data-values">
-                <span id="target-gene" class="data-point">{properties.target_gene_name}</span>
+                <span id="description" class="data-point">{properties.biosample_description}</span>
                 </div>
                 </div>
                 <div class="data-group">
-                <label class="data-label" for="uniprot-id">UniProt Id:</label>
+                <label class="data-label" for="source">Source:</label>
                 <div class="data-values">
-                <span id="uniprot-id" class="data-point">
-                    <a href="http://www.uniprot.org/uniprot/{properties.target_term_uniprot}">{properties.target_term_uniprot}</a>
+                <span id="source" class="data-point">
+                    <a href="{model.links.source.get('url')}">{model.links.source.get('source_name')}</a>
                 </span>
                 </div>
                 </div>
+                <!-- Protocols & Documents -->
+                <!-- Relationships to other Biosamples -->
+                <!-- Donor section -->
                 <div class="data-group">
                 <label class="data-label" for="species">Species:</label>
                 <div class="data-values">
                 <span id="species" class="data-point">{model.links.organism.get('organism_name')}</span>
+                <!-- NEED mock donors for the following -->
+                <!--span id="species" class="data-point">{model.links.donor.links.organism.get('organism_name')}</span> -->
                 </div>
                 </div>
-                <div class="data-group">
-                <label class="data-label" for="target-class">Target Class:</label>
-                <div class="data-values">
-                <span id="target-class" class="data-point">{properties.target_class}</span>
-                </div>
-                </div>
+                <!-- Treatment section -->
+                <!-- Construct section?? -->
                 <div class="data-group">
                 <label class="data-label" for="project">Project:</label>
                 <div class="data-values">
@@ -47,13 +48,8 @@
                 <div class="data-group">
                 <label class="data-label" for="created-by">Submitter / Lab / Grant:</label>
                 <div class="data-values">
-                <span id="created-by" class="data-point">{properties.created_by} / {properties.lab_pi} / {properties.grant}</span>
+                <span id="created-by" class="data-point">{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('name')} / {model.links.award.get('project')}</span>
                 </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="date-created">Date Created:</label>
-                <div class="data-values">
-                <span id="date-created" class="data-point">{properties.date_created}</span>
                 </div>
             </div>
         </div>

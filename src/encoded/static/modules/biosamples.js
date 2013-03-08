@@ -4,18 +4,14 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
     'text!templates/biosamples/row.html'],
 function biosamples(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template) {
 
-    exports.Biosample = base.Model.extend({
-        urlRoot: '/biosamples/',
-        initialize: function initialize(attrs, options) {
-            if (options && options.route_args) {
-                this.id = options.route_args[0];
-                this.deferred = this.fetch();
-            }
-        }
-    });
+    exports.biosample_factory = function biosample_factory(attrs, options) {
+        var new_obj = new base.Model(attrs, options);
+        new_obj.url = '/biosamples/' + options.route_args[0];
+        return new_obj;
+    };
 
     exports.BiosampleCollection = base.Collection.extend({
-        model: exports.Biosample,
+        model: base.Model,
         url: '/biosamples/'
     });
 
@@ -29,9 +25,8 @@ function biosamples(exports, $, _, base, table_sorter, table_filter, home_templa
                         'Species',
                         'Source',
                         'Submitter',
-                        'Status'
                         ],
-        sort_initial: 0  // oh the index hack it burns
+        sort_initial: 2  // oh the index hack it burns
 
 
     },
@@ -48,7 +43,7 @@ function biosamples(exports, $, _, base, table_sorter, table_filter, home_templa
         template: _.template(item_template)
     }, {
         route_name: 'biosample',
-        model_factory: exports.Biosample
+        model_factory: exports.biosample_factory
     });
 
     return exports;

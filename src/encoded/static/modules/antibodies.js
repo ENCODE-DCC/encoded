@@ -11,21 +11,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
         return new_obj;
     };
 
-    var Antibody = exports.Antibody = base.Model.extend({
-        urlRoot: '/antibodies/',
-        initialize: function initialize(attrs, options) {
-            if (options && options.route_args) {
-                this.id = options.route_args[0];
-                this.deferred = this.fetch();
-            }
-        }
-    });
-
     var AntibodyCollection = exports.AntibodyCollection = base.Collection.extend({
-        fetch: function fetch(options) {
-
-            return AntibodyCollection.__super__.fetch.apply(this, arguments);
-        },
 
         model: base.Model,
         url: '/antibodies/'

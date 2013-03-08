@@ -16,7 +16,7 @@
            <?js } else { ?> <th>{header}</th> <?js } ?>
         <?js }); ?>
         <?js } else {  ?>
-            <?js var first = view.model.models[0].attributes; ?>
+            <?js var first = view.model.models[0].attributes; ?> <!-- this shoudl maybe find a model with max(num_attributes) -->
             <?js _.each(first, function(val,header) { if(header.search(/(uuid|_no)/) == -1) {?>
                 <th>{header}</th>
             <?js } } ); ?>
