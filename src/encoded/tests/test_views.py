@@ -1,46 +1,30 @@
 import pytest
 
-def test_home_html(testapp):
-    res = testapp.get('/', status=200)
+COLLECTION_URLS = [
+    '/',
+    '/antibodies/',
+    '/targets/',
+    '/organisms/',
+    '/sources/',
+    '/validations/',
+    '/antibody-lots/',
+    ]
+
+
+@pytest.mark.parametrize('url', COLLECTION_URLS)
+def test_html(testapp, url):
+    res = testapp.get(url, status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
 
-def test_home_json(testapp):
-    res = testapp.get('/', headers={'Accept': 'application/json'}, status=200)
-    assert res.json_body['title'] == 'Home'
+@pytest.mark.parametrize('url', COLLECTION_URLS)
+def test_json(jsontestapp, url):
+    res = jsontestapp.get(url, status=200)
+    assert res.json['_links']
 
 
-## these could all be tested with ?format=json as well.
-def test_antibodies_html(testapp):
-    res = testapp.get('/antibodies/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
-
-
-def test_targets_html(testapp):
-    res = testapp.get('/targets/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
-
-
-def test_organisms_html(testapp):
-    res = testapp.get('/organisms/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
-
-
-def test_sources_html(testapp):
-    res = testapp.get('/sources/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
-
-
-def test_validations_html(testapp):
-    res = testapp.get('/validations/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
-
-
-def test_antibody_lots_html(testapp):
-    res = testapp.get('/antibody-lots/', status=200)
-    assert res.body.startswith('<!DOCTYPE html>')
-
-
+@pytest.mark.persona
+@pytest.mark.slow
 def test_bad_audience(testapp, dummy_request):
     import requests
 
@@ -114,6 +98,7 @@ def __test_sample_data(testapp):
     assert len(res.json['_embedded']['items']) == 2
 
 
+@pytest.mark.slow
 def test_load_workbook(testapp, collection_test):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
@@ -143,8 +128,9 @@ def test_organisms_post(testapp):
         testapp.post_json(url, item, status=201)
 
 
-def test_organisms_post_bad_json(testapp):
+def test_organisms_post_bad_json(jsontestapp):
     items = [{'foo': 'bar'}]
     url = '/organisms/'
     for item in items:
-        testapp.post_json(url, item, status=422)
+        res = jsontestapp.post_json(url, item, status=422)
+        assert res.json['errors']

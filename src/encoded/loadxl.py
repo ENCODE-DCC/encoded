@@ -213,12 +213,15 @@ def post_collection(testapp, alldata, content_type):
     for uuid, value in list(collection.iteritems()):
 
         try:
-            testapp.post_json(url, value, status=201)
+            res = testapp.post_json(url, value, status=[201, 422])
             nload += 1
         except Exception as e:
             logger.warn('Error SUBMITTING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, value))
             del alldata[content_type][uuid]
-            continue
+        else:
+            if res.status_code == 422:
+                logger.warn('Error VALIDATING %s %s: %r. Value:\n%r\n' % (content_type, uuid, res.json['errors'], value))
+                del alldata[content_type][uuid]
     logger.warn('Loaded %d %s out of %d' % (nload, content_type, alldata['COUNTS'][content_type]))
 
 
