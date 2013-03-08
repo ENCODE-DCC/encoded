@@ -434,15 +434,46 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
     except KeyError:
         raise ValueError('Missing/skipped target reference')
 
+
 @parse_decorator_factory('donor', {'value': 'donor_id'})
 def parse_donor(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
     source_list = value.pop('alias_source_list')
     try:
-        value['alias_source_uuids'] = [ indices['source'][source] for source in source_list ]
+        value['alias_source_uuids'] = [indices['source'][source] for source in source_list]
     except KeyError:
-        return # just skip this error for now
+        return  # just skip this error for now
         raise ValueError('Unable to find source: %s' % source)
+
+
+@parse_decorator_factory('document', {'value': 'document_name'})
+def parse_document(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    pass
+
+
+@parse_decorator_factory('treatment', {'value': 'treatment_name'})
+def parse_treatment(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    try:
+        value['duration'] = float(value['duration'])
+    except (ValueError, TypeError):
+        del value['duration']
+
+    try:
+        value['concentration'] = float(value['concentration'])
+    except (ValueError, TypeError):
+        del value['concentration']
+
+@parse_decorator_factory('construct', {'value': 'vector_name'})
+def parse_construct(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    pass
+
+@parse_decorator_factory('biosample', {'value': 'accession'})
+def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    '''alias_list  alias_source_list organism_no donor   treatment
+    construct_list  source  document_list submitted_by_colleague_email
+        submitted_by_lab_name   submitted_by_award_number'''
 
 
 def load_all(testapp, filename, docsdir, test=False):
