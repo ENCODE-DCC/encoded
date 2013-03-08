@@ -468,19 +468,30 @@ a[href^="http"]:empty:after {
 	padding: 5px;
 }
 
-.type-validation.view-detail.status-approved {
+//should make the below a mixin
+.type-validation.view-detail .status-approved {
   figure { border-color: $successBorder; background-color: $successBackground; }
-  figcaption { color: $successText; }
+  	figcaption { color: $successText; }
 }
 
-.type-validation.view-detail.status-rejected {
+.type-validation.view-detail .status-failed {
   figure { border-color: $errorBorder; background-color: $errorBackground; }
-  figcaption { color: $errorText; }
+  	figcaption { color: $errorText; }
 }
 
-.type-validation.view-detail.status-pending {
+.type-validation.view-detail .status-submitted {
   figure { border-color: $infoBorder; background-color: $infoBackground; }
-  figcaption { color: $infoText; }
+  	figcaption { color: $infoText; }
+}
+
+.type-validation.view-detail .status-incomplete {
+  figure { border-color: $warningBorder; background-color: $warningBackground; }
+  	figcaption { color: $warningText; }
+}
+
+.type-validation.view-detail .status-unsubmitted {
+  figure { border-color: #e1e1e8; background-color: #f7f7f9; }
+  	figcaption { color: #333; }
 }
 
 .validation-img {
