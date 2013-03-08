@@ -1,3 +1,4 @@
+import pytest
 import unittest
 from pyramid.httpexceptions import HTTPBadRequest
 import requests
@@ -7,6 +8,8 @@ from pyramid import (
     request)
 
 
+@pytest.mark.persona
+@pytest.mark.slow
 class ViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp(autocommit=False)

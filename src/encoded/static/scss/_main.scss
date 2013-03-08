@@ -359,15 +359,19 @@ a[href^="http"]:empty:after {
 
 @each $item in label, badge {
 	// Approved (green)
-	.#{$item}.status-approved          { background-color: $successText; }
-	.#{$item}.status-aproved[href]     { background-color: darken($successText, 10%); }
-	// In Progress (turquoise)
-	.#{$item}.status-in-progress		{ background-color: $infoText; }
-	.#{$item}.status-in-progress[href] { background-color: darken($infoText, 10%); }
-	// Rejected (red)
-	.#{$item}.status-rejected         { background-color: $errorText; }
-	.#{$item}.status-rejected[href]   { background-color: darken($errorText, 10%); }
-	// Pending (gray) is the default if no class given
+	.#{$item}.status-approved        { background-color: $successText; }
+	.#{$item}.status-aproved[href]   { background-color: darken($successText, 10%); }
+	// Submitted (blue)
+	.#{$item}.status-submitted		 { background-color: $infoText; }
+	.#{$item}.status-submitted[href] { background-color: darken($infoText, 10%); }
+	// Failed (red)
+	.#{$item}.status-failed          { background-color: $errorText; }
+	.#{$item}.status-failed[href]    { background-color: darken($errorText, 10%); }
+	// Incomplete (yellow)
+	.#{$item}.status-incomplete      { background-color: $warningText; }
+	.#{$item}.status-incomplete[href]{ background-color: darken($warningText, 10%); }
+	
+	// Unsubmitted/pending (gray) is the default if no class given
 }
 
 .data-display {
