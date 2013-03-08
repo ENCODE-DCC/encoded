@@ -22,15 +22,6 @@ function base(exports, $, _, Backbone, HAL, assert) {
         return result;
     }
 
-    // The view registry allows for a Pyramid like pattern of view registration.
-    var ViewRegistry = exports.ViewRegistry = function ViewRegistry() {
-        this.deferred = [];
-        this.routes = {};
-        this.current_views = {}; // Mapping from slot_name -> currently active view
-        this.slots = {};
-        this.views = {};
-    };
-
     // Cached regex for stripping a leading hash/slash and trailing space.
     var routeStripper = /^[#\/]|\s+$/g;
 
@@ -38,15 +29,15 @@ function base(exports, $, _, Backbone, HAL, assert) {
     var trailingSlash = /\/$/;
 
     var OverlayHistory = exports.overlayHistory = Backbone.History.extend({
-        path: '',
+        path: null,
         constructor: function() {
             OverlayHistory.__super__.constructor.apply(this, arguments);
-            this.overlay_handlers = [];
+            this.type_handlers = {route: this.handlers, overlay: []};
         },
-        // Add a route to be tested when the overlay changes. Routes added later
-        // may override previous routes.
-        routeOverlay: function(route, callback) {
-          this.overlay_handlers.unshift({route: route, callback: callback});
+        // Extend with support for multiple route types
+        route: function(route, callback, route_type) {
+          if (!route_type) route_type = 'route';
+          this.type_handlers[route_type].unshift({route: route, callback: callback});
         },
         getFragment: function(fragment, forcePushState) {
           if (fragment == null) {
@@ -63,7 +54,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
           return fragment.replace(routeStripper, '');
         },
         loadOverlay: function(overlay) {
-            _.any(this.overlay_handlers, function(handler) {
+            _.any(this.type_handlers['overlay'], function(handler) {
                 if (handler.route.test(overlay)) {
                     handler.callback(overlay);
                     return true;
@@ -98,56 +89,67 @@ function base(exports, $, _, Backbone, HAL, assert) {
     });
 
     var DeferredRouter = exports.DeferredRouter = Backbone.Router.extend({
-        route: function(route, name, callback) {
+        route: function(route, name, callback, route_type) {
+          if (!route_type) route_type = 'route';
           if (!_.isRegExp(route)) route = this._routeToRegExp(route);
           if (!callback) callback = this[name];
           Backbone.history.route(route, _.bind(function(fragment) {
             var args = this._extractParameters(route, fragment);
             args.push(fragment.replace(/\/.*/g, '/'));
             if (callback) $.when(callback.apply(this, args)).done(_.bind(function () {
-                this.trigger.apply(this, ['route:' + name].concat(args));
-                Backbone.history.trigger('route', this, name, args);
-                console.log("routed: "+location.href);
+                this.trigger.apply(this, [route_type + ':' + name].concat(args));
+                Backbone.history.trigger(route_type, this, name, args);
+                console.log("routed: " + route_type + " " +location.href);
             }, this)).fail(_.bind(function () {
-                console.log("route failed...");
+                console.log(route_type + " route failed...");
             }, this));
-          }, this));
-          return this;
-        },
-        routeOverlay: function(route, name, callback) {
-          if (!_.isRegExp(route)) route = this._routeToRegExp(route);
-          if (!callback) callback = this[name];
-          Backbone.history.routeOverlay(route, _.bind(function(fragment) {
-            var args = this._extractParameters(route, fragment);
-            args.push(fragment.replace(/\/.*/g, '/'));
-            if (callback) $.when(callback.apply(this, args)).done(_.bind(function () {
-                this.trigger.apply(this, ['overlay:' + name].concat(args));
-                Backbone.history.trigger('overlay', this, name, args);
-                console.log("overlay: "+location.href);
-            }, this)).fail(_.bind(function () {
-                console.log("overlay failed...");
-            }, this));
-          }, this));
+          }, this), route_type);
           return this;
         }
     });
 
-    exports.view_registry = new ViewRegistry();
+    // The view registry allows for a Pyramid like pattern of view registration.
+    var ViewRegistry = exports.ViewRegistry = function ViewRegistry() {
+        this.deferred = [];
+        this.routes = {};
+        this.current_views = {}; // Mapping from slot_name -> currently active view
+        this.slots = {};
+        this.views = {};
+        this.initialize.apply(this, arguments);
+    };
 
     _.extend(ViewRegistry.prototype, {
+        initialize: function initialize() {
+            // Replace the history object
+            this.history = Backbone.history = new OverlayHistory();
+            this.router = new DeferredRouter();
+            // Setup the close overlay
+            this.router.route('', '', function() {return null;}, 'overlay');
+            this.history.on('overlay', function(router, name, args) {
+                if (name === '') {
+                    this.slots['overlay'].hide();
+                } else {
+                    this.slots['overlay'].show();
+                }
+            }, this);
+        },
+
         add_slot: function add_slot(slot_name, selector) {
             this.slots[slot_name] = $(selector);
         },
 
-        add_route: function add_route(route_name, patterns) {
-            this.routes[route_name] = patterns;
+        add_route: function add_route(route_name, patterns, route_type) {
+            if (!route_type) route_type = 'route';
+            var routes = this.routes[route_type];
+            if (!routes) routes = this.routes[route_type] = {};
+            routes[route_name] = patterns;
         },
 
         defer: function defer(view) {
             this.deferred.push(view);
         },
 
-        make_route_controller: function make_route_controller(view_factory, model_factory) {
+        make_route_controller: function make_route_controller(view_factory, model_factory, slot_name) {
             function route_controller() {
                 var options = {},
                     deferred;
@@ -158,9 +160,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
                 }
                 view = new_(view_factory, [options]);
                 if (view.deferred !== undefined) deferred = view.deferred;
-                $.when(deferred).done(_.bind(function () {
-                    this.switch_to(view);
-                }, this));
+                $.when(deferred).done(_.bind(this.switch_to, this, slot_name, view));
                 return deferred;
             }
             return _.bind(route_controller, this);
@@ -170,42 +170,48 @@ function base(exports, $, _, Backbone, HAL, assert) {
             var view_registry = this;
             _(this.deferred).each(function (view_factory) {
                 var route_name = view_factory.route_name;
-                if (!route_name) return;
-                assert(!view_registry.views[route_name], 'route already defined for ' + route_name);
-                view_registry.views[route_name] = view_factory;
-                console.log("Adding view for: "+ route_name);
+                var route_type = view_factory.route_type;
+                var key;
+                if (route_name === undefined) return;
+                if (!route_type) route_type = view_factory.route_type = 'route';
+                key = [route_type, route_name];
+                assert(!view_registry.views[key], 'route already defined for ' + route_type + ', ' + route_name);
+                view_registry.views[key] = view_factory;
+                console.log("Adding view for: " + route_type + ', ' + route_name);
             });
             this.deferred = null;
         },
 
         make_router: function make_router(routes) {
-            Backbone.history = new OverlayHistory();
             this.process_deferred();
-            var router = this.router = new DeferredRouter();
-            var rev_routes = _(_(this.routes).map(function (patterns, route_name) {
-                return _(patterns).map(function (patt) {
-                    return { route_name: route_name, pattern: patt };
-                });
-            })).flatten().reverse();
-            var view_registry = this;
-            _(rev_routes).each(function (route) {
-                var view_factory = view_registry.views[route.route_name];
-                assert(view_factory, 'missing view for route ' + route.route_name);
-                var callback = view_registry.make_route_controller(view_factory, view_factory.model_factory);
-                router.route(route.pattern, route.route_name, callback);
-            });
+            var router = this.router;
+            _.each(this.routes, _.bind(function(routes, route_type) {
+                var rev_routes = _(_(routes).map(function (patterns, route_name) {
+                    return _(patterns).map(function (patt) {
+                        return { route_name: route_name, pattern: patt };
+                    });
+                })).flatten().reverse();
+                _(rev_routes).each(_.bind(function (route) {
+                    var view_factory = this.views[[route_type, route.route_name]];
+                    assert(view_factory, 'missing view for route ' + route_type + ', ' + route.route_name);
+                    var callback = this.make_route_controller(view_factory, view_factory.model_factory, view_factory.slot_name);
+                    router.route(route.pattern, route.route_name, callback, route_type);
+                }, this));
+            }, this));
             return router;
         },
 
-        switch_to: function switch_to(view, no_render) {
-            var slot_name = Object.getPrototypeOf(view).constructor.slot_name;
+        switch_to: function switch_to(slot_name, view) {
             var current_view = this.current_views[slot_name];
-            if (!no_render) view.render();
+            var view_html = '';
+            if (view) view_html = view.render().el;
             if (current_view) current_view.remove();
-            if (!no_render) this.slots[slot_name].html(view.el);
+            this.slots[slot_name].html(view_html);
             this.current_views[slot_name] = view;
         }
     });
+
+    exports.view_registry = new ViewRegistry();
 
 
     // Base View class implements conventions for rendering views.
@@ -227,6 +233,7 @@ function base(exports, $, _, Backbone, HAL, assert) {
 
     }, {
         view_registry: exports.view_registry,
+        route_type: 'route',
         slot_name: 'content'
     });
 
@@ -235,6 +242,27 @@ function base(exports, $, _, Backbone, HAL, assert) {
         this.view_registry.defer(view);
         return view;
     };
+
+    exports.OverlayView = exports.View.extend({
+        title: undefined,
+        description: undefined,
+
+        // Views should define their own `template`
+        template: undefined,
+        // surprisingly this function is necessary...
+        update: function update() {},
+        // Render the view
+        render: function render() {
+            this.update();
+            var properties = this.model && this.model.toJSON();
+            this.$el.html(this.template({model: this.model, properties: properties, view: this, '_': _}));
+            return this;
+        }
+
+    }, {
+        route_type: 'overlay',
+        slot_name: 'overlay'
+    });
 
     exports.RowView = exports.View.extend({
         tagName: 'tr',

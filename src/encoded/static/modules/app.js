@@ -31,9 +31,13 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
         //logout: '#logout'
     };
 
+    var overlay_routes = {
+    };
+
     var slots = {
         content: '#content',
-        navbar: '#navbar'
+        navbar: '#navbar',
+        overlay: '#overlay'
     };
 
     _.extend(exports, Backbone.Events, {
@@ -48,13 +52,16 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             _(routes).each(function (patterns, route_name) {
                 view_registry.add_route(route_name, patterns);
             });
+            _(overlay_routes).each(function (patterns, route_name) {
+                view_registry.add_route(route_name, patterns, 'overlay');
+            });
             _(slots).each(function (selector, slot_name) {
                 view_registry.add_slot(slot_name, selector);
             });
             this.router = this.view_registry.make_router();
             // Render navbar when navigation triggers route.
             var navbar_view = new navbar.NavBarView({el: slots.navbar, model: this.config});
-            view_registry.switch_to(navbar_view, true);
+            view_registry.current_views['navbar'] = navbar_view.render();
             this.setupNavigation();
             this.trigger('started');
             console.log(view_registry);
