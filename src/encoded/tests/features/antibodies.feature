@@ -13,28 +13,26 @@ Feature: Antibodies
         And I should see an element with the css selector "table.sticky-area"
         And I should see an element with the css selector "table.sticky-area > tbody > tr"
         And I should see at least 15 elements with the css selector "table.sticky-area > tbody > tr"
-        And I should see an element with the css selector "a[href='/antibodies/6226629a-dcd4-463b-adbd-dddc0c11d721']"
+        And I should see an element with the css selector "a[href='/antibodies/c808814f-376f-41ee-b93e-ddd00294ca3d']"
 
-        #When I click the link to "/antibodies/f2942c07-0f9b-4e05-b9df-1c5afbd45446"
-        #Then I should see an element with the css selector "#content.container"
-        #And I should see an element with the css selector "div.data-display"
-        #And I should see "INCOMPLETE"
-        #And I should see "mouse CTCF"
-        # none in current test set.
+        When I click the link to "/antibodies/f2942c07-0f9b-4e05-b9df-1c5afbd45446"
+        Then I should see an element with the css selector "#content.container"
+        And I should see an element with the css selector "div.data-display"
+        And I should see "INCOMPLETE"
+        And I should see "mouse CTCF"
 
-        #When I go back
-        #When I click the link to "/antibodies/68374220-d4de-4114-bc78-4b1c21f03711"
-        #Then I should see an element with the css selector "#content.container"
-        #And I should see an element with the css selector "div.data-display"
-        #And I should see "SUBMITTED"
-        #And I should see "CTCF"
-        # none in current test set
+        When I go back
+        When I click the link to "/antibodies/68374220-d4de-4114-bc78-4b1c21f03711"
+        Then I should see an element with the css selector "#content.container"
+        And I should see an element with the css selector "div.data-display"
+        And I should see "SUBMITTED"
+        And I should see "CTCF"
 
         When I go back
         When I fill in "table-filter" with "mouse"
         Then I should see an element with the css selector "tr:not(.hidden) a[href='/antibodies/97d18178-73f7-47c2-a9f0-3ff1c4f0fed5']" within 1 seconds
-        And I should see an element with the css selector "tr.hidden a[href='/antibodies/6226629a-dcd4-463b-adbd-dddc0c11d721']"
-        And I should see exactly one element with the css selector "#table-count" containing the text "2"
+        And I should see an element with the css selector "tr.hidden a[href='/antibodies/c808814f-376f-41ee-b93e-ddd00294ca3d']"
+        And I should see exactly one element with the css selector "#table-count" containing the text "7"
 
         #When I click the link to "/antibodies/f2942c07-0f9b-4e05-b9df-1c5afbd45446"
         #Then I should see an element with the css selector "#content.container"
@@ -48,4 +46,4 @@ Feature: Antibodies
         And I should see at least 1 elements with the css selector "section"
         And I should see at least 1 elements with the css selector "figure"
         And I should see at least 1 elements with the css selector "img.validation-img"
-        And I should see "B. Bernstein / Bernstein / ENCODE2"
+        And I should see "P. Bernstein / Bradley Bernstein, Broad / ENCODE2"

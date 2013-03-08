@@ -49,14 +49,15 @@ def testapp_setup(request, connection, check_constraints):
 @fixture
 def collection_test():
     return {
-        'awards': 37,
+        'awards': 39,
         'labs': 42,
-        'users': 80,
-        'sources': 50,
-        'targets': 21,
+        'users': 81,
+        'sources': 51,
+        'targets': 23,
         'antibody-lots': 18,
-        'validations': 21,
-        'antibodies': 20,
+        'validations': 19,
+        'antibodies': 23,
+        'donors': 79,
     }
 
 

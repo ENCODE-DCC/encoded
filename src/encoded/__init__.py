@@ -90,7 +90,8 @@ def main(global_config, **settings):
         load_sample_data(app)
 
     workbook_filename = settings.get('load_workbook', '')
-    load_test_only = settings.get('load_test_only', False)
+
+    load_test_only = asbool(settings.get('load_test_only', False))
     docsdir = settings.get('load_docsdir', None)
     if workbook_filename:
         load_workbook(app, workbook_filename, docsdir, test=load_test_only)

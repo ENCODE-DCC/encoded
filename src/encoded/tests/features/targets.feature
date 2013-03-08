@@ -44,9 +44,9 @@ Feature: Targets
         When I fill in "table-filter" with "mouse"
         Then I should see an element with the css selector "tr[class='odd'],tr[class='even'] > a[href='/targets/a1b236fc-38d5-4af5-a140-ede8bb6327c8']" within 1 seconds
         And I should see an element with the css selector "tr[class='odd hidden'],tr[class='even hidden'] > a[href='/targets/c21f310f-fb91-4505-b62c-c8c707696827']"
-        And I should see exactly one element with the css selector "#table-count" containing the text "6"
+        And I should see exactly one element with the css selector "#table-count" containing the text "8"
 
         When I click the link to "/targets/a1b236fc-38d5-4af5-a140-ede8bb6327c8"
         Then I should see an element with the css selector "#content[class='container']"
         And I should see an element with the css selector "#target-data[class='panel data-display']"
-        And I should see "B. Ren / Ren / ENCODE2"
+        And I should see "U. Ren / Bing Ren, UCSD / ENCODE2-Mouse"

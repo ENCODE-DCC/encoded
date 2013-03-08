@@ -84,7 +84,7 @@ def cell_value(sheet, row, col, hint=None):
             value = None
 
     # Empty cell
-    elif ctype in (xlrd.XL_CELL_EMPTY, xlrd.XL_CELL_BLANK):
+    elif ctype in (xlrd.XL_CELL_EMPTY, xlrd.XL_CELL_BLANK) or value == 'NULL':
         value = None
 
     else:
@@ -140,8 +140,8 @@ def extract(filename, sheets, test=False):
             row['_uuid'] = uuid
 
             for col, value in row.iteritems():
-                if col.find('_list') < 0:
-                    continue
+                if col.find('_list') < 0: continue
+                if value == 'NULL': continue # otherwise we get ['NULL']
                 row[col] = [v.strip() for v in (str(value) or '').split(';') if v]
 
             data[uuid] = row
@@ -153,6 +153,7 @@ def value_index(data, attribute):
     index = {}
     for uuid, value in data.iteritems():
         index_value = resolve_dotted(value, attribute)
+        if not index_value or index_value == 'NULL': continue
         assert index_value not in index, index_value
         index[index_value] = uuid
     return index
@@ -394,9 +395,9 @@ def parse_validation(testapp, alldata, content_type, indices, uuid, value, docsd
 
         assign_submitter(value, content_type, indices,
                          {
-                         'last_name': value.pop('submitted_by'),
-                         'pi_last_name': value.get('submitted_by_pi', None),
-                         'project': value.pop('validated_by', None)
+                         'email': value.pop('submitted_by_colleague_email'),
+                         'lab_name': value.pop('submitted_by_lab_name'),
+                         'award_no': value.pop('submitted_by_award_number')
                          }
                          )
         try:
@@ -414,7 +415,9 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
         raise ValueError('Missing/skipped antibody_lot reference')
 
     value['validation_uuids'] = []
-    filenames = [v.strip() for v in (value.pop('validation_filenames') or '').split(';') if v]
+    filenames = value.pop('validation_filenames_list')
+    #[v.strip() for v in (value.pop('validation_filenames') or '').split(';') if v]
+    # above should be renamed validation_filenames_list
     for filename in filenames:
         validation_uuids = indices['validation'].get(filename, [])
         for validation_uuid in validation_uuids:
@@ -428,6 +431,15 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
     except KeyError:
         raise ValueError('Missing/skipped target reference')
 
+@parse_decorator_factory('donor', {'value': 'donor_id'})
+def parse_donor(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    source_list = value.pop('alias_source_list')
+    try:
+        value['alias_source_uuids'] = [ indices['source'][source] for source in source_list ]
+    except KeyError:
+        return # just skip this error for now
+        raise ValueError('Unable to find source: %s' % source)
 
 
 def load_all(testapp, filename, docsdir, test=False):
@@ -473,16 +485,6 @@ def load_all(testapp, filename, docsdir, test=False):
 
     '''
     source_index = value_index(alldata[content_type], 'source_name')
-
-    content_type = 'donor'
-    post_collection(testapp, alldata, content_type)
-
-
-    content_type = 'biosample'
-    post_collection(testapp, alldata, content_type)
-
-    content_type = 'document'
-    post_collection(testapp, alldata, content_type)
     '''
 
     parse_target(testapp, alldata, indices, 'target', docsdir)
@@ -505,3 +507,14 @@ def load_all(testapp, filename, docsdir, test=False):
     '''
 
     parse_antibody_approval(testapp, alldata, indices, 'antibody_approval', docsdir)
+
+    parse_donor(testapp, alldata, indices, 'donor', docsdir)
+    '''
+    content_type = 'document'
+    post_collection(testapp, alldata, content_type)
+
+    content_type = 'biosample'
+    post_collection(testapp, alldata, content_type)
+
+    '''
+
