@@ -228,7 +228,7 @@ $footerBorder:              #0f2a42 !default;
 
 
 // add external-link icon to all offsite links (in .panel's) - modified from _FontAwesome.scss
-.panel a[href^="http"]:after		{
+.panel a[href^="http"]:after, td a[href^="http"]:after		{
 	content: " \f036";
 	font-family: FontAwesome;
 	font-weight: normal;
@@ -317,14 +317,17 @@ a[href^="http"]:empty:after {
 
 
 // fix footer width for small screens + content margin fix
+
 @media (max-width: 767px) {
 	#footer {
 		margin-left: -20px;
     	margin-right: -20px;
 	}
+	
+	#som-log { margin-right: 10px; }
 }
 
-#footer .container {
+#footer div .container {
 	// padding: 15px;
 }
 
@@ -343,9 +346,9 @@ a[href^="http"]:empty:after {
     padding: 15px 30px;
 }
 
-.panel h3, .panel h4 {color: #4E7294;}
+.panel h3, .panel h4 {color: #0A253D;}
 
-
+.view-detail h3 { line-height: 24.5px; }
 
 /* Data Display - Based on Bootstrap Forms Layout
    Used for displaying Read Only data in a form type layout
@@ -468,19 +471,30 @@ a[href^="http"]:empty:after {
 	padding: 5px;
 }
 
-.type-validation.view-detail.status-approved {
+//should make the below a mixin
+.type-validation.view-detail .status-approved {
   figure { border-color: $successBorder; background-color: $successBackground; }
-  figcaption { color: $successText; }
+  	figcaption { color: $successText; }
 }
 
-.type-validation.view-detail.status-rejected {
+.type-validation.view-detail .status-failed {
   figure { border-color: $errorBorder; background-color: $errorBackground; }
-  figcaption { color: $errorText; }
+  	figcaption { color: $errorText; }
 }
 
-.type-validation.view-detail.status-pending {
+.type-validation.view-detail .status-submitted {
   figure { border-color: $infoBorder; background-color: $infoBackground; }
-  figcaption { color: $infoText; }
+  	figcaption { color: $infoText; }
+}
+
+.type-validation.view-detail .status-incomplete {
+  figure { border-color: $warningBorder; background-color: $warningBackground; }
+  	figcaption { color: $warningText; }
+}
+
+.type-validation.view-detail .status-unsubmitted {
+  figure { border-color: #e1e1e8; background-color: #f7f7f9; }
+  	figcaption { color: #333; }
 }
 
 .validation-img {
