@@ -1,5 +1,6 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'backbone.hal', 'assert'],
-function base(exports, $, _, Backbone, HAL, assert) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'backbone.hal', 'assert',
+    'text!templates/modal.html'],
+function base(exports, $, _, Backbone, HAL, assert, modal_template) {
 
     // Underscore template settings
     // `{model.title}` for escaped text
@@ -127,11 +128,17 @@ function base(exports, $, _, Backbone, HAL, assert) {
             this.router.route('', '', function() {return null;}, 'overlay');
             this.history.on('overlay', function(router, name, args) {
                 if (name === '') {
-                    this.slots['overlay'].hide();
+                    this.slots['overlay'].find('.modal').modal('hide');
                 } else {
-                    this.slots['overlay'].show();
+                    this.slots['overlay'].find('.modal').modal({keyboard: false, backdrop: 'static'});
                 }
             }, this);
+            $(document).keyup(function(e) {
+                // esc handler - close overlay by navigating to ''
+                if (e.keyCode != 27 || !location.hash) return;
+                Backbone.history.navigate(location.pathname + location.search, {trigger: true});
+            });
+
         },
 
         add_slot: function add_slot(slot_name, selector) {
@@ -243,12 +250,17 @@ function base(exports, $, _, Backbone, HAL, assert) {
         return view;
     };
 
-    exports.OverlayView = exports.View.extend({
+    exports.Modal = exports.View.extend({
+        submit_button_title: "Save",
+        cancel_button_title: "Cancel",
         title: undefined,
-        description: undefined,
+
+        events: {
+            "click modal-footer .submit": "submit"
+        },
 
         // Views should define their own `template`
-        template: undefined,
+        template: _.template(modal_template),
         // surprisingly this function is necessary...
         update: function update() {},
         // Render the view
@@ -257,8 +269,8 @@ function base(exports, $, _, Backbone, HAL, assert) {
             var properties = this.model && this.model.toJSON();
             this.$el.html(this.template({model: this.model, properties: properties, view: this, '_': _}));
             return this;
-        }
-
+        },
+        submit: function submit() {}
     }, {
         route_type: 'overlay',
         slot_name: 'overlay'
