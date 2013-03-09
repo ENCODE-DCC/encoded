@@ -5,7 +5,7 @@
 </header>
 <div class="row">
     <div class="span12">
-        <div class="panel data-display" id="target-data">
+        <div class="panel data-display" id="biosample-data">
             <div class="data-group">
                 <label class="data-label" for="accession">Accession number:</label>
                 <div class="data-values">
@@ -45,9 +45,9 @@
                 </div>
                 </div>
                 <div class="data-group">
-                <label class="data-label" for="created-by">Submitter / Lab / Grant:</label>
+                <label class="data-label" for="submitted-by">Submitter / Lab / Grant:</label>
                 <div class="data-values">
-                <span id="created-by" class="data-point">{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('name')} / {model.links.award.get('project')}</span>
+                <span id="submitted-by" class="data-point">{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('name')} / {model.links.award.get('project')}</span>
                 </div>
                 </div>
             </div>
