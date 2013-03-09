@@ -32,7 +32,7 @@ Feature: Antibodies
         When I fill in "table-filter" with "mouse"
         Then I should see an element with the css selector "tr:not(.hidden) a[href='/antibodies/97d18178-73f7-47c2-a9f0-3ff1c4f0fed5']" within 1 seconds
         And I should see an element with the css selector "tr.hidden a[href='/antibodies/c808814f-376f-41ee-b93e-ddd00294ca3d']"
-        And I should see exactly one element with the css selector "#table-count" containing the text "7"
+        And I should see exactly one element with the css selector "#table-count" containing the text "8"
 
         #When I click the link to "/antibodies/f2942c07-0f9b-4e05-b9df-1c5afbd45446"
         #Then I should see an element with the css selector "#content.container"
@@ -46,4 +46,4 @@ Feature: Antibodies
         And I should see at least 1 elements with the css selector "section"
         And I should see at least 1 elements with the css selector "figure"
         And I should see at least 1 elements with the css selector "img.validation-img"
-        And I should see "P. Bernstein / Bradley Bernstein, Broad / ENCODE2"
+        And I should see ". Bernstein / Bradley Bernstein, Broad / ENCODE2"
