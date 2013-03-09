@@ -157,7 +157,10 @@ def value_index(data, attribute):
     for uuid, value in data.iteritems():
         index_value = resolve_dotted(value, attribute)
         if not index_value or index_value == 'NULL': continue
-        assert index_value not in index, index_value
+        try:
+            assert index_value not in index, index_value
+        except:
+            import pdb;pdb.set_trace()
         index[index_value] = uuid
     return index
 
@@ -298,7 +301,7 @@ def parse_colleague(testapp, alldata, content_type, indices, uuid, value, docsdi
     for lab_name in value.get('lab_name_list', []):
         lab_uuid = indices['lab'].get(lab_name)  # singletons???
         if alldata['lab'].get(lab_uuid, None) is None:
-            logger.warn('Missing/skipped lab reference %s for lab: %s' % (lab_uuid, uuid))
+            logger.warn('Missing/skipped lab reference %s for colleague: %s' % (lab_uuid, uuid))
         else:
             value['lab_uuids'].append(lab_uuid)
 
