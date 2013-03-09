@@ -45,5 +45,12 @@ function sources(exports, $, _, base, table_sorter, table_filter, home_template,
         model_factory: exports.Source
     });
 
+    exports.SourceEditOverlay = base.Modal.extend({
+        title: "Edit",
+        template2: _.template('Hello')
+    }, {
+        route_name: 'edit'
+    });
+
     return exports;
 });

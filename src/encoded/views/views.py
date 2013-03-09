@@ -94,6 +94,11 @@ class Source(CollectionViews):
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
+    links = {
+        'actions': [
+            {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
+    }
 
 
 @resource(pattern='/biosamples/{path_segment}', collection_pattern='/biosamples/')
