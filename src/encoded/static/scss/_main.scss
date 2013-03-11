@@ -203,6 +203,7 @@ body {
 .cancel-link {margin-left: 20px;}
 
 $footerHeight: 				150px;
+$footerTopBorderHeight:		1px;
 $footerTopHeight: 			110px;
 $footerBottomHeight:		$footerHeight - $footerTopHeight;
 $footerBackground:          #0f2a42 !default;
@@ -254,7 +255,7 @@ a[href^="http"]:empty:after {
 }
 
 
-@include sticky-footer($footerHeight, "#layout", "#layout-footer", "#page-footer");
+@include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
 
 #page-footer #footer-top {
 	height: $footerTopHeight;
