@@ -1,56 +1,185 @@
 <header class="row">
     <div class="span12">
-        <h2>Biosample</h2>
+        <h5>{model.links.organism.get('organism_name')} Biosample</h5>
+        <h2>{properties.accession} / {properties.biosample_type}</h2>
+        <h4>{properties.biosample_description}</h4>
     </div>
 </header>
 <div class="row">
     <div class="span12">
         <div class="panel data-display" id="biosample-data">
+          <section id="general">
             <div class="data-group">
                 <label class="data-label" for="accession">Accession number:</label>
                 <div class="data-values">
-                <span id="accession" class="data-point">{properties.accession}</span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="description">Description:</label>
+                    <span id="accession" class="data-point">{properties.accession}</span>
+                    </div>
+            </div>
+            <div class="data-group">
+            <label class="data-label" for="description">Description:</label>
                 <div class="data-values">
-                <span id="description" class="data-point">{properties.biosample_description}</span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="source">Source:</label>
-                <div class="data-values">
-                <span id="source" class="data-point">
-                    <a href="{model.links.source.get('url')}">{model.links.source.get('source_name')}</a>
-                </span>
-                </div>
-                </div>
-                <!-- Protocols & Documents -->
-                <!-- Relationships to other Biosamples -->
-                <!-- Donor section -->
-                <div class="data-group">
-                <label class="data-label" for="species">Species:</label>
-                <div class="data-values">
-                <span id="species" class="data-point">{model.links.organism.get('organism_name')}</span>
-                <!-- NEED mock donors for the following -->
-                </div>
-                </div>
-                <!-- Treatment section -->
-                <!-- Construct section?? -->
-                <div class="data-group">
-                <label class="data-label" for="project">Project:</label>
-                <div class="data-values">
-                <span id="project" class="data-point">{properties.project}</span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="submitted-by">Submitter / Lab / Grant:</label>
-                <div class="data-values">
-                <span id="submitted-by" class="data-point">{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('name')} / {model.links.award.get('project')}</span>
-                </div>
+                     <span id="description" class="data-point">{properties.biosample_description}</span>
                 </div>
             </div>
-        </div>
+            <div class="data-group">
+                <label class="data-label" for="term-id">Term ID:</label>
+                <div class="data-values">
+                    <span id="term-id" class="data-point">{properties.biosample_term_id}</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="term-name">Term name:</label>
+                <div class="data-values">
+                    <span id="term_name" class="data-point">{properties.biosample_term_name}</span>
+                </div>
+            </div>
+            <div class="data-group">
+            <label class="data-label" for="source">Source:</label>
+                <div class="data-values">
+                    <span id="source" class="data-point">
+                        <a href="{model.links.source.get('url')}">{model.links.source.get('source_name')}</a>
+                    </span>
+               </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="product-id">Product ID:</label>
+                <div class="data-values">
+                    <?js if(properties.product_id != 'N/A') { ?>
+                    <span id="product-id" class="data-point"><a href="{properties.product_url}">{properties.product_id}</a></span>
+                    <?js } else { ?>
+                    <span id="product-id" class="data-point">{properties.product_id}</span>
+                    <?js } ?>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="lot-id">Lot ID:</label>
+                <div class="data-values">
+                    <span id="lot-id" class="data-point">{properties.lot_id}</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="species">Species:</label>
+                <div class="data-values">
+                    <span id="species" class="data-point">{model.links.organism.get('organism_name')}</span>
+                    <!-- NEED mock donors for the following -->
+                </div>
+            </div>
+             <div class="data-group">
+                <label class="data-label" for="project">Project:</label>
+                    <div class="data-values">
+                        <span id="project" class="data-point">{properties.project}</span>
+                    </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="submitted-by">Submitter / Lab / Grant:</label>
+                <div class="data-values">
+                    <span id="submitted-by" class="data-point">{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('name')} / {model.links.award.get('project')}</span>
+                </div>
+            </div>
+            </section> <!--#general -->
+
+            <hr>
+            <!-- Donor section -->
+
+            <section id="donor-info">
+                <h4>FAKE Donor Information</h4>
+                    <div class="data-group">
+                <label class="data-label" for="isotype">Donor ID:</label>
+                <div class="data-values">
+                    <span id="isotype" class="data-point">ATCC_CCL-266</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="antigen-description">Age:</label>
+                <div class="data-values">
+                    <span id="antigen-description" class="data-point">fetal</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="antigen-sequence">Sex:</label>
+                <div class="data-values">
+                    <span id="antigen-sequence" class="data-point">unknown</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="antigen-sequence">Strain:</label>
+                <div class="data-values">
+                    <span id="antigen-sequence" class="data-point">C3H</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="antigen-sequence">Health status:</label>
+                <div class="data-values">
+                    <span id="antigen-sequence" class="data-point">sarcoma</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="antigen-sequence">Species:</label>
+                <div class="data-values">
+                    <span id="antigen-sequence" class="data-point">mouse</span>
+                </div>
+            </div>
+            </section><!-- #donor-info -->
+            <hr>
+                <!-- Treatment section -->
+
+            <section id="treatment-details">
+                <h4>FAKE Treatment Details</h4>
+                    <div class="data-group">
+                <label class="data-label" for="isotype">Treatment:</label>
+                <div class="data-values">
+                    <span id="isotype" class="data-point">EqS_2.0pct_60hr</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="antigen-description">Type:</label>
+                <div class="data-values">
+                    <span id="antigen-description" class="data-point">differentiation</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="antigen-sequence">Document:</label>
+                <div class="data-values">
+                    <span id="antigen-sequence" class="data-point">missing</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="antigen-sequence">Condition:</label>
+                <div class="data-values">
+                    <span id="antigen-sequence" class="data-point">insulin</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="antigen-sequence">Duration:</label>
+                <div class="data-values">
+                    <span id="antigen-sequence" class="data-point">60 hours</span>
+                </div>
+            </div>
+            </section><!-- #treatment-details -->
+                   <!-- Construct section?? -->
+         </div>
+          <!-- Protocols & Documents -->
+        <h3>Protocols</h3>
+        <div class="panel data-display">
+
+        </div><!-- .data-display -->
+
+        <h3>Supporting Documents</h3>
+        <div class="panel data-display">
+
+        </div><!-- .data-display -->
+
+        <!-- DBXREFS -->
+        <h3>Database Cross-Reference</h3>
+        <div class="panel data-display">
+
+        </div><!-- .data-display -->
+
+        <!-- Relationships to other Biosamples -->
+        <h3>Related Biosamples</h3>
+        <div class="panel data-display">
+
+        </div><!-- .data-display -->
+
     </div>
 </div>
