@@ -47,6 +47,12 @@ def maybe_include_embedded(request, result):
         result['_embedded'] = {'resources': embedded}
 
 
+def format(value, **ns):
+    if isinstance(value, basestring):
+        return value.format(**ns)
+    return value
+
+
 class CollectionViews(object):
     schema = None
     properties = None
@@ -97,22 +103,19 @@ class CollectionViews(object):
                         continue
                     if repeat:
                         ns = item.copy()
+                        ns['collection_uri'] = self.collection_uri
+                        ns['item_type'] = self.item_type
                         repeat_name, repeater = repeat.split()
                         for repeat_value in item[repeater]:
                             ns[repeat_name] = repeat_value
-                            value = value.copy()
-                            value['href'] = member['href'].format(
-                                collection_uri=self.collection_uri,
-                                item_type=self.item_type,
-                                **ns)
+                            value = dict((k, format(v, **ns)) for k, v in value.iteritems())
                             out.append(value)
                             self.maybe_embed(rel, value['href'])
                     else:
-                        ns = item
-                        value['href'] = member['href'].format(
-                            collection_uri=self.collection_uri,
-                            item_type=self.item_type,
-                            **ns)
+                        ns = item.copy()
+                        ns['collection_uri'] = self.collection_uri
+                        ns['item_type'] = self.item_type
+                        value = dict((k, format(v, **ns)) for k, v in value.iteritems())
                         out.append(value)
                         self.maybe_embed(rel, value['href'])
                 value = out
@@ -120,10 +123,10 @@ class CollectionViews(object):
                 value = value_template.copy()
                 del value['templated']
                 assert 'repeat' not in value
-                value['href'] = value['href'].format(
-                    collection_uri=self.collection_uri,
-                    item_type=self.item_type,
-                    **item)
+                ns = item.copy()
+                ns['collection_uri'] = self.collection_uri
+                ns['item_type'] = self.item_type
+                value = dict((k, format(v, **ns)) for k, v in value.iteritems())
                 self.maybe_embed(rel, value['href'])
             else:
                 assert 'repeat' not in value
