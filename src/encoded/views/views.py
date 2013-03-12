@@ -103,6 +103,7 @@ class Donor(CollectionViews):
     links = {
         'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
     }
+    embedded = set(['organism'])
 
 
 @resource(pattern='/treatments/{path_segment}', collection_pattern='/treatments/')
@@ -138,19 +139,18 @@ class Biosample(CollectionViews):
         'description': 'Biosamples used in the ENCODE project',
     }
     links = {
-        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
+        #'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True, 'embedded': True},
         'source': {'href': '/sources/{source_uuid}', 'templated': True, 'embedded': True},
         'lab': {'href': '/labs/{lab_uuid}', 'templated': True, 'embedded': True},
         'award': {'href': '/awards/{award_uuid}', 'templated': True, 'embedded': True},
-    }
-    embedded = set(['organism', 'submitter', 'lab', 'award', 'source'])
-
-    '''
-        'donor': {'href': '/donors/{donor_uuid}', 'templated': True},
+        'donor': {'href': '/donors/{donor_uuid}', 'templated': True, 'embedded': True},
         'treatments': [
-            {'href': '/treatments/{treatment_uuid}', 'templated': True, 'embedded': False},
+            {'href': '/treatments/{treatment_uuid}', 'templated': True, 'embedded': True, 'repeat': 'treatment_uuid treatment_uuids'},
         ],
+    }
+    embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments'])
+    '''
         'constructs': [
             {'href': '/constructs/{construct_uuid}', 'templated': True, 'embedded': False, 'repeat': 'construct_uuid construct_uuids'},
         ],

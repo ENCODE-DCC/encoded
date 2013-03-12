@@ -1,6 +1,6 @@
 <header class="row">
     <div class="span12">
-        <h5>{model.links.organism.get('organism_name')} Biosample</h5>
+        <h5>{model.links.donor.links.organism.get('organism_name')} Biosample</h5>
         <h2>{properties.accession} / {properties.biosample_type}</h2>
         <h4>{properties.biosample_description}</h4>
     </div>
@@ -54,7 +54,7 @@
             <div class="data-group">
                 <label class="data-label" for="species">Species:</label>
                 <div class="data-values">
-                    <span id="species" class="data-point">{model.links.organism.get('organism_name')}</span>
+                    <span id="species" class="data-point">{model.links.donor.links.organism.get('organism_name')}</span>
                     <!-- NEED mock donors for the following -->
                 </div>
             </div>
@@ -70,86 +70,83 @@
                     <span id="submitted-by" class="data-point">{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('name')} / {model.links.award.get('project')}</span>
                 </div>
             </div>
-            </section> <!--#general -->
+            <?js if(properties.biosample_type == 'Immortalized cell line') { ?>
+            <div class="data-group">
+                <label class="data-label" for="species">Species:</label>
+                <div class="data-values">
+                    <span id="species" class="data-point">{model.links.donor.links.organism.get('organism_name')}</span>
+                </div>
+            </div>
+            </section>
+            <?js } else { ?>
+           </section> <!--#general -->
 
             <hr>
             <!-- Donor section -->
-
-            <section id="donor-info">
-                <h4>FAKE Donor Information</h4>
+             <section id="donor-info">
+                <h4>Donor Information</h4>
                     <div class="data-group">
-                <label class="data-label" for="isotype">Donor ID:</label>
+                <label class="data-label" for="donor-id">Donor ID:</label>
                 <div class="data-values">
-                    <span id="isotype" class="data-point">ATCC_CCL-266</span>
+                    <span id="donor-id" class="data-point">{model.links.donor.get('donor_id')}</span>
                 </div>
             </div>
             <div class="data-group">
-                <label class="data-label" for="antigen-description">Age:</label>
+                <label class="data-label" for="donor-age">Age:</label>
                 <div class="data-values">
-                    <span id="antigen-description" class="data-point">fetal</span>
+                    <span id="donor-age" class="data-point">{model.links.donor.get('age')}</span>
                 </div>
             </div>
             <div class="data-group">
-                <label class="data-label" for="antigen-sequence">Sex:</label>
+                <label class="data-label" for="donor-sex">Sex:</label>
                 <div class="data-values">
-                    <span id="antigen-sequence" class="data-point">unknown</span>
+                    <span id="donor-sex" class="data-point">{model.links.donor.get('sex')}</span>
                 </div>
             </div>
             <div class="data-group">
-                <label class="data-label" for="antigen-sequence">Strain:</label>
+                <label class="data-label" for="donor-strain">Strain:</label>
                 <div class="data-values">
-                    <span id="antigen-sequence" class="data-point">C3H</span>
+                    <span id="donor-strain" class="data-point">{model.links.donor.get('strain background')}</span>
                 </div>
             </div>
             <div class="data-group">
-                <label class="data-label" for="antigen-sequence">Health status:</label>
+                <label class="data-label" for="health-status">Health status:</label>
                 <div class="data-values">
-                    <span id="antigen-sequence" class="data-point">sarcoma</span>
-                </div>
-            </div>
-            <div class="data-group">
-                <label class="data-label" for="antigen-sequence">Species:</label>
-                <div class="data-values">
-                    <span id="antigen-sequence" class="data-point">mouse</span>
+                    <span id="health-status" class="data-point">{model.links.donor.get('health_status')}</span>
                 </div>
             </div>
             </section><!-- #donor-info -->
+            <?js } ?>
+
+            <?js if (model.links.treatments.length) {  treatment = model.links.treatments[0];?>
             <hr>
                 <!-- Treatment section -->
-
-            <section id="treatment-details">
-                <h4>FAKE Treatment Details</h4>
+                 <h4>Treatment Details</h4>
                     <div class="data-group">
-                <label class="data-label" for="isotype">Treatment:</label>
+                <label class="data-label" for="treatment">Treatment:</label>
                 <div class="data-values">
-                    <span id="isotype" class="data-point">EqS_2.0pct_60hr</span>
+                    <span id="treatment" class="data-point">{treatment.get('treatment_name')}</span>
                 </div>
             </div>
             <div class="data-group">
-                <label class="data-label" for="antigen-description">Type:</label>
+                <label class="data-label" for="treatment-type">Type:</label>
                 <div class="data-values">
-                    <span id="antigen-description" class="data-point">differentiation</span>
+                    <span id="treatment-type" class="data-point">{treatment.get('treatment_type')}</span>
                 </div>
             </div>
+                <?js if(treatment.get('condition_id') && treatment.get('condition_id') != 'NULL') { ?>
             <div class="data-group">
-                <label class="data-label" for="antigen-sequence">Document:</label>
+                <label class="data-label" for="treatment-condition">Condition:</label>
                 <div class="data-values">
-                    <span id="antigen-sequence" class="data-point">missing</span>
+                    <span id="treatment-condition" class="data-point">
+                        <?js if(treatment.get('concentration') != 'NULL') { ?> {treatment.get('concentration')} {treatment.get('concentration units')} <?js } ?>
+                        {treatment.get('condition_term')} ({treatment.get('condition_id')})
+                    <?js if (treatment.get('duration') != 'NULL') { ?> for {treatment.get('duration')} {treatment.get('duration units')} <?js } ?>
+                    </span>
                 </div>
-            </div>
-            <div class="data-group">
-                <label class="data-label" for="antigen-sequence">Condition:</label>
-                <div class="data-values">
-                    <span id="antigen-sequence" class="data-point">insulin</span>
-                </div>
-            </div>
-            <div class="data-group">
-                <label class="data-label" for="antigen-sequence">Duration:</label>
-                <div class="data-values">
-                    <span id="antigen-sequence" class="data-point">60 hours</span>
-                </div>
-            </div>
+                <?js } ?>
             </section><!-- #treatment-details -->
+            <?js } ?>
                    <!-- Construct section?? -->
          </div>
           <!-- Protocols & Documents -->

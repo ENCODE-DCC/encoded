@@ -54,11 +54,11 @@ def collection_test():
         'antibody-lots': 20,
         'validations': 21,
         'antibodies': 24,
-        'donors': 72,
+        'donors': 74,
         'documents': 30,
         'treatments': 6,
         'constructs': 5,
-        'biosamples': 136
+        'biosamples': 135,
     }
 
 

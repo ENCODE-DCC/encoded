@@ -502,7 +502,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     '''alias_list  alias_source_list  still not handled'''
 
     ''' MANDATORY FIELDS '''
-    value['organism_uuid'] = indices['organism'][value.pop('organism_no')]
+    #value['organism_uuid'] = indices['organism'][value.pop('organism_no')]
     source = value.pop('source')
     try:
         value['source_uuid'] = indices['source'][source]
@@ -517,14 +517,8 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                      }
                      )
 
-    ''' OPTIONAL OR REQUIRED FIELDS '''
-    donor_uuid = None
-    try:
-        donor = value.pop('donor')
-        donor_uuid = indices['donor'][donor]
-    except:
-        pass
-        # sometimes we don't know donor
+    donor = value.pop('donor')
+    donor_uuid = indices['donor'][donor]
     if donor_uuid:
         try:
             d = alldata['donor'][donor_uuid]
@@ -532,13 +526,16 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
         except KeyError:
             raise ValueError('Unable to find donor for biosample: %s' % donor)
 
+    ''' OPTIONAL OR REQUIRED FIELDS '''
+
+    value['treatment_uuids'] = []  # eventhough it's really 1:0 or 1.
     try:
         treat = value.pop('treatment')
         treatment_uuid = indices['treatment'][treat]
         try:
             if alldata['treatment'].get(treatment_uuid, None) is None:
                 logger.warn('Missing/skipped treatment reference %s for biosample: %s' % (treatment_uuid, uuid))
-            value['treatment_uuid'] = treatment_uuid
+            value['treatment_uuids'].append(treatment_uuid)
         except KeyError:
             raise ValueError('Unable to find treatment for biosample: %s' % treat)
     except KeyError:
