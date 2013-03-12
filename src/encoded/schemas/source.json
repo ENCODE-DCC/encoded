@@ -9,13 +9,13 @@
             "type": "string",
             "format": "uuid"
         },
-        "alias": {
-            "title": "Alias",
+        "source_name": {
+            "title": "Source Name",
             "description": "",
             "type": "string"
         },
-        "source_name": {
-            "title": "Source Name",
+        "alias": {
+            "title": "Alias",
             "description": "",
             "type": "string"
         },
