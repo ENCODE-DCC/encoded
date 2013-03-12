@@ -378,6 +378,8 @@ a[href^="http"]:empty:after {
 	// Unsubmitted/pending (gray) is the default if no class given
 }
 
+
+//displaying key-value pairs in a page (old way - replaced by description lists, below
 .data-display {
   // Increase spacing between groups
   .data-group {
@@ -408,6 +410,7 @@ a[href^="http"]:empty:after {
     padding-left: $horizontalComponentOffset;
   }
 }
+
 
 .data-group .row {margin-top: 10px;}
 
@@ -445,6 +448,64 @@ a[href^="http"]:empty:after {
     }
   }
 }
+
+
+
+// description lists
+// will replace the above data-display using more semantically correct description lists
+// main scenario is for showing key:value pairs
+.key-value {
+	dt, dd { 
+		margin-bottom: 10px; 
+		min-height: 20px; // = line-height ; defined somewhere?
+	}
+	dt {
+		display: inline-block;
+		float: left;
+    	width: $horizontalComponentOffset - 20;
+   		padding-top: 5px;
+    	text-align: right;
+	}
+	dt::after {
+		content: ": ";
+	}
+	
+	dd {
+		display: block;
+		padding-top: 5px;
+		margin-left: $horizontalComponentOffset;
+		//margin-bottom: 5px;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+	}
+}
+
+// make key-value description lists responsive
+@media (max-width: 480px) {
+  // Remove the horizontal styles
+  .key-value {
+    dt {
+    	float: none;
+    	width: auto;
+    	padding-top: 0;
+    	text-align: left;
+    }
+    // Move over all values to left
+    dt, dd {
+    	margin-left: 0;
+    	padding-top: 0;
+    	margin-bottom: 0px;
+    }
+    // add vertical space to key-value pairs
+    dd {
+    	margin-bottom: 15px;
+    }
+  }
+}
+
+
+
+
 
 /* Validation Details Page */
 .type-validation.view-detail {
