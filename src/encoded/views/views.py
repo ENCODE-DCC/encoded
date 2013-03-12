@@ -121,6 +121,10 @@ class Construct(CollectionViews):
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
     }
+    links = {
+        'source': {'href': '/sources/{source_uuid}', 'templated': True, 'embedded': True},
+    }
+    embedded = set(['source'])
 
 
 @resource(pattern='/documents/{path_segment}', collection_pattern='/documents/')
@@ -148,12 +152,12 @@ class Biosample(CollectionViews):
         'treatments': [
             {'href': '/treatments/{treatment_uuid}', 'templated': True, 'embedded': True, 'repeat': 'treatment_uuid treatment_uuids'},
         ],
-    }
-    embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments'])
-    '''
         'constructs': [
-            {'href': '/constructs/{construct_uuid}', 'templated': True, 'embedded': False, 'repeat': 'construct_uuid construct_uuids'},
+            {'href': '/constructs/{construct_uuid}', 'templated': True, 'embedded': True, 'repeat': 'construct_uuid construct_uuids'},
         ],
+    }
+    embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
+    '''
         'documents': [
             {'href': '/awards/{award_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
         ]

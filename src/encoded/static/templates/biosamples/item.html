@@ -1,8 +1,7 @@
 <header class="row">
     <div class="span12">
-        <h5>{model.links.donor.links.organism.get('organism_name')} Biosample</h5>
+        <h4 style="text-transform: capitalize;">Biosample > {properties.biosample_type} > {model.links.donor.links.organism.get('organism_name')} </h4>
         <h2>{properties.accession} / {properties.biosample_type}</h2>
-        <h4>{properties.biosample_description}</h4>
     </div>
 </header>
 <div class="row">
@@ -10,9 +9,9 @@
         <div class="panel data-display" id="biosample-data">
           <section id="general">
             <div class="data-group">
-            <label class="data-label" for="description">Description:</label>
+                <label class="data-label" for="term-name">Term name:</label>
                 <div class="data-values">
-                     <span id="description" class="data-point">{properties.biosample_description}</span>
+                    <span id="term_name" class="data-point">{properties.biosample_term_name}</span>
                 </div>
             </div>
             <div class="data-group">
@@ -22,9 +21,9 @@
                 </div>
             </div>
             <div class="data-group">
-                <label class="data-label" for="term-name">Term name:</label>
+            <label class="data-label" for="description">Description:</label>
                 <div class="data-values">
-                    <span id="term_name" class="data-point">{properties.biosample_term_name}</span>
+                     <span id="description" class="data-point">{properties.biosample_description}</span>
                 </div>
             </div>
             <div class="data-group">
@@ -38,7 +37,7 @@
             <div class="data-group">
                 <label class="data-label" for="product-id">Product ID:</label>
                 <div class="data-values">
-                    <?js if(properties.product_id != 'N/A') { ?>
+                    <?js if(properties.product_url != 'N/A') { ?>
                     <span id="product-id" class="data-point"><a href="{properties.product_url}">{properties.product_id}</a></span>
                     <?js } else { ?>
                     <span id="product-id" class="data-point">{properties.product_id}</span>
@@ -52,22 +51,27 @@
                 </div>
             </div>
             <div class="data-group">
-                <label class="data-label" for="species">Species:</label>
-                <div class="data-values">
-                    <span id="species" class="data-point">{model.links.donor.links.organism.get('organism_name')}</span>
-                    <!-- NEED mock donors for the following -->
-                </div>
-            </div>
-             <div class="data-group">
                 <label class="data-label" for="project">Project:</label>
                     <div class="data-values">
                         <span id="project" class="data-point">{properties.project}</span>
                     </div>
             </div>
             <div class="data-group">
-                <label class="data-label" for="submitted-by">Submitter / Lab / Grant:</label>
+                <label class="data-label" for="submitted-by">Submitted By:</label>
                 <div class="data-values">
-                    <span id="submitted-by" class="data-point">{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('name')} / {model.links.award.get('project')}</span>
+                    <span id="submitted-by" class="data-point">{model.links.submitter.get('first_name')} {model.links.submitter.get('last_name')}</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="lab">Lab:</label>
+                <div class="data-values">
+                    <span id="lab" class="data-point">{model.links.lab.get('name')}</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="grant">Grant:</label>
+                <div class="data-values">
+                    <span id="grant" class="data-point">{model.links.award.get('number')}</span>
                 </div>
             </div>
             <?js if(properties.biosample_type == 'Immortalized cell line') { ?>
@@ -145,10 +149,55 @@
                     </span>
                 </div>
                 <?js } ?>
+            </div>
             </section><!-- #treatment-details -->
             <?js } ?>
-                   <!-- Construct section?? -->
-         </div>
+                   <!-- Construct section-->
+            <?js if(model.links.constructs.length) { ?>
+            <hr> <!-- maybe if this out or drop the clanky <hr>s -->
+            <section>
+                <h4>Construct Details</h4>
+                <?js _.each(model.links.constructs, function(construct) { ?>
+                <div class="data-group">
+                    <label class="data-label" for="vector-name">Vector:</label>
+                    <div class="data-values">
+                        <span id="vector-name" class="data-point">{construct.get('vector_name')}</span>
+                    </div>
+                </div>
+                <div class="data-group">
+                    <label class="data-label" for="construct-types">Vector Type:</label>
+                    <div class="data-values">
+                        <span id="construct-types" class="data-point">{construct.get('transfection_type')} {construct.get('construct_type')}</span>
+                    </div>
+                </div>
+                <div class="data-group">
+                    <label class="data-label" for="construct-desc">Description:</label>
+                    <div class="data-values">
+                        <span id="construct-desc" class="data-point">{construct.get('construct_description')}</span>
+                    </div>
+                </div>
+                <div class="data-group">
+                <label class="data-label" for="construct-source">Source:</label>
+                    <div class="data-values">
+                        <span id="source" class="data-point">
+                            <a href="{construct.links.source.get('url')}">{construct.links.source.get('source_name')}</a>
+                        </span>
+                   </div>
+                </div>
+                <div class="data-group">
+                    <label class="data-label" for="construct-product-id">Product ID:</label>
+                    <div class="data-values">
+                        <?js if(construct.product_url != 'N/A') { ?>
+                        <span id="construct-product-id" class="data-point"><a href="{construct.product_url}">{construct.product_id}</a></span>
+                        <?js } else { ?>
+                        <span id="construct-product-id" class="data-point">{construct.product_id}</span>
+                        <?js } ?>
+                    </div>
+                </div>
+                <!-- more details go here -->
+                <?js } ); ?>
+            </section> <!-- construct details -->
+            <?js } ?>
           <!-- Protocols & Documents -->
         <h3>Protocols</h3>
         <div class="panel data-display">
