@@ -158,10 +158,10 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
 
         make_route_controller: function make_route_controller(view_factory, model_factory, slot_name) {
             function route_controller() {
-                var options = {},
+                var options = {route_args: arguments},
                     deferred;
                 if (model_factory) {
-                    options.model = new_(model_factory, [null, {route_args: arguments}]);
+                    options.model = new_(model_factory, [null, options]);
                     // possibly redundant
                     deferred = options.model.deferred;
                 }
