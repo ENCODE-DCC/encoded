@@ -22,6 +22,7 @@ requirejs.config({
         'backbone.hal': 'libs/backbone.hal',
         bootstrap: 'libs/bootstrap.min',
         jquery: 'libs/jquery.min',
+        jsonform: 'libs/jsonform',
         modernizr: 'libs/modernizr.min',
         underscore: 'libs/underscore.min',
         'navigator': 'libs/include.orig',
@@ -39,6 +40,11 @@ requirejs.config({
 
         bootstrap: {
             deps: ['jquery']
+        },
+
+        jsonform: {
+            deps: ['jquery', 'underscore'],
+            exports: 'JSONForm'
         },
 
         'navigator': {
