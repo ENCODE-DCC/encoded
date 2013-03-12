@@ -251,6 +251,7 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
     };
 
     exports.Modal = exports.View.extend({
+        className: "modal hide fade",
         submit_button_title: "Save",
         cancel_button_title: "Cancel",
         title: undefined,
