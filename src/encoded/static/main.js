@@ -74,7 +74,7 @@ requirejs.config({
     }
 });
 
-if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'modernizr', 'stickyheader'],
+if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'modernizr', 'stickyheader', 'jsonform'],
 function main($, app) {
 
     // Treat the jQuery ready function as the entry point to the application.
