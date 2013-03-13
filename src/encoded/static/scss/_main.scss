@@ -306,7 +306,7 @@ a[href^="http"]:empty:after {
 	//-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 	//box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 	text-align: center;
-	background: linear-gradient(#FFFFFF 0px, #E8ECEF 50%) repeat scroll 0 0 transparent;
+	@include background-image(linear-gradient(#fff 0px, #e8ecef 50%));
     //border-top: 1px solid #C4C1C1;
 	a {
 		color: rgb(111, 111, 111);
