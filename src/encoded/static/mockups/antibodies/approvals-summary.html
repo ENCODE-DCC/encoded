@@ -66,24 +66,68 @@
         		<div class="span12">
         		
         		<table id="antibodies-summary" class="responsive sticky-area">
-					<thead class="sticky-header">
-						<tr class="nosort table-controls">
-							<th colspan="7">
-								<button class="btn btn-primary">+ Add Antibody</button>
-								<input type="text" class="table-filter" placeholder="Filter by..." style="float:right">
-							</th>
-						</tr>
-						<tr>
-							<th>Accession</th>
-							<th>Target label</th>
-							<th>Source</th>
-							<th>Product ID</th>
-							<th>Lot ID</th>
-							<th>Species</th>
-							<th>Status</th>
-						</tr>
-					</thead>
-					<tbody>
+        		
+        		
+        		
+<thead class="sticky-header">
+	<tr class="nosort table-controls">
+		<th colspan="8">
+			<span class="label label-invert" id="table-count">24</span>
+			<span class="" id="total-records">of 24 records</span>
+			<div class="input-append" style="float: right;">
+
+				<input type="text" placeholder="Filter table by..." class="table-filter span3" name="table-filter" style="">
+
+					<div class="btn-group">
+						<button data-toggle="dropdown" class="btn dropdown-toggle">
+							<span class="caret"></span>
+						   </button>
+				<div class="dropdown-menu dropdown-panel">
+					<div class="float-wrap">
+						<div class="col">
+							<h4>Filter Type A</h4>
+							<label for="1"><input type="checkbox" id="1"> Number 1</label>
+							<label for="2"><input type="checkbox" id="2"> Number 2</label>
+							<label for="3"><input type="checkbox" id="3"> Number 3</label>
+							<label for="4"><input type="checkbox" id="4"> Number 4</label>
+							<label for="5"><input type="checkbox" id="5"> Number 5</label>
+						</div>
+						<div class="col">
+							<h4>Filter Type B</h4>
+							<label for="1"><input type="checkbox" id="1"> Number 1</label>
+							<label for="2"><input type="checkbox" id="2"> Number 2</label>
+							<label for="3"><input type="checkbox" id="3"> Number 3</label>
+							<label for="4"><input type="checkbox" id="4"> Number 4</label>
+							<label for="5"><input type="checkbox" id="5"> Number 5</label>
+						</div>
+						<div class="col">
+							<h4>Filter Type C</h4>
+							<label for="1"><input type="checkbox" id="1"> Number 1</label>
+							<label for="2"><input type="checkbox" id="2"> Number 2</label>
+							<label for="3"><input type="checkbox" id="3"> Number 3</label>
+							<label for="4"><input type="checkbox" id="4"> Number 4</label>
+							<label for="5"><input type="checkbox" id="5"> Number 5</label>
+						</div>
+					</div>
+					<div class="tools"><button>Set Filters</button> <a href="">Cancel</a></div>
+				</div>
+			</div>
+		</th>
+	</tr>
+	<tr>
+		<th style="cursor: pointer;">Accession<i class="sortdirection icon-"></i></th> 
+		<th class="sort-initial" style="cursor: pointer;">Target<i class="sortdirection icon- icon-chevron-down"></i></th>
+		<th style="cursor: pointer;">Species<i class="sortdirection icon-"></i></th> 
+		<th style="cursor: pointer;">Source<i class="sortdirection icon-"></i></th> 
+		<th style="cursor: pointer;">Product ID<i class="sortdirection icon-"></i></th> 
+		<th style="cursor: pointer;">Lot ID<i class="sortdirection icon-"></i></th> 
+		<th style="cursor: pointer;">Validations<i class="sortdirection icon-"></i></th> 
+		<th style="cursor: pointer;">Status<i class="sortdirection icon-"></i></th> 
+	</tr>
+</thead>
+    
+    
+				<tbody>
 					<tr data-href="/antibodies/78bc5de0-ddf3-4671-b7e4-bab1f202b50f"><td>ENCAB000ABR</td>
 					<td>MLL2</td>
 					<td>Sigma-Aldrich</td>
@@ -1552,6 +1596,8 @@
         	$(document).ready(function() { 
     			$("#antibodies-summary").table_sorter().table_filter();
 			});
+			
+			
         </script>
     </body>
 </html>
