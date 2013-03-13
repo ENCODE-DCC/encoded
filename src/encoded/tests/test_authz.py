@@ -26,6 +26,9 @@ class ViewTests(unittest.TestCase):
     def test_login(self):
         from ..authz import login
         data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Fsomeaudience').json()
+        if data.get('message', None) == 'Cannot get verified email for assertion':
+            self.skipTest("Persona: %s" % data['message'])
+
         email = data['email']
         assertion = data['assertion']
 
@@ -41,7 +44,10 @@ class ViewTests(unittest.TestCase):
     def test_login_fails_with_bad_audience(self):
         from ..authz import login
         data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Fbadaudience').json()
-        # email = data['email']
+
+        if data.get('message', None) == 'Cannot get verified email for assertion':
+            self.skipTest("Persona: %s" % data['message'])
+
         assertion = data['assertion']
 
         req = testing.DummyRequest(json_body={'assertion': assertion, 'came_from': '/'})

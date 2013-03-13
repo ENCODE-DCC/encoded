@@ -1,0 +1,31 @@
+// Custom Mixins
+// -----------------------------------------------
+
+
+// STICKY FOOTER
+// Compass' sticky footer with added top-border variable to allow use of a top border on your footer.
+// @include sticky-footer(54px, "#my-root", "#my-root-footer", "#my-footer")
+@mixin sticky-footer(
+	$footer-height,
+	$footer-border-top, 
+	$root-selector: unquote("#root"), 
+	$root-footer-selector: unquote("#root_footer"), 
+	$footer-selector: unquote("#footer")) {
+  html, body {
+    height: 100%; 
+    }
+  #{$root-selector} {
+    clear: both;
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin-bottom: (-$footer-height) - $footer-border-top;
+    #{$root-footer-selector} {
+      height: $footer-height; } 
+    }
+  #{$footer-selector} {
+    clear: both;
+    position: relative;
+    height: $footer-height; 
+    } 
+}

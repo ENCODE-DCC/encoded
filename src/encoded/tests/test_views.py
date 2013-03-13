@@ -29,7 +29,10 @@ def test_bad_audience(testapp, dummy_request):
     import requests
 
     data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Fsomeaudience').json()
-    assertion = data['assertion']
+    try:
+        assertion = data['assertion']
+    except KeyError:
+        pytest.skip(data.get('message', "Unknown persona error"))
 
     res = testapp.post_json('/login', params={'assertion': assertion, 'came_from': '/'}, status=400)
 
@@ -43,8 +46,7 @@ def _test_login_cycle(testapp, dummy_request):
         email = data['email']
         assertion = data['assertion']
     except KeyError:
-        import sys
-        sys.stderr.write("Something is foul with personatestuser: %s" % data)
+        pytest.skip(data.get('message', "Unknown persona error"))
 
     res = testapp.post_json('/login', params={'assertion': assertion, 'came_from': '/'}, status=200)
 
@@ -102,7 +104,7 @@ def test_load_workbook(testapp, collection_test):
     from pkg_resources import resource_filename
     assert type(collection_test) == dict
     workbook = resource_filename('encoded', 'tests/data/test_encode3_interface_submissions.xlsx')
-    docsdir = resource_filename('encoded', 'tests/data/validation-docs/')
+    docsdir = resource_filename('encoded', 'tests/data/documents/')
     from conftest import app_settings
     load_test_only = app_settings.get('load_test_only', False)
     assert load_test_only

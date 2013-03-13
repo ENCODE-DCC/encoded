@@ -1,61 +1,146 @@
 <header class="row">
     <div class="span12">
-        <h2>Antibody Target</h2>
+        <h5>{model.links.organism.get('organism_name')} Biosample</h5>
+        <h2>{properties.accession} / {properties.biosample_type}</h2>
+        <h4>{properties.biosample_description}</h4>
     </div>
 </header>
 <div class="row">
     <div class="span12">
-        <div class="panel data-display" id="target-data">
-            <div class="data-group">
-                <label class="data-label" for="target-name">Target Name:</label>
-                <div class="data-values">
-                <span id="target-name" class="data-point">{properties.target_label}</span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="target-gene">Target Gene:</label>
-                <div class="data-values">
-                <span id="target-gene" class="data-point">{properties.target_gene_name}</span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="uniprot-id">UniProt Id:</label>
-                <div class="data-values">
-                <span id="uniprot-id" class="data-point">
-                    <a href="http://www.uniprot.org/uniprot/{properties.target_term_uniprot}">{properties.target_term_uniprot}</a>
-                </span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="species">Species:</label>
-                <div class="data-values">
-                <span id="species" class="data-point">{model.links.organism.get('organism_name')}</span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="target-class">Target Class:</label>
-                <div class="data-values">
-                <span id="target-class" class="data-point">{properties.target_class}</span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="project">Project:</label>
-                <div class="data-values">
-                <span id="project" class="data-point">{properties.project}</span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="created-by">Submitter / Lab / Grant:</label>
-                <div class="data-values">
-                <span id="created-by" class="data-point">{properties.created_by} / {properties.lab_pi} / {properties.grant}</span>
-                </div>
-                </div>
-                <div class="data-group">
-                <label class="data-label" for="date-created">Date Created:</label>
-                <div class="data-values">
-                <span id="date-created" class="data-point">{properties.date_created}</span>
-                </div>
-            </div>
-        </div>
+        <div class="panel data-display" id="biosample-data">
+        
+        <section id="general">
+        
+        	<dl class="key-value">
+        		
+        		<dt>Accession number</dt>
+        		<dd>{properties.accession}</dd>
+        		
+        		<dt>Description</dt>
+        		<dd>{properties.biosample_description}</dd>
+        		
+        		<dt>Term ID</dt>
+        		<dd>{properties.biosample_term_id}</dd>
+        		
+        		<dt>Term name</dt>
+        		<dd>{properties.biosample_term_name}</dd>
+        		
+        		<dt>Source</dt>
+        		<dd><a href="{model.links.source.get('url')}">
+        			{model.links.source.get('source_name')}</a></dd>
+        		
+        		<dt>Product ID</dt>
+        		<dd>
+        			<?js if(properties.product_id != 'N/A') { ?>
+                    	<a href="{properties.product_url}">{properties.product_id}</a>
+                    <?js } else { ?>
+                    	{properties.product_id}
+                    <?js } ?>
+        		</dd>
+        		
+        		<dt>Lot ID</dt>
+        		<dd>{properties.lot_id}</dd>
+        		
+        		<dt>Species</dt>
+        		<dd>{model.links.organism.get('organism_name')}</dd>
+        		
+        		<dt>Project</dt>
+        		<dd>{properties.project}</dd>
+        		
+        		<dt>Submitter / Lab / Grant</dt>
+        		<dd>{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / 
+        		{model.links.lab.get('name')} / 
+        		{model.links.award.get('project')}</dd>
+        		
+        	</dl>
+        </section> <!--#general -->
+
+        <hr>
+        
+        <!-- Donor section -->
+
+        <section id="donor-info">
+            <h4>FAKE Donor Information</h4>
+            
+            <dl class="key-value">
+        		
+        		<dt>Donor ID</dt>
+        		<dd>ATCC_CCL-266</dd>
+        		
+        		<dt>Age</dt>
+        		<dd>fetal</dd>
+        		
+        		<dt>Sex</dt>
+        		<dd>unknown</dd>
+        		
+        		<dt>Strain</dt>
+        		<dd>C3H</dd>
+        		
+        		<dt>Health status</dt>
+        		<dd>sarcoma</dd>
+        		
+        		<dt>Species</dt>
+        		<dd>mouse</dd>
+        		
+        	</dl>
+
+        </section><!-- #donor-info -->
+        
+        <hr>
+        
+        <!-- Treatment section -->
+
+        <section id="treatment-details">
+    
+        	<h4>FAKE Treatment Details</h4>
+             
+            <dl class="key-value">
+        		
+        		<dt>Treatment</dt>
+        		<dd>EqS_2.0pct_60hr</dd>
+        		
+        		<dt>Type</dt>
+        		<dd>differntiation</dd>
+        		
+        		<dt>Document</dt>
+        		<dd>missing</dd>
+        		
+        		<dt>Condition</dt>
+        		<dd>insulin</dd>
+        		
+        		<dt>Duration</dt>
+        		<dd>60 hours</dd>
+        		
+        	</dl>
+             
+        </section><!-- #treatment-details -->
+        
+        <!-- Construct section?? -->
+        </div><!-- .panel -->
+        
+        
+        <!-- Protocols & Documents -->
+        <h3>Protocols</h3>
+        <div class="panel data-display">
+
+        </div><!-- .data-display -->
+
+        <h3>Supporting Documents</h3>
+        <div class="panel data-display">
+
+        </div><!-- .data-display -->
+
+        <!-- DBXREFS -->
+        <h3>Database Cross-Reference</h3>
+        <div class="panel data-display">
+
+        </div><!-- .data-display -->
+
+        <!-- Relationships to other Biosamples -->
+        <h3>Related Biosamples</h3>
+        <div class="panel data-display">
+
+        </div><!-- .data-display -->
+
     </div>
 </div>

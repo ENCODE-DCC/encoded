@@ -46,14 +46,19 @@ def app(request, connection, check_constraints):
 @fixture
 def collection_test():
     return {
-        'awards': 37,
+        'awards': 39,
         'labs': 42,
-        'users': 80,
-        'sources': 50,
-        'targets': 21,
-        'antibody-lots': 18,
+        'users': 81,
+        'sources': 51,
+        'targets': 23,
+        'antibody-lots': 20,
         'validations': 21,
-        'antibodies': 20,
+        'antibodies': 24,
+        'donors': 72,
+        'documents': 30,
+        'treatments': 6,
+        'constructs': 5,
+        'biosamples': 136
     }
 
 

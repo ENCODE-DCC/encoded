@@ -8,7 +8,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
 
         initialize: function () {
             // TODO: re-renders more than necessary, should split into subviews.
-            console.log("Initializeing navbar");
+            console.log("Initializing navbar");
             this.listenTo(app.router, 'all', this.on_route);
         },
 

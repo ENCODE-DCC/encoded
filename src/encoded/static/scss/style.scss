@@ -63,7 +63,7 @@
 @import "compass/css3/text-shadow";
 @import "compass/css3/box-shadow";
 @import "compass/css3/transition";
-@import "compass/layout/sticky-footer";
+//@import "compass/layout/sticky-footer";
 @import "compass/css3/images";
 @import "compass/typography/text/force-wrap";
 
@@ -71,6 +71,7 @@
 @import "fontawesome";
 
 // Custom styles and overrides
+@import "mixins-custom";
 @import "main"; // bootstrap over-rides and main styles for ENCODE site and apps
 
 // Utility classes

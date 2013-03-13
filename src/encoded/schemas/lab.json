@@ -47,6 +47,24 @@
                 "null"
             ]
         },
+        "award_uuids": {
+            "default": null,
+            "description": "",
+            "items": {
+                "default": null,
+                "description": "",
+                "title": "",
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "title": "",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
         "city": {
             "default": null,
             "description": "",
@@ -93,6 +111,15 @@
             ]
         },
         "lab_name": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "name": {
             "default": null,
             "description": "",
             "title": "",
