@@ -415,8 +415,6 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
 
     value['validation_uuids'] = []
     filenames = value.pop('validation_filenames_list')
-    #[v.strip() for v in (value.pop('validation_filenames') or '').split(';') if v]
-    # above should be renamed validation_filenames_list
     for filename in filenames:
         validation_uuids = indices['validation'].get(filename, [])
         for validation_uuid in validation_uuids:
@@ -424,6 +422,9 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
                 logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
             else:
                 value['validation_uuids'].append(validation_uuid)
+
+    assert len(set(value['validation_uuids'])) == len(value['validation_uuids'])
+
     try:
         organism_uuid = indices['organism'][value.pop('organism_name')]
         value['target_uuid'] = indices['target'][(value.pop('target_label'), organism_uuid)]
