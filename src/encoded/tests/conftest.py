@@ -49,16 +49,16 @@ def collection_test():
         'awards': 39,
         'labs': 42,
         'users': 81,
-        'sources': 51,
-        'targets': 23,
-        'antibody-lots': 20,
-        'validations': 21,
-        'antibodies': 24,
+        'sources': 55,
+        'targets': 24,
+        'antibody-lots': 25,
+        'validations': 35,
+        'antibodies': 25,
         'donors': 72,
-        'documents': 30,
+        'documents': 119,
         'treatments': 6,
         'constructs': 5,
-        'biosamples': 136
+        'biosamples': 134,
     }
 
 

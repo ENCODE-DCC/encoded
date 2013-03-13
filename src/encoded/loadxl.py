@@ -21,7 +21,6 @@ TYPE_URL = {
     'donor': '/donors/',
     'document': '/documents/',
     'biosample': '/biosamples/',
-    'document':  '/documents/',
     'treatment': '/treatments/',
     'construct': '/constructs/',
     'colleague': '/users/',
@@ -81,13 +80,13 @@ def cell_value(sheet, row, col, hint=None):
 
     elif ctype == xlrd.XL_CELL_TEXT:
         value = value.strip()
-        if value == 'null':
+        if value.lower() == 'null':
             value = None
         elif value == '':
             value = None
 
     # Empty cell
-    elif ctype in (xlrd.XL_CELL_EMPTY, xlrd.XL_CELL_BLANK) or value == 'NULL':
+    elif ctype in (xlrd.XL_CELL_EMPTY, xlrd.XL_CELL_BLANK):
         value = None
 
     else:
@@ -142,11 +141,19 @@ def extract(filename, sheets, test=False):
                 continue
             row['_uuid'] = uuid
 
+            dbxs = {}
             for col, value in row.iteritems():
                 if col.find('_list') < 0: continue
-                if value == 'NULL': continue # otherwise we get ['NULL']
-                row[col] = [v.strip() for v in (str(value) or '').split(';') if v]
+                if not value:
+                    val_list = []  #oh so clanky, but str(None) = 'None'
+                else:
+                    val_list = [v.strip() for v in (str(value) or '').split(';') if v]
+                if col.find('dbxref') >= 0:
+                    dbxs[col.split('_')[0]] = val_list
+                else:
+                    row[col] = val_list
 
+            if dbxs: row['dbxref'] = dbxs
             data[uuid] = row
         alldata['COUNTS'][name] = len(data.keys())
     return alldata
@@ -156,7 +163,7 @@ def value_index(data, attribute):
     index = {}
     for uuid, value in data.iteritems():
         index_value = resolve_dotted(value, attribute)
-        if not index_value or index_value == 'NULL': continue
+        if not index_value: continue
         try:
             assert index_value not in index, index_value
         except:
@@ -320,12 +327,10 @@ def parse_source(testapp, alldata, content_type, indices, uuid, value, docsdir):
 def parse_target(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
     value['organism_uuid'] = indices['organism'][value.pop('organism_name')]
-    aliases = value.pop('target_aliases') or ''  # needs to be _list!
-    alias_source = value.pop('target_alias_source')
-    value['dbxref'] = [
+    '''value['dbxref'] = [
         {'db': alias_source, 'id': alias.strip()}
         for alias in aliases.split(';') if alias]
-
+    '''
     value = assign_submitter(value, content_type, indices,
                              {
                              'email': value.pop('submitted_by_colleague_email'),
@@ -343,12 +348,12 @@ def parse_antibody_lot(testapp, alldata, content_type, indices, uuid, value, doc
         value['source_uuid'] = indices['source'][source]
     except KeyError:
         raise ValueError('Unable to find source: %s' % source)
-    aliases = value.pop('antibody_alias') or ''
+    '''aliases = value.pop('antibody_alias') or ''
     alias_source = value.pop('antibody_alias_source')
     value['dbxref'] = [
         {'db': alias_source, 'id': alias.strip()}
         for alias in aliases.split(';') if alias]
-
+    '''
     assign_submitter(value, content_type, indices,
                      {
                      'email': value.pop('submitted_by_colleague_email'),
@@ -502,7 +507,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     '''alias_list  alias_source_list  still not handled'''
 
     ''' MANDATORY FIELDS '''
-    value['organism_uuid'] = indices['organism'][value.pop('organism_no')]
+    #value['organism_uuid'] = indices['organism'][value.pop('organism_no')]
     source = value.pop('source')
     try:
         value['source_uuid'] = indices['source'][source]
@@ -517,14 +522,8 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                      }
                      )
 
-    ''' OPTIONAL OR REQUIRED FIELDS '''
-    donor_uuid = None
-    try:
-        donor = value.pop('donor')
-        donor_uuid = indices['donor'][donor]
-    except:
-        pass
-        # sometimes we don't know donor
+    donor = value.pop('donor')
+    donor_uuid = indices['donor'][donor]
     if donor_uuid:
         try:
             d = alldata['donor'][donor_uuid]
@@ -532,13 +531,16 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
         except KeyError:
             raise ValueError('Unable to find donor for biosample: %s' % donor)
 
+    ''' OPTIONAL OR REQUIRED FIELDS '''
+
+    value['treatment_uuids'] = []  # eventhough it's really 1:0 or 1.
     try:
         treat = value.pop('treatment')
         treatment_uuid = indices['treatment'][treat]
         try:
             if alldata['treatment'].get(treatment_uuid, None) is None:
                 logger.warn('Missing/skipped treatment reference %s for biosample: %s' % (treatment_uuid, uuid))
-            value['treatment_uuid'] = treatment_uuid
+            value['treatment_uuids'].append(treatment_uuid)
         except KeyError:
             raise ValueError('Unable to find treatment for biosample: %s' % treat)
     except KeyError:
@@ -554,20 +556,17 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
             try:
                 document_uuid = indices['document'].get(doc, [])
                 if alldata['document'].get(document_uuid, None) is None:
-                    logger.warn('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
-                    ## but don't raise error
+                    raise ValueError('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
                 else:
                     value['document_uuids'].append(document_uuid)
             except KeyError:
                 raise ValueError('Unable to find document for biosample: %s' % doc)
     except:
-        pass
-        # protocol documents can be missing?
+        logger.warn('Empty biosample documents list: %s' % documents)
 
     value['construct_uuids'] = []
     try:
         constructs = value.pop('construct_list')
-        if constructs == 'NULL': raise Exception
 
         for ctx in constructs:
             construct_uuid = indices['construct'].get(ctx, [])
@@ -575,7 +574,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 logger.warn('Missing/skipped construct reference %s for biosample: %s' % (construct_uuid, uuid))
                 ## but don't raise error
             else:
-                 value['construct_uuids'].append(construct_uuid)
+                value['construct_uuids'].append(construct_uuid)
     except:
         pass
         # protocol documents can be missing?

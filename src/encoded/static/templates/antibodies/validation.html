@@ -1,67 +1,70 @@
 <div class="container status-{properties.validation_status.toLowerCase()}"><!-- need to remove other code from js -->
-	<div class="row">
-		<div class="span6">
-			<figure>
-				<?js if (properties.document) { ?>
-				<a  href="{properties.document.href}">
-					<?js if (properties.document.type.indexOf('image/') == 0) { ?>
-						<img
-							class="validation-img"
-							src="{properties.document.href}"
-							height="{properties.document.height}"
-							width="{properties.document.width}"
-							alt="Validation Image"
-							/>
-					<?js } else if (properties.document.type == "application/pdf"){ ?>
-						<img
-							class="validation-img validation-file"
-							src="/static/img/file-pdf.svg"
-							height="100"
-							width="100"
-							alt="Validation PDF Icon"
-							/>
-					<?js } else { ?>
-						<img
-							class="validation-img validation-file"
-							src="/static/img/file.svg"
-							height="100"
-							width="100"
-							alt=" Validation Icon"
-							/>
-					<?js } ?>
-				</a>
-				<?js } else { ?>
-						<img
-							class="validation-img validation-file"
-							src="/static/img/file-broken.png"
-							alt="validation image not found"
-							height="100"
-							width="100"
-							alt="Validation File Broken Icon"
-						/>
-				<?js } ?>
-				<figcaption>
-					<span>{properties.validation_status}</span>
-				</figcaption>
-			</figure>
-		</div>
-		<div class="span5">
-			<div class="validation-meta-data">
-				<h3>Method: <span>{properties.validation_method}</span></h3>
-				<h4>Target species: <span>{model.links.target.links.organism.get('organism_name')}</span></h4>
-				<p><span>{properties.caption}</span></p>
-				<p><b>Submitter / Lab / Grant:</b> <span>{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / {model.links.lab.get('name')} / {model.links.award.get('project')}</span></p>
-				<p><b>Approver:</b> <span>{properties.validated_by}</span></p>
-				<p><b>Image:</b> <span class="label status-{properties.validation_status.toLowerCase()}">{properties.validation_status}</span>
-				<p><b>Download:</b>
-					<?js if (properties.document) { ?>
-					<a  href="{properties.document.href}"
-						download="{properties.document.download}"
-						>{properties.document.download}</a>
-					<?js } else { ?>
-					<em>Document not available</em>
-					<?js } ?>
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="span6">
+            <figure>
+                <?js if (properties.document) { ?>
+                <a  href="{properties.document.href}">
+                    <?js if (properties.document.type.indexOf('image/') == 0) { ?>
+                        <img
+                            class="validation-img"
+                            src="{properties.document.href}"
+                            height="{properties.document.height}"
+                            width="{properties.document.width}"
+                            alt="Validation Image"
+                            />
+                    <?js } else if (properties.document.type == "application/pdf"){ ?>
+                        <img
+                            class="validation-img validation-file"
+                            src="/static/img/file-pdf.svg"
+                            height="100"
+                            width="100"
+                            alt="Validation PDF Icon"
+                            />
+                    <?js } else { ?>
+                        <img
+                            class="validation-img validation-file"
+                            src="/static/img/file.svg"
+                            height="100"
+                            width="100"
+                            alt=" Validation Icon"
+                            />
+                    <?js } ?>
+                </a>
+                <?js } else { ?>
+                        <img
+                            class="validation-img validation-file"
+                            src="/static/img/file-broken.png"
+                            alt="validation image not found"
+                            height="100"
+                            width="100"
+                            alt="Validation File Broken Icon"
+                        />
+                <?js } ?>
+                <figcaption>
+                    <span>{properties.validation_status}</span>
+                </figcaption>
+            </figure>
+        </div>
+        <div class="span5">
+            <div class="validation-meta-data">
+                <h3>Method: <span>{properties.validation_method}</span></h3>
+                <h4>Target species: <span>{model.links.target.links.organism.get('organism_name')}</span>
+                </h4>
+                <p><span>{properties.caption}</span></p>
+                <p><b>Submitted By:</b> <span>{model.links.submitter.get('first_name')} {model.links.submitter.get('last_name')}</span></p>
+                <p><b>Lab:</b> <span>{model.links.lab.get('name')}</span></p>
+                <p><b>Grant:</b> <span>{model.links.award.get('number')}</span></p>
+                <p><b>Approver:</b> <span>{properties.validated_by}</span></p>
+                <p><b>Image:</b> <span class="label status-{properties.validation_status.toLowerCase()}">{properties.validation_status}</span>
+                <p><b>Download:</b>
+                    <?js if (properties.document) { ?>
+                    <a  href="{properties.document.href}"
+                        download="{properties.document.download}"
+                        >{properties.document.download}</a>
+                    <?js } else { ?>
+                    <em>Document not available</em>
+                    <?js } ?>
+            </div>
+        </div>
+    </div>
 </div>

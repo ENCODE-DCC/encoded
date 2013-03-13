@@ -14,5 +14,9 @@ Feature: Sources
         And I should see an element with the css selector "table.sticky-area > tbody > tr"
         And I should see at least 5 elements with the css selector "table.sticky-area > tbody > tr"
         And I should see at least 5 elements with the css selector "tr > td > a"
-        And I should see exactly one element with the css selector "#table-count" containing the text "51"
+        And I should see exactly one element with the css selector "#table-count" containing the text "55"
+        And I should not see "N/A"
+        And I should not see "NULL"
+        And I should not see "null"
+
 
