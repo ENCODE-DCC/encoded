@@ -119,32 +119,34 @@ def test_load_workbook(testapp, collection_test):
     assert len(res.json['_links']['items']) == 10
 
 
-def test_organisms_post(testapp):
-    from .sample_data import ORGANISMS as items
-    url = '/organisms/'
-    for item in items:
-        testapp.post_json(url, item, status=201)
+@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
+def test_collection_post(jsontestapp, url):
+    from .sample_data import URL_COLLECTION
+    collection = URL_COLLECTION[url]
+    for item in collection:
+        jsontestapp.post_json(url, item, status=201)
 
 
-def test_organisms_post_bad_json(jsontestapp):
-    items = [{'foo': 'bar'}]
-    url = '/organisms/'
-    for item in items:
+@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
+def test_collection_post_bad_json(jsontestapp, url):
+    collection = [{'foo': 'bar'}]
+    for item in collection:
         res = jsontestapp.post_json(url, item, status=422)
         assert res.json['errors']
 
 
-def test_organisms_update(jsontestapp):
-    from .sample_data import ORGANISMS as items
-    collection_url = '/organisms/'
-    initial = items[0]
-    res = jsontestapp.post_json(collection_url, initial, status=201)
+@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
+def test_collection_update(jsontestapp, url):
+    from .sample_data import URL_COLLECTION
+    collection = URL_COLLECTION[url]
+    initial = collection[0]
+    res = jsontestapp.post_json(url, initial, status=201)
     item_url = res.json['_links']['items'][0]['href']
     res = jsontestapp.get(item_url).json
     res.pop('_links', None)
     res.pop('_embedded', None)
     assert res == initial
-    update = items[1].copy()
+    update = collection[1].copy()
     del update['_uuid']
     jsontestapp.post_json(item_url, update, status=200)
     res = jsontestapp.get(item_url).json

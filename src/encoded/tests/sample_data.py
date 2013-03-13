@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collections import OrderedDict
 
 ORGANISMS = [
     {
@@ -81,18 +82,12 @@ TARGETS = [
 SOURCES = [
     {
     '_uuid': '3aa827c3-92f8-41fa-9608-201558f7a1c4',
-    '_links': {
-        'self': {'href': '/sources/{_uuid}', 'templated': True},
-        },
     'alias': 'sigma',
     'source_name': 'Sigma-Aldrich',
     'url': 'http://www.sigmaaldrich.com',
     },
     {
     '_uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
-    '_links': {
-        'self': {'href': '/sources/{_uuid}', 'templated': True},
-        },
     'alias': 'gingeras',
     'source_name': 'Gingeras Lab',
     'url': 'http://www.gingeraslab.edu',
@@ -244,6 +239,19 @@ USERS = [
     'lab_uuids': ['b635b4ed-dba3-4672-ace9-11d76a8d03af'],
     },
 ]
+
+URL_COLLECTION = OrderedDict([
+    ('/organisms/', ORGANISMS),
+    ('/targets/', TARGETS),
+    ('/sources/', SOURCES),
+    ('/antibody-lots/', ANTIBODY_LOTS),
+    ('/validations/', VALIDATIONS),
+    ('/antibodies/', ANTIBODY_APPROVALS),
+    ('/biosamples/', BIOSAMPLES),
+    ('/users/', USERS),
+    ('/labs/', LABS),
+    ('/awards/', AWARDS),
+])
 
 
 def test_load_all(testapp):
