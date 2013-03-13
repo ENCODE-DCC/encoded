@@ -19,7 +19,13 @@ $(function() {
             var $header = $(this),
                 $table = $header.parents('.sticky-area:first'),
                 offsetTop = $table.offset().top,
-                scrollTop = $(window).scrollTop() + $('.navbar-fixed-top').height(),
+                $nb = $('.navbar-fixed-top'),
+                nb_height = 0;
+
+            if ($nb.css('position') == 'fixed') {
+                nb_height = $nb.height();
+            }
+            var scrollTop = $(window).scrollTop() + nb_height,
                 delta = scrollTop - offsetTop;
 
             if((scrollTop > offsetTop) && (scrollTop < (offsetTop + $table.height()))) {
