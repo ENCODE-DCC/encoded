@@ -10,6 +10,7 @@ STATIC_MAX_AGE = 0
 
 def static_resources(config):
     config.add_static_view('static', 'static', cache_max_age=STATIC_MAX_AGE)
+    config.add_static_view('profiles', 'schemas', cache_max_age=STATIC_MAX_AGE)
 
     favicon_path = '/static/img/favicon.ico'
     if config.route_prefix:

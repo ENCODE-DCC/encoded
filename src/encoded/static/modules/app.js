@@ -39,9 +39,14 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
         //logout: '#logout'
     };
 
+    var overlay_routes = {
+        edit: ['edit']
+    };
+
     var slots = {
         content: '#content',
-        navbar: '#navbar'
+        navbar: '#navbar',
+        overlay: '#overlay'
     };
 
     _.extend(exports, Backbone.Events, {
@@ -56,13 +61,16 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             _(routes).each(function (patterns, route_name) {
                 view_registry.add_route(route_name, patterns);
             });
+            _(overlay_routes).each(function (patterns, route_name) {
+                view_registry.add_route(route_name, patterns, 'overlay');
+            });
             _(slots).each(function (selector, slot_name) {
                 view_registry.add_slot(slot_name, selector);
             });
             this.router = this.view_registry.make_router();
             // Render navbar when navigation triggers route.
             var navbar_view = new navbar.NavBarView({el: slots.navbar, model: this.config});
-            view_registry.switch_to(navbar_view, true);
+            view_registry.current_views['navbar'] = navbar_view.render();
             this.setupNavigation();
             this.trigger('started');
             console.log(view_registry);
@@ -82,18 +90,18 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
                 }
                 // Get the absolute anchor href.
                 console.log("anchor link clicked");
-                var href = {prop: $(this).prop("href"), attr: $(this).attr("href")};
+                var href = $(this).prop("href");
                 // Get the absolute root.
                 var root = location.protocol + "//" + location.host + '/';
                 // Ensure the root is part of the anchor href, meaning it's relative.
-                if (href.prop && href.prop.slice(0, root.length) === root) {
+                if (href && href.slice(0, root.length) === root) {
                     // Stop the default event to ensure the link will not cause a page
                     // refresh.
                     evt.preventDefault();
                     // `Backbone.history.navigate` is sufficient for all Routers and will
                     // trigger the correct events. The Router's internal `navigate` method
                     // calls this anyways.  The fragment is sliced from the root.
-                    Backbone.history.navigate(href.attr, true);
+                    Backbone.history.navigate(href.slice(root.length), {trigger: true});
                 }
             });
         }

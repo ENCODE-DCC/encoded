@@ -22,6 +22,7 @@ requirejs.config({
         'backbone.hal': 'libs/backbone.hal',
         bootstrap: 'libs/bootstrap.min',
         jquery: 'libs/jquery.min',
+        jsonform: 'libs/jsonform',
         modernizr: 'libs/modernizr.min',
         underscore: 'libs/underscore.min',
         'navigator': 'libs/include.orig',
@@ -39,6 +40,11 @@ requirejs.config({
 
         bootstrap: {
             deps: ['jquery']
+        },
+
+        jsonform: {
+            deps: ['jquery', 'underscore'],
+            exports: 'JSONForm'
         },
 
         'navigator': {
@@ -68,7 +74,7 @@ requirejs.config({
     }
 });
 
-if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'modernizr', 'stickyheader'],
+if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'modernizr', 'stickyheader', 'jsonform'],
 function main($, app) {
 
     // Treat the jQuery ready function as the entry point to the application.

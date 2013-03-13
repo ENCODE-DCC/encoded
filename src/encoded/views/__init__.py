@@ -47,13 +47,19 @@ def maybe_include_embedded(request, result):
         result['_embedded'] = {'resources': embedded}
 
 
+def format(value, **ns):
+    if isinstance(value, basestring):
+        return value.format(**ns)
+    return value
+
+
 class CollectionViews(object):
     schema = None
     properties = None
     links = {
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
         'collection': {'href': '{collection_uri}', 'templated': True},
-        'profile': {'href': '/profiles/{item_type}', 'templated': True},
+        'profile': {'href': '/profiles/{item_type}.json', 'templated': True},
     }
     embedded = {}
 
@@ -97,23 +103,19 @@ class CollectionViews(object):
                         continue
                     if repeat:
                         ns = item.copy()
+                        ns['collection_uri'] = self.collection_uri
+                        ns['item_type'] = self.item_type
                         repeat_name, repeater = repeat.split()
                         for repeat_value in item[repeater]:
                             ns[repeat_name] = repeat_value
-                            value = value.copy()
-                            value['href'] = member['href'].format(
-                                collection_uri=self.collection_uri,
-                                item_type=self.item_type,
-                                **ns)
+                            value = dict((k, format(v, **ns)) for k, v in value.iteritems())
                             out.append(value)
                             self.maybe_embed(rel, value['href'])
                     else:
-                        ns = item
-                        ns[repeat_name] = repeat_value
-                        value['href'] = member['href'].format(
-                            collection_uri=self.collection_uri,
-                            item_type=self.item_type,
-                            **ns)
+                        ns = item.copy()
+                        ns['collection_uri'] = self.collection_uri
+                        ns['item_type'] = self.item_type
+                        value = dict((k, format(v, **ns)) for k, v in value.iteritems())
                         out.append(value)
                         self.maybe_embed(rel, value['href'])
                 value = out
@@ -121,10 +123,10 @@ class CollectionViews(object):
                 value = value_template.copy()
                 del value['templated']
                 assert 'repeat' not in value
-                value['href'] = value['href'].format(
-                    collection_uri=self.collection_uri,
-                    item_type=self.item_type,
-                    **item)
+                ns = item.copy()
+                ns['collection_uri'] = self.collection_uri
+                ns['item_type'] = self.item_type
+                value = dict((k, format(v, **ns)) for k, v in value.iteritems())
                 self.maybe_embed(rel, value['href'])
             else:
                 assert 'repeat' not in value
@@ -185,7 +187,7 @@ class CollectionViews(object):
         maybe_include_embedded(self.request, result)
         return result
 
-    @view(validators=('validate_collection_post',), permission='add')
+    @view(validators=('validate_item_content',), permission='add')
     def collection_post(self):
         session = DBSession()
         item = self.request.validated
@@ -206,7 +208,7 @@ class CollectionViews(object):
         }
         return result
 
-    def validate_collection_post(self):
+    def validate_item_content(self):
         data = self.request.json_body
         if self.schema is None:
             self.request.validated = data
@@ -227,4 +229,28 @@ class CollectionViews(object):
             return {}
         result = self.make_item(model)
         maybe_include_embedded(self.request, result)
+        return result
+
+    @view(validators=('validate_item_content',), permission='edit')
+    def post(self):
+        uuid = self.request.matchdict['path_segment']
+        key = (uuid, self.item_type)
+        session = DBSession()
+        model = session.query(CurrentStatement).get(key)
+        if model is None:
+            raise NotFound()
+        item = self.request.validated
+        item['_uuid'] = uuid  # XXX Should this really be stored in object?
+        model.resource[self.item_type] = item
+        item_uri = self.item_uri(model.resource.rid)
+        self.request.response.status = 200
+        result = {
+            'result': 'success',
+            '_links': {
+                'profile': {'href': '/profiles/result'},
+                'items': [
+                    {'href': item_uri},
+                ],
+            },
+        }
         return result
