@@ -32,7 +32,7 @@ class User(CollectionViews):
     }
     links = {
         'labs': [
-            {'href': '/labs/{lab_uuid}', 'templated': True, 'embedded': True,
+            {'href': '/labs/{lab_uuid}', 'templated': True,
              'repeat': 'lab_uuid lab_uuids'}
         ]
     }
@@ -47,7 +47,7 @@ class Lab(CollectionViews):
     }
     links = {
         'awards': [
-            {'href': '/awards/{award_uuid}', 'templated': True, 'embedded': True,
+            {'href': '/awards/{award_uuid}', 'templated': True,
              'repeat': 'award_uuid award_uuids'}
         ]
     }
@@ -101,7 +101,7 @@ class Donor(CollectionViews):
         'description': 'Listing Biosample Donors',
     }
     links = {
-        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
+        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
     }
     embedded = set(['organism'])
 
@@ -122,7 +122,7 @@ class Construct(CollectionViews):
         'description': 'Listing of Biosample Constructs',
     }
     links = {
-        'source': {'href': '/sources/{source_uuid}', 'templated': True, 'embedded': True},
+        'source': {'href': '/sources/{source_uuid}', 'templated': True},
     }
     embedded = set(['source'])
 
@@ -133,6 +133,12 @@ class Document(CollectionViews):
         'title': 'Documents',
         'description': 'Listing of Biosample Documents',
     }
+    links = {
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True},
+    }
+    embedded = set(['submitter', 'lab', 'award'])
 
 
 @resource(pattern='/biosamples/{path_segment}', collection_pattern='/biosamples/')
@@ -143,25 +149,22 @@ class Biosample(CollectionViews):
         'description': 'Biosamples used in the ENCODE project',
     }
     links = {
-        #'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True, 'embedded': True},
-        'source': {'href': '/sources/{source_uuid}', 'templated': True, 'embedded': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True, 'embedded': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True, 'embedded': True},
-        'donor': {'href': '/donors/{donor_uuid}', 'templated': True, 'embedded': True},
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+        'source': {'href': '/sources/{source_uuid}', 'templated': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        'donor': {'href': '/donors/{donor_uuid}', 'templated': True},
+        'documents': [
+            {'href': '/documents/{document_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
+        ],
         'treatments': [
-            {'href': '/treatments/{treatment_uuid}', 'templated': True, 'embedded': True, 'repeat': 'treatment_uuid treatment_uuids'},
+            {'href': '/treatments/{treatment_uuid}', 'templated': True, 'repeat': 'treatment_uuid treatment_uuids'},
         ],
         'constructs': [
-            {'href': '/constructs/{construct_uuid}', 'templated': True, 'embedded': True, 'repeat': 'construct_uuid construct_uuids'},
+            {'href': '/constructs/{construct_uuid}', 'templated': True, 'repeat': 'construct_uuid construct_uuids'},
         ],
     }
     embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
-    '''
-        'documents': [
-            {'href': '/awards/{award_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
-        ]
-    '''
 
 
 @resource(pattern='/targets/{path_segment}', collection_pattern='/targets/')
@@ -172,10 +175,10 @@ class Target(CollectionViews):
         'description': 'Listing of ENCODE3 targets',
     }
     links = {
-        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True, 'embedded': True},
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True, 'embedded': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True, 'embedded': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True, 'embedded': True},
+        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True},
     }
     embedded = set(['organism', 'submitter', 'lab', 'award'])
 
@@ -189,11 +192,11 @@ class Validation(CollectionViews):
         'description': 'Listing of antibody validation documents',
     }
     links = {
-        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True, 'embedded': True},
-        'target': {'href': '/targets/{target_uuid}', 'templated': True, 'embedded': True},
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True, 'embedded': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True, 'embedded': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True, 'embedded': True},
+        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
+        'target': {'href': '/targets/{target_uuid}', 'templated': True},
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True},
     }
     embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
 
@@ -206,8 +209,8 @@ class AntibodyApproval(CollectionViews):
         'description': 'Listing of validation approvals for ENCODE antibodies',
     }
     links = {
-        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True, 'embedded': True},
-        'target': {'href': '/targets/{target_uuid}', 'templated': True, 'embedded': True},
+        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
+        'target': {'href': '/targets/{target_uuid}', 'templated': True},
         'validations': [
             {'href': '/validations/{validation_uuid}', 'templated': True, 'repeat': 'validation_uuid validation_uuids'},
             ],

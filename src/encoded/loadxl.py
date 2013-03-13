@@ -21,7 +21,6 @@ TYPE_URL = {
     'donor': '/donors/',
     'document': '/documents/',
     'biosample': '/biosamples/',
-    'document':  '/documents/',
     'treatment': '/treatments/',
     'construct': '/constructs/',
     'colleague': '/users/',
@@ -142,11 +141,18 @@ def extract(filename, sheets, test=False):
                 continue
             row['_uuid'] = uuid
 
+            dbxs = []
             for col, value in row.iteritems():
                 if col.find('_list') < 0: continue
-                if value == 'NULL': continue # otherwise we get ['NULL']
-                row[col] = [v.strip() for v in (str(value) or '').split(';') if v]
+                #if not value or value == 'NULL': continue # otherwise we get ['NULL']
 
+                val_list = [v.strip() for v in (str(value) or '').split(';') if v]
+                if col.find('dbxref') >= 0:
+                    dbxs.append({'db': col.split('_')[0], 'ids': val_list})
+                else:
+                    row[col] = val_list
+
+            if dbxs: row['dbxref'] = dbxs
             data[uuid] = row
         alldata['COUNTS'][name] = len(data.keys())
     return alldata
@@ -320,12 +326,10 @@ def parse_source(testapp, alldata, content_type, indices, uuid, value, docsdir):
 def parse_target(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
     value['organism_uuid'] = indices['organism'][value.pop('organism_name')]
-    aliases = value.pop('target_aliases') or ''  # needs to be _list!
-    alias_source = value.pop('target_alias_source')
-    value['dbxref'] = [
+    '''value['dbxref'] = [
         {'db': alias_source, 'id': alias.strip()}
         for alias in aliases.split(';') if alias]
-
+    '''
     value = assign_submitter(value, content_type, indices,
                              {
                              'email': value.pop('submitted_by_colleague_email'),
@@ -343,12 +347,12 @@ def parse_antibody_lot(testapp, alldata, content_type, indices, uuid, value, doc
         value['source_uuid'] = indices['source'][source]
     except KeyError:
         raise ValueError('Unable to find source: %s' % source)
-    aliases = value.pop('antibody_alias') or ''
+    '''aliases = value.pop('antibody_alias') or ''
     alias_source = value.pop('antibody_alias_source')
     value['dbxref'] = [
         {'db': alias_source, 'id': alias.strip()}
         for alias in aliases.split(';') if alias]
-
+    '''
     assign_submitter(value, content_type, indices,
                      {
                      'email': value.pop('submitted_by_colleague_email'),
@@ -551,15 +555,13 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
             try:
                 document_uuid = indices['document'].get(doc, [])
                 if alldata['document'].get(document_uuid, None) is None:
-                    logger.warn('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
-                    ## but don't raise error
+                    raise ValueError('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
                 else:
                     value['document_uuids'].append(document_uuid)
             except KeyError:
                 raise ValueError('Unable to find document for biosample: %s' % doc)
     except:
-        pass
-        # protocol documents can be missing?
+        logger.warn('Empty biosample documents list: %s' % documents)
 
     value['construct_uuids'] = []
     try:
@@ -572,7 +574,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 logger.warn('Missing/skipped construct reference %s for biosample: %s' % (construct_uuid, uuid))
                 ## but don't raise error
             else:
-                 value['construct_uuids'].append(construct_uuid)
+                value['construct_uuids'].append(construct_uuid)
     except:
         pass
         # protocol documents can be missing?
