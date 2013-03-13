@@ -51,161 +51,121 @@
     </div>
 </header>
 
-<div class="panel data-display">
+<div class="panel data-display" id="biosample-data">
+        
+            <div class="btn-group" style="float: right">
+				<button class="btn">Edit</button>
+				<button class="btn">History</button>
+			</div>
+        
+        <section id="general">
+        
+        	<dl class="key-value">
+        		
+        		<dt>Accession number</dt>
+        		<dd>{properties.accession}</dd>
+        		
+        		<dt>Description</dt>
+        		<dd>{properties.biosample_description}</dd>
+        		
+        		<dt>Term ID</dt>
+        		<dd>{properties.biosample_term_id}</dd>
+        		
+        		<dt>Term name</dt>
+        		<dd>{properties.biosample_term_name}</dd>
+        		
+        		<dt>Source</dt>
+        		<dd><a href="{model.links.source.get('url')}">
+        			{model.links.source.get('source_name')}</a></dd>
+        		
+        		<dt>Product ID</dt>
+        		<dd>
+        			<?js if(properties.product_id != 'N/A') { ?>
+                    	<a href="{properties.product_url}">{properties.product_id}</a>
+                    <?js } else { ?>
+                    	{properties.product_id}
+                    <?js } ?>
+        		</dd>
+        		
+        		<dt>Lot ID</dt>
+        		<dd>{properties.lot_id}</dd>
+        		
+        		<dt>Species</dt>
+        		<dd>{model.links.organism.get('organism_name')}</dd>
+        		
+        		<dt>Project</dt>
+        		<dd>{properties.project}</dd>
+        		
+        		<dt>Submitter / Lab / Grant</dt>
+        		<dd>{model.links.submitter.get('first_name')[0]}. {model.links.submitter.get('last_name')} / 
+        		{model.links.lab.get('name')} / 
+        		{model.links.award.get('project')}</dd>
+        		
+        	</dl>
+        </section> <!--#general -->
 
-	<div class="data-group">
-		<label class="data-label" for="source-name">Accession number:</label>
-		<div class="data-values">
-			<span id="source-name" class="data-point">BSENC000AAC</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="product-id">Description:</label>
-		<div class="data-values">
-			<span id="product-id" class="data-point">Total RNA isolated from a normal human fetal cerebellum.</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="lot-id">Term ID:</label>
-		<div class="data-values">
-			<span id="lot-id" class="data-point">UBERON:0002037</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="target-label">Term name:</label>
-		<div class="data-values">
-			<span id="target-label" class="data-point">cerebellum</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="host">Source:</label>
-		<div class="data-values">
-			<span id="host" class="data-point"><a href="#external_source_url">American Type Culture Collection (ATCC)</a></span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="clonality">Product ID:</label>
-		<div class="data-values">
-			<span id="clonality" class="data-point"><a href="#external_product_url">CCL-226</a></span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="purification">Lot ID:</label>
-		<div class="data-values">
-			<span id="purification" class="data-point">unknown</span>
-		</div>
-	</div>
-	
-	<div class="data-group">
-		<label class="data-label" for="purification">Biosample type:</label>
-		<div class="data-values">
-			<span id="purification" class="data-point">primary cell line</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="purification">Passage number:</label>
-		<div class="data-values">
-			<span id="purification" class="data-point">unknown</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="purification">Culture start date:</label>
-		<div class="data-values">
-			<span id="purification" class="data-point">unknown</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="purification">Culture harvest date:</label>
-		<div class="data-values">
-			<span id="purification" class="data-point">unknown</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="purification">Submitter:</label>
-		<div class="data-values">
-			<span id="purification" class="data-point">Carrie Davis (Gingeras lab)</span>
-		</div>
-	</div>
-	
-	<hr>
-	
-	<section id="donor-info">
-		<h4>Donor Information</h4>
-			<div class="data-group">
-		<label class="data-label" for="isotype">Donor ID:</label>
-		<div class="data-values">
-			<span id="isotype" class="data-point">ATCC_CCL-266</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="antigen-description">Age:</label>
-		<div class="data-values">
-			<span id="antigen-description" class="data-point">fetal</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="antigen-sequence">Sex:</label>
-		<div class="data-values">
-			<span id="antigen-sequence" class="data-point">unknown</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="antigen-sequence">Strain:</label>
-		<div class="data-values">
-			<span id="antigen-sequence" class="data-point">C3H</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="antigen-sequence">Health status:</label>
-		<div class="data-values">
-			<span id="antigen-sequence" class="data-point">sarcoma</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="antigen-sequence">Species:</label>
-		<div class="data-values">
-			<span id="antigen-sequence" class="data-point">mouse</span>
-		</div>
-	</div>
-	</section><!-- #donor-info -->
-	
-	<hr>
-	
-	<section id="treatment-details">
-		<h4>Treatment Details</h4>
-			<div class="data-group">
-		<label class="data-label" for="isotype">Treatment:</label>
-		<div class="data-values">
-			<span id="isotype" class="data-point">EqS_2.0pct_60hr</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="antigen-description">Type:</label>
-		<div class="data-values">
-			<span id="antigen-description" class="data-point">differentiation</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="antigen-sequence">Document:</label>
-		<div class="data-values">
-			<span id="antigen-sequence" class="data-point">missing</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="antigen-sequence">Condition:</label>
-		<div class="data-values">
-			<span id="antigen-sequence" class="data-point">insulin</span>
-		</div>
-	</div>
-	<div class="data-group">
-		<label class="data-label" for="antigen-sequence">Duration:</label>
-		<div class="data-values">
-			<span id="antigen-sequence" class="data-point">60 hours</span>
-		</div>
-	</div>
-	</section><!-- #treatment-details -->
-	
-</div><!-- .data-display -->
+        <hr>
+        
+        <!-- Donor section -->
+
+        <section id="donor-info">
+            <h4>FAKE Donor Information</h4>
+            
+            <dl class="key-value">
+        		
+        		<dt>Donor ID</dt>
+        		<dd>ATCC_CCL-266</dd>
+        		
+        		<dt>Age</dt>
+        		<dd>fetal</dd>
+        		
+        		<dt>Sex</dt>
+        		<dd>unknown</dd>
+        		
+        		<dt>Strain</dt>
+        		<dd>C3H</dd>
+        		
+        		<dt>Health status</dt>
+        		<dd>sarcoma</dd>
+        		
+        		<dt>Species</dt>
+        		<dd>mouse</dd>
+        		
+        	</dl>
+
+        </section><!-- #donor-info -->
+        
+        <hr>
+        
+        <!-- Treatment section -->
+
+        <section id="treatment-details">
+    
+        	<h4>FAKE Treatment Details</h4>
+             
+            <dl class="key-value">
+        		
+        		<dt>Treatment</dt>
+        		<dd>EqS_2.0pct_60hr</dd>
+        		
+        		<dt>Type</dt>
+        		<dd>differntiation</dd>
+        		
+        		<dt>Document</dt>
+        		<dd>missing</dd>
+        		
+        		<dt>Condition</dt>
+        		<dd>insulin</dd>
+        		
+        		<dt>Duration</dt>
+        		<dd>60 hours</dd>
+        		
+        	</dl>
+             
+        </section><!-- #treatment-details -->
+        
+        <!-- Construct section?? -->
+        </div><!-- .panel -->
 	
 <h3>Protocols</h3>
 <div class="panel data-display">
