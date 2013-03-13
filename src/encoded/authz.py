@@ -119,15 +119,6 @@ def logout(request):
     return {'email': None}
 
 
-class RootFactory(object):
-    __acl__ = [
-        (Allow, 'g:admin', ALL_PERMISSIONS),
-    ]
-
-    def __init__(self, request):
-        self.request = request
-
-
 def groupfinder(userid, request):
     session = DBSession()
     query = session.query(UserMap).filter(UserMap.persona_email == userid)

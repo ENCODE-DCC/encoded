@@ -27,7 +27,10 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
         },
 
         on_route: function on_route(evt) {
-            this.current_route = evt.substring(evt.indexOf(':')+1);
+            var route_parts = evt.split(':');
+            // Only render on the main route not the overlay route.
+            if (route_parts[0] !== 'route') return;
+            this.current_route = route_parts[1];
             this.render();
             if (app.user.email) {
                 $("#signout").text("Log out: "+app.user.email);

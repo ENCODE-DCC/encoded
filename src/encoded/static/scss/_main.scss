@@ -598,3 +598,42 @@ h3 .label {
 	top: -3px;
 	left: 15px;
 }
+
+
+// stuff below is for prototype dropdown panel
+.open > .dropdown-panel {
+    display: block;
+}
+
+.dropdown-panel {
+	background-clip: padding-box;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    display: none;
+    float: left;
+    left: -328px;
+    margin: 2px 0 0;
+    min-width: 340px;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    z-index: 1000;
+	padding: 10px;
+	.col { 
+		margin: 0 30px 0 0;
+		float: left; 
+		display: inline-block;
+		h4 { font-size: 1.0em; margin: 0 0 4px 0; }
+	}
+	.col:first-child {
+		margin-left: 10px;
+	}
+	.col:last-child {
+		margin-right: 10px;
+	}
+	.tools { background: #ededed; padding: 8px; a {color: blue;} }
+}
+
+.float-wrap { overflow: hidden; }
