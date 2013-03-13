@@ -187,7 +187,7 @@ class CollectionViews(object):
         maybe_include_embedded(self.request, result)
         return result
 
-    @view(validators=('validate_collection_post',), permission='add')
+    @view(validators=('validate_item_content',), permission='add')
     def collection_post(self):
         session = DBSession()
         item = self.request.validated
@@ -208,7 +208,7 @@ class CollectionViews(object):
         }
         return result
 
-    def validate_collection_post(self):
+    def validate_item_content(self):
         data = self.request.json_body
         if self.schema is None:
             self.request.validated = data
@@ -229,4 +229,28 @@ class CollectionViews(object):
             return {}
         result = self.make_item(model)
         maybe_include_embedded(self.request, result)
+        return result
+
+    @view(validators=('validate_item_content',), permission='edit')
+    def post(self):
+        uuid = self.request.matchdict['path_segment']
+        key = (uuid, self.item_type)
+        session = DBSession()
+        model = session.query(CurrentStatement).get(key)
+        if model is None:
+            raise NotFound()
+        item = self.request.validated
+        item['_uuid'] = uuid  # XXX Should this really be stored in object?
+        model.resource[self.item_type] = item
+        item_uri = self.item_uri(model.resource.rid)
+        self.request.response.status = 200
+        result = {
+            'result': 'success',
+            '_links': {
+                'profile': {'href': '/profiles/result'},
+                'items': [
+                    {'href': item_uri},
+                ],
+            },
+        }
         return result

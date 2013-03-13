@@ -132,3 +132,23 @@ def test_organisms_post_bad_json(jsontestapp):
     for item in items:
         res = jsontestapp.post_json(url, item, status=422)
         assert res.json['errors']
+
+
+def test_organisms_update(jsontestapp):
+    from .sample_data import ORGANISMS as items
+    collection_url = '/organisms/'
+    initial = items[0]
+    res = jsontestapp.post_json(collection_url, initial, status=201)
+    item_url = res.json['_links']['items'][0]['href']
+    res = jsontestapp.get(item_url).json
+    res.pop('_links', None)
+    res.pop('_embedded', None)
+    assert res == initial
+    update = items[1].copy()
+    del update['_uuid']
+    jsontestapp.post_json(item_url, update, status=200)
+    res = jsontestapp.get(item_url).json
+    res.pop('_uuid', None)
+    res.pop('_links', None)
+    res.pop('_embedded', None)
+    assert res == update
