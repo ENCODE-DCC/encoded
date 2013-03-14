@@ -12,6 +12,7 @@ requires = [
     'jsonschema',
     'loremipsum',
     'pyramid',
+    'pyramid_multiauth',
     'pyramid_tm',
     'setuptools',
     'xlrd',

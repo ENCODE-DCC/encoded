@@ -9,7 +9,11 @@ engine_settings = {
 }
 
 app_settings = {
-    'persona.secret': 'GLIDING LIKE A WHALE',
+    'multiauth.policies': 'authtkt',
+    'multiauth.groupfinder': 'encoded.authz.groupfinder',
+    'multiauth.policy.authtkt.use': 'pyramid.authentication.AuthTktAuthenticationPolicy',
+    'multiauth.policy.authtkt.hashalg': 'sha512',
+    'multiauth.policy.authtkt.secret': 'GLIDING LIKE A WHALE',
     'persona.audiences': 'http://localhost:6543',
     'persona.siteName': 'ENCODE DCC Submission',
     'load_test_only': True,

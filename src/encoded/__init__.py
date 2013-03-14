@@ -80,7 +80,8 @@ def main(global_config, **settings):
     config.scan('encoded.renderers')
     config.include('.resource')
     config.include('.views')
-    config.include('.authz')
+    config.include('.persona')
+    config.include('pyramid_multiauth')
 
     config.include(static_resources)
     config.include(tests_js)
