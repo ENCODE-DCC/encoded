@@ -168,16 +168,23 @@ class TransactionRecord(Base):
 
 class UserMap(Base):
     __tablename__ = 'user_map'
-    persona_email = Column(types.Text, primary_key=True)
+    # e.g. mailto:test@example.com
+    login = Column(types.Text, primary_key=True)
     userid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
 
-    user = orm.relationship('Resource',
+    resource = orm.relationship('Resource',
         lazy='joined', foreign_keys=[userid])
+
+    user = orm.relationship('CurrentStatement',
+        lazy='joined', foreign_keys=[userid],
+        primaryjoin="""and_(CurrentStatement.rid==UserMap.userid,
+            CurrentStatement.predicate=='user')""")
+
     # might have to be deferred
 
-    def __init__(self, persona_email, uuid):
-        self.persona_email = persona_email
-        self.userid = uuid
+    def __init__(self, login, userid):
+        self.login = login
+        self.userid = userid
 
 
 @event.listens_for(Statement, 'before_insert')

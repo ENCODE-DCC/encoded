@@ -103,7 +103,8 @@ def login(request):
     except KeyError as e:
         logger.info('/login has no came_from post: %s', e)
     data = verify_login(request)
-    request.response.headers = remember(request, data['email'])
+    login = 'mailto:' + data['email'].lower()
+    request.response.headers = remember(request, login)
     request.response.content_type = 'application/json'
     return data
 
@@ -119,9 +120,9 @@ def logout(request):
     return {'email': None}
 
 
-def groupfinder(userid, request):
+def groupfinder(login, request):
     session = DBSession()
-    query = session.query(UserMap).filter(UserMap.persona_email == userid)
+    query = session.query(UserMap).filter(UserMap.login == login)
     try:
         query.one()
         return ['g:admin']  # return ['g:%s' % g for g in user.groups]

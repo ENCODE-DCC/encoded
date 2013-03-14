@@ -39,7 +39,7 @@ class ViewTests(unittest.TestCase):
         self.assertEqual(response['audience'], self.config.get_settings()['persona.audiences'])
         self.assertEqual(response['email'], email)
         self.assertEqual(response['issuer'], 'login.persona.org')
-        self.assertEqual(self.security_policy.remembered, email)
+        self.assertEqual(self.security_policy.remembered, 'mailto:' + email)
 
     def test_login_fails_with_bad_audience(self):
         from ..authz import login
