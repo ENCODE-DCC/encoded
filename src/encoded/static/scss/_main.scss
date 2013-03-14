@@ -599,6 +599,23 @@ h3 .label {
 	left: 15px;
 }
 
+// used to mask who screen, for modals etc
+#mask {
+    position: absolute;
+    z-index: 9000;
+    background-color: rgba(0,0,0,0.6);
+    display: none;  // js switches to display: block
+    height: 4000px; // this should be set in the js to fit screen perfectly
+    width: 4000px;  // this should be set in the js to fit screen perfectly
+    top: 0;
+    left: 0;
+}
+
+.unmask {
+	position: relative; 
+	z-index: 9999;
+}
+
 
 // stuff below is for prototype dropdown panel
 .open > .dropdown-panel {
