@@ -11,6 +11,8 @@ from ..storage import (
     Resource,
 )
 
+TEMPLATE_NAMES = ('templated', 'repeat')
+
 
 def includeme(config):
     config.scan('.views')
@@ -84,6 +86,7 @@ class CollectionViews(object):
 
     def expand_links(self, model, item):
         # This should probably go on a metaclass
+        # FIXME: needs tests!
         merged_links = {}
         for cls in reversed(type(self).mro()):
             merged_links.update(vars(cls).get('links', {}))
@@ -94,43 +97,43 @@ class CollectionViews(object):
             if isinstance(value_template, list):
                 out = []
                 for member in value_template:
-                    value = member.copy()
-                    templated = value.pop('templated', False)
-                    repeat = value.pop('repeat', None)
+                    templated = member.get('templated', False)
+                    repeat = member.get('repeat', None)
                     if not templated:
+                        value = member
+                        assert 'repeat' not in value
                         out.append(value)
                         self.maybe_embed(rel, value['href'])
                         continue
-                    if repeat:
+                    if repeat is not None:
                         ns = item.copy()
                         ns['collection_uri'] = self.collection_uri
                         ns['item_type'] = self.item_type
                         repeat_name, repeater = repeat.split()
                         for repeat_value in item[repeater]:
+                            value = member
                             ns[repeat_name] = repeat_value
-                            value = dict((k, format(v, **ns)) for k, v in value.iteritems())
+                            value = dict((k, format(v, **ns)) for k, v in value.iteritems() if k not in TEMPLATE_NAMES)
                             out.append(value)
                             self.maybe_embed(rel, value['href'])
                     else:
+                        value = member
                         ns = item.copy()
                         ns['collection_uri'] = self.collection_uri
                         ns['item_type'] = self.item_type
-                        value = dict((k, format(v, **ns)) for k, v in value.iteritems())
+                        value = dict((k, format(v, **ns)) for k, v in value.iteritems() if k not in TEMPLATE_NAMES)
                         out.append(value)
                         self.maybe_embed(rel, value['href'])
                 value = out
-            elif value_template.get('templated', False):
-                value = value_template.copy()
-                del value['templated']
-                assert 'repeat' not in value
-                ns = item.copy()
-                ns['collection_uri'] = self.collection_uri
-                ns['item_type'] = self.item_type
-                value = dict((k, format(v, **ns)) for k, v in value.iteritems())
-                self.maybe_embed(rel, value['href'])
             else:
-                assert 'repeat' not in value
                 value = value_template
+                templated = value.get('templated', False)
+                assert 'repeat' not in value
+                if templated:
+                    ns = item.copy()
+                    ns['collection_uri'] = self.collection_uri
+                    ns['item_type'] = self.item_type
+                    value = dict((k, format(v, **ns)) for k, v in value.iteritems() if k not in TEMPLATE_NAMES)
                 self.maybe_embed(rel, value['href'])
             links[rel] = value
         return links

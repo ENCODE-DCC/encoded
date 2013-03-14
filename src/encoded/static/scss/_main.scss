@@ -306,7 +306,7 @@ a[href^="http"]:empty:after {
 	//-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 	//box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 	text-align: center;
-	background: linear-gradient(#FFFFFF 0px, #E8ECEF 50%) repeat scroll 0 0 transparent;
+	@include background-image(linear-gradient(#fff 0px, #e8ecef 50%));
     //border-top: 1px solid #C4C1C1;
 	a {
 		color: rgb(111, 111, 111);
@@ -597,6 +597,23 @@ h3 .label {
 	position: relative;
 	top: -3px;
 	left: 15px;
+}
+
+// used to mask who screen, for modals etc
+#mask {
+    position: absolute;
+    z-index: 9000;
+    background-color: rgba(0,0,0,0.6);
+    display: none;  // js switches to display: block
+    height: 4000px; // this should be set in the js to fit screen perfectly
+    width: 4000px;  // this should be set in the js to fit screen perfectly
+    top: 0;
+    left: 0;
+}
+
+.unmask {
+	position: relative; 
+	z-index: 9999;
 }
 
 

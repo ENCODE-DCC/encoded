@@ -75,112 +75,127 @@
         	<div class="row">
         		<div class="span12">
         		
-        		<div class="panel data-display">
+        		<div class="panel data-display" id="validation">
         		
 					<div class="btn-group" style="float: right">
-						<button class="btn" onclick="location.href='edit.html'">Edit</button>
+						<button class="btn active" onclick="location.href='antibody-details.html'">Edit</button>
 						<button class="btn">History</button>
 						<button class="btn">Clone</button>
 					</div>
-        		
-        			<div class="data-group">
-						<label class="data-label" for="source-name">Source name (vendor):</label>
-						<div class="data-values">
-							<span id="source-name" class="data-point"><a href="#">Abnova Corporation</a></span>
-						</div>
-					</div>
-        			<div class="data-group">
-						<label class="data-label" for="product-id">Product ID:</label>
-						<div class="data-values">
-							<span id="product-id" class="data-point"><a href="#">H00001386-M02</a></span>
-						</div>
-					</div>
-					<div class="data-group">
-						<label class="data-label" for="lot-id">Lot ID:</label>
-						<div class="data-values">
-							<span id="lot-id" class="data-point"><a href="#">P37345098</a></span>
-						</div>
-					</div>
-					<div class="data-group">
-						<label class="data-label" for="target-label">Target:</label>
-						<div class="data-values">
-							<span id="target-label" class="data-point">SomLab3e</span><br>
-						</div>
-					</div>
-					<div class="data-group">
-						<label class="data-label" for="host">Host:</label>
-						<div class="data-values">
-							<span id="host" class="data-point">Mouse</span>
-						</div>
-					</div>
-					<div class="data-group">
-						<label class="data-label" for="clonality">Clonality:</label>
-						<div class="data-values">
-							<span id="clonality" class="data-point">Monoclonal</span>
-						</div>
-					</div>
-					<div class="data-group">
-						<label class="data-label" for="purification">Purification:</label>
-						<div class="data-values">
-							<span id="purification" class="data-point">A/G protein Affinity</span>
-						</div>
-					</div>
-					<div class="data-group">
-						<label class="data-label" for="isotype">Isotype:</label>
-						<div class="data-values">
-							<span id="isotype" class="data-point">IgG</span>
-						</div>
-					</div>
-					<div class="data-group">
-						<label class="data-label" for="antigen-description">Antigen description:</label>
-						<div class="data-values">
-							<span id="antigen-description" class="data-point">
-								ATF2 (AAH26175, 1 a.a. ~ 209 a.a) full-length recombinant protein with GST tag. MW of the GST tag alone is 26 KDa.
-							</span>
-						</div>
-					</div>
-					<div class="data-group">
-						<label class="data-label" for="antigen-sequence">Antigen sequence:</label>
-						<div class="data-values">
-							<span id="antigen-description" class="data-point">					MKFKLHVNSARQYKDLWNMSDDKPFLCTAPGCGQRFTNEDHLAVHKHKHEMTLKFGPARNDSVIVADQTPTPTRFLKNCEEVGLFNELASPFENEFKKASEDDIKKMPLDLSPLATPIIRSKIEEPSVVETTHQDSPLPHPESTTSDEKEVPLAQTAQPTSAIVRPASLQVPNVLLTSSDSSVIIQQAVPSPTSSTVITQAPSSNRPIV</span>
-						</div>
-					</div>
-					<div class="data-group">
-						<label class="data-label" for="references">References:</label>
-						<div class="data-values">
-							<div id="references" class="data-point references-list">
-								<p>
-								Arvey A, Agius P, Noble WS, Leslie C.
-								<a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/22955984">
-								Sequence and chromatin determinants of cell-type-specific transcription factor binding</a>.
-								<em>Genome Res</em>. 2012 Sep;22(9):1723-34.
-								</p>
 
-								<p>
-								Bánfai B, Jia H, Khatun J, Wood E, Risk B, Gundling WE Jr, Kundaje A, Gunawardena HP, Yu Y, Xie
-								L <em>et al</em>.
-								<a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/22955977">
-								Long noncoding RNAs are rarely translated in two human cell lines</a>.
-								<em>Genome Res</em>. 2012 Sep;22(9):1646-57.
-								</p>
 
-								<p>
-								Boyle AP, Hong EL, Hariharan M, Cheng Y, Schaub MA, Kasowski M, Karczewski KJ, Park J, Hitz BC, Weng
-								S <em>et al</em>.
-								<a target="_blank" href="http://www.ncbi.nlm.nih.gov/pubmed/22955989">
-								Annotation of functional variation in personal genomes using RegulomeDB</a>.
-								<em>Genome Res</em>. 2012 Sep;22(9):1790-7.
-								</p>
 
-							</div>
+					<form class="form-horizontal">
+        			<div class="control-group">
+						<label class="control-label" for="source-name">Source name (vendor):</label>
+						<div class="controls">
+							<input type="text" id="source-name" class="input-xlarge" value="Abnova Corporation">
 						</div>
 					</div>
-					<div class="data-group" id="submit-controls">
-						<label class="data-label" for=""></label>
-						<div class="data-values">
-							<button class="btn" type="submit">Edit</button>
+        			<div class="control-group">
+						<label class="control-label" for="product-id">Product ID:</label>
+						<div class="controls">
+							<input type="text" id="product-id" class="input-xlarge" value="H00001386-M02" disabled>
 						</div>
 					</div>
+					<div class="control-group">
+						<label class="control-label" for="product-url">Product URL:</label>
+						<div class="controls">
+							<input type="text" id="product-url" class="input-xlarge" value="http://same.url.com">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="lot-id">Lot ID:</label>
+						<div class="controls">
+							<input type="text" id="lot-id" class="input-xlarge" value="P37345098">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="target-label">Target label:</label>
+						<div class="controls">
+							<input type="text" id="target-label" class="input-xlarge" value=" SomLab3e">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="host">Host:</label>
+						<div class="controls">
+							<select id="host" class="input-xlarge">
+								<option>Select...</option>
+								<option selected>Mouse</option>
+								<option>Sheep</option>
+								<option>Goat</option>
+								<option>Rabbit</option>
+								<option>Rat</option>
+							</select>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="clonality">Clonality:</label>
+						<div class="controls">
+							<select id="clonality" class="input-xlarge">
+								<option>Select...</option>
+								<option selected>monoclonal</option>
+								<option>polyclonal</option>
+							</select>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="purification">Purification:</label>
+						<div class="controls">
+							<select id="purification" class="input-xlarge">
+								<option>Select...</option>
+								<option>IEC Ion Exchange Chromatography (IEC)</option>
+								<option>Immobilized Metal Chelate Chromatography (IMAC)</option>
+								<option>Thiophilic Adsorption (T-Gel)</option>
+								<option>Melon Gel Chromatography</option>
+								<option>Antigen-specific Affinty Purification</option>
+								<option>Protein A Affinity Purification</option>
+								<option>Protein G Affinity Purification</option>
+								<option selected>Protien A/G Affinity Purification</option>
+								<option>Protein L Affinity Purification</option>
+							</select>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="isotype">Isotype:</label>
+						<div class="controls">
+							<select id="isotype" class="input-xlarge">
+								<option>Select...</option>     
+								<option>IgA</option>
+								<option>IgD</option>
+								<option>IgE</option>
+								<option selected>IgG</option>
+								<option>IgM</option>
+							</select>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="antigen-description">Antigen description:</label>
+						<div class="controls">
+							<textarea id="antigen-description" rows="3" class="input-xlarge">ATF2 (AAH26175, 1 a.a. ~ 209 a.a) full-length recombinant protein with GST tag. MW of the GST tag alone is 26 KDa.</textarea>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="antigen-sequence">Antigen sequence:</label>
+						<div class="controls">
+							<textarea id="antigen-sequence" rows="3" class="input-xlarge">MKFKLHVNSARQYKDLWNMSDDKPFLCTAPGCGQRFTNEDHLAVHKHKHEMTLKFGPARNDSVIVADQTPTPTRFLKNCEEVGLFNELASPFENEFKKASEDDIKKMPLDLSPLATPIIRSKIEEPSVVETTHQDSPLPHPESTTSDEKEVPLAQTAQPTSAIVRPASLQVPNVLLTSSDSSVIIQQAVPSPTSSTVITQAPSSNRPIV</textarea>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="references">References:</label>
+						<div class="controls">
+							<input type="text" id="references" class="input-xlarge" value="22955984, 22955977, 22955989">
+						</div>
+					</div>
+					<div class="control-group" id="submit-controls">
+						<label class="control-label" for=""></label>
+						<div class="controls">
+							<button class="btn" onclick="location.href='antibody-details.html'">Save</button> 
+							<a href="#" class="cancel-link" onclick="location.href='antibody-details.html'">Cancel</a>
+						</div>
+					</div>
+        		</form>
+        	
         		
         		</div><!-- .data-display -->
         		
@@ -208,7 +223,7 @@
 						</div>
 						<div class="span5">
 						
-							<div class="btn-group" style="float: right">
+					<div class="btn-group" style="float: right">
 						<button class="btn">Edit</button>
 						<button class="btn">History</button>
 						<button class="btn">Clone</button>
@@ -302,10 +317,21 @@
         <script src="../../libs/bootstrap.min.js"></script>
         <script src="../../libs/modernizr.min.js"></script>
         <script>
-    
-    	
-		
-		
+        $(document).ready(function() { 
+
+     
+			//Get the screen height and width
+			var maskHeight = $(document).height();
+			var maskWidth = $(window).width();
+			
+			$("#mask").attr("height", maskHeight);
+			$("#mask").attr("width", maskWidth);
+			
+			$("#mask").css("display", "block");
+			
+			$("#validation").addClass("unmask");
+          
+		});
         </script>
     </body>
 </html>
