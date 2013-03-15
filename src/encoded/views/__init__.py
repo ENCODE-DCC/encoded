@@ -197,6 +197,7 @@ class CollectionViews(object):
         rid = item.get('_uuid', None)
         resource = Resource({self.item_type: item}, rid)
         session.add(resource)
+        self.after_add(resource)
         item_uri = self.item_uri(resource.rid)
         self.request.response.status = 201
         self.request.response.location = item_uri
@@ -210,6 +211,9 @@ class CollectionViews(object):
             },
         }
         return result
+
+    def after_add(self, resource):
+        '''Hook for subclasses'''
 
     def validate_item_content(self):
         data = self.request.json_body

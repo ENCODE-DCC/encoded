@@ -79,7 +79,7 @@ def test_load_workbook(testapp, collection_test):
     assert len(res.json['_links']['items']) == 10
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
+@pytest.mark.parametrize('url', ['/organisms/', '/sources/', '/users/'])
 def test_collection_post(jsontestapp, url):
     from .sample_data import URL_COLLECTION
     collection = URL_COLLECTION[url]
@@ -114,3 +114,21 @@ def test_collection_update(jsontestapp, url):
     res.pop('_links', None)
     res.pop('_embedded', None)
     assert res == update
+
+
+def test_users_post(jsontestapp, session):
+    from .sample_data import URL_COLLECTION
+    from ..storage import UserMap
+    from ..authz import groupfinder
+    url = '/users/'
+    item = URL_COLLECTION[url][0]
+    jsontestapp.post_json(url, item, status=201)
+    login = 'mailto:' + item['email']
+    query = session.query(UserMap).filter(UserMap.login == login)
+    user = query.one()
+    assert user is not None
+    principals = groupfinder(login, None)
+    assert sorted(principals) == [
+        'lab:2c334112-288e-4d45-9154-3f404c726daf',
+        'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
+        ]
