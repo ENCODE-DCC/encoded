@@ -57,7 +57,7 @@ def __test_sample_data(testapp):
 
 
 @pytest.mark.slow
-def test_load_workbook(testapp, collection_test):
+def test_load_workbook(jsontestapp, collection_test):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
     assert type(collection_test) == dict
@@ -66,15 +66,15 @@ def test_load_workbook(testapp, collection_test):
     from conftest import app_settings
     load_test_only = app_settings.get('load_test_only', False)
     assert load_test_only
-    load_all(testapp, workbook, docsdir, test=load_test_only)
+    load_all(jsontestapp, workbook, docsdir, test=load_test_only)
     for content_type, expect in collection_test.iteritems():
-        url = '/'+content_type+'/'
-        res = testapp.get(url, headers={'Accept': 'application/json'}, status=200)
+        url = '/' + content_type + '/'
+        res = jsontestapp.get(url, status=200)
         assert res.json['_links']['items']
         assert len(res.json['_links']['items']) == expect
 
     # test limit
-    res = testapp.get('/antibodies/?limit=10', headers={'Accept': 'application/json'}, status=200)
+    res = jsontestapp.get('/antibodies/?limit=10', status=200)
     assert res.json['_links']['items']
     assert len(res.json['_links']['items']) == 10
 

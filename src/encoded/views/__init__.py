@@ -67,9 +67,9 @@ class CollectionViews(object):
 
     __acl__ = [
         (Allow, Everyone, 'list'),
-        (Allow, Everyone, 'add'),
+        (Allow, 'group:admin', 'add'),
         (Allow, Everyone, 'view'),
-        (Allow, Everyone, 'edit'),
+        (Allow, 'group:admin', 'edit'),
     ]
 
     def __init__(self, request):
