@@ -70,13 +70,13 @@ def collection_test():
 
 
 @fixture
-def testapp(request, app, external_tx):
+def htmltestapp(request, app, external_tx):
     from webtest import TestApp
     return TestApp(app)
 
 
 @fixture
-def jsontestapp(request, app, external_tx):
+def testapp(request, app, external_tx):
     '''TestApp with JSON accept header.
     '''
     from webtest import TestApp

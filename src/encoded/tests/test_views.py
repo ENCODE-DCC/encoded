@@ -12,22 +12,22 @@ COLLECTION_URLS = [
 
 
 @pytest.mark.parametrize('url', COLLECTION_URLS)
-def test_html(testapp, url):
-    res = testapp.get(url, status=200)
+def test_html(htmltestapp, url):
+    res = htmltestapp.get(url, status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
 
 @pytest.mark.parametrize('url', COLLECTION_URLS)
-def test_json(jsontestapp, url):
-    res = jsontestapp.get(url, status=200)
+def test_json(testapp, url):
+    res = testapp.get(url, status=200)
     assert res.json['_links']
 
 
-def _test_user_html(testapp):
+def _test_user_html(htmltestapp):
     ''' this test should return 403 forbidden but cannot currently load data
         via post_json with authz on.
     '''
-    res = testapp.get('/users/', status=403)
+    res = htmltestapp.get('/users/', status=403)
 
 
 def _test_antibody_approval_creation(testapp):
@@ -37,12 +37,12 @@ def _test_antibody_approval_creation(testapp):
     assert res.location
     assert res.json['_links']['profile'] == {'href': '/profiles/result'}
     assert res.json['_links']['items'] == [{'href': urlparse(res.location).path}]
-    res = testapp.get(res.location, headers={'Accept': 'application/json'}, status=200)
+    res = testapp.get(res.location, status=200)
     assert res.json['_links']['profile'] == {'href': '/profiles/antibody_approval'}
     data = dict(res.json)
     del data['_links']
     assert data == new_antibody
-    res = testapp.get('/antibodies/', headers={'Accept': 'application/json'}, status=200)
+    res = testapp.get('/antibodies/', status=200)
     assert len(res.json['_links']['items']) == 1
 
 
@@ -57,7 +57,7 @@ def __test_sample_data(testapp):
 
 
 @pytest.mark.slow
-def test_load_workbook(jsontestapp, collection_test):
+def test_load_workbook(testapp, collection_test):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
     assert type(collection_test) == dict
@@ -66,63 +66,63 @@ def test_load_workbook(jsontestapp, collection_test):
     from conftest import app_settings
     load_test_only = app_settings.get('load_test_only', False)
     assert load_test_only
-    load_all(jsontestapp, workbook, docsdir, test=load_test_only)
+    load_all(testapp, workbook, docsdir, test=load_test_only)
     for content_type, expect in collection_test.iteritems():
         url = '/' + content_type + '/'
-        res = jsontestapp.get(url, status=200)
+        res = testapp.get(url, status=200)
         assert res.json['_links']['items']
         assert len(res.json['_links']['items']) == expect
 
     # test limit
-    res = jsontestapp.get('/antibodies/?limit=10', status=200)
+    res = testapp.get('/antibodies/?limit=10', status=200)
     assert res.json['_links']['items']
     assert len(res.json['_links']['items']) == 10
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/', '/users/'])
-def test_collection_post(jsontestapp, url):
+def test_collection_post(testapp, url):
     from .sample_data import URL_COLLECTION
     collection = URL_COLLECTION[url]
     for item in collection:
-        jsontestapp.post_json(url, item, status=201)
+        testapp.post_json(url, item, status=201)
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_post_bad_json(jsontestapp, url):
+def test_collection_post_bad_json(testapp, url):
     collection = [{'foo': 'bar'}]
     for item in collection:
-        res = jsontestapp.post_json(url, item, status=422)
+        res = testapp.post_json(url, item, status=422)
         assert res.json['errors']
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_update(jsontestapp, url):
+def test_collection_update(testapp, url):
     from .sample_data import URL_COLLECTION
     collection = URL_COLLECTION[url]
     initial = collection[0]
-    res = jsontestapp.post_json(url, initial, status=201)
+    res = testapp.post_json(url, initial, status=201)
     item_url = res.json['_links']['items'][0]['href']
-    res = jsontestapp.get(item_url).json
+    res = testapp.get(item_url).json
     res.pop('_links', None)
     res.pop('_embedded', None)
     assert res == initial
     update = collection[1].copy()
     del update['_uuid']
-    jsontestapp.post_json(item_url, update, status=200)
-    res = jsontestapp.get(item_url).json
+    testapp.post_json(item_url, update, status=200)
+    res = testapp.get(item_url).json
     res.pop('_uuid', None)
     res.pop('_links', None)
     res.pop('_embedded', None)
     assert res == update
 
 
-def test_users_post(jsontestapp, session):
+def test_users_post(testapp, session):
     from .sample_data import URL_COLLECTION
     from ..storage import UserMap
     from ..authorization import groupfinder
     url = '/users/'
     item = URL_COLLECTION[url][0]
-    jsontestapp.post_json(url, item, status=201)
+    testapp.post_json(url, item, status=201)
     login = 'mailto:' + item['email']
     query = session.query(UserMap).filter(UserMap.login == login)
     user = query.one()
