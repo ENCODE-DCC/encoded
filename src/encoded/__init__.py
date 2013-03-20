@@ -52,14 +52,22 @@ def configure_engine(settings):
 def load_sample_data(app):
     from .tests.sample_data import load_sample
     from webtest import TestApp
-    testapp = TestApp(app)
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'IMPORT',
+        }
+    testapp = TestApp(app, environ)
     load_sample(testapp)
 
 
 def load_workbook(app, workbook_filename, docsdir, test=False):
     from .loadxl import load_all
     from webtest import TestApp
-    testapp = TestApp(app)
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'IMPORT',
+        }
+    testapp = TestApp(app, environ)
     load_all(testapp, workbook_filename, docsdir, test=test)
 
 

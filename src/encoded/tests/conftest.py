@@ -9,11 +9,14 @@ engine_settings = {
 }
 
 app_settings = {
-    'multiauth.policies': 'authtkt',
-    'multiauth.groupfinder': 'encoded.authz.groupfinder',
+    'multiauth.policies': 'authtkt remoteuser',
+    'multiauth.groupfinder': 'encoded.authorization.groupfinder',
     'multiauth.policy.authtkt.use': 'pyramid.authentication.AuthTktAuthenticationPolicy',
     'multiauth.policy.authtkt.hashalg': 'sha512',
     'multiauth.policy.authtkt.secret': 'GLIDING LIKE A WHALE',
+    'multiauth.policy.remoteuser.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.remoteuser.namespace': 'remoteuser',
+    'multiauth.policy.remoteuser.base': 'pyramid.authentication.RemoteUserAuthenticationPolicy',
     'persona.audiences': 'http://localhost:6543',
     'persona.siteName': 'ENCODE DCC Submission',
     'load_test_only': True,
@@ -67,17 +70,20 @@ def collection_test():
 
 
 @fixture
-def testapp(request, app, external_tx):
+def htmltestapp(request, app, external_tx):
     from webtest import TestApp
     return TestApp(app)
 
 
 @fixture
-def jsontestapp(request, app, external_tx):
+def testapp(request, app, external_tx):
     '''TestApp with JSON accept header.
     '''
     from webtest import TestApp
-    environ = {'HTTP_ACCEPT': 'application/json'}
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+        }
     return TestApp(app, environ)
 
 

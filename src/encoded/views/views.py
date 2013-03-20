@@ -1,5 +1,9 @@
 from ..resource import resource
 from ..schema_utils import load_schema
+from ..storage import (
+    DBSession,
+    UserMap,
+)
 from . import CollectionViews
 
 
@@ -36,6 +40,14 @@ class User(CollectionViews):
              'repeat': 'lab_uuid lab_uuids'}
         ]
     }
+
+    def after_add(self, resource):
+        email = resource['user'].get('email')
+        if email is None:
+            return
+        session = DBSession()
+        user_map = UserMap('mailto:' + email, resource.rid)
+        session.add(user_map)
 
 
 @resource(pattern='/labs/{path_segment}', collection_pattern='/labs/')
