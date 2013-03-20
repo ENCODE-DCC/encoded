@@ -119,7 +119,7 @@ def test_collection_update(jsontestapp, url):
 def test_users_post(jsontestapp, session):
     from .sample_data import URL_COLLECTION
     from ..storage import UserMap
-    from ..authz import groupfinder
+    from ..authorization import groupfinder
     url = '/users/'
     item = URL_COLLECTION[url][0]
     jsontestapp.post_json(url, item, status=201)
