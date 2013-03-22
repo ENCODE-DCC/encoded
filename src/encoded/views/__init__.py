@@ -10,6 +10,7 @@ from pyramid.security import (
 )
 from pyramid.threadlocal import manager
 from pyramid.view import (
+    notfound_view_config,
     view_config,
     )
 from uuid import UUID
@@ -88,7 +89,9 @@ class Root(object):
 
     __acl__ = [
         (Allow, Everyone, 'list'),
+        (Allow, 'group:admin', 'add'),
         (Allow, Everyone, 'view'),
+        (Allow, 'group:admin', 'edit'),
         (Allow, Everyone, 'traverse'),
     ]
 
@@ -126,14 +129,6 @@ class Collection(object):
         'profile': {'href': '/profiles/{item_type}.json', 'templated': True},
     }
     embedded = {}
-
-    __acl__ = [
-        (Allow, Everyone, 'list'),
-        (Allow, 'group:admin', 'add'),
-        (Allow, Everyone, 'view'),
-        (Allow, 'group:admin', 'edit'),
-        (Allow, Everyone, 'traverse'),
-    ]
 
     def __init__(self, parent, name):
         self.__name__ = name
@@ -242,6 +237,17 @@ def collection_add(context, request):
         },
     }
     return result
+
+
+@notfound_view_config(containment=Collection)
+def notfound(exception, request):
+    # context is the error
+    # First check whether traversal was allowed
+    result = has_permission('traverse', request.context, request)
+    if not result:
+        msg = 'Unauthorized: traversal failed permission check'
+        return HTTPForbidden(msg, result=result)
+    return exception
 
 
 class Item(object):

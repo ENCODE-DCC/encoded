@@ -132,3 +132,11 @@ def test_users_post(testapp, session):
         'lab:2c334112-288e-4d45-9154-3f404c726daf',
         'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
         ]
+
+
+def test_notfound_denied_anonymous(htmltestapp):
+    htmltestapp.get('/users/badname', status=403)
+
+
+def test_notfound_admin(testapp):
+    testapp.get('/users/badname', status=404)

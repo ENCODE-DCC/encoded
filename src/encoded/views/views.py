@@ -1,5 +1,10 @@
 from pyramid.view import view_config
-
+from pyramid.security import (
+    Allow,
+    Authenticated,
+    Deny,
+    Everyone,
+)
 from ..schema_utils import load_schema
 from ..storage import (
     DBSession,
@@ -44,6 +49,11 @@ class User(Collection):
              'repeat': 'lab_uuid lab_uuids'}
         ]
     }
+
+    __acl__ = [
+        (Allow, Authenticated, 'traverse'),
+        (Deny, Everyone, 'traverse'),
+        ]
 
     def after_add(self, item):
         email = item.model.resource['user'].get('email')
