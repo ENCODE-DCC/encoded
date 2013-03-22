@@ -1,18 +1,21 @@
+from pyramid.events import (
+    ContextFound,
+    subscriber,
+    )
 from pyramid.httpexceptions import (
     HTTPForbidden,
     HTTPInternalServerError,
     HTTPNotFound,
     )
+from pyramid.location import lineage
 from pyramid.security import (
     Allow,
     Everyone,
     has_permission,
 )
 from pyramid.threadlocal import manager
-from pyramid.view import (
-    notfound_view_config,
-    view_config,
-    )
+from pyramid.view import view_config
+from urllib import unquote
 from uuid import UUID
 from ..storage import (
     DBSession,
@@ -24,6 +27,30 @@ TEMPLATE_NAMES = ('templated', 'repeat')
 
 def includeme(config):
     config.include('.views')
+
+
+def make_subrequest(request, path):
+    """ Make a subrequest
+
+    Copies request environ data for authentication.
+
+    May be better to just pull out the resource through traversal and manually
+    perform security checks.
+    """
+    env = request.environ.copy()
+    if path and '?' in path:
+        path_info, query_string = path.split('?', 1)
+        path_info = unquote(path_info)
+    else:
+        path_info = unquote(path)
+        query_string = ''
+    env['PATH_INFO'] = path_info
+    env['QUERY_STRING'] = query_string
+    subreq = request.__class__(env, method='GET', content_type=None,
+                               body=b'')
+    subreq.remove_conditional_headers()
+    # XXX "This does not remove headers like If-Match"
+    return subreq
 
 
 def embed(request, path, result=None):
@@ -38,7 +65,7 @@ def embed(request, path, result=None):
     result = embedded.get(path, None)
     if result is not None:
         return result
-    subreq = request.blank(path)
+    subreq = make_subrequest(request, path)
     subreq.override_renderer = 'null_renderer'
     try:
         result = request.invoke_subrequest(subreq)
@@ -239,15 +266,16 @@ def collection_add(context, request):
     return result
 
 
-@notfound_view_config(containment=Collection)
-def notfound(exception, request):
-    # context is the error
-    # First check whether traversal was allowed
-    result = has_permission('traverse', request.context, request)
-    if not result:
-        msg = 'Unauthorized: traversal failed permission check'
-        return HTTPForbidden(msg, result=result)
-    return exception
+@subscriber(ContextFound)
+def traversal_security(event):
+    """ Check traversal was permitted at each step
+    """
+    request = event.request
+    for resource in reversed(list(lineage(request.context))):
+        result = has_permission('traverse', resource, request)
+        if not result:
+            msg = 'Unauthorized: traversal failed permission check'
+            raise HTTPForbidden(msg, result=result)
 
 
 class Item(object):

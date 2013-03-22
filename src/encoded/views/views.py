@@ -50,10 +50,10 @@ class User(Collection):
         ]
     }
 
-    __acl__ = [
-        (Allow, Authenticated, 'traverse'),
-        (Deny, Everyone, 'traverse'),
-        ]
+#    __acl__ = [
+#        (Allow, Authenticated, 'traverse'),
+#        (Deny, Everyone, 'traverse'),
+#        ]
 
     def after_add(self, item):
         email = item.model.resource['user'].get('email')

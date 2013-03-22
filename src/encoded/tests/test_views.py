@@ -134,7 +134,8 @@ def test_users_post(testapp, session):
         ]
 
 
-def test_notfound_denied_anonymous(htmltestapp):
+# __acl__ check disabled as users are transcluded.
+def __test_notfound_denied_anonymous(htmltestapp):
     htmltestapp.get('/users/badname', status=403)
 
 
