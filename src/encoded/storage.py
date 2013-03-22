@@ -151,6 +151,7 @@ class Resource(Base, DictMixin):
         current = self.data.get(key, None)
         if current is None:
             self.data[key] = current = CurrentStatement(predicate=key)
+            current.resource = self
         statement = Statement(predicate=key, object=value, rid=self.rid)
         current.statement = statement
 

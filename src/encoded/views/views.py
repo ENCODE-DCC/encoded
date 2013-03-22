@@ -1,34 +1,38 @@
-from ..resource import resource
+from pyramid.view import view_config
+
 from ..schema_utils import load_schema
 from ..storage import (
     DBSession,
     UserMap,
 )
-from . import CollectionViews
+from . import (
+    Collection,
+    Root,
+    )
 
 
-@resource(pattern='')
-class Home(object):
-    def __init__(self, request):
-        self.request = request
+def includeme(config):
+    config.scan('.')
+    config.set_root_factory(root)
 
-    def get(self):
-        request = self.request
-        result = {
-            'title': 'Home',
-            'portal_title': 'ENCODE 3',
-            '_links': {
-                'self': {'href': request.route_path(self.__route__)},  # See http://git.io/_OKINA
-                'profile': {'href': '/profiles/portal'},
-                # 'login': {'href': request.route_path('login')},
-            },
+
+root = Root(title='Home', portal_title='ENCODE 3')
+
+
+@view_config(context=Root, request_method='GET')
+def home(context, request):
+    result = context.__json__(request)
+    result['_links'] = {
+        'self': {'href': request.resource_path(context)},
+        'profile': {'href': '/profiles/portal'},
+        # 'login': {'href': request.resource_path(context, 'login')},
         }
-        return result
+    return result
 
 
 #    permission='admin'  ## this prevents loading of users via post_json
-@resource(pattern='/users/{path_segment}', collection_pattern='/users/')
-class User(CollectionViews):
+@root.location('users')
+class User(Collection):
     schema = load_schema('colleague.json')
     properties = {
         'title': 'DCC Users',
@@ -41,17 +45,17 @@ class User(CollectionViews):
         ]
     }
 
-    def after_add(self, resource):
-        email = resource['user'].get('email')
+    def after_add(self, item):
+        email = item.model.resource['user'].get('email')
         if email is None:
             return
         session = DBSession()
-        user_map = UserMap('mailto:' + email, resource.rid)
+        user_map = UserMap('mailto:' + email, item.model.resource.rid)
         session.add(user_map)
 
 
-@resource(pattern='/labs/{path_segment}', collection_pattern='/labs/')
-class Lab(CollectionViews):
+@root.location('labs')
+class Lab(Collection):
     schema = load_schema('lab.json')
     properties = {
         'title': 'Labs',
@@ -65,8 +69,8 @@ class Lab(CollectionViews):
     }
 
 
-@resource(pattern='/awards/{path_segment}', collection_pattern='/awards/')
-class Award(CollectionViews):
+@root.location('awards')
+class Award(Collection):
     schema = load_schema('award.json')
     properties = {
         'title': 'Awards (Grants)',
@@ -74,8 +78,8 @@ class Award(CollectionViews):
     }
 
 
-@resource(name='antibody_lot', pattern='/antibody-lots/{path_segment}', collection_pattern='/antibody-lots/')
-class AntibodyLots(CollectionViews):
+@root.location('antibody-lots')
+class AntibodyLots(Collection):
     #schema = load_schema('antibody_lot.json')
     properties = {
         'title': 'Antibodies Registry',
@@ -87,8 +91,8 @@ class AntibodyLots(CollectionViews):
     embedded = set(['source'])
 
 
-@resource(pattern='/organisms/{path_segment}', collection_pattern='/organisms/')
-class Organism(CollectionViews):
+@root.location('organisms')
+class Organism(Collection):
     schema = load_schema('organism.json')
     properties = {
         'title': 'Organisms',
@@ -96,8 +100,8 @@ class Organism(CollectionViews):
     }
 
 
-@resource(pattern='/sources/{path_segment}', collection_pattern='/sources/')
-class Source(CollectionViews):
+@root.location('sources')
+class Source(Collection):
     schema = load_schema('source.json')
     properties = {
         'title': 'Sources',
@@ -110,8 +114,8 @@ class Source(CollectionViews):
     }
 
 
-@resource(pattern='/donors/{path_segment}', collection_pattern='/donors/')
-class Donor(CollectionViews):
+@root.location('donors')
+class Donor(Collection):
     ## schema = load_schema('donor.json') Doesn't exist yet
     properties = {
         'title': 'Donors',
@@ -123,8 +127,8 @@ class Donor(CollectionViews):
     embedded = set(['organism'])
 
 
-@resource(pattern='/treatments/{path_segment}', collection_pattern='/treatments/')
-class Treatment(CollectionViews):
+@root.location('treatments')
+class Treatment(Collection):
     ## schema = load_schema('treatment.json') Doesn't exist yet
     properties = {
         'title': 'Treatments',
@@ -132,8 +136,8 @@ class Treatment(CollectionViews):
     }
 
 
-@resource(pattern='/constructs/{path_segment}', collection_pattern='/constructs/')
-class Construct(CollectionViews):
+@root.location('constructs')
+class Construct(Collection):
     properties = {
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
@@ -144,8 +148,8 @@ class Construct(CollectionViews):
     embedded = set(['source'])
 
 
-@resource(pattern='/documents/{path_segment}', collection_pattern='/documents/')
-class Document(CollectionViews):
+@root.location('documents')
+class Document(Collection):
     properties = {
         'title': 'Documents',
         'description': 'Listing of Biosample Documents',
@@ -158,8 +162,8 @@ class Document(CollectionViews):
     embedded = set(['submitter', 'lab', 'award'])
 
 
-@resource(pattern='/biosamples/{path_segment}', collection_pattern='/biosamples/')
-class Biosample(CollectionViews):
+@root.location('biosamples')
+class Biosample(Collection):
     #schema = load_schema('biosample.json')
     properties = {
         'title': 'Biosamples',
@@ -184,8 +188,8 @@ class Biosample(CollectionViews):
     embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
 
 
-@resource(pattern='/targets/{path_segment}', collection_pattern='/targets/')
-class Target(CollectionViews):
+@root.location('targets')
+class Target(Collection):
     #schema = load_schema('target.json')
     properties = {
         'title': 'Targets',
@@ -201,8 +205,8 @@ class Target(CollectionViews):
 
 
 # The following should really be child collections.
-@resource(pattern='/validations/{path_segment}', collection_pattern='/validations/')
-class Validation(CollectionViews):
+@root.location('validations')
+class Validation(Collection):
     #schema = load_schema('validation.json')
     properties = {
         'title': 'Antibody Validations',
@@ -218,9 +222,10 @@ class Validation(CollectionViews):
     embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
 
 
-@resource(name='antibody_approval', pattern='/antibodies/{path_segment}', collection_pattern='/antibodies/')
-class AntibodyApproval(CollectionViews):
+@root.location('antibodies')
+class AntibodyApproval(Collection):
     #schema = load_schema('antibody_approval.json')
+    item_type = 'antibody_approval'
     properties = {
         'title': 'Antibody Approvals',
         'description': 'Listing of validation approvals for ENCODE antibodies',
