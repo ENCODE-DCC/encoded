@@ -150,8 +150,7 @@ class Resource(Base, DictMixin):
     def __setitem__(self, key, value):
         current = self.data.get(key, None)
         if current is None:
-            self.data[key] = current = CurrentStatement(predicate=key)
-            current.resource = self
+            self.data[key] = current = CurrentStatement(predicate=key, rid=self.rid)
         statement = Statement(predicate=key, object=value, rid=self.rid)
         current.statement = statement
 

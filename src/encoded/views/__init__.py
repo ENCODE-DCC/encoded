@@ -281,7 +281,7 @@ def traversal_security(event):
 class Item(object):
     # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
     def __init__(self, collection, model, acl=None):
-        self.__name__ = model.resource.rid
+        self.__name__ = model.rid
         self.__parent__ = collection
         self.model = model
         if acl is not None:
@@ -368,7 +368,7 @@ def item_view(context, request):
 
 @view_config(context=Item, validators=[validate_item_content], permission='edit', request_method='POST')
 def item_edit(context, request):
-    uuid = context.model.resource.rid
+    uuid = context.model.rid
     collection = context.__parent__
     properties = request.validated
     properties['_uuid'] = uuid  # XXX Should this really be stored in object?

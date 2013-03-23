@@ -56,11 +56,12 @@ class User(Collection):
 #        ]
 
     def after_add(self, item):
-        email = item.model.resource['user'].get('email')
+        email = item.model.statement.object.get('email')
         if email is None:
             return
         session = DBSession()
-        user_map = UserMap('mailto:' + email, item.model.resource.rid)
+        login = 'mailto:' + email
+        user_map = UserMap(login=login, userid=item.model.rid)
         session.add(user_map)
 
 
