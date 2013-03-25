@@ -23,7 +23,6 @@ from ..storage import (
     CurrentStatement,
     Resource,
 )
-TEMPLATE_NAMES = ('templated', 'repeat')
 
 
 def includeme(config):
