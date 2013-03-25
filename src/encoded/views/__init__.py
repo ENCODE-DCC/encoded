@@ -158,6 +158,11 @@ class Collection(object):
         if self.item_type is None:
             self.item_type = type(self).__name__.lower()
 
+        merged_links = {}
+        for cls in reversed(type(self).mro()):
+            merged_links.update(vars(cls).get('links', {}))
+        self.links = merged_links
+
     def item_acl(self, model):
         return None
 
@@ -289,28 +294,23 @@ class Item(object):
             properties['_links'] = links
         return properties
 
-    def maybe_embed(self, request, rel, href):
-        if request is None:
-            return
-        if rel in self.__parent__.embedded:
-            embed(request, href)
-
     def expand_links(self, properties, request):
-        # This should probably go on a metaclass
-        # FIXME: needs tests!
-        merged_links = {}
-        for cls in reversed(type(self.__parent__).mro()):
-            merged_links.update(vars(cls).get('links', {}))
+        # Expand templated links
         ns = properties.copy()
         ns['collection_uri'] = request.resource_path(self.__parent__)
         ns['item_type'] = self.model.predicate
-        compiled = ObjectTemplate(merged_links)
+        compiled = ObjectTemplate(self.__parent__.links)
         links = compiled(ns)
+        # Embed resources
+        embedded = self.__parent__.embedded
         for rel, value in links.items():
-            if not isinstance(value, list):
-                value = [value]
-            for member in value:
-                self.maybe_embed(request, rel, member['href'])
+            if rel not in embedded:
+                continue
+            if isinstance(value, list):
+                for member in value:
+                    embed(request, member['href'])
+            else:
+                embed(request, value['href'])
         return links
 
 
