@@ -17,6 +17,7 @@ from pyramid.threadlocal import manager
 from pyramid.view import view_config
 from urllib import unquote
 from uuid import UUID
+from ..objtemplate import ObjectTemplate
 from ..storage import (
     DBSession,
     CurrentStatement,
@@ -82,12 +83,6 @@ def maybe_include_embedded(request, result):
     embedded = manager.stack[0].get('encoded_embedded', None)
     if embedded:
         result['_embedded'] = {'resources': embedded}
-
-
-def format(value, **ns):
-    if isinstance(value, basestring):
-        return value.format(**ns)
-    return value
 
 
 def no_body_needed(request):
@@ -306,54 +301,16 @@ class Item(object):
         merged_links = {}
         for cls in reversed(type(self.__parent__).mro()):
             merged_links.update(vars(cls).get('links', {}))
-        links = {}
-        collection_uri = request.resource_path(self.__parent__)
-        item_type = self.model.predicate
-        for rel, value_template in merged_links.items():
-            if value_template is None:
-                continue
-            if isinstance(value_template, list):
-                out = []
-                for member in value_template:
-                    templated = member.get('templated', False)
-                    repeat = member.get('repeat', None)
-                    if not templated:
-                        value = member
-                        assert 'repeat' not in value
-                        out.append(value)
-                        self.maybe_embed(request, rel, value['href'])
-                        continue
-                    if repeat is not None:
-                        ns = properties.copy()
-                        ns['collection_uri'] = collection_uri
-                        ns['item_type'] = item_type
-                        repeat_name, repeater = repeat.split()
-                        for repeat_value in properties[repeater]:
-                            value = member
-                            ns[repeat_name] = repeat_value
-                            value = dict((k, format(v, **ns)) for k, v in value.iteritems() if k not in TEMPLATE_NAMES)
-                            out.append(value)
-                            self.maybe_embed(request, rel, value['href'])
-                    else:
-                        value = member
-                        ns = properties.copy()
-                        ns['collection_uri'] = collection_uri
-                        ns['item_type'] = item_type
-                        value = dict((k, format(v, **ns)) for k, v in value.iteritems() if k not in TEMPLATE_NAMES)
-                        out.append(value)
-                        self.maybe_embed(request, rel, value['href'])
-                value = out
-            else:
-                value = value_template
-                templated = value.get('templated', False)
-                assert 'repeat' not in value
-                if templated:
-                    ns = properties.copy()
-                    ns['collection_uri'] = collection_uri
-                    ns['item_type'] = item_type
-                    value = dict((k, format(v, **ns)) for k, v in value.iteritems() if k not in TEMPLATE_NAMES)
-                self.maybe_embed(request, rel, value['href'])
-            links[rel] = value
+        ns = properties.copy()
+        ns['collection_uri'] = request.resource_path(self.__parent__)
+        ns['item_type'] = self.model.predicate
+        compiled = ObjectTemplate(merged_links)
+        links = compiled(ns)
+        for rel, value in links.items():
+            if not isinstance(value, list):
+                value = [value]
+            for member in value:
+                self.maybe_embed(request, rel, member['href'])
         return links
 
 
