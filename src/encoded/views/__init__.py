@@ -283,7 +283,7 @@ class Item(object):
             self.__acl__ = acl
 
     def __json__(self, request):
-        properties = self.model.statement.__json__()
+        properties = self.model.statement.object
         links = self.expand_links(properties, request)
         if links is not None:
             properties['_links'] = links

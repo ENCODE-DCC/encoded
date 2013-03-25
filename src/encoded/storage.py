@@ -105,9 +105,6 @@ class Statement(Base):
     resource = orm.relationship('Resource')
     transaction = orm.relationship('TransactionRecord')
 
-    def __json__(self, request=None):
-        return self.object
-
 
 class CurrentStatement(Base):
     __tablename__ = 'current_statements'
