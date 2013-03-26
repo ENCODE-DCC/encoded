@@ -12,14 +12,13 @@ def groupfinder(login, request):
 
     if namespace == 'mailto':
         session = DBSession()
-        query = session.query(UserMap).filter(UserMap.login == login)
-        try:
-            user = query.one().user
-            principals = ['userid:' + str(user.rid)]
-            principals.extend('lab:' + lab_uuid for lab_uuid in user.statement.object.get('lab_uuids', []))
-            return principals
-        except NoResultFound:
+        model = session.query(UserMap).get(login)
+        if model is None:
             return None
+        user = model.user
+        principals = ['userid:' + str(user.rid)]
+        principals.extend('lab:' + lab_uuid for lab_uuid in user.statement.object.get('lab_uuids', []))
+        return principals
 
     elif namespace == 'remoteuser':
         if localname in ['TEST', 'IMPORT']:
