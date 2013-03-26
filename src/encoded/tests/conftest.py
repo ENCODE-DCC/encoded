@@ -169,3 +169,55 @@ def check_constraints(request, connection):
     @request.addfinalizer
     def unregister():
         transaction.manager.unregisterSynch(constraint_checker)
+
+
+@fixture
+def execute_counter(request, connection):
+    """ Count calls to execute
+    """
+    from sqlalchemy import event
+
+    class Counter(object):
+        def __init__(self):
+            self.reset()
+
+        def reset(self):
+            self.count = 0
+
+    counter = Counter()
+
+    @event.listens_for(connection, 'after_cursor_execute')
+    def after_cursor_execute(conn, cursor, statement, parameters, context, executemany):
+        #import pytest; pytest.set_trace()
+        counter.count += 1
+
+    @request.addfinalizer
+    def remove():
+        # http://www.sqlalchemy.org/trac/ticket/2686
+        # event.remove(connection, 'after_cursor_execute', after_cursor_execute)
+        connection.dispatch.after_cursor_execute.remove(after_cursor_execute, connection)
+
+    return counter
+
+
+@fixture
+def no_deps(request, connection):
+    from encoded.storage import DBSession
+    from sqlalchemy import event
+
+    session = DBSession()
+
+    @event.listens_for(session, 'after_flush')
+    def check_dependencies(session, flush_context):
+        #import pytest; pytest.set_trace()
+        assert not flush_context.cycles
+
+
+    @event.listens_for(connection, "before_execute", retval=True)
+    def before_execute(conn, clauseelement, multiparams, params):
+        #import pytest; pytest.set_trace()
+        return clauseelement, multiparams, params
+
+    @request.addfinalizer
+    def remove():
+        event.remove(session, 'before_flush', check_dependencies)

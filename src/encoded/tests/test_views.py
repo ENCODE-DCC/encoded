@@ -96,20 +96,29 @@ def test_collection_post_bad_json(testapp, url):
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_update(testapp, url):
+def test_collection_update(testapp, url, execute_counter):
     from .sample_data import URL_COLLECTION
     collection = URL_COLLECTION[url]
     initial = collection[0]
     res = testapp.post_json(url, initial, status=201)
     item_url = res.json['_links']['items'][0]['href']
+
+    execute_counter.reset()
     res = testapp.get(item_url).json
+    assert execute_counter.count == 1
+
     res.pop('_links', None)
     res.pop('_embedded', None)
     assert res == initial
+
     update = collection[1].copy()
     del update['_uuid']
     testapp.post_json(item_url, update, status=200)
+
+    execute_counter.reset()
     res = testapp.get(item_url).json
+    assert execute_counter.count == 1
+
     res.pop('_uuid', None)
     res.pop('_links', None)
     res.pop('_embedded', None)
