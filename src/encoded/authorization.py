@@ -1,4 +1,3 @@
-from sqlalchemy.orm.exc import NoResultFound
 from .storage import (
     DBSession,
     UserMap,
