@@ -44,9 +44,26 @@ def configure_engine(settings):
             poolclass=StaticPool,
             )
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
+    if engine.url.drivername == 'sqlite':
+        enable_sqlite_savepoints(engine)
     Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
     return engine
+
+
+def enable_sqlite_savepoints(engine):
+    """ Savepoint support for sqlite.
+
+    https://code.google.com/p/pysqlite-static-env/
+    """
+    from sqlalchemy import event
+
+    @event.listens_for(engine, 'connect')
+    def connect(dbapi_connection, connection_record):
+        dbapi_connection.operation_needs_transaction_callback = lambda x: True
+
+    from zope.sqlalchemy.datamanager import NO_SAVEPOINT_SUPPORT
+    NO_SAVEPOINT_SUPPORT.remove('sqlite')
 
 
 def load_sample_data(app):
