@@ -1,3 +1,4 @@
+@toolbar
 Feature: Toolbar
 
     Background:
