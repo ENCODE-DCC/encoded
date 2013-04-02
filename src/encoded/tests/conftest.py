@@ -5,7 +5,7 @@ http://pyramid.readthedocs.org/en/latest/narr/testing.html
 from pytest import fixture
 
 engine_settings = {
-'sqlalchemy.url': 'sqlite://',
+    'sqlalchemy.url': 'sqlite://',
 }
 
 app_settings = {
@@ -69,6 +69,27 @@ def collection_test():
     }
 
 
+@fixture(scope='session')
+def testdata(request, app, connection):
+    tx = connection.begin_nested()
+    request.addfinalizer(tx.rollback)
+
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    testapp = TestApp(app, environ)
+
+    from ..loadxl import load_all
+    from pkg_resources import resource_filename
+    workbook = resource_filename('encoded', 'tests/data/test_encode3_interface_submissions.xlsx')
+    docsdir = resource_filename('encoded', 'tests/data/documents/')
+    load_test_only = app_settings.get('load_test_only', False)
+    assert load_test_only
+    load_all(testapp, workbook, docsdir, test=load_test_only)
+
+
 @fixture
 def htmltestapp(request, app, external_tx):
     from webtest import TestApp
@@ -83,8 +104,26 @@ def testapp(request, app, external_tx):
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'TEST',
-        }
+    }
     return TestApp(app, environ)
+
+
+@fixture(scope='session')
+def _server(request, app):
+    from webtest.http import StopableWSGIServer
+    server = StopableWSGIServer.create(app)
+    assert server.wait()
+
+    @request.addfinalizer
+    def shutdown():
+        server.shutdown()
+
+    return server
+
+
+@fixture
+def server(_server, external_tx):
+    return _server
 
 
 # http://docs.sqlalchemy.org/en/rel_0_8/orm/session.html#joining-a-session-into-an-external-transaction
@@ -109,7 +148,7 @@ def connection(request):
 
 @fixture
 def external_tx(request, connection):
-    tx = connection.begin()
+    tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
     ## The database should be empty at this point
     # from encoded.storage import Base
