@@ -30,7 +30,7 @@ def tests_js(config):
     config.add_static_view('tests/js', 'tests/js', cache_max_age=STATIC_MAX_AGE)
 
 
-def configure_engine(settings):
+def configure_engine(settings, test_setup=False):
     engine_url = settings.get('sqlalchemy.url')
     if not engine_url:
         # Already setup by test fixture
@@ -46,8 +46,9 @@ def configure_engine(settings):
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'sqlite':
         enable_sqlite_savepoints(engine)
-    Base.metadata.create_all(engine)
-    DBSession.configure(bind=engine)
+    if not test_setup:
+        Base.metadata.create_all(engine)
+        DBSession.configure(bind=engine)
     return engine
 
 

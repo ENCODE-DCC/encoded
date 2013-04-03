@@ -70,7 +70,7 @@ def collection_test():
 
 
 @fixture(scope='session')
-def testdata(request, app, connection):
+def testdata(request, app, connection, zsa_savepoints):
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
 
@@ -90,14 +90,52 @@ def testdata(request, app, connection):
     load_all(testapp, workbook, docsdir, test=load_test_only)
 
 
+@fixture(scope='session')
+def minitestdata(request, app, connection, zsa_savepoints):
+    tx = connection.begin_nested()
+    request.addfinalizer(tx.rollback)
+
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    testapp = TestApp(app, environ)
+
+    from .sample_data import URL_COLLECTION
+    for url in ['/organisms/']:  # , '/sources/', '/users/']:
+        collection = URL_COLLECTION[url]
+        for item in collection:
+            testapp.post_json(url, item, status=201)
+
+
+@fixture(scope='session')
+def minitestdata2(request, app, connection, zsa_savepoints):
+    tx = connection.begin_nested()
+    request.addfinalizer(tx.rollback)
+
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    testapp = TestApp(app, environ)
+
+    from .sample_data import URL_COLLECTION
+    for url in ['/organisms/']:  # , '/sources/', '/users/']:
+        collection = URL_COLLECTION[url]
+        for item in collection:
+            testapp.post_json(url, item, status=201)
+
+
 @fixture
-def htmltestapp(request, app, external_tx):
+def htmltestapp(request, app, external_tx, zsa_savepoints):
     from webtest import TestApp
     return TestApp(app)
 
 
 @fixture
-def testapp(request, app, external_tx):
+def testapp(request, app, external_tx, zsa_savepoints):
     '''TestApp with JSON accept header.
     '''
     from webtest import TestApp
@@ -109,7 +147,7 @@ def testapp(request, app, external_tx):
 
 
 @fixture(scope='session')
-def _server(request, app):
+def _server(request, app, zsa_savepoints):
     from webtest.http import StopableWSGIServer
     server = StopableWSGIServer.create(app)
     assert server.wait()
@@ -133,14 +171,18 @@ def server(_server, external_tx):
 @fixture(scope='session')
 def connection(request):
     from encoded import configure_engine
-    from encoded.storage import DBSession
+    from encoded.storage import Base, DBSession
 
-    engine = configure_engine(engine_settings)
+    engine = configure_engine(engine_settings, test_setup=True)
     connection = engine.connect()
+    tx = connection.begin()
+
+    Base.metadata.create_all(bind=connection)
     DBSession.configure(bind=connection)
 
     @request.addfinalizer
     def close():
+        tx.rollback()
         connection.close()
 
     return connection
@@ -158,10 +200,49 @@ def external_tx(request, connection):
 
 
 @fixture
-def transaction(request, external_tx):
+def transaction(request, external_tx, zsa_savepoints):
     import transaction
+    transaction.begin()
     request.addfinalizer(transaction.abort)
     return transaction
+
+
+@fixture(scope='session')
+def zsa_savepoints(request, connection):
+    """ Place a savepoint at the start of the zope transaction
+
+    This means failed requests rollback to the db state when they began rather
+    than that at the start of the test.
+    """
+    from transaction.interfaces import ISynchronizer
+    from zope.interface import implementer
+
+    @implementer(ISynchronizer)
+    class Savepoints(object):
+        def __init__(self, connection):
+            self.connection = connection
+            self.sp = None
+
+        def beforeCompletion(self, transaction):
+            pass
+
+        def afterCompletion(self, transaction):
+            # txn be aborted a second time in manager.begin()
+            if self.sp is not None:
+                self.sp.commit()
+                self.sp = None
+
+        def newTransaction(self, transaction):
+            self.sp = self.connection.begin_nested()
+
+    savepoint_manager = Savepoints(connection)
+
+    import transaction
+    transaction.manager.registerSynch(savepoint_manager)
+
+    @request.addfinalizer
+    def unregister():
+        transaction.manager.unregisterSynch(savepoint_manager)
 
 
 @fixture
@@ -250,7 +331,6 @@ def no_deps(request, connection):
     def check_dependencies(session, flush_context):
         #import pytest; pytest.set_trace()
         assert not flush_context.cycles
-
 
     @event.listens_for(connection, "before_execute", retval=True)
     def before_execute(conn, clauseelement, multiparams, params):
