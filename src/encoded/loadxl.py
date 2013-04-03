@@ -26,6 +26,7 @@ TYPE_URL = {
     'colleague': '/users/',
     'lab': '/labs/',
     'award': '/awards/',
+    'experiment': '/experiments/',
     ##{ 'institute': '/institutes/'),
 }
 
@@ -502,7 +503,7 @@ def parse_construct(testapp, alldata, content_type, indices, uuid, value, docsdi
         raise ValueError('Unable to find source: %s' % source)
 
 
-@parse_decorator_factory('biosample', {'value': 'accession'})
+@parse_decorator_factory('biosample', {})
 def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
     '''alias_list  alias_source_list  still not handled'''
@@ -564,7 +565,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 raise ValueError('Unable to find document for biosample: %s' % doc)
     except:
         logger.warn('Empty biosample documents list: %s' % documents)
-
+    
     value['construct_uuids'] = []
     try:
         constructs = value.pop('construct_list')
@@ -578,8 +579,12 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 value['construct_uuids'].append(construct_uuid)
     except:
         pass
-        # protocol documents can be missing?
-
+        # protocol documents can be missing?    
+    
+    value['related_biosample_uuid'] = ''
+    sample = value.pop('related_biosample_derived_from')  
+    if sample is not None:
+        value['related_biosample_uuid'] =  indices['biosample'][sample]
 
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
@@ -614,4 +619,8 @@ def load_all(testapp, filename, docsdir, test=False):
 
     parse_construct(testapp, alldata, indices, 'construct', docsdir)
 
+    indices['biosample'] = value_index(alldata['biosample'], 'accession')
+    
     parse_biosample(testapp, alldata, indices, 'biosample', docsdir)
+    
+    #parse_experiments(testapp, alldata, indices, 'experiment', docsdir)

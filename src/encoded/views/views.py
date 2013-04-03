@@ -231,8 +231,7 @@ class Validation(Collection):
         'award': {'href': '/awards/{award_uuid}', 'templated': True},
     }
     embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
-
-
+    
 @root.location('antibodies')
 class AntibodyApproval(Collection):
     #schema = load_schema('antibody_approval.json')

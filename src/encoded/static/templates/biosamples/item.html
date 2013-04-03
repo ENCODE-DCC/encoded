@@ -126,35 +126,36 @@
 
             <?js if (model.links.treatments.length) {  treatment = model.links.treatments[0];?>
             <hr>
-                <!-- Treatment section -->
-                 <h4>Treatment Details</h4>
-                    <div class="data-group">
-                <label class="data-label" for="treatment">Treatment:</label>
-                <div class="data-values">
-                    <span id="treatment" class="data-point">{treatment.get('treatment_name')}</span>
-                </div>
-            </div>
-            <div class="data-group">
-                <label class="data-label" for="treatment-type">Type:</label>
-                <div class="data-values">
-                    <span id="treatment-type" class="data-point">{treatment.get('treatment_type')}</span>
-                </div>
-            </div>
-                <?js if(treatment.get('condition_id') && treatment.get('condition_id') != 'NULL') { ?>
-            <div class="data-group">
-                <label class="data-label" for="treatment-condition">Condition:</label>
-                <div class="data-values">
-                    <span id="treatment-condition" class="data-point">
-                        <?js if(treatment.get('concentration') != 'NULL') { ?> {treatment.get('concentration')} {treatment.get('concentration units')} <?js } ?>
-                        {treatment.get('condition_term')} ({treatment.get('condition_id')})
-                    <?js if (treatment.get('duration') != 'NULL') { ?> for {treatment.get('duration')} {treatment.get('duration units')} <?js } ?>
-                    </span>
-                </div>
-                <?js } ?>
-            </div>
+            <!-- Treatment section -->
+            <section>    
+	            <h4>Treatment Details</h4>
+	            <div class="data-group">
+	            	<label class="data-label" for="treatment">Treatment:</label>
+	                <div class="data-values">
+	                    <span id="treatment" class="data-point">{treatment.get('treatment_name')}</span>
+	                </div>
+	            </div>
+	            <div class="data-group">
+	                <label class="data-label" for="treatment-type">Type:</label>
+	                <div class="data-values">
+	                    <span id="treatment-type" class="data-point">{treatment.get('treatment_type')}</span>
+	                </div>
+	            </div>
+	            <?js if(treatment.get('condition_id') && treatment.get('condition_id') != 'NULL') { ?>
+		            <div class="data-group">
+		                <label class="data-label" for="treatment-condition">Condition:</label>
+		                <div class="data-values">
+		                    <span id="treatment-condition" class="data-point">
+		                        <?js if(treatment.get('concentration') != 'NULL') { ?> {treatment.get('concentration')} {treatment.get('concentration units')} <?js } ?>
+		                        {treatment.get('condition_term')} ({treatment.get('condition_id')})
+		                    <?js if (treatment.get('duration') != 'NULL') { ?> for {treatment.get('duration')} {treatment.get('duration units')} <?js } ?>
+		                    </span>
+		                </div>  
+		            </div>
+		      	<?js } ?>
             </section><!-- #treatment-details -->
             <?js } ?>
-                   <!-- Construct section-->
+            <!-- Construct section-->
             <?js if(model.links.constructs.length) { ?>
             <hr> <!-- maybe if this out or drop the clanky <hr>s -->
             <section>
@@ -204,11 +205,18 @@
           <!-- Protocols & Documents -->
         <div class="protocols"></div>
 
+		<?js if(properties.related_biosample_uuid != '') { ?>
         <!-- Relationships to other Biosamples -->
         <h3>Related Biosamples</h3>
         <div class="panel data-display">
-
+        	<h4>Derived From Biosample</h4>
+        	<div class="data-group">
+                <label class="data-label" for="related-biosample-id">Accession:</label>
+                <div class="data-values">
+                    <span id="related-biosample-id" class="data-point"><a href ="{properties.related_biosample_uuid}">{properties.related_biosample_accession}</a></span>
+                </div>
+           </div>
         </div><!-- .data-display -->
-
+        <?js } ?>
     </div>
 </div>

@@ -1,0 +1,11 @@
+<td><a href="{model.url()}">{properties.target_label}</a></td>
+<td>{model.links.organism.get('organism_name')}</td>
+<td>
+<?js if(properties.dbxref.uniprot.length) { _.each(properties.dbxref.uniprot, function(id) {  ?>
+    <a href="http://www.uniprot.org/uniprot/{id}">{id}</a> (UniProt)
+<?js }); } else { ?>
+    <em>None submitted</em>
+<?js } ?>
+</td>
+<td>{properties.project}</td>
+

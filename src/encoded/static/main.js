@@ -7,6 +7,7 @@ requirejs.config({
         biosamples: 'modules/biosamples',
         targets: 'modules/targets',
         sources: 'modules/sources',
+        experiments: 'modules/experiments',
         app: 'modules/app',
         assert: 'modules/assert',
         base: 'modules/base',
