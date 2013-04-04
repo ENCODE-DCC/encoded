@@ -564,36 +564,29 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
         # treatment is often null
 
     value['document_uuids'] = []
-
-    try:
-        documents = value.pop('document_list')
-
-        for doc in documents:
-            try:
-                document_uuid = indices['document'].get(doc, [])
-                if alldata['document'].get(document_uuid, None) is None:
-                    raise ValueError('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
-                else:
-                    value['document_uuids'].append(document_uuid)
-            except KeyError:
-                raise ValueError('Unable to find document for biosample: %s' % doc)
-    except:
-        logger.warn('Empty biosample documents list: %s' % documents)
+    documents = value.pop('document_list')
+    for doc in documents:
+        document_uuid = indices['document'].get(doc, None)
+        if document_uuid is None:
+            logger.warn('Unable to find document for biosample: %s' % doc)
+            continue
+        if document_uuid not in alldata['document']:
+            logger.warn('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
+            continue
+        value['document_uuids'].append(document_uuid)
 
     value['construct_uuids'] = []
-    try:
-        constructs = value.pop('construct_list')
-
-        for ctx in constructs:
-            construct_uuid = indices['construct'].get(ctx, [])
-            if alldata['construct'].get(construct_uuid, None) is None:
-                logger.warn('Missing/skipped construct reference %s for biosample: %s' % (construct_uuid, uuid))
-                ## but don't raise error
-            else:
-                value['construct_uuids'].append(construct_uuid)
-    except:
-        pass
-        # protocol documents can be missing?
+    constructs = value.pop('construct_list')
+    for ctx in constructs:
+        construct_uuid = indices['construct'].get(ctx, None)
+        if construct_uuid is None:
+            logger.warn('Unable to find construct for biosample: %s' % ctx)
+            continue
+        if construct_uuid not in alldata['construct']:
+            logger.warn('Missing/skipped construct reference %s for biosample: %s' % (construct_uuid, uuid))
+            continue
+            ## but don't raise error
+        value['construct_uuids'].append(construct_uuid)
 
 
 def load_all(testapp, filename, docsdir, test=False):
