@@ -582,9 +582,11 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
         # protocol documents can be missing?    
     
     value['related_biosample_uuid'] = ''
+    value['related_biosample_accession'] = ''
     sample = value.pop('related_biosample_derived_from')  
     if sample is not None:
         value['related_biosample_uuid'] =  indices['biosample'][sample]
+        value['related_biosample_accession'] = sample
 
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]

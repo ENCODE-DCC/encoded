@@ -129,12 +129,14 @@ class Resource(Base, DictMixin):
     '''
     __tablename__ = 'resources'
     rid = Column(UUID, primary_key=True)
-    rel = orm.relationship('Statement',
+    
+    '''rel = orm.relationship('Statement',
         lazy='joined',
         primaryjoin="Resource.rid==Relation.source")
     rev = orm.relationship('Statement',
         lazy='joined',
-        primaryjoin="Resource.rid==Relation.target")
+        primaryjoin="Resource.rid==Relation.target")'''
+    
     data = orm.relationship('CurrentStatement',
         collection_class=collections.attribute_mapped_collection('predicate'),
         cascade='all, delete-orphan',
@@ -161,12 +163,12 @@ class Resource(Base, DictMixin):
         return self.data.keys()
 
 
-class Relation(Base):
+'''class Relation(Base):
     __tablename__ = 'relations'
     id = Column(types.Integer, autoincrement=True, primary_key=True)
     source = Column(UUID, ForeignKey('resources.rid'), nullable=False)
     target = Column(UUID, ForeignKey('resources.rid'), nullable=False)
-    type = Column(types.String, nullable=False)
+    type = Column(types.String, nullable=False)'''
 
 
 class TransactionRecord(Base):
