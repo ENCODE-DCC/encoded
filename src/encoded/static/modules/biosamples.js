@@ -38,6 +38,8 @@ function biosamples(exports, $, _, base, table_sorter, table_filter, home_templa
                         'Species',
                         'Source',
                         'Submitter',
+                        'Treatments',
+                        'Constructs',
                         ],
         sort_initial: 2  // oh the index hack it burns
 
