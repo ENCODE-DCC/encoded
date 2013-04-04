@@ -1,7 +1,49 @@
 import pytest
+pytestmark = pytest.mark.fixtures
 
 
-def test_fixtures1(minitestdata, testapp):
+@pytest.data.datafixture
+def minitestdata(app, data_fixture_manager):
+    assert data_fixture_manager._current_connection == 'minitestdata'
+
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    testapp = TestApp(app, environ)
+
+    from .sample_data import URL_COLLECTION
+    for url in ['/organisms/']:  # , '/sources/', '/users/']:
+        collection = URL_COLLECTION[url]
+        for item in collection:
+            testapp.post_json(url, item, status=201)
+
+
+@pytest.data.datafixture
+def minitestdata2(app, data_fixture_manager):
+    assert data_fixture_manager._current_connection == 'minitestdata2'
+
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    testapp = TestApp(app, environ)
+
+    from .sample_data import URL_COLLECTION
+    for url in ['/organisms/']:  # , '/sources/', '/users/']:
+        collection = URL_COLLECTION[url]
+        for item in collection:
+            testapp.post_json(url, item, status=201)
+
+
+@pytest.data.use('minitestdata')
+def test_fixtures1(testapp):
+    """ This test is not really exhaustive.
+
+    Still need to inspect the sql log to verify fixture correctness.
+    """
     url = '/organisms/'
     res = testapp.get(url)
     items = res.json['_links']['items']
@@ -37,8 +79,8 @@ def test_fixtures1(minitestdata, testapp):
     assert len(items) == count2
 
 
-@pytest.mark.xfail
-def test_fixtures2(minitestdata2, testapp):
+@pytest.data.use('minitestdata2')
+def test_fixtures2(testapp):
     # http://stackoverflow.com/questions/15775601/mutually-exclusive-fixtures
     res = testapp.get('/organisms/')
     items = res.json['_links']['items']

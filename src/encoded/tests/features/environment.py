@@ -6,7 +6,8 @@ import pytest
 def before_all(context):
     webenv.before_all(context)
     server = pytest.bdd.getfixture('_server')
-    pytest.bdd.getfixture('testdata')
+    manager = pytest.bdd.getfixture('data_fixture_manager')
+    manager.use_data_fixture('workbook', context)
     context.base_url = server.application_url
 
 

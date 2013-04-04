@@ -64,7 +64,7 @@ def enable_sqlite_savepoints(engine):
         dbapi_connection.operation_needs_transaction_callback = lambda x: True
 
     from zope.sqlalchemy.datamanager import NO_SAVEPOINT_SUPPORT
-    NO_SAVEPOINT_SUPPORT.remove('sqlite')
+    NO_SAVEPOINT_SUPPORT.discard('sqlite')
 
 
 def load_sample_data(app):

@@ -363,11 +363,17 @@ def behave_runner(request):
     import behave.runner
     import pytest.bdd
 
+    class Context(behave.runner.Context):
+        @property
+        def _request(self):
+            from pytest.bdd import _fixture_requests
+            return _fixture_requests[-1]
+
     class Runner(object):
         config = None
 
         def __init__(self):
-            self.context = behave.runner.Context(self)
+            self.context = Context(self)
             self.hooks = pytest.bdd._make_hook.__hooks__
             self.context._set_root_attribute('getfixture',
                                              pytest.bdd.getfixture)
