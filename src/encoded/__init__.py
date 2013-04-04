@@ -121,6 +121,8 @@ def main(global_config, **settings):
 
     load_test_only = asbool(settings.get('load_test_only', False))
     docsdir = settings.get('load_docsdir', None)
+    if docsdir is not None:
+        docsdir = [path.strip() for path in docsdir.strip().split('\n')]
     if workbook_filename:
         load_workbook(app, workbook_filename, docsdir, test=load_test_only)
 
