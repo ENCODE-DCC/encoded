@@ -26,7 +26,6 @@ TYPE_URL = {
     'colleague': '/users/',
     'lab': '/labs/',
     'award': '/awards/',
-    'experiment': '/experiments/',
     ##{ 'institute': '/institutes/'),
 }
 
@@ -588,6 +587,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
         value['related_biosample_uuid'] =  indices['biosample'][sample]
         value['related_biosample_accession'] = sample
 
+
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
     alldata = extract(filename, sheets, test=test)
@@ -624,5 +624,3 @@ def load_all(testapp, filename, docsdir, test=False):
     indices['biosample'] = value_index(alldata['biosample'], 'accession')
     
     parse_biosample(testapp, alldata, indices, 'biosample', docsdir)
-    
-    #parse_experiments(testapp, alldata, indices, 'experiment', docsdir)
