@@ -36,9 +36,9 @@ def find_doc(docsdir, filename):
         candidate = os.path.join(dirpath, filename)
         if not os.path.exists(candidate):
             continue
-        #if path is not None:
-        #    msg = 'Duplicate filenames: %s, %s' % (path, candidate)
-        #    raise AssertionError(msg)
+        if path is not None:
+            msg = 'Duplicate filenames: %s, %s' % (path, candidate)
+            raise AssertionError(msg)
         path = candidate
     if path is None:
         raise ValueError('File not found: %s' % filename)
