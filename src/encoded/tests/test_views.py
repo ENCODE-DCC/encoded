@@ -75,9 +75,8 @@ def __test_sample_data(testapp):
 
 
 @pytest.mark.slow
-@pytest.data.use('workbook')
 @pytest.mark.parametrize(('url', 'length'), COLLECTION_URL_LENGTH.items())
-def test_load_workbook(testapp, url, length):
+def test_load_workbook(workbook, testapp, url, length):
     # testdata must come before testapp in the funcargs list for their
     # savepoints to be correctly ordered.
     res = testapp.get(url, status=200)
@@ -86,8 +85,7 @@ def test_load_workbook(testapp, url, length):
 
 
 @pytest.mark.slow
-@pytest.data.use('workbook')
-def test_collection_limit(testapp):
+def test_collection_limit(workbook, testapp):
     res = testapp.get('/antibodies/?limit=10', status=200)
     assert res.json['_links']['items']
     assert len(res.json['_links']['items']) == 10

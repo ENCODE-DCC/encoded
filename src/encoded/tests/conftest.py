@@ -51,7 +51,7 @@ def app(request, check_constraints, zsa_savepoints):
     return main({}, **app_settings)
 
 
-@pytest.data.datafixture
+@pytest.datafixture
 def workbook(app):
     from webtest import TestApp
     environ = {
@@ -109,7 +109,7 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
-@pytest.data.connection_factory
+@pytest.datafixture_connection_factory
 def connection_factory(scopefunc):
     from encoded import configure_engine
     from encoded.storage import Base, DBSession
@@ -120,14 +120,13 @@ def connection_factory(scopefunc):
 
     engine = configure_engine(engine_settings, test_setup=True)
     connection = engine.connect()
-    with connection:
-        with connection.begin():
-            Base.metadata.create_all(bind=connection)
-            session = DBSession(scope=None, bind=connection)
-            DBSession.registry.set(session)
-            yield connection
-            # teardown occurs when the generator is resumed, exiting the
-            # context managers
+    tx = connection.begin()
+    Base.metadata.create_all(bind=connection)
+    session = DBSession(scope=None, bind=connection)
+    DBSession.registry.set(session)
+    yield connection
+    tx.rollback()
+    connection.close()
 
 
 @fixture

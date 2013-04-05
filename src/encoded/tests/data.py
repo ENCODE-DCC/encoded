@@ -1,6 +1,14 @@
 """ pytest plugin to support data fixtures for sqlalchemy sessions
 
-This works by creating multiple concurrent connections which are then 
+Each data fixture is associated with its own connection.
+
+Data fixtures are registered using the ``pytest.datafixture`` decorator.
+
+The connection_factory is registered using the
+``pytest.datafixture_connection_factory`` decorator
+
+Tests and fixtures may require the datafixture like any other fixture, either
+specifying in the funcargs or with ``pytest.mark.usefixtures(...)``.
 """
 
 import pytest
@@ -37,7 +45,6 @@ def connection(data_fixture_manager):
 
 class DataFixtureManager(object):
     def __init__(self, config):
-        self._marker = pytest.mark.use_data
         self.config = config
         self._factories = {}
         self._fixtures = {}
@@ -91,27 +98,40 @@ class DataFixtureManager(object):
         """ Register a data fixture function
         """
         def decorate(fn):
-            self._factories[fn.__name__] = fn
+            name = fn.__name__
+            self._factories[name] = fn
             #conn, teardown = self.connection_for(name)
-            pytest.fixture(scope='session')(fn)
-            return fn
+
+            def wrapper(*args, **kw):
+                # This check might be unnecessary
+                assert self._current_connection == name
+                return fn(*args, **kw)
+
+            wrapper.__wrapped__ = fn
+            pytest.fixture(scope='session')(wrapper)
+            return wrapper
         return decorate
 
     def pytest_namespace(self):
-        data = {
-            'connection_factory': self.connection_factory,
+        return {
+            'datafixture_connection_factory': self.connection_factory,
             'datafixture': self.datafixture,
-            'use': self._marker,
         }
-        return {'data': data}
 
     @pytest.mark.tryfirst
     def pytest_runtest_setup(self, item):
-        marker = item.keywords.get(self._marker.markname, None)
-        if marker is None:
+        fi = getattr(item, '_fixtureinfo', None)
+        if fi is not None:
+            data_fixtures = [
+                name for name in fi.names_closure
+                if name in self._factories
+            ]
+        if not data_fixtures:
             self._current_connection = None
             return
-        name, = marker.args
+        if len(data_fixtures) != 1:
+            raise ValueError('Multiple data fixtures specified: %r' % data_fixtures)
+        name, = data_fixtures
         self.use_data_fixture(name, item)
 
     def use_data_fixture(self, name, item):

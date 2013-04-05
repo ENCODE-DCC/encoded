@@ -1,8 +1,7 @@
 import pytest
-pytestmark = pytest.mark.fixtures
 
 
-@pytest.data.datafixture
+@pytest.datafixture
 def minitestdata(app, data_fixture_manager):
     assert data_fixture_manager._current_connection == 'minitestdata'
 
@@ -20,7 +19,7 @@ def minitestdata(app, data_fixture_manager):
             testapp.post_json(url, item, status=201)
 
 
-@pytest.data.datafixture
+@pytest.datafixture
 def minitestdata2(app, data_fixture_manager):
     assert data_fixture_manager._current_connection == 'minitestdata2'
 
@@ -38,7 +37,7 @@ def minitestdata2(app, data_fixture_manager):
             testapp.post_json(url, item, status=201)
 
 
-@pytest.data.use('minitestdata')
+@pytest.mark.usefixtures('minitestdata')
 def test_fixtures1(testapp):
     """ This test is not really exhaustive.
 
@@ -79,8 +78,7 @@ def test_fixtures1(testapp):
     assert len(items) == count2
 
 
-@pytest.data.use('minitestdata2')
-def test_fixtures2(testapp):
+def test_fixtures2(minitestdata2, testapp):
     # http://stackoverflow.com/questions/15775601/mutually-exclusive-fixtures
     res = testapp.get('/organisms/')
     items = res.json['_links']['items']
