@@ -19,7 +19,11 @@ Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
 
 Run the Pyramid tests with::
 
-    $ bin/test
+    $ bin/test -k -bdd
+
+Run the Browser tests with::
+
+    $ bin/test -k bdd -v -v
 
 Notes on SASS/Compass
 =====================

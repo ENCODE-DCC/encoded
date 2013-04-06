@@ -1,43 +1,45 @@
 """ Behave testing with pytest
 
-This module combines behave testing with pytest
+This plugin combines behave testing with pytest
 """
+import behave.runner
+import behave.step_registry
 from contextlib import contextmanager
 import pytest
-from _pytest.python import FixtureRequest
+from _pytest.python import FixtureRequest, scopeproperty, scopemismatch
 import re
 
-parse_param_tag = re.compile(r'(\w+)\(([\s\w,]+)\)').match
+
+@pytest.fixture(scope='session')
+def context(request):
+    runner = request.session.config.pluginmanager.getplugin('bdd')
+    context = runner.context
+
+    # Hooks are called here so they only run when bdd tests are selected
+    @request.addfinalizer
+    def after_all():
+        with runner.fixture_context(request):
+            runner.run_hook('after_all', context)
+
+    with runner.fixture_context(request):
+        runner.run_hook('before_all', context)
+
+    return context
 
 
-def marker_from_tag(tag):
-    args = None
-    match = parse_param_tag(tag)
-    if match is not None:
-        tag = match.group(1)
-        args = [arg.strip() for arg in match.group(2).split(',') if arg.strip()]
-    marker = getattr(pytest.mark, tag)
-    if args is not None:
-        marker = marker(*args)
-    return marker
+@pytest.fixture(scope='module')
+def feature(context):
+    return context.feature
 
 
-@contextmanager
-def fixture_context(fixture_request):
-    """ Manages the fixture_request context
-    """
-    from pytest.bdd import _fixture_requests
-    _fixture_requests.append(fixture_request)
-    yield
-    popped = _fixture_requests.pop()
-    assert popped is fixture_request
+@pytest.fixture(scope='function')
+def scenario(context):
+    return context.scenario
 
 
-# pytest.bdd.getfixture
-def getfixture(name):
-    from pytest.bdd import _fixture_requests
-    fixture_request = _fixture_requests[-1]
-    return fixture_request.getfuncargvalue(name)
+@pytest.fixture(scope='subfunction')
+def step(context):
+    return context.step
 
 
 def pytest_configure(config):
@@ -47,21 +49,26 @@ def pytest_configure(config):
 
 
 class BDDPlugin(object):
+
     def __init__(self, config):
         self.config = config
+        self.hooks = {}
+        self._fixture_requests = []
+        self.context = behave.runner.Context(self)
+        self.step_registry = behave.step_registry.registry
 
-    @property
-    def reporter(self):
-        return self.config.pluginmanager.getplugin('terminalreporter')
-
-    @pytest.mark.tryfirst
-    def pytest_runtest_logstart(self, nodeid, location):
-        # ensure that the path is printed before the
-        # 1st test of a module starts running
-        reporter = self.reporter
-        if not reporter.showlongtestinfo:
-            return
-        #fspath = nodeid.split("::")[0]
+#    @property
+#    def reporter(self):
+#        return self.config.pluginmanager.getplugin('terminalreporter')
+#
+#    @pytest.mark.tryfirst
+#    def pytest_runtest_logstart(self, nodeid, location):
+#        # ensure that the path is printed before the
+#        # 1st test of a module starts running
+#        reporter = self.reporter
+#        if not reporter.showlongtestinfo:
+#            return
+#        #fspath = nodeid.split("::")[0]
 
     def pytest_runtest_setup(self, item):
         pass
@@ -75,46 +82,52 @@ class BDDPlugin(object):
             return
         if dirpath.basename == 'features' and \
                 path.basename == 'environment.py':
-            path.pyimport()
+            self.register_hooks(path.pyimport())
             return
+
+    def register_hooks(self, environment):
+        for place in ['step', 'scenario', 'feature', 'tag', 'all']:
+            for timing in ['before', 'after']:
+                name = '%s_%s' % (timing, place)
+                hook = getattr(environment, name, None)
+                if hook is None:
+                    continue
+                if not callable(hook):
+                    continue
+                self.hooks[name] = hook
 
     def pytest_namespace(self):
         """ Behave currently relies on a single global step registry
         """
-        # from behave.matchers import step_matcher
-        from behave.step_registry import registry
-        hooks = {}
-
-        def _make_hook(hook_name):
-            def decorator(wrapped):
-                hooks.setdefault(hook_name, []).append(wrapped)
-                return wrapped
-
-            decorator.__name__ = hook_name
-            return decorator
-
-        _make_hook.__hooks__ = hooks
-
-        ns = {
-            # 'step_matcher': step_matcher,
-            '_registry': registry,
-            '_make_hook': _make_hook,  # Can't simply be a dict
-            '_fixture_requests': [],  # Set later
-            'getfixture': getfixture,
-        }
+        ns = {'getfixture': self.getfixture}
 
         for step_type in ('given', 'when', 'then', 'step'):
-            decorator = registry.make_decorator(step_type)
+            decorator = self.step_registry.make_decorator(step_type)
             ns[step_type] = decorator
             ns[step_type.title()] = decorator
 
-        # Make before_step, etc. decorators
-        for timing in ['before', 'after']:
-            for place in ['step', 'scenario', 'feature', 'tag', 'all']:
-                name = '%s_%s' % (timing, place)
-                ns[name] = _make_hook(name)
-
         return {'bdd': ns}
+
+    def run_hook(self, name, context, *args):
+        hook = self.hooks.get(name, None)
+        if hook is None:
+            return
+        with context.user_mode():
+            hook(context, *args)
+
+    @contextmanager
+    def fixture_context(self, fixture_request):
+        """ Manages the fixture_request context
+        """
+        self._fixture_requests.append(fixture_request)
+        yield
+        popped = self._fixture_requests.pop()
+        assert popped is fixture_request
+
+    # pytest.bdd.getfixture
+    def getfixture(self, name):
+        fixture_request = self._fixture_requests[-1]
+        return fixture_request.getfuncargvalue(name)
 
 
 class FeatureFile(pytest.File):
@@ -132,9 +145,73 @@ class FeatureFile(pytest.File):
         yield Feature(feature, self)
 
 
+class BDDFixtureRequest(FixtureRequest):
+    @scopeproperty()
+    def function(self):
+        """ test function object if the request has a per-function scope. """
+        node = self._pyfuncitem.getparent(Scenario)
+        if node:
+            return node.obj
+        if isinstance(self._pyfuncitem, Step):
+            return self._pyfuncitem.obj
+
+    @scopeproperty("class")
+    def cls(self):
+        """ class (can be None) where the test function was collected. """
+        node = self._pyfuncitem.getparent(ScenarioOutline)
+        if node:
+            return node.obj
+
+    @property
+    def instance(self):
+        """ instance (can be None) on which test function was collected. """
+        return None
+
+    @scopeproperty()
+    def module(self):
+        """ python module object where the test function was collected. """
+        node = self._pyfuncitem.getparent(Feature)
+        if node:
+            return node.obj
+
+    def _getscopeitem(self, scope):
+        if scope == "session":
+            return self.session
+        if scope == "subfunction":
+            x = self._pyfuncitem.getparent(Step)
+            if x is not None:
+                return x
+            scope = "function"
+        if scope == "function":
+            x = self._pyfuncitem.getparent(Scenario)
+            if x is not None:
+                return x
+            scope = "class"
+        if scope == "class":
+            x = self._pyfuncitem.getparent(ScenarioOutline)
+            if x is not None:
+                return x
+            scope = "module"
+        if scope == "module":
+            return self._pyfuncitem.getparent(Feature)
+        raise ValueError("unknown finalization scope %r" % (scope,))
+
+
 class FixtureRequestMixin(object):
     funcargs = {}
     nofuncargs = True
+    _parse_param_tag = re.compile(r'(\w+)\(([\s\w,]+)\)').match
+
+    def marker_from_tag(self, tag):
+        args = None
+        match = self._parse_param_tag(tag)
+        if match is not None:
+            tag = match.group(1)
+            args = [arg.strip() for arg in match.group(2).split(',') if arg.strip()]
+        marker = getattr(pytest.mark, tag)
+        if args is not None:
+            marker = marker(*args)
+        return marker
 
     def _init_fixtures(self, markers=()):
         self.obj = lambda: None
@@ -148,19 +225,33 @@ class FixtureRequestMixin(object):
                                                    None,
                                                    funcargs=False)
         self.fixturenames = fi.names_closure
-        self._request = FixtureRequest(self)
+        self._request = BDDFixtureRequest(self)
+        self._request.scope = self.fixture_scope
+
+    def _setup_fixtures(self):
+        # Ensure scoped fixtures are run in the correct behave context
+        with self.runner.context.user_mode():
+            for fixturename in self.fixturenames:
+                if fixturename == 'request':
+                    continue
+                scope = self._fixtureinfo.name2fixturedefs[fixturename][-1].scope
+                if scopemismatch(self.fixture_scope, scope):
+                    continue
+                self._request.getfuncargvalue(fixturename)
 
 
 class Feature(FixtureRequestMixin, pytest.Collector):
     outline = None
+    fixture_scope = 'module'
 
     def __init__(self, model, parent):
         name = '%s: %s' % (model.keyword, model.name)
         super(Feature, self).__init__(name, parent)
         self.feature = self.model = model
+        self.runner = self.session.config.pluginmanager.getplugin('bdd')
         markers = []
         for tag in self.model.tags:
-            marker = marker_from_tag(tag)
+            marker = self.marker_from_tag(tag)
             self.keywords[marker.markname] = marker
             markers.append(marker)
         self._init_fixtures(markers)
@@ -176,17 +267,14 @@ class Feature(FixtureRequestMixin, pytest.Collector):
             else:
                 yield Scenario(scenario, self)
 
-    @property
-    def runner(self):
-        with fixture_context(self._request):
-            return getfixture('behave_runner')
-
     def setup(self):
-        for fixturename in self.fixturenames:
-            self._request.getfuncargvalue(fixturename)
         runner = self.runner
         feature = self.feature
         runner.feature = feature
+
+        with runner.fixture_context(self._request):
+            # Ensure that before_all / after_all get called
+            runner.getfixture('context')
 
         runner.context._push()
         runner.context.feature = feature
@@ -194,7 +282,10 @@ class Feature(FixtureRequestMixin, pytest.Collector):
         # current tags as a set
         runner.context.tags = set(feature.tags)
 
-        with fixture_context(self._request):
+        with runner.fixture_context(self._request):
+            # Ensure scoped fixtures are run in the correct behave context
+            self._setup_fixtures()
+
             for tag in feature.tags:
                 runner.run_hook('before_tag', runner.context, tag)
             runner.run_hook('before_feature', runner.context, feature)
@@ -203,7 +294,7 @@ class Feature(FixtureRequestMixin, pytest.Collector):
         runner = self.runner
         feature = self.feature
 
-        with fixture_context(self._request):
+        with runner.fixture_context(self._request):
             runner.run_hook('after_feature', runner.context, feature)
             for tag in feature.tags:
                 runner.run_hook('after_tag', runner.context, tag)
@@ -212,6 +303,8 @@ class Feature(FixtureRequestMixin, pytest.Collector):
 
 
 class ScenarioOutline(FixtureRequestMixin, pytest.Collector):
+    fixture_scope = 'cls'
+
     def __init__(self, model, parent):
         name = '%s: %s' % (model.keyword, model.name)
         super(ScenarioOutline, self).__init__(name, parent)
@@ -235,6 +328,8 @@ class ScenarioOutline(FixtureRequestMixin, pytest.Collector):
 
 
 class Scenario(FixtureRequestMixin, pytest.Collector):
+    fixture_scope = 'function'
+
     def __init__(self, model, parent):
         name = '%s: %s' % (model.keyword, model.name)
         row = getattr(model, '_row', None)
@@ -245,7 +340,7 @@ class Scenario(FixtureRequestMixin, pytest.Collector):
         self.scenario = self.model = model
         markers = []
         for tag in self.model.tags:
-            marker = marker_from_tag(tag)
+            marker = self.marker_from_tag(tag)
             self.keywords[marker.markname] = marker
             markers.append(marker)
         self.undefined = []
@@ -272,9 +367,6 @@ class Scenario(FixtureRequestMixin, pytest.Collector):
             yield Step(step, self)
 
     def setup(self):
-        for fixturename in self.fixturenames:
-            self._request.getfuncargvalue(fixturename)
-        from behave.step_registry import registry
         runner = self.runner
         feature = self.feature
         scenario = self.scenario
@@ -291,13 +383,16 @@ class Scenario(FixtureRequestMixin, pytest.Collector):
         # current tags as a set
         runner.context.tags = set(tags)
 
-        with fixture_context(self._request):
+        with runner.fixture_context(self._request):
+            # Ensure scoped fixtures are run in the correct behave context
+            self._setup_fixtures()
+
             for tag in scenario.tags:
                 runner.run_hook('before_tag', runner.context, tag)
             runner.run_hook('before_scenario', runner.context, scenario)
 
         for step in scenario:
-            step.match = registry.find_match(step)
+            step.match = runner.step_registry.find_match(step)
             if step.match is None:
                 self.undefined.append(step)
                 step.status = 'undefined'
@@ -309,7 +404,7 @@ class Scenario(FixtureRequestMixin, pytest.Collector):
         #for step in self.undefined:
         #    runner.undefined.append(step)
 
-        with fixture_context(self._request):
+        with runner.fixture_context(self._request):
             runner.run_hook('after_scenario', runner.context, scenario)
             for tag in scenario.tags:
                 runner.run_hook('after_tag', runner.context, tag)
@@ -319,6 +414,8 @@ class Scenario(FixtureRequestMixin, pytest.Collector):
 
 
 class Step(FixtureRequestMixin, pytest.Item):
+    fixture_scope = 'subfunction'
+
     def __init__(self, model, parent):
         name = '%s %s' % (model.keyword, model.name)
         super(Step, self).__init__(name, parent)
@@ -349,6 +446,8 @@ class Step(FixtureRequestMixin, pytest.Item):
         step = self.step
         match = step.match
 
+        runner.context.step = step
+
         if match is None:
             self.parent.run_steps = False
             pytest.skip('No match')
@@ -358,21 +457,21 @@ class Step(FixtureRequestMixin, pytest.Item):
             pytest.skip('Skipped')
             return
 
-        with fixture_context(self._request):
+        with runner.fixture_context(self._request):
+            self._setup_fixtures()
             runner.run_hook('before_step', runner.context, self)
 
     def runtest(self):
-        for fixturename in self.fixturenames:
-            self._request.getfuncargvalue(fixturename)
         runner = self.runner
         step = self.step
         match = step.match
+        if step.text:
+            runner.context.text = step.text
+        if step.table:
+            runner.context.table = step.table
         try:
-            if step.text:
-                runner.context.text = step.text
-            if step.table:
-                runner.context.table = step.table
-            match.run(runner.context)
+            with runner.fixture_context(self._request):
+                match.run(runner.context)
             step.status = 'passed'
         except Exception:
             step.status = 'failed'
@@ -384,46 +483,5 @@ class Step(FixtureRequestMixin, pytest.Item):
         runner = self.runner
         step = self.step
 
-        with fixture_context(self._request):
+        with runner.fixture_context(self._request):
             runner.run_hook('after_step', runner.context, step)
-
-
-@pytest.fixture(scope='session')
-def behave_runner(request):
-    import behave.runner
-    import pytest.bdd
-
-    class Context(behave.runner.Context):
-        @property
-        def _request(self):
-            from pytest.bdd import _fixture_requests
-            return _fixture_requests[-1]
-
-    class Runner(object):
-        config = None
-
-        def __init__(self):
-            self.context = Context(self)
-            self.hooks = pytest.bdd._make_hook.__hooks__
-            self.context._set_root_attribute('getfixture',
-                                             pytest.bdd.getfixture)
-
-        def run_hook(self, name, context, *args):
-            with fixture_context(request):
-                # Allow multiple hooks
-                if name in self.hooks:
-                    with context.user_mode():
-                        for hook in self.hooks[name]:
-                            hook(context, *args)
-
-    runner = Runner()
-
-    @request.addfinalizer
-    def after_all():
-        with fixture_context(request):
-            runner.run_hook('after_all', runner.context)
-
-    with fixture_context(request):
-        runner.run_hook('before_all', runner.context)
-
-    return runner
