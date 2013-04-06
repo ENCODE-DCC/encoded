@@ -1,9 +1,11 @@
 from behaving.web import environment as webenv
+import pytest
 
 
 def before_all(context):
-    context.base_url = 'http://localhost:6543/'
     webenv.before_all(context)
+    _server = pytest.bdd.getfixture('_server')
+    context.base_url = _server.application_url
 
 
 def after_all(context):

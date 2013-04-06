@@ -8,7 +8,25 @@ COLLECTION_URLS = [
     '/sources/',
     '/validations/',
     '/antibody-lots/',
-    ]
+]
+
+COLLECTION_URL_LENGTH = {
+    '/awards/': 39,
+    '/labs/': 42,
+    '/users/': 81,
+    '/sources/': 55,
+    '/targets/': 24,
+    '/antibody-lots/': 25,
+    '/validations/': 35,
+    '/antibodies/': 25,
+    '/donors/': 72,
+    '/documents/': 119,
+    '/treatments/': 6,
+    '/constructs/': 5,
+    '/biosamples/': 134,
+}
+
+COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
 
 
 @pytest.mark.parametrize('url', COLLECTION_URLS)
@@ -57,23 +75,17 @@ def __test_sample_data(testapp):
 
 
 @pytest.mark.slow
-def test_load_workbook(testapp, collection_test):
-    from ..loadxl import load_all
-    from pkg_resources import resource_filename
-    assert type(collection_test) == dict
-    workbook = resource_filename('encoded', 'tests/data/test_encode3_interface_submissions.xlsx')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    from conftest import app_settings
-    load_test_only = app_settings.get('load_test_only', False)
-    assert load_test_only
-    load_all(testapp, workbook, docsdir, test=load_test_only)
-    for content_type, expect in collection_test.iteritems():
-        url = '/' + content_type + '/'
-        res = testapp.get(url, status=200)
-        assert res.json['_links']['items']
-        assert len(res.json['_links']['items']) == expect
+@pytest.mark.parametrize(('url', 'length'), COLLECTION_URL_LENGTH.items())
+def test_load_workbook(workbook, testapp, url, length):
+    # testdata must come before testapp in the funcargs list for their
+    # savepoints to be correctly ordered.
+    res = testapp.get(url, status=200)
+    assert res.json['_links']['items']
+    assert len(res.json['_links']['items']) == length
 
-    # test limit
+
+@pytest.mark.slow
+def test_collection_limit(workbook, testapp):
     res = testapp.get('/antibodies/?limit=10', status=200)
     assert res.json['_links']['items']
     assert len(res.json['_links']['items']) == 10

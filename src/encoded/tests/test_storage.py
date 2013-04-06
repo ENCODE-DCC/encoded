@@ -1,3 +1,7 @@
+import pytest
+pytestmark = pytest.mark.storage
+
+
 def test_storage_creation(session):
     from encoded.storage import (
         Statement,
