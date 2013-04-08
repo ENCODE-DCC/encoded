@@ -517,7 +517,7 @@ def parse_construct(testapp, alldata, content_type, indices, uuid, value, docsdi
         raise ValueError('Unable to find source: %s' % source)
 
 
-@parse_decorator_factory('biosample', {'value': 'accession'})
+@parse_decorator_factory('biosample', {})
 def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
     '''alias_list  alias_source_list  still not handled'''
@@ -564,29 +564,43 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
         # treatment is often null
 
     value['document_uuids'] = []
-    documents = value.pop('document_list')
-    for doc in documents:
-        document_uuid = indices['document'].get(doc, None)
-        if document_uuid is None:
-            logger.warn('Unable to find document for biosample: %s' % doc)
-            continue
-        if document_uuid not in alldata['document']:
-            logger.warn('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
-            continue
-        value['document_uuids'].append(document_uuid)
+
+    try:
+        documents = value.pop('document_list')
+
+        for doc in documents:
+            try:
+                document_uuid = indices['document'].get(doc, [])
+                if alldata['document'].get(document_uuid, None) is None:
+                    raise ValueError('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
+                else:
+                    value['document_uuids'].append(document_uuid)
+            except KeyError:
+                raise ValueError('Unable to find document for biosample: %s' % doc)
+    except:
+        logger.warn('Empty biosample documents list: %s' % documents)
 
     value['construct_uuids'] = []
-    constructs = value.pop('construct_list')
-    for ctx in constructs:
-        construct_uuid = indices['construct'].get(ctx, None)
-        if construct_uuid is None:
-            logger.warn('Unable to find construct for biosample: %s' % ctx)
-            continue
-        if construct_uuid not in alldata['construct']:
-            logger.warn('Missing/skipped construct reference %s for biosample: %s' % (construct_uuid, uuid))
-            continue
-            ## but don't raise error
-        value['construct_uuids'].append(construct_uuid)
+    try:
+        constructs = value.pop('construct_list')
+
+        for ctx in constructs:
+            construct_uuid = indices['construct'].get(ctx, [])
+            if alldata['construct'].get(construct_uuid, None) is None:
+                logger.warn('Missing/skipped construct reference %s for biosample: %s' % (construct_uuid, uuid))
+                ## but don't raise error
+            else:
+                value['construct_uuids'].append(construct_uuid)
+    except:
+        pass
+        # protocol documents can be missing?
+
+    value['related_biosample_uuid'] = ''
+    value['related_biosample_accession'] = ''
+    sample = value.pop('related_biosample_derived_from')
+    if sample is not None:
+        value['related_biosample_uuid'] = indices['biosample'][sample]
+        value['related_biosample_accession'] = sample
 
 
 def load_all(testapp, filename, docsdir, test=False):
@@ -621,5 +635,7 @@ def load_all(testapp, filename, docsdir, test=False):
     parse_treatment(testapp, alldata, indices, 'treatment', docsdir)
 
     parse_construct(testapp, alldata, indices, 'construct', docsdir)
+
+    indices['biosample'] = value_index(alldata['biosample'], 'accession')
 
     parse_biosample(testapp, alldata, indices, 'biosample', docsdir)

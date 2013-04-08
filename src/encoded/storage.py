@@ -153,7 +153,7 @@ class Resource(Base, DictMixin):
 
     def keys(self):
         return self.data.keys()
-
+    
 
 class TransactionRecord(Base):
     __tablename__ = 'transactions'

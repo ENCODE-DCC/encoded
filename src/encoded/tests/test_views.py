@@ -14,16 +14,16 @@ COLLECTION_URL_LENGTH = {
     '/awards/': 39,
     '/labs/': 42,
     '/users/': 81,
-    '/sources/': 55,
+    '/sources/': 59,
     '/targets/': 24,
-    '/antibody-lots/': 25,
-    '/validations/': 35,
+    '/antibody-lots/': 26,
+    '/validations/': 34,
     '/antibodies/': 25,
     '/donors/': 72,
-    '/documents/': 119,
-    '/treatments/': 6,
+    '/documents/': 120,
+    '/treatments/': 7,
     '/constructs/': 5,
-    '/biosamples/': 134,
+    '/biosamples/': 135,
 }
 
 COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
