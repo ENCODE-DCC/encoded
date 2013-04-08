@@ -19,8 +19,8 @@ Feature: Biosamples
         When I click the element with the css selector "tr[data-href='/biosamples/4c1e9780-cc19-4553-b9fe-8ded24af8ff9'] td:first-child"
         Then I should see an element with the css selector "#content[class='container']"
         And I should see an element with the css selector "#biosample-data[class='panel data-display']"
-        And I should see "Chia ENCODE2, UCSC"
-        And I should see "DUMMY3"
+        And I should see "ENCODE2 Project, UCSC"
+        And I should see "ENCODE2-Mouse"
 
         When I go back
         Then I should see an element with the css selector "#content[class='container']"
@@ -41,4 +41,4 @@ Feature: Biosamples
         When I fill in "table-filter" with "Primary"
         Then I should see an element with the css selector "tr[class='odd'],tr[class='even'] > a[href='/biosamples/3fd1abe6-b066-4ef4-85e6-75d867a5d448']" within 1 seconds
         And I should see an element with the css selector "tr[class='odd hidden'],tr[class='even hidden'] > a[href='/biosamples/4b9c490d-7147-42ff-aa25-9390c9d1e2bf']"
-        And I should see exactly one element with the css selector "#table-count" containing the text "68"
+        And I should see exactly one element with the css selector "#table-count" containing the text "69"
