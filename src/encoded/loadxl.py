@@ -30,6 +30,21 @@ TYPE_URL = {
 }
 
 
+def find_doc(docsdir, filename):
+    path = None
+    for dirpath in docsdir:
+        candidate = os.path.join(dirpath, filename)
+        if not os.path.exists(candidate):
+            continue
+        if path is not None:
+            msg = 'Duplicate filenames: %s, %s' % (path, candidate)
+            raise AssertionError(msg)
+        path = candidate
+    if path is None:
+        raise ValueError('File not found: %s' % filename)
+    return path
+
+
 class IndexContainer:
     indices = {}
 
@@ -378,7 +393,7 @@ def parse_validation(testapp, alldata, content_type, indices, uuid, value, docsd
         raise ValueError('Unable to find target: %r' % (key,))
 
     filename = value.pop('document_filename')
-    stream = open(os.path.join(docsdir, filename), 'rb')
+    stream = open(find_doc(docsdir, filename), 'rb')
     _, ext = os.path.splitext(filename.lower())
     if ext in ('.png', '.jpg', '.tiff'):
         value['document'] = image_data(stream, filename)
@@ -448,7 +463,7 @@ def parse_donor(testapp, alldata, content_type, indices, uuid, value, docsdir):
 def parse_document(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
     filename = value.pop('document_file_name')
-    stream = open(os.path.join(docsdir, filename), 'rb')
+    stream = open(find_doc(docsdir, filename), 'rb')
     _, ext = os.path.splitext(filename.lower())
     if ext in ('.png', '.jpg', '.tiff'):
         value['document'] = image_data(stream, filename)
@@ -564,7 +579,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 raise ValueError('Unable to find document for biosample: %s' % doc)
     except:
         logger.warn('Empty biosample documents list: %s' % documents)
-    
+
     value['construct_uuids'] = []
     try:
         constructs = value.pop('construct_list')
@@ -578,13 +593,13 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 value['construct_uuids'].append(construct_uuid)
     except:
         pass
-        # protocol documents can be missing?    
-    
+        # protocol documents can be missing?
+
     value['related_biosample_uuid'] = ''
     value['related_biosample_accession'] = ''
-    sample = value.pop('related_biosample_derived_from')  
+    sample = value.pop('related_biosample_derived_from')
     if sample is not None:
-        value['related_biosample_uuid'] =  indices['biosample'][sample]
+        value['related_biosample_uuid'] = indices['biosample'][sample]
         value['related_biosample_accession'] = sample
 
 
@@ -622,5 +637,5 @@ def load_all(testapp, filename, docsdir, test=False):
     parse_construct(testapp, alldata, indices, 'construct', docsdir)
 
     indices['biosample'] = value_index(alldata['biosample'], 'accession')
-    
+
     parse_biosample(testapp, alldata, indices, 'biosample', docsdir)

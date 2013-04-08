@@ -1,3 +1,4 @@
+@sources @usefixtures(workbook)
 Feature: Sources
 
     Background:

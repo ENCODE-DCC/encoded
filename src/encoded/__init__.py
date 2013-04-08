@@ -30,7 +30,7 @@ def tests_js(config):
     config.add_static_view('tests/js', 'tests/js', cache_max_age=STATIC_MAX_AGE)
 
 
-def configure_engine(settings):
+def configure_engine(settings, test_setup=False):
     engine_url = settings.get('sqlalchemy.url')
     if not engine_url:
         # Already setup by test fixture
@@ -44,9 +44,27 @@ def configure_engine(settings):
             poolclass=StaticPool,
             )
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
-    Base.metadata.create_all(engine)
-    DBSession.configure(bind=engine)
+    if engine.url.drivername == 'sqlite':
+        enable_sqlite_savepoints(engine)
+    if not test_setup:
+        Base.metadata.create_all(engine)
+        DBSession.configure(bind=engine)
     return engine
+
+
+def enable_sqlite_savepoints(engine):
+    """ Savepoint support for sqlite.
+
+    https://code.google.com/p/pysqlite-static-env/
+    """
+    from sqlalchemy import event
+
+    @event.listens_for(engine, 'connect')
+    def connect(dbapi_connection, connection_record):
+        dbapi_connection.operation_needs_transaction_callback = lambda x: True
+
+    from zope.sqlalchemy.datamanager import NO_SAVEPOINT_SUPPORT
+    NO_SAVEPOINT_SUPPORT.discard('sqlite')
 
 
 def load_sample_data(app):
@@ -103,6 +121,8 @@ def main(global_config, **settings):
 
     load_test_only = asbool(settings.get('load_test_only', False))
     docsdir = settings.get('load_docsdir', None)
+    if docsdir is not None:
+        docsdir = [path.strip() for path in docsdir.strip().split('\n')]
     if workbook_filename:
         load_workbook(app, workbook_filename, docsdir, test=load_test_only)
 

@@ -1,3 +1,4 @@
+@generics @usefixtures(workbook)
 Feature: Generics
 
     Background:

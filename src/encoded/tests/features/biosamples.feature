@@ -1,3 +1,4 @@
+@biosamples @usefixtures(workbook)
 Feature: Biosamples
 
     Background:

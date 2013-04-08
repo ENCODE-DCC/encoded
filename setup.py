@@ -23,6 +23,8 @@ requires = [
     ]
 
 tests_require = [
+    'behave',
+    'behaving',
     'pytest',
 ]
 

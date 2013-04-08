@@ -1,3 +1,4 @@
+@targets @usefixtures(workbook)
 Feature: Targets
 
     Background:

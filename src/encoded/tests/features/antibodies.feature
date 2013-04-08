@@ -1,3 +1,4 @@
+@antibodies @usefixtures(workbook)
 Feature: Antibodies
 
     Background:
