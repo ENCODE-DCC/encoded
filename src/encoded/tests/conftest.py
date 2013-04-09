@@ -5,10 +5,6 @@ http://pyramid.readthedocs.org/en/latest/narr/testing.html
 import pytest
 from pytest import fixture
 
-engine_settings = {
-    'sqlalchemy.url': 'sqlite://',
-}
-
 app_settings = {
     'multiauth.policies': 'authtkt remoteuser',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
@@ -28,6 +24,10 @@ import logging
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+
+def pytest_addoption(parser):
+    parser.addoption('--engine-url', dest='engine_url', default='sqlite://')
 
 
 @fixture
@@ -110,13 +110,19 @@ def server(_server, external_tx):
 # requests can be rolled back at the end of the test.
 
 @pytest.datafixture_connection_factory
-def connection_factory(scopefunc):
+def connection_factory(config):
     from encoded import configure_engine
     from encoded.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
 
+    scopefunc = config.pluginmanager.getplugin('data').scopefunc
+
     if type(DBSession.registry) is not ScopedRegistry:
         DBSession.registry = ScopedRegistry(DBSession.session_factory, scopefunc)
+
+    engine_settings = {
+        'sqlalchemy.url': config.option.engine_url,
+    }
 
     engine = configure_engine(engine_settings, test_setup=True)
     connection = engine.connect()
