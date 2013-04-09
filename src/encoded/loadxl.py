@@ -51,9 +51,12 @@ class IndexContainer:
 
 
 def resolve_dotted(value, name):
-    for key in name.split('.'):
-        value = value[key]
-    return value
+    try:
+        for key in name.split('.'):
+         value = value[key]
+        return value
+    except KeyError:
+        return None
 
 
 def convert(type_, value):
@@ -394,19 +397,21 @@ def parse_validation(testapp, alldata, content_type, indices, uuid, value, docsd
         raise ValueError('Unable to find target: %r' % (key,))
 
     filename = value.pop('document_filename')
-    stream = open(find_doc(docsdir, filename), 'rb')
     _, ext = os.path.splitext(filename.lower())
-    if ext in ('.png', '.jpg', '.tiff'):
-        value['document'] = image_data(stream, filename)
-    elif ext == '.pdf':
-        mime_type = 'application/pdf'
-        value['document'] = {
-            'download': filename,
-            'type': mime_type,
-            'href': data_uri(stream, mime_type),
-        }
-    else:
-        raise ValueError("Unknown file type for %s" % filename)
+
+    if ext:
+        stream = open(find_doc(docsdir, filename), 'rb')
+        if ext in ('.png', '.jpg', '.jpeg', '.tiff', '.tif'):
+            value['document'] = image_data(stream, filename)
+        elif ext == '.pdf':
+            mime_type = 'application/pdf'
+            value['document'] = {
+                'download': filename,
+                'type': mime_type,
+                'href': data_uri(stream, mime_type),
+            }
+        else:
+            raise ValueError("Unknown file type for %s" % filename)
 
     assign_submitter(value, content_type, indices,
                      {
@@ -466,7 +471,7 @@ def parse_document(testapp, alldata, content_type, indices, uuid, value, docsdir
     filename = value.pop('document_file_name')
     stream = open(find_doc(docsdir, filename), 'rb')
     _, ext = os.path.splitext(filename.lower())
-    if ext in ('.png', '.jpg', '.tiff'):
+    if ext in ('.png', '.jpg', '.tiff', '.tif'):
         value['document'] = image_data(stream, filename)
     elif ext == '.pdf':
         mime_type = 'application/pdf'
@@ -492,7 +497,6 @@ def parse_document(testapp, alldata, content_type, indices, uuid, value, docsdir
                      'award_no': value.pop('submitted_by_award_number')
                      }
                      )
-
 
 @parse_decorator_factory('treatment', {'value': 'treatment_name'})
 def parse_treatment(testapp, alldata, content_type, indices, uuid, value, docsdir):
@@ -602,7 +606,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     if sample is not None:
         value['related_biosample_uuid'] = indices['biosample'][sample]
         value['related_biosample_accession'] = sample
-        
+
 @parse_decorator_factory('platform', {'value': '_uuid'})
 def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir):
     geo_ids = value.pop('geo_dbxref_list')
@@ -610,7 +614,7 @@ def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir
     gpl_ids = geo_ids.split(';')
     for gpl_id in gpl_ids:
         value['gpl_ids'].append(gpl_id.strip())
-        
+
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
     alldata = extract(filename, sheets, test=test)
@@ -647,5 +651,5 @@ def load_all(testapp, filename, docsdir, test=False):
     indices['biosample'] = value_index(alldata['biosample'], 'accession')
 
     parse_biosample(testapp, alldata, indices, 'biosample', docsdir)
-    
+
     parse_platform(testapp, alldata, indices, 'platform', docsdir)
