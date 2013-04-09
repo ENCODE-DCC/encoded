@@ -605,11 +605,11 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
         
 @parse_decorator_factory('platform', {'value': '_uuid'})
 def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir):
-    gpl = value.pop('geo_dbxref_list')
+    geo_ids = value.pop('geo_dbxref_list')
     value['gpl_ids'] = []
-    gpl_ids = gpl.split(';')
-    for gpl in gpl_ids:
-        value['gpl_ids'].append(gpl.strip())
+    gpl_ids = geo_ids.split(';')
+    for gpl_id in gpl_ids:
+        value['gpl_ids'].append(gpl_id.strip())
         
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
