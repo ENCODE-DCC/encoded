@@ -23,7 +23,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'constructs/',
             'organisms/',
             'validations/',
-            'antibody-lots/'
+            'antibody-lots/',
+            'libraries/'
         ],
         generic: [
             'labs/:uuid',
@@ -35,7 +36,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'constructs/:uuid',
             'organisms/:uuid',
             'validations/:uuid',
-            'antibody-lots/:uuid'
+            'antibody-lots/:uuid',
+            'libraries/:uuid'
         ]
         //login: '#login'
         //logout: '#logout'
@@ -117,7 +119,7 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             {id: 'biosamples', title: 'Biosamples', url: '/biosamples/'},
             {id: 'targets', title: 'Targets', url: '/targets/'},
             {id: 'sources', title: 'Sources', url: '/sources/'},
-            {id: 'platforms', title: 'Platforms', url: '/platforms/'},
+            {id: 'platforms', title: 'Platforms', url: '/platforms/'}
        ],
         user_actions: [
             {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'},

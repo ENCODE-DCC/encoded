@@ -27,6 +27,7 @@ TYPE_URL = {
     'lab': '/labs/',
     'award': '/awards/',
     'platform': '/platforms/',
+    'library': '/libraries/',
     ##{ 'institute': '/institutes/'),
 }
 
@@ -161,7 +162,7 @@ def extract(filename, sheets, test=False):
             for col, value in row.iteritems():
                 if col.find('_list') < 0: continue
                 if not value:
-                    val_list = []  #oh so clanky, but str(None) = 'None'
+                    val_list = []  # oh so clanky, but str(None) = 'None'
                 else:
                     val_list = [v.strip() for v in (str(value) or '').split(';') if v]
                 if col.find('dbxref') >= 0:
@@ -543,7 +544,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     donor_uuid = indices['donor'][donor]
     if donor_uuid:
         try:
-            d = alldata['donor'][donor_uuid]
+            #d = alldata['donor'][donor_uuid]
             value['donor_uuid'] = donor_uuid
         except KeyError:
             raise ValueError('Unable to find donor for biosample: %s' % donor)
@@ -602,7 +603,8 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     if sample is not None:
         value['related_biosample_uuid'] = indices['biosample'][sample]
         value['related_biosample_accession'] = sample
-        
+
+
 @parse_decorator_factory('platform', {'value': '_uuid'})
 def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir):
     geo_ids = value.pop('geo_dbxref_list')
@@ -610,7 +612,49 @@ def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir
     gpl_ids = geo_ids.split(';')
     for gpl_id in gpl_ids:
         value['gpl_ids'].append(gpl_id.strip())
-        
+
+
+@parse_decorator_factory('library', {'value': '_uuid'})
+def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    value['biosample_uuid'] = ''
+    try:
+        biosample_accession = value.pop('biosample_accession')
+        biosample_uuid = indices['biosample'][biosample_accession]
+        try:
+            if alldata['biosample'].get(biosample_uuid, None) is None:
+                raise ValueError('Missing/skipped biosample reference')
+            value['biosample_uuid'] = biosample_uuid
+        except KeyError:
+            raise ValueError('Unable to find biosample for library: %s' % biosample_accession)
+    except KeyError:
+        raise ValueError('Missing biosample for library: %s' % uuid)
+
+    value['document_uuids'] = []
+
+    try:
+        documents = value.pop('document_list')
+
+        for doc in documents:
+            try:
+                document_uuid = indices['document'].get(doc, [])
+                if alldata['document'].get(document_uuid, None) is None:
+                    raise ValueError('Missing/skipped document reference %s for library: %s' % (document_uuid, uuid))
+                else:
+                    value['document_uuids'].append(document_uuid)
+            except KeyError:
+                raise ValueError('Unable to find document for library: %s' % doc)
+    except:
+        logger.warn('Empty library documents list: %s' % documents)
+
+    assign_submitter(value, content_type, indices,
+                     {
+                     'email': value.pop('submitted_by_colleague_email'),
+                     'lab_name': value.pop('submitted_by_lab'),
+                     'award_no': value.pop('submitted_by_award')
+                     }
+                     )
+
+
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
     alldata = extract(filename, sheets, test=test)
@@ -647,5 +691,7 @@ def load_all(testapp, filename, docsdir, test=False):
     indices['biosample'] = value_index(alldata['biosample'], 'accession')
 
     parse_biosample(testapp, alldata, indices, 'biosample', docsdir)
-    
+
     parse_platform(testapp, alldata, indices, 'platform', docsdir)
+
+    parse_library(testapp, alldata, indices, 'library', docsdir)
