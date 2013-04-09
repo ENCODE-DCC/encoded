@@ -1,5 +1,5 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'biosamples', 'targets', 'sources', 'navbar', 'generic'],
-function app(exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, navbar, generic) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'biosamples', 'targets', 'sources', 'platforms', 'navbar', 'generic'],
+function app(exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, platforms, navbar, generic) {
 
     var routes = {
         home: [''],
@@ -11,6 +11,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
         source: ['sources/:uuid'],
         biosamples: ['biosamples/'],
         biosample: ['biosamples/:uuid'],
+        platforms: ['platforms/'],
+        platform: ['platforms/:uuid'],
         generics: [
             'labs/',
             'users/',
@@ -114,7 +116,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             {id: 'antibodies', title: 'Antibodies', url: '/antibodies/'},
             {id: 'biosamples', title: 'Biosamples', url: '/biosamples/'},
             {id: 'targets', title: 'Targets', url: '/targets/'},
-            {id: 'sources', title: 'Sources', url: '/sources/'}
+            {id: 'sources', title: 'Sources', url: '/sources/'},
+            {id: 'platforms', title: 'Platforms', url: '/platforms/'},
        ],
         user_actions: [
             {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'},

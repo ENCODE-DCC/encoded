@@ -12,6 +12,7 @@ Feature: Toolbar
         And I should see an element with the css selector "#global-sections > li:not([class='active']) > a[href='/biosamples/']"
         And I should see an element with the css selector "#global-sections > li:not([class='active']) > a[href='/targets/']"
         And I should see an element with the css selector "#global-sections > li:not([class='active']) > a[href='/sources/']"
+        And I should see an element with the css selector "#global-sections > li:not([class='active']) > a[href='/platforms/']"
         And I should see an element with the css selector "#user-actions > li > #signin[href='#login']"
         And I should see an element with the css selector "#user-actions > li[style='display: none;'] > #signout[href='#logout']"
         And I should see "Welcome to ENCODE 3"
