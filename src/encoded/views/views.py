@@ -248,3 +248,11 @@ class AntibodyApproval(Collection):
             ],
     }
     embedded = set(['antibody_lot', 'target'])
+    
+@root.location('platforms')
+class Platform(Collection):
+    #schema = load_schema('award.json')
+    properties = {
+        'title': 'Platforms',
+        'description': 'Listing of Platforms',
+    }

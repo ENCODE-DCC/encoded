@@ -26,6 +26,7 @@ TYPE_URL = {
     'colleague': '/users/',
     'lab': '/labs/',
     'award': '/awards/',
+    'platform': '/platforms/',
     ##{ 'institute': '/institutes/'),
 }
 
@@ -601,8 +602,15 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     if sample is not None:
         value['related_biosample_uuid'] = indices['biosample'][sample]
         value['related_biosample_accession'] = sample
-
-
+        
+@parse_decorator_factory('platform', {'value': '_uuid'})
+def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    geo_ids = value.pop('geo_dbxref_list')
+    value['gpl_ids'] = []
+    gpl_ids = geo_ids.split(';')
+    for gpl_id in gpl_ids:
+        value['gpl_ids'].append(gpl_id.strip())
+        
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
     alldata = extract(filename, sheets, test=test)
@@ -639,3 +647,5 @@ def load_all(testapp, filename, docsdir, test=False):
     indices['biosample'] = value_index(alldata['biosample'], 'accession')
 
     parse_biosample(testapp, alldata, indices, 'biosample', docsdir)
+    
+    parse_platform(testapp, alldata, indices, 'platform', docsdir)
