@@ -8,7 +8,7 @@ import xlrd
 # http://www.lexicon.net/sjmachin/xlrd.html
 
 logger = logging.getLogger('encoded')
-logger.setLevel(logging.WARNING)  #doesn't work to shut off sqla INFO
+logger.setLevel(logging.WARNING)  # doesn't work to shut off sqla INFO
 
 TYPE_URL = {
     # TODO This has appears in 3 places... maybe it shoudl be configged
@@ -28,6 +28,7 @@ TYPE_URL = {
     'award': '/awards/',
     'platform': '/platforms/',
     'library': '/libraries/',
+    'assay': '/assays/',
     'replicate': '/replicates/',
     ##{ 'institute': '/institutes/'),
 }
@@ -608,6 +609,9 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
 
 @parse_decorator_factory('platform', {'value': '_uuid'})
 def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    ''' GEO Platform ID column is checked for multiple id's '''
+
     geo_ids = value.pop('geo_dbxref_list')
     value['gpl_ids'] = []
     gpl_ids = geo_ids.split(';')
@@ -617,6 +621,9 @@ def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir
 
 @parse_decorator_factory('library', {'value': '_uuid'})
 def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    ''' Biosample, documents and submitter are handled for library '''
+
     value['biosample_uuid'] = ''
     try:
         biosample_accession = value.pop('biosample_accession')
@@ -656,9 +663,14 @@ def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir)
                      )
 
 
+@parse_decorator_factory('assay', {'value': '_uuid'})
+def parse_assay(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    pass
+
+
 @parse_decorator_factory('replicate', {'value': '_uuid'})
 def parse_replicate(testapp, alldata, content_type, indices, uuid, value, docsdir):
-    print value
+    pass
 
 
 def load_all(testapp, filename, docsdir, test=False):
@@ -701,5 +713,7 @@ def load_all(testapp, filename, docsdir, test=False):
     parse_platform(testapp, alldata, indices, 'platform', docsdir)
 
     parse_library(testapp, alldata, indices, 'library', docsdir)
+
+    parse_assay(testapp, alldata, indices, 'assay', docsdir)
 
     parse_replicate(testapp, alldata, indices, 'replicate', docsdir)
