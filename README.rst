@@ -25,6 +25,12 @@ Run the Browser tests with::
 
     $ bin/test -k bdd -v -v
 
+To run tests with postgresql::
+
+    $ initdb encoded
+    $ bin/test --engine-url postgresql:///encoded
+
+
 Notes on SASS/Compass
 =====================
 

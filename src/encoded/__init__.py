@@ -46,6 +46,8 @@ def configure_engine(settings, test_setup=False):
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'sqlite':
         enable_sqlite_savepoints(engine)
+    elif engine.url.drivername == 'postgresql':
+        set_postgresql_statement_timeout(engine)
     if not test_setup:
         Base.metadata.create_all(engine)
         DBSession.configure(bind=engine)
@@ -65,6 +67,24 @@ def enable_sqlite_savepoints(engine):
 
     from zope.sqlalchemy.datamanager import NO_SAVEPOINT_SUPPORT
     NO_SAVEPOINT_SUPPORT.discard('sqlite')
+
+
+def set_postgresql_statement_timeout(engine, timeout=10 * 1000):
+    """ Prevent Postgres waiting indefinitely for a lock.
+    """
+    from sqlalchemy import event
+    import psycopg2
+
+    @event.listens_for(engine, 'connect')
+    def connect(dbapi_connection, connection_record):
+        cursor = dbapi_connection.cursor()
+        try:
+            cursor.execute("SET statement_timeout TO %d" % timeout)
+        except psycopg2.Error:
+            dbapi_connection.rollback()
+        finally:
+            cursor.close()
+            dbapi_connection.commit()
 
 
 def load_sample_data(app):
