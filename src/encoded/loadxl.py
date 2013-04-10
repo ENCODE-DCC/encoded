@@ -28,6 +28,7 @@ TYPE_URL = {
     'award': '/awards/',
     'platform': '/platforms/',
     'library': '/libraries/',
+    'replicate': '/replicates/',
     ##{ 'institute': '/institutes/'),
 }
 
@@ -655,6 +656,11 @@ def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir)
                      )
 
 
+@parse_decorator_factory('replicate', {'value': '_uuid'})
+def parse_replicate(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    print value
+
+
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
     alldata = extract(filename, sheets, test=test)
@@ -695,3 +701,5 @@ def load_all(testapp, filename, docsdir, test=False):
     parse_platform(testapp, alldata, indices, 'platform', docsdir)
 
     parse_library(testapp, alldata, indices, 'library', docsdir)
+
+    parse_replicate(testapp, alldata, indices, 'replicate', docsdir)

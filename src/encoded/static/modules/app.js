@@ -24,7 +24,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'organisms/',
             'validations/',
             'antibody-lots/',
-            'libraries/'
+            'libraries/',
+            'replicates/'
         ],
         generic: [
             'labs/:uuid',
@@ -37,7 +38,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'organisms/:uuid',
             'validations/:uuid',
             'antibody-lots/:uuid',
-            'libraries/:uuid'
+            'libraries/:uuid',
+            'replicates/:uuid'
         ]
         //login: '#login'
         //logout: '#logout'

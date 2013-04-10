@@ -271,3 +271,11 @@ class Library(Collection):
             {'href': '/documents/{document_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
         ],
     }
+
+
+@root.location('replicates')
+class Replicates(Collection):
+    properties = {
+        'title': 'Replicates',
+        'description': 'Listing of Replicates',
+    }
