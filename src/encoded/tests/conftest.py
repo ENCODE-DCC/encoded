@@ -24,6 +24,7 @@ import logging
 
 logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+logging.getLogger('selenium').setLevel(logging.DEBUG)
 
 
 def pytest_addoption(parser):
