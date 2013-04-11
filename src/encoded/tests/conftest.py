@@ -24,7 +24,7 @@ app_settings = {
 def pytest_configure():
     import logging
     logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
     logging.getLogger('selenium').setLevel(logging.DEBUG)
 
     class Shorten(logging.Filter):
