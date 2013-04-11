@@ -48,18 +48,23 @@ def pytest_configure(config):
     config.pluginmanager.register(bdd, 'bdd')
 
 
+class BehaveConfig(object):
+    verbose = False
+
+
 class BDDPlugin(object):
 
     def __init__(self, config):
-        self.config = config
+        self._config = config
         self.hooks = {}
         self._fixture_requests = []
+        self.config = BehaveConfig()
         self.context = behave.runner.Context(self)
         self.step_registry = behave.step_registry.registry
 
 #    @property
 #    def reporter(self):
-#        return self.config.pluginmanager.getplugin('terminalreporter')
+#        return self._config.pluginmanager.getplugin('terminalreporter')
 #
 #    @pytest.mark.tryfirst
 #    def pytest_runtest_logstart(self, nodeid, location):
@@ -228,14 +233,16 @@ class FixtureRequestMixin(object):
         self._request = BDDFixtureRequest(self)
         self._request.scope = self.fixture_scope
 
-    def _setup_fixtures(self):
+    def _setup_fixtures(self, scope=None):
+        if scope is None:
+            scope = self.fixture_scope
         # Ensure scoped fixtures are run in the correct behave context
         with self.runner.context.user_mode():
             for fixturename in self.fixturenames:
                 if fixturename == 'request':
                     continue
-                scope = self._fixtureinfo.name2fixturedefs[fixturename][-1].scope
-                if scopemismatch(self.fixture_scope, scope):
+                fixture_scope = self._fixtureinfo.name2fixturedefs[fixturename][-1].scope
+                if scopemismatch(scope, fixture_scope):
                     continue
                 self._request.getfuncargvalue(fixturename)
 
@@ -275,6 +282,7 @@ class Feature(FixtureRequestMixin, pytest.Collector):
         with runner.fixture_context(self._request):
             # Ensure that before_all / after_all get called
             runner.getfixture('context')
+            self._setup_fixtures('session')
 
         runner.context._push()
         runner.context.feature = feature
