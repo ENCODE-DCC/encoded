@@ -183,10 +183,7 @@ def value_index(data, attribute):
     for uuid, value in data.iteritems():
         index_value = resolve_dotted(value, attribute)
         if not index_value: continue
-        try:
-            assert index_value not in index, index_value
-        except:
-            import pdb;pdb.set_trace()
+        assert index_value not in index, index_value
         index[index_value] = uuid
     return index
 
@@ -436,14 +433,24 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
 
     value['validation_uuids'] = []
     filenames = value.pop('validation_filenames_list')
+    validations = set([])
     for filename in filenames:
         validation_uuids = indices['validation'].get(filename, [])
         for validation_uuid in validation_uuids:
-            if alldata['validation'].get(validation_uuid, None) is None:
+            val = alldata['validation'].get(validation_uuid, None)
+            if val is None:
                 logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
             else:
-                value['validation_uuids'].append(validation_uuid)
+                method = val['validation_method']
+                if (filename, method) not in validations:
+                    value['validation_uuids'].append(validation_uuid)
+                    validations.add((filename, method))
+                else:
+                    pass
+                    # frowny_gel is frowny because log files get clogged
+                    #logger.warn('Duplicate method/validation skipped: %s %s for approval' % (filename, method))
 
+    # make sure there are no duplicates
     assert len(set(value['validation_uuids'])) == len(value['validation_uuids'])
 
     try:
@@ -529,6 +536,8 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
 
     ''' MANDATORY FIELDS '''
     #value['organism_uuid'] = indices['organism'][value.pop('organism_no')]
+    #if uuid == '6d26ea14-2548-459b-bdd7-e7afb954e7e8':
+    #    import pdb;pdb.set_trace()
     source = value.pop('source')
     try:
         value['source_uuid'] = indices['source'][source]
@@ -564,7 +573,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
             value['treatment_uuids'].append(treatment_uuid)
         except KeyError:
             raise ValueError('Unable to find treatment for biosample: %s' % treat)
-    except KeyError:
+    except KeyError as k:
         pass
         # treatment is often null
 
@@ -575,14 +584,14 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
 
         for doc in documents:
             try:
-                document_uuid = indices['document'].get(doc, [])
+                document_uuid = indices['document'].get(doc, None)
                 if alldata['document'].get(document_uuid, None) is None:
-                    raise ValueError('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
+                    raise ValueError('Missing/skipped document reference %s for biosample: %s' % (doc, uuid))
                 else:
                     value['document_uuids'].append(document_uuid)
             except KeyError:
                 raise ValueError('Unable to find document for biosample: %s' % doc)
-    except:
+    except KeyError:
         logger.warn('Empty biosample documents list: %s' % documents)
 
     value['construct_uuids'] = []

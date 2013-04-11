@@ -11,13 +11,13 @@ COLLECTION_URLS = [
 ]
 
 COLLECTION_URL_LENGTH = {
-    '/awards/': 39,
+    '/awards/': 38,
     '/labs/': 42,
-    '/users/': 81,
+    '/users/': 82,
     '/sources/': 60,
-    '/targets/': 24,
-    '/antibody-lots/': 25,
-    '/validations/': 35,
+    '/targets/': 27,
+    '/antibody-lots/': 29,
+    '/validations/': 39,
     '/antibodies/': 25,
     '/donors/': 72,
     '/documents/': 120,
