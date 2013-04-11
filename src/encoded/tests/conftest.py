@@ -105,7 +105,32 @@ def testapp(request, app, external_tx, zsa_savepoints):
 @fixture(scope='session')
 def _server(request, app, zsa_savepoints):
     from webtest.http import StopableWSGIServer
-    server = StopableWSGIServer.create(app, threads=1)
+    import threading
+    from webtest.http import get_free_port
+
+    def create(cls, application, **kwargs):
+        """Start a server to serve ``application``. Return a server
+        instance."""
+        host, port = get_free_port()
+        kwargs['port'] = port
+        if 'host' not in kwargs:
+            kwargs['host'] = host
+        if 'expose_tracebacks' not in kwargs:
+            kwargs['expose_tracebacks'] = True
+        server = cls(application, **kwargs)
+        server.runner = threading.Thread(target=server.run)
+        server.runner.daemon = True
+        server.runner.start()
+        return server
+
+    server = create(
+        StopableWSGIServer,
+        app,
+        threads=1,
+        channel_timeout=60,
+        cleanup_interval=10,
+        expose_tracebacks=True,
+    )
     assert server.wait()
 
     @request.addfinalizer
