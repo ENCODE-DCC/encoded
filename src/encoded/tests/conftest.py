@@ -105,7 +105,7 @@ def testapp(request, app, external_tx, zsa_savepoints):
 @fixture(scope='session')
 def _server(request, app, zsa_savepoints):
     from webtest.http import StopableWSGIServer
-    server = StopableWSGIServer.create(app)
+    server = StopableWSGIServer.create(app, threads=1)
     assert server.wait()
 
     @request.addfinalizer
