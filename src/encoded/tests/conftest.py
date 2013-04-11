@@ -29,11 +29,11 @@ def pytest_configure():
 
     class Shorten(logging.Filter):
         max_len = 500
-        def filter(self, record):
 
+        def filter(self, record):
             if record.msg == '%r':
                 record.msg = record.msg % record.args
-                record.args = () 
+                record.args = ()
             if len(record.msg) > self.max_len:
                 record.msg = record.msg[:self.max_len] + '...'
             return True
