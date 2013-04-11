@@ -2,6 +2,12 @@
 ENCODE Metadata Database
 ========================
 
+|Build status|_
+
+.. |Build status| image:: https://travis-ci.org/ENCODE-DCC/encoded.png?branch=master
+.. _Build status: https://travis-ci.org/ENCODE-DCC/encoded
+
+
 *Note: the default Mac python doesn't seem to work. You might want to install Python with Homebrew and you may need to sintall one of more of (using homebrew): libxml2 libxslt freetype openssl libjpeg.*
 
 First run buildout::
