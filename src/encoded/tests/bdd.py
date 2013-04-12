@@ -264,7 +264,7 @@ class Feature(FixtureRequestMixin, pytest.Collector):
         self._init_fixtures(markers)
 
     def reportinfo(self):
-        return self.fspath, self.model.line, self.name
+        return self.fspath, self.model.line - 1, self.name
 
     def collect(self):
         from behave import model
@@ -320,7 +320,7 @@ class ScenarioOutline(FixtureRequestMixin, pytest.Collector):
         self._init_fixtures()
 
     def reportinfo(self):
-        return self.fspath, self.model.line, self.name
+        return self.fspath, self.model.line - 1, self.name
 
     @property
     def runner(self):
@@ -356,7 +356,7 @@ class Scenario(FixtureRequestMixin, pytest.Collector):
         self._init_fixtures(markers)
 
     def reportinfo(self):
-        return self.fspath, self.model.line, self.name
+        return self.fspath, self.model.line - 1, self.name
 
     @property
     def runner(self):
@@ -431,7 +431,7 @@ class Step(FixtureRequestMixin, pytest.Item):
         self._init_fixtures()
 
     def reportinfo(self):
-        return self.fspath, self.model.line, self.name
+        return self.fspath, self.model.line - 1, self.name
 
     @property
     def runner(self):
