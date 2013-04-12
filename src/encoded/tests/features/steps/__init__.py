@@ -18,6 +18,16 @@ def should_see_element_with_css_and_text(context, css, text):
 def click_element(context, css):
     elements = context.browser.find_by_css(css)
     assert len(elements) == 1
+
+    # Scroll element to middle of window so webdriver does not scroll the
+    # element underneath the floating header.
+    context.browser.execute_script("window.scrollTo(0, 0);")
+    location = elements.first._element.location  # webdriver element
+    size = context.browser.driver.get_window_size()
+    x = location['x'] - (size['width'] / 2)
+    y = location['y'] - (size['height'] / 2)
+    context.browser.execute_script("window.scrollTo(%d, %d);" % (x, y))
+
     elements.first.click()
 
 
