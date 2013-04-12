@@ -12,12 +12,14 @@ Feature: Biosamples
         When I visit "/biosamples/"
         And I wait for the table to fully load
         When I click the element with the css selector "tr[data-href='/biosamples/4c1e9780-cc19-4553-b9fe-8ded24af8ff9'] td:first-child"
-        Then I should see an element with the css selector "#biosample-data[class='panel data-display']"
+        Then the browser's URL should be "/biosamples/4c1e9780-cc19-4553-b9fe-8ded24af8ff9"
+        And I should see an element with the css selector "#biosample-data[class='panel data-display']"
         And I should see "ENCODE2 Project, UCSC"
         And I should see "ENCODE2-Mouse"
 
         When I go back
-        Then I should see an element with the css selector "table.sticky-area > tbody > tr"
+        Then the browser's URL should be "/biosamples/"
+        And I should see an element with the css selector "table.sticky-area > tbody > tr"
 
     Scenario: Table
         When I visit "/biosamples/"
