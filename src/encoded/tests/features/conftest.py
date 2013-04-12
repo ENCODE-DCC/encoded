@@ -38,8 +38,8 @@ def before_scenario(request, context, scenario):
 
 #@pytest.fixture(scope='subfunction', autouse=True)
 def before_step(request, context, step):
-    print '\n\n---------BEFORE STEP--------\n\n'
 
     @request.addfinalizer
     def after_step():
-        print '\n\n---------AFTER STEP--------\n\n'
+        if step.status == 'failed':
+            context.browser.driver.save_screenshot('failed_step.png')
