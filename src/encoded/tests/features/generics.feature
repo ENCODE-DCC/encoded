@@ -1,9 +1,6 @@
 @generics @usefixtures(workbook)
 Feature: Generics
 
-    Background:
-        Given a browser
-
     Scenario: Labs
         When I visit "/labs/"
         Then I should see an element with the css selector "table.sticky-area"

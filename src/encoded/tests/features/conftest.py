@@ -8,15 +8,21 @@ def scenario_tx(external_tx):
     pass
 
 
-#@pytest.fixture(scope='session')
-def browser(context, before_all):
+@pytest.fixture(scope='session', autouse=True)
+def set_webdriver(request, context):
+    context.default_browser = request.config.option.webdriver
+
+
+@pytest.fixture(scope='session', autouse=True)
+def browser(context, before_all, set_webdriver):
     from behaving.web.steps.browser import given_a_browser
     # context.default_browser = 'remote'
     given_a_browser(context)
+    context.browser.driver.set_window_size(1024, 768)
 
 
 # These are equivalent to the environment.py hooks
-#@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 def before_all(request, _server, context):
     import behaving.web
     behaving.web.setup(context)

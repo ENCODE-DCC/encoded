@@ -1,9 +1,6 @@
 @sources @usefixtures(workbook)
 Feature: Sources
 
-    Background:
-        Given a browser
-
     Scenario: Active section
         When I visit "/sources/"
         Then the "/sources/" section should be active

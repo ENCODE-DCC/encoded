@@ -1,9 +1,6 @@
 @antibodies @usefixtures(workbook)
 Feature: Antibodies
 
-    Background:
-        Given a browser
-
     Scenario: Active section
         When I visit "/antibodies/"
         Then the "/antibodies/" section should be active

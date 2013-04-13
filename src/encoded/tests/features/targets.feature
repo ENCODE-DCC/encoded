@@ -1,9 +1,6 @@
 @targets @usefixtures(workbook)
 Feature: Targets
 
-    Background:
-        Given a browser
-
     Scenario: Active section
         When I visit "/targets/"
         Then the "/targets/" section should be active

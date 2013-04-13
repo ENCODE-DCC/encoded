@@ -1,9 +1,6 @@
 @platforms @usefixtures(workbook)
 Feature: Platforms
 
-    Background:
-        Given a browser
-
     Scenario: Active section
         When I visit "/platforms/"
         Then the "/platforms/" section should be active

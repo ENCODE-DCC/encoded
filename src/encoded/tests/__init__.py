@@ -3,3 +3,4 @@
 
 def pytest_addoption(parser):
     parser.addoption('--engine-url', dest='engine_url', default='sqlite://')
+    parser.addoption('--webdriver', dest='webdriver', default='')

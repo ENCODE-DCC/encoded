@@ -1,9 +1,6 @@
 @biosamples @usefixtures(workbook)
 Feature: Biosamples
 
-    Background:
-        Given a browser
-
     Scenario: Active section
         When I visit "/biosamples/"
         Then the "/biosamples/" section should be active

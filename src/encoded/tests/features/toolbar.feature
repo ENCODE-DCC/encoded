@@ -1,9 +1,6 @@
 @toolbar
 Feature: Toolbar
 
-    Background:
-        Given a browser
-
     Scenario: Active section
         When I visit "/"
         Then I should see an element with the css selector "#global-sections > li.active > a[href='/']"
