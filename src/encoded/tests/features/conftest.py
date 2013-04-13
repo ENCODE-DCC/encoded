@@ -36,10 +36,18 @@ def before_scenario(request, context, scenario):
         pass
 
 
-#@pytest.fixture(scope='subfunction', autouse=True)
+@pytest.fixture(scope='subfunction', autouse=True)
 def before_step(request, context, step):
 
     @request.addfinalizer
     def after_step():
-        if step.status == 'failed':
-            context.browser.driver.save_screenshot('failed_step.png')
+        import textwrap
+        if step.status != 'failed':
+            return
+        print('')
+        print("=" * 70)
+        print("  Screenshot URL: %s" % context.browser.url)
+        print("-" * 70)
+        screenshot = context.browser.driver.get_screenshot_as_base64()
+        print '\n'.join(textwrap.wrap('data:image/png;base64,' + screenshot))
+        print("=" * 70)
