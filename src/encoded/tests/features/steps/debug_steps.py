@@ -1,8 +1,13 @@
-from behave import then
+from behave import step
 
 
-@then('I debug')
-def i_debug(context):
-    import pdb
-    pdb.set_trace()
+@step('I debug')
+def debug(context):
+    import pytest
+    pytest.set_trace()
     pass
+
+
+@step('I fail')
+def fail(context):
+    assert False
