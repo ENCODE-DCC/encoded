@@ -279,3 +279,8 @@ class Replicates(Collection):
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
+    links = {
+        'biosample': {'href': '/biosamples/{biosample_uuid}', 'templated': True},
+        'library': {'href': '/libraries/{library_uuid}', 'templated': True},
+        'platform': {'href': '/platforms/{platform_uuid}', 'templated': True},
+    }
