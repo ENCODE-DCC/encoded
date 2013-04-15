@@ -164,7 +164,7 @@ def extract(filename, sheets, test=False):
             for col, value in row.iteritems():
                 if col.find('_list') < 0: continue
                 if not value:
-                    val_list = []  #oh so clanky, but str(None) = 'None'
+                    val_list = []  # oh so clanky, but str(None) = 'None'
                 else:
                     val_list = [v.strip() for v in (str(value) or '').split(';') if v]
                 if col.find('dbxref') >= 0:
@@ -173,7 +173,10 @@ def extract(filename, sheets, test=False):
                     row[col] = val_list
 
             if dbxs: row['dbxref'] = dbxs
-            data[uuid] = row
+            if data.get(uuid, None) is None:
+                data[uuid] = row
+            else:
+                logger.warn("Duplicate UUIDs for %s: (%s) first: %s" % (name, uuid, row))
         alldata['COUNTS'][name] = len(data.keys())
     return alldata
 
