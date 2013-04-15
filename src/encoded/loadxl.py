@@ -622,7 +622,7 @@ def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir
 @parse_decorator_factory('library', {'value': '_uuid'})
 def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
-    ''' Biosample, documents and submitter are handled for library '''
+    ''' Biosample, documents and submitter are MANDATORY FIELDS for library '''
 
     value['biosample_uuid'] = ''
     try:
@@ -665,12 +665,48 @@ def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir)
 
 @parse_decorator_factory('assay', {'value': '_uuid'})
 def parse_assay(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    #TBD: Handle assay types and fields
     pass
 
 
 @parse_decorator_factory('replicate', {'value': '_uuid'})
 def parse_replicate(testapp, alldata, content_type, indices, uuid, value, docsdir):
-    pass
+
+    ''' MANDATORY FIELDS for a replicate '''
+
+    #TBD: Code to handle assay_type
+    value['biosample_uuid'] = ''
+    try:
+        biosample_accession = value.pop('biosample_accession')
+        biosample_uuid = indices['biosample'][biosample_accession]
+        try:
+            if alldata['biosample'].get(biosample_uuid, None) is None:
+                raise ValueError('Missing/skipped biosample reference')
+            value['biosample_uuid'] = biosample_uuid
+        except KeyError:
+            raise ValueError('Unable to find biosample for replicate: %s' % biosample_accession)
+    except KeyError:
+        raise ValueError('Missing biosample for replicate: %s' % uuid)
+
+    # Checking for library reference
+    if value['library_uuid'] is None:
+        raise ValueError('Missing library UUID for replicate %s' % uuid)
+    else:
+        try:
+            if alldata['library'].get(value['library_uuid'], None) is None:
+                raise ValueError('Missing/skipped library reference')
+        except KeyError:
+            raise ValueError('Unable to find library reference for replicate: %s' % uuid)
+
+    # Checking for platform reference
+    if value['platform_uuid'] is None:
+        raise ValueError('Missing platform UUID for replicate %s' % uuid)
+    else:
+        try:
+            if alldata['platform'].get(value['platform_uuid'], None) is None:
+                raise ValueError('Missing/skipped platform reference')
+        except KeyError:
+            raise ValueError('Unable to find platform reference for replicate: %s' % uuid)
 
 
 def load_all(testapp, filename, docsdir, test=False):
