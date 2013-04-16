@@ -273,14 +273,25 @@ class Library(Collection):
     }
 
 
+@root.location('assays')
+class Assays(Collection):
+    properties = {
+        'title': 'Assays',
+        'description': 'Listing of Assays',
+    }
+
+
 @root.location('replicates')
 class Replicates(Collection):
     properties = {
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
-    links = {
-        'biosample': {'href': '/biosamples/{biosample_uuid}', 'templated': True},
-        'library': {'href': '/libraries/{library_uuid}', 'templated': True},
-        'platform': {'href': '/platforms/{platform_uuid}', 'templated': True},
+
+
+@root.location('experiments')
+class Experiments(Collection):
+    properties = {
+        'title': 'Experiments',
+        'description': 'Listing of Experiments',
     }

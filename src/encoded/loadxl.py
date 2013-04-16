@@ -30,6 +30,7 @@ TYPE_URL = {
     'library': '/libraries/',
     'assay': '/assays/',
     'replicate': '/replicates/',
+    'experiment': '/experiments/',
     ##{ 'institute': '/institutes/'),
 }
 
@@ -638,7 +639,6 @@ def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir)
         raise ValueError('Missing biosample for library: %s' % uuid)
 
     value['document_uuids'] = []
-
     try:
         documents = value.pop('document_list')
 
@@ -652,7 +652,7 @@ def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir)
             except KeyError:
                 raise ValueError('Unable to find document for library: %s' % doc)
     except:
-        logger.warn('Empty library documents list: %s' % documents)
+        logger.warn('Document for library %s is not found: %s' % (uuid, documents))
 
     assign_submitter(value, content_type, indices,
                      {
@@ -663,9 +663,8 @@ def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir)
                      )
 
 
-@parse_decorator_factory('assay', {'value': '_uuid'})
+@parse_decorator_factory('assay', {'value': 'assay_name'})
 def parse_assay(testapp, alldata, content_type, indices, uuid, value, docsdir):
-    #TBD: Handle assay types and fields
     pass
 
 
@@ -674,19 +673,19 @@ def parse_replicate(testapp, alldata, content_type, indices, uuid, value, docsdi
 
     ''' MANDATORY FIELDS for a replicate '''
 
-    #TBD: Code to handle assay_type
-    value['biosample_uuid'] = ''
+    # Checking for assay reference
+    value['assay_uuid'] = ''
     try:
-        biosample_accession = value.pop('biosample_accession')
-        biosample_uuid = indices['biosample'][biosample_accession]
+        assay_name = value.pop('assay_type')
+        assay_uuid = indices['assay'][assay_name]
         try:
-            if alldata['biosample'].get(biosample_uuid, None) is None:
-                raise ValueError('Missing/skipped biosample reference')
-            value['biosample_uuid'] = biosample_uuid
+            if alldata['assay'].get(assay_uuid, None) is None:
+                raise ValueError('Missing/skipped assay reference')
+            value['assay_uuid'] = assay_uuid
         except KeyError:
-            raise ValueError('Unable to find biosample for replicate: %s' % biosample_accession)
+            raise ValueError('Unable to find assay for replicate: %s' % assay_name)
     except KeyError:
-        raise ValueError('Missing biosample for replicate: %s' % uuid)
+        raise ValueError('Unable to find assay reference for replicate: %s' % uuid)
 
     # Checking for library reference
     if value['library_uuid'] is None:
@@ -707,6 +706,11 @@ def parse_replicate(testapp, alldata, content_type, indices, uuid, value, docsdi
                 raise ValueError('Missing/skipped platform reference')
         except KeyError:
             raise ValueError('Unable to find platform reference for replicate: %s' % uuid)
+
+
+@parse_decorator_factory('experiment', {'value': '_uuid'})
+def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    pass
 
 
 def load_all(testapp, filename, docsdir, test=False):
@@ -753,3 +757,5 @@ def load_all(testapp, filename, docsdir, test=False):
     parse_assay(testapp, alldata, indices, 'assay', docsdir)
 
     parse_replicate(testapp, alldata, indices, 'replicate', docsdir)
+
+    #parse_experiment(testapp, alldata, indices, 'experimemt', docsdir)

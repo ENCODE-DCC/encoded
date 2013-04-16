@@ -123,7 +123,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             {id: 'biosamples', title: 'Biosamples', url: '/biosamples/'},
             {id: 'targets', title: 'Targets', url: '/targets/'},
             {id: 'sources', title: 'Sources', url: '/sources/'},
-            {id: 'platforms', title: 'Platforms', url: '/platforms/'}
+            {id: 'platforms', title: 'Platforms', url: '/platforms/'},
+            {id: 'experiments', title: 'Experiments', url: '/experiments/'}
        ],
         user_actions: [
             {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'},
