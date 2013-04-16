@@ -18,8 +18,8 @@ Feature: Targets
         And I should not see "null"
 
         When I fill in "table-filter" with "mouse"
-        Then I should see an element with the css selector "tr[class='odd'],tr[class='even'] > a[href='/targets/a1b236fc-38d5-4af5-a140-ede8bb6327c8']" within 1 seconds
-        And I should see an element with the css selector "tr[class='odd hidden'],tr[class='even hidden'] > a[href='/targets/c21f310f-fb91-4505-b62c-c8c707696827']"
+        Then I should see an element with the css selector "tr:not(.hidden) a[href='/targets/a1b236fc-38d5-4af5-a140-ede8bb6327c8']" within 1 seconds
+        And I should see an element with the css selector "tr.hidden a[href='/targets/c21f310f-fb91-4505-b62c-c8c707696827']"
         And I should see exactly one element with the css selector "#table-count" containing the text "9"
 
 

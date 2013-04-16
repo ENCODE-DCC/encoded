@@ -28,16 +28,16 @@ Feature: Biosamples
         And I should see an element with the css selector "tr[data-href='/biosamples/4c1e9780-cc19-4553-b9fe-8ded24af8ff9']"
 
         When I fill in "table-filter" with "Immortal"
-        Then I should see an element with the css selector "tr[class='odd'],tr[class='even'] > a[href='/biosamples/660f6f11-b18f-4e50-b377-a76270e255cc']" within 1 seconds
-        And I should see an element with the css selector "tr[class='odd hidden'],tr[class='even hidden'] > a[href='/biosamples/4b9c490d-7147-42ff-aa25-9390c9d1e2bf']"
+        Then I should see an element with the css selector "tr:not(.hidden) a[href='/biosamples/6b9a8e74-1d0b-413e-9015-87d519805515']" within 1 seconds
+        And I should see an element with the css selector "tr.hidden a[href='/biosamples/aa965872-9e45-4d76-b295-bec6e4fe2517']"
         And I should see exactly one element with the css selector "#table-count" containing the text "18"
 
         When I fill in "table-filter" with "Tissue"
-        Then I should see an element with the css selector "tr[class='odd'],tr[class='even'] > a[href='/biosamples/aa965872-9e45-4d76-b295-bec6e4fe2517']" within 1 seconds
-        And I should see an element with the css selector "tr[class='odd hidden'],tr[class='even hidden'] > a[href='/biosamples/4b9c490d-7147-42ff-aa25-9390c9d1e2bf']"
+        Then I should see an element with the css selector "tr:not(.hidden) a[href='/biosamples/aa965872-9e45-4d76-b295-bec6e4fe2517']" within 1 seconds
+        And I should see an element with the css selector "tr.hidden a[href='/biosamples/6b9a8e74-1d0b-413e-9015-87d519805515']"
         And I should see exactly one element with the css selector "#table-count" containing the text "48"
 
         When I fill in "table-filter" with "Primary"
-        Then I should see an element with the css selector "tr[class='odd'],tr[class='even'] > a[href='/biosamples/3fd1abe6-b066-4ef4-85e6-75d867a5d448']" within 1 seconds
-        And I should see an element with the css selector "tr[class='odd hidden'],tr[class='even hidden'] > a[href='/biosamples/4b9c490d-7147-42ff-aa25-9390c9d1e2bf']"
+        Then I should see an element with the css selector "tr:not(.hidden) a[href='/biosamples/3fd1abe6-b066-4ef4-85e6-75d867a5d448']" within 1 seconds
+        And I should see an element with the css selector "tr.hidden a[href='/biosamples/6b9a8e74-1d0b-413e-9015-87d519805515']"
         And I should see exactly one element with the css selector "#table-count" containing the text "69"
