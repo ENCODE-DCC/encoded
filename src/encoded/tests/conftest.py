@@ -41,10 +41,6 @@ def pytest_configure():
     logging.getLogger('sqlalchemy.engine.base.Engine').addFilter(Shorten())
 
 
-def pytest_addoption(parser):
-    parser.addoption('--engine-url', dest='engine_url', default='sqlite://')
-
-
 @fixture
 def config(request):
     from pyramid.testing import setUp, tearDown
