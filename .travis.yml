@@ -17,4 +17,5 @@ install: "python bootstrap.py && bin/buildout"
 script: |-
   bin/test -v -v --timeout=200 --remote-webdriver \
   --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
-  --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER"
+  --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
+  --browser-arg-int wait_time 5
