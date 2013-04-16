@@ -4,5 +4,9 @@ python:
 before_script:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
+  - "wget https://chromedriver.googlecode.com/files/chromedriver_linux32_26.0.1383.0.zip -O chromedriver.zip"
+  - "unzip chromedriver.zip"
+  - "sudo cp chromedriver /usr/local/bin"
+  - "sudo chmod 755 /usr/local/bin/chromedriver"
 install: "python bootstrap.py && bin/buildout"
-script: "bin/test -v -v -s --timeout=200"
+script: "bin/test -v -v -s --timeout=200 --webdriver=chrome"
