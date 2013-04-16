@@ -1,12 +1,20 @@
 language: python
 python:
   - "2.7"
+env: 
+  global: 
+    - secure: |-
+      Ipz6Oxg8S/0lWSVH0bKSGf+EMir/qxK542ITsCTIxp2QuxlIuSC1YXrfrzNj
+      ggXxOFrD1mTU2vQs5CoTl7U55XjJq8OdbGxwLYFCJhNfmufXbWwycpczBWEI
+      dPG9RJaLcfdgGp7FRx1RkcqbVhnlTYnJcGRfbKBDKyGdyOjq048=
+    - secure: |-
+      qRVI8Sz7UQOVPMskft0mWi7/ionkz1/u9sSRjGW4Ifa27khTuMw2uEmbfvPq
+      Y4oaiSDs6Y84v04ef9M5COo119FzpyGJ2Sro7LN3akGqdazihIzpnVL92KOg
+      0HdlWNdaSNRdUFt9FH6nDCUiX8ZMLQIcE1cS202c7NHZNCoSmBE=
 before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - "wget https://chromedriver.googlecode.com/files/chromedriver_linux32_26.0.1383.0.zip -O chromedriver.zip"
-  - "unzip chromedriver.zip"
-  - "sudo cp chromedriver /usr/local/bin"
-  - "sudo chmod 755 /usr/local/bin/chromedriver"
+  - "curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash"
 install: "python bootstrap.py && bin/buildout"
-script: "bin/test -v -v -s --timeout=200 --webdriver=chrome"
+script: |-
+  bin/test -v -v --timeout=200 --remote-webdriver \
+  --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
+  --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER"

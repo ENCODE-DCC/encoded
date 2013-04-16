@@ -10,7 +10,9 @@ def scenario_tx(external_tx):
 
 @pytest.fixture(scope='session', autouse=True)
 def set_webdriver(request, context):
-    context.default_browser = request.config.option.webdriver
+    context.default_browser = request.config.option.browser
+    context.remote_webdriver = request.config.option.remote_webdriver
+    context.browser_args = dict(request.config.option.browser_args)
 
 
 @pytest.fixture(scope='session', autouse=True)
