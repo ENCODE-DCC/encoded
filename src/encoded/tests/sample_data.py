@@ -200,6 +200,16 @@ AWARDS = [
     },
 ]
 
+BAD_AWARDS = [  # UUID same as one of labs
+    {
+    '_uuid': '529e3e74-3caa-4842-ae64-18c8720e610e',
+    'name': 'ENCODE3-DCC',
+    },
+    {
+    '_uuid': 'b635b4ed-dba3-4672-ace9-11d76a8d03af',
+    'name': 'Myers',
+    },
+]
 LABS = [
     {
     '_uuid': '2c334112-288e-4d45-9154-3f404c726daf',
@@ -208,6 +218,19 @@ LABS = [
     },
     {
     '_uuid': 'b635b4ed-dba3-4672-ace9-11d76a8d03af',
+    'name': 'Myers Lab',
+    'instituition': 'HudsonAlpha Institute for Biotechnology'
+    },
+]
+
+BAD_LABS = [  # same UUID
+    {
+    '_uuid': '2c334112-288e-4d45-9154-3f404c726daf',
+    'name': 'Cherry Lab',
+    'instituition': 'Stanford University'
+    },
+    {
+    '_uuid': '2c334112-288e-4d45-9154-3f404c726daf',
     'name': 'Myers Lab',
     'instituition': 'HudsonAlpha Institute for Biotechnology'
     },
