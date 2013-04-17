@@ -652,7 +652,7 @@ def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir)
             except KeyError:
                 raise ValueError('Unable to find document for library: %s' % doc)
     except:
-        logger.warn('Document for library %s is not found: %s' % (uuid, documents))
+        logger.warn('Document %s for library  %s are not found' % (documents, uuid))
 
     assign_submitter(value, content_type, indices,
                      {
