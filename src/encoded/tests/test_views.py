@@ -8,6 +8,7 @@ COLLECTION_URLS = [
     '/sources/',
     '/validations/',
     '/antibody-lots/',
+    '/platforms/'
 ]
 
 COLLECTION_URL_LENGTH = {
@@ -24,6 +25,10 @@ COLLECTION_URL_LENGTH = {
     '/treatments/': 7,
     '/constructs/': 5,
     '/biosamples/': 135,
+    '/platforms/': 11,
+    '/libraries/': 53,
+    '/assays/': 3,
+    '/replicates/': 84,
 }
 
 COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
