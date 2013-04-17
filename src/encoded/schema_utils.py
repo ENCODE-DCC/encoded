@@ -9,12 +9,12 @@ class SchemaValidator(jsonschema.Draft4Validator):
 
 
 def load_schema(filename):
-    schema = json.load(resource_stream(__name__,  'schemas/' + filename))
+    schema = json.load(resource_stream(__name__, 'schemas/' + filename))
     return SchemaValidator(schema)
 
 
 def basic_schema(value, null_type='string', template=None, nullable=all,
-    _key=None):
+                 _key=None):
 
     # recursing paramaters
     params = locals().copy()
@@ -26,7 +26,7 @@ def basic_schema(value, null_type='string', template=None, nullable=all,
             ('title', ''),
             ('description', ''),
             ('default', None),
-            ])
+        ])
 
     def templated(data):
         out = template.copy()
@@ -56,7 +56,7 @@ def basic_schema(value, null_type='string', template=None, nullable=all,
         return templated({
             'type': 'object',
             'properties': properties,
-            })
+        })
     elif isinstance(value, list):
         _key = _key + '[]' if _key else '[]'
         if value:
@@ -66,6 +66,6 @@ def basic_schema(value, null_type='string', template=None, nullable=all,
         return templated({
             'type': 'array',
             'items': basic_schema(item, _key=_key, **params),
-            })
+        })
     else:
         raise ValueError(value)

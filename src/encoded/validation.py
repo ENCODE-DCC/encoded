@@ -52,7 +52,7 @@ def failed_validation(exc, request):
     return {
         'status': 'error',
         'errors': list(request.errors),
-        }
+    }
 
 
 def prepare_validators(validators):

@@ -1,7 +1,7 @@
 from pyramid.path import (
     DottedNameResolver,
     caller_package,
-    )
+)
 
 
 class NamespacedAuthenticationPolicy(object):
@@ -40,14 +40,14 @@ class NamespacedAuthenticationPolicy(object):
         name = 'Namespaced_%s_%s' % (namespace, base.__name__)
         klass = type(name, (cls, base), {'_namespace_prefix': namespace + ':'})
         return super(NamespacedAuthenticationPolicy, klass) \
-                                                .__new__(klass, *args, **kw)
+            .__new__(klass, *args, **kw)
 
     def __init__(self, namespace, base, *args, **kw):
         super(NamespacedAuthenticationPolicy, self).__init__(*args, **kw)
 
     def unauthenticated_userid(self, request):
         userid = super(NamespacedAuthenticationPolicy, self) \
-                                            .unauthenticated_userid(request)
+            .unauthenticated_userid(request)
         if userid is not None:
             userid = self._namespace_prefix + userid
         return userid
@@ -57,4 +57,4 @@ class NamespacedAuthenticationPolicy(object):
             return []
         principal = principal[len(self._namespace_prefix):]
         return super(NamespacedAuthenticationPolicy, self) \
-                                            .remember(request, principal, **kw)
+            .remember(request, principal, **kw)

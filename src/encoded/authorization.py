@@ -1,7 +1,7 @@
 from .storage import (
     DBSession,
     UserMap,
-    )
+)
 
 
 def groupfinder(login, request):

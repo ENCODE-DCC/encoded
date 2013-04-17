@@ -1,12 +1,12 @@
 from pyramid.events import (
     ContextFound,
     subscriber,
-    )
+)
 from pyramid.httpexceptions import (
     HTTPForbidden,
     HTTPInternalServerError,
     HTTPNotFound,
-    )
+)
 from pyramid.location import lineage
 from pyramid.security import (
     Allow,
