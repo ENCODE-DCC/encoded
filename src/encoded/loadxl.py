@@ -30,6 +30,7 @@ TYPE_URL = {
     'library': '/libraries/',
     'assay': '/assays/',
     'replicate': '/replicates/',
+    'file': '/files/',
     'experiment': '/experiments/',
     ##{ 'institute': '/institutes/'),
 }
@@ -275,7 +276,6 @@ def parse_decorator_factory(content_type, index_type):
     def parse_sheet(parse_type):
 
         def wrapped(testapp, alldata, indices, content_type, docsdir):
-
             for uuid, value in list(alldata[content_type].iteritems()):
 
                 try:  # one big error handle
@@ -708,9 +708,47 @@ def parse_replicate(testapp, alldata, content_type, indices, uuid, value, docsdi
             raise ValueError('Unable to find platform reference for replicate: %s' % uuid)
 
 
+@parse_decorator_factory('file', {'value': '_uuid'})
+def parse_file(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    ''' MANDATORY FIELDS for file '''
+
+    # Check for replicate reference
+    try:
+        if alldata['replicate'].get(value['replicate_uuid'], None) is None:
+            raise ValueError('Missing/skipped replicate reference')
+    except KeyError:
+        raise ValueError('Unable to find replicate for file: %s' % uuid)
+
+    # Check for experiment reference
+    try:
+        if value['experiment_dataset_uuid'] not in indices['experiment']:
+            raise ValueError('Missing/skipped experiment reference')
+    except KeyError:
+        raise ValueError('Unable to find experiment for file: %s' % uuid)
+
+
 @parse_decorator_factory('experiment', {'value': '_uuid'})
 def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsdir):
-    pass
+
+    ''' MANDATORY FIELDS for experiment '''
+
+    value['files_uuids'] = []
+
+    for file in alldata['file']:
+        # import pdb; pdb.set_trace();
+        if alldata['file'][file]['experiment_dataset_uuid'] == value['_uuid']:
+            value['files_uuids'].append(file['_uuid'])
+        else:
+            pass
+
+    assign_submitter(value, content_type, indices,
+                     {
+                     'email': value.pop('submitted_by_colleague_email'),
+                     'lab_name': value.pop('submitted_by_lab_name'),
+                     'award_no': value.pop('submitted_by_award_number')
+                     }
+                     )
 
 
 def load_all(testapp, filename, docsdir, test=False):
@@ -758,4 +796,8 @@ def load_all(testapp, filename, docsdir, test=False):
 
     parse_replicate(testapp, alldata, indices, 'replicate', docsdir)
 
-    #parse_experiment(testapp, alldata, indices, 'experimemt', docsdir)
+    indices['experiment'] = value_index(alldata['experiment'], '_uuid')
+
+    parse_file(testapp, alldata, indices, 'file', docsdir)
+
+    parse_experiment(testapp, alldata, indices, 'experiment', docsdir)

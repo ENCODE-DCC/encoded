@@ -289,6 +289,14 @@ class Replicates(Collection):
     }
 
 
+@root.location('files')
+class Files(Collection):
+    properties = {
+        'title': 'Files',
+        'description': 'Listing of Files',
+    }
+
+
 @root.location('experiments')
 class Experiments(Collection):
     properties = {
