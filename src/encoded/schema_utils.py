@@ -13,6 +13,23 @@ def load_schema(filename):
     return SchemaValidator(schema)
 
 
+def validate_request(schema, request):
+    data = request.json_body
+    for error in schema.iter_errors(data):
+        request.errors.add('body', list(error.path), error.message)
+    if not request.errors:
+        request.validated = schema.serialize(data)
+
+
+def schema_validator(filename):
+    schema = load_schema(filename)
+
+    def validator(request):
+        return validate_request(schema, request)
+
+    return validator
+
+
 def basic_schema(value, null_type='string', template=None, nullable=all,
                  _key=None):
 
