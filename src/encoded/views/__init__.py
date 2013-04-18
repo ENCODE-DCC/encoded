@@ -18,6 +18,7 @@ from pyramid.view import view_config
 from urllib import unquote
 from uuid import UUID
 from ..objtemplate import ObjectTemplate
+from ..schema_utils import validate_request
 from ..storage import (
     DBSession,
     CurrentStatement,
@@ -98,10 +99,7 @@ def validate_item_content(context, request):
     if schema is None:
         request.validated = data
         return
-    for error in schema.iter_errors(data):
-        request.errors.add('body', list(error.path), error.message)
-    if not request.errors:
-        request.validated = schema.serialize(data)
+    validate_request(schema, request)
 
 
 class Root(object):

@@ -1,12 +1,13 @@
 from pyramid.config.views import DefaultViewMapper
 from pyramid.events import NewRequest
 from pyramid.httpexceptions import HTTPUnprocessableEntity
+from pyramid.util import LAST
 
 
 def includeme(config):
     config.add_subscriber(wrap_request, NewRequest)
     config.add_view(view=failed_validation, context=ValidationFailure)
-    config.add_view_predicate('validators', ValidatorsPredicate)
+    config.add_view_predicate('validators', ValidatorsPredicate, weighs_more_than=LAST)
 
 
 class Errors(list):
@@ -74,9 +75,12 @@ class ValidatorsPredicate(object):
         self.validators = prepare_validators(val)
 
     def text(self):
-        return 'validators = %r' % self.validators
+        return 'validators = %r' % (self.validators,)
 
-    phash = text
+    def phash(self):
+        # Return a constant to ensure views discriminated only by validators
+        # may not be registered.
+        return 'validators'
 
     def __call__(self, context, request):
         for validator in self.validators:
