@@ -8,6 +8,7 @@ def includeme(config):
     config.add_subscriber(wrap_request, NewRequest)
     config.add_view(view=failed_validation, context=ValidationFailure)
     config.add_view_predicate('validators', ValidatorsPredicate, weighs_more_than=LAST)
+    config.add_view_predicate('subpath_segments', SubpathSegmentsPredicate)
 
 
 class Errors(list):
@@ -88,3 +89,16 @@ class ValidatorsPredicate(object):
         if request.errors:
             raise ValidationFailure()
         return True
+
+
+class SubpathSegmentsPredicate(object):
+    def __init__(self, val, config):
+        self.val = val
+
+    def text(self):
+        return 'subpath_segments = %r' % self.val
+
+    phash = text
+
+    def __call__(self, context, request):
+        return len(request.subpath) == self.val
