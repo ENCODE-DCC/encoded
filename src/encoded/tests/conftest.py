@@ -18,6 +18,7 @@ app_settings = {
     'persona.siteName': 'ENCODE DCC Submission',
     'load_test_only': True,
     'load_sample_data': False,
+    'testing': True,
 }
 
 

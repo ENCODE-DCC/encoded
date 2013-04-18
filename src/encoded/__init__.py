@@ -130,7 +130,10 @@ def main(global_config, **settings):
     config.include('pyramid_multiauth')
 
     config.include(static_resources)
-    config.include(tests_js)
+
+    if asbool(settings.get('testing', False)):
+        config.include('.tests.testing_views')
+        config.include(tests_js)
 
     app = config.make_wsgi_app()
 
