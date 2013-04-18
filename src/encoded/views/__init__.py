@@ -284,8 +284,12 @@ class Item(object):
         if acl is not None:
             self.__acl__ = acl
 
+    @property
+    def properties(self):
+        return self.model.statement.object
+
     def __json__(self, request):
-        properties = self.model.statement.object
+        properties = self.properties.copy()
         links = self.expand_links(properties, request)
         if links is not None:
             properties['_links'] = links
