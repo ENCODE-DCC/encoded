@@ -1,0 +1,31 @@
+{
+    "title": "Access key",
+    "description": "Programmatic access key",
+    "type": "object",
+    "properties": {
+        "_uuid": {
+            "title": "UUID",
+            "description": "Only admins are allowed to set this value",
+            "type": "string",
+            "format": "uuid"
+        },
+        "user_uuid": {
+            "title": "User",
+            "description": "Only admins are allowed to set this value",
+            "type": "string",
+            "format": "uuid"
+        },
+        "description": {
+            "title": "Description",
+            "description": "",
+            "type": "string",
+            "default": ""
+        },
+        "secret_access_key_hash": {
+            "title": "Secret access key hash",
+            "description": "Only admins are allowed to set this value",
+            "type": "string"
+        }
+    },
+    "required": []
+}

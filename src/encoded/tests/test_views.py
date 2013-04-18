@@ -189,6 +189,34 @@ def test_users_post(testapp, session):
     ]
 
 
+def test_access_key_post(testapp, anontestapp):
+    from .sample_data import URL_COLLECTION
+    from base64 import b64encode
+    url = '/users/'
+    item = URL_COLLECTION[url][0]
+    testapp.post_json(url, item, status=201)
+
+    user_uuid = item['_uuid']
+    description = 'My programmatic key'
+    url = '/access-keys/'
+    item = {'user_uuid': user_uuid, 'description': description}
+    res = testapp.post_json(url, item, status=201)
+
+    access_key_id = res.json['access_key_id']
+    secret_access_key = res.json['secret_access_key']
+    auth_header = 'Basic ' + b64encode('%s:%s' % (access_key_id, secret_access_key))
+
+    res = anontestapp.get('/@@testing-user', headers={'Authorization': auth_header})
+    assert res.json['authenticated_userid'] == 'accesskey:' + access_key_id
+    assert sorted(res.json['effective_principals']) == [
+        'accesskey:' + access_key_id,
+        'lab:2c334112-288e-4d45-9154-3f404c726daf',
+        'system.Authenticated',
+        'system.Everyone',
+        'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
+    ]
+
+
 # __acl__ check disabled as users are transcluded.
 def __test_notfound_denied_anonymous(htmltestapp):
     htmltestapp.get('/users/badname', status=403)

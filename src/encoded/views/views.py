@@ -1,3 +1,4 @@
+from pyramid.security import effective_principals
 from pyramid.view import view_config
 #from pyramid.security import (
 #    Allow,
@@ -5,15 +6,26 @@ from pyramid.view import view_config
 #    Deny,
 #    Everyone,
 #)
-from ..schema_utils import load_schema
+from ..password import (
+    display_password,
+    generate_password,
+    hash_password,
+)
+from ..schema_utils import (
+    load_schema,
+    schema_validator,
+)
 from ..storage import (
     DBSession,
     UserMap,
 )
 from . import (
     Collection,
+    Item,
     Root,
+    collection_add,
 )
+import uuid
 
 
 def includeme(config):
@@ -63,6 +75,92 @@ class User(Collection):
         login = 'mailto:' + email
         user_map = UserMap(login=login, userid=item.model.rid)
         session.add(user_map)
+
+
+@root.location('access-keys')
+class AccessKey(Collection):
+    item_type = 'access_key'
+    properties = {
+        'title': 'Access keys',
+        'description': 'Programmatic access keys',
+    }
+    links = {
+        'user': {'href': '/users/{user_uuid}', 'templated': True},
+    }
+
+
+@view_config(context=AccessKey, validators=[schema_validator('access_key_admin.json')], effective_principals=['group:admin'], permission='add', request_method='POST')
+def access_key_add(context, request):
+    if '_uuid' not in request.validated:
+        request.validated['_uuid'] = uuid.uuid4()
+    access_key_id = request.validated['_uuid']
+
+    if 'user_uuid' not in request.validated:
+        request.validated['user_uuid'], = [
+            principal.split(':', 1)[1]
+            for principal in effective_principals(request)
+            if principal.startswith('userid:')
+        ]
+
+    password = None
+    if 'secret_access_key_hash' not in request.validated:
+        password = generate_password()
+        request.validated['secret_access_key_hash'] = hash_password(password)
+
+    result = collection_add(context, request)
+
+    if password is None:
+        result['secret_access_key'] = None
+    else:
+        result['secret_access_key'] = display_password(password)
+
+    result['access_key_id'] = access_key_id
+    result['description'] = request.validated['description']
+    return result
+
+
+@view_config(context=AccessKey, validators=[schema_validator('access_key.json')], permission='add', request_method='POST')
+def access_key_add_user(context, request):
+    return access_key_add(context, request)
+
+
+@view_config(name='access-keys', context=Item, permission='view', request_method='GET', subpath_segments=0)
+def list_access_key(context, request):
+    session = DBSession()
+    query = session.query(AccessKey).filter(
+        AccessKey.userid == context.model.rid
+    )
+    access_keys = [
+        {'access_key_id': model.id, 'description': model.description}
+        for model in query.all()
+    ]
+    return {'access_keys': access_keys}
+
+
+@view_config(name='access-keys', context=Item, permission='view', request_method='GET', subpath_segments=1)
+def get_access_key(context, request):
+    access_key_id, = request.subpath
+    session = DBSession()
+    model = session.query(AccessKey).filter(
+        AccessKey.userid == context.model.rid
+    ).get(access_key_id)
+    return {'access_key_id': model.id, 'description': model.description}
+
+
+@view_config(name='access-keys', context=Item, containment=User, permission='edit', request_method='POST', subpath_segments=0)
+def add_access_key(context, request):
+    description = request.validated['description']
+    password = generate_password()
+    session = DBSession()
+    access_key = AccessKey(password=password, description=description)
+    session.add(access_key)
+
+    return {
+        'status': 'success',
+        'access_key_id': access_key.id,
+        'description': access_key.description,
+        'secret_access_key': display_password(password),
+    }
 
 
 @root.location('labs')

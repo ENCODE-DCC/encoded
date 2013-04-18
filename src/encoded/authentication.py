@@ -1,7 +1,11 @@
+from pyramid.authentication import (
+    BasicAuthAuthenticationPolicy as _BasicAuthAuthenticationPolicy,
+)
 from pyramid.path import (
     DottedNameResolver,
     caller_package,
 )
+from .password import check_password
 
 
 class NamespacedAuthenticationPolicy(object):
@@ -58,3 +62,28 @@ class NamespacedAuthenticationPolicy(object):
         principal = principal[len(self._namespace_prefix):]
         return super(NamespacedAuthenticationPolicy, self) \
             .remember(request, principal, **kw)
+
+
+class BasicAuthAuthenticationPolicy(_BasicAuthAuthenticationPolicy):
+    def __init__(self, check, *args, **kw):
+        # Dotted name support makes it easy to configure with pyramid_multiauth
+        name_resolver = DottedNameResolver(caller_package())
+        check = name_resolver.maybe_resolve(check)
+        super(BasicAuthAuthenticationPolicy, self).__init__(check, *args, **kw)
+
+
+def basic_auth_check(username, password, request):
+    collection = request.root['access-keys']
+    try:
+        access_key = collection[username]
+    except KeyError:
+        return None
+
+    properties = access_key.properties
+    secret_access_key_hash = properties['secret_access_key_hash']
+    if not check_password(password, secret_access_key_hash):
+        return None
+
+    principals = ['userid:' + properties['user_uuid']]
+
+    return principals

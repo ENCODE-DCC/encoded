@@ -6,7 +6,7 @@ import pytest
 from pytest import fixture
 
 app_settings = {
-    'multiauth.policies': 'authtkt remoteuser',
+    'multiauth.policies': 'authtkt remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
     'multiauth.policy.authtkt.use': 'pyramid.authentication.AuthTktAuthenticationPolicy',
     'multiauth.policy.authtkt.hashalg': 'sha512',
@@ -14,6 +14,10 @@ app_settings = {
     'multiauth.policy.remoteuser.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.remoteuser.namespace': 'remoteuser',
     'multiauth.policy.remoteuser.base': 'pyramid.authentication.RemoteUserAuthenticationPolicy',
+    'multiauth.policy.accesskey.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.accesskey.namespace': 'accesskey',
+    'multiauth.policy.accesskey.base': 'encoded.authentication.BasicAuthAuthenticationPolicy',
+    'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
     'persona.siteName': 'ENCODE DCC Submission',
     'load_test_only': True,
@@ -25,7 +29,7 @@ app_settings = {
 def pytest_configure():
     import logging
     logging.basicConfig()
-    #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
     logging.getLogger('selenium').setLevel(logging.DEBUG)
 
     class Shorten(logging.Filter):
@@ -95,6 +99,17 @@ def testapp(request, app, external_tx, zsa_savepoints):
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'TEST',
+    }
+    return TestApp(app, environ)
+
+
+@fixture
+def anontestapp(request, app, external_tx, zsa_savepoints):
+    '''TestApp with JSON accept header.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
     }
     return TestApp(app, environ)
 
