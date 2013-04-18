@@ -1,26 +1,98 @@
 <header class="row">
     <div class="span12">
-        <h4 style="text-transform: capitalize;">Experiment </h4>
-        <h2>{properties.dataset_accession}</h2>
+        <h4 style="text-transform: capitalize;">Experiment > {model.links.lab.get('name')} </h4>
+        <h2>Dataset details for {properties.dataset_accession}</h2>
+        <h4>{properties.dataset_description}</h4>
     </div>
 </header>
 <div class="row">
     <div class="span12">
         <div class="panel data-display" id="experiment-data">
-          	<section id="general">
-            	<div class="data-group">
-                	<label class="data-label" for="accession">Accession:</label>
-                	<div class="data-values">
-                    	<span id="accession" class="data-point">{properties.dataset_accession}</span>
-                	</div>
-            	</div>
-            	<div class="data-group">
-                	<label class="data-label" for="description">Description:</label>
-                	<div class="data-values">
-                    	<span id="description" class="data-point">{properties.dataset_description}</span>
-                	</div>
-            	</div>
-          	</section>
-		</div>
-	</div>
+            <section id="general">
+                <div class="data-group">
+                    <label class="data-label" for="assay-type">Assay Type:</label>
+                    <div class="data-values">
+                        <span id="assay-type" class="data-point">{model.links.replicates[0].links.assay.get('assay_name')}</span>
+                    </div>
+                </div>
+                <div class="data-group">
+                    <label class="data-label" for="project">Project:</label>
+                    <div class="data-values">
+                        <span id="project" class="data-point">{properties.project}</span>
+                    </div>
+                </div>
+                <div class="data-group">
+                    <label class="data-label" for="submitter">Submitter:</label>
+                    <div class="data-values">
+                        <span id="submitter" class="data-point">{model.links.submitter.get('first_name')}</span>
+                    </div>
+                </div>
+                <div class="data-group">
+                    <label class="data-label" for="biological-replicates">Biological Replicates:</label>
+                    <div class="data-values">
+                        <span id="biological-replicates" class="data-point">{model.links.replicates.length}</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <?js if(model.links.replicates.length) { ?>
+            <?js _.each(model.links.replicates, function(replicate) { ?>
+            <h3>Biological Replicate - {replicate.get('biological_replicate_number')}</h3>
+            <div class="panel data-display">
+                <div class="data-group">
+                    <label class="data-label" for="technical-no">Technical Replicate:</label>
+                    <div class="data-values">
+                        <span id="technical-no" class="data-point">{replicate.get('technical_replicate_number')}</span>
+                    </div>
+               </div>
+                <div class="data-group">
+                    <label class="data-label" for="antibody">Antiboby:</label>
+                    <div class="data-values">
+                        <span id="antibody" class="data-point">{replicate.get('antibody_accession')}</span>
+                    </div>
+               </div>
+               <div class="data-group">
+                    <label class="data-label" for="target">Target:</label>
+                    <div class="data-values">
+                        <span id="target" class="data-point">{replicate.get('target')}</span>
+                    </div>
+               </div>
+               <div class="data-group">
+                    <label class="data-label" for="library">Library:</label>
+                    <div class="data-values">
+                        <span id="library" class="data-point"><a href="/libraries/{replicate.links.library.get('_uuid')}">{replicate.links.library.get('library_description')}</a></span>
+                    </div>
+               </div>
+               <div class="data-group">
+                    <label class="data-label" for="platform">Platform:</label>
+                    <div class="data-values">
+                        <span id="platform" class="data-point"><a href="/platforms/{replicate.links.platform.get('_uuid')}">{replicate.links.platform.get('description')}</a></span>
+                    </div>
+               </div>
+            </div>
+            <?js } ); ?>
+        <?js } ?>
+
+        <?js if(model.links.files.length) { ?>
+        <h3>Files</h3>
+        <div class="panel data-display">
+            <?js _.each(model.links.files, function(file) { ?>
+            <div class="data-group">
+                <label class="data-label" for="file-type">Type:</label>
+                <div class="data-values">
+                    <span id="file-type" class="data-point">{file.get('file_format')}</span>
+                </div>
+            </div>
+            <div class="data-group">
+                <label class="data-label" for="file-name">Name:</label>
+                <div class="data-values">
+                    <span id="file-name" class="data-point">{file.get('file_name_encode3')}</span>
+                </div>
+            </div>
+           <?js } ); ?>
+        </div>
+        <?js } ?>   
+
+    </div>
 </div>

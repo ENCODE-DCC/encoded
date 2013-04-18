@@ -733,12 +733,16 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
 
     ''' MANDATORY FIELDS for experiment '''
 
-    value['files_uuids'] = []
+    value['file_uuids'] = []
+    value['replicate_uuids'] = []
 
     for file in alldata['file']:
-        # import pdb; pdb.set_trace();
-        if alldata['file'][file]['experiment_dataset_uuid'] == value['_uuid']:
-            value['files_uuids'].append(file['_uuid'])
+        if (alldata['file'][file])['experiment_dataset_uuid'] is value['_uuid']:
+            value['file_uuids'].append(file)
+            for replicate in alldata['replicate']:
+                if (alldata['file'][file])['replicate_uuid'] is replicate:
+                    if replicate not in value['replicate_uuids']:
+                        value['replicate_uuids'].append(replicate)
         else:
             pass
 
@@ -749,7 +753,6 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
                      'award_no': value.pop('submitted_by_award_number')
                      }
                      )
-
 
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]

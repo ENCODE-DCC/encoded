@@ -287,6 +287,12 @@ class Replicates(Collection):
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
+    links = {
+        'library': {'href': '/libraries/{library_uuid}', 'templated': True},
+        'platform': {'href': '/platforms/{platform_uuid}', 'templated': True},
+        'assay': {'href': '/assays/{assay_uuid}', 'templated': True},
+    }
+    embedded = set(['library', 'platform', 'assay'])
 
 
 @root.location('files')
@@ -303,3 +309,15 @@ class Experiments(Collection):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
+    links = {
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        'files': [
+            {'href': '/files/{file_uuid}', 'templated': True, 'repeat': 'file_uuid file_uuids'},
+        ],
+        'replicates': [
+            {'href': '/replicates/{replicate_uuid}', 'templated': True, 'repeat': 'replicate_uuid replicate_uuids'},
+        ],
+    }
+    embedded = set(['files', 'replicates', 'submitter', 'lab', 'award'])
