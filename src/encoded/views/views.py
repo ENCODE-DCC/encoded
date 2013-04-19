@@ -89,7 +89,9 @@ class AccessKey(Collection):
     }
 
 
-@view_config(context=AccessKey, validators=[schema_validator('access_key_admin.json')], effective_principals=['group:admin'], permission='add', request_method='POST')
+@view_config(context=AccessKey, permission='add', request_method='POST',
+             validators=[schema_validator('access_key_admin.json')],
+             effective_principals=['group:admin'])
 def access_key_add(context, request):
     if '_uuid' not in request.validated:
         request.validated['_uuid'] = uuid.uuid4()
@@ -119,7 +121,8 @@ def access_key_add(context, request):
     return result
 
 
-@view_config(context=AccessKey, validators=[schema_validator('access_key.json')], permission='add', request_method='POST')
+@view_config(context=AccessKey, permission='add', request_method='POST',
+             validators=[schema_validator('access_key.json')])
 def access_key_add_user(context, request):
     return access_key_add(context, request)
 
