@@ -735,6 +735,8 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
 
     value['file_uuids'] = []
     value['replicate_uuids'] = []
+    value['assay_name'] = ''
+    value['target'] = ''
 
     for file in alldata['file']:
         if (alldata['file'][file])['experiment_dataset_uuid'] is value['_uuid']:
@@ -746,6 +748,12 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
         else:
             pass
 
+    # terrible coding, have to fix it later
+    if value['replicate_uuids']:
+        assay_uuid = alldata['replicate'][value['replicate_uuids'][0]]['assay_uuid']
+        value['assay_name'] = alldata['assay'][assay_uuid]['assay_name']
+        value['target'] = alldata['replicate'][value['replicate_uuids'][0]]['target']
+
     assign_submitter(value, content_type, indices,
                      {
                      'email': value.pop('submitted_by_colleague_email'),
@@ -753,6 +761,7 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
                      'award_no': value.pop('submitted_by_award_number')
                      }
                      )
+
 
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
