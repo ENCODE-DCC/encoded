@@ -21,7 +21,7 @@ from ..storage import (
 )
 from . import (
     Collection,
-    Item,
+    # Item,
     Root,
     collection_add,
 )
@@ -122,45 +122,6 @@ def access_key_add(context, request):
 @view_config(context=AccessKey, validators=[schema_validator('access_key.json')], permission='add', request_method='POST')
 def access_key_add_user(context, request):
     return access_key_add(context, request)
-
-
-@view_config(name='access-keys', context=Item, permission='view', request_method='GET', subpath_segments=0)
-def list_access_key(context, request):
-    session = DBSession()
-    query = session.query(AccessKey).filter(
-        AccessKey.userid == context.model.rid
-    )
-    access_keys = [
-        {'access_key_id': model.id, 'description': model.description}
-        for model in query.all()
-    ]
-    return {'access_keys': access_keys}
-
-
-@view_config(name='access-keys', context=Item, permission='view', request_method='GET', subpath_segments=1)
-def get_access_key(context, request):
-    access_key_id, = request.subpath
-    session = DBSession()
-    model = session.query(AccessKey).filter(
-        AccessKey.userid == context.model.rid
-    ).get(access_key_id)
-    return {'access_key_id': model.id, 'description': model.description}
-
-
-@view_config(name='access-keys', context=Item, containment=User, permission='edit', request_method='POST', subpath_segments=0)
-def add_access_key(context, request):
-    description = request.validated['description']
-    password = generate_password()
-    session = DBSession()
-    access_key = AccessKey(password=password, description=description)
-    session.add(access_key)
-
-    return {
-        'status': 'success',
-        'access_key_id': access_key.id,
-        'description': access_key.description,
-        'secret_access_key': display_password(password),
-    }
 
 
 @root.location('labs')
