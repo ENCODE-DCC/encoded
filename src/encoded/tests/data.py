@@ -69,7 +69,7 @@ class DataFixtureManager(object):
             factory = self._factories.get(name, None)
             if factory is None:
                 raise KeyError(name)
-        conn_teardown = self._connection_factory(self.scopefunc)
+        conn_teardown = self._connection_factory(self.config, name)
         conn = conn_teardown.next()
 
         def teardown():

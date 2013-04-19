@@ -9,6 +9,7 @@ from sqlalchemy import (
     types,
     )
 from sqlalchemy.dialects import postgresql
+from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
 from zope.sqlalchemy import ZopeTransactionExtension
@@ -62,6 +63,11 @@ class PGJSON(types.Text):
     __visit_name__ = 'JSON'
 
 
+@compiles(PGJSON, 'postgresql')
+def compile_varchar(element, compiler, **kw):
+    return 'JSON'
+
+
 class JSON(types.TypeDecorator):
     """Represents an immutable structure as a json-encoded string.
     """
@@ -80,6 +86,8 @@ class JSON(types.TypeDecorator):
         return json_renderer.dumps(value)
 
     def process_result_value(self, value, dialect):
+        if dialect.name == 'postgresql':
+            return value
         if value is not None:
             value = json.loads(value)
         return value
@@ -98,10 +106,18 @@ class Statement(Base):
         )
     # The sid column also serves as the order.
     sid = Column(types.Integer, autoincrement=True, primary_key=True)
-    rid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
+    rid = Column(UUID,
+                 ForeignKey('resources.rid',
+                            deferrable=True,
+                            initially='DEFERRED'),
+                 nullable=False)
     predicate = Column(types.String, nullable=False)
     object = Column(JSON)
-    tid = Column(UUID, ForeignKey('transactions.tid'), nullable=False)
+    tid = Column(UUID,
+                 ForeignKey('transactions.tid',
+                            deferrable=True,
+                            initially='DEFERRED'),
+                 nullable=False)
     resource = orm.relationship('Resource')
     transaction = orm.relationship('TransactionRecord')
 

@@ -56,9 +56,12 @@ class IndexContainer:
 
 
 def resolve_dotted(value, name):
-    for key in name.split('.'):
-        value = value[key]
-    return value
+    try:
+        for key in name.split('.'):
+         value = value[key]
+        return value
+    except KeyError:
+        return None
 
 
 def convert(type_, value):
@@ -175,7 +178,10 @@ def extract(filename, sheets, test=False):
                     row[col] = val_list
 
             if dbxs: row['dbxref'] = dbxs
-            data[uuid] = row
+            if data.get(uuid, None) is None:
+                data[uuid] = row
+            else:
+                logger.warn("Duplicate UUIDs for %s: (%s) first: %s" % (name, uuid, row))
         alldata['COUNTS'][name] = len(data.keys())
     return alldata
 
@@ -185,10 +191,7 @@ def value_index(data, attribute):
     for uuid, value in data.iteritems():
         index_value = resolve_dotted(value, attribute)
         if not index_value: continue
-        try:
-            assert index_value not in index, index_value
-        except:
-            import pdb;pdb.set_trace()
+        assert index_value not in index, index_value
         index[index_value] = uuid
     return index
 
@@ -269,6 +272,37 @@ def assign_submitter(data, dtype, indices, fks):
     except Exception as ef:
         raise ValueError('No submitter/lab found for %s: %s due to %s' %
                         (dtype, fks, ef))
+
+
+def check_document(docsdir, filename):
+
+    _, ext = os.path.splitext(filename.lower())
+
+    doc = {}
+    if ext:
+        stream = open(find_doc(docsdir, filename), 'rb')
+        if ext in ('.png', '.jpg', '.jpeg', '.tiff', '.tif'):
+            doc = image_data(stream, filename)
+
+        elif ext == '.pdf':
+            mime_type = 'application/pdf'
+            doc = {
+                'download': filename,
+                'type': mime_type,
+                'href': data_uri(stream, mime_type)
+            }
+        elif ext == '.txt':
+            mime_type = 'text/plain'
+            doc = {
+                'download': filename,
+                'type': mime_type,
+                'href': data_uri(stream, mime_type)
+            }
+
+        else:
+            raise ValueError("Unknown file type for %s" % filename)
+
+    return doc
 
 
 def parse_decorator_factory(content_type, index_type):
@@ -398,20 +432,8 @@ def parse_validation(testapp, alldata, content_type, indices, uuid, value, docsd
         raise ValueError('Unable to find target: %r' % (key,))
 
     filename = value.pop('document_filename')
-    stream = open(find_doc(docsdir, filename), 'rb')
-    _, ext = os.path.splitext(filename.lower())
-    if ext in ('.png', '.jpg', '.tiff'):
-        value['document'] = image_data(stream, filename)
-    elif ext == '.pdf':
-        mime_type = 'application/pdf'
-        value['document'] = {
-            'download': filename,
-            'type': mime_type,
-            'href': data_uri(stream, mime_type),
-        }
-    else:
-        raise ValueError("Unknown file type for %s" % filename)
 
+    value['document'] = check_document(docsdir, filename)
     assign_submitter(value, content_type, indices,
                      {
                      'email': value.pop('submitted_by_colleague_email'),
@@ -435,14 +457,24 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
 
     value['validation_uuids'] = []
     filenames = value.pop('validation_filenames_list')
+    validations = set([])
     for filename in filenames:
         validation_uuids = indices['validation'].get(filename, [])
         for validation_uuid in validation_uuids:
-            if alldata['validation'].get(validation_uuid, None) is None:
+            val = alldata['validation'].get(validation_uuid, None)
+            if val is None:
                 logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
             else:
-                value['validation_uuids'].append(validation_uuid)
+                method = val['validation_method']
+                if (filename, method) not in validations:
+                    value['validation_uuids'].append(validation_uuid)
+                    validations.add((filename, method))
+                else:
+                    pass
+                    # frowny_gel is frowny because log files get clogged
+                    #logger.warn('Duplicate method/validation skipped: %s %s for approval' % (filename, method))
 
+    # make sure there are no duplicates
     assert len(set(value['validation_uuids'])) == len(value['validation_uuids'])
 
     try:
@@ -468,26 +500,7 @@ def parse_donor(testapp, alldata, content_type, indices, uuid, value, docsdir):
 def parse_document(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
     filename = value.pop('document_file_name')
-    stream = open(find_doc(docsdir, filename), 'rb')
-    _, ext = os.path.splitext(filename.lower())
-    if ext in ('.png', '.jpg', '.tiff'):
-        value['document'] = image_data(stream, filename)
-    elif ext == '.pdf':
-        mime_type = 'application/pdf'
-        value['document'] = {
-            'download': filename,
-            'type': mime_type,
-            'href': data_uri(stream, mime_type),
-        }
-    elif ext == '.txt':
-        mime_type = 'text/plain'
-        value['document'] = {
-            'download': filename,
-            'type': mime_type,
-            'href': data_uri(stream, mime_type),
-        }
-    else:
-        raise ValueError("Unknown file type for %s" % filename)
+    value['document'] = check_document(docsdir, filename)
 
     assign_submitter(value, content_type, indices,
                      {
@@ -529,6 +542,8 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
 
     ''' MANDATORY FIELDS '''
     #value['organism_uuid'] = indices['organism'][value.pop('organism_no')]
+    #if uuid == '6d26ea14-2548-459b-bdd7-e7afb954e7e8':
+    #    import pdb;pdb.set_trace()
     source = value.pop('source')
     try:
         value['source_uuid'] = indices['source'][source]
@@ -564,7 +579,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
             value['treatment_uuids'].append(treatment_uuid)
         except KeyError:
             raise ValueError('Unable to find treatment for biosample: %s' % treat)
-    except KeyError:
+    except KeyError as k:
         pass
         # treatment is often null
 
@@ -575,14 +590,14 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
 
         for doc in documents:
             try:
-                document_uuid = indices['document'].get(doc, [])
+                document_uuid = indices['document'].get(doc, None)
                 if alldata['document'].get(document_uuid, None) is None:
-                    raise ValueError('Missing/skipped document reference %s for biosample: %s' % (document_uuid, uuid))
+                    raise ValueError('Missing/skipped document reference %s for biosample: %s' % (doc, uuid))
                 else:
                     value['document_uuids'].append(document_uuid)
             except KeyError:
                 raise ValueError('Unable to find document for biosample: %s' % doc)
-    except:
+    except KeyError:
         logger.warn('Empty biosample documents list: %s' % documents)
 
     value['construct_uuids'] = []
@@ -761,6 +776,7 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
                      'award_no': value.pop('submitted_by_award_number')
                      }
                      )
+
 
 
 def load_all(testapp, filename, docsdir, test=False):

@@ -5,10 +5,6 @@ http://pyramid.readthedocs.org/en/latest/narr/testing.html
 import pytest
 from pytest import fixture
 
-engine_settings = {
-    'sqlalchemy.url': 'sqlite://',
-}
-
 app_settings = {
     'multiauth.policies': 'authtkt remoteuser',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
@@ -24,10 +20,25 @@ app_settings = {
     'load_sample_data': False,
 }
 
-import logging
 
-logging.basicConfig()
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+def pytest_configure():
+    import logging
+    logging.basicConfig()
+    #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    logging.getLogger('selenium').setLevel(logging.DEBUG)
+
+    class Shorten(logging.Filter):
+        max_len = 500
+
+        def filter(self, record):
+            if record.msg == '%r':
+                record.msg = record.msg % record.args
+                record.args = ()
+            if len(record.msg) > self.max_len:
+                record.msg = record.msg[:self.max_len] + '...'
+            return True
+
+    logging.getLogger('sqlalchemy.engine.base.Engine').addFilter(Shorten())
 
 
 @fixture
@@ -90,7 +101,32 @@ def testapp(request, app, external_tx, zsa_savepoints):
 @fixture(scope='session')
 def _server(request, app, zsa_savepoints):
     from webtest.http import StopableWSGIServer
-    server = StopableWSGIServer.create(app)
+    import threading
+    from webtest.http import get_free_port
+
+    def create(cls, application, **kwargs):
+        """Start a server to serve ``application``. Return a server
+        instance."""
+        host, port = get_free_port()
+        kwargs['port'] = port
+        if 'host' not in kwargs:
+            kwargs['host'] = host
+        if 'expose_tracebacks' not in kwargs:
+            kwargs['expose_tracebacks'] = True
+        server = cls(application, **kwargs)
+        server.runner = threading.Thread(target=server.run)
+        server.runner.daemon = True
+        server.runner.start()
+        return server
+
+    server = create(
+        StopableWSGIServer,
+        app,
+        threads=1,
+        channel_timeout=60,
+        cleanup_interval=10,
+        expose_tracebacks=True,
+    )
     assert server.wait()
 
     @request.addfinalizer
@@ -110,23 +146,40 @@ def server(_server, external_tx):
 # requests can be rolled back at the end of the test.
 
 @pytest.datafixture_connection_factory
-def connection_factory(scopefunc):
+def connection_factory(config, name):
     from encoded import configure_engine
     from encoded.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
 
+    scopefunc = config.pluginmanager.getplugin('data').scopefunc
+
     if type(DBSession.registry) is not ScopedRegistry:
         DBSession.registry = ScopedRegistry(DBSession.session_factory, scopefunc)
+
+    engine_settings = {
+        'sqlalchemy.url': config.option.engine_url,
+    }
 
     engine = configure_engine(engine_settings, test_setup=True)
     connection = engine.connect()
     tx = connection.begin()
-    Base.metadata.create_all(bind=connection)
-    session = DBSession(scope=None, bind=connection)
-    DBSession.registry.set(session)
-    yield connection
-    tx.rollback()
-    connection.close()
+    try:
+        if engine.url.drivername == 'postgresql':
+            # Create the different test sets in different schemas
+            if name is None:
+                schema_name = 'tests'
+            else:
+                schema_name = 'tests_%s' % name
+            connection.execute('CREATE SCHEMA %s' % schema_name)
+            connection.execute('SET search_path TO %s,public' % schema_name)
+        Base.metadata.create_all(bind=connection)
+        session = DBSession(scope=None, bind=connection)
+        DBSession.registry.set(session)
+        yield connection
+    finally:
+        tx.rollback()
+        connection.close()
+        engine.dispose()
 
 
 @fixture
@@ -141,7 +194,7 @@ def external_tx(request, connection):
 
 
 @fixture
-def transaction(request, external_tx, zsa_savepoints):
+def transaction(request, external_tx, zsa_savepoints, check_constraints):
     import transaction
     transaction.begin()
     request.addfinalizer(transaction.abort)
@@ -214,6 +267,7 @@ def check_constraints(request, connection_proxy):
 
     Sadly SQLite does not support manual constraint checking.
     '''
+    from encoded.storage import DBSession
     from transaction.interfaces import ISynchronizer
     from zope.interface import implementer
 
@@ -222,30 +276,49 @@ def check_constraints(request, connection_proxy):
         def __init__(self, connection):
             self.connection = connection
             self.enabled = self.connection.engine.url.drivername != 'sqlite'
+            self.state = None
 
         def beforeCompletion(self, transaction):
-            if self.enabled:
-                self.connection.execute('SET CONSTRAINTS ALL IMMEDIATE')
-
-        def afterCompletion(self, transaction):
-            if self.enabled:
-                self.connection.execute('SET CONSTRAINTS ALL DEFERRED')
-
-        def newTransaction(self, transaction):
             pass
 
-    constraint_checker = CheckConstraints(connection_proxy)
+        def afterCompletion(self, transaction):
+            pass
+
+        def newTransaction(self, transaction):
+            if not self.enabled:
+                return
+
+            @transaction.addBeforeCommitHook
+            def set_constraints():
+                self.state = 'checking'
+                session = DBSession()
+                session.flush()
+                sp = self.connection.begin_nested()
+                try:
+                    self.connection.execute('SET CONSTRAINTS ALL IMMEDIATE')
+                except:
+                    sp.rollback()
+                    raise
+                else:
+                    self.connection.execute('SET CONSTRAINTS ALL DEFERRED')
+                finally:
+                    sp.commit()
+                    self.state = None
+
+    check_constraints = CheckConstraints(connection_proxy)
 
     import transaction
-    transaction.manager.registerSynch(constraint_checker)
+    transaction.manager.registerSynch(check_constraints)
 
     @request.addfinalizer
     def unregister():
-        transaction.manager.unregisterSynch(constraint_checker)
+        transaction.manager.unregisterSynch(check_constraints)
+
+    return check_constraints
 
 
 @fixture
-def execute_counter(request, connection, zsa_savepoints):
+def execute_counter(request, connection, zsa_savepoints, check_constraints):
     """ Count calls to execute
     """
     from sqlalchemy import event
@@ -263,7 +336,7 @@ def execute_counter(request, connection, zsa_savepoints):
     @event.listens_for(connection, 'after_cursor_execute')
     def after_cursor_execute(conn, cursor, statement, parameters, context, executemany):
         # Ignore the testing savepoints
-        if zsa_savepoints.state != 'begun':
+        if zsa_savepoints.state != 'begun' or check_constraints.state == 'checking':
             return
         counter.count += 1
 

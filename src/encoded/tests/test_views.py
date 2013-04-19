@@ -1,4 +1,5 @@
 import pytest
+from sqlalchemy.exc import IntegrityError
 
 COLLECTION_URLS = [
     '/',
@@ -10,20 +11,24 @@ COLLECTION_URLS = [
     '/antibody-lots/',
 ]
 
+## since we have cleaned up all the errors
+## the below should equal the full spreadsheet rows with text in the 'test' col.
 COLLECTION_URL_LENGTH = {
     '/awards/': 39,
-    '/labs/': 42,
-    '/users/': 81,
+    '/labs/': 43,
+    '/users/': 83,
+    '/organisms/': 6,
     '/sources/': 60,
-    '/targets/': 24,
-    '/antibody-lots/': 25,
-    '/validations/': 35,
-    '/antibodies/': 25,
+    '/targets/': 30,
+    '/antibody-lots/': 30,
+    '/validations/': 42,
+    '/antibodies/': 32,
     '/donors/': 72,
-    '/documents/': 120,
+    '/documents/': 124,
     '/treatments/': 7,
     '/constructs/': 5,
     '/biosamples/': 135,
+    '/platforms/': 11,
 }
 
 COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
@@ -135,6 +140,34 @@ def test_collection_update(testapp, url, execute_counter):
     res.pop('_links', None)
     res.pop('_embedded', None)
     assert res == update
+
+# TODO Add 2 tests for duplicate UUIDs (see sample_data.py)
+def test_post_duplicate_uuid(testapp):
+    from .sample_data import BAD_LABS
+    testapp.post_json('/labs/', BAD_LABS[0], status=201)
+    try:
+        testapp.post_json('/labs/', BAD_LABS[1], status=200)
+    except IntegrityError:
+        assert True
+        return
+    assert False
+
+
+def test_post_repeated_uuid(testapp):
+    from .sample_data import LABS
+    from .sample_data import BAD_AWARDS
+    # these are in a funny order but not setting up relationships anyhoo
+    for lab in LABS:
+        testapp.post_json('/labs/', lab, status=201)
+
+    # good one
+    testapp.post_json('/awards/', BAD_AWARDS[0], status=201)
+    try:
+        testapp.post_json('/labs/', BAD_AWARDS[0], status=200)
+    except IntegrityError:
+        assert True
+        return
+    assert False
 
 
 def test_users_post(testapp, session):

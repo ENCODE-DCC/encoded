@@ -2,6 +2,12 @@
 ENCODE Metadata Database
 ========================
 
+|Build status|_
+
+.. |Build status| image:: https://travis-ci.org/ENCODE-DCC/encoded.png?branch=master
+.. _Build status: https://travis-ci.org/ENCODE-DCC/encoded
+
+
 *Note: the default Mac python doesn't seem to work. You might want to install Python with Homebrew and you may need to sintall one of more of (using homebrew): libxml2 libxslt freetype openssl libjpeg.*
 
 First run buildout::
@@ -25,6 +31,14 @@ Run the Browser tests with::
 
     $ bin/test -k bdd -v -v
 
+To run tests with postgresql::
+
+    first install postgres (on a mac with homebrew for example)
+
+    $ createdb encoded
+    $ bin/test --engine-url postgresql:///encoded
+
+
 Notes on SASS/Compass
 =====================
 
@@ -44,7 +58,7 @@ Compiling "on the fly"
 Compass can watch for any changes made to .scss files and instantly compile them to .css. To start this, from the root of the project (where config.rb is) do::
 
     $ compass watch
-    
+
 You can specify whether the compiled CSS is minified or not in config.rb. (Currently, it is set to minify.)
 
 Force compiling
