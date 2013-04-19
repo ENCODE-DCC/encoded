@@ -18,7 +18,7 @@
                 <div class="data-group">
                     <label class="data-label" for="submitter">Submitter:</label>
                     <div class="data-values">
-                        <span id="submitter" class="data-point">{model.links.submitter.get('first_name')}</span>
+                        <span id="submitter" class="data-point">{model.links.submitter.get('first_name')} {model.links.submitter.get('last_name')}</span>
                     </div>
                 </div>
                 <?js if(properties.encode2_dbxref_list) { ?>

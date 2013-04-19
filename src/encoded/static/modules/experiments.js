@@ -19,7 +19,7 @@ function experiments(exports, $, _, base, table_sorter, table_filter, home_templ
         url: '/experiments/'
     });
 
-    // The targets home screen
+    // The experiments home screen
     var experimentHomeView = base.TableView.extend({
         template: _.template(home_template),
         row_template: _.template(row_template),
