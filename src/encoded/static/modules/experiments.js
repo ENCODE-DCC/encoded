@@ -28,7 +28,7 @@ function experiments(exports, $, _, base, table_sorter, table_filter, home_templ
                         'Target',
                         'Description',
                         'Files',
-                        'Replicates',
+                        'Biological Replicates',
                         'Submitter',
                         'Project'
                         ],
