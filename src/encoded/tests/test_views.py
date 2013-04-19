@@ -189,7 +189,7 @@ def test_users_post(testapp, session):
     ]
 
 
-def test_access_key_post(testapp, anontestapp):
+def test_access_key_post(testapp, anontestapp, execute_counter):
     from .sample_data import URL_COLLECTION
     from base64 import b64encode
     url = '/users/'
@@ -206,7 +206,10 @@ def test_access_key_post(testapp, anontestapp):
     secret_access_key = res.json['secret_access_key']
     auth_header = 'Basic ' + b64encode('%s:%s' % (access_key_id, secret_access_key))
 
+    execute_counter.reset()
     res = anontestapp.get('/@@testing-user', headers={'Authorization': auth_header})
+    assert execute_counter.count == 2
+
     assert res.json['authenticated_userid'] == 'accesskey:' + access_key_id
     assert sorted(res.json['effective_principals']) == [
         'accesskey:' + access_key_id,

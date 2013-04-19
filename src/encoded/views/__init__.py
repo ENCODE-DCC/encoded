@@ -165,7 +165,7 @@ class Collection(object):
 
     def __getitem__(self, name):
         try:
-            UUID(name)
+            name = UUID(name)
         except ValueError:
             raise KeyError(name)
         try:

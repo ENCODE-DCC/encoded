@@ -20,6 +20,7 @@ import uuid
 
 DBSession = orm.scoped_session(orm.sessionmaker(
     extension=ZopeTransactionExtension(),
+    weak_identity_map=False,
 ))
 Base = declarative_base()
 
@@ -131,7 +132,7 @@ class CurrentStatement(Base):
     sid = Column(types.Integer,
                  ForeignKey('statements.sid'), nullable=False)
     statement = orm.relationship(
-        'Statement', lazy='joined',
+        'Statement', lazy='joined', innerjoin=True,
         primaryjoin="CurrentStatement.sid==Statement.sid",
     )
     history = orm.relationship(
