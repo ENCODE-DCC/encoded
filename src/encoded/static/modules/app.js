@@ -1,5 +1,5 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'biosamples', 'targets', 'sources', 'platforms', 'experiments', 'navbar', 'generic'],
-function app(exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, platforms, experiments, navbar, generic) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'biosamples', 'libraries', 'targets', 'sources', 'platforms', 'experiments', 'navbar', 'generic'],
+function app(exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, platforms, libraries, experiments, navbar, generic) {
 
     var routes = {
         home: [''],
@@ -11,6 +11,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
         source: ['sources/:uuid'],
         biosamples: ['biosamples/'],
         biosample: ['biosamples/:uuid'],
+        libraries: ['libraries/'],
+        library: ['libraries/:uuid'],
         platforms: ['platforms/'],
         platform: ['platforms/:uuid'],
         experiments: ['experiments/'],
@@ -27,7 +29,6 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'validations/',
             'antibody-lots/',
             'assays/',
-            'libraries/',
             'replicates/',
             'files/'
         ],
@@ -43,7 +44,6 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'validations/:uuid',
             'antibody-lots/:uuid',
             'assays/:uuid',
-            'libraries/:uuid',
             'replicates/:uuid',
             'files/:uuid'
         ]

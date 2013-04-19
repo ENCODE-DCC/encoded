@@ -271,6 +271,7 @@ class Library(Collection):
             {'href': '/documents/{document_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
         ],
     }
+    embedded = set(['biosample'])
 
 
 @root.location('assays')

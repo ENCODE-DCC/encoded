@@ -15,6 +15,7 @@ requirejs.config({
         navbar: 'modules/navbar',
         login: 'modules/login',
         platforms: 'modules/platforms',
+        libraries: 'modules/libraries',
 
         // Plugins
         text: 'libs/text',
