@@ -19,7 +19,7 @@ function platforms(exports, $, _, base, table_sorter, table_filter, home_templat
         url: '/platforms/'
     });
 
-    // The targets home screen
+    // The platforms home screen
     var platformHomeView = base.TableView.extend({
         template: _.template(home_template),
         row_template: _.template(row_template),
