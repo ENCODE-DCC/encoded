@@ -562,7 +562,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     donor_uuid = indices['donor'][donor]
     if donor_uuid:
         try:
-            #d = alldata['donor'][donor_uuid]
+            d = alldata['donor'][donor_uuid]
             value['donor_uuid'] = donor_uuid
         except KeyError:
             raise ValueError('Unable to find donor for biosample: %s' % donor)
