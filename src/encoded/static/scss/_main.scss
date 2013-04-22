@@ -191,6 +191,47 @@ table thead tr th button {
     @include text-shadow(0px 0px 8px rgba(255, 255, 255, 0.8));
 }
 
+/* Main navigation drop down menus */
+
+.navbar .nav > li > .dropdown-menu:after, .navbar .nav > li > .dropdown-menu:before {
+	border: 0;
+}
+
+#main-nav .dropdown-menu {
+	@include border-top-radius(0);
+	@include border-bottom-radius($baseBorderRadius);
+}
+
+.dropdown-menu li > a:hover,
+.dropdown-menu li > a:focus,
+.dropdown-submenu:hover > a {
+  text-decoration: none;
+  color: $dropdownLinkColorHover;
+  @include gradient-vertical(lighten($navbarInverseLinkBackgroundHover, 8%), lighten($navbarInverseLinkBackgroundHover, 5%));
+}
+/*
+
+#main-nav .dropdown-menu {
+	 list-style: none;
+	 height: 25px;
+	 width: 100%;
+	 min-width: none;
+}
+
+.dropdown-menu.horizontal {
+	width: 100%;
+}
+
+#main-nav li .dropdown-menu li {
+	display: inline-block;
+	float: left;
+}
+
+#main-nav li .dropdown-menu li a {
+	display: inline-block;
+	color: fff;
+}
+ */
 
 
 
