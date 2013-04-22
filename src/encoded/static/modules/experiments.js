@@ -26,10 +26,10 @@ function experiments(exports, $, _, base, table_sorter, table_filter, home_templ
         table_header: [ 'Accession',
                         'Assay Type',
                         'Target',
-                        'Description',
-                        'Files',
+                        'Biosample',
                         'Biological Replicates',
-                        'Submitter',
+                        'Files',
+                        'Lab',
                         'Project'
                         ],
         sort_initial: 0  // oh the index hack it burns
