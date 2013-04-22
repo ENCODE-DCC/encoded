@@ -310,6 +310,7 @@ def parse_decorator_factory(content_type, index_type):
     def parse_sheet(parse_type):
 
         def wrapped(testapp, alldata, indices, content_type, docsdir):
+
             for uuid, value in list(alldata[content_type].iteritems()):
 
                 try:  # one big error handle
@@ -625,9 +626,6 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
 
 @parse_decorator_factory('platform', {'value': '_uuid'})
 def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir):
-
-    ''' GEO Platform ID column is checked for multiple id's '''
-
     geo_ids = value.pop('geo_dbxref_list')
     value['gpl_ids'] = []
     gpl_ids = geo_ids.split(';')
