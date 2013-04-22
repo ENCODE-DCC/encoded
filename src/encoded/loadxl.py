@@ -27,6 +27,11 @@ TYPE_URL = {
     'lab': '/labs/',
     'award': '/awards/',
     'platform': '/platforms/',
+    'library': '/libraries/',
+    'assay': '/assays/',
+    'replicate': '/replicates/',
+    'file': '/files/',
+    'experiment': '/experiments/',
     ##{ 'institute': '/institutes/'),
 }
 
