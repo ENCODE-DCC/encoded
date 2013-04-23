@@ -1,5 +1,5 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'biosamples', 'targets', 'sources', 'platforms', 'navbar', 'generic'],
-function app(exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, platforms, navbar, generic) {
+define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'biosamples', 'libraries', 'targets', 'sources', 'platforms', 'experiments', 'navbar', 'generic'],
+function app(exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, platforms, libraries, experiments, navbar, generic) {
 
     var routes = {
         home: [''],
@@ -11,8 +11,12 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
         source: ['sources/:uuid'],
         biosamples: ['biosamples/'],
         biosample: ['biosamples/:uuid'],
+        libraries: ['libraries/'],
+        library: ['libraries/:uuid'],
         platforms: ['platforms/'],
         platform: ['platforms/:uuid'],
+        experiments: ['experiments/'],
+        experiment: ['experiments/:uuid'],
         generics: [
             'labs/',
             'users/',
@@ -23,7 +27,10 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'constructs/',
             'organisms/',
             'validations/',
-            'antibody-lots/'
+            'antibody-lots/',
+            'assays/',
+            'replicates/',
+            'files/'
         ],
         generic: [
             'labs/:uuid',
@@ -35,7 +42,10 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             'constructs/:uuid',
             'organisms/:uuid',
             'validations/:uuid',
-            'antibody-lots/:uuid'
+            'antibody-lots/:uuid',
+            'assays/:uuid',
+            'replicates/:uuid',
+            'files/:uuid'
         ]
         //login: '#login'
         //logout: '#logout'
@@ -118,6 +128,7 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             {id: 'targets', title: 'Targets', url: '/targets/'},
             {id: 'sources', title: 'Sources', url: '/sources/'},
             {id: 'platforms', title: 'Platforms', url: '/platforms/'},
+            {id: 'experiments', title: 'Experiments', url: '/experiments/'}
        ],
         user_actions: [
             {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'},

@@ -1,0 +1,87 @@
+<header class="row">
+    <div class="span12">
+        <h2>Library details for {properties.accession}</h2>
+        <h4>{properties.library_description}</h4>
+    </div>
+</header>
+<div class="row">
+    <div class="span12">	
+        <div class="panel data-display" id="library-data">
+            <section id="general">
+                <div class="data-group">
+                    <label class="data-label" for="biosample-accession">Biosample Accession:</label>
+                    <div class="data-values">
+                        <span id="biosample-accession" class="data-point"><a href="/biosamples/{model.links.biosample.get('_uuid')}">{model.links.biosample.get('accession')}</a></span>
+                    </div>
+                </div>
+                 <div class="data-group">
+                    <label class="data-label" for="biosample-type">Biosample Type:</label>
+                    <div class="data-values">
+                        <span id="biosample-type" class="data-point">{model.links.biosample.get('biosample_type')}</span>
+                    </div>
+                </div>
+                <div class="data-group">
+                    <label class="data-label" for="biosample-description">Biosample Description:</label>
+                    <div class="data-values">
+                        <span id="biosample-description" class="data-point">{model.links.biosample.get('biosample_description')}</span>
+                    </div>
+                </div>
+                <?js if(properties.nucleic_acid_type) { ?>
+                <div class="data-group">
+                    <label class="data-label" for="nucleic-acid-type">Nucleic Acid Type:</label>
+                    <div class="data-values">
+                        <span id="nucleic-acid-type" class="data-point">{properties.nucleic_acid_type}</span>
+                    </div>
+                </div>
+                <?js } ?>
+                <?js if(properties.nucleic_acid_starting_quantity) { ?>
+                <div class="data-group">
+                    <label class="data-label" for="nucleic-acid-starting">NA Starting Quantity:</label>
+                    <div class="data-values">
+                        <span id="nucleic-acid-starting" class="data-point">{properties.nucleic_acid_starting_quantity}</span>
+                    </div>
+                </div>
+                <?js } ?>
+            	<?js if(properties.lysis_method) { ?>
+                <div class="data-group">
+                    <label class="data-label" for="lysis-method">Lysis Method:</label>
+                    <div class="data-values">
+                        <span id="lysis-method" class="data-point">{properties.lysis_method}</span>
+                    </div>
+                </div>
+                <?js } ?>
+                <?js if(properties.extraction_method) { ?>
+                 <div class="data-group">
+                    <label class="data-label" for="extraction-method">Extraction Method:</label>
+                    <div class="data-values">
+                        <span id="extraction-method" class="data-point">{properties.extraction_method}</span>
+                    </div>
+                <?js } ?>
+                <?js if(properties.fragmentation_method) { ?>
+                 <div class="data-group">
+                    <label class="data-label" for="fragmentation_method">Fragmentation Method:</label>
+                    <div class="data-values">
+                        <span id="fragmentation_method" class="data-point">{properties.fragmentation_method}</span>
+                    </div>
+                <?js } ?>
+                <?js if(properties.size_range) { ?>
+                 <div class="data-group">
+                    <label class="data-label" for="size_range">Validated Size Range:</label>
+                    <div class="data-values">
+                        <span id="size_range" class="data-point">{properties.size_range}</span>
+                    </div>
+                <?js } ?>
+                <?js if(properties.library_size_selection_method) { ?>
+                 <div class="data-group">
+                    <label class="data-label" for="library_size_selection_method">Size Selection Method:</label>
+                    <div class="data-values">
+                        <span id="library_size_selection_method" class="data-point">{properties.library_size_selection_method}</span>
+                    </div>
+                <?js } ?>
+                </div>
+        	</section>   
+        </div>		
+        <!-- Protocols & Documents -->
+        <div class="protocols"></div>	
+    </div>
+</div>

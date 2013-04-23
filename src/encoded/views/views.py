@@ -13,7 +13,7 @@ from ..storage import (
 from . import (
     Collection,
     Root,
-    )
+)
 
 
 def includeme(config):
@@ -31,7 +31,7 @@ def home(context, request):
         'self': {'href': request.resource_path(context)},
         'profile': {'href': '/profiles/portal'},
         # 'login': {'href': request.resource_path(context, 'login')},
-        }
+    }
     return result
 
 
@@ -231,7 +231,8 @@ class Validation(Collection):
         'award': {'href': '/awards/{award_uuid}', 'templated': True},
     }
     embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
-    
+
+
 @root.location('antibodies')
 class AntibodyApproval(Collection):
     #schema = load_schema('antibody_approval.json')
@@ -245,14 +246,79 @@ class AntibodyApproval(Collection):
         'target': {'href': '/targets/{target_uuid}', 'templated': True},
         'validations': [
             {'href': '/validations/{validation_uuid}', 'templated': True, 'repeat': 'validation_uuid validation_uuids'},
-            ],
+        ],
     }
     embedded = set(['antibody_lot', 'target'])
-    
+
+
 @root.location('platforms')
 class Platform(Collection):
-    #schema = load_schema('award.json')
     properties = {
         'title': 'Platforms',
         'description': 'Listing of Platforms',
     }
+
+
+@root.location('libraries')
+class Library(Collection):
+    properties = {
+        'title': 'Libraries',
+        'description': 'Listing of Libraries',
+    }
+    links = {
+        'biosample': {'href': '/biosamples/{biosample_uuid}', 'templated': True},
+        'documents': [
+            {'href': '/documents/{document_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
+        ],
+    }
+    embedded = set(['biosample'])
+
+
+@root.location('assays')
+class Assays(Collection):
+    properties = {
+        'title': 'Assays',
+        'description': 'Listing of Assays',
+    }
+
+
+@root.location('replicates')
+class Replicates(Collection):
+    properties = {
+        'title': 'Replicates',
+        'description': 'Listing of Replicates',
+    }
+    links = {
+        'library': {'href': '/libraries/{library_uuid}', 'templated': True},
+        'platform': {'href': '/platforms/{platform_uuid}', 'templated': True},
+        'assay': {'href': '/assays/{assay_uuid}', 'templated': True},
+    }
+    embedded = set(['library', 'platform', 'assay'])
+
+
+@root.location('files')
+class Files(Collection):
+    properties = {
+        'title': 'Files',
+        'description': 'Listing of Files',
+    }
+
+
+@root.location('experiments')
+class Experiments(Collection):
+    properties = {
+        'title': 'Experiments',
+        'description': 'Listing of Experiments',
+    }
+    links = {
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        'files': [
+            {'href': '/files/{file_uuid}', 'templated': True, 'repeat': 'file_uuid file_uuids'},
+        ],
+        'replicates': [
+            {'href': '/replicates/{replicate_uuid}', 'templated': True, 'repeat': 'replicate_uuid replicate_uuids'},
+        ],
+    }
+    embedded = set(['files', 'replicates', 'submitter', 'lab', 'award'])

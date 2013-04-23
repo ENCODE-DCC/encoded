@@ -27,6 +27,11 @@ TYPE_URL = {
     'lab': '/labs/',
     'award': '/awards/',
     'platform': '/platforms/',
+    'library': '/libraries/',
+    'assay': '/assays/',
+    'replicate': '/replicates/',
+    'file': '/files/',
+    'experiment': '/experiments/',
     ##{ 'institute': '/institutes/'),
 }
 
@@ -628,6 +633,156 @@ def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir
         value['gpl_ids'].append(gpl_id.strip())
 
 
+@parse_decorator_factory('library', {'value': '_uuid'})
+def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    ''' Biosample, documents and submitter are MANDATORY FIELDS for library '''
+
+    value['biosample_uuid'] = ''
+    try:
+        biosample_accession = value.pop('biosample_accession')
+        biosample_uuid = indices['biosample'][biosample_accession]
+        try:
+            if alldata['biosample'].get(biosample_uuid, None) is None:
+                raise ValueError('Missing/skipped biosample reference')
+            value['biosample_uuid'] = biosample_uuid
+        except KeyError:
+            raise ValueError('Unable to find biosample for library: %s' % biosample_accession)
+    except KeyError:
+        raise ValueError('Missing biosample for library: %s' % uuid)
+
+    value['document_uuids'] = []
+    try:
+        documents = value.pop('document_list')
+
+        for doc in documents:
+            try:
+                document_uuid = indices['document'].get(doc, [])
+                if alldata['document'].get(document_uuid, None) is None:
+                    raise ValueError('Missing/skipped document reference %s for library: %s' % (document_uuid, uuid))
+                else:
+                    value['document_uuids'].append(document_uuid)
+            except KeyError:
+                raise ValueError('Unable to find document for library: %s' % doc)
+    except:
+        logger.warn('Document %s for library  %s are not found' % (documents, uuid))
+
+    assign_submitter(value, content_type, indices,
+                     {
+                     'email': value.pop('submitted_by_colleague_email'),
+                     'lab_name': value.pop('submitted_by_lab'),
+                     'award_no': value.pop('submitted_by_award')
+                     }
+                     )
+
+
+@parse_decorator_factory('assay', {'value': 'assay_name'})
+def parse_assay(testapp, alldata, content_type, indices, uuid, value, docsdir):
+    pass
+
+
+@parse_decorator_factory('replicate', {'value': '_uuid'})
+def parse_replicate(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    ''' MANDATORY FIELDS for a replicate '''
+
+    # Checking for assay reference
+    value['assay_uuid'] = ''
+    try:
+        assay_name = value.pop('assay_type')
+        assay_uuid = indices['assay'][assay_name]
+        try:
+            if alldata['assay'].get(assay_uuid, None) is None:
+                raise ValueError('Missing/skipped assay reference')
+            value['assay_uuid'] = assay_uuid
+        except KeyError:
+            raise ValueError('Unable to find assay for replicate: %s' % assay_name)
+    except KeyError:
+        raise ValueError('Unable to find assay reference for replicate: %s' % uuid)
+
+    # Checking for library reference
+    if value['library_uuid'] is None:
+        raise ValueError('Missing library UUID for replicate %s' % uuid)
+    else:
+        try:
+            if alldata['library'].get(value['library_uuid'], None) is None:
+                raise ValueError('Missing/skipped library reference')
+        except KeyError:
+            raise ValueError('Unable to find library reference for replicate: %s' % uuid)
+
+    # Checking for platform reference
+    if value['platform_uuid'] is None:
+        raise ValueError('Missing platform UUID for replicate %s' % uuid)
+    else:
+        try:
+            if alldata['platform'].get(value['platform_uuid'], None) is None:
+                raise ValueError('Missing/skipped platform reference')
+        except KeyError:
+            raise ValueError('Unable to find platform reference for replicate: %s' % uuid)
+
+
+@parse_decorator_factory('file', {'value': '_uuid'})
+def parse_file(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    ''' MANDATORY FIELDS for file '''
+
+    # Check for replicate reference
+    try:
+        if alldata['replicate'].get(value['replicate_uuid'], None) is None:
+            raise ValueError('Missing/skipped replicate reference')
+    except KeyError:
+        raise ValueError('Unable to find replicate for file: %s' % uuid)
+
+    # Check for experiment reference
+    try:
+        if value['experiment_dataset_uuid'] not in indices['experiment']:
+            raise ValueError('Missing/skipped experiment reference')
+    except KeyError:
+        raise ValueError('Unable to find experiment for file: %s' % uuid)
+
+
+@parse_decorator_factory('experiment', {'value': '_uuid'})
+def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsdir):
+
+    ''' MANDATORY FIELDS for experiment '''
+
+    value['file_uuids'] = []
+    value['replicate_uuids'] = []
+    value['assay_name'] = ''
+    value['target'] = ''
+    value['biosamples'] = []
+
+    for file in alldata['file']:
+        if (alldata['file'][file])['experiment_dataset_uuid'] is value['_uuid']:
+            value['file_uuids'].append(file)
+            for replicate in alldata['replicate']:
+                if (alldata['file'][file])['replicate_uuid'] is replicate:
+                    if replicate not in value['replicate_uuids']:
+                        value['replicate_uuids'].append(replicate)
+        else:
+            pass
+
+    # terrible coding, have to fix it later
+    if value['replicate_uuids']:
+        assay_uuid = alldata['replicate'][value['replicate_uuids'][0]]['assay_uuid']
+        value['assay_name'] = alldata['assay'][assay_uuid]['assay_name']
+        value['target'] = alldata['replicate'][value['replicate_uuids'][0]]['target']
+        for replicate in value['replicate_uuids']:
+            library = alldata['replicate'][replicate]['library_uuid']
+            biosample = alldata['library'][library]['biosample_uuid']
+            biosample_accession = alldata['biosample'][biosample]['accession']
+            if biosample_accession not in value['biosamples']:
+                value['biosamples'].append(biosample_accession)
+
+    assign_submitter(value, content_type, indices,
+                     {
+                     'email': value.pop('submitted_by_colleague_email'),
+                     'lab_name': value.pop('submitted_by_lab_name'),
+                     'award_no': value.pop('submitted_by_award_number')
+                     }
+                     )
+
+
 def load_all(testapp, filename, docsdir, test=False):
     sheets = [content_type for content_type in TYPE_URL]
     alldata = extract(filename, sheets, test=test)
@@ -666,3 +821,15 @@ def load_all(testapp, filename, docsdir, test=False):
     parse_biosample(testapp, alldata, indices, 'biosample', docsdir)
 
     parse_platform(testapp, alldata, indices, 'platform', docsdir)
+
+    parse_library(testapp, alldata, indices, 'library', docsdir)
+
+    parse_assay(testapp, alldata, indices, 'assay', docsdir)
+
+    parse_replicate(testapp, alldata, indices, 'replicate', docsdir)
+
+    indices['experiment'] = value_index(alldata['experiment'], '_uuid')
+
+    parse_file(testapp, alldata, indices, 'file', docsdir)
+
+    parse_experiment(testapp, alldata, indices, 'experiment', docsdir)

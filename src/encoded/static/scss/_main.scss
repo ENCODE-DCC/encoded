@@ -99,6 +99,7 @@ table tbody tr.even,
 table tbody tr.alt { background: #f9f9f9; }
 /* table tbody tr:nth-child(even) { background: #f9f9f9; } */
 table tbody tr td { color: #333; padding: 10px 11px; vertical-align: top; }
+table tbody tr:hover { background: #bfcfde; }
 
 /* Table Sorting
 table.tablesorter thead tr .header {
@@ -365,7 +366,7 @@ a[href^="http"]:empty:after {
 		margin-left: -20px;
     	margin-right: -20px;
 	}
-	
+
 	#som-log { margin-right: 10px; }
 }
 
@@ -415,7 +416,7 @@ a[href^="http"]:empty:after {
 	// Incomplete (yellow)
 	.#{$item}.status-incomplete      { background-color: $warningText; }
 	.#{$item}.status-incomplete[href]{ background-color: darken($warningText, 10%); }
-	
+
 	// Unsubmitted/pending (gray) is the default if no class given
 }
 
@@ -496,8 +497,8 @@ a[href^="http"]:empty:after {
 // will replace the above data-display using more semantically correct description lists
 // main scenario is for showing key:value pairs
 .key-value {
-	dt, dd { 
-		margin-bottom: 10px; 
+	dt, dd {
+		margin-bottom: 10px;
 		min-height: 20px; // = line-height ; defined somewhere?
 	}
 	dt {
@@ -510,7 +511,7 @@ a[href^="http"]:empty:after {
 	dt::after {
 		content: ": ";
 	}
-	
+
 	dd {
 		display: block;
 		padding-top: 5px;
@@ -653,7 +654,7 @@ h3 .label {
 }
 
 .unmask {
-	position: relative; 
+	position: relative;
 	z-index: 9999;
 }
 
@@ -679,9 +680,9 @@ h3 .label {
     top: 100%;
     z-index: 1000;
 	padding: 10px;
-	.col { 
+	.col {
 		margin: 0 30px 0 0;
-		float: left; 
+		float: left;
 		display: inline-block;
 		h4 { font-size: 1.0em; margin: 0 0 4px 0; }
 	}
