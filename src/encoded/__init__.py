@@ -124,6 +124,7 @@ def main(global_config, **settings):
     config.add_renderer(None, 'encoded.renderers.PageOrJSON')
     config.add_renderer('null_renderer', 'encoded.renderers.NullRenderer')
     config.scan('encoded.renderers')
+    config.include('.authentication')
     config.include('.validation')
     config.include('.views')
     config.include('.persona')

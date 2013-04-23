@@ -1,3 +1,6 @@
+import base64
+import os
+from passlib.context import CryptContext
 from pyramid.authentication import (
     BasicAuthAuthenticationPolicy as _BasicAuthAuthenticationPolicy,
 )
@@ -5,7 +8,21 @@ from pyramid.path import (
     DottedNameResolver,
     caller_package,
 )
-from .password import check_password
+
+CRYPT_CONTEXT = __name__ + ':crypt_context'
+
+
+def includeme(config):
+    prefix = 'passlib.'
+    passlib_settings = {
+        k[len(prefix):]: v
+        for k, v in config.registry.settings.items()
+        if k.startswith(prefix)
+    }
+    if not passlib_settings:
+        passlib_settings = {'schemes': 'sha512_crypt'}
+    crypt_context = CryptContext(**passlib_settings)
+    config.registry[CRYPT_CONTEXT] = crypt_context
 
 
 class NamespacedAuthenticationPolicy(object):
@@ -80,10 +97,27 @@ def basic_auth_check(username, password, request):
         return None
 
     properties = access_key.properties
-    secret_access_key_hash = properties['secret_access_key_hash']
-    if not check_password(password, secret_access_key_hash):
+    hash = properties['secret_access_key_hash']
+
+    crypt_context = request.registry[CRYPT_CONTEXT]
+    valid = crypt_context.verify(password, hash)
+    if not valid:
         return None
+
+    #valid, new_hash = crypt_context.verify_and_update(password, hash)
+    #if new_hash:
+    #    replace_user_hash(user, new_hash)
 
     principals = ['userid:' + properties['user_uuid']]
 
     return principals
+
+
+def generate_password():
+    """ Generate a password with 80 bits of entropy
+    """
+    # Take a random 10 char binary string (80 bits of
+    # entropy) and encode it as lower cased base32 (16 chars)
+    random_bytes = os.urandom(10)
+    password = base64.b32encode(random_bytes).lower()
+    return password

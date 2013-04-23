@@ -6,10 +6,9 @@ from pyramid.view import view_config
 #    Deny,
 #    Everyone,
 #)
-from ..password import (
-    display_password,
+from ..authentication import (
     generate_password,
-    hash_password,
+    CRYPT_CONTEXT,
 )
 from ..schema_utils import (
     load_schema,
@@ -93,6 +92,8 @@ class AccessKey(Collection):
              validators=[schema_validator('access_key_admin.json')],
              effective_principals=['group:admin'])
 def access_key_add(context, request):
+    crypt_context = request.registry[CRYPT_CONTEXT]
+
     if '_uuid' not in request.validated:
         request.validated['_uuid'] = uuid.uuid4()
     access_key_id = request.validated['_uuid']
@@ -107,14 +108,14 @@ def access_key_add(context, request):
     password = None
     if 'secret_access_key_hash' not in request.validated:
         password = generate_password()
-        request.validated['secret_access_key_hash'] = hash_password(password)
+        request.validated['secret_access_key_hash'] = crypt_context.encrypt(password)
 
     result = collection_add(context, request)
 
     if password is None:
         result['secret_access_key'] = None
     else:
-        result['secret_access_key'] = display_password(password)
+        result['secret_access_key'] = password
 
     result['access_key_id'] = access_key_id
     result['description'] = request.validated['description']
