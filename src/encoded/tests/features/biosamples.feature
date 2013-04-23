@@ -21,7 +21,7 @@ Feature: Biosamples
     Scenario: Table
         When I visit "/biosamples/"
         Then I should see an element with the css selector "table.sticky-area > tbody > tr"
- 
+
         When I wait for the table to fully load
         Then I should see at least 130 elements with the css selector "table.sticky-area > tbody > tr"
         And I should see an element with the css selector "a[href='/biosamples/4c1e9780-cc19-4553-b9fe-8ded24af8ff9']"
@@ -30,7 +30,7 @@ Feature: Biosamples
         When I fill in "table-filter" with "Immortal"
         Then I should see an element with the css selector "tr:not(.hidden) a[href='/biosamples/6b9a8e74-1d0b-413e-9015-87d519805515']" within 1 seconds
         And I should see an element with the css selector "tr.hidden a[href='/biosamples/aa965872-9e45-4d76-b295-bec6e4fe2517']"
-        And I should see exactly one element with the css selector "#table-count" containing the text "18"
+        And I should see exactly one element with the css selector "#table-count" containing the text "19"
 
         When I fill in "table-filter" with "Tissue"
         Then I should see an element with the css selector "tr:not(.hidden) a[href='/biosamples/aa965872-9e45-4d76-b295-bec6e4fe2517']" within 1 seconds
