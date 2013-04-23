@@ -13,14 +13,14 @@ CRYPT_CONTEXT = __name__ + ':crypt_context'
 
 
 def includeme(config):
-    prefix = 'passlib.'
+    setting_prefix = 'passlib.'
     passlib_settings = {
-        k[len(prefix):]: v
+        k[len(setting_prefix):]: v
         for k, v in config.registry.settings.items()
-        if k.startswith(prefix)
+        if k.startswith(setting_prefix)
     }
     if not passlib_settings:
-        passlib_settings = {'schemes': 'sha512_crypt'}
+        passlib_settings = {'schemes': 'sha512_crypt, unix_disabled'}
     crypt_context = CryptContext(**passlib_settings)
     config.registry[CRYPT_CONTEXT] = crypt_context
 
