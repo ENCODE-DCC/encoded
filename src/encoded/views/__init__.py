@@ -138,7 +138,68 @@ class Root(object):
         return decorate
 
 
+class Item(object):
+    # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
+    def __init__(self, collection, model, acl=None):
+        self.__name__ = model.rid
+        self.__parent__ = collection
+        self.model = model
+        if acl is not None:
+            self.__acl__ = acl
+
+    @property
+    def properties(self):
+        return self.model.statement.object
+
+    def __json__(self, request):
+        properties = self.properties.copy()
+        links = self.expand_links(properties, request)
+        if links is not None:
+            properties['_links'] = links
+        return properties
+
+    def expand_links(self, properties, request):
+        # Expand templated links
+        ns = properties.copy()
+        ns['collection_uri'] = request.resource_path(self.__parent__)
+        ns['item_type'] = self.model.predicate
+        compiled = ObjectTemplate(self.__parent__.links)
+        links = compiled(ns)
+        # Embed resources
+        embedded = self.__parent__.embedded
+        for rel, value in links.items():
+            if rel not in embedded:
+                continue
+            if isinstance(value, list):
+                for member in value:
+                    embed(request, member['href'])
+            else:
+                embed(request, value['href'])
+        return links
+
+
+class CustomItemMeta(type):
+    """ Give each collection its own Item class to enable
+        specific view registration.
+    """
+    def __init__(self, name, bases, attrs):
+        super(CustomItemMeta, self).__init__(name, bases, attrs)
+        if 'Item' in attrs:
+            return
+        item_bases = tuple(base.Item for base in bases
+                           if issubclass(base, Collection))
+        qualname = getattr(self, '__qualname__', self.__name__)  # PY3 only
+        item_attrs = {
+            '__module__': self.__module__,
+            '__name__': 'Item',
+            '__qualname__': qualname + '.Item',
+        }
+        self.Item = type('Item', item_bases, item_attrs)
+
+
 class Collection(object):
+    __metaclass__ = CustomItemMeta
+    Item = Item
     schema = None
     properties = None
     item_type = None
@@ -188,7 +249,7 @@ class Collection(object):
 
     def make_item(self, model):
         acl = self.item_acl(model)
-        return Item(self, model, acl)
+        return self.Item(self, model, acl)
 
     def add(self, properties):
         rid = properties.get('_uuid', None)
@@ -273,46 +334,6 @@ def traversal_security(event):
         if not result:
             msg = 'Unauthorized: traversal failed permission check'
             raise HTTPForbidden(msg, result=result)
-
-
-class Item(object):
-    # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
-    def __init__(self, collection, model, acl=None):
-        self.__name__ = model.rid
-        self.__parent__ = collection
-        self.model = model
-        if acl is not None:
-            self.__acl__ = acl
-
-    @property
-    def properties(self):
-        return self.model.statement.object
-
-    def __json__(self, request):
-        properties = self.properties.copy()
-        links = self.expand_links(properties, request)
-        if links is not None:
-            properties['_links'] = links
-        return properties
-
-    def expand_links(self, properties, request):
-        # Expand templated links
-        ns = properties.copy()
-        ns['collection_uri'] = request.resource_path(self.__parent__)
-        ns['item_type'] = self.model.predicate
-        compiled = ObjectTemplate(self.__parent__.links)
-        links = compiled(ns)
-        # Embed resources
-        embedded = self.__parent__.embedded
-        for rel, value in links.items():
-            if rel not in embedded:
-                continue
-            if isinstance(value, list):
-                for member in value:
-                    embed(request, member['href'])
-            else:
-                embed(request, value['href'])
-        return links
 
 
 @view_config(context=Item, permission='view', request_method='GET')
