@@ -8,7 +8,7 @@ import xlrd
 # http://www.lexicon.net/sjmachin/xlrd.html
 
 logger = logging.getLogger('encoded')
-logger.setLevel(logging.WARNING)  # doesn't work to shut off sqla INFO
+logger.setLevel(logging.WARNING)  #doesn't work to shut off sqla INFO
 
 TYPE_URL = {
     # TODO This has appears in 3 places... maybe it shoudl be configged
@@ -310,6 +310,7 @@ def parse_decorator_factory(content_type, index_type):
     def parse_sheet(parse_type):
 
         def wrapped(testapp, alldata, indices, content_type, docsdir):
+
             for uuid, value in list(alldata[content_type].iteritems()):
 
                 try:  # one big error handle
@@ -562,7 +563,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     donor_uuid = indices['donor'][donor]
     if donor_uuid:
         try:
-            #d = alldata['donor'][donor_uuid]
+            d = alldata['donor'][donor_uuid]
             value['donor_uuid'] = donor_uuid
         except KeyError:
             raise ValueError('Unable to find donor for biosample: %s' % donor)
@@ -625,9 +626,6 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
 
 @parse_decorator_factory('platform', {'value': '_uuid'})
 def parse_platform(testapp, alldata, content_type, indices, uuid, value, docsdir):
-
-    ''' GEO Platform ID column is checked for multiple id's '''
-
     geo_ids = value.pop('geo_dbxref_list')
     value['gpl_ids'] = []
     gpl_ids = geo_ids.split(';')
@@ -752,6 +750,7 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
     value['replicate_uuids'] = []
     value['assay_name'] = ''
     value['target'] = ''
+    value['biosamples'] = []
 
     for file in alldata['file']:
         if (alldata['file'][file])['experiment_dataset_uuid'] is value['_uuid']:
@@ -768,6 +767,12 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
         assay_uuid = alldata['replicate'][value['replicate_uuids'][0]]['assay_uuid']
         value['assay_name'] = alldata['assay'][assay_uuid]['assay_name']
         value['target'] = alldata['replicate'][value['replicate_uuids'][0]]['target']
+        for replicate in value['replicate_uuids']:
+            library = alldata['replicate'][replicate]['library_uuid']
+            biosample = alldata['library'][library]['biosample_uuid']
+            biosample_accession = alldata['biosample'][biosample]['accession']
+            if biosample_accession not in value['biosamples']:
+                value['biosamples'].append(biosample_accession)
 
     assign_submitter(value, content_type, indices,
                      {
@@ -776,7 +781,6 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
                      'award_no': value.pop('submitted_by_award_number')
                      }
                      )
-
 
 
 def load_all(testapp, filename, docsdir, test=False):
