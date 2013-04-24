@@ -525,6 +525,18 @@ def parse_treatment(testapp, alldata, content_type, indices, uuid, value, docsdi
     except (ValueError, TypeError):
         del value['concentration']
 
+    value['document_uuid'] = ''
+    if value['treatment_document']:
+        document = value['treatment_document']
+        try:
+            document_uuid = indices['document'].get(document, None)
+            if alldata['document'].get(document_uuid, None) is None:
+                raise ValueError('Missing/skipped document reference %s for treatment: %s' % (document, uuid))
+            else:
+                value['document_uuid'] = document_uuid
+        except KeyError:
+            raise ValueError('Unable to find document for treatment: %s' % document)
+
 
 @parse_decorator_factory('construct', {'value': 'vector_name'})
 def parse_construct(testapp, alldata, content_type, indices, uuid, value, docsdir):
@@ -570,20 +582,6 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
 
     ''' OPTIONAL OR REQUIRED FIELDS '''
 
-    value['treatment_uuids'] = []  # eventhough it's really 1:0 or 1.
-    try:
-        treat = value.pop('treatment')
-        treatment_uuid = indices['treatment'][treat]
-        try:
-            if alldata['treatment'].get(treatment_uuid, None) is None:
-                logger.warn('Missing/skipped treatment reference %s for biosample: %s' % (treatment_uuid, uuid))
-            value['treatment_uuids'].append(treatment_uuid)
-        except KeyError:
-            raise ValueError('Unable to find treatment for biosample: %s' % treat)
-    except KeyError as k:
-        pass
-        # treatment is often null
-
     value['document_uuids'] = []
 
     try:
@@ -601,22 +599,22 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     except KeyError:
         logger.warn('Empty biosample documents list: %s' % documents)
 
-    if value['treatment_uuids']:
-        for treatment_uuid in value['treatment_uuids']:
-            if alldata['treatment'][treatment_uuid]['treatment_document']:
-                try:
-                    document = alldata['treatment'][treatment_uuid]['treatment_document']
-                    try:
-                        document_uuid = indices['document'].get(document, None)
-                        if alldata['document'].get(document_uuid, None) is None:
-                            raise ValueError('Missing/skipped document reference %s for treatment: %s' % (doc, uuid))
-                        else:
-                            if document_uuid not in value['document_uuids']:
-                                value['document_uuids'].append(document_uuid)
-                    except KeyError:
-                        raise ValueError('Unable to find document for treatment: %s' % doc)
-                except KeyError:
-                    logger.warn('Empty treatment documents list: %s' % documents)
+    value['treatment_uuids'] = []  # eventhough it's really 1:0 or 1.
+    try:
+        treat = value.pop('treatment')
+        treatment_uuid = indices['treatment'][treat]
+        try:
+            if alldata['treatment'].get(treatment_uuid, None) is None:
+                logger.warn('Missing/skipped treatment reference %s for biosample: %s' % (treatment_uuid, uuid))
+            value['treatment_uuids'].append(treatment_uuid)
+            # adding treatment documents to biosamples documents list
+            if alldata['treatment'][treatment_uuid]['document_uuid']:
+                value['document_uuids'].append(alldata['treatment'][treatment_uuid]['document_uuid'])
+        except KeyError:
+            raise ValueError('Unable to find treatment for biosample: %s' % treat)
+    except KeyError as k:
+        pass
+        # treatment is often null
 
     value['construct_uuids'] = []
     try:
