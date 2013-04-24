@@ -11,8 +11,10 @@
         </tr>
         <tr>
           <?js  _.each(view.table_header, function (header, index) { ?>
-           <?js  if( view.sort_initial != null  && index==view.sort_initial) { ?>
+           <?js if( view.sort_initial != null && view.sort_initial >= 0 && index==view.sort_initial) { ?>
                 <th class="sort-initial">{header}</th>
+           <?js } else if( view.sort_initial != null && -index==view.sort_initial) { ?>
+                <th class="sort-initial sort-initial-reverse">{header}</th>
            <?js } else { ?> <th>{header}</th> <?js } ?>
         <?js }); ?>
         <?js } else {  ?>

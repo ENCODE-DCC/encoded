@@ -360,7 +360,7 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
         },
 
         events: {
-            "click td": "link"
+            "click td": "link",
         },
 
         link: function(event) {
