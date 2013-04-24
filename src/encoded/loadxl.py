@@ -601,6 +601,23 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
     except KeyError:
         logger.warn('Empty biosample documents list: %s' % documents)
 
+    if value['treatment_uuids']:
+        for treatment_uuid in value['treatment_uuids']:
+            if alldata['treatment'][treatment_uuid]['treatment_document']:
+                try:
+                    document = alldata['treatment'][treatment_uuid]['treatment_document']
+                    try:
+                        document_uuid = indices['document'].get(document, None)
+                        if alldata['document'].get(document_uuid, None) is None:
+                            raise ValueError('Missing/skipped document reference %s for treatment: %s' % (doc, uuid))
+                        else:
+                            if document_uuid not in value['document_uuids']:
+                                value['document_uuids'].append(document_uuid)
+                    except KeyError:
+                        raise ValueError('Unable to find document for treatment: %s' % doc)
+                except KeyError:
+                    logger.warn('Empty treatment documents list: %s' % documents)
+
     value['construct_uuids'] = []
     try:
         constructs = value.pop('construct_list')

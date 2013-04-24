@@ -34,6 +34,7 @@
                     </span>
                </div>
             </div>
+            <?js if(properties.product_id) { ?>
             <div class="data-group">
                 <label class="data-label" for="product-id">Product ID:</label>
                 <div class="data-values">
@@ -44,12 +45,15 @@
                     <?js } ?>
                 </div>
             </div>
+            <?js } ?>
+            <?js if(properties.lot_id) { ?>
             <div class="data-group">
                 <label class="data-label" for="lot-id">Lot ID:</label>
                 <div class="data-values">
                     <span id="lot-id" class="data-point">{properties.lot_id}</span>
                 </div>
             </div>
+            <?js } ?>
             <div class="data-group">
                 <label class="data-label" for="project">Project:</label>
                     <div class="data-values">
@@ -74,19 +78,11 @@
                     <span id="grant" class="data-point">{model.links.award.get('number')}</span>
                 </div>
             </div>
-            <?js if(properties.biosample_type == 'Immortalized cell line') { ?>
-            <div class="data-group">
-                <label class="data-label" for="species">Species:</label>
-                <div class="data-values">
-                    <span id="species" class="data-point">{model.links.donor.links.organism.get('organism_name')}</span>
-                </div>
-            </div>
             </section>
-            <?js } else { ?>
             <!-- DBXREFS -->
 
            </section> <!--#general -->
-
+           <?js if(properties.biosample_type != 'Immortalized cell line') { ?>
             <hr>
             <!-- Donor section -->
              <section id="donor-info">
@@ -146,9 +142,9 @@
 		                <label class="data-label" for="treatment-condition">Condition:</label>
 		                <div class="data-values">
 		                    <span id="treatment-condition" class="data-point">
-		                        <?js if(treatment.get('concentration') != 'NULL') { ?> {treatment.get('concentration')} {treatment.get('concentration units')} <?js } ?>
+		                        <?js if(treatment.get('concentration') != 'NULL') { ?> {treatment.get('concentration')} {treatment.get('concentration_units')} <?js } ?>
 		                        {treatment.get('condition_term')} ({treatment.get('condition_id')})
-		                    <?js if (treatment.get('duration') != 'NULL') { ?> for {treatment.get('duration')} {treatment.get('duration units')} <?js } ?>
+		                    <?js if (treatment.get('duration') != 'NULL') { ?> for {treatment.get('duration')} {treatment.get('duration_units')} <?js } ?>
 		                    </span>
 		                </div>  
 		            </div>
