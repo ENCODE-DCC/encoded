@@ -43,11 +43,6 @@ Feature: Targets
         And I should not see "null"
 
 
-        When I go back
-        And I wait for the table to fully load
-        When I click the link to "http://www.uniprot.org/uniprot/P0C0S5"
-        Then the browser's URL should contain "www.uniprot.org"
-        Then I should see "P0C0S5 (H2AZ_HUMAN)"
 
     Scenario: Detail page
         When I visit "/targets/a1b236fc-38d5-4af5-a140-ede8bb6327c8"
@@ -58,3 +53,7 @@ Feature: Targets
         And I should not see "N/A"
         And I should not see "NULL"
         And I should not see "null"
+        When I click the link to "http://www.uniprot.org/uniprot/P84228"
+        Then the browser's URL should contain "www.uniprot.org"
+        Then I should see "P84228 (H32_MOUSE)"
+
