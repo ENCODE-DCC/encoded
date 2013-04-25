@@ -525,17 +525,19 @@ def parse_treatment(testapp, alldata, content_type, indices, uuid, value, docsdi
     except (ValueError, TypeError):
         del value['concentration']
 
-    value['document_uuid'] = ''
-    if value['treatment_document']:
-        document = value['treatment_document']
-        try:
-            document_uuid = indices['document'].get(document, None)
-            if alldata['document'].get(document_uuid, None) is None:
-                raise ValueError('Missing/skipped document reference %s for treatment: %s' % (document, uuid))
-            else:
-                value['document_uuid'] = document_uuid
-        except KeyError:
-            raise ValueError('Unable to find document for treatment: %s' % document)
+    #import pdb; pdb.set_trace();
+    value['document_uuids'] = []
+    if value['treatment_document_list']:
+        documents = value.pop('treatment_document_list')
+        for doc in documents:
+            try:
+                document_uuid = indices['document'].get(doc, None)
+                if alldata['document'].get(document_uuid, None) is None:
+                    raise ValueError('Missing/skipped document reference %s for treatment: %s' % (doc, uuid))
+                else:
+                    value['document_uuids'].append(document_uuid)
+            except KeyError:
+                raise ValueError('Unable to find document for treatment: %s' % doc)
 
 
 @parse_decorator_factory('construct', {'value': 'vector_name'})
@@ -608,8 +610,8 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 logger.warn('Missing/skipped treatment reference %s for biosample: %s' % (treatment_uuid, uuid))
             value['treatment_uuids'].append(treatment_uuid)
             # adding treatment documents to biosamples documents list
-            if alldata['treatment'][treatment_uuid]['document_uuid']:
-                value['document_uuids'].append(alldata['treatment'][treatment_uuid]['document_uuid'])
+            if alldata['treatment'][treatment_uuid]['document_uuids']:
+                value['document_uuids'] = value['document_uuids']+ alldata['treatment'][treatment_uuid]['document_uuids']
         except KeyError:
             raise ValueError('Unable to find treatment for biosample: %s' % treat)
     except KeyError as k:
