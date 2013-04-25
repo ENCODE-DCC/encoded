@@ -105,12 +105,14 @@
                     <span id="donor-sex" class="data-point">{model.links.donor.get('sex')}</span>
                 </div>
             </div>
+            <?js if(model.links.donor.get('strain background')) { ?>
             <div class="data-group">
                 <label class="data-label" for="donor-strain">Strain:</label>
                 <div class="data-values">
                     <span id="donor-strain" class="data-point">{model.links.donor.get('strain background')}</span>
                 </div>
             </div>
+            <?js } ?>
             <div class="data-group">
                 <label class="data-label" for="health-status">Health status:</label>
                 <div class="data-values">
