@@ -337,6 +337,7 @@ def check_constraints(request, connection_proxy):
 def execute_counter(request, connection, zsa_savepoints, check_constraints):
     """ Count calls to execute
     """
+    from contextlib import contextmanager
     from sqlalchemy import event
 
     class Counter(object):
@@ -346,6 +347,13 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
         def reset(self):
             self.count = 0
+
+        @contextmanager
+        def expect(self, count):
+            start = self.count
+            yield
+            difference = self.count - start
+            assert difference == count
 
     counter = Counter()
 
