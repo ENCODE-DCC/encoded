@@ -3,7 +3,7 @@ define(['exports', 'jquery', 'underscore', 'navigator', 'app', 'base',
 function navbar(exports, $, _, navigator, app, base, navbar_template) {
 
     // The top navbar
-    exports.NavBarView = base.View.extend({
+    var NavBar = exports.NavBarView = base.View.extend({
         template: _.template(navbar_template),
 
         initialize: function () {
@@ -26,25 +26,18 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
             return this.model.user_actions;
         },
 
-        on_route: function on_route(evt) {
-            var route_parts = evt.split(':');
+        events: {
+            "click #signin": "signin",
+            "click #signout": "signout"
+        },
+
+        on_route: function(event) {
+            var route_parts = event.split(':');
             // Only render on the main route not the overlay route.
             if (route_parts[0] !== 'route') return;
             this.current_route = route_parts[1];
             this.render();
-            if (app.user.email) {
-                $("#signout").text("Log out: "+app.user.email);
-                $("#signout").parent().show();
-                $("#signin").parent().hide();
-            } else {
-                $("#signin").parent().show();
-                $("#signout").parent().hide();
-            }
-        },
-
-        events: {
-            "click #signin": "signin",
-            "click #signout": "signout"
+            NavBar.toggle_login();
         },
 
         signout: function(event) {
@@ -92,7 +85,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                                     //_each(app.Config.user_actions(), function(action) {
                                     //    action = action._extend({'class': hide});
                                     //});
-                                    app.router.trigger('login');
+                                    NavBar.toggle_login();
                                     // possibly this should trigger on navbar view directly
                                     //Backbone.history.navigate(location.href, {trigger: true, replace: true});
                                 }
@@ -113,6 +106,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                             console.log('reloading after persona logout');
                             app.user = { email: undefined };
                             app.router.trigger('logout');
+                            NavBar.toggle_login();
                             //Backbone.history.navigate(location.href, {trigger: true, replace: true});
                             //window.location.reload();
                         },
@@ -125,7 +119,19 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
         }
     },
     {
-        slot_name: 'navbar'
+        slot_name: 'navbar',
+
+        toggle_login: function toggleLogin() {
+            if (app.user.email) {
+                $("#signout").text("Log out: "+app.user.email);
+                $("#signout").parent().show();
+                $("#signin").parent().hide();
+            } else {
+                $("#signin").parent().show();
+                $("#signout").parent().hide();
+            }
+        }
+
     });
 
 
