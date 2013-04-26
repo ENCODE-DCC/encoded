@@ -50,7 +50,7 @@ def _test_user_html(htmltestapp):
     ''' this test should return 403 forbidden but cannot currently load data
         via post_json with authz on.
     '''
-    res = htmltestapp.get('/users/', status=403)
+    htmltestapp.get('/users/', status=403)
 
 
 def _test_antibody_approval_creation(testapp):
@@ -142,6 +142,7 @@ def test_collection_update(testapp, url, execute_counter):
     res.pop('_embedded', None)
     assert res == update
 
+
 # TODO Add 2 tests for duplicate UUIDs (see sample_data.py)
 def test_post_duplicate_uuid(testapp):
     from .sample_data import BAD_LABS
@@ -186,7 +187,7 @@ def test_users_post(testapp, session):
     assert sorted(principals) == [
         'lab:2c334112-288e-4d45-9154-3f404c726daf',
         'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
-        ]
+    ]
 
 
 # __acl__ check disabled as users are transcluded.

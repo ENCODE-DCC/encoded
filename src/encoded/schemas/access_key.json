@@ -1,0 +1,13 @@
+{
+    "title": "Access key",
+    "description": "Programmatic access key",
+    "type": "object",
+    "properties": {
+        "description": {
+            "title": "Description",
+            "description": "",
+            "type": "string",
+            "default": ""
+        }
+    }
+}

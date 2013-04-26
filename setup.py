@@ -11,6 +11,7 @@ requires = [
     'WebTest',
     'jsonschema',
     'loremipsum',
+    'passlib',
     'pyramid',
     'pyramid_multiauth',
     'pyramid_tm',

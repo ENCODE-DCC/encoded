@@ -1,38 +1,20 @@
-from pyramid.view import view_config
-from pyramid.security import (
-    Allow,
-    Authenticated,
-    Deny,
-    Everyone,
+#from pyramid.security import (
+#    Allow,
+#    Authenticated,
+#    Deny,
+#    Everyone,
+#)
+from . import root
+from ..contentbase import (
+    Collection,
 )
-from ..schema_utils import load_schema
+from ..schema_utils import (
+    load_schema,
+)
 from ..storage import (
     DBSession,
     UserMap,
 )
-from . import (
-    Collection,
-    Root,
-)
-
-
-def includeme(config):
-    config.scan('.')
-    config.set_root_factory(root)
-
-
-root = Root(title='Home', portal_title='ENCODE 3')
-
-
-@view_config(context=Root, request_method='GET')
-def home(context, request):
-    result = context.__json__(request)
-    result['_links'] = {
-        'self': {'href': request.resource_path(context)},
-        'profile': {'href': '/profiles/portal'},
-        # 'login': {'href': request.resource_path(context, 'login')},
-    }
-    return result
 
 
 #    permission='admin'  ## this prevents loading of users via post_json
