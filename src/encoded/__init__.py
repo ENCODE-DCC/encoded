@@ -126,6 +126,7 @@ def main(global_config, **settings):
     config.scan('encoded.renderers')
     config.include('.authentication')
     config.include('.validation')
+    config.include('.contentbase')
     config.include('.views')
     config.include('.persona')
     config.include('pyramid_multiauth')
