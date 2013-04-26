@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from .storage import (
     Base,
     DBSession,
-    )
+)
 STATIC_MAX_AGE = 0
 
 
@@ -42,7 +42,7 @@ def configure_engine(settings, test_setup=False):
         engine_opts.update(
             connect_args={'check_same_thread': False},
             poolclass=StaticPool,
-            )
+        )
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
     if engine.url.drivername == 'sqlite':
         enable_sqlite_savepoints(engine)
@@ -93,7 +93,7 @@ def load_sample_data(app):
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'IMPORT',
-        }
+    }
     testapp = TestApp(app, environ)
     load_sample(testapp)
 
@@ -104,7 +104,7 @@ def load_workbook(app, workbook_filename, docsdir, test=False):
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'IMPORT',
-        }
+    }
     testapp = TestApp(app, environ)
     load_all(testapp, workbook_filename, docsdir, test=test)
 
