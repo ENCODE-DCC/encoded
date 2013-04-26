@@ -2,7 +2,7 @@ from pyramid.view import view_config
 
 
 def includeme(config):
-    config.scan('.')
+    config.scan(__name__)
 
 
 @view_config(name='testing-user', request_method='GET')
