@@ -1,8 +1,8 @@
-<td><a href="{model.url()}">{properties.target_label}</a></td>
+<td><a href="{model._links.self.href}">{properties.target_label}</a></td>
 <td>{model.links.organism.get('organism_name')}</td>
 <td>
 <?js if(properties.dbxref.uniprot.length) { _.each(properties.dbxref.uniprot, function(id) {  ?>
-    <a href="http://www.uniprot.org/uniprot/{id}">{id}</a> (UniProt)
+    {id} (UniProtKB)
 <?js }); } else { ?>
     <em>None submitted</em>
 <?js } ?>

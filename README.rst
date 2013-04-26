@@ -33,7 +33,9 @@ Run the Browser tests with::
 
 To run tests with postgresql::
 
-    $ initdb encoded
+    first install postgres (on a mac with homebrew for example)
+
+    $ createdb encoded
     $ bin/test --engine-url postgresql:///encoded
 
 
@@ -56,7 +58,7 @@ Compiling "on the fly"
 Compass can watch for any changes made to .scss files and instantly compile them to .css. To start this, from the root of the project (where config.rb is) do::
 
     $ compass watch
-    
+
 You can specify whether the compiled CSS is minified or not in config.rb. (Currently, it is set to minify.)
 
 Force compiling

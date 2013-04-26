@@ -106,7 +106,16 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
             }, this));
           }, this), route_type);
           return this;
+        },
+
+        events: {
+            login: 'login'
+        },
+
+        login: function() {
+
         }
+
     });
 
     // The view registry allows for a Pyramid like pattern of view registration.
@@ -360,7 +369,7 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
         },
 
         events: {
-            "click td": "link"
+            "click td": "link",
         },
 
         link: function(event) {
