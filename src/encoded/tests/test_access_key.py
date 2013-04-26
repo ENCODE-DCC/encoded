@@ -94,7 +94,6 @@ def test_access_key_edit(anontestapp, access_key):
     assert res.json['description'] == NEW_DESCRIPTION
 
 
-@pytest.mark.xfail
 def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get(access_key['location'], headers=headers)

@@ -18,6 +18,7 @@ from ..contentbase import (
     Collection,
     collection_add,
     item_edit,
+    item_view,
 )
 import uuid
 
@@ -119,3 +120,11 @@ def access_key_edit(context, request):
     new_properties.update(request.validated)
     request.validated = new_properties
     return item_edit(context, request)
+
+
+@view_config(context=AccessKey.Item, permission='view', request_method='GET')
+def access_key_view(context, request):
+    properties = item_view(context, request)
+    if properties:
+        del properties['secret_access_key_hash']
+    return properties
