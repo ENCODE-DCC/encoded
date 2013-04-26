@@ -52,7 +52,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
     };
 
     var overlay_routes = {
-        edit: ['edit']
+        edit: ['edit'],
+        add:['add']
     };
 
     var slots = {

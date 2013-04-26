@@ -42,6 +42,9 @@ class User(Collection):
     properties = {
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
+        'actions': [
+            {'name': 'add', 'title': 'Add Colleague', 'profile': '/profiles/colleague.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
     links = {
         'labs': [
@@ -71,6 +74,9 @@ class Lab(Collection):
     properties = {
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
+        'actions': [
+            {'name': 'add', 'title': 'Add Lab', 'profile': '/profiles/lab.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
     links = {
         'awards': [
@@ -86,6 +92,9 @@ class Award(Collection):
     properties = {
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
+        'actions': [
+            {'name': 'add', 'title': 'Add Award', 'profile': '/profiles/award.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
 
 
@@ -108,6 +117,10 @@ class Organism(Collection):
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
+        'description': 'Listing of sources and vendors for ENCODE material',
+        'actions': [
+            {'name': 'add', 'title': 'Add Organism', 'profile': '/profiles/organism.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
 
 
@@ -117,6 +130,9 @@ class Source(Collection):
     properties = {
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
+        'actions': [
+            {'name': 'add', 'title': 'Add Source', 'profile': '/profiles/source.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
     links = {
         'actions': [
