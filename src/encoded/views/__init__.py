@@ -10,8 +10,10 @@ from pyramid.httpexceptions import (
 from pyramid.location import lineage
 from pyramid.security import (
     Allow,
+    Authenticated,
     Everyone,
     has_permission,
+
 )
 from pyramid.threadlocal import manager
 from pyramid.view import view_config
@@ -110,9 +112,9 @@ class Root(object):
 
     __acl__ = [
         (Allow, Everyone, 'list'),
-        (Allow, 'group:admin', 'add'),
+        (Allow, Authenticated, 'add'),
         (Allow, Everyone, 'view'),
-        (Allow, 'group:admin', 'edit'),
+        (Allow, Authenticated, 'edit'),
         (Allow, Everyone, 'traverse'),
     ]
 
@@ -150,6 +152,7 @@ class Collection(object):
         'profile': {'href': '/profiles/{item_type}.json', 'templated': True},
     }
     embedded = {}
+    collection_links = {}
 
     def __init__(self, parent, name):
         self.__name__ = name
@@ -227,13 +230,14 @@ def collection_list(context, request):
         '_links': {
             'self': {'href': collection_uri},
             'items': items,
-            '/rels/actions': [
+            'actions': [
                 {
-                    'name': 'add-antibody',
-                    'title': 'Add antibody',
+                    'name': 'add',
+                    'title': 'Register',
                     'method': 'POST',
                     'type': 'application/json',
                     'href': collection_uri,
+                    'profile': '/profiles/' + context.item_type + '.json'
                 }
             ],
         },
@@ -298,6 +302,7 @@ class Item(object):
         ns = properties.copy()
         ns['collection_uri'] = request.resource_path(self.__parent__)
         ns['item_type'] = self.model.predicate
+        ns['_uuid'] = self.model.rid
         compiled = ObjectTemplate(self.__parent__.links)
         links = compiled(ns)
         # Embed resources

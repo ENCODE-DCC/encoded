@@ -676,7 +676,7 @@ def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir)
             try:
                 document_uuid = indices['document'].get(doc, [])
                 if alldata['document'].get(document_uuid, None) is None:
-                    raise ValueError('Missing/skipped document reference %s for library: %s' % (document_uuid, uuid))
+                    raise ValueError('Missing/skipped document reference for library')
                 else:
                     value['document_uuids'].append(document_uuid)
             except KeyError:
@@ -725,17 +725,17 @@ def parse_replicate(testapp, alldata, content_type, indices, uuid, value, docsdi
             if alldata['library'].get(value['library_uuid'], None) is None:
                 raise ValueError('Missing/skipped library reference')
         except KeyError:
-            raise ValueError('Unable to find library reference for replicate: %s' % uuid)
+            raise ValueError('Unable to find library reference for replicate')
 
     # Checking for platform reference
     if value['platform_uuid'] is None:
-        raise ValueError('Missing platform UUID for replicate %s' % uuid)
+        raise ValueError('Missing platform UUID for replicate')
     else:
         try:
             if alldata['platform'].get(value['platform_uuid'], None) is None:
                 raise ValueError('Missing/skipped platform reference')
         except KeyError:
-            raise ValueError('Unable to find platform reference for replicate: %s' % uuid)
+            raise ValueError('Unable to find platform reference for replicate')
 
 
 @parse_decorator_factory('file', {'value': '_uuid'})
@@ -748,7 +748,7 @@ def parse_file(testapp, alldata, content_type, indices, uuid, value, docsdir):
         if alldata['replicate'].get(value['replicate_uuid'], None) is None:
             raise ValueError('Missing/skipped replicate reference')
     except KeyError:
-        raise ValueError('Unable to find replicate for file: %s' % uuid)
+        raise ValueError('Unable to find replicate for file')
 
     # Check for experiment reference
     try:

@@ -277,8 +277,6 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
         slot_name: 'overlay'
     });
 
-    
-
     exports.RowView = exports.View.extend({
         tagName: 'tr',
 
@@ -461,7 +459,7 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
         className: exports.Modal.prototype.className + ' form-horizontal',
         initialize: function initialize(options) {
             var name = options.route_args[0];
-            this.action = _.find(this.model.attributes.actions, function(item) {
+            this.action = _.find(this.model._links.actions, function(item) {
                 return item.name === name;
             });
             this.title = this.action.title;
@@ -486,6 +484,25 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
             this.form.submit(evt);
         },
         send: function send(value)  {
+            this.value = value;
+            // Essentially just $.ajax but triggering some events
+            this.model.sync(null, this.model, {
+                url: this.action.href,
+                type: this.action.method,
+                contentType: 'application/json',
+                data: JSON.stringify(value),
+                dataType: 'json'
+            }).done(_.bind(function (data) {
+                // close, refresh
+                console.log(data);
+                var url = data._links.items[0].href;
+                // force a refresh
+                app.view_registry.history.path = null;
+                app.view_registry.history.navigate(url, {trigger: true});
+            }, this)).fail(_.bind(function (data) {
+                // flag errors, try again
+                console.log(data);
+            }, this));
             return false;
         }
     }, {

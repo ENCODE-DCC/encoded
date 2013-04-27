@@ -44,6 +44,5 @@ function sources(exports, $, _, base, table_sorter, table_filter, home_template,
         route_name: 'source',
         model_factory: exports.Source
     });
-
     return exports;
 });

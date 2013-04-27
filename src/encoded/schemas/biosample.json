@@ -1,0 +1,57 @@
+{
+    "title": "Biosample",
+    "description": "Biosamples used in Encode Project",
+    "type": "object",
+    "properties": {
+        "_uuid": {
+            "title": "UUID",
+            "description": "",
+            "type": "string",
+            "format": "uuid"
+        },
+        "biosample_type": {
+            "title": "Type",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "Primary cell line",
+                "Immortalized cell line",
+                "Tissue"
+            ]
+        },
+        "species": {
+            "title": "Species",
+            "description": "",
+            "type": "string",
+            "enum": [
+                "Human",
+                "Rabbit",
+                "Rat",
+                "Mouse",
+                "Sheep",
+                "Goat"
+            ]
+        },
+        "lab": {
+            "title": "Lab",
+            "description": "",
+            "type": "string"
+        },
+        "grant": {
+            "title": "Grant",
+            "description": "",
+            "type": "string"
+        },
+        "notes": {
+            "title": "Notes",
+            "description": "",
+            "type": "string"
+        }
+    },
+    "required": [
+        "biosample_type",
+        "species",
+        "lab",
+        "grant"
+    ]
+}

@@ -130,15 +130,13 @@ class Source(Collection):
     properties = {
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
-        'actions': [
-            {'name': 'add', 'title': 'Add Source', 'profile': '/profiles/source.json', 'method': 'POST', 'href': '', 'templated': True},
-        ],
     }
     links = {
         'actions': [
             {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', 'templated': True},
         ],
     }
+
 
 
 @root.location('donors')
@@ -195,6 +193,9 @@ class Biosample(Collection):
     properties = {
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
+        'actions': [
+            {'name': 'add', 'title': 'Register Biosample', 'profile': '/profiles/biosample.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
     links = {
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
