@@ -13,7 +13,10 @@ from pyramid.security import (
     Everyone,
     has_permission,
 )
-from pyramid.threadlocal import manager
+from pyramid.threadlocal import (
+    get_current_request,
+    manager,
+)
 from pyramid.view import view_config
 from urllib import unquote
 from uuid import UUID
@@ -102,6 +105,12 @@ def validate_item_content(context, request):
     validate_request(schema, request)
 
 
+def permission_checker(context, request):
+    def checker(permission):
+        return has_permission(permission, context, request)
+    return checker
+
+
 class Root(object):
     __name__ = ''
     __parent__ = None
@@ -163,6 +172,7 @@ class Item(object):
         ns = properties.copy()
         ns['collection_uri'] = request.resource_path(self.__parent__)
         ns['item_type'] = self.model.predicate
+        ns['permission'] = permission_checker(self, get_current_request())
         compiled = ObjectTemplate(self.__parent__.links)
         links = compiled(ns)
         # Embed resources

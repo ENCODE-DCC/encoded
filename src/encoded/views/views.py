@@ -102,7 +102,7 @@ class Source(Collection):
     }
     links = {
         'actions': [
-            {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', 'templated': True},
+            {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', 'templated': True, 'condition': 'permission:edit'},
         ],
     }
 

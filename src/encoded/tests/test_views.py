@@ -113,6 +113,21 @@ def test_collection_post_bad_json(testapp, url):
         assert res.json['errors']
 
 
+def test_actions_filtered_by_permission(testapp, anontestapp):
+    from .sample_data import URL_COLLECTION
+    url = '/sources/'
+    collection = URL_COLLECTION[url]
+    item = collection[0]
+    res = testapp.post_json(url, item, status=201)
+    location = res.location
+
+    res = testapp.get(location)
+    assert any(action for action in res.json['_links']['actions'] if action['name'] == 'edit')
+
+    res = anontestapp.get(location)
+    assert not any(action for action in res.json['_links']['actions'] if action['name'] == 'edit')
+
+
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
 def test_collection_update(testapp, url, execute_counter):
     from .sample_data import URL_COLLECTION
