@@ -744,11 +744,12 @@ def parse_file(testapp, alldata, content_type, indices, uuid, value, docsdir):
     ''' MANDATORY FIELDS for file '''
 
     # Check for replicate reference
-    try:
-        if alldata['replicate'].get(value['replicate_uuid'], None) is None:
-            raise ValueError('Missing/skipped replicate reference')
-    except KeyError:
-        raise ValueError('Unable to find replicate for file')
+    if value['replicate_uuid']:
+        try:
+            if alldata['replicate'].get(value['replicate_uuid'], None) is None:
+                raise ValueError('Missing/skipped replicate reference')
+        except KeyError:
+            raise ValueError('Unable to find replicate for file')
 
     # Check for experiment reference
     try:
