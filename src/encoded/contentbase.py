@@ -207,7 +207,7 @@ class Item(object):
         return links
 
 
-class CustomItemMeta(type):
+class CustomItemMeta(MergedLinksMeta):
     """ Give each collection its own Item class to enable
         specific view registration.
     """
@@ -236,8 +236,27 @@ class Collection(object):
     __metaclass__ = CustomItemMeta
     Item = Item
     schema = None
-    properties = None
+    properties = {}
     item_type = None
+    links = {
+        'self': {'href': '{collection_uri}', 'templated': True},
+        'items': [{
+            'href': '{item_uri}',
+            'templated': True,
+            'repeat': 'item_uri item_uris',
+        }],
+        'actions': [
+            {
+                'name': 'add',
+                'title': 'Add',
+                'profile': '/profiles/{item_type}.json',
+                'method': 'POST',
+                'href': '',
+                'templated': True,
+                'condition': 'permission:add',
+            },
+        ],
+    }
 
     def __init__(self, parent, name):
         self.__name__ = name
@@ -281,46 +300,40 @@ class Collection(object):
     def after_add(self, item):
         '''Hook for subclasses'''
 
+    def __json__(self, request):
+        nrows = request.params.get('limit', None)
+        session = DBSession()
+        query = session.query(CurrentStatement).filter(
+            CurrentStatement.predicate == self.item_type
+        ).limit(nrows)
+
+        item_uris = []
+        for model in query.all():
+            item = self.Item(self, model)
+            item_properties = item.__json__(request)
+            item_uri = request.resource_path(self, item.__name__)
+            embed(request, item_uri, item_properties)
+            item_uris.append(item_uri)
+
+        properties = self.properties.copy()
+
+        # Expand templated links
+        ns = properties.copy()
+        ns['collection_uri'] = request.resource_path(self)
+        ns['item_type'] = self.item_type
+        ns['item_uris'] = item_uris
+        ns['permission'] = permission_checker(self, get_current_request())
+        compiled = ObjectTemplate(self.merged_links)
+        links = compiled(ns)
+        if links is not None:
+            properties['_links'] = links
+
+        return properties
+
 
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
-    nrows = request.params.get('limit', None)
-    if no_body_needed(request):
-        return {}
-    session = DBSession()
-    query = session.query(CurrentStatement).filter(CurrentStatement.predicate == context.item_type).limit(nrows)
-    items = []
-    for model in query.all():
-        item = context.Item(context, model)
-        properties = item.__json__(request)
-        item_uri = request.resource_path(context, item.__name__)
-        embed(request, item_uri, properties)
-        items.append({'href': item_uri})
-    collection_uri = request.resource_path(context)
-    result = {
-        '_embedded': {
-            'items': items,
-        },
-        '_links': {
-            'self': {'href': collection_uri},
-            'items': items,
-            '/rels/actions': [
-                {
-                    'name': 'add-antibody',
-                    'title': 'Add antibody',
-                    'method': 'POST',
-                    'type': 'application/json',
-                    'href': collection_uri,
-                }
-            ],
-        },
-    }
-
-    if context.properties is not None:
-        result.update(context.properties)
-
-    maybe_include_embedded(request, result)
-    return result
+    return item_view(context, request)
 
 
 @view_config(context=Collection, validators=(validate_item_content,), permission='add', request_method='POST')
