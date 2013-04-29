@@ -25,13 +25,11 @@ import uuid
 
 @root.location('access-keys')
 class AccessKey(Collection):
-    class Item(Collection.Item):
-        def __acl__(self):
-            owner = 'userid:%s' % self.properties['user_uuid']
-            return [
-                (Allow, owner, 'edit'),
-                (Allow, owner, 'view'),
-            ]
+    item_type = 'access_key'
+    properties = {
+        'title': 'Access keys',
+        'description': 'Programmatic access keys',
+    }
 
     __acl__ = [
         (Allow, Authenticated, 'traverse'),
@@ -39,14 +37,18 @@ class AccessKey(Collection):
         (Allow, 'group:admin', 'view'),
         (Deny, Everyone, 'view'),
     ]
-    item_type = 'access_key'
-    properties = {
-        'title': 'Access keys',
-        'description': 'Programmatic access keys',
-    }
-    links = {
-        'user': {'href': '/users/{user_uuid}', 'templated': True},
-    }
+
+    class Item(Collection.Item):
+        links = {
+            'user': {'href': '/users/{user_uuid}', 'templated': True},
+        }
+
+        def __acl__(self):
+            owner = 'userid:%s' % self.properties['user_uuid']
+            return [
+                (Allow, owner, 'edit'),
+                (Allow, owner, 'view'),
+            ]
 
 
 @view_config(context=AccessKey, permission='add', request_method='POST',

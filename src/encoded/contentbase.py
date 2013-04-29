@@ -1,3 +1,5 @@
+# See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
+
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -147,8 +149,26 @@ class Root(object):
         return decorate
 
 
+class MergedLinksMeta(type):
+    """ Merge the links from the subclass with its bases
+    """
+    def __init__(self, name, bases, attrs):
+        super(MergedLinksMeta, self).__init__(name, bases, attrs)
+        self.merged_links = {}
+        for cls in reversed(self.mro()):
+            links = vars(cls).get('links', None)
+            if links is not None:
+                self.merged_links.update(links)
+
+
 class Item(object):
-    # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
+    __metaclass__ = MergedLinksMeta
+    links = {
+        'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
+        'collection': {'href': '{collection_uri}', 'templated': True},
+        'profile': {'href': '/profiles/{item_type}.json', 'templated': True},
+    }
+
     def __init__(self, collection, model, acl=None):
         self.__name__ = model.rid
         self.__parent__ = collection
@@ -173,7 +193,7 @@ class Item(object):
         ns['collection_uri'] = request.resource_path(self.__parent__)
         ns['item_type'] = self.model.predicate
         ns['permission'] = permission_checker(self, get_current_request())
-        compiled = ObjectTemplate(self.__parent__.links)
+        compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         # Embed resources
         embedded = self.__parent__.embedded
@@ -204,6 +224,8 @@ class CustomItemMeta(type):
             '__name__': 'Item',
             '__qualname__': qualname + '.Item',
         }
+        if 'links' in attrs:
+            item_attrs['links'] = attrs['links']
         self.Item = type('Item', item_bases, item_attrs)
 
 
@@ -213,11 +235,6 @@ class Collection(object):
     schema = None
     properties = None
     item_type = None
-    links = {
-        'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
-        'collection': {'href': '{collection_uri}', 'templated': True},
-        'profile': {'href': '/profiles/{item_type}.json', 'templated': True},
-    }
     embedded = {}
 
     def __init__(self, parent, name):
@@ -225,11 +242,6 @@ class Collection(object):
         self.__parent__ = parent
         if self.item_type is None:
             self.item_type = type(self).__name__.lower()
-
-        merged_links = {}
-        for cls in reversed(type(self).mro()):
-            merged_links.update(vars(cls).get('links', {}))
-        self.links = merged_links
 
     def item_acl(self, model):
         return None
