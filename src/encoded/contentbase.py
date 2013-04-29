@@ -163,6 +163,7 @@ class MergedLinksMeta(type):
 
 class Item(object):
     __metaclass__ = MergedLinksMeta
+    embedded = {}
     links = {
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
         'collection': {'href': '{collection_uri}', 'templated': True},
@@ -194,7 +195,7 @@ class Item(object):
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         # Embed resources
-        embedded = self.__parent__.embedded
+        embedded = self.embedded
         for rel, value in links.items():
             if rel not in embedded:
                 continue
@@ -213,6 +214,8 @@ class CustomItemMeta(type):
     def __init__(self, name, bases, attrs):
         super(CustomItemMeta, self).__init__(name, bases, attrs)
         if 'Item' in attrs:
+            assert 'item_links' not in attrs
+            assert 'item_embedded' not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
@@ -222,8 +225,10 @@ class CustomItemMeta(type):
             '__name__': 'Item',
             '__qualname__': qualname + '.Item',
         }
-        if 'links' in attrs:
-            item_attrs['links'] = attrs['links']
+        if 'item_links' in attrs:
+            item_attrs['links'] = attrs['item_links']
+        if 'item_embedded' in attrs:
+            item_attrs['embedded'] = attrs['item_embedded']
         self.Item = type('Item', item_bases, item_attrs)
 
 
@@ -233,7 +238,6 @@ class Collection(object):
     schema = None
     properties = None
     item_type = None
-    embedded = {}
 
     def __init__(self, parent, name):
         self.__name__ = name

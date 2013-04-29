@@ -25,7 +25,7 @@ class User(Collection):
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
     }
-    links = {
+    item_links = {
         'labs': [
             {'href': '/labs/{lab_uuid}', 'templated': True,
              'repeat': 'lab_uuid lab_uuids'}
@@ -54,7 +54,7 @@ class Lab(Collection):
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
     }
-    links = {
+    item_links = {
         'awards': [
             {'href': '/awards/{award_uuid}', 'templated': True,
              'repeat': 'award_uuid award_uuids'}
@@ -78,10 +78,10 @@ class AntibodyLots(Collection):
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
     }
-    links = {
+    item_links = {
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
     }
-    embedded = set(['source'])
+    item_embedded = set(['source'])
 
 
 @root.location('organisms')
@@ -100,7 +100,7 @@ class Source(Collection):
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
-    links = {
+    item_links = {
         'actions': [
             {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', 'templated': True, 'condition': 'permission:edit'},
         ],
@@ -114,10 +114,10 @@ class Donor(Collection):
         'title': 'Donors',
         'description': 'Listing Biosample Donors',
     }
-    links = {
+    item_links = {
         'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
     }
-    embedded = set(['organism'])
+    item_embedded = set(['organism'])
 
 
 @root.location('treatments')
@@ -135,10 +135,10 @@ class Construct(Collection):
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
     }
-    links = {
+    item_links = {
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
     }
-    embedded = set(['source'])
+    item_embedded = set(['source'])
 
 
 @root.location('documents')
@@ -147,12 +147,12 @@ class Document(Collection):
         'title': 'Documents',
         'description': 'Listing of Biosample Documents',
     }
-    links = {
+    item_links = {
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
         'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
         'award': {'href': '/awards/{award_uuid}', 'templated': True},
     }
-    embedded = set(['submitter', 'lab', 'award'])
+    item_embedded = set(['submitter', 'lab', 'award'])
 
 
 @root.location('biosamples')
@@ -162,7 +162,7 @@ class Biosample(Collection):
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     }
-    links = {
+    item_links = {
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
         'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
@@ -178,7 +178,7 @@ class Biosample(Collection):
             {'href': '/constructs/{construct_uuid}', 'templated': True, 'repeat': 'construct_uuid construct_uuids'},
         ],
     }
-    embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
+    item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
 
 
 @root.location('targets')
@@ -188,13 +188,13 @@ class Target(Collection):
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
     }
-    links = {
+    item_links = {
         'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
         'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
         'award': {'href': '/awards/{award_uuid}', 'templated': True},
     }
-    embedded = set(['organism', 'submitter', 'lab', 'award'])
+    item_embedded = set(['organism', 'submitter', 'lab', 'award'])
 
 
 # The following should really be child collections.
@@ -205,14 +205,14 @@ class Validation(Collection):
         'title': 'Antibody Validations',
         'description': 'Listing of antibody validation documents',
     }
-    links = {
+    item_links = {
         'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
         'target': {'href': '/targets/{target_uuid}', 'templated': True},
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
         'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
         'award': {'href': '/awards/{award_uuid}', 'templated': True},
     }
-    embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
+    item_embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
 
 
 @root.location('antibodies')
@@ -223,14 +223,14 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of validation approvals for ENCODE antibodies',
     }
-    links = {
+    item_links = {
         'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
         'target': {'href': '/targets/{target_uuid}', 'templated': True},
         'validations': [
             {'href': '/validations/{validation_uuid}', 'templated': True, 'repeat': 'validation_uuid validation_uuids'},
         ],
     }
-    embedded = set(['antibody_lot', 'target'])
+    item_embedded = set(['antibody_lot', 'target'])
 
 
 @root.location('platforms')
@@ -247,13 +247,13 @@ class Library(Collection):
         'title': 'Libraries',
         'description': 'Listing of Libraries',
     }
-    links = {
+    item_links = {
         'biosample': {'href': '/biosamples/{biosample_uuid}', 'templated': True},
         'documents': [
             {'href': '/documents/{document_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
         ],
     }
-    embedded = set(['biosample'])
+    item_embedded = set(['biosample'])
 
 
 @root.location('assays')
@@ -270,12 +270,12 @@ class Replicates(Collection):
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
-    links = {
+    item_links = {
         'library': {'href': '/libraries/{library_uuid}', 'templated': True},
         'platform': {'href': '/platforms/{platform_uuid}', 'templated': True},
         'assay': {'href': '/assays/{assay_uuid}', 'templated': True},
     }
-    embedded = set(['library', 'platform', 'assay'])
+    item_embedded = set(['library', 'platform', 'assay'])
 
 
 @root.location('files')
@@ -292,7 +292,7 @@ class Experiments(Collection):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    links = {
+    item_links = {
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
         'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
         'award': {'href': '/awards/{award_uuid}', 'templated': True},
@@ -303,4 +303,4 @@ class Experiments(Collection):
             {'href': '/replicates/{replicate_uuid}', 'templated': True, 'repeat': 'replicate_uuid replicate_uuids'},
         ],
     }
-    embedded = set(['files', 'replicates', 'submitter', 'lab', 'award'])
+    item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award'])
