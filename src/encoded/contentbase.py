@@ -169,12 +169,10 @@ class Item(object):
         'profile': {'href': '/profiles/{item_type}.json', 'templated': True},
     }
 
-    def __init__(self, collection, model, acl=None):
+    def __init__(self, collection, model):
         self.__name__ = model.rid
         self.__parent__ = collection
         self.model = model
-        if acl is not None:
-            self.__acl__ = acl
 
     @property
     def properties(self):
@@ -243,9 +241,6 @@ class Collection(object):
         if self.item_type is None:
             self.item_type = type(self).__name__.lower()
 
-    def item_acl(self, model):
-        return None
-
     def __getitem__(self, name):
         try:
             name = UUID(name)
@@ -266,19 +261,16 @@ class Collection(object):
         session = DBSession()
         model = session.query(CurrentStatement).get(key)
         if model is not None:
-            return self.make_item(model)
+            return self.Item(self, model)
         return default
-
-    def make_item(self, model):
-        acl = self.item_acl(model)
-        return self.Item(self, model, acl)
 
     def add(self, properties):
         rid = properties.get('_uuid', None)
         session = DBSession()
         resource = Resource({self.item_type: properties}, rid)
         session.add(resource)
-        item = self.make_item(resource.data[self.item_type])
+        model = resource.data[self.item_type]
+        item = self.Item(self, model)
         self.after_add(item)
         return item
 
@@ -295,7 +287,7 @@ def collection_list(context, request):
     query = session.query(CurrentStatement).filter(CurrentStatement.predicate == context.item_type).limit(nrows)
     items = []
     for model in query.all():
-        item = context.make_item(model)
+        item = context.Item(context, model)
         properties = item.__json__(request)
         item_uri = request.resource_path(context, item.__name__)
         embed(request, item_uri, properties)
