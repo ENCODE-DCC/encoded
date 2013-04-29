@@ -1,5 +1,7 @@
+import inspect
 __all__ = ['ObjectTemplate']
-TEMPLATE_NAMES = ('templated', 'repeat')
+_marker = object()
+TEMPLATE_NAMES = ('templated', 'repeat', 'condition')
 
 
 class ObjectTemplate(object):
@@ -30,8 +32,35 @@ def dict_template(template, namespace):
     templated = template.get('templated', [])
     if isinstance(templated, basestring):
         templated = templated.split()
-    repeat = template.get('repeat', None)
-    if repeat is not None:
+    condition = template.get('condition', _marker)
+    if condition is not _marker:
+        arg = None
+        if isinstance(condition, basestring):
+            if ':' in condition:
+                condition, arg = condition.split(':', 1)
+            condition = namespace[condition]
+        if callable(condition):
+            if arg is not None:
+                condition = condition(arg)
+            else:
+                argspec = inspect.getargspec(condition)
+                if argspec.keywords:
+                    args = namespace
+                else:
+                    args = {}
+                    defaults = dict(zip(reversed(argspec.args), reversed(argspec.defaults)))
+                    for name in argspec.args:
+                        try:
+                            args[name] = namespace[name]
+                        except KeyError:
+                            if name not in defaults:
+                                raise
+                            args[name] = defaults[name]
+                condition = condition(**args)
+        if not condition:
+            return
+    repeat = template.get('repeat', _marker)
+    if repeat is not _marker:
         repeat_name, repeater = repeat.split()
         for repeat_value in namespace[repeater]:
             repeat_namespace = namespace.copy()
@@ -40,30 +69,28 @@ def dict_template(template, namespace):
             for key, value in template.items():
                 if key in TEMPLATE_NAMES:
                     continue
-                if isinstance(value, basestring) \
-                    and (templated is True or key in templated):
-                    result[key] = string_template(value, repeat_namespace)
-                else:
-                    result[key], = list(object_template(value,
-                                                        repeat_namespace))
+                tmpl_string = templated is True or key in templated
+                result[key], = object_template(value, repeat_namespace, tmpl_string)
             yield result
     else:
         result = type(template)()
         for key, value in template.items():
             if key in TEMPLATE_NAMES:
                 continue
-            if isinstance(value, basestring) \
-                and (templated is True or key in templated):
-                result[key] = string_template(value, namespace)
-            else:
-                result[key], = list(object_template(value, namespace))
+            tmpl_string = templated is True or key in templated
+            result[key], = object_template(value, namespace, tmpl_string)
         yield result
 
 
-def object_template(template, namespace):
+def object_template(template, namespace, _template_top_string=False):
     # bools are ints
-    if template is None or isinstance(template, (basestring, int, float)):
+    if template is None or isinstance(template, (int, float)):
         yield template
+    elif isinstance(template, basestring):
+        if _template_top_string:
+            yield string_template(template, namespace)
+        else:
+            yield template
     elif isinstance(template, dict):
         for result in dict_template(template, namespace):
             yield result

@@ -7,7 +7,7 @@ from sqlalchemy import (
     orm,
     schema,
     types,
-    )
+)
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
@@ -20,7 +20,8 @@ import uuid
 
 DBSession = orm.scoped_session(orm.sessionmaker(
     extension=ZopeTransactionExtension(),
-    ))
+    weak_identity_map=False,
+))
 Base = declarative_base()
 
 
@@ -98,12 +99,13 @@ class Statement(Base):
     '''
     __tablename__ = 'statements'
     __table_args__ = (
-        schema.ForeignKeyConstraint(['rid', 'predicate'],
+        schema.ForeignKeyConstraint(
+            ['rid', 'predicate'],
             ['current_statements.rid', 'current_statements.predicate'],
             name='fk_statements_rid_predicate', use_alter=True,
             deferrable=True, initially='DEFERRED',
-            ),
-        )
+        ),
+    )
     # The sid column also serves as the order.
     sid = Column(types.Integer, autoincrement=True, primary_key=True)
     rid = Column(UUID,
@@ -125,18 +127,19 @@ class Statement(Base):
 class CurrentStatement(Base):
     __tablename__ = 'current_statements'
     rid = Column(UUID, ForeignKey('resources.rid'),
-        nullable=False, primary_key=True)
+                 nullable=False, primary_key=True)
     predicate = Column(types.String, nullable=False, primary_key=True)
     sid = Column(types.Integer,
-        ForeignKey('statements.sid'),
-        nullable=False)
-    statement = orm.relationship('Statement',
-        lazy='joined',
-        primaryjoin="CurrentStatement.sid==Statement.sid")
-    history = orm.relationship('Statement',
+                 ForeignKey('statements.sid'), nullable=False)
+    statement = orm.relationship(
+        'Statement', lazy='joined', innerjoin=True,
+        primaryjoin="CurrentStatement.sid==Statement.sid",
+    )
+    history = orm.relationship(
+        'Statement', order_by=Statement.sid,
         primaryjoin="""and_(CurrentStatement.rid==Statement.rid,
-            CurrentStatement.predicate==Statement.predicate)""",
-        order_by=Statement.sid)
+                    CurrentStatement.predicate==Statement.predicate)""",
+    )
     resource = orm.relationship('Resource')
 
 
@@ -145,10 +148,10 @@ class Resource(Base, DictMixin):
     '''
     __tablename__ = 'resources'
     rid = Column(UUID, primary_key=True)
-    data = orm.relationship('CurrentStatement',
+    data = orm.relationship(
+        'CurrentStatement', cascade='all, delete-orphan',
         collection_class=collections.attribute_mapped_collection('predicate'),
-        cascade='all, delete-orphan',
-        )
+    )
 
     def __init__(self, data=None, rid=None):
         if rid is None:
@@ -169,14 +172,14 @@ class Resource(Base, DictMixin):
 
     def keys(self):
         return self.data.keys()
-    
+
 
 class TransactionRecord(Base):
     __tablename__ = 'transactions'
     tid = Column(UUID, default=uuid.uuid4, primary_key=True)
     data = Column(JSON)
-    timestamp = Column(types.DateTime,
-        nullable=False, server_default=func.now())
+    timestamp = Column(
+        types.DateTime, nullable=False, server_default=func.now())
 
 
 class UserMap(Base):
@@ -185,13 +188,14 @@ class UserMap(Base):
     login = Column(types.Text, primary_key=True)
     userid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
 
-    resource = orm.relationship('Resource',
-        lazy='joined', foreign_keys=[userid])
+    resource = orm.relationship('Resource', lazy='joined',
+                                foreign_keys=[userid])
 
-    user = orm.relationship('CurrentStatement',
-        lazy='joined', foreign_keys=[userid],
+    user = orm.relationship(
+        'CurrentStatement', lazy='joined', foreign_keys=[userid],
         primaryjoin="""and_(CurrentStatement.rid==UserMap.userid,
-            CurrentStatement.predicate=='user')""")
+                       CurrentStatement.predicate=='user')""",
+    )
 
     # might have to be deferred
 

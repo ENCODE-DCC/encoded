@@ -1,4 +1,4 @@
-<td><a href="{model.url()}">{properties.accession}</a></td>
+<td><a href="{model._links.self.href}">{properties.accession}</a></td>
 <td>{properties.biosample_term_name}</td>
 <td>{properties.biosample_type}</td>
 <td>{model.links.donor.links.organism.get('organism_name')}</td>

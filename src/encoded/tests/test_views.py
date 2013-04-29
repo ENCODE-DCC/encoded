@@ -50,7 +50,7 @@ def _test_user_html(htmltestapp):
     ''' this test should return 403 forbidden but cannot currently load data
         via post_json with authz on.
     '''
-    res = htmltestapp.get('/users/', status=403)
+    htmltestapp.get('/users/', status=403)
 
 
 def _test_antibody_approval_creation(testapp):
@@ -113,6 +113,21 @@ def test_collection_post_bad_json(testapp, url):
         assert res.json['errors']
 
 
+def test_actions_filtered_by_permission(testapp, anontestapp):
+    from .sample_data import URL_COLLECTION
+    url = '/sources/'
+    collection = URL_COLLECTION[url]
+    item = collection[0]
+    res = testapp.post_json(url, item, status=201)
+    location = res.location
+
+    res = testapp.get(location)
+    assert any(action for action in res.json['_links']['actions'] if action['name'] == 'edit')
+
+    res = anontestapp.get(location)
+    assert not any(action for action in res.json['_links']['actions'] if action['name'] == 'edit')
+
+
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
 def test_collection_update(testapp, url, execute_counter):
     from .sample_data import URL_COLLECTION
@@ -141,6 +156,7 @@ def test_collection_update(testapp, url, execute_counter):
     res.pop('_links', None)
     res.pop('_embedded', None)
     assert res == update
+
 
 # TODO Add 2 tests for duplicate UUIDs (see sample_data.py)
 def test_post_duplicate_uuid(testapp):
@@ -186,7 +202,7 @@ def test_users_post(testapp, session):
     assert sorted(principals) == [
         'lab:2c334112-288e-4d45-9154-3f404c726daf',
         'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
-        ]
+    ]
 
 
 # __acl__ check disabled as users are transcluded.

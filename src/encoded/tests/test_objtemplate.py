@@ -1,8 +1,25 @@
 import pytest
+import pyramid.settings
+
+
+def check_keywords(**ns):
+    assert ns == NAMESPACE
+    return True
+
+
+def check_arg(foo, default=None):
+    assert foo == 'foo'
+    return True
+
 
 NAMESPACE = {
     'foo': 'foo',
     'bar_list': ['bar1', 'bar2'],
+    'false_condition': False,
+    'true_condition': True,
+    'asbool': pyramid.settings.asbool,
+    'check_keywords': check_keywords,
+    'check_arg': check_arg,
 }
 
 NO_CHANGE = [
@@ -35,6 +52,14 @@ TEMPLATE_VALUE = [
      {'a': [{'bar': 'value {bar}', 'b': 1},
             {'bar': 'value {bar}', 'b': 1},
             ]}),
+    ([{'a': 1}, {'b': 2, 'condition': 'false_condition'}],
+     [{'a': 1}]),
+    ([{'a': 1}, {'b': 2, 'condition': 'true_condition'}],
+     [{'a': 1}, {'b': 2}]),
+    ([{'condition': 'asbool:false'}], []),
+    ([{'condition': 'asbool:true'}], [{}]),
+    ([{'condition': 'check_arg'}], [{}]),
+    ([{'condition': 'check_keywords'}], [{}]),
 ]
 
 

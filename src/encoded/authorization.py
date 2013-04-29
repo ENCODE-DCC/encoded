@@ -1,7 +1,7 @@
 from .storage import (
     DBSession,
     UserMap,
-    )
+)
 
 
 def groupfinder(login, request):
@@ -22,3 +22,11 @@ def groupfinder(login, request):
     elif namespace == 'remoteuser':
         if localname in ['TEST', 'IMPORT']:
             return ['group:admin']
+
+    elif namespace == 'accesskey':
+        access_key = request.root['access-keys'][localname]
+        userid = access_key.properties['user_uuid']
+        principals = ['userid:' + userid]
+        user = request.root['users'][userid]
+        principals.extend('lab:' + lab_uuid for lab_uuid in user.properties.get('lab_uuids', []))
+        return principals

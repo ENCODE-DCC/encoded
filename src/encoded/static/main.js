@@ -32,7 +32,7 @@ requirejs.config({
         //'navigator': 'https://login.persona.org/include'  // mozilla persona include, this should be fetched remotely
         stickyheader: 'libs/sticky_header',
         table_filter: 'libs/jquery.table_filter',
-        table_sorter: 'libs/table_sorter'
+        table_sorter: 'libs/table_sorter',
     },
 
     shim: {
