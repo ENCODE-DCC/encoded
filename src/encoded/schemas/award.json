@@ -2,15 +2,6 @@
     "default": null,
     "description": "",
     "properties": {
-        "_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
         "award_end_date": {
             "default": null,
             "description": "",

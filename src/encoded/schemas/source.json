@@ -3,12 +3,6 @@
     "description": "Vendor of antibodies",
     "type": "object",
     "properties": {
-        "_uuid": {
-            "title": "UUID",
-            "description": "",
-            "type": "string",
-            "format": "uuid"
-        },
         "source_name": {
             "title": "Source Name",
             "description": "",

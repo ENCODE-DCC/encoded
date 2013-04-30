@@ -2,15 +2,6 @@
     "default": null,
     "description": "",
     "properties": {
-        "_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
         "email": {
             "default": null,
             "description": "",

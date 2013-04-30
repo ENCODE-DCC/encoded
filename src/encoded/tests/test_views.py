@@ -102,7 +102,8 @@ def test_collection_post(testapp, url):
     from .sample_data import URL_COLLECTION
     collection = URL_COLLECTION[url]
     for item in collection:
-        testapp.post_json(url, item, status=201)
+        res = testapp.post_json(url, item, status=201)
+        assert item['_uuid'] in res.location
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
@@ -140,6 +141,7 @@ def test_collection_update(testapp, url, execute_counter):
     res = testapp.get(item_url).json
     assert execute_counter.count == 1
 
+    del initial['_uuid']
     res.pop('_links', None)
     res.pop('_embedded', None)
     assert res == initial
