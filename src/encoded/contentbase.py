@@ -16,7 +16,6 @@ from pyramid.security import (
     has_permission,
 )
 from pyramid.threadlocal import (
-    get_current_request,
     manager,
 )
 from pyramid.view import view_config
@@ -215,7 +214,7 @@ class Item(object):
         ns['collection_uri'] = request.resource_path(self.__parent__)
         ns['item_type'] = self.model.predicate
         ns['_uuid'] = self.model.rid
-        ns['permission'] = permission_checker(self, get_current_request())
+        ns['permission'] = permission_checker(self, request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         # Embed resources
@@ -347,7 +346,7 @@ class Collection(object):
         ns['collection_uri'] = request.resource_path(self)
         ns['item_type'] = self.item_type
         ns['item_uris'] = item_uris
-        ns['permission'] = permission_checker(self, get_current_request())
+        ns['permission'] = permission_checker(self, request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         if links is not None:
