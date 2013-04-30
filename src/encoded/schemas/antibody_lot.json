@@ -7,15 +7,6 @@
         "null"
     ], 
     "properties": {
-        "_uuid": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
         "antibody_accession": {
             "title": "", 
             "description": "", 

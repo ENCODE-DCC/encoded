@@ -2,15 +2,6 @@
     "default": null,
     "description": "",
     "properties": {
-        "_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
         "antibody_lot_uuid": {
             "default": null,
             "description": "",

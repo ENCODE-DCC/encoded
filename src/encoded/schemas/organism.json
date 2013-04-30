@@ -4,11 +4,6 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
-        "_uuid": {
-            "description": "",
-            "title": "Organism name",
-            "type": "string"
-        },
         "organism_name": {
             "title": "Organism name",
             "description": "",
