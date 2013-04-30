@@ -11,40 +11,6 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
-from ..storage import (
-    DBSession,
-    UserMap,
-)
-
-
-#    permission='admin'  ## this prevents loading of users via post_json
-@root.location('users')
-class User(Collection):
-    schema = load_schema('colleague.json')
-    properties = {
-        'title': 'DCC Users',
-        'description': 'Listing of current ENCODE DCC users',
-    }
-    item_links = {
-        'labs': [
-            {'href': '/labs/{lab_uuid}', 'templated': True,
-             'repeat': 'lab_uuid lab_uuids'}
-        ]
-    }
-
-#    __acl__ = [
-#        (Allow, Authenticated, 'traverse'),
-#        (Deny, Everyone, 'traverse'),
-#        ]
-
-    def after_add(self, item):
-        email = item.model.statement.object.get('email')
-        if email is None:
-            return
-        session = DBSession()
-        login = 'mailto:' + email
-        user_map = UserMap(login=login, userid=item.model.rid)
-        session.add(user_map)
 
 
 @root.location('labs')

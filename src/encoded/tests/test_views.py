@@ -34,7 +34,7 @@ COLLECTION_URL_LENGTH = {
 COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
 
 
-@pytest.mark.parametrize('url', COLLECTION_URLS)
+@pytest.mark.parametrize('url', [url for url in COLLECTION_URLS if url != '/users/'])
 def test_html(htmltestapp, url):
     res = htmltestapp.get(url, status=200)
     assert res.body.startswith('<!DOCTYPE html>')
@@ -44,13 +44,6 @@ def test_html(htmltestapp, url):
 def test_json(testapp, url):
     res = testapp.get(url, status=200)
     assert res.json['_links']
-
-
-def _test_user_html(htmltestapp):
-    ''' this test should return 403 forbidden but cannot currently load data
-        via post_json with authz on.
-    '''
-    htmltestapp.get('/users/', status=403)
 
 
 def _test_antibody_approval_creation(testapp):
@@ -207,10 +200,28 @@ def test_users_post(testapp, session):
     ]
 
 
-# __acl__ check disabled as users are transcluded.
-def __test_notfound_denied_anonymous(htmltestapp):
-    htmltestapp.get('/users/badname', status=403)
+def test_users_view_details_admin(testapp):
+    from .sample_data import URL_COLLECTION
+    url = '/users/'
+    item = URL_COLLECTION[url][0]
+    res = testapp.post_json(url, item, status=201)
+    location = res.location
+    res = testapp.get(location)
+
+    assert 'email' in res.json
 
 
-def test_notfound_admin(testapp):
-    testapp.get('/users/badname', status=404)
+def test_users_view_basic_anon(testapp, anontestapp):
+    from .sample_data import URL_COLLECTION
+    url = '/users/'
+    item = URL_COLLECTION[url][0]
+    res = testapp.post_json(url, item, status=201)
+    location = res.location
+    res = anontestapp.get(location)
+
+    assert 'first_name' in res.json
+    assert 'email' not in res.json
+
+
+def test_users_list_denied_anon(anontestapp):
+    anontestapp.get('/users/', status=403)

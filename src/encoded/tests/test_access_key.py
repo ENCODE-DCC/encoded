@@ -98,3 +98,11 @@ def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get(access_key['location'], headers=headers)
     assert 'secret_access_key_hash' not in res.json
+
+
+def test_notfound_denied_anonymous(htmltestapp):
+    htmltestapp.get('/access-keys/badname', status=403)
+
+
+def test_notfound_admin(testapp):
+    testapp.get('/access-keys/badname', status=404)
