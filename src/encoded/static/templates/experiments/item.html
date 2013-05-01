@@ -70,13 +70,13 @@
                <div class="data-group">
                     <label class="data-label" for="library">Library:</label>
                     <div class="data-values">
-                        <span id="library" class="data-point"><a href="/libraries/{replicate.links.library.get('_uuid')}">{replicate.links.library.get('library_description')}</a></span>
+                        <span id="library" class="data-point"><a href="{replicate.links.library._links.self.href}">{replicate.links.library.get('library_description')}</a></span>
                     </div>
                </div>
                <div class="data-group">
                     <label class="data-label" for="platform">Platform:</label>
                     <div class="data-values">
-                        <span id="platform" class="data-point"><a href="/platforms/{replicate.links.platform.get('_uuid')}">{replicate.links.platform.get('description')}</a></span>
+                        <span id="platform" class="data-point"><a href="{replicate.links.platform._links.self.href}">{replicate.links.platform.get('description')}</a></span>
                     </div>
                </div>
             </div>
