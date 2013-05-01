@@ -336,10 +336,8 @@ class Collection(object):
 
         item_uris = []
         for model in query.all():
-            item = self.Item(self, model)
-            item_properties = item.__json__(request)
-            item_uri = request.resource_path(self, item.__name__)
-            embed(request, item_uri, item_properties)
+            item_uri = request.resource_path(self, model.rid)
+            embed(request, item_uri)
             item_uris.append(item_uri)
 
         properties = self.properties.copy()
