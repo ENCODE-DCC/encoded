@@ -5,6 +5,7 @@
 #    Everyone,
 #)
 from . import root
+from .download import ItemWithDocument
 from ..contentbase import (
     Collection,
 )
@@ -113,12 +114,14 @@ class Document(Collection):
         'title': 'Documents',
         'description': 'Listing of Biosample Documents',
     }
-    item_links = {
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True},
-    }
-    item_embedded = set(['submitter', 'lab', 'award'])
+
+    class Item(ItemWithDocument):
+        links = {
+            'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+            'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+            'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        }
+        embedded = set(['submitter', 'lab', 'award'])
 
 
 @root.location('biosamples')
@@ -171,14 +174,16 @@ class Validation(Collection):
         'title': 'Antibody Validations',
         'description': 'Listing of antibody validation documents',
     }
-    item_links = {
-        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
-        'target': {'href': '/targets/{target_uuid}', 'templated': True},
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True},
-    }
-    item_embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
+
+    class Item(ItemWithDocument):
+        links = {
+            'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
+            'target': {'href': '/targets/{target_uuid}', 'templated': True},
+            'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+            'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+            'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        }
+        embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
 
 
 @root.location('antibodies')

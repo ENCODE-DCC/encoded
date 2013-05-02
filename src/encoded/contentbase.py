@@ -20,7 +20,10 @@ from pyramid.threadlocal import (
 )
 from pyramid.view import view_config
 from urllib import unquote
-from uuid import UUID
+from uuid import (
+    UUID,
+    uuid4,
+)
 from .objtemplate import ObjectTemplate
 from .schema_utils import validate_request
 from .storage import (
@@ -229,6 +232,18 @@ class Item(object):
                 embed(request, value['href'])
         return links
 
+    @classmethod
+    def create(cls, parent, uuid, properties, **additional):
+        item_type = parent.item_type
+        session = DBSession()
+        property_sheets = {item_type: properties}
+        property_sheets.update(additional)
+        resource = Resource(property_sheets, uuid)
+        session.add(resource)
+        model = resource.data[item_type]
+        item = cls(parent, model)
+        return item
+
 
 class CustomItemMeta(MergedLinksMeta):
     """ Give each collection its own Item class to enable
@@ -311,15 +326,13 @@ class Collection(object):
         return default
 
     def add(self, properties):
-        rid = properties.get('_uuid', None)
-        if rid is not None:
+        uuid = properties.get('_uuid', _marker)
+        if uuid is _marker:
+            uuid = uuid4()
+        else:
             properties = properties.copy()
             del properties['_uuid']
-        session = DBSession()
-        resource = Resource({self.item_type: properties}, rid)
-        session.add(resource)
-        model = resource.data[self.item_type]
-        item = self.Item(self, model)
+        item = self.Item.create(self, uuid, properties)
         self.after_add(item)
         return item
 
