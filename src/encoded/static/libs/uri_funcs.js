@@ -38,10 +38,10 @@ function splitUriRef(uriRef) {
 	var scheme=parts[1], auth=parts[3], path=parts[4], query=parts[6], frag=parts[8];
 	if (!reMissingGroupSupport) {
 		var undef;
-		if (parts[0] == "") scheme = undef;
-		if (parts[2] == "") auth = undef;
-		if (parts[5] == "") query = undef;
-		if (parts[7] == "") frag = undef;
+		if (parts[0] === "") scheme = undef;
+		if (parts[2] === "") auth = undef;
+		if (parts[5] === "") query = undef;
+		if (parts[7] === "") frag = undef;
 	}
 	parts = [scheme, auth, path, query, frag];
 	return parts;
@@ -150,10 +150,10 @@ http://cvs.4suite.org/viewcvs/4Suite/Ft/Lib/Uri.py?view=markup
 function absolutizeURI(uriRef, baseUri) {
 	// Ensure base URI is absolute
 	if (! baseUri || ! uriRefIsAbsolute(baseUri)) {
-		 throw Error("baseUri '" + baseUri + "' is not absolute");
+		throw Error("baseUri '" + baseUri + "' is not absolute");
 	}
 	// shortcut for the simplest same-document reference cases
-	if (uriRef == "" || uriRef.charAt(0) == "#") {
+	if (uriRef === "" || uriRef.charAt(0) == "#") {
 		return baseUri.split('#')[0] + uriRef;
 	}
 	var tScheme, tAuth, tPath, tQuery;
@@ -163,10 +163,10 @@ function absolutizeURI(uriRef, baseUri) {
 	// if the reference is absolute, eliminate '.' and '..' path segments
 	// and skip to the end
 	if (typeof rScheme != "undefined") {
-		var tScheme = rScheme;
-		var tAuth = rAuth;
-		var tPath = uriPathRemoveDotSegments(rPath);
-		var tQuery = rQuery;
+		tScheme = rScheme;
+		tAuth = rAuth;
+		tPath = uriPathRemoveDotSegments(rPath);
+		tQuery = rQuery;
 	} else {
 		// the base URI's scheme, and possibly more, will be inherited
 		parts = splitUriRef(baseUri);
