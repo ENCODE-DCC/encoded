@@ -16,7 +16,6 @@ from pyramid.security import (
     has_permission,
 )
 from pyramid.threadlocal import (
-    get_current_request,
     manager,
 )
 from pyramid.view import view_config
@@ -29,6 +28,7 @@ from .storage import (
     CurrentStatement,
     Resource,
 )
+_marker = object()
 
 
 def includeme(config):
@@ -95,16 +95,37 @@ def no_body_needed(request):
     return request.environ.get('encoded.format') == 'html'
 
 
+def setting_uuid_permitted(context, request):
+    data = request.json
+    _uuid = data.get('_uuid', _marker)
+    if _uuid is _marker:
+        return
+
+    result = has_permission('add_with_uuid', context, request)
+    if not result:
+        msg = 'Unauthorized: setting _uuid not permitted'
+        raise HTTPForbidden(msg, result=result)
+
+    try:
+        UUID(_uuid)
+    except ValueError:
+        msg = "%r is not a %r" % (_uuid, 'uuid')
+        request.errors.add('body', ['_uuid'], msg)
+
+    request.validated['_uuid'] = _uuid
+
+
 def validate_item_content(context, request):
-    data = request.json_body
+    data = request.json
+    data.pop('_uuid', None)
     if isinstance(context, Item):
         schema = context.__parent__.schema
     else:
         schema = context.schema
     if schema is None:
-        request.validated = data
+        request.validated.update(data)
         return
-    validate_request(schema, request)
+    validate_request(schema, request, data)
 
 
 def permission_checker(context, request):
@@ -120,6 +141,7 @@ class Root(object):
     __acl__ = [
         (Allow, Everyone, 'list'),
         (Allow, 'group:admin', 'add'),
+        (Allow, 'group:admin', 'add_with_uuid'),
         (Allow, Everyone, 'view'),
         (Allow, 'group:admin', 'edit'),
         (Allow, Everyone, 'traverse'),
@@ -191,7 +213,8 @@ class Item(object):
         ns = properties.copy()
         ns['collection_uri'] = request.resource_path(self.__parent__)
         ns['item_type'] = self.model.predicate
-        ns['permission'] = permission_checker(self, get_current_request())
+        ns['_uuid'] = self.model.rid
+        ns['permission'] = permission_checker(self, request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         # Embed resources
@@ -289,6 +312,9 @@ class Collection(object):
 
     def add(self, properties):
         rid = properties.get('_uuid', None)
+        if rid is not None:
+            properties = properties.copy()
+            del properties['_uuid']
         session = DBSession()
         resource = Resource({self.item_type: properties}, rid)
         session.add(resource)
@@ -309,10 +335,8 @@ class Collection(object):
 
         item_uris = []
         for model in query.all():
-            item = self.Item(self, model)
-            item_properties = item.__json__(request)
-            item_uri = request.resource_path(self, item.__name__)
-            embed(request, item_uri, item_properties)
+            item_uri = request.resource_path(self, model.rid)
+            embed(request, item_uri)
             item_uris.append(item_uri)
 
         properties = self.properties.copy()
@@ -322,7 +346,7 @@ class Collection(object):
         ns['collection_uri'] = request.resource_path(self)
         ns['item_type'] = self.item_type
         ns['item_uris'] = item_uris
-        ns['permission'] = permission_checker(self, get_current_request())
+        ns['permission'] = permission_checker(self, request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         if links is not None:
@@ -336,7 +360,8 @@ def collection_list(context, request):
     return item_view(context, request)
 
 
-@view_config(context=Collection, validators=(validate_item_content,), permission='add', request_method='POST')
+@view_config(context=Collection, permission='add', request_method='POST',
+             validators=[setting_uuid_permitted, validate_item_content])
 def collection_add(context, request):
     properties = request.validated
     item = context.add(properties)
@@ -376,13 +401,11 @@ def item_view(context, request):
     return properties
 
 
-@view_config(context=Item, validators=[validate_item_content], permission='edit', request_method='POST')
+@view_config(context=Item, permission='edit', request_method='POST',
+             validators=[validate_item_content])
 def item_edit(context, request):
-    uuid = context.model.rid
-    collection = context.__parent__
     properties = request.validated
-    properties['_uuid'] = uuid  # XXX Should this really be stored in object?
-    context.model.resource[collection.item_type] = properties
+    context.model.resource[context.model.predicate] = properties
     item_uri = request.resource_path(context.__parent__, context.__name__)
     request.response.status = 200
     result = {

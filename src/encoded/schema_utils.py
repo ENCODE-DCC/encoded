@@ -13,12 +13,13 @@ def load_schema(filename):
     return SchemaValidator(schema)
 
 
-def validate_request(schema, request):
-    data = request.json_body
+def validate_request(schema, request, data=None):
+    if data is None:
+        data = request.json
     for error in schema.iter_errors(data):
         request.errors.add('body', list(error.path), error.message)
     if not request.errors:
-        request.validated = schema.serialize(data)
+        request.validated.update(schema.serialize(data))
 
 
 def schema_validator(filename):

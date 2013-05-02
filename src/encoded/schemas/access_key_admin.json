@@ -3,12 +3,6 @@
     "description": "Programmatic access key",
     "type": "object",
     "properties": {
-        "_uuid": {
-            "title": "UUID",
-            "description": "Only admins are allowed to set this value",
-            "type": "string",
-            "format": "uuid"
-        },
         "user_uuid": {
             "title": "User",
             "description": "Only admins are allowed to set this value",
