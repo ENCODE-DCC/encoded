@@ -1,5 +1,7 @@
 import pytest
 
+pytestmark = pytest.mark.skipif("True")
+
 
 def basic_auth(username, password):
     from base64 import b64encode

@@ -204,6 +204,23 @@ class UserMap(Base):
         self.userid = userid
 
 
+class EDWKey(Base):
+    __tablename__ = 'edw_keys'
+    # e.g. mailto:test@example.com
+    username = Column(types.Text, primary_key=True)
+    pwhash = Column(types.Text)
+    userid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
+
+    resource = orm.relationship('Resource', lazy='joined',
+                                foreign_keys=[userid])
+
+    user = orm.relationship(
+        'CurrentStatement', lazy='joined', foreign_keys=[userid],
+        primaryjoin="""and_(CurrentStatement.rid==EDWKey.userid,
+                       CurrentStatement.predicate=='user')""",
+    )
+
+
 @event.listens_for(Statement, 'before_insert')
 def set_tid(mapper, connection, target):
     if target.tid is not None:
