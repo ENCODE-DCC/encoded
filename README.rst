@@ -36,6 +36,7 @@ To run tests with postgresql::
     first install postgres (on a mac with homebrew for example)
 
     $ createdb encoded
+    $ pg_ctl -D postgres -l pg.log start
     $ bin/test --engine-url postgresql:///encoded
 
 
