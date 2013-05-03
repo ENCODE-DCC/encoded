@@ -8,7 +8,7 @@ def pytest_addoption(parser):
         value = (value[0], int(value[1]))
         getattr(parser.values, options.dest).append(value)
 
-    parser.addoption('--engine-url', dest='engine_url', default='sqlite://')
+    parser.addoption('--engine-url', dest='engine_url', default='postgresql:///encoded')
     parser.addoption('--browser', dest='browser', default=None)
     parser.addoption('--browser-arg', nargs=2, dest='browser_args', action='append', type='string')
     parser.addoption('--browser-arg-int', nargs=2, dest='browser_args', action='callback', callback=int_arg, type='string')

@@ -78,11 +78,14 @@ def workbook(app):
 
     from ..loadxl import load_all
     from pkg_resources import resource_filename
-    workbook = resource_filename('encoded', 'tests/data/test_encode3_interface_submissions.xlsx')
+    insertbook = resource_filename('encoded', 'tests/data/test_encode3_interface_inserts.xlsx')
+    updatebook = resource_filename('encoded', 'tests/data/test_encode3_interface_updates.xlsx')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
     load_test_only = app_settings.get('load_test_only', False)
     assert load_test_only
-    load_all(testapp, workbook, docsdir, test=load_test_only)
+
+    load_all(testapp, insertbook, docsdir, test=load_test_only)
+    load_all(testapp, updatebook, docsdir, test=load_test_only)
 
 
 @fixture
