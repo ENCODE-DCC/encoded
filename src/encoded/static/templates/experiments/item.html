@@ -1,8 +1,7 @@
 <header class="row">
     <div class="span12">
         <h4 style="text-transform: capitalize;">Experiment <?js if(properties.assay_name) { ?> > {properties.assay_name}<?js } ?></h4>
-        <h2>Dataset details for {properties.dataset_accession}</h2>
-        <h4>{properties.dataset_description}</h4>
+        <h2>Experiment summary for {properties.dataset_accession}</h2>
     </div>
 </header>
 <div class="row">
@@ -10,9 +9,15 @@
         <div class="panel data-display" id="experiment-data">
             <section id="general">
                 <div class="data-group">
-                    <label class="data-label" for="project">Project:</label>
+                    <label class="data-label" for="accession">Accession:</label>
                     <div class="data-values">
-                        <span id="project" class="data-point">{properties.project}</span>
+                        <span id="accession" class="data-point">{properties.dataset_accession}</span>
+                    </div>
+                </div>
+                <div class="data-group">
+                    <label class="data-label" for="accession">Description:</label>
+                    <div class="data-values">
+                        <span id="accession" class="data-point">{properties.dataset_description}</span>
                     </div>
                 </div>
                 <div class="data-group">
@@ -30,9 +35,9 @@
                 </div>
                 <?js } ?>
                 <div class="data-group">
-                    <label class="data-label" for="biological-replicates">Biological Replicates:</label>
+                    <label class="data-label" for="project">Project:</label>
                     <div class="data-values">
-                        <span id="biological-replicates" class="data-point">{model.links.replicates.length}</span>
+                        <span id="project" class="data-point">{properties.project}</span>
                     </div>
                 </div>
                 <?js if(model.links.replicates.length) { ?>
@@ -56,53 +61,100 @@
             </section>
         </div>
 
+        <h3>Biosamples used in {properties.dataset_accession}</h3>
+                <table>
+                        <thead>
+                            <tr>
+                                <th>Accession</th>
+                                <th>Term</th>
+                                <th>Biological Replicate</th>
+                                <th>Type</th>
+                                <th>Speices</th>
+                                <th>Source</th>
+                                <th>Submitter</th>
+                            </tr>
+                        </thead>
+                        <?js if(model.links.replicates.length) { ?>
+                        <?js _.each(model.links.replicates, function(replicate) { ?>
+                        <tr>
+                            <td>{replicate.links.library.links.biosample.get('accession')}</td>
+                            <td>{replicate.links.library.links.biosample.get('biosample_term_id')}</td>
+                            <td>{replicate.get('biological_replicate_number')}</td>
+                            <td>{replicate.links.library.links.biosample.get('biosample_type')}</td>
+                            <td>{replicate.links.library.links.biosample.links.donor.links.organism.get('organism_name')}</td>
+                            <td>{replicate.links.library.links.biosample.links.submitter.get('first_name')}</td>
+                            <td>{replicate.links.library.links.biosample.links.source.get('first_name')}
+                             {replicate.links.library.links.biosample.links.submitter.get('last_name')}</td>
+                        </tr>
+                        <?js }); ?>
+                        <?js } ?>
+                <tfoot>
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                </tfoot>
+        </table>
+            
         <?js if(model.links.replicates.length) { ?>
             <?js _.each(model.links.replicates, function(replicate) { ?>
-            <h3>Biological Replicate - {replicate.get('biological_replicate_number')}</h3>
-            <div class="panel data-display">
-                <div class="data-group">
-                    <label class="data-label" for="technical-no">Technical Replicate:</label>
-                    <div class="data-values">
-                        <span id="technical-no" class="data-point">{replicate.get('technical_replicate_number')}</span>
-                    </div>
-               </div>
-                
-               <div class="data-group">
-                    <label class="data-label" for="library">Library:</label>
-                    <div class="data-values">
-                        <span id="library" class="data-point"><a href="{replicate.links.library._links.self.href}">{replicate.links.library.get('library_description')}</a></span>
-                    </div>
-               </div>
-               <div class="data-group">
-                    <label class="data-label" for="platform">Platform:</label>
-                    <div class="data-values">
-                        <span id="platform" class="data-point"><a href="{replicate.links.platform._links.self.href}">{replicate.links.platform.get('description')}</a></span>
-                    </div>
-               </div>
-            </div>
-            <?js } ); ?>
+                <h3>Biological Replicate - {replicate.get('biological_replicate_number')}</h3>
+                <div class="panel data-display">
+                    <div class="data-group">
+                        <label class="data-label" for="technical-no">Technical Replicate:</label>
+                        <div class="data-values">
+                            <span id="technical-no" class="data-point">{replicate.get('technical_replicate_number')}</span>
+                        </div>
+                   </div>
+                    
+                   <div class="data-group">
+                        <label class="data-label" for="library">Library:</label>
+                        <div class="data-values">
+                            <span id="library" class="data-point"><a href="{replicate.links.library._links.self.href}">{replicate.links.library.get('library_description')}</a></span>
+                        </div>
+                   </div>
+                   <div class="data-group">
+                        <label class="data-label" for="platform">Platform:</label>
+                        <div class="data-values">
+                            <span id="platform" class="data-point"><a href="{replicate.links.platform._links.self.href}">{replicate.links.platform.get('description')}</a></span>
+                        </div>
+                   </div>
+                </div>
+            <?js }); ?>
         <?js } ?>
 
         <?js if(model.links.files.length) { ?>
-        <h3>Files</h3>
-        </table>   
-            <div class="panel data-display">
-            <?js _.each(model.links.files, function(file) { ?>
-            <div class="data-group">
-                <label class="data-label" for="file-type">Type:</label>
-                <div class="data-values">
-                    <span id="file-type" class="data-point">{file.get('file_format')}</span>
-                </div>
-            </div>
-            <div class="data-group">
-                <label class="data-label" for="file-name">Name:</label>
-                <div class="data-values">
-                    <span id="file-name" class="data-point">{file.get('file_name_encode3')}</span>
-                </div>
-            </div>
-           <?js } ); ?>
-        </div>
+        <h3>Files linked to {properties.dataset_accession}</h3>  
+            <table>
+                <thead>
+                    <tr>
+                        <th>Accession</th>
+                        <th>File Type</th>
+                        <th>File Name</th>
+                        <th>Associated Replicates</th>
+                        <th>Added By</th>
+                        <th>Date Added</th>
+                    </tr>
+                </thead>
+                <?js _.each(model.links.files, function(file) { ?>
+                <tr>
+                    <td>ENCFF00000</td>
+                    <td>{file.get('file_format')}</td>
+                    <td>{file.get('temp_file_name')}</td>
+                    <td>
+                    <?js if(file.get('biological_replicate_number')) {?>
+                        ({file.get('biological_replicate_number')}, {file.get('technical_replicate_number')})
+                    <?js } ?>
+                    </td>
+                    <td>{file.links.submitter.get('first_name')} {file.links.submitter.get('last_name')}</td>
+                    <td>{file.get('date_passed_validation')}</td>
+                </tr>
+                <?js } ); ?>
+                <tfoot>
+                    <tr>
+                        <td colspan="6"></td>
+                    </tr>
+                </tfoot>
+            </table>
         <?js } ?>   
-
     </div>
 </div>

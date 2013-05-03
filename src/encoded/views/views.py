@@ -252,6 +252,12 @@ class Files(Collection):
         'title': 'Files',
         'description': 'Listing of Files',
     }
+    item_links = {
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True},
+    }
+    item_embedded = set(['submitter', 'lab', 'award'])
 
 
 @root.location('experiments')
