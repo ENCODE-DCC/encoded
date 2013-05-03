@@ -525,6 +525,20 @@ def parse_treatment(testapp, alldata, content_type, indices, uuid, value, docsdi
     except (ValueError, TypeError):
         del value['concentration']
 
+    #import pdb; pdb.set_trace();
+    value['document_uuids'] = []
+    if value['treatment_document_list']:
+        documents = value.pop('treatment_document_list')
+        for doc in documents:
+            try:
+                document_uuid = indices['document'].get(doc, None)
+                if alldata['document'].get(document_uuid, None) is None:
+                    raise ValueError('Missing/skipped document reference %s for treatment: %s' % (doc, uuid))
+                else:
+                    value['document_uuids'].append(document_uuid)
+            except KeyError:
+                raise ValueError('Unable to find document for treatment: %s' % doc)
+
 
 @parse_decorator_factory('construct', {'value': 'vector_name'})
 def parse_construct(testapp, alldata, content_type, indices, uuid, value, docsdir):
@@ -570,20 +584,6 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
 
     ''' OPTIONAL OR REQUIRED FIELDS '''
 
-    value['treatment_uuids'] = []  # eventhough it's really 1:0 or 1.
-    try:
-        treat = value.pop('treatment')
-        treatment_uuid = indices['treatment'][treat]
-        try:
-            if alldata['treatment'].get(treatment_uuid, None) is None:
-                logger.warn('Missing/skipped treatment reference %s for biosample: %s' % (treatment_uuid, uuid))
-            value['treatment_uuids'].append(treatment_uuid)
-        except KeyError:
-            raise ValueError('Unable to find treatment for biosample: %s' % treat)
-    except KeyError as k:
-        pass
-        # treatment is often null
-
     value['document_uuids'] = []
 
     try:
@@ -600,6 +600,23 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 raise ValueError('Unable to find document for biosample: %s' % doc)
     except KeyError:
         logger.warn('Empty biosample documents list: %s' % documents)
+
+    value['treatment_uuids'] = []  # eventhough it's really 1:0 or 1.
+    try:
+        treat = value.pop('treatment')
+        treatment_uuid = indices['treatment'][treat]
+        try:
+            if alldata['treatment'].get(treatment_uuid, None) is None:
+                logger.warn('Missing/skipped treatment reference %s for biosample: %s' % (treatment_uuid, uuid))
+            value['treatment_uuids'].append(treatment_uuid)
+            # adding treatment documents to biosamples documents list
+            if alldata['treatment'][treatment_uuid]['document_uuids']:
+                value['document_uuids'] = value['document_uuids']+ alldata['treatment'][treatment_uuid]['document_uuids']
+        except KeyError:
+            raise ValueError('Unable to find treatment for biosample: %s' % treat)
+    except KeyError as k:
+        pass
+        # treatment is often null
 
     value['construct_uuids'] = []
     try:
@@ -659,7 +676,7 @@ def parse_library(testapp, alldata, content_type, indices, uuid, value, docsdir)
             try:
                 document_uuid = indices['document'].get(doc, [])
                 if alldata['document'].get(document_uuid, None) is None:
-                    raise ValueError('Missing/skipped document reference %s for library: %s' % (document_uuid, uuid))
+                    raise ValueError('Missing/skipped document reference for library')
                 else:
                     value['document_uuids'].append(document_uuid)
             except KeyError:
@@ -708,17 +725,17 @@ def parse_replicate(testapp, alldata, content_type, indices, uuid, value, docsdi
             if alldata['library'].get(value['library_uuid'], None) is None:
                 raise ValueError('Missing/skipped library reference')
         except KeyError:
-            raise ValueError('Unable to find library reference for replicate: %s' % uuid)
+            raise ValueError('Unable to find library reference for replicate')
 
     # Checking for platform reference
     if value['platform_uuid'] is None:
-        raise ValueError('Missing platform UUID for replicate %s' % uuid)
+        raise ValueError('Missing platform UUID for replicate')
     else:
         try:
             if alldata['platform'].get(value['platform_uuid'], None) is None:
                 raise ValueError('Missing/skipped platform reference')
         except KeyError:
-            raise ValueError('Unable to find platform reference for replicate: %s' % uuid)
+            raise ValueError('Unable to find platform reference for replicate')
 
 
 @parse_decorator_factory('file', {'value': '_uuid'})
@@ -727,11 +744,12 @@ def parse_file(testapp, alldata, content_type, indices, uuid, value, docsdir):
     ''' MANDATORY FIELDS for file '''
 
     # Check for replicate reference
-    try:
-        if alldata['replicate'].get(value['replicate_uuid'], None) is None:
-            raise ValueError('Missing/skipped replicate reference')
-    except KeyError:
-        raise ValueError('Unable to find replicate for file: %s' % uuid)
+    if value['replicate_uuid']:
+        try:
+            if alldata['replicate'].get(value['replicate_uuid'], None) is None:
+                raise ValueError('Missing/skipped replicate reference')
+        except KeyError:
+            raise ValueError('Unable to find replicate for file')
 
     # Check for experiment reference
     try:

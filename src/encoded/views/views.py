@@ -20,6 +20,9 @@ class Lab(Collection):
     properties = {
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
+        'actions': [
+            {'name': 'add', 'title': 'Add Lab', 'profile': '/profiles/lab.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
     item_links = {
         'awards': [
@@ -35,6 +38,9 @@ class Award(Collection):
     properties = {
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
+        'actions': [
+            {'name': 'add', 'title': 'Add Award', 'profile': '/profiles/award.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
 
 
@@ -57,6 +63,10 @@ class Organism(Collection):
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
+        'description': 'Listing of sources and vendors for ENCODE material',
+        'actions': [
+            {'name': 'add', 'title': 'Add Organism', 'profile': '/profiles/organism.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
 
 
@@ -72,6 +82,7 @@ class Source(Collection):
             {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', 'templated': True, 'condition': 'permission:edit'},
         ],
     }
+
 
 
 @root.location('donors')
@@ -130,6 +141,9 @@ class Biosample(Collection):
     properties = {
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
+        'actions': [
+            {'name': 'add', 'title': 'Register Biosample', 'profile': '/profiles/biosample.json', 'method': 'POST', 'href': '', 'templated': True},
+        ],
     }
     item_links = {
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},

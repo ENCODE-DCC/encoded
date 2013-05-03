@@ -39,11 +39,9 @@ function biosamples(exports, $, _, base, table_sorter, table_filter, home_templa
                         'Source',
                         'Submitter',
                         'Treatments',
-                        'Constructs',
+                        'Constructs'
                         ],
         sort_initial: 2  // oh the index hack it burns
-
-
     },
     {
         route_name: 'biosamples',
