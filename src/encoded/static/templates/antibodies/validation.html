@@ -7,7 +7,7 @@
                     <?js if (properties.document.type.indexOf('image/') == 0) { ?>
                         <img
                             class="validation-img"
-                            src="{properties.document.href}"
+                            src="{model._links.self.href+'/'+properties.document.href}"
                             height="{properties.document.height}"
                             width="{properties.document.width}"
                             alt="Validation Image"
@@ -58,8 +58,9 @@
                 <p><b>Image:</b> <span class="label status-{properties.validation_status.toLowerCase()}">{properties.validation_status}</span>
                 <p><b>Download:</b>
                     <?js if (properties.document) { ?>
-                    <a  href="{properties.document.href}"
+                    <a  href="{model._links.self.href+'/'+properties.document.href}"
                         download="{properties.document.download}"
+                        data-bypass=true
                         >{properties.document.download}</a>
                     <?js } else { ?>
                     <em>Document not available</em>

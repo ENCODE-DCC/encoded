@@ -174,6 +174,14 @@ class Resource(Base, DictMixin):
         return self.data.keys()
 
 
+class Blob(Base):
+    """ Binary data
+    """
+    __tablename__ = 'blobs'
+    blob_id = Column(UUID, primary_key=True)
+    data = Column(types.LargeBinary)
+
+
 class TransactionRecord(Base):
     __tablename__ = 'transactions'
     tid = Column(UUID, default=uuid.uuid4, primary_key=True)
