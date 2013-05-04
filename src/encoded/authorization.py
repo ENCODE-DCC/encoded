@@ -1,5 +1,6 @@
 from .storage import (
     DBSession,
+    EDWKey,
     UserMap,
 )
 
@@ -14,6 +15,19 @@ def groupfinder(login, request):
     if namespace == 'mailto':
         session = DBSession()
         model = session.query(UserMap).get(login)
+        if model is None:
+            return None
+        user = model.user
+        principals = ['userid:' + str(user.rid)]
+        lab_uuids = user.statement.object.get('lab_uuids', [])
+        principals.extend('lab:' + lab_uuid for lab_uuid in lab_uuids)
+        if CHERRY_LAB_UUID in lab_uuids:
+            principals.append('group:admin')
+        return principals
+
+    elif namespace == 'edwkey':
+        session = DBSession()
+        model = session.query(EDWKey).get(localname)
         if model is None:
             return None
         user = model.user
