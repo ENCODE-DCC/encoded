@@ -30,6 +30,7 @@ from .storage import (
     DBSession,
     CurrentStatement,
     Resource,
+    Keys,
 )
 _marker = object()
 
@@ -188,6 +189,7 @@ class MergedLinksMeta(type):
 
 class Item(object):
     __metaclass__ = MergedLinksMeta
+    keys = []
     embedded = {}
     links = {
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
@@ -232,6 +234,15 @@ class Item(object):
                 embed(request, value['href'])
         return links
 
+    def create_keys(self):
+        session = DBSession()
+        for key_type in self.keys:
+            key = Keys(rid=self.__name__,
+                       namespace=self.model.predicate,
+                       name=key_type,
+                       value=self.properties[key_type])
+            session.add(key)
+
     @classmethod
     def create(cls, parent, uuid, properties, **additional):
         item_type = parent.item_type
@@ -242,6 +253,7 @@ class Item(object):
         session.add(resource)
         model = resource.data[item_type]
         item = cls(parent, model)
+        item.create_keys()
         return item
 
 
@@ -254,6 +266,7 @@ class CustomItemMeta(MergedLinksMeta):
         if 'Item' in attrs:
             assert 'item_links' not in attrs
             assert 'item_embedded' not in attrs
+            assert 'item_keys' not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
@@ -267,6 +280,8 @@ class CustomItemMeta(MergedLinksMeta):
             item_attrs['links'] = attrs['item_links']
         if 'item_embedded' in attrs:
             item_attrs['embedded'] = attrs['item_embedded']
+        if 'item_keys' in attrs:
+            item_attrs['keys'] = attrs['item_keys']
         self.Item = type('Item', item_bases, item_attrs)
 
 

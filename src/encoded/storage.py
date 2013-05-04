@@ -2,6 +2,8 @@ from UserDict import DictMixin
 from sqlalchemy import (
     Column,
     ForeignKey,
+    Index,
+    UniqueConstraint,
     event,
     func,
     orm,
@@ -92,6 +94,26 @@ class JSON(types.TypeDecorator):
         if value is not None:
             value = json.loads(value)
         return value
+
+
+class Keys(Base):
+    ''' indexed unique tables for accessions and other unique keys
+    '''
+    __tablename__ = 'keys'
+    __table_args__ = (
+        Index('unique_key_index', 'namespace', 'name', 'value'),
+        UniqueConstraint('namespace', 'name', 'value', name='_keys_uc'),
+    )
+
+    kid = Column(types.Integer, autoincrement=True, primary_key=True)
+    rid = Column(UUID, ForeignKey('resources.rid'),
+                 nullable=False)
+    namespace = Column(types.String, nullable=False)
+    ''' typically the predicate or object type '''
+    name = Column(types.String, nullable=False)
+    ''' typically the field that is unique, i.e,, accession '''
+    value = Column(types.String, nullable=False)
+    ''' the unique value '''
 
 
 class Statement(Base):

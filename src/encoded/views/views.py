@@ -42,6 +42,7 @@ class Award(Collection):
             {'name': 'add', 'title': 'Add Award', 'profile': '/profiles/award.json', 'method': 'POST', 'href': '', 'templated': True},
         ],
     }
+    #item_keys = ['name'] should this be unique
 
 
 @root.location('antibody-lots')
@@ -55,6 +56,8 @@ class AntibodyLots(Collection):
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
     }
     item_embedded = set(['source'])
+    item_keys = ['antibody_accession']  #  NOTE:  Change name!
+    #   item_keys = [('links.source.name','product_id','lot_id')] multi columns not implemented yet
 
 
 @root.location('organisms')
@@ -96,6 +99,7 @@ class Donor(Collection):
         'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
     }
     item_embedded = set(['organism'])
+    item_keys = ['donor_id']
 
 
 @root.location('treatments')
@@ -105,6 +109,7 @@ class Treatment(Collection):
         'title': 'Treatments',
         'description': 'Listing Biosample Treatments',
     }
+    item_keys = ['treatment_name']
 
 
 @root.location('constructs')
@@ -117,6 +122,8 @@ class Construct(Collection):
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
     }
     item_embedded = set(['source'])
+    item_keys = ['vector_name']
+
 
 
 @root.location('documents')
@@ -127,6 +134,7 @@ class Document(Collection):
     }
 
     class Item(ItemWithDocument):
+        keys = ['document_name']
         links = {
             'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
             'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
@@ -162,6 +170,7 @@ class Biosample(Collection):
         ],
     }
     item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
+    item_keys = ['accession']
 
 
 @root.location('targets')
@@ -178,6 +187,8 @@ class Target(Collection):
         'award': {'href': '/awards/{award_uuid}', 'templated': True},
     }
     item_embedded = set(['organism', 'submitter', 'lab', 'award'])
+    #   item_keys = [('target_label', 'organism_name')] multi columns not implemented yet
+
 
 
 # The following should really be child collections.
@@ -239,6 +250,7 @@ class Library(Collection):
         ],
     }
     item_embedded = set(['biosample'])
+    item_keys = ['accession']
 
 
 @root.location('assays')
@@ -289,3 +301,5 @@ class Experiments(Collection):
         ],
     }
     item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award'])
+    item_keys = ['dataset_accession']   # note: this must be unique accross all datasets, and it's name should change
+
