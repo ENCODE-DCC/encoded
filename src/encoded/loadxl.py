@@ -765,7 +765,7 @@ def parse_file(testapp, alldata, content_type, indices, uuid, value, docsdir):
 
     # Chop long file names
     if value['file_name_encode3']:
-        if(len(value['file_name_encode3']) > 10):
+        if(len(value['file_name_encode3']) > 60):
             value['temp_file_name'] = value['file_name_encode3'][:60] + "..."
         else:
             value['temp_file_name'] = value['file_name_encode3']
