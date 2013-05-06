@@ -16,6 +16,7 @@ from ..storage import (
     Blob,
     DBSession,
 )
+from ..validation import ValidationFailure
 
 
 def parse_data_uri(uri):
@@ -46,49 +47,85 @@ def parse_data_uri(uri):
 class ItemWithDocument(Item):
     """ Item base class with document blob
     """
-    @classmethod
-    def create(cls, parent, uuid, properties):
-        additional_sheets = {}
-        if properties['document']['href'].startswith('data:'):
-            properties = properties.copy()
-            properties['document'] = document = properties['document'].copy()
+    download_property = 'document'
 
-            download_meta = {}
+    @classmethod
+    def _process_downloads(cls, properties, sheets):
+        prop_name = cls.download_property
+        document = properties[prop_name]
+        href = document.get('href', None)
+        if href is not None:
+            if not href.startswith('data:'):
+                msg = "Expected data uri."
+                raise ValidationFailure('body', [prop_name, 'href'], msg)
+
+            properties = properties.copy()
+            properties[prop_name] = document = document.copy()
+
+            if sheets is None:
+                sheets = {}
+            else:
+                sheets = sheets.copy()
+            sheets['downloads'] = downloads = {}
+            download_meta = downloads[prop_name] = {}
+
             download_meta['download'] = filename = document['download']
-            mime_type, charset, data = parse_data_uri(document['href'])
+            mime_type, charset, data = parse_data_uri(href)
             if mime_type is not None:
                 download_meta['type'] = mime_type
             if charset is not None:
                 download_meta['charset'] = charset
             blob_id = uuid4()
+            download_meta['blob_id'] = str(blob_id)
             session = DBSession()
             blob = Blob(blob_id=blob_id, data=data)
             session.add(blob)
-            additional_sheets['downloads'] = {str(blob_id): download_meta}
-            document['href'] = '@@download/%s/%s' % (blob_id, quote(filename))
+            document['href'] = '@@download/%s/%s' % (
+                prop_name, quote(filename))
 
+        return properties, sheets
+
+    @classmethod
+    def create(cls, parent, uuid, properties, sheets=None):
+        properties, sheets = cls._process_downloads(properties, sheets)
         item = super(ItemWithDocument, cls).create(
-            parent, uuid, properties, **additional_sheets)
+            parent, uuid, properties, sheets)
         return item
+
+    def update(self, properties, sheets=None):
+        prop_name = self.download_property
+        document = properties[prop_name]
+        href = document.get('href', None)
+        if href is not None:
+            if href.startswith('@@download/'):
+                try:
+                    existing = self.properties[prop_name]['href']
+                except KeyError:
+                    existing = None
+                if existing != href:
+                    msg = "Expected data uri or existing uri."
+                    raise ValidationFailure('body', [prop_name, 'href'], msg)
+            else:
+                properties, sheets = self._process_downloads(
+                    properties, sheets)
+
+        super(ItemWithDocument, self).update(properties, sheets)
 
 
 @view_config(name='download', context=ItemWithDocument, request_method='GET',
              permission='view', subpath_segments=2)
 def download(context, request):
-    blob_id, filename = request.subpath
+    prop_name, filename = request.subpath
     downloads = context.model.resource['downloads']
     try:
-        blob_id = UUID(blob_id)
-    except ValueError:
-        raise HTTPNotFound(blob_id)
-
-    try:
-        download = downloads[str(blob_id)]
+        download_meta = downloads[prop_name]
     except KeyError:
-        raise HTTPNotFound(blob_id)
+        raise HTTPNotFound(prop_name)
 
-    if download['download'] != filename:
+    if download_meta['download'] != filename:
         raise HTTPNotFound(filename)
+
+    blob_id = UUID(download_meta['blob_id'])
 
     mimetype, content_encoding = guess_type(filename, strict=False)
     if mimetype is None:
