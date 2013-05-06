@@ -11,7 +11,10 @@ from pyramid.httpexceptions import (
 )
 from pyramid.location import lineage
 from pyramid.security import (
+    ALL_PERMISSIONS,
     Allow,
+    Authenticated,
+    Deny,
     Everyone,
     has_permission,
 )
@@ -138,17 +141,39 @@ def permission_checker(context, request):
     return checker
 
 
+def acl_from_settings(settings):
+    acl = []
+    for k, v in settings.iteritems():
+        if k.startswith('allow.'):
+            action = Allow
+            permission = k[len('allow.'):]
+            principals = v.split()
+        elif k.startswith('deny.'):
+            action = Deny
+            permission = k[len('deny.'):]
+            principals = v.split()
+        else:
+            continue
+        if permission == 'ALL_PERMISSIONS':
+            permission = ALL_PERMISSIONS
+        for principal in principals:
+            if principal == 'Authenticated':
+                principal = Authenticated
+            elif principal == 'Everyone':
+                principal = Everyone
+            acl.append((action, permission, principal))
+    return acl
+
+
 class Root(object):
     __name__ = ''
     __parent__ = None
 
     __acl__ = [
         (Allow, Everyone, 'list'),
-        (Allow, 'group:admin', 'add'),
-        (Allow, 'group:admin', 'add_with_uuid'),
         (Allow, Everyone, 'view'),
-        (Allow, 'group:admin', 'edit'),
         (Allow, Everyone, 'traverse'),
+        (Allow, 'group:admin', ALL_PERMISSIONS),
     ]
 
     def __init__(self, **properties):
