@@ -788,7 +788,7 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
     value['replicate_uuids'] = []
     value['assay_name'] = ''
     value['target'] = ''
-    value['biosamples'] = []
+    value['biosample_term'] = ''
 
     for file in alldata['file']:
         if (alldata['file'][file])['experiment_dataset_uuid'] is value['_uuid']:
@@ -814,9 +814,11 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
         for replicate in value['replicate_uuids']:
             library = alldata['replicate'][replicate]['library_uuid']
             biosample = alldata['library'][library]['biosample_uuid']
-            biosample_accession = alldata['biosample'][biosample]['accession']
-            if biosample_accession not in value['biosamples']:
-                value['biosamples'].append(biosample_accession)
+            if value['biosample_term'] is '':
+                value['biosample_term'] = alldata['biosample'][biosample]['biosample_term_name']
+            else:
+                if value['biosample_term'] is not alldata['biosample'][biosample]['biosample_term_name']:
+                    raise KeyError("Experiment has more than one biosample term")
 
     assign_submitter(value, content_type, indices,
                      {
