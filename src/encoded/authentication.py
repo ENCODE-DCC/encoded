@@ -89,6 +89,7 @@ class BasicAuthAuthenticationPolicy(_BasicAuthAuthenticationPolicy):
         super(BasicAuthAuthenticationPolicy, self).__init__(check, *args, **kw)
 
 
+# Currently unused, see views/edw_key.py
 def basic_auth_check(username, password, request):
     collection = request.root['access-keys']
     try:

@@ -1,0 +1,27 @@
+{
+    "title": "EDW create access key",
+    "description": "Received from EDW",
+    "type": "object",
+    "properties": {
+        "email": {
+            "title": "Email",
+            "description": "Email address of user in database",
+            "type": "string"
+        },
+        "username": {
+            "title": "Programmatic access key username",
+            "description": "",
+            "type": "string"
+        },
+        "pwhash": {
+            "title": "Secret access key hash",
+            "description": "EDW hashed password.",
+            "type": "string"
+        }
+    },
+    "required": [
+        "email",
+        "username",
+        "pwhash"
+    ]
+}
