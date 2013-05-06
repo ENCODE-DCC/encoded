@@ -800,6 +800,12 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
         else:
             pass
 
+    #checking for replicates without files
+    for replicate in alldata['replicate']:
+        if alldata['replicate'][replicate]['experiment_accession'] is value['dataset_accession']:
+            if replicate not in value['replicate_uuids']:
+                value['replicate_uuids'].append(replicate)
+
     # terrible coding, have to fix it later
     if value['replicate_uuids']:
         assay_uuid = alldata['replicate'][value['replicate_uuids'][0]]['assay_uuid']
