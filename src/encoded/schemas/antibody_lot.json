@@ -1,202 +1,184 @@
 {
-    "title": "", 
-    "description": "", 
-    "default": null, 
-    "type": [
-        "object", 
-        "null"
-    ], 
+    "default": null,
+    "description": "",
     "properties": {
         "antibody_accession": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
-        "antibody_description": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
+        },
         "antigen_description": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
+        },
         "antigen_sequence": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
+        },
+        "award_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
         "clonality": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
+        },
         "dbxref": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "items": {
-                "title": "", 
-                "description": "", 
-                "default": null, 
-                "type": [
-                    "object", 
-                    "null"
-                ], 
-                "properties": {
-                    "db": {
-                        "title": "", 
-                        "description": "", 
-                        "default": null, 
+            "default": null,
+            "description": "",
+            "properties": {
+                "encode2": {
+                    "default": null,
+                    "description": "",
+                    "items": {
+                        "default": null,
+                        "description": "",
+                        "title": "",
                         "type": [
-                            "string", 
+                            "string",
                             "null"
                         ]
-                    }, 
-                    "id": {
-                        "title": "", 
-                        "description": "", 
-                        "default": null, 
-                        "type": [
-                            "string", 
-                            "null"
-                        ]
-                    }
+                    },
+                    "title": "",
+                    "type": [
+                        "array",
+                        "null"
+                    ]
                 }
-            }, 
+            },
+            "title": "",
             "type": [
-                "array", 
+                "object",
                 "null"
             ]
-        }, 
+        },
+        "encode2_dbxref_list": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
         "host_organism": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
-        "is_obsolete": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
+        },
         "isotype": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
+        },
+        "lab_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
         "lot_id": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
+        },
         "product_id": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
+        },
+        "project": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
         "purification": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
+        },
         "source_uuid": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
-        "submittd_by": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+        },
+        "submitter_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
-        }, 
-        "submitted_by_grant": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "submitted_by_pi": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "target_label": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
+        },
         "url": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
+            "default": null,
+            "description": "",
+            "title": "",
             "type": [
-                "string", 
+                "string",
                 "null"
             ]
         }
-    }
+    },
+    "title": "",
+    "type": [
+        "object",
+        "null"
+    ]
 }

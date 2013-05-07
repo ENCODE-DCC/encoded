@@ -2,25 +2,7 @@
     "default": null,
     "description": "",
     "properties": {
-        "antibody_accession": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "antigen_description": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "antigen_sequence": {
+        "assembly": {
             "default": null,
             "description": "",
             "title": "",
@@ -38,7 +20,34 @@
                 "null"
             ]
         },
-        "clonality": {
+        "biological_replicate_number": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "integer",
+                "null"
+            ]
+        },
+        "composite (sanity)": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "composite_dataset_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "date_passed_validation": {
             "default": null,
             "description": "",
             "title": "",
@@ -76,6 +85,15 @@
                 "null"
             ]
         },
+        "derived_from_filelist": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
         "encode2_dbxref_list": {
             "default": null,
             "description": "",
@@ -85,7 +103,7 @@
                 "null"
             ]
         },
-        "host_organism": {
+        "experiment (sanity)": {
             "default": null,
             "description": "",
             "title": "",
@@ -94,12 +112,39 @@
                 "null"
             ]
         },
-        "isotype": {
+        "experiment_dataset_uuid": {
             "default": null,
             "description": "",
             "title": "",
             "type": [
                 "string",
+                "null"
+            ]
+        },
+        "file_format": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "geo_series": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "is_obsolete": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "boolean",
                 "null"
             ]
         },
@@ -112,7 +157,7 @@
                 "null"
             ]
         },
-        "lot_id": {
+        "md5sum": {
             "default": null,
             "description": "",
             "title": "",
@@ -121,7 +166,7 @@
                 "null"
             ]
         },
-        "product_id": {
+        "output_type": {
             "default": null,
             "description": "",
             "title": "",
@@ -130,7 +175,7 @@
                 "null"
             ]
         },
-        "project": {
+        "replicate_uuid": {
             "default": null,
             "description": "",
             "title": "",
@@ -139,7 +184,7 @@
                 "null"
             ]
         },
-        "purification": {
+        "software": {
             "default": null,
             "description": "",
             "title": "",
@@ -148,7 +193,7 @@
                 "null"
             ]
         },
-        "source_uuid": {
+        "submitted_by_project": {
             "default": null,
             "description": "",
             "title": "",
@@ -166,12 +211,12 @@
                 "null"
             ]
         },
-        "url": {
+        "technical_replicate_number": {
             "default": null,
             "description": "",
             "title": "",
             "type": [
-                "string",
+                "integer",
                 "null"
             ]
         }

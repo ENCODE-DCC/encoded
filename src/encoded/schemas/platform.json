@@ -2,29 +2,11 @@
     "default": null,
     "description": "",
     "properties": {
-        "award_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "date_created": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
         "dbxref": {
             "default": null,
             "description": "",
             "properties": {
-                "geneid": {
+                "encode2": {
                     "default": null,
                     "description": "",
                     "items": {
@@ -42,7 +24,7 @@
                         "null"
                     ]
                 },
-                "hgnc": {
+                "geo": {
                     "default": null,
                     "description": "",
                     "items": {
@@ -60,7 +42,7 @@
                         "null"
                     ]
                 },
-                "uniprot": {
+                "obi": {
                     "default": null,
                     "description": "",
                     "items": {
@@ -85,16 +67,7 @@
                 "null"
             ]
         },
-        "is_current": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "lab_uuid": {
+        "description": {
             "default": null,
             "description": "",
             "title": "",
@@ -103,7 +76,7 @@
                 "null"
             ]
         },
-        "organism_uuid": {
+        "encode2_dbxref_list": {
             "default": null,
             "description": "",
             "title": "",
@@ -112,7 +85,25 @@
                 "null"
             ]
         },
-        "project": {
+        "gpl_ids": {
+            "default": null,
+            "description": "",
+            "items": {
+                "default": null,
+                "description": "",
+                "title": "",
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "title": "",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "obi_dbxref_list": {
             "default": null,
             "description": "",
             "title": "",
@@ -121,16 +112,7 @@
                 "null"
             ]
         },
-        "submitter_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "target_label": {
+        "url": {
             "default": null,
             "description": "",
             "title": "",

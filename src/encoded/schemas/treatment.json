@@ -1,0 +1,101 @@
+{
+    "default": null,
+    "description": "",
+    "properties": {
+        "document_uuids": {
+            "default": null,
+            "description": "",
+            "items": {
+                "default": null,
+                "description": "",
+                "title": "",
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "title": "",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "encode2_name": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "project": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "submitted_by_award_number": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "submitted_by_colleague_email": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "submitted_by_lab_name": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "treatment_document_type": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "treatment_name": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "treatment_type": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        }
+    },
+    "title": "",
+    "type": [
+        "object",
+        "null"
+    ]
+}

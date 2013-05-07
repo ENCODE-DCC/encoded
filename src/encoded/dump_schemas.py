@@ -5,22 +5,30 @@ from encoded.schema_utils import basic_schema
 
 
 BASE_URL = "http://localhost:6543"
-'''TYPE_URL = {
+TYPE_URL = {
     'organism': '/organisms/',
     'source': '/sources/',
     'target': '/targets/',
     'antibody_lot': '/antibody-lots/',
     'validation': '/validations/',
     'antibody_approval': '/antibodies/',
-}'''
-TYPE_URL = {
-    'colleague': '/users/',
+#    'user': '/users/',
     'lab': '/labs/',
     'award': '/awards/',
-    ##{ 'institute': '/institutes/'),
+    'donor': '/donors/',
+    'document': '/documents/',
+    'treatment': '/treatments/',
+    'construct': '/constructs/',
+    'biosample': '/biosamples/',
+    'platform': '/platforms/',
+    'library': '/libraries/',
+    'replicate': '/replicates/',
+    'file': '/files/',
+    'assay': '/assays/',
+    'experiment': '/experiments/',
 }
 
-SKIP = ['_embedded', '_links']
+SKIP = ['_embedded', '_links', 'accession', '_uuid']
 
 outdir = 'src/encoded/schemas/'
 json_heads = {'Accept': 'application/json'}
@@ -34,7 +42,10 @@ json_format = {
 for item in TYPE_URL.keys():
     fn = outdir + item + ".json"
     collection_r = requests.get(BASE_URL + TYPE_URL[item], headers=json_heads)
-    assert collection_r.ok
+    try:
+        assert collection_r.ok
+    except:
+        import pdb;pdb.set_trace()
     i_url = collection_r.json()['_embedded']['resources'].keys()[0]
     individual_r = requests.get(BASE_URL + i_url, headers=json_heads)
     assert individual_r.ok

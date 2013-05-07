@@ -11,7 +11,7 @@
                 "null"
             ]
         },
-        "caption": {
+        "award_uuid": {
             "default": null,
             "description": "",
             "title": "",
@@ -42,15 +42,6 @@
                         "null"
                     ]
                 },
-                "height": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "integer",
-                        "null"
-                    ]
-                },
                 "href": {
                     "default": null,
                     "description": "",
@@ -68,15 +59,6 @@
                         "string",
                         "null"
                     ]
-                },
-                "width": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "integer",
-                        "null"
-                    ]
                 }
             },
             "title": "",
@@ -85,12 +67,12 @@
                 "null"
             ]
         },
-        "is_current": {
+        "lab_uuid": {
             "default": null,
             "description": "",
             "title": "",
             "type": [
-                "boolean",
+                "string",
                 "null"
             ]
         },
@@ -112,7 +94,7 @@
                 "null"
             ]
         },
-        "reference": {
+        "project": {
             "default": null,
             "description": "",
             "title": "",
@@ -121,25 +103,7 @@
                 "null"
             ]
         },
-        "submitted_by": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitted_by_grant": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitted_by_pi": {
+        "submitter_uuid": {
             "default": null,
             "description": "",
             "title": "",
@@ -149,15 +113,6 @@
             ]
         },
         "target_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "validated_by": {
             "default": null,
             "description": "",
             "title": "",

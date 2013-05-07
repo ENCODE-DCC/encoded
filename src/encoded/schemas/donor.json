@@ -1,0 +1,110 @@
+{
+    "default": null,
+    "description": "",
+    "properties": {
+        "age": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "alias_list": {
+            "default": null,
+            "description": "",
+            "items": {
+                "default": null,
+                "description": "",
+                "title": "",
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "title": "",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "alias_source_uuids": {
+            "default": null,
+            "description": "",
+            "items": {
+                "default": null,
+                "description": "",
+                "title": "",
+                "type": [
+                    "string",
+                    "null"
+                ]
+            },
+            "title": "",
+            "type": [
+                "array",
+                "null"
+            ]
+        },
+        "donor_id": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "ethnicity": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "health_status": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "organism_uuid": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "sex": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "strain background": {
+            "default": null,
+            "description": "",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        }
+    },
+    "title": "",
+    "type": [
+        "object",
+        "null"
+    ]
+}

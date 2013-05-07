@@ -2,7 +2,7 @@
     "default": null,
     "description": "",
     "properties": {
-        "award_uuid": {
+        "assay_description": {
             "default": null,
             "description": "",
             "title": "",
@@ -11,7 +11,7 @@
                 "null"
             ]
         },
-        "date_created": {
+        "assay_name": {
             "default": null,
             "description": "",
             "title": "",
@@ -24,7 +24,7 @@
             "default": null,
             "description": "",
             "properties": {
-                "geneid": {
+                "encode2": {
                     "default": null,
                     "description": "",
                     "items": {
@@ -42,25 +42,7 @@
                         "null"
                     ]
                 },
-                "hgnc": {
-                    "default": null,
-                    "description": "",
-                    "items": {
-                        "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
-                },
-                "uniprot": {
+                "obi": {
                     "default": null,
                     "description": "",
                     "items": {
@@ -85,16 +67,7 @@
                 "null"
             ]
         },
-        "is_current": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "lab_uuid": {
+        "encode2_dbxref_list": {
             "default": null,
             "description": "",
             "title": "",
@@ -103,34 +76,7 @@
                 "null"
             ]
         },
-        "organism_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "project": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitter_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "target_label": {
+        "obi_dbxref_list": {
             "default": null,
             "description": "",
             "title": "",

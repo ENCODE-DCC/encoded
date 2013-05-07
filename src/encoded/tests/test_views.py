@@ -29,6 +29,12 @@ COLLECTION_URL_LENGTH = {
     '/constructs/': 5,
     '/biosamples/': 135,
     '/platforms/': 11,
+    '/libraries/': 49,
+    '/replicates/': 47,
+    '/files/': 19,
+    '/assays/': 3,
+    '/experiments/': 25,
+    # '/softwares/': 3, not implemented yet
 }
 
 COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
