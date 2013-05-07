@@ -262,7 +262,7 @@ class Item(object):
     def create_keys(self):
         session = DBSession()
         for key_type in self.keys:
-            key = Key(rid=self.__name__,
+            key = Key(rid=self.model.rid,
                       namespace=self.model.predicate,
                       name=key_type,
                       value=self.properties[key_type])
