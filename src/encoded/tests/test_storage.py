@@ -120,14 +120,5 @@ def test_keys(session):
     session.flush()
     key3 = Key(rid=resource2.rid, namespace=predicate, name=testname, value=obj1[testname])
     session.add(key3)
-    try:
+    with pytest.raises(IntegrityError):
         session.flush()
-    except IntegrityError:
-        assert True
-    ## this should throw an error
-
-
-
-
-
-
