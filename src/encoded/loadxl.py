@@ -810,8 +810,13 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
     if value['replicate_uuids']:
         assay_uuid = alldata['replicate'][value['replicate_uuids'][0]]['assay_uuid']
         value['assay_name'] = alldata['assay'][assay_uuid]['assay_name']
-        value['target'] = alldata['replicate'][value['replicate_uuids'][0]]['target']
         for replicate in value['replicate_uuids']:
+            if alldata['replicate'][replicate]['target'] != "Control":
+                if value['target'] is '':
+                    value['target'] = alldata['replicate'][replicate]['target']
+                else:
+                    if value['target'] is not alldata['replicate'][replicate]['target']:
+                        raise KeyError("Experiment has more than one Target")
             library = alldata['replicate'][replicate]['library_uuid']
             biosample = alldata['library'][library]['biosample_uuid']
             if value['biosample_term'] is '':

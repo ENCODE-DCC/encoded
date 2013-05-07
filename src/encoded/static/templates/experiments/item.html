@@ -21,9 +21,15 @@
                     </div>
                 </div>
                 <div class="data-group">
-                    <label class="data-label" for="submitter">Submitter:</label>
+                    <label class="data-label" for="biosample">Biosample:</label>
                     <div class="data-values">
-                        <span id="submitter" class="data-point">{model.links.submitter.get('first_name')} {model.links.submitter.get('last_name')}</span>
+                        <span id="biosample" class="data-point">{properties.biosample_term}</span>
+                    </div>
+                </div>
+                <div class="data-group">
+                    <label class="data-label" for="biosample-type">Biosample Type:</label>
+                    <div class="data-values">
+                        <span id="biosample-type" class="data-point">{model.links.replicates[0].links.library.links.biosample.get('biosample_type')}</span>
                     </div>
                 </div>
                 <?js if(properties.encode2_dbxref_list) { ?>
@@ -34,6 +40,12 @@
                     </div>
                 </div>
                 <?js } ?>
+                <div class="data-group">
+                    <label class="data-label" for="submitter">Submitter:</label>
+                    <div class="data-values">
+                        <span id="submitter" class="data-point">{model.links.submitter.get('first_name')} {model.links.submitter.get('last_name')}</span>
+                    </div>
+                </div>
                 <div class="data-group">
                     <label class="data-label" for="project">Project:</label>
                     <div class="data-values">
