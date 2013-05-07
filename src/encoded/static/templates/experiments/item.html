@@ -73,7 +73,7 @@
             </section>
         </div>
 
-        <h3>Biosamples used</h3>
+        <h3>Biosamples Used</h3>
                 <table>
                         <thead>
                             <tr>
@@ -87,7 +87,8 @@
                             </tr>
                         </thead>
                         <?js if(model.links.replicates.length) { ?>
-                        <?js _.each(model.links.replicates, function(replicate) { ?>
+                        <?js var replicates = _.sortBy(model.links.replicates, function(element) { return element.get('biological_replicate_number') }); ?>
+                        <?js _.each(replicates, function(replicate) { ?>
                         <tr>
                             <td>{replicate.links.library.links.biosample.get('accession')}</td>
                             <td>{replicate.links.library.links.biosample.get('biosample_term_id')}</td>
@@ -106,9 +107,10 @@
                     </tr>
                 </tfoot>
         </table>
-            
+        
         <?js if(model.links.replicates.length) { ?>
-            <?js _.each(model.links.replicates, function(replicate) { ?>
+            <?js var replicates = _.sortBy(model.links.replicates, function(element) { return element.get('biological_replicate_number') }); ?>
+            <?js _.each(replicates, function(replicate) { ?>
                 <h3>Biological Replicate - {replicate.get('biological_replicate_number')}</h3>
                 <div class="panel data-display">
                     <div class="data-group">
