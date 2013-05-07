@@ -96,7 +96,7 @@ class JSON(types.TypeDecorator):
         return value
 
 
-class Keys(Base):
+class Key(Base):
     ''' indexed unique tables for accessions and other unique keys
     '''
     __tablename__ = 'keys'

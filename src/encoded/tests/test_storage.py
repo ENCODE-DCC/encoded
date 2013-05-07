@@ -9,14 +9,14 @@ def test_storage_creation(session):
         CurrentStatement,
         TransactionRecord,
         Blob,
-        Keys,
+        Key,
         UserMap
     )
     assert session.query(Statement).count() == 0
     assert session.query(CurrentStatement).count() == 0
     assert session.query(TransactionRecord).count() == 0
     assert session.query(Blob).count() == 0
-    assert session.query(Keys).count() == 0
+    assert session.query(Key).count() == 0
     assert session.query(UserMap).count() == 0
 
 
@@ -94,7 +94,7 @@ def test_current_statement_update(session):
 def test_keys(session):
     from encoded.storage import (
         Resource,
-        Keys,
+        Key,
     )
     predicate = 'testdata'
     obj1 = {'foo': 'bar'}
@@ -104,21 +104,21 @@ def test_keys(session):
     resource = session.query(Resource).one()
 
     testname = 'foo'
-    key = Keys(rid=resource.rid, namespace=predicate, name=testname, value=obj1[testname])
+    key = Key(rid=resource.rid, namespace=predicate, name=testname, value=obj1[testname])
     session.add(key)
     session.flush()
-    assert session.query(Keys).count() == 1
+    assert session.query(Key).count() == 1
     othertest = 'foofoo'
     othervalue = 'barbar'
-    key2 = Keys(rid=resource.rid, namespace=predicate, name=othertest, value=othervalue)
+    key2 = Key(rid=resource.rid, namespace=predicate, name=othertest, value=othervalue)
     session.add(key2)
     session.flush()
-    assert session.query(Keys).count() == 2
+    assert session.query(Key).count() == 2
     obj2 = {'foofoo': 'barbar'}
     resource2 = Resource({predicate: obj2})
     session.add(resource2)
     session.flush()
-    key3 = Keys(rid=resource2.rid, namespace=predicate, name=testname, value=obj1[testname])
+    key3 = Key(rid=resource2.rid, namespace=predicate, name=testname, value=obj1[testname])
     session.add(key3)
     try:
         session.flush()
