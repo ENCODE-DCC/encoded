@@ -109,11 +109,11 @@ class Keys(Base):
     rid = Column(UUID, ForeignKey('resources.rid'),
                  nullable=False)
     namespace = Column(types.String, nullable=False)
-    ''' typically the predicate or object type '''
+    # typically the predicate or object type
     name = Column(types.String, nullable=False)
-    ''' typically the field that is unique, i.e,, accession '''
+    # typically the field that is unique, i.e. accession
     value = Column(types.String, nullable=False)
-    ''' the unique value '''
+    # the unique value
 
 
 class Statement(Base):
