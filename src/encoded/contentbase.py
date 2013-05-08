@@ -258,16 +258,26 @@ class Item(object):
         return links
 
     @classmethod
-    def create(cls, parent, uuid, properties, **additional):
+    def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
         session = DBSession()
-        property_sheets = {item_type: properties}
-        property_sheets.update(additional)
+        property_sheets = {}
+        if properties is not None:
+            property_sheets[item_type] = properties
+        if sheets is not None:
+            property_sheets.update(sheets)
         resource = Resource(property_sheets, uuid)
         session.add(resource)
         model = resource.data[item_type]
         item = cls(parent, model)
         return item
+
+    def update(self, properties, sheets=None):
+        if properties is not None:
+            self.model.resource[self.model.predicate] = properties
+        if sheets is not None:
+            for key, value in sheets.items():
+                self.model.resource[key] = value
 
 
 class CustomItemMeta(MergedLinksMeta):
@@ -443,7 +453,7 @@ def item_view(context, request):
              validators=[validate_item_content])
 def item_edit(context, request):
     properties = request.validated
-    context.model.resource[context.model.predicate] = properties
+    context.update(properties)
     item_uri = request.resource_path(context.__parent__, context.__name__)
     request.response.status = 200
     result = {

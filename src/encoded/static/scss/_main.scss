@@ -167,9 +167,13 @@ table thead tr th button {
 /* NavBar */
 .navbar-inverse .navbar-inner {
     border: none;
-    border-bottom: 2px solid #4e7294;
+    border-bottom: 0px solid #4e7294;
     background: #0a253d url("../mockups/img/navbg.png") repeat-x;
     @include box-shadow(0px 0px 30px 2px rgba(170, 170, 170, .9));
+}
+
+.navbar-inverse .navbar-inner#homepage_navbar {
+	border-bottom: 2px solid lighten($navbarInverseLinkBackgroundActive, 20%);
 }
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {
@@ -193,7 +197,6 @@ table thead tr th button {
 }
 
 /* Main navigation drop down menus */
-
 .navbar .nav > li > .dropdown-menu:after, .navbar .nav > li > .dropdown-menu:before {
 	border: 0;
 }
@@ -209,6 +212,55 @@ table thead tr th button {
   text-decoration: none;
   color: $dropdownLinkColorHover;
   @include gradient-vertical(lighten($navbarInverseLinkBackgroundHover, 8%), lighten($navbarInverseLinkBackgroundHover, 5%));
+}
+
+
+$subNavHeight: 30px;
+$subNavLinkPadding: 7px;
+
+#navbar-subnav {
+	height: $subNavHeight;
+	background-color: $navbarInverseLinkBackgroundActive;
+	border-bottom: 2px solid lighten($navbarInverseLinkBackgroundActive, 20%);
+	overflow: hidden;
+}
+
+nav.navbar-fixed-top {
+	@include box-shadow(0px 0px 30px 2px rgba(170, 170, 170, .9));
+}
+
+
+.subnav-links {
+	display: none;
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		li.active {
+			background-color: darken($navbarInverseLinkBackgroundActive, 13%);
+			@include border-radius($baseBorderRadius);
+		}
+	}
+	ul li {
+		display: inline-block;
+		// height: ;
+		margin: 5px 25px 5px 0;
+		float: left;
+		line-height: 6px;
+		font-size: 0.95em;
+		padding: $subNavLinkPadding;
+	}
+	a {
+		color: #fff;
+	}	
+}
+
+#navbar-subnav div section.active {
+        display: block !important;
+}
+
+.subnav-hover-bg {
+	background-color: #2f4961 !important;
 }
 
 
@@ -229,15 +281,21 @@ $footerBackground:          #0f2a42 !default;
 $footerBackgroundHighlight: #294b6a !default;
 $footerBorder:              #0f2a42 !default;
 
-#layout {
+#layout, #home-layout {
 	height: auto !important;
     margin: 0 auto -$footerHeight;
     min-height: 100%;
 }
 
 #content {
-	padding-top: 50px;
+	padding-top: 75px;
 }
+
+#home-top-content {
+	margin-top: 40px;
+	background: #4284d8 url('../img/encode_bg_blue.png') no-repeat center;
+}
+
 
 // top padding for small screens
 @media (max-width: 979px) {
@@ -363,6 +421,16 @@ a[href^="http"]:empty:after {
     @include border-radius($baseBorderRadius);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin: 10px 0 20px;
+    padding: 15px 30px;
+}
+
+.home-panel {
+	background-color: #fff;
+	border: 1px solid #ced5dc;
+    @include border-top-radius(0);
+    @include border-bottom-radius($baseBorderRadius);
+    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+    margin: 0 0 20px;
     padding: 15px 30px;
 }
 
