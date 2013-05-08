@@ -1,65 +1,75 @@
 {
+    "title": "ENCODE Biosample",
+    "id": "http://submit.encodedcc.org/profiles/biosample.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE Biosample",
+    "type": "object",
+    "required": [ "award_name", "lab_name", "submitter_email", "term_name", "type", "source_name"],
     "default": null,
-    "description": "",
     "properties": {
-        "award_uuid": {
+        "description": {
             "default": null,
-            "description": "",
+            "description": "A plain text description of the biosample",
             "title": "",
             "type": [
                 "string",
                 "null"
             ]
         },
-        "biosample_description": {
+        "submitter_email": {
+            "description": "Email (username) of submiiter",
+            "title": "Submitter Email",
+            "type": "email"
+        },
+        "lab_name": {
+            "description": "Name of the submitting lab",
+            "title": "Lab Name",
+            "type": "string"
+        },
+        "award_name": {
+            "description": "Award (Grant) this submission is registered under",
+            "title": "Award Name",
+            "type": "string"
+        },
+        "term_id": {
             "default": null,
-            "description": "",
-            "title": "",
+            "description": "Ontology term ID describing biosample type",
+            "title": "Ontology ID",
             "type": [
                 "string",
                 "null"
-            ]
+            ],
+            "pattern": "(UBERON|EFO|BTO|CL):[0-9]+"
         },
-        "biosample_term_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "term_name": {
+            "default": "new term will be requested",
+            "description": "Ontology term describing biosample type",
+            "title": "Ontology Term",
+            "type":  "string"
         },
-        "biosample_term_name": {
+        "type": {
             "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "The sub-type of the biosample",
+            "title": "Biosample Type",
+            "type": {
+                "enum" : [
+                    "Primary cell line",
+                    "Immortalized cell line",
+                    "Tissue"
+                ]
+            }
+
         },
-        "biosample_type": {
+        "construct_names": {
             "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "construct_uuids": {
-            "default": null,
-            "description": "",
+            "description": "List of construct names",
             "items": {
                 "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
+                "description": "Transfection, fusion, or shRNA construct name",
+                "title": "Construct Name",
+                "type":  "string"
             },
-            "title": "",
+            "title": "Construct Names",
             "type": [
                 "array",
                 "null"
@@ -67,8 +77,8 @@
         },
         "culture_harvest_date": {
             "default": null,
-            "description": "",
-            "title": "",
+            "description": "Harvest date of cell culture",
+            "title": "Culture Harvest Date",
             "type": [
                 "string",
                 "null"
@@ -76,8 +86,8 @@
         },
         "culture_start_date": {
             "default": null,
-            "description": "",
-            "title": "",
+            "description": "Start date of culture",
+            "title": "Culture Start Date",
             "type": [
                 "string",
                 "null"
@@ -85,8 +95,8 @@
         },
         "date_obtained": {
             "default": null,
-            "description": "",
-            "title": "",
+            "description": "Date sample obtained by lab",
+            "title": "Date Obtained",
             "type": [
                 "string",
                 "null"
@@ -94,181 +104,130 @@
         },
         "dbxref": {
             "default": null,
-            "description": "",
-            "properties": {
-                "dr. thomas gingeras at cold spring harbor laboratory": {
-                    "default": null,
-                    "description": "",
-                    "items": {
-                        "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
-                },
-                "encode2": {
-                    "default": null,
-                    "description": "",
-                    "items": {
-                        "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
-                }
-            },
-            "title": "",
-            "type": [
-                "object",
-                "null"
-            ]
-        },
-        "document_uuids": {
-            "default": null,
-            "description": "",
+            "description": "List of Database (including Lab) cross-references",
             "items": {
-                "default": null,
-                "description": "",
-                "title": "",
+                "properties": {
+                    "database_name": {
+                        "default": null,
+                        "description": "A database name reference",
+                        "title": "DB name",
+                        "type": "string"
+                    },
+                    "database_ids": {
+                        "default": null,
+                        "description": "A list of database id numbers",
+                        "title": "list of DB IDs",
+                        "type":  "array",
+                        "items": {
+                            "description": "External Database identifier",
+                            "title": "DB ID",
+                            "type": "string"
+                        }
+                    }
+                },
+                "title": "Database Cross-Reference",
                 "type": [
-                    "string",
+                    "object",
                     "null"
                 ]
             },
-            "title": "",
+            "title": "DBXREF List",
             "type": [
                 "array",
                 "null"
             ]
         },
-        "donor_uuid": {
+        "protocol_document_list": {
             "default": null,
-            "description": "",
-            "title": "",
+            "description": "List of biosample protocols associated with this biosample",
+            "items": {
+                "description": "Protocol document name",
+                "title": "Protocol Document Name",
+                "type": "string"
+            },
+            "title": "Protocol Document List",
             "type": [
-                "string",
+                "array",
                 "null"
             ]
         },
-        "encode2_dbxref_list": {
+        "donor_accession": {
             "default": null,
-            "description": "",
-            "title": "",
+            "description": "ENCODE Accession of the biosample donor",
+            "title": "Donor Accession",
             "type": [
                 "string",
                 "null"
-            ]
-        },
-        "lab_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            ],
+            "pattern": "^ENCDO[0-9][0-9][0-9][A-Z][A-Z][A-Z]"
         },
         "passage_number": {
             "default": null,
-            "description": "",
-            "title": "",
+            "description": "Cell culture passage number",
+            "title": "Passage Number",
             "type": [
-                "string",
+                "integer",
                 "null"
             ]
         },
-        "project": {
+        "related_biosample_list": {
             "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "related_biosample_accession": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "related_biosample_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "source_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "starting_amount": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitter_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "treatment_uuids": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
-            },
-            "title": "",
+            "description": "List of related biosample",
+            "title": "Related Biosamples",
             "type": [
                 "array",
                 "null"
+            ],
+            "items": {
+                "properties": {
+                    "relationship": {
+                        "default": "derives_from",
+                        "description": "The relationship type for the related biosample",
+                        "title": "Relationship Type",
+                        "type": {
+                            "enum": [
+                                "derived_from",
+                                "contained_in",
+                                "part_of"
+                            ]
+                    },
+                    "biosample_accession": {
+                        "description": "ENCODE Accession for the related biosample",
+                        "title": "Biosample Accession",
+                        "type": "string",
+                        "pattern": "^ENCBS[0-9][0-9][0-9][A-Z][A-Z][A-Z]"
+                    }
+                },
+                "title": "Biosample Relationship",
+                "type": [
+                    "object",
+                    "null"
+                ]
+            },
+
+        },
+        "source_name": {
+            "description": "Name of the biosample source (Lab or Company)",
+            "title": "Biosample Source",
+            "type": "string"
+        },
+        "starting_amount": {
+            "default": null,
+            "description": "Starting amount of Biosample",
+            "title": "Starting Amount",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "treatment_name": {
+            "default": null,
+            "description": "Name of applied treatment",
+            "title": "Treatment Name",
+            "type": [
+                "string",
+                "null"
             ]
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

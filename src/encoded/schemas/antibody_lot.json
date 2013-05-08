@@ -1,8 +1,36 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Antibody Lot",
+    "id": "http://submit.encodedcc.org/profiles/antibody-lot.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE Antibody (no target or validation information)",
+    "type": "object",
+    "required": [ "award_name", "lab_name", "submitter_email", "product_id", "lot_id", "source_name"],
     "properties": {
-        "antibody_accession": {
+        "description": {
+            "default": null,
+            "description": "A plain text description of the Antibody",
+            "title": "",
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "submitter_email": {
+            "description": "Email (username) of submiiter",
+            "title": "Submitter Email",
+            "type": "email"
+        },
+        "lab_name": {
+            "description": "Name of the submitting lab",
+            "title": "Lab Name",
+            "type": "string"
+        },
+        "award_name": {
+            "description": "Award (Grant) this submission is registered under",
+            "title": "Award Name",
+            "type": "string"
+        },
+        "lot_id": {
             "default": null,
             "description": "",
             "title": "",
@@ -11,7 +39,7 @@
                 "null"
             ]
         },
-        "antigen_description": {
+        "product_id": {
             "default": null,
             "description": "",
             "title": "",
@@ -21,15 +49,6 @@
             ]
         },
         "antigen_sequence": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "award_uuid": {
             "default": null,
             "description": "",
             "title": "",
@@ -49,39 +68,36 @@
         },
         "dbxref": {
             "default": null,
-            "description": "",
-            "properties": {
-                "encode2": {
-                    "default": null,
-                    "description": "",
-                    "items": {
+            "description": "List of Database (including Lab) cross-references",
+            "items": {
+                "properties": {
+                    "database_name": {
                         "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
+                        "description": "A database name reference",
+                        "title": "DB name",
+                        "type": "string"
                     },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
-                }
+                    "database_ids": {
+                        "default": null,
+                        "description": "A list of database id numbers",
+                        "title": "list of DB IDs",
+                        "type":  "array",
+                        "items": {
+                            "description": "External Database identifier",
+                            "title": "DB ID",
+                            "type": "string"
+                        }
+                    }
+                },
+                "title": "Database Cross-Reference",
+                "type": [
+                    "object",
+                    "null"
+                ]
             },
-            "title": "",
+            "title": "DBXREF List",
             "type": [
-                "object",
-                "null"
-            ]
-        },
-        "encode2_dbxref_list": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
+                "array",
                 "null"
             ]
         },
@@ -103,61 +119,7 @@
                 "null"
             ]
         },
-        "lab_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "lot_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "product_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "project": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
         "purification": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "source_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitter_uuid": {
             "default": null,
             "description": "",
             "title": "",
@@ -175,10 +137,5 @@
                 "null"
             ]
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

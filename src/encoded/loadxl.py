@@ -305,6 +305,15 @@ def check_document(docsdir, filename):
     return doc
 
 
+def convert_fields(dicts, content_type):
+
+    for field in dicts.keys():
+        idx = field.find(content_type)
+        if (idx >= 0):
+            dicts[field[idx + len(content_type) + 1:]] = dicts[field]
+            del dicts[field]
+
+
 def parse_decorator_factory(content_type, index_type):
 
     def parse_sheet(parse_type):
@@ -373,10 +382,9 @@ def parse_organism(testapp, alldata, content_type, indices, uuid, value, docsdir
     value['taxon_id'] = int(value['taxon_id'])
 
 
-@parse_decorator_factory('source', {'value': 'source_name'})
+@parse_decorator_factory('source', {'value': 'name'})
 def parse_source(testapp, alldata, content_type, indices, uuid, value, docsdir):
-    pass
-
+    value = convert_fields(value, content_type)
 
 @parse_decorator_factory('target', {'tuple': ('target_label', 'organism_uuid')})
 def parse_target(testapp, alldata, content_type, indices, uuid, value, docsdir):

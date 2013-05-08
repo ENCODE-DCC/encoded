@@ -29,9 +29,9 @@ COLLECTION_URL_LENGTH = {
     '/constructs/': 5,
     '/biosamples/': 135,
     '/platforms/': 11,
-    '/libraries/': 49,
-    '/replicates/': 47,
-    '/files/': 19,
+    '/libraries/': 47,
+    '/replicates/': 44,
+    '/files/': 17,
     '/assays/': 3,
     '/experiments/': 25,
     # '/softwares/': 3, not implemented yet

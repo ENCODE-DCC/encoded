@@ -1,38 +1,34 @@
 {
-    "default": null,
+    "title": "Organism",
     "description": "",
+    "type": "object",
+    "additionalProperties": false,
     "properties": {
         "organism_name": {
-            "default": null,
+            "title": "Organism name",
             "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string"
         },
         "scientific_name": {
-            "default": null,
+            "title": "Scientific name",
             "description": "",
-            "title": "",
+            "default": null,
             "type": [
                 "string",
                 "null"
             ]
         },
         "taxon_id": {
-            "default": null,
+            "title": "Taxon ID",
             "description": "",
-            "title": "",
+            "default": null,
             "type": [
                 "integer",
                 "null"
             ]
-        }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+        },
+        "required": [
+            "organism_name"
+        ]
+    }
 }

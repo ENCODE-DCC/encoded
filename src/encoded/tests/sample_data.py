@@ -83,13 +83,13 @@ SOURCES = [
     {
     '_uuid': '3aa827c3-92f8-41fa-9608-201558f7a1c4',
     'alias': 'sigma',
-    'source_name': 'Sigma-Aldrich',
+    'name': 'Sigma-Aldrich',
     'url': 'http://www.sigmaaldrich.com',
     },
     {
     '_uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
     'alias': 'gingeras',
-    'source_name': 'Gingeras Lab',
+    'name': 'Gingeras Lab',
     'url': 'http://www.gingeraslab.edu',
     },
 ]
@@ -105,7 +105,7 @@ ANTIBODY_LOTS = [
     'antibody_name': 's123',
     'clonality': 'Monoclonal',
     'host_orgnanism': 'Mouse',
-    'source_name': 'Sigma-Aldrich',  # PK
+    'name': 'Sigma-Aldrich',  # PK
     'source_uuid': '3aa827c3-92f8-41fa-9608-201558f7a1c4',
     'product_id': 'WH0000468M1',  # PK
     'lot_id': 'CB191-2B3',  # PK
@@ -170,7 +170,7 @@ BIOSAMPLES = [
     'biosample_term': 'Liver',
     'biosample_type': 'Tissue',
     'antibody_accession': 'ENCBS001ZZZ',
-    'source_name': 'Gingeras',
+    'name': 'Gingeras',
     'source_uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
     'product_id': 'fridge1a',
     'lot_id': '1',
