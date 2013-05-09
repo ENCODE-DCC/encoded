@@ -12,6 +12,21 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
           evaluate : /<\?js\s+(.+?)\?>/g
     };
 
+    // Handle ajax errors
+    $(document).ajaxError(function (event, xhr, settings, error) {
+        var url = window.location.pathname + window.location.search;
+        if (settings.type === 'GET' || settings.url === url) {
+            // This was a new page load, show the raw error page.
+            // https://bugs.webkit.org/show_bug.cgi?id=80697#c3
+            url = window.location.href;
+            window.history.replaceState(null, document.title, '#reloading');
+            window.location.replace(url);
+        } else {
+            console.log("Request failed: " + settings.type + " " + settings.url);
+            // Display an error overlay?
+        }
+    });
+
     // See: https://gist.github.com/4659318
     // Works with function or class
     function new_(factory, args) {
@@ -308,7 +323,10 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
                 deferred2 = $.Deferred();
             this.deferred = deferred;
             this.deferred2 = deferred2;
-            $.when(collection.fetch({data: {limit: 30}})).done(_.bind(function () {
+            $.when(collection.fetch({
+                    data: {limit: 30},
+                    global: false  // Skip the global error handler
+                })).done(_.bind(function () {
                 this.title = collection.title;
                 this.description = collection.description;
                 this.rows = collection.map(_.bind(this.render_subviews, this));
