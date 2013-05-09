@@ -433,7 +433,9 @@ def traversal_security(event):
     """ Check traversal was permitted at each step
     """
     request = event.request
-    for resource in reversed(list(lineage(request.context))):
+    ancestors = lineage(request.context)
+    next(ancestors)  # skip self
+    for resource in reversed(list(ancestors)):
         result = has_permission('traverse', resource, request)
         if not result:
             msg = 'Unauthorized: traversal failed permission check'
