@@ -168,13 +168,6 @@ class Root(object):
     __name__ = ''
     __parent__ = None
 
-    __acl__ = [
-        (Allow, Everyone, 'list'),
-        (Allow, Everyone, 'view'),
-        (Allow, Everyone, 'traverse'),
-        (Allow, 'group:admin', ALL_PERMISSIONS),
-    ]
-
     def __init__(self, **properties):
         self.properties = properties
         self.collections = {}
