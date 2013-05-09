@@ -1,7 +1,7 @@
 <td><a href="{model._links.self.href}">{model.links.antibody_lot.get('antibody_accession')}</a></td>
-<td>{model.links.target.get('target_label')}</td>
-<td>{model.links.target.links.organism.get('organism_name')}</td>
-<td>{model.links.antibody_lot.links.source.get('source_name')}</td>
+<td>{model.links.target.get('label')}</td>
+<td>{model.links.target.links.organism.get('name')}</td>
+<td>{model.links.antibody_lot.links.source.get('name')}</td>
 <td>{model.links.antibody_lot.get('product_id')}</td>
 <td>{model.links.antibody_lot.get('lot_id')}</td>
 <td>{model.links.validations.length}</td>

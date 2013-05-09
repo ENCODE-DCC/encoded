@@ -1,141 +1,151 @@
 {
     "title": "ENCODE Antibody Lot",
-    "id": "http://submit.encodedcc.org/profiles/antibody-lot.json",
+    "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an ENCODE Antibody (no target or validation information)",
     "type": "object",
-    "required": [ "award_name", "lab_name", "submitter_email", "product_id", "lot_id", "source_name"],
+    "required": [ "award", "lab", "product_id", "lot_id", "source"],
     "properties": {
         "description": {
-            "default": null,
+            "default": "",
             "description": "A plain text description of the Antibody",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitter_email": {
-            "description": "Email (username) of submiiter",
-            "title": "Submitter Email",
-            "type": "email"
-        },
-        "lab_name": {
-            "description": "Name of the submitting lab",
-            "title": "Lab Name",
+            "title": "Antibody Description",
             "type": "string"
         },
-        "award_name": {
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
             "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
-            "type": "string"
+            "type": "string",
+            "format": "award_link"
         },
         "lot_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "The vendor's id code for the antibody lot",
+            "title": "Antibody Lot ID",
+            "type": "string"
         },
         "product_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "The vendor's antibody product code",
+            "title": "Antibody Product ID",
+            "type": "string"
         },
         "antigen_sequence": {
             "default": null,
-            "description": "",
-            "title": "",
+            "description": "Sequence of the antigen used in raising the antibody",
+            "title": "Antigen Sequence",
             "type": [
                 "string",
                 "null"
             ]
         },
         "clonality": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "Unknown",
+            "description": "Whether the antibody is mono- or poly- clonal",
+            "title": "Antibody Clonality",
+            "type": {
+                "enum": [
+                    "polyclonal",
+                    "monoclonal",
+                    "Unknown"
+                ]
+            }
         },
         "dbxref": {
-            "default": null,
+            "default": {},
             "description": "List of Database (including Lab) cross-references",
-            "items": {
-                "properties": {
-                    "database_name": {
-                        "default": null,
-                        "description": "A database name reference",
-                        "title": "DB name",
-                        "type": "string"
-                    },
-                    "database_ids": {
-                        "default": null,
-                        "description": "A list of database id numbers",
-                        "title": "list of DB IDs",
-                        "type":  "array",
-                        "items": {
-                            "description": "External Database identifier",
-                            "title": "DB ID",
-                            "type": "string"
-                        }
-                    }
-                },
-                "title": "Database Cross-Reference",
-                "type": [
-                    "object",
-                    "null"
-                ]
+            "additionalProperties": {
+                "default": [],
+                "description": "List of Database IDs",
+                "title": "Database IDs",
+                "type":  "array",
+                "items": {
+                    "description": "Database identifiers",
+                    "title": "DB ID",
+                    "type": "string"
+                }
             },
-            "title": "DBXREF List",
-            "type": [
-                "array",
-                "null"
-            ]
+            "title": "DBXREFs",
+            "type": "object"
         },
         "host_organism": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Organism antibody was grown in.",
+            "comment": "These are not linked, currently - this should be replace with another organism object",
+            "title": "Host Organism",
+            "type": {
+                "enum": [
+                    "rabbit",
+                    "goat",
+                    "mouse"
+                ]
         },
         "isotype": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
+            "default": "Unknown",
+            "description": "Isotype of the antibody (IgA, IgD, etc.)",
+            "title": "Antibody Isotype",
+            "type": {
+                "enum": [
+                    "IgA1",
+                    "IgA2",
+                    "IgD",
+                    "IgG",
+                    "IgG1",
+                    "IgG1κ",
+                    "IgG1λ",
+                    "IgG2",
+                    "IgG2κ",
+                    "IgG2λ",
+                    "IgG2a",
+                    "IgG2aκ",
+                    "IgG2aλ",
+                    "IgG2b",
+                    "IgG2bκ",
+                    "IgG2bλ",
+                    "IgG3",
+                    "IgG3κ",
+                    "IgG4",
+                    "IgA",
+                    "IgM",
+                    "IgE",
+                    "serum",
+                    "Unknown",
+                ]
+            }
+         },
         "purification": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "Unknown",
+            "description": "Method by which antibody was purified",
+            "title": "Purification Method",
+            "type": {
+                "enum": [
+                    "Protein A chromatography",
+                    "Protein A/G",
+                    "Affinity",
+                    "Protein A",
+                    "Protein G",
+                    "Crude",
+                    "other",
+                    "IEC",
+                    "IMAC",
+                    "Tissue culture supernatent",
+                    "Unknown"
+           ]
+            }
         },
         "url": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "",
+            "description": "External URL for the specific antibody at vendor site",
+            "title": "External URL",
+            "type": "string",
+            "format": "url"
         }
     }
 }

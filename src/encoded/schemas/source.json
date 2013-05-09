@@ -1,37 +1,33 @@
 {
     "title": "ENCODE Source",
-    "id": "http://submit.encodedcc.org/profiles/source.json",
+    "id": "/profiles/source.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting biosample, antibody or other external source",
     "type": "object",
     "required": ["name"],
+    "additionalProperties": false,
     "properties": {
-        "submitter_email": {
-            "default": "encode2@encodedcc.org",
-            "description": "Email (username) of submiiter",
-            "title": "Submitter Email",
-            "type": "email"
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
         },
-        "lab_name": {
-            "default": "ENCODE2 Project, UCSC",
-            "description": "Name of the submitting lab",
-            "title": "Lab Name",
-            "type": "string"
-        },
-        "award_name": {
-            "default": "ENCODE2",
+        "award": {
+            "default": "ENCODE",
             "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
-            "type": "string"
+            "type": "string",
+            "format": "award_link"
         },
         "alias": {
-            "default": null,
+            "default": "",
             "description": "A short alias or lable for the source",
             "title": "Source Alias",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string"
         },
         "name": {
             "description": "The full name of the source",
@@ -39,13 +35,11 @@
             "type": "string"
         },
         "url": {
-            "default": null,
+            "default": "",
             "description": "An optional URL for the source",
             "title": "Source URL",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string",
+            "format": "url"
         }
     }
  }

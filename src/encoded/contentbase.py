@@ -263,6 +263,8 @@ class Item(object):
         session = DBSession()
         property_sheets = {item_type: properties}
         property_sheets.update(additional)
+        ## TODO add some code to set who the submitters is?
+
         resource = Resource(property_sheets, uuid)
         session.add(resource)
         model = resource.data[item_type]
