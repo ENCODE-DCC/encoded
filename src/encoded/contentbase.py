@@ -160,7 +160,7 @@ def acl_from_settings(settings):
                 principal = Authenticated
             elif principal == 'Everyone':
                 principal = Everyone
-            acl.append((action, permission, principal))
+            acl.append((action, principal, permission))
     return acl
 
 
