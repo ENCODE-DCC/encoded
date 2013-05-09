@@ -98,7 +98,7 @@
             "type": "object"
         },
         "protocol_document_list": {
-            "default": []],
+            "default": [],
             "description": "List of biosample protocols associated with this biosample",
             "comment": "For automatic submission supply unique documents names or uuids",
             "items": {
