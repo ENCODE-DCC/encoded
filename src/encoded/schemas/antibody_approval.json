@@ -1,0 +1,68 @@
+{
+    "title": "ENCODE Antibody Validation",
+    "id": "/profiles/validation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting antibody validation data",
+    "type": "object",
+    "required": [ "award", "lab", "antibody", "status", "target" ],
+    "properties": {
+        "antibody": {
+            "description": "The specific antibody for which the validation image applies.",
+            "comment": "Automatic submitters can supply an ENCODE antibody accession or uuid",
+            "title": "Antibody to be Validated",
+            "type": "string",
+            "format": "antibody_lot_link"
+        },
+        "target": {
+            "description": "Target for which the antibody validation applies.",
+            "comment": "Automatic submitters can supply a target uuid, or name/species pair",
+            "title": "Antibody Target",
+            "type": "object",
+            "format": "target_link"
+        },
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
+        },
+         "validation_list": {
+            "default": [],
+            "description": "List of validation pointers (uuids, image names)",
+            "title": "Validations",
+            "items": {
+                "description": "Validation image used for approval",
+                "comment": "Automatic submitters can supply a validation UUID or document/image name.",
+                "title": "Validation image (or document)",
+                "type": "string",
+                "format": "validation_link"
+            },
+            "type": "array"
+        },
+        "status": {
+            "default": "INCOMPLETE",
+            "description": "Approval status for the Antibody-Target-Validation triple",
+            "comment": "This might not be appropriate here.",
+            "title": "Approval Status",
+            "type": {
+                "enum" : [
+                    "APPROVED",
+                    "SUBMITTED",
+                    "UNSUBMITTED",
+                    "FAILED",
+                    "INCOMPLETE"
+                ]
+            }
+        }
+    }
+}

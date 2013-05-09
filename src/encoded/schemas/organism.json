@@ -1,34 +1,30 @@
 {
     "title": "Organism",
-    "description": "",
+    "id": "/profiles/validation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an organism type to ENCODE",
     "type": "object",
+    "required": ["name", "taxon_id"],
     "additionalProperties": false,
     "properties": {
-        "organism_name": {
+        "name": {
             "title": "Organism name",
-            "description": "",
+            "description": "A short name for the organism, like 'mouse'",
             "type": "string"
         },
         "scientific_name": {
             "title": "Scientific name",
-            "description": "",
-            "default": null,
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "The scientific name (Genus Species) for the organism",
+            "default": "",
+            "type": "string"
         },
         "taxon_id": {
             "title": "Taxon ID",
-            "description": "",
+            "description": "The NCBI taxon ID for the organism",
             "default": null,
             "type": [
                 "integer",
                 "null"
             ]
-        },
-        "required": [
-            "organism_name"
-        ]
-    }
+        }
 }

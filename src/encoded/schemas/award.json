@@ -51,9 +51,9 @@
         "pi": {
             "description": "Principle Investigator of the award",
             "comment": "For automatic submission submit the email, first & last name, or collegue uuid for the PI",
-            "title": "PI",
+            "title": "P.I.",
             "type": "string",
-            "format": "user_link"
+            "format": "colleague_link"
         }
     }
  }

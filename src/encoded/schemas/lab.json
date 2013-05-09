@@ -1,182 +1,111 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Lab",
+    "id": "/profiles/validation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting a lab or research group for the ENCODE project.",
+    "type": "object",
+    "required": [ "name", "pi"],
     "properties": {
-        "address1": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+         "name": {
+            "description": "Unique name for the Lab",
+            "title": "Lab Name",
+            "type": "string"
         },
-        "address2": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "pi": {
+            "description": "Principle Investigator of the lab",
+            "comment": "For automatic submission submit the email, first & last name, or collegue uuid for the PI",
+            "title": "P.I.",
+            "type": "string",
+            "format": "colleague_link"
         },
-        "award_number_list": {
-            "default": null,
-            "description": "",
+        "award_list": {
+            "default": [],
+            "description": "List of Awards (Grants) associated with the lab (and the ENCODE project).",
+            "title": "List of Awards (Grants)",
             "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
+                "description": "Award (Grant) this submission is registered under",
+                "comment": "Automatic submitters can supply an Award UUID, name, or number",
+                "title": "Award Name",
+                "type": "string",
+                "format": "award_link"
             },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
-        },
-        "award_uuids": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
-            },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
-        },
-        "city": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "country": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "fax": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "array"
         },
         "institute_label": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "",
+            "description": "Short name for the Institute the lab belongs too.",
+            "title": "Institute Label",
+            "type": "string"
         },
         "institute_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "",
+            "description": "Full name for the Institute the lab belongs too.",
+            "title": "Institute",
+            "type": "string"
         },
-        "lab_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "address1": {
+            "default": "",
+            "description": "1st line of Lab's mailing address.",
+            "title": "Address",
+            "type": "string"
         },
-        "name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "address2": {
+            "default": "",
+            "description": "2nd line of Lab's mailing address.",
+            "title": "Address (2)",
+            "type": "string"
         },
-        "phone1": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "phone2": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "pi_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "postal_code": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "city": {
+            "default": "",
+            "description": "City in which the lab is located.",
+            "title": "City",
+            "type": "string"
         },
         "state": {
-            "default": null,
-            "description": "",
+            "default": "",
+            "description": "US State, Province or Region in which the lab is located.",
+            "title": "State/Region",
+            "type": "string"
+        },
+        "country": {
+            "default": "",
+            "description": "Country in which the lab is located.",
+            "title": "Country",
+            "type": "string"
+        },
+        "postal_code": {
+            "default": "",
+            "description": "Postal Code for the lab's mailing address",
             "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string",
+            "format": "postal-code"
+        },
+        "fax": {
+            "default": "",
+            "description": "Lab's fax number",
+            "title": "Fax #",
+            "type": "string",
+            "format": "phone"
+        },
+        "phone1": {
+            "default": "",
+            "description": "Lab's primary phone number number",
+            "title": "Phone #",
+            "type": "string",
+            "format": "phone"
+        },
+        "phone2": {
+            "default": "",
+            "description": "Lab's alternate phone number",
+            "title": "Alt. Phone #",
+            "type": "string",
+            "format": "phone"
         },
         "url": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "",
+            "description": "URL for the lab website",
+            "title": "URL",
+            "type": "string"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

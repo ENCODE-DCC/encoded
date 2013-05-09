@@ -1,148 +1,95 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Antibody Validation",
+    "id": "/profiles/validation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting antibody validation data",
+    "type": "object",
+    "required": [ "award", "lab", "antibody" ],
     "properties": {
-        "antibody_lot_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "antibody": {
+            "description": "The specific antibody for which the validation image applies.",
+            "comment": "Automatic submitters can supply an ENCODE antibody accession or uuid",
+            "title": "Antibody to be Validated",
+            "type": "string",
+            "format": "antibody_lot_link"
         },
-        "award_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
+        },
+        "document": {
+            "description": "Antibody validation image (document)",
+            "comment": "For automatic submission supply unique a image/document name or uuid",
+            "title": "Validation Image",
+            "type": "string",
+            "format": "document_link"
+        },
+        "validation_method": {
+            "default": "",
+            "description": "Experimental method for the validation image",
+            "comment": "This will likely get mapped to an experimental methods ontology.",
+            "title": "Method",
+            "type": {
+                "enum": [
+                    "Western blot",
+                    "Western blot after IP",
+                    "Immunoprecipitation",
+                    "Immunofluorescense",
+                    "Knockdowns",
+                    "Mass spectrometry after IP",
+                    "ChIP comparison",
+                    "Tagged epitopes",
+                    "Motif enrichment",
+                    "Dot blot",
+                    "Peptide ELISA",
+                    "Competitor peptides",
+                    "Mutant organisms",
+                    "Mutant histones",
+                    "Annotation enrichment",
+                ]
+            }
+        },
+        "caption": {
+            "default": "",
+            "description": "Caption for the validation image",
+            "title": "Image Caption",
+            "type": "string"
         },
         "date_validated": {
             "default": null,
-            "description": "",
-            "title": "",
+            "description": "Date in which the validation experiment was run.",
+            "title": "Date Validated",
             "type": [
                 "string",
                 "null"
-            ]
+            ],
+            "format": "date-time"
         },
-        "document": {
-            "default": null,
-            "description": "",
-            "properties": {
-                "download": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
-                },
-                "href": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
-                },
-                "type": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
-                }
-            },
-            "title": "",
-            "type": [
-                "object",
-                "null"
-            ]
-        },
-        "lab_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "lot_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "product_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "project": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitter_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "target_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "validation_method": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "validation_status": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "status": {
+            "default": "INCOMPLETE",
+            "description": "Approval status for the Validation image",
+            "title": "Approval Status",
+            "type": {
+                "enum" : [
+                    "APPROVED",
+                    "SUBMITTED",
+                    "UNSUBMITTED",
+                    "FAILED",
+                    "INCOMPLETE"
+                ]
+            }
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }
