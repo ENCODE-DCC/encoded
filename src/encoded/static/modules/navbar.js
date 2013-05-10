@@ -94,7 +94,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                             error: function(xhr, status, err) {
                                     var msg = "";
                                      // If there is an error, show the error messages
-                                    msg = "Login Failure.  Access is restricted to ENCODE consortium members.  <a href='mailto:wranger@encodedcc.org'>Request an account</a>";
+                                    msg = "Login Failure.  Access is restricted to ENCODE consortium members.  <a href='mailto:encode-help@lists.stanford.edu'>Request an account</a>";
                                     $('.alert-error').text(msg).show();
                                     console.log("Persona error: "+err+" ("+status+")");
                             }
