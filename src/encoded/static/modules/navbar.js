@@ -74,13 +74,14 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                                 console.log("Login info:");
                                 console.log(data["info"]);
 
-                                if(data.error) {  // If there is an error, show the error messages
-                                    $('.alert-error').text(data.error.text).show();
+                                if(data.error) {
+                                     $('.alert-error').text(data.error.text).show();
                                 }
                                 else if (data.status != 'okay') {
                                     $('.alert-error').text('This seems impossible, but Persona returned your status as something other than ok').show();
                                 }
                                 else { // If not, send them back to the home page
+                                    $('.alert-error').hide();
                                     app.user.email = data.email;
                                     //_each(app.Config.user_actions(), function(action) {
                                     //    action = action._extend({'class': hide});
@@ -91,7 +92,11 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
                                 }
                             },
                             error: function(xhr, status, err) {
-                                $('.alert-error').text("Login failure: "+err+" ("+status+")").show();
+                                    var msg = "";
+                                     // If there is an error, show the error messages
+                                    msg = "Login Failure.  Access is restricted to ENCODE consortium members.  <a href='mailto:wranger@encodedcc.org'>Request an account</a>";
+                                    $('.alert-error').text(msg).show();
+                                    console.log("Persona error: "+err+" ("+status+")");
                             }
                         });
                     }

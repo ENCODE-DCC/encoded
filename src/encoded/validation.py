@@ -47,12 +47,24 @@ class ValidationFailure(HTTPUnprocessableEntity):
     """
     explanation = 'Failed validation'
 
+    def __init__(self, location=None, name=None, description=None, **kw):
+        HTTPUnprocessableEntity.__init__(self)
+        if location is None:
+            assert name is None and description is None and not kw
+            self.detail = None
+        else:
+            self.detail = dict(location=location, name=name,
+                               description=description, **kw)
+
 
 def failed_validation(exc, request):
     request.response.status_int = exc.code
+    errors = list(request.errors)
+    if exc.detail is not None:
+        errors.append(exc.detail)
     return {
         'status': 'error',
-        'errors': list(request.errors),
+        'errors': errors,
     }
 
 

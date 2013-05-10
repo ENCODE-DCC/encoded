@@ -778,6 +778,11 @@ def parse_file(testapp, alldata, content_type, indices, uuid, value, docsdir):
         try:
             if alldata['replicate'].get(value['replicate_uuid'], None) is None:
                 raise ValueError('Missing/skipped replicate reference')
+            else:
+                value['biological_replicate_number'] = \
+                    alldata['replicate'][value['replicate_uuid']]['biological_replicate_number']
+                value['technical_replicate_number'] = \
+                    alldata['replicate'][value['replicate_uuid']]['technical_replicate_number']
         except KeyError:
             raise ValueError('Unable to find replicate for file')
 
@@ -787,6 +792,21 @@ def parse_file(testapp, alldata, content_type, indices, uuid, value, docsdir):
             raise ValueError('Missing/skipped experiment reference')
     except KeyError:
         raise ValueError('Unable to find experiment for file: %s' % uuid)
+
+    # Chop long file names
+    if value['file_name_encode3']:
+        if(len(value['file_name_encode3']) > 60):
+            value['temp_file_name'] = value['file_name_encode3'][:60] + "..."
+        else:
+            value['temp_file_name'] = value['file_name_encode3']
+
+    assign_submitter(value, content_type, indices,
+                     {
+                     'email': value.pop('submitted_by_colleague_email'),
+                     'lab_name': value.pop('submitted_by_lab'),
+                     'award_no': value.pop('submitted_by_grant')
+                     }
+                     )
 
 
 @parse_decorator_factory('experiment', {'value': '_uuid'})
@@ -809,6 +829,12 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
                         value['replicate_uuids'].append(replicate)
         else:
             pass
+
+    #checking for replicates without files
+    for replicate in alldata['replicate']:
+        if alldata['replicate'][replicate]['experiment_accession'] is value['dataset_accession']:
+            if replicate not in value['replicate_uuids']:
+                value['replicate_uuids'].append(replicate)
 
     # terrible coding, have to fix it later
     if value['replicate_uuids']:

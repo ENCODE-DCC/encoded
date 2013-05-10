@@ -11,7 +11,10 @@ from pyramid.httpexceptions import (
 )
 from pyramid.location import lineage
 from pyramid.security import (
+    ALL_PERMISSIONS,
     Allow,
+    Authenticated,
+    Deny,
     Everyone,
     has_permission,
 )
@@ -20,7 +23,10 @@ from pyramid.threadlocal import (
 )
 from pyramid.view import view_config
 from urllib import unquote
-from uuid import UUID
+from uuid import (
+    UUID,
+    uuid4,
+)
 from .objtemplate import ObjectTemplate
 from .schema_utils import validate_request
 from .storage import (
@@ -134,18 +140,33 @@ def permission_checker(context, request):
     return checker
 
 
+def acl_from_settings(settings):
+    acl = []
+    for k, v in settings.iteritems():
+        if k.startswith('allow.'):
+            action = Allow
+            permission = k[len('allow.'):]
+            principals = v.split()
+        elif k.startswith('deny.'):
+            action = Deny
+            permission = k[len('deny.'):]
+            principals = v.split()
+        else:
+            continue
+        if permission == 'ALL_PERMISSIONS':
+            permission = ALL_PERMISSIONS
+        for principal in principals:
+            if principal == 'Authenticated':
+                principal = Authenticated
+            elif principal == 'Everyone':
+                principal = Everyone
+            acl.append((action, principal, permission))
+    return acl
+
+
 class Root(object):
     __name__ = ''
     __parent__ = None
-
-    __acl__ = [
-        (Allow, Everyone, 'list'),
-        (Allow, 'group:admin', 'add'),
-        (Allow, 'group:admin', 'add_with_uuid'),
-        (Allow, Everyone, 'view'),
-        (Allow, 'group:admin', 'edit'),
-        (Allow, Everyone, 'traverse'),
-    ]
 
     def __init__(self, **properties):
         self.properties = properties
@@ -229,6 +250,28 @@ class Item(object):
                 embed(request, value['href'])
         return links
 
+    @classmethod
+    def create(cls, parent, uuid, properties, sheets=None):
+        item_type = parent.item_type
+        session = DBSession()
+        property_sheets = {}
+        if properties is not None:
+            property_sheets[item_type] = properties
+        if sheets is not None:
+            property_sheets.update(sheets)
+        resource = Resource(property_sheets, uuid)
+        session.add(resource)
+        model = resource.data[item_type]
+        item = cls(parent, model)
+        return item
+
+    def update(self, properties, sheets=None):
+        if properties is not None:
+            self.model.resource[self.model.predicate] = properties
+        if sheets is not None:
+            for key, value in sheets.items():
+                self.model.resource[key] = value
+
 
 class CustomItemMeta(MergedLinksMeta):
     """ Give each collection its own Item class to enable
@@ -311,15 +354,13 @@ class Collection(object):
         return default
 
     def add(self, properties):
-        rid = properties.get('_uuid', None)
-        if rid is not None:
+        uuid = properties.get('_uuid', _marker)
+        if uuid is _marker:
+            uuid = uuid4()
+        else:
             properties = properties.copy()
             del properties['_uuid']
-        session = DBSession()
-        resource = Resource({self.item_type: properties}, rid)
-        session.add(resource)
-        model = resource.data[self.item_type]
-        item = self.Item(self, model)
+        item = self.Item.create(self, uuid, properties)
         self.after_add(item)
         return item
 
@@ -385,7 +426,9 @@ def traversal_security(event):
     """ Check traversal was permitted at each step
     """
     request = event.request
-    for resource in reversed(list(lineage(request.context))):
+    ancestors = lineage(request.context)
+    next(ancestors)  # skip self
+    for resource in reversed(list(ancestors)):
         result = has_permission('traverse', resource, request)
         if not result:
             msg = 'Unauthorized: traversal failed permission check'
@@ -405,7 +448,7 @@ def item_view(context, request):
              validators=[validate_item_content])
 def item_edit(context, request):
     properties = request.validated
-    context.model.resource[context.model.predicate] = properties
+    context.update(properties)
     item_uri = request.resource_path(context.__parent__, context.__name__)
     request.response.status = 200
     result = {

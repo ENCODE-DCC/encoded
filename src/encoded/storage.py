@@ -174,6 +174,14 @@ class Resource(Base, DictMixin):
         return self.data.keys()
 
 
+class Blob(Base):
+    """ Binary data
+    """
+    __tablename__ = 'blobs'
+    blob_id = Column(UUID, primary_key=True)
+    data = Column(types.LargeBinary)
+
+
 class TransactionRecord(Base):
     __tablename__ = 'transactions'
     tid = Column(UUID, default=uuid.uuid4, primary_key=True)
@@ -202,6 +210,23 @@ class UserMap(Base):
     def __init__(self, login, userid):
         self.login = login
         self.userid = userid
+
+
+class EDWKey(Base):
+    __tablename__ = 'edw_keys'
+    # e.g. mailto:test@example.com
+    username = Column(types.Text, primary_key=True)
+    pwhash = Column(types.Text)
+    userid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
+
+    resource = orm.relationship('Resource', lazy='joined',
+                                foreign_keys=[userid])
+
+    user = orm.relationship(
+        'CurrentStatement', lazy='joined', foreign_keys=[userid],
+        primaryjoin="""and_(CurrentStatement.rid==EDWKey.userid,
+                       CurrentStatement.predicate=='user')""",
+    )
 
 
 @event.listens_for(Statement, 'before_insert')

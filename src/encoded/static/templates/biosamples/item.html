@@ -78,6 +78,14 @@
                     <span id="grant" class="data-point">{model.links.award.get('number')}</span>
                 </div>
             </div>
+            <?js if(properties.note) { ?>
+            <div class="data-group">
+                <label class="data-label" for="notes">Note:</label>
+                <div class="data-values">
+                    <span id="notes" class="data-point">{properties.note}</span>
+                </div>
+            </div>
+            <?js } ?>
             </section>
             <!-- DBXREFS -->
 

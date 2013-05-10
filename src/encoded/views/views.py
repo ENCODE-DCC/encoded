@@ -5,6 +5,7 @@
 #    Everyone,
 #)
 from . import root
+from .download import ItemWithDocument
 from ..contentbase import (
     Collection,
 )
@@ -19,9 +20,6 @@ class Lab(Collection):
     properties = {
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
-        'actions': [
-            {'name': 'add', 'title': 'Add Lab', 'profile': '/profiles/lab.json', 'method': 'POST', 'href': '', 'templated': True},
-        ],
     }
     item_links = {
         'awards': [
@@ -37,9 +35,6 @@ class Award(Collection):
     properties = {
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
-        'actions': [
-            {'name': 'add', 'title': 'Add Award', 'profile': '/profiles/award.json', 'method': 'POST', 'href': '', 'templated': True},
-        ],
     }
 
 
@@ -63,9 +58,6 @@ class Organism(Collection):
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
         'description': 'Listing of sources and vendors for ENCODE material',
-        'actions': [
-            {'name': 'add', 'title': 'Add Organism', 'profile': '/profiles/organism.json', 'method': 'POST', 'href': '', 'templated': True},
-        ],
     }
 
 
@@ -124,12 +116,14 @@ class Document(Collection):
         'title': 'Documents',
         'description': 'Listing of Biosample Documents',
     }
-    item_links = {
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True},
-    }
-    item_embedded = set(['submitter', 'lab', 'award'])
+
+    class Item(ItemWithDocument):
+        links = {
+            'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+            'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+            'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        }
+        embedded = set(['submitter', 'lab', 'award'])
 
 
 @root.location('biosamples')
@@ -138,9 +132,6 @@ class Biosample(Collection):
     properties = {
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
-        'actions': [
-            {'name': 'add', 'title': 'Register Biosample', 'profile': '/profiles/biosample.json', 'method': 'POST', 'href': '', 'templated': True},
-        ],
     }
     item_links = {
         'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
@@ -185,14 +176,16 @@ class Validation(Collection):
         'title': 'Antibody Validations',
         'description': 'Listing of antibody validation documents',
     }
-    item_links = {
-        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
-        'target': {'href': '/targets/{target_uuid}', 'templated': True},
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True},
-    }
-    item_embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
+
+    class Item(ItemWithDocument):
+        links = {
+            'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
+            'target': {'href': '/targets/{target_uuid}', 'templated': True},
+            'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+            'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+            'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        }
+        embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
 
 
 @root.location('antibodies')
@@ -264,6 +257,12 @@ class Files(Collection):
         'title': 'Files',
         'description': 'Listing of Files',
     }
+    item_links = {
+        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
+        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
+        'award': {'href': '/awards/{award_uuid}', 'templated': True},
+    }
+    item_embedded = set(['submitter', 'lab', 'award'])
 
 
 @root.location('experiments')
