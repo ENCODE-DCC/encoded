@@ -34,7 +34,7 @@ Run the Browser tests with::
 To run tests with postgresql::
 
     to run with sqllite (default) use:
-    $ bin/test --engine-url sqlite:///
+    $ bin/test --engine-url sqlite://
 
     first install postgres (on a mac with homebrew for example)
 
