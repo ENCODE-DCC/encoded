@@ -17,7 +17,7 @@ before_script:
 install: "python bootstrap.py && bin/buildout"
 script: |-
   bin/test -v -v --timeout=200 --remote-webdriver \
-  --engine-url postgresql://postgres@/encoded \
+  --engine-url postgresql://postgres@localhost/encoded \
   --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
   --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
   --browser-arg-int wait_time 5
