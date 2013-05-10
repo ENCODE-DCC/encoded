@@ -21,10 +21,6 @@
         "taxon_id": {
             "title": "Taxon ID",
             "description": "The NCBI taxon ID for the organism",
-            "default": null,
-            "type": [
-                "integer",
-                "null"
-            ]
+            "type": "integer"
         }
 }

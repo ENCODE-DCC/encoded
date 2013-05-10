@@ -172,7 +172,7 @@
                 "string",
                 "null"
             ],
-            "format": "date-time"
+            "format": "date"
         },
         "culture_start_date": {
             "default": null,
@@ -182,7 +182,7 @@
                 "string",
                 "null"
             ],
-            "format": "date-time"
+            "format": "date"
         },
         "date_obtained": {
             "default": null,
@@ -192,7 +192,7 @@
                 "string",
                 "null"
             ],
-            "format": "date-time"
+            "format": "date"
         },
        "starting_amount": {
             "default": null,

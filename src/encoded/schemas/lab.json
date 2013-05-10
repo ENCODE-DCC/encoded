@@ -105,7 +105,8 @@
             "default": "",
             "description": "URL for the lab website",
             "title": "URL",
-            "type": "string"
+            "type": "string",
+            "format": "uri"
         }
     }
 }

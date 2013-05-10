@@ -39,7 +39,7 @@
             "description": "An optional URL for the source",
             "title": "Source URL",
             "type": "string",
-            "format": "url"
+            "format": "uri"
         }
     }
  }

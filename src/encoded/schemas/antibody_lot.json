@@ -145,7 +145,7 @@
             "description": "External URL for the specific antibody at vendor site",
             "title": "External URL",
             "type": "string",
-            "format": "url"
+            "format": "uri"
         }
     }
 }

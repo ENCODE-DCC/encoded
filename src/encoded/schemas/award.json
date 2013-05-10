@@ -29,7 +29,7 @@
                 "string",
                 "null"
             ],
-            "format": "date-time"
+            "format": "date"
         },
         "end_date": {
             "default": null,
@@ -39,14 +39,14 @@
                 "string",
                 "null"
             ],
-            "format": "date-time"
+            "format": "date"
         },
         "url": {
             "default": "",
             "description": "URL for the award or grant",
             "title": "Award URL",
             "type": "string",
-            "format": "url"
+            "format": "uri"
         },
         "pi": {
             "description": "Principle Investigator of the award",

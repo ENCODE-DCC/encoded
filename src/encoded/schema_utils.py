@@ -2,6 +2,7 @@ from collections import OrderedDict
 from pkg_resources import resource_stream
 import json
 import jsonschema
+import uuid
 
 
 class SchemaValidator(jsonschema.Draft4Validator):
@@ -87,3 +88,12 @@ def basic_schema(value, null_type='string', template=None, nullable=all,
         })
     else:
         raise ValueError(value)
+
+
+@FormatChecker.cls_checks("uuid")
+def is_uuid(instance):
+    try:
+        value = uuid.UUID(instance)
+    except:
+        return False
+    return True

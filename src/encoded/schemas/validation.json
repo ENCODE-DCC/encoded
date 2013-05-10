@@ -75,7 +75,7 @@
                 "string",
                 "null"
             ],
-            "format": "date-time"
+            "format": "date"
         },
         "status": {
             "default": "INCOMPLETE",
