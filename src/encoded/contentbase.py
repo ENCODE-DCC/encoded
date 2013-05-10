@@ -161,20 +161,13 @@ def acl_from_settings(settings):
                 principal = Authenticated
             elif principal == 'Everyone':
                 principal = Everyone
-            acl.append((action, permission, principal))
+            acl.append((action, principal, permission))
     return acl
 
 
 class Root(object):
     __name__ = ''
     __parent__ = None
-
-    __acl__ = [
-        (Allow, Everyone, 'list'),
-        (Allow, Everyone, 'view'),
-        (Allow, Everyone, 'traverse'),
-        (Allow, 'group:admin', ALL_PERMISSIONS),
-    ]
 
     def __init__(self, **properties):
         self.properties = properties
@@ -269,17 +262,27 @@ class Item(object):
             session.add(key)
 
     @classmethod
-    def create(cls, parent, uuid, properties, **additional):
+    def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
         session = DBSession()
-        property_sheets = {item_type: properties}
-        property_sheets.update(additional)
+        property_sheets = {}
+        if properties is not None:
+            property_sheets[item_type] = properties
+        if sheets is not None:
+            property_sheets.update(sheets)
         resource = Resource(property_sheets, uuid)
         session.add(resource)
         model = resource.data[item_type]
         item = cls(parent, model)
         item.create_keys()
         return item
+
+    def update(self, properties, sheets=None):
+        if properties is not None:
+            self.model.resource[self.model.predicate] = properties
+        if sheets is not None:
+            for key, value in sheets.items():
+                self.model.resource[key] = value
 
 
 class CustomItemMeta(MergedLinksMeta):
@@ -438,7 +441,9 @@ def traversal_security(event):
     """ Check traversal was permitted at each step
     """
     request = event.request
-    for resource in reversed(list(lineage(request.context))):
+    ancestors = lineage(request.context)
+    next(ancestors)  # skip self
+    for resource in reversed(list(ancestors)):
         result = has_permission('traverse', resource, request)
         if not result:
             msg = 'Unauthorized: traversal failed permission check'
@@ -458,7 +463,7 @@ def item_view(context, request):
              validators=[validate_item_content])
 def item_edit(context, request):
     properties = request.validated
-    context.model.resource[context.model.predicate] = properties
+    context.update(properties)
     item_uri = request.resource_path(context.__parent__, context.__name__)
     request.response.status = 200
     result = {

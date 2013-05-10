@@ -7,7 +7,7 @@ from xlutils.filter import (
     StreamWriter,
     XLRDReader,
     process,
-    )
+)
 
 
 class SkipNonTests(BaseFilter):
@@ -20,7 +20,7 @@ class SkipNonTests(BaseFilter):
         test_cols = [
             col for col in range(rdsheet.ncols)
             if rdsheet.cell_value(0, col).lower().strip() == 'test'
-            ]
+        ]
         if not test_cols:
             self.test_col = None
         else:
@@ -40,10 +40,23 @@ class SkipNonTests(BaseFilter):
         if not self.skip_row:
             self.next.cell(rdrowx, rdcolx, self.row_index, wtcolx)
 
+class SkipUpdateTests(SkipNonTests):
+    "override row function to skip Update tests"
+
+    def row(self, rdrowx, wtrowx):
+        if rdrowx == 0 or self.test_col is None \
+            or self.rdsheet.cell_value(rdrowx, self.test_col).lower().strip() == 'test':
+            self.row_index += 1
+            self.skip_row = False
+            self.next.row(rdrowx, self.row_index)
+        else:
+            self.skip_row = True
+
+
 
 def iter_rows(sheet):
     headers = [sheet.cell_value(0, col).lower().strip()
-        for col in range(sheet.ncols)]
+               for col in range(sheet.ncols)]
     for row in xrange(1, sheet.nrows):
         yield dict((name, sheet.cell(row, col))
                    for col, name in enumerate(headers) if name)
@@ -133,7 +146,7 @@ class Anonymize(BaseFilter):
             else:
                 generated = "%s-%s" % \
                     tuple(random.choice(self.random_words).capitalize()
-                        for n in range(2))
+                            for n in range(2))
             if generated not in self.generated_names:
                 self.generated_names.add(generated)
                 return generated
@@ -151,20 +164,24 @@ class Anonymize(BaseFilter):
         return new
 
 
-def run(infile, outfile):
+def run(infile, outfile, filter):
     wb = xlrd.open_workbook(file_contents=infile.read())
     reader = XLRDReader(wb, infile.name)
     writer = StreamWriter(outfile)
-    process(reader, SkipNonTests(), Anonymize(), writer)
+    process(reader, filter, Anonymize(), writer)
 
 
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='Extract test data set.')
     parser.add_argument('infile', type=argparse.FileType('rb'))
-    parser.add_argument('outfile', type=argparse.FileType('wb'))
+    parser.add_argument('insertfile', type=argparse.FileType('wb'))
+    parser.add_argument('updatefile', type=argparse.FileType('wb'))
     args = parser.parse_args()
-    run(args.infile, args.outfile)
+    run(args.infile, args.updatefile, SkipNonTests())
+    args.infile.close()
+    args.infile = open(args.infile.name, 'rb')
+    run(args.infile, args.insertfile, SkipUpdateTests())
 
 if __name__ == '__main__':
     main()
