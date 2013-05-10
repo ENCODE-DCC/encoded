@@ -14,7 +14,9 @@ env:
 before_script:
   - psql -c 'create database encoded;' -U postgres
   - "curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash"
-install: "python bootstrap.py && bin/buildout"
+install:
+  - python bootstrap.py
+  - bin/buildout
 script: |-
   bin/test -v -v --timeout=200 --remote-webdriver \
   --engine-url postgresql://postgres@localhost/encoded \
