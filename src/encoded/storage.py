@@ -115,6 +115,9 @@ class Key(Base):
     value = Column(types.String, nullable=False)
     # the unique value
 
+    # Be explicit about dependencies to the ORM layer
+    resource = orm.relationship('Resource')
+
 
 class Statement(Base):
     '''A triple describing a resource
