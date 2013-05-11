@@ -159,6 +159,7 @@ class CurrentStatement(Base):
     )
     history = orm.relationship(
         'Statement', order_by=Statement.sid,
+        post_update=True,  # Break cyclic dependency
         primaryjoin="""and_(CurrentStatement.rid==Statement.rid,
                     CurrentStatement.predicate==Statement.predicate)""",
     )
