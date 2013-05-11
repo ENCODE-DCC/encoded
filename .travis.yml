@@ -11,15 +11,24 @@ env:
       qRVI8Sz7UQOVPMskft0mWi7/ionkz1/u9sSRjGW4Ifa27khTuMw2uEmbfvPq
       Y4oaiSDs6Y84v04ef9M5COo119FzpyGJ2Sro7LN3akGqdazihIzpnVL92KOg
       0HdlWNdaSNRdUFt9FH6nDCUiX8ZMLQIcE1cS202c7NHZNCoSmBE=
-before_script:
-  - psql -c 'create database encoded;' -U postgres
-  - "curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash"
+before_install:
+  - sudo apt-get -qq --purge remove postgresql postgresql-9.1
+  - source /etc/lsb-release
+  - echo "deb http://apt.postgresql.org/pub/repos/apt/ $DISTRIB_CODENAME-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+  - curl http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
+  - sudo apt-get update
+  - sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install postgresql-9.2 libpq-dev
+  - sudo /etc/init.d/postgresql start
 install:
   - python bootstrap.py
   - bin/buildout
+before_script:
+  - sudo -u postgres createuser $USER
+  - sudo -u postgres createdb --owner=$USER encoded
+  - "curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash"
 script: |-
   bin/test -v -v --timeout=200 --remote-webdriver \
-  --engine-url postgresql://postgres@localhost/encoded \
+  --engine-url postgresql:///encoded \
   --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
   --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
   --browser-arg-int wait_time 5
