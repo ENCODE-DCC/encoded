@@ -282,6 +282,11 @@ class CustomItemMeta(MergedLinksMeta):
     """
     def __init__(self, name, bases, attrs):
         super(CustomItemMeta, self).__init__(name, bases, attrs)
+
+        # XXX Remove this, too magical.
+        if self.item_type is None and 'item_type' not in attrs:
+            self.item_type = self.__name__.lower()
+
         if 'Item' in attrs:
             assert 'item_links' not in attrs
             assert 'item_embedded' not in attrs
@@ -330,8 +335,6 @@ class Collection(object):
     def __init__(self, parent, name):
         self.__name__ = name
         self.__parent__ = parent
-        if self.item_type is None:
-            self.item_type = type(self).__name__.lower()
 
     def __getitem__(self, name):
         try:
