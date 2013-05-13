@@ -33,7 +33,7 @@ from .storage import (
     DBSession,
     CurrentStatement,
     Resource,
-    Keys,
+    Key,
 )
 _marker = object()
 
@@ -255,10 +255,10 @@ class Item(object):
     def create_keys(self):
         session = DBSession()
         for key_type in self.keys:
-            key = Keys(rid=self.__name__,
-                       namespace=self.model.predicate,
-                       name=key_type,
-                       value=self.properties[key_type])
+            key = Key(rid=self.model.rid,
+                      namespace=self.model.predicate,
+                      name=key_type,
+                      value=self.properties[key_type])
             session.add(key)
 
     @classmethod
