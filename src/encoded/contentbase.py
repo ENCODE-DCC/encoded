@@ -171,6 +171,7 @@ class Root(object):
     def __init__(self, **properties):
         self.properties = properties
         self.collections = {}
+        self.by_item_type = {}
 
     def __call__(self, request):
         return self
@@ -187,7 +188,9 @@ class Root(object):
         Use as a decorator on Collection subclasses.
         """
         def decorate(factory):
-            self.collections[name] = factory(self, name)
+            collection = factory(self, name)
+            self.collections[name] = collection
+            self.by_item_type[collection.item_type] = collection
             return factory
         return decorate
 
