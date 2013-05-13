@@ -40,4 +40,4 @@ Feature: Biosamples
         When I fill in "table-filter" with "Primary"
         Then I should see an element with the css selector "tr:not(.hidden) a[href='/biosamples/3fd1abe6-b066-4ef4-85e6-75d867a5d448']" within 1 seconds
         And I should see an element with the css selector "tr.hidden a[href='/biosamples/6b9a8e74-1d0b-413e-9015-87d519805515']"
-        And I should see exactly one element with the css selector "#table-count" containing the text "69"
+        And I should see exactly one element with the css selector "#table-count" containing the text "70"
