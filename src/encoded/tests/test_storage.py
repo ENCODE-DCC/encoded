@@ -1,6 +1,5 @@
 import pytest
 pytestmark = pytest.mark.storage
-from sqlalchemy.exc import IntegrityError
 
 
 def test_storage_creation(session):
@@ -92,6 +91,7 @@ def test_current_statement_update(session):
 
 
 def test_keys(session):
+    from sqlalchemy.orm.exc import FlushError
     from encoded.storage import (
         Resource,
         Key,
@@ -120,5 +120,5 @@ def test_keys(session):
     session.flush()
     key3 = Key(rid=resource2.rid, namespace=predicate, name=testname, value=obj1[testname])
     session.add(key3)
-    with pytest.raises(IntegrityError):
+    with pytest.raises(FlushError):
         session.flush()
