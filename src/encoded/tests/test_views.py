@@ -1,5 +1,4 @@
 import pytest
-from sqlalchemy.exc import IntegrityError
 
 COLLECTION_URLS = [
     '/',
@@ -157,12 +156,7 @@ def test_collection_update(testapp, url, execute_counter):
 def test_post_duplicate_uuid(testapp):
     from .sample_data import BAD_LABS
     testapp.post_json('/labs/', BAD_LABS[0], status=201)
-    try:
-        testapp.post_json('/labs/', BAD_LABS[1], status=200)
-    except IntegrityError:
-        assert True
-        return
-    assert False
+    testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
 def test_post_repeated_uuid(testapp):
@@ -172,14 +166,8 @@ def test_post_repeated_uuid(testapp):
     for lab in LABS:
         testapp.post_json('/labs/', lab, status=201)
 
-    # good one
     testapp.post_json('/awards/', BAD_AWARDS[0], status=201)
-    try:
-        testapp.post_json('/labs/', BAD_AWARDS[0], status=200)
-    except IntegrityError:
-        assert True
-        return
-    assert False
+    testapp.post_json('/awards/', BAD_AWARDS[0], status=409)
 
 
 def test_users_post(testapp, session):

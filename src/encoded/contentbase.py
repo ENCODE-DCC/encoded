@@ -5,6 +5,7 @@ from pyramid.events import (
     subscriber,
 )
 from pyramid.httpexceptions import (
+    HTTPConflict,
     HTTPForbidden,
     HTTPInternalServerError,
     HTTPNotFound,
@@ -22,6 +23,8 @@ from pyramid.threadlocal import (
     manager,
 )
 from pyramid.view import view_config
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import FlushError
 from urllib import unquote
 from uuid import (
     UUID,
@@ -289,6 +292,10 @@ class Item(object):
         model = resource.data[item_type]
         item = cls(parent, model)
         item.create_keys()
+        try:
+            session.flush()
+        except (IntegrityError, FlushError):
+            raise HTTPConflict()
         return item
 
     def update(self, properties, sheets=None):
