@@ -2,8 +2,6 @@ from UserDict import DictMixin
 from sqlalchemy import (
     Column,
     ForeignKey,
-    Index,
-    UniqueConstraint,
     event,
     func,
     orm,
