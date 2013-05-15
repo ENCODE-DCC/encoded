@@ -98,3 +98,9 @@ def test_edw_key_update(testapp, anontestapp, edw_key):
     assert sorted(res.json['effective_principals']) == [
         'edwkey:' + edw_key['username'],
     ] + edw_key['user']['effective_principals']
+
+
+def test_edw_key_current_user(anontestapp, edw_key):
+    headers = {'Authorization': edw_key['auth_header']}
+    res = anontestapp.get('/@@current-user', headers=headers)
+    assert res.json['_links']['labs']

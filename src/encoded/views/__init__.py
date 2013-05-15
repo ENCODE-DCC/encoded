@@ -8,7 +8,7 @@ from ..contentbase import (
 def includeme(config):
     config.scan()
     config.set_root_factory(root)
-    root.__acl__ = acl_from_settings(config.registry.settings) + root.__acl__
+    root.__acl__ = acl_from_settings(config.registry.settings)
 
 
 root = Root(title='Home', portal_title='ENCODE 3')

@@ -1,11 +1,14 @@
 from collections import OrderedDict
 from pkg_resources import resource_stream
 import json
-import jsonschema
+from jsonschema import (
+    FormatChecker,
+    Draft4Validator
+)
 import uuid
 
 
-class SchemaValidator(jsonschema.Draft4Validator):
+class SchemaValidator(Draft4Validator):
     pass
 
 

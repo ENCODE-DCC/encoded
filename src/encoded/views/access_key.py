@@ -127,6 +127,8 @@ def access_key_edit(context, request):
 @view_config(context=AccessKey.Item, permission='view', request_method='GET')
 def access_key_view(context, request):
     properties = item_view(context, request)
-    if properties:
+    try:
         del properties['secret_access_key_hash']
+    except KeyError:
+        pass
     return properties
