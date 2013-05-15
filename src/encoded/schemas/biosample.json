@@ -52,7 +52,6 @@
                     "Tissue"
                 ]
             }
-
         },
         "construct_list": {
             "default": [],
@@ -143,6 +142,7 @@
                                 "contained_in",
                                 "part_of"
                             ]
+                        }
                     },
                     "biosample": {
                         "description": "Related biosample",
@@ -154,8 +154,7 @@
                 },
                 "title": "Biosample Relationship",
                 "type": "object"
-            },
-
+            }
         },
         "source": {
             "description": "Source or Vendor of Biomaterials",

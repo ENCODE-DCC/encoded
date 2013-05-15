@@ -23,4 +23,5 @@
             "description": "The NCBI taxon ID for the organism",
             "type": "integer"
         }
+    }
 }
