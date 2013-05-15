@@ -50,8 +50,10 @@ class AntibodyLots(Collection):
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
     }
     item_embedded = set(['source'])
-    item_keys = ['antibody_accession']  #  NOTE:  Change name!
-    #   item_keys = [('links.source.name','product_id','lot_id')] multi columns not implemented yet
+    item_keys = [
+        {'namespace': '', 'name': 'accession', 'value': '{antibody_accession}', 'templated': True},
+        {'namespace': 'antibody_lot', 'name': 'source_product_lot', 'value': '{source_uuid}/{product_id}/{lot_id}', 'templated': True},
+    ]
 
 
 @root.location('organisms')
@@ -76,7 +78,6 @@ class Source(Collection):
             {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', 'templated': True, 'condition': 'permission:edit'},
         ],
     }
-
 
 
 @root.location('donors')
@@ -114,7 +115,6 @@ class Construct(Collection):
     }
     item_embedded = set(['source'])
     item_keys = ['vector_name']
-
 
 
 @root.location('documents')
@@ -158,7 +158,7 @@ class Biosample(Collection):
         ],
     }
     item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
-    item_keys = ['accession']
+    item_keys = [{'namespace': '', 'name': 'accession', 'value': '{accession}', 'templated': True}]
 
 
 @root.location('targets')
@@ -176,7 +176,6 @@ class Target(Collection):
     }
     item_embedded = set(['organism', 'submitter', 'lab', 'award'])
     #   item_keys = [('target_label', 'organism_name')] multi columns not implemented yet
-
 
 
 # The following should really be child collections.
@@ -238,7 +237,7 @@ class Library(Collection):
         ],
     }
     item_embedded = set(['biosample'])
-    item_keys = ['accession']
+    item_keys = [{'namespace': '', 'name': 'accession', 'value': '{accession}', 'templated': True}]
 
 
 @root.location('assays')
@@ -295,5 +294,5 @@ class Experiments(Collection):
         ],
     }
     item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award'])
-    item_keys = ['dataset_accession']   # note: this must be unique accross all datasets, and it's name should change
+    item_keys = [{'namespace': '', 'name': 'accession', 'value': '{dataset_accession}', 'templated': True}]
 

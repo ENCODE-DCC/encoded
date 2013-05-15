@@ -203,6 +203,13 @@ class MergedLinksMeta(type):
             links = vars(cls).get('links', None)
             if links is not None:
                 self.merged_links.update(links)
+        self.merged_keys = []
+        for cls in reversed(self.mro()):
+            for key in vars(cls).get('keys', []):
+                if isinstance(key, basestring):
+                    key = {'namespace': '{item_type}', 'name': key,
+                           'value': '{%s}' % key, 'templated': True}
+                self.merged_keys.append(key)
 
 
 class Item(object):
@@ -225,19 +232,26 @@ class Item(object):
         return self.model.statement.object
 
     def __json__(self, request):
+        links = self.expand_links(request)
+        if links is None:
+            return self.properties
         properties = self.properties.copy()
-        links = self.expand_links(properties, request)
-        if links is not None:
-            properties['_links'] = links
+        properties['_links'] = links
         return properties
 
-    def expand_links(self, properties, request):
+    def template_namespace(self, request=None):
         # Expand templated links
-        ns = properties.copy()
-        ns['collection_uri'] = request.resource_path(self.__parent__)
+        ns = self.properties.copy()
         ns['item_type'] = self.model.predicate
         ns['_uuid'] = self.model.rid
-        ns['permission'] = permission_checker(self, request)
+        if request is not None:
+            ns['collection_uri'] = request.resource_path(self.__parent__)
+            ns['permission'] = permission_checker(self, request)
+        return ns
+
+    def expand_links(self, request):
+        # Expand templated links
+        ns = self.template_namespace(request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         # Embed resources
@@ -254,11 +268,11 @@ class Item(object):
 
     def create_keys(self):
         session = DBSession()
-        for key_type in self.keys:
-            key = Key(rid=self.model.rid,
-                      namespace=self.model.predicate,
-                      name=key_type,
-                      value=self.properties[key_type])
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_keys)
+        keys = compiled(ns)
+        for key_spec in keys:
+            key = Key(rid=self.model.rid, **key_spec)
             session.add(key)
 
     @classmethod
