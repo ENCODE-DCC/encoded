@@ -5,6 +5,7 @@
     "description": "Schema for submitting a target of an antibody or experiment to the ENCODE DCC",
     "type": "object",
     "required": [ "award", "lab", "organism", "label"],
+    "additionalProperties": false,
     "properties": {
         "lab": {
             "default": "ENCODE Project",
@@ -38,6 +39,29 @@
             },
             "title": "DBXREFs",
             "type": "object"
+        },
+        "aliases": {
+            "default": [],
+            "description": "List of target name aliases and sources, indexed for searching",
+            "title": "Aliases",
+            "type": "array",
+            "items": {
+                "description": "Target name aliases",
+                "title": "Alias",
+                "type": "object",
+                "properties": {
+                    "source": {
+                        "description": "Source of this alias",
+                        "title": "Alias Source",
+                        "type": "string"
+                    },
+                    "alias": {
+                        "description": "Alias (alternate identifier) for the target",
+                        "title": "Alias",
+                        "type": "string"
+                    }
+                }
+            }
         },
         "organism": {
             "description": "Organism of the specific target",

@@ -4,13 +4,13 @@ from collections import OrderedDict
 ORGANISMS = [
     {
     '_uuid': '7745b647-ff15-4ff3-9ced-b897d4e2983c',
-    'organism_name': 'human',
+    'name': 'human',
     'scientific_name': 'Homo sapiens',
     'taxon_id': 9606,
     },
     {
     '_uuid': '3413218c-3d86-498b-a0a2-9a406638e786',
-    'organism_name': 'mouse',
+    'name': 'mouse',
     'scientific_name': 'Mus musculus',
     'taxon_id': 10090,
     },
@@ -24,12 +24,12 @@ TARGETS = [
         'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
         },
     'target_term_id': '786', # changed to HNGC
-    'target_label': 'ATF4',
-    'organism_name': 'human',  # link to organism
-    'organism_uuid': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
+    'label': 'ATF4',
+    'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
     'target_symbol': 'ATF4',
     'target_gene_name': 'ATF4', # totally redundant column
-    'target_class': 'generated',
+    'lab':
+    'award':
     'aliases': [
         {'alias': 'CREB2', 'source': 'HGNC'},
         {'alias': 'TXREB', 'source': 'HGNC'},
