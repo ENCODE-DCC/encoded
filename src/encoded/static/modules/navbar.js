@@ -42,7 +42,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
 
         signout: function(event) {
             event.preventDefault();
-            console.log('Loggin out (persona)');
+            console.log('Logging out (persona)');
             navigator.id.logout();
         },
 
