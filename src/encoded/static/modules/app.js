@@ -121,7 +121,7 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
     });
 
     exports.Config = Backbone.Model.extend({
-        title: 'ENCODE 3',
+        title: 'ENCODE',
         global_sections: [
             {id: 'home', title: 'Home', url: '/'},
             {id: 'antibodies', title: 'Antibodies', url: '/antibodies/'},
