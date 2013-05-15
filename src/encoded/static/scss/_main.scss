@@ -203,16 +203,22 @@ table thead tr th button {
 
 #main-nav .dropdown-menu {
 	@include border-top-radius(0);
+    border-top: none;
 	@include border-bottom-radius($baseBorderRadius);
 	margin: 0;
+	background-color: #4e7294;
 }
 
 .dropdown-menu li > a:hover,
 .dropdown-menu li > a:focus,
 .dropdown-submenu:hover > a {
   text-decoration: none;
-  color: $dropdownLinkColorHover;
+  color: #fff; //$dropdownLinkColorHover;
   @include gradient-vertical(lighten($navbarInverseLinkBackgroundHover, 8%), lighten($navbarInverseLinkBackgroundHover, 5%));
+}
+
+.dropdown-menu li > a {
+	color: #fff;
 }
 
 
