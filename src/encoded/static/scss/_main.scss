@@ -204,6 +204,7 @@ table thead tr th button {
 #main-nav .dropdown-menu {
 	@include border-top-radius(0);
 	@include border-bottom-radius($baseBorderRadius);
+	margin: 0;
 }
 
 .dropdown-menu li > a:hover,
