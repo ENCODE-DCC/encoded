@@ -1,5 +1,6 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 
+import venusian
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -199,17 +200,23 @@ class Root(object):
     def __json__(self, request=None):
         return self.properties.copy()
 
-    def location(self, name):
+    def location(self, name, factory=None):
         """ Attach a collection at the location ``name``.
 
         Use as a decorator on Collection subclasses.
         """
         def decorate(factory):
-            collection = factory(self, name)
-            self.collections[name] = collection
-            self.by_item_type[collection.item_type] = collection
+            def callback(scanner, factory_name, factory):
+                collection = factory(self, name)
+                self.collections[name] = collection
+                self.by_item_type[collection.item_type] = collection
+            venusian.attach(factory, callback)
             return factory
-        return decorate
+
+        if factory is None:
+            return decorate
+        else:
+            decorate(factory)
 
 
 class MergedLinksMeta(type):
