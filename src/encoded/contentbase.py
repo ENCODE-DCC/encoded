@@ -213,7 +213,7 @@ class MergedLinksMeta(type):
         for cls in reversed(self.mro()):
             for key in vars(cls).get('keys', []):
                 if isinstance(key, basestring):
-                    key = {'namespace': '{item_type}', 'name': key,
+                    key = {'name': '{item_type}:' + key,
                            'value': '{%s}' % key, 'templated': True}
                 self.merged_keys.append(key)
 

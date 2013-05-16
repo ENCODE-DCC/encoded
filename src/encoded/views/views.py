@@ -51,8 +51,8 @@ class AntibodyLots(Collection):
     }
     item_embedded = set(['source'])
     item_keys = [
-        {'namespace': '', 'name': 'accession', 'value': '{antibody_accession}', 'templated': True},
-        {'namespace': 'antibody_lot', 'name': 'source_product_lot', 'value': '{source_uuid}/{product_id}/{lot_id}', 'templated': True},
+        {'name': 'accession', 'value': '{antibody_accession}', 'templated': True},
+        {'name': '{item_type}:source_product_lot', 'value': '{source_uuid}/{product_id}/{lot_id}', 'templated': True},
     ]
 
 
@@ -158,7 +158,7 @@ class Biosample(Collection):
         ],
     }
     item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
-    item_keys = [{'namespace': '', 'name': 'accession', 'value': '{accession}', 'templated': True}]
+    item_keys = [{'name': 'accession', 'value': '{accession}', 'templated': True}]
 
 
 @root.location('targets')
@@ -237,7 +237,7 @@ class Library(Collection):
         ],
     }
     item_embedded = set(['biosample'])
-    item_keys = [{'namespace': '', 'name': 'accession', 'value': '{accession}', 'templated': True}]
+    item_keys = [{'name': 'accession', 'value': '{accession}', 'templated': True}]
 
 
 @root.location('assays')
@@ -294,5 +294,4 @@ class Experiments(Collection):
         ],
     }
     item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award'])
-    item_keys = [{'namespace': '', 'name': 'accession', 'value': '{dataset_accession}', 'templated': True}]
-
+    item_keys = [{'name': 'accession', 'value': '{dataset_accession}', 'templated': True}]

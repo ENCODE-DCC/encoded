@@ -99,9 +99,8 @@ class Key(Base):
     '''
     __tablename__ = 'keys'
 
-    # typically the predicate or object type
-    namespace = Column(types.String, primary_key=True)
     # typically the field that is unique, i.e. accession
+    # might be prefixed with a namespace for per predicate unique values
     name = Column(types.String, primary_key=True)
     # the unique value
     value = Column(types.String, primary_key=True)
