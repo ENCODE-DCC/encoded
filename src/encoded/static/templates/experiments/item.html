@@ -1,6 +1,7 @@
 <header class="row">
     <div class="span12">
-        <h4 style="text-transform: capitalize;">Experiment <?js if(properties.assay_name) { ?> > {properties.assay_name}<?js } ?></h4>
+        <?js if(model.links.replicates.length){ ?>
+        <h4 style="text-transform: capitalize;">Experiment <?js if(model.links.replicates.length) { ?> > {model.links.replicates[0].links.assay.get('assay_name')}<?js } ?></h4> <?js } ?>
         <h2>Experiment summary for {properties.dataset_accession}</h2>
     </div>
 </header>
@@ -20,10 +21,11 @@
                         <span id="accession" class="data-point">{properties.dataset_description}</span>
                     </div>
                 </div>
+                <?js if(model.links.replicates.length) {?>
                 <div class="data-group">
                     <label class="data-label" for="biosample">Biosample:</label>
                     <div class="data-values">
-                        <span id="biosample" class="data-point">{properties.biosample_term}</span>
+                        <span id="biosample" class="data-point">{model.links.replicates[0].links.library.links.biosample.get('biosample_term_name')}</span>
                     </div>
                 </div>
                 <div class="data-group">
@@ -32,6 +34,7 @@
                         <span id="biosample-type" class="data-point">{model.links.replicates[0].links.library.links.biosample.get('biosample_type')}</span>
                     </div>
                 </div>
+                <?js } ?>
                 <?js if(properties.encode2_dbxref_list) { ?>
                 <div class="data-group">
                     <label class="data-label" for="lab-alias">Lab Alias:</label>
@@ -72,7 +75,7 @@
                <?js } ?>
             </section>
         </div>
-
+        <?js if(model.links.replicates.length){ ?>
         <h3>Biosamples Used</h3>
                 <table>
                         <thead>
@@ -107,7 +110,7 @@
                     </tr>
                 </tfoot>
         </table>
-        
+        <?js } ?>
         <?js if(model.links.replicates.length) { ?>
             <?js var replicates = _.sortBy(model.links.replicates, function(element) { return element.get('biological_replicate_number') }); ?>
             <?js _.each(replicates, function(replicate) { ?>

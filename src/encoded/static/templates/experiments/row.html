@@ -1,7 +1,22 @@
 <td><a href="{model._links.self.href}">{properties.dataset_accession}</a></td>
-<td>{properties.assay_name}</td>
-<td>{properties.target}</td>
-<td>{properties.biosample_term}</td>
+<td>
+	<?js if(model.links.replicates.length) { ?>
+		<?js var assay = model.links.replicates[0].links.assay.get('assay_name'); ?>
+		{assay}
+	<?js } ?>
+</td>
+<td>
+	<?js if(model.links.replicates.length) { ?>
+		<?js var target = model.links.replicates[0].get('target'); ?>
+		{target}
+	<?js } ?>
+</td>
+<td>
+	<?js if(model.links.replicates.length) { ?>
+		<?js var biosample = model.links.replicates[0].links.library.links.biosample.get('biosample_term_name');?>
+		{biosample}
+	<?js } ?>
+</td>
 <td>{model.links.replicates.length}</td>
 <td>{model.links.files.length}</td>
 <td>{model.links.lab.get('name')}</td>
