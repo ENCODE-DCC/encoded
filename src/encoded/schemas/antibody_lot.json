@@ -39,13 +39,9 @@
             "type": "string"
         },
         "antigen_sequence": {
-            "default": null,
             "description": "Sequence of the antigen used in raising the antibody",
             "title": "Antigen Sequence",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string"
         },
         "clonality": {
             "default": "Unknown",

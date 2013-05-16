@@ -3,7 +3,8 @@
     "id": "/profiles/award.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an Award (Grant) for the ENCODE Project",
-    "required": [ "name", "number", "pi"],
+    "required": [ "name", "number"],
+    "additionalProperties": true,
     "properties": {
         "name": {
             "description": "The long name of the award/grant - from NIH database",
@@ -22,23 +23,15 @@
             "type": "string"
         },
         "start_date": {
-            "default": null,
             "description": "Start date for the award",
             "title": "Start Date",
-            "type": [
-                "string",
-                "null"
-            ],
+            "type": "string",
             "format": "date"
         },
         "end_date": {
-            "default": null,
             "description": "End date for the award",
             "title": "End Date",
-            "type": [
-                "string",
-                "null"
-            ],
+            "type": "string",
             "format": "date"
         },
         "url": {

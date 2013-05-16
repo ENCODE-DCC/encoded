@@ -117,13 +117,9 @@
             "format": "donor_link"
         },
         "passage_number": {
-            "default": null,
             "description": "Cell culture passage number",
             "title": "Passage Number",
-            "type": [
-                "integer",
-                "null"
-            ]
+            "type": "integer"
         },
         "related_biosample_list": {
             "default": [],
@@ -164,43 +160,27 @@
             "format": "source_link"
         },
          "culture_harvest_date": {
-            "default": null,
             "description": "Harvest date of cell culture",
             "title": "Culture Harvest Date",
-            "type": [
-                "string",
-                "null"
-            ],
+            "type": "string",
             "format": "date"
         },
         "culture_start_date": {
-            "default": null,
             "description": "Start date of culture",
             "title": "Culture Start Date",
-            "type": [
-                "string",
-                "null"
-            ],
+            "type": "string",
             "format": "date"
         },
         "date_obtained": {
-            "default": null,
             "description": "Date sample obtained by lab",
             "title": "Date Obtained",
-            "type": [
-                "string",
-                "null"
-            ],
+            "type": "string",
             "format": "date"
         },
        "starting_amount": {
-            "default": null,
             "description": "Starting amount of Biosample",
             "title": "Starting Amount",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string"
         }
     }
 }

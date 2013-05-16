@@ -68,13 +68,9 @@
             "type": "string"
         },
         "date_validated": {
-            "default": null,
             "description": "Date in which the validation experiment was run.",
             "title": "Date Validated",
-            "type": [
-                "string",
-                "null"
-            ],
+            "type": "string",
             "format": "date"
         },
         "status": {

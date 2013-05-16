@@ -1,11 +1,25 @@
 import json
-import jsonschema
+from jsonschema import (
+    FormatChecker
+)
 from .schema_utils import is_uuid
 from .storage import (
     DBSession,
     CurrentStatement,
 )
 
+def lookup(predicate, instance):
+    if is_uuid(instance):
+        # use DBSession.CurrentStatement to look up predicate
+        pass
+    else:
+        try:
+        # get by DBSession.keyes
+            pass
+        except:
+            return False
+
+    return True
 
 @FormatChecker.cls_checks("gene_name")
 def is_gene_name(instance):
@@ -36,30 +50,67 @@ def is_target_label(instance):
     return True
 
 
-@FormatChecker.cls_checks( "antibody_lot_link" )
+@FormatChecker.cls_checks("antibody_lot_link")
 def is_antibody_lot_link(instance):
-    ''' can be a uuid or accession '''
+    return lookup('antibody-lot', instance)
+
+@FormatChecker.cls_checks("award_link")
+def is_award_link(instance):
+    ''' can be uuid or name or number '''
     if is_uuid(instance):
-        # get /antibody-lot/{instance} or use DBSession?
-        pass
-    elif is_accession(instance):
-        # get by accessions, requires uniquekeys branch
         pass
     else:
-        return False
+        # try get by name
+        # except get by number
+        # finally fail
+        pass
 
     return True
 
-@FormatChecker.cls_checks( "award_link" )
-@FormatChecker.cls_checks( "biosample_link" )
-@FormatChecker.cls_checks( "colleague_link" )
-@FormatChecker.cls_checks( "construct_link" )
-@FormatChecker.cls_checks( "document_link" )
-@FormatChecker.cls_checks( "donor_link" )
-@FormatChecker.cls_checks( "lab_link" )
-@FormatChecker.cls_checks( "organism_link" )
-@FormatChecker.cls_checks( "source_link" )
-@FormatChecker.cls_checks( "target_link" )
-@FormatChecker.cls_checks( "treatment_link" )
-@FormatChecker.cls_checks( "validation_link" )
+
+@FormatChecker.cls_checks("biosample_link")
+def is_biosample_link(instance):
+    return lookup('biosample', instance)
+
+
+@FormatChecker.cls_checks("colleague_link")
+def is_colleague_link(instance):
+    return lookup('colleague', instance)
+
+
+@FormatChecker.cls_checks("construct_link")
+def is_construct_link(instance):
+    return lookup('construct', instance)
+
+
+@FormatChecker.cls_checks("document_link")
+def is_document_link(instance):
+    return lookup('document', instance)
+
+
+@FormatChecker.cls_checks("lab_link")
+def is_lab_link(instance):
+    return lookup('lab', instance)
+
+
+@FormatChecker.cls_checks("source_link")
+def is_source_link(instance):
+    return lookup('source', instance)
+
+
+@FormatChecker.cls_checks("target_link")
+def is_target_link(instance):
+    return lookup('target', instance)
+
+
+@FormatChecker.cls_checks("treatment_link")
+def is_treatment_link(instance):
+    return lookup('treatment', instance)
+
+
+@FormatChecker.cls_checks("validation_link")
+def is_validation_link(instance):
+    return lookup('validation', instance)
+
+
 

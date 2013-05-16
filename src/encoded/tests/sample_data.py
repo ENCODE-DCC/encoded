@@ -18,65 +18,48 @@ ORGANISMS = [
 
 TARGETS = [
     {
-    '_uuid': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
-    '_links': {
-        'self': {'href': '/targets/{_uuid}', 'templated': True},
-        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
+        '_uuid': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
+        '_links': {
+            'self': {'href': '/targets/{_uuid}', 'templated': True},
+            'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
         },
-    'target_term_id': '786', # changed to HNGC
-    'label': 'ATF4',
-    'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
-    'target_symbol': 'ATF4',
-    'target_gene_name': 'ATF4', # totally redundant column
-    'lab':
-    'award':
-    'aliases': [
-        {'alias': 'CREB2', 'source': 'HGNC'},
-        {'alias': 'TXREB', 'source': 'HGNC'},
-        {'alias': 'CREB-2', 'source': 'HGNC'},
-        {'alias': 'TAXREB67', 'source': 'HGNC'},
+        'label': 'ATF4',
+        'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
+        'gene_name': 'ATF4',
+        'lab': 'c0a3540e-8ef0-4d4d-a449-ae47c2475838',
+        'award': '7fd6664b-17f5-4bfe-9fdf-ed7481cf4d24',
+        'aliases': [
+            {'alias': 'CREB2', 'source': 'HGNC'},
+            {'alias': 'TXREB', 'source': 'HGNC'},
+            {'alias': 'CREB-2', 'source': 'HGNC'},
+            {'alias': 'TAXREB67', 'source': 'HGNC'},
         ],
-    'dbxref': [
-        {'db': 'UniProt', 'id': 'P....'},
-    ],
-
-    'is_current': True,
-    'date_created': '2013-01-17',
-    'created_by': 'Myers-Pauli-Behn',
+        'dbxref': {
+            'UniProtKB': ['Q96AQ3'],
+            'HGNC': ['786']
+        }
     },
     {
-    '_uuid': 'BAF56297-9628-418F-B78E-95EDD524E4F6',
-    '_links': {
-        'self': {'href': '/targets/{_uuid}', 'templated': True},
-        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
-        'modification': {'href': '/modifications/{modification_uuid}', 'templated': True}, # possibly unnecessary...
+        '_uuid': 'BAF56297-9628-418F-B78E-95EDD524E4F6',
+        '_links': {
+            'self': {'href': '/targets/{_uuid}', 'templated': True},
+            'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
         },
-    'target_term_id': '4764',
-    'target_label': 'H3K4me3',
-    'organism_name': 'human',  # link to organism
-    'organism_uuid': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
-    'target_symbol': 'H3F3A',
-    'target_gene_name': 'H3F3A',
-    'target_class': 'generated',
-    'modification': {
-        'type': 'trimethylation',
-        'residue': 'K', # lysine
-        'position': 4,
-    },
-    'modification_uuid': '756AFFF-C67C-4D51-B665-8C35D3BC0EB7',
-    'aliases': [
-        {'alias': 'H3.3', 'source': 'HGNC'},
-        {'alias': 'H3F3', 'source': 'HGNC'},
-        {'alias': 'histone H3.3', 'source': 'HGNC'},
+        'lab': 'c0a3540e-8ef0-4d4d-a449-ae47c2475838',
+        'award': '7fd6664b-17f5-4bfe-9fdf-ed7481cf4d24',
+        'label': 'H3K4me3',
+        'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
+        'gene_name': 'H3F3A',
+        'aliases': [
+            {'alias': 'H3.3', 'source': 'HGNC'},
+            {'alias': 'H3F3', 'source': 'HGNC'},
+            {'alias': 'histone H3.3', 'source': 'HGNC'},
         ],
-    'dbxref': [
-        {'db': 'UniProt', 'id': 'P84243'},
-    ],
-
-    'is_current': True,
-    'date_created': '2013-02-06',
-    'created_by': 'Myers-Pauli-Behn',
-    },
+        'dbxref': {
+            'UniProtKB': ['P84243'],
+            'HGNC': ['4764']
+        },
+   },
 ]
 
 SOURCES = [

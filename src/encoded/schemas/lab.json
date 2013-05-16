@@ -4,7 +4,8 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting a lab or research group for the ENCODE project.",
     "type": "object",
-    "required": [ "name", "pi"],
+    "required": ["name"],
+    "additionalProperties": true,
     "properties": {
          "name": {
             "description": "Unique name for the Lab",
@@ -25,7 +26,7 @@
             "items": {
                 "description": "Award (Grant) this submission is registered under",
                 "comment": "Automatic submitters can supply an Award UUID, name, or number",
-                "title": "Award Name",
+                "title": "Award Name or Number",
                 "type": "string",
                 "format": "award_link"
             },
