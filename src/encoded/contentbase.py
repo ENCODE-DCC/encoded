@@ -5,6 +5,7 @@ from pyramid.events import (
     subscriber,
 )
 from pyramid.httpexceptions import (
+    HTTPConflict,
     HTTPForbidden,
     HTTPInternalServerError,
     HTTPNotFound,
@@ -22,6 +23,8 @@ from pyramid.threadlocal import (
     manager,
 )
 from pyramid.view import view_config
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import FlushError
 from urllib import unquote
 from uuid import (
     UUID,
@@ -33,6 +36,7 @@ from .storage import (
     DBSession,
     CurrentStatement,
     Resource,
+    Key,
 )
 _marker = object()
 
@@ -160,7 +164,7 @@ def acl_from_settings(settings):
                 principal = Authenticated
             elif principal == 'Everyone':
                 principal = Everyone
-            acl.append((action, permission, principal))
+            acl.append((action, principal, permission))
     return acl
 
 
@@ -168,16 +172,10 @@ class Root(object):
     __name__ = ''
     __parent__ = None
 
-    __acl__ = [
-        (Allow, Everyone, 'list'),
-        (Allow, Everyone, 'view'),
-        (Allow, Everyone, 'traverse'),
-        (Allow, 'group:admin', ALL_PERMISSIONS),
-    ]
-
     def __init__(self, **properties):
         self.properties = properties
         self.collections = {}
+        self.by_item_type = {}
 
     def __call__(self, request):
         return self
@@ -194,7 +192,9 @@ class Root(object):
         Use as a decorator on Collection subclasses.
         """
         def decorate(factory):
-            self.collections[name] = factory(self, name)
+            collection = factory(self, name)
+            self.collections[name] = collection
+            self.by_item_type[collection.item_type] = collection
             return factory
         return decorate
 
@@ -209,10 +209,18 @@ class MergedLinksMeta(type):
             links = vars(cls).get('links', None)
             if links is not None:
                 self.merged_links.update(links)
+        self.merged_keys = []
+        for cls in reversed(self.mro()):
+            for key in vars(cls).get('keys', []):
+                if isinstance(key, basestring):
+                    key = {'namespace': '{item_type}', 'name': key,
+                           'value': '{%s}' % key, 'templated': True}
+                self.merged_keys.append(key)
 
 
 class Item(object):
     __metaclass__ = MergedLinksMeta
+    keys = []
     embedded = {}
     links = {
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
@@ -230,19 +238,26 @@ class Item(object):
         return self.model.statement.object
 
     def __json__(self, request):
+        links = self.expand_links(request)
+        if links is None:
+            return self.properties
         properties = self.properties.copy()
-        links = self.expand_links(properties, request)
-        if links is not None:
-            properties['_links'] = links
+        properties['_links'] = links
         return properties
 
-    def expand_links(self, properties, request):
+    def template_namespace(self, request=None):
         # Expand templated links
-        ns = properties.copy()
-        ns['collection_uri'] = request.resource_path(self.__parent__)
+        ns = self.properties.copy()
         ns['item_type'] = self.model.predicate
         ns['_uuid'] = self.model.rid
-        ns['permission'] = permission_checker(self, request)
+        if request is not None:
+            ns['collection_uri'] = request.resource_path(self.__parent__)
+            ns['permission'] = permission_checker(self, request)
+        return ns
+
+    def expand_links(self, request):
+        # Expand templated links
+        ns = self.template_namespace(request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         # Embed resources
@@ -257,6 +272,15 @@ class Item(object):
                 embed(request, value['href'])
         return links
 
+    def create_keys(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_keys)
+        keys = compiled(ns)
+        for key_spec in keys:
+            key = Key(rid=self.model.rid, **key_spec)
+            session.add(key)
+
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
@@ -270,6 +294,11 @@ class Item(object):
         session.add(resource)
         model = resource.data[item_type]
         item = cls(parent, model)
+        item.create_keys()
+        try:
+            session.flush()
+        except (IntegrityError, FlushError):
+            raise HTTPConflict()
         return item
 
     def update(self, properties, sheets=None):
@@ -286,9 +315,15 @@ class CustomItemMeta(MergedLinksMeta):
     """
     def __init__(self, name, bases, attrs):
         super(CustomItemMeta, self).__init__(name, bases, attrs)
+
+        # XXX Remove this, too magical.
+        if self.item_type is None and 'item_type' not in attrs:
+            self.item_type = self.__name__.lower()
+
         if 'Item' in attrs:
             assert 'item_links' not in attrs
             assert 'item_embedded' not in attrs
+            assert 'item_keys' not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
@@ -302,6 +337,8 @@ class CustomItemMeta(MergedLinksMeta):
             item_attrs['links'] = attrs['item_links']
         if 'item_embedded' in attrs:
             item_attrs['embedded'] = attrs['item_embedded']
+        if 'item_keys' in attrs:
+            item_attrs['keys'] = attrs['item_keys']
         self.Item = type('Item', item_bases, item_attrs)
 
 
@@ -334,8 +371,6 @@ class Collection(object):
     def __init__(self, parent, name):
         self.__name__ = name
         self.__parent__ = parent
-        if self.item_type is None:
-            self.item_type = type(self).__name__.lower()
 
     def __getitem__(self, name):
         try:
@@ -433,7 +468,9 @@ def traversal_security(event):
     """ Check traversal was permitted at each step
     """
     request = event.request
-    for resource in reversed(list(lineage(request.context))):
+    ancestors = lineage(request.context)
+    next(ancestors)  # skip self
+    for resource in reversed(list(ancestors)):
         result = has_permission('traverse', resource, request)
         if not result:
             msg = 'Unauthorized: traversal failed permission check'

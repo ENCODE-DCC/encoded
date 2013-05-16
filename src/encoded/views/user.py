@@ -1,8 +1,13 @@
-from pyramid.view import view_config
+from pyramid.view import (
+    render_view_to_response,
+    view_config,
+)
 from pyramid.security import (
     Allow,
+    Authenticated,
     Deny,
     Everyone,
+    effective_principals,
 )
 from . import root
 from ..schema_utils import (
@@ -10,6 +15,7 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     Collection,
+    Root,
     item_view,
 )
 from ..storage import (
@@ -71,3 +77,16 @@ def user_basic_view(context, request):
     for key in ['_links', 'first_name', 'last_name']:
         filtered[key] = properties[key]
     return filtered
+
+
+@view_config(context=Root, name='current-user', request_method='GET',
+             effective_principals=[Authenticated])
+def current_user(request):
+    for principal in effective_principals(request):
+        if principal.startswith('userid:'):
+            break
+    else:
+        raise AssertionError('User not found')
+    namespace, userid = principal.split(':', 1)
+    user = request.root.by_item_type[User.item_type][userid]
+    return render_view_to_response(user, request)

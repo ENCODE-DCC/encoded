@@ -43,7 +43,8 @@ class ViewTests(unittest.TestCase):
         from ..persona import login
         data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Fbadaudience').json()
 
-        if data.get('message', None) == 'Cannot get verified email for assertion':
+        if data.get('message', '').startswith('Cannot'):
+            # note personatestuser has changed their error messages a couple times
             self.skipTest("Persona: %s" % data['message'])
 
         assertion = data['assertion']

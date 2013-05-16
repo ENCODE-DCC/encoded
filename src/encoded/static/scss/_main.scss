@@ -203,15 +203,71 @@ table thead tr th button {
 
 #main-nav .dropdown-menu {
 	@include border-top-radius(0);
+    border-top: none;
 	@include border-bottom-radius($baseBorderRadius);
+	margin: 0;
+	background-color: #4e7294;
 }
 
 .dropdown-menu li > a:hover,
 .dropdown-menu li > a:focus,
 .dropdown-submenu:hover > a {
   text-decoration: none;
-  color: $dropdownLinkColorHover;
+  color: #fff; //$dropdownLinkColorHover;
   @include gradient-vertical(lighten($navbarInverseLinkBackgroundHover, 8%), lighten($navbarInverseLinkBackgroundHover, 5%));
+}
+
+.dropdown-menu li > a {
+	color: #fff;
+}
+
+
+$subNavHeight: 30px;
+$subNavLinkPadding: 7px;
+
+#navbar-subnav {
+	height: $subNavHeight;
+	background-color: $navbarInverseLinkBackgroundActive;
+	border-bottom: 2px solid lighten($navbarInverseLinkBackgroundActive, 20%);
+	overflow: hidden;
+}
+
+nav.navbar-fixed-top {
+	@include box-shadow(0px 0px 30px 2px rgba(170, 170, 170, .9));
+}
+
+
+.subnav-links {
+	display: none;
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		li.active {
+			background-color: darken($navbarInverseLinkBackgroundActive, 13%);
+			@include border-radius($baseBorderRadius);
+		}
+	}
+	ul li {
+		display: inline-block;
+		// height: ;
+		margin: 5px 25px 5px 0;
+		float: left;
+		line-height: 6px;
+		font-size: 0.95em;
+		padding: $subNavLinkPadding;
+	}
+	a {
+		color: #fff;
+	}	
+}
+
+#navbar-subnav div section.active {
+        display: block !important;
+}
+
+.subnav-hover-bg {
+	background-color: #2f4961 !important;
 }
 
 

@@ -31,12 +31,35 @@ Run the Browser tests with::
 
     $ bin/test -k bdd -v -v
 
-To run tests with postgresql::
 
+To run tests with sqllite (default) use:
+    $ bin/test --engine-url sqlite://
+
+To run tests with postgresql::
     first install postgres (on a mac with homebrew for example)
 
+    If you wish a clean db wipe for DEVELOPMENT
+    $ dropdb encoded
+    ...
     $ createdb encoded
+    $ pg_ctl -D postgres -l pg.log start
     $ bin/test --engine-url postgresql:///encoded
+
+To start development data server (NO PERMISSIONS) use:
+    $bin/pserve development.ini
+
+To start development data server (AuthZ enabled) use:
+    (requires ../master_encode3_interface_submissions.xlsx)
+    $bin/pserve dev-master.ini
+
+To start productiondata server (Postgres, AuthZ, all data) use:
+    (requires ../master_encode3_interface_submissions.xlsx and/or existing PG DB)
+    $bin/pserve production.ini
+
+    $bin/pserve --help for more pyramid options
+    --log-file [filename] is a useful argument
+
+
 
 
 Notes on SASS/Compass

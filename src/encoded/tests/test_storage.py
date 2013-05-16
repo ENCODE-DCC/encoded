@@ -7,10 +7,16 @@ def test_storage_creation(session):
         Statement,
         CurrentStatement,
         TransactionRecord,
-        )
+        Blob,
+        Key,
+        UserMap
+    )
     assert session.query(Statement).count() == 0
     assert session.query(CurrentStatement).count() == 0
     assert session.query(TransactionRecord).count() == 0
+    assert session.query(Blob).count() == 0
+    assert session.query(Key).count() == 0
+    assert session.query(UserMap).count() == 0
 
 
 def test_transaction_record(session):
@@ -18,7 +24,7 @@ def test_transaction_record(session):
         Resource,
         Statement,
         TransactionRecord,
-        )
+    )
     predicate = 'testdata'
     obj1 = {'foo': 'bar'}
     resource = Resource()
@@ -40,7 +46,7 @@ def test_current_statement(session):
         Resource,
         Statement,
         TransactionRecord,
-        )
+    )
     predicate = 'testdata'
     obj1 = {'foo': 'bar'}
     resource = Resource({predicate: obj1})
@@ -65,7 +71,7 @@ def test_current_statement_update(session):
         CurrentStatement,
         Resource,
         Statement,
-        )
+    )
     predicate = 'testdata'
     obj1 = {'foo': 'bar'}
     resource = Resource({predicate: obj1})
@@ -82,3 +88,37 @@ def test_current_statement_update(session):
     assert [stmt.object for stmt in resource.data[predicate].history] == [obj1, obj2]
     current = session.query(CurrentStatement).one()
     assert current.sid
+
+
+def test_keys(session):
+    from sqlalchemy.orm.exc import FlushError
+    from encoded.storage import (
+        Resource,
+        Key,
+    )
+    predicate = 'testdata'
+    obj1 = {'foo': 'bar'}
+    resource = Resource({predicate: obj1})
+    session.add(resource)
+    session.flush()
+    resource = session.query(Resource).one()
+
+    testname = 'foo'
+    key = Key(rid=resource.rid, namespace=predicate, name=testname, value=obj1[testname])
+    session.add(key)
+    session.flush()
+    assert session.query(Key).count() == 1
+    othertest = 'foofoo'
+    othervalue = 'barbar'
+    key2 = Key(rid=resource.rid, namespace=predicate, name=othertest, value=othervalue)
+    session.add(key2)
+    session.flush()
+    assert session.query(Key).count() == 2
+    obj2 = {'foofoo': 'barbar'}
+    resource2 = Resource({predicate: obj2})
+    session.add(resource2)
+    session.flush()
+    key3 = Key(rid=resource2.rid, namespace=predicate, name=testname, value=obj1[testname])
+    session.add(key3)
+    with pytest.raises(FlushError):
+        session.flush()
