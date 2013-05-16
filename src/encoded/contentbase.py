@@ -11,6 +11,10 @@ from pyramid.httpexceptions import (
     HTTPInternalServerError,
     HTTPNotFound,
 )
+from pyramid.interfaces import (
+    PHASE1_CONFIG,
+    PHASE2_CONFIG,
+)
 from pyramid.location import lineage
 from pyramid.security import (
     ALL_PERMISSIONS,
@@ -39,11 +43,17 @@ from .storage import (
     Resource,
     Key,
 )
+LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
 
 
 def includeme(config):
     config.scan(__name__)
+    config.set_root_factory(root_factory)
+
+
+def root_factory(request):
+    return request.registry[LOCATION_ROOT]
 
 
 def make_subrequest(request, path):
@@ -182,41 +192,68 @@ def uncamel(string):
     return out
 
 
+def location_root(factory):
+    """ Set the location root
+    """
+
+    def set_root(config, factory):
+        acl = acl_from_settings(config.registry.settings)
+        root = factory(acl)
+        config.registry[LOCATION_ROOT] = root
+
+    def callback(scanner, factory_name, factory):
+        scanner.config.action(('location_root',), set_root,
+                              args=(scanner.config, factory),
+                              order=PHASE1_CONFIG)
+    venusian.attach(factory, callback, category='pyramid')
+
+    return factory
+
+
+def location(name, factory=None):
+    """ Attach a collection at the location ``name``.
+
+    Use as a decorator on Collection subclasses.
+    """
+
+    def set_location(config, name, factory):
+        root = config.registry[LOCATION_ROOT]
+        root.attach(name, factory)
+
+    def decorate(factory):
+        def callback(scanner, factory_name, factory):
+            scanner.config.action(('location', name), set_location,
+                                  args=(scanner.config, name, factory),
+                                  order=PHASE2_CONFIG)
+        venusian.attach(factory, callback, category='pyramid')
+        return factory
+
+    return decorate
+
+
 class Root(object):
     __name__ = ''
     __parent__ = None
 
-    def __init__(self, **properties):
-        self.properties = properties
+    def __init__(self, acl=None):
+        if acl is not None:
+            self.__acl__ = acl
         self.collections = {}
         self.by_item_type = {}
-
-    def __call__(self, request):
-        return self
 
     def __getitem__(self, name):
         return self.collections[name]
 
+    def __setitem__(self, name, value):
+        self.collections[name] = value
+        self.by_item_type[value.item_type] = value
+
+    def attach(self, name, factory):
+        value = factory(self, name)
+        self[name] = value
+
     def __json__(self, request=None):
         return self.properties.copy()
-
-    def location(self, name, factory=None):
-        """ Attach a collection at the location ``name``.
-
-        Use as a decorator on Collection subclasses.
-        """
-        def decorate(factory):
-            def callback(scanner, factory_name, factory):
-                collection = factory(self, name)
-                self.collections[name] = collection
-                self.by_item_type[collection.item_type] = collection
-            venusian.attach(factory, callback)
-            return factory
-
-        if factory is None:
-            return decorate
-        else:
-            decorate(factory)
 
 
 class MergedLinksMeta(type):
