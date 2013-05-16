@@ -5,6 +5,7 @@ from pyramid.events import (
     subscriber,
 )
 from pyramid.httpexceptions import (
+    HTTPConflict,
     HTTPForbidden,
     HTTPInternalServerError,
     HTTPNotFound,
@@ -22,6 +23,8 @@ from pyramid.threadlocal import (
     manager,
 )
 from pyramid.view import view_config
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import FlushError
 from urllib import unquote
 from uuid import (
     UUID,
@@ -33,6 +36,7 @@ from .storage import (
     DBSession,
     CurrentStatement,
     Resource,
+    Key,
 )
 _marker = object()
 
@@ -205,10 +209,18 @@ class MergedLinksMeta(type):
             links = vars(cls).get('links', None)
             if links is not None:
                 self.merged_links.update(links)
+        self.merged_keys = []
+        for cls in reversed(self.mro()):
+            for key in vars(cls).get('keys', []):
+                if isinstance(key, basestring):
+                    key = {'namespace': '{item_type}', 'name': key,
+                           'value': '{%s}' % key, 'templated': True}
+                self.merged_keys.append(key)
 
 
 class Item(object):
     __metaclass__ = MergedLinksMeta
+    keys = []
     embedded = {}
     links = {
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
@@ -226,19 +238,26 @@ class Item(object):
         return self.model.statement.object
 
     def __json__(self, request):
+        links = self.expand_links(request)
+        if links is None:
+            return self.properties
         properties = self.properties.copy()
-        links = self.expand_links(properties, request)
-        if links is not None:
-            properties['_links'] = links
+        properties['_links'] = links
         return properties
 
-    def expand_links(self, properties, request):
+    def template_namespace(self, request=None):
         # Expand templated links
-        ns = properties.copy()
-        ns['collection_uri'] = request.resource_path(self.__parent__)
+        ns = self.properties.copy()
         ns['item_type'] = self.model.predicate
         ns['_uuid'] = self.model.rid
-        ns['permission'] = permission_checker(self, request)
+        if request is not None:
+            ns['collection_uri'] = request.resource_path(self.__parent__)
+            ns['permission'] = permission_checker(self, request)
+        return ns
+
+    def expand_links(self, request):
+        # Expand templated links
+        ns = self.template_namespace(request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         # Embed resources
@@ -253,6 +272,15 @@ class Item(object):
                 embed(request, value['href'])
         return links
 
+    def create_keys(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_keys)
+        keys = compiled(ns)
+        for key_spec in keys:
+            key = Key(rid=self.model.rid, **key_spec)
+            session.add(key)
+
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
@@ -266,6 +294,11 @@ class Item(object):
         session.add(resource)
         model = resource.data[item_type]
         item = cls(parent, model)
+        item.create_keys()
+        try:
+            session.flush()
+        except (IntegrityError, FlushError):
+            raise HTTPConflict()
         return item
 
     def update(self, properties, sheets=None):
@@ -290,6 +323,7 @@ class CustomItemMeta(MergedLinksMeta):
         if 'Item' in attrs:
             assert 'item_links' not in attrs
             assert 'item_embedded' not in attrs
+            assert 'item_keys' not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
@@ -303,6 +337,8 @@ class CustomItemMeta(MergedLinksMeta):
             item_attrs['links'] = attrs['item_links']
         if 'item_embedded' in attrs:
             item_attrs['embedded'] = attrs['item_embedded']
+        if 'item_keys' in attrs:
+            item_attrs['keys'] = attrs['item_keys']
         self.Item = type('Item', item_bases, item_attrs)
 
 

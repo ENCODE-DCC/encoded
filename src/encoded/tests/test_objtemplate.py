@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 import pyramid.settings
 
@@ -20,6 +21,7 @@ NAMESPACE = {
     'asbool': pyramid.settings.asbool,
     'check_keywords': check_keywords,
     'check_arg': check_arg,
+    'unicode': u'1μM',
 }
 
 NO_CHANGE = [
@@ -60,6 +62,7 @@ TEMPLATE_VALUE = [
     ([{'condition': 'asbool:true'}], [{}]),
     ([{'condition': 'check_arg'}], [{}]),
     ([{'condition': 'check_keywords'}], [{}]),
+    ({'unicode': '{unicode}', 'templated': True}, {'unicode': u'1μM'}),
 ]
 
 

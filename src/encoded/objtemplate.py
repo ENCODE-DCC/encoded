@@ -18,7 +18,7 @@ class ObjectTemplate(object):
 
 
 def string_template(template, namespace):
-    return template.format(**namespace)
+    return unicode(template).format(**namespace)
 
 
 def list_template(template, namespace):
