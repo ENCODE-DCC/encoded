@@ -168,6 +168,19 @@ def acl_from_settings(settings):
     return acl
 
 
+def uncamel(string):
+    """ CamelCase -> camel_case
+    """
+    out = ''
+    before = ''
+    for char in string:
+        if char.isupper() and before.isalnum() and not before.isupper():
+            out += '_'
+        out += char.lower()
+        before = char
+    return out
+
+
 class Root(object):
     __name__ = ''
     __parent__ = None
@@ -318,7 +331,7 @@ class CustomItemMeta(MergedLinksMeta):
 
         # XXX Remove this, too magical.
         if self.item_type is None and 'item_type' not in attrs:
-            self.item_type = self.__name__.lower()
+            self.item_type = uncamel(self.__name__)
 
         if 'Item' in attrs:
             assert 'item_links' not in attrs
