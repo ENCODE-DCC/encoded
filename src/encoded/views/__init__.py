@@ -1,7 +1,6 @@
 from pyramid.view import view_config
 from ..contentbase import (
     Root,
-    location,
     location_root,
 )
 
@@ -16,13 +15,6 @@ class EncodedRoot(Root):
         'title': 'Home',
         'portal_title': 'ENCODE 3',
     }
-
-
-# BBB
-def root():
-    pass
-
-root.location = location
 
 
 @view_config(context=Root, request_method='GET')

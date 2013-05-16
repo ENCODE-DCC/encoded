@@ -1,8 +1,8 @@
 from pyramid.view import view_config
 from ..contentbase import (
     Collection,
+    location,
 )
-from ..views import root
 from ..views.download import ItemWithDocument
 
 
@@ -22,7 +22,7 @@ def user(request):
     }
 
 
-@root.location('testing-downloads')
+@location('testing-downloads')
 class TestingDownload(Collection):
     properties = {
         'title': 'Test download collection',

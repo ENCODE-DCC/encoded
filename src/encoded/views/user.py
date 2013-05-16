@@ -9,7 +9,6 @@ from pyramid.security import (
     Everyone,
     effective_principals,
 )
-from . import root
 from ..schema_utils import (
     load_schema,
 )
@@ -17,6 +16,7 @@ from ..contentbase import (
     Collection,
     Root,
     item_view,
+    location,
 )
 from ..storage import (
     DBSession,
@@ -24,7 +24,7 @@ from ..storage import (
 )
 
 
-@root.location('users')
+@location('users')
 class User(Collection):
     schema = load_schema('colleague.json')
     properties = {

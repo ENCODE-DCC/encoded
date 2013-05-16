@@ -6,7 +6,6 @@ from pyramid.security import (
     Deny,
     Everyone,
 )
-from . import root
 from ..authentication import (
     generate_password,
     CRYPT_CONTEXT,
@@ -19,11 +18,12 @@ from ..contentbase import (
     collection_add,
     item_edit,
     item_view,
+    location,
 )
 import uuid
 
 
-@root.location('access-keys')
+@location('access-keys')
 class AccessKey(Collection):
     item_type = 'access_key'
     properties = {
