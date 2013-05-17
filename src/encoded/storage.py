@@ -226,28 +226,6 @@ class TransactionRecord(Base):
         types.DateTime, nullable=False, server_default=func.now())
 
 
-class UserMap(Base):
-    __tablename__ = 'user_map'
-    # e.g. mailto:test@example.com
-    login = Column(types.Text, primary_key=True)
-    userid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
-
-    resource = orm.relationship('Resource', lazy='joined',
-                                foreign_keys=[userid])
-
-    user = orm.relationship(
-        'CurrentStatement', lazy='joined', foreign_keys=[userid],
-        primaryjoin="""and_(CurrentStatement.rid==UserMap.userid,
-                       CurrentStatement.predicate=='user')""",
-    )
-
-    # might have to be deferred
-
-    def __init__(self, login, userid):
-        self.login = login
-        self.userid = userid
-
-
 class EDWKey(Base):
     __tablename__ = 'edw_keys'
     # e.g. mailto:test@example.com

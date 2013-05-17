@@ -10,7 +10,6 @@ def test_storage_creation(session):
         Blob,
         Key,
         Link,
-        UserMap
     )
     assert session.query(Statement).count() == 0
     assert session.query(CurrentStatement).count() == 0
@@ -18,7 +17,6 @@ def test_storage_creation(session):
     assert session.query(Blob).count() == 0
     assert session.query(Key).count() == 0
     assert session.query(Link).count() == 0
-    assert session.query(UserMap).count() == 0
 
 
 def test_transaction_record(session):
