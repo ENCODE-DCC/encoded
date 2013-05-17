@@ -1,38 +1,65 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Construct",
+    "id": "/profiles/construct.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE transfection Construct",
+    "type": "object",
+    "required": [ "name", "type", "stability", "source", "lab", "award"],
+    "additionalProperties": false,
     "properties": {
-        "alias": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "name": {
+            "description": "A unique name for the construct or vector",
+            "title": "Construct Name",
+            "type": "string"
         },
-        "source_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "type": {
+            "description": "The type of transfection construct",
+            "title": "Construct Type",
+            "type": {
+                "enum": [
+                    "fusion protein",
+                    "shRNA",
+                    "expression vector"
+               ]
+            }
+        },
+        "stability": {
+            "description": "The in-cell longevity of the transfection construct",
+            "title": "Construct Stability",
+            "type": {
+                "enum": [
+                    "Stable", "Transient"
+                ]
+            }
+        },
+        "source": {
+            "description": "Source or Vendor of construct",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Construct name",
+            "title": "Construct Source",
+            "type": "string",
+            "format": "source_link"
+        },
+       "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
         },
         "url": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "An external for the construct",
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

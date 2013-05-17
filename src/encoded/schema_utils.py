@@ -6,6 +6,7 @@ from jsonschema import (
     Draft4Validator
 )
 import uuid
+import re
 
 
 class SchemaValidator(Draft4Validator):
@@ -100,3 +101,11 @@ def is_uuid(instance):
     except:
         return False
     return True
+
+
+@FormatChecker.cls_checks("accession")
+def is_accession(instance):
+    acc_regex = re.compile('^ENC(BS|DO|LB|DS|AB)[0-9][0-9][0-9][A-Z][A-Z][A-Z]$')
+    if acc_regex.match(instance):
+        return True
+    return False

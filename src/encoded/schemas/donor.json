@@ -1,110 +1,95 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Biosample Donor",
+    "id": "/profiles/donor.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE biosample Donor",
+    "type": "object",
+    "required": [ "award", "lab", "organism"],
+    "additionalProperties": false,
     "properties": {
+        "accession": {
+            "default": "",
+            "description": "ENCODE DCC assigned accession",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Donor Accession",
+            "type": "string",
+            "format": "accession"
+        },
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
+        },
+        "organism": {
+            "description": "Organism of the donor creature",
+            "title": "Donor organism",
+            "type": "string",
+            "format": "organism_link"
+        },
         "age": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Age of the donor organism when sampled",
+            "title": "Donor Age",
+            "type": "string"
         },
-        "alias_list": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
+        "dbxref": {
+            "default": {},
+            "description": "List of Database (including Lab) cross-references",
+            "additionalProperties": {
+                "default": [],
+                "description": "List of Database IDs",
+                "title": "Database IDs",
+                "type":  "array",
+                "items": {
+                    "description": "Database identifier",
+                    "title": "DB ID",
+                    "type": "string"
+                }
             },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
-        },
-        "alias_source_uuids": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
-            },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
-        },
-        "donor_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "title": "DBXREFs",
+            "type": "object"
         },
         "ethnicity": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "",
+            "description": "Ethnicity of human donor",
+            "comment": "For Human donors only",
+            "title": "Donor Ethnicity (human)",
+            "type": "string"
         },
         "health_status": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "organism_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Heath status of human donor",
+            "comment": "For Human donors only",
+            "title": "Donor Health Status (human)",
+            "type": "string"
         },
         "sex": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "Unknown",
+            "description": "Sex (Gender) of the donor",
+            "title": "Donor Sex",
+            "type": {
+                "enum": [
+                    "Male",
+                    "Female",
+                    "Unknown",
+                    "Mixed"
+                ]
+            }
         },
-        "strain background": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "strain_background": {
+            "description": "Strain background of a mouse donor",
+            "comment": "For mouse donors only",
+            "title": "Strain Background (mouse)",
+            "type": "string"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

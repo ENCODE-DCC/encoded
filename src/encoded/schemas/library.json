@@ -1,274 +1,147 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Nucleic Acid Library",
+    "id": "/profiles/library.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE Nucleic Acid Library",
+    "type": "object",
+    "required": [ "award", "lab", "type", "source", "type", "term_id"],
+    "additionalProperties": false,
     "properties": {
-        "award_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "accession": {
+            "default": "",
+            "description": "ENCODE DCC assigned accession",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Library Accession",
+            "type": "string",
+            "format": "accession"
         },
-        "biosample_description": {
-            "default": null,
-            "description": "",
+       "description": {
+            "default": "",
+            "description": "A plain text description of the biosample",
             "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string"
         },
-        "biosample_term_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
         },
-        "biosample_term_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
         },
-        "biosample_type": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "biosample": {
+            "description": "Biosample from which this library was derived or isolated.",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Biosample",
+            "type": "string",
+            "format": "biosample_link"
         },
-        "construct_uuids": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
+        "type": {
+            "description": "Type/subtype of nucleic acid isolated.",
+            "title": "Nucleic Acid Type",
+            "comment": "These will be SO (sequence ontology) terms were possible, but only a small subset",
+            "type": {
+                "enum": [
+                    "DNA",
+                    "RNA",
+                    "Poly-A+ RNA",
+                    "Small RNA",
+                    "miRNA",
                 ]
-            },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
+            }
         },
-        "culture_harvest_date": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "culture_start_date": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "date_obtained": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "term_id": {
+            "description": "The ID of the SO (Sequence Ontology) term best matching the nucleic acid type",
+            "title": "SO Term ID",
+            "type": "string",
+            "pattern": "^SO:[0-9]{7}$"
+
         },
         "dbxref": {
-            "default": null,
-            "description": "",
-            "properties": {
-                "dr. thomas gingeras at cold spring harbor laboratory": {
-                    "default": null,
-                    "description": "",
-                    "items": {
-                        "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
-                },
-                "encode2": {
-                    "default": null,
-                    "description": "",
-                    "items": {
-                        "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
+            "default": {},
+            "description": "List of Database (including Lab) cross-references",
+            "additionalProperties": {
+                "default": [],
+                "description": "List of Database IDs",
+                "title": "Database IDs",
+                "type":  "array",
+                "items": {
+                    "description": "Database identifier",
+                    "title": "DB ID",
+                    "type": "string"
                 }
             },
-            "title": "",
-            "type": [
-                "object",
-                "null"
-            ]
+            "title": "DBXREFs",
+            "type": "object"
         },
-        "document_uuids": {
-            "default": null,
-            "description": "",
+        "documents": {
+            "default": [],
+            "description": "List of library prep and other protocols",
             "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
+                "description": "A library prep or other protocol document",
+                "comment": "Automatic submitters can supply an ENCODE document UUID or unique document name",
+                "title": "Protocol Document",
+                "type": "string",
+                "format": "document_link"
             },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
+            "title": "List of Protocol Documents",
+            "type": "array"
         },
-        "donor_uuid": {
-            "default": null,
+        "nucleic_acid_starting_quantity": {
+            "description": "Starting amount of nucleic acid before selection and purification",
+            "title": "Starting Quantity",
+            "type": "string",
+            "pattern": "[0-9]+"
+        },
+        "extraction_method": {
+            "default": "see document",
+            "description": "A short description of the nucleic acid extraction method used in Library prep.",
+            "title": "Extraction Method",
+            "type": "string"
+        },
+        "fragmentation_method": {
+            "description": "A short description of the nucleic acid fragmentation method used in Library prep.",
+            "title": "Fragmentation Method",
+            "default": "see document",
+            "type": "string"
+        },
+        "library_size_selection_method": {
+            "default": "see document",
             "description": "",
             "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "encode2_dbxref_list": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "lab_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "passage_number": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "project": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "related_biosample_accession": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "related_biosample_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "source_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "starting_amount": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitter_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "treatment_uuids": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
+            "type": {
+                "enum": [
+                    "gel",
+                    "see document",
+                    "SPRI beads"
                 ]
-            },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
+            }
+        },
+        "lysis_method": {
+            "description": "A short description of the cell lysis method used in Library prep.",
+            "title": "Lysis Method",
+            "default": "see document",
+            "type": "string"
+        },
+        "size_range": {
+            "description": "The measured size range of the purified nucleic acid, in kD",
+            "title": "Size Range",
+            "type": "string",
+            "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+        },
+        "strand_specificity": {
+            "default": false,
+            "description": "Whether or not the library was prepared in a strand-specific manner.",
+            "title": "Strand Specificity",
+            "type": "boolean"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

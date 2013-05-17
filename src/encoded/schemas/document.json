@@ -1,112 +1,90 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Document",
+    "id": "/profiles/document.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE document or protocol",
+    "type": "object",
+    "required": [ "name", "type", "lab", "award"],
+    "additionalProperties": false,
     "properties": {
-        "award_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+          "name": {
+            "description": "A plain text unique name of the document",
+            "title": "Document Name",
+            "type": "string"
+        },
+        "type": {
+            "description": "The specific purpose of the document or protocol",
+            "title": "Document Type",
+            "type": {
+                "enum": [
+                    "growth protocol",
+                    "extraction protocol",
+                    "certificate of analysis",
+                    "iPS cell reprogramming protocol",
+                    "differentiation protocol",
+                    "data sheet",
+                    "cell isolation and sorting protocol",
+                    "treatment protocol",
+                    "vector construct image",
+                    "biosample validation",
+                    "general protocol",
+                    "excision protocol",
+                    "transfection protocol",
+                    "construct information"
+               ]
+            }
+        },
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
         },
         "document": {
-            "default": null,
-            "description": "",
+            "description": "Document file metadata",
+            "title": "Document File Metadata",
             "properties": {
                 "download": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "description": "The filename that will appear when downloaded from the web",
+                    "title": "File Download Name",
+                    "type": "string"
                 },
                 "href": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "description": "Internal webapp URL for document file",
+                    "title": "href",
+                    "type": "string",
+                    "format": "uri"
                 },
                 "type": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
+                    "description": "File MIME-type",
+                    "title": "MIME-type",
+                    "type": {
+                        "enum": [
+                            "application/pdf",
+                            "text/plain",
+                            "image/jpeg",
+                            "image/tiff",
+                            "image/gif",
+                            "image/png"
+                        ]
+                    }
                 }
             },
-            "title": "",
-            "type": [
-                "object",
-                "null"
-            ]
+            "type": "object"
         },
-        "document_label": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "document_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "document_type": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "lab_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "project": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitter_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "label": {
+            "description": "A short human-friendly label for the document",
+            "title": "Document Label",
+            "type": "string"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
 }

@@ -6,6 +6,14 @@
     "type": "object",
     "required": [ "award", "lab", "product_id", "lot_id", "source"],
     "properties": {
+        "accession": {
+            "default": "",
+            "description": "ENCODE DCC assigned accession",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Antibody Accession",
+            "type": "string",
+            "format": "accession"
+        },
         "description": {
             "default": "",
             "description": "A plain text description of the Antibody",
