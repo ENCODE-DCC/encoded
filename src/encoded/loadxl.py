@@ -641,7 +641,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
             value['treatment_uuids'].append(treatment_uuid)
             # adding treatment documents to biosamples documents list
             if alldata['treatment'][treatment_uuid]['document_uuids']:
-                value['document_uuids'] = value['document_uuids']+ alldata['treatment'][treatment_uuid]['document_uuids']
+                value['document_uuids'] = value['document_uuids'] + alldata['treatment'][treatment_uuid]['document_uuids']
         except KeyError:
             raise ValueError('Unable to find treatment for biosample: %s' % treat)
     except KeyError as k:
