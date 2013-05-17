@@ -98,8 +98,8 @@
                             <td>{replicate.get('biological_replicate_number')}</td>
                             <td>{replicate.links.library.links.biosample.get('biosample_type')}</td>
                             <td>{replicate.links.library.links.biosample.links.donor.links.organism.get('organism_name')}</td>
-                            <td>{replicate.links.library.links.biosample.links.submitter.get('first_name')}</td>
-                            <td>{replicate.links.library.links.biosample.links.source.get('first_name')}
+                            <td>{replicate.links.library.links.biosample.links.source.get('source_name')}</td>
+                            <td>{replicate.links.library.links.biosample.links.submitter.get('first_name')}
                              {replicate.links.library.links.biosample.links.submitter.get('last_name')}</td>
                         </tr>
                         <?js }); ?>
@@ -154,7 +154,7 @@
                 </thead>
                 <?js _.each(model.links.files, function(file) { ?>
                 <tr>
-                    <td>ENCFF00000</td>
+                    <td>{file.get('file_accession')}</td>
                     <td>{file.get('file_format')}</td>
                     <td>{file.get('temp_file_name')}</td>
                     <td>
