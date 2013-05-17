@@ -44,6 +44,7 @@ from .storage import (
     Key,
     Link,
 )
+from .validation import ValidationFailure
 LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
 
@@ -384,7 +385,10 @@ class Item(object):
         compiled = ObjectTemplate(self.merged_keys)
         _keys = [(key['name'], key['value']) for key in compiled(ns)]
         keys = set(_keys)
-        assert len(keys) == len(_keys)
+
+        if len(keys) != len(_keys):
+            msg = "Duplicate keys"
+            raise ValidationFailure('body', None, msg)
 
         existing = {
             (key.name, key.value)
@@ -413,7 +417,10 @@ class Item(object):
             for link_spec in compiled(ns)
         ]
         rels = set(_rels)
-        assert len(rels) == len(_rels)
+
+        if len(rels) != len(_rels):
+            msg = "Duplicate links"
+            raise ValidationFailure('body', None, msg)
 
         existing = {
             (link.rel, link.target_rid)
