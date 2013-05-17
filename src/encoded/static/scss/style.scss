@@ -73,7 +73,7 @@
 // Custom styles and overrides
 @import "mixins-custom";
 @import "main"; // bootstrap over-rides and main styles for ENCODE site and apps
-// @import "navbar_w_horizontal_subnav"; // custom non-Bootstrap top nav bar
+//@import "navbar_w_horizontal_subnav"; // custom non-Bootstrap top nav bar
 
 // Utility classes
 @import "utilities"; // Has to be last to override when necessary
