@@ -31,3 +31,16 @@ class TestingDownload(Collection):
 
     class Item(ItemWithDocument):
         pass
+
+
+@location('testing-keys')
+class TestingKey(Collection):
+    properties = {
+        'title': 'Test keys',
+        'description': 'Testing. Testing. 1, 2, 3.',
+    }
+
+    item_keys = [
+        'name',
+        {'name': 'testing_accession', 'value': '{accession}', 'templated': True},
+    ]

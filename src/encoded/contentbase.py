@@ -358,12 +358,42 @@ class Item(object):
             raise HTTPConflict()
         return item
 
+    def update_keys(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_keys)
+        _keys = [(key['name'], key['value']) for key in compiled(ns)]
+        keys = set(_keys)
+        assert len(keys) == len(_keys)
+
+        existing = {
+            (key.name, key.value)
+            for key in self.model.resource.unique_keys
+        }
+
+        to_remove = existing - keys
+        to_add = keys - existing
+
+        for pk in to_remove:
+            key = session.query(Key).get(pk)
+            session.delete(key)
+
+        for name, value in to_add:
+            key = Key(rid=self.model.rid, name=name, value=value)
+            session.add(key)
+
     def update(self, properties, sheets=None):
         if properties is not None:
             self.model.resource[self.model.predicate] = properties
         if sheets is not None:
             for key, value in sheets.items():
                 self.model.resource[key] = value
+        self.update_keys()
+        session = DBSession()
+        try:
+            session.flush()
+        except (IntegrityError, FlushError):
+            raise HTTPConflict()
 
 
 class CustomItemMeta(MergedLinksMeta):

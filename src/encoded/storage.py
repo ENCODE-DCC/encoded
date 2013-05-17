@@ -106,10 +106,10 @@ class Key(Base):
     value = Column(types.String, primary_key=True)
 
     rid = Column(UUID, ForeignKey('resources.rid'),
-                 nullable=False)
+                 nullable=False, index=True)
 
     # Be explicit about dependencies to the ORM layer
-    resource = orm.relationship('Resource')
+    resource = orm.relationship('Resource', backref='unique_keys')
 
 
 class Statement(Base):
