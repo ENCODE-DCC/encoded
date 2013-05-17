@@ -42,6 +42,7 @@ from .storage import (
     CurrentStatement,
     Resource,
     Key,
+    Link,
 )
 LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
@@ -261,11 +262,13 @@ class MergedLinksMeta(type):
     """
     def __init__(self, name, bases, attrs):
         super(MergedLinksMeta, self).__init__(name, bases, attrs)
+
         self.merged_links = {}
         for cls in reversed(self.mro()):
             links = vars(cls).get('links', None)
             if links is not None:
                 self.merged_links.update(links)
+
         self.merged_keys = []
         for cls in reversed(self.mro()):
             for key in vars(cls).get('keys', []):
@@ -273,6 +276,10 @@ class MergedLinksMeta(type):
                     key = {'name': '{item_type}:' + key,
                            'value': '{%s}' % key, 'templated': True}
                 self.merged_keys.append(key)
+
+        self.merged_rels = []
+        for cls in reversed(self.mro()):
+            self.merged_rels.extend(vars(cls).get('rels', []))
 
 
 class Item(object):
@@ -338,6 +345,18 @@ class Item(object):
             key = Key(rid=self.model.rid, **key_spec)
             session.add(key)
 
+    def create_rels(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_rels)
+        rels = compiled(ns)
+        for link_spec in rels:
+            rel = link_spec['rel']
+            target_rid = UUID(link_spec['target'])
+            link = Link(
+                source_rid=self.model.rid, rel=rel, target_rid=target_rid)
+            session.add(link)
+
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
@@ -352,6 +371,7 @@ class Item(object):
         model = resource.data[item_type]
         item = cls(parent, model)
         item.create_keys()
+        item.create_rels()
         try:
             session.flush()
         except (IntegrityError, FlushError):
@@ -382,15 +402,45 @@ class Item(object):
             key = Key(rid=self.model.rid, name=name, value=value)
             session.add(key)
 
+    def update_rels(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_rels)
+        source = self.model.rid
+
+        _rels = [
+            (link_spec['rel'], UUID(link_spec['target']))
+            for link_spec in compiled(ns)
+        ]
+        rels = set(_rels)
+        assert len(rels) == len(_rels)
+
+        existing = {
+            (link.rel, link.target_rid)
+            for link in self.model.resource.rels
+        }
+
+        to_remove = existing - rels
+        to_add = rels - existing
+
+        for rel, target in to_remove:
+            link = session.query(Link).get((source, rel, target))
+            session.delete(link)
+
+        for rel, target in to_add:
+            link = Link(source_rid=source, rel=rel, target_rid=target)
+            session.add(link)
+
     def update(self, properties, sheets=None):
         if properties is not None:
             self.model.resource[self.model.predicate] = properties
         if sheets is not None:
             for key, value in sheets.items():
                 self.model.resource[key] = value
-        self.update_keys()
         session = DBSession()
         try:
+            self.update_keys()
+            self.update_rels()
             session.flush()
         except (IntegrityError, FlushError):
             raise HTTPConflict()
@@ -411,6 +461,7 @@ class CustomItemMeta(MergedLinksMeta):
             assert 'item_links' not in attrs
             assert 'item_embedded' not in attrs
             assert 'item_keys' not in attrs
+            assert 'item_rels' not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
@@ -426,6 +477,8 @@ class CustomItemMeta(MergedLinksMeta):
             item_attrs['embedded'] = attrs['item_embedded']
         if 'item_keys' in attrs:
             item_attrs['keys'] = attrs['item_keys']
+        if 'item_rels' in attrs:
+            item_attrs['rels'] = attrs['item_rels']
         self.Item = type('Item', item_bases, item_attrs)
 
 

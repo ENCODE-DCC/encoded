@@ -112,6 +112,23 @@ class Key(Base):
     resource = orm.relationship('Resource', backref='unique_keys')
 
 
+class Link(Base):
+    """ indexed relations
+    """
+    __tablename__ = 'links'
+    source_rid = Column(
+        'source', UUID, ForeignKey('resources.rid'), primary_key=True)
+    rel = Column(types.String, primary_key=True)
+    target_rid = Column(
+        'target', UUID, ForeignKey('resources.rid'), primary_key=True,
+        index=True)  # Single column index for reverse lookup
+
+    source = orm.relationship(
+        'Resource', foreign_keys=[source_rid], backref='rels')
+    target = orm.relationship(
+        'Resource', foreign_keys=[target_rid], backref='revs')
+
+
 class Statement(Base):
     '''A triple describing a resource
     '''
