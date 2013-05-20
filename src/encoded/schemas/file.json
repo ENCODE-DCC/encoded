@@ -1,229 +1,199 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Experimental Data File",
+    "id": "/profiles/file.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting data file Metadata for ENCODE",
+    "type": "object",
+    "required": [ "award", "lab", "file_format", "md5sum", "output_type"],
+    "additionalProperties": false,
     "properties": {
-        "assembly": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "award_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "biological_replicate_number": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "integer",
-                "null"
-            ]
-        },
-        "composite (sanity)": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "composite_dataset_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "date_passed_validation": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "dbxref": {
-            "default": null,
-            "description": "",
-            "properties": {
-                "encode2": {
-                    "default": null,
-                    "description": "",
-                    "items": {
-                        "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
-                }
-            },
-            "title": "",
-            "type": [
-                "object",
-                "null"
-            ]
-        },
-        "derived_from_filelist": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "encode2_dbxref_list": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "experiment (sanity)": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "experiment_dataset_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "accession": {
+            "default": "",
+            "description": "ENCODE DCC assigned accession",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Dataset Accession",
+            "type": "string",
+            "format": "accession"
         },
         "file_format": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "File format (FastQ, BAM, BED, etc.)",
+            "comment": "Some of these types are for historical purposes only and are not valid new inputs.",
+            "title": "File Format",
+            "type": {
+                "enum": [
+                    "bam",
+                    "bed12",
+                    "bed12+3",
+                    "bed12+3.bigBed",
+                    "bed15",
+                    "bed3",
+                    "bed4",
+                    "bed5",
+                    "bed6",
+                    "bed6+3",
+                    "bed6+3.bigBed",
+                    "bed8",
+                    "bed9",
+                    "bed9+1",
+                    "bed9+1.bigBed",
+                    "bed9+2",
+                    "bed9+2.bigBed",
+                    "bigWig"
+                    "broadPeak",
+                    "fastq",
+                    "gtf",
+                    "narrowPeak",
+                    "narrowPeak.bigBed"
+               ]
+            }
         },
-        "geo_series": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
         },
-        "is_obsolete": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "lab_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
         },
         "md5sum": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Calucluated MD5 sum of the file",
+            "title": "MD5 Sum",
+            "type": "integer",
+            "format": "hex"
         },
         "output_type": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Coded description of the file purpose/contents for display",
+            "comment": "Not all combinations of output_type and file_type are valid.",
+            "title": "Output Type",
+            "type": {
+                "enum": [
+                    "Sites",
+                    "RawData",
+                    "Peaks",
+                    "Alignments",
+                    "Signal"
+                ]
+            }
         },
-        "replicate_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "replicate": {
+            "description": "Pointer to the experimental replicate for this file.",
+            "comment": "Automatic submitters can supply a Replicate UUID",
+            "type": "string",
+            "format": "replicate_link"
         },
         "software": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Pointer to the software used to generate this file",
+            "comment": "Not valid for primary data files like FastQ.  Automatic submitters can supply an ENCODE Software UUID or unique name.",
+            "title": "Software",
+            "type": "string",
+            "format": "software_link"
         },
-        "submitted_by_project": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "assembly": {
+            "description": "Genome assembly that files were mapped to",
+            "title": "Mapping Assembly",
+            "comment": "BAM/BED and other mapped files only.",
+            "type": {
+                "enum": ["mm9", "hg19", "N/A"]
+            }
         },
-        "submitter_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "experiment_dataset": {
+            "description": "A pointer to the dataset for the ENCODE Experiment dataset that this file belongs to.",
+            "comment": "Automatic submitters can supply an Experment dataset UUID or accession",
+            "title": "Experiment (dataset)",
+            "type": "string",
+            "format": "dataset_link"
         },
-        "technical_replicate_number": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "integer",
-                "null"
-            ]
+        "composite_dataset": {
+            "description": "A pointer to the dataset for the UCSC Browser composite that this file belongs to.",
+            "comment": "Automatic submitters can supply an Dataset UUID or accession",
+            "title": "Composite (dataset)",
+            "type": "string",
+            "format": "dataset_link"
+        },
+        "date_passed_validation": {
+            "description": "The date which this file passed ENCODE DCC Validation",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Date of Validation",
+            "type": "string",
+            "format": "date"
+        },
+        "dbxref": {
+            "default": {},
+            "description": "List of Database (including Lab) cross-references",
+            "additionalProperties": {
+                "default": [],
+                "description": "List of Database IDs",
+                "title": "Database IDs",
+                "type":  "array",
+                "items": {
+                    "description": "Database",
+                    "title": "DB ID",
+                    "type": "string"
+                }
+            },
+            "title": "DBXREFs",
+            "type": "object"
+        },
+        "parent_files": {
+            "description": "List of parent files (derived_from).",
+            "comment": "For automatic submission supply unique data File accessions or uuids",
+            "items": {
+                    "description": "File used to produce this file.",
+                    "title": "Parent File",
+                    "type": "string",
+                    "format": "file_link"
+            },
+            "title": "Parent Files",
+            "type": "array"
+        },
+        "file_relationships": {
+            "default": {},
+            "description": "Hash of inter-ENCODE file relationships; Keys are relationship types.",
+            "derived_from": {
+                "default": [],
+                "description": "List of parent files (derived_from).",
+                "title": "Files",
+                "type":  "array",
+                "items": {
+                    "description": "File pointer",
+                    "comment": "For automatic submission supply unique data File accessions or uuids",
+                    "title": "File",
+                    "type": "string",
+                    "format": "file_link"
+                }
+            },
+            "controls_for": {
+                "default": [],
+                "description": "List of files this file is a control for",
+                "title": "Files",
+                "type":  "array",
+                "items": {
+                    "description": "File pointer",
+                    "comment": "For automatic submission supply unique data File accessions or uuids",
+                    "title": "File",
+                    "type": "string",
+                    "format": "file_link"
+                }
+            },
+             "paired_with": {
+                "description": "File this file is paired with.",
+                "comment": "For automatic submission supply unique data File accessions or uuids",
+                "title": "File",
+                "title": "File",
+                "type": "string",
+                "format": "file_link"
+                }
+            },
+            "title": "File Relationships",
+            "type": "object"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

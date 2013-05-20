@@ -1,0 +1,87 @@
+{
+    "title": "ENCODE Replicate",
+    "id": "/profiles/replicate.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an experimental Replicate",
+    "type": "object",
+    "required": [ "award", "lab", "assay_type", "biological_replicate_no" "technical_replicate_no", "library"],
+    "additionalProperties": false,
+    "properties": {
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
+        },
+        "assay_type": {
+            "description": "Ontology term describing assay used for this replicate",
+            "comment": "Use OBI ontology (term_id) name where possible",
+            "title": "Assay type",
+            "type":  "string"
+        },
+        "term_id": {
+            "default": "",
+            "description": "OBI Ontology term ID describing assay type",
+            "title": "Assay (OBI) Ontology ID",
+            "type": "string",
+            "pattern": "^OBI:[0-9]{7}$"
+        },
+        "antibody": {
+            "description": "Antibody used with this Replicate (-IP experiments only)",
+            "comment": "Automatic submitters can supply an Antibody accession or UUID",
+            "title": "Antibody",
+            "type": "string",
+            "format": "antibody_link"
+        },
+        "biological_replicate_no": {
+            "default": 1,
+            "description": "Biologically replicated experiments are numbered sequentially",
+            "title": "Replicate # (Biological)",
+            "type": "integer"
+        },
+        "technical_replicate_no": {
+            "default": 1,
+            "description": "Technically replicated experiments are numbered sequentially",
+            "title": "Replicate # (Technical)",
+            "type": "integer"
+        },
+        "experiment": {
+            "description": "Experiment dataset that this Replicate is grouped with",
+            "comment": "For automatic submission supply unique Experiment dataset accession or UUID",
+            "title": "Experiment ID",
+            "type": "string",
+            "format": "experiment_link"
+        },
+        "library": {
+            "description": "Nucleic acid Library used in this replicate.",
+            "comment": "For automatic submission supply unique Library accession or UUID",
+            "title": "Library ID",
+            "type": "string",
+            "format": "library_link"
+        },
+        "platform": {
+            "description": "Platform (hardware) that this Replicate was performed on",
+            "comment": "For automatic submission supply unique Platform name or UUID",
+            "title": "Platform ID",
+            "type": "string",
+            "format": "platform_link"
+        },
+        "target": {
+            "description": "Protein, RNA, or chemical target of the experiment",
+            "comment": "For automatic submission supply unique Target label or UUID",
+            "title": "Target ID",
+            "type": "string",
+            "format": "target_link"
+        }
+    }
+}

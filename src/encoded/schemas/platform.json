@@ -1,6 +1,11 @@
 {
-    "default": null,
-    "description": "",
+    "title": "Platform",
+    "id": "/profiles/platform.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an experimental platform to ENCODE",
+    "type": "object",
+    "required": ["term_name"],
+    "additionalProperties": false,
     "properties": {
         "dbxref": {
             "default": null,

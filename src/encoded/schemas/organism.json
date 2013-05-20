@@ -1,6 +1,6 @@
 {
     "title": "Organism",
-    "id": "/profiles/validation.json",
+    "id": "/profiles/organism.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an organism type to ENCODE",
     "type": "object",

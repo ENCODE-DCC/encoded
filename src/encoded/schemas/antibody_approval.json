@@ -1,6 +1,6 @@
 {
     "title": "ENCODE Antibody Validation",
-    "id": "/profiles/validation.json",
+    "id": "/profiles/antibody_approval.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting antibody validation data",
     "type": "object",

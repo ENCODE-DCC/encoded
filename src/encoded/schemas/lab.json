@@ -1,6 +1,6 @@
 {
     "title": "ENCODE Lab",
-    "id": "/profiles/validation.json",
+    "id": "/profiles/lab.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting a lab or research group for the ENCODE project.",
     "type": "object",

@@ -5,7 +5,7 @@
     "description": "Schema for submitting an ENCODE Collegue (not user)",
     "type": "object",
     "required": [ "email", "first_name", "last_name"],
-    "description": "",
+    "additionalProperties": false,
     "properties": {
         "email": {
             "description": "The colleagues' email address",

@@ -14,7 +14,7 @@
             "type": "string",
             "format": "accession"
         },
-       "description": {
+        "description": {
             "default": "",
             "description": "A plain text description of the biosample",
             "title": "",

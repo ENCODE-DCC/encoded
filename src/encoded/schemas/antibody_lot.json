@@ -5,7 +5,7 @@
     "description": "Schema for submitting an ENCODE Antibody (no target or validation information)",
     "type": "object",
     "required": [ "award", "lab", "product_id", "lot_id", "source"],
-    "properties": {
+    "additionalProperties": false,
         "accession": {
             "default": "",
             "description": "ENCODE DCC assigned accession",
