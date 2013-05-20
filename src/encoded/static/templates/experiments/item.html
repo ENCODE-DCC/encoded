@@ -84,7 +84,7 @@
                                 <th>Term</th>
                                 <th>Biological Replicate</th>
                                 <th>Type</th>
-                                <th>Speices</th>
+                                <th>Species</th>
                                 <th>Source</th>
                                 <th>Submitter</th>
                             </tr>
@@ -111,6 +111,77 @@
                 </tfoot>
         </table>
         <?js } ?>
+
+        <?js if(model.links.replicates.length){ ?>
+        <h3>Assay Details</h3>
+        <div class="panel data-display">
+            <?js if(model.links.replicates[0].links.library.get('nucleic_acid_type')) { ?>
+            <div class="data-group">
+                <label class="data-label" for="nucleic-acid-type">Nucleic Acid Type:</label>
+                <div class="data-values">
+                    <span id="nucleic-acid-type" class="data-point">{model.links.replicates[0].links.library.get('nucleic_acid_type')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('nucleic_acid_starting_quantity')) { ?>
+            <div class="data-group">
+                <label class="data-label" for="nucleic-acid-starting">NA Starting Quantity:</label>
+                <div class="data-values">
+                    <span id="nucleic-acid-starting" class="data-point">{model.links.replicates[0].links.library.get('nucleic_acid_starting_quantity')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('lysis_method')) { ?>
+            <div class="data-group">
+                <label class="data-label" for="lysis-method">Lysis Method:</label>
+                <div class="data-values">
+                    <span id="lysis-method" class="data-point">{model.links.replicates[0].links.library.get('lysis_method')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('extraction_method')) { ?>
+            <div class="data-group">
+                <label class="data-label" for="extraction-method">Extraction Method:</label>
+                <div class="data-values">
+                    <span id="extraction-method" class="data-point">{model.links.replicates[0].links.library.get('extraction_method')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('fragmentation_method')) { ?>
+             <div class="data-group">
+                <label class="data-label" for="fragmentation_method">Fragmentation Method:</label>
+                <div class="data-values">
+                    <span id="fragmentation_method" class="data-point">{model.links.replicates[0].links.library.get('fragmentation_method')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('size_range')) { ?>
+             <div class="data-group">
+                <label class="data-label" for="size_range">Validated Size Range:</label>
+                <div class="data-values">
+                    <span id="size_range" class="data-point">{model.links.replicates[0].links.library.get('size_range')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('library_size_selection_method')) { ?>
+             <div class="data-group">
+                <label class="data-label" for="library_size_selection_method">Size Selection Method:</label>
+                <div class="data-values">
+                    <span id="library_size_selection_method" class="data-point">{model.links.replicates[0].links.library.get('library_size_selection_method')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.platform.get('description')) { ?>
+             <div class="data-group">
+                <label class="data-label" for="platform">Platform:</label>
+                <div class="data-values">
+                     <span id="platform" class="data-point"><a href="{model.links.replicates[0].links.platform._links.self.href}">{model.links.replicates[0].links.platform.get('description')}</a></span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js } ?>
+        </div>
+
         <?js if(model.links.replicates.length) { ?>
             <?js var replicates = _.sortBy(model.links.replicates, function(element) { return element.get('biological_replicate_number') }); ?>
             <?js _.each(replicates, function(replicate) { ?>
@@ -126,13 +197,8 @@
                    <div class="data-group">
                         <label class="data-label" for="library">Library:</label>
                         <div class="data-values">
-                            <span id="library" class="data-point"><a href="{replicate.links.library._links.self.href}">{replicate.links.library.get('library_description')}</a></span>
-                        </div>
-                   </div>
-                   <div class="data-group">
-                        <label class="data-label" for="platform">Platform:</label>
-                        <div class="data-values">
-                            <span id="platform" class="data-point"><a href="{replicate.links.platform._links.self.href}">{replicate.links.platform.get('description')}</a></span>
+                            <span id="library" class="data-point">{replicate.links.library.get('accession')} - ({replicate.links.library.get('library_description')})
+                            </span>
                         </div>
                    </div>
                 </div>
