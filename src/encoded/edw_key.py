@@ -11,7 +11,7 @@ from .schema_utils import (
 from .storage import (
     DBSession,
     EDWKey,
-    UserMap,
+    Key,
 )
 from .validation import ValidationFailure
 
@@ -51,14 +51,13 @@ def edw_key_create(context, request):
     username = request.validated['username']
     pwhash = request.validated['pwhash']
 
-    login = 'mailto:' + email
     session = DBSession()
-    user_map = session.query(UserMap).get(login)
-    if user_map is None:
+    key = session.query(Key).get(('user:email', email))
+    if key is None:
         msg = "User not found for %r" % email
         request.errors.add('body', ['email'], msg)
     else:
-        userid = user_map.userid
+        userid = key.rid
 
     if not username:
         msg = "username must not be blank"
@@ -90,14 +89,13 @@ def edw_key_update(context, request):
     username = request.validated['username']
     pwhash = request.validated['pwhash']
 
-    login = 'mailto:' + email
     session = DBSession()
-    user_map = session.query(UserMap).get(login)
-    if user_map is None:
+    key = session.query(Key).get(('user:email', email))
+    if key is None:
         msg = "User not found for %r" % email
         request.errors.add('body', ['email'], msg)
     else:
-        userid = user_map.userid
+        userid = key.rid
 
     existing = session.query(EDWKey).get(username)
     if existing is None:

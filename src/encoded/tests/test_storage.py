@@ -9,14 +9,14 @@ def test_storage_creation(session):
         TransactionRecord,
         Blob,
         Key,
-        UserMap
+        Link,
     )
     assert session.query(Statement).count() == 0
     assert session.query(CurrentStatement).count() == 0
     assert session.query(TransactionRecord).count() == 0
     assert session.query(Blob).count() == 0
     assert session.query(Key).count() == 0
-    assert session.query(UserMap).count() == 0
+    assert session.query(Link).count() == 0
 
 
 def test_transaction_record(session):
@@ -104,13 +104,13 @@ def test_keys(session):
     resource = session.query(Resource).one()
 
     testname = 'foo'
-    key = Key(rid=resource.rid, namespace=predicate, name=testname, value=obj1[testname])
+    key = Key(rid=resource.rid, name=testname, value=obj1[testname])
     session.add(key)
     session.flush()
     assert session.query(Key).count() == 1
     othertest = 'foofoo'
     othervalue = 'barbar'
-    key2 = Key(rid=resource.rid, namespace=predicate, name=othertest, value=othervalue)
+    key2 = Key(rid=resource.rid, name=othertest, value=othervalue)
     session.add(key2)
     session.flush()
     assert session.query(Key).count() == 2
@@ -118,7 +118,7 @@ def test_keys(session):
     resource2 = Resource({predicate: obj2})
     session.add(resource2)
     session.flush()
-    key3 = Key(rid=resource2.rid, namespace=predicate, name=testname, value=obj1[testname])
+    key3 = Key(rid=resource2.rid, name=testname, value=obj1[testname])
     session.add(key3)
     with pytest.raises(FlushError):
         session.flush()

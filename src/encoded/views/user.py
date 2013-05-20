@@ -9,7 +9,6 @@ from pyramid.security import (
     Everyone,
     effective_principals,
 )
-from . import root
 from ..schema_utils import (
     load_schema,
 )
@@ -17,14 +16,11 @@ from ..contentbase import (
     Collection,
     Root,
     item_view,
-)
-from ..storage import (
-    DBSession,
-    UserMap,
+    location,
 )
 
 
-@root.location('users')
+@location('users')
 class User(Collection):
     schema = load_schema('colleague.json')
     properties = {
@@ -39,15 +35,6 @@ class User(Collection):
         (Deny, Everyone, 'view_details'),
     ]
 
-    def after_add(self, item):
-        email = item.model.statement.object.get('email')
-        if email is None:
-            return
-        session = DBSession()
-        login = 'mailto:' + email
-        user_map = UserMap(login=login, userid=item.model.rid)
-        session.add(user_map)
-
     class Item(Collection.Item):
         links = {
             'labs': [
@@ -55,6 +42,7 @@ class User(Collection):
                  'repeat': 'lab_uuid lab_uuids'}
             ]
         }
+        keys = ['email']
 
         def __acl__(self):
             owner = 'userid:%s' % self.model.rid
