@@ -641,7 +641,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
             value['treatment_uuids'].append(treatment_uuid)
             # adding treatment documents to biosamples documents list
             if alldata['treatment'][treatment_uuid]['document_uuids']:
-                value['document_uuids'] = value['document_uuids']+ alldata['treatment'][treatment_uuid]['document_uuids']
+                value['document_uuids'] = value['document_uuids'] + alldata['treatment'][treatment_uuid]['document_uuids']
         except KeyError:
             raise ValueError('Unable to find treatment for biosample: %s' % treat)
     except KeyError as k:
@@ -816,9 +816,6 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
 
     value['file_uuids'] = []
     value['replicate_uuids'] = []
-    value['assay_name'] = ''
-    value['target'] = ''
-    value['biosamples'] = []
 
     for file in alldata['file']:
         if (alldata['file'][file])['experiment_dataset_uuid'] is value['_uuid']:
@@ -835,19 +832,7 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
         if alldata['replicate'][replicate]['experiment_accession'] is value['dataset_accession']:
             if replicate not in value['replicate_uuids']:
                 value['replicate_uuids'].append(replicate)
-
-    # terrible coding, have to fix it later
-    if value['replicate_uuids']:
-        assay_uuid = alldata['replicate'][value['replicate_uuids'][0]]['assay_uuid']
-        value['assay_name'] = alldata['assay'][assay_uuid]['assay_name']
-        value['target'] = alldata['replicate'][value['replicate_uuids'][0]]['target']
-        for replicate in value['replicate_uuids']:
-            library = alldata['replicate'][replicate]['library_uuid']
-            biosample = alldata['library'][library]['biosample_uuid']
-            biosample_accession = alldata['biosample'][biosample]['accession']
-            if biosample_accession not in value['biosamples']:
-                value['biosamples'].append(biosample_accession)
-
+    
     assign_submitter(value, content_type, indices,
                      {
                      'email': value.pop('submitted_by_colleague_email'),

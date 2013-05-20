@@ -1,6 +1,7 @@
 <header class="row">
     <div class="span12">
-        <h4 style="text-transform: capitalize;">Experiment <?js if(properties.assay_name) { ?> > {properties.assay_name}<?js } ?></h4>
+        <?js if(model.links.replicates.length){ ?>
+        <h4 style="text-transform: capitalize;">Experiment <?js if(model.links.replicates.length) { ?> > {model.links.replicates[0].links.assay.get('assay_name')}<?js } ?></h4> <?js } ?>
         <h2>Experiment summary for {properties.dataset_accession}</h2>
     </div>
 </header>
@@ -20,12 +21,20 @@
                         <span id="accession" class="data-point">{properties.dataset_description}</span>
                     </div>
                 </div>
+                <?js if(model.links.replicates.length) {?>
                 <div class="data-group">
-                    <label class="data-label" for="submitter">Submitter:</label>
+                    <label class="data-label" for="biosample">Biosample:</label>
                     <div class="data-values">
-                        <span id="submitter" class="data-point">{model.links.submitter.get('first_name')} {model.links.submitter.get('last_name')}</span>
+                        <span id="biosample" class="data-point">{model.links.replicates[0].links.library.links.biosample.get('biosample_term_name')}</span>
                     </div>
                 </div>
+                <div class="data-group">
+                    <label class="data-label" for="biosample-type">Biosample Type:</label>
+                    <div class="data-values">
+                        <span id="biosample-type" class="data-point">{model.links.replicates[0].links.library.links.biosample.get('biosample_type')}</span>
+                    </div>
+                </div>
+                <?js } ?>
                 <?js if(properties.encode2_dbxref_list) { ?>
                 <div class="data-group">
                     <label class="data-label" for="lab-alias">Lab Alias:</label>
@@ -34,6 +43,12 @@
                     </div>
                 </div>
                 <?js } ?>
+                <div class="data-group">
+                    <label class="data-label" for="submitter">Submitter:</label>
+                    <div class="data-values">
+                        <span id="submitter" class="data-point">{model.links.submitter.get('first_name')} {model.links.submitter.get('last_name')}</span>
+                    </div>
+                </div>
                 <div class="data-group">
                     <label class="data-label" for="project">Project:</label>
                     <div class="data-values">
@@ -60,8 +75,8 @@
                <?js } ?>
             </section>
         </div>
-
-        <h3>Biosamples used</h3>
+        <?js if(model.links.replicates.length){ ?>
+        <h3>Biosamples Used</h3>
                 <table>
                         <thead>
                             <tr>
@@ -69,21 +84,22 @@
                                 <th>Term</th>
                                 <th>Biological Replicate</th>
                                 <th>Type</th>
-                                <th>Speices</th>
+                                <th>Species</th>
                                 <th>Source</th>
                                 <th>Submitter</th>
                             </tr>
                         </thead>
                         <?js if(model.links.replicates.length) { ?>
-                        <?js _.each(model.links.replicates, function(replicate) { ?>
+                        <?js var replicates = _.sortBy(model.links.replicates, function(element) { return element.get('biological_replicate_number') }); ?>
+                        <?js _.each(replicates, function(replicate) { ?>
                         <tr>
                             <td>{replicate.links.library.links.biosample.get('accession')}</td>
                             <td>{replicate.links.library.links.biosample.get('biosample_term_id')}</td>
                             <td>{replicate.get('biological_replicate_number')}</td>
                             <td>{replicate.links.library.links.biosample.get('biosample_type')}</td>
                             <td>{replicate.links.library.links.biosample.links.donor.links.organism.get('organism_name')}</td>
-                            <td>{replicate.links.library.links.biosample.links.submitter.get('first_name')}</td>
-                            <td>{replicate.links.library.links.biosample.links.source.get('first_name')}
+                            <td>{replicate.links.library.links.biosample.links.source.get('source_name')}</td>
+                            <td>{replicate.links.library.links.biosample.links.submitter.get('first_name')}
                              {replicate.links.library.links.biosample.links.submitter.get('last_name')}</td>
                         </tr>
                         <?js }); ?>
@@ -94,9 +110,81 @@
                     </tr>
                 </tfoot>
         </table>
-            
+        <?js } ?>
+
+        <?js if(model.links.replicates.length){ ?>
+        <h3>Assay Details</h3>
+        <div class="panel data-display">
+            <?js if(model.links.replicates[0].links.library.get('nucleic_acid_type')) { ?>
+            <div class="data-group">
+                <label class="data-label" for="nucleic-acid-type">Nucleic Acid Type:</label>
+                <div class="data-values">
+                    <span id="nucleic-acid-type" class="data-point">{model.links.replicates[0].links.library.get('nucleic_acid_type')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('nucleic_acid_starting_quantity')) { ?>
+            <div class="data-group">
+                <label class="data-label" for="nucleic-acid-starting">NA Starting Quantity:</label>
+                <div class="data-values">
+                    <span id="nucleic-acid-starting" class="data-point">{model.links.replicates[0].links.library.get('nucleic_acid_starting_quantity')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('lysis_method')) { ?>
+            <div class="data-group">
+                <label class="data-label" for="lysis-method">Lysis Method:</label>
+                <div class="data-values">
+                    <span id="lysis-method" class="data-point">{model.links.replicates[0].links.library.get('lysis_method')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('extraction_method')) { ?>
+            <div class="data-group">
+                <label class="data-label" for="extraction-method">Extraction Method:</label>
+                <div class="data-values">
+                    <span id="extraction-method" class="data-point">{model.links.replicates[0].links.library.get('extraction_method')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('fragmentation_method')) { ?>
+             <div class="data-group">
+                <label class="data-label" for="fragmentation_method">Fragmentation Method:</label>
+                <div class="data-values">
+                    <span id="fragmentation_method" class="data-point">{model.links.replicates[0].links.library.get('fragmentation_method')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('size_range')) { ?>
+             <div class="data-group">
+                <label class="data-label" for="size_range">Validated Size Range:</label>
+                <div class="data-values">
+                    <span id="size_range" class="data-point">{model.links.replicates[0].links.library.get('size_range')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.library.get('library_size_selection_method')) { ?>
+             <div class="data-group">
+                <label class="data-label" for="library_size_selection_method">Size Selection Method:</label>
+                <div class="data-values">
+                    <span id="library_size_selection_method" class="data-point">{model.links.replicates[0].links.library.get('library_size_selection_method')}</span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js if(model.links.replicates[0].links.platform.get('description')) { ?>
+             <div class="data-group">
+                <label class="data-label" for="platform">Platform:</label>
+                <div class="data-values">
+                     <span id="platform" class="data-point"><a href="{model.links.replicates[0].links.platform._links.self.href}">{model.links.replicates[0].links.platform.get('description')}</a></span>
+                </div>
+            </div>
+            <?js } ?>
+            <?js } ?>
+        </div>
+
         <?js if(model.links.replicates.length) { ?>
-            <?js _.each(model.links.replicates, function(replicate) { ?>
+            <?js var replicates = _.sortBy(model.links.replicates, function(element) { return element.get('biological_replicate_number') }); ?>
+            <?js _.each(replicates, function(replicate) { ?>
                 <h3>Biological Replicate - {replicate.get('biological_replicate_number')}</h3>
                 <div class="panel data-display">
                     <div class="data-group">
@@ -109,13 +197,8 @@
                    <div class="data-group">
                         <label class="data-label" for="library">Library:</label>
                         <div class="data-values">
-                            <span id="library" class="data-point"><a href="{replicate.links.library._links.self.href}">{replicate.links.library.get('library_description')}</a></span>
-                        </div>
-                   </div>
-                   <div class="data-group">
-                        <label class="data-label" for="platform">Platform:</label>
-                        <div class="data-values">
-                            <span id="platform" class="data-point"><a href="{replicate.links.platform._links.self.href}">{replicate.links.platform.get('description')}</a></span>
+                            <span id="library" class="data-point">{replicate.links.library.get('accession')} - ({replicate.links.library.get('library_description')})
+                            </span>
                         </div>
                    </div>
                 </div>
@@ -137,7 +220,7 @@
                 </thead>
                 <?js _.each(model.links.files, function(file) { ?>
                 <tr>
-                    <td>ENCFF00000</td>
+                    <td>{file.get('file_accession')}</td>
                     <td>{file.get('file_format')}</td>
                     <td>{file.get('temp_file_name')}</td>
                     <td>
