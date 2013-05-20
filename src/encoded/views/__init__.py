@@ -1,17 +1,20 @@
 from pyramid.view import view_config
 from ..contentbase import (
     Root,
-    acl_from_settings,
+    location_root,
 )
 
 
 def includeme(config):
     config.scan()
-    config.set_root_factory(root)
-    root.__acl__ = acl_from_settings(config.registry.settings)
 
 
-root = Root(title='Home', portal_title='ENCODE 3')
+@location_root
+class EncodedRoot(Root):
+    properties = {
+        'title': 'Home',
+        'portal_title': 'ENCODE 3',
+    }
 
 
 @view_config(context=Root, request_method='GET')

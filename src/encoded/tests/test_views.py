@@ -172,15 +172,11 @@ def test_post_repeated_uuid(testapp):
 
 def test_users_post(testapp, session):
     from .sample_data import URL_COLLECTION
-    from ..storage import UserMap
     from ..authorization import groupfinder
     url = '/users/'
     item = URL_COLLECTION[url][0]
     testapp.post_json(url, item, status=201)
     login = 'mailto:' + item['email']
-    query = session.query(UserMap).filter(UserMap.login == login)
-    user = query.one()
-    assert user is not None
     principals = groupfinder(login, None)
     assert sorted(principals) == [
         'lab:2c334112-288e-4d45-9154-3f404c726daf',

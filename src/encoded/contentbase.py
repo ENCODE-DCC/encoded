@@ -1,5 +1,6 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 
+import venusian
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -9,6 +10,10 @@ from pyramid.httpexceptions import (
     HTTPForbidden,
     HTTPInternalServerError,
     HTTPNotFound,
+)
+from pyramid.interfaces import (
+    PHASE1_CONFIG,
+    PHASE2_CONFIG,
 )
 from pyramid.location import lineage
 from pyramid.security import (
@@ -37,12 +42,20 @@ from .storage import (
     CurrentStatement,
     Resource,
     Key,
+    Link,
 )
+from .validation import ValidationFailure
+LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
 
 
 def includeme(config):
     config.scan(__name__)
+    config.set_root_factory(root_factory)
+
+
+def root_factory(request):
+    return request.registry[LOCATION_ROOT]
 
 
 def make_subrequest(request, path):
@@ -168,35 +181,81 @@ def acl_from_settings(settings):
     return acl
 
 
+def uncamel(string):
+    """ CamelCase -> camel_case
+    """
+    out = ''
+    before = ''
+    for char in string:
+        if char.isupper() and before.isalnum() and not before.isupper():
+            out += '_'
+        out += char.lower()
+        before = char
+    return out
+
+
+def location_root(factory):
+    """ Set the location root
+    """
+
+    def set_root(config, factory):
+        acl = acl_from_settings(config.registry.settings)
+        root = factory(acl)
+        config.registry[LOCATION_ROOT] = root
+
+    def callback(scanner, factory_name, factory):
+        scanner.config.action(('location_root',), set_root,
+                              args=(scanner.config, factory),
+                              order=PHASE1_CONFIG)
+    venusian.attach(factory, callback, category='pyramid')
+
+    return factory
+
+
+def location(name, factory=None):
+    """ Attach a collection at the location ``name``.
+
+    Use as a decorator on Collection subclasses.
+    """
+
+    def set_location(config, name, factory):
+        root = config.registry[LOCATION_ROOT]
+        root.attach(name, factory)
+
+    def decorate(factory):
+        def callback(scanner, factory_name, factory):
+            scanner.config.action(('location', name), set_location,
+                                  args=(scanner.config, name, factory),
+                                  order=PHASE2_CONFIG)
+        venusian.attach(factory, callback, category='pyramid')
+        return factory
+
+    return decorate
+
+
 class Root(object):
     __name__ = ''
     __parent__ = None
 
-    def __init__(self, **properties):
-        self.properties = properties
+    def __init__(self, acl=None):
+        if acl is not None:
+            self.__acl__ = acl
         self.collections = {}
         self.by_item_type = {}
-
-    def __call__(self, request):
-        return self
 
     def __getitem__(self, name):
         return self.collections[name]
 
+    def __setitem__(self, name, value):
+        self.collections[name] = value
+        self.by_item_type[value.item_type] = value
+
+    def attach(self, name, factory):
+        value = factory(self, name)
+        self[name] = value
+
     def __json__(self, request=None):
         return self.properties.copy()
-
-    def location(self, name):
-        """ Attach a collection at the location ``name``.
-
-        Use as a decorator on Collection subclasses.
-        """
-        def decorate(factory):
-            collection = factory(self, name)
-            self.collections[name] = collection
-            self.by_item_type[collection.item_type] = collection
-            return factory
-        return decorate
 
 
 class MergedLinksMeta(type):
@@ -204,18 +263,24 @@ class MergedLinksMeta(type):
     """
     def __init__(self, name, bases, attrs):
         super(MergedLinksMeta, self).__init__(name, bases, attrs)
+
         self.merged_links = {}
         for cls in reversed(self.mro()):
             links = vars(cls).get('links', None)
             if links is not None:
                 self.merged_links.update(links)
+
         self.merged_keys = []
         for cls in reversed(self.mro()):
             for key in vars(cls).get('keys', []):
                 if isinstance(key, basestring):
-                    key = {'namespace': '{item_type}', 'name': key,
+                    key = {'name': '{item_type}:' + key,
                            'value': '{%s}' % key, 'templated': True}
                 self.merged_keys.append(key)
+
+        self.merged_rels = []
+        for cls in reversed(self.mro()):
+            self.merged_rels.extend(vars(cls).get('rels', []))
 
 
 class Item(object):
@@ -281,6 +346,18 @@ class Item(object):
             key = Key(rid=self.model.rid, **key_spec)
             session.add(key)
 
+    def create_rels(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_rels)
+        rels = compiled(ns)
+        for link_spec in rels:
+            rel = link_spec['rel']
+            target_rid = UUID(link_spec['target'])
+            link = Link(
+                source_rid=self.model.rid, rel=rel, target_rid=target_rid)
+            session.add(link)
+
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
@@ -295,11 +372,71 @@ class Item(object):
         model = resource.data[item_type]
         item = cls(parent, model)
         item.create_keys()
+        item.create_rels()
         try:
             session.flush()
         except (IntegrityError, FlushError):
             raise HTTPConflict()
         return item
+
+    def update_keys(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_keys)
+        _keys = [(key['name'], key['value']) for key in compiled(ns)]
+        keys = set(_keys)
+
+        if len(keys) != len(_keys):
+            msg = "Duplicate keys"
+            raise ValidationFailure('body', None, msg)
+
+        existing = {
+            (key.name, key.value)
+            for key in self.model.resource.unique_keys
+        }
+
+        to_remove = existing - keys
+        to_add = keys - existing
+
+        for pk in to_remove:
+            key = session.query(Key).get(pk)
+            session.delete(key)
+
+        for name, value in to_add:
+            key = Key(rid=self.model.rid, name=name, value=value)
+            session.add(key)
+
+    def update_rels(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_rels)
+        source = self.model.rid
+
+        _rels = [
+            (link_spec['rel'], UUID(link_spec['target']))
+            for link_spec in compiled(ns)
+        ]
+        rels = set(_rels)
+
+        if len(rels) != len(_rels):
+            msg = "Duplicate links"
+            raise ValidationFailure('body', None, msg)
+
+        existing = {
+            (link.rel, link.target_rid)
+            for link in self.model.resource.rels
+        }
+
+        to_remove = existing - rels
+        to_add = rels - existing
+
+        for rel, target in to_remove:
+            link = session.query(Link).get((source, rel, target))
+            session.delete(link)
+
+        for rel, target in to_add:
+            link = Link(source_rid=source, rel=rel, target_rid=target)
+            session.add(link)
 
     def update(self, properties, sheets=None):
         if properties is not None:
@@ -307,6 +444,13 @@ class Item(object):
         if sheets is not None:
             for key, value in sheets.items():
                 self.model.resource[key] = value
+        session = DBSession()
+        try:
+            self.update_keys()
+            self.update_rels()
+            session.flush()
+        except (IntegrityError, FlushError):
+            raise HTTPConflict()
 
 
 class CustomItemMeta(MergedLinksMeta):
@@ -318,12 +462,13 @@ class CustomItemMeta(MergedLinksMeta):
 
         # XXX Remove this, too magical.
         if self.item_type is None and 'item_type' not in attrs:
-            self.item_type = self.__name__.lower()
+            self.item_type = uncamel(self.__name__)
 
         if 'Item' in attrs:
             assert 'item_links' not in attrs
             assert 'item_embedded' not in attrs
             assert 'item_keys' not in attrs
+            assert 'item_rels' not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
@@ -339,6 +484,8 @@ class CustomItemMeta(MergedLinksMeta):
             item_attrs['embedded'] = attrs['item_embedded']
         if 'item_keys' in attrs:
             item_attrs['keys'] = attrs['item_keys']
+        if 'item_rels' in attrs:
+            item_attrs['rels'] = attrs['item_rels']
         self.Item = type('Item', item_bases, item_attrs)
 
 
