@@ -1,5 +1,4 @@
 from pyramid.view import (
-    render_view_to_response,
     view_config,
 )
 from pyramid.security import (
@@ -7,6 +6,7 @@ from pyramid.security import (
     Authenticated,
     Deny,
     Everyone,
+    authenticated_userid,
     effective_principals,
 )
 from ..schema_utils import (
@@ -17,6 +17,7 @@ from ..contentbase import (
     Root,
     item_view,
     location,
+    make_subrequest,
 )
 
 
@@ -76,5 +77,19 @@ def current_user(request):
     else:
         raise AssertionError('User not found')
     namespace, userid = principal.split(':', 1)
-    user = request.root.by_item_type[User.item_type][userid]
-    return render_view_to_response(user, request)
+    collection = request.root.by_item_type[User.item_type]
+    path = request.resource_path(collection, userid)
+    subreq = make_subrequest(request, path)
+    subreq.override_renderer = 'null_renderer'
+    result = request.invoke_subrequest(subreq)
+    login = authenticated_userid(request)
+    namespace, userid = login.split(':', 1)
+    if namespace == 'mailto':
+        result = result.copy()
+        result['_persona_email'] = userid
+    return result
+
+
+@view_config(context=Root, name='current-user', request_method='GET')
+def current_user_anonymous(request):
+    return {}
