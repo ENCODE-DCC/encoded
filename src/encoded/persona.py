@@ -57,6 +57,7 @@ def includeme(config):
                     permission=NO_PERMISSION_REQUIRED)
 
 
+# in a perfect world these would inherit from Classes shared by api module
 def verify_login(request):
     """Verifies the assertion and the csrf token in the given request.
 
@@ -73,9 +74,6 @@ def verify_login(request):
         logger.info('Failed persona login: %s (%s)', e, type(e).__name__)
         raise HTTPBadRequest('Invalid assertion: %s (%s)' % (e, type(e).__name__))
     return data
-
-
-    ''' in a perfect world these would inherit from Classes shared by api module'''
 
 
 def login(request):
