@@ -47,6 +47,7 @@ def includeme(config):
     login_path = settings.get('persona.login_path', '/login')
     config.add_route(login_route, login_path)
     config.add_view(login, route_name=login_route,
+                    request_method='POST',
                     permission=NO_PERMISSION_REQUIRED)
 
     logout_route = settings.get('persona.logout_route', 'logout')
