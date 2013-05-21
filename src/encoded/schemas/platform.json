@@ -4,132 +4,52 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an experimental platform to ENCODE",
     "type": "object",
-    "required": ["term_name"],
+    "required": ["name"],
     "additionalProperties": false,
     "properties": {
-        "dbxref": {
-            "default": null,
-            "description": "",
-            "properties": {
-                "encode2": {
-                    "default": null,
-                    "description": "",
-                    "items": {
-                        "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
-                },
-                "geo": {
-                    "default": null,
-                    "description": "",
-                    "items": {
-                        "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
-                },
-                "obi": {
-                    "default": null,
-                    "description": "",
-                    "items": {
-                        "default": null,
-                        "description": "",
-                        "title": "",
-                        "type": [
-                            "string",
-                            "null"
-                        ]
-                    },
-                    "title": "",
-                    "type": [
-                        "array",
-                        "null"
-                    ]
-                }
-            },
-            "title": "",
-            "type": [
-                "object",
-                "null"
-            ]
+       "term_id": {
+            "default": "New term requested",
+            "description": "OBI Ontology term ID for this expermental platform",
+            "comment": "Use unique OBI term ID or 'New term requested' if necessary",
+            "title": "Ontology ID",
+            "type": "string",
+            "pattern": "^(OBI:[0-9]{7}|New term requested)$"
+        },
+        "name": {
+            "description": "Name of the Platform (should be OBI term were possible)",
+            "title": "Platform Name",
+            "type":  "string"
         },
         "description": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "",
+            "description": "A longer, plain text description of the Platform",
+            "title": "Platform Description",
+            "type": "string"
         },
-        "encode2_dbxref_list": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "gpl_ids": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
+        "dbxref": {
+            "default": {},
+            "description": "List of Database cross-references",
+            "additionalProperties": {
+                "default": [],
+                "description": "List of Database IDs",
+                "title": "Database IDs",
+                "type":  "array",
+                "items": {
+                    "description": "Database",
+                    "title": "DB ID",
+                    "type": "string"
+                }
             },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
-        },
-        "obi_dbxref_list": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "title": "DBXREFs",
+            "type": "object"
         },
         "url": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "",
+            "description": "Commercial URL for the experimental Platform",
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
+
 }

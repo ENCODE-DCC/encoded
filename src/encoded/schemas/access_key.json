@@ -1,5 +1,7 @@
 {
-    "title": "Access key",
+    "title": "ENCODE DCC Access key",
+    "id": "/profiles/access_key.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Programmatic access key",
     "type": "object",
     "properties": {
