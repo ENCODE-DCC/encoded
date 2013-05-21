@@ -292,6 +292,9 @@ class Experiments(Collection):
         'replicates': [
             {'href': '/replicates/{replicate_uuid}', 'templated': True, 'repeat': 'replicate_uuid replicate_uuids'},
         ],
+        'experiments': [
+            {'href': '/experiments/{experiment_control_uuid}', 'templated': True, 'repeat': 'experiment_control_uuid experiment_control_uuids'},
+        ],
     }
-    item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award'])
+    item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award', 'experiments'])
     item_keys = [{'name': 'accession', 'value': '{dataset_accession}', 'templated': True}]
