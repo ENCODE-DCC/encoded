@@ -275,7 +275,8 @@ nav.navbar-fixed-top {
 /* Global Styles */
 
 body {
-	background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat fixed;
+	/* background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat fixed; */
+	background: #e8ecef;
 }
 
 .cancel-link {margin-left: 20px;}
@@ -296,11 +297,6 @@ $footerBorder:              #0f2a42 !default;
 
 #content {
 	padding-top: 75px;
-}
-
-#home-top-content {
-	margin-top: 40px;
-	background: #4284d8 url('../img/encode_bg_blue.png') no-repeat center;
 }
 
 
@@ -434,7 +430,7 @@ a[href^="http"]:empty:after {
 
 .panel-blue {
 	background-color: #4284d8;
-	border: 1px solid #ced5dc;
+	border: 1px solid #3276ca;
     @include border-radius($baseBorderRadius);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin: 10px 0 20px;
@@ -442,28 +438,38 @@ a[href^="http"]:empty:after {
     overflow: hidden;
 }
 
+.panel-gray {
+    margin: 10px 0 20px;
+    padding: 15px 30px;
+    overflow: hidden;
+}
+
+#homepage-main-box {
+	min-height: 400px;
+	background: url('/static/img/encode-bg-gray.png') no-repeat center;
+}
+
 #project-info {
-	@include text-shadow(rgba(235,232,232,1) 1px 1px 0);
+	h1,h2,h3,h4 {
+		@include text-shadow(rgba(255,255,255,1) 1px 1px 0);
+	}
 	display: inline-block;
-	width: 600px;
+	width: 670px;
 	float: left;
+	font-size: 1.3em;
 }
 
 #login-box {
-	@include background-image(linear-gradient(rgba(255,255,255,0.22), rgba(0,0,0,0.22)));
+	@include background-image(linear-gradient(rgba(255,255,255,0.22), rgba(0,0,0,0.12)));
 	@include border-radius(5px);
+	border: 1px solid #ddd;
 	display: inline-block;
 	height: 120px;
 	width: 300px;
 	padding: 20px;
 	margin: 10px 10px;
-	color: #fff;
 	float: right;
-	@include box-shadow(rgba(31,44,115,.95) 2px 2px 10px);
-		a:link {
-			color: #fff;
-			text-decoration: underline;
-		}
+	@include box-shadow(rgba(221,221,221,1) 2px 2px 10px);
 		h4 {
 			margin: 0 0 10px 0;
 			padding: 0;
@@ -473,7 +479,9 @@ a[href^="http"]:empty:after {
 #login-button {
 	display: block !important;
 	width: 100%;
-	font-size: 1.2em;
+	font-size: 1.4em;
+	font-weight: bold;
+	margin-bottom: 7px;
 }
 
 .panel h3, .panel h4 {color: #0A253D;}
