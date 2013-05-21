@@ -8,7 +8,7 @@ import xlrd
 # http://www.lexicon.net/sjmachin/xlrd.html
 
 logger = logging.getLogger('encoded')
-logger.setLevel(logging.INFO)  # doesn't work to shut off sqla INFO
+logger.setLevel(logging.WARN)  # doesn't work to shut off sqla INFO
 
 TYPE_URL = {
     # TODO This has appears in 3 places... maybe it shoudl be configged
