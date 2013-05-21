@@ -312,7 +312,7 @@ $footerBorder:              #0f2a42 !default;
 }
 
 
-// add external-link icon to all offsite links (in .panel's) - modified from _FontAwesome.scss
+// add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss
 .panel a[href^="http"]:after, td a[href^="http"]:after		{
 	content: " \f036";
 	font-family: FontAwesome;
@@ -333,7 +333,7 @@ $footerBorder:              #0f2a42 !default;
 	margin-top: 0;
 }
 // remove external-link icon if there is no text in link <a></a>
-// Note doesn't work in =<IE8, oh well
+// Note does not work in =<IE8, oh well
 a[href^="http"]:empty:after {
 	content: none;
 }
@@ -429,16 +429,51 @@ a[href^="http"]:empty:after {
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin: 10px 0 20px;
     padding: 15px 30px;
+    overflow: hidden;
 }
 
-.home-panel {
-	background-color: #fff;
+.panel-blue {
+	background-color: #4284d8;
 	border: 1px solid #ced5dc;
-    @include border-top-radius(0);
-    @include border-bottom-radius($baseBorderRadius);
+    @include border-radius($baseBorderRadius);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
-    margin: 0 0 20px;
+    margin: 10px 0 20px;
     padding: 15px 30px;
+    overflow: hidden;
+}
+
+#project-info {
+	@include text-shadow(rgba(235,232,232,1) 1px 1px 0);
+	display: inline-block;
+	width: 600px;
+	float: left;
+}
+
+#login-box {
+	@include background-image(linear-gradient(rgba(255,255,255,0.22), rgba(0,0,0,0.22)));
+	@include border-radius(5px);
+	display: inline-block;
+	height: 120px;
+	width: 300px;
+	padding: 20px;
+	margin: 10px 10px;
+	color: #fff;
+	float: right;
+	@include box-shadow(rgba(31,44,115,.95) 2px 2px 10px);
+		a:link {
+			color: #fff;
+			text-decoration: underline;
+		}
+		h4 {
+			margin: 0 0 10px 0;
+			padding: 0;
+		}
+}
+
+#login-button {
+	display: block !important;
+	width: 100%;
+	font-size: 1.2em;
 }
 
 .panel h3, .panel h4 {color: #0A253D;}
