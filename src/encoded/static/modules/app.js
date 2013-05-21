@@ -123,7 +123,6 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
     exports.Config = Backbone.Model.extend({
         title: 'ENCODE',
         global_sections: [
-            {id: 'home', title: 'Home', url: '/'},
             {id: 'antibodies', title: 'Antibodies', url: '/antibodies/'},
             {id: 'biosamples', title: 'Biosamples', url: '/biosamples/'},
             {id: 'targets', title: 'Targets', url: '/targets/'},
