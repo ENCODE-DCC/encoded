@@ -460,7 +460,7 @@ a[href^="http"]:empty:after {
 }
 
 #login-box {
-	@include background-image(linear-gradient(rgba(255,255,255,0.22), rgba(0,0,0,0.12)));
+	@include background-image(linear-gradient(rgba(255,255,255,0.1), rgba(0,0,0,0.1)));
 	@include border-radius(5px);
 	border: 1px solid #ddd;
 	display: inline-block;
