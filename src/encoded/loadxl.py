@@ -8,7 +8,7 @@ import xlrd
 # http://www.lexicon.net/sjmachin/xlrd.html
 
 logger = logging.getLogger('encoded')
-logger.setLevel(logging.WARNING)  #doesn't work to shut off sqla INFO
+logger.setLevel(logging.WARN)  # doesn't work to shut off sqla INFO
 
 TYPE_URL = {
     # TODO This has appears in 3 places... maybe it shoudl be configged
@@ -28,11 +28,10 @@ TYPE_URL = {
     'award': '/awards/',
     'platform': '/platforms/',
     'library': '/libraries/',
-    'assay': '/assays/',
+    'assay': '/assays/',  # this should be removed lated
     'replicate': '/replicates/',
     'file': '/files/',
     'experiment': '/experiments/',
-    ##{ 'institute': '/institutes/'),
 }
 
 
@@ -350,7 +349,7 @@ def parse_decorator_factory(content_type, index_type):
                     parse_type(testapp, alldata, content_type, indices, uuid, value, docsdir)
 
                 except Exception as e:
-                    logger.info('PROCESSING %s %s: %s Value:\n%r\n' % (content_type, uuid, e, original))
+                    logger.warn('PROCESSING %s %s: %s Value:\n%r\n' % (content_type, uuid, e, original))
                     del alldata[content_type][uuid]
                     continue
 
