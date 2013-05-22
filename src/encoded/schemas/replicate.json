@@ -4,7 +4,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an experimental Replicate",
     "type": "object",
-    "required": [ "award", "lab", "assay_type", "biological_replicate_no" "technical_replicate_no", "library"],
+    "required": [ "award", "lab", "assay_type", "biological_replicate_no", "technical_replicate_no", "library"],
     "additionalProperties": false,
     "properties": {
         "lab": {

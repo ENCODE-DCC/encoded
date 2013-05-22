@@ -16,9 +16,8 @@
             "format": "accession"
         },
        "description": {
-            "default": "",
-            "description": "A plain text description of the biosample",
-            "title": "",
+            "description": "A plain text description of the nucleic acid Library",
+            "title": "Library Description",
             "type": "string"
         },
         "lab": {
@@ -54,7 +53,7 @@
                     "RNA",
                     "Poly-A+ RNA",
                     "Small RNA",
-                    "miRNA",
+                    "miRNA"
                 ]
             }
         },
@@ -63,7 +62,6 @@
             "title": "SO Term ID",
             "type": "string",
             "pattern": "^SO:[0-9]{7}$"
-
         },
         "dbxref": {
             "default": {},

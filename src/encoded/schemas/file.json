@@ -38,7 +38,7 @@
                     "bed9+1.bigBed",
                     "bed9+2",
                     "bed9+2.bigBed",
-                    "bigWig"
+                    "bigWig",
                     "broadPeak",
                     "fastq",
                     "gtf",
@@ -190,7 +190,6 @@
                 "title": "File",
                 "type": "string",
                 "format": "file_link"
-                }
             },
             "title": "File Relationships",
             "type": "object"

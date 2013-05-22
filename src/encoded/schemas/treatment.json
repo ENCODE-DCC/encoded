@@ -1,101 +1,133 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE biosample Treatment",
+    "id": "/profiles/treatment.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE biosample Treatment",
+    "type": "object",
+    "required": [ "name", "type", "lab", "award"],
+    "additionalProperties": false,
     "properties": {
-        "document_uuids": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
+        "name": {
+            "description": "A unique name for the treatment",
+            "title": "Treatment Name",
+            "type": "string"
+        },
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
+        },
+        "type": {
+            "description": "The type of biosample treatment",
+            "title": "Treatment Type",
+            "type": {
+                "enum": [
+                    "differentiation",
+                    "chemical",
+                    "cell sorting",
+                    "iPSC reprogramming"
                 ]
+            }
+        },
+        "document_type": {
+            "default": "N/A",
+            "description": "Type of the attached protocol.",
+            "title": "Protocol type",
+            "type": {
+                "enum": [
+                    "N/A",
+                    "differentiation protocol",
+                    "treatment protocol",
+                    "iPSC reprogramming protocol",
+                    "cell isolation and sorting protocol"
+                ]
+            }
+        },
+        "document": {
+            "description": "Treatment protocol document",
+            "comment": "For automatic submission supply an unique document name or UUID",
+            "title": "Protocol Document",
+            "type": "string",
+            "format": "document_link"
+        },
+        "dbxref": {
+            "default": {},
+            "description": "List of Database (including Lab) cross-references",
+            "additionalProperties": {
+                "default": [],
+                "description": "List of Database IDs",
+                "title": "Database IDs",
+                "type":  "array",
+                "items": {
+                    "description": "Database",
+                    "title": "DB ID",
+                    "type": "string"
+                }
             },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
+            "title": "DBXREFs",
+            "type": "object"
         },
-        "encode2_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "term_id": {
+            "description": "ChEBI Ontology term ID describing chemical used in treatment",
+            "comment": "For chemical treatments only",
+            "title": "ChEBI ID",
+            "type": "string",
+            "pattern": "^(CHEBI):[0-9]{5}$"
         },
-        "project": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "term_name": {
+            "description": "ChEBI ontology term describing chemical treatmenbt",
+            "comment": "For chemical treatments only",
+            "title": "ChEBI Term (Chemical Name)",
+            "type":  "string"
         },
-        "submitted_by_award_number": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "concentration": {
+            "description": "Concentration of chemical treament (numeric)",
+            "comment": "For chemical treatments only",
+            "title": "Concentration",
+            "type": "float"
         },
-        "submitted_by_colleague_email": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "concentration_units": {
+            "description": "Concentration units for chemical treament",
+            "comment": "For chemical treatments only",
+            "title": "Conc. units",
+            "type": {
+                "enum": [
+                    "nM",
+                    "μM",
+                    "mM",
+                    "percent"
+                ]
+            }
         },
-        "submitted_by_lab_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "duration": {
+            "description": "Duration of chemical treament (numeric)",
+            "comment": "For chemical treatments only",
+            "title": "Duration",
+            "type": "float"
         },
-        "treatment_document_type": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "treatment_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "treatment_type": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "duration_units": {
+            "description": "Duration units for chemical treament",
+            "comment": "For chemical treatments only",
+            "title": "Duration units",
+            "type": {
+                "enum": [
+                    "sec",
+                    "min",
+                    "hour",
+                    "day"
+                ]
+            }
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

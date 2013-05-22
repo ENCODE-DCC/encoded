@@ -6,6 +6,7 @@
     "type": "object",
     "required": [ "award", "lab", "product_id", "lot_id", "source"],
     "additionalProperties": false,
+    "properties": {
         "accession": {
             "default": "",
             "description": "ENCODE DCC assigned accession",
@@ -124,7 +125,7 @@
                     "Unknown"
                 ]
             }
-         },
+        },
         "purification": {
             "default": "Unknown",
             "description": "Method by which antibody was purified",
