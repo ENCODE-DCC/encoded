@@ -2,11 +2,13 @@ from pkg_resources import resource_string
 from pyramid.events import (
     NewRequest,
     subscriber,
-    )
+)
+from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.security import authenticated_userid
 from pyramid.threadlocal import (
     get_current_request,
     manager,
-    )
+)
 import pyramid.renderers
 import uuid
 
@@ -64,7 +66,17 @@ def choose_format(event):
     request = event.request
     if request.method not in ('GET', 'HEAD'):
         request.environ['encoded.format'] = 'json'
-        return
+        token = request.headers.get('X-CSRF-Token')
+        if token is not None:
+            if token == request.session.get_csrf_token():
+                return
+            raise HTTPBadRequest('incorrect CSRF token')
+        login = authenticated_userid(request)
+        if login is not None:
+            namespace, userid = login.split(':', 1)
+            if namespace != 'mailto':
+                return
+        raise HTTPBadRequest('missing CSRF token')
 
     format = request.params.get('format')
     if format is None:
