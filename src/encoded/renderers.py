@@ -68,7 +68,7 @@ def choose_format(event):
         request.environ['encoded.format'] = 'json'
         token = request.headers.get('X-CSRF-Token')
         if token is not None:
-            if token == request.session.get_csrf_token():
+            if token == request.session.get('_csrft_', None):
                 return
             raise HTTPBadRequest('incorrect CSRF token')
         login = authenticated_userid(request)
