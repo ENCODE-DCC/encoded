@@ -1,6 +1,5 @@
 import pytest
 import unittest
-from pyramid.httpexceptions import HTTPBadRequest
 import requests
 
 from pyramid import testing
@@ -12,6 +11,8 @@ class ViewTests(unittest.TestCase):
     def setUp(self):
         self.config = testing.setUp(autocommit=False)
         self.config.add_settings({'persona.audiences': 'http://someaudience'})
+        self.config.include('encoded.predicates')
+        self.config.include('encoded.validation')
         self.config.include('encoded.persona')
         self.security_policy = self.config.testing_securitypolicy()
         self.config.set_authorization_policy(self.security_policy)
@@ -22,7 +23,7 @@ class ViewTests(unittest.TestCase):
         testing.tearDown()
 
     def test_login(self):
-        from ..persona import login
+        from ..persona import login, verify_assertion
         data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Fsomeaudience').json()
         if data.get('message', None) == 'Cannot get verified email for assertion':
             self.skipTest("Persona: %s" % data['message'])
@@ -30,7 +31,8 @@ class ViewTests(unittest.TestCase):
         email = data['email']
         assertion = data['assertion']
 
-        req = testing.DummyRequest(json_body={'assertion': assertion, 'came_from': '/'})
+        req = testing.DummyRequest(json={'assertion': assertion, 'came_from': '/'})
+        verify_assertion(req)
         response = login(req)
 
         self.assertEqual(response['status'], "okay")
@@ -40,7 +42,8 @@ class ViewTests(unittest.TestCase):
         self.assertEqual(self.security_policy.remembered, 'mailto:' + email)
 
     def test_login_fails_with_bad_audience(self):
-        from ..persona import login
+        from ..persona import verify_assertion
+        from ..validation import ValidationFailure
         data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Fbadaudience').json()
 
         if data.get('message', '').startswith('Cannot'):
@@ -49,16 +52,15 @@ class ViewTests(unittest.TestCase):
 
         assertion = data['assertion']
 
-        req = testing.DummyRequest(json_body={'assertion': assertion, 'came_from': '/'})
+        req = testing.DummyRequest(json={'assertion': assertion, 'came_from': '/'})
 
-        self.assertRaises(HTTPBadRequest, login, req)
+        self.assertRaises(ValidationFailure, verify_assertion, req)
         self.assertFalse(hasattr(self.security_policy, 'remembered'))
 
     def test_logout(self):
         from ..persona import logout
-        req = testing.DummyRequest(json_body={'came_from': '/'})
-        req.params['came_from'] = '/'
-        response = logout(req)
+        req = testing.DummyRequest(params={'redirect': 'false'})
+        logout(req)
 
         #self.assertEqual(response.status_code, 200)
         self.assertTrue(self.security_policy.forgotten)
@@ -75,16 +77,15 @@ def test_bad_audience(testapp, dummy_request):
     except KeyError:
         pytest.skip(data.get('message', "Unknown persona error"))
 
-    res = testapp.post_json('/login', params={'assertion': assertion, 'came_from': '/'}, status=400)
+    testapp.post_json('/login', params={'assertion': assertion, 'came_from': '/'}, status=422)
 
 
 def _test_login_cycle(testapp, dummy_request):
     import requests
-    from pyramid.security import authenticated_userid
 
     data = requests.get('http://personatestuser.org/email_with_assertion/http%3A%2F%2Flocalhost:6543').json()
     try:
-        email = data['email']
+        data['email']
         assertion = data['assertion']
     except KeyError:
         pytest.skip(data.get('message', "Unknown persona error"))
