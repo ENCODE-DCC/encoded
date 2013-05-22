@@ -3,10 +3,8 @@ from pyramid.view import (
 )
 from pyramid.security import (
     Allow,
-    Authenticated,
     Deny,
     Everyone,
-    authenticated_userid,
     effective_principals,
 )
 from ..schema_utils import (
@@ -68,28 +66,16 @@ def user_basic_view(context, request):
     return filtered
 
 
-@view_config(context=Root, name='current-user', request_method='GET',
-             effective_principals=[Authenticated])
+@view_config(context=Root, name='current-user', request_method='GET')
 def current_user(request):
     for principal in effective_principals(request):
         if principal.startswith('userid:'):
             break
     else:
-        raise AssertionError('User not found')
+        return {}
     namespace, userid = principal.split(':', 1)
     collection = request.root.by_item_type[User.item_type]
     path = request.resource_path(collection, userid)
     subreq = make_subrequest(request, path)
     subreq.override_renderer = 'null_renderer'
-    result = request.invoke_subrequest(subreq)
-    login = authenticated_userid(request)
-    namespace, userid = login.split(':', 1)
-    if namespace == 'mailto':
-        result = result.copy()
-        result['_persona_email'] = userid
-    return result
-
-
-@view_config(context=Root, name='current-user', request_method='GET')
-def current_user_anonymous(request):
-    return {}
+    return request.invoke_subrequest(subreq)
