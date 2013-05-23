@@ -217,9 +217,11 @@ table thead tr th button {
   @include gradient-vertical(lighten($navbarInverseLinkBackgroundHover, 8%), lighten($navbarInverseLinkBackgroundHover, 5%));
 }
 
+/* Needs background setting first
 .dropdown-menu li > a {
 	color: #fff;
 }
+*/
 
 
 $subNavHeight: 30px;
