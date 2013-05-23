@@ -1,17 +1,16 @@
 <div id="homepage-main-box"  class="panel-gray">
-
-	<section id="project-info" class="home-panel-left">
-		<h1>ENCODE</h1>
-		<h2>The Encyclopedia of DNA Elements</h2>
-		<p>This is an ENCODE DCC-only development site.</p>
-		<p>If you are not a DCC member please navigate to <a href="#">http://submit.encodedecc.org</a> and change your bookmarks and references.</p>
-	</section>
-	
-	<section id="login-box">
-		<h4>Data Providers</h4>       
-		<a href="#" id="login-button" class="btn btn-large btn-success">Log In</a>
-		<p>No Account? <a href="#">Create an Account</a>.</p>
-		<p>Logins handled by <a href="http://www.mozilla.org/en-US/persona/" target="_blank">Mozilla Persona</a>.</p>
-	</section>
-
+	<div class="row">
+		<div id="project-info" class="home-panel-left span7">
+			<h1>ENCODE</h1>
+			<h2>The Encyclopedia of DNA Elements</h2>
+		</div>
+	<?js if (!view.authenticated) { ?>
+		<div id="signin-box" class="span3">
+			<h4>Data Providers</h4>       
+			<a data-trigger="login" id="signin-button" class="btn btn-large btn-success">Sign In</a>
+			<p>No access? <a href='mailto:encode-help@lists.stanford.edu'>Request an account</a>.</p>
+			<p>Authentication by <a href="http://www.mozilla.org/en-US/persona/" target="_blank">Mozilla Persona</a>.</p>
+		</div>
+	<?js } ?>
+	</div><!-- .row -->
 </div>

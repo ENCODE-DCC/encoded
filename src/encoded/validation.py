@@ -1,12 +1,16 @@
 from pyramid.config.views import DefaultViewMapper
 from pyramid.events import NewRequest
-from pyramid.httpexceptions import HTTPUnprocessableEntity
+from pyramid.httpexceptions import (
+    HTTPError,
+    HTTPUnprocessableEntity,
+)
 from pyramid.util import LAST
 
 
 def includeme(config):
     config.add_subscriber(wrap_request, NewRequest)
     config.add_view(view=failed_validation, context=ValidationFailure)
+    config.add_view(view=http_error, context=HTTPError)
     config.add_view_predicate('validators', ValidatorsPredicate, weighs_more_than=LAST)
 
 
@@ -58,14 +62,41 @@ class ValidationFailure(HTTPUnprocessableEntity):
 
 
 def failed_validation(exc, request):
-    request.response.status_int = exc.code
+    # Clear any existing response
+    if 'response' in vars(request):
+        del request.response
+    request.response.status = exc.status
     errors = list(request.errors)
     if exc.detail is not None:
         errors.append(exc.detail)
-    return {
+    result = {
         'status': 'error',
+        'code': exc.code,
+        'title': exc.title,
+        'explanation': exc.explanation,
         'errors': errors,
     }
+    if exc.comment is not None:
+        result['comment'] = exc.comment
+    return result
+
+
+def http_error(exc, request):
+    # Clear any existing response
+    if 'response' in vars(request):
+        del request.response
+    request.response.status = exc.status
+    result = {
+        'status': 'error',
+        'code': exc.code,
+        'title': exc.title,
+        'explanation': exc.explanation,
+    }
+    if exc.detail is not None:
+        result['detail'] = exc.detail
+    if exc.comment is not None:
+        result['comment'] = exc.comment
+    return result
 
 
 def prepare_validators(validators):

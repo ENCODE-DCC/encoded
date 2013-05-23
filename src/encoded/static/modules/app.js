@@ -1,5 +1,5 @@
 define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'biosamples', 'libraries', 'targets', 'sources', 'platforms', 'experiments', 'navbar', 'generic'],
-function app(exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, platforms, libraries, experiments, navbar, generic) {
+function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, platforms, libraries, experiments, navbar, generic) {
 
     var routes = {
         home: [''],
@@ -62,13 +62,25 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
         overlay: '#overlay'
     };
 
-    _.extend(exports, Backbone.Events, {
+    var app = exports;
+
+    _.extend(app, Backbone.Events, {
 
         navbar_view: undefined,
 
-        user: { email: undefined },
+        session: undefined,
+
+        // CSRF protection
+        ajaxPrefilter: function (options, original, xhr) {
+            var http_method = options.type;
+            var csrf_token = this.session && this.session.csrf_token;
+            if (http_method === 'GET' || http_method === 'HEAD') return;
+            if (!csrf_token) return;
+            xhr.setRequestHeader('X-CSRF-Token', csrf_token);
+        },
 
         start: function start() {
+            $.ajaxPrefilter(_.bind(this.ajaxPrefilter, this));
             this.config = new exports.Config();
             var view_registry = this.view_registry = base.View.view_registry;
             _(routes).each(function (patterns, route_name) {
@@ -81,13 +93,23 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
                 view_registry.add_slot(slot_name, selector);
             });
             this.router = this.view_registry.make_router();
+            this.session_deferred = $.Deferred();
+            this.persona_deferred = $.Deferred();
             // Render navbar when navigation triggers route.
             var navbar_view = new navbar.NavBarView({el: slots.navbar, model: this.config});
-            view_registry.current_views['navbar'] = navbar_view.render();
+            view_registry.current_views['navbar'] = navbar_view;
+            $.when(navbar_view.deferred).done(function () {
+                navbar_view.render();
+            });
             this.setupNavigation();
             this.trigger('started');
             console.log(view_registry);
             console.log(this.router);
+
+            var trigger = _.bind(this.trigger, this);
+            $(document).on('click', 'a[data-trigger]', function click(evt) {
+                trigger($(this).attr('data-trigger'));
+            });
         },
 
         setupNavigation: function setupNavigation() {
@@ -97,7 +119,7 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             // All navigation that is relative should be passed through the navigate
             // method, to be processed by the router.  If the link has a data-bypass
             // attribute, bypass the delegation completely.
-            $(document).on('click', 'a:not([data-bypass])', function click(evt) {
+            $(document).on('click', 'a[href]:not([data-bypass])', function click(evt) {
                 if (evt.which > 1 || evt.shiftKey || evt.altKey || evt.metaKey) {
                     return;
                 }
@@ -125,15 +147,13 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
         global_sections: [
             {id: 'antibodies', title: 'Antibodies', url: '/antibodies/'},
             {id: 'biosamples', title: 'Biosamples', url: '/biosamples/'},
-            {id: 'targets', title: 'Targets', url: '/targets/'},
-            {id: 'sources', title: 'Sources', url: '/sources/'},
-            {id: 'platforms', title: 'Platforms', url: '/platforms/'},
-            {id: 'experiments', title: 'Experiments', url: '/experiments/'}
-       ],
+            {id: 'experiments', title: 'Experiments', url: '/experiments/'},
+            {id: 'targets', title: 'Targets', url: '/targets/'}
+        ],
         user_actions: [
-            {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'},
-            {id: 'signout', title: 'Log out', url: '#logout', bypass: 'true'}
-       ]
+            {id: 'signout', title: 'Sign out', trigger: 'logout'}
+        ],
+        user_properties: undefined
     });
 
     return exports;

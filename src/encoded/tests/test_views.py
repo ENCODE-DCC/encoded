@@ -26,7 +26,7 @@ COLLECTION_URL_LENGTH = {
     '/documents/': 130,
     '/treatments/': 7,
     '/constructs/': 5,
-    '/biosamples/': 137,
+    '/biosamples/': 134,
     '/platforms/': 11,
     '/users/': 84,
     '/files/': 19,
