@@ -182,6 +182,9 @@
             <?js } ?>
         </div>
 
+        <!-- Protocols & Documents -->
+        <div class="protocols"></div>   
+        
         <?js if(model.links.replicates.length) { ?>
             <?js var replicates = _.sortBy(model.links.replicates, function(element) { return element.get('biological_replicate_number') }); ?>
             <?js _.each(replicates, function(replicate) { ?>
