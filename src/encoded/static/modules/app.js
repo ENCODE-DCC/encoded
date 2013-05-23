@@ -131,8 +131,8 @@ function app(exports, $, _, Backbone, base, home, antibodies, biosamples, target
             {id: 'experiments', title: 'Experiments', url: '/experiments/'}
        ],
         user_actions: [
-            {id: 'signin', title: 'Log in', url: '#login', bypass: 'true'},
-            {id: 'signout', title: 'Log out', url: '#logout', bypass: 'true'}
+            {id: 'signin', title: 'Sign in', url: '#login', bypass: 'true'},
+            {id: 'signout', title: 'Sign out', url: '#logout', bypass: 'true'}
        ]
     });
 
