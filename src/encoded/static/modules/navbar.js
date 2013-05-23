@@ -3,9 +3,12 @@ define(['exports', 'jquery', 'underscore', 'navigator', 'app', 'base',
 function (navbar, $, _, navigator, app, base, navbar_template) {
 
     function reload() {
-        var url = window.location.href;
-        window.history.replaceState(null, document.title, '#reloading');
-        window.location.replace(url);
+        window.location.reload();
+        // This was a new page load.
+        // https://bugs.webkit.org/show_bug.cgi?id=80697#c3
+        //var url = window.location.href;
+        //window.history.replaceState(null, document.title, '#reloading');
+        //window.location.replace(url);
     }
 
     // The top navbar
@@ -103,10 +106,31 @@ function (navbar, $, _, navigator, app, base, navbar_template) {
                 contentType: 'application/json'
             }).done(reload).fail(function (xhr, status, err) {
                 // If there is an error, show the error messages
-                var msg = "Login Failure.  Access is restricted to ENCODE consortium members.  <a href='mailto:encode-help@lists.stanford.edu'>Request an account</a>";
-                $('.alert-error').html(msg).show();
-                console.log("Persona error: "+err+" ("+status+")");
+                var msg, html, data, content_type;
                 navigator.id.logout();
+                if (status === 'error') {
+                    content_type = xhr.getResponseHeader('Content-Type').split(';')[0];
+                    if (content_type === 'application/json') {
+                        data = JSON.parse(xhr.responseText);
+                        msg = data.title + '. ' + (data.detail || '');
+                    } else {
+                        msg = err + '.';
+                    }
+                    if (xhr.status === 400 && data.detail.indexOf('CSRF') !== -1) {
+                        reload();  // CSRF failure
+                    } else if (xhr.status === 422) {
+                        msg = data.errors[0].description;
+                    } else if (xhr.status === 403) {
+                        html = "Login failure. Access is restricted to ENCODE consortium members.  <a href='mailto:encode-help@lists.stanford.edu'>Request an account</a>";
+                    }
+                } else {
+                    msg = "Error communicating with server: " + status;
+                }
+                if (html) {
+                    $('.alert-error').html(html).show();
+                } else {
+                    $('.alert-error').text("Login failure. " + msg).show();
+                }
             });
         },
 
