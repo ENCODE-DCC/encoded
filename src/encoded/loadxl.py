@@ -310,7 +310,7 @@ def check_document(docsdir, filename):
     doc = {}
     if ext:
         stream = open(find_doc(docsdir, filename), 'rb')
-        if ext in ('.png', '.jpg', '.jpeg', '.tiff', '.tif'):
+        if ext in ('.png', '.jpg', '.jpeg', '.tiff', '.tif', '.gif'):
             doc = image_data(stream, filename)
 
         elif ext == '.pdf':
