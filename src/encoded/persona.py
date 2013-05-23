@@ -18,6 +18,10 @@ from pyramid.view import (
     view_config,
 )
 from .contentbase import make_subrequest
+from .storage import (
+    DBSession,
+    Key,
+)
 from .validation import ValidationFailure
 
 
@@ -52,7 +56,7 @@ def verify_assertion(request):
     try:
         assertion = request.json['assertion']
     except KeyError:
-        msg = 'No assertion.'
+        msg = 'Missing assertion.'
         raise ValidationFailure('body', ['assertion'], msg)
     try:
         data = verifier.verify(assertion)
@@ -72,7 +76,12 @@ def verify_assertion(request):
 def login(request):
     """View to check the persona assertion and remember the user"""
     data = request.validated
-    login = 'mailto:' + data['email'].lower()
+    email = data['email'].lower()
+    session = DBSession()
+    model = session.query(Key).get(('user:email', email))
+    if model is None:
+        raise HTTPForbidden()
+    login = 'mailto:' + email
     request.response.headerlist.extend(remember(request, login))
     return data
 
