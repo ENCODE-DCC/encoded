@@ -70,13 +70,13 @@ def choose_format(event):
         if token is not None:
             if token == request.session.get('_csrft_', None):
                 return
-            raise HTTPBadRequest('incorrect CSRF token')
+            raise HTTPBadRequest('Incorrect CSRF token')
         login = authenticated_userid(request)
         if login is not None:
             namespace, userid = login.split(':', 1)
             if namespace != 'mailto':
                 return
-        raise HTTPBadRequest('missing CSRF token')
+        raise HTTPBadRequest('Missing CSRF token')
 
     format = request.params.get('format')
     if format is None:
