@@ -144,7 +144,7 @@ function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, 
             {id: 'experiments', title: 'Experiments', url: '/experiments/'}
         ],
         user_actions: [
-            {id: 'signout', title: 'Log out', url: '#logout', bypass: 'true'}
+            {id: 'signout', title: 'Sign out', url: '#logout', bypass: 'true'}
         ],
         user_properties: undefined
     });
