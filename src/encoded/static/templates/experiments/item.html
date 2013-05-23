@@ -21,6 +21,14 @@
                         <span id="accession" class="data-point">{properties.dataset_description}</span>
                     </div>
                 </div>
+                <?js if(model.links.replicates[0].get('target')) {?>
+               <div class="data-group">
+                    <label class="data-label" for="target">Target:</label>
+                    <div class="data-values">
+                        <span id="target" class="data-point">{model.links.replicates[0].get('target')}</span>
+                    </div>
+               </div>
+               <?js } ?>
                 <?js if(model.links.replicates.length) {?>
                 <div class="data-group">
                     <label class="data-label" for="biosample">Biosample:</label>
@@ -64,14 +72,6 @@
                     </div>
                </div>
                <?js } ?>
-               <?js if(model.links.replicates[0].get('target')) {?>
-               <div class="data-group">
-                    <label class="data-label" for="target">Target:</label>
-                    <div class="data-values">
-                        <span id="target" class="data-point">{model.links.replicates[0].get('target')}</span>
-                    </div>
-               </div>
-               <?js } ?>
                <?js } ?>
             </section>
         </div>
@@ -94,7 +94,7 @@
                         <?js _.each(replicates, function(replicate) { ?>
                         <tr>
                             <td>{replicate.links.library.links.biosample.get('accession')}</td>
-                            <td>{replicate.links.library.links.biosample.get('biosample_term_id')}</td>
+                            <td>{replicate.links.library.links.biosample.get('biosample_term_name')}</td>
                             <td>{replicate.get('biological_replicate_number')}</td>
                             <td>{replicate.links.library.links.biosample.get('biosample_type')}</td>
                             <td>{replicate.links.library.links.biosample.links.donor.links.organism.get('organism_name')}</td>
@@ -214,6 +214,14 @@
                         </div>
                     </div>
                     <?js } ?>
+                    <div class="data-group">
+                        <label class="data-label" for="biosample">Biosample:</label>
+                        <div class="data-values">
+                            <span id="biosample" class="data-point"><a href={replicate.links.library.links.biosample._links.self.href}>
+                                {replicate.links.library.links.biosample.get('accession')}</a>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             <?js }); ?>
         <?js } ?>
