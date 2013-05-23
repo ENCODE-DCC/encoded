@@ -14,9 +14,8 @@ BASE_URL = "http://localhost:6543"
     'antibody_approval': '/antibodies/',
 }'''
 TYPE_URL = {
-    'colleague': '/users/',
-    'lab': '/labs/',
-    'award': '/awards/',
+    'experiment': '/experiments/',
+    'replicate': '/replicates/',
     ##{ 'institute': '/institutes/'),
 }
 
@@ -34,8 +33,9 @@ json_format = {
 for item in TYPE_URL.keys():
     fn = outdir + item + ".json"
     collection_r = requests.get(BASE_URL + TYPE_URL[item], headers=json_heads)
+    import pdb;pdb.set_trace()
     assert collection_r.ok
-    i_url = collection_r.json()['_embedded']['resources'].keys()[0]
+    i_url = collection_r.json()['_links']['items'][0]['href']
     individual_r = requests.get(BASE_URL + i_url, headers=json_heads)
     assert individual_r.ok
     individual = individual_r.json()

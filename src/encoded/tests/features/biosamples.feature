@@ -30,7 +30,7 @@ Feature: Biosamples
         When I fill in "table-filter" with "Immortal"
         Then I should see an element with the css selector "tr:not(.hidden) a[href='/biosamples/6b9a8e74-1d0b-413e-9015-87d519805515']" within 1 seconds
         And I should see an element with the css selector "tr.hidden a[href='/biosamples/aa965872-9e45-4d76-b295-bec6e4fe2517']"
-        And I should see exactly one element with the css selector "#table-count" containing the text "19"
+        And I should see exactly one element with the css selector "#table-count" containing the text "20"
 
         When I fill in "table-filter" with "Tissue"
         Then I should see an element with the css selector "tr:not(.hidden) a[href='/biosamples/aa965872-9e45-4d76-b295-bec6e4fe2517']" within 1 seconds

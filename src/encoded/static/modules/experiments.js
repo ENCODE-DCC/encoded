@@ -32,7 +32,7 @@ function experiments(exports, $, _, base, table_sorter, table_filter, home_templ
                         'Lab',
                         'Project'
                         ],
-        sort_initial: -1  // reverse sort on field 1
+        sort_initial: 1
     },
     {
         route_name: 'experiments',

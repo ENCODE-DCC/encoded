@@ -14,20 +14,26 @@ COLLECTION_URLS = [
 ## the below should equal the full spreadsheet rows with text in the 'test' col.
 COLLECTION_URL_LENGTH = {
     '/awards/': 39,
-    '/labs/': 43,
+    '/labs/': 45,
     '/users/': 83,
     '/organisms/': 6,
-    '/sources/': 60,
+    '/sources/': 77,
     '/targets/': 30,
     '/antibody-lots/': 29,
     '/validations/': 41,
-    '/antibodies/': 31,
+    '/antibodies/': 32,
     '/donors/': 72,
-    '/documents/': 124,
+    '/documents/': 130,
     '/treatments/': 7,
     '/constructs/': 5,
-    '/biosamples/': 135,
+    '/biosamples/': 137,
     '/platforms/': 11,
+    '/users/': 84,
+    '/files/': 19,
+    '/replicates/': 47,
+    '/libraries/': 49,
+    '/experiments/': 28,
+
 }
 
 COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
