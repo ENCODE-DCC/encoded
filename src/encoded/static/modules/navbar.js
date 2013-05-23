@@ -2,15 +2,6 @@ define(['exports', 'jquery', 'underscore', 'navigator', 'app', 'base',
     'text!templates/navbar.html'],
 function (navbar, $, _, navigator, app, base, navbar_template) {
 
-    function reload() {
-        window.location.reload();
-        // This was a new page load.
-        // https://bugs.webkit.org/show_bug.cgi?id=80697#c3
-        //var url = window.location.href;
-        //window.history.replaceState(null, document.title, '#reloading');
-        //window.location.replace(url);
-    }
-
     // The top navbar
     navbar.NavBarView = base.View.extend({
         template: _.template(navbar_template),
@@ -20,8 +11,9 @@ function (navbar, $, _, navigator, app, base, navbar_template) {
             console.log("Initializing navbar");
             this.listenTo(app.router, 'all', this.on_route);
             this.listenTo(app, 'started', this.update_session);
-            this.listenTo(app, 'user-ready', this.render);
-            this.ready = false;
+            this.listenTo(app, 'login', this.login);
+            this.listenTo(app, 'logout', this.logout);
+            this.deferred = app.persona_deferred;
         },
 
         update: function () {
@@ -48,17 +40,12 @@ function (navbar, $, _, navigator, app, base, navbar_template) {
             });
         },
 
-        events: {
-            "click #signin": "signin",
-            "click #signout": "signout"
-        },
-
         on_route: function (event) {
             var route_parts = event.split(':');
             // Only render on the main route not the overlay route.
             if (route_parts[0] !== 'route') return;
             this.current_route = route_parts[1];
-            if (this.ready) this.render();
+            if (this.deferred.state() === 'resolved') this.render();
         },
 
         update_session: function (event) {
@@ -66,12 +53,13 @@ function (navbar, $, _, navigator, app, base, navbar_template) {
             var onlogout = _.bind(this.onlogout, this);
             var onready = _.bind(this.onready, this);
 
-            $.ajax({
+             $.ajax({
                 url: '/session',
                 type: 'GET',
                 dataType: 'json'
             }).done(function (data) {
                 app.session = data;
+                app.session_deferred.resolve(data);
                 navigator.id.watch({
                     loggedInUser: app.session.persona,
                     onlogin: onlogin,
@@ -104,7 +92,9 @@ function (navbar, $, _, navigator, app, base, navbar_template) {
                 dataType: 'json',
                 data: JSON.stringify({assertion: assertion}),
                 contentType: 'application/json'
-            }).done(reload).fail(function (xhr, status, err) {
+            }).done(function (data) {
+                window.location.reload();
+            }).fail(function (xhr, status, err) {
                 // If there is an error, show the error messages
                 var msg, html, data, content_type;
                 navigator.id.logout();
@@ -117,7 +107,7 @@ function (navbar, $, _, navigator, app, base, navbar_template) {
                         msg = err + '.';
                     }
                     if (xhr.status === 400 && data.detail.indexOf('CSRF') !== -1) {
-                        reload();  // CSRF failure
+                        window.location.reload();  // CSRF failure
                     } else if (xhr.status === 422) {
                         msg = data.errors[0].description;
                     } else if (xhr.status === 403) {
@@ -141,20 +131,38 @@ function (navbar, $, _, navigator, app, base, navbar_template) {
                 url: '/logout?redirect=false',
                 type: 'GET',
                 dataType: 'json'
-            }).done(reload).fail(function (xhr, status, err) {
+            }).done(function (data) {
+                window.location.reload();
+            }).fail(function (xhr, status, err) {
                 alert("Logout failure: "+err+" ("+status+")");
             });
         },
 
         onready: function () {
             this.ready = true;
-            app.trigger('user-ready');
+            app.persona_deferred.resolve();
+        },
+
+        login: function (event) {
+            app.persona_deferred.done(function () {
+                $('.alert-error').hide(); // Hide any errors on a new submit
+                var request_params = {}; // could be site name
+                console.log('Logging in (persona) ');
+                navigator.id.request(request_params);
+            });
+        },
+
+        logout: function (event) {
+            app.persona_deferred.done(function () {
+                console.log('Logging out (persona)');
+                navigator.id.logout();
+            });
         }
+
     },
     {
         slot_name: 'navbar'
     });
-
 
     return navbar;
 });

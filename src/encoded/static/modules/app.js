@@ -93,13 +93,23 @@ function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, 
                 view_registry.add_slot(slot_name, selector);
             });
             this.router = this.view_registry.make_router();
+            this.session_deferred = $.Deferred();
+            this.persona_deferred = $.Deferred();
             // Render navbar when navigation triggers route.
             var navbar_view = new navbar.NavBarView({el: slots.navbar, model: this.config});
             view_registry.current_views['navbar'] = navbar_view;
+            $.when(navbar_view.deferred).done(function () {
+                navbar_view.render();
+            });
             this.setupNavigation();
             this.trigger('started');
             console.log(view_registry);
             console.log(this.router);
+
+            var trigger = _.bind(this.trigger, this);
+            $(document).on('click', 'a[data-trigger]', function click(evt) {
+                trigger($(this).attr('data-trigger'));
+            });
         },
 
         setupNavigation: function setupNavigation() {
@@ -144,7 +154,7 @@ function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, 
             {id: 'experiments', title: 'Experiments', url: '/experiments/'}
         ],
         user_actions: [
-            {id: 'signout', title: 'Sign out', url: '#logout', bypass: 'true'}
+            {id: 'signout', title: 'Sign out', trigger: 'logout'}
         ],
         user_properties: undefined
     });

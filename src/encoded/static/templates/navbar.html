@@ -19,12 +19,16 @@
                     <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                     <?js _.each(view.user_actions(), function (action) { ?>
-                        <li class="{action.class}"><a data-bypass="{action.bypass}" href="{action.url}" id="{action.id}">{action.title}</a></li>
+                        <li class="{action.class}"><a
+                            <?js if (action.bypass) { ?>data-bypass="bypass"<?js } ?>
+                            <?js if (action.url) { ?>href="{action.url}"<?js } ?>
+                            <?js if (action.trigger) { ?>data-trigger="{action.trigger}"<?js } ?>
+                            id="{action.id}">{action.title}</a></li>
                     <?js }); ?>
                     </ul>
                 </li>
             <?js } else { ?>
-                <li><a data-bypass="true" href="#login" id="signin">Sign in</a></li>            
+                <li><a data-trigger="login" id="signin">Sign in</a></li>            
             <?js } ?>
             </ul>
         </div><!--/.nav-collapse -->
