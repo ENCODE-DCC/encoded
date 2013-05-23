@@ -815,6 +815,7 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
 
     value['file_uuids'] = []
     value['replicate_uuids'] = []
+    value['experiment_control_uuids'] = []
 
     for file in alldata['file']:
         if (alldata['file'][file])['experiment_dataset_uuid'] is value['_uuid']:
@@ -825,6 +826,12 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
                         value['replicate_uuids'].append(replicate)
         else:
             pass
+
+    # Handling controls here
+    for file_uuid in value['file_uuids']:
+        if alldata['file'][file_uuid]['possible_controls']:
+            if not value['experiment_control_uuids']:
+                value['experiment_control_uuids'].append(alldata['file'][file_uuid]['possible_controls'])
 
     #checking for replicates without files
     for replicate in alldata['replicate']:
