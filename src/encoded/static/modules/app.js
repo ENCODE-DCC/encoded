@@ -109,7 +109,7 @@ function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, 
             // All navigation that is relative should be passed through the navigate
             // method, to be processed by the router.  If the link has a data-bypass
             // attribute, bypass the delegation completely.
-            $(document).on('click', 'a:not([data-bypass])', function click(evt) {
+            $(document).on('click', 'a[href]:not([data-bypass])', function click(evt) {
                 if (evt.which > 1 || evt.shiftKey || evt.altKey || evt.metaKey) {
                     return;
                 }
