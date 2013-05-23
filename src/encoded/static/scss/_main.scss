@@ -369,7 +369,7 @@ header .controls {
 
 // add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss
 .panel a[href^="http"]:after, td a[href^="http"]:after		{
-	content: " \f036";
+	content: " \f027";
 	font-family: FontAwesome;
 	font-weight: normal;
 	font-style: normal;

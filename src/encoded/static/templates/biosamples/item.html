@@ -20,12 +20,14 @@
                     <span id="term-id" class="data-point">{properties.biosample_term_id}</span>
                 </div>
             </div>
+            <?js if(properties.biosample_description) { ?>
             <div class="data-group">
             <label class="data-label" for="description">Description:</label>
                 <div class="data-values">
                      <span id="description" class="data-point">{properties.biosample_description}</span>
                 </div>
             </div>
+            <?js } ?>
             <div class="data-group">
             <label class="data-label" for="source">Source:</label>
                 <div class="data-values">
@@ -54,12 +56,14 @@
                 </div>
             </div>
             <?js } ?>
+            <?js if(properties.project) { ?>
             <div class="data-group">
                 <label class="data-label" for="project">Project:</label>
                     <div class="data-values">
                         <span id="project" class="data-point">{properties.project}</span>
                     </div>
             </div>
+            <?js } ?>
             <div class="data-group">
                 <label class="data-label" for="submitted-by">Submitted By:</label>
                 <div class="data-values">
