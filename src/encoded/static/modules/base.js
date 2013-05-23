@@ -1,6 +1,7 @@
 define(['exports', 'jquery', 'underscore', 'backbone', 'backbone.hal', 'assert',
+    'text!templates/error.html',
     'text!templates/modal.html'],
-function base(exports, $, _, Backbone, HAL, assert, modal_template) {
+function base(exports, $, _, Backbone, HAL, assert, error_template, modal_template) {
 
     // Underscore template settings
     // `{model.title}` for escaped text
@@ -14,13 +15,20 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
 
     // Handle ajax errors
     $(document).ajaxError(function (event, xhr, settings, error) {
+        var data, content_type, view;
         var url = window.location.pathname + window.location.search;
-        if (settings.type === 'GET' || settings.url === url) {
-            // This was a new page load, show the raw error page.
-            // https://bugs.webkit.org/show_bug.cgi?id=80697#c3
-            url = window.location.href;
-            window.history.replaceState(null, document.title, '#reloading');
-            window.location.replace(url);
+        if (settings.type === 'GET' && settings.url === url) {
+            content_type = xhr.getResponseHeader('Content-Type').split(';')[0];
+            if (content_type === 'application/json') {
+                data = JSON.parse(xhr.responseText);
+            } else {
+                data = {
+                    'code': xhr.status,
+                    'title': xhr.statusText
+                };
+            }
+            view = new exports.ErrorView({model: data});
+            exports.view_registry.switch_to('content', view);
         } else {
             console.log("Request failed: " + settings.type + " " + settings.url);
             // Display an error overlay?
@@ -246,7 +254,7 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
 
 
     // Base View class implements conventions for rendering views.
-    exports.View = Backbone.View.extend({
+    exports.BaseView = Backbone.View.extend({
         title: undefined,
         description: undefined,
 
@@ -261,7 +269,9 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
             this.$el.html(this.template({model: this.model, properties: properties, view: this, '_': _}));
             return this;
         }
+    });
 
+    exports.View = exports.BaseView.extend({
     }, {
         view_registry: exports.view_registry,
         route_type: 'route',
@@ -273,6 +283,16 @@ function base(exports, $, _, Backbone, HAL, assert, modal_template) {
         this.view_registry.defer(view);
         return view;
     };
+
+    exports.ErrorView = exports.BaseView.extend({
+        template: _.template(error_template),
+
+        render: function () {
+            this.update();
+            this.$el.html(this.template({model: this.model, properties: this.model, view: this, '_': _}));
+            return this;
+        }
+    });
 
     exports.Modal = exports.View.extend({
         className: "modal hide fade",

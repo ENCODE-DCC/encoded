@@ -1,12 +1,18 @@
-define(['exports', 'jquery', 'underscore', 'base', 'text!templates/home.html'],
-function home(exports, $, _, base, home_template) {
+define(['exports', 'jquery', 'underscore', 'app', 'base', 'text!templates/home.html'],
+function (home, $, _, app, base, home_template) {
 
     // The home screen
-    exports.HomeView = base.View.extend({
-        template: _.template(home_template)
+    home.HomeView = base.View.extend({
+        template: _.template(home_template),
+        initialize: function () {
+            this.deferred = app.session_deferred;
+        },
+        update: function () {
+            this.authenticated = !!app.session.persona;
+        }
     },  {
         route_name: 'home'
     });
 
-    return exports;
+    return home;
 });
