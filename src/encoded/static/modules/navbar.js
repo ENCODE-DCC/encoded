@@ -128,7 +128,7 @@ function navbar(exports, $, _, navigator, app, base, navbar_template) {
 
         toggle_login: function toggleLogin() {
             if (app.user.email) {
-                $("#signout").text("Log out: "+app.user.email);
+                $("#signout").text("Sign out: "+app.user.email);
                 $("#signout").parent().show();
                 $("#signin").parent().hide();
             } else {
