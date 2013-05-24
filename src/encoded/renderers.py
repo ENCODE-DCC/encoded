@@ -68,7 +68,9 @@ def choose_format(event):
         request.environ['encoded.format'] = 'json'
         token = request.headers.get('X-CSRF-Token')
         if token is not None:
-            if token == request.session.get('_csrft_', None):
+            # Avoid dirtying the session and adding a Set-Cookie header
+            # XXX Should consider if this is a good idea or not and timeouts
+            if token == dict.get(request.session, '_csrft_', None):
                 return
             raise HTTPBadRequest('Incorrect CSRF token')
         login = authenticated_userid(request)
