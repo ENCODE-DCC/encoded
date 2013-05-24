@@ -1,7 +1,8 @@
 import requests
 import json
 
-URL = 'http://submit.encodedcc.org'
+METADATA_URL = 'http://submit.encodedcc.org'
+FILES_URL = 'https://encodedcc.sdsc.edu/cgi-bin/edwWebSubmit'
 headers = {'content-type': 'application/json'}  # may not be necessary
 
 # you have to get these from the DCC after loggin in
@@ -18,7 +19,7 @@ key_pair = {
 you could get this from the server with:
 
 user_json = requests.get(key_pair['user']+':'+key_pair['pw']+
-    '@'+URL+'users/cherry@stanford.edu/').json()
+    '@'+METADATA_URL+'users/cherry@stanford.edu/').json()
 user = json.loads(user_json)
 
 Or you could pull data from your LIMS or google doc,
@@ -55,16 +56,24 @@ colleague = {
     "email": "cherry@stanford.edu",
     "job_title": "PI"
 }
+
+# The _links (or other fields beginning with _ are for internal fields
+# If you submit them they will be ignored (at best)
+
+for k in list(colleague.keys()):
+    if k.startswith('_'):
+        del colleague[k]
+
+
 # change the name
-colleague.first_name = 'J. Michael'
+colleague["first_name"] = 'J. Michael'
 colleague_json = json.dumps(colleague)
 
-object_url = "%s%s" % (
-    URL,
-    user['_links']['self']['href']  # aka "/users/{UUID}"
-)
+object_url = METADATA_URL + "/users/" + colleague['email']
+## You can also use UUID instead of email
+
 response = requests.post(object_url,
-                         auth=(key_pair['user'], key_pair['pw'],
+                         auth=(key_pair['user'], key_pair['pw']),
                          data=colleague_json,
                          headers=headers)
 
@@ -73,12 +82,13 @@ assert(response.status_code == 200)  # 201 for creation
 ## Now submit some files
 manifest_url = "http://mysite.org/mylab/encode/validated.txt"
 
-data_url = 'https://encodedcc.sdsc.edu/cgi-bin/edwWebSubmit?name=%s&password=%s&url=%s'  %  (
-         key_pair['user'],
-         key_pair['pw'],
-         manifest_url
-)
-response = requests.get(data_url)
+data = {
+    "name": key_pair['user'],
+    "password": key_pair['pw'],
+    "url": manifest_url
+}
+
+response = requests.get(FILES_URL, params=data)
 assert(response.status_code == 200)
 
 
