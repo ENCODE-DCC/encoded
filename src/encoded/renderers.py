@@ -80,9 +80,12 @@ def choose_format(event):
 
     format = request.params.get('format')
     if format is None:
-        request.environ['encoded.vary'] = ('Accept',)
-        mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
-        format = mime_type.split('/', 1)[1]
+        request.environ['encoded.vary'] = ('Accept', 'Authorization')
+        if request.authorization is not None:
+            format = 'json'
+        else:
+            mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
+            format = mime_type.split('/', 1)[1]
     else:
         format = format.lower()
         if format not in ('html', 'json'):

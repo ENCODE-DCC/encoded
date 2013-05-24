@@ -51,6 +51,14 @@ def test_json(testapp, url):
     assert res.json['_links']
 
 
+def test_json_basic_auth(htmltestapp):
+    import base64
+    url = '/'
+    value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
+    res = htmltestapp.get(url, headers={'Authorization': value}, status=200)
+    assert res.json['_links']
+
+
 def _test_antibody_approval_creation(testapp):
     from urlparse import urlparse
     new_antibody = {'foo': 'bar'}
