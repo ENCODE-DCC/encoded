@@ -530,14 +530,11 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 #signin-box {
 	@include background-image(linear-gradient(rgba(255,255,255,0.1), rgba(0,0,0,0.1)));
 	@include border-radius(5px);
-	border: 1px solid #ddd;
+	border: 1px solid #cacaca;
 	display: inline-block;
-	//height: 120px;
-	//width: 300px;
 	padding: 20px;
-	//margin: 10px 10px;
 	float: right;
-	@include box-shadow(rgba(221,221,221,1) 2px 2px 10px);
+	@include box-shadow(rgba(180,180,180,0.9) 0 2px 10px, 0 1px 0 #fff inset);
 		h4 {
 			margin: 0 0 10px 0;
 			padding: 0;
