@@ -68,7 +68,9 @@ def choose_format(event):
         request.environ['encoded.format'] = 'json'
         token = request.headers.get('X-CSRF-Token')
         if token is not None:
-            if token == request.session.get('_csrft_', None):
+            # Avoid dirtying the session and adding a Set-Cookie header
+            # XXX Should consider if this is a good idea or not and timeouts
+            if token == dict.get(request.session, '_csrft_', None):
                 return
             raise HTTPBadRequest('Incorrect CSRF token')
         login = authenticated_userid(request)
@@ -80,9 +82,12 @@ def choose_format(event):
 
     format = request.params.get('format')
     if format is None:
-        request.environ['encoded.vary'] = ('Accept',)
-        mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
-        format = mime_type.split('/', 1)[1]
+        request.environ['encoded.vary'] = ('Accept', 'Authorization')
+        if request.authorization is not None:
+            format = 'json'
+        else:
+            mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
+            format = mime_type.split('/', 1)[1]
     else:
         format = format.lower()
         if format not in ('html', 'json'):

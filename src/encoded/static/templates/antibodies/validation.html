@@ -56,7 +56,7 @@
                 <p><b>Grant:</b> <span>{model.links.award.get('number')}</span></p>
                 <p><b>Approver:</b> <span>{properties.validated_by}</span></p>
                 <p><b>Image:</b> <span class="label status-{properties.validation_status.toLowerCase()}">{properties.validation_status}</span>
-                <p><b>Download:</b>
+                <p><i class="icon-download-alt"></i> <b>Download:</b>
                     <?js if (properties.document) { ?>
                     <a  href="{model._links.self.href+'/'+properties.document.href}"
                         download="{properties.document.download}"

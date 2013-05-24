@@ -11,6 +11,10 @@ Contents
 
 */
 
+/* A few global variables (a good thing in css :) */
+$mainThemeColor: #e8ecef; // i.e. the background color
+
+
 /* Overwriting Bootstrap Styes */
 
 /* Hero Unit */
@@ -161,7 +165,17 @@ table thead tr th button {
 }
 
 
+/* Breadcrumbs - overwrite bootstrap styles */
 
+.breadcrumb {
+	padding: 5px 15px;
+    background-color: darken($mainThemeColor, 3%);
+    border: 1px solid darken($mainThemeColor, 9%);
+    @include box-shadow(inset 0px 0px 5px 2px rgba(180, 180, 180, 0.1));
+    color: #646464;
+    text-transform: capitalize;
+    .active { color: #000; }
+}
 
 
 /* NavBar */
@@ -327,7 +341,7 @@ nav.navbar-fixed-top {
 
 body {
 	/* background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat fixed; */
-	background: #e8ecef;
+	background: $mainThemeColor;
 }
 
 .cancel-link {margin-left: 20px;}
@@ -394,6 +408,13 @@ header .controls {
 a[href^="http"]:empty:after {
 	content: none;
 }
+
+// do not use external link icon in these cases...
+// downloads
+a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
+	content: none !important;
+}
+
 
 
 @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
@@ -523,14 +544,11 @@ a[href^="http"]:empty:after {
 #signin-box {
 	@include background-image(linear-gradient(rgba(255,255,255,0.1), rgba(0,0,0,0.1)));
 	@include border-radius(5px);
-	border: 1px solid #ddd;
+	border: 1px solid #cacaca;
 	display: inline-block;
-	//height: 120px;
-	//width: 300px;
 	padding: 20px;
-	//margin: 10px 10px;
 	float: right;
-	@include box-shadow(rgba(221,221,221,1) 2px 2px 10px);
+	@include box-shadow(rgba(180,180,180,0.9) 0 2px 10px, 0 1px 0 #fff inset);
 		h4 {
 			margin: 0 0 10px 0;
 			padding: 0;
@@ -716,7 +734,7 @@ a[href^="http"]:empty:after {
 }
 
 
-.type-validation.view-detail figure {
+.type-validation.view-detail figure, .type-document.view-detail figure {
 	@include border-radius($baseBorderRadius);
 	margin: 14px;
 	padding: 10px;
@@ -751,7 +769,7 @@ a[href^="http"]:empty:after {
   	figcaption { color: $warningText; }
 }
 
-.type-validation.view-detail .status-unsubmitted {
+.type-validation.view-detail .status-unsubmitted, .type-document.view-detail .status-none {
   figure { border-color: #e1e1e8; background-color: #f7f7f9; }
   	figcaption { color: #333; }
 }

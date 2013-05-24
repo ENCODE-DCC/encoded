@@ -1,4 +1,4 @@
-<div class="container"><!-- need to remove other code from js -->
+<div class="container status-none"><!-- need to remove other code from js -->
     <div class="row">
         <div class="span6">
             <figure>
@@ -49,7 +49,7 @@
                 <p><b>Submitted By:</b> <span>{model.links.submitter.get('first_name')} {model.links.submitter.get('last_name')}</span></p>
                 <p><b>Lab:</b> <span>{model.links.lab.get('name')}</span></p>
                 <p><b>Grant:</b> <span>{model.links.award.get('number')}</span></p>
-                <p><b>Download:</b>
+                <p><i class="icon-download-alt"></i> <b>Download:</b>
                     <?js if (properties.document) { ?>
                     <a  href="{model._links.self.href+'/'+properties.document.href}"
                         download="{properties.document.download}"

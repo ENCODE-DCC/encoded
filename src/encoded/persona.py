@@ -90,7 +90,7 @@ def login(request):
              subpath_segments=0, permission=NO_PERMISSION_REQUIRED)
 def logout(request):
     """View to forget the user"""
-    request.response.headers = forget(request)
+    request.response.headerlist.extend(forget(request))
     if asbool(request.params.get('redirect', True)):
         raise HTTPFound(location=request.resource_path(request.root))
     return {'status': 'okay'}
