@@ -11,6 +11,10 @@ Contents
 
 */
 
+/* A few global variables (a good thing in css :) */
+$mainThemeColor: #e8ecef; // i.e. the background color
+
+
 /* Overwriting Bootstrap Styes */
 
 /* Hero Unit */
@@ -161,7 +165,17 @@ table thead tr th button {
 }
 
 
+/* Breadcrumbs - overwrite bootstrap styles */
 
+.breadcrumb {
+	padding: 5px 15px;
+    background-color: darken($mainThemeColor, 3%);
+    border: 1px solid darken($mainThemeColor, 9%);
+    @include box-shadow(inset 0px 0px 5px 2px rgba(180, 180, 180, 0.1));
+    color: #646464;
+    text-transform: capitalize;
+    .active { color: #000; }
+}
 
 
 /* NavBar */
@@ -327,7 +341,7 @@ nav.navbar-fixed-top {
 
 body {
 	/* background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat fixed; */
-	background: #e8ecef;
+	background: $mainThemeColor;
 }
 
 .cancel-link {margin-left: 20px;}

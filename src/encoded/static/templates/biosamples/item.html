@@ -1,6 +1,10 @@
 <header class="row">
     <div class="span12">
-        <h4 style="text-transform: capitalize;">Biosample > {properties.biosample_type} > {model.links.donor.links.organism.get('organism_name')} </h4>
+        <ul class="breadcrumb">
+			<li>Biosamples <span class="divider">/</span></li>
+			<li>{properties.biosample_type} <span class="divider">/</span></li>
+			<li class="active">{model.links.donor.links.organism.get('organism_name')}</li>
+		</ul>
         <h2>{properties.accession} / {properties.biosample_type}</h2>
     </div>
 </header>
