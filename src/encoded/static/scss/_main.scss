@@ -734,7 +734,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 }
 
 
-.type-validation.view-detail figure {
+.type-validation.view-detail figure, .type-document.view-detail figure {
 	@include border-radius($baseBorderRadius);
 	margin: 14px;
 	padding: 10px;
@@ -769,7 +769,7 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
   	figcaption { color: $warningText; }
 }
 
-.type-validation.view-detail .status-unsubmitted {
+.type-validation.view-detail .status-unsubmitted, .type-document.view-detail .status-none {
   figure { border-color: #e1e1e8; background-color: #f7f7f9; }
   	figcaption { color: #333; }
 }
