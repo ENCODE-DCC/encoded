@@ -395,6 +395,13 @@ a[href^="http"]:empty:after {
 	content: none;
 }
 
+// do not use external link icon in these cases...
+// downloads
+a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
+	content: none !important;
+}
+
+
 
 @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
 

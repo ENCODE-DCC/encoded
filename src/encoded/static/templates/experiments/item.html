@@ -225,17 +225,17 @@
                     <tr>
                         <th>Accession</th>
                         <th>File Type</th>
-                        <th>File Name</th>
                         <th>Associated Replicates</th>
                         <th>Added By</th>
                         <th>Date Added</th>
+                        <th>File Download</th>
                     </tr>
                 </thead>
+                <tbody>
                 <?js _.each(model.links.files, function(file) { ?>
                 <tr>
                     <td>{file.get('file_accession')}</td>
                     <td>{file.get('file_format')}</td>
-                    <td>{file.get('temp_file_name')}</td>
                     <td>
                     <?js if(file.get('biological_replicate_number')) {?>
                         ({file.get('biological_replicate_number')}, {file.get('technical_replicate_number')})
@@ -243,8 +243,12 @@
                     </td>
                     <td>{file.links.submitter.get('first_name')} {file.links.submitter.get('last_name')}</td>
                     <td>{file.get('date_passed_validation')}</td>
+                    <td><a href="http://encodedcc.sdsc.edu/warehouse/{file.get('file_name_encode3')}" download>
+                    		<span class="icon-download-alt"></span> Download</a>
+                    </td>
                 </tr>
                 <?js } ); ?>
+                </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="6"></td>
