@@ -1,7 +1,13 @@
 <header class="row">
     <div class="span12">
         <?js if(model.links.replicates.length){ ?>
-        <h4 style="text-transform: capitalize;">Experiment <?js if(model.links.replicates.length) { ?> > {model.links.replicates[0].links.assay.get('assay_name')}<?js } ?></h4> <?js } ?>
+        <ul class="breadcrumb">
+			<li>Experiment <?js if(model.links.replicates.length) { ?> <span class="divider">/</span></li>
+			<li class="active">{model.links.replicates[0].links.assay.get('assay_name')}</li>
+			<?js } ?>
+		</ul>
+		<?js } ?>  
+        
         <h2>Experiment summary for {properties.dataset_accession}</h2>
     </div>
 </header>
