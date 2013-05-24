@@ -59,11 +59,26 @@ colleague = {
 colleague.first_name = 'J. Michael'
 colleague_json = json.dumps(colleague)
 
-object_url = "%s:%s@%s%s" % (
-    key_pair['user'],
-    key_pair['pw'],
+object_url = "%s%s" % (
     URL,
-    user['_links']['self']['href']
+    user['_links']['self']['href']  # aka "/users/{UUID}"
 )
-response = requests.post(object_url, data=colleague_json, headers=headers)
+response = requests.post(object_url,
+                         auth=(key_pair['user'], key_pair['pw'],
+                         data=colleague_json,
+                         headers=headers)
+
 assert(response.status_code == 200)  # 201 for creation
+
+## Now submit some files
+manifest_url = "http://mysite.org/mylab/encode/validated.txt"
+
+data_url = 'https://encodedcc.sdsc.edu/cgi-bin/edwWebSubmit?name=%s&password=%s&url=%s'  %  (
+         key_pair['user'],
+         key_pair['pw'],
+         manifest_url
+)
+response = requests.get(data_url)
+assert(response.status_code == 200)
+
+
