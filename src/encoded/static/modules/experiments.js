@@ -64,14 +64,16 @@ function experiments(exports, $, _, base, table_sorter, table_filter, home_templ
             this.deferred = deferred;
             model.deferred = model.fetch();
             $.when(model.deferred).done(_.bind(function () {
-                this.documents = _.map(model.links.replicates[0].links.library.links.documents, _.bind(function (item) {
-                    item.deferred = item.fetch();
-                    var subview = new this.document({model: item});
-                    $.when(subview.deferred).then(function () {
-                        subview.render();
-                    });
-                    return subview;
-                }, this));
+                if(model.links.replicates.length) {
+                    this.documents = _.map(model.links.replicates[0].links.library.links.documents, _.bind(function (item) {
+                        item.deferred = item.fetch();
+                        var subview = new this.document({model: item});
+                        $.when(subview.deferred).then(function () {
+                            subview.render();
+                        });
+                        return subview;
+                    }, this));
+                }
                 $.when.apply($, _.pluck(this.documents, 'deferred')).then(function () {
                     deferred.resolve();
                 });
@@ -80,11 +82,13 @@ function experiments(exports, $, _, base, table_sorter, table_filter, home_templ
         template: _.template(item_template),
         render: function render() {
             ExperimentView.__super__.render.apply(this, arguments);
-            var div = this.$el.find('div.protocols');
-            if(this.documents.length) div.before('<h3>Protocols</h3>');
-            _.each(this.documents, function (view) {
-                div.append(view.el);
-            });
+            if(this.documents) {
+                var div = this.$el.find('div.protocols');
+                if(this.documents.length) div.before('<h3>Protocols</h3>');
+                _.each(this.documents, function (view) {
+                    div.append(view.el);
+                });
+            }
             return this;
         }
     }, {
