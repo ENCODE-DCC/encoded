@@ -1,10 +1,6 @@
 @platforms @usefixtures(workbook)
 Feature: Platforms
 
-    Scenario: Active section
-        When I visit "/platforms/"
-        Then the "/platforms/" section should be active
-
     Scenario: Table
         When I visit "/platforms/"
         Then I should see an element with the css selector "table.sticky-area > tbody > tr"

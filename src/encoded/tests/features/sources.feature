@@ -1,9 +1,6 @@
 @sources @usefixtures(workbook)
 Feature: Sources
 
-    Scenario: Active section
-        When I visit "/sources/"
-        Then the "/sources/" section should be active
 
     Scenario: Table
         When I visit "/sources/"
