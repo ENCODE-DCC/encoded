@@ -1,4 +1,5 @@
 from pyramid.view import view_config
+from random import randint
 from ..contentbase import (
     Root,
     location_root,
@@ -6,6 +7,8 @@ from ..contentbase import (
 
 
 def includeme(config):
+    # Random processid so etags are invalidated after restart.
+    config.registry['encoded.processid'] = randint(0, 2 ** 32)
     config.scan()
 
 

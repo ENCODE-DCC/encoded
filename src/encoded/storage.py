@@ -220,7 +220,8 @@ class Blob(Base):
 
 class TransactionRecord(Base):
     __tablename__ = 'transactions'
-    tid = Column(UUID, default=uuid.uuid4, primary_key=True)
+    order = Column(types.Integer, autoincrement=True, primary_key=True)
+    tid = Column(UUID, default=uuid.uuid4, nullable=False, unique=True)
     data = Column(JSON)
     timestamp = Column(
         types.DateTime, nullable=False, server_default=func.now())

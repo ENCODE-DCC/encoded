@@ -143,9 +143,8 @@ def test_collection_update(testapp, url, execute_counter):
     res = testapp.post_json(url, initial, status=201)
     item_url = res.json['_links']['items'][0]['href']
 
-    execute_counter.reset()
-    res = testapp.get(item_url).json
-    assert execute_counter.count == 1
+    with execute_counter.expect(2):
+        res = testapp.get(item_url).json
 
     del initial['_uuid']
     res.pop('_links', None)
@@ -156,9 +155,8 @@ def test_collection_update(testapp, url, execute_counter):
     del update['_uuid']
     testapp.post_json(item_url, update, status=200)
 
-    execute_counter.reset()
-    res = testapp.get(item_url).json
-    assert execute_counter.count == 1
+    with execute_counter.expect(2):
+        res = testapp.get(item_url).json
 
     res.pop('_uuid', None)
     res.pop('_links', None)
@@ -223,3 +221,18 @@ def test_users_view_basic_anon(testapp, anontestapp):
 
 def test_users_list_denied_anon(anontestapp):
     anontestapp.get('/users/', status=403)
+
+
+def test_etags(testapp):
+    url = '/organisms/'
+    from .sample_data import URL_COLLECTION
+    collection = URL_COLLECTION[url]
+    item = collection[0]
+    res = testapp.post_json(url, item, status=201)
+    res = testapp.get(url, status=200)
+    etag = res.etag
+    res = testapp.get(url, headers={'If-None-Match': etag}, status=304)
+    item = collection[1]
+    res = testapp.post_json(url, item, status=201)
+    res = testapp.get(url, headers={'If-None-Match': etag}, status=200)
+    assert res.etag != etag
