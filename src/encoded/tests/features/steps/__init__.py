@@ -4,7 +4,8 @@ import behaving.web.steps  # NOQA
 
 @step(u'I should see at least {count:d} elements with the css selector "{css}"')
 def should_see_count_elements_with_css(context, css, count):
-    assert len(context.browser.find_by_css(css)) >= count, u'Element has at least that many counts'
+    element_count = len(context.browser.find_by_css(css))
+    assert element_count >= count, u'Element has at least that many counts'
 
 
 @step(u'I should see exactly one element with the css selector "{css}" containing the text "{text}"')
@@ -33,7 +34,7 @@ def click_element(context, css):
 
 @step(u'I wait for the table to fully load')
 def wait_for_table(context):
-    assert context.browser.is_element_present_by_css("#table-count.label-invert")
+    assert context.browser.is_element_present_by_css("table.fully-loaded")
 
 
 @step(u'The "{url}" section should be active')
