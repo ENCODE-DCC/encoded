@@ -2,7 +2,7 @@ import requests
 import json
 
 METADATA_URL = 'http://submit.encodedcc.org'
-FILES_URL = 'https://encodedcc.sdsc.edu/cgi-bin/edwWebSubmit'
+FILES_URL = 'https://submit.encodedcc.org/edwWebSubmit'
 headers = {'content-type': 'application/json'}  # may not be necessary
 
 # you have to get these from the DCC after loggin in
