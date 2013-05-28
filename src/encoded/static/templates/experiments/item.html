@@ -27,7 +27,7 @@
                         <span id="accession" class="data-point">{properties.dataset_description}</span>
                     </div>
                 </div>
-                <?js if(model.links.replicates[0].get('target')) {?>
+                <?js if(model.links.replicates.length) {?>
                <div class="data-group">
                     <label class="data-label" for="target">Target:</label>
                     <div class="data-values">
@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <?js if(model.links.replicates.length) { ?>
-                <?js if(model.links.replicates[0].get('antibody_accession')) {?>
+                <?js if(model.links.replicates.length) {?>
                 <div class="data-group">
                     <label class="data-label" for="antibody">Antibody:</label>
                     <div class="data-values">
