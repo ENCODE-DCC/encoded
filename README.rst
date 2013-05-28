@@ -60,6 +60,15 @@ To start productiondata server (Postgres, AuthZ, all data) use:
     --log-file [filename] is a useful argument
 
 
+Database setup on VMs::
+
+    # service postgresql-9.2 initdb
+    # service postgresql-9.2 start
+    # sudo -u postgres createuser --createdb encoded
+
+Then as the encoded user::
+
+    $ createdb encoded
 
 
 Notes on SASS/Compass
