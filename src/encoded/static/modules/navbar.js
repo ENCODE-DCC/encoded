@@ -4,7 +4,7 @@ define(['exports', 'jquery', 'underscore', 'navigator', 'app', 'base',
 function (navbar, $, _, navigator, app, base, global_sections_template, user_actions_template) {
 
 
-    navbar.GlobalSectionsView = base.View.extend({
+    navbar.GlobalSectionsView = base.BaseView.extend({
         template: _.template(global_sections_template),
 
         initialize: function () {
@@ -28,13 +28,10 @@ function (navbar, $, _, navigator, app, base, global_sections_template, user_act
             this.current_route = route_parts[1];
             this.render();
         }
-    },
-    {
-        slot_name: 'global_sections'
     });
 
 
-    navbar.UserActionsView = base.View.extend({
+    navbar.UserActionsView = base.BaseView.extend({
         template: _.template(user_actions_template),
 
         initialize: function () {
@@ -169,9 +166,6 @@ function (navbar, $, _, navigator, app, base, global_sections_template, user_act
             });
         }
 
-    },
-    {
-        slot_name: 'navbar'
     });
 
     return navbar;
