@@ -1,15 +1,43 @@
 define(['exports', 'jquery', 'underscore', 'navigator', 'app', 'base',
-    'text!templates/navbar.html'],
-function (navbar, $, _, navigator, app, base, navbar_template) {
+    'text!templates/global_sections.html',
+    'text!templates/user_actions.html'],
+function (navbar, $, _, navigator, app, base, global_sections_template, user_actions_template) {
 
-    // The top navbar
-    navbar.NavBarView = base.View.extend({
-        template: _.template(navbar_template),
+
+    navbar.GlobalSectionsView = base.View.extend({
+        template: _.template(global_sections_template),
 
         initialize: function () {
-            // TODO: re-renders more than necessary, should split into subviews.
-            console.log("Initializing navbar");
             this.listenTo(app.router, 'all', this.on_route);
+        },
+
+        // Preprocess the global_sections adding an active class to the current section
+        global_sections: function () {
+            var view = this;
+            return _(this.model.global_sections).map(function (action) {
+                return _.extend(action, {
+                    'class': view.current_route === action.id ? 'active': ''
+                });
+            });
+        },
+
+        on_route: function (event) {
+            var route_parts = event.split(':');
+            // Only render on the main route not the overlay route.
+            if (route_parts[0] !== 'route') return;
+            this.current_route = route_parts[1];
+            this.render();
+        }
+    },
+    {
+        slot_name: 'global_sections'
+    });
+
+
+    navbar.UserActionsView = base.View.extend({
+        template: _.template(user_actions_template),
+
+        initialize: function () {
             this.listenTo(app, 'started', this.update_session);
             this.listenTo(app, 'login', this.login);
             this.listenTo(app, 'logout', this.logout);
@@ -24,28 +52,10 @@ function (navbar, $, _, navigator, app, base, navbar_template) {
             }
         },
 
-        // Preprocess the global_sections adding an active class to the current section
-        global_sections: function () {
-            var view = this;
-            return _(this.model.global_sections).map(function (action) {
-                return _.extend(action, {
-                    'class': view.current_route === action.id ? 'active': ''
-                });
-            });
-        },
-
         user_actions: function () {
             return _.filter(this.model.user_actions, function (action) {
                 return action.condition === undefined || action.condition();
             });
-        },
-
-        on_route: function (event) {
-            var route_parts = event.split(':');
-            // Only render on the main route not the overlay route.
-            if (route_parts[0] !== 'route') return;
-            this.current_route = route_parts[1];
-            if (this.deferred.state() === 'resolved') this.render();
         },
 
         update_session: function (event) {

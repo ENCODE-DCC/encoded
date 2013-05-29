@@ -58,7 +58,8 @@ function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, 
 
     var slots = {
         content: '#content',
-        navbar: '#navbar',
+        global_sections: '#global-sections',
+        user_actions: '#user-actions',
         overlay: '#overlay'
     };
 
@@ -96,10 +97,15 @@ function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, 
             this.session_deferred = $.Deferred();
             this.persona_deferred = $.Deferred();
             // Render navbar when navigation triggers route.
-            var navbar_view = new navbar.NavBarView({el: slots.navbar, model: this.config});
-            view_registry.current_views['navbar'] = navbar_view;
-            $.when(navbar_view.deferred).done(function () {
-                navbar_view.render();
+            var global_sections_view = new navbar.GlobalSectionsView({el: slots.global_sections, model: this.config});
+            view_registry.current_views['global_sections'] = global_sections_view;
+            $.when(global_sections_view.deferred).done(function () {
+                global_sections_view.render();
+            });
+            var user_actions_view = new navbar.UserActionsView({el: slots.user_actions, model: this.config});
+            view_registry.current_views['user_actions'] = user_actions_view;
+            $.when(user_actions_view.deferred).done(function () {
+                user_actions_view.render();
             });
             this.setupNavigation();
             this.trigger('started');
