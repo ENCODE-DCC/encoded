@@ -95,6 +95,10 @@ function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, 
                 view_registry.add_slot(slot_name, selector);
             });
             this.router = this.view_registry.make_router();
+            this.router.on('switched:content', function () {
+                // XXX The templates should be updated to always define an h1.
+                $('title').text($('h1, h2').first().text() + ' - ' + $('#navbar .brand').first().text());
+            });
             this.session_deferred = $.Deferred();
             this.persona_deferred = $.Deferred();
             // Render navbar when navigation triggers route.

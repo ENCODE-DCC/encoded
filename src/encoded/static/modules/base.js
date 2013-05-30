@@ -249,6 +249,7 @@ function base(exports, $, _, Backbone, HAL, assert, error_template, modal_templa
             if (current_view) current_view.remove();
             this.slots[slot_name].html(view_html);
             this.current_views[slot_name] = view;
+            this.router.trigger('switched:' + slot_name);
         }
     });
 
