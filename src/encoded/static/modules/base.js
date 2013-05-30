@@ -201,6 +201,8 @@ function base(exports, $, _, Backbone, HAL, assert, error_template, modal_templa
                 }
                 var view = new_(view_factory, [options]);
                 if (view.deferred !== undefined) deferred = view.deferred;
+                var slot = this.slots[slot_name];
+                slot.removeClass('done');
                 $.when(deferred).done(_.bind(this.switch_to, this, slot_name, view));
                 return deferred;
             };
@@ -245,9 +247,11 @@ function base(exports, $, _, Backbone, HAL, assert, error_template, modal_templa
         switch_to: function switch_to(slot_name, view) {
             var current_view = this.current_views[slot_name];
             var view_html = '';
+            var slot = this.slots[slot_name];
             if (view) view_html = view.render().el;
             if (current_view) current_view.remove();
-            this.slots[slot_name].html(view_html);
+            slot.html(view_html);
+            slot.addClass('done');
             this.current_views[slot_name] = view;
             this.router.trigger('switched:' + slot_name);
         }

@@ -37,7 +37,17 @@ def wait_for_table(context):
     assert context.browser.is_element_present_by_css("table.fully-loaded")
 
 
+@step(u'I wait for the content to load')
+def wait_for_content(context):
+    assert context.browser.is_element_present_by_css("#content.done")
+
+
 @step(u'The "{url}" section should be active')
 def url_section_active(context, url):
     assert context.browser.is_element_present_by_css("#global-sections > li.active > a[href='%s']" % url)
     assert context.browser.is_element_not_present_by_css("#global-sections > li.active > a:not([href='%s'])" % url)
+
+
+@step(u'the title should contain the text "{text}"')
+def title_contains(context, text):
+    assert text in context.browser.title
