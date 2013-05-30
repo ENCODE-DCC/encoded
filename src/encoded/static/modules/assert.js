@@ -1,4 +1,6 @@
 define(function () {
+    'use strict';
+
     function AssertionError(message) {
         this.name = this.constructor.name; //set our function's name as error name.
         this.message = message;

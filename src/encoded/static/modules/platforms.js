@@ -3,6 +3,7 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
     'text!templates/platforms/item.html',
     'text!templates/platforms/row.html'],
 function platforms(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template) {
+    'use strict';
 
     exports.Platform = base.Model.extend({
         urlRoot: '/platforms/',
@@ -24,7 +25,7 @@ function platforms(exports, $, _, base, table_sorter, table_filter, home_templat
         template: _.template(home_template),
         row_template: _.template(row_template),
         table_header: [ 'Platform Name',
-        				'GEO Platform ID(s)'
+                        'GEO Platform ID(s)'
                         ],
         sort_initial: 0  // oh the index hack it burns
     },

@@ -2,7 +2,7 @@ define(['exports', 'jquery', 'underscore', 'navigator', 'app', 'base',
     'text!templates/global_sections.html',
     'text!templates/user_actions.html'],
 function (navbar, $, _, navigator, app, base, global_sections_template, user_actions_template) {
-
+    'use strict';
 
     navbar.GlobalSectionsView = base.BaseView.extend({
         template: _.template(global_sections_template),

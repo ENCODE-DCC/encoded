@@ -3,6 +3,7 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
     'text!templates/sources/item.html',
     'text!templates/sources/row.html'],
 function sources(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template) {
+    'use strict';
 
     exports.Source = base.Model.extend({
         urlRoot: '/sources/',

@@ -1,4 +1,5 @@
 (function($) {
+'use strict';
 
 // http://stackoverflow.com/a/6625189/199100
 // http://css-tricks.com/persistent-headers/

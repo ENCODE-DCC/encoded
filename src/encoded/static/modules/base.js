@@ -2,6 +2,7 @@ define(['exports', 'jquery', 'underscore', 'backbone', 'backbone.hal', 'assert',
     'text!templates/error.html',
     'text!templates/modal.html'],
 function base(exports, $, _, Backbone, HAL, assert, error_template, modal_template) {
+    'use strict';
 
     // Underscore template settings
     // `{model.title}` for escaped text
@@ -64,6 +65,7 @@ function base(exports, $, _, Backbone, HAL, assert, error_template, modal_templa
           this.type_handlers[route_type].unshift({route: route, callback: callback});
         },
         getFragment: function(fragment, forcePushState) {
+          /*jshint eqnull:true */
           if (fragment == null) {
             if (this._hasPushState || !this._wantsHashChange || forcePushState) {
               fragment = this.location.pathname;
@@ -189,7 +191,7 @@ function base(exports, $, _, Backbone, HAL, assert, error_template, modal_templa
         },
 
         make_route_controller: function make_route_controller(view_factory, model_factory, slot_name) {
-            function route_controller() {
+            var route_controller = function () {
                 var options = {route_args: arguments},
                     deferred;
                 if (model_factory) {
@@ -197,11 +199,11 @@ function base(exports, $, _, Backbone, HAL, assert, error_template, modal_templa
                     // possibly redundant
                     deferred = options.model.deferred;
                 }
-                view = new_(view_factory, [options]);
+                var view = new_(view_factory, [options]);
                 if (view.deferred !== undefined) deferred = view.deferred;
                 $.when(deferred).done(_.bind(this.switch_to, this, slot_name, view));
                 return deferred;
-            }
+            };
             return _.bind(route_controller, this);
         },
 
@@ -408,13 +410,13 @@ function base(exports, $, _, Backbone, HAL, assert, error_template, modal_templa
         },
 
         events: {
-            "click td": "link",
+            "click td": "link"
         },
 
         link: function(event) {
             console.log("table cell clicked");
-            $td = $(event.currentTarget);
-            $anchs = $td.children("a");
+            var $td = $(event.currentTarget);
+            var $anchs = $td.children("a");
             if ($anchs.length == 1) {
                 $anchs[0].click();
                 return;

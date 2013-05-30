@@ -1,5 +1,6 @@
 define(['exports', 'jquery', 'underscore', 'app', 'base', 'text!templates/home.html'],
 function (home, $, _, app, base, home_template) {
+    'use strict';
 
     // The home screen
     home.HomeView = base.View.extend({

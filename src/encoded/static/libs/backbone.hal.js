@@ -2,12 +2,14 @@
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
     define(['backbone', 'underscore'], function (Backbone, _) {
-      return (root.HAL = factory(Backbone, _));
+      root.HAL = factory(Backbone, _);
+      return (root.HAL);
     });
   } else {
     root.HAL = factory(Backbone, _);
   }
 }(this, function(Backbone, _) {
+    'use strict';
     var Collection, Model, exports = {};
 
     Model = exports.Model = Backbone.Model.extend({

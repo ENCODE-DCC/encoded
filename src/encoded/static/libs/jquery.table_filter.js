@@ -39,6 +39,7 @@
  */
 
 (function($){
+    'use strict';
 
 	$.fn.table_filter = function (options) {
 

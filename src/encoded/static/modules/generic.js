@@ -3,6 +3,7 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
     'text!templates/generic_item.html',
     'text!templates/generic_row.html'],
 function generic(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template) {
+    'use strict';
 
     exports.generic_factory = function generic_factory(attrs, options) {
         var new_obj = new exports.Generic(attrs, options);

@@ -5,6 +5,7 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
     'text!templates/biosamples/document.html'
     ],
 function biosamples(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template, document_template) {
+    'use strict';
 
     // cannoot get factory to give correct object!
     exports.biosample_factory = function biosample_factory(attrs, options) {

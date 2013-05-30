@@ -5,6 +5,7 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
     'text!templates/libraries/document.html'
     ],
 function libraries(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template, document_template) {
+    'use strict';
 
     exports.library_factory = function library_factory(attrs, options) {
         var new_obj = new base.Model(attrs, options);
@@ -32,7 +33,7 @@ function libraries(exports, $, _, base, table_sorter, table_filter, home_templat
         row_template: _.template(row_template),
         table_header: [ 'Accession',
                         'Description',
-                        'Biosample',
+                        'Biosample'
                         ],
         sort_initial: 0  // oh the index hack it burns
     },

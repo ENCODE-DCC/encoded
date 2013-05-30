@@ -4,6 +4,7 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
     'text!templates/antibodies/row.html',
     'text!templates/antibodies/validation.html'],
 function antibodies(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template, validation_template) {
+    'use strict';
 
     exports.antibody_factory = function antibody_factory(attrs, options) {
         var new_obj = new base.Model(attrs, options);

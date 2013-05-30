@@ -4,6 +4,7 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
     'text!templates/experiments/row.html',
      'text!templates/experiments/document.html'],
 function experiments(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template, document_template) {
+    'use strict';
 
     exports.experiment_factory = function experiment_factory(attrs, options) {
         var new_obj = new base.Model(attrs, options);
