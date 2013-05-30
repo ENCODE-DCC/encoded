@@ -44,19 +44,16 @@ Feature: Generics
         And I should see at least 5 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
 
         When I visit "/libraries/"
-        Then I should see an element with the css selector "#content[class='container']"
-        And I should see an element with the css selector "table.sticky-area"
+        Then I should see an element with the css selector "table.sticky-area"
         And I wait for the table to fully load
         And I should see at least 5 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
 
         When I visit "/assays/"
-        Then I should see an element with the css selector "#content[class='container']"
-        And I should see an element with the css selector "table.sticky-area"
+        Then I should see an element with the css selector "table.sticky-area"
         And I wait for the table to fully load
         And I should see at least 3 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
 
         When I visit "/replicates/"
-        Then I should see an element with the css selector "#content[class='container']"
-        And I should see an element with the css selector "table.sticky-area"
+        Then I should see an element with the css selector "table.sticky-area"
         And I wait for the table to fully load
         And I should see at least 5 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
