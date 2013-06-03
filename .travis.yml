@@ -4,13 +4,13 @@ python:
 env: 
   global: 
   - secure: |-
-      Ipz6Oxg8S/0lWSVH0bKSGf+EMir/qxK542ITsCTIxp2QuxlIuSC1YXrfrzNj
-      ggXxOFrD1mTU2vQs5CoTl7U55XjJq8OdbGxwLYFCJhNfmufXbWwycpczBWEI
-      dPG9RJaLcfdgGp7FRx1RkcqbVhnlTYnJcGRfbKBDKyGdyOjq048=
+      t+lPD6JK4y285juflyou+HGLAbDCRblpfabQQC+klC1iArbvqAmjJB8NdrNy
+      SUSM7e4U5KwvCCxCbOv6p9FCMbgzDfYWQcvsKYeDyo0IuuoqasSqAbN5lPVC
+      XjdIE6vlGoLpWf0CHZ1wONXGv6E6VISpdbInd0S3R998qNK774g=
   - secure: |-
-      qRVI8Sz7UQOVPMskft0mWi7/ionkz1/u9sSRjGW4Ifa27khTuMw2uEmbfvPq
-      Y4oaiSDs6Y84v04ef9M5COo119FzpyGJ2Sro7LN3akGqdazihIzpnVL92KOg
-      0HdlWNdaSNRdUFt9FH6nDCUiX8ZMLQIcE1cS202c7NHZNCoSmBE=
+      WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
+      SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
+      ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
 before_install:
   - sudo apt-get -qq --purge remove postgresql postgresql-9.1
   - source /etc/lsb-release
