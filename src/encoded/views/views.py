@@ -112,8 +112,11 @@ class Construct(Collection):
     }
     item_links = {
         'source': {'href': '/sources/{source_uuid}', 'templated': True},
+        'documents': [
+            {'href': '/documents/{document_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
+        ],
     }
-    item_embedded = set(['source'])
+    item_embedded = set(['source', 'documents'])
     item_keys = ['vector_name']
 
 

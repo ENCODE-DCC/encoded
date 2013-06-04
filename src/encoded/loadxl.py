@@ -578,6 +578,19 @@ def parse_construct(testapp, alldata, content_type, indices, uuid, value, docsdi
     except KeyError:
         raise ValueError('Unable to find source: %s' % source)
 
+    value['document_uuids'] = []
+    if value['construct_document_list']:
+        documents = value.pop('construct_document_list')
+        for doc in documents:
+            try:
+                document_uuid = indices['document'].get(doc, None)
+                if alldata['document'].get(document_uuid, None) is None:
+                    raise ValueError('Missing/skipped document reference %s for construct: %s' % (doc, uuid))
+                else:
+                    value['document_uuids'].append(document_uuid)
+            except KeyError:
+                raise ValueError('Unable to find document for construct: %s' % doc)
+
 
 @parse_decorator_factory('biosample', {})
 def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdir):
@@ -658,6 +671,8 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 ## but don't raise error
             else:
                 value['construct_uuids'].append(construct_uuid)
+            if alldata['construct'][construct_uuid]['document_uuids']:
+                value['document_uuids'] = value['document_uuids'] + alldata['construct'][construct_uuid]['document_uuids']
     except:
         pass
         # protocol documents can be missing?
