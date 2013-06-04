@@ -4,9 +4,9 @@ python:
 env: 
   global: 
   - secure: |-
-      t+lPD6JK4y285juflyou+HGLAbDCRblpfabQQC+klC1iArbvqAmjJB8NdrNy
-      SUSM7e4U5KwvCCxCbOv6p9FCMbgzDfYWQcvsKYeDyo0IuuoqasSqAbN5lPVC
-      XjdIE6vlGoLpWf0CHZ1wONXGv6E6VISpdbInd0S3R998qNK774g=
+      CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
+      cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
+      7diAxOq7YSxxqA2XdtLydkNlo85BWoucmc0yHEl3weNR9554UmM=
   - secure: |-
       WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
       SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
