@@ -30,11 +30,11 @@ i  :: Variables
 
 ========================================================= */
 
-/* =============================
-   =============================
+/*=============================
+===============================
    i :: Variables
-   =============================
-   ============================= */
+===============================
+=============================*/
 $mainThemeColor: 			#e8ecef; /* i.e. the background color */
 
 $footerHeight: 				150px;
@@ -44,47 +44,17 @@ $footerBottomHeight:		$footerHeight - $footerTopHeight;
 $footerBackground:          #0f2a42 !default;
 $footerBackgroundHighlight: #294b6a !default;
 $footerBorder:              #0f2a42 !default;
+
+$tableHeadFootBackgroundColor: #f5f5f5;
    
-/* =============================
-   =============================
+/*=============================
+===============================
    1 :: Global Styles
-   =============================
-   ============================= */
+===============================
+=============================*/
 body { background: $mainThemeColor; }
 
 .float-wrap { overflow: hidden; }
-
-/* add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss */
-.panel a[href^="http"]:after, td a[href^="http"]:after		{
-	content: " \f027";
-	font-family: FontAwesome;
-	font-weight: normal;
-	font-style: normal;
-	text-decoration: none;
-	-webkit-font-smoothing: antialiased;
-
-	/* sprites.less reset */
-	display: inline;
-	width: auto;
-	height: auto;
-	line-height: normal;
-	vertical-align: baseline;
-	background-image: none;
-	background-position: 0% 0%;
-	background-repeat: repeat;
-	margin-top: 0;
-}
-/* remove external-link icon if there is no text in link <a></a>
-Note does not work in =<IE8, oh well */
-a[href^="http"]:empty:after {
-	content: none;
-}
-
-// do not use external link icon in these cases...
-// downloads
-a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
-	content: none !important;
-}
 
 /* Modals */
 .modal {
@@ -117,7 +87,8 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 	z-index: 9999;
 }
 
-/* stuff below is for prototype dropdown panel */
+/* stuff below is for prototype dropdown panel -
+if we don't end up using it, remove */
 .open > .dropdown-panel {
     display: block;
 }
@@ -182,11 +153,7 @@ header .controls {
 	}
 }
 
-#submit-controls {
-	padding: 5px;
-	background-color: #f7fbfe;
-	@include border-radius($baseBorderRadius);
-}
+
 
 .panel {
 	background-color: #fff;
@@ -216,16 +183,46 @@ header .controls {
 
 .panel h3, .panel h4 {color: #0A253D;}
 
-.view-detail h3 { line-height: 24.5px; }
+.view-detail h3 {line-height: 24.5px;}
 
+/* add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss */
+.panel a[href^="http"]:after, td a[href^="http"]:after		{
+	content: " \f027";
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-style: normal;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
 
+	/* sprites.less reset */
+	display: inline;
+	width: auto;
+	height: auto;
+	line-height: normal;
+	vertical-align: baseline;
+	background-image: none;
+	background-position: 0% 0%;
+	background-repeat: repeat;
+	margin-top: 0;
+}
+/* remove external-link icon if there is no text in link <a></a>
+Note does not work in =<IE8, oh well */
+a[href^="http"]:empty:after {
+	content: none;
+}
+
+/* do not use external link icon in these cases... */
+/* downloads */
+a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
+	content: none !important;
+}
 
    
-/* ===================================
-   ===================================
-   2 :: Bootstrap-specific Overrides
-   ===================================
-   =================================== */
+/*=================================
+===================================
+ 2 :: Bootstrap-specific Overrides
+===================================
+=================================*/
    
 /* Hero Unit */
 .hero-unit {
@@ -244,15 +241,20 @@ header .controls {
 }
 
 
-/* =============================
-   3 :: Header
-   ============================= */
+/*=============================
+===============================
+ 3 :: Header
+=============================== 
+=============================*/
 
-/* =============================
-   =============================
-   4 :: Navigation & Menus
-   =============================
-   ============================= */
+
+
+
+/*=============================
+===============================
+ 4 :: Navigation & Menus
+===============================
+=============================*/
    
 $subNavHeight: 30px;
 $subNavLinkPadding: 7px;
@@ -411,11 +413,11 @@ nav.navbar-fixed-top {
 
 
    
-/* =============================
-   =============================
-   5 :: Main Content Area
-   =============================
-   ============================= */
+/*=============================
+===============================
+   5 :: Main Content Areas
+===============================
+=============================*/
    
 /* Validation Details Page */
 .type-validation.view-detail {
@@ -510,10 +512,6 @@ h3 .label {
 	left: 15px;
 }
 
-/* Data Display - Based on Bootstrap Forms Layout
-   Used for displaying Read Only data in a form type layout
-   E.g. Key/value pairs */
-
 .validation-status-labels {
 	font-weight: bold;
 	font-size: 1.2em;
@@ -534,11 +532,16 @@ h3 .label {
 	.#{$item}.status-incomplete      { background-color: $warningText; }
 	.#{$item}.status-incomplete[href]{ background-color: darken($warningText, 10%); }
 
-	// Unsubmitted/pending (gray) is the default if no class given
+	/* Unsubmitted/pending (gray) is the default if no class given */
 }
 
+/* Data Display - Based on Bootstrap Forms Layout
+   Used for displaying Read Only data in a form type layout
+   E.g. Key/value pairs */
+   
+/* displaying key-value pairs in a page (old way - replaced by description lists, below 
+may be able to remove this now*/
 
-//displaying key-value pairs in a page (old way - replaced by description lists, below
 .data-display {
   // Increase spacing between groups
   .data-group {
@@ -610,9 +613,9 @@ h3 .label {
 
 
 
-// description lists
+/*  Description Lists
 // will replace the above data-display using more semantically correct description lists
-// main scenario is for showing key:value pairs
+// main scenario is for showing key:value pairs */
 .key-value {
 	dt, dd {
 		margin-bottom: 10px;
@@ -664,12 +667,11 @@ h3 .label {
 
 
    
-/* =============================
-   =============================
+/*=============================
+===============================
    6 :: Home Page Only
-   =============================
-   ============================= */
-
+===============================
+=============================*/
 #homepage-main-box {
 	min-height: 400px;
 	background: url('/static/img/encode-bg-gray.png') no-repeat center;
@@ -707,11 +709,11 @@ h3 .label {
 }
    
    
-/* =============================
-   =============================
+/*=============================
+===============================
    7 :: Footer
-   =============================
-   ============================= */
+===============================
+=============================*/
 @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
 
 #page-footer #footer-top {
@@ -790,14 +792,12 @@ h3 .label {
 }
    
    
-/* =============================
-   =============================
+/*=============================
+===============================
    8 :: Tables
-   =============================
-   ============================= */
+===============================
+=============================*/
 /* Modified version of Foundation tables */
-
-$tableHeadFootBackgroundColor: #f5f5f5;
 
 table {
   background: #fff;
@@ -865,17 +865,17 @@ table thead tr th button {
 	background-position: 7px 6px;
 }
 
-// initial state is hidden (see template; class=hide)
+/* initial state is hidden (see template; class=hide) */
 #total-records {
 	font-weight: normal;
 }
    
    
-/* =============================
-   =============================
+/*=============================
+===============================
    9 :: Forms
-   =============================
-   ============================= */
+===============================
+=============================*/
 
 /* Input Fields */
 $inputBorder: darken(#fff, 20%) !default;
@@ -898,4 +898,10 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 
 input.search-query {
 	@include border-radius($borderRadiusSmall);
+}
+
+#submit-controls { /* is this used anywhere other than a mockup? */
+	padding: 5px;
+	background-color: #f7fbfe;
+	@include border-radius($baseBorderRadius);
 }
