@@ -61,7 +61,7 @@ function (navbar, $, _, navigator, app, base, global_sections_template, user_act
             var onlogout = _.bind(this.onlogout, this);
             var onready = _.bind(this.onready, this);
 
-             $.ajax({
+            $.ajax({
                 url: '/session',
                 type: 'GET',
                 dataType: 'json'
