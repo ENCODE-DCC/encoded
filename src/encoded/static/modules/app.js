@@ -1,5 +1,6 @@
 define(['exports', 'jquery', 'underscore', 'backbone', 'base', 'home', 'antibodies', 'biosamples', 'libraries', 'targets', 'sources', 'platforms', 'experiments', 'navbar', 'generic'],
 function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, sources, platforms, libraries, experiments, navbar, generic) {
+    /*jshint devel: true*/
     'use strict';
 
     var routes = {

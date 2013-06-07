@@ -1,7 +1,8 @@
-define(['exports', 'jquery', 'underscore', 'backbone', 'backbone.hal', 'assert',
+define(['exports', 'jquery', 'underscore', 'backbone', 'backbone.hal', 'assert', 'app',
     'text!templates/error.html',
     'text!templates/modal.html'],
-function base(exports, $, _, Backbone, HAL, assert, error_template, modal_template) {
+function base(exports, $, _, Backbone, HAL, assert, app, error_template, modal_template) {
+    /*jshint devel: true*/
     'use strict';
 
     // Underscore template settings
