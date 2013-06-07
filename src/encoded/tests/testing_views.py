@@ -39,6 +39,7 @@ class TestingKey(Collection):
         'title': 'Test keys',
         'description': 'Testing. Testing. 1, 2, 3.',
     }
+    unique_key = 'testing_accession'
 
     item_keys = [
         'name',

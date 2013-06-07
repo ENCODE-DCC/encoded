@@ -11,11 +11,22 @@ bad_items = [
 ]
 
 
-def test_keys_add(testapp):
+@pytest.fixture
+def content(testapp):
     url = '/testing-keys/'
     for item in items:
         testapp.post_json(url, item, status=201)
 
+
+@pytest.mark.parametrize('item', items)
+def test_unique_key(testapp, content, item):
+    url = '/testing-keys/' + item['accession']
+    res = testapp.get(url)
+    assert res.json['name'] == item['name']
+
+
+def test_keys_bad_items(testapp, content):
+    url = '/testing-keys/'
     for item in bad_items:
         testapp.post_json(url, item, status=409)
 
