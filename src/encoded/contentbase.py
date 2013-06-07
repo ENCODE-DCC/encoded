@@ -300,7 +300,10 @@ class Item(object):
     links = {
         'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
         'collection': {'href': '{collection_uri}', 'templated': True},
-        'profile': {'href': '/profiles/{item_type}.json', 'templated': True},
+        'profiles': [
+            {'href': '/profiles/{item_type}', 'templated': True},
+            {'href': '/profiles/item'},
+        ],
     }
 
     def __init__(self, collection, model):
@@ -512,6 +515,10 @@ class Collection(object):
     unique_key = None
     links = {
         'self': {'href': '{collection_uri}', 'templated': True},
+        'profiles': [
+            {'href': '/profiles/{item_type}_collection', 'templated': True},
+            {'href': '/profiles/collection'},
+        ],
         'items': [{
             'href': '{item_uri}',
             'templated': True,

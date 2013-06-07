@@ -25,7 +25,9 @@ def home(context, request):
     result = context.__json__(request)
     result['_links'] = {
         'self': {'href': request.resource_path(context)},
-        'profile': {'href': '/profiles/portal'},
+        'profiles': [
+            {'href': '/profiles/portal'},
+        ],
         # 'login': {'href': request.resource_path(context, 'login')},
     }
     return result
