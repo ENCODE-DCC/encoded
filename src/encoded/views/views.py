@@ -16,6 +16,7 @@ from ..schema_utils import (
 
 @location('labs')
 class Lab(Collection):
+    item_type = 'lab'
     schema = load_schema('lab.json')
     properties = {
         'title': 'Labs',
@@ -31,6 +32,7 @@ class Lab(Collection):
 
 @location('awards')
 class Award(Collection):
+    item_type = 'award'
     schema = load_schema('award.json')
     properties = {
         'title': 'Awards (Grants)',
@@ -41,6 +43,7 @@ class Award(Collection):
 
 @location('antibody-lots')
 class AntibodyLots(Collection):
+    item_type = 'antibody_lot'
     #schema = load_schema('antibody_lot.json')
     properties = {
         'title': 'Antibodies Registry',
@@ -58,6 +61,7 @@ class AntibodyLots(Collection):
 
 @location('organisms')
 class Organism(Collection):
+    item_type = 'organism'
     schema = load_schema('organism.json')
     properties = {
         'title': 'Organisms',
@@ -68,6 +72,7 @@ class Organism(Collection):
 
 @location('sources')
 class Source(Collection):
+    item_type = 'source'
     schema = load_schema('source.json')
     properties = {
         'title': 'Sources',
@@ -82,6 +87,7 @@ class Source(Collection):
 
 @location('donors')
 class Donor(Collection):
+    item_type = 'donor'
     ## schema = load_schema('donor.json') Doesn't exist yet
     properties = {
         'title': 'Donors',
@@ -96,6 +102,7 @@ class Donor(Collection):
 
 @location('treatments')
 class Treatment(Collection):
+    item_type = 'biosample_treatment'
     ## schema = load_schema('treatment.json') Doesn't exist yet
     properties = {
         'title': 'Treatments',
@@ -106,6 +113,7 @@ class Treatment(Collection):
 
 @location('constructs')
 class Construct(Collection):
+    item_type = 'biosample_construct'
     properties = {
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
@@ -119,6 +127,7 @@ class Construct(Collection):
 
 @location('documents')
 class Document(Collection):
+    item_type = 'biosample_document'
     properties = {
         'title': 'Documents',
         'description': 'Listing of Biosample Documents',
@@ -136,6 +145,7 @@ class Document(Collection):
 
 @location('biosamples')
 class Biosample(Collection):
+    item_type = 'biosample'
     #schema = load_schema('biosample.json')
     properties = {
         'title': 'Biosamples',
@@ -163,6 +173,7 @@ class Biosample(Collection):
 
 @location('targets')
 class Target(Collection):
+    item_type = 'target'
     #schema = load_schema('target.json')
     properties = {
         'title': 'Targets',
@@ -180,7 +191,8 @@ class Target(Collection):
 
 # The following should really be child collections.
 @location('validations')
-class Validation(Collection):
+class AntibodyValidation(Collection):
+    item_type = 'antibody_validation'
     #schema = load_schema('validation.json')
     properties = {
         'title': 'Antibody Validations',
@@ -218,6 +230,7 @@ class AntibodyApproval(Collection):
 
 @location('platforms')
 class Platform(Collection):
+    item_type = 'platform'
     properties = {
         'title': 'Platforms',
         'description': 'Listing of Platforms',
@@ -226,6 +239,7 @@ class Platform(Collection):
 
 @location('libraries')
 class Library(Collection):
+    item_type = 'library'
     properties = {
         'title': 'Libraries',
         'description': 'Listing of Libraries',
@@ -242,6 +256,7 @@ class Library(Collection):
 
 @location('assays')
 class Assays(Collection):
+    item_type = 'assay'
     properties = {
         'title': 'Assays',
         'description': 'Listing of Assays',
@@ -250,6 +265,7 @@ class Assays(Collection):
 
 @location('replicates')
 class Replicates(Collection):
+    item_type = 'replicate'
     properties = {
         'title': 'Replicates',
         'description': 'Listing of Replicates',
@@ -264,6 +280,7 @@ class Replicates(Collection):
 
 @location('files')
 class Files(Collection):
+    item_type = 'file'
     properties = {
         'title': 'Files',
         'description': 'Listing of Files',
@@ -278,6 +295,7 @@ class Files(Collection):
 
 @location('experiments')
 class Experiments(Collection):
+    item_type = 'experiment'
     properties = {
         'title': 'Experiments',
         'description': 'Listing of Experiments',

@@ -21,6 +21,7 @@ from ..contentbase import (
 
 @location('users')
 class User(Collection):
+    item_type = 'user'
     unique_key = 'user:email'
     schema = load_schema('colleague.json')
     properties = {
