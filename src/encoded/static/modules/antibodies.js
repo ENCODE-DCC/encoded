@@ -6,18 +6,6 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
 function antibodies(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template, validation_template) {
     'use strict';
 
-    exports.antibody_factory = function antibody_factory(attrs, options) {
-        var new_obj = new base.Model(attrs, options);
-        new_obj.url = '/antibodies/' + options.route_args[0];
-        return new_obj;
-    };
-
-    var AntibodyCollection = exports.AntibodyCollection = base.Collection.extend({
-
-        model: base.Model,
-        url: '/antibodies/'
-    });
-
     // The antibodies home screen
     var AntibodiesHomeView = exports.AntibodiesHomeView = base.TableView.extend({
         template: _.template(home_template),
@@ -34,8 +22,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
         sort_initial: 1  // oh the index hack it burns
 
     }, {
-        route_name: 'antibodies',
-        model_factory: exports.AntibodyCollection
+        profile: '/profiles/antibody_approval_collection'
     });
 
     exports.ValidationView = base.View.extend({
@@ -61,7 +48,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
             var model = options.model,
                 deferred = $.Deferred();
             this.deferred = deferred;
-            model.deferred = model.fetch();
+            //model.deferred = model.fetch();
             $.when(model.deferred).done(_.bind(function () {
                 this.validations = _.map(model.links.validations, _.bind(function (item) {
                     item.deferred = item.fetch();
@@ -98,8 +85,7 @@ function antibodies(exports, $, _, base, table_sorter, table_filter, home_templa
             return this;
         }
     }, {
-        route_name: 'antibody',
-        model_factory: exports.antibody_factory
+        profile: '/profiles/antibody_approval'
     });
 
      return exports;

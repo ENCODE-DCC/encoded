@@ -7,28 +7,6 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
 function biosamples(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template, document_template) {
     'use strict';
 
-    // cannoot get factory to give correct object!
-    exports.biosample_factory = function biosample_factory(attrs, options) {
-        var new_obj = new base.Model(attrs, options);
-        new_obj.url = '/biosamples/' + options.route_args[0];
-        return new_obj;
-    };
-
-    exports.Biosample = base.Model.extend({
-        urlRoot: '/biosamples/',
-        initialize: function initialize(attrs, options) {
-            if (options && options.route_args) {
-                this.id = options.route_args[0];
-                this.deferred = this.fetch();
-            }
-        }
-    });
-
-    var BiosampleCollection = exports.BiosampleCollection = base.Collection.extend({
-        model: base.Model, // base.Model???
-        url: '/biosamples/'
-    });
-
     // The biosamples home screen
     var biosampleHomeView = exports.BiosamplesHomeView = base.TableView.extend({
         template: _.template(home_template),
@@ -45,8 +23,7 @@ function biosamples(exports, $, _, base, table_sorter, table_filter, home_templa
         sort_initial: 2  // oh the index hack it burns
     },
     {
-        route_name: 'biosamples',
-        model_factory: exports.BiosampleCollection
+        profile: '/profiles/biosample_collection'
     });
 
     exports.DocumentView = base.View.extend({
@@ -65,7 +42,7 @@ function biosamples(exports, $, _, base, table_sorter, table_filter, home_templa
             var model = options.model,
                 deferred = $.Deferred();
             this.deferred = deferred;
-            model.deferred = model.fetch();
+            //model.deferred = model.fetch();
             $.when(model.deferred).done(_.bind(function () {
                 this.documents = _.map(model.links.documents, _.bind(function (item) {
                     item.deferred = item.fetch();
@@ -91,8 +68,7 @@ function biosamples(exports, $, _, base, table_sorter, table_filter, home_templa
             return this;
         }
     }, {
-        route_name: 'biosample',
-        model_factory: exports.biosample_factory
+        profile: '/profiles/biosample'
     });
 
     return exports;

@@ -6,27 +6,6 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
 function experiments(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template, document_template) {
     'use strict';
 
-    exports.experiment_factory = function experiment_factory(attrs, options) {
-        var new_obj = new base.Model(attrs, options);
-        new_obj.url = '/experiments/' + options.route_args[0];
-        return new_obj;
-    };
-
-    exports.Experiment = base.Model.extend({
-        urlRoot: '/experiments/',
-        initialize: function initialize(attrs, options) {
-            if (options && options.route_args) {
-                this.id = options.route_args[0];
-                this.deferred = this.fetch();
-            }
-        }
-    });
-
-    exports.ExperimentCollection = base.Collection.extend({
-        model: exports.Experiment,
-        url: '/experiments/'
-    });
-
     // The experiments home screen
     var experimentHomeView = base.TableView.extend({
         template: _.template(home_template),
@@ -43,8 +22,7 @@ function experiments(exports, $, _, base, table_sorter, table_filter, home_templ
         sort_initial: 1
     },
     {
-        route_name: 'experiments',
-        model_factory: exports.ExperimentCollection
+        profile: '/profiles/experiment_collection'
     });
 
     exports.DocumentView = base.View.extend({
@@ -63,7 +41,7 @@ function experiments(exports, $, _, base, table_sorter, table_filter, home_templ
             var model = options.model,
                 deferred = $.Deferred();
             this.deferred = deferred;
-            model.deferred = model.fetch();
+            //model.deferred = model.fetch();
             $.when(model.deferred).done(_.bind(function () {
                 if(model.links.replicates.length) {
                     this.documents = _.map(model.links.replicates[0].links.library.links.documents, _.bind(function (item) {
@@ -93,8 +71,8 @@ function experiments(exports, $, _, base, table_sorter, table_filter, home_templ
             return this;
         }
     }, {
-        route_name: 'experiment',
-        model_factory: exports.experiment_factory
+        profile: '/profiles/experiment'
     });
+
     return exports;
 });

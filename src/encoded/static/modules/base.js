@@ -48,11 +48,47 @@ function base(exports, $, _, Backbone, HAL, assert, app, error_template, modal_t
         return result;
     }
 
+    var qs = function (url) {
+        var qmark = url.indexOf('?');
+        var query, hash;
+        if (qmark === -1) return '';
+        hash = url.indexOf('#', qmark + 1);
+        if (hash === -1) return url.slice(qmark + 1);
+        return url.slice(qmark + 1, hash);
+    };
+
+    var parse_qs = function (query) {
+        var parsed = {};
+        query.split('&').forEach(function (part) {
+            var equal = part.indexOf('=');
+            if (equal === -1) return;
+            var key = decodeURI(part.slice(0, equal).replace('+', ' '));
+            var value = decodeURI(part.slice(equal + 1).replace('+', ' '));
+            parsed[key] = value;
+        });
+        return parsed;
+    };
+
     // Cached regex for stripping a leading hash/slash and trailing space.
     var routeStripper = /^[#\/]|\s+$/g;
 
     // Cached regex for removing a trailing slash.
     var trailingSlash = /\/$/;
+
+
+    exports.Model = HAL.Model.extend({});
+
+    exports.Collection = HAL.Collection.extend({
+        model: exports.Model,
+        search: function(letters) {
+            if(letters === "") return this;
+
+            var pattern = new RegExp(letters,"gi");
+            return _(this.filter(function(data) {
+                return pattern.test(data.get());
+            }));
+        }
+    });
 
     var OverlayHistory = exports.overlayHistory = Backbone.History.extend({
         path: null,
@@ -151,6 +187,12 @@ function base(exports, $, _, Backbone, HAL, assert, app, error_template, modal_t
         this.current_views = {}; // Mapping from slot_name -> currently active view
         this.slots = {};
         this.views = {};
+        this.by_profile = {};
+        this.model_by_profile = {
+            '/profiles/portal': exports.Model,
+            '/profiles/item': exports.Model,
+            '/profiles/collection': exports.Collection
+        };
         this.initialize.apply(this, arguments);
     };
 
@@ -212,23 +254,29 @@ function base(exports, $, _, Backbone, HAL, assert, app, error_template, modal_t
 
         process_deferred: function process_deferred() {
             var view_registry = this;
-            _(this.deferred).each(function (view_factory) {
+            _(this.deferred).each(_.bind(function (view_factory) {
                 var route_name = view_factory.route_name;
                 var route_type = view_factory.route_type;
+                var profile = view_factory.profile;
                 var key;
+                if (profile !== undefined) {
+                    this.by_profile[profile] = view_factory;
+                    return;
+                }
                 if (route_name === undefined) return;
                 if (!route_type) route_type = view_factory.route_type = 'route';
                 key = [route_type, route_name];
                 assert(!view_registry.views[key], 'route already defined for ' + route_type + ', ' + route_name);
                 view_registry.views[key] = view_factory;
                 console.log("Adding view for: " + route_type + ', ' + route_name);
-            });
+            }, this));
             this.deferred = null;
         },
 
         make_router: function make_router(routes) {
             this.process_deferred();
             var router = this.router;
+            router.route('*path', 'any', _.bind(this.route_any, this));
             _.each(this.routes, _.bind(function(routes, route_type) {
                 var rev_routes = _(_(routes).map(function (patterns, route_name) {
                     return _(patterns).map(function (patt) {
@@ -243,6 +291,53 @@ function base(exports, $, _, Backbone, HAL, assert, app, error_template, modal_t
                 }, this));
             }, this));
             return router;
+        },
+
+        route_any: function (path) {
+            var url = '/' + path;
+            var slot_name = 'content';
+            var slot = this.slots[slot_name];
+            var deferred = $.Deferred();
+            slot.removeClass('done');
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json'
+            }).done(_.bind(function (data) {
+                // The query params should go in here somehow
+                var profiles = data._links && data._links.profiles || [];
+                var ModelFactory = this.lookup_model_factory(profiles);
+                var context = new ModelFactory(data, {});
+                var ViewFactory = this.lookup_view_factory(profiles);
+                var view = new ViewFactory({model: context});
+                $.when(view.deferred).done(function () {
+                    deferred.resolve(view);
+                });
+            }, this));
+            deferred.done(_.bind(this.switch_to, this, slot_name));
+            return deferred;
+        },
+
+        lookup_view_factory: function (profiles) {
+            var i = 0;
+            var profiles_length = profiles.length;
+            var view_registrations = this.by_profile;
+            var view_factory;
+            for (; i < profiles_length && !view_factory; i++) {
+                view_factory = view_registrations[profiles[i].href];
+            }
+            return view_factory;
+        },
+
+        lookup_model_factory: function (profiles) {
+            var i = 0;
+            var profiles_length = profiles.length;
+            var model_registrations = this.model_by_profile;
+            var model_factory;
+            for (; i < profiles_length && !model_factory; i++) {
+                model_factory = model_registrations[profiles[i].href];
+            }
+            return model_factory;
         },
 
         switch_to: function switch_to(slot_name, view) {
@@ -434,19 +529,6 @@ function base(exports, $, _, Backbone, HAL, assert, app, error_template, modal_t
             Backbone.history.navigate($td.parents("tr[data-href]").attr("data-href"), true);
         }
 
-    });
-
-    exports.Model = HAL.Model.extend({});
-
-    exports.Collection = HAL.Collection.extend({
-        search: function(letters) {
-            if(letters === "") return this;
-
-            var pattern = new RegExp(letters,"gi");
-            return _(this.filter(function(data) {
-                return pattern.test(data.get());
-            }));
-        }
     });
 
     var editOverlay = exports.editOverlay = exports.Modal.extend({

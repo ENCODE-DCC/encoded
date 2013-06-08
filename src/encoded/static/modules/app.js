@@ -3,56 +3,6 @@ function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, 
     /*jshint devel: true*/
     'use strict';
 
-    var routes = {
-        home: [''],
-        antibodies: ['antibodies/'],
-        antibody: ['antibodies/:uuid'],
-        targets: ['targets/'],
-        target: ['targets/:uuid'],
-        sources: ['sources/'],
-        source: ['sources/:uuid'],
-        biosamples: ['biosamples/'],
-        biosample: ['biosamples/:uuid'],
-        libraries: ['libraries/'],
-        library: ['libraries/:uuid'],
-        platforms: ['platforms/'],
-        platform: ['platforms/:uuid'],
-        experiments: ['experiments/'],
-        experiment: ['experiments/:uuid'],
-        generics: [
-            'labs/',
-            'users/',
-            'documents/',
-            'donors/',
-            'awards/',
-            'treatments/',
-            'constructs/',
-            'organisms/',
-            'validations/',
-            'antibody-lots/',
-            'assays/',
-            'replicates/',
-            'files/'
-        ],
-        generic: [
-            'labs/:uuid',
-            'users/:uuid',
-            'documents/:uuid',
-            'donors/:uuid',
-            'awards/:uuid',
-            'treatments/:uuid',
-            'constructs/:uuid',
-            'organisms/:uuid',
-            'validations/:uuid',
-            'antibody-lots/:uuid',
-            'assays/:uuid',
-            'replicates/:uuid',
-            'files/:uuid'
-        ]
-        //login: '#login'
-        //logout: '#logout'
-    };
-
     var overlay_routes = {
         edit: ['edit'],
         add:['add']
@@ -86,9 +36,6 @@ function (exports, $, _, Backbone, base, home, antibodies, biosamples, targets, 
             $.ajaxPrefilter(_.bind(this.ajaxPrefilter, this));
             this.config = new exports.Config();
             var view_registry = this.view_registry = base.View.view_registry;
-            _(routes).each(function (patterns, route_name) {
-                view_registry.add_route(route_name, patterns);
-            });
             _(overlay_routes).each(function (patterns, route_name) {
                 view_registry.add_route(route_name, patterns, 'overlay');
             });

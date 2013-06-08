@@ -12,7 +12,7 @@ function (home, $, _, app, base, home_template) {
             this.authenticated = !!app.session.persona;
         }
     },  {
-        route_name: 'home'
+        profile: '/profiles/portal'
     });
 
     return home;

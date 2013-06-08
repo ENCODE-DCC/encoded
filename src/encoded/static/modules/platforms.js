@@ -5,21 +5,6 @@ define(['exports', 'jquery', 'underscore', 'base', 'table_sorter', 'table_filter
 function platforms(exports, $, _, base, table_sorter, table_filter, home_template, item_template, row_template) {
     'use strict';
 
-    exports.Platform = base.Model.extend({
-        urlRoot: '/platforms/',
-        initialize: function initialize(attrs, options) {
-            if (options && options.route_args) {
-                this.id = options.route_args[0];
-                this.deferred = this.fetch();
-            }
-        }
-    });
-
-    exports.PlatformCollection = base.Collection.extend({
-        model: exports.Platform,
-        url: '/platforms/'
-    });
-
     // The platforms home screen
     var platformHomeView = base.TableView.extend({
         template: _.template(home_template),
@@ -30,19 +15,13 @@ function platforms(exports, $, _, base, table_sorter, table_filter, home_templat
         sort_initial: 0  // oh the index hack it burns
     },
     {
-        route_name: 'platforms',
-        model_factory: exports.PlatformCollection
+        profile: '/profiles/platform_collection'
     });
 
     var platformView = exports.PlatformView = base.View.extend({
-        initialize: function initialize(options) {
-            var model = options.model;
-            this.deferred = model.deferred;
-        },
         template: _.template(item_template)
     }, {
-        route_name: 'platform',
-        model_factory: exports.Platform
+        profile: '/profiles/platform'
     });
 
     return exports;
