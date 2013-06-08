@@ -26,7 +26,7 @@ function (navbar, $, _, navigator, app, base, global_sections_template, user_act
             var route_parts = event.split(':');
             // Only render on the main route not the overlay route.
             if (route_parts[0] !== 'route') return;
-            this.current_route = route_parts[1];
+            this.current_route = document.location.pathname.split('/', 2)[1];
             this.render();
         }
     });
