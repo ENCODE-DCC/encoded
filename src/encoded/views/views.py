@@ -196,9 +196,6 @@ class Validation(Collection):
             'award': {'href': '/awards/{award_uuid}', 'templated': True},
         }
         embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
-        keys = [
-            {'name': '{item_type}:lot_target', 'value': '{antibody_lot_uuid}/{target_uuid}', 'templated': True}
-        ]
 
 
 @location('antibodies')
@@ -217,6 +214,9 @@ class AntibodyApproval(Collection):
         ],
     }
     item_embedded = set(['antibody_lot', 'target'])
+    item_keys = [
+        {'name': '{item_type}:lot_target', 'value': '{antibody_lot_uuid}/{target_uuid}', 'templated': True}
+    ]
 
 
 @location('platforms')
