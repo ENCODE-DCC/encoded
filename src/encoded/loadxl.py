@@ -50,6 +50,20 @@ def find_doc(docsdir, filename):
     return path
 
 
+def trim(value):
+    """ Shorten over long binary fields in error log
+    """
+    trimmed = {}
+    for k, v in value.iteritems():
+        if isinstance(v, dict):
+            trimmed[k] = trim(v)
+        elif isinstance(v, basestring) and len(v) > 100:
+            trimmed[k] = v[:40] + '...'
+        else:
+            trimmed[k] = v
+    return trimmed
+
+
 class IndexContainer:
     indices = {}
 
@@ -254,10 +268,10 @@ def post_all(testapp, alldata, content_type):
         try:
             res = testapp.post_json(update_url, value, status=[404, 200, 422])
         except Exception as e:
-            logger.warn('Error UPDATING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, value))
+            logger.warn('Error UPDATING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, trim(value)))
         else:
             if res.status_code == 422:
-                logger.warn('Error VALIDATING for UPDATE %s %s: %r. Value:\n%r\n' % (content_type, uuid, res.json['errors'], value))
+                logger.warn('Error VALIDATING for UPDATE %s %s: %r. Value:\n%r\n' % (content_type, uuid, res.json['errors'], trim(value)))
                 del alldata[content_type][uuid]
             elif res.status_code == 404:
                 logger.info('%s %s could not be found for UPDATE, posting as new' % (content_type, uuid))
@@ -282,11 +296,11 @@ def post_collection(testapp, collection, url, count):
             res = testapp.post_json(url, value, status=[201, 422])
             nload += 1
         except Exception as e:
-            logger.warn('Error SUBMITTING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, e, value))
+            logger.warn('Error SUBMITTING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, e, trim(value)))
             del collection[uuid]
         else:
             if res.status_code == 422:
-                logger.warn('Error VALIDATING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, res.json['errors'], value))
+                logger.warn('Error VALIDATING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, res.json['errors'], trim(value)))
                 del collection[uuid]
     logger.warn('Loaded NEW %d %s out of %d' % (nload, url, count))
 
