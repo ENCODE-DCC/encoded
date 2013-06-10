@@ -21,7 +21,7 @@ COLLECTION_URL_LENGTH = {
     '/targets/': 30,
     '/antibody-lots/': 29,
     '/validations/': 41,
-    '/antibodies/': 32,
+    '/antibodies/': 30,
     '/donors/': 72,
     '/documents/': 130,
     '/treatments/': 7,

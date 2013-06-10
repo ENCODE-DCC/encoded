@@ -15,7 +15,7 @@ Feature: Antibodies
         When I fill in "table-filter" with "mouse"
         Then I should see an element with the css selector "tr:not(.hidden) a[href='/antibodies/97d18178-73f7-47c2-a9f0-3ff1c4f0fed5']" within 1 seconds
         And I should see an element with the css selector "tr.hidden a[href='/antibodies/c808814f-376f-41ee-b93e-ddd00294ca3d']"
-        And I should see exactly one element with the css selector "#table-count" containing the text "9"
+        And I should see exactly one element with the css selector "#table-count" containing the text "8"
 
     Scenario: Click through
         When I visit "/antibodies/"
