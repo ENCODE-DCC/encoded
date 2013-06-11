@@ -26,7 +26,6 @@ requirejs.config({
         bootstrap: 'libs/bootstrap.min',
         jquery: 'libs/jquery.min',
         jsonform: 'libs/jsonform',
-        modernizr: 'libs/modernizr.min',
         underscore: 'libs/underscore.min',
         'navigator': 'libs/include.orig',
         //'navigator': 'https://login.persona.org/include'  // mozilla persona include, this should be fetched remotely
@@ -53,11 +52,6 @@ requirejs.config({
         'navigator': {
             exports: 'navigator'
         },
-        // Modernizr loads later than normal with Require.js, so don't use the
-        // new HTML5 elements in the HTML file itself.
-        modernizr: {
-            exports: 'Modernizr'
-        },
 
         stickyheader: {
             deps: ['jquery']
@@ -77,7 +71,7 @@ requirejs.config({
     }
 });
 
-if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'modernizr', 'stickyheader', 'jsonform'],
+if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'stickyheader', 'jsonform'],
 function main($, app) {
     'use strict';
 
