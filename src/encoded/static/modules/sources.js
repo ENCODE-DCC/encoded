@@ -23,7 +23,7 @@ function sources(exports, $, _, base, table_sorter, table_filter, home_template,
     var sourceView = exports.SourceView = base.View.extend({
         template: _.template(item_template)
     }, {
-        profile: 'source'
+        profile: '/profiles/source'
     });
     return exports;
 });
