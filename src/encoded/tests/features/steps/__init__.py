@@ -3,9 +3,15 @@ import behaving.web.steps  # NOQA
 
 
 @step(u'I should see at least {count:d} elements with the css selector "{css}"')
-def should_see_count_elements_with_css(context, css, count):
+def should_see_at_least_count_elements_with_css(context, css, count):
     element_count = len(context.browser.find_by_css(css))
     assert element_count >= count, u'Element has at least that many counts'
+
+
+@step(u'I should see {count:d} elements with the css selector "{css}"')
+def should_see_count_elements_with_css(context, css, count):
+    element_count = len(context.browser.find_by_css(css))
+    assert element_count == count, u'Found %d (expected %d)' % (element_count, count)
 
 
 @step(u'I should see exactly one element with the css selector "{css}" containing the text "{text}"')
