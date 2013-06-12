@@ -66,7 +66,7 @@ define(function () {
                 this.pathname = '';
                 this.origin = 'null';
             } else if (typeof this.origin === 'undefined') {
-                // Firefox does not have a.origin (but does have location.origin)
+                // Firefox does not have a.origin (but FF 21 has location.origin)
                 this.origin = this.protocol + '//' + this.host;
             }
         },

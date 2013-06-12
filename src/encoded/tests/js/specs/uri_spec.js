@@ -34,8 +34,13 @@ function uri_spec(URI) {
             expect(uri.hash).toBe('#test');
             expect(uri.host).toBe(document.location.host);
             expect(uri.hostname).toBe(document.location.hostname);
-            expect(uri.href).toBe(document.location.origin + '/search?q=devmo#test');
-            expect(uri.origin).toBe(document.location.origin);
+            var origin = document.location.origin;
+            if (typeof origin === 'undefined') {
+                // Older Firefox
+                origin = document.location.protocol  + '//' + document.location.host;
+            }
+            expect(uri.href).toBe(origin + '/search?q=devmo#test');
+            expect(uri.origin).toBe(origin);
             expect(uri.pathname).toBe('/search');
             expect(uri.port).toBe(document.location.port);
             expect(uri.protocol).toBe(document.location.protocol);
