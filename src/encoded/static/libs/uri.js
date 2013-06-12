@@ -38,15 +38,18 @@ define(function () {
     var URI = class_({
         constructor: function (href, base) {
             var a;
-            if (typeof base === 'undefined') {
+            if (typeof href === 'undefined') {
+                a = document.location;
+            } else if (typeof base === 'undefined') {
                 // Use an anchor from the current document
                 a = document_a;
+                a.href = href;
             } else {
                 // Use the special resolver document and set the base
                 resolver_base.href = base;
                 a = resolver_a;
+                a.href = href;
             }
-            a.href = href;
             
             this.hash = a.hash;
             this.host = a.host;

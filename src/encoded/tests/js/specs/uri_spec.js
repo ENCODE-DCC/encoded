@@ -48,6 +48,24 @@ function uri_spec(URI) {
             expect(uri.params().q).toBe('devmo');
         });
 
+        it("is able to parse the current document uri", function() {
+            var uri = URI();
+            expect(uri.hash).toBe(document.location.hash);
+            expect(uri.host).toBe(document.location.host);
+            expect(uri.hostname).toBe(document.location.hostname);
+            var origin = document.location.origin;
+            if (typeof origin === 'undefined') {
+                // Older Firefox
+                origin = document.location.protocol  + '//' + document.location.host;
+            }
+            expect(uri.href).toBe(document.location.href);
+            expect(uri.origin).toBe(origin);
+            expect(uri.pathname).toBe(document.location.pathname);
+            expect(uri.port).toBe(document.location.port);
+            expect(uri.protocol).toBe(document.location.protocol);
+            expect(uri.search).toBe(document.location.search);
+        });
+
         it("is able to parse file URIs", function() {
             var uri = URI('file:///search?q=devmo#test');
             expect(uri.hash).toBe('#test');
