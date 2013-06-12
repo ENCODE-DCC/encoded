@@ -4,7 +4,7 @@ define(function () {
     // Browser support: IE >= 9
     // Could use an iframe for IE8 and _.each instead of .forEach
     // An html document to resolve the uri against another base
-    var resolver_doc = document.implementation.createHTMLDocument();
+    var resolver_doc = document.implementation.createHTMLDocument('resolver');
     var resolver_base = resolver_doc.createElement('base');
     var resolver_a = resolver_doc.createElement('a');
     var document_a = document.createElement('a');
@@ -57,6 +57,18 @@ define(function () {
             this.port = a.port;
             this.protocol = a.protocol;
             this.search = a.search;
+
+            // Normalize
+            if (this.protocol === 'data:') {
+                // Chrome gives '' but Firefox gives '#foo'
+                this.hash = '';
+                // Chrome gives 'text/html;charset=utf-8,value' but Firefox gives ''
+                this.pathname = '';
+                this.origin = 'null';
+            } else if (typeof this.origin === 'undefined') {
+                // Firefox does not have a.origin (but does have location.origin)
+                this.origin = this.protocol + '//' + this.host;
+            }
         },
         params: function () {
             var params = {};

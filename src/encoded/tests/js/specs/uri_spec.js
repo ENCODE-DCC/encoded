@@ -17,6 +17,7 @@ function uri_spec(URI) {
     };
 
     describe("The uri library", function() {
+
         it("is able to parse an absolute uri", function() {
             test_example_uri(URI(example_uri));
         });
@@ -40,6 +41,34 @@ function uri_spec(URI) {
             expect(uri.protocol).toBe(document.location.protocol);
             expect(uri.search).toBe('?q=devmo');
             expect(uri.params().q).toBe('devmo');
+        });
+
+        it("is able to parse file URIs", function() {
+            var uri = URI('file:///search?q=devmo#test');
+            expect(uri.hash).toBe('#test');
+            expect(uri.host).toBe('');
+            expect(uri.hostname).toBe('');
+            expect(uri.href).toBe('file:///search?q=devmo#test');
+            expect(uri.origin).toBe('file://');
+            expect(uri.pathname).toBe('/search');
+            expect(uri.port).toBe('');
+            expect(uri.protocol).toBe('file:');
+            expect(uri.search).toBe('?q=devmo');
+            expect(uri.params().q).toBe('devmo');
+        });
+
+        it("is able to parse data URIs", function() {
+            var uri = URI('data:text/plain;charset=utf-8,foo?q=devmo#test');
+            expect(uri.hash).toBe('');
+            expect(uri.host).toBe('');
+            expect(uri.hostname).toBe('');
+            expect(uri.href).toBe('data:text/plain;charset=utf-8,foo?q=devmo#test');
+            expect(uri.origin).toBe('null');
+            expect(uri.pathname).toBe('');
+            expect(uri.port).toBe('');
+            expect(uri.protocol).toBe('data:');
+            expect(uri.search).toBe('');
+            expect(uri.params().q).toBe(undefined);
         });
 
     });
