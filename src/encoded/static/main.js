@@ -32,6 +32,7 @@ requirejs.config({
         stickyheader: 'libs/sticky_header',
         table_filter: 'libs/jquery.table_filter',
         table_sorter: 'libs/table_sorter',
+        'class': 'libs/class',
         uri: 'libs/uri'
     },
 
