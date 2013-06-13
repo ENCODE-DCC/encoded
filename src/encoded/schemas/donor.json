@@ -38,9 +38,21 @@
             "format": "organism_link"
         },
         "age": {
-            "description": "Age of the donor organism when sampled",
-            "title": "Donor Age",
-            "type": "string"
+            "description": "Age or stage of the donor organism when sampled",
+            "title": "Donor Age/Stage",
+            "type": "string",
+            "pattern": "^(TS[0-2][0-9]|[EP][0-9\\.]{1,4}|[0-9]{1,3}|fetal|adult|newborn)$"
+        },
+        "age_units": {
+            "description": "Units for age or lifecycle stage of the donor organism when sampled",
+            "title": "Donor Age/Stage Units",
+            "type": {
+                "enum": [
+                    "years",
+                    "days",
+                    "embryonic stage"
+                ]
+            }
         },
         "dbxref": {
             "default": {},
@@ -67,9 +79,8 @@
             "type": "string"
         },
         "health_status": {
-            "description": "Heath status of human donor",
-            "comment": "For Human donors only",
-            "title": "Donor Health Status (human)",
+            "description": "Heath status of donor",
+            "title": "Donor Health Status",
             "type": "string"
         },
         "sex": {
@@ -85,10 +96,48 @@
                 ]
             }
         },
+        "related_donor_list": {
+            "default": [],
+            "description": "List of related donors",
+            "title": "Related Donors",
+            "type":  "array",
+            "items": {
+                "properties": {
+                    "relationship": {
+                        "description": "How Donors are related.",
+                        "title": "Relationship Type",
+                        "type": {
+                            "enum": [
+                                "parent",
+                                "child",
+                                "sibling",
+                                "fraternal twin",
+                                "identical twin"
+                            ]
+                        }
+                    },
+                    "donor": {
+                        "description": "Related donor",
+                        "comment": "For automated submission supply an ENCODE donor accession or uuid",
+                        "title": "Related Donor",
+                        "type": "string",
+                        "format": "donor_link"
+                    }
+                },
+                "title": "Donor Relationship",
+                "type": "object"
+            }
+        },
         "strain_background": {
-            "description": "Strain background of a mouse donor",
-            "comment": "For mouse donors only",
-            "title": "Strain Background (mouse)",
+            "description": "Strain background of a non-human donor",
+            "comment": "For non-human donors only",
+            "title": "Strain Background",
+            "type": "string"
+        },
+        "strain_name": {
+            "description": "Specific strain name of a non-human donor",
+            "comment": "For non-human donors only",
+            "title": "Strain Name",
             "type": "string"
         }
     }

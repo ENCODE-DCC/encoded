@@ -4,7 +4,8 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an ENCODE Biosample",
     "type": "object",
-    "required": [ "award", "lab", "type", "source", "donor"],
+    "required": [ "award", "lab", "type", "source", "organism", "term_id"],
+    "additionProperties": false,
     "properties": {
          "accession": {
             "default": "",
@@ -39,10 +40,10 @@
         "term_id": {
             "default": "",
             "description": "Ontology term ID describing biosample type",
-            "comment": "Valid ontologies for biosamples are: Uberon, EFO, BTO, or CL",
+            "comment": "Valid ontologies for biosamples are: Uberon, EFO, BTO, or CL.  NTR is a new term request from ENCODE DCC.",
             "title": "Ontology ID",
             "type": "string",
-            "pattern": "^(UBERON|EFO|BTO|CL|AMAD):[0-9]{2,8}$"
+            "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR):[0-9]{2,8}$"
         },
         "term_name": {
             "default": "",
@@ -57,7 +58,8 @@
                 "enum" : [
                     "Primary cell line",
                     "Immortalized cell line",
-                    "Tissue"
+                    "Tissue",
+                    "Induced pluripotent stem cell line"
                 ]
             }
         },
@@ -74,18 +76,13 @@
             "title": "List of Constructs",
             "type": "array"
         },
-        "treatment_list": {
-            "default": [],
-            "description": "List of treatments applied to biosample",
+        "treatment": {
+            "description": "A treatments applied to biosample",
+            "description": "Substances used to treat a biosample",
             "comment": "For automatic submission supply unique treatment names or uuids",
-            "items": {
-                "description": "Substances used to treat a biosample",
-                "title": "Biosample Treatment",
-                "type": "string",
-                "format": "treatment_link"
-            },
-            "title": "Treatment List",
-            "type": "array"
+            "title": "Biosample Treatment",
+            "type": "string",
+            "format": "treatment_link"
         },
         "dbxref": {
             "default": {},
@@ -117,12 +114,31 @@
             "title": "Protocol Document List",
             "type": "array"
         },
+        "validation_document_list": {
+            "default": [],
+            "description": "List of validation protocols associated with this biosample (treatment)",
+            "comment": "For automatic submission supply unique documents names or uuids",
+            "items": {
+                "description": "Biosample validation document",
+                "title": "validation Document",
+                "type": "string",
+                "format": "document_link"
+            },
+            "title": "Validation Document List",
+            "type": "array"
+        },
         "donor": {
             "description": "Donor reference for the Biosample",
             "comment": "For automatic submission, supply a ENCODE donor accession or uuid",
             "title": "Donor",
             "type": "object",
             "format": "donor_link"
+        },
+        "organism": {
+            "description": "Organism of the biosample",
+            "title": "Source organism",
+            "type": "string",
+            "format": "organism_link"
         },
         "passage_number": {
             "description": "Cell culture passage number",
@@ -167,7 +183,16 @@
             "type": "string",
             "format": "source_link"
         },
-         "culture_harvest_date": {
+         "transfection": {
+            "description": "The in-cell longevity of the transfection construct (if it exists)",
+            "title": "Construct Stability",
+            "type": {
+                "enum": [
+                    "Stable", "Transient"
+                ]
+            }
+        },
+        "culture_harvest_date": {
             "description": "Harvest date of cell culture",
             "title": "Culture Harvest Date",
             "type": "string",
@@ -189,6 +214,16 @@
             "description": "Starting amount of Biosample",
             "title": "Starting Amount",
             "type": "string"
+        },
+        "starting_amount_units": {
+            "description": "Units tarting amount of Biosample",
+            "title": "Starting Amount Units",
+            "type": {
+                "enum": [
+                    "g","mg","cells/ml","cells", "whole embryos", "items"
+                ]
+            }
         }
+
     }
 }

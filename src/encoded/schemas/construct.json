@@ -23,15 +23,6 @@
                ]
             }
         },
-        "stability": {
-            "description": "The in-cell longevity of the transfection construct",
-            "title": "Construct Stability",
-            "type": {
-                "enum": [
-                    "Stable", "Transient"
-                ]
-            }
-        },
         "source": {
             "description": "Source or Vendor of construct",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Construct name",
@@ -54,6 +45,19 @@
             "title": "Award Name",
             "type": "string",
             "format": "award_link"
+        },
+        "document_list": {
+            "default": [],
+            "description": "List of documents associated with this construct",
+            "comment": "For automatic submission supply unique documents names or uuids",
+            "items": {
+                "description": "Contruct document",
+                "title": "Construct Document",
+                "type": "string",
+                "format": "document_link"
+            },
+            "title": "Construct Document List",
+            "type": "array"
         },
         "url": {
             "description": "An external for the construct",

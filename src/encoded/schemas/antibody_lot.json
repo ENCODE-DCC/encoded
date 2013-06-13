@@ -37,6 +37,13 @@
             "type": "string",
             "format": "award_link"
         },
+        "source": {
+            "description": "Source or Vendor of Antibody",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Antibody Source",
+            "type": "string",
+            "format": "source_link"
+        },
         "lot_id": {
             "description": "The vendor's id code for the antibody lot",
             "title": "Antibody Lot ID",
@@ -89,6 +96,8 @@
                 "enum": [
                     "rabbit",
                     "goat",
+                    "sheep",
+                    "rat",
                     "mouse"
                 ]
             }
