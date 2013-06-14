@@ -21,6 +21,7 @@ from ..contentbase import (
 
 @location('users')
 class User(Collection):
+    unique_key = 'user:email'
     schema = load_schema('colleague.json')
     properties = {
         'title': 'DCC Users',
@@ -42,9 +43,10 @@ class User(Collection):
             ]
         }
         keys = ['email']
+        unique_key = 'user:email'
 
         def __acl__(self):
-            owner = 'userid:%s' % self.model.rid
+            owner = 'userid:%s' % self.uuid
             return [
                 (Allow, owner, 'edit'),
                 (Allow, owner, 'view_details'),

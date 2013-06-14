@@ -30,7 +30,10 @@ from pyramid.threadlocal import (
     manager,
 )
 from pyramid.view import view_config
-from sqlalchemy import func
+from sqlalchemy import (
+    func,
+    orm,
+)
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import FlushError
 from urllib import (
@@ -309,6 +312,10 @@ class Item(object):
     def properties(self):
         return self.model.statement.object
 
+    @property
+    def uuid(self):
+        return self.model.rid
+
     def __json__(self, request):
         links = self.expand_links(request)
         if links is None:
@@ -321,7 +328,7 @@ class Item(object):
         # Expand templated links
         ns = self.properties.copy()
         ns['item_type'] = self.model.predicate
-        ns['_uuid'] = self.model.rid
+        ns['_uuid'] = self.uuid
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)
             ns['permission'] = permission_checker(self, request)
@@ -350,7 +357,7 @@ class Item(object):
         compiled = ObjectTemplate(self.merged_keys)
         keys = compiled(ns)
         for key_spec in keys:
-            key = Key(rid=self.model.rid, **key_spec)
+            key = Key(rid=self.uuid, **key_spec)
             session.add(key)
 
     def create_rels(self):
@@ -362,7 +369,7 @@ class Item(object):
             rel = link_spec['rel']
             target_rid = UUID(link_spec['target'])
             link = Link(
-                source_rid=self.model.rid, rel=rel, target_rid=target_rid)
+                source_rid=self.uuid, rel=rel, target_rid=target_rid)
             session.add(link)
 
     @classmethod
@@ -410,14 +417,14 @@ class Item(object):
             session.delete(key)
 
         for name, value in to_add:
-            key = Key(rid=self.model.rid, name=name, value=value)
+            key = Key(rid=self.uuid, name=name, value=value)
             session.add(key)
 
     def update_rels(self):
         session = DBSession()
         ns = self.template_namespace()
         compiled = ObjectTemplate(self.merged_rels)
-        source = self.model.rid
+        source = self.uuid
 
         _rels = [
             (link_spec['rel'], UUID(link_spec['target']))
@@ -502,6 +509,7 @@ class Collection(object):
     schema = None
     properties = {}
     item_type = None
+    unique_key = None
     links = {
         'self': {'href': '{collection_uri}', 'templated': True},
         'items': [{
@@ -528,10 +536,6 @@ class Collection(object):
 
     def __getitem__(self, name):
         try:
-            name = UUID(name)
-        except ValueError:
-            raise KeyError(name)
-        try:
             item = self.get(name)
         except KeyError:
             # Just in case we get an unexpected KeyError
@@ -542,12 +546,48 @@ class Collection(object):
         return item
 
     def get(self, name, default=None):
-        key = (name, self.item_type)
+        try:
+            uuid = UUID(name)
+        except ValueError:
+            return self.get_by_name(name, default)
+        else:
+            return self.get_by_uuid(uuid, default)
+
+    def get_by_uuid(self, uuid, default=None):
+        pkey = (uuid, self.item_type)
         session = DBSession()
-        model = session.query(CurrentStatement).get(key)
-        if model is not None:
-            return self.Item(self, model)
-        return default
+        model = session.query(CurrentStatement).get(pkey)
+        if model is None:
+            return default
+        return self.Item(self, model)
+
+    def get_by_name(self, name, default=None):
+        if self.unique_key is None:
+            return default
+        pkey = (self.unique_key, name)
+        session = DBSession()
+        # Eager load related resources here.
+        key = session.query(Key).options(
+            orm.joinedload_all(
+                Key.resource,
+                Resource.data,
+                CurrentStatement.statement,
+                innerjoin=True,
+            ),
+            orm.joinedload_all(
+                Key.resource,
+                Resource.rels,
+                Link.target,
+                Resource.data,
+                CurrentStatement.statement,
+            ),
+        ).get(pkey)
+        if key is None:
+            return default
+        model = key.resource.data.get(self.item_type, None)
+        if model is None:
+            return default
+        return self.Item(self, model)
 
     def add(self, properties):
         uuid = properties.get('_uuid', _marker)
@@ -658,9 +698,11 @@ def traversal_security(event):
     """ Check traversal was permitted at each step
     """
     request = event.request
-    ancestors = lineage(request.context)
-    next(ancestors)  # skip self
-    for resource in reversed(list(ancestors)):
+    traversed = reversed(list(lineage(request.context)))
+    # Required to view the root page as anonymous user
+    # XXX Needs test once login based browser tests work.
+    next(traversed)  # Skip root object
+    for resource in traversed:
         result = has_permission('traverse', resource, request)
         if not result:
             msg = 'Unauthorized: traversal failed permission check'

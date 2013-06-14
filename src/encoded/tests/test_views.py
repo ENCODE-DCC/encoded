@@ -21,7 +21,7 @@ COLLECTION_URL_LENGTH = {
     '/targets/': 30,
     '/antibody-lots/': 29,
     '/validations/': 41,
-    '/antibodies/': 32,
+    '/antibodies/': 30,
     '/donors/': 72,
     '/documents/': 130,
     '/treatments/': 7,
@@ -182,16 +182,18 @@ def test_post_repeated_uuid(testapp):
     testapp.post_json('/awards/', BAD_AWARDS[0], status=409)
 
 
-def test_users_post(testapp, session):
+def test_users_post(testapp, anontestapp):
     from .sample_data import URL_COLLECTION
-    from ..authorization import groupfinder
     url = '/users/'
     item = URL_COLLECTION[url][0]
     testapp.post_json(url, item, status=201)
-    login = 'mailto:' + item['email']
-    principals = groupfinder(login, None)
-    assert sorted(principals) == [
+    res = anontestapp.get('/@@testing-user',
+                          extra_environ={'REMOTE_USER': item['email']})
+    assert sorted(res.json['effective_principals']) == [
         'lab:2c334112-288e-4d45-9154-3f404c726daf',
+        'remoteuser:%s' % item['email'],
+        'system.Authenticated',
+        'system.Everyone',
         'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
     ]
 
