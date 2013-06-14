@@ -2,7 +2,7 @@
     "title": "ENCODE Colleague",
     "id": "/profiles/colleague.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an ENCODE Collegue (not user)",
+    "description": "Schema for submitting an ENCODE Colleague (not user)",
     "type": "object",
     "required": [ "email", "first_name", "last_name"],
     "additionalProperties": false,

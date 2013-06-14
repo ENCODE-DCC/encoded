@@ -3,7 +3,7 @@
     "id": "/profiles/award.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an Award (Grant) for the ENCODE Project",
-    "required": [ "name", "number"],
+    "required": [ "name", "number", "pi"],
     "additionalProperties": true,
     "properties": {
         "name": {

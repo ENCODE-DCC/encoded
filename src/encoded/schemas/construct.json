@@ -19,6 +19,7 @@
                 "enum": [
                     "fusion protein",
                     "shRNA",
+                    "siRNA",
                     "expression vector"
                ]
             }

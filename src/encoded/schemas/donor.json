@@ -96,37 +96,71 @@
                 ]
             }
         },
-        "related_donor_list": {
+        "parent_list": {
             "default": [],
-            "description": "List of related donors",
-            "title": "Related Donors",
+            "description": "List of donors related as (literal) parent to this donor",
+            "title": "Parents",
             "type":  "array",
-            "items": {
-                "properties": {
-                    "relationship": {
-                        "description": "How Donors are related.",
-                        "title": "Relationship Type",
-                        "type": {
-                            "enum": [
-                                "parent",
-                                "child",
-                                "sibling",
-                                "fraternal twin",
-                                "identical twin"
-                            ]
-                        }
-                    },
-                    "donor": {
-                        "description": "Related donor",
-                        "comment": "For automated submission supply an ENCODE donor accession or uuid",
-                        "title": "Related Donor",
-                        "type": "string",
-                        "format": "donor_link"
-                    }
-                },
-                "title": "Donor Relationship",
-                "type": "object"
+            "donor": {
+                "description": "Parent Donor",
+                "comment": "For automated submission supply an ENCODE donor accession or uuid",
+                "title": "Parent",
+                "type": "string",
+                "format": "donor_link"
             }
+        },
+        "child_list": {
+            "default": [],
+            "description": "List of donors related as (literal) children to this donor",
+            "title": "Children",
+            "type":  "array",
+            "donor": {
+                "description": "Child Donor",
+                "comment": "For automated submission supply an ENCODE donor accession or uuid",
+                "title": "Child",
+                "type": "string",
+                "format": "donor_link"
+            }
+        },
+        "sibling_list": {
+            "default": [],
+            "description": "List of donors related as (literal) siblings to this donor",
+            "title": "Siblings",
+            "type":  "array",
+            "donor": {
+                "description": "Sibling Donor",
+                "comment": "For automated submission supply an ENCODE donor accession or uuid",
+                "title": "Sibling Donor",
+                "type": "string",
+                "format": "donor_link"
+            }
+        },
+        "littermate_list": {
+            "default": [],
+            "description": "List of donors related as littermates to this (mouse) donor",
+            "title": "Littermates",
+            "type":  "array",
+            "donor": {
+                "description": "Another donor mouse from the same litter",
+                "comment": "For automated submission supply an ENCODE donor accession or uuid",
+                "title": "Littermate",
+                "type": "string",
+                "format": "donor_link"
+            }
+        },
+        "fraternal_twin": {
+            "description": "The donor's fraternal twin",
+            "comment": "For automated submission supply an ENCODE donor accession or uuid",
+            "title": "Fraternal Twin",
+            "type": "string",
+            "format": "donor_link"
+        },
+        "identical_twin": {
+            "description": "Another donor mouse from the same litter",
+            "comment": "For automated submission supply an ENCODE donor accession or uuid",
+            "title": "Littermate",
+            "type": "string",
+            "format": "donor_link"
         },
         "strain_background": {
             "description": "Strain background of a non-human donor",

@@ -56,10 +56,10 @@
             "title": "Biosample Type",
             "type": {
                 "enum" : [
-                    "Primary cell line",
-                    "Immortalized cell line",
-                    "Tissue",
-                    "Induced pluripotent stem cell line"
+                    "primary cell line",
+                    "immortalized cell line",
+                    "tissue",
+                    "induced pluripotent stem cell line"
                 ]
             }
         },
@@ -145,50 +145,58 @@
             "title": "Passage Number",
             "type": "integer"
         },
-        "related_biosample_list": {
+        "derived_from_list": {
             "default": [],
-            "description": "List of related biosample",
-            "title": "Related Biosamples",
+            "description": "List of biosamples this biosample is derived from",
+            "title": "List of Biosample Parents",
             "type":  "array",
             "items": {
-                "properties": {
-                    "relationship": {
-                        "default": "derives_from",
-                        "description": "The relationship type for the related biosample",
-                        "title": "Relationship Type",
-                        "type": {
-                            "enum": [
-                                "derived_from",
-                                "contained_in",
-                                "part_of"
-                            ]
-                        }
-                    },
-                    "biosample": {
-                        "description": "Related biosample",
-                        "comment": "For automated submission supply an ENCODE biosample accession or uuid",
-                        "title": "Related Biosample",
-                        "type": "string",
-                        "format": "biosample_link"
-                    }
-                },
-                "title": "Biosample Relationship",
-                "type": "object"
+                    "description": "Biosample that this sample derives from via a construct or treatment",
+                    "comment": "For automated submission supply an ENCODE biosample accession or uuid",
+                    "title": "Parent (derived_from) Biosample",
+                    "type": "string",
+                    "format": "biosample_link"
             }
         },
-        "source": {
+        "contained_in_list": {
+            "default": [],
+            "description": "List of biosamples this biosample is contained in (reverse of pooled from)",
+            "title": "List of Biosample Parents",
+            "type":  "array",
+            "items": {
+                    "description": "Biosample that this sample is contained in",
+                    "comment": "For automated submission supply an ENCODE biosample accession or uuid",
+                    "title": "Parent (contained_in) Biosample",
+                    "type": "string",
+                    "format": "biosample_link"
+            }
+        },
+         "part_of": {
+            "default": [],
+            "description": "List of biosamples this biosample part of",
+            "title": "List of Biosample Parents",
+            "type":  "array",
+            "items": {
+                    "description": "Biosample that this sample is part of",
+                    "comment": "For automated submission supply an ENCODE biosample accession or uuid",
+                    "title": "Parent (part_of) Biosample",
+                    "type": "string",
+                    "format": "biosample_link"
+            }
+        },
+       "source": {
             "description": "Source or Vendor of Biomaterials",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
             "title": "Biosample Source",
             "type": "string",
             "format": "source_link"
         },
-         "transfection": {
+         "transfection_type": {
             "description": "The in-cell longevity of the transfection construct (if it exists)",
-            "title": "Construct Stability",
+            "title": "Transfection type (stability)",
             "type": {
                 "enum": [
-                    "Stable", "Transient"
+                    "stable", "transient"
                 ]
             }
         },
