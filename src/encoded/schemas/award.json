@@ -4,7 +4,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an Award (Grant) for the ENCODE Project",
     "required": [ "name", "number", "pi"],
-    "additionalProperties": true,
+    "additionalProperties": false,
     "properties": {
         "name": {
             "description": "The long name of the award/grant - from NIH database",

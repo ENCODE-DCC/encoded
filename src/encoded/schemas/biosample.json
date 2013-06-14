@@ -8,7 +8,6 @@
     "additionProperties": false,
     "properties": {
          "accession": {
-            "default": "",
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Biosample Accession",
@@ -38,7 +37,6 @@
             "format": "award_link"
         },
         "term_id": {
-            "default": "",
             "description": "Ontology term ID describing biosample type",
             "comment": "Valid ontologies for biosamples are: Uberon, EFO, BTO, or CL.  NTR is a new term request from ENCODE DCC.",
             "title": "Ontology ID",
@@ -46,7 +44,6 @@
             "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR):[0-9]{2,8}$"
         },
         "term_name": {
-            "default": "",
             "description": "Ontology term describing biosample type",
             "title": "Ontology Term",
             "type":  "string"

@@ -51,7 +51,6 @@
             "type": "string"
         },
         "address2": {
-            "default": "",
             "description": "2nd line of Lab's mailing address.",
             "title": "Address (2)",
             "type": "string"
@@ -103,7 +102,6 @@
             "format": "phone"
         },
         "url": {
-            "default": "",
             "description": "URL for the lab website",
             "title": "URL",
             "type": "string",

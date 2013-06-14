@@ -8,7 +8,6 @@
     "additionalProperties": false,
     "properties": {
         "accession": {
-            "default": "",
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Donor Accession",
@@ -72,7 +71,6 @@
             "type": "object"
         },
         "ethnicity": {
-            "default": "",
             "description": "Ethnicity of human donor",
             "comment": "For Human donors only",
             "title": "Donor Ethnicity (human)",
@@ -84,15 +82,15 @@
             "type": "string"
         },
         "sex": {
-            "default": "Unknown",
+            "default": "unknown",
             "description": "Sex (Gender) of the donor",
             "title": "Donor Sex",
             "type": {
                 "enum": [
-                    "Male",
-                    "Female",
-                    "Unknown",
-                    "Mixed"
+                    "male",
+                    "female",
+                    "unknown",
+                    "mixed"
                 ]
             }
         },

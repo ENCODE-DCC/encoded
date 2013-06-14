@@ -8,7 +8,6 @@
     "additionalProperties": false,
     "properties": {
         "accession": {
-            "default": "",
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Library Accession",
@@ -51,8 +50,8 @@
                 "enum": [
                     "DNA",
                     "RNA",
-                    "Poly-A+ RNA",
-                    "Small RNA",
+                    "poly-A+ RNA",
+                    "small RNA",
                     "miRNA"
                 ]
             }

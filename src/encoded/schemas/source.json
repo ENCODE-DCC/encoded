@@ -25,7 +25,7 @@
         },
         "alias": {
             "default": "",
-            "description": "A short alias or lable for the source",
+            "description": "A short alias or label for the source",
             "title": "Source Alias",
             "type": "string"
         },
@@ -35,7 +35,6 @@
             "type": "string"
         },
         "url": {
-            "default": "",
             "description": "An optional URL for the source",
             "title": "Source URL",
             "type": "string",

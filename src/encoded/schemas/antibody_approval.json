@@ -5,6 +5,7 @@
     "description": "Schema for submitting antibody validation data",
     "type": "object",
     "required": [ "award", "lab", "antibody", "status", "target" ],
+    "additionProperties": false,
     "properties": {
         "antibody": {
             "description": "The specific antibody for which the validation image applies.",

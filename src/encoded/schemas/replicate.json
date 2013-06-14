@@ -30,7 +30,6 @@
             "type":  "string"
         },
         "term_id": {
-            "default": "",
             "description": "OBI Ontology term ID describing assay type",
             "title": "Assay (OBI) Ontology ID",
             "type": "string",

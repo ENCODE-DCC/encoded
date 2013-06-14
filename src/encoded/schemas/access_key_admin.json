@@ -3,6 +3,7 @@
     "id": "/profiles/access_key_admin.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
+    "additionProperties": false,
     "properties": {
         "user_uuid": {
             "title": "User",

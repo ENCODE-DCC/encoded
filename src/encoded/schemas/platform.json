@@ -7,13 +7,12 @@
     "required": ["name"],
     "additionalProperties": false,
     "properties": {
-       "term_id": {
-            "default": "New term requested",
+        "term_id": {
             "description": "OBI Ontology term ID for this expermental platform",
             "comment": "Use unique OBI term ID or 'New term requested' if necessary",
             "title": "Ontology ID",
             "type": "string",
-            "pattern": "^(OBI:[0-9]{7}|New term requested)$"
+            "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
         "name": {
             "description": "Name of the Platform (should be OBI term were possible)",
@@ -44,7 +43,6 @@
             "type": "object"
         },
         "url": {
-            "default": "",
             "description": "Commercial URL for the experimental Platform",
             "title": "URL",
             "type": "string",

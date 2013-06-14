@@ -8,7 +8,6 @@
     "additionalProperties": false,
     "properties": {
         "accession": {
-            "default": "",
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Dataset Accession",
@@ -75,11 +74,11 @@
             "title": "Output Type",
             "type": {
                 "enum": [
-                    "Sites",
-                    "RawData",
-                    "Peaks",
-                    "Alignments",
-                    "Signal"
+                    "sites",
+                    "rawData",
+                    "peaks",
+                    "alignments",
+                    "signal"
                 ]
             }
         },
@@ -101,7 +100,7 @@
             "title": "Mapping Assembly",
             "comment": "BAM/BED and other mapped files only.",
             "type": {
-                "enum": ["mm9", "hg19", "N/A"]
+                "enum": ["mm9", "hg19", "n/a"]
             }
         },
         "experiment_dataset": {

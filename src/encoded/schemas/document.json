@@ -7,7 +7,7 @@
     "required": [ "name", "type", "lab", "award"],
     "additionalProperties": false,
     "properties": {
-          "name": {
+        "name": {
             "description": "A plain text unique name of the document",
             "title": "Document Name",
             "type": "string"

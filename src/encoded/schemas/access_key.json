@@ -4,6 +4,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Programmatic access key",
     "type": "object",
+    "additionProperties": false,
     "properties": {
         "description": {
             "title": "Description",

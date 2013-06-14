@@ -41,12 +41,12 @@
             }
         },
         "document_type": {
-            "default": "N/A",
+            "default": "n/a",
             "description": "Type of the attached protocol.",
             "title": "Protocol type",
             "type": {
                 "enum": [
-                    "N/A",
+                    "n/a",
                     "differentiation protocol",
                     "treatment protocol",
                     "iPSC reprogramming protocol",

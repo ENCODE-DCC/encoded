@@ -8,7 +8,6 @@
     "additionalProperties": false,
     "properties": {
         "accession": {
-            "default": "",
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Antibody Accession",
@@ -60,7 +59,6 @@
             "type": "string"
         },
         "clonality": {
-            "default": "Unknown",
             "description": "Whether the antibody is mono- or poly- clonal",
             "title": "Antibody Clonality",
             "type": {
@@ -103,7 +101,6 @@
             }
         },
         "isotype": {
-            "default": "Unknown",
             "description": "Isotype of the antibody (IgA, IgD, etc.)",
             "title": "Antibody Isotype",
             "type": {
@@ -136,27 +133,23 @@
             }
         },
         "purification": {
-            "default": "Unknown",
             "description": "Method by which antibody was purified",
             "title": "Purification Method",
             "type": {
                 "enum": [
-                    "Protein A chromatography",
                     "Protein A/G",
-                    "Affinity",
+                    "affinity",
                     "Protein A",
                     "Protein G",
-                    "Crude",
+                    "crude",
                     "other",
                     "IEC",
                     "IMAC",
-                    "Tissue culture supernatent",
-                    "Unknown"
+                    "tissue culture supernatent"
                 ]
             }
         },
         "url": {
-            "default": "",
             "description": "External URL for the specific antibody at vendor site",
             "title": "External URL",
             "type": "string",
