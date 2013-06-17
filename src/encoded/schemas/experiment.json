@@ -5,7 +5,7 @@
     "description": "Schema for submitting an primary set of files to ENCODE (Experiment)",
     "comment": "Experiment is a special case of Dataset",
     "type": "object",
-    "required": [ "award", "lab", "dataset_type"],
+    "required": [ "award", "lab", "dataset_type", "term_id"],
     "additionalProperties": false,
     "properties": {
          "accession": {
@@ -37,18 +37,24 @@
             "type": "string",
             "format": "award_link"
         },
-        "biosamples": {
-            "default": [],
-            "description": "All Biosamples on which experimental data will be collected for this dataset",
-            "comment": "For automatic submission supply unique Biosample accessions or uuids",
-            "title": "List of Biosamples",
-            "items": {
-                "description": "Biosample identifier.",
-                "title": "Biosample",
-                "type": "string",
-                "format": "biosample_link"
-            },
-            "type": "array"
+        "target": {
+            "description": "Protein, RNA, or chemical target of the experiment",
+            "comment": "For automatic submission supply unique Target label or UUID",
+            "title": "Target ID",
+            "type": "string",
+            "format": "target_link"
+        },
+        "assay_type": {
+            "description": "Ontology term describing assay used for this replicate",
+            "comment": "Use OBI ontology (term_id) or New Term Requst no. from DCC",
+            "title": "Assay type",
+            "type":  "string"
+        },
+        "term_id": {
+            "description": "OBI Ontology term ID describing assay type",
+            "title": "Assay (OBI) Ontology ID",
+            "type": "string",
+            "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
         "dataset_type": {
             "default": "experiment",
@@ -121,8 +127,43 @@
             "items": {
                 "description": "Experimental Replicate",
                 "title": "Replicate",
-                "type": "string",
-                "format": "replicate_link"
+                "type": "object",
+                "required": ["biological_replicate_no", "technical_replicate_no", "library"],
+                "properties": {
+                    "antibody": {
+                        "description": "Antibody used with this Replicate (-IP experiments only)",
+                        "comment": "Automatic submitters can supply an Antibody accession or UUID",
+                        "title": "Antibody",
+                        "type": "string",
+                        "format": "antibody_link"
+                    },
+                    "biological_replicate_no": {
+                        "default": 1,
+                        "description": "Biologically replicated experiments are numbered sequentially",
+                        "title": "Replicate # (Biological)",
+                        "type": "integer"
+                    },
+                    "technical_replicate_no": {
+                        "default": 1,
+                        "description": "Technically replicated experiments are numbered sequentially",
+                        "title": "Replicate # (Technical)",
+                        "type": "integer"
+                    },
+                    "library": {
+                        "description": "Nucleic acid Library used in this replicate.",
+                        "comment": "For automatic submission supply unique Library accession or UUID",
+                        "title": "Library ID",
+                        "type": "string",
+                        "format": "library_link"
+                    },
+                    "platform": {
+                        "description": "Platform (hardware) that this Replicate was performed on",
+                        "comment": "For automatic submission supply unique Platform name or UUID",
+                        "title": "Platform ID",
+                        "type": "string",
+                        "format": "platform_link"
+                    }
+                }
             },
             "title": "List of Replicates",
             "type": "array"

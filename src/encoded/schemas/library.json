@@ -99,16 +99,38 @@
             "pattern": "[0-9]+"
         },
         "extraction_method": {
-            "default": "see document",
             "description": "A short description of the nucleic acid extraction method used in Library prep.",
             "title": "Extraction Method",
-            "type": "string"
+            "default": "see document",
+            "type": {
+                "enum": [
+                    "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                    "Trizol (LifeTech cat#: 15596-018)",
+                    "Ambion mirVana",
+                    "Qiagen #74204",
+                    "QIAGEN DNeasy Blood & Tissue Kit",
+                    "see document",
+                    "n/a"
+                ]
+            },
+            "format": "semi-controlled"
         },
         "fragmentation_method": {
             "description": "A short description of the nucleic acid fragmentation method used in Library prep.",
             "title": "Fragmentation Method",
             "default": "see document",
-            "type": "string"
+            "type": {
+                "enum": [
+                    "sonication",
+                    "see document",
+                    "covaris sheering",
+                    "chemical (part of Illumina TruSeq mRNA Kit)",
+                    "Illumina/Nextera tagmentation",
+                    "bioruptor twin",
+                    "n/a"
+                ]
+            },
+            "format": "semi-controlled"
         },
         "library_size_selection_method": {
             "default": "see document",
@@ -120,13 +142,25 @@
                     "see document",
                     "SPRI beads"
                 ]
-            }
+            },
+            "format": "semi-controlled"
         },
         "lysis_method": {
             "description": "A short description of the cell lysis method used in Library prep.",
             "title": "Lysis Method",
             "default": "see document",
-            "type": "string"
+            "type": {
+                "enum": [
+                    "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                    "Trizol (LifeTech cat#: 15596-018)",
+                    "Ambion mirVana",
+                    "Qiagen #74204",
+                    "QIAGEN DNeasy Blood & Tissue Kit",
+                    "see document",
+                    "n/a"
+                ]
+            },
+            "format": "semi-controlled"
         },
         "size_range": {
             "description": "The measured size range of the purified nucleic acid, in kD",
@@ -134,9 +168,15 @@
             "type": "string",
             "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
+        "paired_ended": {
+            "default": false,
+            "description": "Whether or not the library was prepared with paired ends",
+            "title": "Paired Ended",
+            "type": "boolean"
+        },
         "strand_specificity": {
             "default": false,
-            "description": "Whether or not the library was prepared in a strand-specific manner.",
+            "description": "Whether or not the library was prepared in a strand-specific manner",
             "title": "Strand Specificity",
             "type": "boolean"
         }

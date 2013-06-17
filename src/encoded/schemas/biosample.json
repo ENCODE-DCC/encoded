@@ -188,6 +188,21 @@
             "type": "string",
             "format": "source_link"
         },
+        "phase": {
+            "description": "Cell-cycle phase in which cells were harvested",
+            "title": "Cell-cycle phase",
+            "type": {
+                "enum": [
+                    "G1",
+                    "G1b",
+                    "G2",
+                    "S1",
+                    "S2",
+                    "S3",
+                    "S4"
+                ]
+            }
+        },
          "transfection_type": {
             "description": "The in-cell longevity of the transfection construct (if it exists)",
             "title": "Transfection type (stability)",
