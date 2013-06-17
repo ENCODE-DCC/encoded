@@ -1,11 +1,10 @@
 {
-    "title": "ENCODE Experimental Dataset",
-    "id": "/profiles/experiment.json",
+    "title": "ENCODE Dataset",
+    "id": "/profiles/dataset.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an primary set of files to ENCODE (Experiment)",
-    "comment": "Experiment is a special case of Dataset",
+    "description": "Schema for submitting a set of files to ENCODE",
     "type": "object",
-    "required": [ "award", "lab", "dataset_type"],
+    "required": [ "award", "lab", "files"],
     "additionalProperties": false,
     "properties": {
          "accession": {
@@ -17,7 +16,7 @@
         },
         "description": {
             "default": "",
-            "description": "A plain text description of the experimental dataset",
+            "description": "A plain text description of the dataset",
             "title": "Experiment Description",
             "type": "string"
         },
@@ -37,26 +36,16 @@
             "type": "string",
             "format": "award_link"
         },
-        "biosamples": {
-            "default": [],
-            "description": "All Biosamples on which experimental data will be collected for this dataset",
-            "comment": "For automatic submission supply unique Biosample accessions or uuids",
-            "title": "List of Biosamples",
-            "items": {
-                "description": "Biosample identifier.",
-                "title": "Biosample",
-                "type": "string",
-                "format": "biosample_link"
-            },
-            "type": "array"
-        },
         "dataset_type": {
-            "default": "experiment",
+            "default": "project",
             "description": "The Dataset type",
-            "comment": "For Experiments this is always 'experiment'",
             "title": "Dataset Type",
             "type": {
-                "enum": ["experiment"]
+                "enum": [
+                    "project",
+                    "composite",
+                    "publication"
+                ]
             }
         },
         "dbxref": {
@@ -90,7 +79,6 @@
             "type": "array"
         },
         "files": {
-            "default": [],
             "description": "List of files in this dataset",
             "comment": "For automatic submission supply unique data File accessions or uuids",
             "items": {
@@ -113,19 +101,6 @@
                 "pattern": "^PMID:[0-9]+$"
             },
             "type": "array"
-        },
-       "replicates": {
-            "default": [],
-            "description": "List Replicates in this Experimental dataset",
-            "comment": "For automatic submission supply unique Replicate names or uuids",
-            "items": {
-                "description": "Experimental Replicate",
-                "title": "Replicate",
-                "type": "string",
-                "format": "replicate_link"
-            },
-            "title": "List of Replicates",
-            "type": "array"
         }
-    }
+   }
 }

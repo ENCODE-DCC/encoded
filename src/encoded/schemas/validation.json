@@ -73,6 +73,18 @@
             "type": "string",
             "format": "date"
         },
+        "reference_list": {
+            "default": [],
+            "description": "List of references (Pubmed IDs)",
+            "title": "References",
+            "reference": {
+                "description": "Pubmed id for a published reference",
+                "title": "Pubmed Reference",
+                "type": "string",
+                "pattern": "^PMID:[0-9]+$"
+            },
+            "type": "array"
+        },
         "status": {
             "default": "INCOMPLETE",
             "description": "Approval status for the Validation image",
