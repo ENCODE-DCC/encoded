@@ -19,7 +19,7 @@
             "type": "string",
             "format": "colleague_link"
         },
-        "award_list": {
+        "awards": {
             "default": [],
             "description": "List of Awards (Grants) associated with the lab (and the ENCODE project).",
             "title": "List of Awards (Grants)",

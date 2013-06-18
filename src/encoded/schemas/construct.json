@@ -47,7 +47,7 @@
             "type": "string",
             "format": "award_link"
         },
-        "document_list": {
+        "documents": {
             "default": [],
             "description": "List of documents associated with this construct",
             "comment": "For automatic submission supply unique documents names or uuids",

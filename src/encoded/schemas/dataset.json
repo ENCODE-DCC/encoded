@@ -90,7 +90,7 @@
             "title": "List of Data Files",
             "type": "array"
         },
-         "reference_list": {
+         "references": {
             "default": [],
             "description": "List of references (Pubmed IDs)",
             "title": "References",

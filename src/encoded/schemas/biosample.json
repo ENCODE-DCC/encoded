@@ -16,7 +16,7 @@
         },
         "description": {
             "default": "",
-            "description": "A plain text description of the biosample",
+            "description": "A plain text description of the biosample - please not contructs and treatments, and experimental intent.",
             "title": "",
             "type": "string"
         },
@@ -56,11 +56,29 @@
                     "primary cell line",
                     "immortalized cell line",
                     "tissue",
+                    "in vitro differentiated cells",
                     "induced pluripotent stem cell line"
                 ]
             }
         },
-        "construct_list": {
+        "source": {
+            "description": "Source or Vendor of Biomaterials",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Biosample Source",
+            "type": "string",
+            "format": "source_link"
+        },
+       "product_id": {
+            "description": "The vendor's biosample product code",
+            "title": "Biosample Product ID",
+            "type": "string"
+        },
+        "lot_id": {
+            "description": "A lot code for the biosample",
+            "title": "Biosample Lot ID",
+            "type": "string"
+        },
+        "constructs": {
             "default": [],
             "description": "List of construct object identifiers",
             "comment": "For automatic submission this is a list of unique references to construct objects.",
@@ -98,7 +116,7 @@
             "title": "DBXREFs",
             "type": "object"
         },
-        "protocol_document_list": {
+        "protocol_documents": {
             "default": [],
             "description": "List of biosample protocols associated with this biosample",
             "comment": "For automatic submission supply unique documents names or uuids",
@@ -111,7 +129,7 @@
             "title": "Protocol Document List",
             "type": "array"
         },
-        "validation_document_list": {
+        "validation_documents": {
             "default": [],
             "description": "List of validation protocols associated with this biosample (treatment)",
             "comment": "For automatic submission supply unique documents names or uuids",
@@ -142,7 +160,7 @@
             "title": "Passage Number",
             "type": "integer"
         },
-        "derived_from_list": {
+        "derived_from": {
             "default": [],
             "description": "List of biosamples this biosample is derived from",
             "title": "List of Biosample Parents",
@@ -155,7 +173,7 @@
                     "format": "biosample_link"
             }
         },
-        "contained_in_list": {
+        "contained_in": {
             "default": [],
             "description": "List of biosamples this biosample is contained in (reverse of pooled from)",
             "title": "List of Biosample Parents",
@@ -180,13 +198,6 @@
                     "type": "string",
                     "format": "biosample_link"
             }
-        },
-       "source": {
-            "description": "Source or Vendor of Biomaterials",
-            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
-            "title": "Biosample Source",
-            "type": "string",
-            "format": "source_link"
         },
         "phase": {
             "description": "Cell-cycle phase in which cells were harvested",

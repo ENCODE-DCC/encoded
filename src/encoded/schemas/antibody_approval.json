@@ -37,7 +37,7 @@
             "type": "string",
             "format": "award_link"
         },
-         "validation_list": {
+         "validations": {
             "default": [],
             "description": "List of validation pointers (uuids, image names)",
             "title": "Validations",

@@ -94,7 +94,7 @@
                 ]
             }
         },
-        "parent_list": {
+        "parents": {
             "default": [],
             "description": "List of donors related as (literal) parent to this donor",
             "title": "Parents",
@@ -107,7 +107,7 @@
                 "format": "donor_link"
             }
         },
-        "child_list": {
+        "children": {
             "default": [],
             "description": "List of donors related as (literal) children to this donor",
             "title": "Children",
@@ -120,7 +120,7 @@
                 "format": "donor_link"
             }
         },
-        "sibling_list": {
+        "siblings": {
             "default": [],
             "description": "List of donors related as (literal) siblings to this donor",
             "title": "Siblings",
@@ -133,7 +133,7 @@
                 "format": "donor_link"
             }
         },
-        "littermate_list": {
+        "littermates": {
             "default": [],
             "description": "List of donors related as littermates to this (mouse) donor",
             "title": "Littermates",

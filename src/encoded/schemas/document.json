@@ -82,7 +82,7 @@
             },
             "type": "object"
         },
-        "reference_list": {
+        "references": {
             "default": [],
             "description": "List of references (Pubmed IDs)",
             "title": "References",

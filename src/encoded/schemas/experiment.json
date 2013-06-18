@@ -108,7 +108,7 @@
             "title": "List of Data Files",
             "type": "array"
         },
-         "reference_list": {
+         "references": {
             "default": [],
             "description": "List of references (Pubmed IDs)",
             "title": "References",
@@ -120,7 +120,20 @@
             },
             "type": "array"
         },
-       "replicates": {
+        "possible_controls": {
+            "default": [],
+            "description": "List of control experiments that could apply to this experiment",
+            "comment": "For automatic submission supply Experiment (dataset) accessions or uuids",
+            "items": {
+                "description": "Possible control experiment",
+                "title": "Control",
+                "type": "string",
+                "format": "experiment_link"
+            },
+            "title": "List of Possible Control experiments",
+            "type": "array"
+        },
+        "replicates": {
             "default": [],
             "description": "List Replicates in this Experimental dataset",
             "comment": "For automatic submission supply unique Replicate names or uuids",
@@ -129,6 +142,7 @@
                 "title": "Replicate",
                 "type": "object",
                 "required": ["biological_replicate_no", "technical_replicate_no", "library"],
+                "additionalProperties": false,
                 "properties": {
                     "antibody": {
                         "description": "Antibody used with this Replicate (-IP experiments only)",
@@ -162,6 +176,35 @@
                         "title": "Platform ID",
                         "type": "string",
                         "format": "platform_link"
+                    },
+                    "flowcell_details": {
+                        "default": [],
+                        "description": "Details about the machine/flowcell/lane information for this replicates",
+                        "title": "Flowcell Details",
+                        "type": "array",
+                        "items": {
+                            "description": "A machine:flowcell:lane triple",
+                            "title": "Machine:Flowcells:Lanes",
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "machine": {
+                                    "description": "The friendly name of the specific machine platform",
+                                    "title": "Machine name",
+                                    "type": "string"
+                                },
+                                "flowcell": {
+                                    "description": "The identifier of flowcell",
+                                    "title": "Flowcell ID",
+                                    "type": "string"
+                                },
+                                "lane": {
+                                    "description": "The identifier of the lane used",
+                                    "title": "Lane",
+                                    "type": "string"
+                                }
+                            }
+                        }
                     }
                 }
             },

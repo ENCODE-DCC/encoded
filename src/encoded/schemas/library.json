@@ -62,6 +62,23 @@
             "type": "string",
             "pattern": "^SO:[0-9]{7}$"
         },
+        "source": {
+            "description": "Source or Vendor of Nucleic Acid Library",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Library Source",
+            "type": "string",
+            "format": "source_link"
+        },
+        "product_id": {
+            "description": "The vendor's library product code",
+            "title": "Library Product ID",
+            "type": "string"
+        },
+         "lot_id": {
+            "description": "A vendor's id code for the nucleic acid library lot",
+            "title": "Library lot ID",
+            "type": "string"
+        },
         "dbxref": {
             "default": {},
             "description": "List of Database (including Lab) cross-references",

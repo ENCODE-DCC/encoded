@@ -29,6 +29,7 @@
             "format": "award_link"
         },
         "type": {
+            "default": "chemical",
             "description": "The type of biosample treatment",
             "title": "Treatment Type",
             "type": {

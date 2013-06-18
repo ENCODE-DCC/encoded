@@ -73,7 +73,7 @@
             "type": "string",
             "format": "date"
         },
-        "reference_list": {
+        "references": {
             "default": [],
             "description": "List of references (Pubmed IDs)",
             "title": "References",
