@@ -1,9 +1,4 @@
-from .storage import (
-    DBSession,
-    EDWKey,
-    Key,
-)
-
+from .contentbase import LOCATION_ROOT
 CHERRY_LAB_UUID = 'cfb789b8-46f3-4d59-a2b3-adc39e7df93a'
 
 
@@ -11,44 +6,36 @@ def groupfinder(login, request):
     if ':' not in login:
         return None
     namespace, localname = login.split(':', 1)
+    user = None
+    # We may get called before the context is found and the root set
+    root = request.registry[LOCATION_ROOT]
 
-    if namespace == 'mailto':
-        session = DBSession()
-        model = session.query(Key).get(('user:email', localname))
-        if model is None:
-            return None
-        properties = model.resource['user']
-        principals = ['userid:' + str(model.rid)]
-        lab_uuids = properties.get('lab_uuids', [])
-        principals.extend('lab:' + lab_uuid for lab_uuid in lab_uuids)
-        if CHERRY_LAB_UUID in lab_uuids:
-            principals.append('group:admin')
-        return principals
-
-    elif namespace == 'edwkey':
-        session = DBSession()
-        model = session.query(EDWKey).get(localname)
-        if model is None:
-            return None
-        user = model.user
-        principals = ['userid:' + str(user.rid)]
-        lab_uuids = user.statement.object.get('lab_uuids', [])
-        principals.extend('lab:' + lab_uuid for lab_uuid in lab_uuids)
-        if CHERRY_LAB_UUID in lab_uuids:
-            principals.append('group:admin')
-        return principals
-
-    elif namespace == 'remoteuser':
+    if namespace == 'remoteuser':
         if localname in ['TEST', 'IMPORT']:
             return ['group:admin']
 
+    if namespace in ('mailto', 'remoteuser'):
+        users = root.by_item_type['user']
+        try:
+            user = users[localname]
+        except KeyError:
+            return None
+
     elif namespace == 'accesskey':
-        access_key = request.root['access-keys'][localname]
+        access_keys = root.by_item_type['access_key']
+        try:
+            access_key = access_keys[localname]
+        except KeyError:
+            return None
         userid = access_key.properties['user_uuid']
-        principals = ['userid:' + userid]
-        user = request.root['users'][userid]
-        lab_uuids = user.properties.get('lab_uuids', [])
-        principals.extend('lab:' + lab_uuid for lab_uuid in lab_uuids)
-        if CHERRY_LAB_UUID in lab_uuids:
-            principals.append('group:admin')
-        return principals
+        user = root.by_item_type['user'][userid]
+
+    if user is None:
+        return None
+
+    principals = ['userid:%s' % user.uuid]
+    lab_uuids = user.properties.get('lab_uuids', [])
+    principals.extend('lab:' + lab_uuid for lab_uuid in lab_uuids)
+    if CHERRY_LAB_UUID in lab_uuids:
+        principals.append('group:admin')
+    return principals
