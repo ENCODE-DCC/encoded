@@ -29,7 +29,7 @@ COLLECTION_URL_LENGTH = {
     '/biosamples/': 134,
     '/platforms/': 11,
     '/users/': 84,
-    '/files/': 19,
+    '/files/': 18,
     '/replicates/': 47,
     '/libraries/': 49,
     '/experiments/': 28,
