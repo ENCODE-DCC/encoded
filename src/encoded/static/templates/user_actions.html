@@ -6,7 +6,7 @@
         <?js _.each(view.user_actions(), function (action) { ?>
             <li class="{action.class}"><a
                 <?js if (action.bypass) { ?>data-bypass="bypass"<?js } ?>
-                <?js if (action.url) { ?>href="{action.url}"<?js } ?>
+                <?js if (action.url) { ?>href="{action.url}"<?js } else { ?>onclick=""<?js } ?>
                 <?js if (action.trigger) { ?>data-trigger="{action.trigger}"<?js } ?>
                 id="{action.id}">{action.title}</a></li>
         <?js }); ?>
