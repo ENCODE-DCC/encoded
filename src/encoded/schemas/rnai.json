@@ -1,0 +1,103 @@
+{
+    "title": "ENCODE RNAi",
+    "id": "/profiles/rnai.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE RNAi (including shRNA and siRNA)",
+    "type": "object",
+    "required": [ "name", "type", "source", "lab", "award"],
+    "additionalProperties": false,
+    "properties": {
+        "name": {
+            "description": "A unique name for the construct or vector",
+            "title": "Construct Name",
+            "type": "string"
+        },
+        "type": {
+            "description": "The sub-type of the interfering RNA",
+            "title": "RNAi Type",
+            "type": {
+                "enum": [
+                    "shRNA",
+                    "siRNA"
+               ]
+            }
+        },
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
+        },
+        "source": {
+            "description": "Source or Vendor of RNAi",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "RNAi Source",
+            "type": "string",
+            "format": "source_link"
+        },
+        "product_id": {
+            "description": "The vendor's construct product code",
+            "title": "Construct Product ID",
+            "type": "string"
+        },
+        "url": {
+            "description": "An external for the construct",
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
+        },
+        "target": {
+            "description": "Target that knocked down or inhibited by the RNAi",
+            "comment": "Automatic submitters can supply a target uuid, or name/species pair",
+            "title": "RNAi Target",
+            "type": "object",
+            "format": "target_link"
+        },
+        "documents": {
+            "default": [],
+            "description": "List of documents associated with this RNAi",
+            "comment": "For automatic submission supply unique documents names or uuids",
+            "items": {
+                "description": "RNAi document",
+                "title": "RNAi Document",
+                "type": "string",
+                "format": "document_link"
+            },
+            "title": "RNAi Documens (list)",
+            "type": "array"
+        },
+        "validations": {
+            "default": [],
+            "description": "List of documents/images associated with the validation of this RNAi",
+            "comment": "For automatic submission supply unique documents/images names or uuids",
+            "items": {
+                "description": "RNAi validation document",
+                "title": "Validation Document",
+                "type": "string",
+                "format": "document_link"
+            },
+            "title": "RNAi Validation Images (list)",
+            "type": "array"
+        },
+        "rnai_sequence": {
+            "description": "Sequence for the relevant part of the inhibatory RNA(not including vector)",
+            "title": "RNAi Sequence",
+            "type": "string"
+        },
+        "rnai_target_sequence": {
+            "description": "Genomic sequence of the target of the RNAi",
+            "title": "Target Sequence",
+            "type": "string"
+        }
+    }
+}

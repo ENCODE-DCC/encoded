@@ -4,7 +4,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an ENCODE transfection Construct",
     "type": "object",
-    "required": [ "name", "type", "stability", "source", "lab", "award"],
+    "required": [ "name", "type", "source", "lab", "award"],
     "additionalProperties": false,
     "properties": {
         "name": {
@@ -18,18 +18,9 @@
             "type": {
                 "enum": [
                     "fusion protein",
-                    "shRNA",
-                    "siRNA",
-                    "expression vector"
+                    "zinc-finger knockout"
                ]
             }
-        },
-        "source": {
-            "description": "Source or Vendor of construct",
-            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Construct name",
-            "title": "Construct Source",
-            "type": "string",
-            "format": "source_link"
         },
        "lab": {
             "default": "ENCODE Project",
@@ -47,6 +38,58 @@
             "type": "string",
             "format": "award_link"
         },
+        "source": {
+            "description": "Source or Vendor of construct",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Construct Source",
+            "type": "string",
+            "format": "source_link"
+        },
+        "product_id": {
+            "description": "The vendor's construct product code",
+            "title": "Construct Product ID",
+            "type": "string"
+        },
+        "url": {
+            "description": "External Product URL for the specific construct at vendor site",
+            "title": "Product URL",
+            "type": "string",
+            "format": "uri"
+        },
+        "target": {
+            "description": "Target that is tagged or knocked down by the construct",
+            "comment": "Automatic submitters can supply a target uuid, or name/species pair",
+            "title": "Construct Target",
+            "type": "object",
+            "format": "target_link"
+        },
+        "tags": {
+            "default": [],
+            "description": "List of tags associated with this construct",
+            "items": {
+                "description": "A Tag",
+                "title": "Tag",
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "enum": [
+                            "eGFP",
+                            "V5",
+                            "HA"
+                        ]
+                    },
+                    "location": {
+                        "enum": [
+                            "N-terminus",
+                            "C-terminus",
+                            "other"
+                        ]
+                    }
+                }
+            },
+            "title": "Construct Document (list)",
+            "type": "array"
+        },
         "documents": {
             "default": [],
             "description": "List of documents associated with this construct",
@@ -57,14 +100,36 @@
                 "type": "string",
                 "format": "document_link"
             },
-            "title": "Construct Document List",
+            "title": "Construct Document (list)",
             "type": "array"
         },
-        "url": {
-            "description": "An external for the construct",
-            "title": "URL",
-            "type": "string",
-            "format": "uri"
+        "validations": {
+            "default": [],
+            "description": "List of documents/images associated with the validation of this construct",
+            "comment": "For automatic submission supply unique documents/images names or uuids",
+            "items": {
+                "description": "Contruct validation document",
+                "title": "Validation Document",
+                "type": "string",
+                "format": "document_link"
+            },
+            "title": "Construct Validation Images (list)",
+            "type": "array"
+        },
+        "genomic_integration_site": {
+            "description": "Site in the biosample genome where the construct is stabily integrated",
+            "title": "Integration Site",
+            "type": "string"
+        },
+        "insert_sequence": {
+            "description": "DNA sequence for the relevant inserted part of the construct (not including vector)",
+            "title": "Insert Sequence",
+            "type": "string"
+        },
+        "insert_genome_coordinates": {
+            "description": "Coordinates in the (human or mouse) reference geneome corresponding to inserted sequence",
+            "title": "Insert Genome Coordintes",
+            "type": "string"
         }
     }
 }
