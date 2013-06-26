@@ -1,0 +1,89 @@
+{
+    "title": "ENCODE Construct Validation",
+    "id": "/profiles/construct_validation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting construct validation data",
+    "type": "object",
+    "required": [ "award", "lab", "construct" ],
+    "additionalProperties": false,
+    "properties": {
+        "construct": {
+            "description": "The specific construct for which the validation image applies.",
+            "comment": "Automatic submitters can supply a construct uuid",
+            "title": "Antibody to be Validated",
+            "type": "string",
+            "format": "antibody_lot_link"
+        },
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
+        },
+        "document": {
+            "description": "Construct validation image (document)",
+            "comment": "For automatic submission supply unique a image/document name or uuid",
+            "title": "Validation Image",
+            "type": "string",
+            "format": "document_link"
+        },
+        "validation_method": {
+            "description": "Experimental method for the validation image",
+            "comment": "This will likely get mapped to an experimental methods ontology.",
+            "title": "Method",
+            "type": {
+                "enum": [
+                    "western blot",
+                    "western blot after IP",
+                    "immunoprecipitation",
+                    "immunofluorescense",
+                    "knockdowns",
+                    "mass spectrometry after IP",
+                    "chIP comparison",
+                    "tagged epitopes",
+                    "motif enrichment",
+                    "dot blot",
+                    "peptide ELISA",
+                    "competitor peptides",
+                    "mutant organisms",
+                    "mutant histones",
+                    "annotation enrichment"
+                ]
+            }
+        },
+        "caption": {
+            "default": "",
+            "description": "Caption for the validation image",
+            "title": "Image Caption",
+            "type": "string"
+        },
+        "date_validated": {
+            "description": "Date in which the validation experiment was run.",
+            "title": "Date Validated",
+            "type": "string",
+            "format": "date"
+        },
+        "references": {
+            "default": [],
+            "description": "List of references (Pubmed IDs)",
+            "title": "References",
+            "reference": {
+                "description": "Pubmed id for a published reference",
+                "title": "Pubmed Reference",
+                "type": "string",
+                "pattern": "^PMID:[0-9]+$"
+            },
+            "type": "array"
+        }
+    }
+}

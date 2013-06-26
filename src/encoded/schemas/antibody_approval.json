@@ -39,14 +39,14 @@
         },
          "validations": {
             "default": [],
-            "description": "List of validation pointers (uuids, image names)",
+            "description": "List of validation images",
             "title": "Validations",
             "items": {
                 "description": "Validation image used for approval",
                 "comment": "Automatic submitters can supply a validation UUID or document/image name.",
                 "title": "Validation image (or document)",
                 "type": "string",
-                "format": "validation_link"
+                "format": "antibody_validation_link"
             },
             "type": "array"
         },

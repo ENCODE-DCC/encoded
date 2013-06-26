@@ -4,14 +4,9 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an ENCODE transfection Construct",
     "type": "object",
-    "required": [ "name", "type", "source", "lab", "award"],
+    "required": [ "type", "target", "tag", "lab", "award"],
     "additionalProperties": false,
     "properties": {
-        "name": {
-            "description": "A unique name for the construct or vector",
-            "title": "Construct Name",
-            "type": "string"
-        },
         "type": {
             "description": "The type of transfection construct",
             "title": "Construct Type",
@@ -89,6 +84,11 @@
             },
             "title": "Construct Document (list)",
             "type": "array"
+        },
+        "vector_name": {
+            "description": "The name of the vector used for the construct",
+            "title": "Vector Name",
+            "type": "string"
         },
         "documents": {
             "default": [],

@@ -4,14 +4,9 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Schema for submitting an ENCODE RNAi (including shRNA and siRNA)",
     "type": "object",
-    "required": [ "name", "type", "source", "lab", "award"],
+    "required": [ "type", "target", "lab", "award"],
     "additionalProperties": false,
     "properties": {
-        "name": {
-            "description": "A unique name for the construct or vector",
-            "title": "Construct Name",
-            "type": "string"
-        },
         "type": {
             "description": "The sub-type of the interfering RNA",
             "title": "RNAi Type",
@@ -62,6 +57,11 @@
             "title": "RNAi Target",
             "type": "object",
             "format": "target_link"
+        },
+        "vector_name": {
+            "description": "The name of the vector used for the construct",
+            "title": "Vector Name",
+            "type": "string"
         },
         "documents": {
             "default": [],
