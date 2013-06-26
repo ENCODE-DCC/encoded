@@ -858,9 +858,14 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
 
     # Handling controls here
     for file_uuid in value['file_uuids']:
-        if alldata['file'][file_uuid]['possible_controls']:
-            if not value['experiment_control_uuids']:
-                value['experiment_control_uuids'].append(alldata['file'][file_uuid]['possible_controls'])
+        possible_controls = alldata['file'][file_uuid]['possible_controls']
+        if not possible_controls:
+            continue
+        if possible_controls == uuid:
+            logger.warn("Experiment: %s is its own control through file: %s" % (uuid, file_uuid))
+            continue
+        if possible_controls not in value['experiment_control_uuids']:
+            value['experiment_control_uuids'].append(possible_controls)
 
     #checking for replicates without files
     for replicate in alldata['replicate']:
