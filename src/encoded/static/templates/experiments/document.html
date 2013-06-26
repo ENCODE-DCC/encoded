@@ -3,7 +3,7 @@
         <div class="span6">
             <figure>
                 <?js if (properties.document) { ?>
-                <a  href="{properties.document.href}">
+                <a data-bypass="true" href="{properties.document.href}">
                     <?js if (properties.document.type.indexOf('image/') == 0) { ?>
                         <img
                             class="validation-img"

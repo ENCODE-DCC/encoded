@@ -3,7 +3,7 @@
         <div class="span6">
             <figure>
                 <?js if (properties.document) { ?>
-                <a  href="{properties.document.href}">
+                <a data-bypass="true" href="{properties.document.href}">
                     <?js if (properties.document.type.indexOf('image/') == 0) { ?>
                         <img
                             class="validation-img"
@@ -49,10 +49,11 @@
                 <p><b>Submitted By:</b> <span>{model.links.submitter.get('first_name')} {model.links.submitter.get('last_name')}</span></p>
                 <p><b>Lab:</b> <span>{model.links.lab.get('name')}</span></p>
                 <p><b>Grant:</b> <span>{model.links.award.get('number')}</span></p>
-                <p><b>Download:</b>
+                <p><i class="icon-download-alt"></i> <b>Download:</b>
                     <?js if (properties.document) { ?>
                     <a  href="{properties.document.href}"
                         download="{properties.document.download}"
+                        data-bypass="true"
                         >{properties.document.download}</a>
                     <?js } else { ?>
                     <em>Document not available</em>
