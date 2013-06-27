@@ -39,8 +39,8 @@ class User(Collection):
     class Item(Collection.Item):
         links = {
             'labs': [
-                {'href': '/labs/{lab_uuid}', 'templated': True,
-                 'repeat': 'lab_uuid lab_uuids'}
+                {'$value': '/labs/{lab_uuid}', '$templated': True,
+                 '$repeat': 'lab_uuid lab_uuids'}
             ]
         }
         keys = ['email']
@@ -64,7 +64,7 @@ def user_details_view(context, request):
 def user_basic_view(context, request):
     properties = item_view(context, request)
     filtered = {}
-    for key in ['_links', 'first_name', 'last_name']:
+    for key in ['labs', 'first_name', 'last_name']:
         filtered[key] = properties[key]
     return filtered
 

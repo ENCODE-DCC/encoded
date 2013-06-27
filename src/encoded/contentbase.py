@@ -285,7 +285,7 @@ class MergedLinksMeta(type):
             for key in vars(cls).get('keys', []):
                 if isinstance(key, basestring):
                     key = {'name': '{item_type}:' + key,
-                           'value': '{%s}' % key, 'templated': True}
+                           'value': '{%s}' % key, '$templated': True}
                 self.merged_keys.append(key)
 
         self.merged_rels = []
@@ -298,11 +298,11 @@ class Item(object):
     keys = []
     embedded = {}
     links = {
-        'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
-        'collection': {'href': '{collection_uri}', 'templated': True},
-        'profiles': [
-            {'href': '/profiles/{item_type}', 'templated': True},
-            {'href': '/profiles/item'},
+        '@id': {'$value': '{item_uri}', '$templated': True},
+        # 'collection': '{collection_uri}',
+        '@type': [
+            {'$value': '/profiles/{item_type}', '$templated': True},
+            '/profiles/item',
         ],
     }
 
@@ -310,6 +310,10 @@ class Item(object):
         self.__name__ = model.rid
         self.__parent__ = collection
         self.model = model
+
+    @property
+    def item_type(self):
+        return self.model.predicate
 
     @property
     def properties(self):
@@ -320,25 +324,24 @@ class Item(object):
         return self.model.rid
 
     def __json__(self, request):
-        links = self.expand_links(request)
-        if links is None:
-            return self.properties
         properties = self.properties.copy()
-        properties['_links'] = links
+        links = self.expand_links(request)
+        properties.update(links)
         return properties
 
     def template_namespace(self, request=None):
-        # Expand templated links
+        # Expand $templated links
         ns = self.properties.copy()
-        ns['item_type'] = self.model.predicate
+        ns['item_type'] = self.item_type
         ns['_uuid'] = self.uuid
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)
+            ns['item_uri'] = request.resource_path(self)
             ns['permission'] = permission_checker(self, request)
         return ns
 
     def expand_links(self, request):
-        # Expand templated links
+        # Expand $templated links
         ns = self.template_namespace(request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
@@ -348,10 +351,9 @@ class Item(object):
             if rel not in embedded:
                 continue
             if isinstance(value, list):
-                for member in value:
-                    embed(request, member['href'])
+                links[rel] = [embed(request, member) for member in value]
             else:
-                embed(request, value['href'])
+                links[rel] = embed(request, value)
         return links
 
     def create_keys(self):
@@ -514,16 +516,11 @@ class Collection(object):
     item_type = None
     unique_key = None
     links = {
-        'self': {'href': '{collection_uri}', 'templated': True},
-        'profiles': [
-            {'href': '/profiles/{item_type}_collection', 'templated': True},
-            {'href': '/profiles/collection'},
+        '@id': {'$value': '{collection_uri}', '$templated': True},
+        '@type': [
+            {'$value': '/profiles/{item_type}_collection', '$templated': True},
+            '/profiles/collection',
         ],
-        'items': [{
-            'href': '{item_uri}',
-            'templated': True,
-            'repeat': 'item_uri item_uris',
-        }],
         'actions': [
             {
                 'name': 'add',
@@ -531,7 +528,7 @@ class Collection(object):
                 'profile': '/profiles/{item_type}.json',
                 'method': 'POST',
                 'href': '',
-                'templated': True,
+                '$templated': True,
                 'condition': 'permission:add',
             },
         ],
@@ -617,24 +614,21 @@ class Collection(object):
             CurrentStatement.predicate == self.item_type
         ).limit(nrows)
 
-        item_uris = []
-        for model in query.all():
-            item_uri = request.resource_path(self, model.rid)
-            embed(request, item_uri)
-            item_uris.append(item_uri)
-
         properties = self.properties.copy()
-
-        # Expand templated links
+        # Expand $templated links
         ns = properties.copy()
         ns['collection_uri'] = request.resource_path(self)
         ns['item_type'] = self.item_type
-        ns['item_uris'] = item_uris
         ns['permission'] = permission_checker(self, request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
-        if links is not None:
-            properties['_links'] = links
+        properties.update(links)
+        items = properties['items'] = []
+
+        for model in query.all():
+            item_uri = request.resource_path(self, model.rid)
+            rendered = embed(request, item_uri)
+            items.append(rendered)
 
         return properties
 
@@ -685,17 +679,13 @@ def collection_list(context, request):
 def collection_add(context, request):
     properties = request.validated
     item = context.add(properties)
-    item_uri = request.resource_path(context, item.__name__)
+    item_uri = request.resource_path(item)
     request.response.status = 201
     request.response.location = item_uri
     result = {
         'result': 'success',
-        '_links': {
-            'profile': {'href': '/profiles/result'},
-            'items': [
-                {'href': item_uri},
-            ],
-        },
+        '@type': ['/profiles/result'],
+        'items': [item_uri],
     }
     return result
 
@@ -722,7 +712,7 @@ def item_view(context, request):
     if no_body_needed(request):
         return {}
     properties = context.__json__(request)
-    maybe_include_embedded(request, properties)
+    #maybe_include_embedded(request, properties)
     return properties
 
 
@@ -731,15 +721,11 @@ def item_view(context, request):
 def item_edit(context, request):
     properties = request.validated
     context.update(properties)
-    item_uri = request.resource_path(context.__parent__, context.__name__)
+    item_uri = request.resource_path(context)
     request.response.status = 200
     result = {
         'result': 'success',
-        '_links': {
-            'profile': {'href': '/profiles/result'},
-            'items': [
-                {'href': item_uri},
-            ],
-        },
+        '@type': ['/profiles/result'],
+        'items': [item_uri],
     }
     return result

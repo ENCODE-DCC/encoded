@@ -24,8 +24,8 @@ class Lab(Collection):
     }
     item_links = {
         'awards': [
-            {'href': '/awards/{award_uuid}', 'templated': True,
-             'repeat': 'award_uuid award_uuids'}
+            {'$value': '/awards/{award_uuid}', '$templated': True,
+             '$repeat': 'award_uuid award_uuids'}
         ]
     }
 
@@ -50,12 +50,12 @@ class AntibodyLots(Collection):
         'description': 'Listing of ENCODE antibodies',
     }
     item_links = {
-        'source': {'href': '/sources/{source_uuid}', 'templated': True},
+        'source': {'$value': '/sources/{source_uuid}', '$templated': True},
     }
     item_embedded = set(['source'])
     item_keys = [
-        {'name': 'accession', 'value': '{antibody_accession}', 'templated': True},
-        {'name': '{item_type}:source_product_lot', 'value': '{source_uuid}/{product_id}/{lot_id}', 'templated': True},
+        {'name': 'accession', 'value': '{antibody_accession}', '$templated': True},
+        {'name': '{item_type}:source_product_lot', 'value': '{source_uuid}/{product_id}/{lot_id}', '$templated': True},
     ]
 
 
@@ -80,7 +80,7 @@ class Source(Collection):
     }
     item_links = {
         'actions': [
-            {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', 'templated': True, 'condition': 'permission:edit'},
+            {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', '$templated': True, '$condition': 'permission:edit'},
         ],
     }
 
@@ -94,7 +94,7 @@ class Donor(Collection):
         'description': 'Listing Biosample Donors',
     }
     item_links = {
-        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
+        'organism': {'$value': '/organisms/{organism_uuid}', '$templated': True},
     }
     item_embedded = set(['organism'])
     item_keys = ['donor_id']
@@ -119,9 +119,9 @@ class Construct(Collection):
         'description': 'Listing of Biosample Constructs',
     }
     item_links = {
-        'source': {'href': '/sources/{source_uuid}', 'templated': True},
+        'source': {'$value': '/sources/{source_uuid}', '$templated': True},
         'documents': [
-            {'href': '/documents/{document_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
+            {'$value': '/documents/{document_uuid}', '$templated': True, '$repeat': 'document_uuid document_uuids'},
         ],
     }
     item_embedded = set(['source', 'documents'])
@@ -139,9 +139,9 @@ class Document(Collection):
     class Item(ItemWithDocument):
         keys = ['document_name']
         links = {
-            'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-            'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-            'award': {'href': '/awards/{award_uuid}', 'templated': True},
+            'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
+            'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
+            'award': {'$value': '/awards/{award_uuid}', '$templated': True},
         }
         embedded = set(['submitter', 'lab', 'award'])
 
@@ -155,23 +155,23 @@ class Biosample(Collection):
         'description': 'Biosamples used in the ENCODE project',
     }
     item_links = {
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-        'source': {'href': '/sources/{source_uuid}', 'templated': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True},
-        'donor': {'href': '/donors/{donor_uuid}', 'templated': True},
+        'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
+        'source': {'$value': '/sources/{source_uuid}', '$templated': True},
+        'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
+        'award': {'$value': '/awards/{award_uuid}', '$templated': True},
+        'donor': {'$value': '/donors/{donor_uuid}', '$templated': True},
         'documents': [
-            {'href': '/documents/{document_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
+            {'$value': '/documents/{document_uuid}', '$templated': True, '$repeat': 'document_uuid document_uuids'},
         ],
         'treatments': [
-            {'href': '/treatments/{treatment_uuid}', 'templated': True, 'repeat': 'treatment_uuid treatment_uuids'},
+            {'$value': '/treatments/{treatment_uuid}', '$templated': True, '$repeat': 'treatment_uuid treatment_uuids'},
         ],
         'constructs': [
-            {'href': '/constructs/{construct_uuid}', 'templated': True, 'repeat': 'construct_uuid construct_uuids'},
+            {'$value': '/constructs/{construct_uuid}', '$templated': True, '$repeat': 'construct_uuid construct_uuids'},
         ],
     }
     item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
-    item_keys = [{'name': 'accession', 'value': '{accession}', 'templated': True}]
+    item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
 
 
 @location('targets')
@@ -183,10 +183,10 @@ class Target(Collection):
         'description': 'Listing of ENCODE3 targets',
     }
     item_links = {
-        'organism': {'href': '/organisms/{organism_uuid}', 'templated': True},
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        'organism': {'$value': '/organisms/{organism_uuid}', '$templated': True},
+        'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
+        'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
+        'award': {'$value': '/awards/{award_uuid}', '$templated': True},
     }
     item_embedded = set(['organism', 'submitter', 'lab', 'award'])
     #   item_keys = [('target_label', 'organism_name')] multi columns not implemented yet
@@ -204,11 +204,11 @@ class AntibodyValidation(Collection):
 
     class Item(ItemWithDocument):
         links = {
-            'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
-            'target': {'href': '/targets/{target_uuid}', 'templated': True},
-            'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-            'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-            'award': {'href': '/awards/{award_uuid}', 'templated': True},
+            'antibody_lot': {'$value': '/antibody-lots/{antibody_lot_uuid}', '$templated': True},
+            'target': {'$value': '/targets/{target_uuid}', '$templated': True},
+            'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
+            'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
+            'award': {'$value': '/awards/{award_uuid}', '$templated': True},
         }
         embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
 
@@ -222,15 +222,15 @@ class AntibodyApproval(Collection):
         'description': 'Listing of validation approvals for ENCODE antibodies',
     }
     item_links = {
-        'antibody_lot': {'href': '/antibody-lots/{antibody_lot_uuid}', 'templated': True},
-        'target': {'href': '/targets/{target_uuid}', 'templated': True},
+        'antibody_lot': {'$value': '/antibody-lots/{antibody_lot_uuid}', '$templated': True},
+        'target': {'$value': '/targets/{target_uuid}', '$templated': True},
         'validations': [
-            {'href': '/validations/{validation_uuid}', 'templated': True, 'repeat': 'validation_uuid validation_uuids'},
+            {'$value': '/validations/{validation_uuid}', '$templated': True, '$repeat': 'validation_uuid validation_uuids'},
         ],
     }
     item_embedded = set(['antibody_lot', 'target'])
     item_keys = [
-        {'name': '{item_type}:lot_target', 'value': '{antibody_lot_uuid}/{target_uuid}', 'templated': True}
+        {'name': '{item_type}:lot_target', 'value': '{antibody_lot_uuid}/{target_uuid}', '$templated': True}
     ]
 
 
@@ -251,13 +251,13 @@ class Library(Collection):
         'description': 'Listing of Libraries',
     }
     item_links = {
-        'biosample': {'href': '/biosamples/{biosample_uuid}', 'templated': True},
+        'biosample': {'$value': '/biosamples/{biosample_uuid}', '$templated': True},
         'documents': [
-            {'href': '/documents/{document_uuid}', 'templated': True, 'repeat': 'document_uuid document_uuids'},
+            {'$value': '/documents/{document_uuid}', '$templated': True, '$repeat': 'document_uuid document_uuids'},
         ],
     }
     item_embedded = set(['biosample'])
-    item_keys = [{'name': 'accession', 'value': '{accession}', 'templated': True}]
+    item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
 
 
 @location('assays')
@@ -277,9 +277,9 @@ class Replicates(Collection):
         'description': 'Listing of Replicates',
     }
     item_links = {
-        'library': {'href': '/libraries/{library_uuid}', 'templated': True},
-        'platform': {'href': '/platforms/{platform_uuid}', 'templated': True},
-        'assay': {'href': '/assays/{assay_uuid}', 'templated': True},
+        'library': {'$value': '/libraries/{library_uuid}', '$templated': True},
+        'platform': {'$value': '/platforms/{platform_uuid}', '$templated': True},
+        'assay': {'$value': '/assays/{assay_uuid}', '$templated': True},
     }
     item_embedded = set(['library', 'platform', 'assay'])
 
@@ -292,9 +292,9 @@ class Files(Collection):
         'description': 'Listing of Files',
     }
     item_links = {
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
+        'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
+        'award': {'$value': '/awards/{award_uuid}', '$templated': True},
     }
     item_embedded = set(['submitter', 'lab', 'award'])
 
@@ -307,18 +307,18 @@ class Experiments(Collection):
         'description': 'Listing of Experiments',
     }
     item_links = {
-        'submitter': {'href': '/users/{submitter_uuid}', 'templated': True},
-        'lab': {'href': '/labs/{lab_uuid}', 'templated': True},
-        'award': {'href': '/awards/{award_uuid}', 'templated': True},
+        'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
+        'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
+        'award': {'$value': '/awards/{award_uuid}', '$templated': True},
         'files': [
-            {'href': '/files/{file_uuid}', 'templated': True, 'repeat': 'file_uuid file_uuids'},
+            {'$value': '/files/{file_uuid}', '$templated': True, '$repeat': 'file_uuid file_uuids'},
         ],
         'replicates': [
-            {'href': '/replicates/{replicate_uuid}', 'templated': True, 'repeat': 'replicate_uuid replicate_uuids'},
+            {'$value': '/replicates/{replicate_uuid}', '$templated': True, '$repeat': 'replicate_uuid replicate_uuids'},
         ],
         'experiments': [
-            {'href': '/experiments/{experiment_control_uuid}', 'templated': True, 'repeat': 'experiment_control_uuid experiment_control_uuids'},
+            {'$value': '/experiments/{experiment_control_uuid}', '$templated': True, '$repeat': 'experiment_control_uuid experiment_control_uuids'},
         ],
     }
     item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award', 'experiments'])
-    item_keys = [{'name': 'accession', 'value': '{dataset_accession}', 'templated': True}]
+    item_keys = [{'name': 'accession', 'value': '{dataset_accession}', '$templated': True}]

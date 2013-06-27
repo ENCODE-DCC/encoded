@@ -23,11 +23,9 @@ class EncodedRoot(Root):
 @view_config(context=Root, request_method='GET')
 def home(context, request):
     result = context.__json__(request)
-    result['_links'] = {
-        'self': {'href': request.resource_path(context)},
-        'profiles': [
-            {'href': '/profiles/portal'},
-        ],
+    result.update({
+        '@id': request.resource_path(context),
+        '@type': ['/profiles/portal'],
         # 'login': {'href': request.resource_path(context, 'login')},
-    }
+    })
     return result

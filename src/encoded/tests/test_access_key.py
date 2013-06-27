@@ -57,7 +57,7 @@ def access_key(access_keys):
 def test_access_key_current_user(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get('/@@current-user', headers=headers)
-    assert res.json['_links']['labs']
+    assert res.json['labs']
 
 
 def test_access_key_principals(anontestapp, execute_counter, access_key):
