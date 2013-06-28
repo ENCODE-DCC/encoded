@@ -201,11 +201,13 @@ def extract(filename, sheets, test=False):
 
 def value_index(data, attribute):
     index = {}
-    for uuid, value in data.iteritems():
+    for uuid, value in list(data.iteritems()):
         index_value = resolve_dotted(value, attribute)
-        if not index_value: continue
-        assert index_value not in index, index_value
-        index[index_value] = uuid
+        if index_value in index:
+            logger.warn('Duplicate values for %s, %s: %r' % (index[index_value], uuid, index_value))
+            del[data[uuid]]
+        else:
+            index[index_value] = uuid
     return index
 
 
@@ -363,7 +365,7 @@ def parse_decorator_factory(content_type, index_type):
                     parse_type(testapp, alldata, content_type, indices, uuid, value, docsdir)
 
                 except Exception as e:
-                    logger.warn('PROCESSING %s %s: %s Value:\n%r\n' % (content_type, uuid, e, original))
+                    logger.warn('PROCESSING %s %s: %r Value:\n%r\n' % (content_type, uuid, e, original))
                     del alldata[content_type][uuid]
                     continue
 
