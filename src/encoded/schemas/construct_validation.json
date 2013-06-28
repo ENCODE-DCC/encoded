@@ -2,11 +2,18 @@
     "title": "ENCODE Construct Validation",
     "id": "/profiles/construct_validation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
     "description": "Schema for submitting construct validation data",
     "type": "object",
     "required": [ "award", "lab", "construct" ],
     "additionalProperties": false,
     "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
         "construct": {
             "description": "The specific construct for which the validation image applies.",
             "comment": "Automatic submitters can supply a construct uuid",

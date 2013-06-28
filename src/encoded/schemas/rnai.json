@@ -2,12 +2,19 @@
     "title": "ENCODE RNAi",
     "id": "/profiles/rnai.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
     "description": "Schema for submitting an ENCODE RNAi (including shRNA and siRNA)",
     "type": "object",
     "required": [ "type", "target", "lab", "award"],
     "additionalProperties": false,
     "properties": {
-        "type": {
+         "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+       "type": {
             "description": "The sub-type of the interfering RNA",
             "title": "RNAi Type",
             "type": {

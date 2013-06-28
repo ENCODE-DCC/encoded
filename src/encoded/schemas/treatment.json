@@ -2,11 +2,18 @@
     "title": "ENCODE biosample Treatment",
     "id": "/profiles/treatment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
     "description": "Schema for submitting an ENCODE biosample Treatment",
     "type": "object",
     "required": [ "name", "type", "lab", "award"],
     "additionalProperties": false,
     "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
         "name": {
             "description": "A unique name for the treatment",
             "title": "Treatment Name",

@@ -2,12 +2,19 @@
     "title": "ENCODE Experimental Dataset",
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
     "description": "Schema for submitting an primary set of files to ENCODE (Experiment)",
     "comment": "Experiment is a special case of Dataset",
     "type": "object",
     "required": [ "award", "lab", "dataset_type", "term_id"],
     "additionalProperties": false,
     "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
          "accession": {
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",

@@ -2,11 +2,18 @@
     "title": "ENCODE Construct",
     "id": "/profiles/construct.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
     "description": "Schema for submitting an ENCODE transfection Construct",
     "type": "object",
     "required": [ "type", "target", "tag", "lab", "award"],
     "additionalProperties": false,
     "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
         "type": {
             "description": "The type of transfection construct",
             "title": "Construct Type",
@@ -106,12 +113,12 @@
         "validations": {
             "default": [],
             "description": "List of documents/images associated with the validation of this construct",
-            "comment": "For automatic submission supply unique documents/images names or uuids",
+            "comment": "For automatic submission supply image names or uuids",
             "items": {
-                "description": "Contruct validation document",
-                "title": "Validation Document",
+                "description": "Contruct validation",
+                "title": "Validation",
                 "type": "string",
-                "format": "document_link"
+                "format": "construct_validation_link"
             },
             "title": "Construct Validation Images (list)",
             "type": "array"

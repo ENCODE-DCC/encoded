@@ -2,12 +2,19 @@
     "title": "ENCODE Experimental Data File",
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
     "description": "Schema for submitting data file Metadata for ENCODE",
     "type": "object",
     "required": [ "award", "lab", "file_format", "md5sum", "output_type"],
     "additionalProperties": false,
     "properties": {
-        "accession": {
+         "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+       "accession": {
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Dataset Accession",

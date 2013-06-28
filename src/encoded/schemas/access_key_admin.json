@@ -2,7 +2,7 @@
     "title": "ENCODE DCC ADMIN Access key",
     "id": "/profiles/access_key_admin.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "type": "object",
+    "version": "0.01",
     "additionProperties": false,
     "properties": {
         "user_uuid": {

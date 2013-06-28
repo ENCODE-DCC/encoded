@@ -2,11 +2,18 @@
     "title": "ENCODE Replicate",
     "id": "/profiles/replicate.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
     "description": "Schema for submitting an experimental Replicate",
     "type": "object",
     "required": [ "award", "lab", "assay_type", "biological_replicate_no", "technical_replicate_no", "library"],
     "additionalProperties": false,
     "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
         "lab": {
             "default": "ENCODE Project",
             "description": "Submitting Lab",

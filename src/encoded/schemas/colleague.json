@@ -2,11 +2,18 @@
     "title": "ENCODE Colleague",
     "id": "/profiles/colleague.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
     "description": "Schema for submitting an ENCODE Colleague (not user)",
     "type": "object",
     "required": [ "email", "first_name", "last_name"],
     "additionalProperties": false,
     "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
         "email": {
             "description": "The colleagues' email address",
             "title": "Email",
@@ -23,7 +30,15 @@
             "title": "Last Name",
             "type": "string"
         },
-        "labs": {
+       "lab": {
+            "description": "The lab to which this colleague belongs (NOTE: DOES NOT CONFER SUBMISSION RIGHTS)",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "submits_for": {
+            "default": [],
             "description": "Labs colleague is authorized to submit data for.",
             "comment": "Automatic submitters can supply a list of Lab UUIDs or Names",
             "title": "List of labs",
@@ -53,7 +68,7 @@
             "type": "string",
             "format": "phone"
         },
-       "fax": {
+        "fax": {
             "description": "A FAX number for the colleague (with country code)",
             "title": "Fax Number",
             "type": "string",
