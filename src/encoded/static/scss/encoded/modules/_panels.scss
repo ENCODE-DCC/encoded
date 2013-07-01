@@ -1,0 +1,63 @@
+/* Panels */
+.panel {
+	background-color: #fff;
+	border: 1px solid #ced5dc;
+    @include border-radius($baseBorderRadius);
+    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+    margin: 10px 0 20px;
+    padding: 15px 30px;
+    overflow: hidden;
+}
+
+.panel-blue {
+background-color: #4284d8;
+border: 1px solid #3276ca;
+    @include border-radius($baseBorderRadius);
+    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+    margin: 10px 0 20px;
+    padding: 15px 30px;
+    overflow: hidden;
+}
+
+.panel-gray {
+    margin: 10px 0 20px;
+    padding: 15px 30px;
+    overflow: hidden;
+}
+
+
+.panel h3, .panel h4 {color: #0A253D;}
+
+.view-detail h3 {line-height: 24.5px;}
+
+/* add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss */
+.panel a[href^="http"]:after, td a[href^="http"]:after		{
+	content: " \f027";
+	font-family: FontAwesome;
+	font-weight: normal;
+	font-style: normal;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
+
+	/* sprites.less reset */
+	display: inline;
+	width: auto;
+	height: auto;
+	line-height: normal;
+	vertical-align: baseline;
+	background-image: none;
+	background-position: 0% 0%;
+	background-repeat: repeat;
+	margin-top: 0;
+}
+/* remove external-link icon if there is no text in link <a></a>
+Note does not work in =<IE8, oh well */
+a[href^="http"]:empty:after {
+	content: none;
+}
+
+/* do not use external link icon in these cases... */
+/* downloads */
+a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
+	content: none !important;
+} 

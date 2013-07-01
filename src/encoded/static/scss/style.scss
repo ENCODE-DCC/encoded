@@ -75,7 +75,15 @@
 // SMACSS-based architecture (http://smacss.com/)
 @import "encoded/base";
 @import "encoded/layout"; 
-@import "encoded/modules";
+@import "encoded/modules/breadcrumbs",
+		"encoded/modules/forms",
+		"encoded/modules/key-value-display",
+		"encoded/modules/modals",
+		"encoded/modules/navbar",
+		"encoded/modules/panels",
+		"encoded/modules/signin-box",
+		"encoded/modules/tables",
+		"encoded/modules/validations";
 @import "encoded/state";
 @import "encoded/theme"; 
 

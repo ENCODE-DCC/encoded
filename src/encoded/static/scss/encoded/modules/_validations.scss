@@ -1,0 +1,114 @@
+/* Validation Details Page */
+.type-validation.view-detail {
+		header {
+			margin: 0 15px;
+			h3 {
+				margin-bottom: 0;
+			}
+	}
+}
+
+
+.type-validation.view-detail figure, .type-document.view-detail figure {
+	@include border-radius($baseBorderRadius);
+	margin: 14px;
+	padding: 10px;
+	border: 1px solid;
+	text-align: center;
+}
+
+.type-validation.view-detail figcaption {
+	font-weight: bold;
+	text-align: center;
+	padding: 5px;
+}
+
+/* should make the below a mixin */
+.type-validation.view-detail.status-approved {
+  figure { border-color: $successBorder; background-color: $successBackground; }
+  	figcaption { color: $successText; }
+}
+
+.type-validation.view-detail.status-failed {
+  figure { border-color: $errorBorder; background-color: $errorBackground; }
+  	figcaption { color: $errorText; }
+}
+
+.type-validation.view-detail.status-submitted {
+  figure { border-color: $infoBorder; background-color: $infoBackground; }
+  	figcaption { color: $infoText; }
+}
+
+.type-validation.view-detail.status-incomplete {
+  figure { border-color: $warningBorder; background-color: $warningBackground; }
+  	figcaption { color: $warningText; }
+}
+
+.type-validation.view-detail.status-unsubmitted, .type-document.view-detail .status-none {
+  figure { border-color: #e1e1e8; background-color: #f7f7f9; }
+  	figcaption { color: #333; }
+}
+
+.validation-img {
+	max-height: 360px;
+}
+
+.validation-meta-data {
+	margin: 15px 15px 15px 0;
+}
+
+.validation-status {
+	margin-bottom: 8px;
+	font-weight: bold;
+	font-size: 1.5em;
+}
+
+.validation-status .approved {
+	color: $successText;
+	top: -5px;
+	position: relative;
+}
+
+.validation-status .pending, .validation-status .pending  { 
+	/* use with icon-tasks or maybe icon-inbox */
+	color: $infoText;
+	top: -5px;
+	position: relative;
+}
+
+.validation-status .rejected {  /* use with icon-thumbs-down */
+	color: $errorText;
+	top: -5px;
+	position: relative;
+}
+
+h3 .label {
+	font-size: 16px;
+	line-height: 20px;
+	position: relative;
+	top: -3px;
+	left: 15px;
+}
+
+.validation-status-labels {
+	font-weight: bold;
+	font-size: 1.2em;
+	float: right;
+}
+
+@each $item in label, badge {
+	// Approved (green)
+	.#{$item}.status-approved        { background-color: $successText; }
+	.#{$item}.status-aproved[href]   { background-color: darken($successText, 10%); }
+	// Submitted (blue)
+	.#{$item}.status-submitted		 { background-color: $infoText; }
+	.#{$item}.status-submitted[href] { background-color: darken($infoText, 10%); }
+	// Failed (red)
+	.#{$item}.status-failed          { background-color: $errorText; }
+	.#{$item}.status-failed[href]    { background-color: darken($errorText, 10%); }
+	// Incomplete (yellow)
+	.#{$item}.status-incomplete      { background-color: $warningText; }
+	.#{$item}.status-incomplete[href]{ background-color: darken($warningText, 10%); }
+
+	/* Unsubmitted/pending (gray) is the default if no class given */
+}
