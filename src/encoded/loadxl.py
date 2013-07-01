@@ -201,11 +201,13 @@ def extract(filename, sheets, test=False):
 
 def value_index(data, attribute):
     index = {}
-    for uuid, value in data.iteritems():
+    for uuid, value in list(data.iteritems()):
         index_value = resolve_dotted(value, attribute)
-        if not index_value: continue
-        assert index_value not in index, index_value
-        index[index_value] = uuid
+        if index_value in index:
+            logger.warn('Duplicate values for %s, %s: %r' % (index[index_value], uuid, index_value))
+            del[data[uuid]]
+        else:
+            index[index_value] = uuid
     return index
 
 
@@ -363,7 +365,7 @@ def parse_decorator_factory(content_type, index_type):
                     parse_type(testapp, alldata, content_type, indices, uuid, value, docsdir)
 
                 except Exception as e:
-                    logger.warn('PROCESSING %s %s: %s Value:\n%r\n' % (content_type, uuid, e, original))
+                    logger.warn('PROCESSING %s %s: %r Value:\n%r\n' % (content_type, uuid, e, original))
                     del alldata[content_type][uuid]
                     continue
 
@@ -493,9 +495,10 @@ def parse_validation(testapp, alldata, content_type, indices, uuid, value, docsd
 
 @parse_decorator_factory('antibody_approval', {})
 def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value, docsdir):
-
+    product_id = value.pop('antibody_product_id')
+    lot_id = value.pop('antibody_lot_id')
     try:
-        value['antibody_lot_uuid'] = indices['antibody_lot'][(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
+        value['antibody_lot_uuid'] = indices['antibody_lot'][(product_id, lot_id)]
     except KeyError:
         raise ValueError('Missing/skipped antibody_lot reference')
 
@@ -510,13 +513,16 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
                 logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
             else:
                 method = val['validation_method']
-                if (filename, method) not in validations:
+                if val['product_id'] != product_id:
+                    if filename != 'frowny_gel.png':
+                        logger.warn('Skipped validation: %s filename: %s for antibody_approval: %s, wrong product_id (%s not %s)' % (
+                            validation_uuid, filename, uuid, val['product_id'], product_id))
+                elif (filename, method) not in validations:
                     value['validation_uuids'].append(validation_uuid)
                     validations.add((filename, method))
                 else:
-                    pass
-                    # frowny_gel is frowny because log files get clogged
-                    #logger.warn('Duplicate method/validation skipped: %s %s for approval' % (filename, method))
+                    if filename != 'frowny_gel.png':
+                        logger.warn('Duplicate method/validation skipped: %s %s for approval %s' % (filename, method, uuid))
 
     # make sure there are no duplicates
     assert len(set(value['validation_uuids'])) == len(value['validation_uuids'])
@@ -858,9 +864,14 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
 
     # Handling controls here
     for file_uuid in value['file_uuids']:
-        if alldata['file'][file_uuid]['possible_controls']:
-            if not value['experiment_control_uuids']:
-                value['experiment_control_uuids'].append(alldata['file'][file_uuid]['possible_controls'])
+        possible_controls = alldata['file'][file_uuid]['possible_controls']
+        if not possible_controls:
+            continue
+        if possible_controls == uuid:
+            logger.warn("Experiment: %s is its own control through file: %s" % (uuid, file_uuid))
+            continue
+        if possible_controls not in value['experiment_control_uuids']:
+            value['experiment_control_uuids'].append(possible_controls)
 
     #checking for replicates without files
     for replicate in alldata['replicate']:
