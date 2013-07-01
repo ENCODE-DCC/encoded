@@ -1,0 +1,18 @@
+/*=============================
+   i :: Variables
+=============================*/
+$mainThemeColor: 			#e8ecef; /* i.e. the background color ..for now */
+
+$footerHeight: 				150px;
+$footerTopBorderHeight:		1px;
+$footerTopHeight: 			110px;
+$footerBottomHeight:		$footerHeight - $footerTopHeight;
+$footerBackground:          #0f2a42 !default;
+$footerBackgroundHighlight: #294b6a !default;
+$footerBorder:              #0f2a42 !default;
+
+$tableHeadFootBackgroundColor: #f5f5f5;
+
+body { background: $mainThemeColor; }
+
+.float-wrap { overflow: hidden; }

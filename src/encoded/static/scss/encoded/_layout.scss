@@ -1,0 +1,87 @@
+#layout, #home-layout {
+	height: auto !important;
+    margin: 0 auto -$footerHeight;
+    min-height: 100%;
+}
+
+#content {
+	padding-top: 75px;
+}
+
+#homepage-main-box {
+	min-height: 400px;
+	background: url('/static/img/encode-bg-gray.png') no-repeat center;
+}
+
+#project-info {
+	h1,h2,h3,h4 {
+		@include text-shadow(rgba(255,255,255,1) 1px 1px 0);
+	}
+	display: inline-block;
+	float: left;
+	font-size: 1.3em;
+}
+
+/* *********************************************************
+		FOOTER
+********************************************************** */
+@include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
+
+#page-footer #footer-top {
+	height: $footerTopHeight;
+	border-top: 1px solid #C4C1C1;
+	// border-bottom: 1px solid $footerBackground;
+	// @include background-image(linear-gradient($footerBackground, $footerBackgroundHighlight));
+	// color: $white;
+	//text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
+	// text-align: center;
+	// line-height: $footerTopHeight;
+	#su-logo {
+		float: left;
+		margin-top: 35px;
+	}
+	#som-logo {
+		float: right;
+		margin-top: 35px;
+	}
+	#footer-links {
+		height: $footerTopHeight;
+		margin: 0 auto;
+		display: inline-block;
+		ul {
+			margin: 0;
+			list-style: none;
+			li {
+				line-height: $footerTopHeight;
+				margin-right: 15px;
+				float: left;
+			}
+		}
+	}
+}
+
+#page-footer #footer-bottom {
+	height: $footerBottomHeight;
+	line-height: $footerBottomHeight;
+	text-align: center;
+	// background-color: #33587b;
+	// color: $white;
+	text-shadow: 0 -1px rgba(255, 255, 255, 0.3);
+}
+
+
+#page-footer {
+	color: rgb(111, 111, 111);
+	//background-color: #E8ECEF;
+	//-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
+	//box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
+	text-align: center;
+	@include background-image(linear-gradient(#fff 0px, #e8ecef 50%));
+    //border-top: 1px solid #C4C1C1;
+	a {
+		color: rgb(111, 111, 111);
+	}
+	a:hover {
+		text-decoration: underline;
+	}
+}

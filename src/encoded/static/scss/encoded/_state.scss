@@ -1,0 +1,41 @@
+/* top padding for small screens */
+@media (max-width: 979px) {
+	#content {
+			padding-top: 0;
+	}
+}
+
+
+// fix footer width for small screens + content margin fix
+@media (max-width: 767px) {
+	#footer {
+		margin-left: -20px;
+    	margin-right: -20px;
+	}
+
+	#som-log { margin-right: 10px; }
+}
+
+
+// make key-value description lists responsive
+@media (max-width: 480px) {
+  // Remove the horizontal styles
+  .key-value {
+    dt {
+    	float: none;
+    	width: auto;
+    	padding-top: 0;
+    	text-align: left;
+    }
+    // Move over all values to left
+    dt, dd {
+    	margin-left: 0;
+    	padding-top: 0;
+    	margin-bottom: 0px;
+    }
+    // add vertical space to key-value pairs
+    dd {
+    	margin-bottom: 15px;
+    }
+  }
+}
