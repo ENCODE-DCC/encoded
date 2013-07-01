@@ -1,3 +1,19 @@
+/* At some points each module should go into it's own file.
+
+CONTENTS
+
+Breadcrumbs
+NavBar
+Signin box
+Key-value pair lists
+Validation boxes
+Tables
+Forms
+Modals
+Panels
+
+*/
+
 /* Breadcrumbs - overwrite bootstrap styles */
 .breadcrumb {
 	padding: 5px 15px;
@@ -16,6 +32,10 @@
     border-bottom: 0px solid #4e7294;
     background: #0a253d url("../mockups/img/navbg.png") repeat-x;
     @include box-shadow(0px 0px 30px 2px rgba(170, 170, 170, .9));
+}
+
+.navbar-inverse .navbar-inner#homepage_navbar {
+	border-bottom: 2px solid lighten($navbarInverseLinkBackgroundActive, 20%);
 }
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {
@@ -41,7 +61,7 @@
 
 
 
-
+/* Sign in box (used on home page) */
 .signin-box {
 	@include background-image(linear-gradient(rgba(255,255,255,0.1), rgba(0,0,0,0.1)));
 	@include border-radius(5px);
@@ -55,7 +75,6 @@
 			padding: 0;
 		}
 }
-
 .signin-button {
 	display: block !important;
 	font-size: 1.4em;
@@ -271,7 +290,7 @@ table thead tr th button {
 	margin-bottom: 0 !important;
 }
 
-#table-count {
+.table-count {
 	padding: 0.6em 2em;
 	margin-right: 1em;
 }
@@ -283,7 +302,7 @@ table thead tr th button {
 }
 
 /* initial state is hidden (see template; class=hide) */
-#total-records {
+.total-records {
 	font-weight: normal;
 }
 
@@ -338,6 +357,7 @@ input.search-query {
 }
 
 /* used to mask who screen, for modals etc */
+/* STILL USING THE BELOW OR JUST FOR A MOCKUP???????? */
 #mask {
     position: absolute;
     z-index: 9000;
@@ -355,6 +375,7 @@ input.search-query {
 }
 
 
+/* Panels */
 .panel {
 	background-color: #fff;
 	border: 1px solid #ced5dc;

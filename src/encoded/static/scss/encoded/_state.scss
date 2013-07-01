@@ -1,6 +1,6 @@
 /* top padding for small screens */
 @media (max-width: 979px) {
-	#content {
+	.content {
 			padding-top: 0;
 	}
 }
@@ -8,12 +8,11 @@
 
 // fix footer width for small screens + content margin fix
 @media (max-width: 767px) {
-	#footer {
+	.footer {
 		margin-left: -20px;
     	margin-right: -20px;
 	}
-
-	#som-log { margin-right: 10px; }
+	.som-log { margin-right: 10px; }
 }
 
 
