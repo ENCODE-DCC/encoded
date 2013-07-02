@@ -1,6 +1,4 @@
-/*=============================
-   i :: Variables
-=============================*/
+/* Variables */
 $mainThemeColor: 			#e8ecef; /* i.e. the background color ..for now */
 
 $footerHeight: 				150px;
@@ -13,6 +11,10 @@ $footerBorder:              #0f2a42 !default;
 
 $tableHeadFootBackgroundColor: #f5f5f5;
 
+
+/* BASE STYLES */
 body { background: $mainThemeColor; }
 
 .float-wrap { overflow: hidden; }
+
+/* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */
