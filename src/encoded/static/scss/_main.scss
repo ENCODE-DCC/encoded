@@ -1,55 +1,60 @@
-/*
-Custom Styles
+/* =========================================================
+Custom Styles to be imported by style.scss
 
 Contents
 
-:: Hero Unit
-:: Input Fields
-:: Dropdown menus (popover)
-:: Tables
-:: ...
+i  :: Variables
+1  :: Global Styles
+2  :: Bootstrap Specific Overrides
+3  :: Header
+4  :: Navigation & Menus
+5  :: Main Content Area
+6  :: Home Page Only
+7  :: Footer
+8  :: Tables
+9  :: Forms
 
-*/
+1 :: Variables
+2 :: Base rules
+3 :: Layout rules
+  3.1 : header
+  3.2 : navigation & menus
+  3.3 : main content
+  3.4 : home page 
+  3.5 : footer
+  3.6 : tables
+  3.7 : forms
+4 :: Module and Submodule rules
+5 :: State rules
+6 :: Theme rules
 
-/* A few global variables (a good thing in css :) */
-$mainThemeColor: #e8ecef; // i.e. the background color
+========================================================= */
 
+/*=============================
+===============================
+   i :: Variables
+===============================
+=============================*/
+$mainThemeColor: 			#e8ecef; /* i.e. the background color */
 
-/* Overwriting Bootstrap Styes */
+$footerHeight: 				150px;
+$footerTopBorderHeight:		1px;
+$footerTopHeight: 			110px;
+$footerBottomHeight:		$footerHeight - $footerTopHeight;
+$footerBackground:          #0f2a42 !default;
+$footerBackgroundHighlight: #294b6a !default;
+$footerBorder:              #0f2a42 !default;
 
-/* Hero Unit */
-.hero-unit {
-	@include border-radius($baseBorderRadius);
-}
+$tableHeadFootBackgroundColor: #f5f5f5;
+   
+/*=============================
+===============================
+   1 :: Global Styles
+===============================
+=============================*/
+body { background: $mainThemeColor; }
 
-
-/* Input Fields */
-$inputBorder: darken(#fff, 20%) !default;
-$inputFocusBgColor: darken(#fff, 2%) !default;
-$inputFocusBorderColor: darken(#fff, 26%) !default;
-
-input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea, select {
-	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
-	font-family: inherit;
-	border: 1px solid $inputBorder;
-	@include box-shadow(inset 0 1px 2px rgba(0,0,0,0.1));
-	@include transition(all 0.15s linear);
-		&:focus {
-			background: $inputFocusBgColor;
-			border-color: $inputFocusBorderColor;
-			box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-		}
-		&[disabled] { background-color: #ddd; }
-}
-
-input.search-query {
-	@include border-radius($borderRadiusSmall);
-}
-
-/* Dropdown Menus, etc */
-.dropdown-menu, .popover {
-	@include border-radius($baseBorderRadius);
-}
+.float-wrap { overflow: hidden; }
 
 /* Modals */
 .modal {
@@ -65,108 +70,166 @@ input.search-query {
   @include opacity(60);
 }
 
-/* Tables */
-/* Modified version of Foundation tables */
-
-$tableHeadFootBackgroundColor: #f5f5f5;
-
-table {
-  background: #fff;
-  margin: 0 0 18px;
-  border: 1px solid #ddd;
-  /* @include border-radius($baseBorderRadius); */
-  border-spacing: 0;
-  border-collapse: separate;
-  font-size: 0.92em;
-  width: 100%;
+/* used to mask who screen, for modals etc */
+#mask {
+    position: absolute;
+    z-index: 9000;
+    background-color: rgba(0,0,0,0.6);
+    display: none;  // js switches to display: block
+    height: 4000px; // this should be set in the js to fit screen perfectly
+    width: 4000px;  // this should be set in the js to fit screen perfectly
+    top: 0;
+    left: 0;
 }
 
-table thead, table tfoot { background: $tableHeadFootBackgroundColor; }
-
-table thead tr th,
-table tfoot tr th,
-table tbody tr td,
-table tr td,
-table tfoot tr td {
-	display: table-cell;
-	font-size: ms(0);
-	line-height: 18px;
-	text-align: left;
+.unmask {
+	position: relative;
+	z-index: 9999;
 }
 
-table thead tr th,
-table tfoot tr td { padding: 8px 10px 9px; font-size: ms(0); font-weight: bold; color: #222; border: 1px solid white; }
-table thead tr th:first-child, table tfoot tr td:first-child { border-left: none; }
-table thead tr th:last-child, table tfoot tr td:last-child { border-right: none; }
-
-table tbody tr.even,
-table tbody tr.alt { background: #f9f9f9; }
-/* table tbody tr:nth-child(even) { background: #f9f9f9; } */
-table tbody tr td { color: #333; padding: 10px 11px; vertical-align: top; }
-table tbody tr:hover { background: #bfcfde; }
-
-/* Table Sorting
-table.tablesorter thead tr .header {
-	background-image: url(../img/bg.gif);
-	background-repeat: no-repeat;
-	background-position: center right;
-	cursor: pointer;
-}
-table.tablesorter thead tr .headerSortUp {
-	background-image: url(../img/asc.gif);
-}
-table.tablesorter thead tr .headerSortDown {
-	background-image: url(../img/desc.gif);
-}
-table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
-background-color: darken($tableHeadFootBackgroundColor, 10%);
+/* stuff below is for prototype dropdown panel -
+if we don't end up using it, remove */
+.open > .dropdown-panel {
+    display: block;
 }
 
-.tablesorter thead tr th {
-	padding-right: 16px;
+.dropdown-panel {
+	background-clip: padding-box;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    display: none;
+    float: left;
+    left: -328px;
+    margin: 2px 0 0;
+    min-width: 340px;
+    padding: 0;
+    position: absolute;
+    top: 100%;
+    z-index: 1000;
+	padding: 10px;
+	.col {
+		margin: 0 30px 0 0;
+		float: left;
+		display: inline-block;
+		h4 { font-size: 1.0em; margin: 0 0 4px 0; }
+	}
+	.col:first-child {
+		margin-left: 10px;
+	}
+	.col:last-child {
+		margin-right: 10px;
+	}
+	.tools { background: #ededed; padding: 8px; a {color: blue;} }
 }
 
-*/
+.cancel-link {margin-left: 20px;}
 
-table thead tr th {
-	 padding-right: 30px;
+#layout, #home-layout {
+	height: auto !important;
+    margin: 0 auto -$footerHeight;
+    min-height: 100%;
 }
 
-.sortdirection {
-	float: right;
-    margin-right: -22px;
-    margin-top: 2px;
+#content {
+	padding-top: 75px;
 }
 
-/* Table Controls */
-table thead tr th button {
-	float: left;
+header .controls {
+	position: relative;
+	height: 90px;
+	button { 
+		position: absolute;
+		bottom: 10px;
+		right: 0;
+	}
 }
 
-.table-filter {
-	float: right;
-	margin-bottom: 0 !important;
+/* top padding for small screens */
+@media (max-width: 979px) {
+	#content {
+			padding-top: 0;
+	}
 }
 
-#table-count {
-	padding: 0.6em 2em;
-	margin-right: 1em;
+
+
+.panel {
+	background-color: #fff;
+	border: 1px solid #ced5dc;
+    @include border-radius($baseBorderRadius);
+    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+    margin: 10px 0 20px;
+    padding: 15px 30px;
+    overflow: hidden;
 }
 
-.spinner-warning {
-	padding: 0.6em 2em 0.6em 30px !important;
-	background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
-	background-position: 7px 6px;
+.panel-blue {
+	background-color: #4284d8;
+	border: 1px solid #3276ca;
+    @include border-radius($baseBorderRadius);
+    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+    margin: 10px 0 20px;
+    padding: 15px 30px;
+    overflow: hidden;
 }
 
-// initial state is hidden (see template; class=hide)
-#total-records {
+.panel-gray {
+    margin: 10px 0 20px;
+    padding: 15px 30px;
+    overflow: hidden;
+}
+
+.panel h3, .panel h4 {color: #0A253D;}
+
+.view-detail h3 {line-height: 24.5px;}
+
+/* add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss */
+.panel a[href^="http"]:after, td a[href^="http"]:after		{
+	content: " \f027";
+	font-family: FontAwesome;
 	font-weight: normal;
+	font-style: normal;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
+
+	/* sprites.less reset */
+	display: inline;
+	width: auto;
+	height: auto;
+	line-height: normal;
+	vertical-align: baseline;
+	background-image: none;
+	background-position: 0% 0%;
+	background-repeat: repeat;
+	margin-top: 0;
+}
+/* remove external-link icon if there is no text in link <a></a>
+Note does not work in =<IE8, oh well */
+a[href^="http"]:empty:after {
+	content: none;
 }
 
+/* do not use external link icon in these cases... */
+/* downloads */
+a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
+	content: none !important;
+}
+
+   
+/*=================================
+===================================
+ 2 :: Bootstrap-specific Overrides
+===================================
+=================================*/
+   
+/* Hero Unit */
+.hero-unit {
+	@include border-radius($baseBorderRadius);
+}
 
 /* Breadcrumbs - overwrite bootstrap styles */
-
 .breadcrumb {
 	padding: 5px 15px;
     background-color: darken($mainThemeColor, 3%);
@@ -177,6 +240,24 @@ table thead tr th button {
     .active { color: #000; }
 }
 
+
+/*=============================
+===============================
+ 3 :: Header
+=============================== 
+=============================*/
+
+
+
+
+/*=============================
+===============================
+ 4 :: Navigation & Menus
+===============================
+=============================*/
+   
+$subNavHeight: 30px;
+$subNavLinkPadding: 7px;
 
 /* NavBar */
 .navbar-inverse .navbar-inner {
@@ -231,15 +312,10 @@ table thead tr th button {
   @include gradient-vertical(lighten($navbarInverseLinkBackgroundHover, 8%), lighten($navbarInverseLinkBackgroundHover, 5%));
 }
 
-/* Needs background setting first
-.dropdown-menu li > a {
-	color: #fff;
+/* Dropdown Menus, etc */
+.dropdown-menu, .popover {
+	@include border-radius($baseBorderRadius);
 }
-*/
-
-
-$subNavHeight: 30px;
-$subNavLinkPadding: 7px;
 
 #navbar-subnav {
 	height: $subNavHeight;
@@ -336,87 +412,308 @@ nav.navbar-fixed-top {
 }
 
 
+   
+/*=============================
+===============================
+   5 :: Main Content Areas
+===============================
+=============================*/
+   
+/* Validation Details Page */
+.type-validation.view-detail {
+		header {
+			margin: 0 15px;
 
-/* Global Styles */
-
-body {
-	/* background: #e8ecef url("../img/dna-bg.png") bottom right no-repeat fixed; */
-	background: $mainThemeColor;
+			h3 {
+				margin-bottom: 0;
+			}
+	}
 }
 
-.cancel-link {margin-left: 20px;}
 
-$footerHeight: 				150px;
-$footerTopBorderHeight:		1px;
-$footerTopHeight: 			110px;
-$footerBottomHeight:		$footerHeight - $footerTopHeight;
-$footerBackground:          #0f2a42 !default;
-$footerBackgroundHighlight: #294b6a !default;
-$footerBorder:              #0f2a42 !default;
-
-#layout, #home-layout {
-	height: auto !important;
-    margin: 0 auto -$footerHeight;
-    min-height: 100%;
+.type-validation.view-detail figure, .type-document.view-detail figure {
+	@include border-radius($baseBorderRadius);
+	margin: 14px;
+	padding: 10px;
+	border: 1px solid;
+	text-align: center;
 }
 
-#content {
-	padding-top: 75px;
+.type-validation.view-detail figcaption {
+	font-weight: bold;
+	text-align: center;
+	padding: 5px;
 }
 
-header .controls {
+/* should make the below a mixin */
+.type-validation.view-detail .status-approved {
+  figure { border-color: $successBorder; background-color: $successBackground; }
+  	figcaption { color: $successText; }
+}
+
+.type-validation.view-detail .status-failed {
+  figure { border-color: $errorBorder; background-color: $errorBackground; }
+  	figcaption { color: $errorText; }
+}
+
+.type-validation.view-detail .status-submitted {
+  figure { border-color: $infoBorder; background-color: $infoBackground; }
+  	figcaption { color: $infoText; }
+}
+
+.type-validation.view-detail .status-incomplete {
+  figure { border-color: $warningBorder; background-color: $warningBackground; }
+  	figcaption { color: $warningText; }
+}
+
+.type-validation.view-detail .status-unsubmitted, .type-document.view-detail .status-none {
+  figure { border-color: #e1e1e8; background-color: #f7f7f9; }
+  	figcaption { color: #333; }
+}
+
+.validation-img {
+	max-height: 360px;
+}
+
+.validation-meta-data {
+	margin: 15px 15px 15px 0;
+}
+
+.validation-status {
+	margin-bottom: 8px;
+	font-weight: bold;
+	font-size: 1.5em;
+}
+
+.validation-status .approved {
+	color: $successText;
+	top: -5px;
 	position: relative;
-	height: 90px;
-	button { 
-		position: absolute;
-		bottom: 10px;
-		right: 0;
+}
+
+.validation-status .pending, .validation-status .pending  { 
+	/* use with icon-tasks or maybe icon-inbox */
+	color: $infoText;
+	top: -5px;
+	position: relative;
+}
+
+.validation-status .rejected {  /* use with icon-thumbs-down */
+	color: $errorText;
+	top: -5px;
+	position: relative;
+}
+
+h3 .label {
+	font-size: 16px;
+	line-height: 20px;
+	position: relative;
+	top: -3px;
+	left: 15px;
+}
+
+.validation-status-labels {
+	font-weight: bold;
+	font-size: 1.2em;
+	float: right;
+}
+
+@each $item in label, badge {
+	// Approved (green)
+	.#{$item}.status-approved        { background-color: $successText; }
+	.#{$item}.status-aproved[href]   { background-color: darken($successText, 10%); }
+	// Submitted (blue)
+	.#{$item}.status-submitted		 { background-color: $infoText; }
+	.#{$item}.status-submitted[href] { background-color: darken($infoText, 10%); }
+	// Failed (red)
+	.#{$item}.status-failed          { background-color: $errorText; }
+	.#{$item}.status-failed[href]    { background-color: darken($errorText, 10%); }
+	// Incomplete (yellow)
+	.#{$item}.status-incomplete      { background-color: $warningText; }
+	.#{$item}.status-incomplete[href]{ background-color: darken($warningText, 10%); }
+
+	/* Unsubmitted/pending (gray) is the default if no class given */
+}
+
+/* Data Display - Based on Bootstrap Forms Layout
+   Used for displaying Read Only data in a form type layout
+   E.g. Key/value pairs */
+   
+/* displaying key-value pairs in a page (old way - replaced by description lists, below 
+may be able to remove this now*/
+
+.data-display {
+  // Increase spacing between groups
+  .data-group {
+    margin-bottom: 7px;
+    @include clearfix();
+  }
+  // Float the labels left
+  .data-label {
+    float: left;
+    width: $horizontalComponentOffset - 20;
+    padding-top: 5px;
+    text-align: right;
+  }
+  // Move over all input controls and content
+  .data-values {
+    // Super jank IE7 fix to ensure the inputs in .input-append and input-prepend
+    // do not inherit the margin of the parent, in this case .controls
+    *display: inline-block;
+    *padding-left: 20px;
+    margin-left: $horizontalComponentOffset;
+    *margin-left: 0;
+    &:first-child {
+      *padding-left: $horizontalComponentOffset;
+    }
+  }
+  // Move over buttons in .form-actions to align with .controls
+  .form-actions {
+    padding-left: $horizontalComponentOffset;
+  }
+}
+
+
+.data-group .row {margin-top: 10px;}
+
+.data-label {
+  font-weight: bold;
+  text-align: right;
+}
+.data-values {
+	padding-top: 5px;
+	margin-bottom: 5px;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+}
+
+/* Making data displays responsive */
+// UP TO LANDSCAPE PHONE
+
+@media (max-width: 480px) {
+  // Remove the horizontal form styles
+  .data-display {
+    .data-label {
+      float: none;
+      width: auto;
+      padding-top: 0;
+      text-align: left;
+    }
+    .data-group {
+    	margin-bottom: 15px;
+    }
+    // Move over all input controls and content
+    .data-values, label {
+      margin-left: 0;
+      padding-top: 0;
+      margin-bottom: 0;
+    }
+  }
+}
+
+
+
+/*  Description Lists
+// will replace the above data-display using more semantically correct description lists
+// main scenario is for showing key:value pairs */
+.key-value {
+	dt, dd {
+		margin-bottom: 10px;
+		min-height: 20px; // = line-height ; defined somewhere?
+	}
+	dt {
+		display: inline-block;
+		float: left;
+    	width: $horizontalComponentOffset - 20;
+   		padding-top: 5px;
+    	text-align: right;
+	}
+	dt::after {
+		content: ": ";
+	}
+
+	dd {
+		display: block;
+		padding-top: 5px;
+		margin-left: $horizontalComponentOffset;
+		//margin-bottom: 5px;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
 	}
 }
 
+// make key-value description lists responsive
+@media (max-width: 480px) {
+  // Remove the horizontal styles
+  .key-value {
+    dt {
+    	float: none;
+    	width: auto;
+    	padding-top: 0;
+    	text-align: left;
+    }
+    // Move over all values to left
+    dt, dd {
+    	margin-left: 0;
+    	padding-top: 0;
+    	margin-bottom: 0px;
+    }
+    // add vertical space to key-value pairs
+    dd {
+    	margin-bottom: 15px;
+    }
+  }
+}
 
-// top padding for small screens
-@media (max-width: 979px) {
-	#content {
-			padding-top: 0;
+
+   
+/*=============================
+===============================
+   6 :: Home Page Only
+===============================
+=============================*/
+#homepage-main-box {
+	min-height: 400px;
+	background: url('/static/img/encode-bg-gray.png') no-repeat center;
+}
+
+#project-info {
+	h1,h2,h3,h4 {
+		@include text-shadow(rgba(255,255,255,1) 1px 1px 0);
 	}
+	display: inline-block;
+	//width: 670px;
+	float: left;
+	font-size: 1.3em;
 }
 
-
-// add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss
-.panel a[href^="http"]:after, td a[href^="http"]:after		{
-	content: " \f027";
-	font-family: FontAwesome;
-	font-weight: normal;
-	font-style: normal;
-	text-decoration: none;
-	-webkit-font-smoothing: antialiased;
-
-	/* sprites.less reset */
-	display: inline;
-	width: auto;
-	height: auto;
-	line-height: normal;
-	vertical-align: baseline;
-	background-image: none;
-	background-position: 0% 0%;
-	background-repeat: repeat;
-	margin-top: 0;
-}
-// remove external-link icon if there is no text in link <a></a>
-// Note does not work in =<IE8, oh well
-a[href^="http"]:empty:after {
-	content: none;
+#signin-box {
+	@include background-image(linear-gradient(rgba(255,255,255,0.1), rgba(0,0,0,0.1)));
+	@include border-radius(5px);
+	border: 1px solid #cacaca;
+	display: inline-block;
+	padding: 20px;
+	float: right;
+	@include box-shadow(rgba(180,180,180,0.9) 0 2px 10px, 0 1px 0 #fff inset);
+		h4 {
+			margin: 0 0 10px 0;
+			padding: 0;
+		}
 }
 
-// do not use external link icon in these cases...
-// downloads
-a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
-	content: none !important;
+#signin-button {
+	display: block !important;
+	font-size: 1.4em;
+	font-weight: bold;
+	margin-bottom: 7px;
 }
-
-
-
+   
+   
+/*=============================
+===============================
+   7 :: Footer
+===============================
+=============================*/
 @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
 
 #page-footer #footer-top {
@@ -493,379 +790,118 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 #footer div .container {
 	// padding: 15px;
 }
+   
+   
+/*=============================
+===============================
+   8 :: Tables
+===============================
+=============================*/
+/* Modified version of Foundation tables */
 
-#submit-controls {
+table {
+  background: #fff;
+  margin: 0 0 18px;
+  border: 1px solid #ddd;
+  /* @include border-radius($baseBorderRadius); */
+  border-spacing: 0;
+  border-collapse: separate;
+  font-size: 0.92em;
+  width: 100%;
+}
+
+table thead, table tfoot { background: $tableHeadFootBackgroundColor; }
+
+table thead tr th,
+table tfoot tr th,
+table tbody tr td,
+table tr td,
+table tfoot tr td {
+	display: table-cell;
+	font-size: ms(0);
+	line-height: 18px;
+	text-align: left;
+}
+
+table thead tr th,
+table tfoot tr td { padding: 8px 10px 9px; font-size: ms(0); font-weight: bold; color: #222; border: 1px solid white; }
+table thead tr th:first-child, table tfoot tr td:first-child { border-left: none; }
+table thead tr th:last-child, table tfoot tr td:last-child { border-right: none; }
+
+table tbody tr.even,
+table tbody tr.alt { background: #f9f9f9; }
+/* table tbody tr:nth-child(even) { background: #f9f9f9; } */
+table tbody tr td { color: #333; padding: 10px 11px; vertical-align: top; }
+table tbody tr:hover { background: #bfcfde; }
+
+table thead tr th {
+	 padding-right: 30px;
+}
+
+.sortdirection {
+	float: right;
+    margin-right: -22px;
+    margin-top: 2px;
+}
+
+/* Table Controls */
+table thead tr th button {
+	float: left;
+}
+
+.table-filter {
+	float: right;
+	margin-bottom: 0 !important;
+}
+
+#table-count {
+	padding: 0.6em 2em;
+	margin-right: 1em;
+}
+
+.spinner-warning {
+	padding: 0.6em 2em 0.6em 30px !important;
+	background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
+	background-position: 7px 6px;
+}
+
+/* initial state is hidden (see template; class=hide) */
+#total-records {
+	font-weight: normal;
+}
+   
+   
+/*=============================
+===============================
+   9 :: Forms
+===============================
+=============================*/
+
+/* Input Fields */
+$inputBorder: darken(#fff, 20%) !default;
+$inputFocusBgColor: darken(#fff, 2%) !default;
+$inputFocusBorderColor: darken(#fff, 26%) !default;
+
+input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea, select {
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+	font-family: inherit;
+	border: 1px solid $inputBorder;
+	@include box-shadow(inset 0 1px 2px rgba(0,0,0,0.1));
+	@include transition(all 0.15s linear);
+		&:focus {
+			background: $inputFocusBgColor;
+			border-color: $inputFocusBorderColor;
+			box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+		}
+		&[disabled] { background-color: #ddd; }
+}
+
+input.search-query {
+	@include border-radius($borderRadiusSmall);
+}
+
+#submit-controls { /* is this used anywhere other than a mockup? */
 	padding: 5px;
 	background-color: #f7fbfe;
 	@include border-radius($baseBorderRadius);
 }
-
-.panel {
-	background-color: #fff;
-	border: 1px solid #ced5dc;
-    @include border-radius($baseBorderRadius);
-    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
-    margin: 10px 0 20px;
-    padding: 15px 30px;
-    overflow: hidden;
-}
-
-.panel-blue {
-	background-color: #4284d8;
-	border: 1px solid #3276ca;
-    @include border-radius($baseBorderRadius);
-    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
-    margin: 10px 0 20px;
-    padding: 15px 30px;
-    overflow: hidden;
-}
-
-.panel-gray {
-    margin: 10px 0 20px;
-    padding: 15px 30px;
-    overflow: hidden;
-}
-
-#homepage-main-box {
-	min-height: 400px;
-	background: url('/static/img/encode-bg-gray.png') no-repeat center;
-}
-
-#project-info {
-	h1,h2,h3,h4 {
-		@include text-shadow(rgba(255,255,255,1) 1px 1px 0);
-	}
-	display: inline-block;
-	//width: 670px;
-	float: left;
-	font-size: 1.3em;
-}
-
-#signin-box {
-	@include background-image(linear-gradient(rgba(255,255,255,0.1), rgba(0,0,0,0.1)));
-	@include border-radius(5px);
-	border: 1px solid #cacaca;
-	display: inline-block;
-	padding: 20px;
-	float: right;
-	@include box-shadow(rgba(180,180,180,0.9) 0 2px 10px, 0 1px 0 #fff inset);
-		h4 {
-			margin: 0 0 10px 0;
-			padding: 0;
-		}
-}
-
-#signin-button {
-	display: block !important;
-	font-size: 1.4em;
-	font-weight: bold;
-	margin-bottom: 7px;
-}
-
-.panel h3, .panel h4 {color: #0A253D;}
-
-.view-detail h3 { line-height: 24.5px; }
-
-/* Data Display - Based on Bootstrap Forms Layout
-   Used for displaying Read Only data in a form type layout
-   E.g. Key/value pairs */
-
-.validation-status-labels {
-	font-weight: bold;
-	font-size: 1.2em;
-	float: right;
-}
-
-@each $item in label, badge {
-	// Approved (green)
-	.#{$item}.status-approved        { background-color: $successText; }
-	.#{$item}.status-aproved[href]   { background-color: darken($successText, 10%); }
-	// Submitted (blue)
-	.#{$item}.status-submitted		 { background-color: $infoText; }
-	.#{$item}.status-submitted[href] { background-color: darken($infoText, 10%); }
-	// Failed (red)
-	.#{$item}.status-failed          { background-color: $errorText; }
-	.#{$item}.status-failed[href]    { background-color: darken($errorText, 10%); }
-	// Incomplete (yellow)
-	.#{$item}.status-incomplete      { background-color: $warningText; }
-	.#{$item}.status-incomplete[href]{ background-color: darken($warningText, 10%); }
-
-	// Unsubmitted/pending (gray) is the default if no class given
-}
-
-
-//displaying key-value pairs in a page (old way - replaced by description lists, below
-.data-display {
-  // Increase spacing between groups
-  .data-group {
-    margin-bottom: 7px;
-    @include clearfix();
-  }
-  // Float the labels left
-  .data-label {
-    float: left;
-    width: $horizontalComponentOffset - 20;
-    padding-top: 5px;
-    text-align: right;
-  }
-  // Move over all input controls and content
-  .data-values {
-    // Super jank IE7 fix to ensure the inputs in .input-append and input-prepend
-    // do not inherit the margin of the parent, in this case .controls
-    *display: inline-block;
-    *padding-left: 20px;
-    margin-left: $horizontalComponentOffset;
-    *margin-left: 0;
-    &:first-child {
-      *padding-left: $horizontalComponentOffset;
-    }
-  }
-  // Move over buttons in .form-actions to align with .controls
-  .form-actions {
-    padding-left: $horizontalComponentOffset;
-  }
-}
-
-
-.data-group .row {margin-top: 10px;}
-
-.data-label {
-  font-weight: bold;
-  text-align: right;
-}
-.data-values {
-	padding-top: 5px;
-	margin-bottom: 5px;
-	word-wrap: break-word;
-	overflow-wrap: break-word;
-}
-
-/* Making data displays responsive */
-// UP TO LANDSCAPE PHONE
-
-@media (max-width: 480px) {
-  // Remove the horizontal form styles
-  .data-display {
-    .data-label {
-      float: none;
-      width: auto;
-      padding-top: 0;
-      text-align: left;
-    }
-    .data-group {
-    	margin-bottom: 15px;
-    }
-    // Move over all input controls and content
-    .data-values, label {
-      margin-left: 0;
-      padding-top: 0;
-      margin-bottom: 0;
-    }
-  }
-}
-
-
-
-// description lists
-// will replace the above data-display using more semantically correct description lists
-// main scenario is for showing key:value pairs
-.key-value {
-	dt, dd {
-		margin-bottom: 10px;
-		min-height: 20px; // = line-height ; defined somewhere?
-	}
-	dt {
-		display: inline-block;
-		float: left;
-    	width: $horizontalComponentOffset - 20;
-   		padding-top: 5px;
-    	text-align: right;
-	}
-	dt::after {
-		content: ": ";
-	}
-
-	dd {
-		display: block;
-		padding-top: 5px;
-		margin-left: $horizontalComponentOffset;
-		//margin-bottom: 5px;
-		word-wrap: break-word;
-		overflow-wrap: break-word;
-	}
-}
-
-// make key-value description lists responsive
-@media (max-width: 480px) {
-  // Remove the horizontal styles
-  .key-value {
-    dt {
-    	float: none;
-    	width: auto;
-    	padding-top: 0;
-    	text-align: left;
-    }
-    // Move over all values to left
-    dt, dd {
-    	margin-left: 0;
-    	padding-top: 0;
-    	margin-bottom: 0px;
-    }
-    // add vertical space to key-value pairs
-    dd {
-    	margin-bottom: 15px;
-    }
-  }
-}
-
-
-
-
-
-/* Validation Details Page */
-.type-validation.view-detail {
-		header {
-			margin: 0 15px;
-
-			h3 {
-				margin-bottom: 0;
-			}
-	}
-}
-
-
-.type-validation.view-detail figure, .type-document.view-detail figure {
-	@include border-radius($baseBorderRadius);
-	margin: 14px;
-	padding: 10px;
-	border: 1px solid;
-	text-align: center;
-}
-
-.type-validation.view-detail figcaption {
-	font-weight: bold;
-	text-align: center;
-	padding: 5px;
-}
-
-//should make the below a mixin
-.type-validation.view-detail .status-approved {
-  figure { border-color: $successBorder; background-color: $successBackground; }
-  	figcaption { color: $successText; }
-}
-
-.type-validation.view-detail .status-failed {
-  figure { border-color: $errorBorder; background-color: $errorBackground; }
-  	figcaption { color: $errorText; }
-}
-
-.type-validation.view-detail .status-submitted {
-  figure { border-color: $infoBorder; background-color: $infoBackground; }
-  	figcaption { color: $infoText; }
-}
-
-.type-validation.view-detail .status-incomplete {
-  figure { border-color: $warningBorder; background-color: $warningBackground; }
-  	figcaption { color: $warningText; }
-}
-
-.type-validation.view-detail .status-unsubmitted, .type-document.view-detail .status-none {
-  figure { border-color: #e1e1e8; background-color: #f7f7f9; }
-  	figcaption { color: #333; }
-}
-
-.validation-img {
-	max-height: 360px;
-}
-
-.validation-meta-data {
-	margin: 15px 15px 15px 0;
-}
-
-.validation-status {
-	margin-bottom: 8px;
-	font-weight: bold;
-	font-size: 1.5em;
-}
-
-.validation-status .approved {
-	color: $successText;
-	top: -5px;
-	position: relative;
-}
-
-.validation-status .pending, .validation-status .pending  { // use with icon-tasks or maybe icon-inbox
-	color: $infoText;
-	top: -5px;
-	position: relative;
-}
-
-.validation-status .rejected {  // use with icon-thumbs-down
-	color: $errorText;
-	top: -5px;
-	position: relative;
-}
-
-h3 .label {
-	font-size: 16px;
-	line-height: 20px;
-	position: relative;
-	top: -3px;
-	left: 15px;
-}
-
-// used to mask who screen, for modals etc
-#mask {
-    position: absolute;
-    z-index: 9000;
-    background-color: rgba(0,0,0,0.6);
-    display: none;  // js switches to display: block
-    height: 4000px; // this should be set in the js to fit screen perfectly
-    width: 4000px;  // this should be set in the js to fit screen perfectly
-    top: 0;
-    left: 0;
-}
-
-.unmask {
-	position: relative;
-	z-index: 9999;
-}
-
-
-// stuff below is for prototype dropdown panel
-.open > .dropdown-panel {
-    display: block;
-}
-
-.dropdown-panel {
-	background-clip: padding-box;
-    background-color: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    display: none;
-    float: left;
-    left: -328px;
-    margin: 2px 0 0;
-    min-width: 340px;
-    padding: 0;
-    position: absolute;
-    top: 100%;
-    z-index: 1000;
-	padding: 10px;
-	.col {
-		margin: 0 30px 0 0;
-		float: left;
-		display: inline-block;
-		h4 { font-size: 1.0em; margin: 0 0 4px 0; }
-	}
-	.col:first-child {
-		margin-left: 10px;
-	}
-	.col:last-child {
-		margin-right: 10px;
-	}
-	.tools { background: #ededed; padding: 8px; a {color: blue;} }
-}
-
-.float-wrap { overflow: hidden; }
