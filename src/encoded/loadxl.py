@@ -493,9 +493,10 @@ def parse_validation(testapp, alldata, content_type, indices, uuid, value, docsd
 
 @parse_decorator_factory('antibody_approval', {})
 def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value, docsdir):
-
+    product_id = value.pop('antibody_product_id')
+    lot_id = value.pop('antibody_lot_id')
     try:
-        value['antibody_lot_uuid'] = indices['antibody_lot'][(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
+        value['antibody_lot_uuid'] = indices['antibody_lot'][(product_id, lot_id)]
     except KeyError:
         raise ValueError('Missing/skipped antibody_lot reference')
 
@@ -510,13 +511,16 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
                 logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
             else:
                 method = val['validation_method']
-                if (filename, method) not in validations:
+                if val['product_id'] != product_id:
+                    if filename != 'frowny_gel.png':
+                        logger.warn('Skipped validation: %s filename: %s for antibody_approval: %s, wrong product_id (%s not %s)' % (
+                            validation_uuid, filename, uuid, val['product_id'], product_id))
+                elif (filename, method) not in validations:
                     value['validation_uuids'].append(validation_uuid)
                     validations.add((filename, method))
                 else:
-                    pass
-                    # frowny_gel is frowny because log files get clogged
-                    #logger.warn('Duplicate method/validation skipped: %s %s for approval' % (filename, method))
+                    if filename != 'frowny_gel.png':
+                        logger.warn('Duplicate method/validation skipped: %s %s for approval %s' % (filename, method, uuid))
 
     # make sure there are no duplicates
     assert len(set(value['validation_uuids'])) == len(value['validation_uuids'])
