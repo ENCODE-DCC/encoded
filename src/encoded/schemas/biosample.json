@@ -90,7 +90,7 @@
             "description": "List of construct object identifiers",
             "comment": "For automatic submission this is a list of unique references to construct objects.",
             "items": {
-                "description": "Transfection, fusion, or shRNA construct name or uuid",
+                "description": "Transfection, fusion, or Zn-finger KO construct name or uuid",
                 "title": "Constructs",
                 "type":  "string",
                 "format": "construct_link"
@@ -98,13 +98,29 @@
             "title": "List of Constructs",
             "type": "array"
         },
-        "treatment": {
-            "description": "A treatments applied to biosample",
+        "rnais": {
+            "default": [],
+            "description": "List of RNAi construct object identifiers",
+            "comment": "For automatic submission this is a list of unique references to RNAi objects.",
+            "items": {
+                "description": "si or shRNA construct name or uuid",
+                "title": "RNAi Constructs",
+                "type":  "string",
+                "format": "rnai_link"
+            },
+            "title": "List of RNAi objects.",
+            "type": "array"
+        },
+        "treatments": {
+            "default": [],
             "description": "Substances used to treat a biosample",
-            "comment": "For automatic submission supply unique treatment names or uuids",
-            "title": "Biosample Treatment",
-            "type": "string",
-            "format": "treatment_link"
+            "comment": "For automatic submission this is a list of unique references to RNAi objects.",
+            "items": {
+                "description": "Treatment (names or UUIDs) applied to biosample",
+                "title": "Biosample Treatment",
+                "type": "string",
+                "format": "treatment_link"
+            }
         },
         "dbxref": {
             "default": {},
@@ -205,6 +221,18 @@
                     "type": "string",
                     "format": "biosample_link"
             }
+        },
+        "note": {
+            "description": "Experimenter's notes about the biosample.",
+            "title": "Note",
+            "type": "string"
+        },
+        "subcellular_fraction": {
+            "description": "The subcomponent of cells/tissues isolated for specific library prep",
+            "comment": "Use terms from the GO Cellular Component ontology",
+            "title": "Subcellular Fraction (GO term)",
+            "type": "string",
+            "pattern": "^GO:[0-9]{7}"
         },
         "phase": {
             "description": "Cell-cycle phase in which cells were harvested",

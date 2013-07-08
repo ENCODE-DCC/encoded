@@ -100,11 +100,6 @@
                 "pattern": "^PMID:[0-9]+$"
             },
             "type": "array"
-        },
-        "label": {
-            "description": "A short human-friendly label for the document",
-            "title": "Document Label",
-            "type": "string"
         }
     }
 }

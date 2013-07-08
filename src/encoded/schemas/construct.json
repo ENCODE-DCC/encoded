@@ -40,6 +40,12 @@
             "type": "string",
             "format": "award_link"
         },
+        "description": {
+            "default": "",
+            "description": "Long description of the construct",
+            "title": "Construct Description",
+            "type": "string"
+        },
         "source": {
             "description": "Source or Vendor of construct",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
@@ -92,9 +98,9 @@
             "title": "Construct Document (list)",
             "type": "array"
         },
-        "vector_name": {
-            "description": "The name of the vector used for the construct",
-            "title": "Vector Name",
+        "vector_backbone_name": {
+            "description": "The name of the vector backbone used for the construct",
+            "title": "Vector Backbone Name",
             "type": "string"
         },
         "documents": {

@@ -41,31 +41,15 @@
             "title": "Treatment Type",
             "type": {
                 "enum": [
-                    "differentiation",
-                    "chemical",
-                    "cell sorting",
-                    "iPSC reprogramming"
+                    "protein",
+                    "chemical"
                 ]
             }
         },
-        "document_type": {
-            "default": "n/a",
-            "description": "Type of the attached protocol.",
-            "title": "Protocol type",
-            "type": {
-                "enum": [
-                    "n/a",
-                    "differentiation protocol",
-                    "treatment protocol",
-                    "iPSC reprogramming protocol",
-                    "cell isolation and sorting protocol"
-                ]
-            }
-        },
-        "document": {
+        "protocol": {
             "description": "Treatment protocol document",
             "comment": "For automatic submission supply an unique document name or UUID",
-            "title": "Protocol Document",
+            "title": "Treatment Protocol Document",
             "type": "string",
             "format": "document_link"
         },

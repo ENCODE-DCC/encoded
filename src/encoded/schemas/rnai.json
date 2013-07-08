@@ -65,9 +65,9 @@
             "type": "object",
             "format": "target_link"
         },
-        "vector_name": {
-            "description": "The name of the vector used for the construct",
-            "title": "Vector Name",
+        "vector_backbone_name": {
+            "description": "The name of the vector backone used for the RNAi construct",
+            "title": "Vector Backbone Name",
             "type": "string"
         },
         "documents": {
