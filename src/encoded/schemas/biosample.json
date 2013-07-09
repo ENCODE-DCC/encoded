@@ -141,7 +141,7 @@
             "items": {
                 "description": "List of ENCODE2 Identifiers",
                 "title": "ID",
-                "type":  "string",
+                "type":  "string"
             },
             "title": "ENCODE2 DBXREFs",
             "type": "array"

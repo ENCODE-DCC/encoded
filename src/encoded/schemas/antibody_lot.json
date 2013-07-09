@@ -111,6 +111,17 @@
             "title": "Lab Aliases",
             "type": "array"
         },
+        "encode2_dbxrefs": {
+            "default": [],
+            "description": "List cross-references to the previous ENCODE2 system",
+            "items": {
+                "description": "List of ENCODE2 Identifiers",
+                "title": "ID",
+                "type":  "string"
+            },
+            "title": "ENCODE2 DBXREFs",
+            "type": "array"
+        },
         "host_organism": {
             "description": "Organism antibody was grown in.",
             "comment": "These are not linked, currently - this should be replace with another organism object",
