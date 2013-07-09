@@ -32,22 +32,18 @@
             "title": "Platform Description",
             "type": "string"
         },
-        "dbxref": {
-            "default": {},
-            "description": "List of Database cross-references",
-            "additionalProperties": {
-                "default": [],
+        "lab_aliases": {
+            "default": [],
+            "description": "List of lab IDs or cross-references",
+            "items": {
                 "description": "List of Database IDs",
+                "comments": "please use LABNAME:DBID",
                 "title": "Database IDs",
-                "type":  "array",
-                "items": {
-                    "description": "Database",
-                    "title": "DB ID",
-                    "type": "string"
-                }
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
             },
-            "title": "DBXREFs",
-            "type": "object"
+            "title": "Lab Aliases",
+            "type": "array"
         },
         "url": {
             "description": "Commercial URL for the experimental Platform",

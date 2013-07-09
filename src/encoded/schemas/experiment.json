@@ -72,22 +72,30 @@
                 "enum": ["experiment"]
             }
         },
-        "dbxref": {
-            "default": {},
-            "description": "List of Database (including Lab) cross-references",
-            "additionalProperties": {
-                "default": [],
-                "description": "List of Database IDs",
-                "title": "Database IDs",
-                "type":  "array",
-                "items": {
-                    "description": "Database",
-                    "title": "DB ID",
-                    "type": "string"
-                }
+        "geo_dbxrefs": {
+            "default": [],
+            "description": "List of GEO dbxrefs (GSR or GSM#s)",
+            "items": {
+                "description": "List of GEO IDs",
+                "title": "GEO IDs",
+                "type":  "string",
+                "pattern": "^(GRS|GSM)+:\\S+"
             },
-            "title": "DBXREFs",
-            "type": "object"
+            "title": "GEO DBXREFs",
+            "type": "array"
+        },
+        "lab_aliases": {
+            "default": [],
+            "description": "List of lab IDs or cross-references",
+            "items": {
+                "description": "List of Database IDs",
+                "comments": "please use LABNAME:DBID",
+                "title": "Database IDs",
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
+            },
+            "title": "Lab Aliases",
+            "type": "array"
         },
         "documents": {
             "default": [],
