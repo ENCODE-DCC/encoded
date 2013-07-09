@@ -229,10 +229,11 @@
         },
         "subcellular_fraction": {
             "description": "The subcomponent of cells/tissues isolated for specific library prep",
-            "comment": "Use terms from the GO Cellular Component ontology",
-            "title": "Subcellular Fraction (GO term)",
-            "type": "string",
-            "pattern": "^GO:[0-9]{7}"
+            "comment": "Terms are from the GO Cellular Component ontology",
+            "title": "Subcellular Fraction",
+            "type": {
+                "enum": ["nucleus", "cytosol"]
+            }
         },
         "phase": {
             "description": "Cell-cycle phase in which cells were harvested",

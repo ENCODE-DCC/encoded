@@ -21,11 +21,6 @@
             "type": "string",
             "format": "accession"
         },
-       "description": {
-            "description": "A plain text description of the nucleic acid Library",
-            "title": "Library Description",
-            "type": "string"
-        },
         "lab": {
             "default": "ENCODE Project",
             "description": "Submitting Lab",
@@ -57,8 +52,7 @@
                 "enum": [
                     "DNA",
                     "RNA",
-                    "poly-A+ RNA",
-                    "small RNA",
+                    "polyadenylated mRNA",
                     "miRNA"
                 ]
             }
@@ -86,22 +80,18 @@
             "title": "Library lot ID",
             "type": "string"
         },
-        "dbxref": {
-            "default": {},
-            "description": "List of Database (including Lab) cross-references",
-            "additionalProperties": {
-                "default": [],
+        "lab_aliases": {
+            "default": [],
+            "description": "List of lab IDs or cross-references",
+            "items": {
                 "description": "List of Database IDs",
+                "comments": "please use LABNAME:DBID",
                 "title": "Database IDs",
-                "type":  "array",
-                "items": {
-                    "description": "Database identifier",
-                    "title": "DB ID",
-                    "type": "string"
-                }
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
             },
-            "title": "DBXREFs",
-            "type": "object"
+            "title": "Lab Aliases",
+            "type": "array"
         },
         "documents": {
             "default": [],
@@ -158,7 +148,7 @@
         },
         "library_size_selection_method": {
             "default": "see document",
-            "description": "",
+            "description": "The experimental method used to size-select the nucleic acid during Library prep.",
             "title": "",
             "type": {
                 "enum": [

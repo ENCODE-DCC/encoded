@@ -110,95 +110,30 @@
                 "enum": ["mm9", "hg19", "n/a"]
             }
         },
-        "experiment_dataset": {
-            "description": "A pointer to the dataset for the ENCODE Experiment dataset that this file belongs to.",
-            "comment": "Automatic submitters can supply an Experment dataset UUID or accession",
-            "title": "Experiment (dataset)",
-            "type": "string",
-            "format": "dataset_link"
+         "submitted_file_name": {
+            "description": "Original, local file name of the file (not unique, for reference only)",
+            "title": "File Name",
+            "type": "string"
         },
-        "composite_dataset": {
-            "description": "A pointer to the dataset for the UCSC Browser composite that this file belongs to.",
-            "comment": "Automatic submitters can supply an Dataset UUID or accession",
-            "title": "Composite (dataset)",
-            "type": "string",
-            "format": "dataset_link"
+         "download_path": {
+            "description": "EDW download file path and name",
+            "title": "Download Path",
+            "type": "string"
         },
-        "date_passed_validation": {
+        "assembly": {
+            "description": "Genome assembly that files were mapped to",
+            "title": "Mapping Assembly",
+            "comment": "BAM/BED and other mapped files only.",
+            "type": {
+                "enum": ["mm9", "hg19", "n/a"]
+            }
+        },
+       "date_passed_validation": {
             "description": "The date which this file passed ENCODE DCC Validation",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Date of Validation",
             "type": "string",
             "format": "date"
-        },
-        "dbxref": {
-            "default": {},
-            "description": "List of Database (including Lab) cross-references",
-            "additionalProperties": {
-                "default": [],
-                "description": "List of Database IDs",
-                "title": "Database IDs",
-                "type":  "array",
-                "items": {
-                    "description": "Database",
-                    "title": "DB ID",
-                    "type": "string"
-                }
-            },
-            "title": "DBXREFs",
-            "type": "object"
-        },
-        "parent_files": {
-            "description": "List of parent files (derived_from).",
-            "comment": "For automatic submission supply unique data File accessions or uuids",
-            "items": {
-                    "description": "File used to produce this file.",
-                    "title": "Parent File",
-                    "type": "string",
-                    "format": "file_link"
-            },
-            "title": "Parent Files",
-            "type": "array"
-        },
-        "file_relationships": {
-            "default": {},
-            "description": "Hash of inter-ENCODE file relationships; Keys are relationship types.",
-            "derived_from": {
-                "default": [],
-                "description": "List of parent files (derived_from).",
-                "title": "Files",
-                "type":  "array",
-                "items": {
-                    "description": "File pointer",
-                    "comment": "For automatic submission supply unique data File accessions or uuids",
-                    "title": "File",
-                    "type": "string",
-                    "format": "file_link"
-                }
-            },
-            "controls_for": {
-                "default": [],
-                "description": "List of files this file is a control for",
-                "title": "Files",
-                "type":  "array",
-                "items": {
-                    "description": "File pointer",
-                    "comment": "For automatic submission supply unique data File accessions or uuids",
-                    "title": "File",
-                    "type": "string",
-                    "format": "file_link"
-                }
-            },
-             "paired_with": {
-                "description": "File this file is paired with.",
-                "comment": "For automatic submission supply unique data File accessions or uuids",
-                "title": "File",
-                "title": "File",
-                "type": "string",
-                "format": "file_link"
-            },
-            "title": "File Relationships",
-            "type": "object"
         }
     }
 }
