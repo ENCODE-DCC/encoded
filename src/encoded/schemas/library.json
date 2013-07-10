@@ -21,7 +21,20 @@
             "type": "string",
             "format": "accession"
         },
-        "lab": {
+         "alternate_accessions": {
+            "default": [],
+            "description": "Accessions previously assigned to objects that have been merged with this one.",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Alternate Accessions",
+            "type": "array",
+            "items": {
+                "description": "An alternate accession",
+                "title": "Alt. Accession",
+                "type": "string",
+                "format": "accession"
+            }
+        },
+       "lab": {
             "default": "ENCODE Project",
             "description": "Submitting Lab",
             "comment": "Automatic submitters can supply a Lab UUID or Name",

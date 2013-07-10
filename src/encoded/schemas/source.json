@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting biosample, antibody or other external source",
     "type": "object",
-    "required": ["name"],
+    "required": ["name", "title"],
     "additionalProperties": false,
     "properties": {
         "schema-version": {
@@ -30,16 +30,22 @@
             "type": "string",
             "format": "award_link"
         },
-        "alias": {
+        "description": {
             "default": "",
-            "description": "A short alias or label for the source",
-            "title": "Source Alias",
+            "description": "A long name or description for the source",
+            "title": "Source Description",
             "type": "string"
         },
-        "name": {
-            "description": "The full name of the source",
-            "title": "Source or Vendor Name",
+        "title": {
+            "description": "The preferred shorter name of the source",
+            "title": "Source or Vendor Title",
             "type": "string"
+        },
+       "name": {
+            "description": "Unique short name for the Source",
+            "title": "Source or Vendor Name",
+            "type": "string",
+            "pattern": "[a-z0-9\\-]"
         },
         "url": {
             "description": "An optional URL for the source",

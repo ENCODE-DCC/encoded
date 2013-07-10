@@ -16,8 +16,9 @@
         },
         "name": {
             "title": "Organism name",
-            "description": "A short name for the organism, like 'mouse'",
-            "type": "string"
+            "description": "A short unique name for the organism, like 'mouse'",
+            "type": "string",
+            "pattern": "[a-z\\-]"
         },
         "scientific_name": {
             "title": "Scientific name",

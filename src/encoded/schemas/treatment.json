@@ -15,9 +15,10 @@
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
         "name": {
-            "description": "A unique name for the treatment",
-            "title": "Treatment Name",
-            "type": "string"
+            "description": "Unique short name for the Treatment",
+            "title": "Treatment name",
+            "type": "string",
+            "pattern": "[a-z0-9\\-]"
         },
         "lab": {
             "default": "ENCODE Project",

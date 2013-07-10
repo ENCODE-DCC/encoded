@@ -26,12 +26,6 @@
             "title": "Platform Name",
             "type":  "string"
         },
-        "description": {
-            "default": "",
-            "description": "A longer, plain text description of the Platform",
-            "title": "Platform Description",
-            "type": "string"
-        },
         "lab_aliases": {
             "default": [],
             "description": "List of lab IDs or cross-references",
