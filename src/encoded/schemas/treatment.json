@@ -66,6 +66,17 @@
             "title": "Lab Aliases",
             "type": "array"
         },
+        "encode2_dbxrefs": {
+            "default": [],
+            "description": "List cross-references to the previous ENCODE2 system",
+            "items": {
+                "description": "List of ENCODE2 Identifiers",
+                "title": "ID",
+                "type":  "string"
+            },
+            "title": "ENCODE2 DBXREFs",
+            "type": "array"
+        },
         "term_id": {
             "description": "ChEBI Ontology term ID describing chemical used in treatment",
             "comment": "For chemical treatments only",
