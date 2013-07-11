@@ -1,3 +1,4 @@
+from cgi import escape
 from pkg_resources import resource_string
 from pyramid.events import (
     NewRequest,
@@ -51,9 +52,10 @@ class PageRenderer:
         self.page = resource_string('encoded', 'index.html')
 
     def __call__(self, value, system):
-        # TODO: Include response value in page
-        # Return a string to preserve the existing response headers
-        return self.page
+        request = system.get('request')
+        if request is not None:
+            request.response.content_type = 'text/html'
+        return self.page.format(json=escape(value))
 
 
 @subscriber(NewRequest)
@@ -111,7 +113,8 @@ class PageOrJSON:
             request.response.vary = original_vary + vary
 
         format = request.environ.get('encoded.format', 'json')
+        value = self.json_renderer(value, system)
         if format == 'json':
-            return self.json_renderer(value, system)
+            return value
         else:
             return self.page_renderer(value, system)
