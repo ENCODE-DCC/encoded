@@ -170,7 +170,7 @@ class Biosample(Collection):
             {'$value': '/constructs/{construct_uuid}', '$templated': True, '$repeat': 'construct_uuid construct_uuids'},
         ],
     }
-    item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs'])
+    item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs', 'documents'])
     item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
 
 
@@ -228,7 +228,7 @@ class AntibodyApproval(Collection):
             {'$value': '/validations/{validation_uuid}', '$templated': True, '$repeat': 'validation_uuid validation_uuids'},
         ],
     }
-    item_embedded = set(['antibody_lot', 'target'])
+    item_embedded = set(['antibody_lot', 'target', 'validations'])
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody_lot_uuid}/{target_uuid}', '$templated': True}
     ]
@@ -256,7 +256,7 @@ class Library(Collection):
             {'$value': '/documents/{document_uuid}', '$templated': True, '$repeat': 'document_uuid document_uuids'},
         ],
     }
-    item_embedded = set(['biosample'])
+    item_embedded = set(['biosample', 'documents'])
     item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
 
 
@@ -316,9 +316,9 @@ class Experiments(Collection):
         'replicates': [
             {'$value': '/replicates/{replicate_uuid}', '$templated': True, '$repeat': 'replicate_uuid replicate_uuids'},
         ],
-        'experiments': [
+        'controls': [
             {'$value': '/experiments/{experiment_control_uuid}', '$templated': True, '$repeat': 'experiment_control_uuid experiment_control_uuids'},
         ],
     }
-    item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award', 'experiments'])
+    item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award', 'controls'])
     item_keys = [{'name': 'accession', 'value': '{dataset_accession}', '$templated': True}]
