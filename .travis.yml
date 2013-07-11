@@ -19,6 +19,8 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install postgresql-9.2 libpq-dev
   - sudo /etc/init.d/postgresql start
+  - virtualenv --no-site-packages virtualenv-clean
+  - source virtualenv-clean/bin/activate
 install:
   - python bootstrap.py
   - bin/buildout
