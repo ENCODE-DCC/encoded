@@ -296,8 +296,8 @@ class Item(object):
         '@id': {'$value': '{item_uri}', '$templated': True},
         # 'collection': '{collection_uri}',
         '@type': [
-            {'$value': '/profiles/{item_type}', '$templated': True},
-            '/profiles/item',
+            {'$value': '{item_type}', '$templated': True},
+            'item',
         ],
     }
 
@@ -513,8 +513,8 @@ class Collection(object):
     links = {
         '@id': {'$value': '{collection_uri}', '$templated': True},
         '@type': [
-            {'$value': '/profiles/{item_type}_collection', '$templated': True},
-            '/profiles/collection',
+            {'$value': '{item_type}_collection', '$templated': True},
+            'collection',
         ],
         'all': {'$value': '{collection_uri}?limit=all', '$templated': True},
         'actions': [
@@ -684,8 +684,8 @@ def collection_add(context, request):
     request.response.status = 201
     request.response.location = item_uri
     result = {
-        'result': 'success',
-        '@type': ['/profiles/result'],
+        'status': 'success',
+        '@type': ['result'],
         'items': [item_uri],
     }
     return result
@@ -723,8 +723,8 @@ def item_edit(context, request):
     item_uri = request.resource_path(context)
     request.response.status = 200
     result = {
-        'result': 'success',
-        '@type': ['/profiles/result'],
+        'status': 'success',
+        '@type': ['result'],
         'items': [item_uri],
     }
     return result

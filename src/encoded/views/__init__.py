@@ -25,7 +25,7 @@ def home(context, request):
     result = context.__json__(request)
     result.update({
         '@id': request.resource_path(context),
-        '@type': ['/profiles/portal'],
+        '@type': ['portal'],
         # 'login': {'href': request.resource_path(context, 'login')},
     })
     return result

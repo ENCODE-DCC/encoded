@@ -70,10 +70,11 @@ def failed_validation(exc, request):
     if exc.detail is not None:
         errors.append(exc.detail)
     result = {
+        '@type': [type(exc).__name__, 'error'],
         'status': 'error',
         'code': exc.code,
         'title': exc.title,
-        'explanation': exc.explanation,
+        'description': exc.explanation,
         'errors': errors,
     }
     if exc.comment is not None:
@@ -87,10 +88,11 @@ def http_error(exc, request):
         del request.response
     request.response.status = exc.status
     result = {
+        '@type': [type(exc).__name__, 'error'],
         'status': 'error',
         'code': exc.code,
         'title': exc.title,
-        'explanation': exc.explanation,
+        'description': exc.explanation,
     }
     if exc.detail is not None:
         result['detail'] = exc.detail
