@@ -199,7 +199,13 @@ function (mixins, $, React, URI) {
         componentDidMount: function () {
             if (this.historyEnabled) {
                 if (this.state.context) {
-                    window.history.replaceState(this.state.context, '', this.props.href);
+                    var data = this.state.context;
+                    try {
+                        window.history.replaceState(data, '', window.location.href);
+                    } catch (exc) {
+                        // Might fail due to too large data
+                        window.history.replaceState(null, '', window.location.href);
+                    }
                 }
                 window.addEventListener('popstate', this.handlePopState, true);
             }
