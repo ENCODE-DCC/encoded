@@ -27,7 +27,7 @@ function (React, mixins) {
             var session = this.props.session;
             var user_actions = this.props.user_actions;
             return (
-                <div class="navbar navbar-fixed-top navbar-inverse">
+                <div id="navbar" class="navbar navbar-fixed-top navbar-inverse">
                     <div class="navbar-inner">
                         <div class="container">
                             <a class="btn btn-navbar" href="" data-toggle="collapse" data-target=".nav-collapse">
