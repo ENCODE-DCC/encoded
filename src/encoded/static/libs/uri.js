@@ -60,6 +60,14 @@ function (class_) {
                 params[key] = value;
             });
             return params;
+        },
+        sameOrigin: function (href) {
+            if (!(href instanceof this.constructor)) {
+                href = URI(href);
+            }
+            if (this.protocol !== href.protocol) return false;
+            if (this.protocol === 'file:') return this.pathname === href.pathname;
+            return this.origin !== 'null' && this.origin === href.origin;
         }
     });
 

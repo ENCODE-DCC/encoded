@@ -66,6 +66,16 @@ function uri_spec(URI) {
             expect(uri.search).toBe(document.location.search);
         });
 
+        it("is able calculate correct sameOrigin on http URIs.", function() {
+            // XXX review https://developer.mozilla.org/en-US/docs/Same-origin_policy_for_file:_URIs
+            var uri = URI(example_uri);
+            expect(uri.sameOrigin('http://www.example.com:8080/bar')).toBe(true);
+            expect(uri.sameOrigin('http://www.example.com:8080/')).toBe(true);
+            expect(uri.sameOrigin('http://www.example.com:8081/')).toBe(false);
+            expect(uri.sameOrigin('http://www.example.com/')).toBe(false);
+            expect(uri.sameOrigin('https://www.example.com/')).toBe(false);
+        });
+
         it("is able to parse file URIs", function() {
             var uri = URI('file:///search?q=devmo#test');
             expect(uri.hash).toBe('#test');
@@ -78,6 +88,15 @@ function uri_spec(URI) {
             expect(uri.protocol).toBe('file:');
             expect(uri.search).toBe('?q=devmo');
             expect(uri.params().q).toBe('devmo');
+        });
+
+        it("is able calculate correct sameOrigin on file URIs.", function() {
+            // XXX review https://developer.mozilla.org/en-US/docs/Same-origin_policy_for_file:_URIs
+            var uri = URI('file:///search?q=devmo#test');
+            expect(uri.sameOrigin('file:///search?q=devmo#bar')).toBe(true);
+            expect(uri.sameOrigin('file:///search?a=1')).toBe(true);
+            expect(uri.sameOrigin('file:///search')).toBe(true);
+            expect(uri.sameOrigin('file:///foo')).toBe(false);
         });
 
         it("is able to parse data URIs", function() {
@@ -93,6 +112,13 @@ function uri_spec(URI) {
             expect(uri.search).toBe('');
             expect(uri.params().q).toBe(undefined);
         });
+
+        it("is able calculate correct sameOrigin on data URIs.", function() {
+            // XXX review https://developer.mozilla.org/en-US/docs/Same-origin_policy_for_file:_URIs
+            var href = 'data:text/plain;charset=utf-8,foo?q=devmo#test';
+            expect(URI(href).sameOrigin(href)).toBe(false);
+        });
+
 
     });
 
