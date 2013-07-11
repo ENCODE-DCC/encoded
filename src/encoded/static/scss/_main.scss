@@ -55,6 +55,7 @@ $tableHeadFootBackgroundColor: #f5f5f5;
 body { background: $mainThemeColor; }
 
 .float-wrap { overflow: hidden; }
+[hidden] { display: none !important; }
 
 /* Modals */
 .modal {
@@ -130,6 +131,10 @@ if we don't end up using it, remove */
 	height: auto !important;
     margin: 0 auto -$footerHeight;
     min-height: 100%;
+}
+
+#slot-application, #application {
+    height: 100%;
 }
 
 #content {
@@ -446,27 +451,27 @@ nav.navbar-fixed-top {
 }
 
 /* should make the below a mixin */
-.type-validation.view-detail .status-approved {
+.type-validation.view-detail.status-approved {
   figure { border-color: $successBorder; background-color: $successBackground; }
   	figcaption { color: $successText; }
 }
 
-.type-validation.view-detail .status-failed {
+.type-validation.view-detail.status-failed {
   figure { border-color: $errorBorder; background-color: $errorBackground; }
   	figcaption { color: $errorText; }
 }
 
-.type-validation.view-detail .status-submitted {
+.type-validation.view-detail.status-submitted {
   figure { border-color: $infoBorder; background-color: $infoBackground; }
   	figcaption { color: $infoText; }
 }
 
-.type-validation.view-detail .status-incomplete {
+.type-validation.view-detail.status-incomplete {
   figure { border-color: $warningBorder; background-color: $warningBackground; }
   	figcaption { color: $warningText; }
 }
 
-.type-validation.view-detail .status-unsubmitted, .type-document.view-detail .status-none {
+.type-validation.view-detail.status-unsubmitted, .type-document.view-detail {
   figure { border-color: #e1e1e8; background-color: #f7f7f9; }
   	figcaption { color: #333; }
 }
@@ -672,7 +677,7 @@ may be able to remove this now*/
    6 :: Home Page Only
 ===============================
 =============================*/
-#homepage-main-box {
+.homepage-main-box {
 	min-height: 400px;
 	background: url('/static/img/encode-bg-gray.png') no-repeat center;
 }
@@ -849,12 +854,16 @@ table thead tr th button {
 	float: left;
 }
 
-.table-filter {
-	float: right;
+form.table-filter {
+    float: right;
+    margin: 0;
+}
+
+.table-filter input {
 	margin-bottom: 0 !important;
 }
 
-#table-count {
+.table-count {
 	padding: 0.6em 2em;
 	margin-right: 1em;
 }
