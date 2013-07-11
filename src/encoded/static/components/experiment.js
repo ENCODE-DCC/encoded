@@ -61,7 +61,7 @@ function (experiment, React, globals) {
                             <dd>{context.submitter.first_name}{' '}{context.submitter.last_name}</dd>
 
                             <dt>Project</dt>
-                            <dd>{context.project}</dd>
+                            <dd>{context.award.project}</dd>
 
                             {replicate ? <dt>Antibody</dt> : null}
                             {replicate ? <dd>{replicate.antibody_accession}</dd> : null}

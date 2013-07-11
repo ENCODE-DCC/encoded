@@ -50,8 +50,8 @@ function (biosample, React, URI, globals) {
                             <dt hidden={!context.lot_id}>Lot ID</dt>
                             <dd hidden={!context.lot_id}>{context.lot_id}</dd>
 
-                            <dt hidden={!context.project}>Project</dt>
-                            <dd hidden={!context.project}>{context.project}</dd>
+                            <dt>Project</dt>
+                            <dd>{context.award.project}</dd>
 
                             <dt>Submitted by</dt>
                             <dd>{context.submitter.first_name}{' '}{context.submitter.last_name}</dd>

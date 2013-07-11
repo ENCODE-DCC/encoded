@@ -62,7 +62,7 @@ function (React, mixins) {
                     </li>
                 );
             });
-            return <ul class="global-sections nav">{actions}</ul>;
+            return <ul id="global-sections" class="nav">{actions}</ul>;
         }
     });
 
@@ -72,7 +72,7 @@ function (React, mixins) {
             var session = this.props.session;
             if (!(session && session.persona)) {
                 return (
-                    <ul class="user-actions nav pull-right" hidden={!session}>
+                    <ul id="user-actions" class="nav pull-right" hidden={!session}>
                         <li><a href="" data-trigger="login" data-id="signin">Sign in</a></li>
                     </ul>
                 );
@@ -88,7 +88,7 @@ function (React, mixins) {
             });
             var fullname = session.user_properties.first_name + ' ' + session.user_properties.last_name;
             return (
-                <ul class="user-actions nav pull-right">
+                <ul id="user-actions" class="nav pull-right">
                     <li class="dropdown">
                         <a href="" class="dropdown-toggle" data-toggle="dropdown">{fullname}
                         <b class="caret"></b></a>

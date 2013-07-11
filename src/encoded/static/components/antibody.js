@@ -16,7 +16,7 @@ function (antibody, React, URI, globals) {
                         <div class="span12">
                             <h2>Approval for {context.antibody_lot.antibody_accession}</h2>
                             <h3>Antibody against {context.target.organism.organism_name}
-                                {context.target.target_label}
+                                {' '}{context.target.target_label}
                                 <span class={'label ' + statusClass}>
                                     {context.approval_status}
                                 </span>

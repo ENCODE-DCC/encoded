@@ -35,7 +35,7 @@ function (target, React, globals) {
                     <dd>{context.target_class}</dd>
 
                     <dt>Project</dt>
-                    <dd>{context.project}</dd>
+                    <dd>{context.award.project}</dd>
 
                     <dt>Lab</dt>
                     <dd>{context.lab.name}</dd>

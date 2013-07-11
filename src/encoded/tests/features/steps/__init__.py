@@ -40,12 +40,14 @@ def click_element(context, css):
 
 @step(u'I wait for the table to fully load')
 def wait_for_table(context):
-    assert context.browser.is_element_present_by_css("table.fully-loaded")
+    assert context.browser.is_element_present_by_css("table.collection-table")
+    assert context.browser.is_element_not_present_by_css("table.collection-table.communicating")
 
 
 @step(u'I wait for the content to load')
 def wait_for_content(context):
-    assert context.browser.is_element_present_by_css("#content.done")
+    assert context.browser.is_element_present_by_css("#application")
+    assert context.browser.is_element_not_present_by_css("#application.communicating")
 
 
 @step(u'The "{url}" section should be active')
