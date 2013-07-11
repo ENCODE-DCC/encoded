@@ -123,11 +123,6 @@ def maybe_include_embedded(request, result):
         result['_embedded'] = {'resources': embedded}
 
 
-def no_body_needed(request):
-    # No need for request data when rendering the single page html
-    return request.environ.get('encoded.format') == 'html'
-
-
 def setting_uuid_permitted(context, request):
     data = request.json
     _uuid = data.get('_uuid', _marker)
@@ -521,6 +516,7 @@ class Collection(object):
             {'$value': '/profiles/{item_type}_collection', '$templated': True},
             '/profiles/collection',
         ],
+        'all': {'$value': '{collection_uri}?limit=all', '$templated': True},
         'actions': [
             {
                 'name': 'add',
@@ -608,13 +604,18 @@ class Collection(object):
         '''Hook for subclasses'''
 
     def __json__(self, request):
-        nrows = request.params.get('limit', None)
+        limit = request.params.get('limit', 30)
+        if limit in ('', 'all'):
+            limit = None
+        if limit is not None:
+            limit = int(limit)
         session = DBSession()
         query = session.query(CurrentStatement).filter(
             CurrentStatement.predicate == self.item_type
-        ).limit(nrows)
+        )
 
         properties = self.properties.copy()
+        properties['count'] = query.count()
         # Expand $templated links
         ns = properties.copy()
         ns['collection_uri'] = request.resource_path(self)
@@ -625,7 +626,7 @@ class Collection(object):
         properties.update(links)
         items = properties['items'] = []
 
-        for model in query.all():
+        for model in query.limit(limit).all():
             item_uri = request.resource_path(self, model.rid)
             rendered = embed(request, item_uri)
             items.append(rendered)
@@ -709,8 +710,6 @@ def traversal_security(event):
 @view_config(context=Item, permission='view', request_method='GET',
              decorator=etag_conditional)
 def item_view(context, request):
-    if no_body_needed(request):
-        return {}
     properties = context.__json__(request)
     #maybe_include_embedded(request, properties)
     return properties
