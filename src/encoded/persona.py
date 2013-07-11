@@ -45,6 +45,10 @@ def includeme(config):
     config.registry['persona.verifier'] = verifier_factory(audiences)
 
 
+class LoginDenied(HTTPForbidden):
+    title = 'Login failure'
+
+
 # in a perfect world these would inherit from Classes shared by api module
 def verify_assertion(request):
     """Verifies the assertion in the given request.
@@ -80,7 +84,7 @@ def login(request):
     session = DBSession()
     model = session.query(Key).get(('user:email', email))
     if model is None:
-        raise HTTPForbidden()
+        raise LoginDenied()
     login = 'mailto:' + email
     request.response.headerlist.extend(remember(request, login))
     return data

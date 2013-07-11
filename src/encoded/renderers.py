@@ -58,6 +58,10 @@ class PageRenderer:
         return self.page.format(json=escape(value))
 
 
+class CSRFTokenError(HTTPBadRequest):
+    pass
+
+
 @subscriber(NewRequest)
 def choose_format(event):
     # Ignore subrequests
@@ -74,13 +78,13 @@ def choose_format(event):
             # XXX Should consider if this is a good idea or not and timeouts
             if token == dict.get(request.session, '_csrft_', None):
                 return
-            raise HTTPBadRequest('Incorrect CSRF token')
+            raise CSRFTokenError('Incorrect CSRF token')
         login = authenticated_userid(request)
         if login is not None:
             namespace, userid = login.split(':', 1)
             if namespace != 'mailto':
                 return
-        raise HTTPBadRequest('Missing CSRF token')
+        raise CSRFTokenError('Missing CSRF token')
 
     format = request.params.get('format')
     if format is None:
