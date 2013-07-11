@@ -21,6 +21,19 @@
             "type": "string",
             "format": "accession"
         },
+        "alternate_accessions": {
+            "default": [],
+            "description": "Accessions previously assigned to objects that have been merged with this one.",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Alternate Accessions",
+            "type": "array",
+            "items": {
+                "description": "An alternate accession",
+                "title": "Alt. Accession",
+                "type": "string",
+                "format": "accession"
+            }
+        },
         "description": {
             "default": "",
             "description": "A plain text description of the biosample - please not contructs and treatments, and experimental intent.",
@@ -297,7 +310,12 @@
                     "g","mg","cells/ml","cells", "whole embryos", "items"
                 ]
             }
+        },
+        "url": {
+            "description": "Commercial URL for purchased Biosamples",
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
         }
-
     }
 }

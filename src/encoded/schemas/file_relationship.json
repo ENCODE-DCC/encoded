@@ -1,0 +1,98 @@
+{
+    "title": "ENCODE Relationship Data File",
+    "id": "/profiles/file_relation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting datafile relationship and alias metadata for ENCODE",
+    "type": "object",
+    "required": [ "award", "lab"],
+    "additionalProperties": false,
+    "properties": {
+         "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+        "lab": {
+            "default": "ENCODE Project",
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "format": "lab_link"
+        },
+        "award": {
+            "default": "ENCODE",
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "format": "award_link"
+        },
+        "lab_aliases": {
+            "default": [],
+            "description": "List of lab IDs or cross-references",
+            "items": {
+                "description": "List of Database IDs",
+                "comments": "please use LABNAME:DBID",
+                "title": "Database IDs",
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
+            },
+            "title": "Lab Aliases",
+            "type": "array"
+        },
+        "encode2_dbxrefs": {
+            "default": [],
+            "description": "List cross-references to the previous ENCODE2 system",
+            "items": {
+                "description": "List of ENCODE2 Identifiers",
+                "title": "ID",
+                "type":  "string"
+            },
+            "title": "ENCODE2 DBXREFs",
+            "type": "array"
+        },
+        "derived_from": {
+            "default": [],
+            "description": "List of parent files (derived_from).",
+            "title": "Files",
+            "type":  "array",
+            "items": {
+                "description": "File pointer",
+                "comment": "For automatic submission supply unique data File accessions or uuids",
+                "title": "Derived from File",
+                "type": "string",
+                "format": "file_link"
+            }
+        },
+        "controls_for": {
+            "default": [],
+            "description": "List of files this file is a control for",
+            "title": "Files",
+            "type":  "array",
+            "items": {
+                "description": "File pointer",
+                "comment": "For automatic submission supply unique data File accessions or uuids",
+                "title": "Controls for File",
+                "type": "string",
+                "format": "file_link"
+            }
+        },
+        "replaced_by": {
+            "description": "If this file has been deprecated, which file is the current one",
+            "comment": "For automatic submission supply unique data File accessions or uuids",
+            "title": "Replacing File",
+            "type": "string",
+            "format": "file_link"
+        },
+        "paired_with": {
+            "description": "File this file is paired with.",
+            "comment": "For automatic submission supply unique data File accessions or uuids",
+            "title": "Paired File",
+            "type": "string",
+            "format": "file_link"
+        }
+    }
+}
