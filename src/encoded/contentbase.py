@@ -290,7 +290,10 @@ class MergedLinksMeta(type):
 
 class Item(object):
     __metaclass__ = MergedLinksMeta
-    keys = []
+    keys = [
+        # This key is necessary for the innerjoin=true query option
+        {'name': 'uuid', 'value': '{uuid}', '$templated': True},
+    ]
     embedded = {}
     links = {
         '@id': {'$value': '{item_uri}', '$templated': True},
@@ -329,6 +332,7 @@ class Item(object):
         ns = self.properties.copy()
         ns['item_type'] = self.item_type
         ns['_uuid'] = self.uuid
+        ns['uuid'] = self.uuid
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)
             ns['item_uri'] = request.resource_path(self)
@@ -548,43 +552,34 @@ class Collection(object):
         try:
             uuid = UUID(name)
         except ValueError:
-            return self.get_by_name(name, default)
+            if self.unique_key is None:
+                return default
+            return self.get_by_key(self.unique_key, name, default)
         else:
-            return self.get_by_uuid(uuid, default)
+            return self.get_by_key('uuid', str(uuid), default)
 
-    def get_by_uuid(self, uuid, default=None):
-        session = DBSession()
-        model = session.query(Resource).get(uuid)
-        if model is None:
-            return default
-        if model.item_type != self.item_type:
-            return None
-        return self.Item(self, model)
-
-    def get_by_name(self, name, default=None):
-        if self.unique_key is None:
-            return default
-        pkey = (self.unique_key, name)
+    def get_by_key(self, key, value, default=None):
+        pkey = (key, value)
         session = DBSession()
         # Eager load related resources here.
         key = session.query(Key).options(
-            orm.joinedload_all(
+            orm.joinedload(
                 Key.resource,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
+                Resource.unique_keys,
                 innerjoin=True,
             ),
             orm.joinedload_all(
                 Key.resource,
                 Resource.rels,
                 Link.target,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
+                Resource.unique_keys,
             ),
         ).get(pkey)
         if key is None:
             return default
         model = key.resource
+        if model.item_type != self.item_type:
+            return default
         return self.Item(self, model)
 
     def add(self, properties):

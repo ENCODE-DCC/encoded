@@ -109,7 +109,9 @@ class Key(Base):
                  nullable=False, index=True)
 
     # Be explicit about dependencies to the ORM layer
-    resource = orm.relationship('Resource', backref='unique_keys')
+    resource = orm.relationship(
+        'Resource', lazy='joined', innerjoin=True,
+        backref=orm.backref('unique_keys', lazy='joined'))
 
 
 class Link(Base):
