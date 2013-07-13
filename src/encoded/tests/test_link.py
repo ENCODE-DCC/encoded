@@ -33,7 +33,7 @@ def content(testapp):
 def test_links_add(content, session):
     from ..storage import Link
     links = sorted([
-        (str(link.source_rid), link.rel, str(link.target_rid))
+        (str(link.source.uuid), link.rel, str(link.target.uuid))
         for link in session.query(Link).all()
     ])
     expected = sorted([
@@ -51,7 +51,7 @@ def test_links_update(content, testapp, session):
     testapp.post_json(url, new_item, status=200)
 
     links = sorted([
-        (str(link.source_rid), link.rel, str(link.target_rid))
+        (str(link.source.uuid), link.rel, str(link.target.uuid))
         for link in session.query(Link).all()
     ])
     expected = sorted([

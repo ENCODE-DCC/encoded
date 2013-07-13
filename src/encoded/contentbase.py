@@ -305,7 +305,7 @@ class Item(object):
     }
 
     def __init__(self, collection, model):
-        self.__name__ = model.rid
+        self.__name__ = model.uuid
         self.__parent__ = collection
         self.model = model
 
@@ -319,7 +319,7 @@ class Item(object):
 
     @property
     def uuid(self):
-        return self.model.rid
+        return self.model.uuid
 
     def __json__(self, request):
         properties = self.properties.copy()
@@ -361,8 +361,7 @@ class Item(object):
         compiled = ObjectTemplate(self.merged_keys)
         keys = compiled(ns)
         for key_spec in keys:
-            key = Key(rid=self.uuid, **key_spec)
-            session.add(key)
+            self.model.unique_keys.append(Key(**key_spec))
 
     def create_rels(self):
         session = DBSession()
@@ -371,22 +370,24 @@ class Item(object):
         rels = compiled(ns)
         for link_spec in rels:
             rel = link_spec['rel']
-            target_rid = UUID(link_spec['target'])
+            target = session.query(Key).get(('uuid', link_spec['target']))
+            assert target is not None
             link = Link(
-                source_rid=self.uuid, rel=rel, target_rid=target_rid)
+                source_rid=self.model.rid, rel=rel, target_rid=target.rid)
             session.add(link)
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
         session = DBSession()
-        property_sheets = {}
-        if properties is not None:
-            property_sheets[''] = properties
-        if sheets is not None:
-            property_sheets.update(sheets)
-        resource = Resource(item_type, property_sheets, uuid)
+        resource = Resource(item_type, uuid)
         session.add(resource)
+        session.flush()
+        if properties is not None:
+            resource[''] = properties
+        if sheets is not None:
+            for key, value in sheets.items():
+                resource[key] = value
         item = cls(parent, resource)
         item.create_keys()
         item.create_rels()
@@ -420,19 +421,19 @@ class Item(object):
             session.delete(key)
 
         for name, value in to_add:
-            key = Key(rid=self.uuid, name=name, value=value)
-            session.add(key)
+            self.model.unique_keys.append(Key(name=name, value=value))
 
     def update_rels(self):
         session = DBSession()
         ns = self.template_namespace()
         compiled = ObjectTemplate(self.merged_rels)
-        source = self.uuid
+        source = self.model.rid
 
-        _rels = [
-            (link_spec['rel'], UUID(link_spec['target']))
-            for link_spec in compiled(ns)
-        ]
+        _rels = []
+        for link_spec in compiled(ns):
+            target = session.query(Key).get(('uuid', link_spec['target']))
+            assert target is not None
+            _rels.append((link_spec['rel'], target.rid))
         rels = set(_rels)
 
         if len(rels) != len(_rels):
@@ -620,7 +621,7 @@ class Collection(object):
         items = properties['items'] = []
 
         for model in query.limit(limit).all():
-            item_uri = request.resource_path(self, model.rid)
+            item_uri = request.resource_path(self, model.uuid)
             rendered = embed(request, item_uri)
             items.append(rendered)
 

@@ -16,6 +16,7 @@ from zope.sqlalchemy import ZopeTransactionExtension
 from .renderers import json_renderer
 import json
 import transaction
+from uuid import uuid4
 import uuid
 
 DBSession = orm.scoped_session(orm.sessionmaker(
@@ -105,7 +106,7 @@ class Key(Base):
     # the unique value
     value = Column(types.String, primary_key=True)
 
-    rid = Column(UUID, ForeignKey('resources.rid'),
+    rid = Column(types.Integer, ForeignKey('resources.rid'),
                  nullable=False, index=True)
 
     # Be explicit about dependencies to the ORM layer
@@ -119,10 +120,10 @@ class Link(Base):
     """
     __tablename__ = 'links'
     source_rid = Column(
-        'source', UUID, ForeignKey('resources.rid'), primary_key=True)
+        'source', types.Integer, ForeignKey('resources.rid'), primary_key=True)
     rel = Column(types.String, primary_key=True)
     target_rid = Column(
-        'target', UUID, ForeignKey('resources.rid'), primary_key=True,
+        'target', types.Integer, ForeignKey('resources.rid'), primary_key=True,
         index=True)  # Single column index for reverse lookup
 
     source = orm.relationship(
@@ -145,7 +146,7 @@ class PropertySheet(Base):
     )
     # The sid column also serves as the order.
     sid = Column(types.Integer, autoincrement=True, primary_key=True)
-    rid = Column(UUID,
+    rid = Column(types.Integer,
                  ForeignKey('resources.rid',
                             deferrable=True,
                             initially='DEFERRED'),
@@ -163,7 +164,7 @@ class PropertySheet(Base):
 
 class CurrentPropertySheet(Base):
     __tablename__ = 'current_propsheets'
-    rid = Column(UUID, ForeignKey('resources.rid'),
+    rid = Column(types.Integer, ForeignKey('resources.rid'),
                  nullable=False, primary_key=True)
     name = Column(types.String, nullable=False, primary_key=True)
     sid = Column(types.Integer,
@@ -185,7 +186,8 @@ class Resource(Base, DictMixin):
     '''Resources are described by multiple propsheets
     '''
     __tablename__ = 'resources'
-    rid = Column(UUID, primary_key=True)
+    rid = Column(types.Integer, autoincrement=True, primary_key=True)
+    uuid = Column(UUID)
     item_type = Column(types.String, nullable=False)
     data = orm.relationship(
         'CurrentPropertySheet', cascade='all, delete-orphan',
@@ -193,17 +195,16 @@ class Resource(Base, DictMixin):
         collection_class=collections.attribute_mapped_collection('name'),
     )
 
-    def __init__(self, item_type, data=None, rid=None):
-        if rid is None:
-            rid = uuid.uuid4()
-        super(Resource, self).__init__(item_type=item_type, rid=rid)
-        if data is not None:
-            self.update(data)
+    def __init__(self, item_type, uuid=None):
+        if uuid is None:
+            uuid = uuid4()
+        super(Resource, self).__init__(item_type=item_type, uuid=uuid)
 
     def __getitem__(self, key):
         return self.data[key].propsheet.properties
 
     def __setitem__(self, key, value):
+        assert self.rid is not None
         current = self.data.get(key, None)
         if current is None:
             self.data[key] = current = CurrentPropertySheet(name=key, rid=self.rid)

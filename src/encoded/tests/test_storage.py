@@ -29,6 +29,7 @@ def test_transaction_record(session):
     props1 = {'foo': 'bar'}
     resource = Resource('test_item')
     session.add(resource)
+    session.flush()
     propsheet = PropertySheet(name=name, properties=props1, rid=resource.rid)
     session.add(propsheet)
     session.flush()
@@ -49,8 +50,10 @@ def test_current_propsheet(session):
     )
     name = 'testdata'
     props1 = {'foo': 'bar'}
-    resource = Resource('test_item', {name: props1})
+    resource = Resource('test_item')
     session.add(resource)
+    session.flush()
+    resource[name] = props1
     session.flush()
     resource = session.query(Resource).one()
     assert resource.rid
@@ -74,8 +77,10 @@ def test_current_propsheet_update(session):
     )
     name = 'testdata'
     props1 = {'foo': 'bar'}
-    resource = Resource('test_item', {name: props1})
+    resource = Resource('test_item')
     session.add(resource)
+    session.flush()
+    resource[name] = props1
     session.flush()
     resource = session.query(Resource).one()
     props2 = {'foo': 'baz'}
@@ -98,8 +103,10 @@ def test_keys(session):
     )
     name = 'testdata'
     props1 = {'foo': 'bar'}
-    resource = Resource('test_item', {name: props1})
+    resource = Resource('test_item')
     session.add(resource)
+    session.flush()
+    resource[name] = props1
     session.flush()
     resource = session.query(Resource).one()
 
@@ -115,7 +122,8 @@ def test_keys(session):
     session.flush()
     assert session.query(Key).count() == 2
     props2 = {'foofoo': 'barbar'}
-    resource2 = Resource('test_item', {name: props2})
+    resource2 = Resource('test_item')
+    resource[name] = props2
     session.add(resource2)
     session.flush()
     key3 = Key(rid=resource2.rid, name=testname, value=props1[testname])
