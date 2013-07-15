@@ -9,6 +9,6 @@ Feature: Toolbar
         And I should see an element with the css selector "#global-sections > li:not(.active) > a[href='/biosamples/']"
         And I should see an element with the css selector "#global-sections > li:not(.active) > a[href='/targets/']"
         And I should see an element with the css selector "#global-sections > li:not(.active) > a[href='/experiments/']"
-        And I should see an element with the css selector "#user-actions > li > #signin[data-trigger='login']"
-        And I should not see an element with the css selector "#user-actions > li[style='display: none;'] > #signout[data-trigger='logout']"
+        And I should see an element with the css selector "#user-actions > li > [data-trigger='login']"
+        And I should not see an element with the css selector "#user-actions > li[style='display: none;'] > [data-trigger='logout']"
         And I should see "The Encyclopedia of DNA Elements"

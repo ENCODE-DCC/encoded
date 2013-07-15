@@ -29,7 +29,9 @@ requirejs.config({
 });
 
 TESTS = [
-    '/tests/js/specs/testing_spec.js'
+    '/tests/js/specs/testing_spec.js',
+    '/tests/js/specs/registry_spec.js',
+    '/tests/js/specs/uri_spec.js'
 ];
 
 require(['jquery', 'jasmine', 'jasmine_html', 'main'],

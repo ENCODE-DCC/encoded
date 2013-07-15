@@ -4,15 +4,15 @@ pytestmark = pytest.mark.storage
 
 def test_storage_creation(session):
     from encoded.storage import (
-        Statement,
-        CurrentStatement,
+        PropertySheet,
+        CurrentPropertySheet,
         TransactionRecord,
         Blob,
         Key,
         Link,
     )
-    assert session.query(Statement).count() == 0
-    assert session.query(CurrentStatement).count() == 0
+    assert session.query(PropertySheet).count() == 0
+    assert session.query(CurrentPropertySheet).count() == 0
     assert session.query(TransactionRecord).count() == 0
     assert session.query(Blob).count() == 0
     assert session.query(Key).count() == 0
@@ -22,71 +22,71 @@ def test_storage_creation(session):
 def test_transaction_record(session):
     from encoded.storage import (
         Resource,
-        Statement,
+        PropertySheet,
         TransactionRecord,
     )
-    predicate = 'testdata'
-    obj1 = {'foo': 'bar'}
-    resource = Resource()
+    name = 'testdata'
+    props1 = {'foo': 'bar'}
+    resource = Resource('test_item')
     session.add(resource)
-    stmt = Statement(predicate=predicate, object=obj1, rid=resource.rid)
-    session.add(stmt)
+    propsheet = PropertySheet(name=name, properties=props1, rid=resource.rid)
+    session.add(propsheet)
     session.flush()
-    assert session.query(Statement).count() == 1
-    statement = session.query(Statement).one()
+    assert session.query(PropertySheet).count() == 1
+    propsheet = session.query(PropertySheet).one()
     assert session.query(TransactionRecord).count() == 1
     record = session.query(TransactionRecord).one()
     assert record.tid
-    assert statement.tid == record.tid
+    assert propsheet.tid == record.tid
 
 
-def test_current_statement(session):
+def test_current_propsheet(session):
     from encoded.storage import (
-        CurrentStatement,
+        CurrentPropertySheet,
         Resource,
-        Statement,
+        PropertySheet,
         TransactionRecord,
     )
-    predicate = 'testdata'
-    obj1 = {'foo': 'bar'}
-    resource = Resource({predicate: obj1})
+    name = 'testdata'
+    props1 = {'foo': 'bar'}
+    resource = Resource('test_item', {name: props1})
     session.add(resource)
     session.flush()
     resource = session.query(Resource).one()
     assert resource.rid
-    assert resource[predicate] == obj1
-    statement = session.query(Statement).one()
-    assert statement.sid
-    assert statement.rid == resource.rid
-    current = session.query(CurrentStatement).one()
-    assert current.sid == statement.sid
+    assert resource[name] == props1
+    propsheet = session.query(PropertySheet).one()
+    assert propsheet.sid
+    assert propsheet.rid == resource.rid
+    current = session.query(CurrentPropertySheet).one()
+    assert current.sid == propsheet.sid
     assert current.rid == resource.rid
     record = session.query(TransactionRecord).one()
     assert record.tid
-    assert statement.tid == record.tid
+    assert propsheet.tid == record.tid
 
 
-def test_current_statement_update(session):
+def test_current_propsheet_update(session):
     from encoded.storage import (
-        CurrentStatement,
+        CurrentPropertySheet,
         Resource,
-        Statement,
+        PropertySheet,
     )
-    predicate = 'testdata'
-    obj1 = {'foo': 'bar'}
-    resource = Resource({predicate: obj1})
+    name = 'testdata'
+    props1 = {'foo': 'bar'}
+    resource = Resource('test_item', {name: props1})
     session.add(resource)
     session.flush()
     resource = session.query(Resource).one()
-    obj2 = {'foo': 'baz'}
-    resource[predicate] = obj2
+    props2 = {'foo': 'baz'}
+    resource[name] = props2
     session.flush()
     resource = session.query(Resource).one()
     session.flush()
-    assert resource[predicate] == obj2
-    assert session.query(Statement).count() == 2
-    assert [stmt.object for stmt in resource.data[predicate].history] == [obj1, obj2]
-    current = session.query(CurrentStatement).one()
+    assert resource[name] == props2
+    assert session.query(PropertySheet).count() == 2
+    assert [propsheet.properties for propsheet in resource.data[name].history] == [props1, props2]
+    current = session.query(CurrentPropertySheet).one()
     assert current.sid
 
 
@@ -96,15 +96,15 @@ def test_keys(session):
         Resource,
         Key,
     )
-    predicate = 'testdata'
-    obj1 = {'foo': 'bar'}
-    resource = Resource({predicate: obj1})
+    name = 'testdata'
+    props1 = {'foo': 'bar'}
+    resource = Resource('test_item', {name: props1})
     session.add(resource)
     session.flush()
     resource = session.query(Resource).one()
 
     testname = 'foo'
-    key = Key(rid=resource.rid, name=testname, value=obj1[testname])
+    key = Key(rid=resource.rid, name=testname, value=props1[testname])
     session.add(key)
     session.flush()
     assert session.query(Key).count() == 1
@@ -114,11 +114,11 @@ def test_keys(session):
     session.add(key2)
     session.flush()
     assert session.query(Key).count() == 2
-    obj2 = {'foofoo': 'barbar'}
-    resource2 = Resource({predicate: obj2})
+    props2 = {'foofoo': 'barbar'}
+    resource2 = Resource('test_item', {name: props2})
     session.add(resource2)
     session.flush()
-    key3 = Key(rid=resource2.rid, name=testname, value=obj1[testname])
+    key3 = Key(rid=resource2.rid, name=testname, value=props1[testname])
     session.add(key3)
     with pytest.raises(FlushError):
         session.flush()

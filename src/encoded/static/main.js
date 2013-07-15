@@ -1,46 +1,26 @@
 requirejs.config({
-    baseUrl: '/static',
+    baseUrl: '/static/components',
 
     paths: {
-        generic: 'modules/generic',
-        antibodies: 'modules/antibodies',
-        biosamples: 'modules/biosamples',
-        targets: 'modules/targets',
-        sources: 'modules/sources',
-        experiments: 'modules/experiments',
-        app: 'modules/app',
-        assert: 'modules/assert',
-        base: 'modules/base',
-        home: 'modules/home',
-        navbar: 'modules/navbar',
-        login: 'modules/login',
-        platforms: 'modules/platforms',
-        libraries: 'modules/libraries',
-
         // Plugins
-        text: 'libs/text',
+        jsx: '../libs/jsx',
 
         // Libraries
-        backbone: 'libs/backbone',
-        'backbone.hal': 'libs/backbone.hal',
-        bootstrap: 'libs/bootstrap.min',
-        jquery: 'libs/jquery.min',
-        jsonform: 'libs/jsonform',
-        modernizr: 'libs/modernizr.min',
-        underscore: 'libs/underscore.min',
-        'navigator': 'libs/include.orig',
-        //'navigator': 'https://login.persona.org/include'  // mozilla persona include, this should be fetched remotely
-        stickyheader: 'libs/sticky_header',
-        table_filter: 'libs/jquery.table_filter',
-        table_sorter: 'libs/table_sorter',
+        bootstrap: '../libs/bootstrap.min',
+        jquery: '../libs/jquery.min',
+        jsonform: '../libs/jsonform',
+        JSXTransformer: '../libs/JSXTransformer',
+        underscore: '../libs/underscore.min',
+        //persona: '../libs/include.orig',
+        persona: 'https://login.persona.org/include',  // mozilla persona include, this should be fetched remotely
+        react: '../libs/react',
+        stickyheader: '../libs/sticky_header',
+        'class': '../libs/class',
+        registry: '../libs/registry',
+        uri: '../libs/uri'
     },
 
     shim: {
-        backbone: {
-            deps: ['underscore', 'jquery'],
-            exports: 'Backbone'
-        },
-
         bootstrap: {
             deps: ['jquery']
         },
@@ -50,24 +30,19 @@ requirejs.config({
             exports: 'JSONForm'
         },
 
-        'navigator': {
-            exports: 'navigator'
+        JSXTransformer: {
+            exports: "JSXTransformer"
         },
-        // Modernizr loads later than normal with Require.js, so don't use the
-        // new HTML5 elements in the HTML file itself.
-        modernizr: {
-            exports: 'Modernizr'
+
+        persona: {
+            exports: 'navigator.id'
+        },
+
+        react: {
+            exports: 'React'
         },
 
         stickyheader: {
-            deps: ['jquery']
-        },
-
-        table_filter: {
-            deps: ['jquery', 'table_sorter']
-        },
-
-        table_sorter: {
             deps: ['jquery']
         },
 
@@ -77,15 +52,21 @@ requirejs.config({
     }
 });
 
-if (!window.TESTRUNNER) require(['jquery', 'app', 'bootstrap', 'modernizr', 'stickyheader', 'jsonform'],
-function main($, app) {
+if (!window.TESTRUNNER) require(['jquery', 'react', 'jsx!app', 'bootstrap', 'stickyheader', 'jsonform', 'persona',
+    'jsx!item', 'jsx!collection', 'jsx!errors', 'jsx!home', 'jsx!antibody', 'jsx!biosample', 'jsx!experiment', 'jsx!platform', 'jsx!target'
+    ],
+function main($, React, App) {
     'use strict';
 
     // Treat the jQuery ready function as the entry point to the application.
     // Inside this function, kick-off all initialization, everything up to this
     // point should be definitions.
     $(function ready() {
-        app.start();
+        var app = App({
+            contextDataElement: document.getElementById('data-context'),
+            href: window.location.href,
+        });
+        React.renderComponent(app, document.getElementById('slot-application'));
 
         // Simplify debugging
         window.app = app;

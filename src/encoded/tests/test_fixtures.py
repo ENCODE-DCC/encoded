@@ -45,7 +45,7 @@ def test_fixtures1(testapp):
     """
     url = '/organisms/'
     res = testapp.get(url)
-    items = res.json['_links']['items']
+    items = res.json['items']
     count1 = len(items)
     assert len(items)
 
@@ -55,7 +55,7 @@ def test_fixtures1(testapp):
     assert res.json['errors']
 
     res = testapp.get(url)
-    items = res.json['_links']['items']
+    items = res.json['items']
     assert len(items)
 
     from .sample_data import URL_COLLECTION
@@ -64,7 +64,7 @@ def test_fixtures1(testapp):
     testapp.post_json(url, item, status=201)
 
     res = testapp.get(url)
-    items = res.json['_links']['items']
+    items = res.json['items']
     count2 = len(items)
     assert count2 == count1 + 1
 
@@ -74,12 +74,12 @@ def test_fixtures1(testapp):
     assert res.json['errors']
 
     res = testapp.get(url)
-    items = res.json['_links']['items']
+    items = res.json['items']
     assert len(items) == count2
 
 
 def test_fixtures2(minitestdata2, testapp):
     # http://stackoverflow.com/questions/15775601/mutually-exclusive-fixtures
     res = testapp.get('/organisms/')
-    items = res.json['_links']['items']
+    items = res.json['items']
     assert len(items)
