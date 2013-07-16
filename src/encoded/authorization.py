@@ -34,8 +34,12 @@ def groupfinder(login, request):
         return None
 
     principals = ['userid:%s' % user.uuid]
-    lab_uuids = user.properties.get('lab_uuids', [])
-    principals.extend('lab:' + lab_uuid for lab_uuid in lab_uuids)
-    if CHERRY_LAB_UUID in lab_uuids:
+    lab = user.properties.get('lab')
+    if lab:
+        principals.append('lab:%s' % lab)
+    submits_for = user.properties.get('submits_for', [])
+    principals.extend('lab:%s' % lab_uuid for lab_uuid in submits_for)
+    principals.extend('submits_for:%s' % lab_uuid for lab_uuid in submits_for)
+    if CHERRY_LAB_UUID in submits_for:
         principals.append('group:admin')
     return principals
