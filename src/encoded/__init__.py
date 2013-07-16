@@ -142,6 +142,7 @@ def main(global_config, **settings):
     config.include('.views')
     config.include('.persona')
     config.include('pyramid_multiauth')
+    config.include('.elasticsearch')
 
     config.include(static_resources)
 

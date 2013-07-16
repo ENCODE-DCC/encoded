@@ -116,9 +116,9 @@ function (collection, $, class_, React, globals) {
         },
 
         guessColumns: function (props) {
-            var columns = props.columns;
-            if (!columns) {
-                columns = [];
+            var column_list = props.context.columns;
+            var columns = []
+            if (Object.keys(column_list).length === 0) {
                 for (var key in props.context.items[0]) {
                     if (key.slice(0, 1) != '@' && key.search(/(uuid|_no|accession)/) == -1) {
                         columns.push(key);
@@ -126,6 +126,10 @@ function (collection, $, class_, React, globals) {
                 }
                 columns.sort();
                 columns.unshift('@id');
+            } else {
+                for(var column in column_list) {
+                    columns.push(column)
+                }
             }
             this.setState({columns: columns});
             return columns;
@@ -145,10 +149,8 @@ function (collection, $, class_, React, globals) {
                     if (column == '@id') {
                         factory = globals.listing_titles.lookup(item);
                         value = factory({context: item});
-                    } else if (!value) {
-                        value = '';
                     } else if (value instanceof Array) {
-                        value = value.length;
+                        value = value;
                     } else if (value['@type']) {
                         factory = globals.listing_titles.lookup(value);
                         value = factory({context: value});
@@ -195,7 +197,7 @@ function (collection, $, class_, React, globals) {
             var sortOn = this.state.sortOn;
             var reversed = this.state.reversed;
             var searchTerm = this.state.searchTerm;
-            var titles = this.props.titles || {'@id': 'Item'};
+            var titles = context.columns;
             var data = this.state.data;
             var params = this.props.location.params();
             var total = context.count || data.rows.length;

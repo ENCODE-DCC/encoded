@@ -21,8 +21,9 @@ requires = [
     'zope.sqlalchemy',
     'PyBrowserID',
     'ordereddict',
-    'pyelasticsearch'
-    ]
+    'pyelasticsearch',
+    'elasticutils'
+]
 
 tests_require = [
     'behave',
@@ -47,7 +48,7 @@ setup(
     tests_require=tests_require,
     extras_require={
         'test': tests_require,
-        },
+    },
     entry_points='''
         [console_scripts]
         extract_test_data = encoded.commands.extract_test_data:main
@@ -56,4 +57,4 @@ setup(
         [paste.app_factory]
         main = encoded:main
         ''',
-    )
+)
