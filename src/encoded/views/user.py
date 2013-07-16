@@ -38,10 +38,11 @@ class User(Collection):
 
     class Item(Collection.Item):
         links = {
-            'labs': [
+            'submits_for': [
                 {'$value': '/labs/{lab_uuid}', '$templated': True,
-                 '$repeat': 'lab_uuid lab_uuids'}
-            ]
+                 '$repeat': 'lab_uuid submits_for'},
+            ],
+            'lab': {'$value': '/labs/{lab}', '$templated': True, '$condition': 'lab'},
         }
         keys = ['email']
         unique_key = 'user:email'
@@ -64,8 +65,11 @@ def user_details_view(context, request):
 def user_basic_view(context, request):
     properties = item_view(context, request)
     filtered = {}
-    for key in ['labs', 'first_name', 'last_name']:
-        filtered[key] = properties[key]
+    for key in ['lab', 'first_name', 'last_name']:
+        try:
+            filtered[key] = properties[key]
+        except KeyError:
+            pass
     return filtered
 
 
