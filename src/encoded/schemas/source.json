@@ -45,7 +45,7 @@
             "description": "Unique short name for the Source",
             "title": "Source or Vendor Name",
             "type": "string",
-            "pattern": "[a-z0-9\\-]"
+            "pattern": "^[a-z0-9\\-]+$"
         },
         "url": {
             "description": "An optional URL for the source",

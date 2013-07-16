@@ -18,7 +18,7 @@
             "description": "Unique short name for the Treatment",
             "title": "Treatment name",
             "type": "string",
-            "pattern": "[a-z0-9\\-]"
+            "pattern": "^[a-z0-9\\-]+$"
         },
         "lab": {
             "default": "ENCODE Project",

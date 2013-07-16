@@ -22,7 +22,7 @@
             "description": "Official NIH reference number for the award",
             "title": "Award Name (NIH reference number)",
             "type": "string",
-            "pattern": "[a-z0-9\\-]"
+            "pattern": "^[a-z0-9\\-]+$"
        },
         "description": {
             "default": "",
