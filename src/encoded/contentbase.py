@@ -48,7 +48,7 @@ from .objtemplate import ObjectTemplate
 from .schema_utils import validate_request
 from .storage import (
     DBSession,
-    CurrentStatement,
+    CurrentPropertySheet,
     Resource,
     Key,
     Link,
@@ -309,11 +309,11 @@ class Item(object):
 
     @property
     def item_type(self):
-        return self.model.predicate
+        return self.model.item_type
 
     @property
     def properties(self):
-        return self.model.statement.object
+        return self.model['']
 
     @property
     def uuid(self):
@@ -379,13 +379,12 @@ class Item(object):
         session = DBSession()
         property_sheets = {}
         if properties is not None:
-            property_sheets[item_type] = properties
+            property_sheets[''] = properties
         if sheets is not None:
             property_sheets.update(sheets)
-        resource = Resource(property_sheets, uuid)
+        resource = Resource(item_type, property_sheets, uuid)
         session.add(resource)
-        model = resource.data[item_type]
-        item = cls(parent, model)
+        item = cls(parent, resource)
         item.create_keys()
         item.create_rels()
         try:
@@ -407,7 +406,7 @@ class Item(object):
 
         existing = {
             (key.name, key.value)
-            for key in self.model.resource.unique_keys
+            for key in self.model.unique_keys
         }
 
         to_remove = existing - keys
@@ -439,7 +438,7 @@ class Item(object):
 
         existing = {
             (link.rel, link.target_rid)
-            for link in self.model.resource.rels
+            for link in self.model.rels
         }
 
         to_remove = existing - rels
@@ -455,10 +454,10 @@ class Item(object):
 
     def update(self, properties, sheets=None):
         if properties is not None:
-            self.model.resource[self.model.predicate] = properties
+            self.model[''] = properties
         if sheets is not None:
             for key, value in sheets.items():
-                self.model.resource[key] = value
+                self.model[key] = value
         session = DBSession()
         try:
             self.update_keys()
@@ -556,11 +555,12 @@ class Collection(object):
             return self.get_by_uuid(uuid, default)
 
     def get_by_uuid(self, uuid, default=None):
-        pkey = (uuid, self.item_type)
         session = DBSession()
-        model = session.query(CurrentStatement).get(pkey)
+        model = session.query(Resource).get(uuid)
         if model is None:
             return default
+        if model.item_type != self.item_type:
+            return None
         return self.Item(self, model)
 
     def get_by_name(self, name, default=None):
@@ -573,7 +573,7 @@ class Collection(object):
             orm.joinedload_all(
                 Key.resource,
                 Resource.data,
-                CurrentStatement.statement,
+                CurrentPropertySheet.propsheet,
                 innerjoin=True,
             ),
             orm.joinedload_all(
@@ -581,14 +581,12 @@ class Collection(object):
                 Resource.rels,
                 Link.target,
                 Resource.data,
-                CurrentStatement.statement,
+                CurrentPropertySheet.propsheet,
             ),
         ).get(pkey)
         if key is None:
             return default
-        model = key.resource.data.get(self.item_type, None)
-        if model is None:
-            return default
+        model = key.resource
         return self.Item(self, model)
 
     def add(self, properties):
@@ -612,8 +610,8 @@ class Collection(object):
         if limit is not None:
             limit = int(limit)
         session = DBSession()
-        query = session.query(CurrentStatement).filter(
-            CurrentStatement.predicate == self.item_type
+        query = session.query(Resource).filter(
+            Resource.item_type == self.item_type
         )
 
         properties = self.properties.copy()
