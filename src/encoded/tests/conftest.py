@@ -5,8 +5,8 @@ http://pyramid.readthedocs.org/en/latest/narr/testing.html
 import pytest
 from pytest import fixture
 
-app_settings = {
-    'multiauth.policies': 'authtkt remoteuser edwkey',
+_app_settings = {
+    'multiauth.policies': 'authtkt remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
     'multiauth.policy.authtkt.use': 'pyramid.authentication.AuthTktAuthenticationPolicy',
     'multiauth.policy.authtkt.hashalg': 'sha512',
@@ -18,22 +18,25 @@ app_settings = {
     'multiauth.policy.accesskey.namespace': 'accesskey',
     'multiauth.policy.accesskey.base': 'encoded.authentication.BasicAuthAuthenticationPolicy',
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
-    'multiauth.policy.edwkey.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
-    'multiauth.policy.edwkey.namespace': 'edwkey',
-    'multiauth.policy.edwkey.base': 'encoded.authentication.BasicAuthAuthenticationPolicy',
-    'multiauth.policy.edwkey.check': 'encoded.edw_key.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
     'persona.siteName': 'ENCODE DCC Submission',
     'allow.view': 'Everyone',
     'allow.list': 'Everyone',
     'allow.traverse': 'Everyone',
     'allow.ALL_PERMISSIONS': 'group:admin',
-    'allow.edw_key_create': 'edwkey:edw',
-    'allow.edw_key_update': 'edwkey:edw',
+    'allow.edw_key_create': 'accesskey:edw',
+    'allow.edw_key_update': 'accesskey:edw',
     'load_test_only': True,
     'load_sample_data': False,
     'testing': True,
 }
+
+
+@fixture(scope='session')
+def app_settings(server_host_port):
+    settings = _app_settings.copy()
+    settings['persona.audiences'] = 'http://%s:%s' % server_host_port
+    return settings
 
 
 def pytest_configure():
@@ -70,7 +73,7 @@ def dummy_request():
 
 
 @fixture(scope='session')
-def app(request, check_constraints, zsa_savepoints):
+def app(request, check_constraints, zsa_savepoints, app_settings):
     '''WSGI application level functional testing.
     '''
     from encoded import main
@@ -78,7 +81,7 @@ def app(request, check_constraints, zsa_savepoints):
 
 
 @pytest.datafixture
-def workbook(app):
+def workbook(app, app_settings):
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
@@ -128,7 +131,13 @@ def anontestapp(request, app, external_tx, zsa_savepoints):
 
 
 @fixture(scope='session')
-def _server(request, app, zsa_savepoints):
+def server_host_port():
+    from webtest.http import get_free_port
+    return get_free_port()
+
+
+@fixture(scope='session')
+def _server(request, app, zsa_savepoints, server_host_port):
     from webtest.http import StopableWSGIServer
     import threading
     from webtest.http import get_free_port
@@ -148,9 +157,13 @@ def _server(request, app, zsa_savepoints):
         server.runner.start()
         return server
 
+    host, port = server_host_port
+
     server = create(
         StopableWSGIServer,
         app,
+        host=host,
+        port=port,
         threads=1,
         channel_timeout=60,
         cleanup_interval=10,

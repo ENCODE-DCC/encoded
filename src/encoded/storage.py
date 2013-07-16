@@ -94,15 +94,50 @@ class JSON(types.TypeDecorator):
         return value
 
 
-class Statement(Base):
+class Key(Base):
+    ''' indexed unique tables for accessions and other unique keys
+    '''
+    __tablename__ = 'keys'
+
+    # typically the field that is unique, i.e. accession
+    # might be prefixed with a namespace for per name unique values
+    name = Column(types.String, primary_key=True)
+    # the unique value
+    value = Column(types.String, primary_key=True)
+
+    rid = Column(UUID, ForeignKey('resources.rid'),
+                 nullable=False, index=True)
+
+    # Be explicit about dependencies to the ORM layer
+    resource = orm.relationship('Resource', backref='unique_keys')
+
+
+class Link(Base):
+    """ indexed relations
+    """
+    __tablename__ = 'links'
+    source_rid = Column(
+        'source', UUID, ForeignKey('resources.rid'), primary_key=True)
+    rel = Column(types.String, primary_key=True)
+    target_rid = Column(
+        'target', UUID, ForeignKey('resources.rid'), primary_key=True,
+        index=True)  # Single column index for reverse lookup
+
+    source = orm.relationship(
+        'Resource', foreign_keys=[source_rid], backref='rels')
+    target = orm.relationship(
+        'Resource', foreign_keys=[target_rid], backref='revs')
+
+
+class PropertySheet(Base):
     '''A triple describing a resource
     '''
-    __tablename__ = 'statements'
+    __tablename__ = 'propsheets'
     __table_args__ = (
         schema.ForeignKeyConstraint(
-            ['rid', 'predicate'],
-            ['current_statements.rid', 'current_statements.predicate'],
-            name='fk_statements_rid_predicate', use_alter=True,
+            ['rid', 'name'],
+            ['current_propsheets.rid', 'current_propsheets.name'],
+            name='fk_property_sheets_rid_name', use_alter=True,
             deferrable=True, initially='DEFERRED',
         ),
     )
@@ -113,8 +148,8 @@ class Statement(Base):
                             deferrable=True,
                             initially='DEFERRED'),
                  nullable=False)
-    predicate = Column(types.String, nullable=False)
-    object = Column(JSON)
+    name = Column(types.String, nullable=False)
+    properties = Column(JSON)
     tid = Column(UUID,
                  ForeignKey('transactions.tid',
                             deferrable=True,
@@ -124,51 +159,54 @@ class Statement(Base):
     transaction = orm.relationship('TransactionRecord')
 
 
-class CurrentStatement(Base):
-    __tablename__ = 'current_statements'
+class CurrentPropertySheet(Base):
+    __tablename__ = 'current_propsheets'
     rid = Column(UUID, ForeignKey('resources.rid'),
                  nullable=False, primary_key=True)
-    predicate = Column(types.String, nullable=False, primary_key=True)
+    name = Column(types.String, nullable=False, primary_key=True)
     sid = Column(types.Integer,
-                 ForeignKey('statements.sid'), nullable=False)
-    statement = orm.relationship(
-        'Statement', lazy='joined', innerjoin=True,
-        primaryjoin="CurrentStatement.sid==Statement.sid",
+                 ForeignKey('propsheets.sid'), nullable=False)
+    propsheet = orm.relationship(
+        'PropertySheet', lazy='joined', innerjoin=True,
+        primaryjoin="CurrentPropertySheet.sid==PropertySheet.sid",
     )
     history = orm.relationship(
-        'Statement', order_by=Statement.sid,
-        primaryjoin="""and_(CurrentStatement.rid==Statement.rid,
-                    CurrentStatement.predicate==Statement.predicate)""",
+        'PropertySheet', order_by=PropertySheet.sid,
+        post_update=True,  # Break cyclic dependency
+        primaryjoin="""and_(CurrentPropertySheet.rid==PropertySheet.rid,
+                    CurrentPropertySheet.name==PropertySheet.name)""",
     )
     resource = orm.relationship('Resource')
 
 
 class Resource(Base, DictMixin):
-    '''Resources are described by multiple statements
+    '''Resources are described by multiple propsheets
     '''
     __tablename__ = 'resources'
     rid = Column(UUID, primary_key=True)
+    item_type = Column(types.String, nullable=False)
     data = orm.relationship(
-        'CurrentStatement', cascade='all, delete-orphan',
-        collection_class=collections.attribute_mapped_collection('predicate'),
+        'CurrentPropertySheet', cascade='all, delete-orphan',
+        innerjoin=True, lazy='joined',
+        collection_class=collections.attribute_mapped_collection('name'),
     )
 
-    def __init__(self, data=None, rid=None):
+    def __init__(self, item_type, data=None, rid=None):
         if rid is None:
             rid = uuid.uuid4()
-        super(Resource, self).__init__(rid=rid)
+        super(Resource, self).__init__(item_type=item_type, rid=rid)
         if data is not None:
             self.update(data)
 
     def __getitem__(self, key):
-        return self.data[key].statement.object
+        return self.data[key].propsheet.properties
 
     def __setitem__(self, key, value):
         current = self.data.get(key, None)
         if current is None:
-            self.data[key] = current = CurrentStatement(predicate=key, rid=self.rid)
-        statement = Statement(predicate=key, object=value, rid=self.rid)
-        current.statement = statement
+            self.data[key] = current = CurrentPropertySheet(name=key, rid=self.rid)
+        propsheet = PropertySheet(name=key, properties=value, rid=self.rid)
+        current.propsheet = propsheet
 
     def keys(self):
         return self.data.keys()
@@ -184,52 +222,14 @@ class Blob(Base):
 
 class TransactionRecord(Base):
     __tablename__ = 'transactions'
-    tid = Column(UUID, default=uuid.uuid4, primary_key=True)
+    order = Column(types.Integer, autoincrement=True, primary_key=True)
+    tid = Column(UUID, default=uuid.uuid4, nullable=False, unique=True)
     data = Column(JSON)
     timestamp = Column(
         types.DateTime, nullable=False, server_default=func.now())
 
 
-class UserMap(Base):
-    __tablename__ = 'user_map'
-    # e.g. mailto:test@example.com
-    login = Column(types.Text, primary_key=True)
-    userid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
-
-    resource = orm.relationship('Resource', lazy='joined',
-                                foreign_keys=[userid])
-
-    user = orm.relationship(
-        'CurrentStatement', lazy='joined', foreign_keys=[userid],
-        primaryjoin="""and_(CurrentStatement.rid==UserMap.userid,
-                       CurrentStatement.predicate=='user')""",
-    )
-
-    # might have to be deferred
-
-    def __init__(self, login, userid):
-        self.login = login
-        self.userid = userid
-
-
-class EDWKey(Base):
-    __tablename__ = 'edw_keys'
-    # e.g. mailto:test@example.com
-    username = Column(types.Text, primary_key=True)
-    pwhash = Column(types.Text)
-    userid = Column(UUID, ForeignKey('resources.rid'), nullable=False)
-
-    resource = orm.relationship('Resource', lazy='joined',
-                                foreign_keys=[userid])
-
-    user = orm.relationship(
-        'CurrentStatement', lazy='joined', foreign_keys=[userid],
-        primaryjoin="""and_(CurrentStatement.rid==EDWKey.userid,
-                       CurrentStatement.predicate=='user')""",
-    )
-
-
-@event.listens_for(Statement, 'before_insert')
+@event.listens_for(PropertySheet, 'before_insert')
 def set_tid(mapper, connection, target):
     if target.tid is not None:
         return

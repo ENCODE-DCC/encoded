@@ -8,7 +8,7 @@ import xlrd
 # http://www.lexicon.net/sjmachin/xlrd.html
 
 logger = logging.getLogger('encoded')
-logger.setLevel(logging.WARNING)  #doesn't work to shut off sqla INFO
+logger.setLevel(logging.WARN)  # doesn't work to shut off sqla INFO
 
 TYPE_URL = {
     # TODO This has appears in 3 places... maybe it shoudl be configged
@@ -28,11 +28,10 @@ TYPE_URL = {
     'award': '/awards/',
     'platform': '/platforms/',
     'library': '/libraries/',
-    'assay': '/assays/',
+    'assay': '/assays/',  # this should be removed lated
     'replicate': '/replicates/',
     'file': '/files/',
     'experiment': '/experiments/',
-    ##{ 'institute': '/institutes/'),
 }
 
 
@@ -49,6 +48,20 @@ def find_doc(docsdir, filename):
     if path is None:
         raise ValueError('File not found: %s' % filename)
     return path
+
+
+def trim(value):
+    """ Shorten over long binary fields in error log
+    """
+    trimmed = {}
+    for k, v in value.iteritems():
+        if isinstance(v, dict):
+            trimmed[k] = trim(v)
+        elif isinstance(v, basestring) and len(v) > 100:
+            trimmed[k] = v[:40] + '...'
+        else:
+            trimmed[k] = v
+    return trimmed
 
 
 class IndexContainer:
@@ -188,11 +201,13 @@ def extract(filename, sheets, test=False):
 
 def value_index(data, attribute):
     index = {}
-    for uuid, value in data.iteritems():
+    for uuid, value in list(data.iteritems()):
         index_value = resolve_dotted(value, attribute)
-        if not index_value: continue
-        assert index_value not in index, index_value
-        index[index_value] = uuid
+        if index_value in index:
+            logger.warn('Duplicate values for %s, %s: %r' % (index[index_value], uuid, index_value))
+            del[data[uuid]]
+        else:
+            index[index_value] = uuid
     return index
 
 
@@ -255,10 +270,10 @@ def post_all(testapp, alldata, content_type):
         try:
             res = testapp.post_json(update_url, value, status=[404, 200, 422])
         except Exception as e:
-            logger.warn('Error UPDATING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, value))
+            logger.warn('Error UPDATING %s %s: %r. Value:\n%r\n' % (content_type, uuid, e, trim(value)))
         else:
             if res.status_code == 422:
-                logger.warn('Error VALIDATING for UPDATE %s %s: %r. Value:\n%r\n' % (content_type, uuid, res.json['errors'], value))
+                logger.warn('Error VALIDATING for UPDATE %s %s: %r. Value:\n%r\n' % (content_type, uuid, res.json['errors'], trim(value)))
                 del alldata[content_type][uuid]
             elif res.status_code == 404:
                 logger.info('%s %s could not be found for UPDATE, posting as new' % (content_type, uuid))
@@ -283,11 +298,11 @@ def post_collection(testapp, collection, url, count):
             res = testapp.post_json(url, value, status=[201, 422])
             nload += 1
         except Exception as e:
-            logger.warn('Error SUBMITTING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, e, value))
+            logger.warn('Error SUBMITTING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, e, trim(value)))
             del collection[uuid]
         else:
             if res.status_code == 422:
-                logger.warn('Error VALIDATING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, res.json['errors'], value))
+                logger.warn('Error VALIDATING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, res.json['errors'], trim(value)))
                 del collection[uuid]
     logger.warn('Loaded NEW %d %s out of %d' % (nload, url, count))
 
@@ -311,7 +326,7 @@ def check_document(docsdir, filename):
     doc = {}
     if ext:
         stream = open(find_doc(docsdir, filename), 'rb')
-        if ext in ('.png', '.jpg', '.jpeg', '.tiff', '.tif'):
+        if ext in ('.png', '.jpg', '.jpeg', '.tiff', '.tif', '.gif'):
             doc = image_data(stream, filename)
 
         elif ext == '.pdf':
@@ -359,7 +374,7 @@ def parse_decorator_factory(content_type, index_type):
                     parse_type(testapp, alldata, content_type, indices, uuid, value, docsdir)
 
                 except Exception as e:
-                    logger.info('PROCESSING %s %s: %s Value:\n%r\n' % (content_type, uuid, e, original))
+                    logger.warn('PROCESSING %s %s: %r Value:\n%r\n' % (content_type, uuid, e, original))
                     del alldata[content_type][uuid]
                     continue
 
@@ -488,9 +503,10 @@ def parse_validation(testapp, alldata, content_type, indices, uuid, value, docsd
 
 @parse_decorator_factory('antibody_approval', {})
 def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value, docsdir):
-
+    product_id = value.pop('antibody_product_id')
+    lot_id = value.pop('antibody_lot_id')
     try:
-        value['antibody_lot_uuid'] = indices['antibody_lot'][(value.pop('antibody_product_id'), value.pop('antibody_lot_id'))]
+        value['antibody_lot_uuid'] = indices['antibody_lot'][(product_id, lot_id)]
     except KeyError:
         raise ValueError('Missing/skipped antibody_lot reference')
 
@@ -505,13 +521,16 @@ def parse_antibody_approval(testapp, alldata, content_type, indices, uuid, value
                 logger.warn('Missing/skipped validation reference %s for antibody_approval: %s' % (validation_uuid, uuid))
             else:
                 method = val['validation_method']
-                if (filename, method) not in validations:
+                if val['product_id'] != product_id:
+                    if filename != 'frowny_gel.png':
+                        logger.warn('Skipped validation: %s filename: %s for antibody_approval: %s, wrong product_id (%s not %s)' % (
+                            validation_uuid, filename, uuid, val['product_id'], product_id))
+                elif (filename, method) not in validations:
                     value['validation_uuids'].append(validation_uuid)
                     validations.add((filename, method))
                 else:
-                    pass
-                    # frowny_gel is frowny because log files get clogged
-                    #logger.warn('Duplicate method/validation skipped: %s %s for approval' % (filename, method))
+                    if filename != 'frowny_gel.png':
+                        logger.warn('Duplicate method/validation skipped: %s %s for approval %s' % (filename, method, uuid))
 
     # make sure there are no duplicates
     assert len(set(value['validation_uuids'])) == len(value['validation_uuids'])
@@ -587,6 +606,19 @@ def parse_construct(testapp, alldata, content_type, indices, uuid, value, docsdi
     except KeyError:
         raise ValueError('Unable to find source: %s' % source)
 
+    value['document_uuids'] = []
+    if value['construct_document_list']:
+        documents = value.pop('construct_document_list')
+        for doc in documents:
+            try:
+                document_uuid = indices['document'].get(doc, None)
+                if alldata['document'].get(document_uuid, None) is None:
+                    raise ValueError('Missing/skipped document reference %s for construct: %s' % (doc, uuid))
+                else:
+                    value['document_uuids'].append(document_uuid)
+            except KeyError:
+                raise ValueError('Unable to find document for construct: %s' % doc)
+
 
 @parse_decorator_factory('biosample', {})
 def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdir):
@@ -649,7 +681,7 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
             value['treatment_uuids'].append(treatment_uuid)
             # adding treatment documents to biosamples documents list
             if alldata['treatment'][treatment_uuid]['document_uuids']:
-                value['document_uuids'] = value['document_uuids']+ alldata['treatment'][treatment_uuid]['document_uuids']
+                value['document_uuids'] = value['document_uuids'] + alldata['treatment'][treatment_uuid]['document_uuids']
         except KeyError:
             raise ValueError('Unable to find treatment for biosample: %s' % treat)
     except KeyError as k:
@@ -667,6 +699,8 @@ def parse_biosample(testapp, alldata, content_type, indices, uuid, value, docsdi
                 ## but don't raise error
             else:
                 value['construct_uuids'].append(construct_uuid)
+            if alldata['construct'][construct_uuid]['document_uuids']:
+                value['document_uuids'] = value['document_uuids'] + alldata['construct'][construct_uuid]['document_uuids']
     except:
         pass
         # protocol documents can be missing?
@@ -824,9 +858,7 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
 
     value['file_uuids'] = []
     value['replicate_uuids'] = []
-    value['assay_name'] = ''
-    value['target'] = ''
-    value['biosamples'] = []
+    value['experiment_control_uuids'] = []
 
     for file in alldata['file']:
         if (alldata['file'][file])['experiment_dataset_uuid'] is value['_uuid']:
@@ -838,23 +870,22 @@ def parse_experiment(testapp, alldata, content_type, indices, uuid, value, docsd
         else:
             pass
 
+    # Handling controls here
+    for file_uuid in value['file_uuids']:
+        possible_controls = alldata['file'][file_uuid]['possible_controls']
+        if not possible_controls:
+            continue
+        if possible_controls == uuid:
+            logger.warn("Experiment: %s is its own control through file: %s" % (uuid, file_uuid))
+            continue
+        if possible_controls not in value['experiment_control_uuids']:
+            value['experiment_control_uuids'].append(possible_controls)
+
     #checking for replicates without files
     for replicate in alldata['replicate']:
         if alldata['replicate'][replicate]['experiment_accession'] is value['dataset_accession']:
             if replicate not in value['replicate_uuids']:
                 value['replicate_uuids'].append(replicate)
-
-    # terrible coding, have to fix it later
-    if value['replicate_uuids']:
-        assay_uuid = alldata['replicate'][value['replicate_uuids'][0]]['assay_uuid']
-        value['assay_name'] = alldata['assay'][assay_uuid]['assay_name']
-        value['target'] = alldata['replicate'][value['replicate_uuids'][0]]['target']
-        for replicate in value['replicate_uuids']:
-            library = alldata['replicate'][replicate]['library_uuid']
-            biosample = alldata['library'][library]['biosample_uuid']
-            biosample_accession = alldata['biosample'][biosample]['accession']
-            if biosample_accession not in value['biosamples']:
-                value['biosamples'].append(biosample_accession)
 
     assign_submitter(value, content_type, indices,
                      {

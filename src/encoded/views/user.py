@@ -1,15 +1,12 @@
 from pyramid.view import (
-    render_view_to_response,
     view_config,
 )
 from pyramid.security import (
     Allow,
-    Authenticated,
     Deny,
     Everyone,
     effective_principals,
 )
-from . import root
 from ..schema_utils import (
     load_schema,
 )
@@ -17,15 +14,15 @@ from ..contentbase import (
     Collection,
     Root,
     item_view,
-)
-from ..storage import (
-    DBSession,
-    UserMap,
+    location,
+    make_subrequest,
 )
 
 
-@root.location('users')
+@location('users')
 class User(Collection):
+    item_type = 'user'
+    unique_key = 'user:email'
     schema = load_schema('colleague.json')
     properties = {
         'title': 'DCC Users',
@@ -39,25 +36,18 @@ class User(Collection):
         (Deny, Everyone, 'view_details'),
     ]
 
-    def after_add(self, item):
-        email = item.model.statement.object.get('email')
-        if email is None:
-            return
-        session = DBSession()
-        login = 'mailto:' + email
-        user_map = UserMap(login=login, userid=item.model.rid)
-        session.add(user_map)
-
     class Item(Collection.Item):
         links = {
             'labs': [
-                {'href': '/labs/{lab_uuid}', 'templated': True,
-                 'repeat': 'lab_uuid lab_uuids'}
+                {'$value': '/labs/{lab_uuid}', '$templated': True,
+                 '$repeat': 'lab_uuid lab_uuids'}
             ]
         }
+        keys = ['email']
+        unique_key = 'user:email'
 
         def __acl__(self):
-            owner = 'userid:%s' % self.model.rid
+            owner = 'userid:%s' % self.uuid
             return [
                 (Allow, owner, 'edit'),
                 (Allow, owner, 'view_details'),
@@ -74,19 +64,21 @@ def user_details_view(context, request):
 def user_basic_view(context, request):
     properties = item_view(context, request)
     filtered = {}
-    for key in ['_links', 'first_name', 'last_name']:
+    for key in ['labs', 'first_name', 'last_name']:
         filtered[key] = properties[key]
     return filtered
 
 
-@view_config(context=Root, name='current-user', request_method='GET',
-             effective_principals=[Authenticated])
+@view_config(context=Root, name='current-user', request_method='GET')
 def current_user(request):
     for principal in effective_principals(request):
         if principal.startswith('userid:'):
             break
     else:
-        raise AssertionError('User not found')
+        return {}
     namespace, userid = principal.split(':', 1)
-    user = request.root.by_item_type[User.item_type][userid]
-    return render_view_to_response(user, request)
+    collection = request.root.by_item_type[User.item_type]
+    path = request.resource_path(collection, userid)
+    subreq = make_subrequest(request, path)
+    subreq.override_renderer = 'null_renderer'
+    return request.invoke_subrequest(subreq)

@@ -1,7 +1,5 @@
 import pytest
 
-pytestmark = pytest.mark.skipif("True")
-
 
 def basic_auth(username, password):
     from base64 import b64encode
@@ -31,6 +29,7 @@ def access_keys(app):
             'location': res.location,
             'effective_principals': sorted(principals),
             '_uuid': item['_uuid'],
+            'email': item['email'],
         })
     access_keys = []
     for user in users:
@@ -55,9 +54,15 @@ def access_key(access_keys):
     return access_keys[0]
 
 
+def test_access_key_current_user(anontestapp, access_key):
+    headers = {'Authorization': access_key['auth_header']}
+    res = anontestapp.get('/@@current-user', headers=headers)
+    assert res.json['labs']
+
+
 def test_access_key_principals(anontestapp, execute_counter, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    with execute_counter.expect(2):
+    with execute_counter.expect(1):
         res = anontestapp.get('/@@testing-user', headers=headers)
 
     assert res.json['authenticated_userid'] == 'accesskey:' + access_key['access_key_id']
@@ -102,9 +107,59 @@ def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key):
     assert 'secret_access_key_hash' not in res.json
 
 
-def test_notfound_denied_anonymous(htmltestapp):
-    htmltestapp.get('/access-keys/badname', status=403)
+def test_notfound_denied_anonymous(anontestapp):
+    anontestapp.get('/access-keys/badname', status=403)
 
 
 def test_notfound_admin(testapp):
     testapp.get('/access-keys/badname', status=404)
+
+
+def test_access_key_uses_edw_hash(app, access_key):
+    from encoded.edw_hash import EDWHash
+    from encoded.contentbase import LOCATION_ROOT
+    root = app.registry[LOCATION_ROOT]
+    obj = root.by_item_type['access_key'][access_key['access_key_id']]
+    pwhash = obj.properties['secret_access_key_hash']
+    assert EDWHash.encrypt(access_key['secret_access_key']) == pwhash
+
+
+def test_edw_key_create(testapp, anontestapp, access_key):
+    from encoded.edw_hash import EDWHash
+    email = access_key['user']['email']
+    access_key_id = 'test_edw_user'
+    password = 'test_edw_pass'
+    pwhash = EDWHash.encrypt(password)
+    item = {'email': email, 'username': access_key_id, 'pwhash': pwhash}
+    url = '/@@edw_key_create'
+    testapp.post_json(url, item)
+
+    headers = {'Authorization': basic_auth(access_key_id, password)}
+    res = anontestapp.get('/@@testing-user', headers=headers)
+    assert res.json['authenticated_userid'] == 'accesskey:' + access_key_id
+    assert sorted(res.json['effective_principals']) == [
+        'accesskey:' + access_key_id,
+    ] + access_key['user']['effective_principals']
+
+
+def test_edw_key_update(testapp, anontestapp, access_key):
+    from encoded.edw_hash import EDWHash
+    email = access_key['user']['email']
+    access_key_id = access_key['access_key_id']
+    password = 'new'
+    pwhash = EDWHash.encrypt(password)
+    item = {'email': email, 'username': access_key_id, 'pwhash': pwhash}
+    url = '/@@edw_key_update'
+    testapp.post_json(url, item)
+
+    headers = {'Authorization': access_key['auth_header']}
+    res = anontestapp.get('/@@testing-user', headers=headers)
+    assert res.json['authenticated_userid'] is None
+    assert res.json['effective_principals'] == ['system.Everyone']
+
+    headers = {'Authorization': basic_auth(access_key_id, password)}
+    res = anontestapp.get('/@@testing-user', headers=headers)
+    assert res.json['authenticated_userid'] == 'accesskey:' + access_key_id
+    assert sorted(res.json['effective_principals']) == [
+        'accesskey:' + access_key_id,
+    ] + access_key['user']['effective_principals']

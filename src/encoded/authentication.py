@@ -8,11 +8,13 @@ from pyramid.path import (
     DottedNameResolver,
     caller_package,
 )
+from .contentbase import LOCATION_ROOT
 
 CRYPT_CONTEXT = __name__ + ':crypt_context'
 
 
 def includeme(config):
+    config.include('.edw_hash')
     setting_prefix = 'passlib.'
     passlib_settings = {
         k[len(setting_prefix):]: v
@@ -20,7 +22,7 @@ def includeme(config):
         if k.startswith(setting_prefix)
     }
     if not passlib_settings:
-        passlib_settings = {'schemes': 'sha512_crypt, unix_disabled'}
+        passlib_settings = {'schemes': 'edw_hash, unix_disabled'}
     crypt_context = CryptContext(**passlib_settings)
     config.registry[CRYPT_CONTEXT] = crypt_context
 
@@ -91,7 +93,9 @@ class BasicAuthAuthenticationPolicy(_BasicAuthAuthenticationPolicy):
 
 # Currently unused, see views/edw_key.py
 def basic_auth_check(username, password, request):
-    collection = request.root['access-keys']
+    # We may get called before the context is found and the root set
+    root = request.registry[LOCATION_ROOT]
+    collection = root['access-keys']
     try:
         access_key = collection[username]
     except KeyError:
@@ -114,11 +118,21 @@ def basic_auth_check(username, password, request):
     return principals
 
 
+def generate_user():
+    """ Generate a random user name with 64 bits of entropy
+    """
+    # Take a random 5 char binary string (80 bits of
+    # entropy) and encode it as upper cased base32 (8 chars)
+    random_bytes = os.urandom(5)
+    user = base64.b32encode(random_bytes).rstrip('=').upper()
+    return user
+
+
 def generate_password():
     """ Generate a password with 80 bits of entropy
     """
     # Take a random 10 char binary string (80 bits of
     # entropy) and encode it as lower cased base32 (16 chars)
     random_bytes = os.urandom(10)
-    password = base64.b32encode(random_bytes).lower()
+    password = base64.b32encode(random_bytes).rstrip('=').lower()
     return password

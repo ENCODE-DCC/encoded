@@ -20,7 +20,6 @@ requires = [
     'xlutils',
     'zope.sqlalchemy',
     'PyBrowserID',
-    ##'requests>=1.0',
     ]
 
 tests_require = [

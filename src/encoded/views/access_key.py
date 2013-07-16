@@ -6,9 +6,9 @@ from pyramid.security import (
     Deny,
     Everyone,
 )
-from . import root
 from ..authentication import (
     generate_password,
+    generate_user,
     CRYPT_CONTEXT,
 )
 from ..schema_utils import (
@@ -16,16 +16,19 @@ from ..schema_utils import (
 )
 from ..contentbase import (
     Collection,
+    Root,
     collection_add,
     item_edit,
     item_view,
+    location,
 )
-import uuid
+from ..validation import ValidationFailure
 
 
-@root.location('access-keys')
+@location('access-keys')
 class AccessKey(Collection):
     item_type = 'access_key'
+    unique_key = 'access_key:access_key_id'
     properties = {
         'title': 'Access keys',
         'description': 'Programmatic access keys',
@@ -40,8 +43,12 @@ class AccessKey(Collection):
 
     class Item(Collection.Item):
         links = {
-            'user': {'href': '/users/{user_uuid}', 'templated': True},
+            'user': {'value': '/users/{user_uuid}', '$templated': True},
         }
+        keys = ['access_key_id']
+        rels = [
+            {'rel': '{item_type}:user', 'target': '{user_uuid}', '$templated': True},
+        ]
 
         def __acl__(self):
             owner = 'userid:%s' % self.properties['user_uuid']
@@ -59,9 +66,8 @@ class AccessKey(Collection):
 def access_key_add(context, request):
     crypt_context = request.registry[CRYPT_CONTEXT]
 
-    if '_uuid' not in request.validated:
-        request.validated['_uuid'] = uuid.uuid4()
-    access_key_id = request.validated['_uuid']
+    if 'access_key_id' not in request.validated:
+        request.validated['access_key_id'] = generate_user()
 
     if 'user_uuid' not in request.validated:
         request.validated['user_uuid'], = [
@@ -82,7 +88,7 @@ def access_key_add(context, request):
     else:
         result['secret_access_key'] = password
 
-    result['access_key_id'] = access_key_id
+    result['access_key_id'] = request.validated['access_key_id']
     result['description'] = request.validated['description']
     return result
 
@@ -132,3 +138,81 @@ def access_key_view(context, request):
     except KeyError:
         pass
     return properties
+
+
+# Consider if
+
+
+@view_config(name='edw_key_create', context=Root, subpath_segments=0,
+             request_method='POST', permission='edw_key_create',
+             validators=[schema_validator('edw_key.json')])
+def edw_key_create(context, request):
+    email = request.validated['email']
+    username = request.validated['username']
+    pwhash = request.validated['pwhash']
+
+    users = request.root['users']
+    try:
+        user = users[email]
+    except KeyError:
+        msg = "User not found for %r" % email
+        request.errors.add('body', ['email'], msg)
+
+    if not username:
+        msg = "username must not be blank"
+        request.errors.add('body', ['username'], msg)
+    else:
+        collection = request.root['access-keys']
+        try:
+            collection[username]
+        except KeyError:
+            pass
+        else:
+            msg = "username already exists"
+            request.errors.add('body', ['username'], msg)
+
+    if request.errors:
+        raise ValidationFailure()
+
+    request.validated.clear()
+    request.validated['access_key_id'] = username
+    request.validated['secret_access_key_hash'] = pwhash
+    request.validated['user_uuid'] = user.uuid
+    request.validated['description'] = ''
+
+    collection_add(collection, request)
+    return {'status': 'success'}
+
+
+@view_config(name='edw_key_update', context=Root, subpath_segments=0,
+             request_method='POST', permission='edw_key_update',
+             validators=[schema_validator('edw_key.json')])
+def edw_key_update(request):
+    email = request.validated['email']
+    username = request.validated['username']
+    pwhash = request.validated['pwhash']
+
+    users = request.root['users']
+    try:
+        user = users[email]
+    except KeyError:
+        msg = "User not found for %r" % email
+        request.errors.add('body', ['email'], msg)
+
+    collection = request.root['access-keys']
+    try:
+        access_key = collection[username]
+    except KeyError:
+        msg = "username not found"
+        request.errors.add('body', ['username'], msg)
+
+    if request.errors:
+        raise ValidationFailure()
+
+    request.validated.clear()
+    request.validated.update(access_key.properties)
+    request.validated['secret_access_key_hash'] = pwhash
+    request.validated['user_uuid'] = user.uuid
+
+    item_edit(access_key, request)
+    return {'status': 'success'}

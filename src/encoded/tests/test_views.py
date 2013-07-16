@@ -1,5 +1,4 @@
 import pytest
-from sqlalchemy.exc import IntegrityError
 
 COLLECTION_URLS = [
     '/',
@@ -15,25 +14,25 @@ COLLECTION_URLS = [
 ## the below should equal the full spreadsheet rows with text in the 'test' col.
 COLLECTION_URL_LENGTH = {
     '/awards/': 39,
-    '/labs/': 43,
+    '/labs/': 45,
     '/users/': 83,
     '/organisms/': 6,
-    '/sources/': 60,
+    '/sources/': 77,
     '/targets/': 30,
-    '/antibody-lots/': 30,
+    '/antibody-lots/': 29,
     '/validations/': 41,
-    '/antibodies/': 32,
+    '/antibodies/': 30,
     '/donors/': 72,
-    '/documents/': 124,
+    '/documents/': 130,
     '/treatments/': 7,
     '/constructs/': 5,
-    '/biosamples/': 135,
+    '/biosamples/': 134,
     '/platforms/': 11,
-    '/libraries/': 47,
-    '/replicates/': 44,
-    '/files/': 17,
-    '/assays/': 3,
-    '/experiments/': 25,
+    '/users/': 84,
+    '/files/': 18,
+    '/replicates/': 47,
+    '/libraries/': 49,
+    '/experiments/': 28,
     # '/softwares/': 3, not implemented yet
 }
 
@@ -49,7 +48,15 @@ def test_html(htmltestapp, url):
 @pytest.mark.parametrize('url', COLLECTION_URLS)
 def test_json(testapp, url):
     res = testapp.get(url, status=200)
-    assert res.json['_links']
+    assert res.json['@type']
+
+
+def test_json_basic_auth(htmltestapp):
+    import base64
+    url = '/'
+    value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
+    res = htmltestapp.get(url, headers={'Authorization': value}, status=200)
+    assert res.json['@id']
 
 
 def _test_antibody_approval_creation(testapp):
@@ -57,15 +64,15 @@ def _test_antibody_approval_creation(testapp):
     new_antibody = {'foo': 'bar'}
     res = testapp.post_json('/antibodies/', new_antibody, status=201)
     assert res.location
-    assert res.json['_links']['profile'] == {'href': '/profiles/result'}
-    assert res.json['_links']['items'] == [{'href': urlparse(res.location).path}]
+    assert '/profiles/result' in res.json['@type']['profile']
+    assert res.json['items'] == [{'href': urlparse(res.location).path}]
     res = testapp.get(res.location, status=200)
-    assert res.json['_links']['profile'] == {'href': '/profiles/antibody_approval'}
-    data = dict(res.json)
-    del data['_links']
-    assert data == new_antibody
+    assert '/profiles/antibody_approval' in res.json['@type']
+    data = res.json
+    for key in new_antibody:
+        assert data[key] == new_antibody[key]
     res = testapp.get('/antibodies/', status=200)
-    assert len(res.json['_links']['items']) == 1
+    assert len(res.json['items']) == 1
 
 
 def __test_sample_data(testapp):
@@ -83,17 +90,15 @@ def __test_sample_data(testapp):
 def test_load_workbook(workbook, testapp, url, length):
     # testdata must come before testapp in the funcargs list for their
     # savepoints to be correctly ordered.
-    res = testapp.get(url, status=200)
-    assert res.json['_links']['items']
-    assert len(res.json['_links']['items']) >= length
+    res = testapp.get(url + '?limit=all', status=200)
+    assert len(res.json['items']) >= length
     # extra guys are fine
 
 
 @pytest.mark.slow
 def test_collection_limit(workbook, testapp):
     res = testapp.get('/antibodies/?limit=10', status=200)
-    assert res.json['_links']['items']
-    assert len(res.json['_links']['items']) == 10
+    assert len(res.json['items']) == 10
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/', '/users/'])
@@ -122,10 +127,10 @@ def test_actions_filtered_by_permission(testapp, anontestapp):
     location = res.location
 
     res = testapp.get(location)
-    assert any(action for action in res.json['_links']['actions'] if action['name'] == 'edit')
+    assert any(action for action in res.json['actions'] if action['name'] == 'edit')
 
     res = anontestapp.get(location)
-    assert not any(action for action in res.json['_links']['actions'] if action['name'] == 'edit')
+    assert not any(action for action in res.json['actions'] if action['name'] == 'edit')
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
@@ -134,41 +139,31 @@ def test_collection_update(testapp, url, execute_counter):
     collection = URL_COLLECTION[url]
     initial = collection[0]
     res = testapp.post_json(url, initial, status=201)
-    item_url = res.json['_links']['items'][0]['href']
+    item_url = res.json['items'][0]
 
-    execute_counter.reset()
-    res = testapp.get(item_url).json
-    assert execute_counter.count == 1
+    with execute_counter.expect(2):
+        res = testapp.get(item_url).json
 
     del initial['_uuid']
-    res.pop('_links', None)
-    res.pop('_embedded', None)
-    assert res == initial
+    for key in initial:
+        assert res[key] == initial[key]
 
     update = collection[1].copy()
     del update['_uuid']
     testapp.post_json(item_url, update, status=200)
 
-    execute_counter.reset()
-    res = testapp.get(item_url).json
-    assert execute_counter.count == 1
+    with execute_counter.expect(2):
+        res = testapp.get(item_url).json
 
-    res.pop('_uuid', None)
-    res.pop('_links', None)
-    res.pop('_embedded', None)
-    assert res == update
+    for key in update:
+        assert res[key] == update[key]
 
 
 # TODO Add 2 tests for duplicate UUIDs (see sample_data.py)
 def test_post_duplicate_uuid(testapp):
     from .sample_data import BAD_LABS
     testapp.post_json('/labs/', BAD_LABS[0], status=201)
-    try:
-        testapp.post_json('/labs/', BAD_LABS[1], status=200)
-    except IntegrityError:
-        assert True
-        return
-    assert False
+    testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
 def test_post_repeated_uuid(testapp):
@@ -178,30 +173,22 @@ def test_post_repeated_uuid(testapp):
     for lab in LABS:
         testapp.post_json('/labs/', lab, status=201)
 
-    # good one
     testapp.post_json('/awards/', BAD_AWARDS[0], status=201)
-    try:
-        testapp.post_json('/labs/', BAD_AWARDS[0], status=200)
-    except IntegrityError:
-        assert True
-        return
-    assert False
+    testapp.post_json('/awards/', BAD_AWARDS[0], status=409)
 
 
-def test_users_post(testapp, session):
+def test_users_post(testapp, anontestapp):
     from .sample_data import URL_COLLECTION
-    from ..storage import UserMap
-    from ..authorization import groupfinder
     url = '/users/'
     item = URL_COLLECTION[url][0]
     testapp.post_json(url, item, status=201)
-    login = 'mailto:' + item['email']
-    query = session.query(UserMap).filter(UserMap.login == login)
-    user = query.one()
-    assert user is not None
-    principals = groupfinder(login, None)
-    assert sorted(principals) == [
+    res = anontestapp.get('/@@testing-user',
+                          extra_environ={'REMOTE_USER': item['email']})
+    assert sorted(res.json['effective_principals']) == [
         'lab:2c334112-288e-4d45-9154-3f404c726daf',
+        'remoteuser:%s' % item['email'],
+        'system.Authenticated',
+        'system.Everyone',
         'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
     ]
 
@@ -231,3 +218,18 @@ def test_users_view_basic_anon(testapp, anontestapp):
 
 def test_users_list_denied_anon(anontestapp):
     anontestapp.get('/users/', status=403)
+
+
+def test_etags(testapp):
+    url = '/organisms/'
+    from .sample_data import URL_COLLECTION
+    collection = URL_COLLECTION[url]
+    item = collection[0]
+    res = testapp.post_json(url, item, status=201)
+    res = testapp.get(url, status=200)
+    etag = res.etag
+    res = testapp.get(url, headers={'If-None-Match': etag}, status=304)
+    item = collection[1]
+    res = testapp.post_json(url, item, status=201)
+    res = testapp.get(url, headers={'If-None-Match': etag}, status=200)
+    assert res.etag != etag

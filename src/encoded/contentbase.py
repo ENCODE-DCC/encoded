@@ -1,13 +1,20 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 
+import venusian
 from pyramid.events import (
     ContextFound,
     subscriber,
 )
 from pyramid.httpexceptions import (
+    HTTPConflict,
     HTTPForbidden,
     HTTPInternalServerError,
     HTTPNotFound,
+    HTTPNotModified,
+)
+from pyramid.interfaces import (
+    PHASE1_CONFIG,
+    PHASE2_CONFIG,
 )
 from pyramid.location import lineage
 from pyramid.security import (
@@ -16,13 +23,23 @@ from pyramid.security import (
     Authenticated,
     Deny,
     Everyone,
+    authenticated_userid,
     has_permission,
 )
 from pyramid.threadlocal import (
     manager,
 )
 from pyramid.view import view_config
-from urllib import unquote
+from sqlalchemy import (
+    func,
+    orm,
+)
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import FlushError
+from urllib import (
+    quote,
+    unquote,
+)
 from uuid import (
     UUID,
     uuid4,
@@ -31,14 +48,24 @@ from .objtemplate import ObjectTemplate
 from .schema_utils import validate_request
 from .storage import (
     DBSession,
-    CurrentStatement,
+    CurrentPropertySheet,
     Resource,
+    Key,
+    Link,
+    TransactionRecord,
 )
+from .validation import ValidationFailure
+LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
 
 
 def includeme(config):
     config.scan(__name__)
+    config.set_root_factory(root_factory)
+
+
+def root_factory(request):
+    return request.registry[LOCATION_ROOT]
 
 
 def make_subrequest(request, path):
@@ -94,11 +121,6 @@ def maybe_include_embedded(request, result):
     embedded = manager.stack[0].get('encoded_embedded', None)
     if embedded:
         result['_embedded'] = {'resources': embedded}
-
-
-def no_body_needed(request):
-    # No need for request data when rendering the single page html
-    return request.environ.get('encoded.format') == 'html'
 
 
 def setting_uuid_permitted(context, request):
@@ -164,35 +186,81 @@ def acl_from_settings(settings):
     return acl
 
 
+def uncamel(string):
+    """ CamelCase -> camel_case
+    """
+    out = ''
+    before = ''
+    for char in string:
+        if char.isupper() and before.isalnum() and not before.isupper():
+            out += '_'
+        out += char.lower()
+        before = char
+    return out
+
+
+def location_root(factory):
+    """ Set the location root
+    """
+
+    def set_root(config, factory):
+        acl = acl_from_settings(config.registry.settings)
+        root = factory(acl)
+        config.registry[LOCATION_ROOT] = root
+
+    def callback(scanner, factory_name, factory):
+        scanner.config.action(('location_root',), set_root,
+                              args=(scanner.config, factory),
+                              order=PHASE1_CONFIG)
+    venusian.attach(factory, callback, category='pyramid')
+
+    return factory
+
+
+def location(name, factory=None):
+    """ Attach a collection at the location ``name``.
+
+    Use as a decorator on Collection subclasses.
+    """
+
+    def set_location(config, name, factory):
+        root = config.registry[LOCATION_ROOT]
+        root.attach(name, factory)
+
+    def decorate(factory):
+        def callback(scanner, factory_name, factory):
+            scanner.config.action(('location', name), set_location,
+                                  args=(scanner.config, name, factory),
+                                  order=PHASE2_CONFIG)
+        venusian.attach(factory, callback, category='pyramid')
+        return factory
+
+    return decorate
+
+
 class Root(object):
     __name__ = ''
     __parent__ = None
 
-    def __init__(self, **properties):
-        self.properties = properties
+    def __init__(self, acl=None):
+        if acl is not None:
+            self.__acl__ = acl
         self.collections = {}
         self.by_item_type = {}
-
-    def __call__(self, request):
-        return self
 
     def __getitem__(self, name):
         return self.collections[name]
 
+    def __setitem__(self, name, value):
+        self.collections[name] = value
+        self.by_item_type[value.item_type] = value
+
+    def attach(self, name, factory):
+        value = factory(self, name)
+        self[name] = value
+
     def __json__(self, request=None):
         return self.properties.copy()
-
-    def location(self, name):
-        """ Attach a collection at the location ``name``.
-
-        Use as a decorator on Collection subclasses.
-        """
-        def decorate(factory):
-            collection = factory(self, name)
-            self.collections[name] = collection
-            self.by_item_type[collection.item_type] = collection
-            return factory
-        return decorate
 
 
 class MergedLinksMeta(type):
@@ -200,20 +268,37 @@ class MergedLinksMeta(type):
     """
     def __init__(self, name, bases, attrs):
         super(MergedLinksMeta, self).__init__(name, bases, attrs)
+
         self.merged_links = {}
         for cls in reversed(self.mro()):
             links = vars(cls).get('links', None)
             if links is not None:
                 self.merged_links.update(links)
 
+        self.merged_keys = []
+        for cls in reversed(self.mro()):
+            for key in vars(cls).get('keys', []):
+                if isinstance(key, basestring):
+                    key = {'name': '{item_type}:' + key,
+                           'value': '{%s}' % key, '$templated': True}
+                self.merged_keys.append(key)
+
+        self.merged_rels = []
+        for cls in reversed(self.mro()):
+            self.merged_rels.extend(vars(cls).get('rels', []))
+
 
 class Item(object):
     __metaclass__ = MergedLinksMeta
+    keys = []
     embedded = {}
     links = {
-        'self': {'href': '{collection_uri}{_uuid}', 'templated': True},
-        'collection': {'href': '{collection_uri}', 'templated': True},
-        'profile': {'href': '/profiles/{item_type}.json', 'templated': True},
+        '@id': {'$value': '{item_uri}', '$templated': True},
+        # 'collection': '{collection_uri}',
+        '@type': [
+            {'$value': '{item_type}', '$templated': True},
+            'item',
+        ],
     }
 
     def __init__(self, collection, model):
@@ -222,23 +307,37 @@ class Item(object):
         self.model = model
 
     @property
+    def item_type(self):
+        return self.model.item_type
+
+    @property
     def properties(self):
-        return self.model.statement.object
+        return self.model['']
+
+    @property
+    def uuid(self):
+        return self.model.rid
 
     def __json__(self, request):
         properties = self.properties.copy()
-        links = self.expand_links(properties, request)
-        if links is not None:
-            properties['_links'] = links
+        links = self.expand_links(request)
+        properties.update(links)
         return properties
 
-    def expand_links(self, properties, request):
-        # Expand templated links
-        ns = properties.copy()
-        ns['collection_uri'] = request.resource_path(self.__parent__)
-        ns['item_type'] = self.model.predicate
-        ns['_uuid'] = self.model.rid
-        ns['permission'] = permission_checker(self, request)
+    def template_namespace(self, request=None):
+        # Expand $templated links
+        ns = self.properties.copy()
+        ns['item_type'] = self.item_type
+        ns['_uuid'] = self.uuid
+        if request is not None:
+            ns['collection_uri'] = request.resource_path(self.__parent__)
+            ns['item_uri'] = request.resource_path(self)
+            ns['permission'] = permission_checker(self, request)
+        return ns
+
+    def expand_links(self, request):
+        # Expand $templated links
+        ns = self.template_namespace(request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         # Embed resources
@@ -247,36 +346,124 @@ class Item(object):
             if rel not in embedded:
                 continue
             if isinstance(value, list):
-                for member in value:
-                    embed(request, member['href'])
+                links[rel] = [embed(request, member) for member in value]
             else:
-                embed(request, value['href'])
+                links[rel] = embed(request, value)
         return links
+
+    def create_keys(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_keys)
+        keys = compiled(ns)
+        for key_spec in keys:
+            key = Key(rid=self.uuid, **key_spec)
+            session.add(key)
+
+    def create_rels(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_rels)
+        rels = compiled(ns)
+        for link_spec in rels:
+            rel = link_spec['rel']
+            target_rid = UUID(link_spec['target'])
+            link = Link(
+                source_rid=self.uuid, rel=rel, target_rid=target_rid)
+            session.add(link)
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
         session = DBSession()
-
         property_sheets = {}
         if properties is not None:
-            property_sheets[item_type] = properties
+            property_sheets[''] = properties
         if sheets is not None:
             property_sheets.update(sheets)
-
-        ## TODO add some code to set who the submitters is?
-        resource = Resource(property_sheets, uuid)
+        resource = Resource(item_type, property_sheets, uuid)
         session.add(resource)
-        model = resource.data[item_type]
-        item = cls(parent, model)
+        item = cls(parent, resource)
+        item.create_keys()
+        item.create_rels()
+        try:
+            session.flush()
+        except (IntegrityError, FlushError):
+            raise HTTPConflict()
         return item
+
+    def update_keys(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_keys)
+        _keys = [(key['name'], key['value']) for key in compiled(ns)]
+        keys = set(_keys)
+
+        if len(keys) != len(_keys):
+            msg = "Duplicate keys"
+            raise ValidationFailure('body', None, msg)
+
+        existing = {
+            (key.name, key.value)
+            for key in self.model.unique_keys
+        }
+
+        to_remove = existing - keys
+        to_add = keys - existing
+
+        for pk in to_remove:
+            key = session.query(Key).get(pk)
+            session.delete(key)
+
+        for name, value in to_add:
+            key = Key(rid=self.uuid, name=name, value=value)
+            session.add(key)
+
+    def update_rels(self):
+        session = DBSession()
+        ns = self.template_namespace()
+        compiled = ObjectTemplate(self.merged_rels)
+        source = self.uuid
+
+        _rels = [
+            (link_spec['rel'], UUID(link_spec['target']))
+            for link_spec in compiled(ns)
+        ]
+        rels = set(_rels)
+
+        if len(rels) != len(_rels):
+            msg = "Duplicate links"
+            raise ValidationFailure('body', None, msg)
+
+        existing = {
+            (link.rel, link.target_rid)
+            for link in self.model.rels
+        }
+
+        to_remove = existing - rels
+        to_add = rels - existing
+
+        for rel, target in to_remove:
+            link = session.query(Link).get((source, rel, target))
+            session.delete(link)
+
+        for rel, target in to_add:
+            link = Link(source_rid=source, rel=rel, target_rid=target)
+            session.add(link)
 
     def update(self, properties, sheets=None):
         if properties is not None:
-            self.model.resource[self.model.predicate] = properties
+            self.model[''] = properties
         if sheets is not None:
             for key, value in sheets.items():
-                self.model.resource[key] = value
+                self.model[key] = value
+        session = DBSession()
+        try:
+            self.update_keys()
+            self.update_rels()
+            session.flush()
+        except (IntegrityError, FlushError):
+            raise HTTPConflict()
 
 
 class CustomItemMeta(MergedLinksMeta):
@@ -288,11 +475,13 @@ class CustomItemMeta(MergedLinksMeta):
 
         # XXX Remove this, too magical.
         if self.item_type is None and 'item_type' not in attrs:
-            self.item_type = self.__name__.lower()
+            self.item_type = uncamel(self.__name__)
 
         if 'Item' in attrs:
             assert 'item_links' not in attrs
             assert 'item_embedded' not in attrs
+            assert 'item_keys' not in attrs
+            assert 'item_rels' not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
@@ -306,6 +495,10 @@ class CustomItemMeta(MergedLinksMeta):
             item_attrs['links'] = attrs['item_links']
         if 'item_embedded' in attrs:
             item_attrs['embedded'] = attrs['item_embedded']
+        if 'item_keys' in attrs:
+            item_attrs['keys'] = attrs['item_keys']
+        if 'item_rels' in attrs:
+            item_attrs['rels'] = attrs['item_rels']
         self.Item = type('Item', item_bases, item_attrs)
 
 
@@ -315,13 +508,14 @@ class Collection(object):
     schema = None
     properties = {}
     item_type = None
+    unique_key = None
     links = {
-        'self': {'href': '{collection_uri}', 'templated': True},
-        'items': [{
-            'href': '{item_uri}',
-            'templated': True,
-            'repeat': 'item_uri item_uris',
-        }],
+        '@id': {'$value': '{collection_uri}', '$templated': True},
+        '@type': [
+            {'$value': '{item_type}_collection', '$templated': True},
+            'collection',
+        ],
+        'all': {'$value': '{collection_uri}?limit=all', '$templated': True},
         'actions': [
             {
                 'name': 'add',
@@ -329,7 +523,7 @@ class Collection(object):
                 'profile': '/profiles/{item_type}.json',
                 'method': 'POST',
                 'href': '',
-                'templated': True,
+                '$templated': True,
                 'condition': 'permission:add',
             },
         ],
@@ -341,10 +535,6 @@ class Collection(object):
 
     def __getitem__(self, name):
         try:
-            name = UUID(name)
-        except ValueError:
-            raise KeyError(name)
-        try:
             item = self.get(name)
         except KeyError:
             # Just in case we get an unexpected KeyError
@@ -355,12 +545,47 @@ class Collection(object):
         return item
 
     def get(self, name, default=None):
-        key = (name, self.item_type)
+        try:
+            uuid = UUID(name)
+        except ValueError:
+            return self.get_by_name(name, default)
+        else:
+            return self.get_by_uuid(uuid, default)
+
+    def get_by_uuid(self, uuid, default=None):
         session = DBSession()
-        model = session.query(CurrentStatement).get(key)
-        if model is not None:
-            return self.Item(self, model)
-        return default
+        model = session.query(Resource).get(uuid)
+        if model is None:
+            return default
+        if model.item_type != self.item_type:
+            return None
+        return self.Item(self, model)
+
+    def get_by_name(self, name, default=None):
+        if self.unique_key is None:
+            return default
+        pkey = (self.unique_key, name)
+        session = DBSession()
+        # Eager load related resources here.
+        key = session.query(Key).options(
+            orm.joinedload_all(
+                Key.resource,
+                Resource.data,
+                CurrentPropertySheet.propsheet,
+                innerjoin=True,
+            ),
+            orm.joinedload_all(
+                Key.resource,
+                Resource.rels,
+                Link.target,
+                Resource.data,
+                CurrentPropertySheet.propsheet,
+            ),
+        ).get(pkey)
+        if key is None:
+            return default
+        model = key.resource
+        return self.Item(self, model)
 
     def add(self, properties):
         uuid = properties.get('_uuid', _marker)
@@ -377,35 +602,73 @@ class Collection(object):
         '''Hook for subclasses'''
 
     def __json__(self, request):
-        nrows = request.params.get('limit', None)
+        limit = request.params.get('limit', 30)
+        if limit in ('', 'all'):
+            limit = None
+        if limit is not None:
+            limit = int(limit)
         session = DBSession()
-        query = session.query(CurrentStatement).filter(
-            CurrentStatement.predicate == self.item_type
-        ).limit(nrows)
-
-        item_uris = []
-        for model in query.all():
-            item_uri = request.resource_path(self, model.rid)
-            embed(request, item_uri)
-            item_uris.append(item_uri)
+        query = session.query(Resource).filter(
+            Resource.item_type == self.item_type
+        )
 
         properties = self.properties.copy()
-
-        # Expand templated links
+        properties['count'] = query.count()
+        # Expand $templated links
         ns = properties.copy()
         ns['collection_uri'] = request.resource_path(self)
         ns['item_type'] = self.item_type
-        ns['item_uris'] = item_uris
         ns['permission'] = permission_checker(self, request)
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
-        if links is not None:
-            properties['_links'] = links
+        properties.update(links)
+        items = properties['items'] = []
+
+        for model in query.limit(limit).all():
+            item_uri = request.resource_path(self, model.rid)
+            rendered = embed(request, item_uri)
+            items.append(rendered)
 
         return properties
 
 
-@view_config(context=Collection, permission='list', request_method='GET')
+def etag_conditional(view_callable):
+    """ ETag conditional GET support
+
+    Returns 304 Not Modified when the last transaction id, server process id,
+    format and userid all match.
+
+    This might not be strictly correct due to MVCC visibility on postgres.
+    Perhaps use ``select txid_current_snapshot();`` instead there.
+    """
+    def wrapped(context, request):
+        if len(manager.stack) != 1:
+            return view_callable(context, request)
+        format = request.environ.get('encoded.format', 'html')
+        if format == 'html':
+            last_tid = None
+        else:
+            session = DBSession()
+            last_tid = session.query(func.max(TransactionRecord.order)).scalar()
+        processid = request.registry['encoded.processid']
+        userid = authenticated_userid(request) or ''
+        etag = u'%s;%s;%s;%s' % (last_tid, processid, format, userid)
+        etag = quote(etag.encode('utf-8'), ';:@')
+        if etag in request.if_none_match:
+            raise HTTPNotModified()
+        result = view_callable(context, request)
+        request.response.etag = etag
+        cache_control = request.response.cache_control
+        cache_control.private = True
+        cache_control.max_age = 0
+        cache_control.must_revalidate = True
+        return result
+
+    return wrapped
+
+
+@view_config(context=Collection, permission='list', request_method='GET',
+             decorator=etag_conditional)
 def collection_list(context, request):
     return item_view(context, request)
 
@@ -415,17 +678,13 @@ def collection_list(context, request):
 def collection_add(context, request):
     properties = request.validated
     item = context.add(properties)
-    item_uri = request.resource_path(context, item.__name__)
+    item_uri = request.resource_path(item)
     request.response.status = 201
     request.response.location = item_uri
     result = {
-        'result': 'success',
-        '_links': {
-            'profile': {'href': '/profiles/result'},
-            'items': [
-                {'href': item_uri},
-            ],
-        },
+        'status': 'success',
+        '@type': ['result'],
+        'items': [item_uri],
     }
     return result
 
@@ -435,21 +694,22 @@ def traversal_security(event):
     """ Check traversal was permitted at each step
     """
     request = event.request
-    ancestors = lineage(request.context)
-    next(ancestors)  # skip self
-    for resource in reversed(list(ancestors)):
+    traversed = reversed(list(lineage(request.context)))
+    # Required to view the root page as anonymous user
+    # XXX Needs test once login based browser tests work.
+    next(traversed)  # Skip root object
+    for resource in traversed:
         result = has_permission('traverse', resource, request)
         if not result:
             msg = 'Unauthorized: traversal failed permission check'
             raise HTTPForbidden(msg, result=result)
 
 
-@view_config(context=Item, permission='view', request_method='GET')
+@view_config(context=Item, permission='view', request_method='GET',
+             decorator=etag_conditional)
 def item_view(context, request):
-    if no_body_needed(request):
-        return {}
     properties = context.__json__(request)
-    maybe_include_embedded(request, properties)
+    #maybe_include_embedded(request, properties)
     return properties
 
 
@@ -458,15 +718,11 @@ def item_view(context, request):
 def item_edit(context, request):
     properties = request.validated
     context.update(properties)
-    item_uri = request.resource_path(context.__parent__, context.__name__)
+    item_uri = request.resource_path(context)
     request.response.status = 200
     result = {
-        'result': 'success',
-        '_links': {
-            'profile': {'href': '/profiles/result'},
-            'items': [
-                {'href': item_uri},
-            ],
-        },
+        'status': 'success',
+        '@type': ['result'],
+        'items': [item_uri],
     }
     return result

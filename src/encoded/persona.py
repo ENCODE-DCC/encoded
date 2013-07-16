@@ -1,30 +1,42 @@
-import warnings
-import json
-from pyramid.settings import aslist
-from pyramid.httpexceptions import HTTPBadRequest
-from pyramid.security import NO_PERMISSION_REQUIRED
+from browserid.errors import TrustError
 from pyramid.config import ConfigurationError
-from pyramid.security import remember, forget
+from pyramid.httpexceptions import (
+    HTTPForbidden,
+    HTTPFound,
+)
+from pyramid.security import (
+    NO_PERMISSION_REQUIRED,
+    authenticated_userid,
+    remember,
+    forget,
+)
+from pyramid.settings import (
+    asbool,
+    aslist,
+)
+from pyramid.view import (
+    view_config,
+)
+from .contentbase import make_subrequest
+from .storage import (
+    DBSession,
+    Key,
+)
+from .validation import ValidationFailure
 
-import logging
-import browserid.errors
 
-
-logger = logging.getLogger(__name__)
+AUDIENCES_MESSAGE = """\
+Missing persona.audiences settings. This is needed for security reasons. \
+See https://developer.mozilla.org/en-US/docs/Mozilla/Persona/Security_Considerations \
+for details."""
 
 
 def includeme(config):
-
-    settings = config.get_settings()
-
-    if 'persona.audience' in settings:
-        settings['persona.audiences'] = settings['persona.audience']
-        warnings.warn('persona.audience has been changed to persona.audiences, and may accept more than one value. '
-                      'Please update you config file accordingly.', stacklevel=3)
+    config.scan(__name__)
+    settings = config.registry.settings
 
     if not 'persona.audiences' in settings:
-        raise ConfigurationError('Missing persona.audience settings. This is needed for security reasons. '
-                                 'See https://developer.mozilla.org/en-US/docs/Persona/Security_Considerations for details.')
+        raise ConfigurationError(AUDIENCES_MESSAGE)
     # Construct a browserid Verifier using the configured audience.
     # This will pre-compile some regexes to reduce per-request overhead.
     verifier_factory = config.maybe_dotted(settings.get('persona.verifier',
@@ -32,71 +44,79 @@ def includeme(config):
     audiences = aslist(settings['persona.audiences'])
     config.registry['persona.verifier'] = verifier_factory(audiences)
 
-    # Parameters for the request API call
-    request_params = {}
-    for option in ('privacyPolicy', 'siteLogo', 'siteName', 'termsOfService'):
-        setting_name = 'persona.%s' % option
-        if setting_name in settings:
-            request_params[option] = settings[setting_name]
-    config.registry['persona.request_params'] = json.dumps(request_params)
 
-    # Login and logout views
-
-    login_route = settings.get('persona.login_route', 'login')
-    config.registry['persona.login_route'] = login_route
-    login_path = settings.get('persona.login_path', '/login')
-    config.add_route(login_route, login_path)
-    config.add_view(login, route_name=login_route,
-                    permission=NO_PERMISSION_REQUIRED)
-
-    logout_route = settings.get('persona.logout_route', 'logout')
-    config.registry['persona.logout_route'] = logout_route
-    logout_path = settings.get('persona.logout_path', '/logout')
-    config.add_route(logout_route, logout_path)
-    config.add_view(logout, route_name=logout_route,
-                    permission=NO_PERMISSION_REQUIRED)
+class LoginDenied(HTTPForbidden):
+    title = 'Login failure'
 
 
-def verify_login(request):
-    """Verifies the assertion and the csrf token in the given request.
+# in a perfect world these would inherit from Classes shared by api module
+def verify_assertion(request):
+    """Verifies the assertion in the given request.
 
     Returns the email of the user if everything is valid, otherwise raises
-    a HTTPBadRequest"""
+    a ValidationFailure
+    """
     verifier = request.registry['persona.verifier']
     try:
-        ##data = verifier.verify(request.POST['assertion'])
-        data = verifier.verify(request.json_body['assertion'])
-    except KeyError as e:
-        logger.info('verify_login called wtih no assertion: %s', e)
-        raise HTTPBadRequest('No assertion: (req: %s)' % request.json_body)
-    except (ValueError, browserid.errors.TrustError) as e:
-        logger.info('Failed persona login: %s (%s)', e, type(e).__name__)
-        raise HTTPBadRequest('Invalid assertion: %s (%s)' % (e, type(e).__name__))
-    return data
+        assertion = request.json['assertion']
+    except KeyError:
+        msg = 'Missing assertion.'
+        raise ValidationFailure('body', ['assertion'], msg)
+    try:
+        data = verifier.verify(assertion)
+    except (ValueError, TrustError) as e:
+        msg = 'Invalid assertion: %s (%s)' % (e, type(e).__name__)
+        raise ValidationFailure('body', ['assertion'], msg)
+    else:
+        request.validated = data
 
 
-    ''' in a perfect world these would inherit from Classes shared by api module'''
-
-
+# Unfortunately, X-Requested-With is not sufficient.
+# http://lists.webappsec.org/pipermail/websecurity_lists.webappsec.org/2011-February/007533.html
+# Checking the CSRF token in middleware is easier
+@view_config(name='login', physical_path='/', request_method='POST',
+             subpath_segments=0, permission=NO_PERMISSION_REQUIRED,
+             validators=[verify_assertion])
 def login(request):
     """View to check the persona assertion and remember the user"""
-    try:
-        from_url = request.json_body['came_from']
-    except KeyError as e:
-        logger.info('/login has no came_from post: %s', e)
-    data = verify_login(request)
-    login = 'mailto:' + data['email'].lower()
-    request.response.headers = remember(request, login)
-    request.response.content_type = 'application/json'
+    data = request.validated
+    email = data['email'].lower()
+    session = DBSession()
+    model = session.query(Key).get(('user:email', email))
+    if model is None:
+        raise LoginDenied()
+    login = 'mailto:' + email
+    request.response.headerlist.extend(remember(request, login))
     return data
 
 
+@view_config(name='logout', physical_path='/',
+             subpath_segments=0, permission=NO_PERMISSION_REQUIRED)
 def logout(request):
     """View to forget the user"""
-    try:
-        from_url = request.json_body['came_from']
-    except KeyError as e:
-        logger.info('/logout has no came_from post: %s', e)
-    request.response.headers = forget(request)
-    request.response.content_type = 'application/json'
-    return {'email': None}
+    request.response.headerlist.extend(forget(request))
+    if asbool(request.params.get('redirect', True)):
+        raise HTTPFound(location=request.resource_path(request.root))
+    return {'status': 'okay'}
+
+
+@view_config(name='session', physical_path='/', request_method='GET',
+             subpath_segments=0, permission=NO_PERMISSION_REQUIRED)
+def session(context, request):
+    """ Give the user a CSRF token
+    """
+    token = request.session.get_csrf_token()
+    login = authenticated_userid(request)
+    result = {'csrf_token': token, 'persona': None, 'user_properties': {}}
+    if login is None:
+        return result
+
+    namespace, userid = login.split(':', 1)
+    if namespace != 'mailto':
+        raise HTTPForbidden()
+
+    result['persona'] = userid
+    subreq = make_subrequest(request, '/current-user')
+    subreq.override_renderer = 'null_renderer'
+    result['user_properties'] = request.invoke_subrequest(subreq)
+    return result

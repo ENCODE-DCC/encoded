@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Antibodies | ENCODE 3</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="../../css/style.css">
+        
+        <link rel="stylesheet" href="../../css/responsive.css">
+        
+        <link rel="stylesheet" href="../lib/responsive-tables.css">
+        
+        <script data-main="/static/main" src="../../libs/require.min.js"></script>
+    </head>
+    <body>
+    <div id="layout">
+		<nav class="navbar navbar-fixed-top navbar-inverse">
+			<div class="navbar-inner">
+				<div class="container">
+ 
+				<!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+ 
+				<!-- Be sure to leave the brand out there if you want it shown -->
+				<a class="brand" href="#">ENCODE 3</a>
+ 
+					<!-- Everything you want hidden at 940px or less, place within here -->
+					<div class="nav-collapse collapse">
+					<!-- .nav, .navbar-search, .navbar-form, etc -->
+						<ul class="nav" id="main-nav">
+							<li class="dropdown-horizontal" data-menu="antibodies-menu">
+								<a class="dropdown-toggle" href="#">
+									Antibodies
+								</a>
+							</li>
+							<li class="dropdown-horizontal" data-menu="biosamples-menu">
+								<a class="dropdown-toggle" href="#">
+									Biosamples
+								</a>
+							</li>
+							<li class="dropdown-horizontal active" data-menu="experiments-menu">
+								<a class="dropdown-toggle" href="#">
+									Experiments 
+								</a>
+							</li>
+							<li class="dropdown-horizontal" data-menu="targets-menu">
+								<a class="dropdown-toggle" href="#">
+									Targets 
+								</a>
+							</li>
+		        		</ul>
+		        		
+					</div>
+				</div>
+			</div><!-- .navbar-inner -->
+			<div id="navbar-subnav">
+				<div class="container">
+					<section class="subnav-links" id="antibodies-menu">
+						<ul class="dropdown-horiz-menu">
+							<li><a href="#">Human</a></li>
+							<li><a href="#">Mouse</a></li>
+						</ul>
+					</section>
+					<section class="subnav-links" id="biosamples-menu">
+						<ul class="dropdown-horiz-menu" style="display:block;">
+							<li><a href="#">Immortalized Cell Lines</a></li>
+							<li><a href="#">Primary Cell Lines</a></li>
+							<li><a href="#">Tissues</a></li>
+						</ul>
+					</section>
+					<section class="subnav-links active" id="experiments-menu">
+						<ul class="dropdown-horiz-menu">
+							<li><a href="#">ChIP-Seq</a></li>
+							<li><a href="#">RNA-Seq</a></li>
+							<li class="active"><a href="#">DNase</a></li>
+							<li><a href="#">Methyation</a></li>
+							<li><a href="#">RAMPAGE</a></li>
+							<li><a href="#">Chromatin Interactions</a></li>
+							<li><a href="#">RNA-binding</a></li>
+						</ul>
+					</section>
+					<section class="subnav-links" id="targets-menu">
+						<ul class="dropdown-horiz-menu">
+							<li><a href="#">ChIP-Seq</a></li>
+							<li><a href="#">RIP-Seq</a></li>
+							<li><a href="#">CLIP-Seq</a></li>
+							<li><a href="#">knockdown/RNA-Seq</a></li>
+						</ul>
+					</section>
+				</div><!-- .container -->
+			</div><!-- .navbar-subnav -->
+		</nav>
+        
+        <div id="content" class="container">
+        	<header class="row">
+        		<div class="span12">
+        			<h2>Antibody Registration</h2>
+        			<section class="page-data">
+						<p class="title">Listing of approvals returned from server</p>
+					</section>
+        		</div>
+        	</header>
+        	
+        	<div id="main" class="row">
+        		<div class="span12">
+        		
+        		<table id="antibodies-summary" class="responsive sticky-area">
+        		
+        		
+        		
+<thead class="sticky-header">
+	<tr class="nosort table-controls">
+		<th colspan="7">
+			<span class="label label-invert" id="table-count">24</span>
+			<span class="" id="total-records">of 24 records</span>
+			<div class="input-append" style="float: right;">
+
+				<input type="text" placeholder="Filter table by..." class="table-filter span3" name="table-filter" style="">
+
+					<div class="btn-group">
+						<button data-toggle="dropdown" class="btn dropdown-toggle">
+							<span class="caret"></span>
+						   </button>
+				<div class="dropdown-menu dropdown-panel">
+					<div class="float-wrap">
+						<div class="col">
+							<p>Filter Type A</p>
+							<label for="1"><input type="checkbox" id="1"> Number 1</label>
+							<label for="2"><input type="checkbox" id="2"> Number 2</label>
+							<label for="3"><input type="checkbox" id="3"> Number 3</label>
+							<label for="4"><input type="checkbox" id="4"> Number 4</label>
+							<label for="5"><input type="checkbox" id="5"> Number 5</label>
+						</div>
+						<div class="col">
+							<h4>Filter Type B</h4>
+							<label for="6"><input type="checkbox" id="6"> Number 1</label>
+							<label for="7"><input type="checkbox" id="7"> Number 2</label>
+							<label for="8"><input type="checkbox" id="8"> Number 3</label>
+							<label for="9"><input type="checkbox" id="9"> Number 4</label>
+							<label for="10"><input type="checkbox" id="10"> Number 5</label>
+						</div>
+						<div class="col">
+							<h4>Filter Type C</h4>
+							<label for="11"><input type="checkbox" id="11"> Number 1</label>
+							<label for="12"><input type="checkbox" id="12"> Number 2</label>
+							<label for="13"><input type="checkbox" id="13"> Number 3</label>
+							<label for="14"><input type="checkbox" id="14"> Number 4</label>
+							<label for="15"><input type="checkbox" id="15"> Number 5</label>
+						</div>
+					</div>
+					<div class="tools"><button>Set Filters</button> <a href="">Cancel</a></div>
+				</div>
+			</div>
+			</div>
+		</th>
+	</tr>
+	<tr>
+		<th style="cursor: pointer;">Accession<i class="sortdirection icon-"></i></th> 
+		<th class="sort-initial" style="cursor: pointer;">Target<i class="sortdirection icon- icon-chevron-down"></i></th>
+		<!-- <th style="cursor: pointer;">Species<i class="sortdirection icon-"></i></th> -->
+		<th style="cursor: pointer;">Source<i class="sortdirection icon-"></i></th> 
+		<th style="cursor: pointer;">Product ID<i class="sortdirection icon-"></i></th> 
+		<th style="cursor: pointer;">Lot ID<i class="sortdirection icon-"></i></th> 
+		<th style="cursor: pointer;">Validations<i class="sortdirection icon-"></i></th> 
+		<th style="cursor: pointer;">Status<i class="sortdirection icon-"></i></th> 
+	</tr>
+</thead>
+				<tbody>
+					<tr data-href="/antibodies/78bc5de0-ddf3-4671-b7e4-bab1f202b50f"><td>ENCAB000ABR</td>
+					<td>MLL2</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402978</td>
+					<td>10278-2E1</td>
+					<td>human</td>
+					<td><a href="/antibodies/78bc5de0-ddf3-4671-b7e4-bab1f202b50f">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/35405eb7-bf22-4ad8-b7d4-02ae61e44819"><td></td>
+					<td>HEY1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-16424</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/35405eb7-bf22-4ad8-b7d4-02ae61e44819">FAILED</a></td>
+					</tr><tr data-href="/antibodies/fddcf1d6-abc3-4bb8-bdf5-62d87d91a902"><td>ENCAB000ACJ</td>
+					<td>RFXANK</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402429</td>
+					<td>08130-4G10</td>
+					<td>human</td>
+					<td><a href="/antibodies/fddcf1d6-abc3-4bb8-bdf5-62d87d91a902">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/8b31f216-7256-4c43-8f44-b5f7300283aa"><td>ENCAB000AAI</td>
+					<td>TAX1BP1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0008887M1</td>
+					<td>08297-2C3</td>
+					<td>human</td>
+					<td><a href="/antibodies/8b31f216-7256-4c43-8f44-b5f7300283aa">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/8d0952ba-bb27-4700-87b3-256fa8b35622"><td></td>
+					<td>TCF3</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-349</td>
+					<td>A1111 D2611</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/8d0952ba-bb27-4700-87b3-256fa8b35622">PENDING</a></td>
+					</tr><tr data-href="/antibodies/212052ab-aede-4ec1-92e9-6d186d3de97c"><td>ENCAB000ABU</td>
+					<td>MLL4</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1404755</td>
+					<td>06293-1F6</td>
+					<td>human</td>
+					<td><a href="/antibodies/212052ab-aede-4ec1-92e9-6d186d3de97c">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/ee313b22-a747-4ed1-bd73-9998d3384d93"><td>ENCAB000ACQ</td>
+					<td>TCF4</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0006925M2</td>
+					<td>12262-1F6</td>
+					<td>human</td>
+					<td><a href="/antibodies/ee313b22-a747-4ed1-bd73-9998d3384d93">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/185a396a-989c-46ad-86f6-dec10ffa8b99"><td>ENCAB000AAG</td>
+					<td>SMAD5</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0004090M1</td>
+					<td>10267-2D7</td>
+					<td>human</td>
+					<td><a href="/antibodies/185a396a-989c-46ad-86f6-dec10ffa8b99">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/004f206f-2cb9-46de-abd1-f60d92b0f01e"><td>ENCAB000AAH</td>
+					<td>SOX4</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0006659M1</td>
+					<td>11007-2C5</td>
+					<td>human</td>
+					<td><a href="/antibodies/004f206f-2cb9-46de-abd1-f60d92b0f01e">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/b559414a-434b-4c43-87a8-f59398b22a59"><td>ENCAB000ABQ</td>
+					<td>MLLT3</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402272</td>
+					<td>08165-3C11</td>
+					<td>human</td>
+					<td><a href="/antibodies/b559414a-434b-4c43-87a8-f59398b22a59">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/1971a6cb-7019-4c1a-af00-baebecdcc371"><td>ENCAB000ADY</td>
+					<td>H3K4me2</td>
+					<td>Abcam</td>
+					<td>ab32356</td>
+					<td>577702</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/1971a6cb-7019-4c1a-af00-baebecdcc371">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/1703376b-4420-432d-9283-f092e54dc66c"><td></td>
+					<td>CCNT1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-10750</td>
+					<td>H0807</td>
+					<td>human</td>
+					<td><a href="/antibodies/1703376b-4420-432d-9283-f092e54dc66c">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/7b445c5a-202d-4fcd-8950-c2931fce8359"><td></td>
+					<td>PABPC1</td>
+					<td>Millipore</td>
+					<td>04-1467</td>
+					<td>JBC1363217</td>
+					<td>human</td>
+					<td><a href="/antibodies/7b445c5a-202d-4fcd-8950-c2931fce8359">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/f9e88ef8-1b45-47b9-816d-23ec02649864"><td></td>
+					<td>EZH2</td>
+					<td>Active Motif</td>
+					<td>39875</td>
+					<td>27210001</td>
+					<td>human</td>
+					<td><a href="/antibodies/f9e88ef8-1b45-47b9-816d-23ec02649864">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/46043c35-0ef3-4fd7-a256-e980a7135b41"><td>ENCAB000ABC</td>
+					<td>ETV5</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0002119M1</td>
+					<td>CA261-3B10</td>
+					<td>human</td>
+					<td><a href="/antibodies/46043c35-0ef3-4fd7-a256-e980a7135b41">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/23ea8add-af7a-4b2b-b43d-7fcbcb036408"><td></td>
+					<td>ESR1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-543</td>
+					<td>C2510 G1509</td>
+					<td>human</td>
+					<td><a href="/antibodies/23ea8add-af7a-4b2b-b43d-7fcbcb036408">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/8e3e55b3-daf4-4d68-b60b-2db395299fcc"><td>ENCAB000ABL</td>
+					<td>IRF9</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0010379M2</td>
+					<td>10229-1D11</td>
+					<td>human</td>
+					<td><a href="/antibodies/8e3e55b3-daf4-4d68-b60b-2db395299fcc">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/5c83b4eb-1a5e-4df1-ae66-9b9b43625323"><td>ENCAB000ACU</td>
+					<td>TSC22D3</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0001831M1</td>
+					<td>11125-3A5</td>
+					<td>human</td>
+					<td><a href="/antibodies/5c83b4eb-1a5e-4df1-ae66-9b9b43625323">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/dfbc6f9f-1782-4787-8118-5a155df1b580"><td>ENCAB000ADO</td>
+					<td>CEBPZ</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB2100398</td>
+					<td>QC8343</td>
+					<td>human</td>
+					<td><a href="/antibodies/dfbc6f9f-1782-4787-8118-5a155df1b580">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/f2942c07-0f9b-4e05-b9df-1c5afbd45446"><td></td>
+					<td>CTCF</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-15914</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/f2942c07-0f9b-4e05-b9df-1c5afbd45446">PENDING</a></td>
+					</tr><tr data-href="/antibodies/a7cc3e17-327b-4139-b31b-a17b9207b3dd"><td></td>
+					<td>PAX5</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-1975</td>
+					<td>I070</td>
+					<td>human</td>
+					<td><a href="/antibodies/a7cc3e17-327b-4139-b31b-a17b9207b3dd">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/76eb07f1-5d59-45eb-a8e8-d58b10e49008"><td></td>
+					<td>WHSC1</td>
+					<td>Abcam</td>
+					<td>ab75359</td>
+					<td>GR47579-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/76eb07f1-5d59-45eb-a8e8-d58b10e49008">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/03aed395-600c-41be-be6b-9a874496ba13"><td></td>
+					<td>TCF12</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-357</td>
+					<td>F2305</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/03aed395-600c-41be-be6b-9a874496ba13">PENDING</a></td>
+					</tr><tr data-href="/antibodies/8e809841-3581-4003-adcb-f18280cc08ac"><td>ENCAB000AAQ</td>
+					<td>CREB3</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0010488M1</td>
+					<td>10141-3H5</td>
+					<td>human</td>
+					<td><a href="/antibodies/8e809841-3581-4003-adcb-f18280cc08ac">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/51166035-a1d6-41cb-bd1e-8eb968acf678"><td></td>
+					<td>CELF1</td>
+					<td>Millipore</td>
+					<td>05-621</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/51166035-a1d6-41cb-bd1e-8eb968acf678">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/85390852-6274-4592-996a-99171d50638d"><td>ENCAB000ACE</td>
+					<td>PBX2</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0005089M1</td>
+					<td>11116-2E9</td>
+					<td>human</td>
+					<td><a href="/antibodies/85390852-6274-4592-996a-99171d50638d">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/1deec735-c09d-4569-be9d-707ea1ac87be"><td>ENCAB000ABI</td>
+					<td>ID2</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB3300119</td>
+					<td>A01500199</td>
+					<td>human</td>
+					<td><a href="/antibodies/1deec735-c09d-4569-be9d-707ea1ac87be">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/7e136778-3828-4f95-a181-960ca495c224"><td>ENCAB000ACX</td>
+					<td>XBP1</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB3500473</td>
+					<td>PM49351101</td>
+					<td>human</td>
+					<td><a href="/antibodies/7e136778-3828-4f95-a181-960ca495c224">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/24ce680d-1a10-4fcf-b7be-557f1d65ea72"><td>ENCAB000ADM</td>
+					<td>ARNTL2</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB2100154</td>
+					<td>QC8728</td>
+					<td>human</td>
+					<td><a href="/antibodies/24ce680d-1a10-4fcf-b7be-557f1d65ea72">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/2d3cb7c5-e4c9-4163-a29e-ae05da5b8eb1"><td>ENCAB000AAT</td>
+					<td>CREM</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0001390M2</td>
+					<td>11056-3B5</td>
+					<td>human</td>
+					<td><a href="/antibodies/2d3cb7c5-e4c9-4163-a29e-ae05da5b8eb1">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/70563a52-3c9f-4e47-97d3-942e585c533d"><td></td>
+					<td>FOXA2</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-6554</td>
+					<td>L1409</td>
+					<td>human</td>
+					<td><a href="/antibodies/70563a52-3c9f-4e47-97d3-942e585c533d">PENDING</a></td>
+					</tr><tr data-href="/antibodies/5c367011-5db1-4085-8f81-4616d3afbd5b"><td></td>
+					<td>ELK4</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-13030</td>
+					<td>E0603</td>
+					<td>human</td>
+					<td><a href="/antibodies/5c367011-5db1-4085-8f81-4616d3afbd5b">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/fce84ba9-61f4-4d71-8781-4984d38cf872"><td></td>
+					<td>CHD1</td>
+					<td>Bethyl Laboratories</td>
+					<td>A301-218A</td>
+					<td>A301-218A-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/fce84ba9-61f4-4d71-8781-4984d38cf872">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/0913ffaf-9080-4beb-8bd1-d52703ffa32c"><td>ENCAB000ACV</td>
+					<td>TSC22D4</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0081628M7</td>
+					<td>11221-4G7</td>
+					<td>human</td>
+					<td><a href="/antibodies/0913ffaf-9080-4beb-8bd1-d52703ffa32c">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/ad87e7a1-bf10-4a25-9e71-d4c45967c4a3"><td></td>
+					<td>FOXM1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-502</td>
+					<td>C1909</td>
+					<td>human</td>
+					<td><a href="/antibodies/ad87e7a1-bf10-4a25-9e71-d4c45967c4a3">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/5e77fa18-37bf-4304-b712-72c54fe69481"><td>ENCAB000AAS</td>
+					<td>CREB5</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0009586M1</td>
+					<td>08106-1E2</td>
+					<td>human</td>
+					<td><a href="/antibodies/5e77fa18-37bf-4304-b712-72c54fe69481">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/13233c68-6c3a-404a-b959-d60c121c72a9"><td></td>
+					<td>NFIC</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-81335</td>
+					<td>L0808</td>
+					<td>human</td>
+					<td><a href="/antibodies/13233c68-6c3a-404a-b959-d60c121c72a9">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/ccb53a64-44ef-4b86-bb34-fbeb32f46d42"><td>ENCAB000ADB</td>
+					<td>ZNF207</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0007756M1</td>
+					<td>07159-6D6</td>
+					<td>human</td>
+					<td><a href="/antibodies/ccb53a64-44ef-4b86-bb34-fbeb32f46d42">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/0f348d98-8b33-428b-9210-cf8504ce49a6"><td></td>
+					<td>PITX1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-81979</td>
+					<td>J0109</td>
+					<td>human</td>
+					<td><a href="/antibodies/0f348d98-8b33-428b-9210-cf8504ce49a6">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/758a8a0e-e753-4872-960a-064e4de999b9"><td>ENCAB000ACH</td>
+					<td>RBPJ</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0003516M1</td>
+					<td>08248-4E12</td>
+					<td>human</td>
+					<td><a href="/antibodies/758a8a0e-e753-4872-960a-064e4de999b9">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/2cc62714-74cd-43ec-b8cd-8fcfd15be66d"><td></td>
+					<td>EP300</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-48343</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/2cc62714-74cd-43ec-b8cd-8fcfd15be66d">PENDING</a></td>
+					</tr><tr data-href="/antibodies/bcc5e918-b91d-4aa7-b427-e2e3236a2bc5"><td></td>
+					<td>MYOD1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-32758</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/bcc5e918-b91d-4aa7-b427-e2e3236a2bc5">PENDING</a></td>
+					</tr><tr data-href="/antibodies/cdd51e5a-a248-43e2-8f15-6f3d3b843730"><td>ENCAB000ACN</td>
+					<td>STAT5B</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0006777M1</td>
+					<td>11231-1A1</td>
+					<td>human</td>
+					<td><a href="/antibodies/cdd51e5a-a248-43e2-8f15-6f3d3b843730">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/9e7176b0-e370-46dc-969a-9909de5f0c90"><td></td>
+					<td>RCOR1</td>
+					<td>Abcam</td>
+					<td>ab24166</td>
+					<td>834865</td>
+					<td>human</td>
+					<td><a href="/antibodies/9e7176b0-e370-46dc-969a-9909de5f0c90">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/cb012342-bed0-4566-ba49-d4c68628eb22"><td>ENCAB000ABS</td>
+					<td>MLLT6</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1404077</td>
+					<td>07149-1B2</td>
+					<td>human</td>
+					<td><a href="/antibodies/cb012342-bed0-4566-ba49-d4c68628eb22">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/5ef07b6d-4de9-45f0-980f-feb75f9e3c9a"><td></td>
+					<td>CEBPD</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-636</td>
+					<td>C1010</td>
+					<td>human</td>
+					<td><a href="/antibodies/5ef07b6d-4de9-45f0-980f-feb75f9e3c9a">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/d19ad1ec-656e-4317-9b1b-bf0a80e7ea39"><td></td>
+					<td>REST</td>
+					<td>Dr. David Anderson at Protein Expression Center (pec@caltech.edu)</td>
+					<td>NRSF</td>
+					<td>20070905JV</td>
+					<td>human</td>
+					<td><a href="/antibodies/d19ad1ec-656e-4317-9b1b-bf0a80e7ea39">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/2001f71c-7afb-485b-b577-a913b303175a"><td>ENCAB000ACM</td>
+					<td>STAT2</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1404413</td>
+					<td>07124-2E9</td>
+					<td>human</td>
+					<td><a href="/antibodies/2001f71c-7afb-485b-b577-a913b303175a">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/fc1d0812-ad84-4698-aceb-e076db6c81ae"><td></td>
+					<td>CHD2</td>
+					<td>Abcam</td>
+					<td>ab68301</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/fc1d0812-ad84-4698-aceb-e076db6c81ae">PENDING</a></td>
+					</tr><tr data-href="/antibodies/b01ce25b-3970-445f-b4da-8fa9d6d4c6da"><td>ENCAB000AAE</td>
+					<td>KLF13</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0051621M1</td>
+					<td>10236-1D3</td>
+					<td>human</td>
+					<td><a href="/antibodies/b01ce25b-3970-445f-b4da-8fa9d6d4c6da">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/61a06a63-7710-43e3-b191-fed325c47a36"><td>ENCAB000AEZ</td>
+					<td>CDK9</td>
+					<td>Abcam</td>
+					<td>ab75898</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/61a06a63-7710-43e3-b191-fed325c47a36">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/8c557221-88cc-49be-84ee-08e135783a7c"><td></td>
+					<td>RDBP</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-32912</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/8c557221-88cc-49be-84ee-08e135783a7c">PENDING</a></td>
+					</tr><tr data-href="/antibodies/2dc67301-67ea-4152-b23c-e71bdfa7f8f8"><td></td>
+					<td>CTBP2</td>
+					<td>BD Biosciences</td>
+					<td>612044</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/2dc67301-67ea-4152-b23c-e71bdfa7f8f8">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/7a40faee-ec66-46d0-bed5-563ad4f734b2"><td>ENCAB000ADK</td>
+					<td>AEBP2</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB2100067</td>
+					<td>QC1287</td>
+					<td>human</td>
+					<td><a href="/antibodies/7a40faee-ec66-46d0-bed5-563ad4f734b2">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/d57d6e22-1756-495c-a3b9-78985989fab1"><td></td>
+					<td>ETS1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-350</td>
+					<td>A1608</td>
+					<td>human</td>
+					<td><a href="/antibodies/d57d6e22-1756-495c-a3b9-78985989fab1">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/de655582-2278-479a-8901-403d5dafb1dc"><td></td>
+					<td>PBX3</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-891</td>
+					<td>H0307</td>
+					<td>human</td>
+					<td><a href="/antibodies/de655582-2278-479a-8901-403d5dafb1dc">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/fba68131-ce1d-4146-9678-cf42998489c4"><td></td>
+					<td>CTCFL</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-98982</td>
+					<td>E0109</td>
+					<td>human</td>
+					<td><a href="/antibodies/fba68131-ce1d-4146-9678-cf42998489c4">PENDING</a></td>
+					</tr><tr data-href="/antibodies/f904ea93-0360-4ff4-9ad8-59da9a49fbe8"><td>ENCAB000AAK</td>
+					<td>ZBED1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0009189M1</td>
+					<td>11040-5G1</td>
+					<td>human</td>
+					<td><a href="/antibodies/f904ea93-0360-4ff4-9ad8-59da9a49fbe8">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/3a729c6e-86b2-4f15-bc1f-d34a8a9e72d3"><td>ENCAB000ABT</td>
+					<td>MLLT10</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1404568</td>
+					<td>08003-2B9</td>
+					<td>human</td>
+					<td><a href="/antibodies/3a729c6e-86b2-4f15-bc1f-d34a8a9e72d3">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/9c15079e-eb47-4bc3-a914-6702c1cb7f47"><td>ENCAB000AAR</td>
+					<td>CREB3L4</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0148327M1</td>
+					<td>11349-3E3</td>
+					<td>human</td>
+					<td><a href="/antibodies/9c15079e-eb47-4bc3-a914-6702c1cb7f47">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/64e0671a-e226-4b5e-ad59-24c0eee0706d"><td></td>
+					<td>NFE2</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-22827</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/64e0671a-e226-4b5e-ad59-24c0eee0706d">PENDING</a></td>
+					</tr><tr data-href="/antibodies/492a6735-1094-4c2c-9ff2-790d191770b8"><td></td>
+					<td>H2AFZ</td>
+					<td>Millipore</td>
+					<td>07-594</td>
+					<td>DAM1540736</td>
+					<td>human</td>
+					<td><a href="/antibodies/492a6735-1094-4c2c-9ff2-790d191770b8">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/eab6bc39-2345-40ba-82bf-696c2f3f9ab7"><td></td>
+					<td>FOXA1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-6553</td>
+					<td>H1209</td>
+					<td>human</td>
+					<td><a href="/antibodies/eab6bc39-2345-40ba-82bf-696c2f3f9ab7">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/eb7ba49d-598f-44e7-84d7-77f523706da1"><td>ENCAB000ABB</td>
+					<td>ERF</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0002077M1</td>
+					<td>07138-1E5</td>
+					<td>human</td>
+					<td><a href="/antibodies/eb7ba49d-598f-44e7-84d7-77f523706da1">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/0913a8c2-64fa-47af-a4b0-7a940726ce48"><td></td>
+					<td>IRF1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-497</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/0913a8c2-64fa-47af-a4b0-7a940726ce48">PENDING</a></td>
+					</tr><tr data-href="/antibodies/0b12293f-46f7-40c9-a078-e20c0fb98b01"><td>ENCAB000ADO</td>
+					<td>CEBPZ</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB2100398</td>
+					<td>QC8343</td>
+					<td>human</td>
+					<td><a href="/antibodies/0b12293f-46f7-40c9-a078-e20c0fb98b01">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/ced58d68-7eca-45e6-b17e-a6e86ff3dcf5"><td></td>
+					<td>GTF2F1</td>
+					<td>Abcam</td>
+					<td>ab28179</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/ced58d68-7eca-45e6-b17e-a6e86ff3dcf5">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/1ed94474-4d05-4ae9-a25f-2a46e3c56bb4"><td>ENCAB000ABG</td>
+					<td>HIC1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0003090M1</td>
+					<td>12174-4E11</td>
+					<td>human</td>
+					<td><a href="/antibodies/1ed94474-4d05-4ae9-a25f-2a46e3c56bb4">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/ea6d2344-4031-40b0-b940-9e21af3e3d6d"><td>ENCAB000AAV</td>
+					<td>DDIT3</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0001649M1</td>
+					<td>08176-2G3</td>
+					<td>human</td>
+					<td><a href="/antibodies/ea6d2344-4031-40b0-b940-9e21af3e3d6d">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/b585cd14-4d58-44ef-afd1-a92b49fb9657"><td></td>
+					<td>CREB1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-240</td>
+					<td>C2306</td>
+					<td>human</td>
+					<td><a href="/antibodies/b585cd14-4d58-44ef-afd1-a92b49fb9657">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/0050d031-0a63-45db-a871-74611c8627b5"><td>ENCAB000ADC</td>
+					<td>ZNF277</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0011179M1</td>
+					<td>06059-1B2</td>
+					<td>human</td>
+					<td><a href="/antibodies/0050d031-0a63-45db-a871-74611c8627b5">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/20b87596-0159-4dc2-b096-ee980299d7bb"><td>ENCAB000ACK</td>
+					<td>SMAD4</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1404038</td>
+					<td>10063-3E2</td>
+					<td>human</td>
+					<td><a href="/antibodies/20b87596-0159-4dc2-b096-ee980299d7bb">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/4467c904-1c70-4ca2-b24c-05c8bce07d7a"><td>ENCAB000ADN</td>
+					<td>BBX</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB2100209</td>
+					<td>QC2616</td>
+					<td>human</td>
+					<td><a href="/antibodies/4467c904-1c70-4ca2-b24c-05c8bce07d7a">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/0ae7698e-6f80-48a7-93b7-c6d4bf82b5db"><td></td>
+					<td>NFE2</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-291</td>
+					<td>D1703</td>
+					<td>human</td>
+					<td><a href="/antibodies/0ae7698e-6f80-48a7-93b7-c6d4bf82b5db">PENDING</a></td>
+					</tr><tr data-href="/antibodies/5ed8aaa5-112c-44ff-9bae-93a74045de72"><td>ENCAB000ACL</td>
+					<td>SP100</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0006672M2</td>
+					<td>11112-1G6</td>
+					<td>human</td>
+					<td><a href="/antibodies/5ed8aaa5-112c-44ff-9bae-93a74045de72">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/2aa43efa-8e42-431e-a14d-2d36a419437b"><td></td>
+					<td>NRF1</td>
+					<td>Abcam</td>
+					<td>ab55744</td>
+					<td>GR27905</td>
+					<td>human</td>
+					<td><a href="/antibodies/2aa43efa-8e42-431e-a14d-2d36a419437b">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/fb5a91cb-8833-4078-b38c-c6d78cebf30c"><td></td>
+					<td>JUND</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-74</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/fb5a91cb-8833-4078-b38c-c6d78cebf30c">PENDING</a></td>
+					</tr><tr data-href="/antibodies/723b05b0-13d6-4f40-ae55-92ed9b88aa81"><td>ENCAB000ADE</td>
+					<td>ZNF622</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1401933</td>
+					<td>09282-4G6</td>
+					<td>human</td>
+					<td><a href="/antibodies/723b05b0-13d6-4f40-ae55-92ed9b88aa81">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/6e0e6b9a-9aed-4b7d-9a80-a9350ee1ac54"><td>ENCAB000ADF</td>
+					<td>ZNF76</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402401</td>
+					<td>08179-3D4</td>
+					<td>human</td>
+					<td><a href="/antibodies/6e0e6b9a-9aed-4b7d-9a80-a9350ee1ac54">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/25db685e-3ac3-48b7-ad74-c9bfd857dc9f"><td>ENCAB000ACO</td>
+					<td>STAT6</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0006778M1</td>
+					<td>08340-6C10</td>
+					<td>human</td>
+					<td><a href="/antibodies/25db685e-3ac3-48b7-ad74-c9bfd857dc9f">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/538d745f-fdf4-445c-9cc3-b8e6d3a96737"><td></td>
+					<td>FOXA1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-101058</td>
+					<td>A2706</td>
+					<td>human</td>
+					<td><a href="/antibodies/538d745f-fdf4-445c-9cc3-b8e6d3a96737">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/25f2d216-f6bb-48e2-bc2a-bb9f33a1b558"><td>ENCAB000AEV</td>
+					<td>CBX2</td>
+					<td>Bethyl Laboratories</td>
+					<td>A302-524A</td>
+					<td>A302-524A-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/25f2d216-f6bb-48e2-bc2a-bb9f33a1b558">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/2f868437-7109-4f51-82b1-b45f79159c5e"><td>ENCAB000AAD</td>
+					<td>FOXO3A</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0002309M3</td>
+					<td>08018-1F6</td>
+					<td>human</td>
+					<td><a href="/antibodies/2f868437-7109-4f51-82b1-b45f79159c5e">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/9e7ec763-f9df-4504-8500-110c54628f06"><td>ENCAB000ABO</td>
+					<td>KLF7</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0008609M1</td>
+					<td>12017-S1</td>
+					<td>human</td>
+					<td><a href="/antibodies/9e7ec763-f9df-4504-8500-110c54628f06">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/ceadb881-a188-4eba-9ec8-83b41749c6af"><td>ENCAB000ABW</td>
+					<td>MLLT10</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0008028M1</td>
+					<td>06146-6H8</td>
+					<td>human</td>
+					<td><a href="/antibodies/ceadb881-a188-4eba-9ec8-83b41749c6af">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/f7d89df5-0b38-453c-9325-5577e479dc82"><td>ENCAB000AAB</td>
+					<td>ATF4</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0000468M1</td>
+					<td>CB191-2B3</td>
+					<td>human</td>
+					<td><a href="/antibodies/f7d89df5-0b38-453c-9325-5577e479dc82">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/5999a23a-2ba7-4f58-ae6f-66e6fb9c45b5"><td>ENCAB000ABZ</td>
+					<td>MSC</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1401458</td>
+					<td>09184-4D7</td>
+					<td>human</td>
+					<td><a href="/antibodies/5999a23a-2ba7-4f58-ae6f-66e6fb9c45b5">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/747755be-8bed-42b7-9ac5-a69f068a4f58"><td></td>
+					<td>ESRRA</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-66882</td>
+					<td>A0809</td>
+					<td>human</td>
+					<td><a href="/antibodies/747755be-8bed-42b7-9ac5-a69f068a4f58">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/643fd427-99d2-4759-a18d-85c0c89da0ab"><td>ENCAB000ADS</td>
+					<td>H3K27ac</td>
+					<td>Active Motif</td>
+					<td>39133</td>
+					<td>19208002</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/643fd427-99d2-4759-a18d-85c0c89da0ab">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/9a9e00a1-6ecd-474e-bfe3-ac7266cb323d"><td>ENCAB000AAF</td>
+					<td>NFE2L2</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0004780M1</td>
+					<td>11336-1F3</td>
+					<td>human</td>
+					<td><a href="/antibodies/9a9e00a1-6ecd-474e-bfe3-ac7266cb323d">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/2b93a2f8-84f5-4c68-bc49-169f6aaaa672"><td></td>
+					<td>KAT2B</td>
+					<td>Bethyl Laboratories</td>
+					<td>A301-666A</td>
+					<td>A301-666A-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/2b93a2f8-84f5-4c68-bc49-169f6aaaa672">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/d19d9832-2df5-4c1a-afe7-ede89465d730"><td>ENCAB000ADL</td>
+					<td>ANKZF1</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB2104258</td>
+					<td>QC5213</td>
+					<td>human</td>
+					<td><a href="/antibodies/d19d9832-2df5-4c1a-afe7-ede89465d730">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/cee784d9-e5e6-44f7-b3a1-be6ba28987b1"><td>ENCAB000AAC</td>
+					<td>CSDA</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0008531M2</td>
+					<td>11074-4D9</td>
+					<td>human</td>
+					<td><a href="/antibodies/cee784d9-e5e6-44f7-b3a1-be6ba28987b1">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/8134271d-dcd8-487d-822e-de6ddf375226"><td></td>
+					<td>FOXP2</td>
+					<td>Abcam</td>
+					<td>ab16046</td>
+					<td>AB-2B</td>
+					<td>human</td>
+					<td><a href="/antibodies/8134271d-dcd8-487d-822e-de6ddf375226">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/79f96f2f-bf58-4a07-b51b-968e719a4138"><td></td>
+					<td>KDM5B</td>
+					<td>Dr. Yang Shi at Harvard</td>
+					<td>PLU-1</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/79f96f2f-bf58-4a07-b51b-968e719a4138">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/928eb742-2779-4888-ad2e-6c2db85cb8bf"><td>ENCAB000ABA</td>
+					<td>ELF4</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0002000M2</td>
+					<td>08269-1E10</td>
+					<td>human</td>
+					<td><a href="/antibodies/928eb742-2779-4888-ad2e-6c2db85cb8bf">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/b3362bea-b160-49d7-b85d-03ec79d1789d"><td></td>
+					<td>PHF8</td>
+					<td>Bethyl Laboratories</td>
+					<td>A301-772A</td>
+					<td>A301-772A-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/b3362bea-b160-49d7-b85d-03ec79d1789d">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/ea07b436-6747-4783-98bf-34455fb51c0b"><td>ENCAB000ABK</td>
+					<td>IRF2</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0003660M2</td>
+					<td>10320-3B5</td>
+					<td>human</td>
+					<td><a href="/antibodies/ea07b436-6747-4783-98bf-34455fb51c0b">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/d4279ecc-e5e0-4b0d-8af7-53fcdb4b72d6"><td>ENCAB000ABN</td>
+					<td>KLF6</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0001316M1</td>
+					<td>11258-1A9</td>
+					<td>human</td>
+					<td><a href="/antibodies/d4279ecc-e5e0-4b0d-8af7-53fcdb4b72d6">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/d294ac14-dcd7-4195-82d3-1086b3bb42b9"><td>ENCAB000ABP</td>
+					<td>MEF2B</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0004207M1</td>
+					<td>06153-3E10</td>
+					<td>human</td>
+					<td><a href="/antibodies/d294ac14-dcd7-4195-82d3-1086b3bb42b9">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/8c7483d0-5835-4214-a7ad-e602c0432b72"><td></td>
+					<td>CHD7</td>
+					<td>Bethyl Laboratories</td>
+					<td>A301-223A</td>
+					<td>A301-223A-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/8c7483d0-5835-4214-a7ad-e602c0432b72">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/a95ae9c0-21a0-4fc7-8331-0d054204d033"><td>ENCAB000ADW</td>
+					<td>H3K4me1</td>
+					<td>Abcam</td>
+					<td>ab8895</td>
+					<td>383111</td>
+					<td>human</td>
+					<td><a href="/antibodies/a95ae9c0-21a0-4fc7-8331-0d054204d033">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/17be5044-e241-4539-9afa-1ea9105d1012"><td>ENCAB000ADD</td>
+					<td>ZNF511</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402659</td>
+					<td>10061-3G1</td>
+					<td>human</td>
+					<td><a href="/antibodies/17be5044-e241-4539-9afa-1ea9105d1012">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/84b8a871-76e3-499d-85be-4eb3c271e162"><td>ENCAB000ACZ</td>
+					<td>ZBTB25</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402399</td>
+					<td>08193-2E8</td>
+					<td>human</td>
+					<td><a href="/antibodies/84b8a871-76e3-499d-85be-4eb3c271e162">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/448836b5-f901-4411-92a3-5b96364677bd"><td></td>
+					<td>GABPA</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-28312</td>
+					<td>F1804</td>
+					<td>human</td>
+					<td><a href="/antibodies/448836b5-f901-4411-92a3-5b96364677bd">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/5df143d6-bad0-49cb-ae8e-1ab993c48794"><td></td>
+					<td>NR2F2</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-271940</td>
+					<td>I1410</td>
+					<td>human</td>
+					<td><a href="/antibodies/5df143d6-bad0-49cb-ae8e-1ab993c48794">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/159a51e2-16aa-4792-bf48-bb0263dc6b88"><td></td>
+					<td>HNF4A</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-6556</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/159a51e2-16aa-4792-bf48-bb0263dc6b88">PENDING</a></td>
+					</tr><tr data-href="/antibodies/c73ecc29-52e9-4160-ac89-e2944a8ad25f"><td></td>
+					<td>CHD2</td>
+					<td>Abcam</td>
+					<td>ab68301</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/c73ecc29-52e9-4160-ac89-e2944a8ad25f">PENDING</a></td>
+					</tr><tr data-href="/antibodies/5f2a8a3e-1eb4-45af-a3f6-4b0c484b0a93"><td></td>
+					<td>HA-E2F1</td>
+					<td>Covance</td>
+					<td>MMS-101P</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/5f2a8a3e-1eb4-45af-a3f6-4b0c484b0a93">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/977aec18-c8b7-4b9c-8a1e-a75897b084ac"><td></td>
+					<td>RDBP</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-32912</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/977aec18-c8b7-4b9c-8a1e-a75897b084ac">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/0fe588d0-3f59-4931-8547-ebd0b7ace8e7"><td>ENCAB000ADV</td>
+					<td>H3K36me3</td>
+					<td>Abcam</td>
+					<td>ab9050</td>
+					<td>707946</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/0fe588d0-3f59-4931-8547-ebd0b7ace8e7">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/3fae147f-0187-4678-b57b-5b93c20f26c7"><td>ENCAB000AAZ</td>
+					<td>EGR2</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402178</td>
+					<td>09177-1G5</td>
+					<td>human</td>
+					<td><a href="/antibodies/3fae147f-0187-4678-b57b-5b93c20f26c7">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/11704d67-00e1-40c0-9c63-4ebe7a87e582"><td></td>
+					<td>EP300</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-584</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/11704d67-00e1-40c0-9c63-4ebe7a87e582">PENDING</a></td>
+					</tr><tr data-href="/antibodies/6f18487b-5210-4ebb-a723-2416be4d9f0e"><td>ENCAB000ACD</td>
+					<td>NOC3L</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0064318M4</td>
+					<td>07208-5E8</td>
+					<td>human</td>
+					<td><a href="/antibodies/6f18487b-5210-4ebb-a723-2416be4d9f0e">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/cdaa5bf9-3645-452f-8a5d-9a31bd68b896"><td>ENCAB000ABD</td>
+					<td>ETV6</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0002120M1</td>
+					<td>12089-3B10</td>
+					<td>human</td>
+					<td><a href="/antibodies/cdaa5bf9-3645-452f-8a5d-9a31bd68b896">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/d1e53075-3ce2-4878-a7b2-f315c54718ec"><td></td>
+					<td>FOSL1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-183</td>
+					<td>I0809</td>
+					<td>human</td>
+					<td><a href="/antibodies/d1e53075-3ce2-4878-a7b2-f315c54718ec">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/1d12f0e6-286a-4b91-9b4a-8a3d55edee39"><td>ENCAB000ABX</td>
+					<td>MLL4</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0009757M2</td>
+					<td>12132-4C10</td>
+					<td>human</td>
+					<td><a href="/antibodies/1d12f0e6-286a-4b91-9b4a-8a3d55edee39">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/51b61889-0a4d-4012-9814-d17cef8fde9c"><td>ENCAB000AAA</td>
+					<td>H3K4me3</td>
+					<td>Active Motif</td>
+					<td>39159</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/51b61889-0a4d-4012-9814-d17cef8fde9c">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/5fcc3b7f-71cb-43bd-a2ad-de7748d6d3a6"><td>ENCAB000ACC</td>
+					<td>NFYC</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0004802M1</td>
+					<td>11060-1D3</td>
+					<td>human</td>
+					<td><a href="/antibodies/5fcc3b7f-71cb-43bd-a2ad-de7748d6d3a6">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/0c3090c8-6b47-493e-bd31-9e1f881be36e"><td></td>
+					<td>CHD1</td>
+					<td>Novus Biologicals</td>
+					<td>NB100-60411</td>
+					<td>A1</td>
+					<td>human</td>
+					<td><a href="/antibodies/0c3090c8-6b47-493e-bd31-9e1f881be36e">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/bd2c1c07-6b9a-49aa-b90a-7e9c51c009ec"><td>ENCAB000ADG</td>
+					<td>THRB</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB4502969</td>
+					<td>310346</td>
+					<td>human</td>
+					<td><a href="/antibodies/bd2c1c07-6b9a-49aa-b90a-7e9c51c009ec">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/6e21afbc-cd34-4acd-9914-bc486e0b77f6"><td></td>
+					<td>NANOG</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-33759</td>
+					<td>C0909</td>
+					<td>human</td>
+					<td><a href="/antibodies/6e21afbc-cd34-4acd-9914-bc486e0b77f6">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/9677e28a-b4a7-4d90-ae3c-809d115b9df4"><td>ENCAB000AAX</td>
+					<td>DMTF1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0009988M3</td>
+					<td>11249-5C6</td>
+					<td>human</td>
+					<td><a href="/antibodies/9677e28a-b4a7-4d90-ae3c-809d115b9df4">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/58cf4b2d-dbaa-4bbc-a9aa-d59cbe1492f5"><td>ENCAB000AEX</td>
+					<td>CBX8</td>
+					<td>Bethyl Laboratories</td>
+					<td>A300-882A</td>
+					<td>A300-882A-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/58cf4b2d-dbaa-4bbc-a9aa-d59cbe1492f5">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/7ab5aca8-a0a5-4627-81ce-05579138f440"><td></td>
+					<td>PML</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-71910</td>
+					<td>H1908</td>
+					<td>human</td>
+					<td><a href="/antibodies/7ab5aca8-a0a5-4627-81ce-05579138f440">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/d6947988-8fea-4c13-b2ec-2381e7f7a84f"><td>ENCAB000AAN</td>
+					<td>ATF5</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402543</td>
+					<td>09167-4G5</td>
+					<td>human</td>
+					<td><a href="/antibodies/d6947988-8fea-4c13-b2ec-2381e7f7a84f">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/f034f33b-7bd7-4ad2-8ee1-804d2e755b5a"><td>ENCAB000AET</td>
+					<td>MYC</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-764</td>
+					<td>H0107</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/f034f33b-7bd7-4ad2-8ee1-804d2e755b5a">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/c2f57378-5ceb-4e3b-bfad-2cb17586f5d4"><td>ENCAB000ACT</td>
+					<td>THAP11</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1403323</td>
+					<td>08214-3C11</td>
+					<td>human</td>
+					<td><a href="/antibodies/c2f57378-5ceb-4e3b-bfad-2cb17586f5d4">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/dd2c254f-923b-4875-b602-0a44f6cdde55"><td>ENCAB000ACP</td>
+					<td>TCF19</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0006941M1</td>
+					<td>11354-6D8</td>
+					<td>human</td>
+					<td><a href="/antibodies/dd2c254f-923b-4875-b602-0a44f6cdde55">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/5fac6b56-8caf-4e68-b545-97dff7045507"><td>ENCAB000ABJ</td>
+					<td>IKZF3</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0022806M2</td>
+					<td>05333-1D7</td>
+					<td>human</td>
+					<td><a href="/antibodies/5fac6b56-8caf-4e68-b545-97dff7045507">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/64ce74cf-b478-43d4-b470-23fcf64ccbe6"><td></td>
+					<td>CHD4</td>
+					<td>Bethyl Laboratories</td>
+					<td>A301-081A</td>
+					<td>A301-081A-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/64ce74cf-b478-43d4-b470-23fcf64ccbe6">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/888e7103-6161-4226-86b9-d9e2829fd37f"><td></td>
+					<td>USF1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-229</td>
+					<td>A2109</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/888e7103-6161-4226-86b9-d9e2829fd37f">PENDING</a></td>
+					</tr><tr data-href="/antibodies/22f7db69-e290-4501-bc04-a9aee2afd6c7"><td>ENCAB000ADI</td>
+					<td>LXRA</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB3500178</td>
+					<td>55771203</td>
+					<td>human</td>
+					<td><a href="/antibodies/22f7db69-e290-4501-bc04-a9aee2afd6c7">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/871203b9-07de-4f67-a766-c43f031857a2"><td></td>
+					<td>NCOR1</td>
+					<td>Bethyl Laboratories</td>
+					<td>A301-145A</td>
+					<td>A301-145A-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/871203b9-07de-4f67-a766-c43f031857a2">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/4b6f6700-d865-4ad0-89e5-a08e22239af8"><td>ENCAB000ADR</td>
+					<td>DRAP1</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB2104800</td>
+					<td>QC11974</td>
+					<td>human</td>
+					<td><a href="/antibodies/4b6f6700-d865-4ad0-89e5-a08e22239af8">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/6360895c-440e-41aa-b467-4ef4dd924426"><td></td>
+					<td>SP2</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-643</td>
+					<td>K1803</td>
+					<td>human</td>
+					<td><a href="/antibodies/6360895c-440e-41aa-b467-4ef4dd924426">PENDING</a></td>
+					</tr><tr data-href="/antibodies/23b733c4-86ca-4b15-aff2-8f6bc7cb7d3f"><td>ENCAB000ABY</td>
+					<td>MLLT11</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0010962M1</td>
+					<td>12101-S3</td>
+					<td>human</td>
+					<td><a href="/antibodies/23b733c4-86ca-4b15-aff2-8f6bc7cb7d3f">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/db9858d3-d0e4-4c80-aed2-8f1023eeeab5"><td>ENCAB000AAY</td>
+					<td>DPF2</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0005977M1</td>
+					<td>11088-2F6</td>
+					<td>human</td>
+					<td><a href="/antibodies/db9858d3-d0e4-4c80-aed2-8f1023eeeab5">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/f2f54219-8c38-4ae8-8444-60e4cf5155c9"><td>ENCAB000ADX</td>
+					<td>H3K4me1</td>
+					<td>Abcam</td>
+					<td>ab8895</td>
+					<td>720417</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/f2f54219-8c38-4ae8-8444-60e4cf5155c9">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/0d24452b-e907-4b91-88d3-9e954cd0843e"><td></td>
+					<td>GABPA</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-22810</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/0d24452b-e907-4b91-88d3-9e954cd0843e">PENDING</a></td>
+					</tr><tr data-href="/antibodies/a3aad647-88dc-4693-b4ba-c35ec2ee331d"><td>ENCAB000ADJ</td>
+					<td>LXRB</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB3500380</td>
+					<td>55791001</td>
+					<td>human</td>
+					<td><a href="/antibodies/a3aad647-88dc-4693-b4ba-c35ec2ee331d">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/9638c43a-84be-447f-a3a2-ec885bc99aa1"><td>ENCAB000AAW</td>
+					<td>DEAF1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0010522M4</td>
+					<td>11340-1H8</td>
+					<td>human</td>
+					<td><a href="/antibodies/9638c43a-84be-447f-a3a2-ec885bc99aa1">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/919f536b-df0b-4f55-b79d-029a9d75b128"><td>ENCAB000AEE</td>
+					<td>BCL11A</td>
+					<td>Abcam</td>
+					<td>ab19489</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/919f536b-df0b-4f55-b79d-029a9d75b128">PENDING</a></td>
+					</tr><tr data-href="/antibodies/7575d7bf-bdb3-4d8b-aeba-0104828989f3"><td>ENCAB000ABV</td>
+					<td>MLL1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0004298M1</td>
+					<td>06153-3H2</td>
+					<td>human</td>
+					<td><a href="/antibodies/7575d7bf-bdb3-4d8b-aeba-0104828989f3">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/6629b86d-4dcc-479e-9c3b-3d85c2ad92e9"><td></td>
+					<td>ELK1</td>
+					<td>Epitomics</td>
+					<td>1277-1</td>
+					<td>YG030402C</td>
+					<td>human</td>
+					<td><a href="/antibodies/6629b86d-4dcc-479e-9c3b-3d85c2ad92e9">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/8dfcbec8-fc99-42f8-ac64-a9db1a6e08e9"><td>ENCAB000ACF</td>
+					<td>PLEK</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0005341M1</td>
+					<td>08309-6E3</td>
+					<td>human</td>
+					<td><a href="/antibodies/8dfcbec8-fc99-42f8-ac64-a9db1a6e08e9">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/717f0385-de63-44f7-9fbf-f7c823cda7f5"><td>ENCAB000AAP</td>
+					<td>BCL11A</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1400573</td>
+					<td>08165-3D9</td>
+					<td>human</td>
+					<td><a href="/antibodies/717f0385-de63-44f7-9fbf-f7c823cda7f5">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/ab3c98ba-11ff-475c-b586-966324e32482"><td>ENCAB000AAO</td>
+					<td>ATF6B</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402155</td>
+					<td>08179-4D10</td>
+					<td>human</td>
+					<td><a href="/antibodies/ab3c98ba-11ff-475c-b586-966324e32482">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/c2e28a9e-0017-4929-ad5e-15bd10e6d14c"><td></td>
+					<td>RELA</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-372</td>
+					<td>A2298</td>
+					<td>human</td>
+					<td><a href="/antibodies/c2e28a9e-0017-4929-ad5e-15bd10e6d14c">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/762af597-8c5f-49bd-928a-6a2de3a89141"><td></td>
+					<td>SETDB1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-166621</td>
+					<td>H2009</td>
+					<td>human</td>
+					<td><a href="/antibodies/762af597-8c5f-49bd-928a-6a2de3a89141">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/439baaa6-2902-490f-ad1b-4e02cf6066db"><td>ENCAB000ACR</td>
+					<td>TCF7</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0006932M1</td>
+					<td>11181-1D2</td>
+					<td>human</td>
+					<td><a href="/antibodies/439baaa6-2902-490f-ad1b-4e02cf6066db">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/1672c385-da0b-4921-9ef2-ab445926848b"><td>ENCAB000AAU</td>
+					<td>CUX1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0001523M1</td>
+					<td>12129-2A10</td>
+					<td>human</td>
+					<td><a href="/antibodies/1672c385-da0b-4921-9ef2-ab445926848b">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/61c94d89-ad7e-4bc0-9fb9-43a88427734f"><td>ENCAB000ACI</td>
+					<td>RELA</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0005970M1</td>
+					<td>CA011-8G3</td>
+					<td>human</td>
+					<td><a href="/antibodies/61c94d89-ad7e-4bc0-9fb9-43a88427734f">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/360e2652-b14d-4ad0-9369-1e37b6ed7b2a"><td></td>
+					<td>PPARGC1A</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-13067</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/360e2652-b14d-4ad0-9369-1e37b6ed7b2a">PENDING</a></td>
+					</tr><tr data-href="/antibodies/5bc2e10d-516b-4bcb-a6d8-f914ecf02b96"><td></td>
+					<td>PAX5</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-1974</td>
+					<td>E1409</td>
+					<td>human</td>
+					<td><a href="/antibodies/5bc2e10d-516b-4bcb-a6d8-f914ecf02b96">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/30274bae-e28d-462b-8d27-dcf2f17a699c"><td>ENCAB000ACY</td>
+					<td>YY1AP1</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402596</td>
+					<td>08333-2G7</td>
+					<td>human</td>
+					<td><a href="/antibodies/30274bae-e28d-462b-8d27-dcf2f17a699c">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/870f5db4-21d7-43bb-a8d8-82f1f267dac2"><td></td>
+					<td>FOSL1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-605</td>
+					<td>G0109</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/870f5db4-21d7-43bb-a8d8-82f1f267dac2">PENDING</a></td>
+					</tr><tr data-href="/antibodies/67290833-2791-4b11-83c5-9638c66099db"><td>ENCAB000ACG</td>
+					<td>RARA</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0005914M1</td>
+					<td>09205-S1</td>
+					<td>human</td>
+					<td><a href="/antibodies/67290833-2791-4b11-83c5-9638c66099db">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/68374220-d4de-4114-bc78-4b1c21f03711"><td></td>
+					<td>CTCF</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-5916</td>
+					<td>K0902</td>
+					<td>human</td>
+					<td><a href="/antibodies/68374220-d4de-4114-bc78-4b1c21f03711">PENDING</a></td>
+					</tr><tr data-href="/antibodies/6d24d9da-6a36-4817-8e5f-85a39e7a0b4d"><td></td>
+					<td>CREB1</td>
+					<td>Cell Signaling Technology</td>
+					<td>9198</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/6d24d9da-6a36-4817-8e5f-85a39e7a0b4d">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/f5257550-666d-4fe7-b632-df7a82bcf006"><td></td>
+					<td>GATA3</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-268</td>
+					<td>G0910</td>
+					<td>human</td>
+					<td><a href="/antibodies/f5257550-666d-4fe7-b632-df7a82bcf006">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/dbd372b6-2694-46aa-a48b-39fc721f1ea2"><td></td>
+					<td>PRDM1</td>
+					<td>Cell Signaling Technology</td>
+					<td>9115</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/dbd372b6-2694-46aa-a48b-39fc721f1ea2">PENDING</a></td>
+					</tr><tr data-href="/antibodies/795816bf-a5f5-4789-b5a8-f4d050e3ed85"><td>ENCAB000AFA</td>
+					<td>CUX1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-6327</td>
+					<td>E0709</td>
+					<td>human</td>
+					<td><a href="/antibodies/795816bf-a5f5-4789-b5a8-f4d050e3ed85">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/35d83be4-ca58-4bd7-bd74-b40a073e6956"><td>ENCAB000AEU</td>
+					<td>CREBBP</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-369</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/35d83be4-ca58-4bd7-bd74-b40a073e6956">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/64eea190-367f-4e96-900b-23664b11c5f1"><td>ENCAB000ADH</td>
+					<td>AFF1</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB4501886</td>
+					<td>3110690</td>
+					<td>human</td>
+					<td><a href="/antibodies/64eea190-367f-4e96-900b-23664b11c5f1">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/93eaa317-126f-45b8-8942-b1e2a82adac0"><td>ENCAB000ABM</td>
+					<td>KLF10</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0007071M2</td>
+					<td>CA221-4G9</td>
+					<td>human</td>
+					<td><a href="/antibodies/93eaa317-126f-45b8-8942-b1e2a82adac0">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/58b4df5b-ba21-4111-a715-3b5ba863b9b4"><td>ENCAB000ADQ</td>
+					<td>CXXC1</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB2103447</td>
+					<td>QC12000</td>
+					<td>human</td>
+					<td><a href="/antibodies/58b4df5b-ba21-4111-a715-3b5ba863b9b4">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/6abd35af-b687-4816-b9a8-44553ed553db"><td>ENCAB000ADU</td>
+					<td>H3K36me3</td>
+					<td>Abcam</td>
+					<td>ab9050</td>
+					<td>499302</td>
+					<td>human</td>
+					<td><a href="/antibodies/6abd35af-b687-4816-b9a8-44553ed553db">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/fc89b08a-1df5-463a-a8ef-314220ea8547"><td>ENCAB000AAJ</td>
+					<td>YBX1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0004904M1</td>
+					<td>11333-4F12</td>
+					<td>human</td>
+					<td><a href="/antibodies/fc89b08a-1df5-463a-a8ef-314220ea8547">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/12fc17d2-39d3-4191-aab0-e0096e0b758b"><td>ENCAB000AEW</td>
+					<td>CBX3</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-101004</td>
+					<td>G1410</td>
+					<td>human</td>
+					<td><a href="/antibodies/12fc17d2-39d3-4191-aab0-e0096e0b758b">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/04bcc30b-3248-44b5-9ca6-24fe6cc2ca3a"><td></td>
+					<td>H3ac</td>
+					<td>Millipore</td>
+					<td>06-599</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/04bcc30b-3248-44b5-9ca6-24fe6cc2ca3a">PENDING</a></td>
+					</tr><tr data-href="/antibodies/f2a2afa8-2bd4-4722-ab94-7fe9578c487e"><td>ENCAB000ADA</td>
+					<td>ZNF131</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0007690M7</td>
+					<td>09002-5F1</td>
+					<td>human</td>
+					<td><a href="/antibodies/f2a2afa8-2bd4-4722-ab94-7fe9578c487e">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/a20134aa-0faa-4273-9473-421c6162cd78"><td>ENCAB000ADP</td>
+					<td>CIZ1</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB2104414</td>
+					<td>QC7737</td>
+					<td>human</td>
+					<td><a href="/antibodies/a20134aa-0faa-4273-9473-421c6162cd78">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/e682bf34-3c85-4eaa-991b-a9ff272468bd"><td></td>
+					<td>ELF1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-631</td>
+					<td>L2707</td>
+					<td>human</td>
+					<td><a href="/antibodies/e682bf34-3c85-4eaa-991b-a9ff272468bd">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/71a8a1e1-fa85-46a0-b155-2508263cc56e"><td></td>
+					<td>CHD1</td>
+					<td>Novus Biologicals</td>
+					<td>NB100-60411</td>
+					<td>A1</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/71a8a1e1-fa85-46a0-b155-2508263cc56e">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/7681a613-fd84-4ab4-99e5-92dd687ead2d"><td></td>
+					<td>EP300</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-584</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/7681a613-fd84-4ab4-99e5-92dd687ead2d">PENDING</a></td>
+					</tr><tr data-href="/antibodies/d838aaab-d542-48f4-b46e-149a4fabde4c"><td>ENCAB000AAL</td>
+					<td>ZFP36L1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0000677M2</td>
+					<td>07135-1A3</td>
+					<td>human</td>
+					<td><a href="/antibodies/d838aaab-d542-48f4-b46e-149a4fabde4c">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/88be98d4-8194-4fba-acd3-1c7e4cde66fe"><td></td>
+					<td>NR3C1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-1003</td>
+					<td>A2508  E1908</td>
+					<td>human</td>
+					<td><a href="/antibodies/88be98d4-8194-4fba-acd3-1c7e4cde66fe">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/e6f336f1-6d39-4a2a-8faf-85fd8c652e99"><td></td>
+					<td>GATA2</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-267</td>
+					<td>E2708</td>
+					<td>human</td>
+					<td><a href="/antibodies/e6f336f1-6d39-4a2a-8faf-85fd8c652e99">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/2c13cc62-987b-4fdf-b726-0535c5e4c78e"><td>ENCAB000AAM</td>
+					<td>ADNP</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0023394M1</td>
+					<td>08267-6B8</td>
+					<td>human</td>
+					<td><a href="/antibodies/2c13cc62-987b-4fdf-b726-0535c5e4c78e">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/d4f368b2-23d1-4c3e-9f62-1e6e4c79d8c3"><td>ENCAB000ACA</td>
+					<td>NFRKB</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0004798M3</td>
+					<td>07159-3G8</td>
+					<td>human</td>
+					<td><a href="/antibodies/d4f368b2-23d1-4c3e-9f62-1e6e4c79d8c3">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/485a1450-29a7-4619-b408-7b5d8a47dec7"><td></td>
+					<td>FOSL2</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-604</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/485a1450-29a7-4619-b408-7b5d8a47dec7">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/fe451e1f-056c-49dc-a222-07c2fe28d7f6"><td></td>
+					<td>EP300</td>
+					<td>Bethyl Laboratories</td>
+					<td>A300-358A</td>
+					<td>A300-358A-1</td>
+					<td>human</td>
+					<td><a href="/antibodies/fe451e1f-056c-49dc-a222-07c2fe28d7f6">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/7a0e2bb3-f587-4dd5-b8fe-bcc65cb8ba10"><td></td>
+					<td>CREB1</td>
+					<td>Millipore</td>
+					<td>06-863</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/7a0e2bb3-f587-4dd5-b8fe-bcc65cb8ba10">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/9a6a0c97-2489-453c-8d08-52bcfa8e3565"><td></td>
+					<td>NFATC1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-17834</td>
+					<td>G2007</td>
+					<td>human</td>
+					<td><a href="/antibodies/9a6a0c97-2489-453c-8d08-52bcfa8e3565">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/b5777924-2bcd-4565-8e96-a4c99b40d559"><td></td>
+					<td>GATA3</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-269</td>
+					<td>A1404</td>
+					<td>human</td>
+					<td><a href="/antibodies/b5777924-2bcd-4565-8e96-a4c99b40d559">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/e1165643-d453-4c91-a671-7e81a7d2cdf4"><td></td>
+					<td>MYBL2</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-81192</td>
+					<td>B1611</td>
+					<td>human</td>
+					<td><a href="/antibodies/e1165643-d453-4c91-a671-7e81a7d2cdf4">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/b9a77f65-9dcf-451b-8f17-e6adf83ddffa"><td></td>
+					<td>SRF</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-335</td>
+					<td>F3006 L2005 H2604</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/b9a77f65-9dcf-451b-8f17-e6adf83ddffa">PENDING</a></td>
+					</tr><tr data-href="/antibodies/3d604370-bc4c-462e-8a21-a60f57ebc1b6"><td></td>
+					<td>ETS1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-350</td>
+					<td>A1608</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/3d604370-bc4c-462e-8a21-a60f57ebc1b6">PENDING</a></td>
+					</tr><tr data-href="/antibodies/5e12cdcc-0b43-409e-a823-68b1401f504a"><td></td>
+					<td>THAP1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-98174</td>
+					<td>D1910</td>
+					<td>human</td>
+					<td><a href="/antibodies/5e12cdcc-0b43-409e-a823-68b1401f504a">PENDING</a></td>
+					</tr><tr data-href="/antibodies/c0880963-e527-4270-bc11-b6a3f630d1d1"><td></td>
+					<td>MYOG</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-12732</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/c0880963-e527-4270-bc11-b6a3f630d1d1">PENDING</a></td>
+					</tr><tr data-href="/antibodies/a09f35f6-850f-46e6-922f-12d66f7c6b8f"><td>ENCAB000ABE</td>
+					<td>FLI1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0002313M5</td>
+					<td>07187-1F6</td>
+					<td>human</td>
+					<td><a href="/antibodies/a09f35f6-850f-46e6-922f-12d66f7c6b8f">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/d5b16cc2-f8c4-4bbf-baf8-52a73fd9feb7"><td>ENCAB000ADT</td>
+					<td>H3K27me3</td>
+					<td>Active Motif</td>
+					<td>39155</td>
+					<td>30508004</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/d5b16cc2-f8c4-4bbf-baf8-52a73fd9feb7">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/d96f122f-821e-41e4-9199-1f1d2dd5c681"><td></td>
+					<td>EGR1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-110</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/d96f122f-821e-41e4-9199-1f1d2dd5c681">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/27bbf8ea-7f4d-4542-96d0-80861fa9e671"><td></td>
+					<td>EBF1</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-137065</td>
+					<td>J0505</td>
+					<td>human</td>
+					<td><a href="/antibodies/27bbf8ea-7f4d-4542-96d0-80861fa9e671">APPROVED</a></td>
+					</tr><tr data-href="/antibodies/93b8d763-8803-4900-bfca-5e39b515304f"><td>ENCAB000ABF</td>
+					<td>FOXP4</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1402657</td>
+					<td>11200-3B12</td>
+					<td>human</td>
+					<td><a href="/antibodies/93b8d763-8803-4900-bfca-5e39b515304f">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/5ab308e6-2901-4318-ab88-de80c9fca0bc"><td>ENCAB000AES</td>
+					<td>MYB</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-7874</td>
+					<td>missing</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/5ab308e6-2901-4318-ab88-de80c9fca0bc">PENDING</a></td>
+					</tr><tr data-href="/antibodies/f4a9eb75-faba-4c56-a159-031ac335f30a"><td>ENCAB000ACW</td>
+					<td>UBP1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0007342M1</td>
+					<td>07362-1C5</td>
+					<td>human</td>
+					<td><a href="/antibodies/f4a9eb75-faba-4c56-a159-031ac335f30a">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/d5900856-c064-4449-80a5-6ffa2b09a700"><td></td>
+					<td>CTCF</td>
+					<td>Santa Cruz Biotechnology</td>
+					<td>sc-15914</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/d5900856-c064-4449-80a5-6ffa2b09a700">PENDING</a></td>
+					</tr><tr data-href="/antibodies/12510e60-baec-472b-9135-4cfe45878f72"><td></td>
+					<td>MAFF</td>
+					<td>Sigma-Aldrich</td>
+					<td>M8194</td>
+					<td>missing</td>
+					<td>human</td>
+					<td><a href="/antibodies/12510e60-baec-472b-9135-4cfe45878f72">PENDING</a></td>
+					</tr><tr data-href="/antibodies/57ae86a3-9abc-48e3-addc-58d6096fd380"><td>ENCAB000ACS</td>
+					<td>THAP1</td>
+					<td>Sigma-Aldrich</td>
+					<td>SAB1407621</td>
+					<td>8224</td>
+					<td>human</td>
+					<td><a href="/antibodies/57ae86a3-9abc-48e3-addc-58d6096fd380">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/ae7df5eb-5570-491c-bdca-d639d0a488ca"><td>ENCAB000ACB</td>
+					<td>NFX1</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0004799M1</td>
+					<td>11146-1D12</td>
+					<td>human</td>
+					<td><a href="/antibodies/ae7df5eb-5570-491c-bdca-d639d0a488ca">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/48bde582-94ce-4635-b52a-8b3cf01400bd"><td>ENCAB000ABH</td>
+					<td>HSF4</td>
+					<td>Sigma-Aldrich</td>
+					<td>WH0003299M1</td>
+					<td>09099-1A4</td>
+					<td>human</td>
+					<td><a href="/antibodies/48bde582-94ce-4635-b52a-8b3cf01400bd">IN_PROGRESS</a></td>
+					</tr><tr data-href="/antibodies/a9a27a34-5e5b-4add-8209-2a842fba7164"><td></td>
+					<td>REST</td>
+					<td>Dr. David Anderson at Protein Expression Center (pec@caltech.edu)</td>
+					<td>NRSF</td>
+					<td>20070905JV</td>
+					<td>mouse</td>
+					<td><a href="/antibodies/a9a27a34-5e5b-4add-8209-2a842fba7164">PENDING</a></td>
+					</tr></tbody>
+					<tfoot>
+						<tr>
+							<th colspan="7">204 items.</th>
+						</tr>
+					</tfoot>
+					</table>
+        		
+        		</div>
+        	</div><!-- #main -->
+        	
+        </div><!-- #content -->
+    <div id='layout-footer'></div>
+	</div><!-- #layout -->
+	
+	<footer id="page-footer">
+		<div id="footer-top">
+			<div class="container">
+				&copy;2013. Stanford University. School of Medicine. Department of Genetics.
+			</div>
+		</div>
+		<div id="footer-bottom">
+			<div class="container">
+			Bottom footer
+			</div>
+		</div>
+	</footer>
+        
+        <!-- needed scripts linked to for now - remove for production b/c requireJS -->
+        <script src="../../libs/jquery.min.js"></script>
+        <script src="../../libs/bootstrap.min.js"></script>
+item_embedded =
+        <script src="../lib/responsive-tables.js"></script>
+        <script src="../../libs/table_sorter.js"></script>
+        <script src="../../libs/sticky_header.js"></script>
+        <script src="../../libs/jquery.table_filter.js"></script>
+        <script>
+        	$(document).ready(function() { 
+    			$("#antibodies-summary").table_sorter().table_filter();
+			});
+        </script>
+        
+        
+    <!-- NEW SCRIPTS NEEDED FOR MENUS !!!!!!!!!!! -->
+        <!-- load hoverIntent -->
+        <script src="http://cherne.net/brian/resources/jquery.hoverIntent.r6.js"></script>
+        <script>
+		// switch out sub menu based on hover
+		(function(){
+			// cache the currently open tab
+			var currentActiveLink = $("#main-nav .active").attr("data-menu");
+			
+			$("#main-nav > li").hoverIntent(function() {
+			        console.log(currentActiveLink);			
+					// mouseIn - close subnav for element, open subnav for hovered element
+					$("#navbar-subnav").addClass("subnav-hover-bg");
+					$("#" + currentActiveLink).css('display', 'none');
+					var selectedMenu = $(this).attr("data-menu");
+					$('#' + selectedMenu).css('display', 'block');
+				}, function() {
+					// mouseOut - reset subnav to original state
+					$("#navbar-subnav").removeClass("subnav-hover-bg");
+					var selectedMenu = $(this).attr("data-menu");
+					$('#' + selectedMenu).css('display', 'none');
+					$("#" + currentActiveLink).css('display', 'block');
+			});
+		})();
+        </script>
+    </body>
+</html>

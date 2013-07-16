@@ -8,7 +8,7 @@ ENCODE Metadata Database
 .. _Build status: https://travis-ci.org/ENCODE-DCC/encoded
 
 
-*Note: the default Mac python doesn't seem to work. You might want to install Python with Homebrew and you may need to sintall one of more of (using homebrew): libxml2 libxslt freetype openssl libjpeg.*
+*Note: the default Mac python doesn't seem to work. You might want to install Python with Homebrew and you may need to install one of more of (using homebrew): libxml2 libxslt freetype openssl libjpeg.*
 
 First run buildout::
 
@@ -60,6 +60,15 @@ To start productiondata server (Postgres, AuthZ, all data) use:
     --log-file [filename] is a useful argument
 
 
+Database setup on VMs::
+
+    # service postgresql-9.2 initdb
+    # service postgresql-9.2 start
+    # sudo -u postgres createuser --createdb encoded
+
+Then as the encoded user::
+
+    $ createdb encoded
 
 
 Notes on SASS/Compass

@@ -116,7 +116,7 @@ class ItemWithDocument(Item):
              permission='view', subpath_segments=2)
 def download(context, request):
     prop_name, filename = request.subpath
-    downloads = context.model.resource['downloads']
+    downloads = context.model['downloads']
     try:
         download_meta = downloads[prop_name]
     except KeyError:

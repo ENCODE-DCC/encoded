@@ -1,7 +1,7 @@
 import inspect
 __all__ = ['ObjectTemplate']
 _marker = object()
-TEMPLATE_NAMES = ('templated', 'repeat', 'condition')
+TEMPLATE_NAMES = ('$templated', '$repeat', '$condition', '$value')
 
 
 class ObjectTemplate(object):
@@ -18,7 +18,7 @@ class ObjectTemplate(object):
 
 
 def string_template(template, namespace):
-    return template.format(**namespace)
+    return unicode(template).format(**namespace)
 
 
 def list_template(template, namespace):
@@ -29,10 +29,10 @@ def list_template(template, namespace):
 
 
 def dict_template(template, namespace):
-    templated = template.get('templated', [])
+    templated = template.get('$templated', [])
     if isinstance(templated, basestring):
         templated = templated.split()
-    condition = template.get('condition', _marker)
+    condition = template.get('$condition', _marker)
     if condition is not _marker:
         arg = None
         if isinstance(condition, basestring):
@@ -59,26 +59,33 @@ def dict_template(template, namespace):
                 condition = condition(**args)
         if not condition:
             return
-    repeat = template.get('repeat', _marker)
+    value = template.get('$value', _marker)
+    repeat = template.get('$repeat', _marker)
     if repeat is not _marker:
         repeat_name, repeater = repeat.split()
         for repeat_value in namespace[repeater]:
             repeat_namespace = namespace.copy()
             repeat_namespace[repeat_name] = repeat_value
+            if value is not _marker:
+                result, = object_template(value, repeat_namespace, templated)
+            else:
+                result = type(template)()
+                for key, tmpl_value in template.items():
+                    if key in TEMPLATE_NAMES:
+                        continue
+                    tmpl_string = templated is True or key in templated
+                    result[key], = object_template(tmpl_value, repeat_namespace, tmpl_string)
+            yield result
+    else:
+        if value is not _marker:
+            result, = object_template(value, namespace, templated)
+        else:
             result = type(template)()
-            for key, value in template.items():
+            for key, tmpl_value in template.items():
                 if key in TEMPLATE_NAMES:
                     continue
                 tmpl_string = templated is True or key in templated
-                result[key], = object_template(value, repeat_namespace, tmpl_string)
-            yield result
-    else:
-        result = type(template)()
-        for key, value in template.items():
-            if key in TEMPLATE_NAMES:
-                continue
-            tmpl_string = templated is True or key in templated
-            result[key], = object_template(value, namespace, tmpl_string)
+                result[key], = object_template(tmpl_value, namespace, tmpl_string)
         yield result
 
 

@@ -1,5 +1,6 @@
-from pyramid.settings import asbool
 from pyramid.config import Configurator
+from pyramid.session import UnencryptedCookieSessionFactoryConfig
+from pyramid.settings import asbool
 from sqlalchemy import engine_from_config
 from .storage import (
     Base,
@@ -113,8 +114,18 @@ def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
 
+    secret = settings['multiauth.policy.authtkt.secret']
+    # auth_tkt has no timeout set
+    # cookie will still expire at browser close
+    timeout = 60 * 60 * 24
+    session_factory = UnencryptedCookieSessionFactoryConfig(
+        secret=secret,
+        timeout=timeout,
+    )
+
     config = Configurator(
         settings=settings,
+        session_factory=session_factory,
     )
 
     config.include('pyramid_tm')
@@ -129,7 +140,6 @@ def main(global_config, **settings):
     config.include('.predicates')
     config.include('.contentbase')
     config.include('.views')
-    config.include('.edw_key')
     config.include('.persona')
     config.include('pyramid_multiauth')
 

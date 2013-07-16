@@ -1,12 +1,15 @@
+from cgi import escape
 from pkg_resources import resource_string
 from pyramid.events import (
     NewRequest,
     subscriber,
-    )
+)
+from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.security import authenticated_userid
 from pyramid.threadlocal import (
     get_current_request,
     manager,
-    )
+)
 import pyramid.renderers
 import uuid
 
@@ -49,9 +52,14 @@ class PageRenderer:
         self.page = resource_string('encoded', 'index.html')
 
     def __call__(self, value, system):
-        # TODO: Include response value in page
-        # Return a string to preserve the existing response headers
-        return self.page
+        request = system.get('request')
+        if request is not None:
+            request.response.content_type = 'text/html'
+        return self.page.format(json=escape(value))
+
+
+class CSRFTokenError(HTTPBadRequest):
+    pass
 
 
 @subscriber(NewRequest)
@@ -64,13 +72,28 @@ def choose_format(event):
     request = event.request
     if request.method not in ('GET', 'HEAD'):
         request.environ['encoded.format'] = 'json'
-        return
+        token = request.headers.get('X-CSRF-Token')
+        if token is not None:
+            # Avoid dirtying the session and adding a Set-Cookie header
+            # XXX Should consider if this is a good idea or not and timeouts
+            if token == dict.get(request.session, '_csrft_', None):
+                return
+            raise CSRFTokenError('Incorrect CSRF token')
+        login = authenticated_userid(request)
+        if login is not None:
+            namespace, userid = login.split(':', 1)
+            if namespace != 'mailto':
+                return
+        raise CSRFTokenError('Missing CSRF token')
 
     format = request.params.get('format')
     if format is None:
-        request.environ['encoded.vary'] = ('Accept',)
-        mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
-        format = mime_type.split('/', 1)[1]
+        request.environ['encoded.vary'] = ('Accept', 'Authorization')
+        if request.authorization is not None:
+            format = 'json'
+        else:
+            mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
+            format = mime_type.split('/', 1)[1]
     else:
         format = format.lower()
         if format not in ('html', 'json'):
@@ -94,7 +117,8 @@ class PageOrJSON:
             request.response.vary = original_vary + vary
 
         format = request.environ.get('encoded.format', 'json')
+        value = self.json_renderer(value, system)
         if format == 'json':
-            return self.json_renderer(value, system)
+            return value
         else:
             return self.page_renderer(value, system)

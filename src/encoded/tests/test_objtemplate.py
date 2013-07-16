@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 import pyramid.settings
 
@@ -20,6 +21,7 @@ NAMESPACE = {
     'asbool': pyramid.settings.asbool,
     'check_keywords': check_keywords,
     'check_arg': check_arg,
+    'unicode': u'1μM',
 }
 
 NO_CHANGE = [
@@ -34,32 +36,36 @@ NO_CHANGE = [
 ]
 
 TEMPLATE_VALUE = [
-    ({'templated': True, 'foo': 'value {foo}'}, {'foo': 'value foo'}),
-    ({'templated': 'foo bar', 'foo': 'value {foo}'}, {'foo': 'value foo'}),
-    ({'templated': 'bar', 'foo': 'value {foo}'}, {'foo': 'value {foo}'}),
-    ({'a': [{'templated': True, 'repeat': 'bar bar_list',
-             'bar': 'value {bar}', 'b': 1}]},
-     {'a': [{'bar': 'value bar1', 'b': 1},
-            {'bar': 'value bar2', 'b': 1},
+    ({'$templated': True, 'foo': '$value {foo}'}, {'foo': '$value foo'}),
+    ({'$templated': 'foo bar', 'foo': '$value {foo}'}, {'foo': '$value foo'}),
+    ({'$templated': 'bar', 'foo': '$value {foo}'}, {'foo': '$value {foo}'}),
+    ({'a': [{'$templated': True, '$repeat': 'bar bar_list',
+             'bar': '$value {bar}', 'b': 1}]},
+     {'a': [{'bar': '$value bar1', 'b': 1},
+            {'bar': '$value bar2', 'b': 1},
             ]}),
-    ({'a': [{'templated': 'foo bar', 'repeat': 'bar bar_list',
-             'bar': 'value {bar}', 'b': 1}]},
-     {'a': [{'bar': 'value bar1', 'b': 1},
-            {'bar': 'value bar2', 'b': 1},
+    ({'a': [{'$templated': 'foo bar', '$repeat': 'bar bar_list',
+             'bar': '$value {bar}', 'b': 1}]},
+     {'a': [{'bar': '$value bar1', 'b': 1},
+            {'bar': '$value bar2', 'b': 1},
             ]}),
-    ({'a': [{'templated': 'foo', 'repeat': 'bar bar_list',
-             'bar': 'value {bar}', 'b': 1}]},
-     {'a': [{'bar': 'value {bar}', 'b': 1},
-            {'bar': 'value {bar}', 'b': 1},
+    ({'a': [{'$templated': 'foo', '$repeat': 'bar bar_list',
+             'bar': '$value {bar}', 'b': 1}]},
+     {'a': [{'bar': '$value {bar}', 'b': 1},
+            {'bar': '$value {bar}', 'b': 1},
             ]}),
-    ([{'a': 1}, {'b': 2, 'condition': 'false_condition'}],
+    ([{'a': 1}, {'b': 2, '$condition': 'false_condition'}],
      [{'a': 1}]),
-    ([{'a': 1}, {'b': 2, 'condition': 'true_condition'}],
+    ([{'a': 1}, {'b': 2, '$condition': 'true_condition'}],
      [{'a': 1}, {'b': 2}]),
-    ([{'condition': 'asbool:false'}], []),
-    ([{'condition': 'asbool:true'}], [{}]),
-    ([{'condition': 'check_arg'}], [{}]),
-    ([{'condition': 'check_keywords'}], [{}]),
+    ([{'$condition': 'asbool:false'}], []),
+    ([{'$condition': 'asbool:true'}], [{}]),
+    ([{'$condition': 'check_arg'}], [{}]),
+    ([{'$condition': 'check_keywords'}], [{}]),
+    ({'unicode': '{unicode}', '$templated': True}, {'unicode': u'1μM'}),
+    ({'$value': '$value {foo}', '$templated': True}, '$value foo'),
+    ([{'$templated': True, '$repeat': 'bar bar_list', '$value': '$value {bar}'}],
+     ['$value bar1', '$value bar2']),
 ]
 
 
