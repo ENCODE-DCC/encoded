@@ -24,7 +24,8 @@ def access_keys(app):
             'system.Everyone',
             'userid:' + item['_uuid'],
         ]
-        principals.extend('lab:' + lab_uuid for lab_uuid in item['lab_uuids'])
+        principals.extend('lab:%s' % lab_uuid for lab_uuid in item['submits_for'])
+        principals.extend('submits_for:%s' % lab_uuid for lab_uuid in item['submits_for'])
         users.append({
             'location': res.location,
             'effective_principals': sorted(principals),
@@ -57,7 +58,7 @@ def access_key(access_keys):
 def test_access_key_current_user(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get('/@@current-user', headers=headers)
-    assert res.json['labs']
+    assert res.json['submits_for']
 
 
 def test_access_key_principals(anontestapp, execute_counter, access_key):

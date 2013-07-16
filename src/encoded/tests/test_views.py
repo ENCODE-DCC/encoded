@@ -75,14 +75,14 @@ def _test_antibody_approval_creation(testapp):
     assert len(res.json['items']) == 1
 
 
-def __test_sample_data(testapp):
-
-    from .sample_data import test_load_all
-    test_load_all(testapp)
-    res = testapp.get('/biosamples/', headers={'Accept': 'application/json'}, status=200)
-    assert len(res.json['_embedded']['items']) == 1
-    res = testapp.get('/labs/', headers={'Accept': 'application/json'}, status=200)
-    assert len(res.json['_embedded']['items']) == 2
+@pytest.mark.xfail
+def test_load_sample_data(testapp):
+    from .sample_data import URL_COLLECTION
+    for url, collection in URL_COLLECTION.iteritems():
+        for item in collection:
+            testapp.post_json(url, item, status=201)
+        res = testapp.get(url + '?limit=all')
+        assert len(res.json['items']) == len(collection)
 
 
 @pytest.mark.slow
@@ -159,22 +159,10 @@ def test_collection_update(testapp, url, execute_counter):
         assert res[key] == update[key]
 
 
-# TODO Add 2 tests for duplicate UUIDs (see sample_data.py)
 def test_post_duplicate_uuid(testapp):
     from .sample_data import BAD_LABS
     testapp.post_json('/labs/', BAD_LABS[0], status=201)
     testapp.post_json('/labs/', BAD_LABS[1], status=409)
-
-
-def test_post_repeated_uuid(testapp):
-    from .sample_data import LABS
-    from .sample_data import BAD_AWARDS
-    # these are in a funny order but not setting up relationships anyhoo
-    for lab in LABS:
-        testapp.post_json('/labs/', lab, status=201)
-
-    testapp.post_json('/awards/', BAD_AWARDS[0], status=201)
-    testapp.post_json('/awards/', BAD_AWARDS[0], status=409)
 
 
 def test_users_post(testapp, anontestapp):
@@ -187,6 +175,7 @@ def test_users_post(testapp, anontestapp):
     assert sorted(res.json['effective_principals']) == [
         'lab:2c334112-288e-4d45-9154-3f404c726daf',
         'remoteuser:%s' % item['email'],
+        'submits_for:2c334112-288e-4d45-9154-3f404c726daf',
         'system.Authenticated',
         'system.Everyone',
         'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
