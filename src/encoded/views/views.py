@@ -12,6 +12,7 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
+from collections import OrderedDict
 
 
 @location('labs')
@@ -172,6 +173,16 @@ class Biosample(Collection):
     }
     item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs', 'documents'])
     item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
+    columns = OrderedDict([
+        ('accession', 'Accession'),
+        ('biosample_term_name', 'Term'),
+        ('biosample_type', 'Type'),
+        ('donor.organism.organism_name', 'Species'),
+        ('source.alias', 'Source'),
+        ('lab.name', 'Submitter'),
+        ('treatments.length', 'Treatments'),
+        ('constructs.length', 'Constructs')
+    ])
 
 
 @location('targets')
@@ -190,6 +201,12 @@ class Target(Collection):
     }
     item_embedded = set(['organism', 'submitter', 'lab', 'award'])
     #   item_keys = [('target_label', 'organism_name')] multi columns not implemented yet
+    columns = OrderedDict([
+        ('target_label', 'Target'),
+        ('organism.organism_name', 'Species'),
+        ('dbxref.uniprot', 'External Resources'),
+        ('project', 'Project')
+    ])
 
 
 # The following should really be child collections.
@@ -232,6 +249,16 @@ class AntibodyApproval(Collection):
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody_lot_uuid}/{target_uuid}', '$templated': True}
     ]
+    columns = OrderedDict([
+        ('antibody_lot.antibody_accession', 'Accession'),
+        ('target.target_label', 'Target'),
+        ('target.organism.organism_name', 'Species'),
+        ('antibody_lot.source.source_name', 'Source'),
+        ('antibody_lot.product_id', 'Product ID'),
+        ('antibody_lot.lot_id', 'Lot ID'),
+        ('validations.length', 'Validations'),
+        ('approval_status', 'Status')
+    ])
 
 
 @location('platforms')
@@ -322,3 +349,13 @@ class Experiments(Collection):
     }
     item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award', 'controls'])
     item_keys = [{'name': 'accession', 'value': '{dataset_accession}', '$templated': True}]
+    columns = OrderedDict([
+        ('dataset_accession', 'Accession'),
+        ('replicates.0.assay.assay_name', 'Assay Type'),
+        ('replicates.0.target', 'Target'),
+        ('replicates.0.library.biosample.biosample_term_name', 'Biosample'),
+        ('replicates.length', 'Biological Replicates'),
+        ('files.length', 'Files'),
+        ('lab.name', 'Lab'),
+        ('project', 'Project')
+    ])

@@ -54,6 +54,7 @@ from .storage import (
     Link,
     TransactionRecord,
 )
+from collections import OrderedDict
 from .validation import ValidationFailure
 LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
@@ -506,9 +507,10 @@ class Collection(object):
     __metaclass__ = CustomItemMeta
     Item = Item
     schema = None
-    properties = {}
+    properties = OrderedDict()
     item_type = None
     unique_key = None
+    columns = {}
     links = {
         '@id': {'$value': '{collection_uri}', '$templated': True},
         '@type': [
@@ -623,11 +625,42 @@ class Collection(object):
         links = compiled(ns)
         properties.update(links)
         items = properties['items'] = []
+        properties['columns'] = self.columns
 
         for model in query.limit(limit).all():
             item_uri = request.resource_path(self, model.rid)
             rendered = embed(request, item_uri)
-            items.append(rendered)
+            subSet = {}
+            if self.columns:
+                for column in self.columns:
+                    key = column
+                    subSet['@id'] = rendered['@id']
+                    subSet['@type'] = rendered['@type']
+                    if '.' not in key:
+                        subSet[column] = rendered[column]
+                    else:
+                        keys = key.split('.')
+                        firstKey = keys[0]
+                        keys.pop(0)
+                        data = rendered[firstKey]
+                        for singleKey in keys:
+                            # Hardcoding few lines here should be gone with ES
+                            if singleKey == 'length':
+                                data = len(data)
+                            elif singleKey == '0':
+                                if data:
+                                    data = data[0]
+                                else:
+                                    data = ''
+                                    break
+                            elif singleKey in data:
+                                data = data[singleKey]
+                            else:
+                                data = ''
+                        subSet[column] = data
+            else:
+                subSet = rendered
+            items.append(subSet)
 
         return properties
 
