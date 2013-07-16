@@ -8,7 +8,7 @@ function (antibody, React, URI, globals) {
             var context = this.props.context;
             var statusClass = 'status-' + (context.approval_status || '').toLowerCase();
             var validations = context.validations.map(function (item) {
-                return globals.panel_views.lookup(item)({context: item});
+                return globals.panel_views.lookup(item)({context: item, key: item['@id']});
             });
             return (
                 <div class={'type-antibody_approval view-item ' + statusClass}>
