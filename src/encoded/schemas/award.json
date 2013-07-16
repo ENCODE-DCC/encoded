@@ -4,7 +4,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "0.01",
     "description": "Schema for submitting an Award (Grant) for the ENCODE Project",
-    "required": [ "name", "number", "pi"],
+    "required": [ "name", "pi"],
     "additionalProperties": false,
     "properties": {
         "schema-version": {
