@@ -12,7 +12,7 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
-from ordereddict import OrderedDict
+from collections import OrderedDict
 
 
 @location('labs')
@@ -248,6 +248,11 @@ class AntibodyApproval(Collection):
     item_embedded = set(['antibody_lot', 'target', 'validations'])
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody_lot_uuid}/{target_uuid}', '$templated': True}
+    ]
+    item_rels = [
+        {'rel': 'antibody_lot', 'target': '{antibody_lot_uuid}', '$templated': True},
+        {'rel': 'target', 'target': '{target_uuid}', '$templated': True},
+        {'rel': 'validation', 'target': '{validation_uuid}', '$templated': True, '$repeat': 'validation_uuid validation_uuids'},
     ]
     columns = OrderedDict([
         ('antibody_lot.antibody_accession', 'Accession'),

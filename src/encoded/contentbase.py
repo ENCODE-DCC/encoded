@@ -26,6 +26,7 @@ from pyramid.security import (
     authenticated_userid,
     has_permission,
 )
+from pyramid.settings import asbool
 from pyramid.threadlocal import (
     manager,
 )
@@ -54,7 +55,7 @@ from .storage import (
     Link,
     TransactionRecord,
 )
-from ordereddict import OrderedDict
+from collections import OrderedDict
 from .validation import ValidationFailure
 LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
@@ -340,17 +341,18 @@ class Item(object):
         # Expand $templated links
         ns = self.template_namespace(request)
         compiled = ObjectTemplate(self.merged_links)
-        links = compiled(ns)
-        # Embed resources
+        return compiled(ns)
+
+    def expand_embedded(self, request, properties):
         embedded = self.embedded
-        for rel, value in links.items():
-            if rel not in embedded:
+        for name in properties:
+            if name not in embedded:
                 continue
+            value = properties[name]
             if isinstance(value, list):
-                links[rel] = [embed(request, member) for member in value]
+                properties[name] = [embed(request, member) for member in value]
             else:
-                links[rel] = embed(request, value)
-        return links
+                properties[name] = embed(request, value)
 
     def create_keys(self):
         session = DBSession()
@@ -507,7 +509,7 @@ class Collection(object):
     __metaclass__ = CustomItemMeta
     Item = Item
     schema = None
-    properties = OrderedDict
+    properties = OrderedDict()
     item_type = None
     unique_key = None
     columns = {}
@@ -535,6 +537,14 @@ class Collection(object):
         self.__name__ = name
         self.__parent__ = parent
 
+        self.embedded_paths = set()
+        for column in self.columns:
+            path = tuple(
+                name for name in column.split('.')[:-1]
+                if name not in ('length', '0')
+            )
+            self.embedded_paths.add(path)
+
     def __getitem__(self, name):
         try:
             item = self.get(name)
@@ -556,6 +566,8 @@ class Collection(object):
 
     def get_by_uuid(self, uuid, default=None):
         session = DBSession()
+        #if (Resource, (uuid,)) not in session.identity_map:
+        #    print 'Uncached %s/%s' % (self.item_type, uuid)
         model = session.query(Resource).get(uuid)
         if model is None:
             return default
@@ -627,42 +639,74 @@ class Collection(object):
         items = properties['items'] = []
         properties['columns'] = self.columns
 
+        query = query.options(
+            orm.joinedload_all(
+                Resource.rels,
+                Link.target,
+                Resource.data,
+                CurrentPropertySheet.propsheet,
+            ),
+        )
+
         for model in query.limit(limit).all():
             item_uri = request.resource_path(self, model.rid)
-            rendered = embed(request, item_uri)
-            subSet = {}
-            if len(self.columns) > 0:
-                for column in self.columns:
-                    key = column
-                    subSet['@id'] = rendered['@id']
-                    subSet['@type'] = rendered['@type']
-                    if '.' not in key:
-                        subSet[column] = rendered[column]
-                    else:
-                        keys = key.split('.')
-                        firstKey = keys[0]
-                        keys.pop(0)
-                        data = rendered[firstKey]
-                        for singleKey in keys:
-                            # Hardcoding few lines here should be gone with ES
-                            if singleKey == 'length':
-                                data = len(data)
-                            elif singleKey == '0':
-                                if len(data) > 0:
-                                    data = data[0]
-                                else:
-                                    data = ''
-                                    break
-                            elif singleKey in data:
-                                data = data[singleKey]
-                            else:
-                                data = ''
-                        subSet[column] = data
-            else:
-                subSet = rendered
-            items.append(subSet)
+            rendered = embed(request, item_uri + '?embed=false')
+
+            for path in self.embedded_paths:
+                expand_path(request, rendered, path)
+
+            if not self.columns:
+                items.append(rendered)
+                continue
+
+            subset = {
+                '@id': rendered['@id'],
+                '@type': rendered['@type'],
+            }
+            for column in self.columns:
+                subset[column] = column_value(rendered, column)
+
+            items.append(subset)
 
         return properties
+
+    def expand_embedded(self, request, properties):
+        pass
+
+
+def column_value(obj, column):
+    path = column.split('.')
+    value = obj
+    for name in path:
+        # Hardcoding few lines here should be gone with ES
+        if name == 'length':
+            return len(value)
+        elif name == '0':
+            if not value:
+                return ''
+            value = value[0]
+        else:
+            value = value.get(name, None)
+            if value is None:
+                return ''
+    return value
+
+
+def expand_path(request, obj, path):
+    if not path:
+        return
+    name = path[0]
+    remaining = path[1:]
+    value = obj[name]
+    if isinstance(value, list):
+        for index, member in enumerate(value):
+            if not isinstance(member, dict):
+                member = value[index] = embed(request, member + '?embed=false')
+            expand_path(request, member, remaining)
+    else:
+        if not isinstance(value, dict):
+            value = obj[name] = embed(request, value + '?embed=false')
+        expand_path(request, value, remaining)
 
 
 def etag_conditional(view_callable):
@@ -742,7 +786,8 @@ def traversal_security(event):
              decorator=etag_conditional)
 def item_view(context, request):
     properties = context.__json__(request)
-    #maybe_include_embedded(request, properties)
+    if asbool(request.params.get('embed', True)):
+        context.expand_embedded(request, properties)
     return properties
 
 

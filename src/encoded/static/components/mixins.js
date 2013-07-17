@@ -159,8 +159,7 @@ function (mixins, $, React, URI) {
                 self.DISABLE_POPSTATE = true;
                 var old_path = window.location.pathname + window.location.search;
                 window.location.assign('/#logged-out');
-                var new_path = window.location.pathname + window.location.search;
-                if (old_path == new_path) {
+                if (old_path == '/') {
                     window.location.reload();
                 }
             }).fail(function (xhr, status, err) {
