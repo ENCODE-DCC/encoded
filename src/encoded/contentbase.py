@@ -617,7 +617,7 @@ class Collection(object):
         '''Hook for subclasses'''
 
     def __json__(self, request):
-        es_columns = []
+        es_columns = ['@id', '@type']
         for column in self.columns:
             es_columns.append(column)
         s = S().indexes(self.__name__).doctypes('basic').values_dict(tuple(es_columns)).all()
