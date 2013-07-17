@@ -23,7 +23,7 @@ COLLECTION_URL = OrderedDict([
     ('/targets/', ['targets', targets_mapping]),
     ('/antibody-lots/', ['antibody_lots', basic_mapping]),
     ('/validations/', ['validations', basic_mapping]),
-    ('/antibodies/', ['antibody_approvals', antibodies_mapping]),
+    ('/antibodies/', ['antibodies', antibodies_mapping]),
     ('/donors/', ['donors', basic_mapping]),
     ('/treatments/', ['treatments', basic_mapping]),
     ('/constructs/', ['constructs', basic_mapping]),

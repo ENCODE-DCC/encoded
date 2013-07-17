@@ -150,7 +150,7 @@ function (collection, $, class_, React, globals) {
                         factory = globals.listing_titles.lookup(item);
                         value = factory({context: item});
                     } else if (value instanceof Array) {
-                        value = value;
+                        value = value.length;
                     } else if (value['@type']) {
                         factory = globals.listing_titles.lookup(value);
                         value = factory({context: value});

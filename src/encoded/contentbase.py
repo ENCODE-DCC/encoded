@@ -57,6 +57,7 @@ from .storage import (
 )
 from collections import OrderedDict
 from .validation import ValidationFailure
+from elasticutils import S
 LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
 
@@ -616,18 +617,15 @@ class Collection(object):
         '''Hook for subclasses'''
 
     def __json__(self, request):
-        limit = request.params.get('limit', 30)
-        if limit in ('', 'all'):
-            limit = None
-        if limit is not None:
-            limit = int(limit)
-        session = DBSession()
-        query = session.query(Resource).filter(
-            Resource.item_type == self.item_type
-        )
-
+        es_columns = []
+        for column in self.columns:
+            es_columns.append(column)
+        s = S().indexes(self.__name__).doctypes('basic').values_dict(tuple(es_columns)).all()
+        es_items = []
+        for item in s:
+            es_items.append(item)
         properties = self.properties.copy()
-        properties['count'] = query.count()
+        properties['count'] = len(es_items)
         # Expand $templated links
         ns = properties.copy()
         ns['collection_uri'] = request.resource_path(self)
@@ -636,37 +634,8 @@ class Collection(object):
         compiled = ObjectTemplate(self.merged_links)
         links = compiled(ns)
         properties.update(links)
-        items = properties['items'] = []
+        properties['items'] = es_items
         properties['columns'] = self.columns
-
-        query = query.options(
-            orm.joinedload_all(
-                Resource.rels,
-                Link.target,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
-            ),
-        )
-
-        for model in query.limit(limit).all():
-            item_uri = request.resource_path(self, model.rid)
-            rendered = embed(request, item_uri + '?embed=false')
-
-            for path in self.embedded_paths:
-                expand_path(request, rendered, path)
-
-            if not self.columns:
-                items.append(rendered)
-                continue
-
-            subset = {
-                '@id': rendered['@id'],
-                '@type': rendered['@type'],
-            }
-            for column in self.columns:
-                subset[column] = column_value(rendered, column)
-
-            items.append(subset)
 
         return properties
 

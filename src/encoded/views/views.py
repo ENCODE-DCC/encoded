@@ -180,8 +180,8 @@ class Biosample(Collection):
         ('donor.organism.organism_name', 'Species'),
         ('source.alias', 'Source'),
         ('lab.name', 'Submitter'),
-        ('treatments.length', 'Treatments'),
-        ('constructs.length', 'Constructs')
+        ('treatments', 'Treatments'),
+        ('constructs', 'Constructs')
     ])
 
 
