@@ -43,15 +43,15 @@ class AccessKey(Collection):
 
     class Item(Collection.Item):
         links = {
-            'user': {'value': '/users/{user_uuid}', '$templated': True},
+            'user': {'value': '/users/{user}', '$templated': True},
         }
         keys = ['access_key_id']
         rels = [
-            {'rel': '{item_type}:user', 'target': '{user_uuid}', '$templated': True},
+            {'rel': '{item_type}:user', 'target': '{user}', '$templated': True},
         ]
 
         def __acl__(self):
-            owner = 'userid:%s' % self.properties['user_uuid']
+            owner = 'userid:%s' % self.properties['user']
             return [
                 (Allow, owner, 'edit'),
                 (Allow, owner, 'view'),
@@ -69,8 +69,8 @@ def access_key_add(context, request):
     if 'access_key_id' not in request.validated:
         request.validated['access_key_id'] = generate_user()
 
-    if 'user_uuid' not in request.validated:
-        request.validated['user_uuid'], = [
+    if 'user' not in request.validated:
+        request.validated['user'], = [
             principal.split(':', 1)[1]
             for principal in effective_principals(request)
             if principal.startswith('userid:')
@@ -177,7 +177,7 @@ def edw_key_create(context, request):
     request.validated.clear()
     request.validated['access_key_id'] = username
     request.validated['secret_access_key_hash'] = pwhash
-    request.validated['user_uuid'] = user.uuid
+    request.validated['user'] = user.uuid
     request.validated['description'] = ''
 
     collection_add(collection, request)
@@ -212,7 +212,7 @@ def edw_key_update(request):
     request.validated.clear()
     request.validated.update(access_key.properties)
     request.validated['secret_access_key_hash'] = pwhash
-    request.validated['user_uuid'] = user.uuid
+    request.validated['user'] = user.uuid
 
     item_edit(access_key, request)
     return {'status': 'success'}

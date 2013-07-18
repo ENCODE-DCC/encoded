@@ -39,8 +39,8 @@ class User(Collection):
     class Item(Collection.Item):
         links = {
             'submits_for': [
-                {'$value': '/labs/{lab_uuid}', '$templated': True,
-                 '$repeat': 'lab_uuid submits_for'},
+                {'$value': '/labs/{lab}', '$templated': True,
+                 '$repeat': 'lab submits_for'},
             ],
             'lab': {'$value': '/labs/{lab}', '$templated': True, '$condition': 'lab'},
         }

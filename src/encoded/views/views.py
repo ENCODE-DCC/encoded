@@ -25,8 +25,8 @@ class Lab(Collection):
     }
     item_links = {
         'awards': [
-            {'$value': '/awards/{award_uuid}', '$templated': True,
-             '$repeat': 'award_uuid award_uuids'}
+            {'$value': '/awards/{award}', '$templated': True,
+             '$repeat': 'award awards'}
         ]
     }
 
@@ -51,12 +51,12 @@ class AntibodyLots(Collection):
         'description': 'Listing of ENCODE antibodies',
     }
     item_links = {
-        'source': {'$value': '/sources/{source_uuid}', '$templated': True},
+        'source': {'$value': '/sources/{source}', '$templated': True},
     }
     item_embedded = set(['source'])
     item_keys = [
-        {'name': 'accession', 'value': '{antibody_accession}', '$templated': True},
-        {'name': '{item_type}:source_product_lot', 'value': '{source_uuid}/{product_id}/{lot_id}', '$templated': True},
+        {'name': 'accession', 'value': '{accession}', '$templated': True},
+        {'name': '{item_type}:source_product_lot', 'value': '{source}/{product_id}/{lot_id}', '$templated': True},
     ]
 
 
@@ -95,7 +95,7 @@ class Donor(Collection):
         'description': 'Listing Biosample Donors',
     }
     item_links = {
-        'organism': {'$value': '/organisms/{organism_uuid}', '$templated': True},
+        'organism': {'$value': '/organisms/{organism}', '$templated': True},
     }
     item_embedded = set(['organism'])
     item_keys = ['donor_id']
@@ -120,9 +120,9 @@ class Construct(Collection):
         'description': 'Listing of Biosample Constructs',
     }
     item_links = {
-        'source': {'$value': '/sources/{source_uuid}', '$templated': True},
+        'source': {'$value': '/sources/{source}', '$templated': True},
         'documents': [
-            {'$value': '/documents/{document_uuid}', '$templated': True, '$repeat': 'document_uuid document_uuids'},
+            {'$value': '/documents/{document}', '$templated': True, '$repeat': 'document documents'},
         ],
     }
     item_embedded = set(['source', 'documents'])
@@ -140,9 +140,9 @@ class Document(Collection):
     class Item(ItemWithDocument):
         keys = ['document_name']
         links = {
-            'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
-            'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
-            'award': {'$value': '/awards/{award_uuid}', '$templated': True},
+            'submitter': {'$value': '/users/{submitter}', '$templated': True},
+            'lab': {'$value': '/labs/{lab}', '$templated': True},
+            'award': {'$value': '/awards/{award}', '$templated': True},
         }
         embedded = set(['submitter', 'lab', 'award'])
 
@@ -156,19 +156,19 @@ class Biosample(Collection):
         'description': 'Biosamples used in the ENCODE project',
     }
     item_links = {
-        'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
-        'source': {'$value': '/sources/{source_uuid}', '$templated': True},
-        'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
-        'award': {'$value': '/awards/{award_uuid}', '$templated': True},
-        'donor': {'$value': '/donors/{donor_uuid}', '$templated': True},
+        'submitter': {'$value': '/users/{submitter}', '$templated': True},
+        'source': {'$value': '/sources/{source}', '$templated': True},
+        'lab': {'$value': '/labs/{lab}', '$templated': True},
+        'award': {'$value': '/awards/{award}', '$templated': True},
+        'donor': {'$value': '/donors/{donor}', '$templated': True},
         'documents': [
-            {'$value': '/documents/{document_uuid}', '$templated': True, '$repeat': 'document_uuid document_uuids'},
+            {'$value': '/documents/{document}', '$templated': True, '$repeat': 'document documents'},
         ],
         'treatments': [
-            {'$value': '/treatments/{treatment_uuid}', '$templated': True, '$repeat': 'treatment_uuid treatment_uuids'},
+            {'$value': '/treatments/{treatment}', '$templated': True, '$repeat': 'treatment treatments'},
         ],
         'constructs': [
-            {'$value': '/constructs/{construct_uuid}', '$templated': True, '$repeat': 'construct_uuid construct_uuids'},
+            {'$value': '/constructs/{construct}', '$templated': True, '$repeat': 'construct constructs'},
         ],
     }
     item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs', 'documents'])
@@ -194,10 +194,10 @@ class Target(Collection):
         'description': 'Listing of ENCODE3 targets',
     }
     item_links = {
-        'organism': {'$value': '/organisms/{organism_uuid}', '$templated': True},
-        'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
-        'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
-        'award': {'$value': '/awards/{award_uuid}', '$templated': True},
+        'organism': {'$value': '/organisms/{organism}', '$templated': True},
+        'submitter': {'$value': '/users/{submitter}', '$templated': True},
+        'lab': {'$value': '/labs/{lab}', '$templated': True},
+        'award': {'$value': '/awards/{award}', '$templated': True},
     }
     item_embedded = set(['organism', 'submitter', 'lab', 'award'])
     #   item_keys = [('target_label', 'organism_name')] multi columns not implemented yet
@@ -221,11 +221,11 @@ class AntibodyValidation(Collection):
 
     class Item(ItemWithDocument):
         links = {
-            'antibody_lot': {'$value': '/antibody-lots/{antibody_lot_uuid}', '$templated': True},
-            'target': {'$value': '/targets/{target_uuid}', '$templated': True},
-            'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
-            'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
-            'award': {'$value': '/awards/{award_uuid}', '$templated': True},
+            'antibody_lot': {'$value': '/antibody-lots/{antibody_lot}', '$templated': True},
+            'target': {'$value': '/targets/{target}', '$templated': True},
+            'submitter': {'$value': '/users/{submitter}', '$templated': True},
+            'lab': {'$value': '/labs/{lab}', '$templated': True},
+            'award': {'$value': '/awards/{award}', '$templated': True},
         }
         embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
 
@@ -239,23 +239,23 @@ class AntibodyApproval(Collection):
         'description': 'Listing of validation approvals for ENCODE antibodies',
     }
     item_links = {
-        'antibody_lot': {'$value': '/antibody-lots/{antibody_lot_uuid}', '$templated': True},
-        'target': {'$value': '/targets/{target_uuid}', '$templated': True},
+        'antibody_lot': {'$value': '/antibody-lots/{antibody_lot}', '$templated': True},
+        'target': {'$value': '/targets/{target}', '$templated': True},
         'validations': [
-            {'$value': '/validations/{validation_uuid}', '$templated': True, '$repeat': 'validation_uuid validation_uuids'},
+            {'$value': '/validations/{validation}', '$templated': True, '$repeat': 'validation validations'},
         ],
     }
     item_embedded = set(['antibody_lot', 'target', 'validations'])
     item_keys = [
-        {'name': '{item_type}:lot_target', 'value': '{antibody_lot_uuid}/{target_uuid}', '$templated': True}
+        {'name': '{item_type}:lot_target', 'value': '{antibody_lot}/{target}', '$templated': True}
     ]
     item_rels = [
-        {'rel': 'antibody_lot', 'target': '{antibody_lot_uuid}', '$templated': True},
-        {'rel': 'target', 'target': '{target_uuid}', '$templated': True},
-        {'rel': 'validation', 'target': '{validation_uuid}', '$templated': True, '$repeat': 'validation_uuid validation_uuids'},
+        {'rel': 'antibody_lot', 'target': '{antibody_lot}', '$templated': True},
+        {'rel': 'target', 'target': '{target}', '$templated': True},
+        {'rel': 'validation', 'target': '{validation}', '$templated': True, '$repeat': 'validation validations'},
     ]
     columns = OrderedDict([
-        ('antibody_lot.antibody_accession', 'Accession'),
+        ('antibody_lot.accession', 'Accession'),
         ('target.target_label', 'Target'),
         ('target.organism.organism_name', 'Species'),
         ('antibody_lot.source.source_name', 'Source'),
@@ -283,9 +283,9 @@ class Library(Collection):
         'description': 'Listing of Libraries',
     }
     item_links = {
-        'biosample': {'$value': '/biosamples/{biosample_uuid}', '$templated': True},
+        'biosample': {'$value': '/biosamples/{biosample}', '$templated': True},
         'documents': [
-            {'$value': '/documents/{document_uuid}', '$templated': True, '$repeat': 'document_uuid document_uuids'},
+            {'$value': '/documents/{document}', '$templated': True, '$repeat': 'document documents'},
         ],
     }
     item_embedded = set(['biosample', 'documents'])
@@ -309,9 +309,9 @@ class Replicates(Collection):
         'description': 'Listing of Replicates',
     }
     item_links = {
-        'library': {'$value': '/libraries/{library_uuid}', '$templated': True},
-        'platform': {'$value': '/platforms/{platform_uuid}', '$templated': True},
-        'assay': {'$value': '/assays/{assay_uuid}', '$templated': True},
+        'library': {'$value': '/libraries/{library}', '$templated': True},
+        'platform': {'$value': '/platforms/{platform}', '$templated': True},
+        'assay': {'$value': '/assays/{assay}', '$templated': True},
     }
     item_embedded = set(['library', 'platform', 'assay'])
 
@@ -324,9 +324,9 @@ class Files(Collection):
         'description': 'Listing of Files',
     }
     item_links = {
-        'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
-        'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
-        'award': {'$value': '/awards/{award_uuid}', '$templated': True},
+        'submitter': {'$value': '/users/{submitter}', '$templated': True},
+        'lab': {'$value': '/labs/{lab}', '$templated': True},
+        'award': {'$value': '/awards/{award}', '$templated': True},
     }
     item_embedded = set(['submitter', 'lab', 'award'])
 
@@ -339,23 +339,23 @@ class Experiments(Collection):
         'description': 'Listing of Experiments',
     }
     item_links = {
-        'submitter': {'$value': '/users/{submitter_uuid}', '$templated': True},
-        'lab': {'$value': '/labs/{lab_uuid}', '$templated': True},
-        'award': {'$value': '/awards/{award_uuid}', '$templated': True},
+        'submitter': {'$value': '/users/{submitter}', '$templated': True},
+        'lab': {'$value': '/labs/{lab}', '$templated': True},
+        'award': {'$value': '/awards/{award}', '$templated': True},
         'files': [
-            {'$value': '/files/{file_uuid}', '$templated': True, '$repeat': 'file_uuid file_uuids'},
+            {'$value': '/files/{file}', '$templated': True, '$repeat': 'file files'},
         ],
         'replicates': [
-            {'$value': '/replicates/{replicate_uuid}', '$templated': True, '$repeat': 'replicate_uuid replicate_uuids'},
+            {'$value': '/replicates/{replicate}', '$templated': True, '$repeat': 'replicate replicates'},
         ],
         'controls': [
-            {'$value': '/experiments/{experiment_control_uuid}', '$templated': True, '$repeat': 'experiment_control_uuid experiment_control_uuids'},
+            {'$value': '/experiments/{experiment_control}', '$templated': True, '$repeat': 'experiment_control experiment_controls'},
         ],
     }
     item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award', 'controls'])
-    item_keys = [{'name': 'accession', 'value': '{dataset_accession}', '$templated': True}]
+    item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
     columns = OrderedDict([
-        ('dataset_accession', 'Accession'),
+        ('accession', 'Accession'),
         ('replicates.0.assay.assay_name', 'Assay Type'),
         ('replicates.0.target', 'Target'),
         ('replicates.0.library.biosample.biosample_term_name', 'Biosample'),
