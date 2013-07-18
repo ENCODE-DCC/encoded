@@ -221,13 +221,13 @@ class AntibodyValidation(Collection):
 
     class Item(ItemWithDocument):
         links = {
-            'antibody_lot': {'$value': '/antibody-lots/{antibody_lot}', '$templated': True},
+            'antibody': {'$value': '/antibody-lots/{antibody}', '$templated': True},
             'target': {'$value': '/targets/{target}', '$templated': True},
             'submitter': {'$value': '/users/{submitter}', '$templated': True},
             'lab': {'$value': '/labs/{lab}', '$templated': True},
             'award': {'$value': '/awards/{award}', '$templated': True},
         }
-        embedded = set(['antibody_lot', 'target', 'submitter', 'lab', 'award'])
+        embedded = set(['antibody', 'target', 'submitter', 'lab', 'award'])
 
 
 @location('antibodies')
@@ -239,28 +239,28 @@ class AntibodyApproval(Collection):
         'description': 'Listing of validation approvals for ENCODE antibodies',
     }
     item_links = {
-        'antibody_lot': {'$value': '/antibody-lots/{antibody_lot}', '$templated': True},
+        'antibody': {'$value': '/antibody-lots/{antibody}', '$templated': True},
         'target': {'$value': '/targets/{target}', '$templated': True},
         'validations': [
             {'$value': '/validations/{validation}', '$templated': True, '$repeat': 'validation validations'},
         ],
     }
-    item_embedded = set(['antibody_lot', 'target', 'validations'])
+    item_embedded = set(['antibody', 'target', 'validations'])
     item_keys = [
-        {'name': '{item_type}:lot_target', 'value': '{antibody_lot}/{target}', '$templated': True}
+        {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
     ]
     item_rels = [
-        {'rel': 'antibody_lot', 'target': '{antibody_lot}', '$templated': True},
+        {'rel': 'antibody', 'target': '{antibody}', '$templated': True},
         {'rel': 'target', 'target': '{target}', '$templated': True},
         {'rel': 'validation', 'target': '{validation}', '$templated': True, '$repeat': 'validation validations'},
     ]
     columns = OrderedDict([
-        ('antibody_lot.accession', 'Accession'),
+        ('antibody.accession', 'Accession'),
         ('target.target_label', 'Target'),
         ('target.organism.organism_name', 'Species'),
-        ('antibody_lot.source.source_name', 'Source'),
-        ('antibody_lot.product_id', 'Product ID'),
-        ('antibody_lot.lot_id', 'Lot ID'),
+        ('antibody.source.source_name', 'Source'),
+        ('antibody.product_id', 'Product ID'),
+        ('antibody.lot_id', 'Lot ID'),
         ('validations.length', 'Validations'),
         ('approval_status', 'Status')
     ])
