@@ -127,8 +127,8 @@ def maybe_include_embedded(request, result):
 
 def setting_uuid_permitted(context, request):
     data = request.json
-    _uuid = data.get('_uuid', _marker)
-    if _uuid is _marker:
+    uuid = data.get('uuid', _marker)
+    if uuid is _marker:
         return
 
     result = has_permission('add_with_uuid', context, request)
@@ -137,17 +137,17 @@ def setting_uuid_permitted(context, request):
         raise HTTPForbidden(msg, result=result)
 
     try:
-        UUID(_uuid)
+        UUID(uuid)
     except ValueError:
-        msg = "%r is not a %r" % (_uuid, 'uuid')
-        request.errors.add('body', ['_uuid'], msg)
+        msg = "%r is not a %r" % (uuid, 'uuid')
+        request.errors.add('body', ['uuid'], msg)
 
-    request.validated['_uuid'] = _uuid
+    request.validated['uuid'] = uuid
 
 
 def validate_item_content(context, request):
     data = request.json
-    data.pop('_uuid', None)
+    data.pop('uuid', None)
     if isinstance(context, Item):
         schema = context.__parent__.schema
     else:
@@ -330,7 +330,7 @@ class Item(object):
         # Expand $templated links
         ns = self.properties.copy()
         ns['item_type'] = self.item_type
-        ns['_uuid'] = self.uuid
+        ns['uuid'] = self.uuid
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)
             ns['item_uri'] = request.resource_path(self)
@@ -602,12 +602,12 @@ class Collection(object):
         return self.Item(self, model)
 
     def add(self, properties):
-        uuid = properties.get('_uuid', _marker)
+        uuid = properties.get('uuid', _marker)
         if uuid is _marker:
             uuid = uuid4()
         else:
             properties = properties.copy()
-            del properties['_uuid']
+            del properties['uuid']
         item = self.Item.create(self, uuid, properties)
         self.after_add(item)
         return item
