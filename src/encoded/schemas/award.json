@@ -4,7 +4,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "0.01",
     "description": "Schema for submitting an Award (Grant) for the ENCODE Project",
-    "required": [ "name", "pi"],
+    "required": [ "name"],
     "additionalProperties": false,
     "properties": {
         "schema-version": {
@@ -22,7 +22,7 @@
             "description": "Official NIH reference number for the award",
             "title": "Award Name (NIH reference number)",
             "type": "string",
-            "pattern": "^[a-z0-9\\-]+$"
+            "pattern": "^[A-Za-z0-9\\-]+$"
        },
         "description": {
             "default": "",
