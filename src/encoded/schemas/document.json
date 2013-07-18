@@ -23,24 +23,23 @@
         "type": {
             "description": "The specific purpose of the document or protocol",
             "title": "Document Type",
-            "type": {
-                "enum": [
-                    "growth protocol",
-                    "extraction protocol",
-                    "certificate of analysis",
-                    "iPS cell reprogramming protocol",
-                    "differentiation protocol",
-                    "data sheet",
-                    "cell isolation and sorting protocol",
-                    "treatment protocol",
-                    "vector construct image",
-                    "biosample validation",
-                    "general protocol",
-                    "excision protocol",
-                    "transfection protocol",
-                    "construct information"
-               ]
-            }
+            "type": "string",
+            "enum": [
+                "growth protocol",
+                "extraction protocol",
+                "certificate of analysis",
+                "iPS cell reprogramming protocol",
+                "differentiation protocol",
+                "data sheet",
+                "cell isolation and sorting protocol",
+                "treatment protocol",
+                "vector construct image",
+                "biosample validation",
+                "general protocol",
+                "excision protocol",
+                "transfection protocol",
+                "construct information"
+           ]
         },
         "lab": {
             "default": "ENCODE Project",
@@ -76,16 +75,14 @@
                 "type": {
                     "description": "File MIME-type",
                     "title": "MIME-type",
-                    "type": {
-                        "enum": [
-                            "application/pdf",
-                            "text/plain",
-                            "image/jpeg",
-                            "image/tiff",
-                            "image/gif",
-                            "image/png"
-                        ]
-                    }
+                    "enum": [
+                        "application/pdf",
+                        "text/plain",
+                        "image/jpeg",
+                        "image/tiff",
+                        "image/gif",
+                        "image/png"
+                    ]
                 }
             },
             "type": "object"

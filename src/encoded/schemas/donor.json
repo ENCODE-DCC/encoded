@@ -65,13 +65,12 @@
         "age_units": {
             "description": "Units for age or lifecycle stage of the donor organism when sampled",
             "title": "Donor Age/Stage Units",
-            "type": {
-                "enum": [
-                    "years",
-                    "days",
-                    "embryonic stage"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "years",
+                "days",
+                "embryonic stage"
+            ]
         },
         "lab_aliases": {
             "default": [],
@@ -101,14 +100,13 @@
             "default": "unknown",
             "description": "Sex (Gender) of the donor",
             "title": "Donor Sex",
-            "type": {
-                "enum": [
-                    "male",
-                    "female",
-                    "unknown",
-                    "mixed"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "male",
+                "female",
+                "unknown",
+                "mixed"
+            ]
         },
         "parents": {
             "default": [],

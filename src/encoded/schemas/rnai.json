@@ -17,12 +17,11 @@
        "type": {
             "description": "The sub-type of the interfering RNA",
             "title": "RNAi Type",
-            "type": {
-                "enum": [
-                    "shRNA",
-                    "siRNA"
-               ]
-            }
+            "type": "string",
+            "enum": [
+                "shRNA",
+                "siRNA"
+            ]
         },
         "lab": {
             "default": "ENCODE Project",

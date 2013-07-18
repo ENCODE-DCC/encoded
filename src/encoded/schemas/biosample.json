@@ -71,15 +71,14 @@
         "type": {
             "description": "The sub-type of the biosample",
             "title": "Biosample Type",
-            "type": {
-                "enum" : [
-                    "primary cell line",
-                    "immortalized cell line",
-                    "tissue",
-                    "in vitro differentiated cells",
-                    "induced pluripotent stem cell line"
-                ]
-            }
+            "type": "string",
+            "enum" : [
+                "primary cell line",
+                "immortalized cell line",
+                "tissue",
+                "in vitro differentiated cells",
+                "induced pluripotent stem cell line"
+            ]
         },
         "source": {
             "description": "Source or Vendor of Biomaterials",
@@ -251,33 +250,30 @@
             "description": "The subcomponent of cells/tissues isolated for specific library prep",
             "comment": "Terms are from the GO Cellular Component ontology",
             "title": "Subcellular Fraction",
-            "type": {
-                "enum": ["nucleus", "cytosol"]
-            }
+            "type": "string",
+            "enum": ["nucleus", "cytosol"]
         },
         "phase": {
             "description": "Cell-cycle phase in which cells were harvested",
             "title": "Cell-cycle phase",
-            "type": {
-                "enum": [
-                    "G1",
-                    "G1b",
-                    "G2",
-                    "S1",
-                    "S2",
-                    "S3",
-                    "S4"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "G1",
+                "G1b",
+                "G2",
+                "S1",
+                "S2",
+                "S3",
+                "S4"
+            ]
         },
          "transfection_type": {
             "description": "The in-cell longevity of the transfection construct (if it exists)",
             "title": "Transfection type (stability)",
-            "type": {
-                "enum": [
-                    "stable", "transient"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "stable", "transient"
+            ]
         },
         "culture_harvest_date": {
             "description": "Harvest date of cell culture",
@@ -305,11 +301,10 @@
         "starting_amount_units": {
             "description": "Units tarting amount of Biosample",
             "title": "Starting Amount Units",
-            "type": {
-                "enum": [
-                    "g","mg","cells/ml","cells", "whole embryos", "items"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "g","mg","cells/ml","cells", "whole embryos", "items"
+            ]
         },
         "url": {
             "description": "Commercial URL for purchased Biosamples",

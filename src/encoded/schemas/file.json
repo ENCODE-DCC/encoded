@@ -25,33 +25,32 @@
             "description": "File format (FastQ, BAM, BED, etc.)",
             "comment": "Some of these types are for historical purposes only and are not valid new inputs.",
             "title": "File Format",
-            "type": {
-                "enum": [
-                    "bam",
-                    "bed12",
-                    "bed12+3",
-                    "bed12+3.bigBed",
-                    "bed15",
-                    "bed3",
-                    "bed4",
-                    "bed5",
-                    "bed6",
-                    "bed6+3",
-                    "bed6+3.bigBed",
-                    "bed8",
-                    "bed9",
-                    "bed9+1",
-                    "bed9+1.bigBed",
-                    "bed9+2",
-                    "bed9+2.bigBed",
-                    "bigWig",
-                    "broadPeak",
-                    "fastq",
-                    "gtf",
-                    "narrowPeak",
-                    "narrowPeak.bigBed"
-               ]
-            }
+            "type": "string",
+            "enum": [
+                "bam",
+                "bed12",
+                "bed12+3",
+                "bed12+3.bigBed",
+                "bed15",
+                "bed3",
+                "bed4",
+                "bed5",
+                "bed6",
+                "bed6+3",
+                "bed6+3.bigBed",
+                "bed8",
+                "bed9",
+                "bed9+1",
+                "bed9+1.bigBed",
+                "bed9+2",
+                "bed9+2.bigBed",
+                "bigWig",
+                "broadPeak",
+                "fastq",
+                "gtf",
+                "narrowPeak",
+                "narrowPeak.bigBed"
+            ]
         },
         "lab": {
             "default": "ENCODE Project",
@@ -72,22 +71,21 @@
         "md5sum": {
             "description": "Calucluated MD5 sum of the file",
             "title": "MD5 Sum",
-            "type": "integer",
+            "type": "string",
             "format": "hex"
         },
         "output_type": {
             "description": "Coded description of the file purpose/contents for display",
             "comment": "Not all combinations of output_type and file_type are valid.",
             "title": "Output Type",
-            "type": {
-                "enum": [
-                    "sites",
-                    "rawData",
-                    "peaks",
-                    "alignments",
-                    "signal"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "sites",
+                "rawData",
+                "peaks",
+                "alignments",
+                "signal"
+            ]
         },
         "replicate": {
             "description": "Pointer to the experimental replicate for this file.",
@@ -106,9 +104,8 @@
             "description": "Genome assembly that files were mapped to",
             "title": "Mapping Assembly",
             "comment": "BAM/BED and other mapped files only.",
-            "type": {
-                "enum": ["mm9", "hg19", "n/a"]
-            }
+            "type": "string",
+            "enum": ["mm9", "hg19", "n/a"]
         },
          "submitted_file_name": {
             "description": "Original, local file name of the file (not unique, for reference only)",
@@ -124,9 +121,8 @@
             "description": "Genome assembly that files were mapped to",
             "title": "Mapping Assembly",
             "comment": "BAM/BED and other mapped files only.",
-            "type": {
-                "enum": ["mm9", "hg19", "n/a"]
-            }
+            "type": "string",
+            "enum": ["mm9", "hg19", "n/a"]
         },
        "date_passed_validation": {
             "description": "The date which this file passed ENCODE DCC Validation",

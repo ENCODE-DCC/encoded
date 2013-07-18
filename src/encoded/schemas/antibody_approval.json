@@ -25,7 +25,7 @@
             "description": "Target for which the antibody validation applies.",
             "comment": "Automatic submitters can supply a target uuid, or name/species pair",
             "title": "Antibody Target",
-            "type": "object",
+            "type": "string",
             "format": "target_link"
         },
         "lab": {
@@ -62,15 +62,14 @@
             "description": "Approval status for the Antibody-Target-Validation triple",
             "comment": "This might not be appropriate here.",
             "title": "Approval Status",
-            "type": {
-                "enum" : [
-                    "APPROVED",
-                    "SUBMITTED",
-                    "UNSUBMITTED",
-                    "FAILED",
-                    "INCOMPLETE"
-                ]
-            }
+            "type": "string",
+            "enum" : [
+                "APPROVED",
+                "SUBMITTED",
+                "UNSUBMITTED",
+                "FAILED",
+                "INCOMPLETE"
+            ]
         }
     }
 }

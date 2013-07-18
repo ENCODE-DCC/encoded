@@ -47,13 +47,12 @@
             "default": "project",
             "description": "The Dataset type",
             "title": "Dataset Type",
-            "type": {
-                "enum": [
-                    "project",
-                    "composite",
-                    "publication"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "project",
+                "composite",
+                "publication"
+            ]
         },
         "geo_dbxrefs": {
             "default": [],

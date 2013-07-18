@@ -42,25 +42,24 @@
             "description": "Experimental method for the validation image",
             "comment": "This will likely get mapped to an experimental methods ontology.",
             "title": "Method",
-            "type": {
-                "enum": [
-                    "western blot",
-                    "western blot after IP",
-                    "immunoprecipitation",
-                    "immunofluorescense",
-                    "knockdowns",
-                    "mass spectrometry after IP",
-                    "chIP comparison",
-                    "tagged epitopes",
-                    "motif enrichment",
-                    "dot blot",
-                    "peptide ELISA",
-                    "competitor peptides",
-                    "mutant organisms",
-                    "mutant histones",
-                    "annotation enrichment"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "western blot",
+                "western blot after IP",
+                "immunoprecipitation",
+                "immunofluorescense",
+                "knockdowns",
+                "mass spectrometry after IP",
+                "chIP comparison",
+                "tagged epitopes",
+                "motif enrichment",
+                "dot blot",
+                "peptide ELISA",
+                "competitor peptides",
+                "mutant organisms",
+                "mutant histones",
+                "annotation enrichment"
+            ]
         },
         "caption": {
             "default": "",
@@ -90,15 +89,14 @@
             "default": "INCOMPLETE",
             "description": "Approval status for the Validation image",
             "title": "Approval Status",
-            "type": {
-                "enum" : [
-                    "APPROVED",
-                    "SUBMITTED",
-                    "UNSUBMITTED",
-                    "FAILED",
-                    "INCOMPLETE"
-                ]
-            }
+            "type": "string",
+            "enum" : [
+                "APPROVED",
+                "SUBMITTED",
+                "UNSUBMITTED",
+                "FAILED",
+                "INCOMPLETE"
+            ]
         }
     }
 }

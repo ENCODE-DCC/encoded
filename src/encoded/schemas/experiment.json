@@ -68,9 +68,8 @@
             "description": "The Dataset type",
             "comment": "For Experiments this is always 'experiment'",
             "title": "Dataset Type",
-            "type": {
-                "enum": ["experiment"]
-            }
+            "type": "string",
+            "enum": ["experiment"]
         },
         "geo_dbxrefs": {
             "default": [],

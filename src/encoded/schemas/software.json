@@ -44,14 +44,13 @@
         "type": {
             "description": "The purpose of the software",
             "title": "Software Type",
-            "type": {
-                "enum" : [
-                    "mapper",
-                    "peakcaller",
-                    "other",
-                    "pipeline"
-                 ]
-            }
+            "type": "string",
+            "enum" : [
+                "mapper",
+                "peakcaller",
+                "other",
+                "pipeline"
+            ]
         },
        "software_version": {
             "description": "Software version code",

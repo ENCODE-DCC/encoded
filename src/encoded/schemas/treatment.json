@@ -40,12 +40,11 @@
             "default": "chemical",
             "description": "The type of biosample treatment",
             "title": "Treatment Type",
-            "type": {
-                "enum": [
-                    "protein",
-                    "chemical"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "protein",
+                "chemical"
+            ]
         },
         "protocol": {
             "description": "Treatment protocol document",
@@ -101,14 +100,13 @@
             "description": "Concentration units for chemical treament",
             "comment": "For chemical treatments only",
             "title": "Conc. units",
-            "type": {
-                "enum": [
-                    "nM",
-                    "μM",
-                    "mM",
-                    "percent"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "nM",
+                "μM",
+                "mM",
+                "percent"
+            ]
         },
         "duration": {
             "description": "Duration of chemical treament (numeric)",
@@ -120,14 +118,13 @@
             "description": "Duration units for chemical treament",
             "comment": "For chemical treatments only",
             "title": "Duration units",
-            "type": {
-                "enum": [
-                    "sec",
-                    "min",
-                    "hour",
-                    "day"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "sec",
+                "min",
+                "hour",
+                "day"
+            ]
         }
     }
 }

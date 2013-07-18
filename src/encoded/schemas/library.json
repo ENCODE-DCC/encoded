@@ -61,14 +61,13 @@
             "description": "Type/subtype of nucleic acid isolated.",
             "title": "Nucleic Acid Type",
             "comment": "These will be SO (sequence ontology) terms were possible, but only a small subset",
-            "type": {
-                "enum": [
-                    "DNA",
-                    "RNA",
-                    "polyadenylated mRNA",
-                    "miRNA"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "DNA",
+                "RNA",
+                "polyadenylated mRNA",
+                "miRNA"
+            ]
         },
         "term_id": {
             "description": "The ID of the SO (Sequence Ontology) term best matching the nucleic acid type",
@@ -129,64 +128,60 @@
             "description": "A short description of the nucleic acid extraction method used in Library prep.",
             "title": "Extraction Method",
             "default": "see document",
-            "type": {
-                "enum": [
-                    "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                    "Trizol (LifeTech cat#: 15596-018)",
-                    "Ambion mirVana",
-                    "Qiagen #74204",
-                    "QIAGEN DNeasy Blood & Tissue Kit",
-                    "see document",
-                    "n/a"
-                ]
-            },
+            "type": "string",
+            "enum": [
+                "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                "Trizol (LifeTech cat#: 15596-018)",
+                "Ambion mirVana",
+                "Qiagen #74204",
+                "QIAGEN DNeasy Blood & Tissue Kit",
+                "see document",
+                "n/a"
+            ],
             "format": "semi-controlled"
         },
         "fragmentation_method": {
             "description": "A short description of the nucleic acid fragmentation method used in Library prep.",
             "title": "Fragmentation Method",
             "default": "see document",
-            "type": {
-                "enum": [
-                    "sonication",
-                    "see document",
-                    "covaris sheering",
-                    "chemical (part of Illumina TruSeq mRNA Kit)",
-                    "Illumina/Nextera tagmentation",
-                    "bioruptor twin",
-                    "n/a"
-                ]
-            },
+            "type": "string",
+            "enum": [
+                "sonication",
+                "see document",
+                "covaris sheering",
+                "chemical (part of Illumina TruSeq mRNA Kit)",
+                "Illumina/Nextera tagmentation",
+                "bioruptor twin",
+                "n/a"
+            ],
             "format": "semi-controlled"
         },
         "library_size_selection_method": {
             "default": "see document",
             "description": "The experimental method used to size-select the nucleic acid during Library prep.",
             "title": "",
-            "type": {
-                "enum": [
-                    "gel",
-                    "see document",
-                    "SPRI beads"
-                ]
-            },
+            "type": "string",
+            "enum": [
+                "gel",
+                "see document",
+                "SPRI beads"
+            ],
             "format": "semi-controlled"
         },
         "lysis_method": {
             "description": "A short description of the cell lysis method used in Library prep.",
             "title": "Lysis Method",
             "default": "see document",
-            "type": {
-                "enum": [
-                    "miRNeasy Mini kit (QIAGEN cat#:217004)",
-                    "Trizol (LifeTech cat#: 15596-018)",
-                    "Ambion mirVana",
-                    "Qiagen #74204",
-                    "QIAGEN DNeasy Blood & Tissue Kit",
-                    "see document",
-                    "n/a"
-                ]
-            },
+            "type": "string",
+            "enum": [
+                "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                "Trizol (LifeTech cat#: 15596-018)",
+                "Ambion mirVana",
+                "Qiagen #74204",
+                "QIAGEN DNeasy Blood & Tissue Kit",
+                "see document",
+                "n/a"
+            ],
             "format": "semi-controlled"
         },
         "size_range": {

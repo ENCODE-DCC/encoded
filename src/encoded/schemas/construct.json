@@ -17,12 +17,11 @@
         "type": {
             "description": "The type of transfection construct",
             "title": "Construct Type",
-            "type": {
-                "enum": [
-                    "fusion protein",
-                    "zinc-finger knockout"
-               ]
-            }
+            "type": "string",
+            "enum": [
+                "fusion protein",
+                "zinc-finger knockout"
+            ]
         },
        "lab": {
             "default": "ENCODE Project",
@@ -68,7 +67,7 @@
             "description": "Target that is tagged or knocked down by the construct",
             "comment": "Automatic submitters can supply a target uuid, or name/species pair",
             "title": "Construct Target",
-            "type": "object",
+            "type": "string",
             "format": "target_link"
         },
         "tags": {
@@ -80,6 +79,7 @@
                 "type": "object",
                 "properties": {
                     "name": {
+                        "type": "string",
                         "enum": [
                             "eGFP",
                             "V5",
@@ -87,6 +87,7 @@
                         ]
                     },
                     "location": {
+                        "type": "string",
                         "enum": [
                             "N-terminus",
                             "C-terminus",

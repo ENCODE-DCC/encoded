@@ -103,13 +103,12 @@
         "clonality": {
             "description": "Whether the antibody is mono- or poly- clonal",
             "title": "Antibody Clonality",
-            "type": {
-                "enum": [
-                    "polyclonal",
-                    "monoclonal",
-                    "Unknown"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "polyclonal",
+                "monoclonal",
+                "Unknown"
+            ]
         },
         "lab_aliases": {
             "default": [],
@@ -139,64 +138,61 @@
             "description": "Organism antibody was grown in.",
             "comment": "These are not linked, currently - this should be replace with another organism object",
             "title": "Host Organism",
-            "type": {
-                "enum": [
-                    "rabbit",
-                    "goat",
-                    "sheep",
-                    "rat",
-                    "mouse"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "rabbit",
+                "goat",
+                "sheep",
+                "rat",
+                "mouse"
+            ]
         },
         "isotype": {
             "description": "Isotype of the antibody (IgA, IgD, etc.)",
             "title": "Antibody Isotype",
-            "type": {
-                "enum": [
-                    "IgA1",
-                    "IgA2",
-                    "IgD",
-                    "IgG",
-                    "IgG1",
-                    "IgG1κ",
-                    "IgG1λ",
-                    "IgG2",
-                    "IgG2κ",
-                    "IgG2λ",
-                    "IgG2a",
-                    "IgG2aκ",
-                    "IgG2aλ",
-                    "IgG2b",
-                    "IgG2bκ",
-                    "IgG2bλ",
-                    "IgG3",
-                    "IgG3κ",
-                    "IgG4",
-                    "IgA",
-                    "IgM",
-                    "IgE",
-                    "serum",
-                    "Unknown"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "IgA1",
+                "IgA2",
+                "IgD",
+                "IgG",
+                "IgG1",
+                "IgG1κ",
+                "IgG1λ",
+                "IgG2",
+                "IgG2κ",
+                "IgG2λ",
+                "IgG2a",
+                "IgG2aκ",
+                "IgG2aλ",
+                "IgG2b",
+                "IgG2bκ",
+                "IgG2bλ",
+                "IgG3",
+                "IgG3κ",
+                "IgG4",
+                "IgA",
+                "IgM",
+                "IgE",
+                "serum",
+                "Unknown"
+            ]
         },
         "purification": {
             "description": "Method by which antibody was purified",
             "title": "Purification Method",
-            "type": {
-                "enum": [
-                    "Protein A/G",
-                    "affinity",
-                    "Protein A",
-                    "Protein G",
-                    "crude",
-                    "other",
-                    "IEC",
-                    "IMAC",
-                    "tissue culture supernatent"
-                ]
-            }
+            "type": "string",
+            "enum": [
+                "Protein A/G",
+                "affinity",
+                "Protein A",
+                "Protein G",
+                "crude",
+                "other",
+                "IEC",
+                "IMAC",
+                "tissue culture supernatent"
+            ]
         },
         "url": {
             "description": "External URL for the specific antibody at vendor site",
