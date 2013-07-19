@@ -48,7 +48,7 @@ def test_html(htmltestapp, url):
 @pytest.mark.parametrize('url', COLLECTION_URLS)
 def test_json(testapp, url):
     res = testapp.get(url, status=200)
-    assert res.json['_links']
+    assert res.json['@type']
 
 
 def test_json_basic_auth(htmltestapp):
@@ -56,7 +56,7 @@ def test_json_basic_auth(htmltestapp):
     url = '/'
     value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
     res = htmltestapp.get(url, headers={'Authorization': value}, status=200)
-    assert res.json['_links']
+    assert res.json['@id']
 
 
 def _test_antibody_approval_creation(testapp):
@@ -64,15 +64,15 @@ def _test_antibody_approval_creation(testapp):
     new_antibody = {'foo': 'bar'}
     res = testapp.post_json('/antibodies/', new_antibody, status=201)
     assert res.location
-    assert res.json['_links']['profile'] == {'href': '/profiles/result'}
-    assert res.json['_links']['items'] == [{'href': urlparse(res.location).path}]
+    assert '/profiles/result' in res.json['@type']['profile']
+    assert res.json['items'] == [{'href': urlparse(res.location).path}]
     res = testapp.get(res.location, status=200)
-    assert res.json['_links']['profile'] == {'href': '/profiles/antibody_approval'}
-    data = dict(res.json)
-    del data['_links']
-    assert data == new_antibody
+    assert '/profiles/antibody_approval' in res.json['@type']
+    data = res.json
+    for key in new_antibody:
+        assert data[key] == new_antibody[key]
     res = testapp.get('/antibodies/', status=200)
-    assert len(res.json['_links']['items']) == 1
+    assert len(res.json['items']) == 1
 
 
 def __test_sample_data(testapp):
@@ -90,17 +90,15 @@ def __test_sample_data(testapp):
 def test_load_workbook(workbook, testapp, url, length):
     # testdata must come before testapp in the funcargs list for their
     # savepoints to be correctly ordered.
-    res = testapp.get(url, status=200)
-    assert res.json['_links']['items']
-    assert len(res.json['_links']['items']) >= length
+    res = testapp.get(url + '?limit=all', status=200)
+    assert len(res.json['items']) >= length
     # extra guys are fine
 
 
 @pytest.mark.slow
 def test_collection_limit(workbook, testapp):
     res = testapp.get('/antibodies/?limit=10', status=200)
-    assert res.json['_links']['items']
-    assert len(res.json['_links']['items']) == 10
+    assert len(res.json['items']) == 10
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/', '/users/'])
@@ -129,10 +127,10 @@ def test_actions_filtered_by_permission(testapp, anontestapp):
     location = res.location
 
     res = testapp.get(location)
-    assert any(action for action in res.json['_links']['actions'] if action['name'] == 'edit')
+    assert any(action for action in res.json['actions'] if action['name'] == 'edit')
 
     res = anontestapp.get(location)
-    assert not any(action for action in res.json['_links']['actions'] if action['name'] == 'edit')
+    assert not any(action for action in res.json['actions'] if action['name'] == 'edit')
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
@@ -141,15 +139,14 @@ def test_collection_update(testapp, url, execute_counter):
     collection = URL_COLLECTION[url]
     initial = collection[0]
     res = testapp.post_json(url, initial, status=201)
-    item_url = res.json['_links']['items'][0]['href']
+    item_url = res.json['items'][0]
 
     with execute_counter.expect(2):
         res = testapp.get(item_url).json
 
     del initial['_uuid']
-    res.pop('_links', None)
-    res.pop('_embedded', None)
-    assert res == initial
+    for key in initial:
+        assert res[key] == initial[key]
 
     update = collection[1].copy()
     del update['_uuid']
@@ -158,10 +155,8 @@ def test_collection_update(testapp, url, execute_counter):
     with execute_counter.expect(2):
         res = testapp.get(item_url).json
 
-    res.pop('_uuid', None)
-    res.pop('_links', None)
-    res.pop('_embedded', None)
-    assert res == update
+    for key in update:
+        assert res[key] == update[key]
 
 
 # TODO Add 2 tests for duplicate UUIDs (see sample_data.py)

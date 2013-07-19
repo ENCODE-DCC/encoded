@@ -43,11 +43,11 @@ class AccessKey(Collection):
 
     class Item(Collection.Item):
         links = {
-            'user': {'href': '/users/{user_uuid}', 'templated': True},
+            'user': {'value': '/users/{user_uuid}', '$templated': True},
         }
         keys = ['access_key_id']
         rels = [
-            {'rel': '{item_type}:user', 'target': '{user_uuid}', 'templated': True},
+            {'rel': '{item_type}:user', 'target': '{user_uuid}', '$templated': True},
         ]
 
         def __acl__(self):

@@ -43,7 +43,7 @@ class TestingKey(Collection):
 
     item_keys = [
         'name',
-        {'name': 'testing_accession', 'value': '{accession}', 'templated': True},
+        {'name': 'testing_accession', 'value': '{accession}', '$templated': True},
     ]
 
 
@@ -55,7 +55,7 @@ class TestingLinkSource(Collection):
     }
 
     item_rels = [
-        {'rel': 'testing_link', 'target': '{target}', 'templated': True},
+        {'rel': 'testing_link', 'target': '{target}', '$templated': True},
     ]
 
 

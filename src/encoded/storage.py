@@ -100,7 +100,7 @@ class Key(Base):
     __tablename__ = 'keys'
 
     # typically the field that is unique, i.e. accession
-    # might be prefixed with a namespace for per predicate unique values
+    # might be prefixed with a namespace for per name unique values
     name = Column(types.String, primary_key=True)
     # the unique value
     value = Column(types.String, primary_key=True)
@@ -129,15 +129,15 @@ class Link(Base):
         'Resource', foreign_keys=[target_rid], backref='revs')
 
 
-class Statement(Base):
+class PropertySheet(Base):
     '''A triple describing a resource
     '''
-    __tablename__ = 'statements'
+    __tablename__ = 'propsheets'
     __table_args__ = (
         schema.ForeignKeyConstraint(
-            ['rid', 'predicate'],
-            ['current_statements.rid', 'current_statements.predicate'],
-            name='fk_statements_rid_predicate', use_alter=True,
+            ['rid', 'name'],
+            ['current_propsheets.rid', 'current_propsheets.name'],
+            name='fk_property_sheets_rid_name', use_alter=True,
             deferrable=True, initially='DEFERRED',
         ),
     )
@@ -148,8 +148,8 @@ class Statement(Base):
                             deferrable=True,
                             initially='DEFERRED'),
                  nullable=False)
-    predicate = Column(types.String, nullable=False)
-    object = Column(JSON)
+    name = Column(types.String, nullable=False)
+    properties = Column(JSON)
     tid = Column(UUID,
                  ForeignKey('transactions.tid',
                             deferrable=True,
@@ -159,52 +159,54 @@ class Statement(Base):
     transaction = orm.relationship('TransactionRecord')
 
 
-class CurrentStatement(Base):
-    __tablename__ = 'current_statements'
+class CurrentPropertySheet(Base):
+    __tablename__ = 'current_propsheets'
     rid = Column(UUID, ForeignKey('resources.rid'),
                  nullable=False, primary_key=True)
-    predicate = Column(types.String, nullable=False, primary_key=True)
+    name = Column(types.String, nullable=False, primary_key=True)
     sid = Column(types.Integer,
-                 ForeignKey('statements.sid'), nullable=False)
-    statement = orm.relationship(
-        'Statement', lazy='joined', innerjoin=True,
-        primaryjoin="CurrentStatement.sid==Statement.sid",
+                 ForeignKey('propsheets.sid'), nullable=False)
+    propsheet = orm.relationship(
+        'PropertySheet', lazy='joined', innerjoin=True,
+        primaryjoin="CurrentPropertySheet.sid==PropertySheet.sid",
     )
     history = orm.relationship(
-        'Statement', order_by=Statement.sid,
+        'PropertySheet', order_by=PropertySheet.sid,
         post_update=True,  # Break cyclic dependency
-        primaryjoin="""and_(CurrentStatement.rid==Statement.rid,
-                    CurrentStatement.predicate==Statement.predicate)""",
+        primaryjoin="""and_(CurrentPropertySheet.rid==PropertySheet.rid,
+                    CurrentPropertySheet.name==PropertySheet.name)""",
     )
     resource = orm.relationship('Resource')
 
 
 class Resource(Base, DictMixin):
-    '''Resources are described by multiple statements
+    '''Resources are described by multiple propsheets
     '''
     __tablename__ = 'resources'
     rid = Column(UUID, primary_key=True)
+    item_type = Column(types.String, nullable=False)
     data = orm.relationship(
-        'CurrentStatement', cascade='all, delete-orphan',
-        collection_class=collections.attribute_mapped_collection('predicate'),
+        'CurrentPropertySheet', cascade='all, delete-orphan',
+        innerjoin=True, lazy='joined',
+        collection_class=collections.attribute_mapped_collection('name'),
     )
 
-    def __init__(self, data=None, rid=None):
+    def __init__(self, item_type, data=None, rid=None):
         if rid is None:
             rid = uuid.uuid4()
-        super(Resource, self).__init__(rid=rid)
+        super(Resource, self).__init__(item_type=item_type, rid=rid)
         if data is not None:
             self.update(data)
 
     def __getitem__(self, key):
-        return self.data[key].statement.object
+        return self.data[key].propsheet.properties
 
     def __setitem__(self, key, value):
         current = self.data.get(key, None)
         if current is None:
-            self.data[key] = current = CurrentStatement(predicate=key, rid=self.rid)
-        statement = Statement(predicate=key, object=value, rid=self.rid)
-        current.statement = statement
+            self.data[key] = current = CurrentPropertySheet(name=key, rid=self.rid)
+        propsheet = PropertySheet(name=key, properties=value, rid=self.rid)
+        current.propsheet = propsheet
 
     def keys(self):
         return self.data.keys()
@@ -227,7 +229,7 @@ class TransactionRecord(Base):
         types.DateTime, nullable=False, server_default=func.now())
 
 
-@event.listens_for(Statement, 'before_insert')
+@event.listens_for(PropertySheet, 'before_insert')
 def set_tid(mapper, connection, target):
     if target.tid is not None:
         return

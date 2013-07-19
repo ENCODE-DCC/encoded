@@ -1,3 +1,4 @@
+from cgi import escape
 from pkg_resources import resource_string
 from pyramid.events import (
     NewRequest,
@@ -51,9 +52,14 @@ class PageRenderer:
         self.page = resource_string('encoded', 'index.html')
 
     def __call__(self, value, system):
-        # TODO: Include response value in page
-        # Return a string to preserve the existing response headers
-        return self.page
+        request = system.get('request')
+        if request is not None:
+            request.response.content_type = 'text/html'
+        return self.page.format(json=escape(value))
+
+
+class CSRFTokenError(HTTPBadRequest):
+    pass
 
 
 @subscriber(NewRequest)
@@ -72,13 +78,13 @@ def choose_format(event):
             # XXX Should consider if this is a good idea or not and timeouts
             if token == dict.get(request.session, '_csrft_', None):
                 return
-            raise HTTPBadRequest('Incorrect CSRF token')
+            raise CSRFTokenError('Incorrect CSRF token')
         login = authenticated_userid(request)
         if login is not None:
             namespace, userid = login.split(':', 1)
             if namespace != 'mailto':
                 return
-        raise HTTPBadRequest('Missing CSRF token')
+        raise CSRFTokenError('Missing CSRF token')
 
     format = request.params.get('format')
     if format is None:
@@ -111,7 +117,8 @@ class PageOrJSON:
             request.response.vary = original_vary + vary
 
         format = request.environ.get('encoded.format', 'json')
+        value = self.json_renderer(value, system)
         if format == 'json':
-            return self.json_renderer(value, system)
+            return value
         else:
             return self.page_renderer(value, system)
