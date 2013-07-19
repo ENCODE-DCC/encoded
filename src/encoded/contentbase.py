@@ -133,7 +133,7 @@ def setting_uuid_permitted(context, request):
 
     result = has_permission('add_with_uuid', context, request)
     if not result:
-        msg = 'Unauthorized: setting _uuid not permitted'
+        msg = 'Unauthorized: setting uuid not permitted'
         raise HTTPForbidden(msg, result=result)
 
     try:

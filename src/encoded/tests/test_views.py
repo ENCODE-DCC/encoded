@@ -107,7 +107,7 @@ def test_collection_post(testapp, url):
     collection = URL_COLLECTION[url]
     for item in collection:
         res = testapp.post_json(url, item, status=201)
-        assert item['_uuid'] in res.location
+        assert item['uuid'] in res.location
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
@@ -144,12 +144,12 @@ def test_collection_update(testapp, url, execute_counter):
     with execute_counter.expect(2):
         res = testapp.get(item_url).json
 
-    del initial['_uuid']
+    del initial['uuid']
     for key in initial:
         assert res[key] == initial[key]
 
     update = collection[1].copy()
-    del update['_uuid']
+    del update['uuid']
     testapp.post_json(item_url, update, status=200)
 
     with execute_counter.expect(2):

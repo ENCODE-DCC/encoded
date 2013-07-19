@@ -27,7 +27,7 @@ def groupfinder(login, request):
             access_key = access_keys[localname]
         except KeyError:
             return None
-        userid = access_key.properties['user_uuid']
+        userid = access_key.properties['user']
         user = root.by_item_type['user'][userid]
 
     if user is None:

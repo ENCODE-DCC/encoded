@@ -60,7 +60,7 @@ def test_fixtures1(testapp):
 
     from .sample_data import URL_COLLECTION
     item = URL_COLLECTION[url][0].copy()
-    item['_uuid'] = '91cddd2c-549b-45f4-8937-82a6a11cca1e'
+    item['uuid'] = '91cddd2c-549b-45f4-8937-82a6a11cca1e'
     testapp.post_json(url, item, status=201)
 
     res = testapp.get(url)

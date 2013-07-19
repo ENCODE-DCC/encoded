@@ -113,7 +113,7 @@ def basic_auth_check(username, password, request):
     #if new_hash:
     #    replace_user_hash(user, new_hash)
 
-    principals = ['userid:' + properties['user_uuid']]
+    principals = ['userid:' + properties['user']]
 
     return principals
 

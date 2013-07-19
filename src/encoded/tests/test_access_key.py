@@ -22,28 +22,28 @@ def access_keys(app):
         principals = [
             'system.Authenticated',
             'system.Everyone',
-            'userid:' + item['_uuid'],
+            'userid:' + item['uuid'],
         ]
         principals.extend('lab:%s' % lab_uuid for lab_uuid in item['submits_for'])
         principals.extend('submits_for:%s' % lab_uuid for lab_uuid in item['submits_for'])
         users.append({
             'location': res.location,
             'effective_principals': sorted(principals),
-            '_uuid': item['_uuid'],
+            'uuid': item['uuid'],
             'email': item['email'],
         })
     access_keys = []
     for user in users:
         description = 'My programmatic key'
         url = '/access-keys/'
-        item = {'user_uuid': user['_uuid'], 'description': description}
+        item = {'user': user['uuid'], 'description': description}
         res = testapp.post_json(url, item, status=201)
         access_keys.append({
             'location': res.location,
             'access_key_id': res.json['access_key_id'],
             'secret_access_key': res.json['secret_access_key'],
             'auth_header': basic_auth(res.json['access_key_id'], res.json['secret_access_key']),
-            'user_uuid': user['_uuid'],
+            'user': user['uuid'],
             'description': description,
             'user': user,
         })
