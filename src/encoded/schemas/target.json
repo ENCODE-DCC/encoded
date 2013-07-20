@@ -20,7 +20,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -28,7 +28,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "dbxref": {
             "default": {},
@@ -74,7 +74,7 @@
             "description": "Organism of the specific target",
             "title": "Target organism",
             "type": "string",
-            "format": "organism_link"
+            "linkTo": "organism"
         },
         "gene_name": {
             "description": "HGNC or MGI gene name for target",

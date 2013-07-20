@@ -29,7 +29,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -37,7 +37,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "description": {
             "default": "",
@@ -50,7 +50,7 @@
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
             "title": "Construct Source",
             "type": "string",
-            "format": "source_link"
+            "linkTo": "source"
         },
         "product_id": {
             "description": "The vendor's construct product code",
@@ -68,7 +68,7 @@
             "comment": "Automatic submitters can supply a target uuid, or name/species pair",
             "title": "Construct Target",
             "type": "string",
-            "format": "target_link"
+            "linkTo": "target"
         },
         "tags": {
             "default": [],
@@ -112,7 +112,7 @@
                 "description": "Contruct document",
                 "title": "Construct Document",
                 "type": "string",
-                "format": "document_link"
+                "linkTo": "document"
             },
             "title": "Construct Document (list)",
             "type": "array"
@@ -125,7 +125,7 @@
                 "description": "Contruct validation",
                 "title": "Validation",
                 "type": "string",
-                "format": "construct_validation_link"
+                "linkTo": "construct_validation"
             },
             "title": "Construct Validation Images (list)",
             "type": "array"

@@ -47,7 +47,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -55,7 +55,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "document": {
             "description": "Document file metadata",

@@ -33,7 +33,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -41,7 +41,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "dataset_type": {
             "default": "project",
@@ -87,7 +87,7 @@
                 "description": "Experimental protocol document",
                 "title": "Document",
                 "type": "string",
-                "format": "document_link"
+                "linkTo": "document"
             },
             "title": "List of Documents",
             "type": "array"
@@ -99,7 +99,7 @@
                 "description": "Data file",
                 "title": "Files",
                 "type": "string",
-                "format": "file_link"
+                "linkTo": "file"
             },
             "title": "List of Data Files",
             "type": "array"

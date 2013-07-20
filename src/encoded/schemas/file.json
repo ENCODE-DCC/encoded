@@ -58,7 +58,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -66,7 +66,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "md5sum": {
             "description": "Calucluated MD5 sum of the file",
@@ -91,14 +91,14 @@
             "description": "Pointer to the experimental replicate for this file.",
             "comment": "Automatic submitters can supply a Replicate UUID",
             "type": "string",
-            "format": "replicate_link"
+            "linkTo": "replicate"
         },
         "software": {
             "description": "Pointer to the software used to generate this file",
             "comment": "Not valid for primary data files like FastQ.  Automatic submitters can supply an ENCODE Software UUID or unique name.",
             "title": "Software",
             "type": "string",
-            "format": "software_link"
+            "linkTo": "software"
         },
         "assembly": {
             "description": "Genome assembly that files were mapped to",

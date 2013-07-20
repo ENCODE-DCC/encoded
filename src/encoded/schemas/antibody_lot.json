@@ -46,7 +46,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -54,14 +54,14 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "source": {
             "description": "Source or Vendor of Antibody",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
             "title": "Antibody Source",
             "type": "string",
-            "format": "source_link"
+            "linkTo": "source"
         },
         "lot_id": {
             "description": "The vendor's id code for the antibody lot",

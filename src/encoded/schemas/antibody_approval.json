@@ -19,14 +19,14 @@
             "comment": "Automatic submitters can supply an ENCODE antibody accession or uuid",
             "title": "Antibody to be Validated",
             "type": "string",
-            "format": "antibody_lot_link"
+            "linkTo": "antibody_lot"
         },
         "target": {
             "description": "Target for which the antibody validation applies.",
             "comment": "Automatic submitters can supply a target uuid, or name/species pair",
             "title": "Antibody Target",
             "type": "string",
-            "format": "target_link"
+            "linkTo": "target"
         },
         "lab": {
             "default": "ENCODE Project",
@@ -34,7 +34,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -42,7 +42,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
          "validations": {
             "default": [],
@@ -53,7 +53,7 @@
                 "comment": "Automatic submitters can supply a validation UUID or document/image name.",
                 "title": "Validation image (or document)",
                 "type": "string",
-                "format": "antibody_validation_link"
+                "linkTo": "antibody_validation"
             },
             "type": "array"
         },

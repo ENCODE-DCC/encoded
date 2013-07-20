@@ -35,7 +35,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "submits_for": {
             "default": [],
@@ -48,7 +48,7 @@
                 "comment": "Automatic submitters can supply a Lab UUID or Name",
                 "title": "Lab",
                 "type": "string",
-                "format": "lab_link"
+                "linkTo": "lab"
             }
         },
         "job_title": {

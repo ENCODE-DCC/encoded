@@ -25,7 +25,7 @@
             "comment": "For automatic submission submit the email, first & last name, or collegue uuid for the PI",
             "title": "P.I.",
             "type": "string",
-            "format": "colleague_link"
+            "linkTo": "colleague"
         },
         "awards": {
             "default": [],
@@ -36,7 +36,7 @@
                 "comment": "Automatic submitters can supply an Award UUID, name, or number",
                 "title": "Award Name or Number",
                 "type": "string",
-                "format": "award_link"
+                "linkTo": "award"
             },
             "type": "array"
         },

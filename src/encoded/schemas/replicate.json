@@ -20,7 +20,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -28,7 +28,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "assay_type": {
             "description": "Ontology term describing assay used for this replicate",
@@ -47,7 +47,7 @@
             "comment": "Automatic submitters can supply an Antibody accession or UUID",
             "title": "Antibody",
             "type": "string",
-            "format": "antibody_link"
+            "linkTo": "antibody"
         },
         "biological_replicate_no": {
             "default": 1,
@@ -66,21 +66,21 @@
             "comment": "For automatic submission supply unique Experiment dataset accession or UUID",
             "title": "Experiment ID",
             "type": "string",
-            "format": "experiment_link"
+            "linkTo": "experiment"
         },
         "library": {
             "description": "Nucleic acid Library used in this replicate.",
             "comment": "For automatic submission supply unique Library accession or UUID",
             "title": "Library ID",
             "type": "string",
-            "format": "library_link"
+            "linkTo": "library"
         },
         "platform": {
             "description": "Platform (hardware) that this Replicate was performed on",
             "comment": "For automatic submission supply unique Platform name or UUID",
             "title": "Platform ID",
             "type": "string",
-            "format": "platform_link"
+            "linkTo": "platform"
         },
         "flowcell_details": {
             "default": [],
@@ -122,7 +122,7 @@
             "comment": "For automatic submission supply unique Target label or UUID",
             "title": "Target ID",
             "type": "string",
-            "format": "target_link"
+            "linkTo": "target"
         }
     }
 }

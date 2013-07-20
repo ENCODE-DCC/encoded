@@ -26,7 +26,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -34,7 +34,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "type": {
             "default": "chemical",
@@ -51,7 +51,7 @@
             "comment": "For automatic submission supply an unique document name or UUID",
             "title": "Treatment Protocol Document",
             "type": "string",
-            "format": "document_link"
+            "linkTo": "document"
         },
         "lab_aliases": {
             "default": [],

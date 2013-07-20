@@ -40,7 +40,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -48,14 +48,14 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "biosample": {
             "description": "Biosample from which this library was derived or isolated.",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
             "title": "Biosample",
             "type": "string",
-            "format": "biosample_link"
+            "linkTo": "biosample"
         },
         "type": {
             "description": "Type/subtype of nucleic acid isolated.",
@@ -80,7 +80,7 @@
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
             "title": "Library Source",
             "type": "string",
-            "format": "source_link"
+            "linkTo": "source"
         },
         "product_id": {
             "description": "The vendor's library product code",
@@ -113,7 +113,7 @@
                 "comment": "Automatic submitters can supply an ENCODE document UUID or unique document name",
                 "title": "Protocol Document",
                 "type": "string",
-                "format": "document_link"
+                "linkTo": "document"
             },
             "title": "List of Protocol Documents",
             "type": "array"

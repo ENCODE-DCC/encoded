@@ -34,7 +34,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -42,14 +42,14 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "target": {
             "description": "Protein, RNA, or chemical target of the experiment",
             "comment": "For automatic submission supply unique Target label or UUID",
             "title": "Target ID",
             "type": "string",
-            "format": "target_link"
+            "linkTo": "target"
         },
         "assay_type": {
             "description": "Ontology term describing assay used for this replicate",
@@ -115,7 +115,7 @@
                 "description": "Experimental protocol document",
                 "title": "Document",
                 "type": "string",
-                "format": "document_link"
+                "linkTo": "document"
             },
             "title": "List of Documents",
             "type": "array"
@@ -128,7 +128,7 @@
                 "description": "Data file",
                 "title": "Files",
                 "type": "string",
-                "format": "file_link"
+                "linkTo": "file"
             },
             "title": "List of Data Files",
             "type": "array"
@@ -153,7 +153,7 @@
                 "description": "Possible control experiment",
                 "title": "Control",
                 "type": "string",
-                "format": "experiment_link"
+                "linkTo": "experiment"
             },
             "title": "List of Possible Control experiments",
             "type": "array"

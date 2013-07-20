@@ -19,7 +19,7 @@
             "comment": "Automatic submitters can supply a construct uuid",
             "title": "Antibody to be Validated",
             "type": "string",
-            "format": "antibody_lot_link"
+            "linkTo": "antibody_lot"
         },
         "lab": {
             "default": "ENCODE Project",
@@ -27,7 +27,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -35,14 +35,14 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "document": {
             "description": "Construct validation image (document)",
             "comment": "For automatic submission supply unique a image/document name or uuid",
             "title": "Validation Image",
             "type": "string",
-            "format": "document_link"
+            "linkTo": "document"
         },
         "validation_method": {
             "description": "Experimental method for the validation image",

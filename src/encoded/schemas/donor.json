@@ -40,7 +40,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -48,13 +48,13 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "organism": {
             "description": "Organism of the donor creature",
             "title": "Donor organism",
             "type": "string",
-            "format": "organism_link"
+            "linkTo": "organism"
         },
         "age": {
             "description": "Age or stage of the donor organism when sampled",
@@ -118,7 +118,7 @@
                 "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Parent",
                 "type": "string",
-                "format": "donor_link"
+                "linkTo": "donor"
             }
         },
         "children": {
@@ -131,7 +131,7 @@
                 "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Child",
                 "type": "string",
-                "format": "donor_link"
+                "linkTo": "donor"
             }
         },
         "siblings": {
@@ -144,7 +144,7 @@
                 "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Sibling Donor",
                 "type": "string",
-                "format": "donor_link"
+                "linkTo": "donor"
             }
         },
         "littermates": {
@@ -157,7 +157,7 @@
                 "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Littermate",
                 "type": "string",
-                "format": "donor_link"
+                "linkTo": "donor"
             }
         },
         "fraternal_twin": {
@@ -165,14 +165,14 @@
             "comment": "For automated submission supply an ENCODE donor accession or uuid",
             "title": "Fraternal Twin",
             "type": "string",
-            "format": "donor_link"
+            "linkTo": "donor"
         },
         "identical_twin": {
             "description": "Another donor mouse from the same litter",
             "comment": "For automated submission supply an ENCODE donor accession or uuid",
             "title": "Littermate",
             "type": "string",
-            "format": "donor_link"
+            "linkTo": "donor"
         },
         "strain_background": {
             "description": "Strain background of a non-human donor",

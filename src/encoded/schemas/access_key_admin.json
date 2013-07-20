@@ -9,7 +9,7 @@
             "title": "User",
             "description": "Only admins are allowed to set this value",
             "type": "string",
-            "format": "uuid"
+            "linkTo": "user"
         },
         "description": {
             "title": "Description",

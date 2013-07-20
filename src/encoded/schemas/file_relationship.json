@@ -20,7 +20,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -28,7 +28,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "lab_aliases": {
             "default": [],
@@ -64,7 +64,7 @@
                 "comment": "For automatic submission supply unique data File accessions or uuids",
                 "title": "Derived from File",
                 "type": "string",
-                "format": "file_link"
+                "linkTo": "file"
             }
         },
         "controls_for": {
@@ -77,7 +77,7 @@
                 "comment": "For automatic submission supply unique data File accessions or uuids",
                 "title": "Controls for File",
                 "type": "string",
-                "format": "file_link"
+                "linkTo": "file"
             }
         },
         "replaced_by": {
@@ -85,14 +85,14 @@
             "comment": "For automatic submission supply unique data File accessions or uuids",
             "title": "Replacing File",
             "type": "string",
-            "format": "file_link"
+            "linkTo": "file"
         },
         "paired_with": {
             "description": "File this file is paired with.",
             "comment": "For automatic submission supply unique data File accessions or uuids",
             "title": "Paired File",
             "type": "string",
-            "format": "file_link"
+            "linkTo": "file"
         }
     }
 }

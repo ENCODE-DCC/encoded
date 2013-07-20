@@ -46,7 +46,7 @@
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
             "type": "string",
-            "format": "lab_link"
+            "linkTo": "lab"
         },
         "award": {
             "default": "ENCODE",
@@ -54,7 +54,7 @@
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
             "type": "string",
-            "format": "award_link"
+            "linkTo": "award"
         },
         "term_id": {
             "description": "Ontology term ID describing biosample type",
@@ -85,7 +85,7 @@
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
             "title": "Biosample Source",
             "type": "string",
-            "format": "source_link"
+            "linkTo": "source"
         },
        "product_id": {
             "description": "The vendor's biosample product code",
@@ -105,7 +105,7 @@
                 "description": "Transfection, fusion, or Zn-finger KO construct name or uuid",
                 "title": "Constructs",
                 "type":  "string",
-                "format": "construct_link"
+                "linkTo": "construct"
             },
             "title": "List of Constructs",
             "type": "array"
@@ -118,7 +118,7 @@
                 "description": "si or shRNA construct name or uuid",
                 "title": "RNAi Constructs",
                 "type":  "string",
-                "format": "rnai_link"
+                "linkTo": "rnai"
             },
             "title": "List of RNAi objects.",
             "type": "array"
@@ -131,7 +131,7 @@
                 "description": "Treatment (names or UUIDs) applied to biosample",
                 "title": "Biosample Treatment",
                 "type": "string",
-                "format": "treatment_link"
+                "linkTo": "treatment"
             }
         },
         "lab_aliases": {
@@ -166,7 +166,7 @@
                 "description": "Protocol document",
                 "title": "Protocol Document",
                 "type": "string",
-                "format": "document_link"
+                "linkTo": "document"
             },
             "title": "Protocol Document List",
             "type": "array"
@@ -179,7 +179,7 @@
                 "description": "Biosample validation document",
                 "title": "validation Document",
                 "type": "string",
-                "format": "document_link"
+                "linkTo": "document"
             },
             "title": "Validation Document List",
             "type": "array"
@@ -189,13 +189,13 @@
             "comment": "For automatic submission, supply a ENCODE donor accession or uuid",
             "title": "Donor",
             "type": "object",
-            "format": "donor_link"
+            "linkTo": "donor"
         },
         "organism": {
             "description": "Organism of the biosample",
             "title": "Source organism",
             "type": "string",
-            "format": "organism_link"
+            "linkTo": "organism"
         },
         "passage_number": {
             "description": "Cell culture passage number",
@@ -212,7 +212,7 @@
                     "comment": "For automated submission supply an ENCODE biosample accession or uuid",
                     "title": "Parent (derived_from) Biosample",
                     "type": "string",
-                    "format": "biosample_link"
+                    "linkTo": "biosample"
             }
         },
         "contained_in": {
@@ -225,7 +225,7 @@
                     "comment": "For automated submission supply an ENCODE biosample accession or uuid",
                     "title": "Parent (contained_in) Biosample",
                     "type": "string",
-                    "format": "biosample_link"
+                    "linkTo": "biosample"
             }
         },
          "part_of": {
@@ -238,7 +238,7 @@
                     "comment": "For automated submission supply an ENCODE biosample accession or uuid",
                     "title": "Parent (part_of) Biosample",
                     "type": "string",
-                    "format": "biosample_link"
+                    "linkTo": "biosample"
             }
         },
         "note": {
