@@ -39,6 +39,21 @@ COLLECTION_URL_LENGTH = {
 COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
 
 
+@pytest.fixture
+def users(testapp):
+    from .sample_data import URL_COLLECTION
+    url = '/labs/'
+    for item in URL_COLLECTION[url]:
+        testapp.post_json(url, item, status=201)
+    users = []
+    url = '/users/'
+    for item in URL_COLLECTION[url]:
+        res = testapp.post_json(url, item, status=201)
+        res = testapp.get(res.location)
+        users.append(res.json)
+    return users
+
+
 @pytest.mark.parametrize('url', [url for url in COLLECTION_URLS if url != '/users/'])
 def test_html(htmltestapp, url):
     res = htmltestapp.get(url, status=200)
@@ -101,7 +116,7 @@ def test_collection_limit(workbook, testapp):
     assert len(res.json['items']) == 10
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/', '/users/'])
+@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
 def test_collection_post(testapp, url):
     from .sample_data import URL_COLLECTION
     collection = URL_COLLECTION[url]
@@ -165,16 +180,13 @@ def test_post_duplicate_uuid(testapp):
     testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
-def test_users_post(testapp, anontestapp):
-    from .sample_data import URL_COLLECTION
-    url = '/users/'
-    item = URL_COLLECTION[url][0]
-    testapp.post_json(url, item, status=201)
+def test_users_post(users, anontestapp):
+    email = users[0]['email']
     res = anontestapp.get('/@@testing-user',
-                          extra_environ={'REMOTE_USER': item['email']})
+                          extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
         'lab:2c334112-288e-4d45-9154-3f404c726daf',
-        'remoteuser:%s' % item['email'],
+        'remoteuser:%s' % email,
         'submits_for:2c334112-288e-4d45-9154-3f404c726daf',
         'system.Authenticated',
         'system.Everyone',
@@ -182,25 +194,13 @@ def test_users_post(testapp, anontestapp):
     ]
 
 
-def test_users_view_details_admin(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/users/'
-    item = URL_COLLECTION[url][0]
-    res = testapp.post_json(url, item, status=201)
-    location = res.location
-    res = testapp.get(location)
-
+def test_users_view_details_admin(users, testapp):
+    res = testapp.get(users[0]['@id'])
     assert 'email' in res.json
 
 
-def test_users_view_basic_anon(testapp, anontestapp):
-    from .sample_data import URL_COLLECTION
-    url = '/users/'
-    item = URL_COLLECTION[url][0]
-    res = testapp.post_json(url, item, status=201)
-    location = res.location
-    res = anontestapp.get(location)
-
+def test_users_view_basic_anon(users, anontestapp):
+    res = anontestapp.get(users[0]['@id'])
     assert 'first_name' in res.json
     assert 'email' not in res.json
 

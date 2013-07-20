@@ -15,6 +15,10 @@ def access_keys(app):
     }
     testapp = TestApp(app, environ)
     from .sample_data import URL_COLLECTION
+    url = '/labs/'
+    for item in URL_COLLECTION[url]:
+        res = testapp.post_json(url, item, status=201)
+
     url = '/users/'
     users = []
     for item in URL_COLLECTION[url]:
