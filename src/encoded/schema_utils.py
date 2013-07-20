@@ -1,16 +1,56 @@
 from collections import OrderedDict
 from pkg_resources import resource_stream
+from pyramid.threadlocal import get_current_request
+from pyramid.traversal import find_resource
 import json
 from jsonschema import (
     FormatChecker,
     Draft4Validator
 )
+from jsonschema.exceptions import ValidationError
 import uuid
 import re
 
 
+def linkTo(validator, linkTo, instance, schema):
+    # avoid circular import
+    from .contentbase import Item
+
+    if not validator.is_type(instance, "string"):
+        return
+
+    request = get_current_request()
+    if validator.is_type(linkTo, "string"):
+        base = request.root.by_item_type[linkTo]
+        linkTo = [linkTo]
+    elif validator.is_type(linkTo, "array"):
+        base = request.context  # XXX
+    else:
+        raise Exception("Bad schema")  # raise some sort of schema error
+    try:
+        item = find_resource(base, instance)
+    except KeyError:
+        error = "%r not found" % instance
+        yield ValidationError(error)
+        return
+    if not isinstance(item, Item):
+        error = "%r is not a linkable resource" % instance
+        yield ValidationError(error)
+        return
+    if item.item_type not in linkTo:
+        reprs = (repr(it) for it in linkTo)
+        error = "%r is not of type %s" % (instance, ", ".join(reprs))
+        yield ValidationError(error)
+        return
+
+    # And normalize the value to a uuid
+    if validator._serialize:
+        validator._validated[-1] = item.uuid
+
+
 class SchemaValidator(Draft4Validator):
-    pass
+    VALIDATORS = Draft4Validator.VALIDATORS.copy()
+    VALIDATORS['linkTo'] = linkTo
 
 
 def load_schema(filename):
