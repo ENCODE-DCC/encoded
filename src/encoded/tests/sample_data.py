@@ -199,7 +199,7 @@ USERS = [
     'first_name': 'Benjamin',
     'last_name': 'Hitz',
     'email': 'hitz@stanford.edu',
-    'submits_for': ['2c334112-288e-4d45-9154-3f404c726daf'],
+    'submits_for': ['cherry'],
     },
     {
     'uuid': '1e945b04-aa54-4732-8b81-b41d4565f5f9',
