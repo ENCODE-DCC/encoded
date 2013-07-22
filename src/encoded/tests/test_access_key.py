@@ -16,8 +16,11 @@ def access_keys(app):
     testapp = TestApp(app, environ)
     from .sample_data import URL_COLLECTION
     url = '/labs/'
+    lab_name = {}
     for item in URL_COLLECTION[url]:
         res = testapp.post_json(url, item, status=201)
+        lab_name[item['name']] = item['uuid']
+        lab_name[item['uuid']] = item['uuid']
 
     url = '/users/'
     users = []
@@ -28,8 +31,8 @@ def access_keys(app):
             'system.Everyone',
             'userid:' + item['uuid'],
         ]
-        principals.extend('lab:%s' % lab_uuid for lab_uuid in item['submits_for'])
-        principals.extend('submits_for:%s' % lab_uuid for lab_uuid in item['submits_for'])
+        principals.extend('lab:%s' % lab_name[name] for name in item['submits_for'])
+        principals.extend('submits_for:%s' % lab_name[name] for name in item['submits_for'])
         users.append({
             'location': res.location,
             'effective_principals': sorted(principals),
