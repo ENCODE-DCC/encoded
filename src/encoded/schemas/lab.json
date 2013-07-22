@@ -20,6 +20,10 @@
             "type": "string",
             "pattern": "^[a-z0-9\\-]+$"
         },
+        "title": {
+            "title": "Temporary lab title",
+            "type": "string"
+        },
         "pi": {
             "description": "Principle Investigator of the lab",
             "comment": "For automatic submission submit the email, first & last name, or collegue uuid for the PI",

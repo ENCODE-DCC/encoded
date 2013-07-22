@@ -29,8 +29,8 @@ class Lab(Collection):
              '$repeat': 'award awards'}
         ]
     }
-    unique_key = 'lab:name'
-    item_keys = ['name']
+    unique_key = 'lab:title'
+    item_keys = ['name', 'title']
 
 
 @location('awards')
