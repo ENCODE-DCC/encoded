@@ -55,13 +55,16 @@ class SchemaValidator(Draft4Validator):
 
 def load_schema(filename):
     schema = json.load(resource_stream(__name__, 'schemas/' + filename))
-    return SchemaValidator(schema, serialize=True)
+    # SchemaValidator is not thread safe for now
+    SchemaValidator(schema, serialize=True)
+    return schema
 
 
 def validate_request(schema, request, data=None):
+    sv = SchemaValidator(schema, serialize=True)
     if data is None:
         data = request.json
-    validated, errors = schema.serialize(data)
+    validated, errors = sv.serialize(data)
     for error in errors:
         request.errors.add('body', list(error.path), error.message)
     if not errors:
