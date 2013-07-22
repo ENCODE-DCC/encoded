@@ -31,21 +31,15 @@
             "linkTo": "award"
         },
         "dbxref": {
-            "default": {},
-            "description": "List of Database (including HGNC or MGI)cross-references",
-            "additionalProperties": {
-                "default": [],
-                "description": "List of Database IDs",
-                "title": "Database IDs",
-                "type":  "array",
-                "items": {
-                    "description": "Database identifiers",
-                    "title": "DB ID",
-                    "type": "string"
-                }
-            },
+            "default": [],
             "title": "DBXREFs",
-            "type": "object"
+            "description": "List of Database (including HGNC or MGI)cross-references",
+            "items": {
+                "description": "Database identifiers",
+                "title": "DB ID",
+                "type":  "string"
+            },
+            "type": "array"
         },
         "aliases": {
             "default": [],
