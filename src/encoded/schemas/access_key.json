@@ -1,17 +1,35 @@
 {
-    "title": "ENCODE DCC Access key",
-    "id": "/profiles/access_key.json",
+    "title": "ENCODE DCC ADMIN Access key",
+    "id": "/profiles/access_key_admin.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "0.01",
-    "description": "Programmatic access key",
-    "type": "object",
     "additionProperties": false,
     "properties": {
+        "user": {
+            "title": "User",
+            "description": "Only admins are allowed to set this value",
+            "type": "string",
+            "linkTo": "user",
+            "permission": "add_with_uuid"
+        },
         "description": {
             "title": "Description",
             "description": "",
             "type": "string",
             "default": ""
+        },
+        "access_key_id": {
+            "title": "Access key ID",
+            "description": "Only admins are allowed to set this value",
+            "type": "string",
+            "permission": "add_with_uuid"
+        },
+        "secret_access_key_hash": {
+            "title": "Secret access key hash",
+            "description": "Only admins are allowed to set this value",
+            "type": "string",
+            "permission": "add_with_uuid"
         }
-    }
+    },
+    "required": []
 }

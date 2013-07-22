@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from pkg_resources import resource_stream
+from pyramid.security import has_permission
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 import json
@@ -48,9 +49,19 @@ def linkTo(validator, linkTo, instance, schema):
         validator._validated[-1] = item.uuid
 
 
+def permission(validator, permission, instance, schema):
+    if not validator.is_type(permission, "string"):
+        raise Exception("Bad schema")  # raise some sort of schema error
+
+    request = get_current_request()
+    context = request.context
+    has_permission(permission, context, request)
+
+
 class SchemaValidator(Draft4Validator):
     VALIDATORS = Draft4Validator.VALIDATORS.copy()
     VALIDATORS['linkTo'] = linkTo
+    VALIDATORS['permission'] = permission
 
 
 def load_schema(filename):

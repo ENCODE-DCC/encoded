@@ -12,6 +12,7 @@ from ..authentication import (
     CRYPT_CONTEXT,
 )
 from ..schema_utils import (
+    load_schema,
     schema_validator,
 )
 from ..contentbase import (
@@ -21,6 +22,7 @@ from ..contentbase import (
     item_edit,
     item_view,
     location,
+    validate_item_content,
 )
 from ..validation import ValidationFailure
 
@@ -28,6 +30,7 @@ from ..validation import ValidationFailure
 @location('access-keys')
 class AccessKey(Collection):
     item_type = 'access_key'
+    schema = load_schema('access_key.json')
     unique_key = 'access_key:access_key_id'
     properties = {
         'title': 'Access keys',
@@ -59,10 +62,7 @@ class AccessKey(Collection):
 
 
 @view_config(context=AccessKey, permission='add', request_method='POST',
-             validators=[schema_validator('access_key.json')])
-@view_config(context=AccessKey, permission='add', request_method='POST',
-             validators=[schema_validator('access_key_admin.json')],
-             effective_principals=['group:admin'])
+             validators=[validate_item_content])
 def access_key_add(context, request):
     crypt_context = request.registry[CRYPT_CONTEXT]
 
@@ -119,10 +119,7 @@ def access_key_disable_secret(context, request):
 
 
 @view_config(context=AccessKey.Item, permission='edit', request_method='POST',
-             validators=[schema_validator('access_key.json')])
-@view_config(context=AccessKey.Item, permission='edit', request_method='POST',
-             validators=[schema_validator('access_key_admin.json')],
-             effective_principals=['group:admin'])
+             validators=[validate_item_content])
 def access_key_edit(context, request):
     new_properties = context.properties.copy()
     new_properties.update(request.validated)
