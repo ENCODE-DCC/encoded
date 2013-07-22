@@ -41,13 +41,14 @@ class Award(Collection):
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
     }
-    #item_keys = ['name'] should this be unique
+    unique_key = 'award:name'
+    item_keys = ['name']
 
 
 @location('antibody-lots')
 class AntibodyLots(Collection):
     item_type = 'antibody_lot'
-    #schema = load_schema('antibody_lot.json')
+    schema = load_schema('antibody_lot.json')
     properties = {
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
@@ -71,6 +72,8 @@ class Organism(Collection):
         'description': 'Listing of all registered organisms',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
+    unique_key = 'organism:name'
+    item_keys = ['name']
 
 
 @location('sources')
@@ -91,7 +94,7 @@ class Source(Collection):
 @location('donors')
 class Donor(Collection):
     item_type = 'donor'
-    ## schema = load_schema('donor.json') Doesn't exist yet
+    schema = load_schema('donor.json')
     properties = {
         'title': 'Donors',
         'description': 'Listing Biosample Donors',
@@ -106,7 +109,7 @@ class Donor(Collection):
 @location('treatments')
 class Treatment(Collection):
     item_type = 'biosample_treatment'
-    ## schema = load_schema('treatment.json') Doesn't exist yet
+    schema = load_schema('treatment.json')
     properties = {
         'title': 'Treatments',
         'description': 'Listing Biosample Treatments',
@@ -117,6 +120,7 @@ class Treatment(Collection):
 @location('constructs')
 class Construct(Collection):
     item_type = 'biosample_construct'
+    schema = load_schema('construct.json')
     properties = {
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
@@ -134,6 +138,7 @@ class Construct(Collection):
 @location('documents')
 class Document(Collection):
     item_type = 'biosample_document'
+    schema = load_schema('document.json')
     properties = {
         'title': 'Documents',
         'description': 'Listing of Biosample Documents',
@@ -152,7 +157,7 @@ class Document(Collection):
 @location('biosamples')
 class Biosample(Collection):
     item_type = 'biosample'
-    #schema = load_schema('biosample.json')
+    schema = load_schema('biosample.json')
     properties = {
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
@@ -190,7 +195,7 @@ class Biosample(Collection):
 @location('targets')
 class Target(Collection):
     item_type = 'target'
-    #schema = load_schema('target.json')
+    schema = load_schema('target.json')
     properties = {
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
@@ -215,7 +220,7 @@ class Target(Collection):
 @location('validations')
 class AntibodyValidation(Collection):
     item_type = 'antibody_validation'
-    #schema = load_schema('validation.json')
+    schema = load_schema('antibody_validation.json')
     properties = {
         'title': 'Antibody Validations',
         'description': 'Listing of antibody validation documents',
@@ -234,7 +239,7 @@ class AntibodyValidation(Collection):
 
 @location('antibodies')
 class AntibodyApproval(Collection):
-    #schema = load_schema('antibody_approval.json')
+    schema = load_schema('antibody_approval.json')
     item_type = 'antibody_approval'
     properties = {
         'title': 'Antibody Approvals',
@@ -271,6 +276,7 @@ class AntibodyApproval(Collection):
 @location('platforms')
 class Platform(Collection):
     item_type = 'platform'
+    schema = load_schema('platform.json')
     properties = {
         'title': 'Platforms',
         'description': 'Listing of Platforms',
@@ -280,6 +286,7 @@ class Platform(Collection):
 @location('libraries')
 class Library(Collection):
     item_type = 'library'
+    schema = load_schema('library.json')
     properties = {
         'title': 'Libraries',
         'description': 'Listing of Libraries',
@@ -297,6 +304,7 @@ class Library(Collection):
 @location('assays')
 class Assays(Collection):
     item_type = 'assay'
+    #schema = load_schema('assay.json')
     properties = {
         'title': 'Assays',
         'description': 'Listing of Assays',
@@ -306,6 +314,7 @@ class Assays(Collection):
 @location('replicates')
 class Replicates(Collection):
     item_type = 'replicate'
+    schema = load_schema('replicate.json')
     properties = {
         'title': 'Replicates',
         'description': 'Listing of Replicates',
@@ -321,6 +330,7 @@ class Replicates(Collection):
 @location('files')
 class Files(Collection):
     item_type = 'file'
+    schema = load_schema('file.json')
     properties = {
         'title': 'Files',
         'description': 'Listing of Files',
@@ -336,6 +346,7 @@ class Files(Collection):
 @location('experiments')
 class Experiments(Collection):
     item_type = 'experiment'
+    schema = load_schema('experiment.json')
     properties = {
         'title': 'Experiments',
         'description': 'Listing of Experiments',
