@@ -1,7 +1,6 @@
 from PIL import Image
 from base64 import b64encode
 from typedsheets import cast_rows, remove_nulls
-import datetime
 import logging
 import mimetypes
 import os.path
@@ -38,11 +37,11 @@ TYPE_URL = {
 }
 
 ORDER = [
-    'organism',
-    'source',
+    'award',
     'lab',
     'colleague',
-    'award',
+    'organism',
+    'source',
     'target',
     'antibody_lot',
     'antibody_validation',
@@ -90,7 +89,6 @@ def trim(value):
     return trimmed
 
 
-
 def read_single_sheet(filename, name):
     assert filename.endswith('.zip')
     zf = ZipFile(filename)
@@ -114,6 +112,7 @@ def filter_missing_key(dictrows, key):
         if not row[key]:
             continue
         yield row
+
 
 def filter_key(dictrows, key):
     for row in dictrows:
@@ -142,10 +141,9 @@ def data_uri(stream, mime_type):
     return 'data:%s;base64,%s' % (mime_type, encoded_data)
 
 
-
 def update(testapp, url, value):
     res = testapp.post_json(url, value, status='*')
-    if res.status == 200:
+    if res.status_int == 200:
         logger.debug('%s UPDATED' % url)
     elif res.status_int == 404:
         logger.debug('%s not found for UPDATE, posting as new' % url)
@@ -175,7 +173,7 @@ def post_collection(testapp, url, rows):
     for row in rows:
         count += 1
         uuid = row['uuid']
-        update_url = url+row['uuid']+'/'
+        update_url = url + uuid + '/'
         res = update(testapp, update_url, row)
         if res.status_int == 200:
             nupdate += 1
@@ -226,7 +224,6 @@ def add_document(dictrows, docsdir=(), **settings):
         yield row
 
 
-
 def default_pipeline(reader, **settings):
     pipeline = cast_rows(reader)
     pipeline = remove_nulls(pipeline)
@@ -241,17 +238,29 @@ def document_pipeline(pipeline, **settings):
     return pipeline
 
 
+def bootstrap_colleagues_pipeline(pipeline, **settings):
+    pipeline = filter_key(pipeline, key='lab')
+    pipeline = filter_key(pipeline, key='submits_for')
+    return pipeline
 
 
 PIPELINE = {
     'antibody_validation': document_pipeline,
 }
 
-import pdb, sys, traceback
 
 def load_all(testapp, filename, docsdir, test=False):
-    for item_type in ORDER:
-        try:
+    import pdb
+    import sys
+    import traceback
+    try:
+        item_type = 'colleague'
+        url = TYPE_URL[item_type]
+        reader = read_single_sheet(filename, item_type)
+        pipeline = default_pipeline(reader, docsdir=docsdir, filter_test_only=test)
+        pipeline = bootstrap_colleagues_pipeline(pipeline)
+        post_collection(testapp, url, pipeline)
+        for item_type in ORDER:
             url = TYPE_URL[item_type]
             reader = read_single_sheet(filename, item_type)
             pipeline = default_pipeline(reader, docsdir=docsdir, filter_test_only=test)
@@ -259,7 +268,7 @@ def load_all(testapp, filename, docsdir, test=False):
             if extra is not None:
                 pipeline = extra(pipeline, docsdir=docsdir, filter_test_only=test)
             post_collection(testapp, url, pipeline)
-        except:
-            type, value, tb = sys.exc_info()
-            traceback.print_exc()
-            pdb.post_mortem(tb)
+    except:
+        type, value, tb = sys.exc_info()
+        traceback.print_exc()
+        pdb.post_mortem(tb)
