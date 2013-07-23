@@ -109,12 +109,12 @@ class Donor(Collection):
         'organism': {'$value': '/organisms/{organism}', '$templated': True},
     }
     item_embedded = set(['organism'])
-    item_keys = ['donor_id']
+    item_keys = ['accession']
 
 
 @location('treatments')
 class Treatment(Collection):
-    item_type = 'biosample_treatment'
+    item_type = 'treatment'
     schema = load_schema('treatment.json')
     properties = {
         'title': 'Treatments',
@@ -125,7 +125,7 @@ class Treatment(Collection):
 
 @location('constructs')
 class Construct(Collection):
-    item_type = 'biosample_construct'
+    item_type = 'construct'
     schema = load_schema('construct.json')
     properties = {
         'title': 'Constructs',
@@ -141,9 +141,19 @@ class Construct(Collection):
     item_keys = ['vector_name']
 
 
+@location('construct-validations')
+class ConstructValidation(Collection):
+    item_type = 'construct_validation'
+    schema = load_schema('construct_validation.json')
+    properties = {
+        'title': 'Constructs Validations',
+        'description': 'Listing of biosample construct validations',
+    }
+
+
 @location('documents')
 class Document(Collection):
-    item_type = 'biosample_document'
+    item_type = 'document'
     schema = load_schema('document.json')
     properties = {
         'title': 'Documents',
@@ -307,15 +317,6 @@ class Library(Collection):
     item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
 
 
-@location('assays')
-class Assays(Collection):
-    item_type = 'assay'
-    #schema = load_schema('assay.json')
-    properties = {
-        'title': 'Assays',
-        'description': 'Listing of Assays',
-    }
-
 
 @location('replicates')
 class Replicates(Collection):
@@ -331,6 +332,16 @@ class Replicates(Collection):
         'assay': {'$value': '/assays/{assay}', '$templated': True},
     }
     item_embedded = set(['library', 'platform', 'assay'])
+
+
+@location('software')
+class Software(Collection):
+    item_type = 'software'
+    schema = load_schema('software.json')
+    properties = {
+        'title': 'Software',
+        'description': 'Listing of software',
+    }
 
 
 @location('files')
@@ -383,3 +394,23 @@ class Experiments(Collection):
         ('lab.name', 'Lab'),
         ('project', 'Project')
     ])
+
+
+@location('rnai')
+class RNAi(Collection):
+    item_type = 'rnai'
+    schema = load_schema('rnai.json')
+    properties = {
+        'title': 'RNAi',
+        'description': 'Listing of RNAi',
+    }
+
+
+@location('dataset')
+class Dataset(Collection):
+    item_type = 'dataset'
+    schema = load_schema('dataset.json')
+    properties = {
+        'title': 'Datasets',
+        'description': 'Listing of datasets',
+    }

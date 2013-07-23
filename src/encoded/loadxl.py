@@ -25,15 +25,18 @@ TYPE_URL = {
     'biosample': '/biosamples/',
     'treatment': '/treatments/',
     'construct': '/constructs/',
+    'construct_validation': '/construct-validations/',
     'colleague': '/users/',
     'lab': '/labs/',
     'award': '/awards/',
     'platform': '/platforms/',
     'library': '/libraries/',
-    'assay': '/assays/',  # this should be removed lated
     'replicate': '/replicates/',
+    'software': '/software/',
     'file': '/files/',
+    'dataset': '/datasets/',
     'experiment': '/experiments/',
+    'rnai': '/rnai/',
 }
 
 ORDER = [
@@ -50,13 +53,16 @@ ORDER = [
     'document',
     'treatment',
     'construct',
+    # 'construct_validation',
     'biosample',
     'platform',
     'library',
-    'assay',
     'replicate',
+    # 'software',
     'file',
+    # 'dataset',
     'experiment',
+    'rnai',
 ]
 
 
@@ -82,8 +88,8 @@ def trim(value):
         return {k: trim(v) for k, v in value.iteritems()}
     if isinstance(value, list):
         return [trim(v) for v in value]
-    if isinstance(value, basestring) and len(value) > 100:
-        return  value[:40] + '...' + value[-40:]
+    if isinstance(value, basestring) and len(value) > 160:
+        return  value[:77] + '...' + value[-80:]
     return value
 
 

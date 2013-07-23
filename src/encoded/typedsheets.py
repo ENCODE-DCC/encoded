@@ -1,7 +1,8 @@
+from pyramid.settings import asbool
+
+
 def parse_array(value):
-    if value is None:
-        return []
-    return [v.strip() for v in value.decode('utf-8').split(';') if v]
+    return [v.strip() for v in value.decode('utf-8').split(';') if v.strip()]
 
 
 def decode_utf8(value):
@@ -12,10 +13,17 @@ def ignore(value):
     return None
 
 
+def parse_number(value):
+    try:
+        return int(value)
+    except ValueError:
+        return float(value)
+
+
 TYPE_BY_NAME = {
     'string': decode_utf8,
-    'float': float,
-    'boolean': bool,
+    'number': parse_number,
+    'boolean': asbool,
     'integer': int,
     'array': parse_array,
     'ignore': ignore,
@@ -31,7 +39,7 @@ def convert(name, value):
         type_name = parts[1]
     else:
         type_name = 'string'
-    if value.upper() == 'NULL':
+    if type_name != 'string' and value.lower() in ('', 'null'):
         return name, None
     cast = TYPE_BY_NAME[type_name]
     value = cast(value)
@@ -39,7 +47,7 @@ def convert(name, value):
 
 
 def cast_rows(dictrows):
-    """ Wrapper generator for typing csv.DictReader rows 
+    """ Wrapper generator for typing csv.DictReader rows
     """
     for row in dictrows:
         yield dict(convert(name, value) for name, value in row.iteritems())

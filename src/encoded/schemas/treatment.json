@@ -97,7 +97,7 @@
             "description": "Concentration of chemical treament (numeric)",
             "comment": "For chemical treatments only",
             "title": "Concentration",
-            "type": "float"
+            "type": "number"
         },
         "concentration_units": {
             "description": "Concentration units for chemical treament",
@@ -115,7 +115,7 @@
             "description": "Duration of chemical treament (numeric)",
             "comment": "For chemical treatments only",
             "title": "Duration",
-            "type": "float"
+            "type": "number"
         },
         "duration_units": {
             "description": "Duration units for chemical treament",

@@ -182,7 +182,7 @@ function (biosample, React, URI, globals) {
         }
     });
 
-    globals.panel_views.register(Treatment, 'biosample_treatment');
+    globals.panel_views.register(Treatment, 'treatment');
 
 
     var Construct = biosample.Construct = React.createClass({
@@ -210,7 +210,7 @@ function (biosample, React, URI, globals) {
         }
     });
 
-    globals.panel_views.register(Construct, 'biosample_construct');
+    globals.panel_views.register(Construct, 'construct');
 
 
     var Document = biosample.Document = React.createClass({
@@ -291,7 +291,7 @@ function (biosample, React, URI, globals) {
         }
     });
 
-    globals.panel_views.register(Document, 'biosample_document');
+    globals.panel_views.register(Document, 'document');
 
 
     return biosample;
