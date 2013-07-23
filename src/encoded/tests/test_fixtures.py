@@ -15,7 +15,7 @@ def minitestdata(app, data_fixture_manager):
     from .sample_data import URL_COLLECTION
     for url in ['/organisms/']:  # , '/sources/', '/users/']:
         collection = URL_COLLECTION[url]
-        for item in collection:
+        for item in collection[:1]:
             testapp.post_json(url, item, status=201)
 
 
@@ -59,8 +59,7 @@ def test_fixtures1(testapp):
     assert len(items)
 
     from .sample_data import URL_COLLECTION
-    item = URL_COLLECTION[url][0].copy()
-    item['uuid'] = '91cddd2c-549b-45f4-8937-82a6a11cca1e'
+    item = URL_COLLECTION[url][1]
     testapp.post_json(url, item, status=201)
 
     res = testapp.get(url)
