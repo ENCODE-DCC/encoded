@@ -78,15 +78,13 @@ def find_doc(docsdir, filename):
 def trim(value):
     """ Shorten over long binary fields in error log
     """
-    trimmed = {}
-    for k, v in value.iteritems():
-        if isinstance(v, dict):
-            trimmed[k] = trim(v)
-        elif isinstance(v, basestring) and len(v) > 100:
-            trimmed[k] = v[:40] + '...'
-        else:
-            trimmed[k] = v
-    return trimmed
+    if isinstance(value, dict):
+        return {k: trim(v) for k, v in value.iteritems()}
+    if isinstance(value, list):
+        return [trim(v) for v in value]
+    if isinstance(value, basestring) and len(value) > 100:
+        return  value[:40] + '...' + value[-40:]
+    return value
 
 
 def read_single_sheet(filename, name):
@@ -122,6 +120,21 @@ def filter_key(dictrows, key):
         yield row
 
 
+def remove_unknown(dictrows):
+    for row in dictrows:
+        for k, v in list(row.iteritems()):
+            if k != 'lot_id' and unicode(v).lower() == 'unknown':
+                del row[k]
+        yield row
+
+def remove_blank(dictrows):
+    for row in dictrows:
+        for k, v in list(row.iteritems()):
+            if v == '':
+                del row[k]
+        yield row
+
+
 def image_data(stream, filename=None):
     data = {}
     if filename is not None:
@@ -148,7 +161,7 @@ def update(testapp, url, value):
     elif res.status_int == 404:
         logger.debug('%s not found for UPDATE, posting as new' % url)
     elif res.status_int == 422:
-        logger.warn('Error VALIDATING for UPDATE %s: %r. Value:\n%r\n' % (url, res.json['errors'], trim(value)))
+        logger.warn('Error VALIDATING for UPDATE %s: %r. Value:\n%r\n' % (url, trim(res.json['errors']), trim(value)))
     else:
         logger.warn('Error UPDATING %s: %s. Value:\n%r\n' % (url, res.status, trim(value)))
     return res
@@ -160,7 +173,7 @@ def create(testapp, url, value):
     if res.status_int == 201:
         pass
     elif res.status_int == 422:
-        logger.warn('Error VALIDATING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, res.json['errors'], trim(value)))
+        logger.warn('Error VALIDATING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, trim(res.json['errors']), trim(value)))
     else:
         logger.warn('Error SUBMITTING NEW %s %s: %s. Value:\n%r\n' % (url, uuid, res.status, trim(value)))
     return res
@@ -230,6 +243,8 @@ def default_pipeline(reader, **settings):
     pipeline = filter_test_only(pipeline, **settings)
     pipeline = filter_missing_key(pipeline, key='uuid')
     pipeline = filter_key(pipeline, key='schema_version')
+    pipeline = remove_unknown(pipeline)
+    pipeline = remove_blank(pipeline)
     return pipeline
 
 

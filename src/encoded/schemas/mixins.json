@@ -20,9 +20,15 @@
         }
     },
     "submitted": {
-        "date_submitted": {
+        "is_current": {
             "description": "",
-            "title": "Date Submitted",
+            "title": "Is Current",
+            "type": "boolean",
+            "default": "True"
+        },
+        "date_created": {
+            "description": "",
+            "title": "Date Created",
             "type": "string",
             "format": "date"
         },
