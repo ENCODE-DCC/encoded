@@ -50,7 +50,7 @@
             "comment": "Automatic submitters can supply an Antibody accession or UUID",
             "title": "Antibody",
             "type": "string",
-            "linkTo": "antibody"
+            "linkTo": "antibody_lot"
         },
         "biological_replicate_no": {
             "default": 1,
