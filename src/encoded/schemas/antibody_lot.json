@@ -8,7 +8,8 @@
     "required": [ "award", "lab", "product_id", "lot_id", "source"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema-version": {
@@ -76,26 +77,21 @@
             "title": "Antibody Product ID",
             "type": "string"
         },
-        "aliases": {
-            "description": "A list of product/lot aliases that also refer to this antibody-log",
-            "title": "List of Antibody Lot Aliases",
-            "type:": "list",
+        "product_id_alias": {
+            "description": "Alias for the product ID",
+            "title": "Product ID Alias",
+            "type": "array",
             "items": {
-                "description": "An antibody lot product/id alias pair",
-                "title": "Product/Lot Alias",
-                "type": "object",
-                "properties": {
-                    "product_id_alias": {
-                        "description": "Alias for the product ID",
-                        "title": "Product ID Alias",
-                        "type": "string"
-                    },
-                    "lot_id_alias": {
-                        "description": "Alias for the lot ID",
-                        "title": "Lot ID alias",
-                        "type": "string"
-                    }
-                }
+                "type": "string"
+            }
+        },
+        "lot_id_alias": {
+            "default": [],
+            "description": "Alias for the lot ID",
+            "title": "Lot ID alias",
+            "type": "array",
+            "items": {
+                "type": "string"
             }
         },
         "antigen_sequence": {
@@ -126,7 +122,7 @@
             "title": "Lab Aliases",
             "type": "array"
         },
-        "encode2_dbxrefs": {
+        "encode2_dbxref": {
             "default": [],
             "description": "List cross-references to the previous ENCODE2 system",
             "items": {
