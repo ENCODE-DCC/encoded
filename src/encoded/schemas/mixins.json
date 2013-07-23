@@ -1,0 +1,37 @@
+{
+    "title": "Mixin properties",
+    "uuid": {
+        "uuid": {
+            "title": "UUID",
+            "description": "",
+            "type": "string",
+            "format": "uuid",
+            "permission": "add_with_uuid"
+        }
+    },
+    "accession": {
+        "accession": {
+            "description": "ENCODE DCC assigned accession",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Accession",
+            "type": "string",
+            "format": "accession",
+            "permission": "add_with_uuid"
+        }
+    },
+    "submitted": {
+        "date_submitted": {
+            "description": "",
+            "title": "Date Submitted",
+            "type": "string",
+            "format": "date"
+        },
+        "submitted_by_colleague_email": {
+            "description": "Principle Investigator of the lab",
+            "comment": "For automatic submission submit the email or collegue uuid for the submitting user",
+            "title": "Submitted By",
+            "type": "string",
+            "linkTo": "user"
+        }
+    }
+}

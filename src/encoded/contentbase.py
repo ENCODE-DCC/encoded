@@ -125,29 +125,8 @@ def maybe_include_embedded(request, result):
         result['_embedded'] = {'resources': embedded}
 
 
-def setting_uuid_permitted(context, request):
-    data = request.json
-    uuid = data.get('uuid', _marker)
-    if uuid is _marker:
-        return
-
-    result = has_permission('add_with_uuid', context, request)
-    if not result:
-        msg = 'Unauthorized: setting uuid not permitted'
-        raise HTTPForbidden(msg, result=result)
-
-    try:
-        UUID(uuid)
-    except ValueError:
-        msg = "%r is not a %r" % (uuid, 'uuid')
-        request.errors.add('body', ['uuid'], msg)
-
-    request.validated['uuid'] = uuid
-
-
 def validate_item_content(context, request):
     data = request.json
-    data.pop('uuid', None)
     if isinstance(context, Item):
         schema = context.__parent__.schema
     else:
@@ -752,7 +731,7 @@ def collection_list(context, request):
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
-             validators=[setting_uuid_permitted, validate_item_content])
+             validators=[validate_item_content])
 def collection_add(context, request):
     properties = request.validated
     item = context.add(properties)

@@ -7,6 +7,9 @@
     "type": "object",
     "required": [ "award", "lab"],
     "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" }
+    ],
     "properties": {
          "schema-version": {
             "description": "The version of JSON schema files used in the generation of the example",

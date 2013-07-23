@@ -5,12 +5,38 @@ from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 import json
 from jsonschema import (
+    Draft4Validator,
     FormatChecker,
-    Draft4Validator
+    RefResolver,
 )
 from jsonschema.exceptions import ValidationError
 import uuid
 import re
+import posixpath
+
+
+def local_handler(uri):
+    base, filename = posixpath.split(uri)
+    if base != '/profiles':
+        raise KeyError(uri)
+    schema = json.load(resource_stream(__name__, 'schemas/' + filename))
+    return schema
+
+
+def mixinProperties(schema, resolver):
+    mixins = schema.get('mixinProperties')
+    if mixins is None:
+        return schema
+    properties = {}
+    for mixin in mixins:
+        ref = mixin.get('$ref')
+        if ref is not None:
+            with resolver.resolving(ref) as resolved:
+                mixin = resolved
+        properties.update(mixin)
+    properties.update(schema.get('properties', {}))
+    schema['properties'] = properties
+    return schema
 
 
 def linkTo(validator, linkTo, instance, schema):
@@ -66,13 +92,17 @@ class SchemaValidator(Draft4Validator):
 
 def load_schema(filename):
     schema = json.load(resource_stream(__name__, 'schemas/' + filename))
+    resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
+    schema = mixinProperties(schema, resolver)
+
     # SchemaValidator is not thread safe for now
-    SchemaValidator(schema, serialize=True)
+    SchemaValidator(schema, resolver=resolver, serialize=True)
     return schema
 
 
 def validate_request(schema, request, data=None):
-    sv = SchemaValidator(schema, serialize=True)
+    resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
+    sv = SchemaValidator(schema, resolver=resolver, serialize=True)
     if data is None:
         data = request.json
     validated, errors = sv.serialize(data)

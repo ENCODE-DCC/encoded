@@ -26,3 +26,9 @@ def test_linkTo_saves_uuid(testapp):
     root = testapp.app.registry[LOCATION_ROOT]
     item = root['users'][user['uuid']]
     assert item.properties['submits_for'] == [lab['uuid']]
+
+
+def test_mixinProperties():
+    from ..schema_utils import load_schema
+    schema = load_schema('access_key.json')
+    assert schema['properties']['uuid']['type'] == 'string'

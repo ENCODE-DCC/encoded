@@ -7,6 +7,9 @@
     "type": "object",
     "required": [ "award", "lab", "antibody" ],
     "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" }
+    ],
     "properties": {
         "antibody": {
             "description": "The specific antibody for which the validation image applies.",
