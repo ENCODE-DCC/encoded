@@ -20,9 +20,9 @@
         "construct": {
             "description": "The specific construct for which the validation image applies.",
             "comment": "Automatic submitters can supply a construct uuid",
-            "title": "Antibody to be Validated",
+            "title": "Construct to be Validated",
             "type": "string",
-            "linkTo": "antibody_lot"
+            "linkTo": "construct"
         },
         "lab": {
             "default": "ENCODE Project",
