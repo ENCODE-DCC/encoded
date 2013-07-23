@@ -29,8 +29,11 @@ class Lab(Collection):
              '$repeat': 'award awards'}
         ]
     }
-    unique_key = 'lab:title'
-    item_keys = ['name', 'title']
+    unique_key = 'lab:name'
+    item_keys = [
+        {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+        {'name': '{item_type}:name', 'value': '{title}', '$templated': True},
+    ]
 
 
 @location('awards')
@@ -57,6 +60,7 @@ class AntibodyLots(Collection):
         'source': {'$value': '/sources/{source}', '$templated': True},
     }
     item_embedded = set(['source'])
+    unique_key = 'accession'
     item_keys = [
         {'name': 'accession', 'value': '{accession}', '$templated': True},
         {'name': '{item_type}:source_product_lot', 'value': '{source}/{product_id}/{lot_id}', '$templated': True},
@@ -89,6 +93,8 @@ class Source(Collection):
             {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', '$templated': True, '$condition': 'permission:edit'},
         ],
     }
+    unique_key = 'source:name'
+    item_keys = ['name']
 
 
 @location('donors')
