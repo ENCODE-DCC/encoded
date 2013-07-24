@@ -39,7 +39,9 @@ def convert(name, value):
         type_name = parts[1]
     else:
         type_name = 'string'
-    if type_name != 'string' and value.lower() in ('', 'null'):
+    if value.lower() == 'null':
+        return name, None
+    if type_name != 'string' and value == '':
         return name, None
     cast = TYPE_BY_NAME[type_name]
     value = cast(value)
