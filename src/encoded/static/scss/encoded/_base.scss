@@ -17,4 +17,11 @@ body { background: $mainThemeColor; }
 
 .float-wrap { overflow: hidden; }
 
+[hidden] { display: none !important; }
+
+#slot-application, #application {
+	height: 100%;
+}
+
+
 /* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */

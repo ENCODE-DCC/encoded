@@ -1,10 +1,10 @@
-.layout {
+#layout {
 	height: auto !important;
     margin: 0 auto -$footerHeight;
     min-height: 100%;
 }
 
-.content {
+#content {
 	padding-top: 75px;
 }
 
@@ -25,9 +25,9 @@
 /* *********************************************************
 		FOOTER
 ********************************************************** */
-@include sticky-footer($footerHeight, $footerTopBorderHeight, ".layout", ".layout-footer", ".page-footer");
+@include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
 
-.page-footer .footer-top {
+#page-footer #footer-top {
 	height: $footerTopHeight;
 	border-top: 1px solid #C4C1C1;
 	// border-bottom: 1px solid $footerBackground;
@@ -36,15 +36,15 @@
 	//text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
 	// text-align: center;
 	// line-height: $footerTopHeight;
-	.su-logo {
+	#su-logo {
 		float: left;
 		margin-top: 35px;
 	}
-	.som-logo {
+	#som-logo {
 		float: right;
 		margin-top: 35px;
 	}
-	.footer-links {
+	#footer-links {
 		height: $footerTopHeight;
 		margin: 0 auto;
 		display: inline-block;
@@ -60,7 +60,7 @@
 	}
 }
 
-.page-footer .footer-bottom {
+#page-footer #footer-bottom {
 	height: $footerBottomHeight;
 	line-height: $footerBottomHeight;
 	text-align: center;
@@ -70,7 +70,7 @@
 }
 
 
-.page-footer {
+#page-footer {
 	color: rgb(111, 111, 111);
 	//background-color: #E8ECEF;
 	//-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);

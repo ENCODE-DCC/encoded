@@ -1,5 +1,5 @@
 /* Sign in box (as used on home page) */
-.signin-box {
+#signin-box {
 	@include background-image(linear-gradient(rgba(255,255,255,0.1), rgba(0,0,0,0.1)));
 	@include border-radius(5px);
 	border: 1px solid #cacaca;

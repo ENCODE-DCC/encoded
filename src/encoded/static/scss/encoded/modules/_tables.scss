@@ -51,8 +51,12 @@ table thead tr th button {
 	float: left;
 }
 
-.table-filter {
+form.table-filter {
 	float: right;
+	margin: 0;
+}
+
+.table-filter input {
 	margin-bottom: 0 !important;
 }
 
