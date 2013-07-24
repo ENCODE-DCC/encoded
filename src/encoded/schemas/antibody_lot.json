@@ -77,14 +77,6 @@
             "title": "Antibody Product ID",
             "type": "string"
         },
-        "product_id_alias": {
-            "description": "Alias for the product ID",
-            "title": "Product ID Alias",
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
         "lot_id_alias": {
             "default": [],
             "description": "Alias for the lot ID",
