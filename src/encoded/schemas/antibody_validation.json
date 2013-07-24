@@ -124,6 +124,13 @@
                 "FAILED",
                 "INCOMPLETE"
             ]
+        },
+        "validation_comment": {
+            "default": "",
+            "description": "Should probably be on the status transistion",
+            "title": "Validation comment",
+            "type": "string",
+            "permission": "review"
         }
     }
 }
