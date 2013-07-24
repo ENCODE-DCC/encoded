@@ -46,10 +46,6 @@ class User(Collection):
         }
         keys = ['email']
         unique_key = 'user:email'
-        rels = [
-            {'rel': 'lab', 'target': '{lab}', '$templated': True, '$condition': 'lab'},
-            {'rel': 'submits_for', 'target': '{lab}', '$templated': True, '$repeat': 'lab submits_for'},
-        ]
 
         def __acl__(self):
             owner = 'userid:%s' % self.uuid

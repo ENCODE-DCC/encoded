@@ -275,11 +275,6 @@ class AntibodyApproval(Collection):
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
     ]
-    item_rels = [
-        {'rel': 'antibody', 'target': '{antibody}', '$templated': True},
-        {'rel': 'target', 'target': '{target}', '$templated': True},
-        {'rel': 'validation', 'target': '{validation}', '$templated': True, '$repeat': 'validation validations'},
-    ]
     columns = OrderedDict([
         ('antibody.accession', 'Accession'),
         ('target.target_label', 'Target'),

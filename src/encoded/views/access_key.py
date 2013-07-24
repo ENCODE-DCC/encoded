@@ -49,9 +49,6 @@ class AccessKey(Collection):
             'user': {'value': '/users/{user}', '$templated': True},
         }
         keys = ['access_key_id']
-        rels = [
-            {'rel': '{item_type}:user', 'target': '{user}', '$templated': True},
-        ]
 
         def __acl__(self):
             owner = 'userid:%s' % self.properties['user']
@@ -174,7 +171,7 @@ def edw_key_create(context, request):
     request.validated.clear()
     request.validated['access_key_id'] = username
     request.validated['secret_access_key_hash'] = pwhash
-    request.validated['user'] = user.uuid
+    request.validated['user'] = str(user.uuid)
     request.validated['description'] = ''
 
     collection_add(collection, request)
@@ -209,7 +206,7 @@ def edw_key_update(request):
     request.validated.clear()
     request.validated.update(access_key.properties)
     request.validated['secret_access_key_hash'] = pwhash
-    request.validated['user'] = user.uuid
+    request.validated['user'] = str(user.uuid)
 
     item_edit(access_key, request)
     return {'status': 'success'}
