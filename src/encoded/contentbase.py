@@ -233,6 +233,18 @@ class Root(object):
         self.collections[name] = value
         self.by_item_type[value.item_type] = value
 
+    def get_by_uuid(self, uuid, default=None):
+        try:
+            uuid = UUID(uuid)
+        except ValueError:
+            return default
+        session = DBSession()
+        model = session.query(Resource).get(uuid)
+        if model is None:
+            return default
+        collection = self.by_item_type[model.item_type]
+        return collection.Item(collection, model)
+
     def attach(self, name, factory):
         value = factory(self, name)
         self[name] = value
@@ -660,7 +672,6 @@ class Collection(object):
                 subset[column] = column_value(rendered, column)
 
             items.append(subset)
-            
 
         return properties
 

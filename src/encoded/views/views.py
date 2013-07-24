@@ -13,6 +13,7 @@ from ..schema_utils import (
     load_schema,
 )
 from collections import OrderedDict
+from pyramid.location import lineage
 
 
 @location('labs')
@@ -216,23 +217,33 @@ class Target(Collection):
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
     }
-    item_links = {
-        'organism': {'$value': '/organisms/{organism}', '$templated': True},
-        'submitter': {'$value': '/users/{submitter}', '$templated': True},
-        'lab': {'$value': '/labs/{lab}', '$templated': True},
-        'award': {'$value': '/awards/{award}', '$templated': True},
-        'name': {'$value': '{label}-{organism.name}', '$templated': True},
-    }
-    item_embedded = set(['organism', 'submitter', 'lab', 'award'])
-    #   item_keys = [('target_label', 'organism_name')] multi columns not implemented yet
     unique_key = 'target:name'
-    item_keys = ['name']
     columns = OrderedDict([
         ('target_label', 'Target'),
         ('organism.organism_name', 'Species'),
         ('dbxref.uniprot', 'External Resources'),
         ('project', 'Project')
     ])
+
+    class Item(Collection.Item):
+        links = {
+            'organism': {'$value': '/organisms/{organism}', '$templated': True},
+            'submitter': {'$value': '/users/{submitter}', '$templated': True},
+            'lab': {'$value': '/labs/{lab}', '$templated': True},
+            'award': {'$value': '/awards/{award}', '$templated': True},
+            'name': {'$value': '{label}-{organism_name}', '$templated': True},
+        }
+        embedded = set(['organism', 'submitter', 'lab', 'award'])
+        keys = [
+            {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
+        ]
+
+        def template_namespace(self, request=None):
+            ns = Collection.Item.template_namespace(self, request)
+            root = list(lineage(self))[-1]
+            organism = root.get_by_uuid(self.properties['organism'])
+            ns['organism_name'] = organism.properties['name']
+            return ns
 
 
 # The following should really be child collections.
@@ -313,7 +324,6 @@ class Library(Collection):
     }
     item_embedded = set(['biosample', 'documents'])
     item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
-
 
 
 @location('replicates')
