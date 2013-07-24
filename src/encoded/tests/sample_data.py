@@ -170,13 +170,13 @@ LABS = [
     {
     'uuid': '2c334112-288e-4d45-9154-3f404c726daf',
     'name': 'cherry',
-    'title': 'cherry',
+    'title': 'Cherry Lab',
     'institute_name': 'Stanford University'
     },
     {
     'uuid': 'b635b4ed-dba3-4672-ace9-11d76a8d03af',
     'name': 'myers',
-    'title': 'myers',
+    'title': 'Myers Lab',
     'institute_name': 'HudsonAlpha Institute for Biotechnology'
     },
 ]
@@ -185,13 +185,13 @@ BAD_LABS = [  # same UUID
     {
     'uuid': '2c334112-288e-4d45-9154-3f404c726daf',
     'name': 'cherry',
-    'title': 'cherry',
+    'title': 'Cherry Lab',
     'institute_name': 'Stanford University'
     },
     {
     'uuid': '2c334112-288e-4d45-9154-3f404c726daf',
     'name': 'myers',
-    'title': 'myers',
+    'title': 'Myers Lab',
     'institute_name': 'HudsonAlpha Institute for Biotechnology'
     },
 ]
