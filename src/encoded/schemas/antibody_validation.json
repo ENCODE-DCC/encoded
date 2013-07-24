@@ -20,7 +20,6 @@
             "linkTo": "antibody_lot"
         },
         "lab": {
-            "default": "ENCODE Project",
             "description": "Submitting Lab",
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
@@ -28,7 +27,6 @@
             "linkTo": "lab"
         },
         "award": {
-            "default": "ENCODE",
             "description": "Award (Grant) this submission is registered under",
             "comment": "Automatic submitters can supply an Award UUID, name, or number",
             "title": "Award Name",
