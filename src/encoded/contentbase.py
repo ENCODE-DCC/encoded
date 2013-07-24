@@ -127,10 +127,7 @@ def maybe_include_embedded(request, result):
 
 def validate_item_content(context, request):
     data = request.json
-    if isinstance(context, Item):
-        schema = context.__parent__.schema
-    else:
-        schema = context.schema
+    schema = context.schema
     if schema is None:
         request.validated.update(data)
         return
@@ -264,10 +261,6 @@ class MergedLinksMeta(type):
                            'value': '{%s}' % key, '$templated': True}
                 self.merged_keys.append(key)
 
-        self.merged_rels = []
-        for cls in reversed(self.mro()):
-            self.merged_rels.extend(vars(cls).get('rels', []))
-
 
 class Item(object):
     __metaclass__ = MergedLinksMeta
@@ -290,6 +283,10 @@ class Item(object):
     @property
     def item_type(self):
         return self.model.item_type
+
+    @property
+    def schema(self):
+        return self.__parent__.schema
 
     @property
     def properties(self):
@@ -343,15 +340,29 @@ class Item(object):
             session.add(key)
 
     def create_rels(self):
+        if self.schema is None:
+            return
         session = DBSession()
-        ns = self.template_namespace()
-        compiled = ObjectTemplate(self.merged_rels)
-        rels = compiled(ns)
-        for link_spec in rels:
-            rel = link_spec['rel']
-            target_rid = UUID(link_spec['target'])
-            link = Link(
-                source_rid=self.uuid, rel=rel, target_rid=target_rid)
+        properties = self.properties
+        source = self.uuid
+        _rels = []
+
+        for name, prop in self.schema['properties'].iteritems():
+            if 'linkTo' not in prop:
+                continue
+            targets = properties.get(name, [])
+            if not isinstance(targets, list):
+                targets = [targets]
+            for target in targets:
+                _rels.append((name, UUID(target)))
+
+        rels = set(_rels)
+        if len(rels) != len(_rels):
+            msg = "Duplicate links"
+            raise ValidationFailure('body', None, msg)
+
+        for rel, target in rels:
+            link = Link(source_rid=source, rel=rel, target_rid=target)
             session.add(link)
 
     @classmethod
@@ -402,17 +413,23 @@ class Item(object):
             session.add(key)
 
     def update_rels(self):
+        if self.schema is None:
+            return
         session = DBSession()
-        ns = self.template_namespace()
-        compiled = ObjectTemplate(self.merged_rels)
+        properties = self.properties
         source = self.uuid
+        _rels = []
 
-        _rels = [
-            (link_spec['rel'], UUID(link_spec['target']))
-            for link_spec in compiled(ns)
-        ]
+        for name, prop in self.schema['properties'].iteritems():
+            if 'linkTo' not in prop:
+                continue
+            targets = properties.get(name, [])
+            if not isinstance(targets, list):
+                targets = [targets]
+            for target in targets:
+                _rels.append((name, UUID(target)))
+
         rels = set(_rels)
-
         if len(rels) != len(_rels):
             msg = "Duplicate links"
             raise ValidationFailure('body', None, msg)
@@ -463,7 +480,6 @@ class CustomItemMeta(MergedLinksMeta):
             assert 'item_links' not in attrs
             assert 'item_embedded' not in attrs
             assert 'item_keys' not in attrs
-            assert 'item_rels' not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
@@ -479,8 +495,6 @@ class CustomItemMeta(MergedLinksMeta):
             item_attrs['embedded'] = attrs['item_embedded']
         if 'item_keys' in attrs:
             item_attrs['keys'] = attrs['item_keys']
-        if 'item_rels' in attrs:
-            item_attrs['rels'] = attrs['item_rels']
         self.Item = type('Item', item_bases, item_attrs)
 
 

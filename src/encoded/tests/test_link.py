@@ -37,8 +37,8 @@ def test_links_add(content, session):
         for link in session.query(Link).all()
     ])
     expected = sorted([
-        (sources[0]['uuid'], u'testing_link', targets[0]['uuid']),
-        (sources[1]['uuid'], u'testing_link', targets[1]['uuid']),
+        (sources[0]['uuid'], u'target', targets[0]['uuid']),
+        (sources[1]['uuid'], u'target', targets[1]['uuid']),
     ])
     assert links == expected
 
@@ -55,7 +55,7 @@ def test_links_update(content, testapp, session):
         for link in session.query(Link).all()
     ])
     expected = sorted([
-        (sources[0]['uuid'], u'testing_link', targets[0]['uuid']),
-        (sources[1]['uuid'], u'testing_link', targets[0]['uuid']),
+        (sources[0]['uuid'], u'target', targets[0]['uuid']),
+        (sources[1]['uuid'], u'target', targets[0]['uuid']),
     ])
     assert links == expected

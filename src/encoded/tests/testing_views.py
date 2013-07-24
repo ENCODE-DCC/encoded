@@ -49,18 +49,24 @@ class TestingKey(Collection):
 
 @location('testing-link-sources')
 class TestingLinkSource(Collection):
+    item_type = 'testing_link_source'
+    schema = {
+        'properties': {
+            'target': {
+                'type': 'string',
+                'linkTo': 'testing_link_target',
+            }
+        }
+    }
     properties = {
         'title': 'Test links',
         'description': 'Testing. Testing. 1, 2, 3.',
     }
 
-    item_rels = [
-        {'rel': 'testing_link', 'target': '{target}', '$templated': True},
-    ]
-
 
 @location('testing-link-targets')
 class TestingLinkTarget(Collection):
+    item_type = 'testing_link_target'
     properties = {
         'title': 'Test link targets',
         'description': 'Testing. Testing. 1, 2, 3.',

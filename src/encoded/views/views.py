@@ -221,9 +221,12 @@ class Target(Collection):
         'submitter': {'$value': '/users/{submitter}', '$templated': True},
         'lab': {'$value': '/labs/{lab}', '$templated': True},
         'award': {'$value': '/awards/{award}', '$templated': True},
+        'name': {'$value': '{label}-{organism.name}', '$templated': True},
     }
     item_embedded = set(['organism', 'submitter', 'lab', 'award'])
     #   item_keys = [('target_label', 'organism_name')] multi columns not implemented yet
+    unique_key = 'target:name'
+    item_keys = ['name']
     columns = OrderedDict([
         ('target_label', 'Target'),
         ('organism.organism_name', 'Species'),

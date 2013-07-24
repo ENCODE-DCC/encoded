@@ -72,7 +72,7 @@ def linkTo(validator, linkTo, instance, schema):
 
     # And normalize the value to a uuid
     if validator._serialize:
-        validator._validated[-1] = item.uuid
+        validator._validated[-1] = str(item.uuid)
 
 
 def permission(validator, permission, instance, schema):
