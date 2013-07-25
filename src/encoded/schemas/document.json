@@ -9,6 +9,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -56,36 +57,6 @@
             "description": "A plain text description of the document",
             "title": "Description",
             "type": "string"
-        },
-        "document": {
-            "description": "Document file metadata",
-            "title": "Document File Metadata",
-            "properties": {
-                "download": {
-                    "description": "The filename that will appear when downloaded from the web",
-                    "title": "File Download Name",
-                    "type": "string"
-                },
-                "href": {
-                    "description": "Internal webapp URL for document file",
-                    "title": "href",
-                    "type": "string",
-                    "format": "uri"
-                },
-                "type": {
-                    "description": "File MIME-type",
-                    "title": "MIME-type",
-                    "enum": [
-                        "application/pdf",
-                        "text/plain",
-                        "image/jpeg",
-                        "image/tiff",
-                        "image/gif",
-                        "image/png"
-                    ]
-                }
-            },
-            "type": "object"
         },
         "references": {
             "default": [],
