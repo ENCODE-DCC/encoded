@@ -35,15 +35,15 @@
             "permission": "import_items"
         },
         "submitted_by": {
-            "description": "Principle Investigator of the lab",
-            "comment": "For automatic submission submit the email or collegue uuid for the submitting user",
+            "description": "",
+            "comment": "For automatic submission submit the email or colleague uuid for the submitting user",
             "title": "Submitted By",
             "type": "string",
             "linkTo": "user",
             "serverDefault": "userid",
             "permission": "import_items"
         },
-       "lab": {
+        "lab": {
             "description": "Submitting Lab",
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",

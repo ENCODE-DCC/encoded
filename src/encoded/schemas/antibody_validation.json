@@ -26,7 +26,7 @@
             "type": "string",
             "linkTo": "target"
         },
-         "document": {
+        "document": {
             "description": "Document file metadata",
             "title": "Document File Metadata",
             "properties": {

@@ -33,7 +33,7 @@
             "title": "Last Name",
             "type": "string"
         },
-       "lab": {
+        "lab": {
             "description": "The lab to which this colleague belongs (NOTE: DOES NOT CONFER SUBMISSION RIGHTS)",
             "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
@@ -60,7 +60,7 @@
             "title": "Job Title",
             "type": "string"
         },
-         "phone1": {
+        "phone1": {
             "description": "The colleagues' primary phone number (with country code)",
             "title": "Phone Number",
             "type": "string",

@@ -29,7 +29,7 @@
             "title": "Treatment title",
             "type": "string"
         },
-         "type": {
+        "type": {
             "default": "chemical",
             "description": "The type of biosample treatment",
             "title": "Treatment Type",

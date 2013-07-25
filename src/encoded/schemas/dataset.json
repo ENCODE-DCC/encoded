@@ -18,7 +18,7 @@
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
-         "accession": {
+        "accession": {
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Dataset Accession",
@@ -31,7 +31,7 @@
             "title": "Experiment Description",
             "type": "string"
         },
-         "dataset_type": {
+        "dataset_type": {
             "default": "project",
             "description": "The Dataset type",
             "title": "Dataset Type",
@@ -67,7 +67,7 @@
             "title": "Lab Aliases",
             "type": "array"
         },
-       "documents": {
+        "documents": {
             "default": [],
             "description": "List of other experimental protocol documents",
             "comment": "For automatic submission supply unique Document names or uuids",
@@ -92,7 +92,7 @@
             "title": "List of Data Files",
             "type": "array"
         },
-         "references": {
+        "references": {
             "default": [],
             "description": "List of references (Pubmed IDs)",
             "title": "References",

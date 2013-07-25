@@ -32,7 +32,7 @@
             "type": "string",
             "linkTo": "target"
         },
-          "validations": {
+        "validations": {
             "default": [],
             "description": "List of validation images",
             "title": "Validations",

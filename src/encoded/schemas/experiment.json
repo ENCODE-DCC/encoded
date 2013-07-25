@@ -19,7 +19,7 @@
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
-         "accession": {
+        "accession": {
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Dataset Accession",
@@ -32,7 +32,7 @@
             "title": "Experiment Description",
             "type": "string"
         },
-         "target": {
+        "target": {
             "description": "Protein, RNA, or chemical target of the experiment",
             "comment": "For automatic submission supply unique Target label or UUID",
             "title": "Target ID",
@@ -121,7 +121,7 @@
             "title": "List of Data Files",
             "type": "array"
         },
-         "references": {
+        "references": {
             "default": [],
             "description": "List of references (Pubmed IDs)",
             "title": "References",

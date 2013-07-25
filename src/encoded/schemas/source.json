@@ -18,7 +18,7 @@
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
-         "description": {
+        "description": {
             "default": "",
             "description": "A long name or description for the source",
             "title": "Source Description",
@@ -29,7 +29,7 @@
             "title": "Source or Vendor Title",
             "type": "string"
         },
-       "name": {
+        "name": {
             "description": "Unique short name for the Source",
             "title": "Source or Vendor Name",
             "type": "string",

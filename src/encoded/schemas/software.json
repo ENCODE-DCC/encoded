@@ -29,7 +29,7 @@
             "title": "Software (package) Title",
             "type": "string"
         },
-         "type": {
+        "type": {
             "description": "The purpose of the software",
             "title": "Software Type",
             "type": "string",
@@ -40,7 +40,7 @@
                 "pipeline"
             ]
         },
-       "software_version": {
+        "software_version": {
             "description": "Software version code",
             "title": "Version",
             "type": "string"

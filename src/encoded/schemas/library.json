@@ -25,7 +25,7 @@
             "type": "string",
             "format": "accession"
         },
-         "alternate_accessions": {
+        "alternate_accessions": {
             "default": [],
             "description": "Accessions previously assigned to objects that have been merged with this one.",
             "comments": "Not to be submitted or updated by non-admin users.",
@@ -75,7 +75,7 @@
             "title": "Library Product ID",
             "type": "string"
         },
-         "lot_id": {
+        "lot_id": {
             "description": "A vendor's id code for the nucleic acid library lot",
             "title": "Library lot ID",
             "type": "string"

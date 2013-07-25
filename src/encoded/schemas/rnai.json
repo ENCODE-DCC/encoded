@@ -18,7 +18,7 @@
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
-       "type": {
+        "type": {
             "description": "The sub-type of the interfering RNA",
             "title": "RNAi Type",
             "type": "string",
@@ -27,7 +27,7 @@
                 "siRNA"
             ]
         },
-         "source": {
+        "source": {
             "description": "Source or Vendor of RNAi",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
             "title": "RNAi Source",

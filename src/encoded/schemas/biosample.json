@@ -18,7 +18,7 @@
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
-         "accession": {
+        "accession": {
             "description": "ENCODE DCC assigned accession",
             "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Biosample Accession",
@@ -44,7 +44,7 @@
             "title": "",
             "type": "string"
         },
-         "term_id": {
+        "term_id": {
             "description": "Ontology term ID describing biosample type",
             "comment": "Valid ontologies for biosamples are: Uberon, EFO, BTO, or CL.  NTR is a new term request from ENCODE DCC.",
             "title": "Ontology ID",
@@ -75,7 +75,7 @@
             "type": "string",
             "linkTo": "source"
         },
-       "product_id": {
+        "product_id": {
             "description": "The vendor's biosample product code",
             "title": "Biosample Product ID",
             "type": "string"
@@ -216,7 +216,7 @@
                     "linkTo": "biosample"
             }
         },
-         "part_of": {
+        "part_of": {
             "default": [],
             "description": "List of biosamples this biosample part of",
             "title": "List of Biosample Parents",
@@ -255,7 +255,7 @@
                 "S4"
             ]
         },
-         "transfection_type": {
+        "transfection_type": {
             "description": "The in-cell longevity of the transfection construct (if it exists)",
             "title": "Transfection type (stability)",
             "type": "string",
@@ -281,7 +281,7 @@
             "type": "string",
             "format": "date"
         },
-       "starting_amount": {
+        "starting_amount": {
             "description": "Starting amount of Biosample",
             "title": "Starting Amount",
             "type": "string"

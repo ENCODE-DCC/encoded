@@ -37,7 +37,7 @@
                 "format": "accession"
             }
         },
-         "life_stage": {
+        "life_stage": {
             "description": "",
             "comment": "Subclasses specify the enum",
             "title": "Life stage",

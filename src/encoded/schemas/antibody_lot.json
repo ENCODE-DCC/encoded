@@ -44,7 +44,7 @@
             "title": "Antibody Description",
             "type": "string"
         },
-         "source": {
+        "source": {
             "description": "Source or Vendor of Antibody",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
             "title": "Antibody Source",

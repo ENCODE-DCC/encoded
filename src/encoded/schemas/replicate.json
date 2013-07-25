@@ -18,7 +18,7 @@
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
-         "assay_type": {
+        "assay_type": {
             "description": "Ontology term describing assay used for this replicate",
             "comment": "Use OBI ontology (term_id) name where possible",
             "title": "Assay type",

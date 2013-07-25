@@ -57,7 +57,7 @@
             "title": "Description",
             "type": "string"
         },
-         "document": {
+        "document": {
             "description": "Document file metadata",
             "title": "Document File Metadata",
             "properties": {
