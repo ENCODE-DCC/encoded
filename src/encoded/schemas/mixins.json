@@ -31,7 +31,7 @@
                 "type": "string",
                 "format": "accession"
             }
-        },
+        }
     },
     "aliases": {
         "aliases": {
