@@ -17,7 +17,21 @@
             "type": "string",
             "format": "accession",
             "permission": "import_items"
-        }
+        },
+        "alternate_accessions": {
+            "default": [],
+            "description": "Accessions previously assigned to objects that have been merged with this one.",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Alternate Accessions",
+            "type": "array",
+            "permission": "import_items",
+            "items": {
+                "description": "An alternate accession",
+                "title": "Alt. Accession",
+                "type": "string",
+                "format": "accession"
+            }
+        },
     },
     "submitted": {
         "is_current": {

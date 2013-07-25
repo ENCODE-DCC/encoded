@@ -8,6 +8,7 @@
     "required": [ "award", "lab", "organism"],
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -16,26 +17,6 @@
             "comment":  "Must match the specific schemas' `version` property",
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
-        },
-        "accession": {
-            "description": "ENCODE DCC assigned accession",
-            "comments": "Not to be submitted or updated by non-admin users.",
-            "title": "Donor Accession",
-            "type": "string",
-            "format": "accession"
-        },
-        "alternate_accessions": {
-            "default": [],
-            "description": "Accessions previously assigned to objects that have been merged with this one.",
-            "comments": "Not to be submitted or updated by non-admin users.",
-            "title": "Alternate Accessions",
-            "type": "array",
-            "items": {
-                "description": "An alternate accession",
-                "title": "Alt. Accession",
-                "type": "string",
-                "format": "accession"
-            }
         },
         "life_stage": {
             "description": "",

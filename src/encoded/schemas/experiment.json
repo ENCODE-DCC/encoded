@@ -10,6 +10,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -18,13 +19,6 @@
             "comment":  "Must match the specific schemas' `version` property",
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
-        },
-        "accession": {
-            "description": "ENCODE DCC assigned accession",
-            "comments": "Not to be submitted or updated by non-admin users.",
-            "title": "Dataset Accession",
-            "type": "string",
-            "format": "accession"
         },
         "description": {
             "default": "",
