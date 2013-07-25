@@ -9,6 +9,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -17,19 +18,6 @@
             "comment":  "Must match the specific schemas' `version` property",
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
-        },
-        "lab_aliases": {
-            "default": [],
-            "description": "List of lab IDs or cross-references",
-            "items": {
-                "description": "List of Database IDs",
-                "comments": "please use LABNAME:DBID",
-                "title": "Database IDs",
-                "type":  "string",
-                "pattern": "^\\S+:\\S+"
-            },
-            "title": "Lab Aliases",
-            "type": "array"
         },
         "encode2_dbxrefs": {
             "default": [],

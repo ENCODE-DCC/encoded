@@ -9,6 +9,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -29,10 +30,10 @@
             },
             "type": "array"
         },
-        "aliases": {
+        "target_aliases": {
             "default": [],
             "description": "List of target name aliases and sources, indexed for searching",
-            "title": "Aliases",
+            "title": "Target aliases",
             "type": "array",
             "items": {
                 "description": "Target name aliases",

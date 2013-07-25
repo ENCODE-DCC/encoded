@@ -10,6 +10,7 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/attachment" },
+        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -68,19 +69,6 @@
                 "type": "string",
                 "pattern": "^PMID:[0-9]+$"
             },
-            "type": "array"
-        },
-        "lab_aliases": {
-            "default": [],
-            "description": "List of lab IDs or cross-references",
-            "items": {
-                "description": "List of Database IDs",
-                "comments": "please use LABNAME:DBID",
-                "title": "Database IDs",
-                "type":  "string",
-                "pattern": "^\\S+:\\S+"
-            },
-            "title": "Lab Aliases",
             "type": "array"
         }
     }

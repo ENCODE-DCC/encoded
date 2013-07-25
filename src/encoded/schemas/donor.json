@@ -9,6 +9,7 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -40,19 +41,6 @@
                 "month",
                 "year"
             ]
-        },
-        "source_aliases": {
-            "default": [],
-            "description": "List of source IDs or cross-references",
-            "items": {
-                "description": "List of Database IDs",
-                "comments": "please use LABNAME:DBID",
-                "title": "Database IDs",
-                "type":  "string",
-                "pattern": "^\\S+:\\S+"
-            },
-            "title": "Source Aliases",
-            "type": "array"
         },
         "health_status": {
             "description": "Heath status of donor",

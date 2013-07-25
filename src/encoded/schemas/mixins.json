@@ -33,6 +33,21 @@
             }
         },
     },
+    "aliases": {
+        "aliases": {
+            "default": [],
+            "description": "List of lab IDs or cross-references",
+            "items": {
+                "description": "List of Database IDs",
+                "comments": "please use LABNAME:DBID",
+                "title": "Database IDs",
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
+            },
+            "title": "Lab Aliases",
+            "type": "array"
+        }
+    },
     "submitted": {
         "is_current": {
             "description": "",
