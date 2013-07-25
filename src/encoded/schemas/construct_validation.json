@@ -10,68 +10,16 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/attachment" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "validation.json#/properties" }
     ],
     "properties": {
-        "schema-version": {
-            "description": "The version of JSON schema files used in the generation of the example",
-            "comment":  "Must match the specific schemas' `version` property",
-            "type": "string",
-            "pattern": "^[0-9]\\.[0-9][0-9]$"
-        },
         "construct": {
             "description": "The specific construct for which the validation image applies.",
             "comment": "Automatic submitters can supply a construct uuid",
             "title": "Construct to be Validated",
             "type": "string",
             "linkTo": "construct"
-        },
-        "validation_method": {
-            "description": "Experimental method for the validation image",
-            "comment": "This will likely get mapped to an experimental methods ontology.",
-            "title": "Method",
-            "type": "string",
-            "enum": [
-                "western blot",
-                "western blot after IP",
-                "immunoprecipitation",
-                "immunofluorescense",
-                "knockdowns",
-                "mass spectrometry after IP",
-                "chIP comparison",
-                "tagged epitopes",
-                "motif enrichment",
-                "dot blot",
-                "peptide ELISA",
-                "competitor peptides",
-                "mutant organisms",
-                "mutant histones",
-                "annotation enrichment"
-            ]
-        },
-        "caption": {
-            "default": "",
-            "description": "Caption for the validation image",
-            "title": "Image Caption",
-            "type": "string"
-        },
-        "date_validated": {
-            "description": "Date in which the validation experiment was run.",
-            "title": "Date Validated",
-            "type": "string",
-            "format": "date"
-        },
-        "references": {
-            "default": [],
-            "description": "List of references (Pubmed IDs)",
-            "title": "References",
-            "reference": {
-                "description": "Pubmed id for a published reference",
-                "title": "Pubmed Reference",
-                "type": "string",
-                "pattern": "^PMID:[0-9]+$"
-            },
-            "type": "array"
         }
     }
 }
