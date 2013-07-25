@@ -369,41 +369,6 @@ class Item(object):
             else:
                 properties[name] = embed(request, value)
 
-    def create_keys(self):
-        session = DBSession()
-        ns = self.template_namespace()
-        compiled = ObjectTemplate(self.merged_keys)
-        keys = compiled(ns)
-        for key_spec in keys:
-            key = Key(rid=self.uuid, **key_spec)
-            session.add(key)
-
-    def create_rels(self):
-        if self.schema is None:
-            return
-        session = DBSession()
-        properties = self.properties
-        source = self.uuid
-        _rels = []
-
-        for name, prop in self.schema['properties'].iteritems():
-            if 'linkTo' not in prop:
-                continue
-            targets = properties.get(name, [])
-            if not isinstance(targets, list):
-                targets = [targets]
-            for target in targets:
-                _rels.append((name, UUID(target)))
-
-        rels = set(_rels)
-        if len(rels) != len(_rels):
-            msg = "Duplicate links"
-            raise ValidationFailure('body', None, msg)
-
-        for rel, target in rels:
-            link = Link(source_rid=source, rel=rel, target_rid=target)
-            session.add(link)
-
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
@@ -416,8 +381,8 @@ class Item(object):
         resource = Resource(item_type, property_sheets, uuid)
         session.add(resource)
         item = cls(parent, resource)
-        item.create_keys()
-        item.create_rels()
+        item.update_keys()
+        item.update_rels()
         try:
             session.flush()
         except (IntegrityError, FlushError):
@@ -432,7 +397,7 @@ class Item(object):
         keys = set(_keys)
 
         if len(keys) != len(_keys):
-            msg = "Duplicate keys"
+            msg = "Duplicate keys %r" % _keys
             raise ValidationFailure('body', None, msg)
 
         existing = {
