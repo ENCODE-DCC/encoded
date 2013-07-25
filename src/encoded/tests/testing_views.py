@@ -3,7 +3,7 @@ from ..contentbase import (
     Collection,
     location,
 )
-from ..views.download import ItemWithDocument
+from ..views.download import ItemWithAttachment
 
 
 def includeme(config):
@@ -29,7 +29,7 @@ class TestingDownload(Collection):
         'description': 'Testing. Testing. 1, 2, 3.',
     }
 
-    class Item(ItemWithDocument):
+    class Item(ItemWithAttachment):
         pass
 
 

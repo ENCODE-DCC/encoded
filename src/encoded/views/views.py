@@ -4,7 +4,7 @@
 #    Deny,
 #    Everyone,
 #)
-from .download import ItemWithDocument
+from .download import ItemWithAttachment
 from ..contentbase import (
     Collection,
     location
@@ -185,7 +185,7 @@ class Document(Collection):
         'description': 'Listing of Biosample Documents',
     }
 
-    class Item(ItemWithDocument):
+    class Item(ItemWithAttachment):
         keys = [
             {'name': 'alias', 'value': '{alias}', '$repeat': 'alias lab_aliases', '$templated': True},
         ]
@@ -282,7 +282,7 @@ class AntibodyValidation(Collection):
         'description': 'Listing of antibody validation documents',
     }
 
-    class Item(ItemWithDocument):
+    class Item(ItemWithAttachment):
         links = {
             'antibody': {'$value': '/antibody-lots/{antibody}', '$templated': True},
             'target': {'$value': '/targets/{target}', '$templated': True},

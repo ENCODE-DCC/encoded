@@ -15,7 +15,7 @@ laAAAAAElFTkSuQmCC"""
 @pytest.fixture
 def testing_download(testapp):
     url = '/testing-downloads/'
-    item = {'document': {
+    item = {'attachment': {
         'download': 'red-dot.png',
         'href': RED_DOT,
     }}
@@ -26,8 +26,8 @@ def testing_download(testapp):
 def test_download_create(testapp, testing_download):
     from base64 import b64decode
     res = testapp.get(testing_download)
-    assert res.json['document']['href'] == '@@download/document/red-dot.png'
-    url = testing_download + '/' + res.json['document']['href']
+    assert res.json['attachment']['href'] == '@@download/attachment/red-dot.png'
+    url = testing_download + '/' + res.json['attachment']['href']
     res = testapp.get(url)
     assert res.content_type == 'image/png'
     assert res.body == b64decode(RED_DOT.split(',', 1)[1])
@@ -35,23 +35,23 @@ def test_download_create(testapp, testing_download):
 
 def test_download_update(testapp, testing_download):
     from base64 import b64decode
-    item = {'document': {
+    item = {'attachment': {
         'download': 'blue-dot.png',
         'href': BLUE_DOT,
     }}
     testapp.post_json(testing_download, item, status=200)
     res = testapp.get(testing_download)
-    assert res.json['document']['href'] == '@@download/document/blue-dot.png'
-    url = testing_download + '/' + res.json['document']['href']
+    assert res.json['attachment']['href'] == '@@download/attachment/blue-dot.png'
+    url = testing_download + '/' + res.json['attachment']['href']
     res = testapp.get(url)
     assert res.content_type == 'image/png'
     assert res.body == b64decode(BLUE_DOT.split(',', 1)[1])
 
 
 def test_download_update_no_change(testapp, testing_download):
-    item = {'document': {
+    item = {'attachment': {
         'download': 'red-dot.png',
-        'href': '@@download/document/red-dot.png',
+        'href': '@@download/attachment/red-dot.png',
     }}
     testapp.post_json(testing_download, item, status=200)
 
@@ -59,11 +59,11 @@ def test_download_update_no_change(testapp, testing_download):
 @pytest.mark.parametrize(
     'href',
     [
-        '@@download/document/another.png',
+        '@@download/attachment/another.png',
         'http://example.com/another.png',
     ])
 def test_download_update_bad_change(testapp, testing_download, href):
-    item = {'document': {
+    item = {'attachment': {
         'download': 'red-dot.png',
         'href': href,
     }}
@@ -73,12 +73,12 @@ def test_download_update_bad_change(testapp, testing_download, href):
 @pytest.mark.parametrize(
     'href',
     [
-        '@@download/document/another.png',
+        '@@download/attachment/another.png',
         'http://example.com/another.png',
     ])
 def test_download_create_bad_change(testapp, href):
     url = '/testing-downloads/'
-    item = {'document': {
+    item = {'attachment': {
         'download': 'red-dot.png',
         'href': href,
     }}
