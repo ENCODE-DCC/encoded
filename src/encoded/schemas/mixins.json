@@ -6,7 +6,7 @@
             "description": "",
             "type": "string",
             "format": "uuid",
-            "permission": "add_with_uuid"
+            "permission": "import_items"
         }
     },
     "accession": {
@@ -16,7 +16,7 @@
             "title": "Accession",
             "type": "string",
             "format": "accession",
-            "permission": "add_with_uuid"
+            "permission": "import_items"
         }
     },
     "submitted": {
@@ -30,14 +30,18 @@
             "description": "",
             "title": "Date Created",
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "serverDefault": "now",
+            "permission": "import_items"
         },
-        "submitted_by_colleague_email": {
+        "submitted_by": {
             "description": "Principle Investigator of the lab",
             "comment": "For automatic submission submit the email or collegue uuid for the submitting user",
             "title": "Submitted By",
             "type": "string",
-            "linkTo": "user"
+            "linkTo": "user",
+            "serverDefault": "userid",
+            "permission": "import_items"
         }
     }
 }

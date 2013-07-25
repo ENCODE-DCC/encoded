@@ -13,7 +13,7 @@
             "description": "Only admins are allowed to set this value",
             "type": "string",
             "linkTo": "user",
-            "permission": "add_with_uuid"
+            "permission": "import_items"
         },
         "description": {
             "title": "Description",
@@ -25,13 +25,13 @@
             "title": "Access key ID",
             "description": "Only admins are allowed to set this value",
             "type": "string",
-            "permission": "add_with_uuid"
+            "permission": "import_items"
         },
         "secret_access_key_hash": {
             "title": "Secret access key hash",
             "description": "Only admins are allowed to set this value",
             "type": "string",
-            "permission": "add_with_uuid"
+            "permission": "import_items"
         }
     },
     "required": []
