@@ -124,20 +124,6 @@
             "title": "Construct Document (list)",
             "type": "array"
         },
-        "validations": {
-            "default": [],
-            "description": "List of documents/images associated with the validation of this construct",
-            "comment": "For automatic submission supply image names or uuids",
-            "items": {
-                "description": "Contruct validation",
-                "title": "Validation",
-                "type": "string",
-                "comment": "XXX construct_validation",
-                "linkTo": "document"
-            },
-            "title": "Construct Validation Images (list)",
-            "type": "array"
-        },
         "genomic_integration_site": {
             "description": "Site in the biosample genome where the construct is stabily integrated",
             "title": "Integration Site",
