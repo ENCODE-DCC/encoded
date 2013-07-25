@@ -245,6 +245,31 @@ class Root(object):
         collection = self.by_item_type[model.item_type]
         return collection.Item(collection, model)
 
+    def get_by_unique_key(self, unique_key, name, default=None):
+        pkey = (unique_key, name)
+        session = DBSession()
+        # Eager load related resources here.
+        key = session.query(Key).options(
+            orm.joinedload_all(
+                Key.resource,
+                Resource.data,
+                CurrentPropertySheet.propsheet,
+                innerjoin=True,
+            ),
+            orm.joinedload_all(
+                Key.resource,
+                Resource.rels,
+                Link.target,
+                Resource.data,
+                CurrentPropertySheet.propsheet,
+            ),
+        ).get(pkey)
+        if key is None:
+            return default
+        model = key.resource
+        collection = self.by_item_type[model.item_type]
+        return collection.Item(collection, model)
+
     def attach(self, name, factory):
         value = factory(self, name)
         self[name] = value
@@ -276,6 +301,7 @@ class MergedLinksMeta(type):
 
 class Item(object):
     __metaclass__ = MergedLinksMeta
+    base_types = ['item']
     keys = []
     embedded = {}
     links = {
@@ -283,7 +309,7 @@ class Item(object):
         # 'collection': '{collection_uri}',
         '@type': [
             {'$value': '{item_type}', '$templated': True},
-            'item',
+            {'$value': '{base}', '$repeat': 'base base_types', '$templated': True},
         ],
     }
 
@@ -318,6 +344,7 @@ class Item(object):
         # Expand $templated links
         ns = self.properties.copy()
         ns['item_type'] = self.item_type
+        ns['base_types'] = self.base_types
         ns['uuid'] = self.uuid
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)

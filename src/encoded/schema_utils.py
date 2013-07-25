@@ -6,13 +6,14 @@ from pyramid.traversal import find_resource
 import json
 from jsonschema import (
     Draft4Validator,
-    FormatChecker,
     RefResolver,
 )
 from jsonschema.exceptions import ValidationError
-import uuid
-import re
+from uuid import UUID
+
 import posixpath
+
+from .schema_formats import is_accession
 
 
 def local_handler(uri):
@@ -28,15 +29,49 @@ def mixinProperties(schema, resolver):
     if mixins is None:
         return schema
     properties = {}
-    for mixin in mixins:
+    bases = []
+    for mixin in reversed(mixins):
         ref = mixin.get('$ref')
         if ref is not None:
             with resolver.resolving(ref) as resolved:
                 mixin = resolved
-        properties.update(mixin)
-    properties.update(schema.get('properties', {}))
+        bases.append(mixin)
+    bases.append(schema.get('properties', {}))
+    for base in bases:
+        for name, base_prop in base.iteritems():
+            prop = properties.setdefault(name, {})
+            for k, v in base_prop.iteritems():
+                if k not in prop:
+                    prop[k] = v
+                    continue
+                if prop[k] == v:
+                    continue
+                raise ValueError('Schema mixin conflict for %s/%s' % (name, k))
     schema['properties'] = properties
     return schema
+
+
+def lookup_resource(root, base, path):
+    try:
+        UUID(path)
+    except ValueError:
+        pass
+    else:
+        item = root.get_by_uuid(path)
+        if item is None:
+            raise KeyError(path)
+        return item
+    if is_accession(path):
+        item = root.get_by_unique_key('accession', path)
+        if item is None:
+            raise KeyError(path)
+        return item
+    if ':' in path:
+        item = root.get_by_unique_key('alias', path)
+        if item is None:
+            raise KeyError(path)
+        return item
+    return find_resource(base, path)
 
 
 def linkTo(validator, linkTo, instance, schema):
@@ -48,14 +83,16 @@ def linkTo(validator, linkTo, instance, schema):
 
     request = get_current_request()
     if validator.is_type(linkTo, "string"):
-        base = request.root.by_item_type[linkTo]
+        base = request.root.by_item_type.get(linkTo, request.context)
         linkTo = [linkTo]
     elif validator.is_type(linkTo, "array"):
         base = request.context  # XXX
     else:
         raise Exception("Bad schema")  # raise some sort of schema error
     try:
-        item = find_resource(base, instance)
+        item = lookup_resource(request.root, base, instance.encode('utf-8'))
+        if item is None:
+            raise KeyError()
     except KeyError:
         error = "%r not found" % instance
         yield ValidationError(error)
@@ -64,11 +101,21 @@ def linkTo(validator, linkTo, instance, schema):
         error = "%r is not a linkable resource" % instance
         yield ValidationError(error)
         return
-    if item.item_type not in linkTo:
+    if not set([item.item_type] + item.base_types).intersection(set(linkTo)):
         reprs = (repr(it) for it in linkTo)
         error = "%r is not of type %s" % (instance, ", ".join(reprs))
         yield ValidationError(error)
         return
+
+    linkEnum = schema.get('linkEnum')
+    if linkEnum is not None:
+        if not validator.is_type(linkEnum, "array"):
+            raise Exception("Bad schema")
+        if not any(UUID(enum_uuid) == item.uuid for enum_uuid in linkEnum):
+            reprs = (repr(it) for it in linkTo)
+            error = "%r is not one of %s" % (instance, ", ".join(reprs))
+            yield ValidationError(error)
+            return
 
     # And normalize the value to a uuid
     if validator._serialize:
@@ -177,20 +224,3 @@ def basic_schema(value, null_type='string', template=None, nullable=all,
         })
     else:
         raise ValueError(value)
-
-
-@FormatChecker.cls_checks("uuid")
-def is_uuid(instance):
-    try:
-        value = uuid.UUID(instance)
-    except:
-        return False
-    return True
-
-
-@FormatChecker.cls_checks("accession")
-def is_accession(instance):
-    acc_regex = re.compile('^ENC(BS|DO|LB|DS|AB)[0-9][0-9][0-9][A-Z][A-Z][A-Z]$')
-    if acc_regex.match(instance):
-        return True
-    return False
