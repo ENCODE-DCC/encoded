@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE Biosample",
     "type": "object",
-    "required": [ "award", "lab", "type", "source", "organism", "term_id"],
+    "required": [ "award", "lab", "biosample_type", "source", "organism", "term_id"],
     "additionProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" }
@@ -69,7 +69,7 @@
             "title": "Ontology Term",
             "type":  "string"
         },
-        "type": {
+        "biosample_type": {
             "description": "The sub-type of the biosample",
             "title": "Biosample Type",
             "type": "string",
@@ -189,7 +189,7 @@
             "description": "Donor reference for the Biosample",
             "comment": "For automatic submission, supply a ENCODE donor accession or uuid",
             "title": "Donor",
-            "type": "object",
+            "type": "string",
             "linkTo": "donor"
         },
         "organism": {

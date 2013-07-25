@@ -20,7 +20,8 @@ TYPE_URL = {
     'antibody_lot': '/antibody-lots/',
     'antibody_validation': '/validations/',
     'antibody_approval': '/antibodies/',
-    'donor': '/donors/',
+    'mouse_donor': '/mouse-donors/',
+    'human_donor': '/human-donors/',
     'document': '/documents/',
     'biosample': '/biosamples/',
     'treatment': '/treatments/',
@@ -49,7 +50,8 @@ ORDER = [
     'antibody_lot',
     'antibody_validation',
     'antibody_approval',
-    'donor',
+    'mouse_donor',
+    'human_donor',
     'document',
     'treatment',
     'construct',
@@ -267,6 +269,7 @@ def bootstrap_colleagues_pipeline(pipeline, **settings):
 
 PIPELINE = {
     'antibody_validation': document_pipeline,
+    'document': document_pipeline,
 }
 
 

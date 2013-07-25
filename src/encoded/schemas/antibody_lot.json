@@ -125,16 +125,9 @@
         },
         "host_organism": {
             "description": "Organism antibody was grown in.",
-            "comment": "These are not linked, currently - this should be replace with another organism object",
             "title": "Host Organism",
             "type": "string",
-            "enum": [
-                "rabbit",
-                "goat",
-                "sheep",
-                "rat",
-                "mouse"
-            ]
+            "linkTo": "organism"
         },
         "isotype": {
             "description": "Isotype of the antibody (IgA, IgD, etc.)",
@@ -145,6 +138,7 @@
                 "IgA2",
                 "IgD",
                 "IgG",
+                "IgGκ",
                 "IgG1",
                 "IgG1κ",
                 "IgG1λ",
@@ -162,27 +156,32 @@
                 "IgG4",
                 "IgA",
                 "IgM",
+                "IgMκ",
                 "IgE",
                 "serum",
                 "Unknown"
             ]
         },
-        "purification": {
+        "purifications": {
             "description": "Method by which antibody was purified",
-            "title": "Purification Method",
-            "type": "string",
-            "enum": [
-                "Protein A/G",
-                "affinity",
-                "Protein A",
-                "Protein G",
-                "crude",
-                "other",
-                "IEC",
-                "IMAC",
-                "tissue culture supernatent",
-                "antiserum"
-            ]
+            "title": "Purification Methods",
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "Protein A/G",
+                    "affinity",
+                    "Protein A",
+                    "Protein G",
+                    "crude",
+                    "other",
+                    "IEC",
+                    "IMAC",
+                    "tissue culture supernatant",
+                    "antiserum"
+                ]
+            }
         },
         "url": {
             "description": "External URL for the specific antibody at vendor site",

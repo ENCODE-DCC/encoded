@@ -15,6 +15,11 @@ from ..schema_utils import (
 from collections import OrderedDict
 from pyramid.location import lineage
 
+ACCESSION_KEYS = [
+    {'name': 'accession', 'value': '{accession}', '$templated': True},
+    {'name': 'accession', 'value': '{accession}', '$repeat': 'accession alternate_accessions', '$templated': True},
+]
+
 
 @location('labs')
 class Lab(Collection):
@@ -50,7 +55,7 @@ class Award(Collection):
 
 
 @location('antibody-lots')
-class AntibodyLots(Collection):
+class AntibodyLot(Collection):
     item_type = 'antibody_lot'
     schema = load_schema('antibody_lot.json')
     properties = {
@@ -62,8 +67,7 @@ class AntibodyLots(Collection):
     }
     item_embedded = set(['source'])
     unique_key = 'accession'
-    item_keys = [
-        {'name': 'accession', 'value': '{accession}', '$templated': True},
+    item_keys = ACCESSION_KEYS + [
         {'name': '{item_type}:source_product_lot', 'value': '{source}/{product_id}/{lot_id}', '$templated': True},
     ]
 
@@ -98,19 +102,39 @@ class Source(Collection):
     item_keys = ['name']
 
 
-@location('donors')
-class Donor(Collection):
-    item_type = 'donor'
-    schema = load_schema('donor.json')
-    properties = {
-        'title': 'Donors',
-        'description': 'Listing Biosample Donors',
-    }
-    item_links = {
+class DonorItem(Collection.Item):
+    base_types = ['donor'] + Collection.Item.base_types
+    links = {
         'organism': {'$value': '/organisms/{organism}', '$templated': True},
     }
-    item_embedded = set(['organism'])
-    item_keys = ['accession']
+    embedded = set(['organism'])
+    keys = ACCESSION_KEYS
+
+
+@location('mouse-donors')
+class MouseDonor(Collection):
+    item_type = 'mouse_donor'
+    schema = load_schema('mouse_donor.json')
+    properties = {
+        'title': 'Mouse donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
+
+
+@location('human-donors')
+class HumanDonor(Collection):
+    item_type = 'human_donor'
+    schema = load_schema('human_donor.json')
+    properties = {
+        'title': 'Human donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
 
 
 @location('treatments')
@@ -121,7 +145,7 @@ class Treatment(Collection):
         'title': 'Treatments',
         'description': 'Listing Biosample Treatments',
     }
-    item_keys = ['treatment_name']
+    #item_keys = ['treatment_name']
 
 
 @location('constructs')
@@ -139,7 +163,7 @@ class Construct(Collection):
         ],
     }
     item_embedded = set(['source', 'documents'])
-    item_keys = ['vector_name']
+    # item_keys = ['vector_name']
 
 
 @location('construct-validations')
@@ -162,7 +186,9 @@ class Document(Collection):
     }
 
     class Item(ItemWithDocument):
-        keys = ['document_name']
+        keys = [
+            {'name': 'alias', 'value': '{alias}', '$repeat': 'alias lab_aliases', '$templated': True},
+        ]
         links = {
             'submitter': {'$value': '/users/{submitter}', '$templated': True},
             'lab': {'$value': '/labs/{lab}', '$templated': True},

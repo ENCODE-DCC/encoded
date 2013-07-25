@@ -19,6 +19,13 @@
             "type": "string",
             "linkTo": "antibody_lot"
         },
+        "target": {
+            "description": "Target for which the antibody validation applies.",
+            "comment": "Automatic submitters can supply a target uuid, or name/species pair",
+            "title": "Antibody Target",
+            "type": "string",
+            "linkTo": "target"
+        },
         "lab": {
             "description": "Submitting Lab",
             "comment": "Automatic submitters can supply a Lab UUID or Name",
@@ -83,7 +90,10 @@
                 "competitor peptides",
                 "mutant organisms",
                 "mutant histones",
-                "annotation enrichment"
+                "annotation enrichment",
+                "XXX NEED REVIEW",
+                "Western blot, Western blot after IP",
+                "immunoblot"
             ]
         },
         "caption": {

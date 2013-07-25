@@ -5,10 +5,11 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE biosample Treatment",
     "type": "object",
-    "required": [ "name", "type", "lab", "award"],
+    "required": [ "title", "type", "lab", "award"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema-version": {
@@ -22,6 +23,11 @@
             "title": "Treatment name",
             "type": "string",
             "pattern": "^[a-z0-9\\-]+$"
+        },
+        "title": {
+            "description": "The preferred viewable name of the software",
+            "title": "Treatment title",
+            "type": "string"
         },
         "lab": {
             "description": "Submitting Lab",
@@ -44,15 +50,20 @@
             "type": "string",
             "enum": [
                 "protein",
-                "chemical"
+                "chemical",
+                "infection"
             ]
         },
-        "protocol": {
+        "protocols": {
+            "default": [],
             "description": "Treatment protocol document",
             "comment": "For automatic submission supply an unique document name or UUID",
-            "title": "Treatment Protocol Document",
-            "type": "string",
-            "linkTo": "document"
+            "title": "Treatment Protocol Documents",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "document"
+            }
         },
         "lab_aliases": {
             "default": [],
@@ -83,10 +94,10 @@
             "comment": "For chemical treatments only",
             "title": "ChEBI ID",
             "type": "string",
-            "pattern": "^(CHEBI):[0-9]{5}$"
+            "pattern": "^(CHEBI:[0-9]{5,6})|(UniprotKB:P[0-9]{5})|(Taxon:[0-9]{6})$"
         },
         "term_name": {
-            "description": "ChEBI ontology term describing chemical treatmenbt",
+            "description": "ChEBI ontology term describing chemical treatment",
             "comment": "For chemical treatments only",
             "title": "ChEBI Term (Chemical Name)",
             "type":  "string"
@@ -103,6 +114,7 @@
             "title": "Conc. units",
             "type": "string",
             "enum": [
+                "pM",
                 "nM",
                 "μM",
                 "mM",
@@ -121,8 +133,8 @@
             "title": "Duration units",
             "type": "string",
             "enum": [
-                "sec",
-                "min",
+                "second",
+                "minute",
                 "hour",
                 "day"
             ]

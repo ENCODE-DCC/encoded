@@ -8,7 +8,8 @@
     "required": [ "type", "lab", "award"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema-version": {
@@ -41,8 +42,20 @@
                 "general protocol",
                 "excision protocol",
                 "transfection protocol",
-                "construct information"
+                "construct information",
+                "XXX NEED REVIEW",
+                "unclassified document",
+                "construct validation",
+                "construct image",
+                "cell isolation protocol",
+                "iPS reprogramming protocol"
            ]
+        },
+        "description": {
+            "default": "",
+            "description": "A plain text description of the document",
+            "title": "Description",
+            "type": "string"
         },
         "lab": {
             "description": "Submitting Lab",
@@ -98,6 +111,19 @@
                 "type": "string",
                 "pattern": "^PMID:[0-9]+$"
             },
+            "type": "array"
+        },
+        "lab_aliases": {
+            "default": [],
+            "description": "List of lab IDs or cross-references",
+            "items": {
+                "description": "List of Database IDs",
+                "comments": "please use LABNAME:DBID",
+                "title": "Database IDs",
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
+            },
+            "title": "Lab Aliases",
             "type": "array"
         }
     }

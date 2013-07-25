@@ -3,10 +3,9 @@
     "id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "0.01",
-    "description": "Schema for submitting an ENCODE biosample Donor",
+    "description": "Base schema for ENCODE biosample donors",
     "type": "object",
     "required": [ "award", "lab", "organism"],
-    "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" }
     ],
@@ -51,31 +50,32 @@
             "type": "string",
             "linkTo": "award"
         },
-        "organism": {
-            "description": "Organism of the donor creature",
-            "title": "Donor organism",
-            "type": "string",
-            "linkTo": "organism"
+        "life_stage": {
+            "description": "",
+            "comment": "Subclasses specify the enum",
+            "title": "Life stage",
+            "type": "string"
         },
         "age": {
-            "description": "Age or stage of the donor organism when sampled",
-            "title": "Donor Age/Stage",
+            "description": "Age or age range of the donor organism when sampled",
+            "title": "Donor age",
             "type": "string",
-            "pattern": "^(TS[0-2][0-9]|[EP][0-9\\.]{1,4}|[0-9]{1,3}|fetal|adult|newborn)$"
+            "pattern": "^\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?$"
         },
         "age_units": {
             "description": "Units for age or lifecycle stage of the donor organism when sampled",
             "title": "Donor Age/Stage Units",
             "type": "string",
             "enum": [
-                "years",
-                "days",
-                "embryonic stage"
+                "day",
+                "week",
+                "month",
+                "year"
             ]
         },
-        "lab_aliases": {
+        "source_aliases": {
             "default": [],
-            "description": "List of lab IDs or cross-references",
+            "description": "List of source IDs or cross-references",
             "items": {
                 "description": "List of Database IDs",
                 "comments": "please use LABNAME:DBID",
@@ -83,14 +83,8 @@
                 "type":  "string",
                 "pattern": "^\\S+:\\S+"
             },
-            "title": "Lab Aliases",
+            "title": "Source Aliases",
             "type": "array"
-        },
-        "ethnicity": {
-            "description": "Ethnicity of human donor",
-            "comment": "For Human donors only",
-            "title": "Donor Ethnicity (human)",
-            "type": "string"
         },
         "health_status": {
             "description": "Heath status of donor",
@@ -148,19 +142,6 @@
                 "linkTo": "donor"
             }
         },
-        "littermates": {
-            "default": [],
-            "description": "List of donors related as littermates to this (mouse) donor",
-            "title": "Littermates",
-            "type":  "array",
-            "donor": {
-                "description": "Another donor mouse from the same litter",
-                "comment": "For automated submission supply an ENCODE donor accession or uuid",
-                "title": "Littermate",
-                "type": "string",
-                "linkTo": "donor"
-            }
-        },
         "fraternal_twin": {
             "description": "The donor's fraternal twin",
             "comment": "For automated submission supply an ENCODE donor accession or uuid",
@@ -169,23 +150,17 @@
             "linkTo": "donor"
         },
         "identical_twin": {
-            "description": "Another donor mouse from the same litter",
+            "description": "The donor's identical twin",
             "comment": "For automated submission supply an ENCODE donor accession or uuid",
-            "title": "Littermate",
+            "title": "Identical Twin",
             "type": "string",
             "linkTo": "donor"
         },
-        "strain_background": {
-            "description": "Strain background of a non-human donor",
-            "comment": "For non-human donors only",
-            "title": "Strain Background",
-            "type": "string"
-        },
-        "strain_name": {
-            "description": "Specific strain name of a non-human donor",
-            "comment": "For non-human donors only",
-            "title": "Strain Name",
-            "type": "string"
+        "organism": {
+            "description": "Organism of the donor creature",
+            "title": "Donor organism",
+            "type": "string",
+            "linkTo": "organism"
         }
     }
 }

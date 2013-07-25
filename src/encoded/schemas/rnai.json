@@ -62,7 +62,7 @@
             "description": "Target that knocked down or inhibited by the RNAi",
             "comment": "Automatic submitters can supply a target uuid, or name/species pair",
             "title": "RNAi Target",
-            "type": "object",
+            "type": "string",
             "linkTo": "target"
         },
         "vector_backbone_name": {

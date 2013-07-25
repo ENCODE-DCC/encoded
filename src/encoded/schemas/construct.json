@@ -5,10 +5,12 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE transfection Construct",
     "type": "object",
-    "required": [ "type", "target", "tag", "lab", "award"],
+    "comment": "XXX tag needs to be required",
+    "required": [ "type", "target", "lab", "award"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema-version": {
@@ -58,11 +60,15 @@
             "title": "Construct Product ID",
             "type": "string"
         },
-        "url": {
+        "product_urls": {
+            "default": [],
             "description": "External Product URL for the specific construct at vendor site",
             "title": "Product URL",
-            "type": "string",
-            "format": "uri"
+            "type": "array",
+            "items": {
+                "type": "string",
+                "format": "uri"
+            }
         },
         "target": {
             "description": "Target that is tagged or knocked down by the construct",
@@ -126,7 +132,8 @@
                 "description": "Contruct validation",
                 "title": "Validation",
                 "type": "string",
-                "linkTo": "construct_validation"
+                "comment": "XXX construct_validation",
+                "linkTo": "document"
             },
             "title": "Construct Validation Images (list)",
             "type": "array"
