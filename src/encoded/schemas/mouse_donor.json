@@ -9,7 +9,8 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "donor.json#/properties" }
+        { "$ref": "donor.json#/properties" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "life_stage": {

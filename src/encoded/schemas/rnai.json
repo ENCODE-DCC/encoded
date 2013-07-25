@@ -8,7 +8,8 @@
     "required": [ "type", "target", "lab", "award"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
          "schema-version": {
@@ -26,21 +27,7 @@
                 "siRNA"
             ]
         },
-        "lab": {
-            "description": "Submitting Lab",
-            "comment": "Automatic submitters can supply a Lab UUID or Name",
-            "title": "Lab",
-            "type": "string",
-            "linkTo": "lab"
-        },
-        "award": {
-            "description": "Award (Grant) this submission is registered under",
-            "comment": "Automatic submitters can supply an Award UUID, name, or number",
-            "title": "Award Name",
-            "type": "string",
-            "linkTo": "award"
-        },
-        "source": {
+         "source": {
             "description": "Source or Vendor of RNAi",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
             "title": "RNAi Source",

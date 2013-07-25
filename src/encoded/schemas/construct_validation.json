@@ -8,7 +8,8 @@
     "required": [ "award", "lab", "construct" ],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema-version": {
@@ -24,21 +25,7 @@
             "type": "string",
             "linkTo": "construct"
         },
-        "lab": {
-            "description": "Submitting Lab",
-            "comment": "Automatic submitters can supply a Lab UUID or Name",
-            "title": "Lab",
-            "type": "string",
-            "linkTo": "lab"
-        },
-        "award": {
-            "description": "Award (Grant) this submission is registered under",
-            "comment": "Automatic submitters can supply an Award UUID, name, or number",
-            "title": "Award Name",
-            "type": "string",
-            "linkTo": "award"
-        },
-        "document": {
+         "document": {
             "description": "Construct validation image (document)",
             "comment": "For automatic submission supply unique a image/document name or uuid",
             "title": "Validation Image",

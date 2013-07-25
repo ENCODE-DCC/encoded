@@ -28,20 +28,6 @@
                 "zinc-finger knockout"
             ]
         },
-       "lab": {
-            "description": "Submitting Lab",
-            "comment": "Automatic submitters can supply a Lab UUID or Name",
-            "title": "Lab",
-            "type": "string",
-            "linkTo": "lab"
-        },
-        "award": {
-            "description": "Award (Grant) this submission is registered under",
-            "comment": "Automatic submitters can supply an Award UUID, name, or number",
-            "title": "Award Name",
-            "type": "string",
-            "linkTo": "award"
-        },
         "description": {
             "default": "",
             "description": "Long description of the construct",

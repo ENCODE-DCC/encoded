@@ -8,7 +8,8 @@
     "required": [ "award", "lab", "assay_type", "biological_replicate_no", "technical_replicate_no", "library"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema-version": {
@@ -17,21 +18,7 @@
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
-        "lab": {
-            "description": "Submitting Lab",
-            "comment": "Automatic submitters can supply a Lab UUID or Name",
-            "title": "Lab",
-            "type": "string",
-            "linkTo": "lab"
-        },
-        "award": {
-            "description": "Award (Grant) this submission is registered under",
-            "comment": "Automatic submitters can supply an Award UUID, name, or number",
-            "title": "Award Name",
-            "type": "string",
-            "linkTo": "award"
-        },
-        "assay_type": {
+         "assay_type": {
             "description": "Ontology term describing assay used for this replicate",
             "comment": "Use OBI ontology (term_id) name where possible",
             "title": "Assay type",

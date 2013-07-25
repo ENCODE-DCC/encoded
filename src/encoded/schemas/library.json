@@ -8,7 +8,8 @@
     "required": [ "award", "lab", "type", "source", "type", "term_id"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema-version": {
@@ -36,20 +37,6 @@
                 "type": "string",
                 "format": "accession"
             }
-        },
-       "lab": {
-            "description": "Submitting Lab",
-            "comment": "Automatic submitters can supply a Lab UUID or Name",
-            "title": "Lab",
-            "type": "string",
-            "linkTo": "lab"
-        },
-        "award": {
-            "description": "Award (Grant) this submission is registered under",
-            "comment": "Automatic submitters can supply an Award UUID, name, or number",
-            "title": "Award Name",
-            "type": "string",
-            "linkTo": "award"
         },
         "biosample": {
             "description": "Biosample from which this library was derived or isolated.",

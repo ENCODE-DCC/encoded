@@ -42,6 +42,20 @@
             "linkTo": "user",
             "serverDefault": "userid",
             "permission": "import_items"
+        },
+       "lab": {
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "linkTo": "lab"
+        },
+        "award": {
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "linkTo": "award"
         }
-    }
+     }
 }

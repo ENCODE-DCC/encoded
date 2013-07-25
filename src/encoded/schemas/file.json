@@ -8,7 +8,8 @@
     "required": [ "award", "lab", "file_format", "md5sum", "output_type"],
     "additionalProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
          "schema-version": {
@@ -55,21 +56,7 @@
                 "narrowPeak.bigBed"
             ]
         },
-        "lab": {
-            "description": "Submitting Lab",
-            "comment": "Automatic submitters can supply a Lab UUID or Name",
-            "title": "Lab",
-            "type": "string",
-            "linkTo": "lab"
-        },
-        "award": {
-            "description": "Award (Grant) this submission is registered under",
-            "comment": "Automatic submitters can supply an Award UUID, name, or number",
-            "title": "Award Name",
-            "type": "string",
-            "linkTo": "award"
-        },
-        "md5sum": {
+         "md5sum": {
             "description": "Calucluated MD5 sum of the file",
             "title": "MD5 Sum",
             "type": "string",

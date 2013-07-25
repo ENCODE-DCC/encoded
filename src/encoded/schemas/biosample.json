@@ -8,7 +8,8 @@
     "required": [ "award", "lab", "biosample_type", "source", "organism", "term_id"],
     "additionProperties": false,
     "mixinProperties": [
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema-version": {
@@ -43,21 +44,7 @@
             "title": "",
             "type": "string"
         },
-        "lab": {
-            "description": "Submitting Lab",
-            "comment": "Automatic submitters can supply a Lab UUID or Name",
-            "title": "Lab",
-            "type": "string",
-            "linkTo": "lab"
-        },
-        "award": {
-            "description": "Award (Grant) this submission is registered under",
-            "comment": "Automatic submitters can supply an Award UUID, name, or number",
-            "title": "Award Name",
-            "type": "string",
-            "linkTo": "award"
-        },
-        "term_id": {
+         "term_id": {
             "description": "Ontology term ID describing biosample type",
             "comment": "Valid ontologies for biosamples are: Uberon, EFO, BTO, or CL.  NTR is a new term request from ENCODE DCC.",
             "title": "Ontology ID",
