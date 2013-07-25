@@ -70,6 +70,17 @@
                 "pattern": "^PMID:[0-9]+$"
             },
             "type": "array"
+        },
+        "urls": {
+            "default": [],
+            "description": "List of URLs",
+            "title": "URLs",
+            "reference": {
+                "title": "URL",
+                "type": "string",
+                "format": "uri"
+            },
+            "type": "array"
         }
     }
 }
