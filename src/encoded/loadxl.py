@@ -106,33 +106,34 @@ def read_single_sheet(filename, name):
 
 
 def filter_test_only(dictrows, filter_test_only=False, **settings):
+    if filter_test_only:
+        return _filter_test_only(dictrows)
+    else:
+        return dictrows
+
+
+def _filter_test_only(dictrows):
     for row in dictrows:
-        test = row.pop('test', True)
-        if filter_test_only and not test:
-            continue
-        yield row
+        if row.get('test', True):
+            yield row
 
 
 def filter_skip(dictrows, **settings):
     for row in dictrows:
-        if row.pop('test', '') == 'skip':
-            continue
-        yield row
+        if row.get('test', '') != 'skip':
+            yield row
 
 
 def filter_missing_key(dictrows, *keys):
     for row in dictrows:
-        if not any(row[key] for key in keys):
-            continue
-        yield row
+        if any(key in row for key in keys):
+            yield row
 
 
-def filter_key(dictrows, *keys):
+def remove_keys(dictrows, *keys):
     for row in dictrows:
         for key in keys:
-            if key in row:
-                row = row.copy()
-                del row[key]
+            row.pop(key, None)
         yield row
 
 
@@ -272,9 +273,10 @@ def default_pipeline(reader, **settings):
     pipeline = filter_skip(pipeline)
     pipeline = filter_test_only(pipeline, **settings)
     pipeline = filter_missing_key(pipeline, 'uuid')
-    pipeline = filter_key(pipeline, 'schema_version')
+    pipeline = remove_keys(pipeline, 'schema_version')
     pipeline = remove_unknown(pipeline)
     pipeline = remove_blank(pipeline)
+    pipeline = remove_keys(pipeline, 'test')
     return pipeline
 
 
@@ -284,12 +286,12 @@ def attachment_pipeline(pipeline, **settings):
 
 
 def bootstrap_colleagues_pipeline(pipeline, **settings):
-    pipeline = filter_key(pipeline, 'lab', 'submits_for')
+    pipeline = remove_keys(pipeline, 'lab', 'submits_for')
     return pipeline
 
 
 def biosamples_pipeline(pipeline, **settings):
-    pipeline = filter_key(pipeline, 'derived_from', 'contained_in')
+    pipeline = remove_keys(pipeline, 'derived_from', 'contained_in')
     return pipeline
 
 
@@ -299,7 +301,7 @@ def biosamples_update_pipeline(pipeline, **settings):
 
 
 def experiments_pipeline(pipeline, **settings):
-    pipeline = filter_key(pipeline, 'files')
+    pipeline = remove_keys(pipeline, 'files')
     return pipeline
 
 

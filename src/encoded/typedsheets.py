@@ -57,7 +57,9 @@ def cast_rows(dictrows):
 
 def remove_nulls(dictrows):
     for row in dictrows:
-        yield dict(
+        row = dict(
             (name, value) for name, value in row.iteritems()
             if value is not None and name
         )
+        if row:
+            yield row
