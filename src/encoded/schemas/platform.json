@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting an experimental platform to ENCODE",
     "type": "object",
-    "required": ["name"],
+    "required": ["title"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
