@@ -241,7 +241,7 @@ class Biosample(Collection):
         ],
     }
     item_embedded = set(['donor', 'submitter', 'lab', 'award', 'source', 'treatments', 'constructs', 'documents'])
-    item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
+    item_keys = ACCESSION_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
         ('biosample_term_name', 'Term'),
@@ -368,7 +368,7 @@ class Library(Collection):
         ],
     }
     item_embedded = set(['biosample', 'documents'])
-    item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
+    item_keys = ACCESSION_KEYS
 
 
 @location('replicates')
@@ -411,6 +411,7 @@ class Files(Collection):
         'award': {'$value': '/awards/{award}', '$templated': True},
     }
     item_embedded = set(['submitter', 'lab', 'award'])
+    item_keys = ACCESSION_KEYS
 
 
 @location('experiments')
@@ -436,7 +437,7 @@ class Experiments(Collection):
         ],
     }
     item_embedded = set(['files', 'replicates', 'submitter', 'lab', 'award', 'controls'])
-    item_keys = [{'name': 'accession', 'value': '{accession}', '$templated': True}]
+    item_keys = ACCESSION_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
         ('replicates.0.assay.assay_name', 'Assay Type'),
