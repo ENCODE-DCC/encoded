@@ -1,5 +1,6 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 
+import transaction
 import venusian
 from pyramid.events import (
     ContextFound,
@@ -373,21 +374,69 @@ class Item(object):
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
         session = DBSession()
-        property_sheets = {}
-        if properties is not None:
-            property_sheets[''] = properties
-        if sheets is not None:
-            property_sheets.update(sheets)
-        resource = Resource(item_type, property_sheets, uuid)
+        sp = transaction.savepoint()
+        resource = Resource(item_type, rid=uuid)
+        cls.update_properties(resource, properties, sheets)
         session.add(resource)
-        item = cls(parent, resource)
-        item.update_keys()
-        item.update_rels()
+        self = cls(parent, resource)
+        new_keys = self.update_keys()
+        self.update_rels()
         try:
             session.flush()
         except (IntegrityError, FlushError):
-            raise HTTPConflict()
-        return item
+            pass
+        else:
+            return self
+        # Try again more carefully
+        sp.rollback()
+        cls.update_properties(resource, properties, sheets)
+        session.add(resource)
+        self = cls(parent, resource)
+        try:
+            session.flush()
+        except (IntegrityError, FlushError):
+            msg = 'UUID conflict'
+            raise HTTPConflict(msg)
+        conflicts = self.check_duplicate_keys(new_keys)
+        self.update_properties(properties, sheets)
+        assert conflicts
+        msg = 'Keys conflict: %r' % conflicts
+        raise HTTPConflict(msg)
+
+
+    @classmethod
+    def update_properties(cls, model, properties, sheets=None):
+        if properties is not None:
+            model[''] = properties
+        if sheets is not None:
+            for key, value in sheets.items():
+                model[key] = value
+
+    def update(self, properties, sheets=None):
+        session = DBSession()
+        sp = transaction.savepoint()
+        self.update_properties(properties, sheets)
+        new_keys = self.update_keys()
+        self.update_rels()
+        try:
+            session.flush()
+        except (IntegrityError, FlushError):
+            pass
+        else:
+            return
+        # Try again more carefully
+        sp.rollback()
+        self.update_properties(properties, sheets)
+        try:
+            session.flush()
+        except (IntegrityError, FlushError):
+            msg = 'Properties conflict'
+            raise HTTPConflict(msg)
+        conflicts = self.check_duplicate_keys(new_keys)
+        self.update_properties(properties, sheets)
+        assert conflicts
+        msg = 'Keys conflict: %r' % conflicts
+        raise HTTPConflict(msg)
 
     def update_keys(self):
         session = DBSession()
@@ -397,7 +446,7 @@ class Item(object):
         keys = set(_keys)
 
         if len(keys) != len(_keys):
-            msg = "Duplicate keys %r" % _keys
+            msg = "Duplicate keys: %r" % _keys
             raise ValidationFailure('body', None, msg)
 
         existing = {
@@ -415,6 +464,12 @@ class Item(object):
         for name, value in to_add:
             key = Key(rid=self.uuid, name=name, value=value)
             session.add(key)
+
+        return to_add
+
+    def check_duplicate_keys(self, keys):
+        session = DBSession()
+        return [pk for pk in keys if session.query(Key).get(pk) is not None]
 
     def update_rels(self):
         if self.schema is None:
@@ -435,7 +490,7 @@ class Item(object):
 
         rels = set(_rels)
         if len(rels) != len(_rels):
-            msg = "Duplicate links"
+            msg = "Duplicate links: %r" % _rels
             raise ValidationFailure('body', None, msg)
 
         existing = {
@@ -454,19 +509,7 @@ class Item(object):
             link = Link(source_rid=source, rel=rel, target_rid=target)
             session.add(link)
 
-    def update(self, properties, sheets=None):
-        if properties is not None:
-            self.model[''] = properties
-        if sheets is not None:
-            for key, value in sheets.items():
-                self.model[key] = value
-        session = DBSession()
-        try:
-            self.update_keys()
-            self.update_rels()
-            session.flush()
-        except (IntegrityError, FlushError):
-            raise HTTPConflict()
+        return to_add
 
 
 class CustomItemMeta(MergedLinksMeta):
