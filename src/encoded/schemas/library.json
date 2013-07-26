@@ -5,7 +5,8 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE Nucleic Acid Library",
     "type": "object",
-    "required": [ "award", "lab", "type", "source", "type", "term_id"],
+    "comment": "XXX is source required?",
+    "required": [ "award", "lab", "type", "type", "term_id"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
