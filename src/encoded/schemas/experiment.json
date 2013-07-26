@@ -56,12 +56,13 @@
         },
         "geo_dbxrefs": {
             "default": [],
-            "description": "List of GEO dbxrefs (GSR or GSM#s)",
+            "comment": "XXX should this include GSR?",
+            "description": "List of GEO dbxrefs (GSE or GSM#s)",
             "items": {
                 "description": "List of GEO IDs",
                 "title": "GEO IDs",
                 "type":  "string",
-                "pattern": "^(GRS|GSM)+:\\S+"
+                "pattern": "^(GSE|GSM)\\d+$"
             },
             "title": "GEO DBXREFs",
             "type": "array"

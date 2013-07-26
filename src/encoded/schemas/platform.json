@@ -33,12 +33,12 @@
         },
         "geo_dbxrefs": {
             "default": [],
-            "description": "List of GEO dbxrefs (GSR or GSM#s)",
+            "description": "List of GEO dbxrefs (GPL#s)",
             "items": {
                 "description": "List of GEO IDs",
                 "title": "GEO IDs",
                 "type":  "string",
-                "pattern": "^(GRS|GSM)+:\\S+"
+                "pattern": "^(GPL)\\d+$"
             },
             "title": "GEO DBXREFs",
             "type": "array"
