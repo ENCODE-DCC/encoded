@@ -26,7 +26,7 @@
             "type": "string",
             "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
-        "name": {
+        "title": {
             "description": "Name of the Platform (should be OBI term were possible)",
             "title": "Platform Name",
             "type":  "string"
