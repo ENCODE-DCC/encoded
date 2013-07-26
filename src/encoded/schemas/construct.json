@@ -46,15 +46,11 @@
             "title": "Construct Product ID",
             "type": "string"
         },
-        "product_urls": {
-            "default": [],
+        "product_url": {
             "description": "External Product URL for the specific construct at vendor site",
             "title": "Product URL",
-            "type": "array",
-            "items": {
-                "type": "string",
-                "format": "uri"
-            }
+            "type": "string",
+            "format": "uri"
         },
         "target": {
             "description": "Target that is tagged or knocked down by the construct",

@@ -55,7 +55,8 @@ ORDER = [
     'document',
     'treatment',
     'construct',
-    # 'construct_validation',
+    'construct_validation',
+    'rnai',
     'biosample',
     'platform',
     'library',
@@ -64,7 +65,6 @@ ORDER = [
     'file',
     # 'dataset',
     'experiment',
-    'rnai',
 ]
 
 
@@ -109,6 +109,13 @@ def filter_test_only(dictrows, filter_test_only=False, **settings):
     for row in dictrows:
         test = row.pop('test', True)
         if filter_test_only and not test:
+            continue
+        yield row
+
+
+def filter_skip(dictrows, **settings):
+    for row in dictrows:
+        if row.pop('test', '') == 'skip':
             continue
         yield row
 
@@ -168,6 +175,8 @@ def update(testapp, url, value):
         logger.debug('%s UPDATED' % url)
     elif res.status_int == 404:
         logger.debug('%s not found for UPDATE, posting as new' % url)
+    elif res.status_int == 409:
+        logger.warn('Error CONFLICT for UPDATE %s: %s. Value:\n%r\n' % (url, res.json['detail'], trim(value)))
     elif res.status_int == 422:
         logger.warn('Error VALIDATING for UPDATE %s: %r. Value:\n%r\n' % (url, trim(res.json['errors']), trim(value)))
     else:
@@ -180,6 +189,8 @@ def create(testapp, url, value):
     res = testapp.post_json(url, value, status='*')
     if res.status_int == 201:
         pass
+    elif res.status_int == 409:
+        logger.warn('Error CONFLICT NEW %s %s: %s. Value:\n%r\n' % (url, uuid, res.json['detail'], trim(value)))
     elif res.status_int == 422:
         logger.warn('Error VALIDATING NEW %s %s: %r. Value:\n%r\n' % (url, uuid, trim(res.json['errors']), trim(value)))
     else:
@@ -191,9 +202,14 @@ def post_collection(testapp, url, rows):
     count = 0
     nload = 0
     nupdate = 0
+    nskipped = 0
     for row in rows:
         count += 1
         uuid = row['uuid']
+        if row.pop('_skip', False):
+            nskipped += 1
+            logger.warn('Error PROCESSING NEW %s %s. Value:\n%r\n' % (url, uuid, trim(row)))
+            continue
         update_url = url + uuid + '/'
         res = update(testapp, update_url, row)
         if res.status_int == 200:
@@ -207,7 +223,7 @@ def post_collection(testapp, url, rows):
     logger.info('Loaded %d for %s. NEW: %d, UPDATE: %d, ERRORS: %d' % (count, url, nload, nupdate, nerrors))
 
 
-def check_document(docsdir, filename):
+def check_attachment(docsdir, filename):
 
     _, ext = os.path.splitext(filename.lower())
 
@@ -238,16 +254,21 @@ def check_document(docsdir, filename):
     return doc
 
 
-def add_document(dictrows, docsdir=(), **settings):
+def add_attachment(dictrows, docsdir=(), **settings):
     for row in dictrows:
-        filename = row['document']
-        row['document'] = check_document(docsdir, filename)
+        filename = row['attachment']
+        try:
+            row['attachment'] = check_attachment(docsdir, filename)
+        except ValueError, e:
+            logger.warn('Error adding attachment for %s: %r' % (row['uuid'], e))
+            row['_skip'] = True
         yield row
 
 
 def default_pipeline(reader, **settings):
     pipeline = cast_rows(reader)
     pipeline = remove_nulls(pipeline)
+    pipeline = filter_skip(pipeline)
     pipeline = filter_test_only(pipeline, **settings)
     pipeline = filter_missing_key(pipeline, key='uuid')
     pipeline = filter_key(pipeline, key='schema_version')
@@ -256,8 +277,8 @@ def default_pipeline(reader, **settings):
     return pipeline
 
 
-def document_pipeline(pipeline, **settings):
-    pipeline = add_document(pipeline, **settings)
+def attachment_pipeline(pipeline, **settings):
+    pipeline = add_attachment(pipeline, **settings)
     return pipeline
 
 
@@ -268,8 +289,9 @@ def bootstrap_colleagues_pipeline(pipeline, **settings):
 
 
 PIPELINE = {
-    'antibody_validation': document_pipeline,
-    'document': document_pipeline,
+    'antibody_validation': attachment_pipeline,
+    'construct_validation': attachment_pipeline,
+    'document': attachment_pipeline,
 }
 
 

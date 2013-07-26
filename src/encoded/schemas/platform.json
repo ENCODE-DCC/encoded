@@ -31,6 +31,18 @@
             "title": "Platform Name",
             "type":  "string"
         },
+        "geo_dbxrefs": {
+            "default": [],
+            "description": "List of GEO dbxrefs (GSR or GSM#s)",
+            "items": {
+                "description": "List of GEO IDs",
+                "title": "GEO IDs",
+                "type":  "string",
+                "pattern": "^(GRS|GSM)+:\\S+"
+            },
+            "title": "GEO DBXREFs",
+            "type": "array"
+        },
         "encode2_dbxrefs": {
             "default": [],
             "description": "List cross-references to the previous ENCODE2 system",

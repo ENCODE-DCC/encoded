@@ -16,8 +16,17 @@ from collections import OrderedDict
 from pyramid.location import lineage
 
 ACCESSION_KEYS = [
-    {'name': 'accession', 'value': '{accession}', '$templated': True},
-    {'name': 'accession', 'value': '{accession}', '$repeat': 'accession alternate_accessions', '$templated': True},
+    {
+        'name': 'accession', 
+        'value': '{accession}',
+        '$templated': True,
+    },
+    {
+        'name': 'accession',
+        'value': '{accession}',
+        '$repeat': 'accession alternate_accessions',
+        '$templated': True,
+    },
 ]
 
 
@@ -68,7 +77,17 @@ class AntibodyLot(Collection):
     item_embedded = set(['source'])
     unique_key = 'accession'
     item_keys = ACCESSION_KEYS + [
-        {'name': '{item_type}:source_product_lot', 'value': '{source}/{product_id}/{lot_id}', '$templated': True},
+        {
+            'name': '{item_type}:source_product_lot',
+            'value': '{source}/{product_id}/{lot_id}',
+            '$templated': True,
+        },
+        {
+            'name': '{item_type}:source_product_lot',
+            'value': '{source}/{product_id}/{alias}',
+            '$repeat': 'alias lot_id_alias',
+            '$templated': True,
+        },
     ]
 
 
@@ -187,7 +206,7 @@ class Document(Collection):
 
     class Item(ItemWithAttachment):
         keys = [
-            {'name': 'alias', 'value': '{alias}', '$repeat': 'alias lab_aliases', '$templated': True},
+            {'name': 'alias', 'value': '{alias}', '$repeat': 'alias aliases', '$templated': True},
         ]
         links = {
             'submitter': {'$value': '/users/{submitter}', '$templated': True},

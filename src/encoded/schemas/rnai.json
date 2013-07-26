@@ -28,9 +28,9 @@
             ]
         },
         "source": {
-            "description": "Source or Vendor of RNAi",
+            "description": "Source or Vendor of construct",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
-            "title": "RNAi Source",
+            "title": "Construct Source",
             "type": "string",
             "linkTo": "source"
         },
@@ -39,9 +39,9 @@
             "title": "Construct Product ID",
             "type": "string"
         },
-        "url": {
-            "description": "An external for the construct",
-            "title": "URL",
+        "product_url": {
+            "description": "External Product URL for the specific construct at vendor site",
+            "title": "Product URL",
             "type": "string",
             "format": "uri"
         },

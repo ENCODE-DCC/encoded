@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE Antibody (no target or validation information)",
     "type": "object",
-    "required": [ "award", "lab", "product_id", "lot_id", "source"],
+    "required": [ "award", "lab", "product_id", "source"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
@@ -34,6 +34,7 @@
             "linkTo": "source"
         },
         "lot_id": {
+            "default": "unknown",
             "description": "The vendor's id code for the antibody lot",
             "title": "Antibody Lot ID",
             "type": "string"
@@ -67,7 +68,7 @@
                 "Unknown"
             ]
         },
-        "encode2_dbxref": {
+        "encode2_dbxrefs": {
             "default": [],
             "description": "List cross-references to the previous ENCODE2 system",
             "items": {
