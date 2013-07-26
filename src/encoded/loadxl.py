@@ -144,12 +144,14 @@ def remove_unknown(dictrows):
                 del row[k]
         yield row
 
+
 def remove_blank(dictrows):
     for row in dictrows:
         for k, v in list(row.iteritems()):
             if v == '':
                 del row[k]
-        yield row
+        if row:
+            yield row
 
 
 def image_data(stream, filename=None):
@@ -275,8 +277,8 @@ def default_pipeline(reader, **settings):
     pipeline = filter_missing_key(pipeline, 'uuid')
     pipeline = remove_keys(pipeline, 'schema_version')
     pipeline = remove_unknown(pipeline)
-    pipeline = remove_blank(pipeline)
     pipeline = remove_keys(pipeline, 'test')
+    pipeline = remove_blank(pipeline)
     return pipeline
 
 
