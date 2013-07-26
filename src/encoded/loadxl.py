@@ -147,8 +147,7 @@ def remove_unknown(dictrows):
 
 def remove_blank(dictrows):
     for row in dictrows:
-        yield {k: v for k, v in row.iteritems() if k != '' and v != ''}
-
+        yield {k: v for k, v in row.iteritems() if k and v not in ('', None, [])}
 
 
 def image_data(stream, filename=None):
@@ -267,9 +266,8 @@ def add_attachment(dictrows, docsdir=(), **settings):
 
 
 def default_pipeline(pipeline, **settings):
-    pipeline = remove_blank(pipeline)
     pipeline = cast_rows(pipeline)
-    #pipeline = remove_nulls(pipeline)
+    pipeline = remove_blank(pipeline)
     pipeline = filter_skip(pipeline)
     pipeline = filter_test_only(pipeline, **settings)
     pipeline = filter_missing_key(pipeline, 'uuid')
@@ -309,12 +307,19 @@ def experiments_update_pipeline(pipeline, **settings):
     return pipeline
 
 
+def replicates_pipeline(pipeline, **settings):
+    # TODO flowcell_details parsing.
+    pipeline = remove_keys(pipeline, 'flowcell_details')
+    return pipeline
+
+
 PIPELINE = {
     'antibody_validation': attachment_pipeline,
     'construct_validation': attachment_pipeline,
     'document': attachment_pipeline,
     'biosample': biosamples_pipeline,
-    'experiment': experiments_pipeline
+    'experiment': experiments_pipeline,
+    'replicate': replicates_pipeline,
 }
 
 UPDATE_ORDER = [
