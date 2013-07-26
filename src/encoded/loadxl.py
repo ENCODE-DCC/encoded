@@ -60,11 +60,11 @@ ORDER = [
     'biosample',
     'platform',
     'library',
+    'file',
+    'experiment',
     'replicate',
     # 'software',
-    'file',
     # 'dataset',
-    'experiment',
 ]
 
 
