@@ -61,7 +61,7 @@
             "comment": "Not all combinations of output_type and file_type are valid.",
             "title": "Output Type",
             "type": "string",
-            "enum": [
+            "XXXenum": [
                 "sites",
                 "rawData",
                 "peaks",
