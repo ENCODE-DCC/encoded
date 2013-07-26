@@ -87,7 +87,7 @@
             "title": "Extraction Method",
             "default": "see document",
             "type": "string",
-            "enum": [
+            "XXXenum": [
                 "miRNeasy Mini kit (QIAGEN cat#:217004)",
                 "Trizol (LifeTech cat#: 15596-018)",
                 "Ambion mirVana",
@@ -103,7 +103,7 @@
             "title": "Fragmentation Method",
             "default": "see document",
             "type": "string",
-            "enum": [
+            "XXXenum": [
                 "sonication",
                 "see document",
                 "covaris sheering",
@@ -119,7 +119,7 @@
             "description": "The experimental method used to size-select the nucleic acid during Library prep.",
             "title": "",
             "type": "string",
-            "enum": [
+            "XXXenum": [
                 "gel",
                 "see document",
                 "SPRI beads"
@@ -131,7 +131,7 @@
             "title": "Lysis Method",
             "default": "see document",
             "type": "string",
-            "enum": [
+            "XXXenum": [
                 "miRNeasy Mini kit (QIAGEN cat#:217004)",
                 "Trizol (LifeTech cat#: 15596-018)",
                 "Ambion mirVana",

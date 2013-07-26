@@ -24,7 +24,7 @@
             "comment": "Some of these types are for historical purposes only and are not valid new inputs.",
             "title": "File Format",
             "type": "string",
-            "enum": [
+            "XXXenum": [
                 "bam",
                 "bed12",
                 "bed12+3",
@@ -80,7 +80,7 @@
             "comment": "Not valid for primary data files like FastQ.  Automatic submitters can supply an ENCODE Software UUID or unique name.",
             "title": "Software",
             "type": "string",
-            "linkTo": "software"
+            "XXXlinkTo": "software"
         },
         "assembly": {
             "description": "Genome assembly that files were mapped to",
