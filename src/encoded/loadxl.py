@@ -147,11 +147,8 @@ def remove_unknown(dictrows):
 
 def remove_blank(dictrows):
     for row in dictrows:
-        for k, v in list(row.iteritems()):
-            if v == '':
-                del row[k]
-        if row:
-            yield row
+        yield {k: v for k, v in row.iteritems() if k != '' and v != ''}
+
 
 
 def image_data(stream, filename=None):
@@ -269,16 +266,16 @@ def add_attachment(dictrows, docsdir=(), **settings):
         yield row
 
 
-def default_pipeline(reader, **settings):
-    pipeline = cast_rows(reader)
-    pipeline = remove_nulls(pipeline)
+def default_pipeline(pipeline, **settings):
+    pipeline = remove_blank(pipeline)
+    pipeline = cast_rows(pipeline)
+    #pipeline = remove_nulls(pipeline)
     pipeline = filter_skip(pipeline)
     pipeline = filter_test_only(pipeline, **settings)
     pipeline = filter_missing_key(pipeline, 'uuid')
     pipeline = remove_keys(pipeline, 'schema_version')
     pipeline = remove_unknown(pipeline)
     pipeline = remove_keys(pipeline, 'test')
-    pipeline = remove_blank(pipeline)
     return pipeline
 
 
@@ -303,12 +300,12 @@ def biosamples_update_pipeline(pipeline, **settings):
 
 
 def experiments_pipeline(pipeline, **settings):
-    pipeline = remove_keys(pipeline, 'files')
+    pipeline = remove_keys(pipeline, 'files', 'possible_controls')
     return pipeline
 
 
 def experiments_update_pipeline(pipeline, **settings):
-    pipeline = filter_missing_key(pipeline, 'files')
+    pipeline = filter_missing_key(pipeline, 'files', 'possible_controls')
     return pipeline
 
 
