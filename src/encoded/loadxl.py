@@ -60,10 +60,10 @@ ORDER = [
     'biosample',
     'platform',
     'library',
-    'file',
     'experiment',
     'replicate',
     # 'software',
+    'file',
     # 'dataset',
 ]
 
@@ -91,7 +91,7 @@ def trim(value):
     if isinstance(value, list):
         return [trim(v) for v in value]
     if isinstance(value, basestring) and len(value) > 160:
-        return  value[:77] + '...' + value[-80:]
+        return value[:77] + '...' + value[-80:]
     return value
 
 
@@ -120,18 +120,19 @@ def filter_skip(dictrows, **settings):
         yield row
 
 
-def filter_missing_key(dictrows, key):
+def filter_missing_key(dictrows, *keys):
     for row in dictrows:
-        if not row[key]:
+        if not any(row[key] for key in keys):
             continue
         yield row
 
 
-def filter_key(dictrows, key):
+def filter_key(dictrows, *keys):
     for row in dictrows:
-        if key in row:
-            row = row.copy()
-            del row[key]
+        for key in keys:
+            if key in row:
+                row = row.copy()
+                del row[key]
         yield row
 
 
@@ -270,8 +271,8 @@ def default_pipeline(reader, **settings):
     pipeline = remove_nulls(pipeline)
     pipeline = filter_skip(pipeline)
     pipeline = filter_test_only(pipeline, **settings)
-    pipeline = filter_missing_key(pipeline, key='uuid')
-    pipeline = filter_key(pipeline, key='schema_version')
+    pipeline = filter_missing_key(pipeline, 'uuid')
+    pipeline = filter_key(pipeline, 'schema_version')
     pipeline = remove_unknown(pipeline)
     pipeline = remove_blank(pipeline)
     return pipeline
@@ -283,8 +284,27 @@ def attachment_pipeline(pipeline, **settings):
 
 
 def bootstrap_colleagues_pipeline(pipeline, **settings):
-    pipeline = filter_key(pipeline, key='lab')
-    pipeline = filter_key(pipeline, key='submits_for')
+    pipeline = filter_key(pipeline, 'lab', 'submits_for')
+    return pipeline
+
+
+def biosamples_pipeline(pipeline, **settings):
+    pipeline = filter_key(pipeline, 'derived_from', 'contained_in')
+    return pipeline
+
+
+def biosamples_update_pipeline(pipeline, **settings):
+    pipeline = filter_missing_key(pipeline, 'derived_from', 'contained_in')
+    return pipeline
+
+
+def experiments_pipeline(pipeline, **settings):
+    pipeline = filter_key(pipeline, 'files')
+    return pipeline
+
+
+def experiments_update_pipeline(pipeline, **settings):
+    pipeline = filter_missing_key(pipeline, 'files')
     return pipeline
 
 
@@ -292,6 +312,18 @@ PIPELINE = {
     'antibody_validation': attachment_pipeline,
     'construct_validation': attachment_pipeline,
     'document': attachment_pipeline,
+    'biosample': biosamples_pipeline,
+    'experiment': experiments_pipeline
+}
+
+UPDATE_ORDER = [
+    'biosample',
+    'experiment',
+]
+
+UPDATE_PIPELINE = {
+    'biosample': biosamples_update_pipeline,
+    'experiment': experiments_update_pipeline
 }
 
 
@@ -311,6 +343,14 @@ def load_all(testapp, filename, docsdir, test=False):
             reader = read_single_sheet(filename, item_type)
             pipeline = default_pipeline(reader, docsdir=docsdir, filter_test_only=test)
             extra = PIPELINE.get(item_type)
+            if extra is not None:
+                pipeline = extra(pipeline, docsdir=docsdir, filter_test_only=test)
+            post_collection(testapp, url, pipeline)
+        for item_type in UPDATE_ORDER:
+            url = TYPE_URL[item_type]
+            reader = read_single_sheet(filename, item_type)
+            pipeline = default_pipeline(reader, docsdir=docsdir, filter_test_only=test)
+            extra = UPDATE_PIPELINE.get(item_type)
             if extra is not None:
                 pipeline = extra(pipeline, docsdir=docsdir, filter_test_only=test)
             post_collection(testapp, url, pipeline)
