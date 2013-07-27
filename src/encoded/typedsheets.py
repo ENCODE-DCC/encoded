@@ -48,7 +48,7 @@ def convert(name, value):
     return name, value
 
 
-def cast_rows(dictrows):
+def cast_row_values(dictrows):
     """ Wrapper generator for typing csv.DictReader rows
     """
     for row in dictrows:
@@ -57,7 +57,7 @@ def cast_rows(dictrows):
 
 def remove_nulls(dictrows):
     for row in dictrows:
-        yield dict(
-            (name, value) for name, value in row.iteritems()
+        yield {
+            name: value for name, value in row.iteritems()
             if value is not None and name
-        )
+        }

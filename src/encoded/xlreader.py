@@ -39,7 +39,15 @@ def cell_value(cell, datemode):
 
 
 
-def reader(sheet):
+def reader(stream, sheetname=None):
+    """ Read named sheet or first and only sheet from xlsx file
+    """
+    book = xlrd.open_workbook(file_contents=stream.read())
+    if sheetname is None:
+        sheet, = book.sheets()        
+    else:
+        sheet = book.sheet_by_name(sheetname)
+
     datemode = sheet.book.datemode
     for index in xrange(sheet.nrows):
         yield [cell_value(cell, datemode) for cell in sheet.row(index)]
@@ -47,12 +55,12 @@ def reader(sheet):
 
 class DictReader:
     # Adapted from http://hg.python.org/cpython/file/2.7/Lib/csv.py
-    def __init__(self, sheet, fieldnames=None, restkey=None, restval=None,
+    def __init__(self, stream, fieldnames=None, restkey=None, restval=None,
                  *args, **kwds):
         self._fieldnames = fieldnames   # list of keys for the dict
         self.restkey = restkey          # key to catch long rows
         self.restval = restval          # default value for short rows
-        self.reader = reader(sheet, *args, **kwds)
+        self.reader = reader(stream, *args, **kwds)
         self.line_num = 0
 
     def __iter__(self):
