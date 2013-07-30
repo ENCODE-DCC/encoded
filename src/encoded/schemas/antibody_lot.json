@@ -65,7 +65,7 @@
             "enum": [
                 "polyclonal",
                 "monoclonal",
-                "Unknown"
+                "unknown"
             ]
         },
         "encode2_dbxrefs": {
@@ -115,7 +115,7 @@
                 "IgMκ",
                 "IgE",
                 "serum",
-                "Unknown"
+                "unknown"
             ]
         },
         "purifications": {
