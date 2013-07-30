@@ -415,7 +415,7 @@ class Item(object):
     def update(self, properties, sheets=None):
         session = DBSession()
         sp = transaction.savepoint()
-        self.update_properties(properties, sheets)
+        self.update_properties(self.model, properties, sheets)
         new_keys = self.update_keys()
         self.update_rels()
         try:
@@ -426,14 +426,14 @@ class Item(object):
             return
         # Try again more carefully
         sp.rollback()
-        self.update_properties(properties, sheets)
+        self.update_properties(self.model, properties, sheets)
         try:
             session.flush()
         except (IntegrityError, FlushError):
             msg = 'Properties conflict'
             raise HTTPConflict(msg)
         conflicts = self.check_duplicate_keys(new_keys)
-        self.update_properties(properties, sheets)
+        self.update_properties(self.model, properties, sheets)
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
         raise HTTPConflict(msg)
