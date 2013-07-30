@@ -6,6 +6,7 @@ from pyramid.traversal import find_resource
 import json
 from jsonschema import (
     Draft4Validator,
+    FormatChecker,
     RefResolver,
 )
 from jsonschema.exceptions import ValidationError
@@ -137,6 +138,8 @@ class SchemaValidator(Draft4Validator):
     VALIDATORS['permission'] = permission
 
 
+format_checker = FormatChecker()
+
 def load_schema(filename):
     schema = json.load(resource_stream(__name__, 'schemas/' + filename))
     resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
@@ -149,7 +152,7 @@ def load_schema(filename):
 
 def validate_request(schema, request, data=None):
     resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
-    sv = SchemaValidator(schema, resolver=resolver, serialize=True)
+    sv = SchemaValidator(schema, resolver=resolver, serialize=True, format_checker=format_checker)
     if data is None:
         data = request.json
     validated, errors = sv.serialize(data)

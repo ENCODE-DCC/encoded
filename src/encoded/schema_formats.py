@@ -1,4 +1,5 @@
 import re
+import rfc3987
 from jsonschema import FormatChecker
 from uuid import UUID
 
@@ -39,3 +40,11 @@ def is_target_label(instance):
        not re.match(oneoff_patts, instance):
         return False
     return True
+
+
+@FormatChecker.cls_checks("uri", raises=ValueError)
+def is_uri(instance):
+    if ':' not in instance:
+        # We want only absolute uris
+        return False
+    return rfc3987.parse(instance, rule="URI_reference")
