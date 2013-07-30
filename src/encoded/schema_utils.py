@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from pkg_resources import resource_stream
 from pyramid.security import has_permission
 from pyramid.threadlocal import get_current_request
@@ -169,61 +168,3 @@ def schema_validator(filename):
         return validate_request(schema, request)
 
     return validator
-
-
-def basic_schema(value, null_type='string', template=None, nullable=all,
-                 _key=None):
-
-    # recursing paramaters
-    params = locals().copy()
-    del params['value']
-    del params['_key']
-
-    if template is None:
-        template = OrderedDict([
-            ('title', ''),
-            ('description', ''),
-            ('default', None),
-        ])
-
-    def templated(data):
-        out = template.copy()
-        out.update(data)
-        if nullable is all or _key in nullable:
-            if isinstance(out['type'], basestring):
-                out['type'] = [out['type']]
-            if 'null' not in out['type']:
-                out['type'].append('null')
-        return out
-
-    if value is None:
-        return templated({'type': null_type})
-    elif isinstance(value, basestring):
-        return templated({'type': 'string'})
-    elif isinstance(value, bool):
-        return templated({'type': 'boolean'})
-    elif isinstance(value, int):
-        return templated({'type': 'integer'})
-    elif isinstance(value, float):
-        return templated({'type': 'number'})
-    elif isinstance(value, dict):
-        key_prefix = _key + '.' if _key else ''
-        properties = OrderedDict(
-            (k, basic_schema(v, _key=(key_prefix + k), **params))
-            for k, v in sorted(value.items()))
-        return templated({
-            'type': 'object',
-            'properties': properties,
-        })
-    elif isinstance(value, list):
-        _key = _key + '[]' if _key else '[]'
-        if value:
-            item = value[0]
-        else:
-            item = None
-        return templated({
-            'type': 'array',
-            'items': basic_schema(item, _key=_key, **params),
-        })
-    else:
-        raise ValueError(value)
