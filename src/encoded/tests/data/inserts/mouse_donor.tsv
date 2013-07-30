@@ -1,0 +1,6 @@
+test	uuid	accession	aliases:array	sex	life_stage	age	age_units	health_status	strain_background	organism	lab	award
+test	a67605ad-45d9-4ec3-8470-18be07a676f0	ENCDO012AAA		male	embryonic	14.5	day	unknown	CD-1	mouse	j-michael-cherry	U41HG006992
+test	0a536ef0-e184-47a7-b412-8818e2964034	ENCDO013AAA		male	embryonic			unknown	129S1/SVImJ	mouse	j-michael-cherry	U41HG006992
+test	5a5926cc-31ce-4b3e-bc62-a001d242202e	ENCDO014AAA		male	embryonic			unknown	129S2/SvPas	mouse	j-michael-cherry	U41HG006992
+test	1a8dd515-63da-40d8-a166-351858c77fd7	ENCDO015AAA		male	embryonic			unknown	129/Ola	mouse	j-michael-cherry	U41HG006992
+test	b432527c-0f19-4bc3-a810-e1bf583cfb38	ENCDO000MUS		unknown	unknown			unknown	unknown	mouse	j-michael-cherry	U41HG006992
