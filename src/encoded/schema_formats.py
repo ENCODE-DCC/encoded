@@ -3,16 +3,14 @@ import rfc3987
 from jsonschema import FormatChecker
 from uuid import UUID
 
-accession_re = re.compile('^ENC(FF|SR|AB|BS|DO|LB)[0-9][0-9][0-9][A-Z][A-Z][A-Z]$')
-
+accession_re = re.compile(r'^ENC(FF|SR|AB|BS|DO|LB)[0-9][0-9][0-9][A-Z][A-Z][A-Z]$')
+uuid_re = re.compile(r'(?i)\{?(?:[0-9a-f]{4}-?){8}\}?')
 
 @FormatChecker.cls_checks("uuid")
 def is_uuid(instance):
-    try:
-        UUID(instance)
-    except:
-        return False
-    return True
+    # Python's UUID ignores all dashes, whereas Postgres is more strict
+    # http://www.postgresql.org/docs/9.2/static/datatype-uuid.html
+    return bool(uuid_re.match(instance))
 
 
 @FormatChecker.cls_checks("accession")
