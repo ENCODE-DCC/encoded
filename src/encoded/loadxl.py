@@ -79,13 +79,6 @@ def noop(dictrows):
     return dictrows
 
 
-def skip_test_column_value_skip(dictrows):
-    for row in dictrows:
-        if row.get('test', '') == 'skip':
-            row['_skip'] = True
-        yield row
-
-
 def remove_keys_with_empty_value(dictrows):
     for row in dictrows:
         yield {
@@ -119,6 +112,26 @@ def skip_rows_missing_all_keys(*keys):
     return component
 
 
+def skip_rows_with_all_key_value(**kw):
+    def component(dictrows):
+        for row in dictrows:
+            if all(row[k] == v if k in row else False for k, v in kw.iteritems()):
+                row['_skip'] = True
+            yield row
+
+    return component
+
+
+def skip_rows_without_all_key_value(**kw):
+    def component(dictrows):
+        for row in dictrows:
+            if not all(row[k] == v if k in row else False for k, v in kw.iteritems()):
+                row['_skip'] = True
+            yield row
+
+    return component
+
+
 def remove_keys(*keys):
     def component(dictrows):
         for row in dictrows:
@@ -129,14 +142,12 @@ def remove_keys(*keys):
     return component
 
 
-def filter_test_only(test_only):
-    if not test_only:
-        return noop
-
+def skip_rows_with_all_falsey_value(*keys):
     def component(dictrows):
         for row in dictrows:
-            if row.get('test', True):
-                yield row
+            if all(not row[key] if key in row else False for key in keys):
+                row['_skip'] = True
+            yield row
 
     return component
 
@@ -176,28 +187,37 @@ def read_single_sheet(path, name):
     if path.endswith('.zip'):
         zf = ZipFile(path)
         names = zf.namelist()
-        def open(n, mode):
-            return zf.open(n, 'r')
-        def exists(n):
-            return n in names
+
+        if (name + '.xlsx') in names:
+            stream = zf.open(name + '.xlsx', 'r')
+            return read_xl(stream)
+
+        if (name + '.tsv') in names:
+            stream = zf.open(name + '.tsv', 'r')
+            return read_csv(stream, dialect='excel-tab')
+
+        if (name + '.csv') in names:
+            stream = zf.open(name + '.csv', 'r')
+            return read_csv(stream)
+
+        raise ValueError("Unable to find %r in %s" % (name, path))
 
     elif os.path.isdir(path):
-        def exists(n):
-            return os.path.exists(os.path.join(path, name))
+        name = os.path.join(path, name)
 
-    if exists(name + '.xlsx'):
-        stream = open(name + '.xlsx', 'rb')
-        return read_xl(stream)
+        if os.path.exists(name + '.xlsx'):
+            stream = open(name + '.xlsx', 'rb')
+            return read_xl(stream)
 
-    if exists(name + '.tsv'):
-        stream = open(name + '.tsv', 'rb')
-        return read_tsv(stream)
+        if os.path.exists(name + '.tsv'):
+            stream = open(name + '.tsv', 'rb')
+            return read_csv(stream, dialect='excel-tab')
 
-    if exists(name + '.csv'):
-        stream = open(name + '.csv', 'rb')
-        return read_csv(stream)
+        if os.path.exists(name + '.csv'):
+            stream = open(name + '.csv', 'rb')
+            return read_csv(stream)
 
-    raise ValueError("Unable to find %r in %s" % name, path)
+    raise ValueError("Unable to find %r in %s" % (name, path))
 
 
 def read_xl(stream):
@@ -205,14 +225,9 @@ def read_xl(stream):
     return xlreader.DictReader(stream)
 
 
-def read_tsv(stream):
+def read_csv(stream, **kw):
     import csv
-    return csv.DictReader(stream, delimiter='\t', quoting=csv.QUOTE_NONE)
-
-
-def read_csv(stream):
-    import csv
-    return csv.DictReader(stream)
+    return csv.DictReader(stream, **kw)
 
 
 ##############################################################################
@@ -223,7 +238,7 @@ def read_csv(stream):
 
 def post(testapp, item_type, phase):
     base_url = TYPE_URL[item_type]
-    if phase == 2:
+    if phase != 1:
         base_url = base_url + '{uuid}'
 
     def component(rows):
@@ -265,6 +280,7 @@ def pipeline_logger(item_type, phase):
         updated = 0
         errors = 0
         skipped = 0
+        count = 0
         for index, row in enumerate(rows):
             row_number = index + 2  # header row
             count = index + 1
@@ -386,12 +402,12 @@ def process(rows):
         pass
 
 
-def get_pipeline(testapp, docsdir, test_only, item_type, phase):
+def get_pipeline(testapp, docsdir, test_only, item_type, phase=None):
     pipeline = [
         cast_row_values,
         remove_keys_with_empty_value,
-        skip_test_column_value_skip,
-        filter_test_only(test_only),
+        skip_rows_with_all_key_value(test='skip'),
+        skip_rows_with_all_falsey_value('test') if test_only else noop,
         skip_rows_missing_all_keys('uuid'),
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
@@ -403,7 +419,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase):
     ]
     if phase == 1:
         pipeline.extend(PIPELINES.get(item_type, []))
-    else:
+    elif phase == 2:
         pipeline.extend(UPDATE_PIPELINES.get(item_type, []))
     pipeline.extend([
         post(testapp, item_type, phase),
@@ -467,3 +483,10 @@ def load_all(testapp, filename, docsdir, test=False):
         type, value, tb = sys.exc_info()
         traceback.print_exc()
         pdb.post_mortem(tb)
+
+
+def update_all(testapp, filename, docsdir, test=False):
+    for item_type in ORDER:
+        source = read_single_sheet(filename, item_type)
+        pipeline = get_pipeline(testapp, docsdir, test, item_type, None)
+        process(combine(source, pipeline))

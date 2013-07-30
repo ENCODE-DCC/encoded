@@ -19,7 +19,6 @@ requires = [
     'setuptools',
     'strict_rfc3339',
     'xlrd',
-    'xlutils',
     'zope.sqlalchemy',
     'PyBrowserID',
     ]
