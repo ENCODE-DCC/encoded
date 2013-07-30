@@ -6,7 +6,7 @@
     "description": "Schema for submitting an ENCODE Nucleic Acid Library",
     "type": "object",
     "comment": "XXX is source required?",
-    "required": [ "award", "lab", "type", "type", "term_id"],
+    "required": [ "award", "lab", "nucleic_acid_type", "term_id"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
@@ -28,7 +28,7 @@
             "type": "string",
             "linkTo": "biosample"
         },
-        "type": {
+        "nucleic_acid_type": {
             "description": "Type/subtype of nucleic acid isolated.",
             "title": "Nucleic Acid Type",
             "comment": "These will be SO (sequence ontology) terms were possible, but only a small subset",

@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE document or protocol",
     "type": "object",
-    "required": [ "type", "lab", "award"],
+    "required": [ "document_type", "lab", "award"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
@@ -26,7 +26,7 @@
             "type": "string",
             "format": "md5sum"
         },
-        "type": {
+        "document_type": {
             "description": "The specific purpose of the document or protocol",
             "title": "Document Type",
             "type": "string",

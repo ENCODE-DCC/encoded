@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE biosample Treatment",
     "type": "object",
-    "required": [ "title", "type", "lab", "award"],
+    "required": [ "title", "treatment_type", "lab", "award"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
@@ -30,7 +30,7 @@
             "title": "Treatment title",
             "type": "string"
         },
-        "type": {
+        "treatment_type": {
             "default": "chemical",
             "description": "The type of biosample treatment",
             "title": "Treatment Type",
