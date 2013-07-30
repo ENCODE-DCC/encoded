@@ -98,13 +98,13 @@ def remove_keys_with_empty_value(dictrows):
 # Pipeline component factories
 
 
-def remove_keys_with_unknown_value_except_for(*keys):
+def warn_keys_with_unknown_value_except_for(*keys):
     def component(dictrows):
         for row in dictrows:
-            yield {
-                k: v for k, v in row.iteritems()
-                if k in keys or unicode(v).lower() != 'unknown'
-            }
+            for k, v in row.iteritems():
+                if k not in keys and unicode(v).lower() == 'unknown':
+                    logger.warn('unknown %r for %s' % (k, row.get('uuid', '<empty uuid>')))
+            yield row
 
     return component
 
@@ -394,7 +394,10 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase):
         filter_test_only(test_only),
         skip_rows_missing_all_keys('uuid'),
         remove_keys('schema_version'),
-        remove_keys_with_unknown_value_except_for('lot_id'),
+        warn_keys_with_unknown_value_except_for(
+            'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
+            'isotype', 'clonality',
+        ),
         remove_keys('test'),
         add_attachment(docsdir),
     ]
@@ -420,10 +423,6 @@ PIPELINES = {
     ],
     'experiment': [
         remove_keys('files', 'possible_controls'),
-    ],
-    'replicate': [
-        # TODO flowcell_details parsing.
-        remove_keys('flowcell_details'),
     ],
 }
 
