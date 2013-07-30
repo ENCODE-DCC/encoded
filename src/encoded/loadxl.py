@@ -412,7 +412,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None):
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
-            'isotype', 'clonality',
+            'strain_background',  # 'flowcell_details.machine',
         ),
         remove_keys('test'),
         add_attachment(docsdir),

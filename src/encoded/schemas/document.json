@@ -34,10 +34,8 @@
                 "growth protocol",
                 "extraction protocol",
                 "certificate of analysis",
-                "iPS cell reprogramming protocol",
                 "differentiation protocol",
                 "data sheet",
-                "cell isolation and sorting protocol",
                 "treatment protocol",
                 "vector construct image",
                 "biosample validation",
@@ -45,12 +43,10 @@
                 "excision protocol",
                 "transfection protocol",
                 "construct information",
-                "XXX NEED REVIEW",
-                "unclassified document",
-                "construct validation",
                 "construct image",
                 "cell isolation protocol",
-                "iPS reprogramming protocol"
+                "iPS reprogramming protocol",
+                "other"
            ]
         },
         "description": {
