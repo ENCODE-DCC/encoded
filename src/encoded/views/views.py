@@ -380,11 +380,13 @@ class Replicates(Collection):
         'description': 'Listing of Replicates',
     }
     item_links = {
+        'antibody': {'$value': '/antibody-lots/{antibody}', '$templated': True},
+        'target': {'$value': '/targets/{target}', '$templated': True},
         'library': {'$value': '/libraries/{library}', '$templated': True},
         'platform': {'$value': '/platforms/{platform}', '$templated': True},
-        'assay': {'$value': '/assays/{assay}', '$templated': True},
+        'experiment': {'$value': '/experiments/{experiment}', '$templated': True},
     }
-    item_embedded = set(['library', 'platform', 'assay'])
+    item_embedded = set(['library', 'platform'])
 
 
 @location('software')
@@ -432,8 +434,8 @@ class Experiments(Collection):
         'replicates': [
             {'$value': '/replicates/{replicate}', '$templated': True, '$repeat': 'replicate replicates'},
         ],
-        'controls': [
-            {'$value': '/experiments/{experiment_control}', '$templated': True, '$repeat': 'experiment_control experiment_controls'},
+        'possible_controls': [
+            {'$value': '/experiments/{control}', '$templated': True, '$repeat': 'control possible_controls'},
         ],
     }
     item_embedded = set(['files', 'replicates', 'submitted_by', 'lab', 'award', 'controls'])
