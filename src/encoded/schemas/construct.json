@@ -5,8 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE transfection Construct",
     "type": "object",
-    "comment": "XXX tag needs to be required",
-    "required": [ "type", "target", "lab", "award"],
+    "required": [ "type", "target", "tags", "lab", "award"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
@@ -72,15 +71,17 @@
                         "enum": [
                             "eGFP",
                             "V5",
-                            "HA"
+                            "HA",
+                            "ER"
                         ]
                     },
                     "location": {
                         "type": "string",
                         "enum": [
-                            "N-terminus",
-                            "C-terminus",
-                            "other"
+                            "N-terminal",
+                            "C-terminal",
+                            "other",
+                            "unknown"
                         ]
                     }
                 }
