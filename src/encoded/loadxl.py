@@ -405,9 +405,9 @@ def process(rows):
 def get_pipeline(testapp, docsdir, test_only, item_type, phase=None):
     pipeline = [
         cast_row_values,
-        remove_keys_with_empty_value,
         skip_rows_with_all_key_value(test='skip'),
         skip_rows_with_all_falsey_value('test') if test_only else noop,
+        remove_keys_with_empty_value,
         skip_rows_missing_all_keys('uuid'),
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
