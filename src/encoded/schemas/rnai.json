@@ -67,7 +67,7 @@
                 "type": "string",
                 "linkTo": "document"
             },
-            "title": "RNAi Documens (list)",
+            "title": "RNAi Documents (list)",
             "type": "array"
         },
         "validations": {
