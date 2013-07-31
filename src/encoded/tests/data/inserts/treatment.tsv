@@ -1,3 +1,3 @@
-test	uuid	title	type	protocols:array	term_name	term_id	concentration:number	concentration_units	duration:number	duration_units	reference	submitted_by	lab	award	PROJECT:ignore	encode2_dbxrefs:array
-test	a87e734c-1167-40a4-929d-57bc49cf3373	2% DMSO 5 day	chemical	ENCODE:MEL_Weissman_treatment_protocol	dimethyl sulfoxide	CHEBI:28262	2	percent	5	day		quis.accumsan@proin.sem	sherman-weissman	RC2HG005602	ENCODE2-Mouse	DMSO_2.0pct
-test	d5a494bd-c540-410f-9bc0-1b626474fe54	Estradiol 100nM 1 hour	chemical		estradiol	CHEBI:23965	100	nM	1	hour		consequat.sapien@ante.duis	encode2-project	ENCODE2	ENCODE2	Estradiol_100nM_1hr
+test	uuid	title	treatment_type	protocols:array	term_name	term_id	concentration:number	concentration_units	duration:number	duration_units	reference	submitted_by	lab	award	PROJECT:ignore	encode2_dbxrefs:array
+test	a87e734c-1167-40a4-929d-57bc49cf3373	2% DMSO 5 day	chemical	ENCODE:MEL_Weissman_treatment_protocol	dimethyl sulfoxide	CHEBI:28262	2	percent	5	day		sollicitudin.sollicitudin@sed.ante	sherman-weissman	RC2HG005602	ENCODE2-Mouse	DMSO_2.0pct
+test	d5a494bd-c540-410f-9bc0-1b626474fe54	Estradiol 100nM 1 hour	chemical		estradiol	CHEBI:23965	100	nM	1	hour		laoreet.torquent@scelerisque.blandit	encode2-project	ENCODE2	ENCODE2	Estradiol_100nM_1hr
