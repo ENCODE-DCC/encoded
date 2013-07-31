@@ -1,13 +1,13 @@
 /* Variables */
 $mainThemeColor: 			#e8ecef; /* i.e. the background color ..for now */
 
-$footerHeight: 				100px;
-$footerTopBorderHeight:		1px;
-$footerTopHeight: 			70px;
-$footerBottomHeight:		$footerHeight - $footerTopHeight;
-$footerBackground:          #0f2a42 !default;
+$footerHeight: 				80px;
+$footerTopBorderHeight:		0px;
+//$footerTopHeight: 			70px;
+//$footerBottomHeight:		$footerHeight - $footerTopHeight;
+$footerBackground:          rgba(10,37,61,0.4) !default;
 $footerBackgroundHighlight: #294b6a !default;
-$footerBorder:              #0f2a42 !default;
+// $footerBorder:              #0f2a42 !default;
 
 $tableHeadFootBackgroundColor: #f5f5f5;
 

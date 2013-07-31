@@ -27,61 +27,34 @@
 ********************************************************** */
 @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
 
-#page-footer #footer-top {
-	height: $footerTopHeight;
-	border-top: 1px solid #C4C1C1;
-	// border-bottom: 1px solid $footerBackground;
-	// @include background-image(linear-gradient($footerBackground, $footerBackgroundHighlight));
-	// color: $white;
-	//text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
-	// text-align: center;
-	// line-height: $footerTopHeight;
-	#su-logo {
-		float: left;
-		margin-top: 22px;
+#page-footer {
+	color: rgb(255, 255, 255);
+	background-color: $footerBackground;
+	height: $footerHeight;
+	@include text-shadow(0 1px rgba(0, 0, 0, 0.3));
+	line-height: 0;
+	overflow: hidden;
+	a { 
+		color: rgb(255, 255, 255); 
+		font-weight: bold;
 	}
-	#som-logo {
-		float: right;
-		margin-top: 22px;
-	}
-	#footer-links {
-		height: $footerTopHeight;
+	a:hover { text-decoration: underline; }
+	#footer-links, #footer-logos {
+		height: $footerHeight;
 		margin: 0 auto;
 		display: inline-block;
 		ul {
 			margin: 0;
 			list-style: none;
 			li {
-				line-height: $footerTopHeight;
-				margin-right: 15px;
+				line-height: $footerHeight;
+				margin-right: 18px;
 				float: left;
 			}
+			li:last-child { margin-right: 0; }
 		}
 	}
 }
-
-#page-footer #footer-bottom {
-	height: $footerBottomHeight;
-	line-height: $footerBottomHeight;
-	text-align: center;
-	// background-color: #33587b;
-	// color: $white;
-	text-shadow: 0 -1px rgba(255, 255, 255, 0.3);
-}
-
-
-#page-footer {
-	color: rgb(111, 111, 111);
-	//background-color: #E8ECEF;
-	//-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
-	//box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
-	text-align: center;
-	@include background-image(linear-gradient(#fff 0px, #e8ecef 50%));
-    //border-top: 1px solid #C4C1C1;
-	a {
-		color: rgb(111, 111, 111);
-	}
-	a:hover {
-		text-decoration: underline;
-	}
+#footer-logos {
+	float: right;
 }
