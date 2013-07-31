@@ -38,12 +38,6 @@ class Lab(Collection):
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
     }
-    item_links = {
-        'awards': [
-            {'$value': '/awards/{award}', '$templated': True,
-             '$repeat': 'award awards'}
-        ]
-    }
     unique_key = 'lab:name'
     item_keys = [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
@@ -70,9 +64,6 @@ class AntibodyLot(Collection):
     properties = {
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
-    }
-    item_links = {
-        'source': {'$value': '/sources/{source}', '$templated': True},
     }
     item_embedded = set(['source'])
     unique_key = 'accession'
@@ -112,7 +103,7 @@ class Source(Collection):
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
-    item_links = {
+    item_template = {
         'actions': [
             {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'POST', 'href': '', '$templated': True, '$condition': 'permission:edit'},
         ],
@@ -123,9 +114,6 @@ class Source(Collection):
 
 class DonorItem(Collection.Item):
     base_types = ['donor'] + Collection.Item.base_types
-    links = {
-        'organism': {'$value': '/organisms/{organism}', '$templated': True},
-    }
     embedded = set(['organism'])
     keys = ACCESSION_KEYS
 
@@ -175,12 +163,6 @@ class Construct(Collection):
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
     }
-    item_links = {
-        'source': {'$value': '/sources/{source}', '$templated': True},
-        'documents': [
-            {'$value': '/documents/{document}', '$templated': True, '$repeat': 'document documents'},
-        ],
-    }
     item_embedded = set(['source', 'documents'])
     # item_keys = ['vector_name']
 
@@ -208,11 +190,6 @@ class Document(Collection):
         keys = [
             {'name': 'alias', 'value': '{alias}', '$repeat': 'alias aliases', '$templated': True},
         ]
-        links = {
-            'submitted_by': {'$value': '/users/{submitted_by}', '$templated': True},
-            'lab': {'$value': '/labs/{lab}', '$templated': True},
-            'award': {'$value': '/awards/{award}', '$templated': True},
-        }
         embedded = set(['submitted_by', 'lab', 'award'])
 
 
@@ -223,22 +200,6 @@ class Biosample(Collection):
     properties = {
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
-    }
-    item_links = {
-        'submitted_by': {'$value': '/users/{submitted_by}', '$templated': True},
-        'source': {'$value': '/sources/{source}', '$templated': True},
-        'lab': {'$value': '/labs/{lab}', '$templated': True},
-        'award': {'$value': '/awards/{award}', '$templated': True},
-        'donor': {'$value': '/donors/{donor}', '$templated': True},
-        'documents': [
-            {'$value': '/documents/{document}', '$templated': True, '$repeat': 'document documents'},
-        ],
-        'treatments': [
-            {'$value': '/treatments/{treatment}', '$templated': True, '$repeat': 'treatment treatments'},
-        ],
-        'constructs': [
-            {'$value': '/constructs/{construct}', '$templated': True, '$repeat': 'construct constructs'},
-        ],
     }
     item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'documents'])
     item_keys = ACCESSION_KEYS
@@ -266,16 +227,12 @@ class Target(Collection):
     columns = OrderedDict([
         ('target_label', 'Target'),
         ('organism.organism_name', 'Species'),
-        ('dbxref.uniprot', 'External Resources'),
+        ('dbxref', 'External Resources'),
         ('project', 'Project')
     ])
 
     class Item(Collection.Item):
-        links = {
-            'organism': {'$value': '/organisms/{organism}', '$templated': True},
-            'submitted_by': {'$value': '/users/{submitted_by}', '$templated': True},
-            'lab': {'$value': '/labs/{lab}', '$templated': True},
-            'award': {'$value': '/awards/{award}', '$templated': True},
+        template = {
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
         }
         embedded = set(['organism', 'submitted_by', 'lab', 'award'])
@@ -302,13 +259,6 @@ class AntibodyValidation(Collection):
     }
 
     class Item(ItemWithAttachment):
-        links = {
-            'antibody': {'$value': '/antibody-lots/{antibody}', '$templated': True},
-            'target': {'$value': '/targets/{target}', '$templated': True},
-            'submitted_by': {'$value': '/users/{submitted_by}', '$templated': True},
-            'lab': {'$value': '/labs/{lab}', '$templated': True},
-            'award': {'$value': '/awards/{award}', '$templated': True},
-        }
         embedded = set(['antibody', 'target', 'submitted_by', 'lab', 'award'])
 
 
@@ -319,13 +269,6 @@ class AntibodyApproval(Collection):
     properties = {
         'title': 'Antibody Approvals',
         'description': 'Listing of validation approvals for ENCODE antibodies',
-    }
-    item_links = {
-        'antibody': {'$value': '/antibody-lots/{antibody}', '$templated': True},
-        'target': {'$value': '/targets/{target}', '$templated': True},
-        'validations': [
-            {'$value': '/validations/{validation}', '$templated': True, '$repeat': 'validation validations'},
-        ],
     }
     item_embedded = set(['antibody', 'target', 'validations'])
     item_keys = [
@@ -361,12 +304,6 @@ class Library(Collection):
         'title': 'Libraries',
         'description': 'Listing of Libraries',
     }
-    item_links = {
-        'biosample': {'$value': '/biosamples/{biosample}', '$templated': True},
-        'documents': [
-            {'$value': '/documents/{document}', '$templated': True, '$repeat': 'document documents'},
-        ],
-    }
     item_embedded = set(['biosample', 'documents'])
     item_keys = ACCESSION_KEYS
 
@@ -378,13 +315,6 @@ class Replicates(Collection):
     properties = {
         'title': 'Replicates',
         'description': 'Listing of Replicates',
-    }
-    item_links = {
-        'antibody': {'$value': '/antibody-lots/{antibody}', '$templated': True},
-        'target': {'$value': '/targets/{target}', '$templated': True},
-        'library': {'$value': '/libraries/{library}', '$templated': True},
-        'platform': {'$value': '/platforms/{platform}', '$templated': True},
-        'experiment': {'$value': '/experiments/{experiment}', '$templated': True},
     }
     item_embedded = set(['library', 'platform'])
 
@@ -407,11 +337,6 @@ class Files(Collection):
         'title': 'Files',
         'description': 'Listing of Files',
     }
-    item_links = {
-        'submitted_by': {'$value': '/users/{submitted_by}', '$templated': True},
-        'lab': {'$value': '/labs/{lab}', '$templated': True},
-        'award': {'$value': '/awards/{award}', '$templated': True},
-    }
     item_embedded = set(['submitted_by', 'lab', 'award'])
     item_keys = ACCESSION_KEYS
 
@@ -424,29 +349,18 @@ class Experiments(Collection):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    item_links = {
-        'submitted_by': {'$value': '/users/{submitted_by}', '$templated': True},
-        'lab': {'$value': '/labs/{lab}', '$templated': True},
-        'award': {'$value': '/awards/{award}', '$templated': True},
-        'files': [
-            {'$value': '/files/{file}', '$templated': True, '$repeat': 'file files'},
-        ],
-        'replicates': [
-            {'$value': '/replicates/{replicate}', '$templated': True, '$repeat': 'replicate replicates'},
-        ],
-        'possible_controls': [
-            {'$value': '/experiments/{control}', '$templated': True, '$repeat': 'control possible_controls'},
-        ],
-    }
     item_embedded = set(['files', 'replicates', 'submitted_by', 'lab', 'award', 'controls'])
+    item_rev = {
+        'replicates': ('replicate', 'experiment'),
+    }
     item_keys = ACCESSION_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
-        ('replicates.0.assay.assay_name', 'Assay Type'),
-        ('replicates.0.target', 'Target'),
-        ('replicates.0.library.biosample.biosample_term_name', 'Biosample'),
-        ('replicates.length', 'Biological Replicates'),
-        ('files.length', 'Files'),
+        #('replicates.0.assay_type', 'Assay Type'),
+        #('replicates.0.target.label', 'Target'),
+        #('replicates.0.library.biosample.biosample_term_name', 'Biosample'),
+        #('replicates.length', 'Biological Replicates'),
+        #('files.length', 'Files'),
         ('lab.name', 'Lab'),
         ('project', 'Project')
     ])

@@ -31,6 +31,7 @@ from pyramid.settings import asbool
 from pyramid.threadlocal import (
     manager,
 )
+from pyramid.traversal import find_root
 from pyramid.view import view_config
 from sqlalchemy import (
     func,
@@ -235,10 +236,11 @@ class Root(object):
         self.by_item_type[value.item_type] = value
 
     def get_by_uuid(self, uuid, default=None):
-        try:
-            uuid = UUID(uuid)
-        except ValueError:
-            return default
+        if isinstance(uuid, basestring):
+            try:
+                uuid = UUID(uuid)
+            except ValueError:
+                return default
         session = DBSession()
         model = session.query(Resource).get(uuid)
         if model is None:
@@ -279,17 +281,17 @@ class Root(object):
         return self.properties.copy()
 
 
-class MergedLinksMeta(type):
-    """ Merge the links from the subclass with its bases
+class MergedTemplateMeta(type):
+    """ Merge the template from the subclass with its bases
     """
     def __init__(self, name, bases, attrs):
-        super(MergedLinksMeta, self).__init__(name, bases, attrs)
+        super(MergedTemplateMeta, self).__init__(name, bases, attrs)
 
-        self.merged_links = {}
+        self.merged_template = {}
         for cls in reversed(self.mro()):
-            links = vars(cls).get('links', None)
-            if links is not None:
-                self.merged_links.update(links)
+            template = vars(cls).get('template', None)
+            if template is not None:
+                self.merged_template.update(template)
 
         self.merged_keys = []
         for cls in reversed(self.mro()):
@@ -301,11 +303,12 @@ class MergedLinksMeta(type):
 
 
 class Item(object):
-    __metaclass__ = MergedLinksMeta
+    __metaclass__ = MergedTemplateMeta
     base_types = ['item']
     keys = []
+    rev = None
     embedded = {}
-    links = {
+    template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
         # 'collection': '{collection_uri}',
         '@type': [
@@ -335,14 +338,59 @@ class Item(object):
     def uuid(self):
         return self.model.rid
 
+    @property
+    def schema_links(self):
+        return self.__parent__.schema_links
+
+    @property
+    def links(self):
+        if self.schema is None:
+            return {}
+        root = find_root(self)
+        links = {}
+        properties = self.properties
+        for name in self.schema_links:
+            value = properties.get(name, None)
+            if value is None:
+                continue
+            if isinstance(value, list):
+                links[name] = [root.get_by_uuid(v) for v in value]
+            else:
+                links[name] = root.get_by_uuid(value)
+        return links
+
+    @property
+    def rev_links(self):
+        if self.rev is None:
+            return {}
+        root = find_root(self)
+        links = {}
+        for name, spec in self.rev.iteritems():
+            item_types, rel = spec
+            if isinstance(item_types, basestring):
+                item_types = [item_types]
+            links[name] = value = []
+            for link in self.model.revs:
+                if rel == link.rel and link.source.item_type in item_types:
+                    item = root.get_by_uuid(link.source_rid)
+                    value.append(item)
+        return links
+
     def __json__(self, request):
         properties = self.properties.copy()
-        links = self.expand_links(request)
-        properties.update(links)
+        templated = self.expand_template(request)
+        properties.update(templated)
+        for name, value in self.links.iteritems():
+            # XXXX Should this be {'@id': url, '@type': [...]} instead?
+            if isinstance(value, list):
+                properties[name] = [request.resource_path(item) for item in value]
+            else:
+                properties[name] = request.resource_path(value)
+        for name, value in self.rev_links.iteritems():
+            properties[name] = [request.resource_path(item) for item in value]
         return properties
 
     def template_namespace(self, request=None):
-        # Expand $templated links
         ns = self.properties.copy()
         ns['item_type'] = self.item_type
         ns['base_types'] = self.base_types
@@ -353,15 +401,16 @@ class Item(object):
             ns['permission'] = permission_checker(self, request)
         return ns
 
-    def expand_links(self, request):
-        # Expand $templated links
+    def expand_template(self, request):
         ns = self.template_namespace(request)
-        compiled = ObjectTemplate(self.merged_links)
+        compiled = ObjectTemplate(self.merged_template)
         return compiled(ns)
 
     def expand_embedded(self, request, properties):
         embedded = self.embedded
-        for name in properties:
+        if self.schema is None:
+            return
+        for name in self.schema_links:
             if name not in embedded:
                 continue
             value = properties[name]
@@ -479,9 +528,7 @@ class Item(object):
         source = self.uuid
         _rels = []
 
-        for name, prop in self.schema['properties'].iteritems():
-            if 'linkTo' not in prop:
-                continue
+        for name in self.schema_links:
             targets = properties.get(name, [])
             if not isinstance(targets, list):
                 targets = [targets]
@@ -512,7 +559,7 @@ class Item(object):
         return to_add
 
 
-class CustomItemMeta(MergedLinksMeta):
+class CustomItemMeta(MergedTemplateMeta):
     """ Give each collection its own Item class to enable
         specific view registration.
     """
@@ -524,9 +571,10 @@ class CustomItemMeta(MergedLinksMeta):
             self.item_type = uncamel(self.__name__)
 
         if 'Item' in attrs:
-            assert 'item_links' not in attrs
+            assert 'item_template' not in attrs
             assert 'item_embedded' not in attrs
             assert 'item_keys' not in attrs
+            assert 'item_rev' not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
@@ -536,12 +584,14 @@ class CustomItemMeta(MergedLinksMeta):
             '__name__': 'Item',
             '__qualname__': qualname + '.Item',
         }
-        if 'item_links' in attrs:
-            item_attrs['links'] = attrs['item_links']
+        if 'item_template' in attrs:
+            item_attrs['template'] = attrs['item_template']
         if 'item_embedded' in attrs:
             item_attrs['embedded'] = attrs['item_embedded']
         if 'item_keys' in attrs:
             item_attrs['keys'] = attrs['item_keys']
+        if 'item_rev' in attrs:
+            item_attrs['rev'] = attrs['item_rev']
         self.Item = type('Item', item_bases, item_attrs)
 
 
@@ -553,7 +603,7 @@ class Collection(object):
     item_type = None
     unique_key = None
     columns = {}
-    links = {
+    template = {
         '@id': {'$value': '{collection_uri}', '$templated': True},
         '@type': [
             {'$value': '{item_type}_collection', '$templated': True},
@@ -584,6 +634,12 @@ class Collection(object):
                 if name not in ('length', '0')
             )
             self.embedded_paths.add(path)
+
+        if self.schema is not None:
+            self.schema_links = [
+                name for name, prop in self.schema['properties'].iteritems()
+                if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
+            ]
 
     def __getitem__(self, name):
         try:
@@ -673,7 +729,7 @@ class Collection(object):
         ns['collection_uri'] = request.resource_path(self)
         ns['item_type'] = self.item_type
         ns['permission'] = permission_checker(self, request)
-        compiled = ObjectTemplate(self.merged_links)
+        compiled = ObjectTemplate(self.merged_template)
         links = compiled(ns)
         properties.update(links)
         items = properties['items'] = []

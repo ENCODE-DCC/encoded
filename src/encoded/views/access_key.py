@@ -45,9 +45,6 @@ class AccessKey(Collection):
     ]
 
     class Item(Collection.Item):
-        links = {
-            'user': {'value': '/users/{user}', '$templated': True},
-        }
         keys = ['access_key_id']
 
         def __acl__(self):

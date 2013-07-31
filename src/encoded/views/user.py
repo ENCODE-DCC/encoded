@@ -37,13 +37,6 @@ class User(Collection):
     ]
 
     class Item(Collection.Item):
-        links = {
-            'submits_for': [
-                {'$value': '/labs/{lab}', '$templated': True,
-                 '$repeat': 'lab submits_for'},
-            ],
-            'lab': {'$value': '/labs/{lab}', '$templated': True, '$condition': 'lab'},
-        }
         keys = ['email']
         unique_key = 'user:email'
 
