@@ -213,9 +213,9 @@ class Biosample(Collection):
         ('accession', 'Accession'),
         ('biosample_term_name', 'Term'),
         ('biosample_type', 'Type'),
-        ('donor.organism.organism_name', 'Species'),
-        ('source.alias', 'Source'),
-        ('lab.name', 'Submitter'),
+        ('donor.organism.name', 'Species'),
+        ('source.title', 'Source'),
+        ('lab.title', 'Submitter'),
         ('treatments.length', 'Treatments'),
         ('constructs.length', 'Constructs')
     ])
@@ -231,8 +231,8 @@ class Target(Collection):
     }
     unique_key = 'target:name'
     columns = OrderedDict([
-        ('target_label', 'Target'),
-        ('organism.organism_name', 'Species'),
+        ('label', 'Target'),
+        ('organism.name', 'Species'),
         ('dbxref', 'External Resources'),
         ('award.rfa', 'RFA'),
     ])
@@ -282,13 +282,13 @@ class AntibodyApproval(Collection):
     ]
     columns = OrderedDict([
         ('antibody.accession', 'Accession'),
-        ('target.target_label', 'Target'),
-        ('target.organism.organism_name', 'Species'),
-        ('antibody.source.source_name', 'Source'),
+        ('target.label', 'Target'),
+        ('target.organism.name', 'Species'),
+        ('antibody.source.title', 'Source'),
         ('antibody.product_id', 'Product ID'),
         ('antibody.lot_id', 'Lot ID'),
         ('validations.length', 'Validations'),
-        ('approval_status', 'Status')
+        ('status', 'Status')
     ])
 
 
@@ -372,7 +372,7 @@ class Experiments(Collection):
         ('biosample_term_name', 'Biosample'),
         ('replicates.length', 'Biological Replicates'),
         ('files.length', 'Files'),
-        ('lab.name', 'Lab'),
+        ('lab.title', 'Lab'),
         ('award.rfa', 'RFA'),
     ])
 
