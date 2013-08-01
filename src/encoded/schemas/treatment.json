@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE biosample Treatment",
     "type": "object",
-    "required": [ "title", "treatment_type", "lab", "award"],
+    "required": ["treatment_term_name", "treatment_type", "lab", "award"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
@@ -18,17 +18,6 @@
             "comment":  "Must match the specific schemas' `version` property",
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
-        },
-        "name": {
-            "description": "Unique short name for the Treatment",
-            "title": "Treatment name",
-            "type": "string",
-            "pattern": "^[a-z0-9\\-]+$"
-        },
-        "title": {
-            "description": "The preferred viewable name of the software",
-            "title": "Treatment title",
-            "type": "string"
         },
         "treatment_type": {
             "default": "chemical",
@@ -63,29 +52,24 @@
             "title": "ENCODE2 DBXREFs",
             "type": "array"
         },
-        "term_id": {
-            "description": "ChEBI Ontology term ID describing chemical used in treatment",
-            "comment": "For chemical treatments only",
-            "title": "ChEBI ID",
+        "treatment_term_id": {
+            "description": "Ontology term ID describing treatment used in treatment",
+            "title": "Treatment term ID",
             "type": "string",
             "pattern": "^(CHEBI:[0-9]{5,6})|(UniprotKB:P[0-9]{5})|(Taxon:[0-9]{6})$"
         },
-        "term_name": {
-            "description": "ChEBI ontology term describing chemical treatment",
-            "comment": "For chemical treatments only",
-            "title": "ChEBI Term (Chemical Name)",
+        "treatment_term_name": {
+            "description": "Ontology term describing treatment",
+            "title": "Treatment term name",
             "type":  "string"
         },
         "concentration": {
-            "description": "Concentration of chemical treament (numeric)",
-            "comment": "For chemical treatments only",
+            "description": "Concentration of treament (numeric)",
             "title": "Concentration",
             "type": "number"
         },
         "concentration_units": {
-            "description": "Concentration units for chemical treament",
-            "comment": "For chemical treatments only",
-            "title": "Conc. units",
+            "title": "Concentration units",
             "type": "string",
             "enum": [
                 "pM",
@@ -96,14 +80,11 @@
             ]
         },
         "duration": {
-            "description": "Duration of chemical treament (numeric)",
-            "comment": "For chemical treatments only",
+            "description": "Duration of treament (numeric)",
             "title": "Duration",
             "type": "number"
         },
         "duration_units": {
-            "description": "Duration units for chemical treament",
-            "comment": "For chemical treatments only",
             "title": "Duration units",
             "type": "string",
             "enum": [

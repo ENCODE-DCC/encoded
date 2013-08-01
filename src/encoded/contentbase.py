@@ -793,7 +793,9 @@ def expand_path(request, obj, path):
         return
     name = path[0]
     remaining = path[1:]
-    value = obj[name]
+    value = obj.get(name, None)
+    if value is None:
+        return
     if isinstance(value, list):
         for index, member in enumerate(value):
             if not isinstance(member, dict):

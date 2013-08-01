@@ -5,7 +5,8 @@
     "version": "0.01",
     "description": "Schema for submitting an experimental Replicate",
     "type": "object",
-    "required": [ "award", "lab", "assay_type", "biological_replicate_number", "technical_replicate_number", "library"],
+    "required": ["experiment", "biological_replicate_number", "technical_replicate_number"],
+    "approvalRequired": ["award", "lab", "library"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
@@ -17,18 +18,6 @@
             "comment":  "Must match the specific schemas' `version` property",
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
-        },
-        "assay_type": {
-            "description": "Ontology term describing assay used for this replicate",
-            "comment": "Use OBI ontology (term_id) name where possible",
-            "title": "Assay type",
-            "type":  "string"
-        },
-        "term_id": {
-            "description": "OBI Ontology term ID describing assay type",
-            "title": "Assay (OBI) Ontology ID",
-            "type": "string",
-            "pattern": "^OBI:[0-9]{7}$"
         },
         "antibody": {
             "description": "Antibody used with this Replicate (-IP experiments only)",
@@ -104,13 +93,6 @@
             "description": "Whether or not the replicate was sequenced using  paired-end primers",
             "title": "Paired Ended",
             "type": "boolean"
-        },
-        "target": {
-            "description": "Protein, RNA, or chemical target of the experiment",
-            "comment": "For automatic submission supply unique Target label or UUID",
-            "title": "Target ID",
-            "type": "string",
-            "linkTo": "target"
         }
     }
 }

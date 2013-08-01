@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting an experimental platform to ENCODE",
     "type": "object",
-    "required": ["title"],
+    "required": ["term_id"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
@@ -26,7 +26,8 @@
             "type": "string",
             "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
-        "title": {
+        "term_name": {
+            "default": "",
             "description": "Name of the Platform (should be OBI term were possible)",
             "title": "Platform Name",
             "type":  "string"

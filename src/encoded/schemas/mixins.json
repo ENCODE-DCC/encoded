@@ -118,5 +118,31 @@
                 }
             }
         }
+    },
+    "biosample_classification": {
+        "biosample_term_id": {
+            "description": "Ontology term ID describing biosample type",
+            "comment": "Valid ontologies for biosamples are: Uberon, EFO, BTO, or CL.  NTR is a new term request from ENCODE DCC.",
+            "title": "Ontology ID",
+            "type": "string",
+            "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR):[0-9]{2,8}$"
+        },
+        "biosample_term_name": {
+            "description": "Ontology term describing biosample type",
+            "title": "Ontology Term",
+            "type":  "string"
+        },
+        "biosample_type": {
+            "description": "The sub-type of the biosample",
+            "title": "Biosample Type",
+            "type": "string",
+            "enum" : [
+                "primary cell line",
+                "immortalized cell line",
+                "tissue",
+                "in vitro differentiated cells",
+                "induced pluripotent stem cell line"
+            ]
+        }
     }
 }

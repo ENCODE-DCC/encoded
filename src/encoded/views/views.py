@@ -228,7 +228,7 @@ class Target(Collection):
         ('target_label', 'Target'),
         ('organism.organism_name', 'Species'),
         ('dbxref', 'External Resources'),
-        ('project', 'Project')
+        ('award.rfa', 'RFA'),
     ])
 
     class Item(Collection.Item):
@@ -294,6 +294,10 @@ class Platform(Collection):
         'title': 'Platforms',
         'description': 'Listing of Platforms',
     }
+    item_template = {
+        'title': '{term_name}',
+        '$templated': True,
+    }
 
 
 @location('libraries')
@@ -356,13 +360,13 @@ class Experiments(Collection):
     item_keys = ACCESSION_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
-        #('replicates.0.assay_type', 'Assay Type'),
-        #('replicates.0.target.label', 'Target'),
-        #('replicates.0.library.biosample.biosample_term_name', 'Biosample'),
-        #('replicates.length', 'Biological Replicates'),
-        #('files.length', 'Files'),
+        ('assay_term_name', 'Assay Type'),
+        ('target.label', 'Target'),
+        ('biosample_term_name', 'Biosample'),
+        ('replicates.length', 'Biological Replicates'),
+        ('files.length', 'Files'),
         ('lab.name', 'Lab'),
-        ('project', 'Project')
+        ('award.rfa', 'RFA'),
     ])
 
 

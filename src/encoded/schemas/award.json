@@ -58,6 +58,17 @@
             "title": "P.I.",
             "type": "string",
             "linkTo": "user"
+        },
+        "rfa": {
+            "default": "",
+            "description": "Project RFA",
+            "title": "RFA",
+            "type": "string"
+        },
+        "project": {
+            "default": "",
+            "title": "Project",
+            "type": "string"
         }
     }
  }

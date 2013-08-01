@@ -6,11 +6,13 @@
     "description": "Schema for submitting an primary set of files to ENCODE (Experiment)",
     "comment": "Experiment is a special case of Dataset",
     "type": "object",
-    "required": [ "award", "lab", "dataset_type", "term_id"],
+    "required": ["award", "lab", "dataset_type"],
+    "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/submitted" }
     ],
@@ -34,13 +36,14 @@
             "type": "string",
             "linkTo": "target"
         },
-        "assay_type": {
+        "assay_term_name": {
+            "default": "",
             "description": "Ontology term describing assay used for this replicate",
             "comment": "Use OBI ontology (term_id) or New Term Requst no. from DCC",
             "title": "Assay type",
             "type":  "string"
         },
-        "term_id": {
+        "assay_term_id": {
             "description": "OBI Ontology term ID describing assay type",
             "title": "Assay (OBI) Ontology ID",
             "type": "string",
