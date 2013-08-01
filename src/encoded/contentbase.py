@@ -48,6 +48,7 @@ from uuid import (
     uuid4,
 )
 from .objtemplate import ObjectTemplate
+from .schema_formats import is_accession
 from .schema_utils import validate_request
 from .storage import (
     DBSession,
@@ -229,7 +230,32 @@ class Root(object):
         self.by_item_type = {}
 
     def __getitem__(self, name):
-        return self.collections[name]
+        try:
+            resource = self.get(name)
+        except KeyError:
+            # Just in case we get an unexpected KeyError
+            # FIXME: exception logging.
+            raise HTTPInternalServerError('Traversal raised KeyError')
+        if resource is None:
+            raise KeyError(name)
+        return resource
+
+    def get(self, name, default=None):
+        resource = self.collections.get(name, None)
+        if resource is not None:
+            return resource
+        resource = self.get_by_uuid(name, None)
+        if resource is not None:
+            return resource
+        if is_accession(name):
+            resource = self.get_by_unique_key('accession', name)
+            if resource is not None:
+                return resource
+        if ':' in name:
+            resource = self.get_by_unique_key('alias', name)
+            if resource is not None:
+                return resource            
+        return default
 
     def __setitem__(self, name, value):
         self.collections[name] = value
@@ -653,14 +679,29 @@ class Collection(object):
         return item
 
     def get(self, name, default=None):
-        try:
-            uuid = UUID(name)
-        except ValueError:
-            return self.get_by_name(name, default)
-        else:
-            return self.get_by_uuid(uuid, default)
+        resource = self.get_by_uuid(name, None)
+        if resource is not None:
+            return resource
+        if is_accession(name):
+            resource = self.get_by_unique_key('accession', name)
+            if resource is not None:
+                return resource
+        if ':' in name:
+            resource = self.get_by_unique_key('alias', name)
+            if resource is not None:
+                return resource
+        if self.unique_key is not None:
+            resource = self.get_by_unique_key(self.unique_key, name)
+            if resource is not None:
+                return resource
+        return default
 
     def get_by_uuid(self, uuid, default=None):
+        if isinstance(uuid, basestring):
+            try:
+                uuid = UUID(uuid)
+            except ValueError:
+                return default
         session = DBSession()
         #if (Resource, (uuid,)) not in session.identity_map:
         #    print 'Uncached %s/%s' % (self.item_type, uuid)
@@ -668,13 +709,11 @@ class Collection(object):
         if model is None:
             return default
         if model.item_type != self.item_type:
-            return None
+            return default
         return self.Item(self, model)
 
-    def get_by_name(self, name, default=None):
-        if self.unique_key is None:
-            return default
-        pkey = (self.unique_key, name)
+    def get_by_unique_key(self, unique_key, name, default=None):
+        pkey = (unique_key, name)
         session = DBSession()
         # Eager load related resources here.
         key = session.query(Key).options(
@@ -695,6 +734,8 @@ class Collection(object):
         if key is None:
             return default
         model = key.resource
+        if model.item_type != self.item_type:
+            return default
         return self.Item(self, model)
 
     def add(self, properties):

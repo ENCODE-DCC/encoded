@@ -29,6 +29,15 @@ ACCESSION_KEYS = [
     },
 ]
 
+ALIAS_KEYS = [
+    {
+        'name': 'alias',
+        'value': '{alias}',
+        '$repeat': 'alias aliases',
+        '$templated': True,
+    },
+]
+
 
 @location('labs')
 class Lab(Collection):
@@ -66,8 +75,7 @@ class AntibodyLot(Collection):
         'description': 'Listing of ENCODE antibodies',
     }
     item_embedded = set(['source'])
-    unique_key = 'accession'
-    item_keys = ACCESSION_KEYS + [
+    item_keys = ACCESSION_KEYS + ALIAS_KEYS + [
         {
             'name': '{item_type}:source_product_lot',
             'value': '{source}/{product_id}/{lot_id}',
@@ -115,7 +123,7 @@ class Source(Collection):
 class DonorItem(Collection.Item):
     base_types = ['donor'] + Collection.Item.base_types
     embedded = set(['organism'])
-    keys = ACCESSION_KEYS
+    keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
 @location('mouse-donors')
@@ -152,7 +160,7 @@ class Treatment(Collection):
         'title': 'Treatments',
         'description': 'Listing Biosample Treatments',
     }
-    #item_keys = ['treatment_name']
+    item_keys = ALIAS_KEYS  # ['treatment_name']
 
 
 @location('constructs')
@@ -187,9 +195,7 @@ class Document(Collection):
     }
 
     class Item(ItemWithAttachment):
-        keys = [
-            {'name': 'alias', 'value': '{alias}', '$repeat': 'alias aliases', '$templated': True},
-        ]
+        keys = ALIAS_KEYS
         embedded = set(['submitted_by', 'lab', 'award'])
 
 
@@ -202,7 +208,7 @@ class Biosample(Collection):
         'description': 'Biosamples used in the ENCODE project',
     }
     item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'documents'])
-    item_keys = ACCESSION_KEYS
+    item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
         ('biosample_term_name', 'Term'),
@@ -236,7 +242,7 @@ class Target(Collection):
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
         }
         embedded = set(['organism', 'submitted_by', 'lab', 'award'])
-        keys = [
+        keys =  ALIAS_KEYS + [
             {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
         ]
 
@@ -298,6 +304,7 @@ class Platform(Collection):
         'title': '{term_name}',
         '$templated': True,
     }
+    item_keys = ALIAS_KEYS
 
 
 @location('libraries')
@@ -309,7 +316,7 @@ class Library(Collection):
         'description': 'Listing of Libraries',
     }
     item_embedded = set(['biosample', 'documents'])
-    item_keys = ACCESSION_KEYS
+    item_keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
 @location('replicates')
@@ -342,7 +349,7 @@ class Files(Collection):
         'description': 'Listing of Files',
     }
     item_embedded = set(['submitted_by', 'lab', 'award'])
-    item_keys = ACCESSION_KEYS
+    item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
 
 
 @location('experiments')
@@ -357,7 +364,7 @@ class Experiments(Collection):
     item_rev = {
         'replicates': ('replicate', 'experiment'),
     }
-    item_keys = ACCESSION_KEYS
+    item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
         ('assay_term_name', 'Assay Type'),
@@ -388,3 +395,4 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
+    item_keys = ALIAS_KEYS
