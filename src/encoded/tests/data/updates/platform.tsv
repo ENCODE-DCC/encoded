@@ -1,4 +1,4 @@
-test	uuid	title	term_id	url	geo_dbxrefs:array	encode2_dbxrefs:array
+test	uuid	term_name	term_id	url	geo_dbxrefs:array	encode2_dbxrefs:array
 test	616db2ff-a1c3-4c4f-b0de-9ea11c825b82	Roche 454 Genome Sequencer FLX	OBI:0000702	http://454.com/products/gs-flx-system/	GPL14603 ;GPL16815	454_GS_FLX
 test	da150a82-63cd-4471-ba3e-ffe7ca96bcda	Applied Biosystems SOLiD System 3 Plus	OBI:0000696	http://www3.appliedbiosystems.com/cms/groups/mcb_marketing/documents/generaldocuments/cms_072050.pdf	GPL9442	AB_SOLiD_3.5
 test	700d6a4b-12da-401b-8cd3-d6675c1f22e4	NimbleGen Human 2.1M Whole-Genome CGH Tiling Array v2.0	NTR:0000001	http://www.roche-applied-science.com/proddata/gpip/3_35_1_2_1_18.html	GPL13190	
