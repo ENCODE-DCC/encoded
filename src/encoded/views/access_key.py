@@ -112,7 +112,7 @@ def access_key_disable_secret(context, request):
     return result
 
 
-@view_config(context=AccessKey.Item, permission='edit', request_method='POST',
+@view_config(context=AccessKey.Item, permission='edit', request_method='PUT',
              validators=[validate_item_content])
 def access_key_edit(context, request):
     new_properties = context.properties.copy()

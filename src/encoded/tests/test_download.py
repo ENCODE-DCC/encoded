@@ -39,7 +39,7 @@ def test_download_update(testapp, testing_download):
         'download': 'blue-dot.png',
         'href': BLUE_DOT,
     }}
-    testapp.post_json(testing_download, item, status=200)
+    testapp.put_json(testing_download, item, status=200)
     res = testapp.get(testing_download)
     assert res.json['attachment']['href'] == '@@download/attachment/blue-dot.png'
     url = testing_download + '/' + res.json['attachment']['href']
@@ -53,7 +53,7 @@ def test_download_update_no_change(testapp, testing_download):
         'download': 'red-dot.png',
         'href': '@@download/attachment/red-dot.png',
     }}
-    testapp.post_json(testing_download, item, status=200)
+    testapp.put_json(testing_download, item, status=200)
 
 
 @pytest.mark.parametrize(
@@ -67,7 +67,7 @@ def test_download_update_bad_change(testapp, testing_download, href):
         'download': 'red-dot.png',
         'href': href,
     }}
-    testapp.post_json(testing_download, item, status=422)
+    testapp.put_json(testing_download, item, status=422)
 
 
 @pytest.mark.parametrize(

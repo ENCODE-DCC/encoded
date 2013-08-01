@@ -37,9 +37,9 @@ def test_keys_update(testapp):
     res = testapp.post_json(url, item, status=201)
     location = res.location
     new_item = {'name': 'new_one', 'accession': 'NEW1'}
-    testapp.post_json(location, new_item, status=200)
+    testapp.put_json(location, new_item, status=200)
     testapp.post_json(url, item, status=201)
-    testapp.post_json(location, item, status=409)
+    testapp.put_json(location, item, status=409)
 
 
 @pytest.mark.slow

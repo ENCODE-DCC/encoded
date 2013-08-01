@@ -103,7 +103,7 @@ def test_access_key_edit(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     NEW_DESCRIPTION = 'new description'
     properties = {'description': NEW_DESCRIPTION}
-    anontestapp.post_json(access_key['location'], properties, headers=headers)
+    anontestapp.put_json(access_key['location'], properties, headers=headers)
 
     res = anontestapp.get(access_key['location'], properties, headers=headers)
     assert res.json['description'] == NEW_DESCRIPTION

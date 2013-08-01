@@ -167,7 +167,7 @@ def test_collection_update(testapp, url, execute_counter):
 
     update = collection[1].copy()
     del update['uuid']
-    testapp.post_json(item_url, update, status=200)
+    testapp.put_json(item_url, update, status=200)
 
     with execute_counter.expect(2):
         res = testapp.get(item_url).json

@@ -236,10 +236,8 @@ def read_csv(stream, **kw):
 # This would a one liner except for logging
 
 
-def post(testapp, item_type, phase):
+def post(testapp, item_type):
     base_url = TYPE_URL[item_type]
-    if phase != 1:
-        base_url = base_url + '{uuid}'
 
     def component(rows):
         for row in rows:
@@ -250,8 +248,28 @@ def post(testapp, item_type, phase):
                     k: v for k, v in row.iteritems() if not k.startswith('_')
                 }
                 # Possibly 
-                url = row['_url'] = base_url.format(uuid=row['uuid'])
+                url = row['_url'] = base_url
                 row['_response'] = testapp.post_json(url, value, status='*')
+
+            yield row
+
+    return component
+
+
+def put(testapp, item_type):
+    base_url = TYPE_URL[item_type]
+
+    def component(rows):
+        for row in rows:
+            if not row.get('_skip') and not row.get('_errors'):
+                # Keys with leading underscores are for communicating between
+                # sections
+                value = row['_value'] = {
+                    k: v for k, v in row.iteritems() if not k.startswith('_')
+                }
+                # Possibly 
+                url = row['_url'] = base_url + '/' + row['uuid']
+                row['_response'] = testapp.put_json(url, value, status='*')
 
             yield row
 
@@ -422,7 +440,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None):
     elif phase == 2:
         pipeline.extend(UPDATE_PIPELINES.get(item_type, []))
     pipeline.extend([
-        post(testapp, item_type, phase),
+        post(testapp, item_type) if phase == 1 else put(testapp, item_type),
         pipeline_logger(item_type, phase),
     ])
     return pipeline

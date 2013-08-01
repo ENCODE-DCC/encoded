@@ -48,7 +48,7 @@ def test_links_update(content, testapp, session):
 
     url = '/testing-link-sources/' + sources[1]['uuid']
     new_item = {'name': 'B updated', 'target': targets[0]['uuid']}
-    testapp.post_json(url, new_item, status=200)
+    testapp.put_json(url, new_item, status=200)
 
     links = sorted([
         (str(link.source_rid), link.rel, str(link.target_rid))

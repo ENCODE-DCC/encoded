@@ -889,10 +889,11 @@ def item_view(context, request):
     return properties
 
 
-@view_config(context=Item, permission='edit', request_method='POST',
+@view_config(context=Item, permission='edit', request_method='PUT',
              validators=[validate_item_content])
 def item_edit(context, request):
     properties = request.validated
+    # XXX should be more specific here for a PUT.
     context.update(properties)
     item_uri = request.resource_path(context)
     request.response.status = 200
