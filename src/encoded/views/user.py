@@ -68,6 +68,7 @@ def user_basic_view(context, request):
 
 @view_config(context=Root, name='current-user', request_method='GET')
 def current_user(request):
+    request.environ['encoded.canonical_redirect'] = False
     for principal in effective_principals(request):
         if principal.startswith('userid:'):
             break

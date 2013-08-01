@@ -21,7 +21,7 @@ def content(testapp):
 @pytest.mark.parametrize('item', items)
 def test_unique_key(testapp, content, item):
     url = '/testing-keys/' + item['accession']
-    res = testapp.get(url)
+    res = testapp.get(url).maybe_follow()
     assert res.json['name'] == item['name']
 
 
