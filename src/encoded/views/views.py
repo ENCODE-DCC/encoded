@@ -13,7 +13,7 @@ from ..schema_utils import (
     load_schema,
 )
 from collections import OrderedDict
-from pyramid.location import lineage
+from pyramid.traversal import find_root
 
 ACCESSION_KEYS = [
     {
@@ -248,7 +248,7 @@ class Target(Collection):
 
         def template_namespace(self, request=None):
             ns = Collection.Item.template_namespace(self, request)
-            root = list(lineage(self))[-1]
+            root = find_root(self)
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
             return ns
