@@ -82,14 +82,14 @@ def _test_antibody_approval_creation(testapp):
     res = testapp.post_json('/antibodies/', new_antibody, status=201)
     assert res.location
     assert '/profiles/result' in res.json['@type']['profile']
-    assert res.json['items'] == [{'href': urlparse(res.location).path}]
+    assert res.json['@graph'] == [{'href': urlparse(res.location).path}]
     res = testapp.get(res.location, status=200)
     assert '/profiles/antibody_approval' in res.json['@type']
     data = res.json
     for key in new_antibody:
         assert data[key] == new_antibody[key]
     res = testapp.get('/antibodies/', status=200)
-    assert len(res.json['items']) == 1
+    assert len(res.json['@graph']) == 1
 
 
 @pytest.mark.xfail
@@ -99,7 +99,7 @@ def test_load_sample_data(testapp):
         for item in collection:
             testapp.post_json(url, item, status=201)
         res = testapp.get(url + '?limit=all')
-        assert len(res.json['items']) == len(collection)
+        assert len(res.json['@graph']) == len(collection)
 
 
 @pytest.mark.slow
@@ -108,14 +108,14 @@ def test_load_workbook(workbook, testapp, url, length):
     # testdata must come before testapp in the funcargs list for their
     # savepoints to be correctly ordered.
     res = testapp.get(url + '?limit=all', status=200)
-    assert len(res.json['items']) >= 1 # length
+    assert len(res.json['@graph']) >= 1 # length
     # extra guys are fine
 
 
 @pytest.mark.slow
 def test_collection_limit(workbook, testapp):
     res = testapp.get('/antibodies/?limit=10', status=200)
-    assert len(res.json['items']) == 10
+    assert len(res.json['@graph']) == 10
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
@@ -156,7 +156,7 @@ def test_collection_update(testapp, url, execute_counter):
     collection = URL_COLLECTION[url]
     initial = collection[0]
     res = testapp.post_json(url, initial, status=201)
-    item_url = res.json['items'][0]
+    item_url = res.json['@graph'][0]
 
     with execute_counter.expect(2):
         res = testapp.get(item_url).json

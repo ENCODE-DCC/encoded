@@ -732,7 +732,7 @@ class Collection(object):
         compiled = ObjectTemplate(self.merged_template)
         links = compiled(ns)
         properties.update(links)
-        items = properties['items'] = []
+        items = properties['@graph'] = []
         properties['columns'] = self.columns
 
         query = query.options(
@@ -859,7 +859,7 @@ def collection_add(context, request):
     result = {
         'status': 'success',
         '@type': ['result'],
-        'items': [item_uri],
+        '@graph': [item_uri],
     }
     return result
 
@@ -900,6 +900,6 @@ def item_edit(context, request):
     result = {
         'status': 'success',
         '@type': ['result'],
-        'items': [item_uri],
+        '@graph': [item_uri],
     }
     return result
