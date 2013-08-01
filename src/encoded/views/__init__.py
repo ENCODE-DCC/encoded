@@ -9,6 +9,7 @@ from ..contentbase import (
 def includeme(config):
     # Random processid so etags are invalidated after restart.
     config.registry['encoded.processid'] = randint(0, 2 ** 32)
+    config.add_route('schema', '/profiles/{item_type}.json')
     config.scan()
 
 
@@ -29,3 +30,10 @@ def home(context, request):
         # 'login': {'href': request.resource_path(context, 'login')},
     })
     return result
+
+
+@view_config(route_name='schema', request_method='GET')
+def schema(context, request):
+    item_type = request.matchdict['item_type']
+    collection = context.by_item_type[item_type]
+    return collection.schema
