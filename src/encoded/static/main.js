@@ -53,7 +53,7 @@ requirejs.config({
 });
 
 if (!window.TESTRUNNER) require(['jquery', 'react', 'jsx!app', 'bootstrap', 'stickyheader', 'jsonform', 'persona',
-    'jsx!item', 'jsx!collection', 'jsx!errors', 'jsx!home', 'jsx!antibody', 'jsx!biosample', 'jsx!experiment', 'jsx!platform', 'jsx!target'
+    'jsx!item', 'jsx!collection', 'jsx!errors', 'jsx!home', 'jsx!antibody', 'jsx!biosample', 'jsx!experiment', 'jsx!platform', 'jsx!target', 'jsx!search'
     ],
 function main($, React, App) {
     'use strict';
