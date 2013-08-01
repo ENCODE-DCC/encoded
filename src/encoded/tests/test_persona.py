@@ -53,11 +53,13 @@ def test_login_bad_audience(anontestapp, persona_bad_assertion):
 
 def test_login_logout(testapp, anontestapp, persona_assertion):
     # Create a user with the persona email
-    from .sample_data import URL_COLLECTION
     url = '/users/'
-    item = URL_COLLECTION[url][0].copy()
     email = persona_assertion['email']
-    item['email'] = email
+    item = {
+        'email': email,
+        'first_name': 'Persona',
+        'last_name': 'Test User',
+    }
     testapp.post_json(url, item, status=201)
 
     # Log in
