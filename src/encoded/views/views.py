@@ -74,7 +74,11 @@ class AntibodyLot(Collection):
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
     }
-    item_embedded = set(['source'])
+    item_template = {
+        'title': '{accession}',
+        '$templated': True,
+    }
+    item_embedded = set(['source', 'host_organism'])
     item_keys = ACCESSION_KEYS + ALIAS_KEYS + [
         {
             'name': '{item_type}:source_product_lot',
@@ -348,7 +352,7 @@ class Files(Collection):
         'title': 'Files',
         'description': 'Listing of Files',
     }
-    item_embedded = set(['submitted_by', 'lab', 'award'])
+    item_embedded = set(['submitted_by', 'lab', 'award', 'replicate'])
     item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
 
 

@@ -39,6 +39,10 @@ class User(Collection):
     class Item(Collection.Item):
         keys = ['email']
         unique_key = 'user:email'
+        template = {
+            'title': '{first_name} {last_name}',
+            '$templated': True,
+        }
 
         def __acl__(self):
             owner = 'userid:%s' % self.uuid
