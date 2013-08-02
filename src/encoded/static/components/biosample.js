@@ -246,7 +246,7 @@ function (biosample, React, URI, globals) {
                     <dd>{context.source.title}</dd>
 
                     <dt>Product ID</dt>
-                    <dd><maybe_link href={context.product_url}>{context.product_id}</maybe_link></dd>
+                    <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
 
                 </dl>
             );

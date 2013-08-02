@@ -45,7 +45,7 @@
             "title": "Construct Product ID",
             "type": "string"
         },
-        "product_url": {
+        "url": {
             "description": "External Product URL for the specific construct at vendor site",
             "title": "Product URL",
             "type": "string",
