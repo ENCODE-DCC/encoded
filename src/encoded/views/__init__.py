@@ -1,3 +1,4 @@
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 from random import randint
 from ..contentbase import (
@@ -35,5 +36,8 @@ def home(context, request):
 @view_config(route_name='schema', request_method='GET')
 def schema(context, request):
     item_type = request.matchdict['item_type']
-    collection = context.by_item_type[item_type]
+    try:
+        collection = context.by_item_type[item_type]
+    except KeyError:
+        raise HTTPNotFound(item_type)
     return collection.schema
