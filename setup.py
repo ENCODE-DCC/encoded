@@ -15,6 +15,7 @@ requires = [
     'pyramid',
     'pyramid_multiauth',
     'pyramid_tm',
+    'python-magic',
     'rfc3987',
     'setuptools',
     'strict_rfc3339',

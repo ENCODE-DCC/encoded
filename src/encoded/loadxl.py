@@ -369,12 +369,20 @@ def attachment(path):
 
     Embeds the attachment as a data url.
     """
+    import magic
     import mimetypes
     from PIL import Image
     from base64 import b64encode
 
     filename = os.path.basename(path)
-    mime_type, encoding = mimetypes.guess_type(filename)
+    mime_type, encoding = mimetypes.guess_type(path)
+    major, minor = mime_type.split('/')
+    detected_type = magic.from_file(path, mime=True)
+
+    # XXX This validation logic should move server-side.
+    if not (detected_type == mime_type or
+            detected_type == 'text/plain' and major == 'text'):
+        raise ValueError('Wrong extension for %s: %s' % (detected_type, filename))
 
     with open(path, 'rb') as stream:
         attach = {
@@ -383,10 +391,9 @@ def attachment(path):
             'href': 'data:%s;base64,%s' % (mime_type, b64encode(stream.read()))
         }
 
-        if mime_type in ('application/pdf', 'text/plain'):
+        if mime_type in ('application/pdf', 'text/plain', 'text/tab-separated-values'):
+            # XXX Should use chardet to detect charset for text files here.
             return attach
-
-        major, minor = mime_type.split('/')
 
         if major == 'image' and minor in ('png', 'jpeg', 'gif', 'tiff'):
             # XXX we should just convert our tiffs to pngs
