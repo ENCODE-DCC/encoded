@@ -1,3 +1,3 @@
 test	uuid	source	product_id	product_url	rnai_type	vector_backbone_name	rnai_sequence	rnai_target_sequence	target	documents:array	validations:ignore	submitted_by	lab	award	PROJECT:ignore
-test	d2dc22ba-5e7c-4626-87ac-257c6fff090c	gregory-crawford			shRNA				CTCF-human			eleifend.venenatis@enim.nam	gregory-crawford	U54HG004563	ENCODE2
-test	2e256742-8cf8-4fbb-89a0-5e55c3cf7aa5	gregory-crawford			shRNA				Control-human			eleifend.venenatis@enim.nam	gregory-crawford	U54HG004563	ENCODE2
+test	d2dc22ba-5e7c-4626-87ac-257c6fff090c	gregory-crawford			shRNA				CTCF-human			libero.massa@metus.molestie	gregory-crawford	U54HG004563	ENCODE2
+test	2e256742-8cf8-4fbb-89a0-5e55c3cf7aa5	gregory-crawford			shRNA				Control-human			libero.massa@metus.molestie	gregory-crawford	U54HG004563	ENCODE2
