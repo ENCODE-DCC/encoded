@@ -1,0 +1,28 @@
+/*  List key-value pairs display */
+.key-value {
+	dt, dd {
+		margin-bottom: 10px;
+		min-height: 20px; // = line-height ; defined somewhere?
+	}
+	dt {
+		display: inline-block;
+		float: left;
+    	width: $horizontalComponentOffset - 20;
+   		padding-top: 5px;
+    	text-align: right;
+	}
+	dt::after {
+		content: ": ";
+	}
+
+	dd {
+		display: block;
+		padding-top: 5px;
+		margin-left: $horizontalComponentOffset;
+		//margin-bottom: 5px;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+	}
+}
+
+// responsive styles in _state.scss

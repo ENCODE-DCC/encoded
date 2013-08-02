@@ -1,0 +1,77 @@
+/*  TABLES    */
+/* Modified version of Foundation tables */
+
+table {
+  background: #fff;
+  margin: 0 0 18px;
+  border: 1px solid #ddd;
+  /* @include border-radius($baseBorderRadius); */
+  border-spacing: 0;
+  border-collapse: separate;
+  font-size: 0.92em;
+  width: 100%;
+}
+
+table thead, table tfoot { background: $tableHeadFootBackgroundColor; }
+
+table thead tr th,
+table tfoot tr th,
+table tbody tr td,
+table tr td,
+table tfoot tr td {
+	display: table-cell;
+	font-size: ms(0);
+	line-height: 18px;
+	text-align: left;
+}
+
+table thead tr th,
+table tfoot tr td { padding: 8px 10px 9px; font-size: ms(0); font-weight: bold; color: #222; border: 1px solid white; }
+table thead tr th:first-child, table tfoot tr td:first-child { border-left: none; }
+table thead tr th:last-child, table tfoot tr td:last-child { border-right: none; }
+
+table tbody tr.even,
+table tbody tr.alt { background: #f9f9f9; }
+/* table tbody tr:nth-child(even) { background: #f9f9f9; } */
+table tbody tr td { color: #333; padding: 10px 11px; vertical-align: top; }
+table tbody tr:hover { background: #bfcfde; }
+
+table thead tr th {
+	 padding-right: 30px;
+}
+
+.sortdirection {
+	float: right;
+    margin-right: -22px;
+    margin-top: 2px;
+}
+
+/* Table Controls */
+table thead tr th button {
+	float: left;
+}
+
+form.table-filter {
+	float: right;
+	margin: 0;
+}
+
+.table-filter input {
+	margin-bottom: 0 !important;
+}
+
+.table-count {
+	padding: 0.6em 2em;
+	margin-right: 1em;
+}
+
+.spinner-warning {
+	padding: 0.6em 2em 0.6em 30px !important;
+	background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
+	background-position: 7px 6px;
+}
+
+/* initial state is hidden (see template; class=hide) */
+.total-records {
+	font-weight: normal;
+}

@@ -1,0 +1,31 @@
+/* Modals */
+.modal {
+  border: 9px solid #333;
+  border: 9px solid rgba(0,0,0,.4);
+  *border: 9px solid #333; /* IE6-7 */
+  @include border-radius(6px);
+  @include box-shadow(none);
+}
+
+.modal-backdrop,
+.modal-backdrop.fade.in {
+  @include opacity(60);
+}
+
+/* used to mask who screen, for modals etc */
+/* STILL USING THE BELOW OR JUST FOR A MOCKUP???????? */
+#mask {
+    position: absolute;
+    z-index: 9000;
+    background-color: rgba(0,0,0,0.6);
+    display: none;  // js switches to display: block
+    height: 4000px; // this should be set in the js to fit screen perfectly
+    width: 4000px;  // this should be set in the js to fit screen perfectly
+    top: 0;
+    left: 0;
+}
+
+.unmask {
+	position: relative;
+	z-index: 9999;
+}
