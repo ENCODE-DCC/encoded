@@ -20,12 +20,6 @@
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
-        "description": {
-            "default": "",
-            "description": "A plain text description of the Antibody",
-            "title": "Antibody Description",
-            "type": "string"
-        },
         "source": {
             "description": "Source or Vendor of Antibody",
             "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
@@ -52,6 +46,12 @@
             "items": {
                 "type": "string"
             }
+        },
+        "antigen_description": {
+            "default": "",
+            "description": "Description of the antigen used in raising the antibody",
+            "title": "Antigen description",
+            "type": "string"
         },
         "antigen_sequence": {
             "description": "Sequence of the antigen used in raising the antibody",
