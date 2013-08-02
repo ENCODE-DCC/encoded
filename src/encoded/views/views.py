@@ -211,7 +211,7 @@ class Biosample(Collection):
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     }
-    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'documents'])
+    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'validation_document', 'derived_from'])
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
