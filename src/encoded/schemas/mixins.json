@@ -110,6 +110,7 @@
                     "enum": [
                         "application/pdf",
                         "text/plain",
+                        "text/tab-separated-values",
                         "image/jpeg",
                         "image/tiff",
                         "image/gif",
