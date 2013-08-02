@@ -1,8 +1,9 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'globals'],
-function (target, React, globals) {
+define(['exports', 'react', 'globals', 'jsx!dbxref'],
+function (target, React, globals, dbxref) {
     'use strict';
 
+    var DbxrefList = dbxref.DbxrefList;
 
     var Panel = target.Panel = React.createClass({
         render: function() {
@@ -11,39 +12,34 @@ function (target, React, globals) {
             return (
                 <dl class={itemClass}>
                     <dt>Target name</dt>
-                    <dd>{context.target_label}</dd>
+                    <dd>{context.label}</dd>
 
                     <dt>Target Gene</dt>
                     <dd>{context.target_gene_name}</dd>
 
-                    <dt>UniProt ID</dt>
+                    <dt>DB cross references</dt>
                     <dd>
-                        {context.dbxref.uniprot.length ? 
-                            context.dbxref.uniprot.map(function (id, index) {
-                                // XXX should be an &nbsp; below, see: https://github.com/facebook/react/issues/183
-                                return (
-                                    <span key={index}><a href={'http://www.uniprot.org/uniprot/' + id}>{id}</a>{' '}</span>
-                                );
-                            })
+                        {context.dbxref.length ? 
+                            <DbxrefList values={context.dbxref} />
                         : <em>None submitted</em> }
                     </dd>
 
                     <dt>Species</dt>
-                    <dd>{context.organism.organism_name}</dd>
+                    <dd>{context.organism.name}</dd>
 
                     <dt>Target Class</dt>
                     <dd>{context.target_class}</dd>
 
-                    <dt>Project</dt>
-                    <dd>{context.award.project}</dd>
+                    <dt>RFA</dt>
+                    <dd>{context.award.rfa}</dd>
 
                     <dt>Lab</dt>
-                    <dd>{context.lab.name}</dd>
+                    <dd>{context.lab.title}</dd>
 
                     <dt>Grant</dt>
-                    <dd>{context.award.number}</dd>
+                    <dd>{context.award.name}</dd>
 
-                    <dt>Date createad</dt>
+                    <dt>Date created</dt>
                     <dd>{context.date_created}</dd>
                 </dl>
             );
@@ -51,14 +47,6 @@ function (target, React, globals) {
     });
 
     globals.panel_views.register(Panel, 'target');
-
-
-    var title = target.title = function (props) {
-        return props.context.organism.organism_name + ' ' + props.context.target_label;
-    };
-
-    globals.listing_titles.register(title, 'target');
-
 
     return target;
 });
