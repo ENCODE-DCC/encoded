@@ -436,10 +436,10 @@ class Item(object):
         embedded = self.embedded
         if self.schema is None:
             return
-        for name in self.schema_links:
-            if name not in embedded:
+        for name in embedded:
+            value = properties.get(name)
+            if value is None:
                 continue
-            value = properties[name]
             if isinstance(value, list):
                 properties[name] = [embed(request, member) for member in value]
             else:
