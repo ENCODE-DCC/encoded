@@ -6,7 +6,7 @@
     "description": "Schema for submitting an ENCODE Biosample",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "additionProperties": false,
+    "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },

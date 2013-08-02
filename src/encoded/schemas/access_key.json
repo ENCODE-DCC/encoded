@@ -3,7 +3,7 @@
     "id": "/profiles/access_key_admin.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "0.01",
-    "additionProperties": false,
+    "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" }
     ],
