@@ -99,13 +99,6 @@
             "title": "Download Path",
             "type": "string"
         },
-        "assembly": {
-            "description": "Genome assembly that files were mapped to",
-            "title": "Mapping Assembly",
-            "comment": "BAM/BED and other mapped files only.",
-            "type": "string",
-            "enum": ["mm9", "hg19", "n/a"]
-        },
         "date_passed_validation": {
             "description": "The date which this file passed ENCODE DCC Validation",
             "comments": "Not to be submitted or updated by non-admin users.",
