@@ -112,8 +112,8 @@ def linkTo(validator, linkTo, instance, schema):
         if not validator.is_type(linkEnum, "array"):
             raise Exception("Bad schema")
         if not any(UUID(enum_uuid) == item.uuid for enum_uuid in linkEnum):
-            reprs = (repr(it) for it in linkTo)
-            error = "%r is not one of %s" % (instance, ", ".join(reprs))
+            reprs = ', '.join(repr(it) for it in linkTo)
+            error = "%r is not one of %s" % (instance, reprs)
             yield ValidationError(error)
             return
 
@@ -122,19 +122,39 @@ def linkTo(validator, linkTo, instance, schema):
         validator._validated[-1] = str(item.uuid)
 
 
+class IgnoreUnchanged(ValidationError):
+    pass
+
+
+def requestMethod(validator, requestMethod, instance, schema):
+    if validator.is_type(requestMethod, "string"):
+        requestMethod = [requestMethod]
+    elif not validator.is_type(requestMethod, "array"):
+        raise Exception("Bad schema")  # raise some sort of schema error
+
+    request = get_current_request()
+    if request.method not in requestMethod:
+        reprs = ', '.join(repr(it) for it in requestMethod)
+        error = "request method %r is not one of %s" % (request.method, reprs)
+        yield IgnoreUnchanged(error)
+
+
 def permission(validator, permission, instance, schema):
     if not validator.is_type(permission, "string"):
         raise Exception("Bad schema")  # raise some sort of schema error
 
     request = get_current_request()
     context = request.context
-    has_permission(permission, context, request)
+    if not has_permission(permission, context, request):
+        error = "permission %r required" % permission
+        yield IgnoreUnchanged(error)
 
 
 class SchemaValidator(Draft4Validator):
     VALIDATORS = Draft4Validator.VALIDATORS.copy()
     VALIDATORS['linkTo'] = linkTo
     VALIDATORS['permission'] = permission
+    VALIDATORS['requestMethod'] = requestMethod
 
 
 format_checker = FormatChecker()
@@ -149,15 +169,30 @@ def load_schema(filename):
     return schema
 
 
-def validate_request(schema, request, data=None):
+def validate_request(schema, request, data=None, current=None):
     resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
     sv = SchemaValidator(schema, resolver=resolver, serialize=True, format_checker=format_checker)
     if data is None:
         data = request.json
     validated, errors = sv.serialize(data)
+
     for error in errors:
+        # Possibly ignore validation if it results in no change to data
+        if current is not None and isinstance(error, IgnoreUnchanged):
+            current_value = current
+            try:
+                for key in error.path:
+                    current_value = current_value[key]
+            except Exception:
+                pass
+            else:
+                validated_value = validated
+                for key in error.path:
+                    validated_value = validated_value[key]
+                if validated_value == current_value:
+                    continue
         request.errors.add('body', list(error.path), error.message)
-    if not errors:
+    if not request.errors:
         request.validated.update(validated)
 
 

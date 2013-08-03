@@ -71,3 +71,50 @@ class TestingLinkTarget(Collection):
         'title': 'Test link targets',
         'description': 'Testing. Testing. 1, 2, 3.',
     }
+
+
+@location('testing-post-put-patch')
+class TestingPostPutPatch(Collection):
+    item_type = 'testing_post_put_patch'
+    schema = {
+        'required': ['required'],
+        'type': 'object',
+        'properties': {
+            "uuid": {
+                "title": "UUID",
+                "description": "",
+                "type": "string",
+                "format": "uuid",
+                "permission": "import_items",
+                "requestMethod": "POST",
+            },
+            'required': {
+                'type': 'string',
+            },
+            'simple1': {
+                'type': 'string',
+                'default': 'simple1 default',
+            },
+            'simple2': {
+                'type': 'string',
+                'default': 'simple2 default',
+            },
+            'protected': {
+                # This should be allowed on PUT so long as value is the same
+                'type': 'string',
+                'default': 'protected default',
+                'permission': 'import_items',
+            },
+            'protected_link': {
+                # This should be allowed on PUT so long as the linked uuid is
+                # the same
+                'type': 'string',
+                'linkTo': 'testing_link_target',
+                'permission': 'import_items',
+            },
+        }
+    }
+    properties = {
+        'title': 'Test links',
+        'description': 'Testing. Testing. 1, 2, 3.',
+    }

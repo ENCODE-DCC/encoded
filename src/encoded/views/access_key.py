@@ -22,7 +22,8 @@ from ..contentbase import (
     item_edit,
     item_view,
     location,
-    validate_item_content,
+    validate_item_content_post,
+    validate_item_content_put,
 )
 from ..validation import ValidationFailure
 
@@ -56,7 +57,7 @@ class AccessKey(Collection):
 
 
 @view_config(context=AccessKey, permission='add', request_method='POST',
-             validators=[validate_item_content])
+             validators=[validate_item_content_post])
 def access_key_add(context, request):
     crypt_context = request.registry[CRYPT_CONTEXT]
 
@@ -113,7 +114,7 @@ def access_key_disable_secret(context, request):
 
 
 @view_config(context=AccessKey.Item, permission='edit', request_method='PUT',
-             validators=[validate_item_content])
+             validators=[validate_item_content_put])
 def access_key_edit(context, request):
     new_properties = context.properties.copy()
     new_properties.update(request.validated)

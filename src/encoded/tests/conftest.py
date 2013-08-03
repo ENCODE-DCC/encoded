@@ -23,6 +23,8 @@ _app_settings = {
     'allow.view': 'Everyone',
     'allow.list': 'Everyone',
     'allow.traverse': 'Everyone',
+    'allow.add': 'group:submitter',
+    'allow.edit': 'group:submitter',  # XXX
     'allow.ALL_PERMISSIONS': 'group:admin',
     'allow.edw_key_create': 'accesskey:edw',
     'allow.edw_key_update': 'accesskey:edw',
@@ -129,6 +131,30 @@ def anontestapp(request, app, external_tx, zsa_savepoints):
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
+    }
+    return TestApp(app, environ)
+
+
+@fixture
+def authenticated_testapp(request, app, external_tx, zsa_savepoints):
+    '''TestApp with JSON accept header for non-admin user.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST_USER',
+    }
+    return TestApp(app, environ)
+
+
+@fixture
+def submitter_testapp(request, app, external_tx, zsa_savepoints):
+    '''TestApp with JSON accept header for non-admin user.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST_SUBMITTER',
     }
     return TestApp(app, environ)
 

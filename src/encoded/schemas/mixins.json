@@ -6,7 +6,8 @@
             "description": "",
             "type": "string",
             "format": "uuid",
-            "permission": "import_items"
+            "permission": "import_items",
+            "requestMethod": "POST"
         }
     },
     "accession": {
