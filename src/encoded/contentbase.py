@@ -128,13 +128,44 @@ def maybe_include_embedded(request, result):
         result['_embedded'] = {'resources': embedded}
 
 
-def validate_item_content(context, request):
+def validate_item_content_post(context, request):
     data = request.json
     schema = context.schema
     if schema is None:
         request.validated.update(data)
         return
     validate_request(schema, request, data)
+
+
+def validate_item_content_put(context, request):
+    data = request.json
+    schema = context.schema
+    if schema is None:
+        if 'uuid' in data:
+            if UUID(data['uuid']) != context.uuid:
+                msg = 'uuid may not be changed'
+                raise ValidationFailure('body', ['uuid'], msg)
+        request.validated.update(data)
+        return
+    current = context.properties.copy()
+    current['uuid'] = str(context.uuid)
+    validate_request(schema, request, data, current)
+
+
+def validate_item_content_patch(context, request):
+    data = context.properties.copy()
+    data.update(request.json)
+    schema = context.schema
+    if schema is None:
+        if 'uuid' in data:
+            if UUID(data['uuid']) != context.uuid:
+                msg = 'uuid may not be changed'
+                raise ValidationFailure('body', ['uuid'], msg)
+        request.validated.update(data)
+        return
+    current = context.properties.copy()
+    current['uuid'] = str(context.uuid)
+    validate_request(schema, request, data, current)
 
 
 def permission_checker(context, request):
@@ -482,6 +513,9 @@ class Item(object):
     @classmethod
     def update_properties(cls, model, properties, sheets=None):
         if properties is not None:
+            if 'uuid' in properties:
+                properties = properties.copy()
+                del properties['uuid']
             model[''] = properties
         if sheets is not None:
             for key, value in sheets.items():
@@ -743,8 +777,7 @@ class Collection(object):
         if uuid is _marker:
             uuid = uuid4()
         else:
-            properties = properties.copy()
-            del properties['uuid']
+            uuid = UUID(uuid)
         item = self.Item.create(self, uuid, properties)
         self.after_add(item)
         return item
@@ -890,7 +923,7 @@ def collection_list(context, request):
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
-             validators=[validate_item_content])
+             validators=[validate_item_content_post])
 def collection_add(context, request):
     properties = request.validated
     item = context.add(properties)
@@ -931,11 +964,36 @@ def item_view(context, request):
 
 
 @view_config(context=Item, permission='edit', request_method='PUT',
-             validators=[validate_item_content])
+             validators=[validate_item_content_put])
 def item_edit(context, request):
+    """ PUT replaces the current properties with the new body
+    """
     properties = request.validated
-    # XXX should be more specific here for a PUT.
+    # This *sets* the property sheet
     context.update(properties)
+    item_uri = request.resource_path(context)
+    request.response.status = 200
+    result = {
+        'status': 'success',
+        '@type': ['result'],
+        '@graph': [item_uri],
+    }
+    return result
+
+
+@view_config(context=Item, permission='edit', request_method='PATCH',
+             validators=[validate_item_content_patch])
+def item_patch(context, request):
+    """ PATCH updates the current properties with those supplied.
+    """
+    # Ideally default values would not be added into request.validated.
+    supplied = request.json
+    patch = {
+        k: v for k, v in request.validated.iteritems() if k in supplied
+    }
+    new_props = context.properties.copy()
+    new_props.update(patch)
+    context.update(new_props)
     item_uri = request.resource_path(context)
     request.response.status = 200
     result = {

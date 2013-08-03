@@ -13,6 +13,8 @@ def groupfinder(login, request):
     if namespace == 'remoteuser':
         if localname in ['TEST', 'IMPORT']:
             return ['group:admin']
+        elif localname in ['TEST_SUBMITTER']:
+            return ['group:submitter']
 
     if namespace in ('mailto', 'remoteuser'):
         users = root.by_item_type['user']
