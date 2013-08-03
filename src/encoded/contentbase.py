@@ -894,11 +894,8 @@ def etag_conditional(view_callable):
         if len(manager.stack) != 1:
             return view_callable(context, request)
         format = request.environ.get('encoded.format', 'html')
-        if format == 'html':
-            last_tid = None
-        else:
-            session = DBSession()
-            last_tid = session.query(func.max(TransactionRecord.order)).scalar()
+        session = DBSession()
+        last_tid = session.query(func.max(TransactionRecord.order)).scalar()
         processid = request.registry['encoded.processid']
         userid = authenticated_userid(request) or ''
         etag = u'%s;%s;%s;%s' % (last_tid, processid, format, userid)
