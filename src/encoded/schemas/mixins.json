@@ -54,7 +54,7 @@
             "description": "",
             "title": "Is Current",
             "type": "boolean",
-            "default": "True"
+            "default": true
         },
         "date_created": {
             "description": "",
