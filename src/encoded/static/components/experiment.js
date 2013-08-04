@@ -78,7 +78,7 @@ function (experiment, React, globals) {
                             <dd>{context.award.rfa}</dd>
 
                             {antibody_accessions.length ? <dt>Antibody</dt> : null}
-                            {antibody_accessions.length ? <dd>antibody_accessions.join(', ')</dd> : null}
+                            {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
                         </dl>
                     </div>
 
