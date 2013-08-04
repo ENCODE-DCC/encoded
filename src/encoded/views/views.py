@@ -20,6 +20,7 @@ ACCESSION_KEYS = [
         'name': 'accession', 
         'value': '{accession}',
         '$templated': True,
+        '$condition': 'accession',
     },
     {
         'name': 'accession',
