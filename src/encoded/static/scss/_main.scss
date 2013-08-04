@@ -37,7 +37,7 @@ i  :: Variables
 =============================*/
 $mainThemeColor: 			#e8ecef; /* i.e. the background color */
 
-$footerHeight: 				150px;
+$footerHeight: 				110px;
 $footerTopBorderHeight:		1px;
 $footerTopHeight: 			110px;
 $footerBottomHeight:		$footerHeight - $footerTopHeight;
@@ -721,37 +721,49 @@ may be able to remove this now*/
 =============================*/
 @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
 
-#page-footer #footer-top {
-	height: $footerTopHeight;
-	border-top: 1px solid #C4C1C1;
+#page-footer .logos {
+	//height: $footerTopHeight;
 	// border-bottom: 1px solid $footerBackground;
 	// @include background-image(linear-gradient($footerBackground, $footerBackgroundHighlight));
 	// color: $white;
 	//text-shadow: 0 -1px rgba(0, 0, 0, 0.3);
 	// text-align: center;
 	// line-height: $footerTopHeight;
-	#su-logo {
+
+    margin-top: -$footerTopHeight;
+    padding-top: 27px;
+    padding-bottom: 27px;
+    img {
+        height: 56px;
+    }
+	.left {
 		float: left;
-		margin-top: 35px;
 	}
-	#som-logo {
+	.right {
 		float: right;
-		margin-top: 35px;
 	}
-	#footer-links {
-		height: $footerTopHeight;
-		margin: 0 auto;
-		display: inline-block;
-		ul {
-			margin: 0;
-			list-style: none;
-			li {
-				line-height: $footerTopHeight;
-				margin-right: 15px;
-				float: left;
-			}
-		}
-	}
+}
+
+#page-footer .text {
+    height: 56px;
+    line-height: 28px;
+    padding-top: 27px;
+    padding-bottom: 27px;
+}
+
+#footer-links {
+    //height: $footerTopHeight;
+    margin: 0 auto;
+    display: inline-block;
+    ul {
+        margin: 0;
+        list-style: none;
+        li {
+            //line-height: $footerTopHeight;
+            margin-right: 15px;
+            float: left;
+        }
+    }
 }
 
 #page-footer #footer-bottom {
@@ -766,6 +778,7 @@ may be able to remove this now*/
 
 #page-footer {
 	color: rgb(111, 111, 111);
+    border-top: 1px solid #C4C1C1;
 	//background-color: #E8ECEF;
 	//-webkit-box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
 	//box-shadow: inset 0px 15px 15px 0px rgba(219, 222, 225, .8);
