@@ -332,7 +332,7 @@ class Replicates(Collection):
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
-    item_embedded = set(['library', 'platform'])
+    item_embedded = set(['library', 'platform', 'antibody'])
 
 
 @location('software')
