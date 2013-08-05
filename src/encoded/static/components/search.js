@@ -80,7 +80,6 @@ function (search, $, React, globals) {
         },
         render: function() {
             var results = this.props.context.items;
-            debugger;
             return (
                 <div >
                     <form class="input-prepend">

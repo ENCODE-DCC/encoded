@@ -8,7 +8,7 @@ es = ElasticSearch(ES_URL)
 
 basic_mapping = {'basic': {}}
 targets_mapping = {'basic': {'properties': {'geneid_dbxref_list': {'type': 'string', 'index': 'not_analyzed'}, 'date_created': {'type': 'string', 'index': 'not_analyzed'}}}}
-biosamples_mapping = {'basic': {'properties': {'lot_id': {'type': 'string'}, 'donor': {'type': 'nested'}, 'lab': {'type': 'nested'}, 'award': {'type': 'nested'}, 'submitter': {'type': 'nested'}, 'source': {'type': 'nested'}, 'treatments': {'type': 'nested'}, 'constructs': {'type': 'nested'}}}}
+biosamples_mapping = {'basic': {'properties': {'biosample_type': {'type': 'string', 'index': 'not_analyzed'}, 'lot_id': {'type': 'string'}, 'donor': {'type': 'nested'}, 'lab': {'type': 'nested'}, 'award': {'type': 'nested'}, 'submitter': {'type': 'nested'}, 'source': {'type': 'nested'}, 'treatments': {'type': 'nested'}, 'constructs': {'type': 'nested'}}}}
 experiments_mapping = {'basic': {'properties': {'replicates': {'type': 'nested', 'properties': {'library id (sanity)': {'type': 'string'}}}}}}
 libraries_mapping = {'basic': {'properties': {'size_range': {'type': 'string'}}}}
 replicates_mapping = {'basic': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}
@@ -69,6 +69,16 @@ def main():
             item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
             document_id = str(item_json.json['@id'])[-37:-1]
             document = item_json.json
+            if COLLECTION_URL.get(url)[0] == '/biosamples/':
+                if document['biosample_term_id']:
+                    try:
+                        document['organ_slim'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
+                        document['system_slim'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
+                    except:
+                        print "ID not found"
+                else:
+                    document['organ_slim'] = ''
+                    document['system_slim'] = ''
             es.index(index, DOCTYPE, document, document_id)
 
         es.refresh(index)
