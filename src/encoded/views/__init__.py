@@ -11,6 +11,7 @@ def includeme(config):
     # Random processid so etags are invalidated after restart.
     config.registry['encoded.processid'] = randint(0, 2 ** 32)
     config.add_route('schema', '/profiles/{item_type}.json')
+    config.add_route('graph', '/profiles/graph.dot')
     config.scan()
 
 
