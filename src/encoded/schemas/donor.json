@@ -64,7 +64,7 @@
             "description": "List of donors related as (literal) parent to this donor",
             "title": "Parents",
             "type":  "array",
-            "donor": {
+            "items": {
                 "description": "Parent Donor",
                 "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Parent",
@@ -77,7 +77,7 @@
             "description": "List of donors related as (literal) children to this donor",
             "title": "Children",
             "type":  "array",
-            "donor": {
+            "items": {
                 "description": "Child Donor",
                 "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Child",
@@ -90,7 +90,7 @@
             "description": "List of donors related as (literal) siblings to this donor",
             "title": "Siblings",
             "type":  "array",
-            "donor": {
+            "items": {
                 "description": "Sibling Donor",
                 "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Sibling Donor",

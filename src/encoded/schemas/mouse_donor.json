@@ -28,7 +28,7 @@
             "description": "List of donors related as littermates to this (mouse) donor",
             "title": "Littermates",
             "type":  "array",
-            "donor": {
+            "items": {
                 "description": "Another donor mouse from the same litter",
                 "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Littermate",
