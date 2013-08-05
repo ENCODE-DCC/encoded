@@ -4,27 +4,6 @@ from ..contentbase import (
     Root
 )
 from elasticutils import S
-from collections import OrderedDict
-
-
-facets = {}
-facets['biosamples'] = ['biosample_type']
-facets['antibodies'] = ['target.organism.organism_name']
-facets['targets'] = ['organism.organism_name']
-facets['experiments'] = ['project']
-
-
-def getFacets(index):
-    '''  Stupidest Method ever '''
-
-    face = ''
-    count = 0
-    for facet in facets[index]:
-        if count == 0:
-            face = face + facet
-        else:
-            face = face + ', ' + facet
-    return face
 
 
 @view_config(name='search', context=Root, request_method='GET')
@@ -34,20 +13,31 @@ def search(context, request):
         '@id': '/search/',
         '@type': ['search'],
         'title': 'ElasticSearch View',
-        'items': OrderedDict()
+        'items': {}
     })
-    items = OrderedDict()
+    items = {}
     queryTerm = request.params.get('searchTerm')
     if queryTerm:
         indexes = ['biosamples', 'antibodies', 'experiments', 'targets']
+
         for index in indexes:
-            s = S().indexes(index).doctypes('basic').values_dict()
-            s1 = s.query_raw({'query_string': {'query': queryTerm}}).facet(getFacets(index))
             items[index] = {}
+
+            basic_s = S().indexes(index).doctypes('basic').values_dict()
+            if index == 'biosamples':
+                s = basic_s.facet('biosample_type', 'organ_slims', 'system_slims')
+            elif index == 'experiments':
+                s = basic_s.facet('lab.name', 'project')
+            elif index == 'antibodies':
+                s = basic_s.facet('target.organism.organism_name', 'approval_status', 'antibody_lot.source.source_name')
+            elif index == 'targets':
+                s = basic_s.facet('organism.organism_name', 'lab.name')
+
+            items[index]['facets'] = s.query_raw({'query_string': {'query': queryTerm}}).facet_counts()
+            s1 = s.query_raw({'query_string': {'query': queryTerm}})
             items[index]['results'] = []
-            if len(s):
-                items[index]['facets'] = s1.facet_counts()
             for data in s1:
                 items[index]['results'].append(data)
+
     result['items'] = items
     return result

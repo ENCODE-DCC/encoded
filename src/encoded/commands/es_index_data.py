@@ -7,12 +7,12 @@ DOCTYPE = 'basic'
 es = ElasticSearch(ES_URL)
 
 basic_mapping = {'basic': {}}
-targets_mapping = {'basic': {'properties': {'geneid_dbxref_list': {'type': 'string', 'index': 'not_analyzed'}, 'date_created': {'type': 'string', 'index': 'not_analyzed'}}}}
-biosamples_mapping = {'basic': {'properties': {'biosample_type': {'type': 'string', 'index': 'not_analyzed'}, 'lot_id': {'type': 'string'}, 'donor': {'type': 'nested'}, 'lab': {'type': 'nested'}, 'award': {'type': 'nested'}, 'submitter': {'type': 'nested'}, 'source': {'type': 'nested'}, 'treatments': {'type': 'nested'}, 'constructs': {'type': 'nested'}}}}
-experiments_mapping = {'basic': {'properties': {'replicates': {'type': 'nested', 'properties': {'library id (sanity)': {'type': 'string'}}}}}}
+targets_mapping = {'basic': {'properties': {'lab': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}, 'geneid_dbxref_list': {'type': 'string', 'index': 'not_analyzed'}, 'date_created': {'type': 'string', 'index': 'not_analyzed'}}}}
+biosamples_mapping = {'basic': {'properties': {'system_slims': {'type': 'string', 'index': 'not_analyzed'}, 'organ_slims': {'type': 'string', 'index': 'not_analyzed'}, 'biosample_type': {'type': 'string', 'index': 'not_analyzed'}, 'lot_id': {'type': 'string'}, 'donor': {'type': 'nested'}, 'lab': {'type': 'nested'}, 'award': {'type': 'nested'}, 'submitter': {'type': 'nested'}, 'source': {'type': 'nested'}, 'treatments': {'type': 'nested'}, 'constructs': {'type': 'nested'}}}}
+experiments_mapping = {'basic': {'properties': {'lab': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}, 'replicates': {'type': 'nested', 'properties': {'library id (sanity)': {'type': 'string'}}}}}}
 libraries_mapping = {'basic': {'properties': {'size_range': {'type': 'string'}}}}
 replicates_mapping = {'basic': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}
-antibodies_mapping = {'basic': {'properties': {'target': {'properties': {'geneid_dbxref_list': {'type': 'string', 'index': 'not_analyzed'}, 'date_created': {'type': 'string', 'index': 'not_analyzed'}}}}}}
+antibodies_mapping = {'basic': {'properties': {'antibody_lot': {'properties': {'source': {'properties': {'source_name': {'type': 'string', 'index': 'not_analyzed'}}}}}, 'target': {'properties': {'geneid_dbxref_list': {'type': 'string', 'index': 'not_analyzed'}, 'date_created': {'type': 'string', 'index': 'not_analyzed'}}}}}}
 
 COLLECTION_URL = OrderedDict([
     ('/awards/', ['awards', basic_mapping]),
@@ -69,16 +69,20 @@ def main():
             item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
             document_id = str(item_json.json['@id'])[-37:-1]
             document = item_json.json
-            if COLLECTION_URL.get(url)[0] == '/biosamples/':
+
+            # For biosamples getting organ_slim and system_slim from ontology index
+            if COLLECTION_URL.get(url)[0] == 'biosamples':
                 if document['biosample_term_id']:
                     try:
-                        document['organ_slim'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
-                        document['system_slim'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
+                        document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
+                        document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
                     except:
-                        print "ID not found"
+                        document['organ_slims'] = []
+                        document['system_slims'] = []
+                        print "ID not found - " + document['biosample_term_id']
                 else:
-                    document['organ_slim'] = ''
-                    document['system_slim'] = ''
+                    document['organ_slims'] = []
+                    document['system_slims'] = []
             es.index(index, DOCTYPE, document, document_id)
 
         es.refresh(index)
