@@ -1,6 +1,6 @@
 from pyramid import paster
 from pyelasticsearch import ElasticSearch, IndexAlreadyExistsError
-from ordereddict import OrderedDict
+from collections import OrderedDict
 
 ES_URL = 'http://localhost:9200'
 DOCTYPE = 'basic'
