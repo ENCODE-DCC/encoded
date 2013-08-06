@@ -8,6 +8,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 requires = [
     'Pillow',
     'SQLAlchemy',
+    'WSGIProxy2',
     'WebTest',
     'jsonschema',
     'loremipsum',
@@ -50,7 +51,8 @@ setup(
         },
     entry_points='''
         [console_scripts]
-        extract_test_data = encoded.commands.extract_test_data:main
+        extract-test-data = encoded.commands.extract_test_data:main
+        import-data = encoded.commands.import_data:main
 
         [paste.app_factory]
         main = encoded:main
