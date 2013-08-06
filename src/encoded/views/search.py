@@ -19,10 +19,9 @@ def search(context, request):
     queryTerm = request.params.get('searchTerm')
     if queryTerm:
         indexes = ['biosamples', 'antibodies', 'experiments', 'targets']
-
+        items['results'] = []
+        items['facets'] = []
         for index in indexes:
-            items[index] = {}
-
             basic_s = S().indexes(index).doctypes('basic').values_dict()
             if index == 'biosamples':
                 s = basic_s.facet('biosample_type', 'organ_slims', 'system_slims')
@@ -33,11 +32,10 @@ def search(context, request):
             elif index == 'targets':
                 s = basic_s.facet('organism.organism_name', 'lab.name')
 
-            items[index]['facets'] = s.query_raw({'query_string': {'query': queryTerm}}).facet_counts()
+            items['facets'].extend(s.query_raw({'query_string': {'query': queryTerm}}).facet_counts())
             s1 = s.query_raw({'query_string': {'query': queryTerm}})
-            items[index]['results'] = []
             for data in s1:
-                items[index]['results'].append(data)
+                items['results'].append(data)
 
     result['items'] = items
     return result

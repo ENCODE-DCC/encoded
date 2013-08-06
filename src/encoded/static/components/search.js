@@ -6,69 +6,37 @@ function (search, $, React, globals) {
     var ResultTable = search.ResultTable = React.createClass({
         render: function() {
             var results = this.props.context.items;
-            var createBiosampleTable = function(item) {
-                return <tr>
-                        <td>{item['accession']}</td>
-                        <td>{item['biosample_type']}</td>
-                        <td>{item['biosample_term_name']}</td>
-                        <td>{item['donor']['organism']['organism_name']}</td>
-                        <td>{item['source']['alias']}</td>
-                    </tr>
-            };
-            var createExperimentTable = function(item) {
-                return <tr>
-                        <td>{item['dataset_accession']}</td>
-                        <td>{item['dataset_description']}</td>
-                        <td>{item['project']}</td>
-                        <td>{item['lab']['name']}</td>
-                    </tr>
-            };
-            var createAntibodyTable = function(item) {
-                return <tr>
-                        <td>{item['antibody_lot']['antibody_accession']}</td>
-                        <td>{item['project']}</td>
-                        <td>{item['approval_status']}</td>
-                        <td>{item['target']['organism']['organism_name']}</td>
-                        <td>{item['antibody_lot']['source']['alias']}</td>
-                    </tr>  
-            };
-            var createTargetTable = function(item) {
-                return <tr>
-                        <td>{item['target_gene_name']}</td>
-                        <td>{item['project']}</td>
-                        <td>{item['organism']['organism_name']}</td>
-                    </tr>   
+            var resultsView = function(result) {
+                return <li class="result">
+                        <h6>BIOSAMPLE</h6>
+                        <div class="content">ENCBSRNA000</div>
+                    </li>
             };
             return (
                 <div class="panel data-display">
-                    {results['biosamples']['results'].length ?
-                        <table class="table table-striped">
-                            <thead class="sticky-header">
-                                <tr><th>Accession</th><th>Biosample Type</th><th>Biosample Term</th><th>Species</th><th>Source</th></tr>
-                            </thead>
-                            {results['biosamples']['results'].map(createBiosampleTable)}</table>
-                    : null}
-                    {results['experiments']['results'].length ?  
-                        <table class="table table-striped">
-                        <thead class="sticky-header">
-                            <tr><th>Accession</th><th>Description</th><th>Project</th><th>Lab</th></tr>
-                        </thead>
-                        {results['experiments']['results'].map(createExperimentTable)}</table>
-                    : null}
-                    {results['antibodies']['results'].length ?  
-                        <table class="table table-striped">
-                            <thead class="sticky-header">
-                                <tr><th>Accession</th><th>Project</th><th>Approval Status</th><th>Species</th><th>Source</th></tr>
-                            </thead>
-                            {results['antibodies']['results'].map(createAntibodyTable)}</table>
-                    : null}
-                    {results['targets']['results'].length ? 
-                        <table class="table table-striped">
-                            <thead class="sticky-header">
-                                <tr><th>Target</th><th>Project</th><th>Species</th></tr>
-                            </thead>
-                            {results['targets']['results'].map(createTargetTable)}</table>
-                    : null}
+                    <div class="row">
+                        <div class="span3" id="facets">
+                            <h4>Filter Results</h4>
+                            <section class="facet wel box">
+                                <h4>Data Type</h4>
+                                <ul class="facet-list">
+                                    <li class="selected"><a href>All</a></li>
+                                    <li><a href>Antibodies</a></li>
+                                    <li><a href>Biosamples</a></li>
+                                    <li><a href>Experiments</a></li>
+                                    <li><a href>Targets</a></li>
+                                </ul>
+                            </section>
+                        </div>
+                        <div class="span8">
+                            <h4>{results['results'].length} Results Found</h4>
+                            <ul class="searchResults">
+                                {results['results'].length ?
+                                    results['results'].map(resultsView)
+                                : null}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             );
         }
@@ -83,7 +51,7 @@ function (search, $, React, globals) {
             return (
                 <div >
                     <form class="input-prepend">
-                        
+                        <span class="add-on"><i class="icon-search"></i></span>
                         <input class="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
                     </form>
                     {Object.keys(results).length ?
