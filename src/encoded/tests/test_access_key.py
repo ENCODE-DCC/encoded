@@ -15,6 +15,13 @@ def access_keys(app):
     }
     testapp = TestApp(app, environ)
     from .sample_data import URL_COLLECTION
+    url = '/labs/'
+    lab_name = {}
+    for item in URL_COLLECTION[url]:
+        res = testapp.post_json(url, item, status=201)
+        lab_name[item['name']] = item['uuid']
+        lab_name[item['uuid']] = item['uuid']
+
     url = '/users/'
     users = []
     for item in URL_COLLECTION[url]:
@@ -22,27 +29,28 @@ def access_keys(app):
         principals = [
             'system.Authenticated',
             'system.Everyone',
-            'userid:' + item['_uuid'],
+            'userid:' + item['uuid'],
         ]
-        principals.extend('lab:' + lab_uuid for lab_uuid in item['lab_uuids'])
+        principals.extend('lab:%s' % lab_name[name] for name in item['submits_for'])
+        principals.extend('submits_for:%s' % lab_name[name] for name in item['submits_for'])
         users.append({
             'location': res.location,
             'effective_principals': sorted(principals),
-            '_uuid': item['_uuid'],
+            'uuid': item['uuid'],
             'email': item['email'],
         })
     access_keys = []
     for user in users:
         description = 'My programmatic key'
         url = '/access-keys/'
-        item = {'user_uuid': user['_uuid'], 'description': description}
+        item = {'user': user['uuid'], 'description': description}
         res = testapp.post_json(url, item, status=201)
         access_keys.append({
             'location': res.location,
             'access_key_id': res.json['access_key_id'],
             'secret_access_key': res.json['secret_access_key'],
             'auth_header': basic_auth(res.json['access_key_id'], res.json['secret_access_key']),
-            'user_uuid': user['_uuid'],
+            'user': user['uuid'],
             'description': description,
             'user': user,
         })
@@ -57,7 +65,7 @@ def access_key(access_keys):
 def test_access_key_current_user(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get('/@@current-user', headers=headers)
-    assert res.json['labs']
+    assert res.json['submits_for']
 
 
 def test_access_key_principals(anontestapp, execute_counter, access_key):
@@ -95,7 +103,7 @@ def test_access_key_edit(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     NEW_DESCRIPTION = 'new description'
     properties = {'description': NEW_DESCRIPTION}
-    anontestapp.post_json(access_key['location'], properties, headers=headers)
+    anontestapp.put_json(access_key['location'], properties, headers=headers)
 
     res = anontestapp.get(access_key['location'], properties, headers=headers)
     assert res.json['description'] == NEW_DESCRIPTION

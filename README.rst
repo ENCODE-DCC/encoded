@@ -8,7 +8,13 @@ ENCODE Metadata Database
 .. _Build status: https://travis-ci.org/ENCODE-DCC/encoded
 
 
-*Note: the default Mac python doesn't seem to work. You might want to install Python with Homebrew and you may need to install one of more of (using homebrew): libxml2 libxslt freetype openssl libjpeg.*
+First install dependencies::
+
+    $ brew install libxml2 libxslt freetype openssl libjpeg libmagic postgresql
+
+Note: The default Mac python doesn't work. You should install Python with Homebrew::
+
+    $ brew install python
 
 First run buildout::
 
@@ -18,6 +24,12 @@ First run buildout::
 To start the application::
 
     $ bin/pserve development.ini
+
+Or with the live data::
+
+    $ say "laurence give me the current data"
+    $ git clone https://github.com/ENCODE-DCC/dccMetadataImport.git ../dccMetadataImport
+    $ bin/pserve dev-masterdata.ini
 
 Browse to the interface at http://localhost:6543/.
 

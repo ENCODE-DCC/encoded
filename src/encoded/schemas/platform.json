@@ -1,0 +1,66 @@
+{
+    "title": "Platform",
+    "id": "/profiles/platform.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting an experimental platform to ENCODE",
+    "type": "object",
+    "required": ["term_id"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+        "term_id": {
+            "description": "OBI Ontology term ID for this expermental platform",
+            "comment": "Use unique OBI term ID or 'New term requested' if necessary",
+            "title": "Ontology ID",
+            "type": "string",
+            "pattern": "^(OBI|NTR):[0-9]{7}$"
+        },
+        "term_name": {
+            "default": "",
+            "description": "Name of the Platform (should be OBI term were possible)",
+            "title": "Platform Name",
+            "type":  "string"
+        },
+        "geo_dbxrefs": {
+            "default": [],
+            "description": "List of GEO dbxrefs (GPL#s)",
+            "items": {
+                "description": "List of GEO IDs",
+                "title": "GEO IDs",
+                "type":  "string",
+                "pattern": "^(GPL)\\d+$"
+            },
+            "title": "GEO DBXREFs",
+            "type": "array"
+        },
+        "encode2_dbxrefs": {
+            "default": [],
+            "description": "List cross-references to the previous ENCODE2 system",
+            "items": {
+                "description": "List of ENCODE2 Identifiers",
+                "title": "ID",
+                "type":  "string"
+            },
+            "title": "ENCODE2 DBXREFs",
+            "type": "array"
+        },
+        "url": {
+            "description": "Commercial URL for the experimental Platform",
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
+        }
+    }
+
+}

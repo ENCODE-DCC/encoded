@@ -1,0 +1,98 @@
+{
+    "title": "ENCODE biosample Treatment",
+    "id": "/profiles/treatment.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting an ENCODE biosample Treatment",
+    "type": "object",
+    "required": ["treatment_term_name", "treatment_type", "lab", "award"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+        "treatment_type": {
+            "default": "chemical",
+            "description": "The type of biosample treatment",
+            "title": "Treatment Type",
+            "type": "string",
+            "enum": [
+                "protein",
+                "chemical",
+                "infection"
+            ]
+        },
+        "protocols": {
+            "default": [],
+            "description": "Treatment protocol document",
+            "comment": "For automatic submission supply an unique document name or UUID",
+            "title": "Treatment Protocol Documents",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "linkTo": "document"
+            }
+        },
+        "encode2_dbxrefs": {
+            "default": [],
+            "description": "List cross-references to the previous ENCODE2 system",
+            "items": {
+                "description": "List of ENCODE2 Identifiers",
+                "title": "ID",
+                "type":  "string"
+            },
+            "title": "ENCODE2 DBXREFs",
+            "type": "array"
+        },
+        "treatment_term_id": {
+            "description": "Ontology term ID describing treatment used in treatment",
+            "title": "Treatment term ID",
+            "type": "string",
+            "pattern": "^(CHEBI:[0-9]{5,6})|(UniprotKB:P[0-9]{5})|(Taxon:[0-9]{6})$"
+        },
+        "treatment_term_name": {
+            "description": "Ontology term describing treatment",
+            "title": "Treatment term name",
+            "type":  "string"
+        },
+        "concentration": {
+            "description": "Concentration of treament (numeric)",
+            "title": "Concentration",
+            "type": "number"
+        },
+        "concentration_units": {
+            "title": "Concentration units",
+            "type": "string",
+            "enum": [
+                "pM",
+                "nM",
+                "μM",
+                "mM",
+                "percent"
+            ]
+        },
+        "duration": {
+            "description": "Duration of treament (numeric)",
+            "title": "Duration",
+            "type": "number"
+        },
+        "duration_units": {
+            "title": "Duration units",
+            "type": "string",
+            "enum": [
+                "second",
+                "minute",
+                "hour",
+                "day"
+            ]
+        }
+    }
+}

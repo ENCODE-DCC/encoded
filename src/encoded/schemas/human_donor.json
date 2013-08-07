@@ -1,0 +1,39 @@
+{
+    "title": "Human donor",
+    "id": "/profiles/human_donor.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting an ENCODE human donor",
+    "type": "object",
+    "required": [ "award", "lab", "organism"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "donor.json#/properties" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "life_stage": {
+            "description": "",
+            "title": "Life stage",
+            "type": "string",
+            "enum": [
+                "fetal",
+                "newborn",
+                "child",
+                "adult",
+                "unknown"
+            ]
+        },
+        "ethnicity": {
+            "title": "Ethnicity",
+            "type": "string"
+        },
+        "organism": {
+            "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
+            "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+        }
+    }
+}

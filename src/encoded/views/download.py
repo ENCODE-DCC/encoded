@@ -44,23 +44,23 @@ def parse_data_uri(uri):
     return mime_type, charset, data
 
 
-class ItemWithDocument(Item):
-    """ Item base class with document blob
+class ItemWithAttachment(Item):
+    """ Item base class with attachment blob
     """
-    download_property = 'document'
+    download_property = 'attachment'
 
     @classmethod
     def _process_downloads(cls, properties, sheets):
         prop_name = cls.download_property
-        document = properties[prop_name]
-        href = document.get('href', None)
+        attachment = properties[prop_name]
+        href = attachment.get('href', None)
         if href is not None:
             if not href.startswith('data:'):
                 msg = "Expected data uri."
                 raise ValidationFailure('body', [prop_name, 'href'], msg)
 
             properties = properties.copy()
-            properties[prop_name] = document = document.copy()
+            properties[prop_name] = attachment = attachment.copy()
 
             if sheets is None:
                 sheets = {}
@@ -69,7 +69,7 @@ class ItemWithDocument(Item):
             sheets['downloads'] = downloads = {}
             download_meta = downloads[prop_name] = {}
 
-            download_meta['download'] = filename = document['download']
+            download_meta['download'] = filename = attachment['download']
             mime_type, charset, data = parse_data_uri(href)
             if mime_type is not None:
                 download_meta['type'] = mime_type
@@ -80,7 +80,7 @@ class ItemWithDocument(Item):
             session = DBSession()
             blob = Blob(blob_id=blob_id, data=data)
             session.add(blob)
-            document['href'] = '@@download/%s/%s' % (
+            attachment['href'] = '@@download/%s/%s' % (
                 prop_name, quote(filename))
 
         return properties, sheets
@@ -88,14 +88,14 @@ class ItemWithDocument(Item):
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
         properties, sheets = cls._process_downloads(properties, sheets)
-        item = super(ItemWithDocument, cls).create(
+        item = super(ItemWithAttachment, cls).create(
             parent, uuid, properties, sheets)
         return item
 
     def update(self, properties, sheets=None):
         prop_name = self.download_property
-        document = properties[prop_name]
-        href = document.get('href', None)
+        attachment = properties[prop_name]
+        href = attachment.get('href', None)
         if href is not None:
             if href.startswith('@@download/'):
                 try:
@@ -109,10 +109,10 @@ class ItemWithDocument(Item):
                 properties, sheets = self._process_downloads(
                     properties, sheets)
 
-        super(ItemWithDocument, self).update(properties, sheets)
+        super(ItemWithAttachment, self).update(properties, sheets)
 
 
-@view_config(name='download', context=ItemWithDocument, request_method='GET',
+@view_config(name='download', context=ItemWithAttachment, request_method='GET',
              permission='view', subpath_segments=2)
 def download(context, request):
     prop_name, filename = request.subpath

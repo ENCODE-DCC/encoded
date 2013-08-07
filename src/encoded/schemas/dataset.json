@@ -1,0 +1,90 @@
+{
+    "title": "ENCODE Dataset",
+    "id": "/profiles/dataset.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting a set of files to ENCODE",
+    "type": "object",
+    "required": [ "award", "lab", "files"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+        "description": {
+            "default": "",
+            "description": "A plain text description of the dataset",
+            "title": "Experiment Description",
+            "type": "string"
+        },
+        "dataset_type": {
+            "default": "project",
+            "description": "The Dataset type",
+            "title": "Dataset Type",
+            "type": "string",
+            "enum": [
+                "project",
+                "composite",
+                "publication"
+            ]
+        },
+        "geo_dbxrefs": {
+            "default": [],
+            "description": "List of GEO dbxrefs (GDS#s)",
+            "items": {
+                "description": "List of GEO IDs",
+                "title": "GEO IDs",
+                "type":  "string",
+                "pattern": "^(GDS)\\d+$"
+            },
+            "title": "GEO DBXREFs",
+            "type": "array"
+        },
+        "documents": {
+            "default": [],
+            "description": "List of other experimental protocol documents",
+            "comment": "For automatic submission supply unique Document names or uuids",
+            "items": {
+                "description": "Experimental protocol document",
+                "title": "Document",
+                "type": "string",
+                "linkTo": "document"
+            },
+            "title": "List of Documents",
+            "type": "array"
+        },
+        "files": {
+            "description": "List of files in this dataset",
+            "comment": "For automatic submission supply unique data File accessions or uuids",
+            "items": {
+                "description": "Data file",
+                "title": "Files",
+                "type": "string",
+                "linkTo": "file"
+            },
+            "title": "List of Data Files",
+            "type": "array"
+        },
+        "references": {
+            "default": [],
+            "description": "List of references (Pubmed IDs)",
+            "title": "References",
+            "reference": {
+                "description": "Pubmed id for a published reference",
+                "title": "Pubmed Reference",
+                "type": "string",
+                "pattern": "^PMID:[0-9]+$"
+            },
+            "type": "array"
+        }
+   }
+}

@@ -1,0 +1,98 @@
+{
+    "title": "ENCODE Replicate",
+    "id": "/profiles/replicate.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting an experimental Replicate",
+    "type": "object",
+    "required": ["experiment", "biological_replicate_number", "technical_replicate_number"],
+    "approvalRequired": ["award", "lab", "library"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+        "antibody": {
+            "description": "Antibody used with this Replicate (-IP experiments only)",
+            "comment": "Automatic submitters can supply an Antibody accession or UUID",
+            "title": "Antibody",
+            "type": "string",
+            "linkTo": "antibody_lot"
+        },
+        "biological_replicate_number": {
+            "default": 1,
+            "description": "Biologically replicated experiments are numbered sequentially",
+            "title": "Replicate # (Biological)",
+            "type": "integer"
+        },
+        "technical_replicate_number": {
+            "default": 1,
+            "description": "Technically replicated experiments are numbered sequentially",
+            "title": "Replicate # (Technical)",
+            "type": "integer"
+        },
+        "experiment": {
+            "description": "Experiment dataset that this Replicate is grouped with",
+            "comment": "For automatic submission supply unique Experiment dataset accession or UUID",
+            "title": "Experiment ID",
+            "type": "string",
+            "linkTo": "experiment"
+        },
+        "library": {
+            "description": "Nucleic acid Library used in this replicate.",
+            "comment": "For automatic submission supply unique Library accession or UUID",
+            "title": "Library ID",
+            "type": "string",
+            "linkTo": "library"
+        },
+        "platform": {
+            "description": "Platform (hardware) that this Replicate was performed on",
+            "comment": "For automatic submission supply unique Platform name or UUID",
+            "title": "Platform ID",
+            "type": "string",
+            "linkTo": "platform"
+        },
+        "flowcell_details": {
+            "default": [],
+            "description": "Details about the machine/flowcell/lane information for this replicates",
+            "title": "Flowcell Details",
+            "type": "array",
+            "items": {
+                "description": "A machine:flowcell:lane triple",
+                "title": "Machine:Flowcells:Lanes",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "machine": {
+                        "description": "The friendly name of the specific machine platform",
+                        "title": "Machine name",
+                        "type": "string"
+                    },
+                    "flowcell": {
+                        "description": "The identifier of flowcell",
+                        "title": "Flowcell ID",
+                        "type": "string"
+                    },
+                    "lane": {
+                        "description": "The identifier of the lane used",
+                        "title": "Lane",
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "paired_ended": {
+            "default": false,
+            "description": "Whether or not the replicate was sequenced using  paired-end primers",
+            "title": "Paired Ended",
+            "type": "boolean"
+        }
+    }
+}

@@ -23,6 +23,8 @@ _app_settings = {
     'allow.view': 'Everyone',
     'allow.list': 'Everyone',
     'allow.traverse': 'Everyone',
+    'allow.add': 'group:submitter',
+    'allow.edit': 'group:submitter',  # XXX
     'allow.ALL_PERMISSIONS': 'group:admin',
     'allow.edw_key_create': 'accesskey:edw',
     'allow.edw_key_update': 'accesskey:edw',
@@ -89,16 +91,19 @@ def workbook(app, app_settings):
     }
     testapp = TestApp(app, environ)
 
-    from ..loadxl import load_all
+    from ..loadxl import (
+        load_all,
+        update_all,
+    )
     from pkg_resources import resource_filename
-    insertbook = resource_filename('encoded', 'tests/data/test_encode3_interface_inserts.xlsx')
-    updatebook = resource_filename('encoded', 'tests/data/test_encode3_interface_updates.xlsx')
+    insertbook = resource_filename('encoded', 'tests/data/inserts/')
+    updatebook = resource_filename('encoded', 'tests/data/updates/')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
     load_test_only = app_settings.get('load_test_only', False)
     assert load_test_only
 
     load_all(testapp, insertbook, docsdir, test=load_test_only)
-    load_all(testapp, updatebook, docsdir, test=load_test_only)
+    update_all(testapp, updatebook, docsdir, test=load_test_only)
 
 
 @fixture
@@ -126,6 +131,30 @@ def anontestapp(request, app, external_tx, zsa_savepoints):
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
+    }
+    return TestApp(app, environ)
+
+
+@fixture
+def authenticated_testapp(request, app, external_tx, zsa_savepoints):
+    '''TestApp with JSON accept header for non-admin user.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST_USER',
+    }
+    return TestApp(app, environ)
+
+
+@fixture
+def submitter_testapp(request, app, external_tx, zsa_savepoints):
+    '''TestApp with JSON accept header for non-admin user.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST_SUBMITTER',
     }
     return TestApp(app, environ)
 

@@ -8,7 +8,7 @@ function (experiment, React, globals) {
         var context;
         if (props['@id']) {
             context = props;
-            props = {context: context, key: context['@id']};
+            props = {context: context};
         }
         return globals.panel_views.lookup(props.context)(props);
     };
@@ -22,61 +22,73 @@ function (experiment, React, globals) {
                 return item.biological_replicate_number;
             });
             var replicate = replicates[0];
-            var documents = replicate && replicate.library.documents || [];
-            var control = context.controls[0];
+            var documents = {};
+            replicates.forEach(function (replicate) {
+                replicate.library.documents.forEach(function (doc) {
+                    documents[doc['@id']] = Panel({context: doc});
+                });
+            })
+            var antibodies = {};
+            replicates.forEach(function (replicate) {
+                if (replicate.antibody) {
+                    antibodies[replicate.antibody['@id']] = replicate.antibody;
+                }
+            });
+            var antibody_accessions = []
+            for (var key in antibodies) {
+                antibody_accessions.push(antibodies[key].accession);
+            }
+            // XXX This makes no sense.
+            var control = context.possible_controls[0];
             return (
                 <div class={itemClass}>
                     <header class="row">
                         <div class="span12">
-                            {replicate ?
-                                <ul class="breadcrumb">
-                                    <li>Experiment <span class="divider">/</span></li>
-                                    <li class="active">{replicate.assay.assay_name}</li>
-                                </ul>
-                            : null}
-                            <h2>Experiment summary for {context.dataset_accession}</h2>
+                            <ul class="breadcrumb">
+                                <li>Experiment <span class="divider">/</span></li>
+                                <li class="active">{context.assay_term_name}</li>
+                            </ul>
+                            <h2>Experiment summary for {context.accession}</h2>
                         </div>
                     </header>
                     <div class="panel data-display">
                         <dl class="key-value">
                             <dt>Accession</dt>
-                            <dd>{context.dataset_accession}</dd>
+                            <dd>{context.accession}</dd>
 
-                            <dt hidden={!context.dataset_description}>Description</dt>
-                            <dd hidden={!context.dataset_description}>{context.dataset_description}</dd>
+                            <dt hidden={!context.description}>Description</dt>
+                            <dd hidden={!context.description}>{context.description}</dd>
 
-                            {replicate ? <dt>Target</dt> : null}
-                            {replicate ? <dd>{replicate.target}</dd> : null}
+                            {context.target ? <dt>Target</dt> : null}
+                            {context.target ? <dd>{context.target.label}</dd> : null}
 
-                            {replicate ? <dt>Biosample</dt> : null}
-                            {replicate ? <dd>{replicate.library.biosample.biosample_term_name}</dd> : null}
+                            <dt>Biosample</dt>
+                            <dd>{context.biosample_term_name}</dd>
 
-                            {replicate ? <dt>Biosample Type</dt> : null}
-                            {replicate ? <dd>{replicate.library.biosample.biosample_type}</dd> : null}
+                            <dt>Biosample Type</dt>
+                            <dd>{context.biosample_type}</dd>
 
                             <dt hidden={!context.encode2_dbxref_list}>ENCODE2 Alias</dt>
                             <dd hidden={!context.encode2_dbxref_list}>{context.encode2_dbxref_list}</dd>
 
                             <dt>Submitted by</dt>
-                            <dd>{context.submitter.first_name}{' '}{context.submitter.last_name}</dd>
+                            <dd>{context.submitted_by.title}</dd>
 
-                            <dt>Project</dt>
-                            <dd>{context.award.project}</dd>
+                            <dt>RFA</dt>
+                            <dd>{context.award.rfa}</dd>
 
-                            {replicate ? <dt>Antibody</dt> : null}
-                            {replicate ? <dd>{replicate.antibody_accession}</dd> : null}
+                            {antibody_accessions.length ? <dt>Antibody</dt> : null}
+                            {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
                         </dl>
                     </div>
 
                     <BiosamplesUsed replicates={replicates} />
                     <AssayDetails replicates={replicates} />
 
-                    {documents.length ?
-                        <div>
-                            <h3>Protocols</h3>
-                            {documents.map(Panel)}
-                        </div>
-                    : null}
+                    <div hidden={!Object.keys(documents).length}>
+                        <h3>Protocols</h3>
+                        {documents}
+                    </div>
 
                     {replicates.map(function (replicate, index) {
                         return (
@@ -120,10 +132,9 @@ function (experiment, React, globals) {
                                 <td>{replicate.library.biosample.biosample_term_name}</td>
                                 <td>{replicate.biological_replicate_number}</td>
                                 <td>{replicate.library.biosample.biosample_type}</td>
-                                <td>{replicate.library.biosample.donor.organism.organism_name}</td>
-                                <td>{replicate.library.biosample.source.source_name}</td>
-                                <td>{replicate.library.biosample.submitter.first_name}{' '}
-                                 {replicate.library.biosample.submitter.last_name}</td>
+                                <td>{replicate.library.biosample.donor.organism.name}</td>
+                                <td>{replicate.library.biosample.source.title}</td>
+                                <td>{replicate.library.biosample.submitted_by.title}</td>
                             </tr>
                         );
                     })}
@@ -189,13 +200,13 @@ function (experiment, React, globals) {
                     <dd>{replicate.technical_replicate_number}</dd>
 
                     <dt>Library</dt>
-                    <dd>{library.accession} - ({library.library_description})</dd>
+                    <dd>{library.accession} - ({library.title})</dd>
 
                     {control ? <dt>Control</dt> : null}
                     {control ?
                         <dd>
                             <a href={control['@id']}>
-                                {control.dataset_accession}
+                                {control.accession}
                             </a>
                         </dd>
                     : null}
@@ -222,7 +233,7 @@ function (experiment, React, globals) {
         if (!files.length) return (<div hidden={true}></div>);
         return (
             <div>
-                <h3>Files linked to {context.dataset_accession}</h3>
+                <h3>Files linked to {context.accession}</h3>
                 <table>
                     <thead>
                         <tr>
@@ -236,16 +247,16 @@ function (experiment, React, globals) {
                     </thead>
                     <tbody>
                     {files.map(function (file, index) {
-                        var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.file_name_encode3;
+                        var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.download_path;
                         return (
                             <tr key={index}>
-                                <td>{file.file_accession}</td>
+                                <td>{file.accession}</td>
                                 <td>{file.file_format}</td>
-                                <td>{file.biological_replicate_number ?
-                                    '(' + file.biological_replicate_number + ', ' + file.technical_replicate_number + ')'
+                                <td>{file.replicate ?
+                                    '(' + file.replicate.biological_replicate_number + ', ' + file.replicate.technical_replicate_number + ')'
                                     : null}
                                 </td>
-                                <td>{file.submitter.first_name}{' '}{file.submitter.last_name}</td>
+                                <td>{file.submitted_by.title}</td>
                                 <td>{file.date_passed_validation}</td>
                                 <td><a href={href} download><i class="icon-download-alt"></i> Download</a></td>
                             </tr>

@@ -1,25 +1,45 @@
 {
-    "title": "Source",
-    "description": "Vendor of antibodies",
+    "title": "ENCODE Source",
+    "id": "/profiles/source.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting biosample, antibody or other external source",
     "type": "object",
+    "required": ["name", "title"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
     "properties": {
-        "source_name": {
-            "title": "Source Name",
-            "description": "",
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+        "description": {
+            "default": "",
+            "description": "A long name or description for the source",
+            "title": "Source Description",
             "type": "string"
         },
-        "alias": {
-            "title": "Alias",
-            "description": "",
+        "title": {
+            "description": "The preferred shorter name of the source",
+            "title": "Source or Vendor Title",
             "type": "string"
+        },
+        "name": {
+            "description": "Unique short name for the Source",
+            "title": "Source or Vendor Name",
+            "type": "string",
+            "pattern": "^[a-z0-9\\-]+$"
         },
         "url": {
-            "title": "URL",
-            "description": "",
-            "type": "string"
+            "description": "An optional URL for the source",
+            "title": "Source URL",
+            "type": "string",
+            "format": "uri"
         }
-    },
-    "required": [
-        "source_name"
-    ]
-}
+    }
+ }

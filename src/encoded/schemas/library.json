@@ -1,0 +1,164 @@
+{
+    "title": "ENCODE Nucleic Acid Library",
+    "id": "/profiles/library.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting an ENCODE Nucleic Acid Library",
+    "type": "object",
+    "comment": "XXX is source required?",
+    "required": [ "award", "lab", "nucleic_acid_term_id"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+        "biosample": {
+            "description": "Biosample from which this library was derived or isolated.",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Biosample",
+            "type": "string",
+            "linkTo": "biosample"
+        },
+        "nucleic_acid_term_name": {
+            "description": "Type/subtype of nucleic acid isolated.",
+            "title": "Nucleic Acid Type",
+            "comment": "These will be SO (sequence ontology) terms were possible, but only a small subset",
+            "type": "string",
+            "enum": [
+                "DNA",
+                "RNA",
+                "polyadenylated mRNA",
+                "miRNA"
+            ]
+        },
+        "nucleic_acid_term_id": {
+            "description": "The ID of the SO (Sequence Ontology) term best matching the nucleic acid type",
+            "title": "SO Term ID",
+            "type": "string",
+            "pattern": "^SO:[0-9]{7}$"
+        },
+        "source": {
+            "description": "Source or Vendor of Nucleic Acid Library",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Library Source",
+            "type": "string",
+            "linkTo": "source"
+        },
+        "product_id": {
+            "description": "The vendor's library product code",
+            "title": "Library Product ID",
+            "type": "string"
+        },
+        "lot_id": {
+            "description": "A vendor's id code for the nucleic acid library lot",
+            "title": "Library lot ID",
+            "type": "string"
+        },
+        "documents": {
+            "default": [],
+            "description": "List of library prep and other protocols",
+            "items": {
+                "description": "A library prep or other protocol document",
+                "comment": "Automatic submitters can supply an ENCODE document UUID or unique document name",
+                "title": "Protocol Document",
+                "type": "string",
+                "linkTo": "document"
+            },
+            "title": "List of Protocol Documents",
+            "type": "array"
+        },
+        "nucleic_acid_starting_quantity": {
+            "description": "Starting amount of nucleic acid before selection and purification",
+            "title": "Starting Quantity",
+            "type": "string",
+            "pattern": "[0-9]+"
+        },
+        "extraction_method": {
+            "description": "A short description of the nucleic acid extraction method used in Library prep.",
+            "title": "Extraction Method",
+            "default": "see document",
+            "type": "string",
+            "XXXenum": [
+                "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                "Trizol (LifeTech cat#: 15596-018)",
+                "Ambion mirVana",
+                "Qiagen #74204",
+                "QIAGEN DNeasy Blood & Tissue Kit",
+                "see document",
+                "n/a"
+            ],
+            "format": "semi-controlled"
+        },
+        "fragmentation_method": {
+            "description": "A short description of the nucleic acid fragmentation method used in Library prep.",
+            "title": "Fragmentation Method",
+            "default": "see document",
+            "type": "string",
+            "XXXenum": [
+                "sonication",
+                "see document",
+                "covaris sheering",
+                "chemical (part of Illumina TruSeq mRNA Kit)",
+                "Illumina/Nextera tagmentation",
+                "bioruptor twin",
+                "n/a"
+            ],
+            "format": "semi-controlled"
+        },
+        "library_size_selection_method": {
+            "default": "see document",
+            "description": "The experimental method used to size-select the nucleic acid during Library prep.",
+            "title": "",
+            "type": "string",
+            "XXXenum": [
+                "gel",
+                "see document",
+                "SPRI beads"
+            ],
+            "format": "semi-controlled"
+        },
+        "lysis_method": {
+            "description": "A short description of the cell lysis method used in Library prep.",
+            "title": "Lysis Method",
+            "default": "see document",
+            "type": "string",
+            "XXXenum": [
+                "miRNeasy Mini kit (QIAGEN cat#:217004)",
+                "Trizol (LifeTech cat#: 15596-018)",
+                "Ambion mirVana",
+                "Qiagen #74204",
+                "QIAGEN DNeasy Blood & Tissue Kit",
+                "see document",
+                "n/a"
+            ],
+            "format": "semi-controlled"
+        },
+        "size_range": {
+            "description": "The measured size range of the purified nucleic acid, in kD",
+            "title": "Size Range",
+            "type": "string",
+            "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
+        },
+        "paired_ended": {
+            "default": false,
+            "description": "Whether or not the library was prepared with paired ends",
+            "title": "Paired Ended",
+            "type": "boolean"
+        },
+        "strand_specificity": {
+            "default": false,
+            "description": "Whether or not the library was prepared in a strand-specific manner",
+            "title": "Strand Specificity",
+            "type": "boolean"
+        }
+    }
+}

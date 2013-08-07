@@ -1,0 +1,32 @@
+{
+    "title": "ENCODE Antibody Validation",
+    "id": "/profiles/antibody_validation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting antibody validation data",
+    "type": "object",
+    "required": [ "award", "lab", "antibody", "target" ],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/attachment" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "validation.json#/properties" }
+    ],
+    "properties": {
+        "antibody": {
+            "description": "The specific antibody for which the validation image applies.",
+            "comment": "Automatic submitters can supply an ENCODE antibody accession or uuid",
+            "title": "Antibody to be Validated",
+            "type": "string",
+            "linkTo": "antibody_lot"
+        },
+        "target": {
+            "description": "Target for which the antibody validation applies.",
+            "comment": "Automatic submitters can supply a target uuid, or name-species pair",
+            "title": "Antibody Target",
+            "type": "string",
+            "linkTo": "target"
+        }
+    }
+}

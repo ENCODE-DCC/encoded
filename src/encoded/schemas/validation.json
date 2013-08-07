@@ -1,193 +1,86 @@
 {
-    "default": null,
-    "description": "",
+    "title": "Base Validation",
+    "id": "/profiles/validation.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "type": "object",
+    "required": [ "award", "lab", "antibody" ],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/attachment" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
     "properties": {
-        "antibody_lot_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
+        "validation_method": {
+            "description": "Experimental method for the validation image",
+            "comment": "This will likely get mapped to an experimental methods ontology.",
+            "title": "Method",
+            "type": "string",
+            "enum": [
+                "western blot",
+                "western blot after IP",
+                "immunoprecipitation",
+                "immunofluorescense",
+                "knockdowns",
+                "mass spectrometry after IP",
+                "chIP comparison",
+                "tagged epitopes",
+                "motif enrichment",
+                "dot blot",
+                "peptide ELISA",
+                "competitor peptides",
+                "mutant organisms",
+                "mutant histones",
+                "annotation enrichment",
+                "XXX NEED REVIEW",
+                "Western blot, Western blot after IP",
+                "immunoblot"
             ]
         },
         "caption": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "",
+            "description": "Caption for the validation image",
+            "title": "Image Caption",
+            "type": "string"
         },
         "date_validated": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Date in which the validation experiment was run.",
+            "title": "Date Validated",
+            "type": "string",
+            "format": "date"
         },
-        "document": {
-            "default": null,
-            "description": "",
-            "properties": {
-                "download": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
-                },
-                "height": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "integer",
-                        "null"
-                    ]
-                },
-                "href": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
-                },
-                "type": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "string",
-                        "null"
-                    ]
-                },
-                "width": {
-                    "default": null,
-                    "description": "",
-                    "title": "",
-                    "type": [
-                        "integer",
-                        "null"
-                    ]
-                }
+        "references": {
+            "default": [],
+            "description": "List of references (Pubmed IDs)",
+            "title": "References",
+            "reference": {
+                "description": "Pubmed id for a published reference",
+                "title": "Pubmed Reference",
+                "type": "string",
+                "pattern": "^PMID:[0-9]+$"
             },
-            "title": "",
-            "type": [
-                "object",
-                "null"
+            "type": "array"
+        },
+        "status": {
+            "default": "INCOMPLETE",
+            "description": "Approval status for the Validation image",
+            "title": "Approval Status",
+            "type": "string",
+            "enum" : [
+                "APPROVED",
+                "SUBMITTED",
+                "UNSUBMITTED",
+                "FAILED",
+                "INCOMPLETE"
             ]
         },
-        "is_current": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "boolean",
-                "null"
-            ]
-        },
-        "lot_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "product_id": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "reference": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitted_by": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitted_by_grant": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "submitted_by_pi": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "target_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "validated_by": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "validation_method": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "validation_status": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "validation_comment": {
+            "default": "",
+            "description": "Should probably be on the status transistion",
+            "title": "Validation comment",
+            "type": "string",
+            "permission": "review"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

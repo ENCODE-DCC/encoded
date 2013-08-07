@@ -1,57 +1,250 @@
 {
-    "title": "Biosample",
-    "description": "Biosamples used in Encode Project",
+    "title": "ENCODE Biosample",
+    "id": "/profiles/biosample.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting an ENCODE Biosample",
     "type": "object",
+    "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/biosample_classification" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
     "properties": {
-        "_uuid": {
-            "title": "UUID",
-            "description": "",
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
             "type": "string",
-            "format": "uuid"
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
-        "biosample_type": {
-            "title": "Type",
-            "description": "",
+        "description": {
+            "default": "",
+            "description": "A plain text description of the biosample - please not contructs and treatments, and experimental intent.",
+            "title": "",
+            "type": "string"
+        },
+        "source": {
+            "description": "Source or Vendor of Biomaterials",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Biosample Source",
+            "type": "string",
+            "linkTo": "source"
+        },
+        "product_id": {
+            "description": "The vendor's biosample product code",
+            "title": "Biosample Product ID",
+            "type": "string"
+        },
+        "lot_id": {
+            "description": "A lot code for the biosample",
+            "title": "Biosample Lot ID",
+            "type": "string"
+        },
+        "constructs": {
+            "default": [],
+            "description": "List of construct object identifiers",
+            "comment": "For automatic submission this is a list of unique references to construct objects.",
+            "items": {
+                "description": "Transfection, fusion, or Zn-finger KO construct name or uuid",
+                "title": "Constructs",
+                "type":  "string",
+                "linkTo": "construct"
+            },
+            "title": "List of Constructs",
+            "type": "array"
+        },
+        "rnais": {
+            "default": [],
+            "description": "List of RNAi construct object identifiers",
+            "comment": "For automatic submission this is a list of unique references to RNAi objects.",
+            "items": {
+                "description": "si or shRNA construct name or uuid",
+                "title": "RNAi Constructs",
+                "type":  "string",
+                "linkTo": "rnai"
+            },
+            "title": "List of RNAi objects.",
+            "type": "array"
+        },
+        "treatments": {
+            "default": [],
+            "description": "Substances used to treat a biosample",
+            "comment": "For automatic submission this is a list of unique references to RNAi objects.",
+            "items": {
+                "description": "Treatment (names or UUIDs) applied to biosample",
+                "title": "Biosample Treatment",
+                "type": "string",
+                "linkTo": "treatment"
+            }
+        },
+        "encode2_dbxrefs": {
+            "default": [],
+            "description": "List cross-references to the previous ENCODE2 system",
+            "items": {
+                "description": "List of ENCODE2 Identifiers",
+                "title": "ID",
+                "type":  "string"
+            },
+            "title": "ENCODE2 DBXREFs",
+            "type": "array"
+        },
+        "protocol_documents": {
+            "default": [],
+            "description": "List of biosample protocols associated with this biosample",
+            "comment": "For automatic submission supply unique documents names or uuids",
+            "items": {
+                "description": "Protocol document",
+                "title": "Protocol Document",
+                "type": "string",
+                "linkTo": "document"
+            },
+            "title": "Protocol Document List",
+            "type": "array"
+        },
+        "validation_documents": {
+            "default": [],
+            "description": "List of validation protocols associated with this biosample (treatment)",
+            "comment": "For automatic submission supply unique documents names or uuids",
+            "items": {
+                "description": "Biosample validation document",
+                "title": "validation Document",
+                "type": "string",
+                "linkTo": "document"
+            },
+            "title": "Validation Document List",
+            "type": "array"
+        },
+        "donor": {
+            "description": "Donor reference for the Biosample",
+            "comment": "For automatic submission, supply a ENCODE donor accession or uuid",
+            "title": "Donor",
+            "type": "string",
+            "linkTo": "donor"
+        },
+        "organism": {
+            "description": "Organism of the biosample",
+            "title": "Source organism",
+            "type": "string",
+            "linkTo": "organism"
+        },
+        "passage_number": {
+            "description": "Cell culture passage number",
+            "title": "Passage Number",
+            "type": "integer"
+        },
+        "derived_from": {
+            "default": [],
+            "description": "List of biosamples this biosample is derived from",
+            "title": "List of Biosample Parents",
+            "type":  "array",
+            "items": {
+                    "description": "Biosample that this sample derives from via a construct or treatment",
+                    "comment": "For automated submission supply an ENCODE biosample accession or uuid",
+                    "title": "Parent (derived_from) Biosample",
+                    "type": "string",
+                    "linkTo": "biosample"
+            }
+        },
+        "contained_in": {
+            "default": [],
+            "description": "List of biosamples this biosample is contained in (reverse of pooled from)",
+            "title": "List of Biosample Parents",
+            "type":  "array",
+            "items": {
+                    "description": "Biosample that this sample is contained in",
+                    "comment": "For automated submission supply an ENCODE biosample accession or uuid",
+                    "title": "Parent (contained_in) Biosample",
+                    "type": "string",
+                    "linkTo": "biosample"
+            }
+        },
+        "part_of": {
+            "default": [],
+            "description": "List of biosamples this biosample part of",
+            "title": "List of Biosample Parents",
+            "type":  "array",
+            "items": {
+                    "description": "Biosample that this sample is part of",
+                    "comment": "For automated submission supply an ENCODE biosample accession or uuid",
+                    "title": "Parent (part_of) Biosample",
+                    "type": "string",
+                    "linkTo": "biosample"
+            }
+        },
+        "note": {
+            "description": "Experimenter's notes about the biosample.",
+            "title": "Note",
+            "type": "string"
+        },
+        "subcellular_fraction": {
+            "description": "The subcomponent of cells/tissues isolated for specific library prep",
+            "comment": "Terms are from the GO Cellular Component ontology",
+            "title": "Subcellular Fraction",
+            "type": "string",
+            "enum": ["nucleus", "cytosol"]
+        },
+        "phase": {
+            "description": "Cell-cycle phase in which cells were harvested",
+            "title": "Cell-cycle phase",
             "type": "string",
             "enum": [
-                "Primary cell line",
-                "Immortalized cell line",
-                "Tissue"
+                "G1",
+                "G1b",
+                "G2",
+                "S1",
+                "S2",
+                "S3",
+                "S4"
             ]
         },
-        "species": {
-            "title": "Species",
-            "description": "",
+        "transfection_type": {
+            "description": "The in-cell longevity of the transfection construct (if it exists)",
+            "title": "Transfection type (stability)",
             "type": "string",
             "enum": [
-                "Human",
-                "Rabbit",
-                "Rat",
-                "Mouse",
-                "Sheep",
-                "Goat"
+                "stable", "transient"
             ]
         },
-        "lab": {
-            "title": "Lab",
-            "description": "",
+        "culture_harvest_date": {
+            "description": "Harvest date of cell culture",
+            "title": "Culture Harvest Date",
+            "type": "string",
+            "format": "date"
+        },
+        "culture_start_date": {
+            "description": "Start date of culture",
+            "title": "Culture Start Date",
+            "type": "string",
+            "format": "date"
+        },
+        "date_obtained": {
+            "description": "Date sample obtained by lab",
+            "title": "Date Obtained",
+            "type": "string",
+            "format": "date"
+        },
+        "starting_amount": {
+            "description": "Starting amount of Biosample",
+            "title": "Starting Amount",
             "type": "string"
         },
-        "grant": {
-            "title": "Grant",
-            "description": "",
-            "type": "string"
+        "starting_amount_units": {
+            "description": "Units tarting amount of Biosample",
+            "title": "Starting Amount Units",
+            "type": "string",
+            "enum": [
+                "g","mg","cells/ml","cells", "whole embryos", "items"
+            ]
         },
-        "notes": {
-            "title": "Notes",
-            "description": "",
-            "type": "string"
+        "url": {
+            "description": "Commercial URL for purchased Biosamples",
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
         }
-    },
-    "required": [
-        "biosample_type",
-        "species",
-        "lab",
-        "grant"
-    ]
+    }
 }

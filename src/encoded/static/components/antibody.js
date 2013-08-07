@@ -6,19 +6,20 @@ function (antibody, React, URI, globals) {
     var Approval = antibody.Approval = React.createClass({
         render: function() {
             var context = this.props.context;
-            var statusClass = 'status-' + (context.approval_status || '').toLowerCase();
+            var statusClass = 'status-' + (context.tatus || '').toLowerCase();
             var validations = context.validations.map(function (item) {
                 return globals.panel_views.lookup(item)({context: item, key: item['@id']});
             });
+            // Missing enncode
             return (
                 <div class={'type-antibody_approval view-item ' + statusClass}>
                     <header class="row">
                         <div class="span12">
-                            <h2>Approval for {context.antibody_lot.antibody_accession}</h2>
-                            <h3>Antibody against {context.target.organism.organism_name}
-                                {' '}{context.target.target_label}
+                            <h2>Approval for {context.antibody.accession}</h2>
+                            <h3>Antibody against {context.target.organism.name}
+                                {' '}{context.target.label}
                                 <span class={'label ' + statusClass}>
-                                    {context.approval_status}
+                                    {context.status}
                                 </span>
                             </h3>
                         </div>
@@ -27,31 +28,37 @@ function (antibody, React, URI, globals) {
                     <div class="panel data-display">
                         <dl class="key-value">
                             <dt>Source (vendor)</dt>
-                            <dd><a href={context.antibody_lot.source.url}>{context.antibody_lot.source.source_name}</a></dd>
+                            <dd><a href={context.antibody.source.url}>{context.antibody.source.title}</a></dd>
                             
                             <dt>Product ID</dt>
-                            <dd><a href={context.antibody_lot.url}>{context.antibody_lot.product_id}</a></dd>
+                            <dd><a href={context.antibody.url}>{context.antibody.product_id}</a></dd>
                             
                             <dt>Lot ID</dt>
-                            <dd>{context.antibody_lot.lot_id}</dd>
-                            
+                            <dd>{context.antibody.lot_id}</dd>
+
+                            {context.antibody.lot_id_alias.length ? <dt>Lot ID aliases</dt> : null }
+                            {context.antibody.lot_id_alias.length ? <dd>{context.antibody.lot_id_alias.join(', ')}</dd> : null }
+
                             <dt>Target</dt>
-                            <dd><a href={context.target['@id']}>{context.target.target_label}</a></dd>
+                            <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
                             
                             <dt>Host</dt>
-                            <dd>{context.antibody_lot.host_organism}</dd>
+                            <dd>{context.antibody.host_organism.name}</dd>
                             
                             <dt>Clonality</dt>
-                            <dd>{context.antibody_lot.clonality}</dd>
+                            <dd>{context.antibody.clonality}</dd>
                             
                             <dt>Purification</dt>
-                            <dd>{context.antibody_lot.purification}</dd>
+                            <dd>{context.antibody.purifications.join(', ')}</dd>
                             
                             <dt>Isotype</dt>
-                            <dd>{context.antibody_lot.isotype}</dd>
+                            <dd>{context.antibody.isotype}</dd>
                             
                             <dt>Antigen description</dt>
-                            <dd>{context.antibody_lot.antigen_description}</dd>
+                            <dd>{context.antibody.antigen_description}</dd>
+
+                            {context.antibody.antigen_sequence ? <dt>Antigen sequence</dt> : null}
+                            {context.antibody.antigen_sequence ? <dd>{context.antibody.antigen_sequence}</dd> : null}
                         </dl>
                     </div>
 
@@ -69,22 +76,22 @@ function (antibody, React, URI, globals) {
     var Validation = antibody.Validation = React.createClass({
         render: function() {
             var context = this.props.context;
-            var statusClass = 'status-' + (context.validation_status || '').toLowerCase();
-            var documentHref, documentUri;
+            var statusClass = 'status-' + (context.status || '').toLowerCase();
+            var attachmentHref, attachmentUri;
             var figure, download, src, imgClass, alt;
             var imgClass = "validation-img validation-file";
             var height = "100";
             var width = "100";
-            if (context.document) {
-                documentUri = URI(context.document.href, URI(context['@id']).href);
-                documentHref = documentUri.pathname + documentUri.search;
-                if (context.document.type.split('/', 1)[0] == 'image') {
+            if (context.attachment) {
+                attachmentUri = URI(context.attachment.href, URI(context['@id']).href);
+                attachmentHref = attachmentUri.pathname + attachmentUri.search;
+                if (context.attachment.type.split('/', 1)[0] == 'image') {
                     imgClass = 'validation-img';
-                    src = documentHref;
-                    height = context.document.height;
-                    width = context.document.width;
+                    src = attachmentHref;
+                    height = context.attachment.height;
+                    width = context.attachment.width;
                     alt = "Validation Image"
-                } else if (context.document.type == "application/pdf"){
+                } else if (context.attachment.type == "application/pdf"){
                     src = "/static/img/file-pdf.svg";
                     alt = "Validation PDF Icon";
                 } else {
@@ -92,13 +99,13 @@ function (antibody, React, URI, globals) {
                     alt = "Validation Icon";
                 }
                 figure = (
-                    <a data-bypass="true" href={documentHref}>
+                    <a data-bypass="true" href={attachmentHref}>
                         <img class={imgClass} src={src} height={height} width={width} alt={alt} />
                     </a>
                 );
                 download = (
-                    <a data-bypass="true" href={documentHref} download={context.document.download}>
-                        {context.document.download}
+                    <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
+                        {context.attachment.download}
                     </a>
                 );
             } else {
@@ -120,7 +127,7 @@ function (antibody, React, URI, globals) {
                                 <figure>
                                     {figure}
                                     <figcaption>
-                                        <span>{context.validation_status}</span>
+                                        <span>{context.status}</span>
                                     </figcaption>
                                 </figure>
                             </div>
@@ -130,25 +137,25 @@ function (antibody, React, URI, globals) {
                                     <dd class="h3">{context.validation_method}</dd>
 
                                     <dt class="h4">Target species</dt>
-                                    <dd class="h4">{context.target.organism.organism_name}</dd>
+                                    <dd class="h4">{context.target.organism.name}</dd>
 
                                     <dt hidden="hidden">Caption</dt>
                                     <dd>{context.caption}</dd>
 
                                     <dt>Submitted By</dt>
-                                    <dd>{context.submitter.first_name} {context.submitter.last_name}</dd>
+                                    <dd>{context.submitted_by.first_name}{' '}{context.submitted_by.last_name}</dd>
 
                                     <dt>Lab</dt>
-                                    <dd>{context.lab.name}</dd>
+                                    <dd>{context.lab.title}</dd>
 
                                     <dt>Grant</dt>
-                                    <dd>{context.award.number}</dd>
+                                    <dd>{context.award.name}</dd>
 
                                     <dt>Approver</dt>
                                     <dd>{context.validated_by}</dd>
 
                                     <dt>Image</dt>
-                                    <dd><span class={'label '+ statusClass}>{context.validation_status}</span></dd>
+                                    <dd><span class={'label '+ statusClass}>{context.status}</span></dd>
 
                                     <dt><i class="icon-download-alt"></i> Download</dt>
                                     <dd>{download}</dd>
@@ -164,19 +171,13 @@ function (antibody, React, URI, globals) {
     globals.panel_views.register(Validation, 'antibody_validation');
 
 
-    var antibody_lot_title = function (props) {
-        return props.context.antibody_accession;
-    };
-
-    globals.listing_titles.register(antibody_lot_title, 'antibody_lot');
-
-
+    // XXX Should move to Python code.
     var antibody_approval_title = function (props) {
         var context = props.context;
-        var antibody_accession = context.antibody_lot.antibody_accession;
-        var organism_name = context.target.organism.organism_name;
-        var target_label = context.target.target_label;
-        return antibody_accession + ' in ' + organism_name + ' ' + target_label;
+        var accession = context.antibody.accession;
+        var organism_name = context.target.organism.name;
+        var target_label = context.target.label;
+        return accession + ' in ' + organism_name + ' ' + target_label;
     };
 
     globals.listing_titles.register(antibody_approval_title, 'antibody_approval');

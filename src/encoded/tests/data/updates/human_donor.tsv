@@ -1,0 +1,68 @@
+test	uuid	accession	alternate_accessions:array	aliases:array	sex	life_stage	age	age_units	ethnicity	health_status	organism	lab	award
+test	844c9a1e-a779-4dce-958b-5345c1c13801	ENCDO004AAA		biochain:01-11002	female	adult	83	year	Caucasian	unknown	human	j-michael-cherry	U41HG006992
+test	7b89a423-f873-4c75-950e-f0bad9897fba	ENCDO003AAA		biochain:UHN00204	unknown	adult	54	year	Caucasian	unknown	human	j-michael-cherry	U41HG006992
+test	5a7f723c-598b-4776-a8e4-19efdfc15f64	ENCDO059AAA		michael-snyder:STL004	female	adult	6	year	Caucasian	Healthy	human	j-michael-cherry	U41HG006992
+test	f1757873-a7c2-47c8-8273-d431ce795aad	ENCDO006AAA		nichd:1104	male	adult	35	year	Caucasian	Control	human	j-michael-cherry	U41HG006992
+test	3b70f62b-3817-42fb-a0ba-c91e656faa17	ENCDO008AAA		nichd:1442	male	adult	22	year	Caucasian	Control	human	j-michael-cherry	U41HG006992
+test	0db43e64-b649-4f72-a85c-923b9ed44db1	ENCDO007AAA		nichd:602	male	adult	27	year	Caucasian	Control	human	j-michael-cherry	U41HG006992
+test	fda5dd4d-8bd5-4489-a41b-cc582fc20645	ENCDO029AAA		promocell:1020301	female	adult	53	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	967de748-adb8-4d5a-b522-584c634268fc	ENCDO039AAA		promocell:1032402	female	adult	70	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	fc8d0140-6f44-4f58-b51b-834b7a445a54	ENCDO031AAA		promocell:1042702	female	adult	51	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	55b34bdb-af12-4f37-8439-79cfa21ce11b	ENCDO032AAA		promocell:1051601	male	adult	48	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	6773c0cf-14d9-43dd-989b-1bd4183b4daa	ENCDO046AAA		promocell:1062901	male	adult	63	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	024906ed-0081-4881-a4fc-24e2feb09ecd	ENCDO010AAA		promocell:11308	female	adult	56	year	Caucasian	unknown	human	j-michael-cherry	U41HG006992
+test	b3cd64db-bb5a-4833-ab87-d05561611fda	ENCDO042AAA		promocell:121402	male	adult	26	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	da132ea8-b3e0-494b-bdbc-caedb66a8280	ENCDO021AAA		promocell:20301	female	adult	53	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	759cb291-f213-4ddb-abdd-01647c6dceb8	ENCDO027AAA		promocell:2061201	female	adult	41	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	c6c35deb-9883-43c7-b529-9c92e10f29c0	ENCDO025AAA		promocell:32410	male	adult	52	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	d42dbe86-2ed1-4e4c-88f2-647d6ae3db33	ENCDO048AAA		promocell:50702	female	adult	69	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	81073413-e301-41fb-bb90-24bc8fdf3495	ENCDO050AAA		promocell:5102701	male	adult	56	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	96c56f8d-7b0a-46e8-8f35-495083c74962	ENCDO022AAA		promocell:6040504	male	adult	62	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	490083e3-8fae-4ad1-b839-287659165d8d	ENCDO019AAA		promocell:6082301	male	adult	60	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	b4138277-edf5-424f-951a-3a0c511a9e35	ENCDO044AAA		promocell:61405	male	adult	23	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	d8504179-8156-4856-9c3e-9b855c359d9f	ENCDO020AAA		promocell:7032704	male	adult	46	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	ab4bc93c-f83f-4b80-85e6-b272d4714be3	ENCDO049AAA		promocell:7101503	male	adult	84	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	43a7674c-4688-4893-84e6-3149aede4c07	ENCDO057AAA		promocell:8011507	female	adult	48	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	1ea14bb5-fd6c-421f-a822-43380ac63c55	ENCDO035AAA		promocell:8022602	female	adult	45	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	7cd670a3-fcf8-4740-a19a-f7e780c3d600	ENCDO056AAA		promocell:8030602	female	adult	50	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	3ba23ac3-e0dc-4b86-b35f-eb64b1c4ee88	ENCDO041AAA		promocell:8033102	male	adult	23	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	3d5d074c-ce49-4aa9-949c-e5c246364a86	ENCDO030AAA		promocell:8072501	male	adult	55	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	0b829938-ad67-40c9-b568-673872ae09bf	ENCDO011AAA		promocell:8100808	male	adult	64	year	Caucasian	unknown	human	j-michael-cherry	U41HG006992
+test	0db40129-feff-43e0-b75b-ff06a049bb8f	ENCDO028AAA		promocell:8112001	male	adult	77	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	807d50f9-3554-426c-a851-b952099e91f0	ENCDO017AAA	ENCDO117AAA	promocell:8121902	male	adult	21	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	10e615e7-0aa8-46e6-bb4a-c14f05ebcae1	ENCDO045AAA		promocell:9022003	female	adult	83	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	b09389ee-820e-423d-adc1-a263d54b8a07	ENCDO051AAA		promocell:9033101	male	adult	28	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	02c671ef-1a38-4065-85e8-99dd78bf2757	ENCDO018AAA		promocell:9052004	male	adult	54	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	af0bf560-27d1-482f-8186-9afcdce0e1df	ENCDO026AAA		promocell:9062902	male	adult	59	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	74af8058-dfd9-4c70-9baf-47e799969194	ENCDO043AAA		promocell:9071501	male	adult	28	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	5c7eb00d-3293-4bda-85d3-527d8a5e533c	ENCDO023AAA		promocell:9082701	male	adult	68	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	fc0e1617-fd55-4480-ab4f-a767e2eea77b	ENCDO047AAA		promocell:9090301	female	adult	55	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	3c1861ed-8fcb-4d6e-b54a-621897dcd6b2	ENCDO040AAA		promocell:9102102	male	adult	46	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	b0189a0d-794f-42ad-98b0-2f7b26f582ce	ENCDO024AAA		promocell:9102601	female	adult	40	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	bc80fa46-202d-4924-88aa-c20289525a0c	ENCDO037AAA		promocell:9110304	female	adult	64	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	cdaad9b7-0087-4735-a77c-0198cea76c3e	ENCDO038AAA		promocell:9110305	female	adult	38	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	13e91df8-6ba4-460f-baf3-c313d884bf4b	ENCDO058AAA		michael-snyder:STL003	male	adult	34	year	Caucasian	Healthy	human	j-michael-cherry	U41HG006992
+test	b7f644e9-630a-4d84-bf3f-8fdffb7b100f	ENCDO060AAA		michael-snyder:STL011	male	adult	32	year	Caucasian	Healthy	human	j-michael-cherry	U41HG006992
+test	496ff1b5-7f27-4371-841d-fbee39241bee	ENCDO002AAA			female	adult	21	year	Caucasian	Apparently Healthy	human	j-michael-cherry	U41HG006992
+test	3b71cde6-cf69-4730-adb0-b177bfd2b794	ENCDO009AAA			female	adult	31	year	Caucasian	Apparently Healthy	human	j-michael-cherry	U41HG006992
+test	f9ae6f1e-1775-44da-aba1-42b0913d6559	ENCDO016AAA			female	adult	85	year	Caucasian	Parkinson's disease	human	j-michael-cherry	U41HG006992
+test	15be505b-16f5-4f0f-8293-17cc8d260991	ENCDO033AAA		promocell:7060606	male	child	13	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	50cb84ae-7f64-48ff-9207-08a8d51a5451	ENCDO034AAA		promocell:9052704	female	child	16	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	fb99cb43-3e91-420c-a763-6abedadd9b19	ENCDO036AAA		promocell:9120907	male	child	6	year	Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	7575647f-73ca-4336-92ff-a60f241d4bbd	ENCDO062AAA		biochain:F11	female	fetal	28	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	d92c4e42-39c3-4acd-a613-cbc2d34c72d1	ENCDO061AAA		biochain:F132	male	fetal	31	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	6a325485-75fe-47f6-bf9a-b3578609ae72	ENCDO063AAA		biochain:F16	female	fetal	37	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	f6277156-eb8e-473d-95eb-761ab6860793	ENCDO064AAA		biochain:F32	female	fetal	20	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	726fdd58-4880-4433-bfe1-725e17bfdfdb	ENCDO065AAA		biochain:F33	male	fetal	22	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	ec7442f4-d969-45e7-a791-6859748f438c	ENCDO066AAA		biochain:F49	female	fetal	40	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	998ef4ba-5aca-4dd0-9ef2-fa030628a115	ENCDO067AAA		biochain:F63	female	fetal	24	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	307746e1-1d80-4763-bc77-dc782c4ee3f0	ENCDO068AAA		biochain:F68	male	fetal	20	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	6c25b878-c194-438b-9c33-03fd5c5425fe	ENCDO069AAA		biochain:F91	female	fetal	28	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	8df2c88b-d4d2-45df-b944-886ee5d4afbe	ENCDO070AAA		biochain:F92	female	fetal	19	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	51cf8d2c-2df2-4b91-a2f7-cef5720e875b	ENCDO071AAA		biochain:F93	male	fetal	36	week	unknown	Normal	human	j-michael-cherry	U41HG006992
+test	10e40e02-c23e-4be3-932e-aa019a4f36d3	ENCDO001AAA			male	fetal	12	week	unknown	Apparently Healthy	human	j-michael-cherry	U41HG006992
+test	8f776851-eb27-44b0-939e-43eb47437c80	ENCDO053AAA		promocell:1071107	female	newborn			Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	8ff82033-a68a-4e92-ba20-2b837ced6eb1	ENCDO055AAA		promocell:2022903	male	newborn			Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	54491770-1b2c-4be2-a110-9efaeaaa160c	ENCDO054AAA		promocell:2022904	female	newborn			Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	b588de88-efa2-4635-a18d-abf26ad69df3	ENCDO052AAA		promocell:8061702	male	newborn			Caucasian	Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV	human	j-michael-cherry	U41HG006992
+test	d90607d9-a5fa-4988-8cbf-c7fe8fcd0998	ENCDO000HUM			unknown	unknown			unknown	unknown	human	j-michael-cherry	U41HG006992

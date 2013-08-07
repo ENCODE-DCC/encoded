@@ -1,0 +1,113 @@
+{
+    "title": "Software",
+    "id": "/profiles/software.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting analysis Software pipeline/parameters to ENCODE",
+    "type": "object",
+    "required": ["name", "arguments", "lab", "award", "software_type"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+        "name": {
+            "description": "Unique ame of the Software package or pipeline",
+            "title": "Software Name",
+            "type":  "string",
+            "pattern": "[a-z][0-9\\-]"
+        },
+        "title": {
+            "description": "The preferred viewable name of the software",
+            "title": "Software (package) Title",
+            "type": "string"
+        },
+        "software_type": {
+            "description": "The purpose of the software",
+            "title": "Software Type",
+            "type": "string",
+            "enum" : [
+                "mapper",
+                "peakcaller",
+                "other",
+                "pipeline"
+            ]
+        },
+        "software_version": {
+            "description": "Software version code",
+            "title": "Version",
+            "type": "string"
+        },
+        "arguments": {
+            "description": "A list of command line arguments used to run the package for a specific purpose.",
+            "title": "Command Line Arguments",
+            "type": "string"
+        },
+        "dependencies": {
+            "description": "A list of specific software dependencies",
+            "title": "Dependencies",
+            "type": "string"
+        },
+        "instructions": {
+            "default": [],
+            "description": "Detailed instructions and protocols for running the program or pipeline",
+            "title": "Instructions",
+            "items": {
+                "comment": "For automatic submission supply an unique document name or UUID",
+                "title": "Sofware Instructions Document",
+                "type": "string",
+                "linkTo": "document"
+            },
+            "type": "array"
+        },
+        "encode2_dbxrefs": {
+            "default": [],
+            "description": "List cross-references to the previous ENCODE2 system",
+            "items": {
+                "description": "List of ENCODE2 Identifiers",
+                "title": "ID",
+                "type":  "string"
+            },
+            "title": "ENCODE2 DBXREFs",
+            "type": "array"
+        },
+        "references": {
+            "default": [],
+            "description": "List of references (Pubmed IDs)",
+            "title": "References",
+            "reference": {
+                "description": "Pubmed id for a published reference",
+                "title": "Pubmed Reference",
+                "type": "string",
+                "pattern": "^PMID:[0-9]+$"
+            },
+            "type": "array"
+        },
+        "bug_tracker_url": {
+            "description": "URL for the software bug tracker",
+            "title": "Bug Tracker URL",
+            "type": "string",
+            "format": "uri"
+        },
+        "source_url": {
+            "description": "URL for the software source code (repository)",
+            "title": "Source URL",
+            "type": "string",
+            "format": "uri"
+        },
+        "url": {
+            "description": "URL for the software website.",
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
+        }
+    }
+
+}

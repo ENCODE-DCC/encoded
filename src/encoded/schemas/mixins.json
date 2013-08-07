@@ -1,0 +1,150 @@
+{
+    "title": "Mixin properties",
+    "uuid": {
+        "uuid": {
+            "title": "UUID",
+            "description": "",
+            "type": "string",
+            "format": "uuid",
+            "permission": "import_items",
+            "requestMethod": "POST"
+        }
+    },
+    "accession": {
+        "accession": {
+            "description": "ENCODE DCC assigned accession",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Accession",
+            "type": "string",
+            "format": "accession",
+            "permission": "import_items"
+        },
+        "alternate_accessions": {
+            "default": [],
+            "description": "Accessions previously assigned to objects that have been merged with this one.",
+            "comments": "Not to be submitted or updated by non-admin users.",
+            "title": "Alternate Accessions",
+            "type": "array",
+            "permission": "import_items",
+            "items": {
+                "description": "An alternate accession",
+                "title": "Alt. Accession",
+                "type": "string",
+                "format": "accession"
+            }
+        }
+    },
+    "aliases": {
+        "aliases": {
+            "default": [],
+            "description": "List of lab IDs or cross-references",
+            "items": {
+                "description": "List of Database IDs",
+                "comments": "please use LABNAME:DBID",
+                "title": "Database IDs",
+                "type":  "string",
+                "pattern": "^\\S+:\\S+"
+            },
+            "title": "Lab Aliases",
+            "type": "array"
+        }
+    },
+    "submitted": {
+        "is_current": {
+            "description": "",
+            "title": "Is Current",
+            "type": "boolean",
+            "default": true
+        },
+        "date_created": {
+            "description": "",
+            "title": "Date Created",
+            "type": "string",
+            "format": "date",
+            "serverDefault": "now",
+            "permission": "import_items"
+        },
+        "submitted_by": {
+            "description": "",
+            "comment": "For automatic submission submit the email or colleague uuid for the submitting user",
+            "title": "Submitted By",
+            "type": "string",
+            "linkTo": "user",
+            "serverDefault": "userid",
+            "permission": "import_items"
+        },
+        "lab": {
+            "description": "Submitting Lab",
+            "comment": "Automatic submitters can supply a Lab UUID or Name",
+            "title": "Lab",
+            "type": "string",
+            "linkTo": "lab"
+        },
+        "award": {
+            "description": "Award (Grant) this submission is registered under",
+            "comment": "Automatic submitters can supply an Award UUID, name, or number",
+            "title": "Award Name",
+            "type": "string",
+            "linkTo": "award"
+        }
+     },
+     "attachment": {
+        "attachment": {
+            "description": "Document file metadata",
+            "title": "Document File Metadata",
+            "type": "object",
+            "properties": {
+                "download": {
+                    "description": "The filename that will appear when downloaded from the web",
+                    "title": "File Download Name",
+                    "type": "string"
+                },
+                "href": {
+                    "description": "Internal webapp URL for document file",
+                    "title": "href",
+                    "type": "string",
+                    "format": "uri"
+                },
+                "type": {
+                    "description": "File MIME-type",
+                    "title": "MIME-type",
+                    "enum": [
+                        "application/pdf",
+                        "text/plain",
+                        "text/tab-separated-values",
+                        "image/jpeg",
+                        "image/tiff",
+                        "image/gif",
+                        "image/png"
+                    ]
+                }
+            }
+        }
+    },
+    "biosample_classification": {
+        "biosample_term_id": {
+            "description": "Ontology term ID describing biosample type",
+            "comment": "Valid ontologies for biosamples are: Uberon, EFO, BTO, or CL.  NTR is a new term request from ENCODE DCC.",
+            "title": "Ontology ID",
+            "type": "string",
+            "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR):[0-9]{2,8}$"
+        },
+        "biosample_term_name": {
+            "description": "Ontology term describing biosample type",
+            "title": "Ontology Term",
+            "type":  "string"
+        },
+        "biosample_type": {
+            "description": "The sub-type of the biosample",
+            "title": "Biosample Type",
+            "type": "string",
+            "enum" : [
+                "primary cell line",
+                "immortalized cell line",
+                "tissue",
+                "in vitro differentiated cells",
+                "induced pluripotent stem cell line"
+            ]
+        }
+    }
+}

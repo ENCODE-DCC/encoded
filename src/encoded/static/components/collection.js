@@ -119,7 +119,7 @@ function (collection, $, class_, React, globals) {
             var column_list = props.context.columns;
             var columns = []
             if (Object.keys(column_list).length === 0) {
-                for (var key in props.context.items[0]) {
+                for (var key in props.context['@graph'][0]) {
                     if (key.slice(0, 1) != '@' && key.search(/(uuid|_no|accession)/) == -1) {
                         columns.push(key);
                     }
@@ -138,7 +138,7 @@ function (collection, $, class_, React, globals) {
         extractData: function (props, columns) {
             var context = props.context;
             columns = columns || this.state.columns;
-            var rows = context.items.map(function (item) {
+            var rows = context['@graph'].map(function (item) {
                 var cells = columns.map(function (column) {
                     var factory;
                     // cell factories

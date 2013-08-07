@@ -1,0 +1,80 @@
+test	uuid	name	description	title	url																			
+test	b40f24ee-8803-4937-9223-1df3a6bf3cd9	abcam	Abcam	Abcam	http://www.abcam.com																			
+test	f21c8da9-4f9a-41bb-b815-30fad0fa5a93	abnova	Abnova	Abnova	http://www.abnova.com																			
+test	12cdc4fc-4506-4c2e-ad62-38810c12d45f	active-motif	Active Motif	Active Motif	http://www.activemotif.com																			
+test	eadabaf1-d5b6-4b48-8847-e86461f12101	atcc	American Type Culture Collection (ATCC)	ATCC	http://www.atcc.org/																			
+test	fa173c30-cf42-4a70-81d7-0734c577e820	arthur-skoultchi	Arthur Skoultchi at Albert Einstein College of Medicine	Arthur Skoultchi	http://www.einstein.yu.edu/faculty/4683/arthur-skoultchi/																			
+test	e34dbfae-7170-4486-92d0-f640587276e8	austin-smith	Austin Smith at University of Cambridge	Austin Smith	http://www.bioc.cam.ac.uk/uto/smitha																			
+test	fa701215-07e6-4ffe-a8f4-20356d66f3e0	aviva	Aviva Systems Biology	Aviva	http://www.avivasysbio.com																			
+test	82fc89e4-81a0-42af-b30e-fb5943b97b31	barbara-wold	Barbara Wold at California Institute of Technology	Barbara Wold	http://woldlab.caltech.edu/																			
+test	409ad2e5-845f-4203-9440-0a55298828a9	bd-biosciences	BD Biosciences	BD Biosciences	http://www.bdbiosciences.com																			
+test	46b0b03b-4076-4d22-99ea-1b3a71bdb750	bethyl-labs	Bethyl Laboratories	Bethyl Labs	http://www.bethyl.com																			
+test	15fa3aa7-3533-4aaa-8bde-1d0e1f5ddbc1	beverly-torok-storb	Beverly Torok-Storb at Fred Hutchison Cancer Research Center	Beverly Torok-Storb	http://cceh.fhcrc.org/																			
+test	54c4c43c-523d-4287-981d-cdb0d523674f	bing-ren	Bing Ren at University of California, San Diego	Bing Ren	http://bioinformatics-renlab.ucsd.edu/rentrac/																			
+test	8599bb19-6c08-4610-9ebf-125c5346461e	biochain	BioChain Institute Inc	BioChain	http://www.biochain.com																			
+test	8d5a7d60-7265-41f8-b540-e09530200cd3	cayman	Cayman Chemical	Cayman	http://www.caymanchem.com																			
+test	c1b2e97d-9237-4f92-ad61-ff7a81a75ea1	cdi	CDI Laboratories	CDI	http://www.cdi-lab.com/index.html																			
+test	3f9abe41-7a7c-46b5-886b-5aeeeb435004	cell-signaling	Cell Signaling Technology	Cell Signaling	http://www.cellsignal.com																			
+test	5485ddc0-fec8-4a18-a62b-109d83268c9d	christine-disteche	Christine Disteche at University of Washington	Christine Disteche	http://depts.washington.edu/chdd/iddrc/res_aff/disteche.html																			
+test	409d724e-067e-4744-8d5b-c8f806136d80	coriell	Coriell Institute for Medical Research	Coriell	http://www.coriell.org/																			
+test	d53c77c6-0300-421e-8884-42aca9d53e78	covance	Covance	Covance	https://store.crpinc.com																			
+test	b3e069d1-ea98-4b05-a3bb-46f44024392c	dana-levasseur	Dana Levasseur at University of Iowa	Dana Levasseur	http://www.int-med.uiowa.edu/Divisions/Immunology/Directory/DanaLevasseur.html																			
+test	1ca41cd5-80dc-4614-91f1-10b0c6f17c5d	david-anderson	David Anderson at Protein Expression Center	David Anderson	http://www.cns.caltech.edu/people/faculty/anderson.html																			
+test	c2469383-4d0f-4e22-a545-b73738191343	david-bodine	David Bodine at National Human Genome Research Institute	David Bodine	http://www.genome.gov/10000336																			
+test	163f28e4-5fb1-492c-a52e-d1f4d6d64299	david-gilbert	David Gilbert at Florida State University	David Gilbert	http://gilbertlab.bio.fsu.edu/																			
+test	b313c480-f947-4c2f-81ff-f4260d9fd8c1	david-randolph	David Randolph at University of Alabama	David Randolph	http://138.26.61.118/depts/MEB/SOMResearchFaculty/currentfacultydata.asp?ID=DRDRDR																			
+test	62792cde-3ad0-44f5-8fe0-1685de76d586	diagenode	Diagenode	Diagenode	http://www.diagenode.com																			
+test	2b165001-234d-478c-8c12-49f8fd092590	emery-bresnick	Emery Bresnick at University of Wisconsin, Madison	Emery Bresnick	http://stemcells.wisc.edu/node/101																			
+test	f924b267-5020-4810-9179-7d28254a4fe3	encode2	ENCODE2	ENCODE2	http://encodeproject.org																			
+test	be960dc7-1912-4ff5-8b1a-a7e2e1b2533e	encode	ENCODE Project	ENCODE	http://encodeproject.org																			
+test	1c8572e5-9952-4e46-b6be-d46b1d928293	epitomics	Epitomics	Epitomics	http://www.epitomics.com																			
+test	b8887426-1cef-41a8-8ef8-404dc5f108fc	eurogentec	Eurogentec	Eurogentec	http://www.eurogentec.com/eu-home.html																			
+test	32a667d7-383e-4ad3-bf0c-31ec58add114	genetex	GeneTex	GeneTex	http://www.genetex.com																			
+test	3358460f-4179-49a3-9be7-e490507dd8bc	genhong-cheng	Genhong Cheng Lab at University of California, Los Angeles	Genhong Cheng	http://www.mimg.ucla.edu/faculty/cheng/																			
+test	5df0e109-b002-4443-b322-0a8ce6f5d880	gordon-hager	Gordon Hager at the National Institutes of Health	Gordon Hager	http://ccr.cancer.gov/staff/staff.asp?profileid=5817																			
+test	6bf39a01-cb18-407c-b984-05fc83d7d73b	gregory-crawford	Gregory Crawford at Duke University	Gregory Crawford	http://www.genome.duke.edu/labs/crawford/																			
+test	e5262635-e4c8-4cf7-bfab-ad7e8959f648	ecacc	Health Protection Agency Culture Collections	ECACC	http://www.hpacultures.org.uk																			
+test	fd53a65a-330e-4b0c-b71c-fbe1c1f0571a	james-engel	James Engel at University of Michigan	James Engel	http://www.med.umich.edu/cdb/people/engel.html																			
+test	ce2db491-e17e-4fde-b4a2-912d531c9ccc	jefferey-marks	Jefferey Marks at Duke University	Jefferey Marks	http://surgery.duke.edu/faculty/details/0098991																			
+test	a4fdd11a-f37c-4592-b5f4-e3006ad655fa	jerrold-olefsky	Jerrold M. Olefsky Lab at University of California, San Diego	Jerrold Olefsky	http://endocrinology.ucsd.edu/Faculty/olefsky.html																			
+test	ce4d93b5-d677-42d2-882b-5bf1e96a7f2a	john-stamatoyannopoulos	John Stamatoyannopoulos at University of Washington	John Stamatoyannopoulos	http://www.gs.washington.edu/faculty/stamj.htm																			
+test	0d95fe43-a4b3-4081-b9ed-e7564fb428cf	josh-chenoweth	Josh Chenoweth at National Institute of Neurological Disorders and Stroke (NINDS)	Josh Chenoweth	http://www.ninds.nih.gov/																			
+test	dd05ba13-b5ca-4bc1-826e-5d116105015f	kevin-struhl	Kevin Struhl at Harvard University	Kevin Struhl	https://struhl.med.harvard.edu/																			
+test	f060244e-1d31-4633-ae4a-b06d21a90568	kevin-white	Kevin White at University of Chicago	Kevin White	http://www.genes.uchicago.edu/white.html																			
+test	324a4867-d17c-404f-a571-ea80fa297214	laszlo-tora	Laszlo Tora at Institut de Génétique et de Biologie Moléculaire et Cellulaire	Laszlo Tora	http://www.igbmc.fr/Tora/																			
+test	415dda4e-123c-414c-a870-c88717be4c07	dsmz	Leibniz Institute DSMZ	DSMZ	http://www.dsmz.de/																			
+test	30091cf1-cdd9-4f2f-b1d7-bf709b8afa49	len-pennacchio	Len Pennacchio at Joint Genome Institute	Len Pennacchio	http://www.jgi.doe.gov/whoweare/pennacchio.html																			
+test	7a6fe01a-e2ec-4055-b345-c7e2e4abb4d4	licia-selleri	Licia Selleri at Weill Cornell Medical College	Licia Selleri	http://www.cornellcelldevbiology.org/selleri/																			
+test	f00336ec-6bf3-48fe-8898-2a017f50b948	lonza	Lonza Group Ltd.	Lonza	http://www.lonza.com/																			
+test	9b0703e9-9f65-4d46-82cd-ca7bf6cedee3	marella-debruijn	Marella deBruijn at The Weatherall Institute of Molecular Medicine	Marella deBruijn	http://www.imm.ox.ac.uk/wimm-research/molhaem/marella-de-bruijn																			
+test	4ce04db5-4b04-42d7-b723-e8e9e798f1d2	michael-bender-and-rachel-byron	Michael Bender and Rachel Byron at Fred Hutchinson Cancer Research Center	Michael Bender and Rachel Byron	http://www.seattlechildrens.org/medical-staff/michael-a-bender/																			
+test	d83a9d9a-70e7-4469-b96d-abcc379e4eaf	michael-bender	Michael Bender at Fred Hutchinson Cancer Research Center	Michael Bender	http://www.seattlechildrens.org/medical-staff/michael-a-bender/																			
+test	45be6f13-5346-4952-ad74-141540384381	michael-snyder	Michael Snyder at Stanford University	Michael Snyder	http://snyderlab.stanford.edu																			
+test	2338a535-f9d9-4e91-a3ba-41bf1d891433	miguel-ramalho-santos	Miguel Ramalho-Santos at University of California, San Francisco	Miguel Ramalho-Santos	http://santoslab.ucsf.edu/lab_site/Home.html																			
+test	ede69357-7024-440e-979a-cdc926c69bff	millipore	Millipore	Millipore	http://www.millipore.com																			
+test	e6697e69-9c1b-4ff1-bf64-3bcb9eee107c	mitchell-weiss	Mitchell Weiss at University of Pennsylvania	Mitchell Weiss	http://www.med.upenn.edu/apps/faculty/index.php/g20000320/p14904																			
+test	4aa3ebbf-79b9-4cac-85d3-f22a621cf906	nichd	National Institute of Child Health and Human Development (NICHD)	NICHD	http://www.nichd.nih.gov/Pages/index.aspx																			
+test	8a39872a-a242-4c6e-9d00-eee2f099a6aa	novus	Novus Biologicals	Novus	http://www.novusbio.com																			
+test	d7b8d8a7-4abf-4d68-ad16-0fba096fd341	paul-yaswen	Paul Yaswen at University of California, Berkeley	Paul Yaswen	http://stemcellcenter.berkeley.edu/PIs/yaswen.html																			
+test	1fd2cfd5-95f3-4731-a839-033a06b4a2dd	peggy-farnham	Peggy Farnham at University of Southern California	Peggy Farnham	http://pibbs.usc.edu/faculty/profile/?fid=205																			
+test	eb9c6b10-9eca-4dab-8bf0-8fe7e484a80c	progeria-research	Progeria Research Foundation	Progeria Research	http://www.progeriaresearch.org																			
+test	b8e804f7-04f2-4042-8aca-eeeb12bdc6f1	promocell	PromoCell GmbH	PromoCell	http://www.promocell.com																			
+test	3ccf4d28-70fd-43fc-92a6-c5e9d09acd09	proteintech	Proteintech	Proteintech	http://www.ptglab.com																			
+test	e15bab28-d1e0-4242-a4ec-498c39643819	rd-systems	R&D Systems	RD Systems	http://www.rndsystems.com																			
+test	dcc29973-d1d9-42d4-8c4f-d3e63c59380a	robert-paulson	Robert Paulson at Pennsylvania State University	Robert Paulson	http://vbs.psu.edu/research/labs/paulson																			
+test	e1823da7-72c3-427a-804b-4ab4978c321a	robert-white	Robert White at Beatson Institute for Cancer Research	Robert White	http://www.beatson.gla.ac.uk/Regulation-of-Cancer-Cell-Proliferation-and-Growth/Robert-J-White-Gene-Transcription.html																			
+test	4c47ebef-05a7-4ef8-be47-cb7e57c3a34a	roberto-mantovani	Roberto Mantovani at Universita degli Studi di Milano	Roberto Mantovani	http://www.unimi.it/chiedove/schedaPersonaXML.jsp?matricola=12736																			
+test	bace8f5e-b342-47c5-9733-8970381e7c00	rockland	Rockland Immunochemicals	Rockland	http://rockland-inc.com																			
+test	017b0807-3dfa-4f9c-a632-81a57c873350	santa-cruz-biotech	Santa Cruz Biotechnology	Santa Cruz Biotech	http://www.scbt.com																			
+test	df860130-1f7e-4c0d-8329-57cdf1e64b24	sciencell	ScienCell Research Laboratories	ScienCell	http://www.sciencellonline.com/																			
+test	62d2ba10-75a2-42eb-895c-a213fe9b59df	sherman-weissman	Sherman Weissman at Yale University	Sherman Weissman	http://bbs.yale.edu/people/sherman_weissman.profile	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse	ENCODE2-Mouse
+test	97ef5e10-d532-4682-8507-1aa10e02b7a2	shinya-yamanaka	Shinya Yamanaka at University of California, San Francisco	Shinya Yamanaka	http://gladstoneinstitutes.org/scientist/yamanaka																			
+test	f13c90dd-1b51-439a-8d78-ca033c6aef23	sigma	Sigma-Aldrich	Sigma	http://www.sigmaaldrich.com																			
+test	20a0d0d3-fd1a-4030-9df3-ddb24c4e6bb0	stephen-smale	Stephen Smale at University of California, Los Angeles	Stephen Smale	http://people.healthsciences.ucla.edu/institution/personnel?personnel_id=45693																			
+test	d6dd96cd-20cd-463a-a482-fdde01f35a15	taconic	Taconic Farms, Inc	Taconic	http://www.taconic.com																			
+test	02fb3217-6216-45ff-8248-0a7e3f903c28	thermo-fisher	Thermo Fisher Scientific Inc.	Thermo Fisher	http://www.thermofisher.com/global/en/home.asp																			
+test	08d0ddd1-56cf-45b3-8933-6d254076916a	thomas-gingeras	Thomas Gingeras at Cold Spring Harbor Laboratory	Thomas Gingeras	http://gingeraslab.cshl.edu/																			
+test	a9ac2187-c8aa-40dd-a92f-afd779b86de4	tcesc	Transgenic Core and Embryonic Stem Cell at University of California, San Diego	TCESC	http://cancer.ucsd.edu/research-training/shared-resources/transgenic-core/Pages/default.aspx																			
+test	d0955680-7357-44cb-b38c-e022243ce600	yang-shi	Yang Shi at Harvard University	Yang Shi	http://cellbio.med.harvard.edu/faculty/shi																			
+test	604321f2-18ee-4ad3-9050-ad5bd0319b43	yoichi-shinkai	Yoichi Shinkai at RIKEN	Yoichi Shinkai	http://www.asi.riken.jp/en/laboratories/chieflabs/cml/																			
+test	e9e4d626-85bd-46fc-9c50-14579bfd6053	zenbio	ZenBio	ZenBio	http://www.zen-bio.com																			

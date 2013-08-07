@@ -8,6 +8,7 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 requires = [
     'Pillow',
     'SQLAlchemy',
+    'WSGIProxy2',
     'WebTest',
     'jsonschema',
     'loremipsum',
@@ -15,9 +16,11 @@ requires = [
     'pyramid',
     'pyramid_multiauth',
     'pyramid_tm',
+    'python-magic',
+    'rfc3987',
     'setuptools',
+    'strict_rfc3339',
     'xlrd',
-    'xlutils',
     'zope.sqlalchemy',
     'PyBrowserID',
     'pyelasticsearch',
@@ -49,8 +52,11 @@ setup(
     },
     entry_points='''
         [console_scripts]
+
         extract_test_data = encoded.commands.extract_test_data:main
         es_index_data = encoded.commands.es_index_data:main
+        import-data = encoded.commands.import_data:main
+
 
         [paste.app_factory]
         main = encoded:main

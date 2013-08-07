@@ -1,202 +1,147 @@
 {
-    "title": "", 
-    "description": "", 
-    "default": null, 
-    "type": [
-        "object", 
-        "null"
-    ], 
+    "title": "ENCODE Antibody Lot",
+    "id": "/profiles/antibody_lot.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "version": "0.01",
+    "description": "Schema for submitting an ENCODE Antibody (no target or validation information)",
+    "type": "object",
+    "required": [ "award", "lab", "product_id", "source"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
     "properties": {
-        "antibody_accession": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "antibody_description": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "antigen_description": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "antigen_sequence": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "clonality": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "dbxref": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "items": {
-                "title": "", 
-                "description": "", 
-                "default": null, 
-                "type": [
-                    "object", 
-                    "null"
-                ], 
-                "properties": {
-                    "db": {
-                        "title": "", 
-                        "description": "", 
-                        "default": null, 
-                        "type": [
-                            "string", 
-                            "null"
-                        ]
-                    }, 
-                    "id": {
-                        "title": "", 
-                        "description": "", 
-                        "default": null, 
-                        "type": [
-                            "string", 
-                            "null"
-                        ]
-                    }
-                }
-            }, 
-            "type": [
-                "array", 
-                "null"
-            ]
-        }, 
-        "host_organism": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "is_obsolete": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "isotype": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
+        "schema-version": {
+            "description": "The version of JSON schema files used in the generation of the example",
+            "comment":  "Must match the specific schemas' `version` property",
+            "type": "string",
+            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        },
+        "source": {
+            "description": "Source or Vendor of Antibody",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Antibody Source",
+            "type": "string",
+            "linkTo": "source"
+        },
         "lot_id": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
+            "default": "unknown",
+            "description": "The vendor's id code for the antibody lot",
+            "title": "Antibody Lot ID",
+            "type": "string"
+        },
         "product_id": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
+            "description": "The vendor's antibody product code",
+            "title": "Antibody Product ID",
+            "type": "string"
+        },
+        "lot_id_alias": {
+            "default": [],
+            "description": "Alias for the lot ID",
+            "title": "Lot ID alias",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "antigen_description": {
+            "default": "",
+            "description": "Description of the antigen used in raising the antibody",
+            "title": "Antigen description",
+            "type": "string"
+        },
+        "antigen_sequence": {
+            "description": "Sequence of the antigen used in raising the antibody",
+            "title": "Antigen Sequence",
+            "type": "string"
+        },
+        "clonality": {
+            "description": "Whether the antibody is mono- or poly- clonal",
+            "title": "Antibody Clonality",
+            "type": "string",
+            "enum": [
+                "polyclonal",
+                "monoclonal"
             ]
-        }, 
-        "purification": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
+        },
+        "encode2_dbxrefs": {
+            "default": [],
+            "description": "List cross-references to the previous ENCODE2 system",
+            "items": {
+                "description": "List of ENCODE2 Identifiers",
+                "title": "ID",
+                "type":  "string"
+            },
+            "title": "ENCODE2 DBXREFs",
+            "type": "array"
+        },
+        "host_organism": {
+            "description": "Organism antibody was grown in.",
+            "title": "Host Organism",
+            "type": "string",
+            "linkTo": "organism"
+        },
+        "isotype": {
+            "description": "Isotype of the antibody (IgA, IgD, etc.)",
+            "title": "Antibody Isotype",
+            "type": "string",
+            "enum": [
+                "IgA1",
+                "IgA2",
+                "IgD",
+                "IgG",
+                "IgGκ",
+                "IgG1",
+                "IgG1κ",
+                "IgG1λ",
+                "IgG2",
+                "IgG2κ",
+                "IgG2λ",
+                "IgG2a",
+                "IgG2aκ",
+                "IgG2aλ",
+                "IgG2b",
+                "IgG2bκ",
+                "IgG2bλ",
+                "IgG3",
+                "IgG3κ",
+                "IgG4",
+                "IgA",
+                "IgM",
+                "IgMκ",
+                "IgE",
+                "serum"
             ]
-        }, 
-        "source_uuid": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "submittd_by": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "submitted_by_grant": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "submitted_by_pi": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
-        "target_label": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
-        }, 
+        },
+        "purifications": {
+            "description": "Method by which antibody was purified",
+            "title": "Purification Methods",
+            "type": "array",
+            "default": [],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "Protein A/G",
+                    "affinity",
+                    "Protein A",
+                    "Protein G",
+                    "crude",
+                    "other",
+                    "IEC",
+                    "IMAC",
+                    "tissue culture supernatant",
+                    "antiserum"
+                ]
+            }
+        },
         "url": {
-            "title": "", 
-            "description": "", 
-            "default": null, 
-            "type": [
-                "string", 
-                "null"
-            ]
+            "description": "External URL for the specific antibody at vendor site",
+            "title": "External URL",
+            "type": "string",
+            "format": "uri"
         }
     }
 }

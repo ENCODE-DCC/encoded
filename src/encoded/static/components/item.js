@@ -59,15 +59,7 @@ function (item, React, globals) {
 
     var title = item.title = function (props) {
         var context = props.context;
-        if (context.title) {
-            return context.title;
-        }
-        for (var key in context) {
-            if (key.search('accession') != -1) {
-                return context[key];
-            }
-        }
-        return context['@id'];
+        return context.title || context.name || context.accession || context['@id'];
     };
 
     globals.listing_titles.register(item.generic_title, 'item');
