@@ -7,32 +7,35 @@ DOCTYPE = 'basic'
 es = ElasticSearch(ES_URL)
 
 basic_mapping = {'basic': {}}
-targets_mapping = {'basic': {'properties': {'lab': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}, 'geneid_dbxref_list': {'type': 'string', 'index': 'not_analyzed'}, 'date_created': {'type': 'string', 'index': 'not_analyzed'}}}}
-biosamples_mapping = {'basic': {'properties': {'system_slims': {'type': 'string', 'index': 'not_analyzed'}, 'organ_slims': {'type': 'string', 'index': 'not_analyzed'}, 'biosample_type': {'type': 'string', 'index': 'not_analyzed'}, 'lot_id': {'type': 'string'}, 'donor': {'type': 'nested'}, 'lab': {'type': 'nested'}, 'award': {'type': 'nested'}, 'submitter': {'type': 'nested'}, 'source': {'type': 'nested'}, 'treatments': {'type': 'nested'}, 'constructs': {'type': 'nested'}}}}
-experiments_mapping = {'basic': {'properties': {'lab': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}, 'replicates': {'type': 'nested', 'properties': {'library id (sanity)': {'type': 'string'}}}}}}
+targets_mapping = {'basic': {'properties': {'lab': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}, 'geneid_dbxref_list': {'type': 'string', 'index': 'not_analyzed'}}}}
+biosamples_mapping = {'basic': {'properties': {'system_slims': {'type': 'string', 'index': 'not_analyzed'}, 'organ_slims': {'type': 'string', 'index': 'not_analyzed'}, 'biosample_type': {'type': 'string', 'index': 'not_analyzed'}, 'treatments': {'type': 'nested'}, 'constructs': {'type': 'nested'}}}}
+experiments_mapping = {'basic': {'properties': {'files': {'type': 'nested', 'properties': {'replicate': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}}, 'lab': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}, 'replicates': {'type': 'nested', 'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}, 'library id (sanity)': {'type': 'string'}}}}}}
 libraries_mapping = {'basic': {'properties': {'size_range': {'type': 'string'}}}}
 replicates_mapping = {'basic': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}
-antibodies_mapping = {'basic': {'properties': {'antibody_lot': {'properties': {'source': {'properties': {'source_name': {'type': 'string', 'index': 'not_analyzed'}}}}}, 'target': {'properties': {'geneid_dbxref_list': {'type': 'string', 'index': 'not_analyzed'}, 'date_created': {'type': 'string', 'index': 'not_analyzed'}}}}}}
+antibodies_mapping = {'basic': {'properties': {'antibody_lot': {'properties': {'source': {'properties': {'source_name': {'type': 'string', 'index': 'not_analyzed'}}}}}}}}
+donors_mapping = {'basic': {'properties': {'age': {'type': 'string'}}}}
 
 COLLECTION_URL = OrderedDict([
+    ('/users/', ['colleagues', basic_mapping]),
     ('/awards/', ['awards', basic_mapping]),
     ('/labs/', ['labs', basic_mapping]),
-    ('/users/', ['submitters', basic_mapping]),
     ('/organisms/', ['organisms', basic_mapping]),
     ('/sources/', ['sources', basic_mapping]),
     ('/targets/', ['targets', targets_mapping]),
     ('/antibody-lots/', ['antibody_lots', basic_mapping]),
-    ('/validations/', ['validations', basic_mapping]),
+    ('/validations/', ['antibody_validations', basic_mapping]),
     ('/antibodies/', ['antibodies', antibodies_mapping]),
-    ('/donors/', ['donors', basic_mapping]),
+    ('/mouse-donors/', ['mouse-donors', donors_mapping]),
+    ('/human-donors/', ['human-donors', donors_mapping]),
     ('/treatments/', ['treatments', basic_mapping]),
     ('/constructs/', ['constructs', basic_mapping]),
+    ('/construct-validations/', ['construct_validations', basic_mapping]),
+    ('/rnai/', ['rnai', basic_mapping]),
     ('/biosamples/', ['biosamples', biosamples_mapping]),
     ('/platforms/', ['platforms', basic_mapping]),
-    ('/libraries/', ['libraries', libraries_mapping]),
-    ('/assays/', ['assays', basic_mapping]),
-    ('/replicates/', ['replicates', replicates_mapping]),
-    ('/experiments/', ['experiments', experiments_mapping])
+    ('/libraries/', ['libraries', basic_mapping]),
+    ('/experiments/', ['experiments', experiments_mapping]),
+    ('/replicates/', ['replicates', replicates_mapping])
 ])
 
 
@@ -54,7 +57,7 @@ def main():
     for url in COLLECTION_URL:
         print "Indexing " + COLLECTION_URL.get(url)[0] + " ...."
         res = testapp.get(url + '?limit=all', headers={'Accept': 'application/json'}, status=200)
-        items = res.json['items']
+        items = res.json['@graph']
 
         # try creating index, if it exists already delete it and create it again and generate mapping
         index = COLLECTION_URL.get(url)[0]
