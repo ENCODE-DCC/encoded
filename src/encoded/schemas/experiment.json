@@ -7,6 +7,7 @@
     "comment": "Experiment is a special case of Dataset",
     "type": "object",
     "required": ["award", "lab", "dataset_type"],
+    "facets": ["lab.title", "assay_term_name", "target.organism.name"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "additionalProperties": false,
     "mixinProperties": [

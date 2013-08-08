@@ -6,6 +6,7 @@
     "description": "Schema for submitting a target of an antibody or experiment to the ENCODE DCC",
     "type": "object",
     "required": [ "award", "lab", "organism", "label"],
+    "facets": ["lab.name", "organism.name"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
