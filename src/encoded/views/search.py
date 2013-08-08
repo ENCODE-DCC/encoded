@@ -15,26 +15,28 @@ def search(context, request):
         '@id': '/search/',
         '@type': ['search'],
         'title': 'ElasticSearch View',
-        'items': {}
+        '@graph': {}
     })
     items = {}
-    items['results'] = []
-    items['count'] = {}
     queryTerm = request.params.get('searchTerm')
-    if len(request.params) == 1:
-        if queryTerm:
+    if queryTerm:
+        if len(request.params) == 1:
+            items['results'] = []
+            items['count'] = {}
             indexes = ['biosamples', 'antibodies', 'experiments', 'targets']
             for index in indexes:
                 s = es.search(queryTerm, index=index, size=1000)
                 items['count'][index] = len(s['hits']['hits'])
                 for data in s['hits']['hits']:
                     items['results'].append(data['_source'])
-    elif len(request.params) > 1:
-        index = request.params.get('index')
-        s = es.search(queryTerm, index=index, size=1000)
-        items['count'][index] = len(s['hits']['hits'])
-        for data in s['hits']['hits']:
-            items['results'].append(data['_source'])
+        else:
+            items['results'] = []
+            items['count'] = {}
+            index = request.params.get('type')
+            s = es.search(queryTerm, index=index, size=1000)
+            items['count'][index] = len(s['hits']['hits'])
+            for data in s['hits']['hits']:
+                items['results'].append(data['_source'])
 
-    result['items'] = items
+    result['@graph'] = items
     return result

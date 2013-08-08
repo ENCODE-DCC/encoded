@@ -5,7 +5,8 @@ function (search, $, React, globals) {
 
     var ResultTable = search.ResultTable = React.createClass({
         render: function() {
-            var results = this.props.context.items;
+            var context = this.props.context;
+            var results = context['@graph'];
             var url = (this.props.location)['search'];
             console.log(location);
             var resultsView = function(result) {
@@ -24,8 +25,8 @@ function (search, $, React, globals) {
                         return <li>
                                 <h6>Experiment</h6>
                                 <div>
-                                    <h4><a href={result['@id']}>{result['dataset_accession']}</a></h4>
-                                    <i>{result['dataset_description']} - {result['lab']['name']}</i>
+                                    <h4><a href={result['@id']}>{result['accession']}</a></h4>
+                                    <i>{result['description']} - {result['assay_term_name']} - {result['lab']['title']}</i>
                                 </div>
                                 <hr></hr>
                             </li>
@@ -34,8 +35,8 @@ function (search, $, React, globals) {
                         return <li>
                                 <h6>Antibody</h6>
                                 <div>
-                                    <h4><a href={result['@id']}>{result['antibody_lot']['antibody_accession']}</a></h4>
-                                    <i>{result['target']['target_label']} - {result['target']['organism']['organism_name']} - {result['target']['lab']['name']}</i>
+                                    <h4><a href={result['@id']}>{result['antibody']['accession']}</a></h4>
+                                    <i>{result['target']['name']} - {result['target']['lab']['title']}</i>
                                 </div>
                                 <hr></hr>
                             </li>
@@ -44,8 +45,8 @@ function (search, $, React, globals) {
                         return <li>
                                 <h6>Target</h6>
                                 <div>
-                                    <h4><a href={result['@id']}>{result['target_label']}</a></h4>
-                                    <i>{result['organism']['organism_name']} - {result['lab']['name']}</i>
+                                    <h4><a href={result['@id']}>{result['name']}</a></h4>
+                                    <i>{result['organism']['name']} - {result['lab']['title']}</i>
                                 </div>
                                 <hr></hr>
                             </li>
@@ -63,25 +64,25 @@ function (search, $, React, globals) {
                                     {results['count']['antibodies'] ?
                                         <li>
                                             <span class="badge pull-right">{results['count']['antibodies']}</span>
-                                            <a href={'/search'+ url+'&index=antibodies'}>Antibodies</a>
+                                            <a href={'/search'+ url+'&type=antibodies'}>Antibodies</a>
                                         </li>
                                     : null}
                                     {results['count']['biosamples'] ?
                                         <li>
                                             <span class="badge pull-right">{results['count']['biosamples']}</span>
-                                            <a href={'/search'+ url+'&index=biosamples'}>Biosamples</a>
+                                            <a href={'/search'+ url+'&type=biosamples'}>Biosamples</a>
                                         </li>
                                     : null}
                                     {results['count']['experiments'] ?
                                         <li>
                                             <span class="badge pull-right">{results['count']['experiments']}</span>
-                                            <a href={'/search'+ url+'&index=experiments'}>Experiments</a>
+                                            <a href={'/search'+ url+'&type=experiments'}>Experiments</a>
                                         </li>
                                     : null}
                                     {results['count']['targets'] ?
                                         <li>
                                             <span class="badge pull-right">{results['count']['targets']}</span>
-                                            <a href={'/search'+ url+'&index=targets'}>Targets</a>
+                                            <a href={'/search'+ url+'&type=targets'}>Targets</a>
                                         </li>
                                     : null}
                                 </ul>
@@ -107,7 +108,8 @@ function (search, $, React, globals) {
             return {items: [], text: ''};
         },
         render: function() {
-            var results = this.props.context.items;
+            var context = this.props.context;
+            var results = context['@graph'];
             return (
                 <div >
                     <form class="input-prepend">
