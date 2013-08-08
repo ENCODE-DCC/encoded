@@ -3,12 +3,53 @@ define(['exports', 'jquery', 'react', 'globals'],
 function (search, $, React, globals) {
     'use strict';
 
+    var FacetBuilder = search.FacetBuilder = React.createClass({
+        render: function() {
+            var context = this.props.context;
+            var facets = context['@graph']['facets'];
+            var terms = [];
+            var url = (this.props.location)['search'];
+            
+            for (var i in facets) {
+                terms.push(i);
+            }
+            var buildTerms = function(map) {
+                var id;
+                var count;
+                for (var j in map) {
+                    id = j;
+                    count = map[j];
+                }
+                return <li>
+                        <span class="badge pull-right">{count}</span>
+                        <a href><small>{id}</small></a>
+                    </li>
+            };
+            var buildSection = function(term) {
+                return <div>
+                            <legend><small>{term}</small></legend>
+                            <ul class="facet-list">
+                                {facets[term].length ?
+                                    facets[term].map(buildTerms)
+                                : null}
+                            </ul>
+                        </div>
+            };
+            return (
+                <div>
+                    {Object.keys(facets).length ?
+                        terms.map(buildSection)
+                    : null}
+                </div>
+            );
+        }
+    });
+
     var ResultTable = search.ResultTable = React.createClass({
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
             var url = (this.props.location)['search'];
-            console.log(location);
             var resultsView = function(result) {
                 switch (result['@type'][0]) {
                     case "biosample":
@@ -59,33 +100,38 @@ function (search, $, React, globals) {
                         <div class="span3" id="facets">
                             <h4>Filter Results</h4>
                             <section class="facet wel box">
-                                <h4>Data Type</h4>
-                                <ul class="facet-list">
-                                    {results['count']['antibodies'] ?
-                                        <li>
-                                            <span class="badge pull-right">{results['count']['antibodies']}</span>
-                                            <a href={'/search'+ url+'&type=antibodies'}>Antibodies</a>
-                                        </li>
-                                    : null}
-                                    {results['count']['biosamples'] ?
-                                        <li>
-                                            <span class="badge pull-right">{results['count']['biosamples']}</span>
-                                            <a href={'/search'+ url+'&type=biosamples'}>Biosamples</a>
-                                        </li>
-                                    : null}
-                                    {results['count']['experiments'] ?
-                                        <li>
-                                            <span class="badge pull-right">{results['count']['experiments']}</span>
-                                            <a href={'/search'+ url+'&type=experiments'}>Experiments</a>
-                                        </li>
-                                    : null}
-                                    {results['count']['targets'] ?
-                                        <li>
-                                            <span class="badge pull-right">{results['count']['targets']}</span>
-                                            <a href={'/search'+ url+'&type=targets'}>Targets</a>
-                                        </li>
-                                    : null}
-                                </ul>
+                                <div>
+                                    <legend><small>Data Type</small></legend>
+                                    <ul class="facet-list">
+                                        {results['count']['antibodies'] ?
+                                            <li>
+                                                <span class="badge pull-right">{results['count']['antibodies']}</span>
+                                                <a href={'/search'+ url+'&type=antibodies'}><small>Antibodies</small></a>
+                                            </li>
+                                        : null}
+                                        {results['count']['biosamples'] ?
+                                            <li>
+                                                <span class="badge pull-right">{results['count']['biosamples']}</span>
+                                                <a href={'/search'+ url+'&type=biosamples'}><small>Biosamples</small></a>
+                                            </li>
+                                        : null}
+                                        {results['count']['experiments'] ?
+                                            <li>
+                                                <span class="badge pull-right">{results['count']['experiments']}</span>
+                                                <a href={'/search'+ url+'&type=experiments'}><small>Experiments</small></a>
+                                            </li>
+                                        : null}
+                                        {results['count']['targets'] ?
+                                            <li>
+                                                <span class="badge pull-right">{results['count']['targets']}</span>
+                                                <a href={'/search'+ url+'&type=targets'}><small>Targets</small></a>
+                                            </li>
+                                        : null}
+                                    </ul>
+                                </div>
+                                {Object.keys(results['facets']).length ?
+                                    <FacetBuilder context={this.props.context} />
+                                :null }
                             </section>
                         </div>
                         <div class="span8">

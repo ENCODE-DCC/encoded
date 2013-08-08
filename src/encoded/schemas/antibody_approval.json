@@ -6,7 +6,7 @@
     "description": "Schema for submitting antibody validation data",
     "type": "object",
     "required": [ "award", "lab", "antibody", "status", "target" ],
-    "facets":["status", "target.organism.name", "antibody.source.name"],
+    "facets":{"Approval Status": "status", "Lab": "target.lab.title", "Organism": "antibody.host_organism.name"},
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
