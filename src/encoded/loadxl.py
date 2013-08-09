@@ -489,29 +489,30 @@ UPDATE_PIPELINES = {
 
 
 def load_all(testapp, filename, docsdir, test=False):
-    import pdb
-    import sys
-    import traceback
-    try:
-        for item_type in ORDER:
+    for item_type in ORDER:
+        try:
             source = read_single_sheet(filename, item_type)
-            pipeline = get_pipeline(testapp, docsdir, test, item_type, 1)
-            process(combine(source, pipeline))
+        except ValueError:
+            continue
+        pipeline = get_pipeline(testapp, docsdir, test, item_type, 1)
+        process(combine(source, pipeline))
 
-        for item_type in ORDER:
-            if item_type not in UPDATE_PIPELINES:
-                continue
+    for item_type in ORDER:
+        if item_type not in UPDATE_PIPELINES:
+            continue
+        try:
             source = read_single_sheet(filename, item_type)
-            pipeline = get_pipeline(testapp, docsdir, test, item_type, 2)
-            process(combine(source, pipeline))
-    except:
-        type, value, tb = sys.exc_info()
-        traceback.print_exc()
-        pdb.post_mortem(tb)
+        except ValueError:
+            continue
+        pipeline = get_pipeline(testapp, docsdir, test, item_type, 2)
+        process(combine(source, pipeline))
 
 
 def update_all(testapp, filename, docsdir, test=False):
     for item_type in ORDER:
-        source = read_single_sheet(filename, item_type)
+        try:
+            source = read_single_sheet(filename, item_type)
+        except ValueError:
+            continue
         pipeline = get_pipeline(testapp, docsdir, test, item_type, None)
         process(combine(source, pipeline))
