@@ -17,17 +17,32 @@ schemas = {
 }
 
 
-def queryBuilder(index, queryTerm):
+def queryBuilder(params):
     ''' Builds ElasticSearch query weith facets '''
 
-    query = {'query': {'query_string': {'query': queryTerm}}}
-    schema = load_schema(schemas[index])
+    schema = load_schema(schemas[params.get('type')])
     facets = schema['facets']
-    if len(facets.keys()):
-        query['facets'] = {}
-        for facet in facets:
-            query['facets'][facet] = {'terms': {'field': ''}}
-            query['facets'][facet]['terms']['field'] = facets[facet]
+
+    if len(params) > 2:
+        query = {'query': {}}
+        query['query']['filtered'] = {}
+        query['query']['filtered']['query'] = {'queryString': {"query": params.get('searchTerm')}}
+        query['query']['filtered']['filter'] = {'bool': {'must': []}}
+        for key, value in params.iteritems():
+            if key != 'searchTerm' and key != 'type':
+                query['query']['filtered']['filter']['bool']['must'].append({'term': {key: value}})
+        if len(facets.keys()):
+            query['facets'] = {}
+            for facet in facets:
+                query['facets'][facet] = {'terms': {'field': ''}}
+                query['facets'][facet]['terms']['field'] = facets[facet]
+    else:
+        query = {'query': {'query_string': {'query': params.get('searchTerm')}}}
+        if len(facets.keys()):
+            query['facets'] = {}
+            for facet in facets:
+                query['facets'][facet] = {'terms': {'field': ''}}
+                query['facets'][facet]['terms']['field'] = facets[facet]
     return query
 
 
@@ -50,13 +65,12 @@ def search(context, request):
         if params.get('type'):
             if 'type' in params:
                 index = request.params.get('type')
-                s = es.search(queryBuilder(index, queryTerm), index=index, size=1100)
+                s = es.search(queryBuilder(params), index=index, size=1100)
                 items['count'][index] = len(s['hits']['hits'])
                 facets = s['facets']
                 schema = load_schema(schemas[index])
                 facet_keys = schema['facets']
                 for facet in facets:
-                    print facet
                     face = []
                     for term in facets[facet]['terms']:
                         face.append({term['term']: term['count'], 'field': facet_keys[facet]})

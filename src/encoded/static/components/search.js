@@ -6,6 +6,7 @@ function (search, $, React, globals) {
     var FacetBuilder = search.FacetBuilder = React.createClass({
         render: function() {
             var context = this.props.context;
+            var result_count = context['@graph']['results'].length;
             var facets = context['@graph']['facets'];
             var terms = [];
             var url = (this.props.location)['search'];
@@ -13,7 +14,6 @@ function (search, $, React, globals) {
                 terms.push(i);
             }
             var buildTerms = function(map) {
-                console.log(map);
                 var id;
                 var count;
                 var field;
@@ -25,10 +25,17 @@ function (search, $, React, globals) {
                         count = map[j];
                     }
                 }
-                return <li>
-                        <span class="badge pull-right">{count}</span>
-                        <a href = {'/search'+url+'&'+field+'='+id}><small>{id}</small></a>
-                    </li>
+                if(count == result_count) {
+                    return <li>
+                            <span class="badge pull-right">{count}</span>
+                            <small>{id}</small>
+                        </li>
+                }else {
+                    return <li>
+                            <span class="badge pull-right">{count}</span>
+                            <a href = {'/search'+url+'&'+field+'='+id}><small>{id}</small></a>
+                        </li>
+                }
             };
             var buildSection = function(term) {
                 return <div>
@@ -62,7 +69,7 @@ function (search, $, React, globals) {
                                 <h6>Biosample</h6>
                                 <div>
                                     <h4><a href={result['@id']}>{result['accession']}</a></h4>
-                                    <i>{result['biosample_term_name']} - {result['biosample_term_id']} - {result['lab']['name']}</i>
+                                    <i>{result['biosample_term_name']} - {result['biosample_term_id']} - {result['lab']['title']}</i>
                                 </div>
                                 <hr></hr>
                             </li>
