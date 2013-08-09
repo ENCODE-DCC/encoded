@@ -41,31 +41,36 @@ def search(context, request):
         '@graph': {}
     })
     items = {}
-    queryTerm = request.params.get('searchTerm')
-    if queryTerm:
+    params = request.params
+    if 'searchTerm' in params:
+        queryTerm = params.get('searchTerm')
         items['results'] = []
         items['count'] = {}
         items['facets'] = {}
-        if len(request.params) == 1:
-            indexes = ['biosamples', 'antibodies', 'experiments', 'targets']
-            for index in indexes:
-                s = es.search(queryTerm, index=index, size=1000)
+        if params.get('type'):
+            if 'type' in params:
+                index = request.params.get('type')
+                s = es.search(queryBuilder(index, queryTerm), index=index, size=1100)
                 items['count'][index] = len(s['hits']['hits'])
+                facets = s['facets']
+                schema = load_schema(schemas[index])
+                facet_keys = schema['facets']
+                for facet in facets:
+                    print facet
+                    face = []
+                    for term in facets[facet]['terms']:
+                        face.append({term['term']: term['count'], 'field': facet_keys[facet]})
+                    if len(face):
+                        items['facets'][facet] = face
+
                 for data in s['hits']['hits']:
                     items['results'].append(data['_source'])
         else:
-            index = request.params.get('type')
-            s = es.search(queryBuilder(index, queryTerm), index=index, size=1000)
-            items['count'][index] = len(s['hits']['hits'])
-            facets = s['facets']
-            for facet in facets:
-                face = []
-                for term in facets[facet]['terms']:
-                    face.append({term['term']: term['count']})
-                if len(face):
-                    items['facets'][facet] = face
-
-            for data in s['hits']['hits']:
-                items['results'].append(data['_source'])
-    result['@graph'] = items
+            indexes = ['biosamples', 'antibodies', 'experiments', 'targets']
+            for index in indexes:
+                s = es.search(queryTerm, index=index, size=1100)
+                items['count'][index] = len(s['hits']['hits'])
+                for data in s['hits']['hits']:
+                    items['results'].append(data['_source'])
+        result['@graph'] = items
     return result

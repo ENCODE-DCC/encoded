@@ -9,20 +9,25 @@ function (search, $, React, globals) {
             var facets = context['@graph']['facets'];
             var terms = [];
             var url = (this.props.location)['search'];
-            
             for (var i in facets) {
                 terms.push(i);
             }
             var buildTerms = function(map) {
+                console.log(map);
                 var id;
                 var count;
+                var field;
                 for (var j in map) {
-                    id = j;
-                    count = map[j];
+                    if(j == "field") {
+                        field = map[j];
+                    }else {
+                        id = j;
+                        count = map[j];
+                    }
                 }
                 return <li>
                         <span class="badge pull-right">{count}</span>
-                        <a href><small>{id}</small></a>
+                        <a href = {'/search'+url+'&'+field+'='+id}><small>{id}</small></a>
                     </li>
             };
             var buildSection = function(term) {
@@ -130,7 +135,7 @@ function (search, $, React, globals) {
                                     </ul>
                                 </div>
                                 {Object.keys(results['facets']).length ?
-                                    <FacetBuilder context={this.props.context} />
+                                    <FacetBuilder location={this.props.location} context={this.props.context} />
                                 :null }
                             </section>
                         </div>
@@ -142,7 +147,6 @@ function (search, $, React, globals) {
                                 : null}
                             </ul>
                         </div>
-                        
                     </div>
                 </div>
             );
