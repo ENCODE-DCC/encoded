@@ -221,15 +221,10 @@ function (mixins, $, React, URI) {
             var target = event.target;
             var nativeEvent = event.nativeEvent;
 
-            if (target.tagName != 'A') {
-                while (target) {
-                    if (target.getAttribute('data-href')) {
-                        break;
-                    }
-                    target = target.parentElement;
-                }
-                if (!target) return;
+            while (target && (target.tagName != 'A' || target.getAttribute('data-href'))) {
+                target = target.parentElement;
             }
+            if (!target) return;
 
             // data-trigger links invoke custom handlers.
             var data_trigger = target.getAttribute('data-trigger');
