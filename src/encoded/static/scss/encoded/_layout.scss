@@ -1,0 +1,60 @@
+#layout {
+	height: auto !important;
+    margin: 0 auto -$footerHeight;
+    min-height: 100%;
+}
+
+#content {
+	padding-top: 75px;
+}
+
+.homepage-main-box {
+	min-height: 400px;
+	background: url('/static/img/encode-bg-gray.png') no-repeat center;
+}
+
+.project-info {
+	h1,h2,h3,h4 {
+		@include text-shadow(rgba(255,255,255,1) 1px 1px 0);
+	}
+	display: inline-block;
+	float: left;
+	font-size: 1.3em;
+}
+
+/* *********************************************************
+		FOOTER
+********************************************************** */
+@include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
+
+#page-footer {
+	color: rgb(255, 255, 255);
+	background-color: $footerBackground;
+	height: $footerHeight;
+	@include text-shadow(0 1px rgba(0, 0, 0, 0.3));
+	line-height: 0;
+	overflow: hidden;
+	a { 
+		color: rgb(255, 255, 255); 
+		font-weight: bold;
+	}
+	a:hover { text-decoration: underline; }
+	#footer-links, #footer-logos {
+		height: $footerHeight;
+		margin: 0 auto;
+		display: inline-block;
+		ul {
+			margin: 0;
+			list-style: none;
+			li {
+				line-height: $footerHeight;
+				margin-right: 30px;
+				float: left;
+			}
+			li:last-child { margin-right: 0; }
+		}
+	}
+}
+#footer-logos {
+	float: right;
+}

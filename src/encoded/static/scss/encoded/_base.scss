@@ -1,0 +1,27 @@
+/* Variables */
+$mainThemeColor: 			#e8ecef; /* i.e. the background color ..for now */
+
+$footerHeight: 				80px;
+$footerTopBorderHeight:		0px;
+//$footerTopHeight: 			70px;
+//$footerBottomHeight:		$footerHeight - $footerTopHeight;
+$footerBackground:          rgba(10,37,61,0.3) !default;
+$footerBackgroundHighlight: #294b6a !default;
+// $footerBorder:              #0f2a42 !default;
+
+$tableHeadFootBackgroundColor: #f5f5f5;
+
+
+/* BASE STYLES */
+body { background: $mainThemeColor; }
+
+.float-wrap { overflow: hidden; }
+
+[hidden] { display: none !important; }
+
+#slot-application, #application {
+	height: 100%;
+}
+
+
+/* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */

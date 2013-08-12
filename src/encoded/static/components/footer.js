@@ -13,26 +13,25 @@ function (React) {
             console.log('render footer');
             return (
                 <footer id="page-footer">
-                    <div id="footer-top">
-                        <div class="container">
-                            <a href="http://www.stanford.edu"><img src="/static/img/su-logo.png" alt="Stanford University" id="su-logo" /></a>
-                            <a href="http://med.stanford.edu/"><img src="/static/img/som-logo.png" alt="Stanford University School of Medicine" id="som-logo" /></a>
-                            <div id="footer-links">
-                                <ul>
-                                    <li><a href="/">ENCODE</a></li>
-                                    <li><a href="">Contact</a></li>
-                                    <li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="footer-bottom">
-                        <div class="container">
-                            &copy;2013. <a href="http://www.stanford.edu/">Stanford University</a>.
-                            <a href="http://med.stanford.edu/">School of Medicine</a>.
-                            <a href="http://genetics.stanford.edu/">Department of Genetics</a>.
-                        </div>
-                    </div>
+					<div class="container">
+						<div id="footer-links">
+							<ul>
+								<li><a href="/"><img src="/static/img/encode-logo-small.png" alt="ENCODE" id="encode-logo" /></a></li>
+								<li><a href="#contact">Contact</a></li>
+								<li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
+								<li>&copy;2013. Stanford University.</li>
+							</ul>
+						</div>
+						<div id="footer-logos">
+							<ul>
+								
+								<li><a href="http://www.ucsc.edu"><img src="/static/img/ucsc-logo-white-alt.png" alt="UC Santa Cruz" id="ucsc-logo" /></a>
+								</li>
+								<li><a href="http://www.stanford.edu"><img src="/static/img/su-logo-white.png" alt="Stanford University" id="su-logo" /></a></li>
+								
+							</ul>
+						</div>
+					</div>
                 </footer>
             );
         }

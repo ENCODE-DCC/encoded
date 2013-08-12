@@ -302,7 +302,7 @@ function (biosample, React, URI, globals) {
             }
 
             return (
-                <section class="type-document view-detail panel">
+                <section class="type-document view-detail panel status-none">
                     <div class="container">
                         <div class="row">
                             <div class="span6">
