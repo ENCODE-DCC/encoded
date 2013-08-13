@@ -6,7 +6,7 @@
     "description": "Schema for submitting an ENCODE Biosample",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "facets": {"Biosample Type": "biosample_type", "Organ": "organ_slims", "System": "system_slims", "Organism": "donor.organism.name", "Lab": "lab.title", "Source": "source.title"},
+    "facets": {"Biosample Type": "biosample_type", "System": "system_slims", "Organism": "donor.organism.name", "Organ": "organ_slims", "Lab": "lab.title", "Source": "source.title"},
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },

@@ -10,8 +10,7 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
             {id: 'antibodies', title: 'Antibodies', url: '/antibodies/'},
             {id: 'biosamples', title: 'Biosamples', url: '/biosamples/'},
             {id: 'experiments', title: 'Experiments', url: '/experiments/'},
-            {id: 'targets', title: 'Targets', url: '/targets/'},
-            {id: 'search', title: 'Search', url: '/search/'},
+            {id: 'targets', title: 'Targets', url: '/targets/'}
         ]
     };
 

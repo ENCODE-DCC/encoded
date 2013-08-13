@@ -73,12 +73,19 @@ function (search, $, React, globals, d3) {
             for (var key in facets) {
                 var data = [];
                 for (var key1 in facets[key]) {
+                    var data1 = {};
                     for (var key2 in facets[key][key1]) {
                         if(key2 != 'field') {
-                             data.push({"label":key2, "count": facets[key][key1][key2]});
+                            data1['label'] = key2;
+                            data1['count'] = facets[key][key1][key2];
+                        }
+                        if(key2 == 'field') {
+                            data1['link'] = url + '?searchTerm=*&type=biosamples&' + facets[key][key1][key2] + "="; 
                         }
                     }
-                }  
+                    data.push(data1);
+                }
+                var margin = {top: 30, right: 10, bottom: 30, left: 10};  
                 var valueLabelWidth = 60; // space reserved for value labels (right)
                 var barHeight = 20; // height of one bar
                 var barLabelWidth = 250; // space reserved for bar labels
@@ -90,6 +97,7 @@ function (search, $, React, globals, d3) {
                 // accessor functions 
                 var barLabel = function(d) { return d['label']; };
                 var barValue = function(d) { return parseFloat(d['count']); };
+                var barLink  = function(d) { return d['link'] + d['label']; };
                  
                 // scales
                 var yScale = d3.scale.ordinal().domain(d3.range(0, data.length)).rangeBands([0, data.length * barHeight]);
@@ -99,8 +107,8 @@ function (search, $, React, globals, d3) {
                 
                 // svg container element
                 var chart = d3.select('#viz').append("svg")
-                    .attr('width', maxBarWidth + barLabelWidth + valueLabelWidth)
-                    .attr('height', gridLabelHeight + gridChartOffset + data.length * barHeight);
+                    .attr('width', maxBarWidth + barLabelWidth + valueLabelWidth + margin.left + margin.right) 
+                    .attr('height', gridLabelHeight + gridChartOffset + data.length * barHeight + margin.top + margin.bottom);
                 
                 // grid line labels
                 var gridContainer = chart.append('g')
@@ -135,14 +143,15 @@ function (search, $, React, globals, d3) {
                 var barsContainer = chart.append('g')
                   .attr('transform', 'translate(' + barLabelWidth + ',' + (gridLabelHeight + gridChartOffset) + ')'); 
                 
-                barsContainer.selectAll("rect").data(data).enter().append("rect")
-                  .attr('y', y)
-                  .attr('height', yScale.rangeBand())
-                  .attr('width', function(d) { return x(barValue(d)); })
-                  .attr('stroke', 'white')
-                  .attr('fill', 'steelblue')
-                  .append("a")
-                  .attr("xlink:href", function (d) { return "http://localhost:6543"; })
+                barsContainer.selectAll("rect").data(data).enter()
+                    .append("a")
+                    .attr("xlink:href", function(d) {return barLink(d); })
+                    .append("rect")
+                    .attr('y', y)
+                    .attr('height', yScale.rangeBand())
+                    .attr('width', function(d) { return x(barValue(d)); })
+                    .attr('stroke', 'white')
+                    .attr('fill', 'steelblue');
                 
                 // bar value labels
                 barsContainer.selectAll("text").data(data).enter().append("text")
@@ -165,7 +174,7 @@ function (search, $, React, globals, d3) {
                     .attr("x", 100)     
                     .attr("y", 20)
                     .attr("text-anchor", "middle")  
-                    .style("font-size", "16px") 
+                    .style("font-size", "18px") 
                     .text(key)
                     .attr("fill", "steelblue");
             }
@@ -218,6 +227,7 @@ function (search, $, React, globals, d3) {
                     <div>
                         {results['results'].length == 0 ?
                             <div class="panel data-display">
+                                <legend>Biosample Facet Distribution</legend>
                                 <div id="viz"></div>
                             </div>
                         : null}
