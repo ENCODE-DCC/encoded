@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting an ENCODE Antibody (no target or validation information)",
     "type": "object",
-    "required": [ "award", "lab", "product_id", "source"],
+    "required": [ "award", "lab", "product_id", "source", "lot_id"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
