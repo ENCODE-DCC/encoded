@@ -460,7 +460,7 @@ PIPELINES = {
         remove_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        remove_keys('derived_from', 'contained_in'),
+        remove_keys('derived_from', 'pooled_from'),
     ],
     'experiment': [
         remove_keys('files', 'possible_controls'),
@@ -480,7 +480,7 @@ UPDATE_PIPELINES = {
         skip_rows_missing_all_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        skip_rows_missing_all_keys('derived_from', 'contained_in'),
+        skip_rows_missing_all_keys('derived_from', 'pooled_from'),
     ],
     'experiment': [
         skip_rows_missing_all_keys('files', 'possible_controls'),
