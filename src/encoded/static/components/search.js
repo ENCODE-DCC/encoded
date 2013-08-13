@@ -151,7 +151,15 @@ function (search, $, React, globals, d3) {
                     .attr('height', yScale.rangeBand())
                     .attr('width', function(d) { return x(barValue(d)); })
                     .attr('stroke', 'white')
-                    .attr('fill', 'steelblue');
+                    .attr('fill', 'steelblue')
+                    .on("mouseover", function(d) { 
+                        d3.select(this)
+                            .attr('fill', 'orange');
+                    })
+                    .on("mouseout", function(d) { 
+                         d3.select(this)
+                            .attr('fill', 'steelblue');
+                    });
                 
                 // bar value labels
                 barsContainer.selectAll("text").data(data).enter().append("text")
