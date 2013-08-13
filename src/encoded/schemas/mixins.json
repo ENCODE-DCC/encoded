@@ -72,7 +72,9 @@
             "linkTo": "user",
             "serverDefault": "userid",
             "permission": "import_items"
-        },
+        }
+    },
+    "attribution": {
         "lab": {
             "description": "Submitting Lab",
             "comment": "Automatic submitters can supply a Lab UUID or Name",

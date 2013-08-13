@@ -10,6 +10,7 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
