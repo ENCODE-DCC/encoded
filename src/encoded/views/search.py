@@ -88,4 +88,30 @@ def search(context, request):
                     for data in s['hits']['hits']:
                         items['results'].append(data['_source'])
         result['@graph'] = items
+    else:
+        schema = load_schema('biosample.json')
+        facets = schema['facets']
+        query = {'query': {'query_string': {'query': '*'}}}
+        query['fields'] = ['']
+        items['results'] = []
+        items['count'] = {}
+        items['facets'] = {}
+        if len(facets.keys()):
+            query['facets'] = {}
+            for facet in facets:
+                query['facets'][facet] = {'terms': {'field': ''}}
+                query['facets'][facet]['terms']['field'] = facets[facet]
+        s = es.search(query, index='biosamples', size=1100)
+        facet_results = s['facets']
+        items['count']['biosamples'] = len(s['hits']['hits'])
+        for facet in facet_results:
+            face = []
+            for term in facet_results[facet]['terms']:
+                face.append({term['term']: term['count'], 'field': facets[facet]})
+            if len(face):
+                items['facets'][facet] = face
+
+        '''for data in s['hits']['hits']:
+            items['results'].append(data['fields'])'''
+        result['@graph'] = items
     return result

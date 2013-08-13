@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['exports', 'jquery', 'react', 'globals'],
-function (search, $, React, globals) {
+define(['exports', 'jquery', 'react', 'globals', 'd3'],
+function (search, $, React, globals, d3) {
     'use strict';
 
     var FacetBuilder = search.FacetBuilder = React.createClass({
@@ -33,7 +33,7 @@ function (search, $, React, globals) {
                 }else {
                     return <li>
                             <span class="badge pull-right">{count}</span>
-                            <a href = {'/search'+url+'&'+field+'='+id}><small>{id}</small></a>
+                            <a href = {url+'&'+field+'='+id}><small>{id}</small></a>
                         </li>
                 }
             };
@@ -62,6 +62,114 @@ function (search, $, React, globals) {
             var context = this.props.context;
             var results = context['@graph'];
             var url = (this.props.location)['search'];
+            var facets = context['@graph']['facets'];
+
+            var myNode = document.getElementById("viz");
+            if(myNode) {
+                while (myNode.firstChild) {
+                    myNode.removeChild(myNode.firstChild);
+                }
+            }
+            for (var key in facets) {
+                var data = [];
+                for (var key1 in facets[key]) {
+                    for (var key2 in facets[key][key1]) {
+                        if(key2 != 'field') {
+                             data.push({"label":key2, "count": facets[key][key1][key2]});
+                        }
+                    }
+                }  
+                var valueLabelWidth = 60; // space reserved for value labels (right)
+                var barHeight = 20; // height of one bar
+                var barLabelWidth = 250; // space reserved for bar labels
+                var barLabelPadding = 10; // padding between bar and bar labels (left)
+                var gridLabelHeight = 18; // space reserved for gridline labels
+                var gridChartOffset = 3; // space between start of grid and first bar
+                var maxBarWidth = 600; // width of the bar with the max value
+                 
+                // accessor functions 
+                var barLabel = function(d) { return d['label']; };
+                var barValue = function(d) { return parseFloat(d['count']); };
+                 
+                // scales
+                var yScale = d3.scale.ordinal().domain(d3.range(0, data.length)).rangeBands([0, data.length * barHeight]);
+                var y = function(d, i) { return yScale(i); };
+                var yText = function(d, i) { return y(d, i) + yScale.rangeBand() / 2; };
+                var x = d3.scale.linear().domain([0, d3.max(data, barValue)]).range([0, maxBarWidth]);
+                
+                // svg container element
+                var chart = d3.select('#viz').append("svg")
+                    .attr('width', maxBarWidth + barLabelWidth + valueLabelWidth)
+                    .attr('height', gridLabelHeight + gridChartOffset + data.length * barHeight);
+                
+                // grid line labels
+                var gridContainer = chart.append('g')
+                  .attr('transform', 'translate(' + barLabelWidth + ',' + gridLabelHeight + ')'); 
+                
+                gridContainer.selectAll("text").data(x.ticks(10)).enter().append("text")
+                  .attr("x", x)
+                  .attr("dy", -3)
+                  .attr("text-anchor", "middle")
+                  .text(String);
+                
+                // vertical grid lines
+                gridContainer.selectAll("line").data(x.ticks(10)).enter().append("line")
+                  .attr("x1", x)
+                  .attr("x2", x)
+                  .attr("y1", 0)
+                  .attr("y2", yScale.rangeExtent()[1] + gridChartOffset)
+                  .style("stroke", "#ccc");
+                
+                // bar labels
+                var labelsContainer = chart.append('g')
+                  .attr('transform', 'translate(' + (barLabelWidth - barLabelPadding) + ',' + (gridLabelHeight + gridChartOffset) + ')'); 
+                labelsContainer.selectAll('text').data(data).enter().append('text')
+                  .attr('y', yText)
+                  .attr('stroke', 'none')
+                  .attr('fill', 'black')
+                  .attr("dy", ".35em") // vertical-align: middle
+                  .attr('text-anchor', 'end')
+                  .text(barLabel);
+                
+                // bars
+                var barsContainer = chart.append('g')
+                  .attr('transform', 'translate(' + barLabelWidth + ',' + (gridLabelHeight + gridChartOffset) + ')'); 
+                
+                barsContainer.selectAll("rect").data(data).enter().append("rect")
+                  .attr('y', y)
+                  .attr('height', yScale.rangeBand())
+                  .attr('width', function(d) { return x(barValue(d)); })
+                  .attr('stroke', 'white')
+                  .attr('fill', 'steelblue')
+                  .append("a")
+                  .attr("xlink:href", function (d) { return "http://localhost:6543"; })
+                
+                // bar value labels
+                barsContainer.selectAll("text").data(data).enter().append("text")
+                  .attr("x", function(d) { return x(barValue(d)); })
+                  .attr("y", yText)
+                  .attr("dx", 3) // padding-left
+                  .attr("dy", ".35em") // vertical-align: middle
+                  .attr("text-anchor", "start") // text-align: right
+                  .attr("fill", "black")
+                  .attr("stroke", "none")
+                  .text(function(d) { return d3.round(barValue(d), 2); });
+                
+                // start line
+                barsContainer.append("line")
+                  .attr("y1", -gridChartOffset)
+                  .attr("y2", yScale.rangeExtent()[1] + gridChartOffset)
+                  .style("stroke", "#000");  
+
+                chart.append("text")
+                    .attr("x", 100)     
+                    .attr("y", 20)
+                    .attr("text-anchor", "middle")  
+                    .style("font-size", "16px") 
+                    .text(key)
+                    .attr("fill", "steelblue");
+            }
+
             var resultsView = function(result) {
                 switch (result['@type'][0]) {
                     case "biosample":
@@ -107,58 +215,68 @@ function (search, $, React, globals) {
                 }
             };  
             return (
-                <div class="panel data-display">
-                    <div class="row">
-                        <div class="span3" id="facets">
-                            <h4>Filter Results</h4>
-                            <section class="facet wel box">
-                                <div>
-                                    <legend><small>Data Type</small></legend>
-                                    <ul class="facet-list">
-                                        {results['count']['antibodies'] ?
-                                            <li>
-                                                <span class="badge pull-right">{results['count']['antibodies']}</span>
-                                                <a href={'/search'+ url+'&type=antibodies'}><small>Antibodies</small></a>
-                                            </li>
-                                        : null}
-                                        {results['count']['biosamples'] ?
-                                            <li>
-                                                <span class="badge pull-right">{results['count']['biosamples']}</span>
-                                                <a href={'/search'+ url+'&type=biosamples'}><small>Biosamples</small></a>
-                                            </li>
-                                        : null}
-                                        {results['count']['experiments'] ?
-                                            <li>
-                                                <span class="badge pull-right">{results['count']['experiments']}</span>
-                                                <a href={'/search'+ url+'&type=experiments'}><small>Experiments</small></a>
-                                            </li>
-                                        : null}
-                                        {results['count']['targets'] ?
-                                            <li>
-                                                <span class="badge pull-right">{results['count']['targets']}</span>
-                                                <a href={'/search'+ url+'&type=targets'}><small>Targets</small></a>
-                                            </li>
-                                        : null}
-                                    </ul>
+                    <div>
+                        {results['results'].length == 0 ?
+                            <div class="panel data-display">
+                                <div id="viz"></div>
+                            </div>
+                        : null}
+                        {results['results'].length ?
+                            <div class="panel data-display">
+                                <div class="row">
+                                    <div class="span3" id="facets">
+                                        <h4>Filter Results</h4>
+                                        <section class="facet wel box">
+                                            <div>
+                                                <legend><small>Data Type</small></legend>
+                                                <ul class="facet-list">
+                                                    {results['count']['antibodies'] ?
+                                                        <li>
+                                                            <span class="badge pull-right">{results['count']['antibodies']}</span>
+                                                            <a href={url+'&type=antibodies'}><small>Antibodies</small></a>
+                                                        </li>
+                                                    : null}
+                                                    {results['count']['biosamples'] ?
+                                                        <li>
+                                                            <span class="badge pull-right">{results['count']['biosamples']}</span>
+                                                            <a href={url+'&type=biosamples'}><small>Biosamples</small></a>
+                                                        </li>
+                                                    : null}
+                                                    {results['count']['experiments'] ?
+                                                        <li>
+                                                            <span class="badge pull-right">{results['count']['experiments']}</span>
+                                                            <a href={url+'&type=experiments'}><small>Experiments</small></a>
+                                                        </li>
+                                                    : null}
+                                                    {results['count']['targets'] ?
+                                                        <li>
+                                                            <span class="badge pull-right">{results['count']['targets']}</span>
+                                                            <a href={url+'&type=targets'}><small>Targets</small></a>
+                                                        </li>
+                                                    : null}
+                                                </ul>
+                                            </div>
+                                            {Object.keys(results['facets']).length ?
+                                                <FacetBuilder location={this.props.location} context={this.props.context} />
+                                            :null }
+                                        </section>
+                                    </div>
+                                    <div class="span8">
+                                        <legend>{results['results'].length} Results Found</legend>
+                                        <ul class="nav nav-tabs nav-stacked">
+                                            {results['results'].length ?
+                                                results['results'].map(resultsView)
+                                            : null}
+                                        </ul>
+                                    </div>
                                 </div>
-                                {Object.keys(results['facets']).length ?
-                                    <FacetBuilder location={this.props.location} context={this.props.context} />
-                                :null }
-                            </section>
-                        </div>
-                        <div class="span8">
-                            <legend>{results['results'].length} Results Found</legend>
-                            <ul class="nav nav-tabs nav-stacked">
-                                {results['results'].length ?
-                                    results['results'].map(resultsView)
-                                : null}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                            </div>  
+                    : null}
+                </div>  
             );
         }
     });
+
 
     var Search = search.Search = React.createClass({
         getInitialState: function() {

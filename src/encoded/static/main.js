@@ -17,7 +17,8 @@ requirejs.config({
         stickyheader: '../libs/sticky_header',
         'class': '../libs/class',
         registry: '../libs/registry',
-        uri: '../libs/uri'
+        uri: '../libs/uri',
+        d3: '../libs/d3.v3.min'
     },
 
     shim: {
@@ -48,11 +49,15 @@ requirejs.config({
 
         underscore: {
             exports: '_'
+        },
+
+        d3: {
+            exports: 'd3'
         }
     }
 });
 
-if (!window.TESTRUNNER) require(['jquery', 'react', 'jsx!app', 'bootstrap', 'stickyheader', 'jsonform', 'persona',
+if (!window.TESTRUNNER) require(['jquery', 'react', 'jsx!app', 'bootstrap', 'stickyheader', 'jsonform', 'persona', 'd3',
     'jsx!item', 'jsx!collection', 'jsx!errors', 'jsx!home', 'jsx!antibody', 'jsx!biosample', 'jsx!experiment', 'jsx!platform', 'jsx!target', 'jsx!search'
     ],
 function main($, React, App) {
