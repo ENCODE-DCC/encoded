@@ -149,15 +149,15 @@
                     "linkTo": "biosample"
             }
         },
-        "contained_in": {
+        "pooled_from": {
             "default": [],
-            "description": "List of biosamples this biosample is contained in (reverse of pooled from)",
+            "description": "List of biosamples this biosample is pooled from",
             "title": "List of Biosample Parents",
             "type":  "array",
             "items": {
-                    "description": "Biosample that this sample is contained in",
+                    "description": "Biosample that this sample is pooled from",
                     "comment": "For automated submission supply an ENCODE biosample accession or uuid",
-                    "title": "Parent (contained_in) Biosample",
+                    "title": "Parent (pooled_from) Biosample",
                     "type": "string",
                     "linkTo": "biosample"
             }
