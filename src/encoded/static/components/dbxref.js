@@ -12,7 +12,7 @@ function (dbxref, React, globals) {
         if (sep != -1) {
             var prefix = value.slice(0, sep);
             var local = value.slice(sep + 1);
-            var url = globals.dbxref_prefix_map[prefix];
+            var url = globals.dbxref_prefix_map[prefix] + local;
             if (url) {
                 return <a href={url}>{value}</a>;
             }
