@@ -31,29 +31,6 @@
             },
             "type": "array"
         },
-        "target_aliases": {
-            "default": [],
-            "description": "List of target name aliases and sources, indexed for searching",
-            "title": "Target aliases",
-            "type": "array",
-            "items": {
-                "description": "Target name aliases",
-                "title": "Alias",
-                "type": "object",
-                "properties": {
-                    "source": {
-                        "description": "Source of this alias",
-                        "title": "Alias Source",
-                        "type": "string"
-                    },
-                    "alias": {
-                        "description": "Alias (alternate identifier) for the target",
-                        "title": "Alias",
-                        "type": "string"
-                    }
-                }
-            }
-        },
         "organism": {
             "description": "Organism of the specific target",
             "title": "Target organism",
