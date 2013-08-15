@@ -16,6 +16,13 @@ schemas = {
     'targets': 'target.json'
 }
 
+data = {
+    'biosamples': ['accession', 'biosample_term_id', 'biosample_term_name', 'lab.title'],
+    'experiments': ['accession', 'description', 'assay_term_name', 'lab.title'],
+    'antibodies': ['antibody.accession', 'target.name', 'target.lab.title'],
+    'targets': ['name', 'organism.name', 'lab.title']
+}
+
 
 def queryBuilder(params):
     ''' Builds ElasticSearch query weith facets '''
@@ -28,6 +35,8 @@ def queryBuilder(params):
         query['query']['filtered'] = {}
         query['query']['filtered']['query'] = {'queryString': {"query": params.get('searchTerm')}}
         query['query']['filtered']['filter'] = {'bool': {'must': []}}
+        query['fields'] = ['@id', '@type']
+        query['fields'].extend(data[params.get('type')])
         for key, value in params.iteritems():
             if key != 'searchTerm' and key != 'type':
                 query['query']['filtered']['filter']['bool']['must'].append({'term': {key: value}})
@@ -38,6 +47,8 @@ def queryBuilder(params):
                 query['facets'][facet]['terms']['field'] = facets[facet]
     else:
         query = {'query': {'query_string': {'query': params.get('searchTerm')}}}
+        query['fields'] = ['@id', '@type']
+        query['fields'].extend(data[params.get('type')])
         if len(facets.keys()):
             query['facets'] = {}
             for facet in facets:
@@ -65,7 +76,7 @@ def search(context, request):
             items['facets'] = {}
             if params.get('type'):
                 if 'type' in params:
-                    index = request.params.get('type')
+                    index = params.get('type')
                     s = es.search(queryBuilder(params), index=index, size=1100)
                     items['count'][index] = len(s['hits']['hits'])
                     facets = s['facets']
@@ -78,21 +89,23 @@ def search(context, request):
                         if len(face):
                             items['facets'][facet] = face
 
-                    for data in s['hits']['hits']:
-                        items['results'].append(data['_source'])
+                    for dataS in s['hits']['hits']:
+                        items['results'].append(dataS['fields'])
             else:
                 indexes = ['biosamples', 'antibodies', 'experiments', 'targets']
+                query = {'query': {'query_string': {'query': params.get('searchTerm')}}}
+                query['fields'] = ['@id', '@type']
                 for index in indexes:
-                    s = es.search(queryTerm, index=index, size=1100)
+                    query['fields'].extend(data[index])
+                    s = es.search(query, index=index, size=1100)
                     items['count'][index] = len(s['hits']['hits'])
-                    for data in s['hits']['hits']:
-                        items['results'].append(data['_source'])
+                    for dataS in s['hits']['hits']:
+                        items['results'].append(dataS['fields'])
         result['@graph'] = items
     else:
         schema = load_schema('biosample.json')
         facets = schema['facets']
         query = {'query': {'match_all': {}}}
-        query['fields'] = ['accession']
         items['results'] = []
         items['count'] = {}
         items['facets'] = {}

@@ -28,12 +28,19 @@ function (search, $, React, globals, d3) {
                 if(count == result_count) {
                     return <li>
                             <span class="badge pull-right">{count}</span>
-                            <small>{id}</small>
+                            <label class="checkbox">
+                                    <input type="checkbox" checked="checked"/>
+                                    <small>{id}</small>
+                            </label>
                         </li>
                 }else {
                     return <li>
                             <span class="badge pull-right">{count}</span>
-                            <a href = {url+'&'+field+'='+id}><small>{id}</small></a>
+                            <label class="checkbox">
+                                    <input type="hidden" defaultValue="test" name="test" />
+                                    <input type="checkbox" defaultValue="test" name="test" />
+                                    <small><a href={url+'&'+field+'='+id}>{id}</a></small>
+                            </label>
                         </li>
                 }
             };
@@ -187,34 +194,43 @@ function (search, $, React, globals, d3) {
                     .attr("fill", "steelblue");
             }
 
+            var styles = function() {
+                var posts = document.getElementsByClassName("post");
+                for(var i=0;i<posts.length;i++) {
+                    posts[i].classList.add(i % 2 === 0 ? "even" : "odd");
+                    posts[i].style["background-color"] = i % 2 === 0 ? "" : "#EEF8FE";
+                    posts[i].style["padding-left"] = "10px";             
+                }
+            };
+
             var resultsView = function(result) {
                 switch (result['@type'][0]) {
                     case "biosample":
                         return <li class="post">
-                                <h6>Biosample</h6>
+                                <strong><small>Biosample</small></strong>
                                 <h4><a href={result['@id']}>{result['accession']}</a></h4>
-                                <small><i>{result['biosample_term_name']} - {result['biosample_term_id']} - {result['lab']['title']}</i></small>
+                                <small><i>{result['biosample_term_name']} - {result['biosample_term_id']} - {result['lab.title']}</i></small>
                             </li>
                         break;
                     case "experiment":
                         return <li class="post">
                                 <h6>Experiment</h6>
                                 <h4><a href={result['@id']}>{result['accession']}</a></h4>
-                                <i>{result['description']} - {result['assay_term_name']} - {result['lab']['title']}</i>
+                                <small><i>{result['description']} - {result['assay_term_name']} - {result['lab.title']}</i></small>
                             </li>
                         break;
                     case "antibody_approval":
                         return <li class="post">
                                 <h6>Antibody</h6>
-                                <h4><a href={result['@id']}>{result['antibody']['accession']}</a></h4>
-                                <i>{result['target']['name']} - {result['target']['lab']['title']}</i>
+                                <h4><a href={result['@id']}>{result['antibody.accession']}</a></h4>
+                                <small><i>{result['target.name']} - {result['target.lab.title']}</i></small>
                             </li>
                         break;
                     case "target":
                         return <li class="post">
                                 <h6>Target</h6>
                                 <h4><a href={result['@id']}>{result['name']}</a></h4>
-                                <i>{result['organism']['name']} - {result['lab']['title']}</i>
+                                <small><i>{result['organism.name']} - {result['lab.title']}</i></small>
                             </li>
                         break;
                 }
@@ -274,6 +290,7 @@ function (search, $, React, globals, d3) {
                                                 results['results'].map(resultsView)
                                             : null}
                                         </ul>
+                                        {styles()}
                                     </div>
                                 </div>
                             </div>  
@@ -291,14 +308,6 @@ function (search, $, React, globals, d3) {
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var styles = function() {
-                var posts = document.getElementsByClassName("post");
-                for(var i=0;i<posts.length;i++) {
-                    posts[i].classList.add(i % 2 === 0 ? "even" : "odd");
-                    posts[i].style["background-color"] = i % 2 === 0 ? "" : "#EFEEEC";
-                    posts[i].style["padding-left"] = "10px";             
-                }
-            };
             return (
                 <div >
                     <form class="input-prepend">
@@ -308,7 +317,6 @@ function (search, $, React, globals, d3) {
                     {Object.keys(results).length ?
                         <ResultTable location={this.props.location} context={this.props.context} />
                     :null }
-                    {styles()}
                 </div>
             );
         }
