@@ -21,7 +21,6 @@ function (experiment, React, globals) {
             var replicates = _.sortBy(context.replicates, function(item) {
                 return item.biological_replicate_number;
             });
-            var replicate = replicates[0];
             var documents = {};
             replicates.forEach(function (replicate) {
                 replicate.library.documents.forEach(function (doc) {
