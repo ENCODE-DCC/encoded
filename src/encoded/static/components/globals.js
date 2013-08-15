@@ -30,6 +30,7 @@ function (globals, Registry) {
         // ENSEMBL link only works for human
         "ENSEMBL": "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=",
         "GeneID": "http://www.ncbi.nlm.nih.gov/gene/",
+        "GEO": "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
         "Caltech": "http://jumpgate.caltech.edu/library/"
     };
 
