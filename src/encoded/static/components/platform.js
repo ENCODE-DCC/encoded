@@ -28,13 +28,5 @@ function (platform, React, globals) {
 
     globals.panel_views.register(Panel, 'platform');
 
-
-    var title = platform.title = function (props) {
-        return props.context.description;
-    };
-
-    globals.listing_titles.register(title, 'platform');
-
-
     return platform;
 });
