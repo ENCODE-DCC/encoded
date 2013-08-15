@@ -1,7 +1,9 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'globals'],
-function (experiment, React, globals) {
+define(['exports', 'react', 'globals', 'jsx!dbxref'],
+function (experiment, React, globals, dbxref) {
     'use strict';
+
+    var DbxrefList = dbxref.DbxrefList;
 
     var Panel = function (props) {
         // XXX not all panels have the same markup
@@ -68,8 +70,10 @@ function (experiment, React, globals) {
                             <dt>Biosample Type</dt>
                             <dd>{context.biosample_type}</dd>
 
-                            <dt hidden={!context.encode2_dbxref_list}>ENCODE2 Alias</dt>
-                            <dd hidden={!context.encode2_dbxref_list}>{context.encode2_dbxref_list}</dd>
+                            <dt hidden={!context.encode2_dbxrefs.length}>ENCODE2 ID</dt>
+                            <dd hidden={!context.encode2_dbxrefs.length}>
+                                <DbxrefList values={context.encode2_dbxrefs} prefix="ENCODE2" />
+                            </dd>
 
                             <dt>Submitted by</dt>
                             <dd>{context.submitted_by.title}</dd>
