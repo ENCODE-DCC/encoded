@@ -23,6 +23,7 @@ function (experiment, React, globals) {
             });
             var documents = {};
             replicates.forEach(function (replicate) {
+                if (!replicate.library) return;
                 replicate.library.documents.forEach(function (doc) {
                     documents[doc['@id']] = Panel({context: doc});
                 });
