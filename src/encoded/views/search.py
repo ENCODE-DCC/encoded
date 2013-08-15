@@ -34,14 +34,14 @@ def queryBuilder(params):
         if len(facets.keys()):
             query['facets'] = {}
             for facet in facets:
-                query['facets'][facet] = {'terms': {'field': ''}}
+                query['facets'][facet] = {'terms': {'field': '', 'size': 1000}}
                 query['facets'][facet]['terms']['field'] = facets[facet]
     else:
         query = {'query': {'query_string': {'query': params.get('searchTerm')}}}
         if len(facets.keys()):
             query['facets'] = {}
             for facet in facets:
-                query['facets'][facet] = {'terms': {'field': ''}}
+                query['facets'][facet] = {'terms': {'field': '', 'size': 1000}}
                 query['facets'][facet]['terms']['field'] = facets[facet]
     return query
 
@@ -91,15 +91,15 @@ def search(context, request):
     else:
         schema = load_schema('biosample.json')
         facets = schema['facets']
-        query = {'query': {'query_string': {'query': '*'}}}
-        query['fields'] = ['']
+        query = {'query': {'match_all': {}}}
+        query['fields'] = ['accession']
         items['results'] = []
         items['count'] = {}
         items['facets'] = {}
         if len(facets.keys()):
             query['facets'] = {}
             for facet in facets:
-                query['facets'][facet] = {'terms': {'field': ''}}
+                query['facets'][facet] = {'terms': {'field': '', 'size': 1000}}
                 query['facets'][facet]['terms']['field'] = facets[facet]
         s = es.search(query, index='biosamples', size=1100)
         facet_results = s['facets']
@@ -110,8 +110,5 @@ def search(context, request):
                 face.append({term['term']: term['count'], 'field': facets[facet]})
             if len(face):
                 items['facets'][facet] = face
-
-        '''for data in s['hits']['hits']:
-            items['results'].append(data['fields'])'''
         result['@graph'] = items
     return result
