@@ -5,13 +5,11 @@
     "version": "0.01",
     "description": "Schema for submitting a target of an antibody or experiment to the ENCODE DCC",
     "type": "object",
-    "required": [ "award", "lab", "organism", "label"],
+    "required": ["organism", "label"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/aliases" }
     ],
     "properties": {
         "schema-version": {

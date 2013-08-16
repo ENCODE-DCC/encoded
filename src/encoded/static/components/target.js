@@ -29,18 +29,6 @@ function (target, React, globals, dbxref) {
 
                     <dt>Target Class</dt>
                     <dd>{context.target_class}</dd>
-
-                    <dt>RFA</dt>
-                    <dd>{context.award.rfa}</dd>
-
-                    <dt>Lab</dt>
-                    <dd>{context.lab.title}</dd>
-
-                    <dt>Grant</dt>
-                    <dd>{context.award.name}</dd>
-
-                    <dt>Date created</dt>
-                    <dd>{context.date_created}</dd>
                 </dl>
             );
         }
