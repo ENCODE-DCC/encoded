@@ -57,3 +57,18 @@
 .results ul li { background: #f9f9f9; padding:10px;}
 
 .results ul li:nth-child(odd) { background: #fff; padding:10px;}
+
+button.btn.collapsed:before
+{
+    content:'+ See more...' ;
+    display:block;
+    text-decoration: none;
+    font-size: small;
+}
+button.btn:before
+{
+    content:'- See Less';
+    display:block;
+    text-decoration: none;
+    font-size: small;
+}

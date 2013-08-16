@@ -13,10 +13,12 @@ function (search, $, React, globals, d3) {
             for (var i in facets) {
                 terms.push(i);
             }
+            var counter, counter1 = 0;
             var buildTerms = function(map) {
                 var id;
                 var count;
                 var field;
+                counter = counter + 1;
                 for (var j in map) {
                     if(j == "field") {
                         field = map[j];
@@ -25,29 +27,73 @@ function (search, $, React, globals, d3) {
                         count = map[j];
                     }
                 }
-                if(count == result_count) {
+                if(counter < 4) {
+                    if(count == result_count) {
+                        return <li>
+                                
+                                <label><small>{id} ({count})</small></label>
+                            </li>
+                    }else {
+                        return <li>
+                                
+                                <a href={url+'&'+field+'='+id}>
+                                    <label><small>{id} ({count})</small></label>
+                                </a>
+                            </li>
+                    }
+                } 
+            };
+            var buildCollapsingTerms = function(map) {
+                var id;
+                var count;
+                var field;
+                counter1 = counter1 + 1;
+                for (var j in map) {
+                    if(j == "field") {
+                        field = map[j];
+                    }else {
+                        id = j;
+                        count = map[j];
+                    }
+                }
+                if (counter1 >= 4) {
                     return <li>
-                            <span class="badge pull-right">{count}</span>
-                            <label><small>{id}</small></label>
-                        </li>
-                }else {
-                    return <li >
-                            <span class="badge pull-right">{count}</span>
                             <a href={url+'&'+field+'='+id}>
-                                <label><small>{id}</small></label>
+                                <label><small>{id} ({count})</small></label>
                             </a>
                         </li>
                 }
             };
             var buildSection = function(term) {
+                counter = 0;
+                counter1 = 0;
+                var termID = term.replace(/\s+/g, '');
+                console.log(termID);
                 return <div>
-                            <legend><small>{term}</small></legend>
+                        <legend><small>{term}</small></legend>
+                        <ul class="facet-list">
+                            {facets[term].length ?
+                                facets[term].map(buildTerms)
+                            : null}
+                        </ul>
+                        {facets[term].length > 3 ?
                             <ul class="facet-list">
-                                {facets[term].length ?
-                                    facets[term].map(buildTerms)
-                                : null}
+                                <div id={termID} class="collapse">
+                                    {facets[term].length ?
+                                        facets[term].map(buildCollapsingTerms)
+                                    : null}
+                                </div>
                             </ul>
-                        </div>
+                        : null}
+                        {facets[term].length > 3 ?
+                            <label class="pull-right">
+                                    <small>
+                                        <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
+                                    </small>
+                            </label>
+                        : null}
+                        
+                    </div>
             };
             return (
                 <div>
@@ -65,7 +111,6 @@ function (search, $, React, globals, d3) {
             var results = context['@graph'];
             var url = (this.props.location)['search'];
             var facets = context['@graph']['facets'];
-
             var myNode = document.getElementById("viz");
             if(myNode) {
                 while (myNode.firstChild) {
@@ -188,15 +233,6 @@ function (search, $, React, globals, d3) {
                     .text(key)
                     .attr("fill", "steelblue");
             }
-
-            var styles = function() {
-                var posts = document.getElementsByClassName("post");
-                for(var i=0;i<posts.length;i++) {
-                    posts[i].classList.add(i % 2 === 0 ? "even" : "odd");
-                    posts[i].style["background-color"] = i % 2 === 0 ? "" : "#EEF8FE";
-                    posts[i].style["padding-left"] = "10px";             
-                }
-            };
 
             var resultsView = function(result) {
                 switch (result['@type'][0]) {
