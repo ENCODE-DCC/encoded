@@ -275,6 +275,9 @@ class Root(object):
         resource = self.collections.get(name, None)
         if resource is not None:
             return resource
+        resource = self.by_item_type.get(name, None)
+        if resource is not None:
+            return resource
         resource = self.get_by_uuid(name, None)
         if resource is not None:
             return resource
