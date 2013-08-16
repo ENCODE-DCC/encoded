@@ -23,7 +23,7 @@ from ..contentbase import (
 class User(Collection):
     item_type = 'user'
     unique_key = 'user:email'
-    schema = load_schema('colleague.json')
+    schema = load_schema('user.json')
     properties = {
         'title': 'DCC Users',
         'description': 'Listing of current ENCODE DCC users',
