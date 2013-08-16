@@ -95,6 +95,7 @@
             "description": "Document file metadata",
             "title": "Document File Metadata",
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "download": {
                     "description": "The filename that will appear when downloaded from the web",
@@ -119,6 +120,24 @@
                         "image/gif",
                         "image/png"
                     ]
+                },
+                "md5sum": {
+                    "description": "The MD5 sum of the doc, calculated upon upload",
+                    "title": "MD5 Sum",
+                    "type": "string",
+                    "format": "md5sum"
+                },
+                "size": {
+                    "title": "File size (bytes)",
+                    "type": "integer"
+                },
+                "width": {
+                    "title": "Image width (pixels)",
+                    "type": "integer"
+                },
+                "height": {
+                    "title": "Image height (pixels)",
+                    "type": "integer"
                 }
             }
         }
