@@ -66,7 +66,7 @@
         },
         "submitted_by": {
             "description": "",
-            "comment": "For automatic submission submit the email or colleague uuid for the submitting user",
+            "comment": "For automatic submission submit the email or user uuid for the submitting user",
             "title": "Submitted By",
             "type": "string",
             "linkTo": "user",
@@ -105,8 +105,7 @@
                 "href": {
                     "description": "Internal webapp URL for document file",
                     "title": "href",
-                    "type": "string",
-                    "format": "uri"
+                    "type": "string"
                 },
                 "type": {
                     "description": "File MIME-type",
