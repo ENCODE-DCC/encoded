@@ -47,3 +47,13 @@
 .facet li.selected:after { left: 99.5%; border: solid transparent; content: " "; height: 0; width: 0; position: absolute; pointer-events: none; } 
 
 .facet li.selected:after { border-color: rgba(191, 191, 191, 0); border-left-color: #ededed; border-width: 7px; top: 50%; margin-top: -7px; }
+
+.facet-list a:hover {
+	text-decoration: none;
+}
+
+.results ul {border: solid 1px #ddd; }
+
+.results ul li { background: #f9f9f9; padding:10px;}
+
+.results ul li:nth-child(odd) { background: #fff; padding:10px;}

@@ -28,19 +28,14 @@ function (search, $, React, globals, d3) {
                 if(count == result_count) {
                     return <li>
                             <span class="badge pull-right">{count}</span>
-                            <label class="checkbox">
-                                    <input type="checkbox" checked="checked"/>
-                                    <small>{id}</small>
-                            </label>
+                            <label><small>{id}</small></label>
                         </li>
                 }else {
-                    return <li>
+                    return <li >
                             <span class="badge pull-right">{count}</span>
-                            <label class="checkbox">
-                                    <input type="hidden" defaultValue="test" name="test" />
-                                    <input type="checkbox" defaultValue="test" name="test" />
-                                    <small><a href={url+'&'+field+'='+id}>{id}</a></small>
-                            </label>
+                            <a href={url+'&'+field+'='+id}>
+                                <label><small>{id}</small></label>
+                            </a>
                         </li>
                 }
             };
@@ -285,12 +280,13 @@ function (search, $, React, globals, d3) {
                                     </div>
                                     <div class="span8">
                                         <legend>{results['results'].length} Results Found</legend>
-                                        <ul class="nav">
-                                            {results['results'].length ?
-                                                results['results'].map(resultsView)
-                                            : null}
-                                        </ul>
-                                        {styles()}
+                                        <div class="results">
+                                            <ul class = "nav">
+                                                {results['results'].length ?
+                                                    results['results'].map(resultsView)
+                                                : null}
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>  
