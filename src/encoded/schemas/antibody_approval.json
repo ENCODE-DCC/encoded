@@ -4,6 +4,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "0.01",
     "description": "Schema for submitting antibody validation data",
+    "comment": "Complete submitted antibody characterizations are reviewed by the DCC and assigned a status"
     "type": "object",
     "required": [ "award", "lab", "antibody", "status", "target" ],
     "additionalProperties": false,
@@ -15,32 +16,33 @@
     "properties": {
         "schema-version": {
             "description": "The version of JSON schema files used in the generation of the example",
-            "comment":  "Must match the specific schemas' `version` property",
+            "comment":  "Must match the specific schema's `version` property",
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
         "antibody": {
-            "description": "The specific antibody for which the validation image applies.",
-            "comment": "Automatic submitters can supply an ENCODE antibody accession or uuid",
-            "title": "Antibody to be Validated",
+            "description": "The specific antibody for which the characterization image applies.",
+            "comment": "Programmatic submitters can supply an ENCODE antibody accession or uuid",
+            "title": "Antibody to be validated",
             "type": "string",
             "linkTo": "antibody_lot"
         },
         "target": {
-            "description": "Target for which the antibody validation applies.",
-            "comment": "Automatic submitters can supply a target uuid, or name/species pair",
-            "title": "Antibody Target",
+            "description": "Target for which the antibody characterization applies.",
+            "comment": "Programmatic submitters can supply a target uuid, or a specific Target label-Organism name pair",
+            "title": "Antibody target",
             "type": "string",
             "linkTo": "target"
         },
         "validations": {
             "default": [],
-            "description": "List of validation images",
+            "description": "List of antibody characterization images",
+            "comment": "Programmatic submitters can supply a list of validation uuids for each primary and secondary characterization submitted",
             "title": "Validations",
             "items": {
-                "description": "Validation image used for approval",
-                "comment": "Automatic submitters can supply a validation UUID or document/image name.",
-                "title": "Validation image (or document)",
+                "description": "Antibody characterizations used for approval",
+                "comment": "Automatic submitters can supply a validation uuid",
+                "title": "Antibody characterization",
                 "type": "string",
                 "linkTo": "antibody_validation"
             },
@@ -48,9 +50,9 @@
         },
         "status": {
             "default": "INCOMPLETE",
-            "description": "Approval status for the Antibody-Target-Validation triple",
-            "comment": "This might not be appropriate here.",
-            "title": "Approval Status",
+            "description": "Status code for the Antibody-Target-Validation triple",
+            "comment": "Use the default, all other values are set by the DCC. The status informs the current state of the antibody characterizations submitted for review",
+            "title": "Approval status",
             "type": "string",
             "enum" : [
                 "APPROVED",

@@ -3,6 +3,8 @@
     "id": "/profiles/validation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "version": "0.01",
+    "description": "Schema for submitting a validation (antibody or biosample) to ENCODE",
+    "comment": "Validation images and captions accompany antibody lots submitted for review and biosamples containing constructs",
     "type": "object",
     "required": [ "award", "lab", "antibody" ],
     "additionalProperties": false,
@@ -15,8 +17,8 @@
     "properties": {
         "validation_method": {
             "description": "Experimental method for the validation image",
-            "comment": "This will likely get mapped to an experimental methods ontology.",
-            "title": "Method",
+            "comment": "Choose from one of the enumerated validation methods. [This list will likely get mapped to an experimental methods ontology in the future.]",
+            "title": "Antibody or biosample characterization method",
             "type": "string",
             "enum": [
                 "western blot",
@@ -25,7 +27,7 @@
                 "immunofluorescense",
                 "knockdowns",
                 "mass spectrometry after IP",
-                "chIP comparison",
+                "ChIP comparison",
                 "tagged epitopes",
                 "motif enrichment",
                 "dot blot",
@@ -35,29 +37,32 @@
                 "mutant histones",
                 "annotation enrichment",
                 "XXX NEED REVIEW",
-                "Western blot, Western blot after IP",
+                "western blot, western blot after IP",
                 "immunoblot"
             ]
         },
         "caption": {
             "default": "",
-            "description": "Caption for the validation image",
-            "title": "Image Caption",
+            "description": "A free-text caption for the validation image",
+            "comment": "Captions for antibody characterizations should include brief methods, expected MW, cell line(s), labels and justification for acceptance, if necessary",
+            "title": "Image caption",
             "type": "string"
         },
         "date_validated": {
-            "description": "Date in which the validation experiment was run.",
-            "title": "Date Validated",
+            "description": "Date in which the validation experiment was run",
+            "comment": "Dates should be formatted as YYYY-MM-DD",
+            "title": "Date validated",
             "type": "string",
             "format": "date"
         },
         "references": {
             "default": [],
             "description": "List of references (Pubmed IDs)",
+            "comment": "If validation data is from a publication, provide the relevant Pubmed identifier(s) in PMID:NNNNNNNN format",
             "title": "References",
             "reference": {
                 "description": "Pubmed id for a published reference",
-                "title": "Pubmed Reference",
+                "title": "Pubmed reference",
                 "type": "string",
                 "pattern": "^PMID:[0-9]+$"
             },
@@ -66,7 +71,8 @@
         "status": {
             "default": "INCOMPLETE",
             "description": "Approval status for the Validation image",
-            "title": "Approval Status",
+            "comment": "Use the default, all other values are assigned by the DCC. The status code indicates the current state of the characterization image",
+            "title": "Approval status",
             "type": "string",
             "enum" : [
                 "APPROVED",
@@ -78,7 +84,8 @@
         },
         "validation_comment": {
             "default": "",
-            "description": "Should probably be on the status transistion",
+            "description": "Comment(s), if any, to associate to the validation or the status of the validation",
+            "comment": "A free-text field for comments relating to the validation or its status",
             "title": "Validation comment",
             "type": "string",
             "permission": "review"
