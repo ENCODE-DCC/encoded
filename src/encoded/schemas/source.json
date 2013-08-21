@@ -14,31 +14,29 @@
     ],
     "properties": {
         "schema-version": {
-            "description": "The version of JSON schema files used in the generation of the example",
-            "comment":  "Must match the specific schemas' `version` property",
+            "comment":  "Do not submit, value is assigned by the server. The version of the JSON schema that the server uses to validate the object.",
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
         },
         "description": {
+            "title": "Description",
+            "description": "A plain text description of the source.",
             "default": "",
-            "description": "A long name or description for the source",
-            "title": "Source Description",
             "type": "string"
         },
         "title": {
-            "description": "The preferred shorter name of the source",
-            "title": "Source or Vendor Title",
+            "title": "Name",
+            "description": "The complete name of the originating lab or vendor. ",
             "type": "string"
         },
         "name": {
-            "description": "Unique short name for the Source",
-            "title": "Source or Vendor Name",
-            "type": "string",
+            "comment": "Do not submit, value is auto generated from the title as lower cased and hyphen delimited.",
+	    "type": "string",
             "pattern": "^[a-z0-9\\-]+$"
         },
         "url": {
-            "description": "An optional URL for the source",
-            "title": "Source URL",
+            "title": "URL",
+            "description": "A URL for the source.",
             "type": "string",
             "format": "uri"
         }
