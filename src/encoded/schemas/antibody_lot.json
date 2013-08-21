@@ -24,7 +24,7 @@
         },
         "source": {
             "description": "Source or Vendor of Antibody",
-            "comment": "Programmatic submitters can supply an ENCODE source UUID or unique Source name",
+            "comment": "Programmatic submitters can supply an ENCODE source uuid or unique Source name",
             "title": "Antibody source",
             "type": "string",
             "linkTo": "source"
@@ -89,7 +89,7 @@
         },
         "host_organism": {
             "description": "Organism antibody was grown in.",
-            "comment": "Programmatic submitters can provide the exact Organism name or UUID for the host organism the antibody was raised in", 
+            "comment": "Programmatic submitters can provide the exact Organism name or uuid for the host organism the antibody was raised in", 
             "title": "Host organism",
             "type": "string",
             "linkTo": "organism"
