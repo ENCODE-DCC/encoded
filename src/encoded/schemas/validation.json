@@ -17,7 +17,7 @@
     "properties": {
         "validation_method": {
             "description": "Experimental method for the validation image",
-            "comment": "Choose from one of the enumerated validation methods. [This list will likely get mapped to an experimental methods ontology in the future.]",
+            "comment": "Choose from one of the enumerated validation methods used to characterized the antibody lot or biosample. [This list will likely get mapped to an experimental methods ontology in the future.]",
             "title": "Antibody or biosample characterization method",
             "type": "string",
             "enum": [
