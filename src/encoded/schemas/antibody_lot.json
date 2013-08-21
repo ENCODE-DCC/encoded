@@ -89,14 +89,14 @@
         },
         "host_organism": {
             "description": "Organism antibody was grown in.",
-            "comment": "Programmatic submitters can provide the exact Organism name or uuid for the host organism the antibody was raised in", 
+            "comment": "Programmatic submitters can provide the exact Organism name or uuid for the host organism the antibody was raised in",
             "title": "Host organism",
             "type": "string",
             "linkTo": "organism"
         },
         "isotype": {
             "description": "Isotype of the antibody (IgA, IgD, etc.)",
-            "comment": "Choose an isotype from the different enumerated antibody classes", 
+            "comment": "Choose an isotype from the different enumerated antibody classes",
             "title": "Antibody isotype",
             "type": "string",
             "enum": [
@@ -129,7 +129,7 @@
         },
         "purifications": {
             "description": "Method by which antibody was purified",
-            "comment":, "Choose a method by which the antibody was purified from the enumerated list", 
+            "comment": "Choose a method by which the antibody was purified from the enumerated list",
             "title": "Purification methods",
             "type": "array",
             "default": [],
