@@ -31,7 +31,7 @@
         },
         "name": {
             "comment": "Do not submit, value is auto generated from the title as lower cased and hyphen delimited.",
-	    "type": "string",
+            "type": "string",
             "pattern": "^[a-z0-9\\-]+$"
         },
         "url": {
