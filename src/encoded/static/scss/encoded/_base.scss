@@ -23,5 +23,8 @@ body { background: $mainThemeColor; }
 	height: 100%;
 }
 
+dd::first-letter { text-transform: capitalize; } 
+dd:first-letter { text-transform: capitalize; } // IE 8 support
+
 
 /* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */
