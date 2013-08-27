@@ -259,8 +259,13 @@ function (collection, $, class_, React, globals) {
                         <tr class="nosort table-controls">
                             <th colSpan={columns.length}>
                                 {loading_or_total}
-                                <form class="table-filter" onKeyUp={this.handleKeyUp} data-skiprequest="true" data-removeempty="true" >
-                                    <input disabled={this.state.communicating || undefined} name="q" type="search" defaultValue={searchTerm} placeholder="Filter table by..." />
+                                <form class="table-filter" onKeyUp={this.handleKeyUp} 
+                                	data-skiprequest="true" data-removeempty="true" >
+                                    <input ref="q" disabled={this.state.communicating || undefined} 
+                                    	name="q" type="search" defaultValue={searchTerm} 
+                                    	placeholder="Filter table by..." class="filter" 
+                                    	id="table-filter" /> 
+                                    <i class="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
                                     <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                     <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                     <input ref="submitButton" type="submit" hidden="hidden" />
@@ -313,6 +318,11 @@ function (collection, $, class_, React, globals) {
             // form.submit() does not fire onsubmit handlers...
             this.refs.submitButton.getDOMNode().click();
         },
+        
+        clearFilter: function (event) {
+            this.refs.q.getDOMNode().value = '';
+            this.submitTimer = setTimeout(this.submit);
+        }, 
 
         componentWillUnmount: function () {
             if (typeof this.submitTimer != 'undefined') {

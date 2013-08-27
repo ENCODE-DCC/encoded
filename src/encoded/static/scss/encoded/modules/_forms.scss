@@ -27,3 +27,26 @@ input.search-query {
 	background-color: #f7fbfe;
 	@include border-radius($baseBorderRadius);
 }
+
+// Clear Table Filter button/icon
+.filter {
+	padding-right: 30px !important;
+}
+.clear-input-icon {
+	position: relative;
+	left: -20px;
+	top: 3px;
+	z-index: 100;
+	color: rgb(223,223,223);
+	font-size: 15px;
+	cursor: pointer;
+}
+
+.clear-input-icon:active {
+	color: rgb(203,203,203);
+}
+
+.red {
+	border-color: red !important;
+	color: red;
+}
