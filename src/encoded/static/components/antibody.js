@@ -6,7 +6,7 @@ function (antibody, React, URI, globals) {
     var Approval = antibody.Approval = React.createClass({
         render: function() {
             var context = this.props.context;
-            var statusClass = 'status-' + (context.tatus || '').toLowerCase();
+            var statusClass = 'status-' + (context.status || '').toLowerCase();
             var validations = context.validations.map(function (item) {
                 return globals.panel_views.lookup(item)({context: item, key: item['@id']});
             });
