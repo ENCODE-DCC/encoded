@@ -75,3 +75,8 @@ form.table-filter {
 .total-records {
 	font-weight: normal;
 }
+
+// Allow line breaks in table cells (esp Targets)
+.collection-table tbody span {
+    display: block;
+}
