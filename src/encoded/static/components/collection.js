@@ -249,7 +249,7 @@ function (collection, $, class_, React, globals) {
                 loading_or_total = (
                     <span>
                         <span class="table-count label label-invert">{found}</span>
-                        of {total} records
+                        <span id="total-records">of {total} records</span>
                     </span>
                 );
             }
