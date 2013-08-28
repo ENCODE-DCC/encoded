@@ -71,19 +71,6 @@
             "title": "RNAi Documents (list)",
             "type": "array"
         },
-        "validations": {
-            "default": [],
-            "description": "List of documents/images associated with the validation of this RNAi",
-            "comment": "For automatic submission supply unique documents/images names or uuids",
-            "items": {
-                "description": "RNAi validation document",
-                "title": "Validation Document",
-                "type": "string",
-                "linkTo": "document"
-            },
-            "title": "RNAi Validation Images (list)",
-            "type": "array"
-        },
         "rnai_sequence": {
             "description": "Sequence for the relevant part of the inhibatory RNA(not including vector)",
             "title": "RNAi Sequence",
