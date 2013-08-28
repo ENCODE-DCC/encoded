@@ -1,44 +1,21 @@
 import pytest
 
-COLLECTION_URLS = [
-    '/',
-    '/antibodies/',
-    '/targets/',
-    '/organisms/',
-    '/sources/',
-    '/validations/',
-    '/antibody-lots/',
-]
 
-## since we have cleaned up all the errors
-## the below should equal the full spreadsheet rows with text in the 'test' col.
-COLLECTION_URL_LENGTH = {
-    '/awards/': 39,
-    '/labs/': 45,
-    '/users/': 83,
-    '/organisms/': 6,
-    '/sources/': 77,
-    '/targets/': 30,
-    '/antibody-lots/': 29,
-    '/validations/': 41,
-    '/antibodies/': 30,
-    # '/donors/': 72,
-    '/mouse-donors/': 0,
-    '/human-donors/': 0,
-    '/documents/': 130,
-    '/treatments/': 7,
-    '/constructs/': 5,
-    '/biosamples/': 134,
-    '/platforms/': 11,
-    '/users/': 84,
-    '/files/': 18,
-    '/replicates/': 47,
-    '/libraries/': 49,
-    '/experiments/': 28,
-    # '/softwares/': 3, not implemented yet
-}
+def _type_length():
+    # Not a fixture as we need to parameterize tests on this
+    import os.path
+    from ..loadxl import ORDER
+    from pkg_resources import resource_filename
+    inserts = resource_filename('encoded', 'tests/data/inserts/')
+    lengths = {}
+    for name in ORDER:
+        with open(os.path.join(inserts, name + '.tsv')) as f:
+            lengths[name] = len([l for l in f.readlines() if l.strip()]) - 1
 
-COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
+    return lengths
+
+
+TYPE_LENGTH = _type_length()
 
 
 @pytest.fixture
@@ -56,15 +33,25 @@ def users(testapp):
     return users
 
 
-@pytest.mark.parametrize('url', [url for url in COLLECTION_URLS if url != '/users/'])
-def test_html(htmltestapp, url):
-    res = htmltestapp.get(url, status=200)
+def test_home(htmltestapp):
+    res = htmltestapp.get('/', status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
 
-@pytest.mark.parametrize('url', COLLECTION_URLS)
-def test_json(testapp, url):
-    res = testapp.get(url, status=200)
+def test_home_json(testapp):
+    res = testapp.get('/', status=200)
+    assert res.json['@type']
+
+
+@pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
+def test_html(htmltestapp, item_type):
+    res = htmltestapp.get('/' + item_type).follow(status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_json(testapp, item_type):
+    res = testapp.get('/' + item_type).follow(status=200)
     assert res.json['@type']
 
 
@@ -103,19 +90,18 @@ def test_load_sample_data(testapp):
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize(('url', 'length'), COLLECTION_URL_LENGTH.items())
-def test_load_workbook(workbook, testapp, url, length):
+@pytest.mark.parametrize(('item_type', 'length'), TYPE_LENGTH.items())
+def test_load_workbook(workbook, testapp, item_type, length):
     # testdata must come before testapp in the funcargs list for their
     # savepoints to be correctly ordered.
-    res = testapp.get(url + '?limit=all', status=200)
-    assert len(res.json['@graph']) >= 1 # length
-    # extra guys are fine
+    res = testapp.get('/%s/?limit=all' % item_type).maybe_follow(status=200)
+    assert len(res.json['@graph']) == length
 
 
 @pytest.mark.slow
 def test_collection_limit(workbook, testapp):
-    res = testapp.get('/antibodies/?limit=10', status=200)
-    assert len(res.json['@graph']) == 10
+    res = testapp.get('/antibodies/?limit=2', status=200)
+    assert len(res.json['@graph']) == 2
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
