@@ -17,7 +17,7 @@ function (React) {
 						<div id="footer-links">
 							<ul>
 								<li><a href="/"><img src="/static/img/encode-logo-small.png" alt="ENCODE" id="encode-logo" /></a></li>
-								<li><a href="#contact">Contact</a></li>
+								<li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
 								<li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
 								<li>&copy;2013. Stanford University.</li>
 							</ul>

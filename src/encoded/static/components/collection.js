@@ -249,7 +249,7 @@ function (collection, $, class_, React, globals) {
                 loading_or_total = (
                     <span>
                         <span class="table-count label label-invert">{found}</span>
-                        of {total} records
+                        <span id="total-records">of {total} records</span>
                     </span>
                 );
             }
@@ -259,8 +259,13 @@ function (collection, $, class_, React, globals) {
                         <tr class="nosort table-controls">
                             <th colSpan={columns.length}>
                                 {loading_or_total}
-                                <form ref="form" class="table-filter" onKeyUp={this.handleKeyUp} data-skiprequest="true" data-removeempty="true" >
-                                    <input disabled={this.state.communicating || undefined} name="q" type="search" defaultValue={searchTerm} placeholder="Filter table by..." />
+                                <form ref="form" class="table-filter" onKeyUp={this.handleKeyUp} 
+                                	data-skiprequest="true" data-removeempty="true">
+                                    <input ref="q" disabled={this.state.communicating || undefined} 
+                                    	name="q" type="search" defaultValue={searchTerm} 
+                                    	placeholder="Filter table by..." class="filter" 
+                                    	id="table-filter" /> 
+                                    <i class="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
                                     <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                     <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                 </form>
@@ -312,6 +317,11 @@ function (collection, $, class_, React, globals) {
             var event = new Event('submit', {bubbles: true, cancelable: true});
             this.refs.form.getDOMNode().dispatchEvent(event);
         },
+        
+        clearFilter: function (event) {
+            this.refs.q.getDOMNode().value = '';
+            this.submitTimer = setTimeout(this.submit);
+        }, 
 
         componentWillUnmount: function () {
             if (typeof this.submitTimer != 'undefined') {
