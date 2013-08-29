@@ -5,36 +5,8 @@ import os.path
 logger = logging.getLogger('encoded')
 logger.setLevel(logging.INFO)  # doesn't work to shut off sqla INFO
 
-TYPE_URL = {
-    # TODO This has appears in 3 places... maybe it shoudl be configged
-    'organism': '/organisms/',
-    'source': '/sources/',
-    'target': '/targets/',
-    'antibody_lot': '/antibody-lots/',
-    'antibody_validation': '/validations/',
-    'antibody_approval': '/antibodies/',
-    'mouse_donor': '/mouse-donors/',
-    'human_donor': '/human-donors/',
-    'document': '/documents/',
-    'biosample': '/biosamples/',
-    'treatment': '/treatments/',
-    'construct': '/constructs/',
-    'construct_validation': '/construct-validations/',
-    'colleague': '/users/',
-    'lab': '/labs/',
-    'award': '/awards/',
-    'platform': '/platforms/',
-    'library': '/libraries/',
-    'replicate': '/replicates/',
-    'software': '/software/',
-    'file': '/files/',
-    'dataset': '/datasets/',
-    'experiment': '/experiments/',
-    'rnai': '/rnai/',
-}
-
 ORDER = [
-    'colleague',
+    'user',
     'award',
     'lab',
     'organism',
@@ -237,7 +209,7 @@ def read_csv(stream, **kw):
 
 
 def post(testapp, item_type):
-    base_url = TYPE_URL[item_type]
+    base_url = '/' + item_type
 
     def component(rows):
         for row in rows:
@@ -247,7 +219,6 @@ def post(testapp, item_type):
                 value = row['_value'] = {
                     k: v for k, v in row.iteritems() if not k.startswith('_')
                 }
-                # Possibly 
                 url = row['_url'] = base_url
                 row['_response'] = testapp.post_json(url, value, status='*')
 
@@ -257,7 +228,7 @@ def post(testapp, item_type):
 
 
 def put(testapp, item_type):
-    base_url = TYPE_URL[item_type]
+    base_url = '/' + item_type
 
     def component(rows):
         for row in rows:
@@ -456,11 +427,11 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None):
 # Additional pipeline sections for item types
 
 PIPELINES = {
-    'colleague': [
+    'user': [
         remove_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        remove_keys('derived_from', 'contained_in'),
+        remove_keys('derived_from', 'pooled_from'),
     ],
     'experiment': [
         remove_keys('files', 'possible_controls'),
@@ -476,11 +447,11 @@ PIPELINES = {
 
 
 UPDATE_PIPELINES = {
-    'colleague': [
+    'user': [
         skip_rows_missing_all_keys('lab', 'submits_for'),
     ],
     'biosample': [
-        skip_rows_missing_all_keys('derived_from', 'contained_in'),
+        skip_rows_missing_all_keys('derived_from', 'pooled_from'),
     ],
     'experiment': [
         skip_rows_missing_all_keys('files', 'possible_controls'),

@@ -10,6 +10,7 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/attachment" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "validation.json#/properties" }
     ],

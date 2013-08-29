@@ -1,8 +1,10 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'globals'],
-function (platform, React, globals) {
+define(['exports', 'react', 'globals', 'jsx!dbxref'],
+function (platform, React, globals, dbxref) {
     'use strict';
 
+    var DbxrefList = dbxref.DbxrefList;
+    var Dbxref = dbxref.Dbxref;
 
     var Panel = platform.Panel = React.createClass({
         render: function() {
@@ -11,30 +13,30 @@ function (platform, React, globals) {
             return (
                 <dl class={itemClass}>
                     <dt>Platform name</dt>
-                    <dd><a href="{context.url}">{context.description}</a></dd>
-            
+                    <dd><a href="{context.url}">{context.title}</a></dd>
+
                     <dt>GEO Platform ID(s)</dt>
-                    <dd>{context.gpl_ids}</dd>
-                
+                    <dd>
+                        {context.geo_dbxrefs.length ? 
+                            <DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
+                        : <em>None submitted</em> }
+                    </dd>
+
                     <dt>OBI ID</dt>
-                    <dd>{context.obi_dbxref_list}</dd>
-                
+                    <dd><Dbxref value={context.term_id} /></dd>
+
                     <dt>ENCODE2 ID</dt>
-                    <dd>{context.encode2_dbxref_list}</dd>
+                    <dd>
+                        {context.encode2_dbxrefs.length ? 
+                            <DbxrefList values={context.encode2_dbxrefs} prefix="ENCODE2" />
+                        : null}
+                    </dd>
                 </dl>
             );
         }
     });
 
     globals.panel_views.register(Panel, 'platform');
-
-
-    var title = platform.title = function (props) {
-        return props.context.description;
-    };
-
-    globals.listing_titles.register(title, 'platform');
-
 
     return platform;
 });

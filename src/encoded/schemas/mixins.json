@@ -66,13 +66,15 @@
         },
         "submitted_by": {
             "description": "",
-            "comment": "For automatic submission submit the email or colleague uuid for the submitting user",
+            "comment": "For automatic submission submit the email or user uuid for the submitting user",
             "title": "Submitted By",
             "type": "string",
             "linkTo": "user",
             "serverDefault": "userid",
             "permission": "import_items"
-        },
+        }
+    },
+    "attribution": {
         "lab": {
             "description": "Submitting Lab",
             "comment": "Automatic submitters can supply a Lab UUID or Name",
@@ -93,6 +95,7 @@
             "description": "Document file metadata",
             "title": "Document File Metadata",
             "type": "object",
+            "additionalProperties": false,
             "properties": {
                 "download": {
                     "description": "The filename that will appear when downloaded from the web",
@@ -102,8 +105,7 @@
                 "href": {
                     "description": "Internal webapp URL for document file",
                     "title": "href",
-                    "type": "string",
-                    "format": "uri"
+                    "type": "string"
                 },
                 "type": {
                     "description": "File MIME-type",
@@ -117,6 +119,24 @@
                         "image/gif",
                         "image/png"
                     ]
+                },
+                "md5sum": {
+                    "description": "The MD5 sum of the doc, calculated upon upload",
+                    "title": "MD5 Sum",
+                    "type": "string",
+                    "format": "md5sum"
+                },
+                "size": {
+                    "title": "File size (bytes)",
+                    "type": "integer"
+                },
+                "width": {
+                    "title": "Image width (pixels)",
+                    "type": "integer"
+                },
+                "height": {
+                    "title": "Image height (pixels)",
+                    "type": "integer"
                 }
             }
         }

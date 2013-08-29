@@ -12,6 +12,7 @@
         { "$ref": "donor.json#/properties" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {

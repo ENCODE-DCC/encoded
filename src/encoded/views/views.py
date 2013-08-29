@@ -333,6 +333,13 @@ class Replicates(Collection):
         'description': 'Listing of Replicates',
     }
     item_embedded = set(['library', 'platform', 'antibody'])
+    item_keys = [
+        {
+            'name': '{item_type}:experiment_biological_technical',
+            'value': '{experiment}/{biological_replicate_number}/{technical_replicate_number}',
+            '$templated': True,
+        },
+    ]
 
 
 @location('software')

@@ -11,6 +11,7 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -19,12 +20,6 @@
             "comment":  "Must match the specific schemas' `version` property",
             "type": "string",
             "pattern": "^[0-9]\\.[0-9][0-9]$"
-        },
-        "md5sum": {
-            "description": "The MD5 sum of the doc, calculated upon upload",
-            "title": "MD5 Sum",
-            "type": "string",
-            "format": "md5sum"
         },
         "document_type": {
             "description": "The specific purpose of the document or protocol",

@@ -207,6 +207,7 @@ function (mixins, $, React, URI) {
                     }
                 }
                 window.addEventListener('popstate', this.handlePopState, true);
+                window.addEventListener('error', this.handleError, false);
             }
         },
 
@@ -215,6 +216,11 @@ function (mixins, $, React, URI) {
             if (method_name) {
                 this[method_name].call(this);
             }
+        },
+
+        handleError: function(event) {
+            // When an unhandled exception occurs, reload the page on navigation
+            this.historyEnabled = false;
         },
 
         handleClick: function(event) {
@@ -292,6 +298,10 @@ function (mixins, $, React, URI) {
 
         handlePopState: function (event) {
             if (this.DISABLE_POPSTATE) return;
+            if (!this.historyEnabled) {
+                window.location.reload();
+                return;
+            }
             var href = window.location.href;
             if (event.state) {
                 this.setState({context: event.state})

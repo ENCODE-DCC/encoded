@@ -93,32 +93,27 @@ def drop_rows_with_all_key_value(**kw):
     return component
 
 
-def insert_pipeline():
-    anonymizer = Anonymizer()
+def extract_pipeline():
     return [
         skip_rows_with_all_falsey_value('test'),
         skip_rows_with_all_key_value(test='skip'),
         skip_rows_with_all_falsey_value('test'),
         skip_rows_missing_all_keys('uuid'),
         drop_rows_with_all_key_value(_skip=True),
+    ]
+
+def anon_pipeline():
+    anonymizer = Anonymizer()
+    return extract_pipeline() + [
         set_existing_key_value(
             fax='000-000-0000',
             phone1='000-000-0000',
             phone2='000-000-0000',
-            skype='skype_name',
-            google_chat='google_chat_name',
+            skype='skype',
+            google='google',
         ),
         anonymizer.replace_emails,
         anonymizer.replace_non_pi_names,
-    ]
-
-
-def update_pipeline():
-    # XXX this separation between insert/update rows doesn't make sense
-    return [
-        skip_rows_missing_all_keys('test'),
-        skip_rows_without_all_key_value(test='test'),
-        drop_rows_with_all_key_value(_skip=True),
     ]
 
 
@@ -134,20 +129,19 @@ def run(pipeline, inpath, outpath):
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='Extract test data set.')
+    parser.add_argument('--anonymize', '-a', action="store_true",
+        help="anonymize the data.")
     parser.add_argument('inpath',
         help="input zip file of excel sheets.")
-    parser.add_argument('insertpath',
+    parser.add_argument('outpath',
         help="directory to write filtered tsv files to.")
-    parser.add_argument('updatepath',
-        help="directory to write filtered tsv files for update tests.")
     args = parser.parse_args()
-    anonymizer = Anonymizer()
+    pipeline = anon_pipeline() if args.anonymize else extract_pipeline()
     import pdb
     import sys
     import traceback
     try:
-        run(insert_pipeline(), args.inpath, args.insertpath)
-        run(update_pipeline(), args.insertpath, args.updatepath)
+        run(pipeline, args.inpath, args.outpath)
     except:
         type, value, tb = sys.exc_info()
         traceback.print_exc()

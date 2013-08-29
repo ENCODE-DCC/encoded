@@ -5,7 +5,7 @@
     "version": "0.01",
     "description": "Schema for submitting data file Metadata for ENCODE",
     "type": "object",
-    "required": [ "award", "lab", "file_format", "md5sum", "output_type"],
+    "required": ["dataset", "file_format", "md5sum", "output_type"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
@@ -69,6 +69,12 @@
                 "signal"
             ]
         },
+        "dataset": {
+            "description": "Pointer to the experiment or dataset for this file.",
+            "comment": "Automatic submitters can supply an experiment accession",
+            "type": "string",
+            "linkTo": ["experiment", "dataset"]
+        },
         "replicate": {
             "description": "Pointer to the experimental replicate for this file.",
             "comment": "Automatic submitters can supply a Replicate UUID",
@@ -98,13 +104,6 @@
             "description": "EDW download file path and name",
             "title": "Download Path",
             "type": "string"
-        },
-        "date_passed_validation": {
-            "description": "The date which this file passed ENCODE DCC Validation",
-            "comments": "Not to be submitted or updated by non-admin users.",
-            "title": "Date of Validation",
-            "type": "string",
-            "format": "date"
         }
     }
 }

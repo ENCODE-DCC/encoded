@@ -5,13 +5,12 @@
     "version": "0.01",
     "description": "Schema for submitting a target of an antibody or experiment to the ENCODE DCC",
     "type": "object",
-    "required": [ "award", "lab", "organism", "label"],
+    "required": ["organism", "label"],
     "facets": {"Lab": "lab.title", "Organism": "organism.name"},
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/aliases" }
     ],
     "properties": {
         "schema-version": {
@@ -30,29 +29,6 @@
                 "type":  "string"
             },
             "type": "array"
-        },
-        "target_aliases": {
-            "default": [],
-            "description": "List of target name aliases and sources, indexed for searching",
-            "title": "Target aliases",
-            "type": "array",
-            "items": {
-                "description": "Target name aliases",
-                "title": "Alias",
-                "type": "object",
-                "properties": {
-                    "source": {
-                        "description": "Source of this alias",
-                        "title": "Alias Source",
-                        "type": "string"
-                    },
-                    "alias": {
-                        "description": "Alias (alternate identifier) for the target",
-                        "title": "Alias",
-                        "type": "string"
-                    }
-                }
-            }
         },
         "organism": {
             "description": "Organism of the specific target",
