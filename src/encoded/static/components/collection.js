@@ -295,8 +295,7 @@ function (collection, $, class_, React, globals) {
             }
             this.refs.reversed.getDOMNode().value = reversed;
             event.preventDefault();
-            // defer until this event is handled
-            setTimeout(this.submit);
+            this.submit();
         },
 
         handleKeyUp: function (event) {
