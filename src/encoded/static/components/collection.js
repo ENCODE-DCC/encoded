@@ -259,11 +259,10 @@ function (collection, $, class_, React, globals) {
                         <tr class="nosort table-controls">
                             <th colSpan={columns.length}>
                                 {loading_or_total}
-                                <form class="table-filter" onKeyUp={this.handleKeyUp} data-skiprequest="true" data-removeempty="true" >
+                                <form ref="form" class="table-filter" onKeyUp={this.handleKeyUp} data-skiprequest="true" data-removeempty="true" >
                                     <input disabled={this.state.communicating || undefined} name="q" type="search" defaultValue={searchTerm} placeholder="Filter table by..." />
                                     <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                     <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
-                                    <input ref="submitButton" type="submit" hidden="hidden" />
                                 </form>
                             </th>
                         </tr>
@@ -309,9 +308,10 @@ function (collection, $, class_, React, globals) {
             this.submitTimer = setTimeout(this.submit, 200);
         },
 
-        submit: function (event) {
+        submit: function () {
             // form.submit() does not fire onsubmit handlers...
-            this.refs.submitButton.getDOMNode().click();
+            var event = new Event('submit', {bubbles: true, cancelable: true});
+            this.refs.form.getDOMNode().dispatchEvent(event);
         },
 
         componentWillUnmount: function () {
