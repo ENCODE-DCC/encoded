@@ -57,9 +57,9 @@ function (collection, $, class_, React, globals) {
                 var a = '' + rowA.cells[sortColumn].sortable;
                 var b = '' + rowB.cells[sortColumn].sortable;
                 if (a < b) {
-                    return reverse ? -1 : 1;
-                } else if (a > b) {
                     return reverse ? 1 : -1;
+                } else if (a > b) {
+                    return reverse ? -1 : 1;
                 }
                 return 0;
             });
@@ -226,7 +226,7 @@ function (collection, $, class_, React, globals) {
             var headers = columns.map(function (column, index) {
                 var className = "sortdirection icon-";
                 if (index === sortOn) {
-                    className += reversed ? " icon-chevron-up" : " icon-chevron-down";
+                    className += reversed ? " icon-chevron-down" : " icon-chevron-up";
                 }
                 return (
                     <th onClick={self.handleClickHeader} key={index}>
