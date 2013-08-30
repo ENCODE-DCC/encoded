@@ -66,6 +66,24 @@ function (collection, $, class_, React, globals) {
         }
     });
 
+    var RowView = function (props) {
+        var row = props.row;
+        var id = row.item['@id'];
+        var tds = row.cells.map( function (cell, index) {
+            if (index === 0) {
+                return (
+                    <td key={index}><a href={row.item['@id']}>{cell.value}</a></td>
+                );
+            }
+            return (
+                <td key={index}>{cell.value}</td>
+            );
+        });
+        return (
+            <tr key={id} hidden={props.hidden} data-href={id}>{tds}</tr>
+        );
+    };
+
     var Table = collection.Table = React.createClass({
         getDefaultProps: function () {
             return {
@@ -218,26 +236,30 @@ function (collection, $, class_, React, globals) {
                 );
             });
             var searchTermLower = this.state.searchTerm.toLowerCase();
-            var found = 0;
-            var rows = data.rows.map(function (row) {
-                var tds = row.cells.map( function (cell, index) {
-                    if (index === 0) {
-                        return (
-                            <td key={index}><a href={row.item['@id']}>{cell.value}</a></td>
-                        );
+            var matching = [];
+            var not_matching = [];
+            // Reorder rows so that the nth-child works
+            if (searchTerm) {
+                data.rows.forEach(function (row) {
+                    if (row.text.indexOf(searchTermLower) == -1) {
+                        not_matching.push(row);
+                    } else {
+                        matching.push(row);
                     }
-                    return (
-                        <td key={index}>{cell.value}</td>
-                    );
                 });
-                var id = row.item['@id'];
-                // Keep DOM nodes around but hidden
-                var hidden = (searchTerm && row.text.indexOf(searchTermLower) == -1) || undefined;
-                if (!hidden) found += 1;
+            } else {
+                matching = data.rows;
+            }
+            var rows = matching.map(function (row) {
                 return (
-                    <tr key={id} hidden={hidden} data-href={id}>{tds}</tr>
+                    <RowView row={row} />
                 );
             });
+            rows.push.apply(not_matching.map(function (row) {
+                return (
+                    <RowView row={row} hidden={true} />
+                );
+            }));
             var table_class = "sticky-area collection-table";
             var loading_or_total;
             if (this.state.communicating) {
@@ -248,7 +270,7 @@ function (collection, $, class_, React, globals) {
             } else {
                 loading_or_total = (
                     <span>
-                        <span class="table-count label label-invert">{found}</span>
+                        <span class="table-count label label-invert">{matching.length}</span>
                         <span id="total-records">of {total} records</span>
                     </span>
                 );
