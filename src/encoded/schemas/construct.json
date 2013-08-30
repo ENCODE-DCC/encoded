@@ -112,17 +112,23 @@
         "genomic_integration_site": {
             "description": "Site in the biosample genome where the construct is stabily integrated",
             "title": "Integration Site",
-            "type": "string"
+            "type": "string",
+            "comment": "TODO",
+            "requestMethod": []
         },
         "insert_sequence": {
             "description": "DNA sequence for the relevant inserted part of the construct (not including vector)",
             "title": "Insert Sequence",
-            "type": "string"
+            "type": "string",
+            "comment": "TODO",
+            "requestMethod": []
         },
         "insert_genome_coordinates": {
             "description": "Coordinates in the (human or mouse) reference geneome corresponding to inserted sequence",
             "title": "Insert Genome Coordintes",
-            "type": "string"
+            "type": "string",
+            "comment": "TODO",
+            "requestMethod": []
         }
     }
 }
