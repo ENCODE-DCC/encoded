@@ -83,7 +83,7 @@
             "title": "Skype user ID",
             "type": "string"
         },
-        "google_chat": {
+        "google": {
             "description": "A Google Chat ID for the user.",
             "title": "Google Chat user ID",
             "type": "string"
