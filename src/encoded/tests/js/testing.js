@@ -6,11 +6,11 @@ requirejs.config({
     baseUrl: '/static',
 
     paths: {
-        jquery: 'libs/jquery.min',
+        jquery: 'vendor/jquery',
         // Jasmine
-        jasmine: '/tests/js/libs/jasmine/jasmine',
-        jasmine_html: '/tests/js/libs/jasmine/jasmine-html',
-        jasmine_jquery: '/tests/js/libs/jasmine-jquery'
+        jasmine: '/tests/js/vendor/jasmine/jasmine',
+        jasmine_html: '/tests/js/vendor/jasmine/jasmine-html',
+        jasmine_jquery: '/tests/js/vendor/jasmine-jquery'
     },
 
     shim: {
