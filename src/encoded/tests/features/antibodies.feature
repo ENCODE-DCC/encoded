@@ -7,10 +7,7 @@ Feature: Antibodies
 
     Scenario: Table
         When I visit "/antibodies/"
-        And I should see an element with the css selector "table.sticky-area > tbody > tr"
-        And I should see at least 15 elements with the css selector "table.sticky-area > tbody > tr"
-        When I wait for the table to fully load
-        Then I should see an element with the css selector "a[href='/antibodies/c808814f-376f-41ee-b93e-ddd00294ca3d/']"
+        And I wait for the table to fully load
 
         When I fill in "q" with "mouse"
         Then I should see an element with the css selector "tr:not([hidden]) a[href='/antibodies/35cf08c4-72cf-4408-8552-231e3e35b279/']" within 1 seconds
