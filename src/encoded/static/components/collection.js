@@ -255,7 +255,7 @@ function (collection, $, class_, React, globals) {
                     <RowView row={row} />
                 );
             });
-            rows.push.apply(not_matching.map(function (row) {
+            rows.push.apply(rows, not_matching.map(function (row) {
                 return (
                     <RowView row={row} hidden={true} />
                 );
