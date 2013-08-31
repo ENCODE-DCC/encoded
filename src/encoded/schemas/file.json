@@ -8,16 +8,14 @@
     "required": ["dataset", "file_format", "md5sum", "output_type"],
     "additionalProperties": false,
     "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
-         "schema-version": {
-            "description": "The version of JSON schema files used in the generation of the example",
-            "comment":  "Must match the specific schemas' `version` property",
-            "type": "string",
-            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        "schema_version": {
+            "default": "1"
         },
         "file_format": {
             "description": "File format (FastQ, BAM, BED, etc.)",
