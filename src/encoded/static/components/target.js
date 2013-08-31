@@ -15,7 +15,7 @@ function (target, React, globals, dbxref) {
                     <dd>{context.label}</dd>
 
                     <dt>Target Gene</dt>
-                    <dd>{context.target_gene_name}</dd>
+                    <dd>{context.gene_name}</dd>
 
                     <dt>DB cross references</dt>
                     <dd>
@@ -26,9 +26,6 @@ function (target, React, globals, dbxref) {
 
                     <dt>Species</dt>
                     <dd>{context.organism.name}</dd>
-
-                    <dt>Target Class</dt>
-                    <dd>{context.target_class}</dd>
                 </dl>
             );
         }
