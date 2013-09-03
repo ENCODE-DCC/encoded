@@ -2,7 +2,6 @@
     "title": "ENCODE Target",
     "id": "/profiles/target.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting a target of an antibody or experiment to the ENCODE DCC",
     "type": "object",
     "required": ["organism", "label"],

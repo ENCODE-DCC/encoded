@@ -2,7 +2,6 @@
     "title": "ENCODE Experimental Data File",
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting data file Metadata for ENCODE",
     "type": "object",
     "required": ["dataset", "file_format", "md5sum", "output_type"],

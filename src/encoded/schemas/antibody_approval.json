@@ -2,7 +2,6 @@
     "title": "ENCODE Antibody Validation",
     "id": "/profiles/antibody_approval.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting antibody validation data",
     "comment": "Complete submitted antibody characterizations are reviewed by the DCC and assigned a status",
     "type": "object",
