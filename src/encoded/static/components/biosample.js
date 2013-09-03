@@ -25,7 +25,7 @@ function (biosample, React, URI, globals) {
                             <ul class="breadcrumb">
                                 <li>Biosamples <span class="divider">/</span></li>
                                 <li>{context.biosample_type}{' '}<span class="divider">/</span></li>{' '}
-                                <li class="active">{context.donor.organism.name}</li>
+                                <li class="active">{context.organism.name}</li>
                             </ul>
                             <h2>{context.accession}{' / '}{context.biosample_type}</h2>
                         </div>
@@ -66,7 +66,7 @@ function (biosample, React, URI, globals) {
                             <dd hidden={!context.note}>{context.note}</dd>
                         </dl>
 
-                        {context.biosample_type != 'immortalized cell line' ?
+                        {context.donor ?
                             <section>
                                 <hr />
                                 <h4>Donor Information</h4>

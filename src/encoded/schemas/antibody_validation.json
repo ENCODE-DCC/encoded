@@ -9,6 +9,7 @@
     "required": [ "award", "lab", "antibody", "target" ],
     "additionalProperties": false,
     "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/attribution" },
@@ -16,6 +17,9 @@
         { "$ref": "validation.json#/properties" }
     ],
     "properties": {
+        "schema_version": {
+            "default": "1"
+        },
         "antibody": {
             "description": "The specific antibody for which the validation image applies.",
             "comment": "Programmatic submitters can supply an ENCODE antibody accession or uuid",

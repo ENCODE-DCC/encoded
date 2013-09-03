@@ -9,6 +9,7 @@
     "required": [ "award", "lab", "nucleic_acid_term_id"],
     "additionalProperties": false,
     "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
@@ -16,11 +17,8 @@
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
-        "schema-version": {
-            "description": "The version of JSON schema files used in the generation of the example",
-            "comment":  "Must match the specific schemas' `version` property",
-            "type": "string",
-            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        "schema_version": {
+            "default": "1"
         },
         "biosample": {
             "description": "Biosample from which this library was derived or isolated.",
