@@ -8,15 +8,14 @@
     "required": ["name", "title"],
     "additionalProperties": false,
     "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
-        "schema-version": {
-            "comment":  "Do not submit, value is assigned by the server. The version of the JSON schema that the server uses to validate the object.",
-            "type": "string",
-            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        "schema_version": {
+            "default": "1"
         },
         "description": {
             "title": "Description",

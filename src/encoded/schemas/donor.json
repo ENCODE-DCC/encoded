@@ -7,6 +7,7 @@
     "type": "object",
     "required": [ "award", "lab", "organism"],
     "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
@@ -14,11 +15,8 @@
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
-        "schema-version": {
-            "description": "The version of JSON schema files used in the generation of the example",
-            "comment":  "Must match the specific schemas' `version` property",
-            "type": "string",
-            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        "schema_version": {
+            "hidden comment": "Bump the default in the subclasses."
         },
         "life_stage": {
             "description": "",

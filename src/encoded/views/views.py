@@ -189,6 +189,9 @@ class ConstructValidation(Collection):
         'description': 'Listing of biosample construct validations',
     }
 
+    class Item(ItemWithAttachment):
+        pass
+
 
 @location('documents')
 class Document(Collection):

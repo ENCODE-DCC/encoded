@@ -2,19 +2,22 @@
     "title": "Base Validation",
     "id": "/profiles/validation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting a validation (antibody or biosample) to ENCODE",
     "comment": "Validation images and captions accompany antibody lots submitted for review and biosamples containing constructs",
     "type": "object",
     "required": [ "award", "lab", "antibody" ],
     "additionalProperties": false,
     "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
+        "schema_version": {
+            "default": "1"
+        },
         "validation_method": {
             "description": "Experimental method for the validation image",
             "comment": "Choose from one of the enumerated validation methods used to characterized the antibody lot or biosample. [This list will likely get mapped to an experimental methods ontology in the future.]",

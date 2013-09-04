@@ -10,6 +10,10 @@ STATIC_MAX_AGE = 0
 
 
 def static_resources(config):
+    from pkg_resources import resource_filename
+    import mimetypes
+    mimetypes.init()
+    mimetypes.init([resource_filename('encoded', 'static/mime.types')])
     config.add_static_view('static', 'static', cache_max_age=STATIC_MAX_AGE)
     config.add_static_view('profiles', 'schemas', cache_max_age=STATIC_MAX_AGE)
 

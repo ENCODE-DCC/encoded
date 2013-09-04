@@ -1,5 +1,14 @@
 {
     "title": "Mixin properties",
+    "schema_version": {
+        "schema_version": {
+            "comment": "Schema version indicates generation of schema used to save version to to enable upgrade steps to work. Individual schemas should set the default.",
+            "type": "string",
+            "default": "1",
+            "pattern": "^\\d+(\\.\\d+)*$",
+            "requestMethod": []
+        }
+    },
     "uuid": {
         "uuid": {
             "title": "UUID",

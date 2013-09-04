@@ -8,16 +8,15 @@
     "required": [ "construct_type", "target", "tags", "lab", "award"],
     "additionalProperties": false,
     "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
-        "schema-version": {
-            "description": "The version of JSON schema files used in the generation of the example",
-            "comment":  "Must match the specific schemas' `version` property",
-            "type": "string",
-            "pattern": "^[0-9]\\.[0-9][0-9]$"
+        "schema_version": {
+            "default": "1"
         },
         "construct_type": {
             "description": "The type of transfection construct",
@@ -111,17 +110,23 @@
         "genomic_integration_site": {
             "description": "Site in the biosample genome where the construct is stabily integrated",
             "title": "Integration Site",
-            "type": "string"
+            "type": "string",
+            "comment": "TODO",
+            "requestMethod": []
         },
         "insert_sequence": {
             "description": "DNA sequence for the relevant inserted part of the construct (not including vector)",
             "title": "Insert Sequence",
-            "type": "string"
+            "type": "string",
+            "comment": "TODO",
+            "requestMethod": []
         },
         "insert_genome_coordinates": {
             "description": "Coordinates in the (human or mouse) reference geneome corresponding to inserted sequence",
             "title": "Insert Genome Coordintes",
-            "type": "string"
+            "type": "string",
+            "comment": "TODO",
+            "requestMethod": []
         }
     }
 }

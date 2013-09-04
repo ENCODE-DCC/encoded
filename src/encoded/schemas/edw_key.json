@@ -7,6 +7,9 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
+        "schema_version": {
+            "default": "1"
+        },
         "email": {
             "title": "Email",
             "description": "Email address of user in database",

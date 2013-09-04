@@ -57,14 +57,32 @@ function (collection, $, class_, React, globals) {
                 var a = '' + rowA.cells[sortColumn].sortable;
                 var b = '' + rowB.cells[sortColumn].sortable;
                 if (a < b) {
-                    return reverse ? -1 : 1;
-                } else if (a > b) {
                     return reverse ? 1 : -1;
+                } else if (a > b) {
+                    return reverse ? -1 : 1;
                 }
                 return 0;
             });
         }
     });
+
+    var RowView = function (props) {
+        var row = props.row;
+        var id = row.item['@id'];
+        var tds = row.cells.map( function (cell, index) {
+            if (index === 0) {
+                return (
+                    <td key={index}><a href={row.item['@id']}>{cell.value}</a></td>
+                );
+            }
+            return (
+                <td key={index}>{cell.value}</td>
+            );
+        });
+        return (
+            <tr key={id} hidden={props.hidden} data-href={id}>{tds}</tr>
+        );
+    };
 
     var Table = collection.Table = React.createClass({
         getDefaultProps: function () {
@@ -206,7 +224,7 @@ function (collection, $, class_, React, globals) {
             var headers = columns.map(function (column, index) {
                 var className = "sortdirection icon-";
                 if (index === sortOn) {
-                    className += reversed ? " icon-chevron-up" : " icon-chevron-down";
+                    className += reversed ? " icon-chevron-down" : " icon-chevron-up";
                 }
                 return (
                     <th onClick={self.handleClickHeader} key={index}>
@@ -216,26 +234,30 @@ function (collection, $, class_, React, globals) {
                 );
             });
             var searchTermLower = this.state.searchTerm.toLowerCase();
-            var found = 0;
-            var rows = data.rows.map(function (row) {
-                var tds = row.cells.map( function (cell, index) {
-                    if (index === 0) {
-                        return (
-                            <td key={index}><a href={row.item['@id']}>{cell.value}</a></td>
-                        );
+            var matching = [];
+            var not_matching = [];
+            // Reorder rows so that the nth-child works
+            if (searchTerm) {
+                data.rows.forEach(function (row) {
+                    if (row.text.indexOf(searchTermLower) == -1) {
+                        not_matching.push(row);
+                    } else {
+                        matching.push(row);
                     }
-                    return (
-                        <td key={index}>{cell.value}</td>
-                    );
                 });
-                var id = row.item['@id'];
-                // Keep DOM nodes around but hidden
-                var hidden = (searchTerm && row.text.indexOf(searchTermLower) == -1) || undefined;
-                if (!hidden) found += 1;
+            } else {
+                matching = data.rows;
+            }
+            var rows = matching.map(function (row) {
                 return (
-                    <tr key={id} hidden={hidden} data-href={id}>{tds}</tr>
+                    <RowView row={row} />
                 );
             });
+            rows.push.apply(rows, not_matching.map(function (row) {
+                return (
+                    <RowView row={row} hidden={true} />
+                );
+            }));
             var table_class = "sticky-area collection-table";
             var loading_or_total;
             if (this.state.communicating) {
@@ -246,8 +268,8 @@ function (collection, $, class_, React, globals) {
             } else {
                 loading_or_total = (
                     <span>
-                        <span class="table-count label label-invert">{found}</span>
-                        of {total} records
+                        <span class="table-count label label-invert">{matching.length}</span>
+                        <span id="total-records">of {total} records</span>
                     </span>
                 );
             }
@@ -257,11 +279,15 @@ function (collection, $, class_, React, globals) {
                         <tr class="nosort table-controls">
                             <th colSpan={columns.length}>
                                 {loading_or_total}
-                                <form class="table-filter" onKeyUp={this.handleKeyUp} data-skiprequest="true" data-removeempty="true" >
-                                    <input disabled={this.state.communicating || undefined} name="q" type="search" defaultValue={searchTerm} placeholder="Filter table by..." />
+                                <form ref="form" class="table-filter" onKeyUp={this.handleKeyUp} 
+                                	data-skiprequest="true" data-removeempty="true">
+                                    <input ref="q" disabled={this.state.communicating || undefined} 
+                                    	name="q" type="search" defaultValue={searchTerm} 
+                                    	placeholder="Filter table by..." class="filter" 
+                                    	id="table-filter" /> 
+                                    <i class="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
                                     <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                     <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
-                                    <input ref="submitButton" type="submit" hidden="hidden" />
                                 </form>
                             </th>
                         </tr>
@@ -274,6 +300,13 @@ function (collection, $, class_, React, globals) {
                     </tbody>
                 </table>
             );
+        },
+
+        componentDidUpdate: function (prevProps, prevState, domNode) {
+            // Switching between collections may leave component in place
+            if (prevProps.context != this.props.context) {
+                this.refs.q.getDOMNode().value = this.state.searchTerm;
+            }
         },
 
         handleClickHeader: function (event) {
@@ -294,8 +327,7 @@ function (collection, $, class_, React, globals) {
             }
             this.refs.reversed.getDOMNode().value = reversed;
             event.preventDefault();
-            // defer until this event is handled
-            setTimeout(this.submit);
+            this.submit();
         },
 
         handleKeyUp: function (event) {
@@ -307,10 +339,16 @@ function (collection, $, class_, React, globals) {
             this.submitTimer = setTimeout(this.submit, 200);
         },
 
-        submit: function (event) {
+        submit: function () {
             // form.submit() does not fire onsubmit handlers...
-            this.refs.submitButton.getDOMNode().click();
+            var event = new Event('submit', {bubbles: true, cancelable: true});
+            this.refs.form.getDOMNode().dispatchEvent(event);
         },
+        
+        clearFilter: function (event) {
+            this.refs.q.getDOMNode().value = '';
+            this.submitTimer = setTimeout(this.submit);
+        }, 
 
         componentWillUnmount: function () {
             if (typeof this.submitTimer != 'undefined') {
