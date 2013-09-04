@@ -22,6 +22,8 @@ def test_data_index(workbook, testapp):
     ''' method tests the ElasticSearch connection by putting in the mapping and indexing the documents '''
     
     connection = ElasticSearch('http://localhost:9200')
+
+    # Eventually we should be able to get the mapping from the schema
     mapping = {
         'basic': {
             'properties': {
@@ -71,12 +73,12 @@ def test_data_index(workbook, testapp):
         item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
         document_id = str(item_json.json['@id'])[-37:-1]
         document = item_json.json
-        connection.index('test', 'basic', document, document_id)
+        connection.index(index, 'basic', document, document_id)
         counter = counter + 1
         if counter % 50 == 0:
             # flushing ElasticSearch(JDK) memory after indexing 50 docs
             connection.flush(index)
 
     connection.refresh(index)
-    count = connection.count('*:*', index='test')
+    count = connection.count('*:*', index=index)
     assert count['count'] == len(items)
