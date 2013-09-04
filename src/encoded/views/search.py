@@ -68,7 +68,7 @@ def search(context, request):
         schema = load_schema('biosample.json')
         facets = schema['facets']
     else:
-        schema = load_schema(params.get('type')[:-1]+'.json')
+        schema = load_schema(schemas[params.get('type')])
         facets = schema['facets']
 
     query = Query()
@@ -110,7 +110,7 @@ def search(context, request):
 
     s = es.search(query, index=index, size=1100)
     facet_results = s['facets']
-    items['count']['biosamples'] = len(s['hits']['hits'])
+    
     for facet in facet_results:
         face = []
         for term in facet_results[facet]['terms']:
@@ -119,8 +119,11 @@ def search(context, request):
             items['facets'][facet] = face
 
     if 'searchTerm' in params:
+        items['count'][index] = len(s['hits']['hits'])
         for dataS in s['hits']['hits']:
             items['results'].append(dataS['fields'])
+    else:
+        items['count']['biosamples'] = len(s['hits']['hits'])
     
     result['@graph'] = items
     return result
