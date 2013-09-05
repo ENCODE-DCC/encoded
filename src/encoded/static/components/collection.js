@@ -293,7 +293,7 @@ function (collection, $, class_, React, globals) {
                                 </form>
                             </th>
                         </tr>
-                        <tr>
+                        <tr class="col-headers">
                             {headers}
                         </tr>
                     </thead>
