@@ -242,7 +242,6 @@ class Target(Collection):
         ('label', 'Target'),
         ('organism.name', 'Species'),
         ('dbxref', 'External Resources'),
-        ('award.rfa', 'RFA'),
     ])
 
     class Item(Collection.Item):
