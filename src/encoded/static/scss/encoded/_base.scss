@@ -31,3 +31,8 @@ dd:first-letter { text-transform: capitalize; } // IE 8 support
 
 .cap-me-once { display: inline-block; }
 .cap-me-once:first-letter { text-transform: uppercase; }
+
+dd ul {
+	list-style: none;
+	margin: 0;
+}
