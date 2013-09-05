@@ -148,10 +148,25 @@ def add_attachment(docsdir):
 # but it's better to check tsv into git.
 
 
-def read_single_sheet(path, name):
+def read_single_sheet(path, name=None):
     """ Read an xlsx, csv or tsv from a zipfile or directory
     """
     from zipfile import ZipFile
+
+    if name is None:
+        root, ext = os.path.splitext(path)
+        stream = open(path, 'rb')
+
+        if ext == '.xlsx':
+            return read_xl(stream)
+
+        if ext == '.tsv':
+            return read_csv(stream, dialect='excel-tab')
+
+        if ext == '.csv':
+            return read_csv(stream)
+
+        raise ValueError('Unknown file extension for %r' % path)
 
     if path.endswith('.xlsx'):
         return xlreader.DictReader(open(path, 'rb'), sheetname=name)
@@ -172,24 +187,22 @@ def read_single_sheet(path, name):
             stream = zf.open(name + '.csv', 'r')
             return read_csv(stream)
 
-        raise ValueError("Unable to find %r in %s" % (name, path))
+    if os.path.isdir(path):
+        root = os.path.join(path, name)
 
-    elif os.path.isdir(path):
-        name = os.path.join(path, name)
-
-        if os.path.exists(name + '.xlsx'):
-            stream = open(name + '.xlsx', 'rb')
+        if os.path.exists(root + '.xlsx'):
+            stream = open(root + '.xlsx', 'rb')
             return read_xl(stream)
 
-        if os.path.exists(name + '.tsv'):
-            stream = open(name + '.tsv', 'rb')
+        if os.path.exists(root + '.tsv'):
+            stream = open(root + '.tsv', 'rb')
             return read_csv(stream, dialect='excel-tab')
 
-        if os.path.exists(name + '.csv'):
-            stream = open(name + '.csv', 'rb')
+        if os.path.exists(root + '.csv'):
+            stream = open(root + '.csv', 'rb')
             return read_csv(stream)
 
-    raise ValueError("Unable to find %r in %s" % (name, path))
+    return []
 
 
 def read_xl(stream):
@@ -208,8 +221,8 @@ def read_csv(stream, **kw):
 # This would a one liner except for logging
 
 
-def post(testapp, item_type):
-    base_url = '/' + item_type
+def make_request(testapp, item_type, method):
+    json_method = getattr(testapp, method.lower() + '_json')
 
     def component(rows):
         for row in rows:
@@ -219,28 +232,21 @@ def post(testapp, item_type):
                 value = row['_value'] = {
                     k: v for k, v in row.iteritems() if not k.startswith('_')
                 }
-                url = row['_url'] = base_url
-                row['_response'] = testapp.post_json(url, value, status='*')
-
-            yield row
-
-    return component
-
-
-def put(testapp, item_type):
-    base_url = '/' + item_type
-
-    def component(rows):
-        for row in rows:
-            if not row.get('_skip') and not row.get('_errors'):
-                # Keys with leading underscores are for communicating between
-                # sections
-                value = row['_value'] = {
-                    k: v for k, v in row.iteritems() if not k.startswith('_')
-                }
-                # Possibly 
-                url = row['_url'] = base_url + '/' + row['uuid']
-                row['_response'] = testapp.put_json(url, value, status='*')
+                try:
+                    if method == 'POST':
+                        url = row['_url'] = '/' + item_type
+                    else:
+                        # XXX support for aliases
+                        for key in ['uuid', 'accession']:
+                            if key in row:
+                                url = row['_url'] = '/' + row[key]
+                                break
+                        else:
+                            raise ValueError('No key found. Need uuid or accession.')
+                except ValueError, e:
+                    row['_errors'] = repr(e)
+                else:
+                    row['_response'] = json_method(url, value, status='*')
 
             yield row
 
@@ -398,7 +404,7 @@ def process(rows):
         pass
 
 
-def get_pipeline(testapp, docsdir, test_only, item_type, phase=None):
+def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None):
     pipeline = [
         cast_row_values,
         skip_rows_with_all_key_value(test='skip'),
@@ -414,11 +420,14 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None):
         add_attachment(docsdir),
     ]
     if phase == 1:
-        pipeline.extend(PIPELINES.get(item_type, []))
+        method = 'POST'
+        pipeline.extend(PHASE1_PIPELINES.get(item_type, []))
     elif phase == 2:
-        pipeline.extend(UPDATE_PIPELINES.get(item_type, []))
+        method = 'PUT'
+        pipeline.extend(PHASE2_PIPELINES.get(item_type, []))
+
     pipeline.extend([
-        post(testapp, item_type) if phase == 1 else put(testapp, item_type),
+        make_request(testapp, item_type, method),
         pipeline_logger(item_type, phase),
     ])
     return pipeline
@@ -426,7 +435,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None):
 
 # Additional pipeline sections for item types
 
-PIPELINES = {
+PHASE1_PIPELINES = {
     'user': [
         remove_keys('lab', 'submits_for'),
     ],
@@ -440,13 +449,13 @@ PIPELINES = {
 
 
 ##############################################################################
-# Update pipelines
+# Phase 2 pipelines
 #
 # A second pass is required to cope with reference cycles. Only rows with
 # filtered out keys are updated.
 
 
-UPDATE_PIPELINES = {
+PHASE2_PIPELINES = {
     'user': [
         skip_rows_missing_all_keys('lab', 'submits_for'),
     ],
@@ -465,25 +474,15 @@ def load_all(testapp, filename, docsdir, test=False):
             source = read_single_sheet(filename, item_type)
         except ValueError:
             continue
-        pipeline = get_pipeline(testapp, docsdir, test, item_type, 1)
+        pipeline = get_pipeline(testapp, docsdir, test, item_type, phase=1)
         process(combine(source, pipeline))
 
     for item_type in ORDER:
-        if item_type not in UPDATE_PIPELINES:
+        if item_type not in PHASE2_PIPELINES:
             continue
         try:
             source = read_single_sheet(filename, item_type)
         except ValueError:
             continue
-        pipeline = get_pipeline(testapp, docsdir, test, item_type, 2)
-        process(combine(source, pipeline))
-
-
-def update_all(testapp, filename, docsdir, test=False):
-    for item_type in ORDER:
-        try:
-            source = read_single_sheet(filename, item_type)
-        except ValueError:
-            continue
-        pipeline = get_pipeline(testapp, docsdir, test, item_type, None)
+        pipeline = get_pipeline(testapp, docsdir, test, item_type, phase=2)
         process(combine(source, pipeline))
