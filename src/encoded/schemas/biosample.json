@@ -103,19 +103,6 @@
             "title": "Protocol Document List",
             "type": "array"
         },
-        "validation_documents": {
-            "default": [],
-            "description": "List of validation protocols associated with this biosample (treatment)",
-            "comment": "For automatic submission supply unique documents names or uuids",
-            "items": {
-                "description": "Biosample validation document",
-                "title": "validation Document",
-                "type": "string",
-                "linkTo": "document"
-            },
-            "title": "Validation Document List",
-            "type": "array"
-        },
         "donor": {
             "description": "Donor reference for the Biosample",
             "comment": "For automatic submission, supply a ENCODE donor accession or uuid",
