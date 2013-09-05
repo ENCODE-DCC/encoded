@@ -28,3 +28,6 @@ dd:first-letter { text-transform: capitalize; } // IE 8 support
 
 
 /* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */
+
+.cap-me-once { display: inline-block; }
+.cap-me-once:first-letter { text-transform: uppercase; }
