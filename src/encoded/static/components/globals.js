@@ -26,7 +26,7 @@ function (globals, Registry) {
 
     globals.dbxref_prefix_map = {
         "UniProtKB": "http://www.uniprot.org/uniprot/",
-        "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?id_type=hgnc&=",
+        "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",
         // ENSEMBL link only works for human
         "ENSEMBL": "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=",
         "GeneID": "http://www.ncbi.nlm.nih.gov/gene/",
