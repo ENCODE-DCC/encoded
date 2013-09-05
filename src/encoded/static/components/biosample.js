@@ -45,7 +45,7 @@ function (biosample, React, URI, globals) {
                             <dd><a href={context.source.url}>{context.source.title}</a></dd>
 
                             <dt hidden={!context.product_id}>Product ID</dt>
-                            <dd hidden={!context.product_id}><maybe_link href={context.product_url}>{context.product_id}</maybe_link></dd>
+                            <dd hidden={!context.product_id}><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
 
                             <dt hidden={!context.lot_id}>Lot ID</dt>
                             <dd hidden={!context.lot_id}>{context.lot_id}</dd>
