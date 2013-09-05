@@ -1,4 +1,4 @@
-from cgi import escape
+from .json_script_escape import json_script_escape
 from pkg_resources import resource_string
 from pyramid.events import (
     NewRequest,
@@ -58,7 +58,7 @@ class PageRenderer:
         request = system.get('request')
         if request is not None:
             request.response.content_type = 'text/html'
-        return self.page.format(json=escape(value))
+        return self.page.format(json=json_script_escape(value))
 
 
 class CSRFTokenError(HTTPBadRequest):
