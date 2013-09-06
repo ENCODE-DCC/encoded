@@ -48,6 +48,7 @@ class Lab(Collection):
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
     }
+    item_name_key = 'name'
     unique_key = 'lab:name'
     item_keys = [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
@@ -63,6 +64,7 @@ class Award(Collection):
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
     }
+    item_name_key = 'name'
     unique_key = 'award:name'
     item_keys = ['name']
 
@@ -80,6 +82,7 @@ class AntibodyLot(Collection):
         '$templated': True,
     }
     item_embedded = set(['source', 'host_organism'])
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS + [
         {
             'name': '{item_type}:source_product_lot',
@@ -106,6 +109,7 @@ class Organism(Collection):
         'description': 'Listing of all registered organisms',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
+    item_name_key = 'name'
     unique_key = 'organism:name'
     item_keys = ['name']
 
@@ -123,6 +127,7 @@ class Source(Collection):
             {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': '', '$templated': True, '$condition': 'permission:edit'},
         ],
     }
+    item_name_key = 'name'
     unique_key = 'source:name'
     item_keys = ['name']
 
@@ -130,6 +135,7 @@ class Source(Collection):
 class DonorItem(Collection.Item):
     base_types = ['donor'] + Collection.Item.base_types
     embedded = set(['organism'])
+    item_name_key = 'accession'
     keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
@@ -221,6 +227,7 @@ class Biosample(Collection):
         'description': 'Biosamples used in the ENCODE project',
     }
     item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'derived_from', 'characterizations'])
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     item_rev = {
         'characterizations': ('biosample_characterization', 'characterizes'),
@@ -281,6 +288,11 @@ class Target(Collection):
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
             return ns
+
+        @property
+        def __name__(self):
+            ns = self.template_namespace()
+            return '{label}-{organism_name}'.format(**ns)
 
 
 # The following should really be child collections.
@@ -345,6 +357,7 @@ class Library(Collection):
         'description': 'Listing of Libraries',
     }
     item_embedded = set(['biosample', 'documents'])
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
@@ -385,6 +398,7 @@ class Files(Collection):
         'description': 'Listing of Files',
     }
     item_embedded = set(['submitted_by', 'lab', 'award', 'replicate'])
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
 
 
@@ -400,6 +414,7 @@ class Experiments(Collection):
     item_rev = {
         'replicates': ('replicate', 'experiment'),
     }
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
