@@ -1,8 +1,8 @@
 language: python
 python:
   - "2.7"
-env: 
-  global: 
+env:
+  global:
   - secure: |-
       CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
       cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
@@ -33,3 +33,4 @@ script: |-
   --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
   --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
   --browser-arg-int wait_time 10
+  --browser 'Chrome'
