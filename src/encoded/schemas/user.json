@@ -2,7 +2,6 @@
     "title": "ENCODE User",
     "id": "/profiles/user.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting an ENCODE User",
     "type": "object",
     "required": [ "email", "first_name", "last_name"],

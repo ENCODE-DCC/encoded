@@ -2,7 +2,6 @@
     "title": "ENCODE experiment dataset",
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting a primary set of files (experiment) to ENCODE",
     "comment": "Experiment is a special case of Dataset indicating the primary replicated dataset that submitted files belong to.",
     "type": "object",
@@ -17,6 +16,7 @@
         { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {

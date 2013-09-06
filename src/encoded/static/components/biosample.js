@@ -99,10 +99,10 @@ function (biosample, React, URI, globals) {
                         </div>
                     : null}
 
-                    {context.validation_documents.length ?
+                    {context.characterizations.length ?
                         <div>
-                            <h3>Validation documents</h3>
-                            {context.validation_documents.map(Panel)}
+                            <h3>Characterizations</h3>
+                            {context.characterizations.map(Panel)}
                         </div>
                     : null}
 
@@ -261,24 +261,24 @@ function (biosample, React, URI, globals) {
             var context = this.props.context;
             var attachmentHref, attachmentUri;
             var figure, download, src, imgClass, alt;
-            var imgClass = "validation-img validation-file";
+            var imgClass = "characterization-img characterization-file";
             var height = "100";
             var width = "100";
             if (context.attachment) {
                 attachmentUri = URI(context.attachment.href, URI(context['@id']).href);
                 attachmentHref = attachmentUri.pathname + attachmentUri.search;
                 if (context.attachment.type.split('/', 1)[0] == 'image') {
-                    imgClass = 'validation-img';
+                    imgClass = 'characterization-img';
                     src = attachmentHref;
                     height = context.attachment.height;
                     width = context.attachment.width;
-                    alt = "Validation Image"
+                    alt = "Characterization Image"
                 } else if (context.attachment.type == "application/pdf"){
                     src = "/static/img/file-pdf.svg";
-                    alt = "Validation PDF Icon";
+                    alt = "Characterization PDF Icon";
                 } else {
                     src = "/static/img/file.svg";
-                    alt = "Validation Icon";
+                    alt = "Characterization Icon";
                 }
                 figure = (
                     <a data-bypass="true" href={attachmentHref}>
@@ -292,7 +292,7 @@ function (biosample, React, URI, globals) {
                 );
             } else {
                 src = "/static/img/file-broken.png";
-                alt = "Validation File Broken Icon";
+                alt = "Characterization File Broken Icon";
                 figure = (
                     <img class={imgClass} src={src} height={height} width={width} alt={alt} />
                 );
@@ -335,6 +335,7 @@ function (biosample, React, URI, globals) {
     });
 
     globals.panel_views.register(Document, 'document');
+    globals.panel_views.register(Document, 'biosample_characterization');
 
 
     return biosample;

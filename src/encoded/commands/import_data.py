@@ -14,10 +14,10 @@ To load the initial data:
         --attach ../dccMetadataImport/data/ENCODE3docs/ \\
         ../documents-export.zip dev-masterdata.ini
 
-To load updates from a directory of xlsx/tsv tils
+To make updates from a single tsv file
 
     %(prog)s --username ACCESS_KEY_ID --password SECRET_ACCESS_KEY \\
-        --update ../updates/ http://localhost:6543
+        --patch ../updates/ http://localhost:6543
 
 """
 from webtest import TestApp
@@ -52,8 +52,13 @@ def internal_app(configfile, username=''):
     return TestApp(app, environ)
 
 
-def run(url):
-    pass
+def run(testapp, filename, docsdir, method, item_type, test=False):
+    if filename.endswith('.tsv') or filename.endswith('.csv'):
+        source = loadxl.read_single_sheet(filename)
+    else:
+        source = loadxl.read_single_sheet(filename, item_type)
+    pipeline = loadxl.get_pipeline(testapp, docsdir, test, item_type, method=method)
+    loadxl.process(loadxl.combine(source, pipeline))
 
 
 def main():
@@ -62,9 +67,14 @@ def main():
         description="Import data", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--test-only', '-t', action='store_true')
-    parser.add_argument('--update', action='store_true',
-        help="Update existing data instead of creating new data")
+    parser.add_argument('--test-only', action='store_true')
+    parser.add_argument('--item-type', help="Item type")
+    parser.add_argument('--post', dest='method', action='store_const',
+        const="POST", help="Create new data")
+    parser.add_argument('--put', dest='method', action='store_const',
+        const="PUT", help="Replace existing data")
+    parser.add_argument('--patch', dest='method', action='store_const',
+        const="PATCH", help="Patch existing data")
     parser.add_argument('--username', '-u', default='',
         help="HTTP username (access_key_id) or import user uuid/email")
     parser.add_argument('--password', '-p', default='',
@@ -99,8 +109,8 @@ def main():
     logging.getLogger('encoded').setLevel(logging.INFO)
     logging.getLogger('wsgi').setLevel(logging.WARNING)
 
-    if args.update:
-        loadxl.update_all(testapp, args.inpath, args.attach, args.test_only)
+    if args.method:
+        run(testapp, args.inpath, args.attach, args.method, args.item_type, args.test_only)
     else:
         loadxl.load_all(testapp, args.inpath, args.attach, args.test_only)
 

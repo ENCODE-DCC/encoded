@@ -366,6 +366,7 @@ class Item(object):
     __metaclass__ = MergedTemplateMeta
     base_types = ['item']
     keys = []
+    name_key = None
     rev = None
     embedded = {}
     template = {
@@ -378,9 +379,14 @@ class Item(object):
     }
 
     def __init__(self, collection, model):
-        self.__name__ = model.rid
         self.__parent__ = collection
         self.model = model
+
+    @property
+    def __name__(self):
+        if self.name_key is None:
+            return self.uuid
+        return self.properties.get(self.name_key, None) or self.uuid
 
     @property
     def item_type(self):
@@ -633,28 +639,18 @@ class CustomItemMeta(MergedTemplateMeta):
         if self.item_type is None and 'item_type' not in attrs:
             self.item_type = uncamel(self.__name__)
 
+        NAMES_TO_TRANSFER = ['template', 'embedded', 'keys', 'rev', 'name_key']
+
         if 'Item' in attrs:
-            assert 'item_template' not in attrs
-            assert 'item_embedded' not in attrs
-            assert 'item_keys' not in attrs
-            assert 'item_rev' not in attrs
+            for name in NAMES_TO_TRANSFER:
+                assert 'item_' + name not in attrs
             return
         item_bases = tuple(base.Item for base in bases
                            if issubclass(base, Collection))
-        qualname = getattr(self, '__qualname__', self.__name__)  # PY3 only
-        item_attrs = {
-            '__module__': self.__module__,
-            '__name__': 'Item',
-            '__qualname__': qualname + '.Item',
-        }
-        if 'item_template' in attrs:
-            item_attrs['template'] = attrs['item_template']
-        if 'item_embedded' in attrs:
-            item_attrs['embedded'] = attrs['item_embedded']
-        if 'item_keys' in attrs:
-            item_attrs['keys'] = attrs['item_keys']
-        if 'item_rev' in attrs:
-            item_attrs['rev'] = attrs['item_rev']
+        item_attrs = {'__module__': self.__module__}
+        for name in NAMES_TO_TRANSFER:
+            if 'item_' + name in attrs:
+                item_attrs[name] = attrs['item_' + name ]
         self.Item = type('Item', item_bases, item_attrs)
 
 
@@ -696,7 +692,8 @@ class Collection(object):
                 name for name in column.split('.')[:-1]
                 if name not in ('length', '0')
             )
-            self.embedded_paths.add(path)
+            if path:
+                self.embedded_paths.add(path)
 
         if self.schema is not None:
             self.schema_links = [

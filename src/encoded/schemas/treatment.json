@@ -2,7 +2,6 @@
     "title": "ENCODE biosample Treatment",
     "id": "/profiles/treatment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting an ENCODE biosample Treatment",
     "type": "object",
     "required": ["treatment_term_name", "treatment_type", "lab", "award"],
@@ -12,6 +11,7 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {

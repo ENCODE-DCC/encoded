@@ -110,7 +110,7 @@ def test_collection_post(testapp, url):
     collection = URL_COLLECTION[url]
     for item in collection:
         res = testapp.post_json(url, item, status=201)
-        assert item['uuid'] in res.location
+        assert item['name'] in res.location
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
@@ -137,12 +137,13 @@ def test_actions_filtered_by_permission(testapp, anontestapp):
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_update(testapp, url, execute_counter):
+def test_collection_put(testapp, url, execute_counter):
     from .sample_data import URL_COLLECTION
     collection = URL_COLLECTION[url]
     initial = collection[0]
     res = testapp.post_json(url, initial, status=201)
     item_url = res.json['@graph'][0]
+    uuid = initial['uuid']
 
     with execute_counter.expect(2):
         res = testapp.get(item_url).json
@@ -155,8 +156,8 @@ def test_collection_update(testapp, url, execute_counter):
     del update['uuid']
     testapp.put_json(item_url, update, status=200)
 
-    with execute_counter.expect(2):
-        res = testapp.get(item_url).json
+    with execute_counter.expect(4):
+        res = testapp.get('/' + uuid).follow().json
 
     for key in update:
         assert res[key] == update[key]
