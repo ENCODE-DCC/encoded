@@ -13,6 +13,7 @@
         { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -230,6 +231,44 @@
             "title": "URL",
             "type": "string",
             "format": "uri"
+        },
+        "life_stage": {
+            "description": "",
+            "title": "Life stage",
+            "type": "string",
+            "enum": [
+                "fetal",
+                "newborn",
+                "child",
+                "adult",
+                "unknown",
+                "embryonic",
+                "postnatal",
+                "adult",
+                "unknown"
+            ]
+        },
+        "age": {
+            "description": "Age or age range of the donor organism when sampled",
+            "title": "Donor age",
+            "type": "string",
+            "pattern": "^\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?$"
+        },
+        "age_units": {
+            "description": "Units for age or lifecycle stage of the donor organism when sampled",
+            "title": "Donor Age/Stage Units",
+            "type": "string",
+            "enum": [
+                "day",
+                "week",
+                "month",
+                "year"
+            ]
+        },
+        "health_status": {
+            "description": "Heath status of donor",
+            "title": "Donor Health Status",
+            "type": "string"
         }
     }
 }

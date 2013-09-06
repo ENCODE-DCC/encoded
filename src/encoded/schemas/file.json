@@ -101,6 +101,15 @@
             "description": "EDW download file path and name",
             "title": "Download Path",
             "type": "string"
+        },
+        "status": {
+            "default": "CURRENT",
+            "title": "Status",
+            "type": "string",
+            "enum" : [
+                "CURRENT",
+                "OBSOLETE"
+            ]
         }
     }
 }

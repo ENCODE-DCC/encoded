@@ -2,7 +2,7 @@
     "title": "ENCODE Antibody lot",
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an ENCODE Antibody (no target or validation information)",
+    "description": "Schema for submitting an ENCODE Antibody (no target or characterization information)",
     "comment": "Each ENCODE antibody lot is a unique combination of source, product ID and lot number",
     "type": "object",
     "required": [ "award", "lab", "product_id", "source", "lot_id"],
@@ -13,6 +13,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {

@@ -13,23 +13,12 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema_version": {
             "default": "1"
-        },
-        "life_stage": {
-            "description": "",
-            "title": "Life stage",
-            "type": "string",
-            "enum": [
-                "fetal",
-                "newborn",
-                "child",
-                "adult",
-                "unknown"
-            ]
         },
         "ethnicity": {
             "title": "Ethnicity",

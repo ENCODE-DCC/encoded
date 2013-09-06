@@ -1,8 +1,8 @@
 {
-    "title": "ENCODE Antibody Validation",
+    "title": "ENCODE Antibody Characterization",
     "id": "/profiles/antibody_approval.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting antibody validation data",
+    "description": "Schema for submitting antibody characterization data",
     "comment": "Complete submitted antibody characterizations are reviewed by the DCC and assigned a status",
     "type": "object",
     "required": [ "award", "lab", "antibody", "status", "target" ],
@@ -31,23 +31,23 @@
             "type": "string",
             "linkTo": "target"
         },
-        "validations": {
+        "characterizations": {
             "default": [],
             "description": "List of antibody characterization images",
-            "comment": "Programmatic submitters can supply a list of validation uuids for each primary and secondary characterization submitted",
-            "title": "Validations",
+            "comment": "Programmatic submitters can supply a list of characterization uuids for each primary and secondary characterization submitted",
+            "title": "Characterizations",
             "items": {
                 "description": "Antibody characterizations used for approval",
-                "comment": "Automatic submitters can supply a validation uuid",
+                "comment": "Automatic submitters can supply a characterization uuid",
                 "title": "Antibody characterization",
                 "type": "string",
-                "linkTo": "antibody_validation"
+                "linkTo": "antibody_characterization"
             },
             "type": "array"
         },
         "status": {
             "default": "INCOMPLETE",
-            "description": "Status code for the Antibody-Target-Validation triple",
+            "description": "Status code for the Antibody-Target-Characterization triple",
             "comment": "Use the default, all other values are set by the DCC. The status informs the current state of the antibody characterizations submitted for review",
             "title": "Approval status",
             "type": "string",
@@ -56,7 +56,8 @@
                 "SUBMITTED",
                 "UNSUBMITTED",
                 "FAILED",
-                "INCOMPLETE"
+                "INCOMPLETE",
+                "DELETED"
             ]
         }
     }

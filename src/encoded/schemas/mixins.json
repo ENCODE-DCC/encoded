@@ -58,13 +58,18 @@
             "type": "array"
         }
     },
+    "standard_status": {
+        "status": {
+            "default": "CURRENT",
+            "title": "Status",
+            "type": "string",
+            "enum" : [
+                "CURRENT",
+                "DELETED"
+            ]
+        }
+    },
     "submitted": {
-        "is_current": {
-            "description": "",
-            "title": "Is Current",
-            "type": "boolean",
-            "default": true
-        },
         "date_created": {
             "description": "",
             "title": "Date Created",
