@@ -221,13 +221,13 @@ function (experiment, React, globals, dbxref) {
                     <dd>{replicate.technical_replicate_number}</dd>
 
                     <dt>Library</dt>
-                    <dd>{library.accession} - ({library.title})</dd>
+                    <dd>{library.accession}</dd>
 
                     <dt>Biosample</dt>
                     <dd>
                         <a href={biosample['@id']}>
                             {biosample.accession}
-                        </a>
+                        </a>{' '}-{' '}{biosample.description}
                     </dd>
                 </dl>
             </div>
