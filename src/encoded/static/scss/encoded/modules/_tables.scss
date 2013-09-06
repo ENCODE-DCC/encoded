@@ -80,3 +80,7 @@ form.table-filter {
 .collection-table tbody span {
     display: block;
 }
+
+.col-headers th:hover {
+	cursor: pointer;
+}
