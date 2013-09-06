@@ -291,7 +291,7 @@ class Target(Collection):
         @property
         def __name__(self):
             ns = self.template_namespace()
-            return '{label}-{organism_name}'.format(**ns)
+            return u'{label}-{organism_name}'.format(**ns)
 
 
 # The following should really be child collections.
