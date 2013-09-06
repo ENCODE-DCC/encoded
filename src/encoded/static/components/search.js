@@ -254,14 +254,14 @@ function (search, $, React, globals, d3) {
                         return <li class="post">
                                 <h6>Antibody</h6>
                                 <h4><a href={result['@id']}>{result['antibody.accession']}</a></h4>
-                                <small><i>{result['target.name']} - {result['target.lab.title']}</i></small>
+                                <small><i>{result['target.label']} - {result['antibody.source.title']}</i></small>
                             </li>
                         break;
                     case "target":
                         return <li class="post">
                                 <h6>Target</h6>
-                                <h4><a href={result['@id']}>{result['name']}</a></h4>
-                                <small><i>{result['organism.name']} - {result['lab.title']}</i></small>
+                                <h4><a href={result['@id']}>{result['label']}</a></h4>
+                                <small><i>{result['organism.name']}</i></small>
                             </li>
                         break;
                 }

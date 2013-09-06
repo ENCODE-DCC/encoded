@@ -20,8 +20,8 @@ schemas = {
 data = {
     'biosamples': ['@id', '@type', 'accession', 'biosample_term_id', 'biosample_term_name', 'lab.title'],
     'experiments': ['@id', '@type', 'accession', 'description', 'assay_term_name', 'lab.title'],
-    'antibodies': ['@id', '@type', 'antibody.accession', 'target.name', 'target.lab.title'],
-    'targets': ['@id', '@type', 'name', 'organism.name', 'lab.title']
+    'antibodies': ['@id', '@type', 'antibody.accession', 'target.label', 'antibody.source.title'],
+    'targets': ['@id', '@type', 'label', 'organism.name', 'lab.title']
 }
 
 
@@ -102,6 +102,7 @@ def search(context, request):
         index = 'biosamples'
         query.query = {'match_all': {}}
     
+    # We can get rid of this once we have a standard graphs for default search page
     if len(facets.keys()):
         for facet in facets:
             face = {'terms': {'field': '', 'size': 1000}}
