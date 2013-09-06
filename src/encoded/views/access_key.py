@@ -47,6 +47,7 @@ class AccessKey(Collection):
 
     class Item(Collection.Item):
         keys = ['access_key_id']
+        name_key = 'access_key_id'
 
         def __acl__(self):
             owner = 'userid:%s' % self.properties['user']

@@ -7,7 +7,7 @@ function (antibody, React, URI, globals) {
         render: function() {
             var context = this.props.context;
             var statusClass = 'status-' + (context.status || '').toLowerCase();
-            var validations = context.validations.map(function (item) {
+            var characterizations = context.characterizations.map(function (item) {
                 return globals.panel_views.lookup(item)({context: item, key: item['@id']});
             });
             // Missing enncode
@@ -62,8 +62,8 @@ function (antibody, React, URI, globals) {
                         </dl>
                     </div>
 
-                    <div class="validations">
-                        {validations}
+                    <div class="characterizations">
+                        {characterizations}
                     </div>
                 </div>
             );
@@ -73,30 +73,30 @@ function (antibody, React, URI, globals) {
     globals.content_views.register(Approval, 'antibody_approval');
 
 
-    var Validation = antibody.Validation = React.createClass({
+    var Characterization = antibody.Characterization = React.createClass({
         render: function() {
             var context = this.props.context;
             var statusClass = 'status-' + (context.status || '').toLowerCase();
             var attachmentHref, attachmentUri;
             var figure, download, src, imgClass, alt;
-            var imgClass = "validation-img validation-file";
+            var imgClass = "characterization-img characterization-file";
             var height = "100";
             var width = "100";
             if (context.attachment) {
                 attachmentUri = URI(context.attachment.href, URI(context['@id']).href);
                 attachmentHref = attachmentUri.pathname + attachmentUri.search;
                 if (context.attachment.type.split('/', 1)[0] == 'image') {
-                    imgClass = 'validation-img';
+                    imgClass = 'characterization-img';
                     src = attachmentHref;
                     height = context.attachment.height;
                     width = context.attachment.width;
-                    alt = "Validation Image"
+                    alt = "Characterization Image"
                 } else if (context.attachment.type == "application/pdf"){
                     src = "/static/img/file-pdf.svg";
-                    alt = "Validation PDF Icon";
+                    alt = "Characterization PDF Icon";
                 } else {
                     src = "/static/img/file.svg";
-                    alt = "Validation Icon";
+                    alt = "Characterization Icon";
                 }
                 figure = (
                     <a data-bypass="true" href={attachmentHref}>
@@ -110,7 +110,7 @@ function (antibody, React, URI, globals) {
                 );
             } else {
                 src = "/static/img/file-broken.png";
-                alt = "Validation File Broken Icon";
+                alt = "Characterization File Broken Icon";
                 figure = (
                     <img class={imgClass} src={src} height={height} width={width} alt={alt} />
                 );
@@ -120,7 +120,7 @@ function (antibody, React, URI, globals) {
             }
 
             return (
-                <section class={'type-validation view-detail panel ' + statusClass}>
+                <section class={'type-characterization view-detail panel ' + statusClass}>
                     <div class="container">
                         <div class="row">
                             <div class="span6">
@@ -132,9 +132,9 @@ function (antibody, React, URI, globals) {
                                 </figure>
                             </div>
                             <div class="span5">
-                                <dl class="validation-meta-data key-value">
+                                <dl class="characterization-meta-data key-value">
                                     <dt class="h3">Method</dt>
-                                    <dd class="h3">{context.validation_method}</dd>
+                                    <dd class="h3">{context.characterization_method}</dd>
 
                                     <dt class="h4">Target species</dt>
                                     <dd class="h4">{context.target.organism.name}</dd>
@@ -151,8 +151,10 @@ function (antibody, React, URI, globals) {
                                     <dt>Grant</dt>
                                     <dd>{context.award.name}</dd>
 
+                                    {/*
                                     <dt>Approver</dt>
                                     <dd>{context.validated_by}</dd>
+                                    */}
 
                                     <dt>Image</dt>
                                     <dd><span class={'label '+ statusClass}>{context.status}</span></dd>
@@ -168,7 +170,7 @@ function (antibody, React, URI, globals) {
         }
     });
 
-    globals.panel_views.register(Validation, 'antibody_validation');
+    globals.panel_views.register(Characterization, 'antibody_characterization');
 
 
     // XXX Should move to Python code.

@@ -10,12 +10,12 @@ Feature: Targets
         And I wait for the table to fully load
 
         When I fill in "q" with "human"
-        Then I should see an element with the css selector "tr:not([hidden]) a[href='/targets/e310f899-8622-4aa7-8c48-8c2199dc8d15/']" within 1 seconds
-        And I should see an element with the css selector "tr[hidden] a[href='/targets/eb576cba-6071-4c28-bba6-3c16fdbce0c7/']"
+        Then I should see an element with the css selector "tr:not([hidden]) a[href='/targets/ADNP-human/']" within 1 seconds
+        And I should see an element with the css selector "tr[hidden] a[href='/targets/H3K4me3-mouse/']"
         And I should see exactly one element with the css selector ".table-count" containing the text "12"
 
     Scenario: Detail page
-        When I visit "/targets/e310f899-8622-4aa7-8c48-8c2199dc8d15/"
+        When I visit "/targets/ADNP-human/"
         And I should see an element with the css selector ".view-item.type-target"
 
         When I click the link to "http://www.uniprot.org/uniprot/Q9H2P0"

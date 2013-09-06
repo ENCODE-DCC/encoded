@@ -2,7 +2,6 @@
     "title": "ENCODE Replicate",
     "id": "/profiles/replicate.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting an experimental Replicate",
     "type": "object",
     "required": ["experiment", "biological_replicate_number", "technical_replicate_number"],
@@ -11,6 +10,7 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {

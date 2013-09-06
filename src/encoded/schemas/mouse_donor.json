@@ -2,7 +2,6 @@
     "title": "Mouse donor",
     "id": "/profiles/mouse_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting an ENCODE mouse donor",
     "type": "object",
     "required": [ "award", "lab", "organism"],
@@ -14,19 +13,12 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema_version": {
             "default": "1"
-        },
-        "life_stage": {
-            "enum": [
-                "embryonic",
-                "postnatal",
-                "adult",
-                "unknown"
-            ]
         },
         "littermates": {
             "default": [],

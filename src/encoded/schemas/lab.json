@@ -2,7 +2,6 @@
     "title": "ENCODE Lab",
     "id": "/profiles/lab.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
     "description": "Schema for submitting a lab or research group for the ENCODE project.",
     "type": "object",
     "required": ["name"],
@@ -11,6 +10,7 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {

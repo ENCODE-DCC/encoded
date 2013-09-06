@@ -1,12 +1,11 @@
 {
-    "title": "ENCODE Antibody Validation",
-    "id": "/profiles/antibody_validation.json",
+    "title": "ENCODE Antibody Characterization",
+    "id": "/profiles/antibody_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "version": "0.01",
-    "description": "Schema for submitting antibody validation data",
+    "description": "Schema for submitting antibody characterization data",
     "comment": "Describes the characterization of an antibody lot submitted for review",
     "type": "object",
-    "required": [ "award", "lab", "antibody", "target" ],
+    "required": [ "award", "lab", "characterizes", "target" ],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -14,21 +13,18 @@
         { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "validation.json#/properties" }
+        { "$ref": "characterization.json#/properties" }
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
-        "antibody": {
-            "description": "The specific antibody for which the validation image applies.",
-            "comment": "Programmatic submitters can supply an ENCODE antibody accession or uuid",
-            "title": "Antibody to be validated",
-            "type": "string",
+        "characterizes": {
+            "title": "Antibody characterized",
             "linkTo": "antibody_lot"
         },
         "target": {
-            "description": "Target for which the antibody validation applies.",
+            "description": "Target for which the antibody characterization applies.",
             "comment": "Programmatic submitters can supply a target uuid, or uniqe Target label-Organism name pair",
             "title": "Antibody target",
             "type": "string",

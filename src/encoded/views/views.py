@@ -48,6 +48,7 @@ class Lab(Collection):
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
     }
+    item_name_key = 'name'
     unique_key = 'lab:name'
     item_keys = [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
@@ -63,6 +64,7 @@ class Award(Collection):
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
     }
+    item_name_key = 'name'
     unique_key = 'award:name'
     item_keys = ['name']
 
@@ -80,6 +82,7 @@ class AntibodyLot(Collection):
         '$templated': True,
     }
     item_embedded = set(['source', 'host_organism'])
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS + [
         {
             'name': '{item_type}:source_product_lot',
@@ -93,7 +96,9 @@ class AntibodyLot(Collection):
             '$templated': True,
         },
     ]
-
+    item_rev = {
+        'characterizations': ('antibody_characterization', 'characterizes'),
+    }
 
 @location('organisms')
 class Organism(Collection):
@@ -104,6 +109,7 @@ class Organism(Collection):
         'description': 'Listing of all registered organisms',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
+    item_name_key = 'name'
     unique_key = 'organism:name'
     item_keys = ['name']
 
@@ -121,6 +127,7 @@ class Source(Collection):
             {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': '', '$templated': True, '$condition': 'permission:edit'},
         ],
     }
+    item_name_key = 'name'
     unique_key = 'source:name'
     item_keys = ['name']
 
@@ -128,6 +135,7 @@ class Source(Collection):
 class DonorItem(Collection.Item):
     base_types = ['donor'] + Collection.Item.base_types
     embedded = set(['organism'])
+    item_name_key = 'accession'
     keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
@@ -176,17 +184,20 @@ class Construct(Collection):
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
     }
-    item_embedded = set(['source', 'documents'])
+    item_embedded = set(['source', 'documents', 'characterizations'])
     # item_keys = ['vector_name']
+    item_rev = {
+        'characterizations': ('construct_characterization', 'characterizes'),
+    }
 
 
-@location('construct-validations')
-class ConstructValidation(Collection):
-    item_type = 'construct_validation'
-    schema = load_schema('construct_validation.json')
+@location('construct-characterizations')
+class ConstructCharacterization(Collection):
+    item_type = 'construct_characterization'
+    schema = load_schema('construct_characterization.json')
     properties = {
-        'title': 'Constructs Validations',
-        'description': 'Listing of biosample construct validations',
+        'title': 'Constructs characterizations',
+        'description': 'Listing of biosample construct characterizations',
     }
 
     class Item(ItemWithAttachment):
@@ -215,8 +226,12 @@ class Biosample(Collection):
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     }
-    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'validation_document', 'derived_from'])
+    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'derived_from', 'characterizations'])
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
+    item_rev = {
+        'characterizations': ('biosample_characterization', 'characterizes'),
+    }
     columns = OrderedDict([
         ('accession', 'Accession'),
         ('biosample_term_name', 'Term'),
@@ -227,6 +242,19 @@ class Biosample(Collection):
         ('treatments.length', 'Treatments'),
         ('constructs.length', 'Constructs')
     ])
+
+
+@location('biosample-characterizations')
+class BiosampleCharacterization(Collection):
+    item_type = 'biosample_characterization'
+    schema = load_schema('biosample_characterization.json')
+    properties = {
+        'title': 'Biosample characterizations',
+        'description': 'Listing of biosample characterizations',
+    }
+
+    class Item(ItemWithAttachment):
+        pass
 
 
 @location('targets')
@@ -260,15 +288,20 @@ class Target(Collection):
             ns['organism_name'] = organism.properties['name']
             return ns
 
+        @property
+        def __name__(self):
+            ns = self.template_namespace()
+            return '{label}-{organism_name}'.format(**ns)
+
 
 # The following should really be child collections.
-@location('validations')
-class AntibodyValidation(Collection):
-    item_type = 'antibody_validation'
-    schema = load_schema('antibody_validation.json')
+@location('antibody-characterizations')
+class AntibodyCharacterization(Collection):
+    item_type = 'antibody_characterization'
+    schema = load_schema('antibody_characterization.json')
     properties = {
-        'title': 'Antibody Validations',
-        'description': 'Listing of antibody validation documents',
+        'title': 'Antibody characterizations',
+        'description': 'Listing of antibody characterization documents',
     }
 
     class Item(ItemWithAttachment):
@@ -281,9 +314,9 @@ class AntibodyApproval(Collection):
     item_type = 'antibody_approval'
     properties = {
         'title': 'Antibody Approvals',
-        'description': 'Listing of validation approvals for ENCODE antibodies',
+        'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    item_embedded = set(['antibody', 'target', 'validations'])
+    item_embedded = set(['antibody', 'target', 'characterizations'])
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
     ]
@@ -294,7 +327,7 @@ class AntibodyApproval(Collection):
         ('antibody.source.title', 'Source'),
         ('antibody.product_id', 'Product ID'),
         ('antibody.lot_id', 'Lot ID'),
-        ('validations.length', 'Validations'),
+        ('characterizations.length', 'Characterizations'),
         ('status', 'Status')
     ])
 
@@ -323,6 +356,7 @@ class Library(Collection):
         'description': 'Listing of Libraries',
     }
     item_embedded = set(['biosample', 'documents'])
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
@@ -363,6 +397,7 @@ class Files(Collection):
         'description': 'Listing of Files',
     }
     item_embedded = set(['submitted_by', 'lab', 'award', 'replicate'])
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
 
 
@@ -378,6 +413,7 @@ class Experiments(Collection):
     item_rev = {
         'replicates': ('replicate', 'experiment'),
     }
+    item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
@@ -391,7 +427,7 @@ class Experiments(Collection):
     ])
 
 
-@location('rnai')
+@location('rnais')
 class RNAi(Collection):
     item_type = 'rnai'
     schema = load_schema('rnai.json')
@@ -399,6 +435,23 @@ class RNAi(Collection):
         'title': 'RNAi',
         'description': 'Listing of RNAi',
     }
+    item_embedded = set(['source', 'documents', 'characterizations'])
+    item_rev = {
+        'characterizations': ('rnai_characterization', 'characterizes'),
+    }
+
+
+@location('rnai-characterizations')
+class RNAiCharacterization(Collection):
+    item_type = 'rnai_characterization'
+    schema = load_schema('rnai_characterization.json')
+    properties = {
+        'title': 'RNAi characterizations',
+        'description': 'Listing of biosample RNAi characterizations',
+    }
+
+    class Item(ItemWithAttachment):
+        pass
 
 
 @location('dataset')
