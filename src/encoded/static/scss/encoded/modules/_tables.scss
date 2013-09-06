@@ -32,7 +32,7 @@ table thead tr th:last-child, table tfoot tr td:last-child { border-right: none;
 
 table tbody tr.even,
 table tbody tr.alt { background: #f9f9f9; }
-/* table tbody tr:nth-child(even) { background: #f9f9f9; } */
+table tbody tr:nth-child(even) { background: #f9f9f9; }
 table tbody tr td { color: #333; padding: 10px 11px; vertical-align: top; }
 table tbody tr:hover { background: #bfcfde; }
 
@@ -72,6 +72,15 @@ form.table-filter {
 }
 
 /* initial state is hidden (see template; class=hide) */
-.total-records {
+#total-records {
 	font-weight: normal;
+}
+
+// Allow line breaks in table cells (esp Targets)
+.collection-table tbody span {
+    display: block;
+}
+
+.col-headers th:hover {
+	cursor: pointer;
 }

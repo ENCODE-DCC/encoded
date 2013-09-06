@@ -86,7 +86,7 @@ function (React, mixins) {
                     </li>
                 );
             });
-            var fullname = session.user_properties.first_name + ' ' + session.user_properties.last_name;
+            var fullname = session.user_properties.title;
             return (
                 <ul id="user-actions" class="nav pull-right">
                     <li class="dropdown">

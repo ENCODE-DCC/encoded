@@ -1,137 +1,71 @@
 {
-    "default": null,
-    "description": "",
+    "title": "Award (Grant)",
+    "id": "/profiles/award.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an Award (Grant) for the ENCODE Project",
+    "required": [ "name"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" }
+    ],
     "properties": {
-        "award_end_date": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "schema_version": {
+            "default": "1"
         },
-        "award_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "award_number": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "award_start_date": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "award_url": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "description": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "end_date": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "title": {
+            "description": "The long name of the award/grant - from NIH database",
+            "title": "Award Title",
+            "type": "string"
         },
         "name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "number": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "pi_first_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "pi_last_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "project": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Official NIH reference number for the award",
+            "title": "Award Name (NIH reference number)",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9\\-]+$"
+       },
+        "description": {
+            "default": "",
+            "description": "Long description of the award.",
+            "title": "Award Description",
+            "type": "string"
         },
         "start_date": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Start date for the award",
+            "title": "Start Date",
+            "type": "string",
+            "format": "date"
+        },
+        "end_date": {
+            "description": "End date for the award",
+            "title": "End Date",
+            "type": "string",
+            "format": "date"
         },
         "url": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "default": "",
+            "description": "URL for the award or grant",
+            "title": "Award URL",
+            "type": "string",
+            "format": "uri"
+        },
+        "pi": {
+            "description": "Principle Investigator of the award",
+            "comment": "For automatic submission submit the email, first & last name, or collegue uuid for the PI",
+            "title": "P.I.",
+            "type": "string",
+            "linkTo": "user"
+        },
+        "rfa": {
+            "default": "",
+            "description": "Project RFA",
+            "title": "RFA",
+            "type": "string"
+        },
+        "project": {
+            "default": "",
+            "title": "Project",
+            "type": "string"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
-}
+    }
+ }

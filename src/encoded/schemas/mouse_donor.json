@@ -1,0 +1,55 @@
+{
+    "title": "Mouse donor",
+    "id": "/profiles/mouse_donor.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE mouse donor",
+    "type": "object",
+    "required": [ "award", "lab", "organism"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "donor.json#/properties" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "littermates": {
+            "default": [],
+            "description": "List of donors related as littermates to this (mouse) donor",
+            "title": "Littermates",
+            "type":  "array",
+            "items": {
+                "description": "Another donor mouse from the same litter",
+                "comment": "For automated submission supply an ENCODE donor accession or uuid",
+                "title": "Littermate",
+                "type": "string",
+                "linkTo": "donor"
+            }
+        },
+        "strain_background": {
+            "description": "Strain background of a non-human donor",
+            "comment": "For non-human donors only",
+            "title": "Strain Background",
+            "type": "string"
+        },
+        "strain_name": {
+            "description": "Specific strain name of a non-human donor",
+            "comment": "For non-human donors only",
+            "title": "Strain Name",
+            "type": "string"
+        },
+        "organism": {
+            "comment": "unsure best way to handle the enum here",
+            "description": "Organism of the donor creature",
+            "default": "3413218c-3d86-498b-a0a2-9a406638e786",
+            "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
+        }
+    }
+}

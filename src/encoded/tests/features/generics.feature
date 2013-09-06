@@ -1,59 +1,46 @@
 @generics @usefixtures(workbook)
 Feature: Generics
 
-    Scenario: Labs
-        When I visit "/labs/"
-        Then I should see an element with the css selector "table.sticky-area"
+    Scenario Outline: Generics
+        When I visit "/<item_type>/"
+        Then I should see an element with the css selector ".collection-table"
         And I wait for the table to fully load
-        And I should see at least 41 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
+        And I should see an element with the css selector ".collection-table > tbody > tr"
+        And I should not see "N/A"
+        And I should not see "NULL"
+        And I should not see "null"
 
-# TODO: Must log in for this.
-#    Scenario: Users
-#        When I visit "/users/"
-#        Then I should see an element with the css selector "table.sticky-area"
-#        And I should see at least 80 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
+        When I click the link with text that contains "<link_text>"
+        Then I should see an element with the css selector ".view-item.type-<item_type>"
+        And I should not see "N/A"
+        And I should not see "NULL"
+        And I should not see "null"
 
-    Scenario: Donors
-        When I visit "/donors/"
-        Then I should see an element with the css selector "table.sticky-area"
-        And I wait for the table to fully load
-        And I should see at least 40 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
+        When I go back
+        Then I should see an element with the css selector ".collection-table"
 
-    Scenario: Awards
-        When I visit "/awards/"
-        Then I should see an element with the css selector "table.sticky-area"
-        And I wait for the table to fully load
-        And I should see at least 37 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
+    Examples: Collections
+        | item_type                     | link_text                             |
+        | antibody_approval             | ENCAB000ACQ                           |
+        | antibody_lot                  | ENCAB000ACQ                           |
+        | antibody_characterization     | 05a22a07-ab5c-42ad-bf93-801f03b017f7  |
+        | award                         | A DATA COORDINATING CENTER FOR ENCODE |
+        | biosample                     | ENCBS000AAA                           |
+        | biosample_characterization    | 297fab1b-3afd-4a5b-a222-ecd4c7ad1fc8  |
+        | construct                     | 893d806f-3a88-43eb-afdf-dcc16c79ee45  |
+        | document                      | 048d1185-2502-4f0e-a043-bbc75b9dd915  |
+        | experiment                    | ENCSR000ACY                           |
+        | file                          | ENCFF000LSP                           |
+        | human_donor                   | ENCDO017AAA                           |
+        | lab                           | Cherry                                |
+        | library                       | ENCLB055ZZZ                           |
+        | mouse_donor                   | ENCDO012AAA                           |
+        | organism                      | human                                 |
+        | platform                      | Illumina HiSeq 2000                   |
+        | replicate                     | 2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f  |
+        | rnai                          | d2dc22ba-5e7c-4626-87ac-257c6fff090c  |
+        | source                        | Abcam                                 |
+        | target                        | ADNP                                  |
+        | treatment                     | 2e33a097-412c-4646-87f9-858dfaaa7c06  |
 
-    Scenario: Documents
-        When I visit "/documents/"
-        Then I should see an element with the css selector "table.sticky-area"
-        And I wait for the table to fully load
-        And I should see at least 30 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
-
-    Scenario: Treatments
-        When I visit "/treatments/"
-        Then I should see an element with the css selector "table.sticky-area"
-        And I wait for the table to fully load
-        And I should see at least 6 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
-
-    Scenario: Constructs
-        When I visit "/constructs/"
-        Then I should see an element with the css selector "table.sticky-area"
-        And I wait for the table to fully load
-        And I should see at least 5 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
-
-        When I visit "/libraries/"
-        Then I should see an element with the css selector "table.sticky-area"
-        And I wait for the table to fully load
-        And I should see at least 5 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
-
-        When I visit "/assays/"
-        Then I should see an element with the css selector "table.sticky-area"
-        And I wait for the table to fully load
-        And I should see at least 3 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
-
-        When I visit "/replicates/"
-        Then I should see an element with the css selector "table.sticky-area"
-        And I wait for the table to fully load
-        And I should see at least 5 elements with the css selector "table.sticky-area > tbody > tr[data-href]"
+# must log in for users

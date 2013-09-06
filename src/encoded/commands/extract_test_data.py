@@ -1,69 +1,12 @@
+import csv
 import loremipsum
 import random
 import re
-import xlrd
-from xlutils.filter import (
-    BaseFilter,
-    StreamWriter,
-    XLRDReader,
-    process,
-)
+from ..loadxl import *
 
 
-class SkipNonTests(BaseFilter):
-    """Skip rows without a 'test' column value.
-    """
-
-    def sheet(self, rdsheet, wtsheet_name):
-        self.rdsheet = rdsheet
-        self.next.sheet(rdsheet, wtsheet_name)
-        test_cols = [
-            col for col in range(rdsheet.ncols)
-            if rdsheet.cell_value(0, col).lower().strip() == 'test'
-        ]
-        if not test_cols:
-            self.test_col = None
-        else:
-            self.test_col, = test_cols
-        self.row_index = -1
-
-    def row(self, rdrowx, wtrowx):
-        if rdrowx == 0 or self.test_col is None \
-            or self.rdsheet.cell_value(rdrowx, self.test_col):
-            self.row_index += 1
-            self.skip_row = False
-            self.next.row(rdrowx, self.row_index)
-        else:
-            self.skip_row = True
-
-    def cell(self, rdrowx, rdcolx, wtrowx, wtcolx):
-        if not self.skip_row:
-            self.next.cell(rdrowx, rdcolx, self.row_index, wtcolx)
-
-class SkipUpdateTests(SkipNonTests):
-    "override row function to skip Update tests"
-
-    def row(self, rdrowx, wtrowx):
-        if rdrowx == 0 or self.test_col is None \
-            or self.rdsheet.cell_value(rdrowx, self.test_col).lower().strip() == 'test':
-            self.row_index += 1
-            self.skip_row = False
-            self.next.row(rdrowx, self.row_index)
-        else:
-            self.skip_row = True
-
-
-
-def iter_rows(sheet):
-    headers = [sheet.cell_value(0, col).lower().strip()
-               for col in range(sheet.ncols)]
-    for row in xrange(1, sheet.nrows):
-        yield dict((name, sheet.cell(row, col))
-                   for col, name in enumerate(headers) if name)
-
-
-class Anonymize(BaseFilter):
-    """Change email addresses, names and phone numbers
+class Anonymizer(object):
+    """Change email addresses and names consistently
     """
 
     # From Colander. Not exhaustive, will not match .museum etc.
@@ -76,56 +19,33 @@ class Anonymize(BaseFilter):
         self.generated_emails = set()
         self.generated_names = set()
 
-    def workbook(self, rdbook, wtbook_name):
-        self.next.workbook(rdbook, wtbook_name)
-        # PI names are public anyway
-        colleagues = iter_rows(rdbook.sheet_by_name('colleague'))
-        self.pi_names = set(row['last_name'].value.lower().strip()
-            for row in colleagues if row['job_title'].value == 'PI')
-
-    def sheet(self, rdsheet, wtsheet_name):
-        wrapped_cell = rdsheet.cell
-
-        def intercept_cell(rdrowx, rdcolx):
-            cell = wrapped_cell(rdrowx, rdcolx)
-            if not cell.value or rdrowx == 0:
-                return cell
-
-            # Replace all emails wherever they are
-            if cell.ctype == xlrd.XL_CELL_TEXT:
+    def replace_emails(self, dictrows):
+        for row in dictrows:
+            for k, v in list(row.iteritems()):
+                if v is None:
+                    continue
                 new_value, num_subs = self.email_re.subn(
-                    self._replace_emails, cell.value)
-                cell.value = new_value
+                    self._replace_emails, v)
+                row[k] = new_value
+            yield row
 
-            heading = wrapped_cell(0, rdcolx).value.lower().strip()
-            if heading in ['fax', 'phone1', 'phone2']:
-                cell.ctype = xlrd.XL_CELL_TEXT
-                cell.value = '000-000-0000'
-
-            elif heading in ['skype']:
-                cell.ctype = xlrd.XL_CELL_TEXT
-                cell.value = 'skypename'
-
-            elif heading in ['last_name', 'submitted_by']:
-                if cell.value.strip().lower() not in self.pi_names:
-                    assert cell.ctype == xlrd.XL_CELL_TEXT
-                    cell.value = self._replace_name(cell.value)
-
-            elif heading in ['first_name']:
-                cell.value = self._random_name(single=True)
-
-            return cell
-
-        rdsheet.cell = intercept_cell
-        self.next.sheet(rdsheet, wtsheet_name)
+    def replace_non_pi_names(self, dictrows):
+        for row in dictrows:
+            if row.get('job_title') != 'PI':
+                if 'first_name' in row:
+                    row['first_name'] = random.choice(self.random_words).capitalize()
+                if 'last_name' in row:
+                    row['last_name'] = self._random_name()
+            yield row
 
     def _random_email(self):
-        while True:
+        for _ in xrange(1000):
             generated = "%s.%s@%s.%s" % \
                 tuple(random.choice(self.random_words) for n in range(4))
             if generated not in self.generated_emails:
                 self.generated_emails.add(generated)
                 return generated
+        raise AssertionError("Unable to find random email")
 
     def _replace_emails(self, matchobj):
         found = matchobj.group(0)
@@ -139,9 +59,9 @@ class Anonymize(BaseFilter):
         self.mapped_emails[found.lower()] = (new, found)
         return new
 
-    def _random_name(self, single=False):
-        while True:
-            if single or random.choice(range(4)):
+    def _random_name(self):
+        for _ in xrange(1000):
+            if random.choice(range(4)):
                 generated = random.choice(self.random_words).capitalize()
             else:
                 generated = "%s-%s" % \
@@ -150,38 +70,83 @@ class Anonymize(BaseFilter):
             if generated not in self.generated_names:
                 self.generated_names.add(generated)
                 return generated
-
-    def _replace_name(self, name):
-        found = name
-        new, original = self.mapped_names.get(found.lower(), (None, None))
-        if new is not None:
-            if found != original:
-                raise ValueError(
-                    "Case mismatch for %s, %s" % (found, original))
-            return new
-        new = self._random_name()
-        self.mapped_names[found.lower()] = (new, found)
-        return new
+        raise AssertionError("Unable to find random name")
 
 
-def run(infile, outfile, filter):
-    wb = xlrd.open_workbook(file_contents=infile.read())
-    reader = XLRDReader(wb, infile.name)
-    writer = StreamWriter(outfile)
-    process(reader, filter, Anonymize(), writer)
+def set_existing_key_value(**kw):
+    def component(dictrows):
+        for row in dictrows:
+            for k, v in kw.iteritems():
+                if k in row:
+                    row[k] = v
+            yield row
+
+    return component
+
+
+def drop_rows_with_all_key_value(**kw):
+    def component(dictrows):
+        for row in dictrows:
+            if not all(row[k] == v if k in row else False for k, v in kw.iteritems()):
+                yield row
+
+    return component
+
+
+def extract_pipeline():
+    return [
+        skip_rows_with_all_falsey_value('test'),
+        skip_rows_with_all_key_value(test='skip'),
+        skip_rows_with_all_falsey_value('test'),
+        skip_rows_missing_all_keys('uuid'),
+        drop_rows_with_all_key_value(_skip=True),
+    ]
+
+def anon_pipeline():
+    anonymizer = Anonymizer()
+    return extract_pipeline() + [
+        set_existing_key_value(
+            fax='000-000-0000',
+            phone1='000-000-0000',
+            phone2='000-000-0000',
+            skype='skype',
+            google='google',
+        ),
+        anonymizer.replace_emails,
+        anonymizer.replace_non_pi_names,
+    ]
+
+
+def run(pipeline, inpath, outpath):
+    for item_type in ORDER:
+        source = read_single_sheet(inpath, item_type)
+        fieldnames = [k for k in source.fieldnames if ':ignore' not in k]
+        with open(os.path.join(outpath, item_type + '.tsv'), 'wb') as out:
+            writer = csv.DictWriter(out, fieldnames, dialect='excel-tab', extrasaction='ignore')
+            writer.writeheader()
+            writer.writerows(combine(source, pipeline))
 
 
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='Extract test data set.')
-    parser.add_argument('infile', type=argparse.FileType('rb'))
-    parser.add_argument('insertfile', type=argparse.FileType('wb'))
-    parser.add_argument('updatefile', type=argparse.FileType('wb'))
+    parser.add_argument('--anonymize', '-a', action="store_true",
+        help="anonymize the data.")
+    parser.add_argument('inpath',
+        help="input zip file of excel sheets.")
+    parser.add_argument('outpath',
+        help="directory to write filtered tsv files to.")
     args = parser.parse_args()
-    run(args.infile, args.updatefile, SkipNonTests())
-    args.infile.close()
-    args.infile = open(args.infile.name, 'rb')
-    run(args.infile, args.insertfile, SkipUpdateTests())
+    pipeline = anon_pipeline() if args.anonymize else extract_pipeline()
+    import pdb
+    import sys
+    import traceback
+    try:
+        run(pipeline, args.inpath, args.outpath)
+    except:
+        type, value, tb = sys.exc_info()
+        traceback.print_exc()
+        pdb.post_mortem(tb)
 
 if __name__ == '__main__':
     main()

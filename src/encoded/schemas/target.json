@@ -1,137 +1,48 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Target",
+    "id": "/profiles/target.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting a target of an antibody or experiment to the ENCODE DCC",
+    "type": "object",
+    "required": ["organism", "label"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" }
+    ],
     "properties": {
-        "created_by": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "date_created": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "schema_version": {
+            "default": "1"
         },
         "dbxref": {
-            "default": null,
-            "description": "",
+            "default": [],
+            "title": "DBXREFs",
+            "description": "List of Database (including HGNC or MGI)cross-references",
             "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
+                "description": "Database identifiers",
+                "title": "DB ID",
+                "type":  "string"
             },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
+            "type": "array"
         },
-        "grant": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "organism": {
+            "description": "Organism of the specific target",
+            "title": "Target organism",
+            "type": "string",
+            "linkTo": "organism"
         },
-        "is_current": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "boolean",
-                "null"
-            ]
+        "gene_name": {
+            "description": "HGNC or MGI gene name for target",
+            "title": "Target Gene Name",
+            "type": "string",
+            "format": "gene_name"
         },
-        "lab_pi": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "organism_uuid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "project": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "target_class": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "target_gene_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "target_label": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "target_term_geneid": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "target_term_uniprot": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "label": {
+            "description": "Short name of the target gene or modified protein.  If unmodified, the HGNC or MGI gene name",
+            "title": "Target Label (Gene Name or modified protein)",
+            "type": "string",
+            "format": "target_label"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

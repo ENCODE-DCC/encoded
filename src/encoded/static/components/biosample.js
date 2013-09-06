@@ -25,9 +25,9 @@ function (biosample, React, URI, globals) {
                             <ul class="breadcrumb">
                                 <li>Biosamples <span class="divider">/</span></li>
                                 <li>{context.biosample_type}{' '}<span class="divider">/</span></li>{' '}
-                                <li class="active">{context.donor.organism.organism_name}</li>
+                                <li class="active">{context.organism.name}</li>
                             </ul>
-                            <h2>{context.accession}{' / '}{context.biosample_type}</h2>
+                            <h2>{context.accession}{' / '}<span class="cap-me-once">{context.biosample_type}</span></h2>
                         </div>
                     </header>
                     <div class="panel data-display">
@@ -38,35 +38,35 @@ function (biosample, React, URI, globals) {
                             <dt>Term ID</dt>
                             <dd>{context.biosample_term_id}</dd>
 
-                            <dt hidden={!context.biosample_description}>Description</dt>
-                            <dd hidden={!context.biosample_description}>{context.biosample_description}</dd>
+                            <dt hidden={!context.description}>Description</dt>
+                            <dd hidden={!context.description}>{context.description}</dd>
 
                             <dt>Source</dt>
-                            <dd><a href={context.source.url}>{context.source.source_name}</a></dd>
+                            <dd><a href={context.source.url}>{context.source.title}</a></dd>
 
                             <dt hidden={!context.product_id}>Product ID</dt>
-                            <dd hidden={!context.product_id}><maybe_link href={context.product_url}>{context.product_id}</maybe_link></dd>
+                            <dd hidden={!context.product_id}><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
 
                             <dt hidden={!context.lot_id}>Lot ID</dt>
                             <dd hidden={!context.lot_id}>{context.lot_id}</dd>
 
-                            <dt>Project</dt>
-                            <dd>{context.award.project}</dd>
+                            <dt>RFA</dt>
+                            <dd>{context.award.rfa}</dd>
 
                             <dt>Submitted by</dt>
-                            <dd>{context.submitter.first_name}{' '}{context.submitter.last_name}</dd>
+                            <dd>{context.submitted_by.title}</dd>
 
                             <dt>Lab</dt>
-                            <dd>{context.lab.name}</dd>
+                            <dd>{context.lab.title}</dd>
 
                             <dt>Grant</dt>
-                            <dd>{context.award.number}</dd>
+                            <dd>{context.award.name}</dd>
 
                             <dt hidden={!context.note}>Note</dt>
                             <dd hidden={!context.note}>{context.note}</dd>
                         </dl>
 
-                        {context.biosample_type != 'Immortalized cell line' ?
+                        {context.donor ?
                             <section>
                                 <hr />
                                 <h4>Donor Information</h4>
@@ -92,21 +92,32 @@ function (biosample, React, URI, globals) {
 
                     </div>
 
-                    {context.documents.length ?
+                    {context.protocol_documents.length ?
                         <div>
-                            <h3>Protocols and supporting documents</h3>
-                            {context.documents.map(Panel)}
+                            <h3>Protocol documents</h3>
+                            {context.protocol_documents.map(Panel)}
+                        </div>
+                    : null}
+
+                    {context.characterizations.length ?
+                        <div>
+                            <h3>Characterizations</h3>
+                            {context.characterizations.map(Panel)}
                         </div>
                     : null}
 
                     <h3 hidden={!context.related_biosample_uuid}>Related Biosamples</h3>
-                    {context.related_biosample_uuid ?
+                    {context.derived_from.length ?
                         <div class="panel data-display">
                             <h4>Derived From Biosample</h4>
-                            <dl class="key-value">
-                                <dt>Accession</dt>
-                                <dd><a href={'/biosamples/' + context.related_biosample_uuid + '/'}>{context.related_biosample_accession}</a></dd>
-                           </dl>
+                            <ul>{context.derived_from.map(function (biosample) {
+                                return (
+                                    <li key={biosample['@id']}>
+                                        <a href={biosample['@id']}>{biosample.accession}</a>
+                                    </li>
+                                );
+                            })}
+                           </ul>
                         </div>
                     : null}
                 </div>
@@ -127,62 +138,94 @@ function (biosample, React, URI, globals) {
         }
     };
 
-    var Donor = biosample.Donor = React.createClass({
+    var HumanDonor = biosample.HumanDonor = React.createClass({
         render: function() {
             var context = this.props.context;
             return (
                 <dl class="key-value">
-                    <dt>Donor ID</dt>
-                    <dd>{context.donor_id}</dd>
+                    <dt>Accession</dt>
+                    <dd>{context.accession}</dd>
+
+                    <dt>Life stage</dt>
+                    <dd>{context.life_stage}</dd>
 
                     <dt>Age</dt>
-                    <dd>{context.age}</dd>
+                    <dd>{context.age}{' '}{context.age_units}</dd>
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    <dt hidden={!context.strain_background}>Strain</dt>
-                    <dd hidden={!context.strain_background}>{context.strain_background}</dd>
-
                     <dt>Health status</dt>
                     <dd>{context.health_status}</dd>
+
+                    <dt>Ethnicity</dt>
+                    <dd>{context.ethnicity}</dd>
                 </dl>
             );
         }
     });
 
-    globals.panel_views.register(Donor, 'donor');
+    globals.panel_views.register(HumanDonor, 'human_donor');
+
+
+    var MouseDonor = biosample.MouseDonor = React.createClass({
+        render: function() {
+            var context = this.props.context;
+            return (
+                <dl class="key-value">
+                    <dt>Accession</dt>
+                    <dd>{context.accession}</dd>
+
+                    <dt>Life stage</dt>
+                    <dd>{context.life_stage}</dd>
+
+                    <dt>Age</dt>
+                    <dd>{context.age}{' '}{context.age_units}</dd>
+
+                    <dt>Sex</dt>
+                    <dd>{context.sex}</dd>
+
+                    <dt>Health status</dt>
+                    <dd>{context.health_status}</dd>
+
+                    <dt>Strain background</dt>
+                    <dd>{context.strain_background}</dd>
+
+                    <dt>Strain name</dt>
+                    <dd>{context.strain_name}</dd>
+                </dl>
+            );
+        }
+    });
+
+    globals.panel_views.register(MouseDonor, 'mouse_donor');
 
 
     var Treatment = biosample.Treatment = React.createClass({
         render: function() {
             var context = this.props.context;
-            var condition = '';
-            if (context.condition_id) {
-                if (context.concentration) {
-                    condition += context.concentration + ' ' + context.concentration_units + ' ';
-                }
-                condition += context.condition_term + ' (' + context.condition_id + ') ';
-                if (context.duration) {
-                    condition += 'for ' + context.duration + ' ' + context.duration_units;
-                }
+            var title = '';
+            if (context.concentration) {
+                title += context.concentration + ' ' + context.concentration_units + ' ';
+            }
+            title += context.treatment_term_name + ' (' + context.treatment_term_id + ') ';
+            if (context.duration) {
+                title += 'for ' + context.duration + ' ' + context.duration_units;
             }
             return (
                 <dl class="key-value">
                     <dt>Treatment</dt>
-                    <dd>{context.treatment_name}</dd>
+                    <dd>{title}</dd>
 
                     <dt>Type</dt>
                     <dd>{context.treatment_type}</dd>
 
-                    {condition ? <dt>Condition</dt> : undefined}
-                    {condition ? <dd>{condition}</dd> : undefined}
                 </dl>
             );
         }
     });
 
-    globals.panel_views.register(Treatment, 'biosample_treatment');
+    globals.panel_views.register(Treatment, 'treatment');
 
 
     var Construct = biosample.Construct = React.createClass({
@@ -191,65 +234,65 @@ function (biosample, React, URI, globals) {
             return (
                 <dl class="key-value">
                     <dt>Vector</dt>
-                    <dd>{context.vector_name}</dd>
+                    <dd>{context.vector_backbone_name}</dd>
 
-                    <dt>Vector Type</dt>
-                    <dd>{context.transfection_type}</dd>
+                    <dt>Construct Type</dt>
+                    <dd>{context.construct_type}</dd>
 
                     <dt>Description</dt>
-                    <dd>{context.construct_description}</dd>
+                    <dd>{context.description}</dd>
 
                     <dt>Source</dt>
-                    <dd>{context.source.source_name}</dd>
+                    <dd>{context.source.title}</dd>
 
                     <dt>Product ID</dt>
-                    <dd><maybe_link href={context.product_url}>{context.product_id}</maybe_link></dd>
+                    <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
 
                 </dl>
             );
         }
     });
 
-    globals.panel_views.register(Construct, 'biosample_construct');
+    globals.panel_views.register(Construct, 'construct');
 
 
     var Document = biosample.Document = React.createClass({
         render: function() {
             var context = this.props.context;
-            var documentHref, documentUri;
+            var attachmentHref, attachmentUri;
             var figure, download, src, imgClass, alt;
-            var imgClass = "validation-img validation-file";
+            var imgClass = "characterization-img characterization-file";
             var height = "100";
             var width = "100";
-            if (context.document) {
-                documentUri = URI(context.document.href, URI(context['@id']).href);
-                documentHref = documentUri.pathname + documentUri.search;
-                if (context.document.type.split('/', 1)[0] == 'image') {
-                    imgClass = 'validation-img';
-                    src = documentHref;
-                    height = context.document.height;
-                    width = context.document.width;
-                    alt = "Validation Image"
-                } else if (context.document.type == "application/pdf"){
+            if (context.attachment) {
+                attachmentUri = URI(context.attachment.href, URI(context['@id']).href);
+                attachmentHref = attachmentUri.pathname + attachmentUri.search;
+                if (context.attachment.type.split('/', 1)[0] == 'image') {
+                    imgClass = 'characterization-img';
+                    src = attachmentHref;
+                    height = context.attachment.height;
+                    width = context.attachment.width;
+                    alt = "Characterization Image"
+                } else if (context.attachment.type == "application/pdf"){
                     src = "/static/img/file-pdf.svg";
-                    alt = "Validation PDF Icon";
+                    alt = "Characterization PDF Icon";
                 } else {
                     src = "/static/img/file.svg";
-                    alt = "Validation Icon";
+                    alt = "Characterization Icon";
                 }
                 figure = (
-                    <a data-bypass="true" href={documentHref}>
+                    <a data-bypass="true" href={attachmentHref}>
                         <img class={imgClass} src={src} height={height} width={width} alt={alt} />
                     </a>
                 );
                 download = (
-                    <a data-bypass="true" href={documentHref} download={context.document.download}>
-                        {context.document.download}
+                    <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
+                        {context.attachment.download}
                     </a>
                 );
             } else {
                 src = "/static/img/file-broken.png";
-                alt = "Validation File Broken Icon";
+                alt = "Characterization File Broken Icon";
                 figure = (
                     <img class={imgClass} src={src} height={height} width={width} alt={alt} />
                 );
@@ -272,13 +315,13 @@ function (biosample, React, URI, globals) {
                                 <p>{context.description}</p>
                                 <dl class="key-value">
                                     <dt>Submitted By</dt>
-                                    <dd>{context.submitter.first_name}{' '}{context.submitter.last_name}</dd>
+                                    <dd>{context.submitted_by.title}</dd>
 
                                     <dt>Lab</dt>
-                                    <dd>{context.lab.name}</dd>
+                                    <dd>{context.lab.title}</dd>
 
                                     <dt>Grant</dt>
-                                    <dd>{context.award.number}</dd>
+                                    <dd>{context.award.name}</dd>
 
                                     <dt><i class="icon-download-alt"></i> Download</dt>
                                     <dd>{download}</dd>
@@ -291,7 +334,8 @@ function (biosample, React, URI, globals) {
         }
     });
 
-    globals.panel_views.register(Document, 'biosample_document');
+    globals.panel_views.register(Document, 'document');
+    globals.panel_views.register(Document, 'biosample_characterization');
 
 
     return biosample;

@@ -1,0 +1,93 @@
+{
+    "title": "ENCODE Biosample Donor",
+    "id": "/profiles/donor.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Base schema for ENCODE biosample donors",
+    "type": "object",
+    "required": [ "award", "lab", "organism"],
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema_version": {
+            "hidden comment": "Bump the default in the subclasses."
+        },
+        "sex": {
+            "default": "unknown",
+            "description": "Sex (Gender) of the donor",
+            "title": "Donor Sex",
+            "type": "string",
+            "enum": [
+                "male",
+                "female",
+                "unknown",
+                "mixed"
+            ]
+        },
+        "parents": {
+            "default": [],
+            "description": "List of donors related as (literal) parent to this donor",
+            "title": "Parents",
+            "type":  "array",
+            "items": {
+                "description": "Parent Donor",
+                "comment": "For automated submission supply an ENCODE donor accession or uuid",
+                "title": "Parent",
+                "type": "string",
+                "linkTo": "donor"
+            }
+        },
+        "children": {
+            "default": [],
+            "description": "List of donors related as (literal) children to this donor",
+            "title": "Children",
+            "type":  "array",
+            "items": {
+                "description": "Child Donor",
+                "comment": "For automated submission supply an ENCODE donor accession or uuid",
+                "title": "Child",
+                "type": "string",
+                "linkTo": "donor"
+            }
+        },
+        "siblings": {
+            "default": [],
+            "description": "List of donors related as (literal) siblings to this donor",
+            "title": "Siblings",
+            "type":  "array",
+            "items": {
+                "description": "Sibling Donor",
+                "comment": "For automated submission supply an ENCODE donor accession or uuid",
+                "title": "Sibling Donor",
+                "type": "string",
+                "linkTo": "donor"
+            }
+        },
+        "fraternal_twin": {
+            "description": "The donor's fraternal twin",
+            "comment": "For automated submission supply an ENCODE donor accession or uuid",
+            "title": "Fraternal Twin",
+            "type": "string",
+            "linkTo": "donor"
+        },
+        "identical_twin": {
+            "description": "The donor's identical twin",
+            "comment": "For automated submission supply an ENCODE donor accession or uuid",
+            "title": "Identical Twin",
+            "type": "string",
+            "linkTo": "donor"
+        },
+        "organism": {
+            "description": "Organism of the donor creature",
+            "title": "Donor organism",
+            "type": "string",
+            "linkTo": "organism"
+        }
+    }
+}

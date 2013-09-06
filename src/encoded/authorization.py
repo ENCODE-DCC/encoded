@@ -13,6 +13,8 @@ def groupfinder(login, request):
     if namespace == 'remoteuser':
         if localname in ['TEST', 'IMPORT']:
             return ['group:admin']
+        elif localname in ['TEST_SUBMITTER']:
+            return ['group:submitter']
 
     if namespace in ('mailto', 'remoteuser'):
         users = root.by_item_type['user']
@@ -27,15 +29,19 @@ def groupfinder(login, request):
             access_key = access_keys[localname]
         except KeyError:
             return None
-        userid = access_key.properties['user_uuid']
+        userid = access_key.properties['user']
         user = root.by_item_type['user'][userid]
 
     if user is None:
         return None
 
     principals = ['userid:%s' % user.uuid]
-    lab_uuids = user.properties.get('lab_uuids', [])
-    principals.extend('lab:' + lab_uuid for lab_uuid in lab_uuids)
-    if CHERRY_LAB_UUID in lab_uuids:
+    lab = user.properties.get('lab')
+    if lab:
+        principals.append('lab:%s' % lab)
+    submits_for = user.properties.get('submits_for', [])
+    principals.extend('lab:%s' % lab_uuid for lab_uuid in submits_for)
+    principals.extend('submits_for:%s' % lab_uuid for lab_uuid in submits_for)
+    if CHERRY_LAB_UUID in submits_for:
         principals.append('group:admin')
     return principals

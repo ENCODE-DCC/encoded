@@ -1,0 +1,103 @@
+{
+    "title": "Base Characterization",
+    "id": "/profiles/characterization.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting a characterization (antibody or biosample) to ENCODE",
+    "comment": "Characterization images and captions accompany antibody lots submitted for review and biosamples containing constructs",
+    "type": "object",
+    "required": [ "award", "lab", "characterizes" ],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/attachment" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "characterizes": {
+            "description": "The specific object for which the characterization image applies.",
+            "comment": "Automatic submitters can supply a uuid",
+            "type": "string"
+        },
+        "characterization_method": {
+            "description": "Experimental method for the characterization image",
+            "comment": "Choose from one of the enumerated characterization methods used to characterized the antibody lot or biosample. [This list will likely get mapped to an experimental methods ontology in the future.]",
+            "title": "Antibody or biosample characterization method",
+            "type": "string",
+            "enum": [
+                "western blot",
+                "western blot after IP",
+                "immunoprecipitation",
+                "immunofluorescense",
+                "knockdowns",
+                "mass spectrometry after IP",
+                "chIP comparison",
+                "tagged epitopes",
+                "motif enrichment",
+                "dot blot",
+                "peptide ELISA",
+                "competitor peptides",
+                "mutant organisms",
+                "mutant histones",
+                "annotation enrichment",
+                "XXX NEED REVIEW",
+                "Western blot, Western blot after IP",
+                "immunoblot"
+            ]
+        },
+        "caption": {
+            "default": "",
+            "description": "A free-text caption for the characterization image",
+            "comment": "Captions for antibody characterizations should include brief methods, expected MW, cell line(s), labels and justification for acceptance, if necessary",
+            "title": "Image caption",
+            "type": "string"
+        },
+        "date": {
+            "description": "Date in which the characterization experiment was run",
+            "comment": "Dates should be formatted as YYYY-MM-DD",
+            "title": "Date characterized",
+            "type": "string",
+            "format": "date"
+        },
+        "references": {
+            "default": [],
+            "description": "List of references (Pubmed IDs)",
+            "comment": "If characterization data is from a publication, provide the relevant Pubmed identifier(s) in PMID:NNNNNNNN format",
+            "title": "References",
+            "reference": {
+                "description": "Pubmed id for a published reference",
+                "title": "Pubmed reference",
+                "type": "string",
+                "pattern": "^PMID:[0-9]+$"
+            },
+            "type": "array"
+        },
+        "status": {
+            "default": "INCOMPLETE",
+            "description": "Approval status for the Characterization image",
+            "comment": "Use the default, all other values are assigned by the DCC. The status code indicates the current state of the characterization image",
+            "title": "Approval status",
+            "type": "string",
+            "enum" : [
+                "APPROVED",
+                "SUBMITTED",
+                "UNSUBMITTED",
+                "FAILED",
+                "INCOMPLETE",
+                "DELETED"
+            ]
+        },
+        "comment": {
+            "default": "",
+            "description": "Comment(s), if any, to associate to the characterization or the status of the characterization",
+            "comment": "A free-text field for comments relating to the characterization or its status",
+            "title": "Characterization comment",
+            "type": "string",
+            "permission": "review"
+        }
+    }
+}

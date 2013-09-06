@@ -1,0 +1,72 @@
+{
+    "title": "ENCODE Document",
+    "id": "/profiles/document.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE document or protocol",
+    "type": "object",
+    "required": [ "document_type", "lab", "award"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/attachment" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "document_type": {
+            "description": "The specific purpose of the document or protocol",
+            "title": "Document Type",
+            "type": "string",
+            "enum": [
+                "growth protocol",
+                "extraction protocol",
+                "certificate of analysis",
+                "differentiation protocol",
+                "data sheet",
+                "treatment protocol",
+                "general protocol",
+                "excision protocol",
+                "transfection protocol",
+                "construct image",
+                "cell isolation protocol",
+                "iPS reprogramming protocol",
+                "other"
+           ]
+        },
+        "description": {
+            "default": "",
+            "description": "A plain text description of the document",
+            "title": "Description",
+            "type": "string"
+        },
+        "references": {
+            "default": [],
+            "description": "List of references (Pubmed IDs)",
+            "title": "References",
+            "reference": {
+                "description": "Pubmed id for a published reference",
+                "title": "Pubmed Reference",
+                "type": "string",
+                "pattern": "^PMID:[0-9]+$"
+            },
+            "type": "array"
+        },
+        "urls": {
+            "default": [],
+            "description": "List of URLs",
+            "title": "URLs",
+            "reference": {
+                "title": "URL",
+                "type": "string",
+                "format": "uri"
+            },
+            "type": "array"
+        }
+    }
+}

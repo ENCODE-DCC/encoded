@@ -38,7 +38,9 @@ def dict_template(template, namespace):
         if isinstance(condition, basestring):
             if ':' in condition:
                 condition, arg = condition.split(':', 1)
-            condition = namespace[condition]
+            condition = namespace.get(condition, _marker)
+            if condition is _marker:
+                return
         if callable(condition):
             if arg is not None:
                 condition = condition(arg)
@@ -67,25 +69,37 @@ def dict_template(template, namespace):
             repeat_namespace = namespace.copy()
             repeat_namespace[repeat_name] = repeat_value
             if value is not _marker:
-                result, = object_template(value, repeat_namespace, templated)
+                results = list(object_template(value, repeat_namespace, templated))
+                if not results:
+                    return
+                result, = results
             else:
                 result = type(template)()
                 for key, tmpl_value in template.items():
                     if key in TEMPLATE_NAMES:
                         continue
                     tmpl_string = templated is True or key in templated
-                    result[key], = object_template(tmpl_value, repeat_namespace, tmpl_string)
+                    results = list(object_template(tmpl_value, repeat_namespace, tmpl_string))
+                    if not results:
+                        continue
+                    result[key], = results
             yield result
     else:
         if value is not _marker:
-            result, = object_template(value, namespace, templated)
+            results = list(object_template(value, namespace, templated))
+            if not results:
+                return
+            result, = results
         else:
             result = type(template)()
             for key, tmpl_value in template.items():
                 if key in TEMPLATE_NAMES:
                     continue
                 tmpl_string = templated is True or key in templated
-                result[key], = object_template(tmpl_value, namespace, tmpl_string)
+                results = list(object_template(tmpl_value, namespace, tmpl_string))
+                if not results:
+                    continue
+                result[key], = results
         yield result
 
 

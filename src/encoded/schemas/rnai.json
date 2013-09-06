@@ -1,0 +1,84 @@
+{
+    "title": "ENCODE RNAi",
+    "id": "/profiles/rnai.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting an ENCODE RNAi (including shRNA and siRNA)",
+    "type": "object",
+    "required": [ "rnai_type", "target", "lab", "award"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "rnai_type": {
+            "description": "The sub-type of the interfering RNA",
+            "title": "RNAi Type",
+            "type": "string",
+            "enum": [
+                "shRNA",
+                "siRNA"
+            ]
+        },
+        "source": {
+            "description": "Source or Vendor of construct",
+            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
+            "title": "Construct Source",
+            "type": "string",
+            "linkTo": "source"
+        },
+        "product_id": {
+            "description": "The vendor's construct product code",
+            "title": "Construct Product ID",
+            "type": "string"
+        },
+        "url": {
+            "description": "External Product URL for the specific construct at vendor site",
+            "title": "Product URL",
+            "type": "string",
+            "format": "uri"
+        },
+        "target": {
+            "description": "Target that knocked down or inhibited by the RNAi",
+            "comment": "Automatic submitters can supply a target uuid, or name/species pair",
+            "title": "RNAi Target",
+            "type": "string",
+            "linkTo": "target"
+        },
+        "vector_backbone_name": {
+            "description": "The name of the vector backone used for the RNAi construct",
+            "title": "Vector Backbone Name",
+            "type": "string"
+        },
+        "documents": {
+            "default": [],
+            "description": "List of documents associated with this RNAi",
+            "comment": "For automatic submission supply unique documents names or uuids",
+            "items": {
+                "description": "RNAi document",
+                "title": "RNAi Document",
+                "type": "string",
+                "linkTo": "document"
+            },
+            "title": "RNAi Documents (list)",
+            "type": "array"
+        },
+        "rnai_sequence": {
+            "description": "Sequence for the relevant part of the inhibatory RNA(not including vector)",
+            "title": "RNAi Sequence",
+            "type": "string"
+        },
+        "rnai_target_sequence": {
+            "description": "Genomic sequence of the target of the RNAi",
+            "title": "Target Sequence",
+            "type": "string"
+        }
+    }
+}

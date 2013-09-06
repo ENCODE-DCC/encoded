@@ -207,6 +207,7 @@ function (mixins, $, React, URI) {
                     }
                 }
                 window.addEventListener('popstate', this.handlePopState, true);
+                window.addEventListener('error', this.handleError, false);
             }
         },
 
@@ -217,19 +218,19 @@ function (mixins, $, React, URI) {
             }
         },
 
+        handleError: function(event) {
+            // When an unhandled exception occurs, reload the page on navigation
+            this.historyEnabled = false;
+        },
+
         handleClick: function(event) {
             var target = event.target;
             var nativeEvent = event.nativeEvent;
 
-            if (target.tagName != 'A') {
-                while (target) {
-                    if (target.getAttribute('data-href')) {
-                        break;
-                    }
-                    target = target.parentElement;
-                }
-                if (!target) return;
+            while (target && (target.tagName != 'A' || target.getAttribute('data-href'))) {
+                target = target.parentElement;
             }
+            if (!target) return;
 
             // data-trigger links invoke custom handlers.
             var data_trigger = target.getAttribute('data-trigger');
@@ -297,6 +298,10 @@ function (mixins, $, React, URI) {
 
         handlePopState: function (event) {
             if (this.DISABLE_POPSTATE) return;
+            if (!this.historyEnabled) {
+                window.location.reload();
+                return;
+            }
             var href = window.location.href;
             if (event.state) {
                 this.setState({context: event.state})

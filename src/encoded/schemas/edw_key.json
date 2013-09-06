@@ -1,8 +1,14 @@
 {
     "title": "EDW create access key",
+    "id": "/profiles/edw_key.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
     "description": "Received from EDW",
     "type": "object",
+    "additionalProperties": false,
     "properties": {
+        "schema_version": {
+            "default": "1"
+        },
         "email": {
             "title": "Email",
             "description": "Email address of user in database",

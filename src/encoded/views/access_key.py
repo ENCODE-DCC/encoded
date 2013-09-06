@@ -12,6 +12,7 @@ from ..authentication import (
     CRYPT_CONTEXT,
 )
 from ..schema_utils import (
+    load_schema,
     schema_validator,
 )
 from ..contentbase import (
@@ -21,6 +22,8 @@ from ..contentbase import (
     item_edit,
     item_view,
     location,
+    validate_item_content_post,
+    validate_item_content_put,
 )
 from ..validation import ValidationFailure
 
@@ -28,6 +31,7 @@ from ..validation import ValidationFailure
 @location('access-keys')
 class AccessKey(Collection):
     item_type = 'access_key'
+    schema = load_schema('access_key.json')
     unique_key = 'access_key:access_key_id'
     properties = {
         'title': 'Access keys',
@@ -42,16 +46,11 @@ class AccessKey(Collection):
     ]
 
     class Item(Collection.Item):
-        links = {
-            'user': {'value': '/users/{user_uuid}', '$templated': True},
-        }
         keys = ['access_key_id']
-        rels = [
-            {'rel': '{item_type}:user', 'target': '{user_uuid}', '$templated': True},
-        ]
+        name_key = 'access_key_id'
 
         def __acl__(self):
-            owner = 'userid:%s' % self.properties['user_uuid']
+            owner = 'userid:%s' % self.properties['user']
             return [
                 (Allow, owner, 'edit'),
                 (Allow, owner, 'view'),
@@ -59,18 +58,15 @@ class AccessKey(Collection):
 
 
 @view_config(context=AccessKey, permission='add', request_method='POST',
-             validators=[schema_validator('access_key.json')])
-@view_config(context=AccessKey, permission='add', request_method='POST',
-             validators=[schema_validator('access_key_admin.json')],
-             effective_principals=['group:admin'])
+             validators=[validate_item_content_post])
 def access_key_add(context, request):
     crypt_context = request.registry[CRYPT_CONTEXT]
 
     if 'access_key_id' not in request.validated:
         request.validated['access_key_id'] = generate_user()
 
-    if 'user_uuid' not in request.validated:
-        request.validated['user_uuid'], = [
+    if 'user' not in request.validated:
+        request.validated['user'], = [
             principal.split(':', 1)[1]
             for principal in effective_principals(request)
             if principal.startswith('userid:')
@@ -118,11 +114,8 @@ def access_key_disable_secret(context, request):
     return result
 
 
-@view_config(context=AccessKey.Item, permission='edit', request_method='POST',
-             validators=[schema_validator('access_key.json')])
-@view_config(context=AccessKey.Item, permission='edit', request_method='POST',
-             validators=[schema_validator('access_key_admin.json')],
-             effective_principals=['group:admin'])
+@view_config(context=AccessKey.Item, permission='edit', request_method='PUT',
+             validators=[validate_item_content_put])
 def access_key_edit(context, request):
     new_properties = context.properties.copy()
     new_properties.update(request.validated)
@@ -177,7 +170,7 @@ def edw_key_create(context, request):
     request.validated.clear()
     request.validated['access_key_id'] = username
     request.validated['secret_access_key_hash'] = pwhash
-    request.validated['user_uuid'] = user.uuid
+    request.validated['user'] = str(user.uuid)
     request.validated['description'] = ''
 
     collection_add(collection, request)
@@ -212,7 +205,7 @@ def edw_key_update(request):
     request.validated.clear()
     request.validated.update(access_key.properties)
     request.validated['secret_access_key_hash'] = pwhash
-    request.validated['user_uuid'] = user.uuid
+    request.validated['user'] = str(user.uuid)
 
     item_edit(access_key, request)
     return {'status': 'success'}

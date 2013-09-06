@@ -1,182 +1,126 @@
 {
-    "default": null,
-    "description": "",
+    "title": "ENCODE Lab",
+    "id": "/profiles/lab.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Schema for submitting a lab or research group for the ENCODE project.",
+    "type": "object",
+    "required": ["name"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
     "properties": {
-        "address1": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "address2": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "award_number_list": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
-            },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
-        },
-        "award_uuids": {
-            "default": null,
-            "description": "",
-            "items": {
-                "default": null,
-                "description": "",
-                "title": "",
-                "type": [
-                    "string",
-                    "null"
-                ]
-            },
-            "title": "",
-            "type": [
-                "array",
-                "null"
-            ]
-        },
-        "city": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "country": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "fax": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "institute_label": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "institute_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
-        },
-        "lab_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "schema_version": {
+            "default": "1"
         },
         "name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "Unique short name for the Lab",
+            "title": "Lab Name",
+            "type": "string",
+            "pattern": "^[a-z0-9\\-]+$"
         },
-        "phone1": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "title": {
+            "title": "Temporary lab title",
+            "type": "string"
         },
-        "phone2": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "pi": {
+            "description": "Principle Investigator of the lab",
+            "comment": "For automatic submission submit the email, first & last name, or collegue uuid for the PI",
+            "title": "P.I.",
+            "type": "string",
+            "linkTo": "user"
         },
-        "pi_name": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "awards": {
+            "default": [],
+            "description": "List of Awards (Grants) associated with the lab (and the ENCODE project).",
+            "title": "List of Awards (Grants)",
+            "items": {
+                "description": "Award (Grant) this submission is registered under",
+                "comment": "Automatic submitters can supply an Award UUID, name, or number",
+                "title": "Award Name or Number",
+                "type": "string",
+                "linkTo": "award"
+            },
+            "type": "array"
         },
-        "postal_code": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+        "institute_label": {
+            "default": "",
+            "description": "Short name for the Institute the lab belongs too.",
+            "title": "Institute Label",
+            "type": "string"
+        },
+        "institute_name": {
+            "default": "",
+            "description": "Full name for the Institute the lab belongs too.",
+            "title": "Institute",
+            "type": "string"
+        },
+        "address1": {
+            "default": "",
+            "description": "1st line of Lab's mailing address.",
+            "title": "Address",
+            "type": "string"
+        },
+        "address2": {
+            "description": "2nd line of Lab's mailing address.",
+            "title": "Address (2)",
+            "type": "string"
+        },
+        "city": {
+            "default": "",
+            "description": "City in which the lab is located.",
+            "title": "City",
+            "type": "string"
         },
         "state": {
-            "default": null,
-            "description": "",
+            "default": "",
+            "description": "US State, Province or Region in which the lab is located.",
+            "title": "State/Region",
+            "type": "string"
+        },
+        "country": {
+            "default": "",
+            "description": "Country in which the lab is located.",
+            "title": "Country",
+            "type": "string"
+        },
+        "postal_code": {
+            "default": "",
+            "description": "Postal Code for the lab's mailing address",
             "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "type": "string",
+            "format": "postal-code"
+        },
+        "fax": {
+            "default": "",
+            "description": "Lab's fax number",
+            "title": "Fax #",
+            "type": "string",
+            "format": "phone"
+        },
+        "phone1": {
+            "default": "",
+            "description": "Lab's primary phone number number",
+            "title": "Phone #",
+            "type": "string",
+            "format": "phone"
+        },
+        "phone2": {
+            "default": "",
+            "description": "Lab's alternate phone number",
+            "title": "Alt. Phone #",
+            "type": "string",
+            "format": "phone"
         },
         "url": {
-            "default": null,
-            "description": "",
-            "title": "",
-            "type": [
-                "string",
-                "null"
-            ]
+            "description": "URL for the lab website",
+            "title": "URL",
+            "type": "string",
+            "format": "uri"
         }
-    },
-    "title": "",
-    "type": [
-        "object",
-        "null"
-    ]
+    }
 }

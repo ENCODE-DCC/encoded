@@ -1,53 +1,57 @@
 import pytest
 
-COLLECTION_URLS = [
-    '/',
-    '/antibodies/',
-    '/targets/',
-    '/organisms/',
-    '/sources/',
-    '/validations/',
-    '/antibody-lots/',
-]
 
-## since we have cleaned up all the errors
-## the below should equal the full spreadsheet rows with text in the 'test' col.
-COLLECTION_URL_LENGTH = {
-    '/awards/': 39,
-    '/labs/': 45,
-    '/users/': 83,
-    '/organisms/': 6,
-    '/sources/': 77,
-    '/targets/': 30,
-    '/antibody-lots/': 29,
-    '/validations/': 41,
-    '/antibodies/': 30,
-    '/donors/': 72,
-    '/documents/': 130,
-    '/treatments/': 7,
-    '/constructs/': 5,
-    '/biosamples/': 134,
-    '/platforms/': 11,
-    '/users/': 84,
-    '/files/': 18,
-    '/replicates/': 47,
-    '/libraries/': 49,
-    '/experiments/': 28,
+def _type_length():
+    # Not a fixture as we need to parameterize tests on this
+    import os.path
+    from ..loadxl import ORDER
+    from pkg_resources import resource_filename
+    inserts = resource_filename('encoded', 'tests/data/inserts/')
+    lengths = {}
+    for name in ORDER:
+        with open(os.path.join(inserts, name + '.tsv')) as f:
+            lengths[name] = len([l for l in f.readlines() if l.strip()]) - 1
 
-}
-
-COLLECTION_URLS = ['/'] + COLLECTION_URL_LENGTH.keys()
+    return lengths
 
 
-@pytest.mark.parametrize('url', [url for url in COLLECTION_URLS if url != '/users/'])
-def test_html(htmltestapp, url):
-    res = htmltestapp.get(url, status=200)
+TYPE_LENGTH = _type_length()
+
+
+@pytest.fixture
+def users(testapp):
+    from .sample_data import URL_COLLECTION
+    url = '/labs/'
+    for item in URL_COLLECTION[url]:
+        testapp.post_json(url, item, status=201)
+    users = []
+    url = '/users/'
+    for item in URL_COLLECTION[url]:
+        res = testapp.post_json(url, item, status=201)
+        res = testapp.get(res.location)
+        users.append(res.json)
+    return users
+
+
+def test_home(htmltestapp):
+    res = htmltestapp.get('/', status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
 
-@pytest.mark.parametrize('url', COLLECTION_URLS)
-def test_json(testapp, url):
-    res = testapp.get(url, status=200)
+def test_home_json(testapp):
+    res = testapp.get('/', status=200)
+    assert res.json['@type']
+
+
+@pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
+def test_html(htmltestapp, item_type):
+    res = htmltestapp.get('/' + item_type).follow(status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_json(testapp, item_type):
+    res = testapp.get('/' + item_type).follow(status=200)
     assert res.json['@type']
 
 
@@ -65,49 +69,48 @@ def _test_antibody_approval_creation(testapp):
     res = testapp.post_json('/antibodies/', new_antibody, status=201)
     assert res.location
     assert '/profiles/result' in res.json['@type']['profile']
-    assert res.json['items'] == [{'href': urlparse(res.location).path}]
+    assert res.json['@graph'] == [{'href': urlparse(res.location).path}]
     res = testapp.get(res.location, status=200)
     assert '/profiles/antibody_approval' in res.json['@type']
     data = res.json
     for key in new_antibody:
         assert data[key] == new_antibody[key]
     res = testapp.get('/antibodies/', status=200)
-    assert len(res.json['items']) == 1
+    assert len(res.json['@graph']) == 1
 
 
-def __test_sample_data(testapp):
-
-    from .sample_data import test_load_all
-    test_load_all(testapp)
-    res = testapp.get('/biosamples/', headers={'Accept': 'application/json'}, status=200)
-    assert len(res.json['_embedded']['items']) == 1
-    res = testapp.get('/labs/', headers={'Accept': 'application/json'}, status=200)
-    assert len(res.json['_embedded']['items']) == 2
+@pytest.mark.xfail
+def test_load_sample_data(testapp):
+    from .sample_data import URL_COLLECTION
+    for url, collection in URL_COLLECTION.iteritems():
+        for item in collection:
+            testapp.post_json(url, item, status=201)
+        res = testapp.get(url + '?limit=all')
+        assert len(res.json['@graph']) == len(collection)
 
 
 @pytest.mark.slow
-@pytest.mark.parametrize(('url', 'length'), COLLECTION_URL_LENGTH.items())
-def test_load_workbook(workbook, testapp, url, length):
+@pytest.mark.parametrize(('item_type', 'length'), TYPE_LENGTH.items())
+def test_load_workbook(workbook, testapp, item_type, length):
     # testdata must come before testapp in the funcargs list for their
     # savepoints to be correctly ordered.
-    res = testapp.get(url + '?limit=all', status=200)
-    assert len(res.json['items']) >= length
-    # extra guys are fine
+    res = testapp.get('/%s/?limit=all' % item_type).maybe_follow(status=200)
+    assert len(res.json['@graph']) == length
 
 
 @pytest.mark.slow
 def test_collection_limit(workbook, testapp):
-    res = testapp.get('/antibodies/?limit=10', status=200)
-    assert len(res.json['items']) == 10
+    res = testapp.get('/antibodies/?limit=2', status=200)
+    assert len(res.json['@graph']) == 2
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/', '/users/'])
+@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
 def test_collection_post(testapp, url):
     from .sample_data import URL_COLLECTION
     collection = URL_COLLECTION[url]
     for item in collection:
         res = testapp.post_json(url, item, status=201)
-        assert item['_uuid'] in res.location
+        assert item['name'] in res.location
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
@@ -134,85 +137,62 @@ def test_actions_filtered_by_permission(testapp, anontestapp):
 
 
 @pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_update(testapp, url, execute_counter):
+def test_collection_put(testapp, url, execute_counter):
     from .sample_data import URL_COLLECTION
     collection = URL_COLLECTION[url]
     initial = collection[0]
     res = testapp.post_json(url, initial, status=201)
-    item_url = res.json['items'][0]
+    item_url = res.json['@graph'][0]
+    uuid = initial['uuid']
 
     with execute_counter.expect(2):
         res = testapp.get(item_url).json
 
-    del initial['_uuid']
+    del initial['uuid']
     for key in initial:
         assert res[key] == initial[key]
 
     update = collection[1].copy()
-    del update['_uuid']
-    testapp.post_json(item_url, update, status=200)
+    del update['uuid']
+    testapp.put_json(item_url, update, status=200)
 
-    with execute_counter.expect(2):
-        res = testapp.get(item_url).json
+    with execute_counter.expect(4):
+        res = testapp.get('/' + uuid).follow().json
 
     for key in update:
         assert res[key] == update[key]
 
 
-# TODO Add 2 tests for duplicate UUIDs (see sample_data.py)
+# Error due to test savepoint setup
+@pytest.mark.xfail
 def test_post_duplicate_uuid(testapp):
     from .sample_data import BAD_LABS
     testapp.post_json('/labs/', BAD_LABS[0], status=201)
     testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
-def test_post_repeated_uuid(testapp):
-    from .sample_data import LABS
-    from .sample_data import BAD_AWARDS
-    # these are in a funny order but not setting up relationships anyhoo
-    for lab in LABS:
-        testapp.post_json('/labs/', lab, status=201)
-
-    testapp.post_json('/awards/', BAD_AWARDS[0], status=201)
-    testapp.post_json('/awards/', BAD_AWARDS[0], status=409)
-
-
-def test_users_post(testapp, anontestapp):
-    from .sample_data import URL_COLLECTION
-    url = '/users/'
-    item = URL_COLLECTION[url][0]
-    testapp.post_json(url, item, status=201)
+def test_users_post(users, anontestapp):
+    email = users[0]['email']
     res = anontestapp.get('/@@testing-user',
-                          extra_environ={'REMOTE_USER': item['email']})
+                          extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
         'lab:2c334112-288e-4d45-9154-3f404c726daf',
-        'remoteuser:%s' % item['email'],
+        'remoteuser:%s' % email,
+        'submits_for:2c334112-288e-4d45-9154-3f404c726daf',
         'system.Authenticated',
         'system.Everyone',
         'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
     ]
 
 
-def test_users_view_details_admin(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/users/'
-    item = URL_COLLECTION[url][0]
-    res = testapp.post_json(url, item, status=201)
-    location = res.location
-    res = testapp.get(location)
-
+def test_users_view_details_admin(users, testapp):
+    res = testapp.get(users[0]['@id'])
     assert 'email' in res.json
 
 
-def test_users_view_basic_anon(testapp, anontestapp):
-    from .sample_data import URL_COLLECTION
-    url = '/users/'
-    item = URL_COLLECTION[url][0]
-    res = testapp.post_json(url, item, status=201)
-    location = res.location
-    res = anontestapp.get(location)
-
-    assert 'first_name' in res.json
+def test_users_view_basic_anon(users, anontestapp):
+    res = anontestapp.get(users[0]['@id'])
+    assert 'title' in res.json
     assert 'email' not in res.json
 
 

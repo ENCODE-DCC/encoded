@@ -1,10 +1,13 @@
-from cgi import escape
+from .json_script_escape import json_script_escape
 from pkg_resources import resource_string
 from pyramid.events import (
     NewRequest,
     subscriber,
 )
-from pyramid.httpexceptions import HTTPBadRequest
+from pyramid.httpexceptions import (
+    HTTPBadRequest,
+    HTTPMovedPermanently,
+)
 from pyramid.security import authenticated_userid
 from pyramid.threadlocal import (
     get_current_request,
@@ -55,7 +58,7 @@ class PageRenderer:
         request = system.get('request')
         if request is not None:
             request.response.content_type = 'text/html'
-        return self.page.format(json=escape(value))
+        return self.page.format(json=json_script_escape(value))
 
 
 class CSRFTokenError(HTTPBadRequest):
@@ -115,6 +118,18 @@ class PageOrJSON:
         if vary is not None:
             original_vary = request.response.vary or ()
             request.response.vary = original_vary + vary
+
+        if (request.method in ('GET', 'HEAD') and
+                request.response.status_int == 200 and
+                isinstance(value, dict) and
+                request.environ.get('encoded.canonical_redirect', True)):
+            url = value.get('@id', None)
+            if url is not None:
+                path = url.split('?', 1)[0]
+                if path != request.path:
+                    qs = request.query_string
+                    location = path + ('?' if qs else '') + qs
+                    raise HTTPMovedPermanently(location=location)
 
         format = request.environ.get('encoded.format', 'json')
         value = self.json_renderer(value, system)

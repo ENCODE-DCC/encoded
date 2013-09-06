@@ -3,17 +3,17 @@ requirejs.config({
 
     paths: {
         // Plugins
-        jsx: '../libs/jsx',
+        jsx: '../vendor/jsx',
 
         // Libraries
-        bootstrap: '../libs/bootstrap.min',
-        jquery: '../libs/jquery.min',
-        jsonform: '../libs/jsonform',
-        JSXTransformer: '../libs/JSXTransformer',
-        underscore: '../libs/underscore.min',
+        bootstrap: '../vendor/bootstrap.min',
+        jquery: '../vendor/jquery.min',
+        jsonform: '../vendor/jsonform',
+        JSXTransformer: '../vendor/JSXTransformer',
+        underscore: '../vendor/underscore.min',
         //persona: '../libs/include.orig',
         persona: 'https://login.persona.org/include',  // mozilla persona include, this should be fetched remotely
-        react: '../libs/react',
+        react: '../vendor/react',
         stickyheader: '../libs/sticky_header',
         'class': '../libs/class',
         registry: '../libs/registry',

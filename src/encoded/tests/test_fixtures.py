@@ -15,7 +15,7 @@ def minitestdata(app, data_fixture_manager):
     from .sample_data import URL_COLLECTION
     for url in ['/organisms/']:  # , '/sources/', '/users/']:
         collection = URL_COLLECTION[url]
-        for item in collection:
+        for item in collection[:1]:
             testapp.post_json(url, item, status=201)
 
 
@@ -45,7 +45,7 @@ def test_fixtures1(testapp):
     """
     url = '/organisms/'
     res = testapp.get(url)
-    items = res.json['items']
+    items = res.json['@graph']
     count1 = len(items)
     assert len(items)
 
@@ -55,16 +55,15 @@ def test_fixtures1(testapp):
     assert res.json['errors']
 
     res = testapp.get(url)
-    items = res.json['items']
+    items = res.json['@graph']
     assert len(items)
 
     from .sample_data import URL_COLLECTION
-    item = URL_COLLECTION[url][0].copy()
-    item['_uuid'] = '91cddd2c-549b-45f4-8937-82a6a11cca1e'
+    item = URL_COLLECTION[url][1]
     testapp.post_json(url, item, status=201)
 
     res = testapp.get(url)
-    items = res.json['items']
+    items = res.json['@graph']
     count2 = len(items)
     assert count2 == count1 + 1
 
@@ -74,12 +73,12 @@ def test_fixtures1(testapp):
     assert res.json['errors']
 
     res = testapp.get(url)
-    items = res.json['items']
+    items = res.json['@graph']
     assert len(items) == count2
 
 
 def test_fixtures2(minitestdata2, testapp):
     # http://stackoverflow.com/questions/15775601/mutually-exclusive-fixtures
     res = testapp.get('/organisms/')
-    items = res.json['items']
+    items = res.json['@graph']
     assert len(items)
