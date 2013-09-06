@@ -268,7 +268,7 @@ function (experiment, React, globals, dbxref) {
                                     : null}
                                 </td>
                                 <td>{file.submitted_by.title}</td>
-                                <td>{file.date_passed_validation}</td>
+                                <td>{file.date_created}</td>
                                 <td><a href={href} download><i class="icon-download-alt"></i> Download</a></td>
                             </tr>
                         );
