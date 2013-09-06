@@ -62,7 +62,7 @@ def user_details_view(context, request):
 def user_basic_view(context, request):
     properties = item_view(context, request)
     filtered = {}
-    for key in ['lab', 'first_name', 'last_name']:
+    for key in ['lab', 'title']:
         try:
             filtered[key] = properties[key]
         except KeyError:
