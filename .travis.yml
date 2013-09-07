@@ -32,5 +32,5 @@ script: |-
   --engine-url postgresql:///encoded \
   --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
   --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
-  --browser-arg-int wait_time 10
+  --browser-arg-int wait_time 10 \
   --browser 'Chrome'
