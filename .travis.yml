@@ -27,10 +27,22 @@ before_script:
   - sudo -u postgres createuser $USER
   - sudo -u postgres createdb --owner=$USER encoded
   - "curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash"
-script: |-
-  bin/test -v -v --timeout=200 --remote-webdriver \
-  --engine-url postgresql:///encoded \
-  --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
-  --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
-  --browser-arg-int wait_time 10 \
+script: >
+  bin/test -v -v --timeout=200 --remote-webdriver
+  --engine-url postgresql:///encoded
+  --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub"
+  --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER"
+  --browser-arg-int build  "$TRAVIS_BUILD_NUMBER"
+  --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH"
+  --browser-arg-int wait_time 10
   --browser 'Chrome'
+after_success:
+  - export SAUCE_JOB_ID=`grep -m 1 /session/ sauce_connect.log | cut -d / -f 7`
+  - >
+    curl -H "Content-Type:text/json" -s -X PUT -d '{"passed": true}'
+    "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID"
+after_failure:
+  - export SAUCE_JOB_ID=`grep -m 1 /session/ sauce_connect.log | cut -d / -f 7`
+  - >
+    curl -H "Content-Type:text/json" -s -X PUT -d '{"passed": false}'
+    "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID"
