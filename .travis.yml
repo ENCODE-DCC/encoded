@@ -54,4 +54,4 @@ after_script:
   - >
     curl -H "Content-Type:text/json" -s -X PUT -d "{\"passed\": $SAUCE_PASSED}"
     "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID"
-  - echo "Sauce test page https://saucelabs.com/tests/$SAUCE_JOB_ID
+  - echo "Sauce test page https://saucelabs.com/tests/$SAUCE_JOB_ID"
