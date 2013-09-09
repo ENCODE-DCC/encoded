@@ -167,8 +167,10 @@ function (collection, $, class_, React, globals) {
                     if (column == '@id') {
                         factory = globals.listing_titles.lookup(item);
                         value = factory({context: item});
+                    } else if (value == null) {
+                        value = '';
                     } else if (value instanceof Array) {
-                        value = value.length;
+                        value = value;
                     } else if (value['@type']) {
                         factory = globals.listing_titles.lookup(value);
                         value = factory({context: value});
