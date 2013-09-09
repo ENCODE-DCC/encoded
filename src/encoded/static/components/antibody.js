@@ -143,7 +143,7 @@ function (antibody, React, URI, globals) {
                                     <dd>{context.caption}</dd>
 
                                     <dt>Submitted By</dt>
-                                    <dd>{context.submitted_by.first_name}{' '}{context.submitted_by.last_name}</dd>
+                                    <dd>{context.submitted_by.title}</dd>
 
                                     <dt>Lab</dt>
                                     <dd>{context.lab.title}</dd>

@@ -16,6 +16,7 @@ function (experiment, React, globals, dbxref) {
     };
 
 
+
     var Experiment = experiment.Experiment = React.createClass({
         render: function() {
             var context = this.props.context;
@@ -41,7 +42,7 @@ function (experiment, React, globals, dbxref) {
                 antibody_accessions.push(antibodies[key].accession);
             }
             // XXX This makes no sense.
-            var control = context.possible_controls[0];
+            //var control = context.possible_controls[0];
             return (
                 <div class={itemClass}>
                     <header class="row">
@@ -61,14 +62,34 @@ function (experiment, React, globals, dbxref) {
                             <dt hidden={!context.description}>Description</dt>
                             <dd hidden={!context.description}>{context.description}</dd>
 
-                            {context.target ? <dt>Target</dt> : null}
-                            {context.target ? <dd>{context.target.label}</dd> : null}
-
                             <dt>Biosample</dt>
                             <dd>{context.biosample_term_name}</dd>
 
                             <dt>Biosample Type</dt>
                             <dd>{context.biosample_type}</dd>
+                            
+                            {context.target ? <dt>Target</dt> : null}
+                            {context.target ? <dd>{context.target.label}</dd> : null}
+                            
+                            {antibody_accessions.length ? <dt>Antibody</dt> : null}
+                            {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
+
+							{context.possible_controls ? <dt>Controls</dt> : null}
+							{context.possible_controls ?
+								<dd>
+									<ul>
+										{context.possible_controls.map(function (control) {
+											return (
+									            <li key={control['@id']}>
+													<a href={control['@id']}>
+														{control.accession}
+													</a>
+												</li>
+											);
+										})}
+									</ul>
+								</dd>
+							: null}
 
                             <dt hidden={!context.encode2_dbxrefs.length}>ENCODE2 ID</dt>
                             <dd hidden={!context.encode2_dbxrefs.length}>
@@ -81,8 +102,6 @@ function (experiment, React, globals, dbxref) {
                             <dt>RFA</dt>
                             <dd>{context.award.rfa}</dd>
 
-                            {antibody_accessions.length ? <dt>Antibody</dt> : null}
-                            {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
                         </dl>
                     </div>
 
@@ -96,7 +115,7 @@ function (experiment, React, globals, dbxref) {
 
                     {replicates.map(function (replicate, index) {
                         return (
-                            <Replicate control={control} replicate={replicate} key={index} />
+                            <Replicate replicate={replicate} key={index} />
                         );
                     })}
 
@@ -107,7 +126,6 @@ function (experiment, React, globals, dbxref) {
     });
 
     globals.content_views.register(Experiment, 'experiment');
-
 
     var BiosamplesUsed = experiment.BiosamplesUsed = function (props) {
         var replicates = props.replicates;
@@ -193,7 +211,6 @@ function (experiment, React, globals, dbxref) {
 
     var Replicate = experiment.Replicate = function (props) {
         var replicate = props.replicate;
-        var control = props.control;
         var library = replicate.library;
         var biosample = library.biosample;
         return (
@@ -204,23 +221,13 @@ function (experiment, React, globals, dbxref) {
                     <dd>{replicate.technical_replicate_number}</dd>
 
                     <dt>Library</dt>
-                    <dd>{library.accession} - ({library.title})</dd>
-
-                    {control ? <dt>Control</dt> : null}
-                    {control ?
-                        <dd>
-                            <a href={control['@id']}>
-                                {control.accession}
-                            </a>
-                        </dd>
-                    : null}
-
+                    <dd>{library.accession}</dd>
 
                     <dt>Biosample</dt>
                     <dd>
                         <a href={biosample['@id']}>
                             {biosample.accession}
-                        </a>
+                        </a>{' '}-{' '}{biosample.description}
                     </dd>
                 </dl>
             </div>
@@ -261,7 +268,7 @@ function (experiment, React, globals, dbxref) {
                                     : null}
                                 </td>
                                 <td>{file.submitted_by.title}</td>
-                                <td>{file.date_passed_validation}</td>
+                                <td>{file.date_created}</td>
                                 <td><a href={href} download><i class="icon-download-alt"></i> Download</a></td>
                             </tr>
                         );

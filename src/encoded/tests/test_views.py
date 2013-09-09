@@ -192,7 +192,7 @@ def test_users_view_details_admin(users, testapp):
 
 def test_users_view_basic_anon(users, anontestapp):
     res = anontestapp.get(users[0]['@id'])
-    assert 'first_name' in res.json
+    assert 'title' in res.json
     assert 'email' not in res.json
 
 

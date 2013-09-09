@@ -270,7 +270,6 @@ class Target(Collection):
         ('label', 'Target'),
         ('organism.name', 'Species'),
         ('dbxref', 'External Resources'),
-        ('award.rfa', 'RFA'),
     ])
 
     class Item(Collection.Item):
@@ -292,7 +291,7 @@ class Target(Collection):
         @property
         def __name__(self):
             ns = self.template_namespace()
-            return '{label}-{organism_name}'.format(**ns)
+            return u'{label}-{organism_name}'.format(**ns)
 
 
 # The following should really be child collections.
@@ -410,7 +409,7 @@ class Experiments(Collection):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    item_embedded = set(['files', 'replicates', 'submitted_by', 'lab', 'award', 'controls', 'target'])
+    item_embedded = set(['files', 'replicates', 'submitted_by', 'lab', 'award', 'possible_controls', 'target'])
     item_rev = {
         'replicates': ('replicate', 'experiment'),
     }

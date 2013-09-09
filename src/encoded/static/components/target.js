@@ -17,7 +17,7 @@ function (target, React, globals, dbxref) {
                     <dt>Target Gene</dt>
                     <dd>{context.gene_name}</dd>
 
-                    <dt>DB cross references</dt>
+                    <dt>External Resources</dt>
                     <dd>
                         {context.dbxref.length ? 
                             <DbxrefList values={context.dbxref} />

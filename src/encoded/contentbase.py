@@ -376,6 +376,7 @@ class Item(object):
             {'$value': '{item_type}', '$templated': True},
             {'$value': '{base}', '$repeat': 'base base_types', '$templated': True},
         ],
+        'uuid': {'$value': '{uuid}', '$templated': True},
     }
 
     def __init__(self, collection, model):

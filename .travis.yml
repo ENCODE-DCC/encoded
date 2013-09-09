@@ -1,8 +1,8 @@
 language: python
 python:
   - "2.7"
-env: 
-  global: 
+env:
+  global:
   - secure: |-
       CMKR45ew7fJWfF/rvaFkV4gNhWRDdM4y8wlj5p1qrEzJ214SENg03fjHJr6B
       cvNf7vanTJKnVxpxUK9kH5Tn/uaJZtnbnJYehZ4YKwzbJQEAEJpWvCk4C54O
@@ -11,7 +11,21 @@ env:
       WmE7J5Vxheir50Heuji0JVpEmoYH5iPkLMQFgnocY1UspO1ka1+8M7SOgsUH
       SK5yLKZ/6oJyhlySqqTmCfYy3y/WXRNG76dy1kjVj/DEbx+n6Yu0nElw84ED
       ZR5KkpFMaKLA505soY+4lJc4jRl5u0qwCB1Ad3UgTgfkI4QSaGM=
+  - CONNECT_URL=http://saucelabs.com/downloads/Sauce-Connect-latest.zip
+  - CONNECT_DOWNLOAD=Sauce_Connect.zip
+  - CONNECT_LOG=sauce_connect.log
+  - READY_FILE=connect.ready
+services:
+  - elasticsearch
 before_install:
+  - curl $CONNECT_URL > $CONNECT_DOWNLOAD
+  - unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
+  - >
+    java -jar Sauce-Connect.jar --readyfile $READY_FILE
+    --logfile $CONNECT_LOG
+    --tunnel-identifier $TRAVIS_JOB_NUMBER
+    $SAUCE_USERNAME $SAUCE_ACCESS_KEY &
+  - 
   - pip install -U setuptools
   - sudo apt-get -qq --purge remove postgresql postgresql-9.1
   - source /etc/lsb-release
@@ -26,12 +40,20 @@ install:
 before_script:
   - sudo -u postgres createuser $USER
   - sudo -u postgres createdb --owner=$USER encoded
-  - "curl https://gist.github.com/santiycr/5139565/raw/sauce_connect_setup.sh | bash"
-script: |-
-  bin/test -v -v --timeout=200 --remote-webdriver \
-  --engine-url postgresql:///encoded \
-  --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub" \
-  --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER" \
+  - while [ ! -f $READY_FILE ]; do sleep .5; done
+script: >
+  bin/test -v -v --timeout=200 --remote-webdriver
+  --engine-url postgresql:///encoded
+  --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub"
+  --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER"
+  --browser-arg-int build  "$TRAVIS_BUILD_NUMBER"
+  --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT"
   --browser-arg-int wait_time 10
-services:
-  - elasticsearch
+  --browser 'Chrome'
+after_script:
+  - export SAUCE_JOB_ID=`grep -m 1 /session/ $CONNECT_LOG | cut -d / -f 7`
+  - export SAUCE_PASSED=`((TRAVIS_TEST_RESULT == 0)) && echo true || echo false`
+  - >
+    curl -H "Content-Type:text/json" -s -X PUT -d "{\"passed\": $SAUCE_PASSED}"
+    "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@saucelabs.com/rest/v1/$SAUCE_USERNAME/jobs/$SAUCE_JOB_ID"
+  - echo "Sauce test page https://saucelabs.com/tests/$SAUCE_JOB_ID"
