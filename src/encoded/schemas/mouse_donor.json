@@ -1,6 +1,6 @@
 {
     "title": "Mouse Donor",
-    "description": "Schema for submitting a mouse donor",
+    "description": "Schema for submitting a mouse donor.",
     "id": "/profiles/mouse_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",

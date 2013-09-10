@@ -1,6 +1,6 @@
 {
     "title": "Donor",
-    "description": "Base schema for donors",
+    "description": "Base schema for donors.",
     "id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
