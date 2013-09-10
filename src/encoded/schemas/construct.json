@@ -1,6 +1,6 @@
 {
     "title": "DNA Construct",
-    "description": "Schema for submitting an expression or targeting vector stably or transiently transfected,",
+    "description": "Schema for submitting an expression or targeting vector stably or transiently transfected.",
     "id": "/profiles/construct.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
