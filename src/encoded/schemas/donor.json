@@ -1,8 +1,8 @@
 {
-    "title": "ENCODE Biosample Donor",
+    "title": "Donor",
+    "description": "Base schema for donors",
     "id": "/profiles/donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Base schema for ENCODE biosample donors",
     "type": "object",
     "required": [ "award", "lab", "organism"],
     "mixinProperties": [
@@ -19,10 +19,9 @@
             "hidden comment": "Bump the default in the subclasses."
         },
         "sex": {
-            "default": "unknown",
-            "description": "Sex (Gender) of the donor",
-            "title": "Donor Sex",
+            "title": "Sex",
             "type": "string",
+            "default": "unknown",
             "enum": [
                 "male",
                 "female",
@@ -31,63 +30,70 @@
             ]
         },
         "parents": {
-            "default": [],
-            "description": "List of donors related as (literal) parent to this donor",
             "title": "Parents",
+            "description": "Donor IDs of biological parents, if known.",
             "type":  "array",
+            "default": [],
             "items": {
-                "description": "Parent Donor",
-                "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Parent",
+                "description": "A donor ID of a biological parent, if known.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "donor"
             }
         },
         "children": {
-            "default": [],
-            "description": "List of donors related as (literal) children to this donor",
             "title": "Children",
+            "description": "Donors that genetic material was supplied to.",
             "type":  "array",
+            "default": [],
+	"XXXnote": "Can be removed since we have parents.",
             "items": {
-                "description": "Child Donor",
-                "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Child",
+                "description": "A donor that genetic material was supplied to.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "donor"
             }
         },
         "siblings": {
-            "default": [],
-            "description": "List of donors related as (literal) siblings to this donor",
             "title": "Siblings",
+            "description": "Donors that have at least one parent in common.",
             "type":  "array",
+            "default": [],
             "items": {
-                "description": "Sibling Donor",
-                "comment": "For automated submission supply an ENCODE donor accession or uuid",
-                "title": "Sibling Donor",
+                "title": "Sibling",
+                "description": "A donors that has at least one parent in common.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "donor"
             }
         },
         "fraternal_twin": {
-            "description": "The donor's fraternal twin",
-            "comment": "For automated submission supply an ENCODE donor accession or uuid",
             "title": "Fraternal Twin",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "donor"
         },
         "identical_twin": {
-            "description": "The donor's identical twin",
-            "comment": "For automated submission supply an ENCODE donor accession or uuid",
             "title": "Identical Twin",
+            "description": "A donor that have identical genetic material.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "donor"
         },
         "organism": {
-            "description": "Organism of the donor creature",
-            "title": "Donor organism",
+            "title": "Organism",
+            "description": "Organism of the donor.",
+            "comment": "Do not submit, value is assigned by the object.",
             "type": "string",
             "linkTo": "organism"
+        },
+        "url": {
+            "title": "URL",
+            "description": "An external resource with additional information about the donor.",
+            "type": "string",
+            "format": "uri"
         }
     }
 }
