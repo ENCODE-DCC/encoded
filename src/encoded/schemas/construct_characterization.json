@@ -1,8 +1,8 @@
 {
-    "title": "ENCODE Construct Characterization",
+    "title": "DNA Construct Characterization",
+    "description": "Schema for submitting DNA construct characterization data",
     "id": "/profiles/construct_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting construct characterization data",
     "type": "object",
     "required": [ "award", "lab", "characterizes" ],
     "additionalProperties": false,
@@ -20,6 +20,7 @@
         },
         "characterizes": {
             "title": "Construct characterized",
+            "comment": "See contstruct.json for available identifiers.",
             "linkTo": "construct"
         }
     }
