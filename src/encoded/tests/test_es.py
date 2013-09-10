@@ -68,16 +68,11 @@ def test_data_index(workbook, testapp):
     mapper = connection.put_mapping(index, 'basic', mapping)
     assert mapper == {'acknowledged': True, 'ok': True}
 
-    counter = 0
     for item in items:
         item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
         document_id = str(item_json.json['@id'])[-37:-1]
         document = item_json.json
         connection.index(index, 'basic', document, document_id)
-        counter = counter + 1
-        if counter % 50 == 0:
-            # flushing ElasticSearch(JDK) memory after indexing 50 docs
-            connection.flush(index)
 
     connection.refresh(index)
     count = connection.count('*:*', index=index)
