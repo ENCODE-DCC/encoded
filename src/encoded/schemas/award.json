@@ -1,9 +1,9 @@
 {
-    "title": "Award (Grant)",
+    "title": "Grant",
     "id": "/profiles/award.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an Award (Grant) for the ENCODE Project",
     "required": [ "name"],
+    "identifyingProperties": ["uuid", "name", "title"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -14,58 +14,56 @@
             "default": "1"
         },
         "title": {
-            "description": "The long name of the award/grant - from NIH database",
-            "title": "Award Title",
+            "title": "Name",
+            "description": "The grant name from the NIH database, if applicable.",
             "type": "string"
         },
         "name": {
-            "description": "Official NIH reference number for the award",
-            "title": "Award Name (NIH reference number)",
+            "title": "Number",
+            "description": "The official grant number from the NIH database, if applicable",
             "type": "string",
             "pattern": "^[A-Za-z0-9\\-]+$"
        },
         "description": {
-            "default": "",
-            "description": "Long description of the award.",
-            "title": "Award Description",
-            "type": "string"
+            "title": "Description",
+            "type": "string",
+            "default": ""
         },
         "start_date": {
-            "description": "Start date for the award",
             "title": "Start Date",
             "type": "string",
             "format": "date"
         },
         "end_date": {
-            "description": "End date for the award",
             "title": "End Date",
             "type": "string",
             "format": "date"
         },
         "url": {
-            "default": "",
-            "description": "URL for the award or grant",
-            "title": "Award URL",
+            "title": "URL",
+            "description": "An external resource with additional information about the grant.",
             "type": "string",
+            "default": "",
             "format": "uri"
         },
         "pi": {
-            "description": "Principle Investigator of the award",
-            "comment": "For automatic submission submit the email, first & last name, or collegue uuid for the PI",
             "title": "P.I.",
+            "description": "Principle Investigator of the grant.",
+            "comment": "See user.json for available identifiers.",
             "type": "string",
             "linkTo": "user"
         },
         "rfa": {
-            "default": "",
-            "description": "Project RFA",
-            "title": "RFA",
-            "type": "string"
+            "title": "Phase",
+            "description": "The name of the bioproject phase.",
+            "type": "string",
+            "default": ""
         },
         "project": {
-            "default": "",
-            "title": "Project",
-            "type": "string"
+            "title": "BioProject",
+            "description": "The collection of biological data related to a single initiative, originating from a consortium.",
+            "type": "string",
+            "default": ""
         }
     }
  }
