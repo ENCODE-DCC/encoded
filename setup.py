@@ -53,6 +53,7 @@ setup(
         [console_scripts]
         extract-test-data = encoded.commands.extract_test_data:main
         import-data = encoded.commands.import_data:main
+        read-edw-fileinfo = encoded.commands.read_edw_fileinfo:main
 
         [paste.app_factory]
         main = encoded:main
