@@ -1,6 +1,6 @@
 {
     "title": "DNA Construct Characterization",
-    "description": "Schema for submitting DNA construct characterization data",
+    "description": "Schema for submitting DNA construct characterization data.",
     "id": "/profiles/construct_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
