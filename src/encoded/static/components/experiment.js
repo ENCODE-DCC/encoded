@@ -179,7 +179,7 @@ function (experiment, React, globals, dbxref) {
         var library = replicate.library;
         var platform = replicate.platform;
         var titles = {
-            nucleic_acid_type: 'Nucleic Acid Type',
+            nucleic_acid_term_name: 'Nucleic Acid Type',
             nucleic_acid_starting_quantity: 'NA Starting Quantity',
             lysis_method: 'Lysis Method',
             extraction_method: 'Extraction Method',
@@ -194,9 +194,9 @@ function (experiment, React, globals, dbxref) {
                 children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
             }
         }
-        if (platform.description) {
+        if (platform.title) {
             children.push(<dt key="dt-platform">Platform</dt>);
-            children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.description}</a></dd>);
+            children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.title}</a></dd>);
         }
         return (
             <div>
