@@ -423,7 +423,7 @@ class Experiments(Collection):
         ('replicates.length', 'Biological Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
-        ('award.rfa', 'RFA'),
+        ('award.rfa', 'Project'),
     ])
 
 

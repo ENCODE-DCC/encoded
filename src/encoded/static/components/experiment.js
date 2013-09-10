@@ -99,7 +99,7 @@ function (experiment, React, globals, dbxref) {
                             <dt>Submitted by</dt>
                             <dd>{context.submitted_by.title}</dd>
 
-                            <dt>RFA</dt>
+                            <dt>Project</dt>
                             <dd>{context.award.rfa}</dd>
 
                         </dl>
