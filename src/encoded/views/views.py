@@ -201,7 +201,7 @@ class ConstructCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        pass
+        embedded = ['submitted_by', 'lab', 'award']
 
 
 @location('documents')
@@ -254,7 +254,7 @@ class BiosampleCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        pass
+        embedded = ['submitted_by', 'lab', 'award']
 
 
 @location('targets')
@@ -305,7 +305,7 @@ class AntibodyCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        embedded = set(['antibody', 'target', 'submitted_by', 'lab', 'award'])
+        embedded = ['submitted_by', 'lab', 'award']
 
 
 @location('antibodies')
@@ -451,7 +451,7 @@ class RNAiCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        pass
+        embedded = ['submitted_by', 'lab', 'award']
 
 
 @location('dataset')
