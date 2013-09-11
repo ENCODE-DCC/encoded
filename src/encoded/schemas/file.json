@@ -108,7 +108,7 @@
             "default": "CURRENT",
             "enum" : [
                 "CURRENT",
-                "DELETED"
+                "OBSOLETE"
             ]
         }
     }
