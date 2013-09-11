@@ -19,7 +19,7 @@
             "default": "1"
         },
         "characterizes": {
-            "title": "Construct characterized",
+            "title": "Construct Characterized",
             "comment": "See contstruct.json for available identifiers.",
             "linkTo": "construct"
         }
