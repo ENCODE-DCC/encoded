@@ -51,7 +51,7 @@
             "items": {
                 "title": "RNAi Vector",
                 "description": "RNAi vector stably or transiently transfected.",
-                "comment": "See rnai.json for available identifers.",
+                "comment": "See rnai.json for available identifiers.",
                 "type":  "string",
                 "linkTo": "rnai"
             }
@@ -62,7 +62,7 @@
 	"default": [],
             "items": {
                 "title": "Treatment",
-                "comment": "See treatment.json for available identifers.",
+                "comment": "See treatment.json for available identifiers.",
 	    "type": "string",
                 "linkTo": "treatment"
             }
