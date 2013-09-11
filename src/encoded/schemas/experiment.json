@@ -72,7 +72,7 @@
             "items": {
                 "title": "Previous ENCODE ID",
                 "type":  "string",
-                "pattern": "^wgEncode\\d+$"
+                "pattern": "^wgEncodeE(H|M)\\d+$"
             }
         },
         "documents": {
