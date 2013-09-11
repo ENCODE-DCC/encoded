@@ -2,7 +2,7 @@
     "title": "Mixin properties",
     "schema_version": {
         "schema_version": {
-            "comment": "Schema version indicates generation of schema used to save version to to enable upgrade steps to work. Individual schemas should set the default.",
+            "comment":  "Do not submit, value is assigned by the server. The version of the JSON schema that the server uses to validate the object. Schema version indicates generation of schema used to save version to to enable upgrade steps to work. Individual schemas should set the default.",
             "type": "string",
             "default": "1",
             "pattern": "^\\d+(\\.\\d+)*$",
@@ -12,7 +12,6 @@
     "uuid": {
         "uuid": {
             "title": "UUID",
-            "description": "",
             "type": "string",
             "format": "uuid",
             "permission": "import_items",
@@ -21,23 +20,23 @@
     },
     "accession": {
         "accession": {
-            "description": "ENCODE DCC assigned accession",
-            "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Accession",
+            "description": "A unique identifier to be used to reference the object.",
+            "comment": "Only admins are allowed to set or update this value.",
             "type": "string",
             "format": "accession",
             "permission": "import_items"
         },
         "alternate_accessions": {
-            "default": [],
-            "description": "Accessions previously assigned to objects that have been merged with this one.",
-            "comments": "Not to be submitted or updated by non-admin users.",
             "title": "Alternate Accessions",
+            "description": "Accessions previously assigned to objects that have been merged with this object.",
             "type": "array",
+            "default": [],
             "permission": "import_items",
             "items": {
-                "description": "An alternate accession",
-                "title": "Alt. Accession",
+                "title": "Alternate Accession",
+                "description": "An accession previously assigned to an object that has been merged with this object.",
+                "comment":"Only admins are allowed to set or update this value.",
                 "type": "string",
                 "format": "accession"
             }
@@ -45,24 +44,24 @@
     },
     "aliases": {
         "aliases": {
+            "title": "Lab Aliases",
+            "description": "List lab specific identifiers to reference an object.",
+            "type": "array",
             "default": [],
-            "description": "List of lab IDs or cross-references",
             "items": {
-                "description": "List of Database IDs",
-                "comments": "please use LABNAME:DBID",
-                "title": "Database IDs",
+                "title": "Lab Alias",
+                "description": "A lab specific identifier to reference an object.",
+                "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
                 "type":  "string",
                 "pattern": "^\\S+:\\S+"
-            },
-            "title": "Lab Aliases",
-            "type": "array"
+            }
         }
     },
     "standard_status": {
         "status": {
-            "default": "CURRENT",
             "title": "Status",
             "type": "string",
+            "default": "CURRENT",
             "enum" : [
                 "CURRENT",
                 "DELETED"
@@ -71,7 +70,6 @@
     },
     "submitted": {
         "date_created": {
-            "description": "",
             "title": "Date Created",
             "type": "string",
             "format": "date",
@@ -79,9 +77,8 @@
             "permission": "import_items"
         },
         "submitted_by": {
-            "description": "",
-            "comment": "For automatic submission submit the email or user uuid for the submitting user",
             "title": "Submitted By",
+            "comment": "See user.son for list of available identifiers.",
             "type": "string",
             "linkTo": "user",
             "serverDefault": "userid",
@@ -90,40 +87,36 @@
     },
     "attribution": {
         "lab": {
-            "description": "Submitting Lab",
-            "comment": "Automatic submitters can supply a Lab UUID or Name",
             "title": "Lab",
+             "description": "Lab associated with the submission.",
+            "comment": "See lab.json for list of available identifiers.",
             "type": "string",
             "linkTo": "lab"
         },
         "award": {
-            "description": "Award (Grant) this submission is registered under",
-            "comment": "Automatic submitters can supply an Award UUID, name, or number",
-            "title": "Award Name",
+            "title": "Grant",
+            "description": "Grant associated with the submission.",
+            "comment": "See award.json for list of available identifiers.",
             "type": "string",
             "linkTo": "award"
         }
      },
      "attachment": {
         "attachment": {
-            "description": "Document file metadata",
             "title": "Document File Metadata",
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "download": {
-                    "description": "The filename that will appear when downloaded from the web",
-                    "title": "File Download Name",
+                    "title": "File Name",
                     "type": "string"
                 },
                 "href": {
-                    "description": "Internal webapp URL for document file",
-                    "title": "href",
+                    "comment": "Internal webapp URL for document file",
                     "type": "string"
                 },
                 "type": {
-                    "description": "File MIME-type",
-                    "title": "MIME-type",
+                    "title": "MIME Type",
                     "enum": [
                         "application/pdf",
                         "text/plain",
@@ -135,21 +128,20 @@
                     ]
                 },
                 "md5sum": {
-                    "description": "The MD5 sum of the doc, calculated upon upload",
-                    "title": "MD5 Sum",
+                    "title": "MD5sum",
                     "type": "string",
                     "format": "md5sum"
                 },
                 "size": {
-                    "title": "File size (bytes)",
+                    "title": "File Size",
                     "type": "integer"
                 },
                 "width": {
-                    "title": "Image width (pixels)",
+                    "title": "Image Width",
                     "type": "integer"
                 },
                 "height": {
-                    "title": "Image height (pixels)",
+                    "title": "Image Height",
                     "type": "integer"
                 }
             }
@@ -157,20 +149,20 @@
     },
     "biosample_classification": {
         "biosample_term_id": {
-            "description": "Ontology term ID describing biosample type",
-            "comment": "Valid ontologies for biosamples are: Uberon, EFO, BTO, or CL.  NTR is a new term request from ENCODE DCC.",
             "title": "Ontology ID",
+            "description": "Ontology identifier describing biosample.",
+            "comment": "NTR is a new term request identifier provided by the DCC.",
             "type": "string",
             "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR):[0-9]{2,8}$"
         },
         "biosample_term_name": {
-            "description": "Ontology term describing biosample type",
             "title": "Ontology Term",
+            "description": "Ontology term describing biosample.",
             "type":  "string"
         },
         "biosample_type": {
-            "description": "The sub-type of the biosample",
             "title": "Biosample Type",
+            "description": "The categorization of the biosample.",
             "type": "string",
             "enum" : [
                 "primary cell line",
@@ -180,5 +172,28 @@
                 "induced pluripotent stem cell line"
             ]
         }
+    },
+    "product_id": {
+            "product_id": {
+                "title": "Product ID",
+                "description": "The product identifier provided by the originating lab or vendor.",
+                "type": "string"
+            }
+    },
+    "lot_id": {
+            "lot_id":{
+	   "title": "Lot ID",
+	   "description": "The lot identifier provided by the originating lab or vendor.",
+	   "type": "string"
+            }
+    },
+    "source": {
+            "source": {
+	   "title": "Source",
+	   "description": "The originating lab or vendor.",
+	   "comment": "See source.json for available identifiers.",
+	   "type": "string",
+	   "linkTo": "source"
+            }
     }
 }
