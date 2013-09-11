@@ -64,7 +64,7 @@
                 "comment": "See document.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "document"
-            },
+            }
         },
         "encode2_dbxrefs": {
             "title": "Previous ENCODE IDs",
@@ -73,7 +73,7 @@
             "items": {
                 "title": "Previous ENCODE ID",
                 "type":  "string"
-            },
+            }
         },
         "references": {
             "title": "References",
