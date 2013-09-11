@@ -242,20 +242,20 @@ function (biosample, React, URI, globals) {
             var context = this.props.context;
             return (
                 <dl class="key-value">
-                    <dt>Vector</dt>
-                    <dd>{context.vector_backbone_name}</dd>
+                    {context.vector_backbone_name ? <dt>Vector</dt> : null}
+                    {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}
 
-                    <dt>Construct Type</dt>
-                    <dd>{context.construct_type}</dd>
+                    {context.construct_type ? <dt>Construct Type</dt> : null}
+                    {context.construct_type ? <dd>{context.construct_type}</dd> : null}
 
-                    <dt>Description</dt>
-                    <dd>{context.description}</dd>
+                   	{context.description ?  <dt>Description</dt> : null}
+                    {context.description ? <dd>{context.description}</dd> : null}
 
-                    <dt>Source</dt>
-                    <dd>{context.source.title}</dd>
+                    {context.source.title ? <dt>Source</dt> : null}
+                    {context.source.title ? <dd>{context.source.title}</dd> : null}
 
-                    <dt>Product ID</dt>
-                    <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                    {context.product_id ? <dt>Product ID</dt> : null}
+                    {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
 
                 </dl>
             );
