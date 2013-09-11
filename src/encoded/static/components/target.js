@@ -12,7 +12,7 @@ function (target, React, globals, dbxref) {
             return (
                 <dl class={itemClass}>
                     <dt>Target name</dt>
-                    <dd>{context.label}</dd>
+                    <dd class="no-cap">{context.label}</dd>
 
                     <dt>Target Gene</dt>
                     <dd>{context.gene_name}</dd>
