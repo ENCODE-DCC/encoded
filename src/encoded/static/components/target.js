@@ -17,13 +17,11 @@ function (target, React, globals, dbxref) {
 
                     <dt>Target Gene</dt>
                     <dd><a href={globals.dbxref_prefix_map.HGNC + context.gene_name}>{context.gene_name}</a></dd>
-                    
-                    
 
                     <dt>External Resources</dt>
                     <dd>
                         {context.dbxref.length ? 
-                            <DbxrefList values={context.dbxref} />
+                            <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
                         : <em>None submitted</em> }
                     </dd>
 
