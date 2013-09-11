@@ -24,8 +24,6 @@ function (target, React, globals, dbxref) {
                         : <em>None submitted</em> }
                     </dd>
 
-                    <dt>Species</dt>
-                    <dd>{context.organism.name}</dd>
                 </dl>
             );
         }
