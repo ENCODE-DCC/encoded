@@ -184,7 +184,7 @@ class Construct(Collection):
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
     }
-    item_embedded = set(['source', 'documents', 'characterizations'])
+    item_embedded = set(['source', 'documents', 'characterizations', 'target'])
     # item_keys = ['vector_name']
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
