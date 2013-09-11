@@ -25,7 +25,7 @@ function (biosample, React, URI, globals) {
                             <ul class="breadcrumb">
                                 <li>Biosamples <span class="divider">/</span></li>
                                 <li>{context.biosample_type}{' '}<span class="divider">/</span></li>{' '}
-                                <li class="active">{context.organism.name}</li>
+                                <li class="active">{context.donor.organism.name}</li>
                             </ul>
                             <h2>{context.accession}{' / '}<span class="cap-me-once">{context.biosample_type}</span></h2>
                         </div>
@@ -64,13 +64,14 @@ function (biosample, React, URI, globals) {
 
                             <dt hidden={!context.note}>Note</dt>
                             <dd hidden={!context.note}>{context.note}</dd>
+
                         </dl>
 
                         {context.donor ?
                             <section>
                                 <hr />
                                 <h4>Donor Information</h4>
-                                <Panel context={context.donor} />
+                                <Panel context={context.donor} biosample={context} />
                             </section>
                         : null}
 
@@ -141,22 +142,26 @@ function (biosample, React, URI, globals) {
     var HumanDonor = biosample.HumanDonor = React.createClass({
         render: function() {
             var context = this.props.context;
+            var biosample = this.props.biosample;
             return (
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
+                    
+                    {context.organism.name ? <dt>Species</dt> : null}
+                    {context.organism.name ? <dd>{context.organism.name}</dd> : null}
 
-                    <dt>Life stage</dt>
-                    <dd>{context.life_stage}</dd>
+                    {biosample.life_stage ? <dt>Life stage</dt> : null}
+                    {biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
 
-                    <dt>Age</dt>
-                    <dd>{context.age}{' '}{context.age_units}</dd>
+                    {biosample.age ? <dt>Age</dt> : null}
+                    {biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    <dt>Health status</dt>
-                    <dd>{context.health_status}</dd>
+                    {biosample.health_status ? <dt>Health status</dt> : null}
+                    {biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
 
                     <dt>Ethnicity</dt>
                     <dd>{context.ethnicity}</dd>
@@ -171,28 +176,32 @@ function (biosample, React, URI, globals) {
     var MouseDonor = biosample.MouseDonor = React.createClass({
         render: function() {
             var context = this.props.context;
+            var biosample = this.props.biosample;
             return (
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
+                    
+                    {context.organism.name ? <dt>Species</dt> : null}
+                    {context.organism.name ? <dd>{context.organism.name}</dd> : null}
 
-                    <dt>Life stage</dt>
-                    <dd>{context.life_stage}</dd>
+                    {biosample.life_stage ? <dt>Life stage</dt> : null}
+                    {biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
 
-                    <dt>Age</dt>
-                    <dd>{context.age}{' '}{context.age_units}</dd>
+                    {biosample.age ? <dt>Age</dt> : null}
+                    {biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    <dt>Health status</dt>
-                    <dd>{context.health_status}</dd>
+                    {biosample.health_status ? <dt>Health status</dt> : null}
+                    {biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
 
                     <dt>Strain background</dt>
                     <dd>{context.strain_background}</dd>
 
-                    <dt>Strain name</dt>
-                    <dd>{context.strain_name}</dd>
+                    {context.strain_name ? <dt>Strain name</dt> : null}
+                    {context.strain_name ? <dd>{context.strain_name}</dd> : null}
                 </dl>
             );
         }
