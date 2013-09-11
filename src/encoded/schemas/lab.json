@@ -56,7 +56,7 @@
         },
         "institute_name": {
             "title": "Institute",
-            "description": "The name for the Institute the lab is associated with.",
+            "description": "The name for the institute the lab is associated with.",
             "type": "string",
             "default": ""
         },
