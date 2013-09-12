@@ -243,7 +243,7 @@ function (biosample, React, URI, globals) {
             return (
                 <dl class="key-value">
                 	{context.target ? <dt>Target</dt> : null}
-                    {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+                    {context.target ? <dd class="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
                     
                     {context.vector_backbone_name ? <dt>Vector</dt> : null}
                     {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}
