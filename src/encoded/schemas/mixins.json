@@ -45,7 +45,7 @@
     "aliases": {
         "aliases": {
             "title": "Lab Aliases",
-            "description": "List lab specific identifiers to reference an object.",
+            "description": "Lab specific identifiers to reference an object.",
             "type": "array",
             "default": [],
             "items": {
