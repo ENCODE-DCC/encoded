@@ -67,7 +67,7 @@ function (biosample, React, URI, globals) {
 
                         </dl>
 
-                        {context.donor ?
+                        {(context.donor && (context.biosample_type != "immortalized cell line")) ?
                             <section>
                                 <hr />
                                 <h4>Donor Information</h4>
