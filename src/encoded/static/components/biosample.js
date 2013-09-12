@@ -151,17 +151,17 @@ function (biosample, React, URI, globals) {
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
 
-                    {biosample.life_stage ? <dt>Life stage</dt> : null}
-                    {biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
+                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                    {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
 
-                    {biosample.age ? <dt>Age</dt> : null}
-                    {biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                    {biosample && biosample.age ? <dt>Age</dt> : null}
+                    {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    {biosample.health_status ? <dt>Health status</dt> : null}
-                    {biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
+                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                    {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
 
                     <dt>Ethnicity</dt>
                     <dd>{context.ethnicity}</dd>
@@ -185,17 +185,17 @@ function (biosample, React, URI, globals) {
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
 
-                    {biosample.life_stage ? <dt>Life stage</dt> : null}
-                    {biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
+                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                    {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
 
-                    {biosample.age ? <dt>Age</dt> : null}
-                    {biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                    {biosample && biosample.age ? <dt>Age</dt> : null}
+                    {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    {biosample.health_status ? <dt>Health status</dt> : null}
-                    {biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
+                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                    {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
 
                     <dt>Strain background</dt>
                     <dd>{context.strain_background}</dd>
