@@ -62,6 +62,11 @@ def run(testapp, filename, docsdir, method, item_type, test=False):
 
 
 def main():
+    # https://github.com/gawel/WSGIProxy2/pull/3 (and change to WebTest)
+    from wsgiproxy.proxies import ALLOWED_METHODS
+    if 'PATCH' not in ALLOWED_METHODS:
+        ALLOWED_METHODS.append('PATCH')
+
     import argparse
     parser = argparse.ArgumentParser(
         description="Import data", epilog=EPILOG,

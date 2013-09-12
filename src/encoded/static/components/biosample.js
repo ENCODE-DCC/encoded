@@ -25,7 +25,7 @@ function (biosample, React, URI, globals) {
                             <ul class="breadcrumb">
                                 <li>Biosamples <span class="divider">/</span></li>
                                 <li>{context.biosample_type}{' '}<span class="divider">/</span></li>{' '}
-                                <li class="active">{context.organism.name}</li>
+                                <li class="active">{context.donor.organism.name}</li>
                             </ul>
                             <h2>{context.accession}{' / '}<span class="cap-me-once">{context.biosample_type}</span></h2>
                         </div>
@@ -50,7 +50,7 @@ function (biosample, React, URI, globals) {
                             <dt hidden={!context.lot_id}>Lot ID</dt>
                             <dd hidden={!context.lot_id}>{context.lot_id}</dd>
 
-                            <dt>RFA</dt>
+                            <dt>Project</dt>
                             <dd>{context.award.rfa}</dd>
 
                             <dt>Submitted by</dt>
@@ -64,13 +64,14 @@ function (biosample, React, URI, globals) {
 
                             <dt hidden={!context.note}>Note</dt>
                             <dd hidden={!context.note}>{context.note}</dd>
+
                         </dl>
 
-                        {context.donor ?
+                        {(context.donor && (context.biosample_type != "immortalized cell line")) ?
                             <section>
                                 <hr />
                                 <h4>Donor Information</h4>
-                                <Panel context={context.donor} />
+                                <Panel context={context.donor} biosample={context} />
                             </section>
                         : null}
 
@@ -141,22 +142,26 @@ function (biosample, React, URI, globals) {
     var HumanDonor = biosample.HumanDonor = React.createClass({
         render: function() {
             var context = this.props.context;
+            var biosample = this.props.biosample;
             return (
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
+                    
+                    {context.organism.name ? <dt>Species</dt> : null}
+                    {context.organism.name ? <dd>{context.organism.name}</dd> : null}
 
-                    <dt>Life stage</dt>
-                    <dd>{context.life_stage}</dd>
+                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                    {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
 
-                    <dt>Age</dt>
-                    <dd>{context.age}{' '}{context.age_units}</dd>
+                    {biosample && biosample.age ? <dt>Age</dt> : null}
+                    {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    <dt>Health status</dt>
-                    <dd>{context.health_status}</dd>
+                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                    {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
 
                     <dt>Ethnicity</dt>
                     <dd>{context.ethnicity}</dd>
@@ -171,28 +176,32 @@ function (biosample, React, URI, globals) {
     var MouseDonor = biosample.MouseDonor = React.createClass({
         render: function() {
             var context = this.props.context;
+            var biosample = this.props.biosample;
             return (
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
+                    
+                    {context.organism.name ? <dt>Species</dt> : null}
+                    {context.organism.name ? <dd>{context.organism.name}</dd> : null}
 
-                    <dt>Life stage</dt>
-                    <dd>{context.life_stage}</dd>
+                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                    {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
 
-                    <dt>Age</dt>
-                    <dd>{context.age}{' '}{context.age_units}</dd>
+                    {biosample && biosample.age ? <dt>Age</dt> : null}
+                    {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    <dt>Health status</dt>
-                    <dd>{context.health_status}</dd>
+                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                    {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
 
                     <dt>Strain background</dt>
                     <dd>{context.strain_background}</dd>
 
-                    <dt>Strain name</dt>
-                    <dd>{context.strain_name}</dd>
+                    {context.strain_name ? <dt>Strain name</dt> : null}
+                    {context.strain_name ? <dd>{context.strain_name}</dd> : null}
                 </dl>
             );
         }
@@ -233,20 +242,23 @@ function (biosample, React, URI, globals) {
             var context = this.props.context;
             return (
                 <dl class="key-value">
-                    <dt>Vector</dt>
-                    <dd>{context.vector_backbone_name}</dd>
+                	{context.target ? <dt>Target</dt> : null}
+                    {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+                    
+                    {context.vector_backbone_name ? <dt>Vector</dt> : null}
+                    {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}
 
-                    <dt>Construct Type</dt>
-                    <dd>{context.construct_type}</dd>
+                    {context.construct_type ? <dt>Construct Type</dt> : null}
+                    {context.construct_type ? <dd>{context.construct_type}</dd> : null}
 
-                    <dt>Description</dt>
-                    <dd>{context.description}</dd>
+                   	{context.description ?  <dt>Description</dt> : null}
+                    {context.description ? <dd>{context.description}</dd> : null}
 
-                    <dt>Source</dt>
-                    <dd>{context.source.title}</dd>
+                    {context.source.title ? <dt>Source</dt> : null}
+                    {context.source.title ? <dd>{context.source.title}</dd> : null}
 
-                    <dt>Product ID</dt>
-                    <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                    {context.product_id ? <dt>Product ID</dt> : null}
+                    {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
 
                 </dl>
             );
@@ -314,6 +326,9 @@ function (biosample, React, URI, globals) {
                                 <h3 style={{'text-transform': 'capitalize'}}>{context.document_type}</h3>
                                 <p>{context.description}</p>
                                 <dl class="key-value">
+                                	{context.caption ? <dt>Caption</dt> : null}
+                                    {context.caption ? <dd>{context.caption}</dd> : null}
+                                    
                                     <dt>Submitted By</dt>
                                     <dd>{context.submitted_by.title}</dd>
 

@@ -9,23 +9,21 @@ function (target, React, globals, dbxref) {
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-detail panel key-value');
+           
             return (
                 <dl class={itemClass}>
                     <dt>Target name</dt>
-                    <dd>{context.label}</dd>
+                    <dd class="no-cap">{context.label}</dd>
 
                     <dt>Target Gene</dt>
-                    <dd>{context.gene_name}</dd>
+                    <dd><a href={globals.dbxref_prefix_map.HGNC + context.gene_name}>{context.gene_name}</a></dd>
 
                     <dt>External Resources</dt>
                     <dd>
                         {context.dbxref.length ? 
-                            <DbxrefList values={context.dbxref} />
+                            <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
                         : <em>None submitted</em> }
                     </dd>
-
-                    <dt>Species</dt>
-                    <dd>{context.organism.name}</dd>
                 </dl>
             );
         }

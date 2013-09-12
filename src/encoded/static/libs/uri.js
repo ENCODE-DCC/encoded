@@ -55,8 +55,8 @@ function (class_) {
             this.search.slice(1).split('&').forEach(function (part) {
                 var equal = part.indexOf('=');
                 if (equal === -1) return;
-                var key = decodeURIComponent(part.slice(0, equal).replace('+', ' '));
-                var value = decodeURIComponent(part.slice(equal + 1).replace('+', ' '));
+                var key = decodeURIComponent(part.slice(0, equal).replace(/\+/g, ' '));
+                var value = decodeURIComponent(part.slice(equal + 1).replace(/\+/g, ' '));
                 params[key] = value;
             });
             return params;
