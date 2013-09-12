@@ -24,7 +24,6 @@ function (target, React, globals, dbxref) {
                             <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
                         : <em>None submitted</em> }
                     </dd>
-
                 </dl>
             );
         }
