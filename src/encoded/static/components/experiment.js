@@ -74,10 +74,9 @@ function (experiment, React, globals, dbxref) {
                             {antibody_accessions.length ? <dt>Antibody</dt> : null}
                             {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
-							{context.possible_controls ? <dt>Controls</dt> : null}
-							{context.possible_controls ?
-								<dd>
-									<ul>
+							<dt hidden={!context.possible_controls.length}>Controls</dt>
+                            <dd hidden={!context.possible_controls.length}>
+                            	<ul>
 										{context.possible_controls.map(function (control) {
 											return (
 									            <li key={control['@id']}>
@@ -88,8 +87,7 @@ function (experiment, React, globals, dbxref) {
 											);
 										})}
 									</ul>
-								</dd>
-							: null}
+                            </dd>
 
                             <dt hidden={!context.encode2_dbxrefs.length}>ENCODE2 ID</dt>
                             <dd hidden={!context.encode2_dbxrefs.length}>
@@ -99,7 +97,7 @@ function (experiment, React, globals, dbxref) {
                             <dt>Submitted by</dt>
                             <dd>{context.submitted_by.title}</dd>
 
-                            <dt>RFA</dt>
+                            <dt>Project</dt>
                             <dd>{context.award.rfa}</dd>
 
                         </dl>
@@ -179,7 +177,7 @@ function (experiment, React, globals, dbxref) {
         var library = replicate.library;
         var platform = replicate.platform;
         var titles = {
-            nucleic_acid_type: 'Nucleic Acid Type',
+            nucleic_acid_term_name: 'Nucleic Acid Type',
             nucleic_acid_starting_quantity: 'NA Starting Quantity',
             lysis_method: 'Lysis Method',
             extraction_method: 'Extraction Method',
@@ -194,9 +192,9 @@ function (experiment, React, globals, dbxref) {
                 children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
             }
         }
-        if (platform.description) {
+        if (platform.title) {
             children.push(<dt key="dt-platform">Platform</dt>);
-            children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.description}</a></dd>);
+            children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.title}</a></dd>);
         }
         return (
             <div>
