@@ -36,8 +36,8 @@ function (antibody, React, URI, globals) {
                             <dt>Lot ID</dt>
                             <dd>{context.antibody.lot_id}</dd>
 
-                            {context.antibody.lot_id_alias.length ? <dt>Lot ID aliases</dt> : null }
-                            {context.antibody.lot_id_alias.length ? <dd>{context.antibody.lot_id_alias.join(', ')}</dd> : null }
+                            <dt hidden={!context.antibody.lot_id_alias.length}>Lot ID aliases</dt>
+                            <dd hidden={!context.antibody.lot_id_alias.length}>{context.antibody.lot_id_alias.join(', ')}</dd>
 
                             <dt>Target</dt>
                             <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
@@ -45,20 +45,20 @@ function (antibody, React, URI, globals) {
                             <dt>Host</dt>
                             <dd>{context.antibody.host_organism.name}</dd>
                             
-                            <dt>Clonality</dt>
-                            <dd>{context.antibody.clonality}</dd>
+                            <dt hidden={!context.antibody.clonality}>Clonality</dt>
+                            <dd hidden={!context.antibody.clonality}>{context.antibody.clonality}</dd>
                             
-                            <dt>Purification</dt>
-                            <dd>{context.antibody.purifications.join(', ')}</dd>
+                            <dt hidden={!context.antibody.purifications.length}>Purification</dt>
+                            <dd hidden={!context.antibody.purifications.length}>{context.antibody.purifications.join(', ')}</dd>
                             
-                            <dt>Isotype</dt>
-                            <dd>{context.antibody.isotype}</dd>
+                            <dt hidden={!context.antibody.isotype}>Isotype</dt>
+                            <dd hidden={!context.antibody.isotype}>{context.antibody.isotype}</dd>
                             
-                            <dt>Antigen description</dt>
-                            <dd>{context.antibody.antigen_description}</dd>
+                            <dt hidden={!context.antibody.antigen_description}>Antigen description</dt>
+                            <dd hidden={!context.antibody.antigen_description}>{context.antibody.antigen_description}</dd>
 
-                            {context.antibody.antigen_sequence ? <dt>Antigen sequence</dt> : null}
-                            {context.antibody.antigen_sequence ? <dd>{context.antibody.antigen_sequence}</dd> : null}
+                            <dt hidden={!context.antibody.antigen_sequence}>Antigen sequence</dt>
+                            <dd hidden={!context.antibody.antigen_sequence}>{context.antibody.antigen_sequence}</dd>
                         </dl>
                     </div>
 
