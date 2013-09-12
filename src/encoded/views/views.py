@@ -305,7 +305,7 @@ class AntibodyCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        embedded = ['submitted_by', 'lab', 'award']
+        embedded = ['submitted_by', 'lab', 'award', 'target']
 
 
 @location('antibodies')
