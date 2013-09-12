@@ -92,7 +92,7 @@
         },
         "fax": {
             "title": "Fax Number",
-            "description":"A FAX number for the lab (with country code).",
+            "description":"A fax number for the lab (with country code).",
             "type": "string",
             "default": "",
             "format": "phone"
