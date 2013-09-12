@@ -51,7 +51,7 @@
         "dataset_type": {
             "title": "Type",
             "comment": "Do not need to submit, value is assigned by server.",
-	    "type": "string",
+            "type": "string",
             "default": "experiment",
             "enum": ["experiment"]
         },

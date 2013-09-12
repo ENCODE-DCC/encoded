@@ -31,21 +31,21 @@
         "organism": {
             "title": "Organism",
             "description": "Organism bearing the target.",
-	    "comment": "See organism.json for available identifiers.",
+            "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "organism"
         },
         "gene_name": {
             "title": "Gene Name",
             "description": "HGNC or MGI identifier for the target.",
-	    "comment": "Submit only the identifier (e.g. HMFN0395 or 22809).",
+            "comment": "Submit only the identifier (e.g. HMFN0395 or 22809).",
             "type": "string",
             "format": "gene_name"
         },
         "label": {
             "title": "Common Name with Modification",
             "description": "Common name for the target including post-translational modifications, if any.",
-	    "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
+            "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
             "format": "target_label"
         }
