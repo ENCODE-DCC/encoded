@@ -60,6 +60,9 @@ from .storage import (
 )
 from collections import OrderedDict
 from .validation import ValidationFailure
+from pyelasticsearch import ElasticSearch
+
+es = ElasticSearch('http://localhost:9200')
 LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
 
@@ -810,34 +813,21 @@ class Collection(object):
         items = properties['@graph'] = []
         properties['columns'] = self.columns
 
-        query = query.options(
-            orm.joinedload_all(
-                Resource.rels,
-                Link.target,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
-            ),
-        )
-
-        for model in query.limit(limit).all():
-            item_uri = request.resource_path(self, model.rid)
-            rendered = embed(request, item_uri + '?embed=false')
-
-            for path in self.embedded_paths:
-                expand_path(request, rendered, path)
-
-            if not self.columns:
-                items.append(rendered)
-                continue
-
-            subset = {
-                '@id': rendered['@id'],
-                '@type': rendered['@type'],
-            }
-            for column in self.columns:
-                subset[column] = column_value(rendered, column)
-
-            items.append(subset)
+        columns = ['@id', '@type']
+        lengthColumns = []
+        for column in self.columns:
+            if 'length' in column:
+                columns.append(column.split('.')[0])
+                lengthColumns.append(column.split('.')[0])
+            else:
+                columns.append(column)
+        
+        query = {'query': {'match_all': {}}, 'fields': columns}
+        results = es.search(query, index=self.item_type + 's', size=10000)
+        for model in results['hits']['hits']:
+            for c in lengthColumns:
+                model['fields'][c + '.length'] = len(model['fields'][c])
+            items.append(model['fields'])
 
         return properties
 
