@@ -67,10 +67,10 @@ function (experiment, React, globals, dbxref) {
 
                             <dt>Biosample Type</dt>
                             <dd>{context.biosample_type}</dd>
-                            
+
                             {context.target ? <dt>Target</dt> : null}
                             {context.target ? <dd>{context.target.label}</dd> : null}
-                            
+
                             {antibody_accessions.length ? <dt>Antibody</dt> : null}
                             {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
@@ -117,7 +117,7 @@ function (experiment, React, globals, dbxref) {
                         );
                     })}
 
-                    <FilesLinked context={context} />                    
+                    <FilesLinked context={context} />
                 </div>
             );
         }
@@ -192,7 +192,7 @@ function (experiment, React, globals, dbxref) {
                 children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
             }
         }
-        if (platform.title) {
+        if (typeof(platform) != 'undefined' && platform.title) {
             children.push(<dt key="dt-platform">Platform</dt>);
             children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.title}</a></dd>);
         }

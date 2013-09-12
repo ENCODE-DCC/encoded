@@ -182,11 +182,11 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if (name + '.tsv') in names:
-            stream = zf.open(name + '.tsv', 'r')
+            stream = zf.open(name + '.tsv', 'rU')
             return read_csv(stream, dialect='excel-tab')
 
         if (name + '.csv') in names:
-            stream = zf.open(name + '.csv', 'r')
+            stream = zf.open(name + '.csv', 'rU')
             return read_csv(stream)
 
     if os.path.isdir(path):
@@ -197,11 +197,11 @@ def read_single_sheet(path, name=None):
             return read_xl(stream)
 
         if os.path.exists(root + '.tsv'):
-            stream = open(root + '.tsv', 'rb')
+            stream = open(root + '.tsv', 'rbU')
             return read_csv(stream, dialect='excel-tab')
 
         if os.path.exists(root + '.csv'):
-            stream = open(root + '.csv', 'rb')
+            stream = open(root + '.csv', 'rbU')
             return read_csv(stream)
 
     return []
@@ -317,7 +317,7 @@ def pipeline_logger(item_type, phase):
 
             yield row
 
-        loaded = created + updated 
+        loaded = created + updated
         logger.info('Loaded %d of %d %s (phase %s). CREATED: %d, UPDATED: %d, SKIPPED: %d, ERRORS: %d' % (
              loaded, count, item_type, phase, created, updated, skipped, errors))
 

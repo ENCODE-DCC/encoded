@@ -48,11 +48,12 @@ def internal_app(configfile, username=''):
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': username,
-    }    
+    }
     return TestApp(app, environ)
 
 
 def run(testapp, filename, docsdir, method, item_type, test=False):
+    import pdb; pdb.set_trace()
     if filename.endswith('.tsv') or filename.endswith('.csv'):
         source = loadxl.read_single_sheet(filename)
     else:
