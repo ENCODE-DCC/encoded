@@ -30,12 +30,10 @@ function (search, $, React, globals, d3) {
                 if(counter < 4) {
                     if(count == result_count) {
                         return <li>
-                                
                                 <label><small>{id} ({count})</small></label>
                             </li>
                     }else {
                         return <li>
-                                
                                 <a href={url+'&'+field+'='+id}>
                                     <label><small>{id} ({count})</small></label>
                                 </a>
@@ -57,18 +55,23 @@ function (search, $, React, globals, d3) {
                     }
                 }
                 if (counter1 >= 4) {
-                    return <li>
-                            <a href={url+'&'+field+'='+id}>
+                   if(count == result_count) {
+                        return <li>
                                 <label><small>{id} ({count})</small></label>
-                            </a>
-                        </li>
+                            </li>
+                    }else {
+                        return <li>
+                                <a href={url+'&'+field+'='+id}>
+                                    <label><small>{id} ({count})</small></label>
+                                </a>
+                            </li>
+                    }
                 }
             };
             var buildSection = function(term) {
                 counter = 0;
                 counter1 = 0;
                 var termID = term.replace(/\s+/g, '');
-                console.log(termID);
                 return <div>
                         <legend><small>{term}</small></legend>
                         <ul class="facet-list">
@@ -279,7 +282,7 @@ function (search, $, React, globals, d3) {
                                 <div class="row">
                                     <div class="span3" id="facets">
                                         <h4>Filter Results</h4>
-                                        <section class="facet wel box">
+                                        <section class="facet box">
                                             <div>
                                                 <legend><small>Data Type</small></legend>
                                                 <ul class="facet-list">

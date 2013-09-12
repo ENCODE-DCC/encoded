@@ -31,6 +31,7 @@ class Query(dict):
     def __init__(self):
         self.query = dict()
         self.facets = dict()
+        self.fields = []
 
     def __setattr__(self, k, v):
         if k in self.keys():
@@ -44,6 +45,37 @@ class Query(dict):
         if k in self.keys():
             return self[k]
         raise AttributeError
+
+
+#FilteredQuery class is extended version of Query class
+class FilteredQuery(dict):
+
+    def __init__(self):
+        self.query = dict({'filtered': {'query': {'queryString': {"query": ''}}, 'filter': {'and': {'filters': []}}}})
+        self.facets = dict()
+        self.fields = []
+
+    def __setattr__(self, k, v):
+        if k in self.keys():
+            self[k] = v
+        elif not hasattr(self, k):
+            self[k] = v
+        else:
+            raise AttributeError("Cannot set '%s', cls attribute already exists" % (k, ))
+
+    def __getattr__(self, k):
+        if k in self.keys():
+            return self[k]
+        raise AttributeError
+
+    def __setterm__(self, v):
+        self['query']['filtered']['query']['queryString']['query'] = v
+
+    def __setfilter__(self, k, v):
+        self['query']['filtered']['filter']['and']['filters'].append({'bool': {'must': {'term': {k: v}}}})
+
+    def __setmissingfilter__(self, v):
+        self['query']['filtered']['filter']['and']['filters'].append({'missing': {'field': v}})
 
 
 @view_config(name='search', context=Root, request_method='GET', permission='view')
@@ -78,20 +110,24 @@ def search(context, request):
     if 'searchTerm' in params:
         if 'type' in params:
             index = params.get('type')
-            query.fields = data[params.get('type')]
             if len(params) > 2:
-                query.query['filtered'] = {'query': {'queryString': {"query": params.get('searchTerm')}}}
-                query['query']['filtered']['filter'] = {'bool': {'must': []}}
+                query = FilteredQuery()
+                query.__setterm__(params.get('searchTerm'))
+                query.fields = data[params.get('type')]
                 for key, value in params.iteritems():
-                    if key != 'searchTerm' and key != 'type':
-                        query['query']['filtered']['filter']['bool']['must'].append({'term': {key: value}})
+                    if value == 'other':
+                        query.__setmissingfilter__(key)
+                    elif key != 'searchTerm' and key != 'type':
+                        query.__setfilter__(key, value)
             else:
+                query.fields = data[params.get('type')]
                 query.query = {'query_string': {'query': params.get('searchTerm')}}
         else:
             # This code block executes the search for all the types of data
             query.query = {'query_string': {'query': params.get('searchTerm')}}
             for d in data:
                 query.fields = data[d]
+                # Should have some limit on size to have better
                 s = es.search(query, index=d, size=1100)
                 items['count'][d] = len(s['hits']['hits'])
                 for dataS in s['hits']['hits']:
@@ -116,6 +152,8 @@ def search(context, request):
         face = []
         for term in facet_results[facet]['terms']:
             face.append({term['term']: term['count'], 'field': facets[facet]})
+        if facet_results[facet]['missing'] != 0:
+            face.append({'other': facet_results[facet]['missing'], 'field': facets[facet]})
         if len(face):
             items['facets'][facet] = face
 
