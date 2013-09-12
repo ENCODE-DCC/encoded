@@ -74,8 +74,8 @@ function (experiment, React, globals, dbxref) {
                             {antibody_accessions.length ? <dt>Antibody</dt> : null}
                             {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
-							<dt hidden={!context.possible_controls}>Controls</dt>
-                            <dd hidden={!context.possible_controls}>
+							<dt hidden={!context.possible_controls.length}>Controls</dt>
+                            <dd hidden={!context.possible_controls.length}>
                             	<ul>
 										{context.possible_controls.map(function (control) {
 											return (
