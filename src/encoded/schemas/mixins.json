@@ -71,6 +71,7 @@
     "submitted": {
         "date_created": {
             "title": "Date Created",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date",
             "serverDefault": "now",

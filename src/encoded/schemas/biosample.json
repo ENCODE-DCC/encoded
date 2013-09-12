@@ -59,11 +59,11 @@
         "treatments": {
             "title": "Treatments",
             "type": "array",
-	"default": [],
+            "default": [],
             "items": {
                 "title": "Treatment",
                 "comment": "See treatment.json for available identifiers.",
-	    "type": "string",
+                "type": "string",
                 "linkTo": "treatment"
             }
         },
@@ -176,19 +176,22 @@
         },
         "culture_harvest_date": {
             "title": "Culture Harvest Date",
-	    "description": "For cultured samples, the date the biosample was taken.",
+            "description": "For cultured samples, the date the biosample was taken.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
         },
         "culture_start_date": {
             "title": "Culture Start Date",
-	    "description": "For cultured samples, the date the culture was started.",
+            "description": "For cultured samples, the date the culture was started.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
         },
         "date_obtained": {
             "title": "Date Obtained",
-	    "description": "For tissue samples, the date the biosample was taken.",
+            "description": "For tissue samples, the date the biosample was taken.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
         },

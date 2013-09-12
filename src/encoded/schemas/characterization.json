@@ -55,6 +55,7 @@
         "date": {
             "title": "Date",
             "description": "The date that the characterization was run on.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
         },
