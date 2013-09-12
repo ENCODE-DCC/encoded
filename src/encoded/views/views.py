@@ -17,7 +17,7 @@ from pyramid.traversal import find_root
 
 ACCESSION_KEYS = [
     {
-        'name': 'accession', 
+        'name': 'accession',
         'value': '{accession}',
         '$templated': True,
         '$condition': 'accession',
@@ -420,7 +420,7 @@ class Experiments(Collection):
         ('assay_term_name', 'Assay Type'),
         ('target.label', 'Target'),
         ('biosample_term_name', 'Biosample'),
-        ('replicates.length', 'Biological Replicates'),
+        ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
         ('award.rfa', 'Project'),

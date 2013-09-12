@@ -9,7 +9,7 @@ def _type_length():
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     lengths = {}
     for name in ORDER:
-        with open(os.path.join(inserts, name + '.tsv')) as f:
+        with open(os.path.join(inserts, name + '.tsv'), 'U') as f:
             lengths[name] = len([l for l in f.readlines() if l.strip()]) - 1
 
     return lengths
