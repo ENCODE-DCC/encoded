@@ -25,7 +25,9 @@ function (biosample, React, URI, globals) {
                             <ul class="breadcrumb">
                                 <li>Biosamples <span class="divider">/</span></li>
                                 <li>{context.biosample_type}{' '}<span class="divider">/</span></li>{' '}
-                                <li class="active">{context.donor.organism.name}</li>
+                                {context.donor ?
+                                    <li class="active">{context.donor.organism.name}</li>
+                                : null }
                             </ul>
                             <h2>{context.accession}{' / '}<span class="cap-me-once">{context.biosample_type}</span></h2>
                         </div>
