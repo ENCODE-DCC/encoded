@@ -1,12 +1,13 @@
 {
-    "title": "ENCODE experiment dataset",
+    "title": "Experiment",
+    "description": "Schema for submitting metadata for an assay with 1 or more replicates.",
+    "comment": "An experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting a primary set of files (experiment) to ENCODE",
-    "comment": "Experiment is a special case of Dataset indicating the primary replicated dataset that submitted files belong to.",
     "type": "object",
     "required": ["award", "lab", "dataset_type"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
+    "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -23,117 +24,105 @@
             "default": "1"
         },
         "description": {
+            "title": "Description",
+            "description": "A plain text description of the experiment.",
             "default": "",
-            "description": "A plain text description of the experimental dataset",
-            "comment":  "This should have a clear indication of the relavant experimental variables",
-            "title": "Experiment description",
             "type": "string"
         },
         "target": {
-            "description": "Protein, RNA, or chemical target of the experiment",
-            "comment": "For automatic submission supply unique Target label or UUID.  Some experiments will have no target and some exeriments have the target of Control.",
-            "title": "Target label",
+            "title": "Target",
+            "description": "For assays, such as ChIP-seq or RIP-seq, the name of the gene whose expression or product is under investigation for the experiment.",
+            "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "target"
         },
         "assay_term_name": {
+            "title": "Assay Name",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "default": "",
-            "description": "Ontology term describing the assay used for this experiment",
-            "comment": "Use OBI ontology term or follow the procedure for New Term Request",
-            "title": "Assay type",
             "type":  "string"
         },
         "assay_term_id": {
-            "description": "The specific OBI ontology term ID describing assay used for this experiment",
-            "comment": "Use OBI ontology term_id or New Term Requst no. from the DCC",
-            "title": "Assay ontology (OBI) ID",
+            "title": "Assay ID",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
             "type": "string",
             "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
         "dataset_type": {
-            "default": "experiment",
-            "description": "The dataset type",
-            "comment": "For Experiments this is always 'experiment'",
-            "title": "Dataset type",
+            "title": "Type",
+            "comment": "Do not need to submit, value is assigned by server.",
             "type": "string",
+            "default": "experiment",
             "enum": ["experiment"]
         },
         "geo_dbxrefs": {
+            "title": "GEO IDs",
+            "type": "array",
             "default": [],
-            "description": "List of GEO dbxrefs (GSE or GSM#s)",
-            "comment": "XXX should this include GSR?",
             "items": {
-                "description": "List of GEO IDs",
-                "title": "GEO IDs",
+                "title": "GEO ID",
                 "type":  "string",
-                "pattern": "^(GSE|GSM)\\d+$"
-            },
-            "title": "GEO DBXREFs",
-            "type": "array"
+                "pattern": "^(GSM|GSE)\\d+$"
+            }
         },
         "encode2_dbxrefs": {
+            "title": "Previous ENCODE IDs",
+            "type": "array",
             "default": [],
-            "description": "List of cross-references to the previous ENCODE system",
-            "comment": "For experiments, these will look like wgEncode*",
             "items": {
-                "description": "List of ENCODE2 Identifiers",
-                "title": "ID",
-                "type":  "string"
-            },
-            "title": "ENCODE2 DBXREFs",
-            "type": "array"
+                "title": "Previous ENCODE ID",
+                "type":  "string",
+                "pattern": "^wgEncodeE(H|M)\\d+$"
+            }
         },
         "documents": {
+            "title": "Documents",
+            "description": "Protocols or other documents that describe the assay or the results (not data files).",
+            "type": "array",
             "default": [],
-            "description": "List of relevant experimental protocol documents",
-            "comment": "For automatic submission supply unique Document names or uuids, these documents are not required to be of type protocol",
             "items": {
-                "description": "Experimental protocol document",
                 "title": "Document",
+                "description": "A protocol or other document that describes the assay or the results (not data files).",
+                "comment": "See document.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "document"
-            },
-            "title": "Document list",
-            "type": "array"
+            }
         },
         "files": {
+            "title": "Data files",
+            "type": "array",
             "default": [],
-            "description": "List of files in this experiment",
-            "comment": "For automatic submission supply unique data File accessions or uuids",
-            "title": "Data file list",
             "items": {
-                "description": "Data file",
-                "title": "Files",
+                "title": "Data File",
+                "comment": "See file.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "file"
-            },
-            "type": "array"
+            }
         },
         "references": {
-            "default": [],
-            "description": "List of references (Pubmed IDs) relating to this experiment",
-            "comment": "References can only be submitted as Pubmed IDs",
             "title": "References",
+            "description": "The Pubmed identifiers that reference data found in the experiment.",
+            "type": "array",
+            "default": [],
             "reference": {
-                "description": "Pubmed ID for a published reference",
-                "title": "Pubmed Reference",
+                "title": "Reference",
+                "description": "A Pubmed identifier that references data found in the experiment.",
                 "type": "string",
                 "pattern": "^PMID:[0-9]+$"
-            },
-            "type": "array"
+            }
         },
         "possible_controls": {
+            "title": "Controls",
+            "description": "Experiments that contain files that can serve as scientific controls for this experiment.",
+            "type": "array",
             "default": [],
-            "description": "List of control experiments that could apply to this experiment",
-            "comment": "For automatic submission supply Experiment (dataset) accessions or uuids",
-            "title": "Possible Control experiments list",
             "items": {
-                "description": "Possible control experiment",
                 "title": "Control",
+                "description": "An experiment that contains files that can serve as a scientific control for this experiment.",
+                "comment": "See experiment.json for a list of available identifiers. Exact pairing of data files with their controls is done using file relationships.",
                 "type": "string",
                 "linkTo": "experiment"
-            },
-            "type": "array"
+            }
         }
     }
 }

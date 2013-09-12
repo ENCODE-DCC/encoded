@@ -2,9 +2,9 @@
     "title": "Organism",
     "id": "/profiles/organism.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an organism type to ENCODE",
     "type": "object",
     "required": ["name", "taxon_id"],
+    "identifyingProperties": ["uuid", "name", "taxon_id", "scientific_name"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -18,22 +18,22 @@
             "default": "1"
         },
         "name": {
-            "title": "Organism name",
-            "description": "A short unique name for the organism, like 'mouse'",
+            "title": "Common Name",
+            "description": "A short unique name for the organism (e.g. 'mouse' or 'human').",
             "type": "string",
             "pattern": "^[a-z\\-]+$"
         },
         "scientific_name": {
-            "title": "Scientific name",
-            "description": "The scientific name (Genus Species) for the organism",
-            "default": "",
-            "type": "string"
+            "title": "Binomial Name",
+            "description": "The genus species for the organism (e.g. 'Mus musculus').",
+            "type": "string",
+            "default": ""
         },
         "taxon_id": {
             "title": "Taxon ID",
-            "description": "The NCBI taxon ID for the organism",
-            "format": "^[0-9]+$",
-            "type": "string"
+            "description": "The NCBI taxon ID for the organism (e.g. 10090).",
+            "type": "string",
+            "format": "^[0-9]+$"
         }
     }
 }
