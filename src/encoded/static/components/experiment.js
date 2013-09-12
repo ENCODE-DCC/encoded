@@ -74,10 +74,9 @@ function (experiment, React, globals, dbxref) {
                             {antibody_accessions.length ? <dt>Antibody</dt> : null}
                             {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
-							{context.possible_controls ? <dt>Controls</dt> : null}
-							{context.possible_controls ?
-								<dd>
-									<ul>
+							<dt hidden={!context.possible_controls}>Controls</dt>
+                            <dd hidden={!context.possible_controls}>
+                            	<ul>
 										{context.possible_controls.map(function (control) {
 											return (
 									            <li key={control['@id']}>
@@ -88,8 +87,7 @@ function (experiment, React, globals, dbxref) {
 											);
 										})}
 									</ul>
-								</dd>
-							: null}
+                            </dd>
 
                             <dt hidden={!context.encode2_dbxrefs.length}>ENCODE2 ID</dt>
                             <dd hidden={!context.encode2_dbxrefs.length}>
