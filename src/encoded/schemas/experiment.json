@@ -38,13 +38,13 @@
         },
         "assay_term_name": {
             "title": "Assay Name",
-            "description": "OBI ontology term for the assay.",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "default": "",
             "type":  "string"
         },
         "assay_term_id": {
             "title": "Assay ID",
-            "description": "OBI ontology identifier for the assay.",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
             "type": "string",
             "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
