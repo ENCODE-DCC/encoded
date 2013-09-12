@@ -171,7 +171,12 @@ function (experiment, React, globals, dbxref) {
 
 
     var AssayDetails = experiment.AssayDetails = function (props) {
-        var replicates = props.replicates
+        var replicates = props.replicates.sort(function(a, b) {
+            if (b.biological_replicate_number === a.biological_replicate_number) {
+                return a.technical_replicate_number - b.technical_replicate_number;
+            }
+            return a.biological_replicate_number - b.biological_replicate_number;
+        });
         if (!replicates.length) return (<div hidden={true}></div>);
         var replicate = replicates[0];
         var library = replicate.library;
