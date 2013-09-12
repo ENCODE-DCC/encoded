@@ -47,7 +47,7 @@
             "description": "Donors that genetic material was supplied to.",
             "type":  "array",
             "default": [],
-	"XXXnote": "Can be removed since we have parents.",
+	    "XXXnote": "Can be removed since we have parents.",
             "items": {
                 "title": "Child",
                 "description": "A donor that genetic material was supplied to.",

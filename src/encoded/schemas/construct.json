@@ -58,7 +58,7 @@
             "items": {
                 "title": "Protein Tag",
                 "description": "Recombinant tag in the construct.",
-	    "comment": "Submit tag name and tag location.",
+	        "comment": "Submit tag name and tag location.",
                 "type": "object",
                 "properties": {
                     "name": {
@@ -90,7 +90,7 @@
         "documents": {
             "title": "Construct Documents",
             "description": "Documents that describe the construct.",
-	"type": "array",
+	    "type": "array",
             "default": [],
             "items": {
                 "title": "Construct Document",
