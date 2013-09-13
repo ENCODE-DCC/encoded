@@ -234,7 +234,7 @@ function (experiment, React, globals, dbxref) {
                     <dd>
                         <a href={biosample['@id']}>
                             {biosample.accession}
-                        </a>{' '}-{' '}{biosample.description}
+                        </a>{' '}-{' '}{biosample.biosample_term_name}
                     </dd>
                 </dl>
             </div>
