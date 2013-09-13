@@ -141,7 +141,6 @@ function (experiment, React, globals, dbxref) {
                         <tr>
                             <th>Accession</th>
                             <th>Term</th>
-                            <th>Biological replicate</th>
                             <th>Type</th>
                             <th>Species</th>
                             <th>Source</th>
@@ -156,7 +155,6 @@ function (experiment, React, globals, dbxref) {
                             <tr key={index}>
                                 <td>{biosample.accession}</td>
                                 <td>{biosample.biosample_term_name}</td>
-                                <td>{biosamples[key].brn}</td>
                                 <td>{biosample.biosample_type}</td>
                                 <td>{biosample.donor.organism.name}</td>
                                 <td>{biosample.source.title}</td>
