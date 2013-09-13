@@ -15,10 +15,10 @@ function (target, React, globals, dbxref) {
                     <dt>Target name</dt>
                     <dd class="no-cap">{context.label}</dd>
 
-                    <dt>Target Gene</dt>
+                    <dt>Target gene</dt>
                     <dd><a href={globals.dbxref_prefix_map.HGNC + context.gene_name}>{context.gene_name}</a></dd>
 
-                    <dt>External Resources</dt>
+                    <dt>External resources</dt>
                     <dd>
                         {context.dbxref.length ? 
                             <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
