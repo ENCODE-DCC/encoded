@@ -153,17 +153,17 @@ function (biosample, React, URI, globals) {
                     <dt hidden={!context.organism.name}>Species</dt>
                     <dd hidden={!context.organism.name}>{context.organism.name}</dd>
 
-                    <dt hidden={!biosample && biosample.life_stage}>Life stage</dt>
-                    <dd hidden={!biosample && biosample.life_stage}>{biosample.life_stage}</dd>
+                    <dt hidden={!biosample && !biosample.life_stage}>Life stage</dt>
+                    <dd hidden={!biosample && !biosample.life_stage}>{biosample.life_stage}</dd>
 
-                    <dt hidden={!biosample && biosample.age}>Age</dt>
-                    <dd hidden={!biosample && biosample.age}>{biosample.age}{' '}{biosample.age_units}</dd>
+                    <dt hidden={!biosample && !biosample.age}>Age</dt>
+                    <dd hidden={!biosample && !biosample.age}>{biosample.age}{' '}{biosample.age_units}</dd>
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    <dt hidden={!biosample && biosample.health_status}>Health status</dt>
-                    <dd hidden={!biosample && biosample.health_status}>{biosample.health_status}</dd>
+                    <dt hidden={!biosample && !biosample.health_status}>Health status</dt>
+                    <dd hidden={!biosample && !biosample.health_status}>{biosample.health_status}</dd>
 
                     <dt>Ethnicity</dt>
                     <dd>{context.ethnicity}</dd>
