@@ -109,7 +109,7 @@ function (biosample, React, URI, globals) {
                         </div>
                     : null}
 
-                    <h3 hidden={!context.related_biosample_uuid}>Related Biosamples</h3>
+                    <h3 hidden={!context.related_biosample_uuid}>Related biosamples</h3>
                     {context.derived_from.length ?
                         <div class="panel data-display">
                             <h4>Derived from biosample</h4>
