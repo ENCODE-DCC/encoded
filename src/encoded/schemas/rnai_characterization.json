@@ -1,8 +1,8 @@
 {
-    "title": "ENCODE RNAi Characterization",
+    "title": "RNAi Vector Characterization",
+    "description": "Schema for submitting RNAi vector characterization data.",
     "id": "/profiles/rnai_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting construct characterization data",
     "type": "object",
     "required": [ "award", "lab", "characterizes" ],
     "additionalProperties": false,
@@ -19,7 +19,8 @@
             "default": "1"
         },
         "characterizes": {
-            "title": "RNAi characterized",
+            "title": "RNAi Characterized",
+            "comment": "See rnai.json for available identifiers.",
             "linkTo": "rnai"
         }
     }

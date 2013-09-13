@@ -1,10 +1,11 @@
 {
-    "title": "ENCODE Construct",
+    "title": "DNA Construct",
+    "description": "Schema for submitting an expression or targeting vector stably or transiently transfected.",
     "id": "/profiles/construct.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an ENCODE transfection Construct",
     "type": "object",
     "required": [ "construct_type", "target", "tags", "lab", "award"],
+    "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -12,15 +13,18 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/product_id" },
+        { "$ref": "mixins.json#/source" }
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
         "construct_type": {
-            "description": "The type of transfection construct",
-            "title": "Construct Type",
+            "title": "Type",
+            "description": "The type of sequence expressed from the construct.",
             "type": "string",
             "enum": [
                 "fusion protein",
@@ -28,42 +32,33 @@
             ]
         },
         "description": {
-            "default": "",
-            "description": "Long description of the construct",
-            "title": "Construct Description",
-            "type": "string"
-        },
-        "source": {
-            "description": "Source or Vendor of construct",
-            "comment": "Automatic submitters can supply an ENCODE source UUID or unique Source name",
-            "title": "Construct Source",
+            "title": "Description",
+            "description": "A plain text description of the construct. May include backbone name, description of the insert or purpose of the construct.",
             "type": "string",
-            "linkTo": "source"
-        },
-        "product_id": {
-            "description": "The vendor's construct product code",
-            "title": "Construct Product ID",
-            "type": "string"
+            "default": ""
         },
         "url": {
-            "description": "External Product URL for the specific construct at vendor site",
-            "title": "Product URL",
+            "title": "URL",
+            "description": "An external resource with additional information about the construct.",
             "type": "string",
             "format": "uri"
         },
         "target": {
-            "description": "Target that is tagged or knocked down by the construct",
-            "comment": "Automatic submitters can supply a target uuid, or name/species pair",
-            "title": "Construct Target",
+            "title": "Target",
+            "description": "The name of the gene whose expression or product is modified by the construct.",
+            "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "target"
         },
         "tags": {
+            "title": "Protein Tags",
+            "description": "Recombinant tags in the construct.",
+            "type": "array",
             "default": [],
-            "description": "List of tags associated with this construct",
             "items": {
-                "description": "A Tag",
-                "title": "Tag",
+                "title": "Protein Tag",
+                "description": "Recombinant tag in the construct.",
+                "comment": "Submit tag name and tag location.",
                 "type": "object",
                 "properties": {
                     "name": {
@@ -85,47 +80,45 @@
                         ]
                     }
                 }
-            },
-            "title": "Construct Document (list)",
-            "type": "array"
+            }
         },
         "vector_backbone_name": {
-            "description": "The name of the vector backbone used for the construct",
-            "title": "Vector Backbone Name",
+            "title": "Backbone Name",
+            "description": "The name of the vector backbone used for the construct.",
             "type": "string"
         },
         "documents": {
+            "title": "Construct Documents",
+            "description": "Documents that describe the construct.",
+            "type": "array",
             "default": [],
-            "description": "List of documents associated with this construct",
-            "comment": "For automatic submission supply unique documents names or uuids",
             "items": {
-                "description": "Contruct document",
                 "title": "Construct Document",
+                "description": "Document that describes the construct.",
+                "comment": "See document.json for available identifiers.",
                 "type": "string",
                 "linkTo": "document"
-            },
-            "title": "Construct Document (list)",
-            "type": "array"
+            }
         },
         "genomic_integration_site": {
-            "description": "Site in the biosample genome where the construct is stabily integrated",
             "title": "Integration Site",
-            "type": "string",
+            "description": "Genomic coordinates where construct is integrated, if known. Use NCBI assembly version:chromosome number:5' nucleotide position (e.g. GRCh37:21:3393939).",
             "comment": "TODO",
+            "type": "string",
             "requestMethod": []
         },
         "insert_sequence": {
-            "description": "DNA sequence for the relevant inserted part of the construct (not including vector)",
             "title": "Insert Sequence",
-            "type": "string",
+            "description": "DNA sequence inserted into the vector backbone.",
             "comment": "TODO",
+            "type": "string",
             "requestMethod": []
         },
         "insert_genome_coordinates": {
-            "description": "Coordinates in the (human or mouse) reference geneome corresponding to inserted sequence",
-            "title": "Insert Genome Coordintes",
-            "type": "string",
+            "title": "Insert Genome Coordinates",
+            "description": "Genomic coordinates of the insert. Use NCBI assembly version:chromosome number:nucleotide range (e.g. GRCh37:15:2800021-28344458).",
             "comment": "TODO",
+            "type": "string",
             "requestMethod": []
         }
     }

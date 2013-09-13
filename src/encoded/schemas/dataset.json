@@ -1,10 +1,11 @@
 {
-    "title": "ENCODE Dataset",
+    "title": "Dataset",
+    "description": "Schema for submitting metadata for a dataset.",
     "id": "/profiles/dataset.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting a set of files to ENCODE",
     "type": "object",
     "required": [ "award", "lab", "files"],
+    "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -20,16 +21,16 @@
             "default": "1"
         },
         "description": {
-            "default": "",
-            "description": "A plain text description of the dataset",
-            "title": "Experiment Description",
-            "type": "string"
+            "title": "Description",
+            "description": "A plain text description of the dataset.",
+            "type": "string",
+            "default": ""
         },
         "dataset_type": {
-            "default": "project",
-            "description": "The Dataset type",
-            "title": "Dataset Type",
+            "title": "Type",
+            "description": "The category that best describes the dataset.",
             "type": "string",
+            "default": "project",
             "enum": [
                 "project",
                 "composite",
@@ -37,53 +38,50 @@
             ]
         },
         "geo_dbxrefs": {
+            "title": "GEO IDs",
+            "type": "array",
             "default": [],
-            "description": "List of GEO dbxrefs (GDS#s)",
             "items": {
-                "description": "List of GEO IDs",
-                "title": "GEO IDs",
+                "title": "GEO ID",
                 "type":  "string",
-                "pattern": "^(GDS)\\d+$"
-            },
-            "title": "GEO DBXREFs",
-            "type": "array"
+                "pattern": "^[GSE|GSM]\\d+$"
+            }
         },
         "documents": {
+            "title": "Documents",
+            "description": "Documents that provide additional information about the dataset (not data files).",
+            "type": "array",
             "default": [],
-            "description": "List of other experimental protocol documents",
-            "comment": "For automatic submission supply unique Document names or uuids",
             "items": {
-                "description": "Experimental protocol document",
                 "title": "Document",
+                "description": "A document that provides additional information about the dataset (not data files).",
                 "type": "string",
+                "comment": "See document.json for available identifiers.",
                 "linkTo": "document"
-            },
-            "title": "List of Documents",
-            "type": "array"
+            }
         },
         "files": {
-            "description": "List of files in this dataset",
-            "comment": "For automatic submission supply unique data File accessions or uuids",
+            "title": "Data Files",
+            "description": "List of data files to be associated with the dataset.",
+            "type": "array",
             "items": {
-                "description": "Data file",
-                "title": "Files",
+                "title": "Data File",
+                "comment": "See file.json for available identifiers.",
                 "type": "string",
                 "linkTo": "file"
-            },
-            "title": "List of Data Files",
-            "type": "array"
+            }
         },
         "references": {
-            "default": [],
-            "description": "List of references (Pubmed IDs)",
             "title": "References",
+            "description": "The Pubmed identifiers that reference data found in the experiment.",
+            "type": "array",
+            "default": [],
             "reference": {
-                "description": "Pubmed id for a published reference",
-                "title": "Pubmed Reference",
+                "title": "Reference",
+                "description": "A Pubmed identifier that references data found in the experiment.",
                 "type": "string",
                 "pattern": "^PMID:[0-9]+$"
-            },
-            "type": "array"
+            }
         }
    }
 }

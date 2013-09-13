@@ -1,10 +1,10 @@
 {
-    "title": "ENCODE biosample Treatment",
+    "title": "Treatment",
     "id": "/profiles/treatment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an ENCODE biosample Treatment",
     "type": "object",
     "required": ["treatment_term_name", "treatment_type", "lab", "award"],
+    "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -19,10 +19,10 @@
             "default": "1"
         },
         "treatment_type": {
-            "default": "chemical",
-            "description": "The type of biosample treatment",
-            "title": "Treatment Type",
+            "title": "Type",
+            "description": "The classification of the treatment.",
             "type": "string",
+            "default": "chemical",
             "enum": [
                 "protein",
                 "chemical",
@@ -30,45 +30,44 @@
             ]
         },
         "protocols": {
-            "default": [],
-            "description": "Treatment protocol document",
-            "comment": "For automatic submission supply an unique document name or UUID",
-            "title": "Treatment Protocol Documents",
+            "title": "Protocol Documents",
+            "description": "Documents that describe the treatment protocol.",
             "type": "array",
+            "default": [],
             "items": {
+                "title": "Protocol Document",
+                "description": "A document that describes the treatment protocol.",
+                "comment": "See document.json for available identifiers.",
                 "type": "string",
                 "linkTo": "document"
             }
         },
         "encode2_dbxrefs": {
+            "title": "Previous ENCODE IDs",
+            "type": "array",
             "default": [],
-            "description": "List cross-references to the previous ENCODE2 system",
             "items": {
-                "description": "List of ENCODE2 Identifiers",
-                "title": "ID",
+                "title": "Previous ENCODE ID",
                 "type":  "string"
-            },
-            "title": "ENCODE2 DBXREFs",
-            "type": "array"
+            }
         },
         "treatment_term_id": {
-            "description": "Ontology term ID describing treatment used in treatment",
-            "title": "Treatment term ID",
+            "title": "Term ID",
+            "description": "Ontology identifier describing a component in the treatment.",
             "type": "string",
             "pattern": "^(CHEBI:[0-9]{5,6})|(UniprotKB:P[0-9]{5})|(Taxon:[0-9]{6})$"
         },
         "treatment_term_name": {
-            "description": "Ontology term describing treatment",
-            "title": "Treatment term name",
+            "title": "Term Name",
+            "description": "Ontology term describing a component in the treatment.",
             "type":  "string"
         },
         "concentration": {
-            "description": "Concentration of treament (numeric)",
             "title": "Concentration",
             "type": "number"
         },
         "concentration_units": {
-            "title": "Concentration units",
+            "title": "Concentration Units",
             "type": "string",
             "enum": [
                 "pM",
@@ -79,12 +78,11 @@
             ]
         },
         "duration": {
-            "description": "Duration of treament (numeric)",
             "title": "Duration",
             "type": "number"
         },
         "duration_units": {
-            "title": "Duration units",
+            "title": "Duration Units",
             "type": "string",
             "enum": [
                 "second",

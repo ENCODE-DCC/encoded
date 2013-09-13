@@ -1,10 +1,11 @@
 {
-    "title": "ENCODE Source",
+    "title": "Source",
+    "description": "Schema for submitting an originating lab or vendor.",
     "id": "/profiles/source.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting biosample, antibody or other external source",
     "type": "object",
     "required": ["name", "title"],
+    "identifyingProperties": ["uuid", "name"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -20,8 +21,8 @@
         "description": {
             "title": "Description",
             "description": "A plain text description of the source.",
-            "default": "",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "title": {
             "title": "Name",
@@ -35,7 +36,7 @@
         },
         "url": {
             "title": "URL",
-            "description": "A URL for the source.",
+            "description": "An external resource with additional information about the source.",
             "type": "string",
             "format": "uri"
         }
