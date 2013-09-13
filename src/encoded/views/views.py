@@ -269,7 +269,7 @@ class Target(Collection):
     columns = OrderedDict([
         ('label', 'Target'),
         ('organism.name', 'Species'),
-        ('dbxref', 'External Resources'),
+        ('dbxref', 'External resources'),
     ])
 
     class Item(Collection.Item):
@@ -417,7 +417,7 @@ class Experiments(Collection):
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
-        ('assay_term_name', 'Assay Type'),
+        ('assay_term_name', 'Assay type'),
         ('target.label', 'Target'),
         ('biosample_term_name', 'Biosample'),
         ('replicates.length', 'Replicates'),
