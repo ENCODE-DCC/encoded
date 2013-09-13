@@ -36,7 +36,7 @@ dd:first-letter { text-transform: capitalize; } // IE 8 and below support
 .cap-me-once:first-letter { text-transform: uppercase; }
 .cap-me-once::first-letter { text-transform: uppercase; } // older browser support
 
-dd ul {
+dd ul, .multi-value {
 	list-style: none;
 	margin: 0;
 }

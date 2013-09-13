@@ -112,8 +112,8 @@ function (biosample, React, URI, globals) {
                     <h3 hidden={!context.related_biosample_uuid}>Related biosamples</h3>
                     {context.derived_from.length ?
                         <div class="panel data-display">
-                            <h4>Derived from biosample</h4>
-                            <ul>{context.derived_from.map(function (biosample) {
+                            <h4>Derived from biosamples</h4>
+                            <ul class="multi-value">{context.derived_from.map(function (biosample) {
                                 return (
                                     <li key={biosample['@id']}>
                                         <a href={biosample['@id']}>{biosample.accession}</a>
