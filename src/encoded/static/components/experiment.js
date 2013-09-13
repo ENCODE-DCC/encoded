@@ -62,31 +62,31 @@ function (experiment, React, globals, dbxref) {
                             <dt hidden={!context.description}>Description</dt>
                             <dd hidden={!context.description}>{context.description}</dd>
 
-                            <dt>Biosample</dt>
-                            <dd>{context.biosample_term_name}</dd>
+                            <dt hidden={!context.biosample_term_name}>Biosample</dt>
+                            <dd hidden={!context.biosample_term_name}>{context.biosample_term_name}</dd>
 
-                            <dt>Biosample Type</dt>
-                            <dd>{context.biosample_type}</dd>
-                            
+                            <dt hidden={!context.biosample_type}>Biosample Type</dt>
+                            <dd hidden={!context.biosample_type}>{context.biosample_type}</dd>
+
                             {context.target ? <dt>Target</dt> : null}
                             {context.target ? <dd>{context.target.label}</dd> : null}
-                            
+
                             {antibody_accessions.length ? <dt>Antibody</dt> : null}
                             {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
-							<dt hidden={!context.possible_controls.length}>Controls</dt>
+                            <dt hidden={!context.possible_controls.length}>Controls</dt>
                             <dd hidden={!context.possible_controls.length}>
-                            	<ul>
-										{context.possible_controls.map(function (control) {
-											return (
-									            <li key={control['@id']}>
-													<a href={control['@id']}>
-														{control.accession}
-													</a>
-												</li>
-											);
-										})}
-									</ul>
+                                <ul>
+                                        {context.possible_controls.map(function (control) {
+                                            return (
+                                                <li key={control['@id']}>
+                                                    <a href={control['@id']}>
+                                                        {control.accession}
+                                                    </a>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
                             </dd>
 
                             <dt hidden={!context.encode2_dbxrefs.length}>ENCODE2 ID</dt>
@@ -117,7 +117,7 @@ function (experiment, React, globals, dbxref) {
                         );
                     })}
 
-                    <FilesLinked context={context} />                    
+                    <FilesLinked context={context} />
                 </div>
             );
         }
@@ -128,6 +128,11 @@ function (experiment, React, globals, dbxref) {
     var BiosamplesUsed = experiment.BiosamplesUsed = function (props) {
         var replicates = props.replicates;
         if (!replicates.length) return (<div hidden={true}></div>);
+        var biosamples = {};
+        replicates.forEach(function(replicate) {
+            var biosample = replicate.library.biosample;
+            biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
+        });
         return (
             <div>
                 <h3>Biosamples Used</h3>
@@ -145,16 +150,17 @@ function (experiment, React, globals, dbxref) {
                     </thead>
                     <tbody>
 
-                    {replicates.map(function (replicate, index) {
+                    { Object.keys(biosamples).map(function (key, index) {
+                        var biosample = biosamples[key].biosample;
                         return (
                             <tr key={index}>
-                                <td>{replicate.library.biosample.accession}</td>
-                                <td>{replicate.library.biosample.biosample_term_name}</td>
-                                <td>{replicate.biological_replicate_number}</td>
-                                <td>{replicate.library.biosample.biosample_type}</td>
-                                <td>{replicate.library.biosample.donor.organism.name}</td>
-                                <td>{replicate.library.biosample.source.title}</td>
-                                <td>{replicate.library.biosample.submitted_by.title}</td>
+                                <td>{biosample.accession}</td>
+                                <td>{biosample.biosample_term_name}</td>
+                                <td>{biosamples[key].brn}</td>
+                                <td>{biosample.biosample_type}</td>
+                                <td>{biosample.donor.organism.name}</td>
+                                <td>{biosample.source.title}</td>
+                                <td>{biosample.submitted_by.title}</td>
                             </tr>
                         );
                     })}
@@ -171,7 +177,12 @@ function (experiment, React, globals, dbxref) {
 
 
     var AssayDetails = experiment.AssayDetails = function (props) {
-        var replicates = props.replicates
+        var replicates = props.replicates.sort(function(a, b) {
+            if (b.biological_replicate_number === a.biological_replicate_number) {
+                return a.technical_replicate_number - b.technical_replicate_number;
+            }
+            return a.biological_replicate_number - b.biological_replicate_number;
+        });
         if (!replicates.length) return (<div hidden={true}></div>);
         var replicate = replicates[0];
         var library = replicate.library;
@@ -192,7 +203,7 @@ function (experiment, React, globals, dbxref) {
                 children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
             }
         }
-        if (platform.title) {
+        if (typeof(platform) != 'undefined' && platform.title) {
             children.push(<dt key="dt-platform">Platform</dt>);
             children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.title}</a></dd>);
         }
