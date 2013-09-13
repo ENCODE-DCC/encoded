@@ -789,6 +789,64 @@ class Collection(object):
     def after_add(self, item):
         '''Hook for subclasses'''
 
+    '''def __json__(self, request):
+        limit = request.params.get('limit', 30)
+        if limit in ('', 'all'):
+            limit = None
+        if limit is not None:
+            limit = int(limit)
+        session = DBSession()
+        query = session.query(Resource).filter(
+            Resource.item_type == self.item_type
+        )
+
+        properties = self.properties.copy()
+        properties['count'] = query.count()
+        # Expand $templated links
+        ns = properties.copy()
+        ns['collection_uri'] = request.resource_path(self)
+        ns['item_type'] = self.item_type
+        ns['permission'] = permission_checker(self, request)
+        compiled = ObjectTemplate(self.merged_template)
+        links = compiled(ns)
+        properties.update(links)
+        items = properties['@graph'] = []
+        properties['columns'] = self.columns
+
+        query = query.options(
+            orm.joinedload_all(
+                Resource.rels,
+                Link.target,
+                Resource.data,
+                CurrentPropertySheet.propsheet,
+            ),
+        )
+
+        for model in query.limit(limit).all():
+            item_uri = request.resource_path(self, model.rid)
+            rendered = embed(request, item_uri + '?embed=false')
+
+            for path in self.embedded_paths:
+                expand_path(request, rendered, path)
+
+            if not self.columns:
+                items.append(rendered)
+                continue
+
+            subset = {
+                '@id': rendered['@id'],
+                '@type': rendered['@type'],
+            }
+            for column in self.columns:
+                subset[column] = column_value(rendered, column)
+
+            items.append(subset)
+
+        return properties
+
+    def expand_embedded(self, request, properties):
+        pass'''
+
     def __json__(self, request):
         limit = request.params.get('limit', 30)
         if limit in ('', 'all'):
@@ -822,12 +880,19 @@ class Collection(object):
             else:
                 columns.append(column)
         
-        query = {'query': {'match_all': {}}, 'fields': columns}
-        results = es.search(query, index=self.item_type + 's', size=10000)
+        if len(columns) > 2:
+            query = {'query': {'match_all': {}}, 'fields': columns}
+        else:
+            query = {'query': {'match_all': {}}}
+        results = es.search(query, index=request.resource_path(self)[1:-1], size=10000)
         for model in results['hits']['hits']:
             for c in lengthColumns:
                 model['fields'][c + '.length'] = len(model['fields'][c])
-            items.append(model['fields'])
+
+            if len(columns) > 2:
+                items.append(model['fields'])
+            else:
+                items.append(model['_source'])
 
         return properties
 
