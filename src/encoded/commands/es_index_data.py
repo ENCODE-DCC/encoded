@@ -19,28 +19,28 @@ antibodies_mapping = {'basic': {'properties': {'target': {'properties': {'lab': 
 
 # Part of this will be moved to schemas and other part should be in a proper dict
 COLLECTION_URL = OrderedDict([
-    ('/users/', ['users', basic_mapping]),
-    ('/awards/', ['awards', basic_mapping]),
-    ('/labs/', ['labs', basic_mapping]),
-    ('/organisms/', ['organisms', basic_mapping]),
-    ('/sources/', ['sources', basic_mapping]),
-    ('/targets/', ['targets', targets_mapping]),
-    ('/antibody-lots/', ['antibody-lots', basic_mapping]),
-    ('/antibody-characterizations/', ['antibody-characterizations', basic_mapping]),
-    ('/antibodies/', ['antibodies', antibodies_mapping]),
-    ('/mouse-donors/', ['mouse-donors', donors_mapping]),
-    ('/human-donors/', ['human-donors', donors_mapping]),
-    ('/treatments/', ['treatments', basic_mapping]),
-    ('/constructs/', ['constructs', basic_mapping]),
-    ('/construct-characterizations/', ['construct-characterizations', basic_mapping]),
-    ('/rnais/', ['rnais', basic_mapping]),
-    ('/rnai-characterizations/', ['rnai-characterizations', basic_mapping]),
-    ('/biosamples/', ['biosamples', biosamples_mapping]),
-    ('/biosample-characterizations/', ['biosample-characterizations', basic_mapping]),
-    ('/platforms/', ['platforms', basic_mapping]),
-    ('/libraries/', ['libraries', basic_mapping]),
-    ('/experiments/', ['experiments', experiments_mapping]),
-    ('/replicates/', ['replicates', replicates_mapping])
+    ('/users/', ['user', basic_mapping]),
+    ('/awards/', ['award', basic_mapping]),
+    ('/labs/', ['lab', basic_mapping]),
+    ('/organisms/', ['organism', basic_mapping]),
+    ('/sources/', ['source', basic_mapping]),
+    ('/targets/', ['target', targets_mapping]),
+    ('/antibody-lots/', ['antibody_lot', basic_mapping]),
+    ('/antibody-characterizations/', ['antibody_characterization', basic_mapping]),
+    ('/antibodies/', ['antibody_approval', antibodies_mapping]),
+    ('/mouse-donors/', ['mouse_donor', donors_mapping]),
+    ('/human-donors/', ['human_donor', donors_mapping]),
+    ('/treatments/', ['treatment', basic_mapping]),
+    ('/constructs/', ['construct', basic_mapping]),
+    ('/construct-characterizations/', ['construct_characterization', basic_mapping]),
+    ('/rnais/', ['rnai', basic_mapping]),
+    ('/rnai-characterizations/', ['rnai_characterization', basic_mapping]),
+    ('/biosamples/', ['biosample', biosamples_mapping]),
+    ('/biosample-characterizations/', ['biosample_characterization', basic_mapping]),
+    ('/platforms/', ['platform', basic_mapping]),
+    ('/libraries/', ['library', basic_mapping]),
+    ('/experiments/', ['experiment', experiments_mapping]),
+    ('/replicates/', ['replicate', replicates_mapping])
 ])
 
 
@@ -63,7 +63,7 @@ def main():
 
     for url in COLLECTION_URL:
         print "Indexing " + COLLECTION_URL.get(url)[0] + " ...."
-        res = testapp.get(url + '?limit=all', headers={'Accept': 'application/json'}, status=200)
+        res = testapp.get(url + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
         items = res.json['@graph']
 
         # try creating index, if it exists already delete it and create it again and generate mapping
@@ -82,7 +82,7 @@ def main():
             document = item_json.json
 
             # For biosamples getting organ_slim and system_slim from ontology index
-            if COLLECTION_URL.get(url)[0] == 'biosamples':
+            if COLLECTION_URL.get(url)[0] == 'biosample':
                 if document['biosample_term_id']:
                     try:
                         document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']

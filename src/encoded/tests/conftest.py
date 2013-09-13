@@ -31,6 +31,7 @@ _app_settings = {
     'load_test_only': True,
     'load_sample_data': False,
     'testing': True,
+    'collection_source': 'database',
 }
 
 

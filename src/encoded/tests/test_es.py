@@ -1,4 +1,9 @@
+import pytest
 from pyelasticsearch import ElasticSearch, IndexAlreadyExistsError
+
+pytestmark = [
+    pytest.mark.es,
+]
 
 
 def test_es_conn():

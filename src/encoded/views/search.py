@@ -78,7 +78,7 @@ class FilteredQuery(dict):
         self['query']['filtered']['filter']['and']['filters'].append({'missing': {'field': v}})
 
 
-@view_config(name='search', context=Root, request_method='GET', permission='view')
+@view_config(name='search', context=Root, request_method='GET', permission='search')
 def search(context, request):
     ''' Search view connects to ElasticSearch and returns the results'''
 
@@ -109,7 +109,7 @@ def search(context, request):
     # Check if we are searching for a specified string or searching everything
     if 'searchTerm' in params:
         if 'type' in params:
-            index = params.get('type')
+            index = schemas[params.get('type')][:-5]
             if len(params) > 2:
                 query = FilteredQuery()
                 query.__setterm__(params.get('searchTerm'))
@@ -128,14 +128,16 @@ def search(context, request):
             for d in data:
                 query.fields = data[d]
                 # Should have some limit on size to have better
-                s = es.search(query, index=d, size=1100)
-                items['count'][d] = len(s['hits']['hits'])
+                s = es.search(query, index=schemas[d][:-5], size=1100)
+                for key, value in schemas.items():
+                    if value == schemas[d]:
+                        items['count'][key] = len(s['hits']['hits'])
                 for dataS in s['hits']['hits']:
                     items['results'].append(dataS['fields'])
             result['@graph'] = items
             return result
     else:
-        index = 'biosamples'
+        index = 'biosample'
         query.query = {'match_all': {}}
     
     # We can get rid of this once we have a standard graphs for default search page
@@ -158,7 +160,9 @@ def search(context, request):
             items['facets'][facet] = face
 
     if 'searchTerm' in params:
-        items['count'][index] = len(s['hits']['hits'])
+        for key, value in schemas.items():
+            if value == index + '.json':
+                items['count'][key] = len(s['hits']['hits'])
         for dataS in s['hits']['hits']:
             items['results'].append(dataS['fields'])
     else:
