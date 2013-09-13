@@ -119,6 +119,10 @@ function uri_spec(URI) {
             expect(URI(href).sameOrigin(href)).toBe(false);
         });
 
+        it("is able to parse params with multiple spaces", function() {
+            var uri = URI('/search?q=devmo++');
+            expect(uri.params().q).toBe('devmo  ');
+		});
 
     });
 

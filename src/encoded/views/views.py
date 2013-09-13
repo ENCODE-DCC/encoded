@@ -184,7 +184,7 @@ class Construct(Collection):
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
     }
-    item_embedded = set(['source', 'documents', 'characterizations'])
+    item_embedded = set(['source', 'documents', 'characterizations', 'target'])
     # item_keys = ['vector_name']
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
@@ -201,7 +201,7 @@ class ConstructCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        pass
+        embedded = ['submitted_by', 'lab', 'award']
 
 
 @location('documents')
@@ -254,7 +254,7 @@ class BiosampleCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        pass
+        embedded = ['submitted_by', 'lab', 'award']
 
 
 @location('targets')
@@ -274,7 +274,7 @@ class Target(Collection):
 
     class Item(Collection.Item):
         template = {
-            'name': {'$value': '{label}-{organism_name}', '$templated': True},
+            'name': {'$value': '{label} ({organism_name})', '$templated': True},
         }
         embedded = set(['organism', 'submitted_by', 'lab', 'award'])
         keys =  ALIAS_KEYS + [
@@ -305,7 +305,7 @@ class AntibodyCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        embedded = set(['antibody', 'target', 'submitted_by', 'lab', 'award'])
+        embedded = ['submitted_by', 'lab', 'award', 'target']
 
 
 @location('antibodies')
@@ -420,10 +420,10 @@ class Experiments(Collection):
         ('assay_term_name', 'Assay Type'),
         ('target.label', 'Target'),
         ('biosample_term_name', 'Biosample'),
-        ('replicates.length', 'Biological Replicates'),
+        ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
-        ('award.rfa', 'RFA'),
+        ('award.rfa', 'Project'),
     ])
 
 
@@ -451,7 +451,7 @@ class RNAiCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        pass
+        embedded = ['submitted_by', 'lab', 'award']
 
 
 @location('dataset')
