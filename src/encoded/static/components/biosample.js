@@ -267,9 +267,9 @@ function (biosample, React, URI, globals) {
 						<ul>
 							{context.documents.map(function (document) {
 								return (
-									<li key={document['@id']}> 
-										<a href={document.attachment.href}>
-									 		{document.attachment.download}
+									<li key={document['@id']} class="cap-me-once"> 
+										<a href={document['@id']}>
+									 		{document.document_type}
 										</a>
 									</li>
 								);
