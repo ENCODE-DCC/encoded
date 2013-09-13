@@ -1,10 +1,11 @@
 {
-    "title": "Human donor",
+    "title": "Human Donor",
+    "description": "Schema for submitting a human donor.",
     "id": "/profiles/human_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an ENCODE human donor",
     "type": "object",
     "required": [ "award", "lab", "organism"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },

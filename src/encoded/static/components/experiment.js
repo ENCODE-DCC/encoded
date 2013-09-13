@@ -90,7 +90,7 @@ function (experiment, React, globals, dbxref) {
                             </dd>
 
                             <dt hidden={!context.encode2_dbxrefs.length}>ENCODE2 ID</dt>
-                            <dd hidden={!context.encode2_dbxrefs.length}>
+                            <dd hidden={!context.encode2_dbxrefs.length} class="no-cap">
                                 <DbxrefList values={context.encode2_dbxrefs} prefix="ENCODE2" />
                             </dd>
 

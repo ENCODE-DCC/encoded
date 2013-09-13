@@ -1,9 +1,8 @@
 {
-    "title": "ENCODE Antibody Characterization",
+    "title": "Antibody Lot Review",
+    "description": "Schema for submitting antibody lot review for application in immunoprecipitation assays.",
     "id": "/profiles/antibody_approval.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting antibody characterization data",
-    "comment": "Complete submitted antibody characterizations are reviewed by the DCC and assigned a status",
     "type": "object",
     "required": [ "award", "lab", "antibody", "status", "target" ],
     "facets":{"Approval Status": "status", "Lab": "target.lab.title", "Organism": "antibody.host_organism.name"},
@@ -19,39 +18,37 @@
             "default": "1"
         },
         "antibody": {
-            "description": "The specific antibody for which the characterization image applies.",
-            "comment": "Programmatic submitters can supply an ENCODE antibody accession or uuid",
-            "title": "Antibody to be validated",
+            "title": "Antibody",
+            "comment": "See antibody_lot.json for available identifiers.",
             "type": "string",
             "linkTo": "antibody_lot"
         },
         "target": {
-            "description": "Target for which the antibody characterization applies.",
-            "comment": "Programmatic submitters can supply a target uuid, or a specific Target label-Organism name pair",
-            "title": "Antibody target",
+            "title": "Target",
+            "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
+            "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "target"
         },
         "characterizations": {
-            "default": [],
-            "description": "List of antibody characterization images",
-            "comment": "Programmatic submitters can supply a list of characterization uuids for each primary and secondary characterization submitted",
             "title": "Characterizations",
+            "description": "Antibody characterizations under review.",
+            "type": "array",
+            "default": [],
             "items": {
-                "description": "Antibody characterizations used for approval",
-                "comment": "Automatic submitters can supply a characterization uuid",
-                "title": "Antibody characterization",
+                "title": "Characterization",
+                "description": "An antibody characterization under review.",
+                "comment": "See antibody_characterization.json for available identifiers.",
                 "type": "string",
                 "linkTo": "antibody_characterization"
-            },
-            "type": "array"
+            }
         },
         "status": {
-            "default": "INCOMPLETE",
-            "description": "Status code for the Antibody-Target-Characterization triple",
-            "comment": "Use the default, all other values are set by the DCC. The status informs the current state of the antibody characterizations submitted for review",
-            "title": "Approval status",
+            "title": "Status",
+            "description": "The current state of the antibody characterizations.",
+            "comment": "Do not submit, the value is assigned by server. The status is updated by the DCC.",
             "type": "string",
+            "default": "INCOMPLETE",
             "enum" : [
                 "APPROVED",
                 "SUBMITTED",

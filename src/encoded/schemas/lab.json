@@ -1,10 +1,10 @@
 {
-    "title": "ENCODE Lab",
+    "title": "Lab",
     "id": "/profiles/lab.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting a lab or research group for the ENCODE project.",
     "type": "object",
     "required": ["name"],
+    "identifyingProperties": ["uuid", "title"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -18,107 +18,102 @@
             "default": "1"
         },
         "name": {
-            "description": "Unique short name for the Lab",
-            "title": "Lab Name",
+            "title": "Name",
+            "description": "A short unique name for the lab, current convention is lower cased and hyphen delimited of PI's first and last name (e.g. john-doe).",
             "type": "string",
             "pattern": "^[a-z0-9\\-]+$"
         },
         "title": {
-            "title": "Temporary lab title",
+            "title": "Title",
+            "description": "A unique name for affiliation identification, current convention is comma separated PI's first & last name and institute label. (e.g. John Doe, UNI).",
             "type": "string"
         },
         "pi": {
-            "description": "Principle Investigator of the lab",
-            "comment": "For automatic submission submit the email, first & last name, or collegue uuid for the PI",
             "title": "P.I.",
+            "description": "Principle Investigator of the lab.",
+            "comment": "See user.json for available identifiers.",
             "type": "string",
             "linkTo": "user"
         },
         "awards": {
+            "title": "Grants",
+            "description": "Grants associated with the lab.",
+            "type": "array",
             "default": [],
-            "description": "List of Awards (Grants) associated with the lab (and the ENCODE project).",
-            "title": "List of Awards (Grants)",
             "items": {
-                "description": "Award (Grant) this submission is registered under",
-                "comment": "Automatic submitters can supply an Award UUID, name, or number",
-                "title": "Award Name or Number",
+                "title": "Grant",
+                "description": "A grant associated with the lab.",
+                "comment": "See award.json for available identifiers.",
                 "type": "string",
                 "linkTo": "award"
-            },
-            "type": "array"
+            }
         },
         "institute_label": {
-            "default": "",
-            "description": "Short name for the Institute the lab belongs too.",
             "title": "Institute Label",
-            "type": "string"
+            "description": "An abbreviation for the institute the lab is associated with.",
+            "type": "string",
+            "default": ""
         },
         "institute_name": {
-            "default": "",
-            "description": "Full name for the Institute the lab belongs too.",
             "title": "Institute",
-            "type": "string"
+            "description": "The name for the institute the lab is associated with.",
+            "type": "string",
+            "default": ""
         },
         "address1": {
-            "default": "",
-            "description": "1st line of Lab's mailing address.",
-            "title": "Address",
-            "type": "string"
+            "title": "Address Line 1",
+            "type": "string",
+            "default": ""
         },
         "address2": {
-            "description": "2nd line of Lab's mailing address.",
-            "title": "Address (2)",
+            "title": "Address Line 2",
             "type": "string"
         },
         "city": {
-            "default": "",
-            "description": "City in which the lab is located.",
             "title": "City",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "state": {
-            "default": "",
-            "description": "US State, Province or Region in which the lab is located.",
-            "title": "State/Region",
-            "type": "string"
+            "title": "State/Province/Region",
+            "type": "string",
+            "default": ""
         },
         "country": {
-            "default": "",
-            "description": "Country in which the lab is located.",
             "title": "Country",
-            "type": "string"
+            "type": "string",
+            "default": ""
         },
         "postal_code": {
-            "default": "",
-            "description": "Postal Code for the lab's mailing address",
-            "title": "",
+            "title": "ZIP/Postal Code",
             "type": "string",
+            "default": "",
             "format": "postal-code"
         },
         "fax": {
-            "default": "",
-            "description": "Lab's fax number",
-            "title": "Fax #",
+            "title": "Fax Number",
+            "description":"A fax number for the lab (with country code).",
             "type": "string",
+            "default": "",
             "format": "phone"
         },
         "phone1": {
-            "default": "",
-            "description": "Lab's primary phone number number",
-            "title": "Phone #",
+            "title": "Primary Phone Number",
+            "description": "The lab's primary phone number (with country code).",
             "type": "string",
+            "default": "",
             "format": "phone"
         },
         "phone2": {
-            "default": "",
-            "description": "Lab's alternate phone number",
-            "title": "Alt. Phone #",
+            "title": "Alternate Phone Number",
+            "description": "The lab's alternative phone number (with country code).",
             "type": "string",
+            "default": "",
             "format": "phone"
         },
         "url": {
-            "description": "URL for the lab website",
             "title": "URL",
+            "description": "An external resource with additional information about the lab.",
             "type": "string",
             "format": "uri"
         }

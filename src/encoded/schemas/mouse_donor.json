@@ -1,10 +1,11 @@
 {
-    "title": "Mouse donor",
+    "title": "Mouse Donor",
+    "description": "Schema for submitting a mouse donor.",
     "id": "/profiles/mouse_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an ENCODE mouse donor",
     "type": "object",
     "required": [ "award", "lab", "organism"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -21,33 +22,29 @@
             "default": "1"
         },
         "littermates": {
-            "default": [],
-            "description": "List of donors related as littermates to this (mouse) donor",
             "title": "Littermates",
+            "description": "Donors comprising the same litter.",
             "type":  "array",
+            "default": [],
             "items": {
-                "description": "Another donor mouse from the same litter",
-                "comment": "For automated submission supply an ENCODE donor accession or uuid",
                 "title": "Littermate",
+                "description": "A donor member of the same litter.",
+                "comment": "See mouse_donor.json for available identifiers.",
                 "type": "string",
                 "linkTo": "donor"
             }
         },
         "strain_background": {
-            "description": "Strain background of a non-human donor",
-            "comment": "For non-human donors only",
             "title": "Strain Background",
+            "description": "The specific parent strain designation of a non-human donor.",
             "type": "string"
         },
         "strain_name": {
-            "description": "Specific strain name of a non-human donor",
-            "comment": "For non-human donors only",
             "title": "Strain Name",
+            "description": "The specific strain designation of a non-human donor.",
             "type": "string"
         },
         "organism": {
-            "comment": "unsure best way to handle the enum here",
-            "description": "Organism of the donor creature",
             "default": "3413218c-3d86-498b-a0a2-9a406638e786",
             "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
         }

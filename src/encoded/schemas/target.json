@@ -1,11 +1,12 @@
 {
-    "title": "ENCODE Target",
+    "title": "Target",
+    "description": "Schema for submitting a target gene.",
     "id": "/profiles/target.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting a target of an antibody or experiment to the ENCODE DCC",
     "type": "object",
     "required": ["organism", "label"],
     "facets": {"Lab": "lab.title", "Organism": "organism.name"},
+    "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -17,31 +18,35 @@
             "default": "1"
         },
         "dbxref": {
+            "title": "External Identifiers",
+            "description": "Unique identifiers from external resources (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
+	"type": "array",
             "default": [],
-            "title": "DBXREFs",
-            "description": "List of Database (including HGNC or MGI)cross-references",
             "items": {
-                "description": "Database identifiers",
-                "title": "DB ID",
+                "title": "External Identifier",
+                "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
+                "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
                 "type":  "string"
-            },
-            "type": "array"
+            }
         },
         "organism": {
-            "description": "Organism of the specific target",
-            "title": "Target organism",
+            "title": "Organism",
+            "description": "Organism bearing the target.",
+            "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "organism"
         },
         "gene_name": {
-            "description": "HGNC or MGI gene name for target",
-            "title": "Target Gene Name",
+            "title": "Gene Name",
+            "description": "HGNC or MGI identifier for the target.",
+            "comment": "Submit only the identifier (e.g. HMFN0395 or 22809).",
             "type": "string",
             "format": "gene_name"
         },
         "label": {
-            "description": "Short name of the target gene or modified protein.  If unmodified, the HGNC or MGI gene name",
-            "title": "Target Label (Gene Name or modified protein)",
+            "title": "Common Name with Modification",
+            "description": "Common name for the target including post-translational modifications, if any.",
+            "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
             "format": "target_label"
         }

@@ -1,11 +1,11 @@
-{
-    "title": "ENCODE Antibody Characterization",
+ {
+    "title": "Antibody Characterization",
+    "description": "Schema for submitting antibody characterization data.",
     "id": "/profiles/antibody_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting antibody characterization data",
-    "comment": "Describes the characterization of an antibody lot submitted for review",
     "type": "object",
     "required": [ "award", "lab", "characterizes", "target" ],
+    "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -20,13 +20,14 @@
             "default": "1"
         },
         "characterizes": {
-            "title": "Antibody characterized",
+            "title": "Antibody Characterized",
+            "comment": "See antibody_lot.json for available identifiers.",
             "linkTo": "antibody_lot"
         },
         "target": {
-            "description": "Target for which the antibody characterization applies.",
-            "comment": "Programmatic submitters can supply a target uuid, or uniqe Target label-Organism name pair",
-            "title": "Antibody target",
+            "title": "Target",
+            "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
+            "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "target"
         }

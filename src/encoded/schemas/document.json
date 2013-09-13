@@ -1,10 +1,11 @@
 {
-    "title": "ENCODE Document",
+    "title": "Document",
+    "description": "Schema for submitting a document file.",
     "id": "/profiles/document.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an ENCODE document or protocol",
     "type": "object",
     "required": [ "document_type", "lab", "award"],
+    "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -20,8 +21,8 @@
             "default": "1"
         },
         "document_type": {
-            "description": "The specific purpose of the document or protocol",
-            "title": "Document Type",
+            "title": "Type",
+            "description": "The category that best describes the document.",
             "type": "string",
             "enum": [
                 "growth protocol",
@@ -40,33 +41,34 @@
            ]
         },
         "description": {
-            "default": "",
-            "description": "A plain text description of the document",
             "title": "Description",
-            "type": "string"
+            "description": "A plain text description of the document.",
+            "type": "string",
+            "default": ""
         },
         "references": {
-            "default": [],
-            "description": "List of references (Pubmed IDs)",
             "title": "References",
+            "description": "The Pubmed identifiers that the document references.",
+            "type": "array",
+            "default": [],
             "reference": {
-                "description": "Pubmed id for a published reference",
-                "title": "Pubmed Reference",
+                "title": "Reference",
+                "description": "A Pubmed identifier that the document references.",
                 "type": "string",
                 "pattern": "^PMID:[0-9]+$"
-            },
-            "type": "array"
+            }
         },
         "urls": {
-            "default": [],
-            "description": "List of URLs",
             "title": "URLs",
+            "description": "External resources with additional information to the document.",
+            "type": "array",
+            "default": [],
             "reference": {
                 "title": "URL",
+                "description": "An external resource with additional information to the document.",
                 "type": "string",
                 "format": "uri"
-            },
-            "type": "array"
+            }
         }
     }
 }
