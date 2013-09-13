@@ -1,11 +1,12 @@
 {
-    "title": "ENCODE Replicate",
+    "title": "Replicate",
+    "description": "Schema for submitting an experimental replicate.",
     "id": "/profiles/replicate.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an experimental Replicate",
     "type": "object",
     "required": ["experiment", "biological_replicate_number", "technical_replicate_number"],
     "approvalRequired": ["library"],
+    "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -18,68 +19,65 @@
             "default": "1"
         },
         "antibody": {
-            "description": "Antibody used with this Replicate (-IP experiments only)",
-            "comment": "Automatic submitters can supply an Antibody accession or UUID",
             "title": "Antibody",
+            "description": "For Immunoprecipitation assays, the antibody used.",
+            "comment": "See antibody_lot.json for available identifiers.",
             "type": "string",
             "linkTo": "antibody_lot"
         },
         "biological_replicate_number": {
-            "default": 1,
-            "description": "Biologically replicated experiments are numbered sequentially",
-            "title": "Replicate # (Biological)",
-            "type": "integer"
+            "title": "Biological Replicate",
+            "description": "Data collection under the same methods using a different biological source, measuring the variability in the biological source.",
+            "type": "integer",
+            "default": 1
         },
         "technical_replicate_number": {
-            "default": 1,
-            "description": "Technically replicated experiments are numbered sequentially",
-            "title": "Replicate # (Technical)",
-            "type": "integer"
+            "title": "Technical Replicate",
+            "description": "Data collection under the same methods using the same biological source, measuring the variability in the method.",
+            "type": "integer",
+            "default": 1
         },
         "experiment": {
-            "description": "Experiment dataset that this Replicate is grouped with",
-            "comment": "For automatic submission supply unique Experiment dataset accession or UUID",
-            "title": "Experiment ID",
+            "title": "Experiment",
+            "description": "The experiment the replicate belongs to.",
+            "comment": "See experiment.json for available identifiers.",
             "type": "string",
             "linkTo": "experiment"
         },
         "library": {
-            "description": "Nucleic acid Library used in this replicate.",
-            "comment": "For automatic submission supply unique Library accession or UUID",
-            "title": "Library ID",
+            "title": "Library",
+            "description": "The nucleic acid library used in this replicate.",
+            "comment": "See library.json for available identifiers.",
             "type": "string",
             "linkTo": "library"
         },
         "platform": {
-            "description": "Platform (hardware) that this Replicate was performed on",
-            "comment": "For automatic submission supply unique Platform name or UUID",
-            "title": "Platform ID",
+            "title": "Platform",
+            "description": "The measurement device used to collect data.",
+            "comment": "See platform.json for available identifiers.",
             "type": "string",
             "linkTo": "platform"
         },
         "flowcell_details": {
-            "default": [],
-            "description": "Details about the machine/flowcell/lane information for this replicates",
-            "title": "Flowcell Details",
+            "title": "Flowcells",
+            "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
             "type": "array",
+            "default": [],
             "items": {
-                "description": "A machine:flowcell:lane triple",
-                "title": "Machine:Flowcells:Lanes",
+                "title": "Flowcell Details",
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
                     "machine": {
-                        "description": "The friendly name of the specific machine platform",
-                        "title": "Machine name",
+                        "title": "Machine Name",
+                        "description": "The lab specific name of the machine used.",
                         "type": "string"
                     },
                     "flowcell": {
-                        "description": "The identifier of flowcell",
                         "title": "Flowcell ID",
                         "type": "string"
                     },
                     "lane": {
-                        "description": "The identifier of the lane used",
                         "title": "Lane",
                         "type": "string"
                     }
@@ -87,10 +85,10 @@
             }
         },
         "paired_ended": {
-            "default": false,
-            "description": "Whether or not the replicate was sequenced using  paired-end primers",
-            "title": "Paired Ended",
-            "type": "boolean"
+            "title": "Paired-End Sequencing",
+            "description": "The utilization of sequencing both ends of the DNA fragment in a library.",
+            "type": "boolean",
+            "default": false
         }
     }
 }

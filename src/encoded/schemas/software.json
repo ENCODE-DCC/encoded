@@ -1,8 +1,8 @@
 {
     "title": "Software",
+    "description": "Schema for submitting analysis software and parameters.",
     "id": "/profiles/software.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting analysis Software pipeline/parameters to ENCODE",
     "type": "object",
     "required": ["name", "arguments", "lab", "award", "software_type"],
     "additionalProperties": false,
@@ -18,19 +18,19 @@
             "default": "1"
         },
         "name": {
-            "description": "Unique ame of the Software package or pipeline",
-            "title": "Software Name",
+            "title": "Name",
+            "description": "Unique name of the software package or pipeline.",
             "type":  "string",
             "pattern": "[a-z][0-9\\-]"
         },
         "title": {
-            "description": "The preferred viewable name of the software",
-            "title": "Software (package) Title",
+            "title": "Title",
+            "description": "The preferred viewable name of the software.",
             "type": "string"
         },
         "software_type": {
-            "description": "The purpose of the software",
-            "title": "Software Type",
+            "title": "Type",
+            "description": "The categorization of the software purpose.",
             "type": "string",
             "enum" : [
                 "mapper",
@@ -40,70 +40,68 @@
             ]
         },
         "software_version": {
-            "description": "Software version code",
             "title": "Version",
             "type": "string"
         },
         "arguments": {
-            "description": "A list of command line arguments used to run the package for a specific purpose.",
             "title": "Command Line Arguments",
+            "description": "The arguments used to run the software.",
             "type": "string"
         },
         "dependencies": {
-            "description": "A list of specific software dependencies",
             "title": "Dependencies",
+            "description": "The list of specific software dependencies.",
             "type": "string"
         },
         "instructions": {
+            "title": "Instructional Documents",
+            "description": "Documents with detailed instructions and protocols for running the software.",
+            "type": "array",
             "default": [],
-            "description": "Detailed instructions and protocols for running the program or pipeline",
-            "title": "Instructions",
             "items": {
-                "comment": "For automatic submission supply an unique document name or UUID",
-                "title": "Sofware Instructions Document",
+                "title": "Instructional Document",
+                "description": "A document with detailed instructions and protocols for running the software.",
+                "comment": "See document.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "document"
-            },
-            "type": "array"
+            }
         },
         "encode2_dbxrefs": {
+            "title": "Previous ENCODE IDs",
+            "type": "array",
             "default": [],
-            "description": "List cross-references to the previous ENCODE2 system",
             "items": {
-                "description": "List of ENCODE2 Identifiers",
-                "title": "ID",
+                "title": "Previous ENCODE ID",
                 "type":  "string"
-            },
-            "title": "ENCODE2 DBXREFs",
-            "type": "array"
+            }
         },
         "references": {
-            "default": [],
-            "description": "List of references (Pubmed IDs)",
             "title": "References",
+            "description": "The Pubmed identifiers used as references for the software.",
+            "type": "array",
+            "default": [],
             "reference": {
-                "description": "Pubmed id for a published reference",
-                "title": "Pubmed Reference",
+                "title": "Reference",
+                "description": "A Pubmed identifier used as a reference for the software.",
                 "type": "string",
                 "pattern": "^PMID:[0-9]+$"
-            },
-            "type": "array"
+            }
         },
         "bug_tracker_url": {
-            "description": "URL for the software bug tracker",
             "title": "Bug Tracker URL",
+            "description": "An external resource to track bugs for the software.",
             "type": "string",
             "format": "uri"
         },
         "source_url": {
-            "description": "URL for the software source code (repository)",
             "title": "Source URL",
+            "description": "An external resource to the code base.",
             "type": "string",
             "format": "uri"
         },
         "url": {
-            "description": "URL for the software website.",
             "title": "URL",
+            "description": "An external resource with additional information about the software.",
             "type": "string",
             "format": "uri"
         }
