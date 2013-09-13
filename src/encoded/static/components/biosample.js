@@ -150,20 +150,20 @@ function (biosample, React, URI, globals) {
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
 
-                    {context.organism.name ? <dt>Species</dt> : null}
-                    {context.organism.name ? <dd>{context.organism.name}</dd> : null}
+                    <dt hidden={!context.organism.name}>Species</dt>
+                    <dd hidden={!context.organism.name}>{context.organism.name}</dd>
 
-                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                    {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
+                    <dt hidden={!biosample && biosample.life_stage}>Life stage</dt>
+                    <dd hidden={!biosample && biosample.life_stage}>{biosample.life_stage}</dd>
 
-                    {biosample && biosample.age ? <dt>Age</dt> : null}
-                    {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                    <dt hidden={!biosample && biosample.age}>Age</dt>
+                    <dd hidden={!biosample && biosample.age}>{biosample.age}{' '}{biosample.age_units}</dd>
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                    {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
+                    <dt hidden={!biosample && biosample.health_status}>Health status</dt>
+                    <dd hidden={!biosample && biosample.health_status}>{biosample.health_status}</dd>
 
                     <dt>Ethnicity</dt>
                     <dd>{context.ethnicity}</dd>
@@ -184,26 +184,26 @@ function (biosample, React, URI, globals) {
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
 
-                    {context.organism.name ? <dt>Species</dt> : null}
-                    {context.organism.name ? <dd>{context.organism.name}</dd> : null}
+                    <dt hidden={!context.organism.name}>Species</dt>
+                    <dd hidden={!context.organism.name}>{context.organism.name}</dd>
 
-                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                    {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
+                    <dt hidden={!biosample && biosample.life_stage}>Life stage</dt>
+                    <dd hidden={!biosample && biosample.life_stage}>{biosample.life_stage}</dd>
 
-                    {biosample && biosample.age ? <dt>Age</dt> : null}
-                    {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                    <dt hidden={!biosample && biosample.age}>Age</dt>
+                    <dd hidden={!biosample && biosample.age}>{biosample.age}{' '}{biosample.age_units}</dd>
 
                     <dt>Sex</dt>
                     <dd>{context.sex}</dd>
 
-                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                    {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
+                    <dt hidden={!biosample && biosample.health_status}>Health status</dt>
+                    <dd hidden={!biosample && biosample.health_status}>{biosample.health_status}</dd>
 
                     <dt>Strain background</dt>
                     <dd>{context.strain_background}</dd>
 
-                    {context.strain_name ? <dt>Strain name</dt> : null}
-                    {context.strain_name ? <dd>{context.strain_name}</dd> : null}
+                    <dt hidden={!context.strain_name}>Strain name</dt>
+                    <dd hidden={!context.strain_name}>{context.strain_name}</dd>
                 </dl>
             );
         }
@@ -244,27 +244,27 @@ function (biosample, React, URI, globals) {
             var context = this.props.context;
             return (
                 <dl class="key-value">
-                	{context.target ? <dt>Target</dt> : null}
-                    {context.target ? <dd class="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+                	<dt hidden={!context.target}>Target</dt>
+                    <dd hidden={!context.target} class="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd>
 
-                    {context.vector_backbone_name ? <dt>Vector</dt> : null}
-                    {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}
+                    <dt hidden={!context.vector_backbone_name}>Vector</dt>
+                    <dd hidden={!context.vector_backbone_name}>{context.vector_backbone_name}</dd>
 
-                    {context.construct_type ? <dt>Construct Type</dt> : null}
-                    {context.construct_type ? <dd>{context.construct_type}</dd> : null}
+                    <dt hidden={!context.construct_type}>Construct Type</dt>
+                    <dd hidden={!context.construct_type}>{context.construct_type}</dd>
 
-                   	{context.description ?  <dt>Description</dt> : null}
-                    {context.description ? <dd>{context.description}</dd> : null}
+                   	<dt hidden={!context.description}>Description</dt>
+                    <dd hidden={!context.description}>{context.description}</dd>
 
-                    {context.source.title ? <dt>Source</dt> : null}
-                    {context.source.title ? <dd>{context.source.title}</dd> : null}
+                    <dt hidden={!context.source.title}>Source</dt>
+                    <dd hidden={!context.source.title}>{context.source.title}</dd>
 
-                    {context.product_id ? <dt>Product ID</dt> : null}
-                    {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
+                    <dt hidden={!context.product_id}>Product ID</dt>
+                    <dd hidden={!context.product_id}><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
                     
                     <dt hidden={!context.documents.length}>Construct documents</dt>
-					<dd>                
-						<ul hidden={!context.documents.length}>
+					<dd hidden={!context.documents.length}>                
+						<ul>
 							{context.documents.map(function (document) {
 								return (
 									<li key={document['@id']}> 
@@ -342,8 +342,8 @@ function (biosample, React, URI, globals) {
                                 <h3 style={{'text-transform': 'capitalize'}}>{context.document_type}</h3>
                                 <p>{context.description}</p>
                                 <dl class="key-value">
-                                	{context.caption ? <dt>Caption</dt> : null}
-                                    {context.caption ? <dd>{context.caption}</dd> : null}
+                                	<dt hidden={!context.caption}>Caption</dt>
+                                    <dd hidden={!context.caption}>{context.caption}</dd>
 
                                     <dt>Submitted By</dt>
                                     <dd>{context.submitted_by.title}</dd>
