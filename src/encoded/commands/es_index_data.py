@@ -7,16 +7,40 @@ DOCTYPE = 'basic'
 es = ElasticSearch(ES_URL)
 
 # Mapping will be moved to schemas eventually
+basic_mapping = {'basic': {}}
+libraries_mapping = {'basic': {'properties': {'size_range': {'type': 'string'}}}}
+replicates_mapping = {'basic': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}
+donors_mapping = {'basic': {'properties': {'age': {'type': 'string'}}}}
+
 targets_mapping = {'basic': {'properties': {'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'organism': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}}}}
 biosamples_mapping = {'basic': {'properties': {'source': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'system_slims': {'type': 'string', 'index': 'not_analyzed'}, 'organ_slims': {'type': 'string', 'index': 'not_analyzed'}, 'biosample_type': {'type': 'string', 'index': 'not_analyzed'}, 'treatments': {'type': 'nested'}, 'constructs': {'type': 'nested'}}}}
 experiments_mapping = {'basic': {'properties': {'assay_term_name': {'type': 'string', 'index': 'not_analyzed'}, 'target': {'properties': {'organism': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}}}, 'files': {'type': 'nested', 'properties': {'replicate': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}}, 'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'replicates': {'type': 'nested', 'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}, 'library id (sanity)': {'type': 'string'}}}}}}
 antibodies_mapping = {'basic': {'properties': {'target': {'properties': {'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}}}, 'antibody': {'properties': {'host_organism': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}}}}}}
 
+# Part of this will be moved to schemas and other part should be in a proper dict
 COLLECTION_URL = OrderedDict([
+    ('/users/', ['users', basic_mapping]),
+    ('/awards/', ['awards', basic_mapping]),
+    ('/labs/', ['labs', basic_mapping]),
+    ('/organisms/', ['organisms', basic_mapping]),
+    ('/sources/', ['sources', basic_mapping]),
     ('/targets/', ['targets', targets_mapping]),
+    ('/antibody-lots/', ['antibody-lots', basic_mapping]),
+    ('/antibody-characterizations/', ['antibody-characterizations', basic_mapping]),
     ('/antibodies/', ['antibodies', antibodies_mapping]),
+    ('/mouse-donors/', ['mouse-donors', donors_mapping]),
+    ('/human-donors/', ['human-donors', donors_mapping]),
+    ('/treatments/', ['treatments', basic_mapping]),
+    ('/constructs/', ['constructs', basic_mapping]),
+    ('/construct-characterizations/', ['construct-characterizations', basic_mapping]),
+    ('/rnais/', ['rnais', basic_mapping]),
+    ('/rnai-characterizations/', ['rnai-characterizations', basic_mapping]),
     ('/biosamples/', ['biosamples', biosamples_mapping]),
-    ('/experiments/', ['experiments', experiments_mapping])
+    ('/biosample-characterizations/', ['biosample-characterizations', basic_mapping]),
+    ('/platforms/', ['platforms', basic_mapping]),
+    ('/libraries/', ['libraries', basic_mapping]),
+    ('/experiments/', ['experiments', experiments_mapping]),
+    ('/replicates/', ['replicates', replicates_mapping])
 ])
 
 
