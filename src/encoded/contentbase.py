@@ -62,14 +62,17 @@ from collections import OrderedDict
 from .validation import ValidationFailure
 from pyelasticsearch import ElasticSearch
 
-es = ElasticSearch('http://localhost:9200')
 LOCATION_ROOT = __name__ + ':location_root'
+ELASTIC_SEARCH = __name__ + ':elasticsearch'
 _marker = object()
 
 
 def includeme(config):
     config.scan(__name__)
     config.set_root_factory(root_factory)
+
+    if 'elasticsearch.server' in config.registry.settings:
+        config.registry[ELASTIC_SEARCH] = ElasticSearch(config.registry.settings['elasticsearch.server'])
 
 
 def root_factory(request):
@@ -848,6 +851,7 @@ class Collection(object):
             query = {'query': {'match_all': {}}}
 
         items = []
+        es = request.registry[ELASTIC_SEARCH]
         results = es.search(query, index=self.item_type, size=10000)
         for model in results['hits']['hits']:
             # Dealing with columns which have length attribute to the array

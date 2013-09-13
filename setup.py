@@ -54,7 +54,7 @@ setup(
         [console_scripts]
 
         extract_test_data = encoded.commands.extract_test_data:main
-        es_index_data = encoded.commands.es_index_data:main
+        es-index-data = encoded.commands.es_index_data:main
         import-data = encoded.commands.import_data:main
 
 
