@@ -149,7 +149,7 @@ function (biosample, React, URI, globals) {
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
-                    
+
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
 
@@ -183,7 +183,7 @@ function (biosample, React, URI, globals) {
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
-                    
+
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
 
@@ -246,7 +246,7 @@ function (biosample, React, URI, globals) {
                 <dl class="key-value">
                 	{context.target ? <dt>Target</dt> : null}
                     {context.target ? <dd class="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
-                    
+
                     {context.vector_backbone_name ? <dt>Vector</dt> : null}
                     {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}
 
@@ -330,7 +330,7 @@ function (biosample, React, URI, globals) {
                                 <dl class="key-value">
                                 	{context.caption ? <dt>Caption</dt> : null}
                                     {context.caption ? <dd>{context.caption}</dd> : null}
-                                    
+
                                     <dt>Submitted By</dt>
                                     <dd>{context.submitted_by.title}</dd>
 
