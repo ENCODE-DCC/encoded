@@ -60,13 +60,19 @@ from .storage import (
 )
 from collections import OrderedDict
 from .validation import ValidationFailure
+from pyelasticsearch import ElasticSearch
+
 LOCATION_ROOT = __name__ + ':location_root'
+ELASTIC_SEARCH = __name__ + ':elasticsearch'
 _marker = object()
 
 
 def includeme(config):
     config.scan(__name__)
     config.set_root_factory(root_factory)
+
+    if 'elasticsearch.server' in config.registry.settings:
+        config.registry[ELASTIC_SEARCH] = ElasticSearch(config.registry.settings['elasticsearch.server'])
 
 
 def root_factory(request):
@@ -669,7 +675,6 @@ class Collection(object):
             {'$value': '{item_type}_collection', '$templated': True},
             'collection',
         ],
-        'all': {'$value': '{collection_uri}?limit=all', '$templated': True},
         'actions': [
             {
                 'name': 'add',
@@ -786,7 +791,7 @@ class Collection(object):
     def after_add(self, item):
         '''Hook for subclasses'''
 
-    def __json__(self, request):
+    def load_db(self, request):
         limit = request.params.get('limit', 30)
         if limit in ('', 'all'):
             limit = None
@@ -797,19 +802,6 @@ class Collection(object):
             Resource.item_type == self.item_type
         )
 
-        properties = self.properties.copy()
-        properties['count'] = query.count()
-        # Expand $templated links
-        ns = properties.copy()
-        ns['collection_uri'] = request.resource_path(self)
-        ns['item_type'] = self.item_type
-        ns['permission'] = permission_checker(self, request)
-        compiled = ObjectTemplate(self.merged_template)
-        links = compiled(ns)
-        properties.update(links)
-        items = properties['@graph'] = []
-        properties['columns'] = self.columns
-
         query = query.options(
             orm.joinedload_all(
                 Resource.rels,
@@ -818,7 +810,7 @@ class Collection(object):
                 CurrentPropertySheet.propsheet,
             ),
         )
-
+        items = []
         for model in query.limit(limit).all():
             item_uri = request.resource_path(self, model.rid)
             rendered = embed(request, item_uri + '?embed=false')
@@ -839,6 +831,59 @@ class Collection(object):
 
             items.append(subset)
 
+        return items
+
+    def load_es(self, request):
+        columns = ['@id', '@type']
+        lengthColumns = []
+        for column in self.columns:
+            if 'length' in column:
+                columns.append(column.split('.')[0])
+                lengthColumns.append(column.split('.')[0])
+            else:
+                columns.append(column)
+        
+        # Hack to check if the views have columns for the collection.
+        if len(columns) > 2:
+            query = {'query': {'match_all': {}}, 'fields': columns}
+        else:
+            query = {'query': {'match_all': {}}}
+
+        items = []
+        es = request.registry[ELASTIC_SEARCH]
+        results = es.search(query, index=self.item_type, size=10000)
+        for model in results['hits']['hits']:
+            # Dealing with columns which have length attribute to the array
+            for c in lengthColumns:
+                model['fields'][c + '.length'] = len(model['fields'][c])
+                del model['fields'][c]
+
+            if len(columns) > 2:
+                items.append(model['fields'])
+            else:
+                items.append(model['_source'])
+        return items
+
+    def __json__(self, request):
+        properties = self.properties.copy()
+        ns = properties.copy()
+        ns['collection_uri'] = request.resource_path(self)
+        ns['item_type'] = self.item_type
+        ns['permission'] = permission_checker(self, request)
+        compiled = ObjectTemplate(self.merged_template)
+        links = compiled(ns)
+        properties.update(links)
+        
+        properties['columns'] = self.columns
+        collection_source = request.params.get('collection_source', None)
+        if collection_source is None:
+            collection_source = request.registry.settings.get('collection_source', 'database')
+        # Switch to change summary page loading options: load_db, load_es
+        if collection_source == 'elasticsearch':
+            properties['@graph'] = self.load_es(request)
+        else:
+            properties['@graph'] = self.load_db(request)
+            properties['all'] = "{collection_uri}?limit=all".format(ns)
         return properties
 
     def expand_embedded(self, request, properties):
