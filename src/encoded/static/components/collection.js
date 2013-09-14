@@ -103,7 +103,9 @@ function (collection, $, class_, React, globals) {
             var updateData = false;
             if (nextProps.context !== this.props.context) {
                 updateData = true;
-                this.fetchAll(nextProps);
+                this.setState({
+                    communicating: this.fetchAll(nextProps)
+                });
             }
             if (nextProps.columns !== this.props.columns) {
                 updateData = true;
@@ -218,12 +220,9 @@ function (collection, $, class_, React, globals) {
             var reversed = this.state.reversed;
             var searchTerm = this.state.searchTerm;
             this.state.searchTerm = searchTerm;
-            console.log(this.state.searchTerm);
-            console.log(searchTerm.length);
             var titles = context.columns;
             var data = this.state.data;
             var params = this.props.location.params();
-            console.log(params);
             var total = context.count || data.rows.length;
             data.sort(sortOn, reversed);
             var self = this;
