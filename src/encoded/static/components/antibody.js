@@ -110,7 +110,7 @@ function (antibody, React, URI, globals) {
                 );
             } else {
                 src = "/static/img/file-broken.png";
-                alt = "Characterization File Broken Icon";
+                alt = "Characterization file broken icon";
                 figure = (
                     <img class={imgClass} src={src} height={height} width={width} alt={alt} />
                 );
@@ -142,7 +142,7 @@ function (antibody, React, URI, globals) {
                                     <dt hidden="hidden">Caption</dt>
                                     <dd>{context.caption}</dd>
 
-                                    <dt>Submitted By</dt>
+                                    <dt>Submitted by</dt>
                                     <dd>{context.submitted_by.title}</dd>
 
                                     <dt>Lab</dt>

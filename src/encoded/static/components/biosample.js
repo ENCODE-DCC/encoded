@@ -72,7 +72,7 @@ function (biosample, React, URI, globals) {
                         {(context.donor && (context.biosample_type != "immortalized cell line")) ?
                             <section>
                                 <hr />
-                                <h4>Donor Information</h4>
+                                <h4>Donor information</h4>
                                 <Panel context={context.donor} biosample={context} />
                             </section>
                         : null}
@@ -80,7 +80,7 @@ function (biosample, React, URI, globals) {
                         {context.treatments.length ?
                             <section>
                                 <hr />
-                                <h4>Treatment Details</h4>
+                                <h4>Treatment details</h4>
                                 {context.treatments.map(Panel)}
                             </section>
                         : null}
@@ -88,7 +88,7 @@ function (biosample, React, URI, globals) {
                         {context.constructs.length ?
                             <section>
                                 <hr />
-                                <h4>Construct Details</h4>
+                                <h4>Construct details</h4>
                                 {context.constructs.map(Panel)}
                             </section>
                         : null}
@@ -109,11 +109,11 @@ function (biosample, React, URI, globals) {
                         </div>
                     : null}
 
-                    <h3 hidden={!context.related_biosample_uuid}>Related Biosamples</h3>
+                    <h3 hidden={!context.related_biosample_uuid}>Related biosamples</h3>
                     {context.derived_from.length ?
                         <div class="panel data-display">
-                            <h4>Derived From Biosample</h4>
-                            <ul>{context.derived_from.map(function (biosample) {
+                            <h4>Derived from biosamples</h4>
+                            <ul class="multi-value">{context.derived_from.map(function (biosample) {
                                 return (
                                     <li key={biosample['@id']}>
                                         <a href={biosample['@id']}>{biosample.accession}</a>
@@ -262,6 +262,20 @@ function (biosample, React, URI, globals) {
                     {context.product_id ? <dt>Product ID</dt> : null}
                     {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
 
+                    <dt hidden={!context.documents.length}>Construct documents</dt>
+					<dd>
+						<ul hidden={!context.documents.length}>
+							{context.documents.map(function (document) {
+								return (
+									<li key={document['@id']} class="cap-me-once">
+										<a href={document['@id']}>
+									 		{document.document_type}
+										</a>
+									</li>
+								);
+							})}
+						</ul>
+					</dd>
                 </dl>
             );
         }
@@ -325,13 +339,13 @@ function (biosample, React, URI, globals) {
                                 </figure>
                             </div>
                             <div class="span5">
-                                <h3 style={{'text-transform': 'capitalize'}}>{context.document_type}</h3>
+                                <h3 class="cap-me-once">{context.document_type}</h3>
                                 <p>{context.description}</p>
                                 <dl class="key-value">
                                 	{context.caption ? <dt>Caption</dt> : null}
                                     {context.caption ? <dd>{context.caption}</dd> : null}
 
-                                    <dt>Submitted By</dt>
+                                    <dt>Submitted by</dt>
                                     <dd>{context.submitted_by.title}</dd>
 
                                     <dt>Lab</dt>

@@ -65,7 +65,7 @@ function (experiment, React, globals, dbxref) {
                             <dt hidden={!context.biosample_term_name}>Biosample</dt>
                             <dd hidden={!context.biosample_term_name}>{context.biosample_term_name}</dd>
 
-                            <dt hidden={!context.biosample_type}>Biosample Type</dt>
+                            <dt hidden={!context.biosample_type}>Biosample type</dt>
                             <dd hidden={!context.biosample_type}>{context.biosample_type}</dd>
 
                             {context.target ? <dt>Target</dt> : null}
@@ -135,13 +135,12 @@ function (experiment, React, globals, dbxref) {
         });
         return (
             <div>
-                <h3>Biosamples Used</h3>
+                <h3>Biosamples used</h3>
                 <table>
                     <thead>
                         <tr>
                             <th>Accession</th>
                             <th>Term</th>
-                            <th>Biological Replicate</th>
                             <th>Type</th>
                             <th>Species</th>
                             <th>Source</th>
@@ -156,7 +155,6 @@ function (experiment, React, globals, dbxref) {
                             <tr key={index}>
                                 <td>{biosample.accession}</td>
                                 <td>{biosample.biosample_term_name}</td>
-                                <td>{biosamples[key].brn}</td>
                                 <td>{biosample.biosample_type}</td>
                                 <td>{biosample.donor.organism.name}</td>
                                 <td>{biosample.source.title}</td>
@@ -188,13 +186,13 @@ function (experiment, React, globals, dbxref) {
         var library = replicate.library;
         var platform = replicate.platform;
         var titles = {
-            nucleic_acid_term_name: 'Nucleic Acid Type',
-            nucleic_acid_starting_quantity: 'NA Starting Quantity',
-            lysis_method: 'Lysis Method',
-            extraction_method: 'Extraction Method',
-            fragmentation_method: 'Fragmentation Method',
-            size_range: 'Size Range',
-            library_size_selection_method: 'Size Selection Method',
+            nucleic_acid_term_name: 'Nucleic acid type',
+            nucleic_acid_starting_quantity: 'NA starting quantity',
+            lysis_method: 'Lysis method',
+            extraction_method: 'Extraction method',
+            fragmentation_method: 'Fragmentation method',
+            size_range: 'Size range',
+            library_size_selection_method: 'Size selection method',
         };
         var children = [];
         for (name in titles) {
@@ -209,7 +207,7 @@ function (experiment, React, globals, dbxref) {
         }
         return (
             <div>
-                <h3>Assay Details</h3>
+                <h3>Assay details</h3>
                 <dl class="panel key-value">
                     {children}
                 </dl>
@@ -224,9 +222,9 @@ function (experiment, React, globals, dbxref) {
         var biosample = library.biosample;
         return (
             <div key={props.key}>
-                <h3>Biological Replicate - {replicate.biological_replicate_number}</h3>
+                <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
                 <dl class="panel key-value">
-                    <dt>Technical Replicate</dt>
+                    <dt>Technical replicate</dt>
                     <dd>{replicate.technical_replicate_number}</dd>
 
                     <dt>Library</dt>
@@ -236,7 +234,7 @@ function (experiment, React, globals, dbxref) {
                     <dd>
                         <a href={biosample['@id']}>
                             {biosample.accession}
-                        </a>{' '}-{' '}{biosample.description}
+                        </a>{' '}-{' '}{biosample.biosample_term_name}
                     </dd>
                 </dl>
             </div>
@@ -258,11 +256,11 @@ function (experiment, React, globals, dbxref) {
                     <thead>
                         <tr>
                             <th>Accession</th>
-                            <th>File Type</th>
-                            <th>Associated Replicates</th>
-                            <th>Added By</th>
-                            <th>Date Added</th>
-                            <th>File Download</th>
+                            <th>File type</th>
+                            <th>Associated replicates</th>
+                            <th>Added by</th>
+                            <th>Date added</th>
+                            <th>File download</th>
                         </tr>
                     </thead>
                     <tbody>
