@@ -269,12 +269,13 @@ class Target(Collection):
     columns = OrderedDict([
         ('label', 'Target'),
         ('organism.name', 'Species'),
-        ('dbxref', 'External Resources'),
+        ('dbxref', 'External resources'),
     ])
 
     class Item(Collection.Item):
         template = {
-            'name': {'$value': '{label} ({organism_name})', '$templated': True},
+            'name': {'$value': '{label}-{organism_name}', '$templated': True},
+            'title': {'$value': '{label} ({organism_name})', '$templated': True},
         }
         embedded = set(['organism', 'submitted_by', 'lab', 'award'])
         keys =  ALIAS_KEYS + [
@@ -417,7 +418,7 @@ class Experiments(Collection):
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
-        ('assay_term_name', 'Assay Type'),
+        ('assay_term_name', 'Assay type'),
         ('target.label', 'Target'),
         ('biosample_term_name', 'Biosample'),
         ('replicates.length', 'Replicates'),
