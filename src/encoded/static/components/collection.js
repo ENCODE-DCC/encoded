@@ -103,7 +103,9 @@ function (collection, $, class_, React, globals) {
             var updateData = false;
             if (nextProps.context !== this.props.context) {
                 updateData = true;
-                this.fetchAll(nextProps);
+                this.setState({
+                    communicating: this.fetchAll(nextProps)
+                });
             }
             if (nextProps.columns !== this.props.columns) {
                 updateData = true;
