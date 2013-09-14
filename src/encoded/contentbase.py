@@ -883,7 +883,7 @@ class Collection(object):
             properties['@graph'] = self.load_es(request)
         else:
             properties['@graph'] = self.load_db(request)
-            properties['all'] = "{collection_uri}?limit=all".format(ns)
+            properties['all'] = "{collection_uri}?limit=all".format(**ns)
         return properties
 
     def expand_embedded(self, request, properties):
