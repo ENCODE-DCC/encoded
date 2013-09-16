@@ -1,3 +1,4 @@
+import os
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 from random import randint
@@ -8,8 +9,7 @@ from ..contentbase import (
 
 
 def includeme(config):
-    # Random processid so etags are invalidated after restart.
-    config.registry['encoded.processid'] = randint(0, 2 ** 32)
+    config.registry['encoded.processid'] = os.getppid()
     config.add_route('schema', '/profiles/{item_type}.json')
     config.add_route('graph', '/profiles/graph.dot')
     config.scan()
