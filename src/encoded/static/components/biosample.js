@@ -261,21 +261,6 @@ function (biosample, React, URI, globals) {
 
                     {context.product_id ? <dt>Product ID</dt> : null}
                     {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
-
-                    <dt hidden={!context.documents.length}>Construct documents</dt>
-					<dd>
-						<ul hidden={!context.documents.length}>
-							{context.documents.map(function (document) {
-								return (
-									<li key={document['@id']} class="cap-me-once">
-										<a href={document['@id']}>
-									 		{document.document_type}
-										</a>
-									</li>
-								);
-							})}
-						</ul>
-					</dd>
                 </dl>
             );
         }
