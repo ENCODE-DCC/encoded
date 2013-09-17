@@ -25,8 +25,8 @@ function (target, React, globals, dbxref) {
                     <dt>Target name</dt>
                     <dd class="no-cap">{context.label}</dd>
 
-                    <dt>Target gene</dt>
-                    <dd><a href={geneLink}>{context.gene_name}</a></dd>
+                    <dt hidden="!{context.gene_name}">Target gene</dt>
+                    <dd hidden="!{context.gene_name}"><a href={geneLink}>{context.gene_name}</a></dd>
 
                     <dt>External resources</dt>
                     <dd>
