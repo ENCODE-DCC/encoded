@@ -337,6 +337,10 @@ function (mixins, $, React, URI) {
                 dataType: 'json'
             }).fail(this.receiveContextFailure)
             .done(this.receiveContextResponse);
+
+            if (!options.replace) {
+                this.contextRequest.always(this.scrollTo);
+            }
         },
 
         receiveContextFailure: function (xhr, status, error) {
@@ -360,6 +364,15 @@ function (mixins, $, React, URI) {
             // Set the contextDataElement as a debugging aid
             if (this.props.contextDataElement) {
                 this.props.contextDataElement.text = xhr.responseText;
+            }
+        },
+
+        scrollTo: function() {
+            var hash = window.location.hash;
+            if (hash && document.getElementById(hash.slice(1))) {
+                window.location.replace(hash);
+            } else {
+                window.scrollTo(0, 0);
             }
         }
     };
