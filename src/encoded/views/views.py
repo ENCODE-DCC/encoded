@@ -36,6 +36,7 @@ ALIAS_KEYS = [
         'value': '{alias}',
         '$repeat': 'alias aliases',
         '$templated': True,
+        '$condition': 'aliases',
     },
 ]
 
@@ -202,6 +203,7 @@ class ConstructCharacterization(Collection):
 
     class Item(ItemWithAttachment):
         embedded = ['submitted_by', 'lab', 'award']
+        keys = ALIAS_KEYS
 
 
 @location('documents')
@@ -255,6 +257,7 @@ class BiosampleCharacterization(Collection):
 
     class Item(ItemWithAttachment):
         embedded = ['submitted_by', 'lab', 'award']
+        keys = ALIAS_KEYS
 
 
 @location('targets')
@@ -307,6 +310,7 @@ class AntibodyCharacterization(Collection):
 
     class Item(ItemWithAttachment):
         embedded = ['submitted_by', 'lab', 'award', 'target']
+        keys = ALIAS_KEYS
 
 
 @location('antibodies')
@@ -370,7 +374,7 @@ class Replicates(Collection):
         'description': 'Listing of Replicates',
     }
     item_embedded = set(['library', 'platform', 'antibody'])
-    item_keys = [
+    item_keys = ALIAS_KEYS + [
         {
             'name': '{item_type}:experiment_biological_technical',
             'value': '{experiment}/{biological_replicate_number}/{technical_replicate_number}',
@@ -453,6 +457,7 @@ class RNAiCharacterization(Collection):
 
     class Item(ItemWithAttachment):
         embedded = ['submitted_by', 'lab', 'award']
+        keys = ALIAS_KEYS
 
 
 @location('dataset')
