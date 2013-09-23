@@ -1,5 +1,5 @@
 {
-    "title": "RNAi Vector Characterization",
+    "title": "RNAi vector characterization",
     "description": "Schema for submitting RNAi vector characterization data.",
     "id": "/profiles/rnai_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -19,7 +19,7 @@
             "default": "1"
         },
         "characterizes": {
-            "title": "RNAi Characterized",
+            "title": "RNAi characterized",
             "comment": "See rnai.json for available identifiers.",
             "linkTo": "rnai"
         }

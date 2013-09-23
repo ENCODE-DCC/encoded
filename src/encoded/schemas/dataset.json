@@ -61,11 +61,11 @@
             }
         },
         "files": {
-            "title": "Data Files",
+            "title": "Data files",
             "description": "List of data files to be associated with the dataset.",
             "type": "array",
             "items": {
-                "title": "Data File",
+                "title": "Data file",
                 "comment": "See file.json for available identifiers.",
                 "type": "string",
                 "linkTo": "file"

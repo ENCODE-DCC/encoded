@@ -1,5 +1,5 @@
 {
-    "title": "Data File Relationships",
+    "title": "Data file relationships",
     "description": "Schema for submitting data file relationships.",
     "id": "/profiles/file_relation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -57,7 +57,7 @@
             "linkTo": "file"
         },
         "paired_with": {
-            "title": "File Pairing",
+            "title": "File pairing",
             "description": "The file that corresponds with this file.",
             "comment": "See file.json for a list of available identifiers.",
             "type": "string",
