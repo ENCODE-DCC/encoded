@@ -70,10 +70,9 @@ def main():
         index = COLLECTION_URL.get(url)[0]
         try:
             es.create_index(index)
+            es.put_mapping(index, DOCTYPE, COLLECTION_URL.get(url)[1])
         except IndexAlreadyExistsError:
-            es.delete_index(index)
-            es.create_index(index)
-        es.put_mapping(index, DOCTYPE, COLLECTION_URL.get(url)[1])
+            pass
 
         counter = 0
         for item in items:
