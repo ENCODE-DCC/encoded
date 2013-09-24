@@ -30,6 +30,7 @@ COLLECTION_URL = OrderedDict([
     ('/antibodies/', ['antibody_approval', antibodies_mapping]),
     ('/mouse-donors/', ['mouse_donor', donors_mapping]),
     ('/human-donors/', ['human_donor', donors_mapping]),
+    ('/documents/', ['document', basic_mapping]),
     ('/treatments/', ['treatment', basic_mapping]),
     ('/constructs/', ['construct', basic_mapping]),
     ('/construct-characterizations/', ['construct_characterization', basic_mapping]),
@@ -77,9 +78,12 @@ def main():
 
         counter = 0
         for item in items:
-            item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
-            document_id = str(item_json.json['@id'])[-37:-1]
-            document = item_json.json
+            try:
+                item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
+                document_id = str(item_json.json['uuid'])
+                document = item_json.json
+            except Exception as e:
+                print e
 
             # For biosamples getting organ_slim and system_slim from ontology index
             if COLLECTION_URL.get(url)[0] == 'biosample':
