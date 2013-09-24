@@ -4,7 +4,6 @@
         "schema_version": {
             "comment":  "Do not submit, value is assigned by the server. The version of the JSON schema that the server uses to validate the object. Schema version indicates generation of schema used to save version to to enable upgrade steps to work. Individual schemas should set the default.",
             "type": "string",
-            "default": "1",
             "pattern": "^\\d+(\\.\\d+)*$",
             "requestMethod": []
         }
