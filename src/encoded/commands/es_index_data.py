@@ -80,28 +80,29 @@ def main():
         for item in items:
             try:
                 item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
-                document_id = str(item_json.json['uuid'])
-                document = item_json.json
             except Exception as e:
                 print e
-
-            # For biosamples getting organ_slim and system_slim from ontology index
-            if COLLECTION_URL.get(url)[0] == 'biosample':
-                if document['biosample_term_id']:
-                    try:
-                        document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
-                        document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
-                    except:
+            else:
+                document_id = str(item_json.json['uuid'])
+                document = item_json.json
+                
+                # For biosamples getting organ_slim and system_slim from ontology index
+                if COLLECTION_URL.get(url)[0] == 'biosample':
+                    if document['biosample_term_id']:
+                        try:
+                            document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
+                            document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
+                        except:
+                            document['organ_slims'] = []
+                            document['system_slims'] = []
+                            print "ID not found - " + document['biosample_term_id']
+                    else:
                         document['organ_slims'] = []
                         document['system_slims'] = []
-                        print "ID not found - " + document['biosample_term_id']
-                else:
-                    document['organ_slims'] = []
-                    document['system_slims'] = []
-            es.index(index, DOCTYPE, document, document_id)
-            counter = counter + 1
-            if counter % 50 == 0:
-                es.flush(index)
+                es.index(index, DOCTYPE, document, document_id)
+                counter = counter + 1
+                if counter % 50 == 0:
+                    es.flush(index)
 
         es.refresh(index)
         count = es.count('*:*', index=index)
