@@ -30,6 +30,7 @@ COLLECTION_URL = OrderedDict([
     ('/antibodies/', ['antibody_approval', antibodies_mapping]),
     ('/mouse-donors/', ['mouse_donor', donors_mapping]),
     ('/human-donors/', ['human_donor', donors_mapping]),
+    ('/documents/', ['document', basic_mapping]),
     ('/treatments/', ['treatment', basic_mapping]),
     ('/constructs/', ['construct', basic_mapping]),
     ('/construct-characterizations/', ['construct_characterization', basic_mapping]),
@@ -71,33 +72,37 @@ def main():
         try:
             es.create_index(index)
         except IndexAlreadyExistsError:
-            es.delete_index(index)
-            es.create_index(index)
-        es.put_mapping(index, DOCTYPE, COLLECTION_URL.get(url)[1])
+            pass
+        else:
+            es.put_mapping(index, DOCTYPE, COLLECTION_URL.get(url)[1])
 
         counter = 0
         for item in items:
-            item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
-            document_id = str(item_json.json['@id'])[-37:-1]
-            document = item_json.json
-
-            # For biosamples getting organ_slim and system_slim from ontology index
-            if COLLECTION_URL.get(url)[0] == 'biosample':
-                if document['biosample_term_id']:
-                    try:
-                        document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
-                        document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
-                    except:
+            try:
+                item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
+            except Exception as e:
+                print e
+            else:
+                document_id = str(item_json.json['uuid'])
+                document = item_json.json
+                
+                # For biosamples getting organ_slim and system_slim from ontology index
+                if COLLECTION_URL.get(url)[0] == 'biosample':
+                    if document['biosample_term_id']:
+                        try:
+                            document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
+                            document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
+                        except:
+                            document['organ_slims'] = []
+                            document['system_slims'] = []
+                            print "ID not found - " + document['biosample_term_id']
+                    else:
                         document['organ_slims'] = []
                         document['system_slims'] = []
-                        print "ID not found - " + document['biosample_term_id']
-                else:
-                    document['organ_slims'] = []
-                    document['system_slims'] = []
-            es.index(index, DOCTYPE, document, document_id)
-            counter = counter + 1
-            if counter % 50 == 0:
-                es.flush(index)
+                es.index(index, DOCTYPE, document, document_id)
+                counter = counter + 1
+                if counter % 50 == 0:
+                    es.flush(index)
 
         es.refresh(index)
         count = es.count('*:*', index=index)

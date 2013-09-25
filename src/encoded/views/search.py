@@ -32,6 +32,7 @@ class Query(dict):
         self.query = dict()
         self.facets = dict()
         self.fields = []
+        self.highlight = dict({'fields': {"*": {}}})
 
     def __setattr__(self, k, v):
         if k in self.keys():
@@ -54,6 +55,7 @@ class FilteredQuery(dict):
         self.query = dict({'filtered': {'query': {'queryString': {"query": ''}}, 'filter': {'and': {'filters': []}}}})
         self.facets = dict()
         self.fields = []
+        self.highlight = dict({'fields': {"*": {}}})
 
     def __setattr__(self, k, v):
         if k in self.keys():
@@ -133,7 +135,13 @@ def search(context, request):
                     if value == schemas[d]:
                         items['count'][key] = len(s['hits']['hits'])
                 for dataS in s['hits']['hits']:
-                    items['results'].append(dataS['fields'])
+                    data_highlight = dataS['fields']
+                    if 'highlight' in dataS:
+                        for key in dataS['highlight'].keys():
+                            data_highlight['highlight'] = dataS['highlight'][key]
+                    else:
+                        data_highlight['highlight'] = []
+                    items['results'].append(data_highlight)
             result['@graph'] = items
             return result
     else:
@@ -164,7 +172,14 @@ def search(context, request):
             if value == index + '.json':
                 items['count'][key] = len(s['hits']['hits'])
         for dataS in s['hits']['hits']:
-            items['results'].append(dataS['fields'])
+            data_highlight = dataS['fields']
+            if 'highlight' in dataS:
+                for key in dataS['highlight'].keys():
+                    data_highlight['highlight'] = dataS['highlight'][key]
+            else:
+                data_highlight['highlight'] = []
+            items['results'].append(data_highlight)
+
     else:
         items['count']['biosamples'] = len(s['hits']['hits'])
     
