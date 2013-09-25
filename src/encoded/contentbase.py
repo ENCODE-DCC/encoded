@@ -50,6 +50,7 @@ from uuid import (
 from .objtemplate import ObjectTemplate
 from .schema_formats import is_accession
 from .schema_utils import validate_request
+from .stats import requests_timing_hook
 from .storage import (
     DBSession,
     CurrentPropertySheet,
@@ -72,7 +73,9 @@ def includeme(config):
     config.set_root_factory(root_factory)
 
     if 'elasticsearch.server' in config.registry.settings:
-        config.registry[ELASTIC_SEARCH] = ElasticSearch(config.registry.settings['elasticsearch.server'])
+        es = ElasticSearch(config.registry.settings['elasticsearch.server'])
+        es.session.hooks['response'].append(requests_timing_hook('es'))
+        config.registry[ELASTIC_SEARCH] = es
 
 
 def root_factory(request):

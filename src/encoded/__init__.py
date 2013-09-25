@@ -132,6 +132,7 @@ def main(global_config, **settings):
         session_factory=session_factory,
     )
 
+    config.include('.stats')
     config.include('pyramid_tm')
     configure_engine(settings)
 

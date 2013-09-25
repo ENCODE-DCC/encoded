@@ -238,33 +238,46 @@ function (search, $, React, globals, d3) {
             }
 
             var resultsView = function(result) {
+                var highlight = result['highlight'];
                 switch (result['@type'][0]) {
                     case "biosample":
                         return <li class="post">
-                                <strong><small>Biosample</small></strong>
-                                <h4><a href={result['@id']}>{result['accession']}</a></h4>
-                                <small><i>{result['biosample_term_name']} - {result['biosample_term_id']} - {result['lab.title']}</i></small>
+                                    <strong><small>Biosample</small></strong>
+                                    <div class="accession"><a href={result['@id']}>{result['accession']}</a></div>
+                                    <small>{result['biosample_term_name']} - {result['biosample_term_id']} - {result['lab.title']}
+                                        <br />
+                                        <div class="highlight"dangerouslySetInnerHTML={{__html: highlight.toString()}} />
+                                    </small>
                             </li>
                         break;
                     case "experiment":
                         return <li class="post">
-                                <h6>Experiment</h6>
-                                <h4><a href={result['@id']}>{result['accession']}</a></h4>
-                                <small><i>{result['description']} - {result['assay_term_name']} - {result['lab.title']}</i></small>
+                                    <strong><small>Experiment</small></strong>
+                                    <div class="accession"><a href={result['@id']}>{result['accession']}</a></div>
+                                    <small>{result['description']} - {result['assay_term_name']} - {result['lab.title']}
+                                        <br />
+                                        <div class="highlight" dangerouslySetInnerHTML={{__html: highlight.toString()}} />
+                                    </small>
                             </li>
                         break;
                     case "antibody_approval":
                         return <li class="post">
-                                <h6>Antibody</h6>
-                                <h4><a href={result['@id']}>{result['antibody.accession']}</a></h4>
-                                <small><i>{result['target.label']} - {result['antibody.source.title']}</i></small>
+                                <strong><small>Antibody</small></strong>
+                                <div class="accession"><a href={result['@id']}>{result['antibody.accession']}</a></div>
+                                <small>{result['target.label']} - {result['antibody.source.title']}
+                                    <br />
+                                    <div class="highlight" dangerouslySetInnerHTML={{__html: highlight.toString()}} />
+                                </small>
                             </li>
                         break;
                     case "target":
                         return <li class="post">
-                                <h6>Target</h6>
-                                <h4><a href={result['@id']}>{result['label']}</a></h4>
-                                <small><i>{result['organism.name']}</i></small>
+                                <strong><small>Target</small></strong>
+                                <div class="accession"><a href={result['@id']}>{result['label']}</a></div>
+                                <small>{result['organism.name']}
+                                    <br />
+                                    <div  class="highlight" dangerouslySetInnerHTML={{__html: highlight.toString()}} />
+                                </small>
                             </li>
                         break;
                 }
