@@ -71,8 +71,8 @@ def stats_tween_factory(handler, registry):
         environ = request.environ
         if 'mod_wsgi.queue_start' in environ:
             queue_begin = int(environ['mod_wsgi.queue_start'])
-            stats.append(('queue_begin', queue_begin))
-            stats.append(('queue_time', begin - queue_begin))
+            stats['queue_begin'] = queue_begin
+            stats['queue_time'] = begin - queue_begin
 
         response.headers['X-Stats'] = urlencode(sorted(stats.items()))
         return response
