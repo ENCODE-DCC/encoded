@@ -67,7 +67,11 @@
                             "eGFP",
                             "V5",
                             "HA",
-                            "ER"
+                            "ER",
+                            "3xFLAG",
+                            "DsRed",
+                            "TRE",
+                            "T2A"
                         ]
                     },
                     "location": {
