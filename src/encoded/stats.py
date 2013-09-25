@@ -17,6 +17,25 @@ def get_root_request():
         return threadlocal_manager.stack[0]['request']
 
 
+def requests_timing_hook(prefix='requests'):
+    count_key = prefix + '_count'
+    time_key = prefix + '_time'
+
+    def response_hook(r, *args, **kwargs):
+        request = get_root_request()
+        if request is None:
+            return
+
+        stats = request._stats
+        stats[count_key] = stats.get(count_key, 0) + 1
+        # requests response.elapsed is a timedelta
+        e = r.elapsed
+        duration = (e.days * 86400 + e.seconds) * 1000000 + e.microseconds
+        stats[time_key] = stats.get(time_key, 0) + duration
+
+    return response_hook
+
+
 # See http://www.sqlalchemy.org/trac/wiki/UsageRecipes/Profiling
 @event.listens_for(Engine, 'before_cursor_execute')
 def before_cursor_execute(
@@ -36,7 +55,7 @@ def after_cursor_execute(
     stats = request._stats
     stats['db_count'] = stats.get('db_count', 0) + 1
     duration = end - context._query_start_time
-    stats['db_time'] = stats.get('db_time', 0)  + duration
+    stats['db_time'] = stats.get('db_time', 0) + duration
 
 
 # http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/hooks.html#creating-a-tween-factory
