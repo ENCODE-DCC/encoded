@@ -64,6 +64,7 @@
             "title": "Data Files",
             "description": "List of data files to be associated with the dataset.",
             "type": "array",
+            "default": [],
             "items": {
                 "title": "Data File",
                 "comment": "See file.json for available identifiers.",
