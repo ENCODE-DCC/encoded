@@ -794,12 +794,7 @@ class Collection(object):
     def after_add(self, item):
         '''Hook for subclasses'''
 
-    def load_db(self, request):
-        limit = request.params.get('limit', 30)
-        if limit in ('', 'all'):
-            limit = None
-        if limit is not None:
-            limit = int(limit)
+    def load_db(self, request, limit=None):
         session = DBSession()
         query = session.query(Resource).filter(
             Resource.item_type == self.item_type
@@ -885,8 +880,17 @@ class Collection(object):
         if collection_source == 'elasticsearch':
             properties['@graph'] = self.load_es(request)
         else:
-            properties['@graph'] = self.load_db(request)
-            properties['all'] = "{collection_uri}?limit=all".format(**ns)
+            limit = request.params.get('limit', 30)
+            if limit in ('', 'all'):
+                limit = None
+            if limit is not None:
+                try:
+                    limit = int(limit)
+                except ValueError:
+                    limit = 30
+            properties['@graph'] = self.load_db(request, limit)
+            if limit is not None:
+                properties['all'] = "{collection_uri}?limit=all&collection_source=database".format(**ns)
         return properties
 
     def expand_embedded(self, request, properties):
