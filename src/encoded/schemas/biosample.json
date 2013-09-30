@@ -228,13 +228,13 @@
             ]
         },
         "age": {
-            "title": "Age",
+            "title": "Donor age",
             "description": " The age or age range of the donor organism when biological material was sampled.",
             "type": "string",
             "pattern": "^\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?$"
         },
         "age_units": {
-            "title": "Age units",
+            "title": "Donor age units",
             "type": "string",
             "enum": [
                 "day",
@@ -244,7 +244,7 @@
             ]
         },
         "health_status": {
-            "title": "Health status",
+            "title": "Donor health status",
             "type": "string"
         }
     }
