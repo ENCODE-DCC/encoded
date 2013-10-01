@@ -18,21 +18,6 @@ def _type_length():
 TYPE_LENGTH = _type_length()
 
 
-@pytest.fixture
-def users(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/labs/'
-    for item in URL_COLLECTION[url]:
-        testapp.post_json(url, item, status=201)
-    users = []
-    url = '/users/'
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-        res = testapp.get(res.location)
-        users.append(res.json)
-    return users
-
-
 def test_home(htmltestapp):
     res = htmltestapp.get('/', status=200)
     assert res.body.startswith('<!DOCTYPE html>')
