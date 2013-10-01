@@ -1,5 +1,5 @@
 {
-    "title": "RNAi Vector",
+    "title": "RNAi vector",
     "description": "Schema for submitting an RNAi stably or transiently transfected.",
     "id": "/profiles/rnai.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -45,17 +45,17 @@
             "linkTo": "target"
         },
         "vector_backbone_name": {
-            "title": "Backbone Name",
+            "title": "Backbone name",
             "description": "The name of the vector backbone used for the construct.",
             "type": "string"
         },
         "documents": {
-            "title": "RNAi Documents",
+            "title": "RNAi documents",
             "description": "Documents that describe the RNAi construct.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "RNAi Document",
+                "title": "RNAi document",
                 "description": "A document that describes the RNAi construct.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
@@ -63,12 +63,12 @@
             }
         },
         "rnai_sequence": {
-            "title": "RNAi Sequence",
+            "title": "RNAi sequence",
             "description": "Sequence of the inhibitory RNA.",
             "type": "string"
         },
         "rnai_target_sequence": {
-            "title": "Target Sequence",
+            "title": "Target sequence",
             "description": "Genomic sequence targeted by the RNA.",
             "type": "string"
         }

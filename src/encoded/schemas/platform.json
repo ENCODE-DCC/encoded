@@ -27,7 +27,7 @@
             "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
         "term_name": {
-            "title": "Platform Name",
+            "title": "Platform name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the measurement device.",
             "type":  "string",
             "default": ""

@@ -27,7 +27,7 @@
             "permission": "import_items"
         },
         "alternate_accessions": {
-            "title": "Alternate Accessions",
+            "title": "Alternate accessions",
             "description": "Accessions previously assigned to objects that have been merged with this object.",
             "type": "array",
             "default": [],
@@ -43,12 +43,12 @@
     },
     "aliases": {
         "aliases": {
-            "title": "Lab Aliases",
+            "title": "Lab aliases",
             "description": "Lab specific identifiers to reference an object.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Lab Alias",
+                "title": "Lab alias",
                 "description": "A lab specific identifier to reference an object.",
                 "comment": "Current convention is colon separated lab name and lab identifier. (e.g. john-doe:42).",
                 "type":  "string",
@@ -69,7 +69,7 @@
     },
     "submitted": {
         "date_created": {
-            "title": "Date Created",
+            "title": "Date created",
             "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date",
@@ -77,7 +77,7 @@
             "permission": "import_items"
         },
         "submitted_by": {
-            "title": "Submitted By",
+            "title": "Submitted by",
             "comment": "See user.son for list of available identifiers.",
             "type": "string",
             "linkTo": "user",
@@ -103,7 +103,7 @@
      },
      "attachment": {
         "attachment": {
-            "title": "Document File Metadata",
+            "title": "Document file metadata",
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -116,7 +116,7 @@
                     "type": "string"
                 },
                 "type": {
-                    "title": "MIME Type",
+                    "title": "MIME type",
                     "enum": [
                         "application/pdf",
                         "text/plain",
@@ -133,15 +133,15 @@
                     "format": "md5sum"
                 },
                 "size": {
-                    "title": "File Size",
+                    "title": "File size",
                     "type": "integer"
                 },
                 "width": {
-                    "title": "Image Width",
+                    "title": "Image width",
                     "type": "integer"
                 },
                 "height": {
-                    "title": "Image Height",
+                    "title": "Image height",
                     "type": "integer"
                 }
             }
@@ -156,12 +156,12 @@
             "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR):[0-9]{2,8}$"
         },
         "biosample_term_name": {
-            "title": "Ontology Term",
+            "title": "Ontology term",
             "description": "Ontology term describing biosample.",
             "type":  "string"
         },
         "biosample_type": {
-            "title": "Biosample Type",
+            "title": "Biosample type",
             "description": "The categorization of the biosample.",
             "type": "string",
             "enum" : [

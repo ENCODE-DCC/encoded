@@ -1,5 +1,5 @@
  {
-    "title": "Antibody Characterization",
+    "title": "Antibody characterization",
     "description": "Schema for submitting antibody characterization data.",
     "id": "/profiles/antibody_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -21,7 +21,7 @@
             "default": "2"
         },
         "characterizes": {
-            "title": "Antibody Characterized",
+            "title": "Antibody characterized",
             "comment": "See antibody_lot.json for available identifiers.",
             "linkTo": "antibody_lot"
         },
