@@ -28,6 +28,11 @@
         "organism": {
             "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
             "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]
+        },
+        "note": {
+            "title": "Note",
+            "description": "Additional information pertaining to the human donor.",
+            "type": "string"
         }
     }
 }
