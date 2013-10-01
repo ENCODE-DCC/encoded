@@ -14,6 +14,7 @@ from uuid import UUID
 import posixpath
 
 from .schema_formats import is_accession
+from .server_defaults import SERVER_DEFAULTS
 
 
 def local_handler(uri):
@@ -155,6 +156,7 @@ class SchemaValidator(Draft4Validator):
     VALIDATORS['linkTo'] = linkTo
     VALIDATORS['permission'] = permission
     VALIDATORS['requestMethod'] = requestMethod
+    SERVER_DEFAULTS = SERVER_DEFAULTS
 
 
 format_checker = FormatChecker()
