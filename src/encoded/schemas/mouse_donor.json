@@ -47,11 +47,6 @@
         "organism": {
             "default": "3413218c-3d86-498b-a0a2-9a406638e786",
             "linkEnum": ["3413218c-3d86-498b-a0a2-9a406638e786"]
-        },
-        "note": {
-            "title": "Note",
-            "description": "Additional information pertaining to the mouse donor.",
-            "type": "string"
         }
     }
 }
