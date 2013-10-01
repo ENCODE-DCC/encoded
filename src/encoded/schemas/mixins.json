@@ -25,6 +25,7 @@
             "comment": "Only admins are allowed to set or update this value.",
             "type": "string",
             "format": "accession",
+            "serverDefault": "accession",
             "permission": "import_items"
         },
         "alternate_accessions": {

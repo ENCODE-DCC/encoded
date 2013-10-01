@@ -136,6 +136,10 @@ class TestingServerDefault(Collection):
             'now': {
                 'serverDefault': 'now',
             },
+            'accession': {
+                'serverDefault': 'accession',
+                'accessionType': 'XX',
+            },
         }
     }
     properties = {

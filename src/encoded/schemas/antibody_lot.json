@@ -23,6 +23,9 @@
         "schema_version": {
             "default": "1"
         },
+        "accession": {
+            "accessionType": "AB"
+        },
         "lot_id": {
             "title": "Lot ID",
             "description": "The lot identifier provided by the originating lab or vendor.",
