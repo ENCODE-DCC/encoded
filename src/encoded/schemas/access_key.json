@@ -1,7 +1,8 @@
 {
-    "title": "ENCODE DCC ADMIN Access key",
+    "title": "Admin Access key",
     "id": "/profiles/access_key_admin.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "required": [],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -13,29 +14,27 @@
         },
         "user": {
             "title": "User",
-            "description": "Only admins are allowed to set this value",
+            "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "linkTo": "user",
             "permission": "import_items"
         },
         "description": {
             "title": "Description",
-            "description": "",
             "type": "string",
             "default": ""
         },
         "access_key_id": {
-            "title": "Access key ID",
-            "description": "Only admins are allowed to set this value",
+            "title": "Access Key ID",
+            "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "permission": "import_items"
         },
         "secret_access_key_hash": {
-            "title": "Secret access key hash",
-            "description": "Only admins are allowed to set this value",
+            "title": "Secret Access Key Hash",
+            "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "permission": "import_items"
         }
-    },
-    "required": []
+    }
 }

@@ -1,38 +1,36 @@
 {
     "title": "Base Characterization",
+    "description": "Schema for submitting a characterization of an object.",
     "id": "/profiles/characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting a characterization (antibody or biosample) to ENCODE",
-    "comment": "Characterization images and captions accompany antibody lots submitted for review and biosamples containing constructs",
     "type": "object",
     "required": [ "award", "lab", "characterizes" ],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "hidden comment": "Bump the default in the subclasses."
         },
         "characterizes": {
-            "description": "The specific object for which the characterization image applies.",
-            "comment": "Automatic submitters can supply a uuid",
+            "description": "The specific entity for which the characterization applies.",
             "type": "string"
         },
         "characterization_method": {
-            "description": "Experimental method for the characterization image",
-            "comment": "Choose from one of the enumerated characterization methods used to characterized the antibody lot or biosample. [This list will likely get mapped to an experimental methods ontology in the future.]",
-            "title": "Antibody or biosample characterization method",
+            "title": "Method",
+            "description": "Experimental method of the characterization.",
             "type": "string",
             "enum": [
                 "western blot",
                 "western blot after IP",
                 "immunoprecipitation",
-                "immunofluorescense",
+                "immunofluorescence",
                 "knockdowns",
                 "mass spectrometry after IP",
                 "chIP comparison",
@@ -50,38 +48,36 @@
             ]
         },
         "caption": {
-            "default": "",
-            "description": "A free-text caption for the characterization image",
-            "comment": "Captions for antibody characterizations should include brief methods, expected MW, cell line(s), labels and justification for acceptance, if necessary",
-            "title": "Image caption",
-            "type": "string"
+            "title": "Caption",
+            "description": "A plain text description about the characterization. Characterizations for antibodies should include brief methods, expected MW, cell line(s), labels and justification for acceptance, if necessary",
+            "type": "string",
+            "default": ""
         },
         "date": {
-            "description": "Date in which the characterization experiment was run",
-            "comment": "Dates should be formatted as YYYY-MM-DD",
-            "title": "Date characterized",
+            "title": "Date",
+            "description": "The date that the characterization was run on.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
         },
         "references": {
-            "default": [],
-            "description": "List of references (Pubmed IDs)",
-            "comment": "If characterization data is from a publication, provide the relevant Pubmed identifier(s) in PMID:NNNNNNNN format",
             "title": "References",
+            "description": "The Pubmed identifiers used as references for the characterization, if previously published.",
+            "type": "array",
+            "default": [],
             "reference": {
-                "description": "Pubmed id for a published reference",
-                "title": "Pubmed reference",
+                "title": "Reference",
+                "description": "The Pubmed identifier used as a reference for the characterization, if previously published",
                 "type": "string",
                 "pattern": "^PMID:[0-9]+$"
-            },
-            "type": "array"
+            }
         },
         "status": {
-            "default": "INCOMPLETE",
-            "description": "Approval status for the Characterization image",
-            "comment": "Use the default, all other values are assigned by the DCC. The status code indicates the current state of the characterization image",
-            "title": "Approval status",
+            "title": "Approval Status",
+            "description": "The current state of the characterization.",
+            "comment": "Do not submit, value is assigned by the DCC.",
             "type": "string",
+            "default": "INCOMPLETE",
             "enum" : [
                 "APPROVED",
                 "SUBMITTED",
@@ -92,11 +88,10 @@
             ]
         },
         "comment": {
-            "default": "",
-            "description": "Comment(s), if any, to associate to the characterization or the status of the characterization",
-            "comment": "A free-text field for comments relating to the characterization or its status",
-            "title": "Characterization comment",
+            "title": "Comment",
+            "description": "Additional information pertaining to the characterization.",
             "type": "string",
+            "default": "",
             "permission": "review"
         }
     }

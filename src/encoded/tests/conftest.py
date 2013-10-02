@@ -31,6 +31,7 @@ _app_settings = {
     'load_test_only': True,
     'load_sample_data': False,
     'testing': True,
+    'collection_source': 'database',
 }
 
 
@@ -442,3 +443,18 @@ def no_deps(request, connection):
     @request.addfinalizer
     def remove():
         event.remove(session, 'before_flush', check_dependencies)
+
+
+@pytest.fixture
+def users(testapp):
+    from .sample_data import URL_COLLECTION
+    url = '/labs/'
+    for item in URL_COLLECTION[url]:
+        testapp.post_json(url, item, status=201)
+    users = []
+    url = '/users/'
+    for item in URL_COLLECTION[url]:
+        res = testapp.post_json(url, item, status=201)
+        res = testapp.get(res.location)
+        users.append(res.json)
+    return users

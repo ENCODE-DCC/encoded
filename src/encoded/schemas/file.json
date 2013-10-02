@@ -1,10 +1,11 @@
 {
-    "title": "ENCODE Experimental Data File",
+    "title": "Data File",
+    "description": "Schema for submitting metadata for a data file.",
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting data file Metadata for ENCODE",
     "type": "object",
     "required": ["dataset", "file_format", "md5sum", "output_type"],
+    "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -17,9 +18,8 @@
             "default": "1"
         },
         "file_format": {
-            "description": "File format (FastQ, BAM, BED, etc.)",
-            "comment": "Some of these types are for historical purposes only and are not valid new inputs.",
             "title": "File Format",
+            "comment": "Not all of the types are valid for new submissions, but are present for historical purposes.",
             "type": "string",
             "XXXenum": [
                 "bam",
@@ -48,15 +48,13 @@
             ]
         },
         "md5sum": {
-            "description": "Calucluated MD5 sum of the file",
-            "title": "MD5 Sum",
+            "title": "MD5sum",
             "type": "string",
             "format": "hex"
         },
         "output_type": {
-            "description": "Coded description of the file purpose/contents for display",
-            "comment": "Not all combinations of output_type and file_type are valid.",
             "title": "Output Type",
+            "description": "A description of the file's purpose or contents.",
             "type": "string",
             "XXXenum": [
                 "sites",
@@ -67,45 +65,47 @@
             ]
         },
         "dataset": {
-            "description": "Pointer to the experiment or dataset for this file.",
-            "comment": "Automatic submitters can supply an experiment accession",
+            "title": "Dataset",
+            "description": "The experiment or dataset the file belongs to.",
+            "comment": "For experiments, see experiment.json for available identifiers. For datasets, see dataset.json for available identifiers.",
             "type": "string",
             "linkTo": ["experiment", "dataset"]
         },
         "replicate": {
-            "description": "Pointer to the experimental replicate for this file.",
-            "comment": "Automatic submitters can supply a Replicate UUID",
+            "title": "Replicate",
+            "description": "The experimental replicate designation for the file.",
+            "comment": "See replicate.json for available identifiers.",
             "type": "string",
             "linkTo": "replicate"
         },
         "software": {
-            "description": "Pointer to the software used to generate this file",
-            "comment": "Not valid for primary data files like FastQ.  Automatic submitters can supply an ENCODE Software UUID or unique name.",
             "title": "Software",
+            "description": "The software and parameters used to generate the file.",
+            "comment": " See software.json for available identifiers. Do not submit, value is not valid for primary data files like FastQ. ",
             "type": "string",
             "XXXlinkTo": "software"
         },
         "assembly": {
-            "description": "Genome assembly that files were mapped to",
             "title": "Mapping Assembly",
-            "comment": "BAM/BED and other mapped files only.",
+            "description": "UCSC genome assembly that files were mapped to.",
+            "comment": "Applies for mapped files (e.g. BAM, BED and BigWig).",
             "type": "string",
             "enum": ["mm9", "hg19", "n/a"]
         },
         "submitted_file_name": {
-            "description": "Original, local file name of the file (not unique, for reference only)",
-            "title": "File Name",
+            "title": "Original File Name",
+            "description": "The local file name used at time of submission.",
             "type": "string"
         },
         "download_path": {
-            "description": "EDW download file path and name",
-            "title": "Download Path",
+            "title": "Download URL",
+            "comment": "The file resource locater.",
             "type": "string"
         },
         "status": {
-            "default": "CURRENT",
             "title": "Status",
             "type": "string",
+            "default": "CURRENT",
             "enum" : [
                 "CURRENT",
                 "OBSOLETE"

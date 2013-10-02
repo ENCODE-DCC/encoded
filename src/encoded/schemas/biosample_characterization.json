@@ -1,8 +1,8 @@
 {
-    "title": "ENCODE Construct Characterization",
+    "title": "Biosample Characterization",
+    "description": "Schema for submitting biosample characterization data",
     "id": "/profiles/construct_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting construct characterization data",
     "type": "object",
     "required": [ "award", "lab", "characterizes" ],
     "additionalProperties": false,
@@ -16,10 +16,11 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "characterizes": {
-            "title": "Biosample characterized",
+            "title": "Biosample Characterized",
+            "comment": "See biosample.json for available identifiers.",
             "linkTo": "biosample"
         }
     }

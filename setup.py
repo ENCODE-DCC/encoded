@@ -23,7 +23,8 @@ requires = [
     'xlrd',
     'zope.sqlalchemy',
     'PyBrowserID',
-    ]
+    'pyelasticsearch',
+]
 
 tests_require = [
     'behave',
@@ -48,14 +49,17 @@ setup(
     tests_require=tests_require,
     extras_require={
         'test': tests_require,
-        },
+    },
     entry_points='''
         [console_scripts]
-        extract-test-data = encoded.commands.extract_test_data:main
+
+        extract_test_data = encoded.commands.extract_test_data:main
+        es-index-data = encoded.commands.es_index_data:main
         import-data = encoded.commands.import_data:main
         read-edw-fileinfo = encoded.commands.read_edw_fileinfo:main
+
 
         [paste.app_factory]
         main = encoded:main
         ''',
-    )
+)

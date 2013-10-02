@@ -1,11 +1,11 @@
 {
-    "title": "ENCODE Antibody lot",
+    "title": "Antibody Lot",
+    "description": "Schema for submitting an antibody lot (not including target or characterization information).",
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an ENCODE Antibody (no target or characterization information)",
-    "comment": "Each ENCODE antibody lot is a unique combination of source, product ID and lot number",
     "type": "object",
     "required": [ "award", "lab", "product_id", "source", "lot_id"],
+    "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -14,59 +14,46 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/product_id" }
+
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
-        "source": {
-            "description": "Source or Vendor of Antibody",
-            "comment": "Programmatic submitters can supply an ENCODE source uuid or unique Source name",
-            "title": "Antibody source",
-            "type": "string",
-            "linkTo": "source"
-        },
         "lot_id": {
+            "title": "Lot ID",
+            "description": "The lot identifier provided by the originating lab or vendor.",
             "default": "unknown",
-            "description": "The vendor's id code for the antibody lot",
-            "comment": "The lot ID supplied by the vendor",
-            "title": "Antibody lot id",
-            "type": "string"
-        },
-        "product_id": {
-            "description": "The vendor's antibody product code",
-            "comment": "The product or catalog number supplied by the vendor",
-            "title": "Antibody product id",
             "type": "string"
         },
         "lot_id_alias": {
-            "default": [],
-            "description": "Alias for the lot ID",
-            "comment": "For lots deemed to be exactly the same by the vendor, the lot ids may be aliases for one another",
-            "title": "Lot id alias",
+            "title": "Lot ID Aliases",
+            "description": "The lot identifiers for this lot deemed to be exactly the same by the vendor.",
             "type": "array",
+            "default": [],
             "items": {
+                "title": "Lot ID Alias",
+                "description": "The lot identifier for this lot deemed to be exactly the same by the vendor. ",
                 "type": "string"
             }
         },
         "antigen_description": {
-            "default": "",
-            "description": "Description of the antigen used in raising the antibody",
-            "comment": "A description, such as the amino acid residue locations of the antigen used to raise the antibody",
-            "title": "Antigen description",
-            "type": "string"
+            "title": "Antigen Description",
+            "description": "The plain text description of the antigen used in raising the antibody (e.g. amino acid residue locations of the antigen).",
+            "type": "string",
+            "default": ""
         },
         "antigen_sequence": {
-            "description": "Sequence of the antigen used in raising the antibody",
-            "comment": "The amino acid sequence of the antigen used to raise the antibody",
-            "title": "Antigen sequence",
+            "title": "Antigen Sequence",
+            "description": "The amino acid sequence of the antigen.",
             "type": "string"
         },
         "clonality": {
-            "description": "Indicate whether the antibody is mono- or polyclonal",
-            "comment": "Choose from monoclonal or polyclonal",
-            "title": "Antibody clonality",
+            "title": "Antibody Clonality",
+            "description": "The diversification of the immune cell lineage to make the antibody.",
             "type": "string",
             "enum": [
                 "polyclonal",
@@ -74,28 +61,24 @@
             ]
         },
         "encode2_dbxrefs": {
+            "title": "Previous ENCODE identifiers",
+            "type": "array",
             "default": [],
-            "description": "List cross-references to the previous ENCODE system",
-            "comment": "Cross-references used in previous ENCODE systems can be found in the antibody column: http://encodeproject.org/ENCODE/antibodies.html",
             "items": {
-                "description": "List of ENCODE2 identifiers",
-                "title": "ID",
+                "title": "Previous ENCODE identifier",
                 "type":  "string"
-            },
-            "title": "ENCODE2 DBXREFs",
-            "type": "array"
+            }
         },
         "host_organism": {
-            "description": "Organism antibody was grown in.",
-            "comment": "Programmatic submitters can provide the exact Organism name or uuid for the host organism the antibody was raised in",
-            "title": "Host organism",
+            "title": "Host",
+            "description": "The organism the antibody was grown in.",
+            "comment": "See organism.json for available identifiers.",
             "type": "string",
             "linkTo": "organism"
         },
         "isotype": {
-            "description": "Isotype of the antibody (IgA, IgD, etc.)",
-            "comment": "Choose an isotype from the different enumerated antibody classes",
-            "title": "Antibody isotype",
+            "title": "isotype",
+            "description": "The class of antibody ( e.g. IgA, IgD, IgE, IgG or IgM)",
             "type": "string",
             "enum": [
                 "IgA1",
@@ -126,12 +109,13 @@
             ]
         },
         "purifications": {
-            "description": "Method by which antibody was purified",
-            "comment": "Choose a method by which the antibody was purified from the enumerated list",
-            "title": "Purification methods",
+            "title": "Purification Methods",
+            "description": "The purification protocols used to isolate the antibody.",
             "type": "array",
             "default": [],
             "items": {
+                "title": "Purification Method",
+                "description": "A purification protocol used to isolate the antibody.",
                 "type": "string",
                 "enum": [
                     "Protein A/G",
@@ -148,9 +132,8 @@
             }
         },
         "url": {
-            "description": "External URL for the specific antibody at vendor site",
-            "comment": "Provide an URL for the vendor's page for the specified antibody lot, if available",
-            "title": "External url",
+            "title": "URL",
+            "description": "An external resource with additional information about the antibody.",
             "type": "string",
             "format": "uri"
         }

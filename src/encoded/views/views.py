@@ -17,7 +17,7 @@ from pyramid.traversal import find_root
 
 ACCESSION_KEYS = [
     {
-        'name': 'accession', 
+        'name': 'accession',
         'value': '{accession}',
         '$templated': True,
         '$condition': 'accession',
@@ -36,6 +36,7 @@ ALIAS_KEYS = [
         'value': '{alias}',
         '$repeat': 'alias aliases',
         '$templated': True,
+        '$condition': 'aliases',
     },
 ]
 
@@ -184,7 +185,7 @@ class Construct(Collection):
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
     }
-    item_embedded = set(['source', 'documents', 'characterizations'])
+    item_embedded = set(['source', 'documents', 'characterizations', 'target'])
     # item_keys = ['vector_name']
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
@@ -201,7 +202,8 @@ class ConstructCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        pass
+        embedded = ['submitted_by', 'lab', 'award']
+        keys = ALIAS_KEYS
 
 
 @location('documents')
@@ -254,7 +256,8 @@ class BiosampleCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        pass
+        embedded = ['submitted_by', 'lab', 'award']
+        keys = ALIAS_KEYS
 
 
 @location('targets')
@@ -269,12 +272,13 @@ class Target(Collection):
     columns = OrderedDict([
         ('label', 'Target'),
         ('organism.name', 'Species'),
-        ('dbxref', 'External Resources'),
+        ('dbxref', 'External resources'),
     ])
 
     class Item(Collection.Item):
         template = {
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
+            'title': {'$value': '{label} ({organism_name})', '$templated': True},
         }
         embedded = set(['organism', 'submitted_by', 'lab', 'award'])
         keys =  ALIAS_KEYS + [
@@ -305,7 +309,8 @@ class AntibodyCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        embedded = set(['antibody', 'target', 'submitted_by', 'lab', 'award'])
+        embedded = ['submitted_by', 'lab', 'award', 'target']
+        keys = ALIAS_KEYS
 
 
 @location('antibodies')
@@ -369,7 +374,7 @@ class Replicates(Collection):
         'description': 'Listing of Replicates',
     }
     item_embedded = set(['library', 'platform', 'antibody'])
-    item_keys = [
+    item_keys = ALIAS_KEYS + [
         {
             'name': '{item_type}:experiment_biological_technical',
             'value': '{experiment}/{biological_replicate_number}/{technical_replicate_number}',
@@ -417,13 +422,13 @@ class Experiments(Collection):
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
-        ('assay_term_name', 'Assay Type'),
+        ('assay_term_name', 'Assay type'),
         ('target.label', 'Target'),
         ('biosample_term_name', 'Biosample'),
-        ('replicates.length', 'Biological Replicates'),
+        ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
-        ('award.rfa', 'RFA'),
+        ('award.rfa', 'Project'),
     ])
 
 
@@ -451,7 +456,8 @@ class RNAiCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment):
-        pass
+        embedded = ['submitted_by', 'lab', 'award']
+        keys = ALIAS_KEYS
 
 
 @location('dataset')

@@ -1,10 +1,11 @@
 {
     "title": "Platform",
+    "description": "Schema for submitting a measurement device.",
     "id": "/profiles/platform.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting an experimental platform to ENCODE",
     "type": "object",
     "required": ["term_id"],
+    "identifyingProperties": ["uuid", "term_name"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -19,44 +20,40 @@
             "default": "1"
         },
         "term_id": {
-            "description": "OBI Ontology term ID for this expermental platform",
-            "comment": "Use unique OBI term ID or 'New term requested' if necessary",
-            "title": "Ontology ID",
+            "title": "Platform ID",
+            "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the measurement device.",
+            "comment": "NTR is a new term request identifier provided by the DCC.",
             "type": "string",
             "pattern": "^(OBI|NTR):[0-9]{7}$"
         },
         "term_name": {
-            "default": "",
-            "description": "Name of the Platform (should be OBI term were possible)",
             "title": "Platform Name",
-            "type":  "string"
+            "description": "OBI (Ontology for Biomedical Investigations) ontology term for the measurement device.",
+            "type":  "string",
+            "default": ""
         },
         "geo_dbxrefs": {
+            "title": "GEO IDs",
+            "type": "array",
             "default": [],
-            "description": "List of GEO dbxrefs (GPL#s)",
             "items": {
-                "description": "List of GEO IDs",
-                "title": "GEO IDs",
+                "title": "GEO ID",
                 "type":  "string",
                 "pattern": "^(GPL)\\d+$"
-            },
-            "title": "GEO DBXREFs",
-            "type": "array"
+            }
         },
         "encode2_dbxrefs": {
+            "title": "Previous ENCODE IDs",
+            "type": "array",
             "default": [],
-            "description": "List cross-references to the previous ENCODE2 system",
             "items": {
-                "description": "List of ENCODE2 Identifiers",
-                "title": "ID",
+                "title": "Previous ENCODE ID",
                 "type":  "string"
-            },
-            "title": "ENCODE2 DBXREFs",
-            "type": "array"
+            }
         },
         "url": {
-            "description": "Commercial URL for the experimental Platform",
             "title": "URL",
+            "description": "An external resource with additional information about the measurement device.",
             "type": "string",
             "format": "uri"
         }

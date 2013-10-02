@@ -62,44 +62,42 @@ function (experiment, React, globals, dbxref) {
                             <dt hidden={!context.description}>Description</dt>
                             <dd hidden={!context.description}>{context.description}</dd>
 
-                            <dt>Biosample</dt>
-                            <dd>{context.biosample_term_name}</dd>
+                            <dt hidden={!context.biosample_term_name}>Biosample</dt>
+                            <dd hidden={!context.biosample_term_name}>{context.biosample_term_name}</dd>
 
-                            <dt>Biosample Type</dt>
-                            <dd>{context.biosample_type}</dd>
-                            
+                            <dt hidden={!context.biosample_type}>Biosample type</dt>
+                            <dd hidden={!context.biosample_type}>{context.biosample_type}</dd>
+
                             {context.target ? <dt>Target</dt> : null}
                             {context.target ? <dd>{context.target.label}</dd> : null}
-                            
+
                             {antibody_accessions.length ? <dt>Antibody</dt> : null}
                             {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
-							{context.possible_controls ? <dt>Controls</dt> : null}
-							{context.possible_controls ?
-								<dd>
-									<ul>
-										{context.possible_controls.map(function (control) {
-											return (
-									            <li key={control['@id']}>
-													<a href={control['@id']}>
-														{control.accession}
-													</a>
-												</li>
-											);
-										})}
-									</ul>
-								</dd>
-							: null}
+                            <dt hidden={!context.possible_controls.length}>Controls</dt>
+                            <dd hidden={!context.possible_controls.length}>
+                                <ul>
+                                        {context.possible_controls.map(function (control) {
+                                            return (
+                                                <li key={control['@id']}>
+                                                    <a href={control['@id']}>
+                                                        {control.accession}
+                                                    </a>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                            </dd>
 
                             <dt hidden={!context.encode2_dbxrefs.length}>ENCODE2 ID</dt>
-                            <dd hidden={!context.encode2_dbxrefs.length}>
+                            <dd hidden={!context.encode2_dbxrefs.length} class="no-cap">
                                 <DbxrefList values={context.encode2_dbxrefs} prefix="ENCODE2" />
                             </dd>
 
                             <dt>Submitted by</dt>
                             <dd>{context.submitted_by.title}</dd>
 
-                            <dt>RFA</dt>
+                            <dt>Project</dt>
                             <dd>{context.award.rfa}</dd>
 
                         </dl>
@@ -119,7 +117,7 @@ function (experiment, React, globals, dbxref) {
                         );
                     })}
 
-                    <FilesLinked context={context} />                    
+                    <FilesLinked context={context} />
                 </div>
             );
         }
@@ -130,15 +128,19 @@ function (experiment, React, globals, dbxref) {
     var BiosamplesUsed = experiment.BiosamplesUsed = function (props) {
         var replicates = props.replicates;
         if (!replicates.length) return (<div hidden={true}></div>);
+        var biosamples = {};
+        replicates.forEach(function(replicate) {
+            var biosample = replicate.library.biosample;
+            biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
+        });
         return (
             <div>
-                <h3>Biosamples Used</h3>
+                <h3>Biosamples used</h3>
                 <table>
                     <thead>
                         <tr>
                             <th>Accession</th>
                             <th>Term</th>
-                            <th>Biological Replicate</th>
                             <th>Type</th>
                             <th>Species</th>
                             <th>Source</th>
@@ -147,16 +149,16 @@ function (experiment, React, globals, dbxref) {
                     </thead>
                     <tbody>
 
-                    {replicates.map(function (replicate, index) {
+                    { Object.keys(biosamples).map(function (key, index) {
+                        var biosample = biosamples[key].biosample;
                         return (
                             <tr key={index}>
-                                <td>{replicate.library.biosample.accession}</td>
-                                <td>{replicate.library.biosample.biosample_term_name}</td>
-                                <td>{replicate.biological_replicate_number}</td>
-                                <td>{replicate.library.biosample.biosample_type}</td>
-                                <td>{replicate.library.biosample.donor.organism.name}</td>
-                                <td>{replicate.library.biosample.source.title}</td>
-                                <td>{replicate.library.biosample.submitted_by.title}</td>
+                                <td>{biosample.accession}</td>
+                                <td>{biosample.biosample_term_name}</td>
+                                <td>{biosample.biosample_type}</td>
+                                <td>{biosample.donor.organism.name}</td>
+                                <td>{biosample.source.title}</td>
+                                <td>{biosample.submitted_by.title}</td>
                             </tr>
                         );
                     })}
@@ -173,19 +175,24 @@ function (experiment, React, globals, dbxref) {
 
 
     var AssayDetails = experiment.AssayDetails = function (props) {
-        var replicates = props.replicates
+        var replicates = props.replicates.sort(function(a, b) {
+            if (b.biological_replicate_number === a.biological_replicate_number) {
+                return a.technical_replicate_number - b.technical_replicate_number;
+            }
+            return a.biological_replicate_number - b.biological_replicate_number;
+        });
         if (!replicates.length) return (<div hidden={true}></div>);
         var replicate = replicates[0];
         var library = replicate.library;
         var platform = replicate.platform;
         var titles = {
-            nucleic_acid_type: 'Nucleic Acid Type',
-            nucleic_acid_starting_quantity: 'NA Starting Quantity',
-            lysis_method: 'Lysis Method',
-            extraction_method: 'Extraction Method',
-            fragmentation_method: 'Fragmentation Method',
-            size_range: 'Size Range',
-            library_size_selection_method: 'Size Selection Method',
+            nucleic_acid_term_name: 'Nucleic acid type',
+            nucleic_acid_starting_quantity: 'NA starting quantity',
+            lysis_method: 'Lysis method',
+            extraction_method: 'Extraction method',
+            fragmentation_method: 'Fragmentation method',
+            size_range: 'Size range',
+            library_size_selection_method: 'Size selection method',
         };
         var children = [];
         for (name in titles) {
@@ -194,13 +201,13 @@ function (experiment, React, globals, dbxref) {
                 children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
             }
         }
-        if (platform.description) {
+        if (typeof(platform) != 'undefined' && platform.title) {
             children.push(<dt key="dt-platform">Platform</dt>);
-            children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.description}</a></dd>);
+            children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.title}</a></dd>);
         }
         return (
             <div>
-                <h3>Assay Details</h3>
+                <h3>Assay details</h3>
                 <dl class="panel key-value">
                     {children}
                 </dl>
@@ -215,9 +222,9 @@ function (experiment, React, globals, dbxref) {
         var biosample = library.biosample;
         return (
             <div key={props.key}>
-                <h3>Biological Replicate - {replicate.biological_replicate_number}</h3>
+                <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
                 <dl class="panel key-value">
-                    <dt>Technical Replicate</dt>
+                    <dt>Technical replicate</dt>
                     <dd>{replicate.technical_replicate_number}</dd>
 
                     <dt>Library</dt>
@@ -227,7 +234,7 @@ function (experiment, React, globals, dbxref) {
                     <dd>
                         <a href={biosample['@id']}>
                             {biosample.accession}
-                        </a>{' '}-{' '}{biosample.description}
+                        </a>{' '}-{' '}{biosample.biosample_term_name}
                     </dd>
                 </dl>
             </div>
@@ -249,11 +256,11 @@ function (experiment, React, globals, dbxref) {
                     <thead>
                         <tr>
                             <th>Accession</th>
-                            <th>File Type</th>
-                            <th>Associated Replicates</th>
-                            <th>Added By</th>
-                            <th>Date Added</th>
-                            <th>File Download</th>
+                            <th>File type</th>
+                            <th>Associated replicates</th>
+                            <th>Added by</th>
+                            <th>Date added</th>
+                            <th>File download</th>
                         </tr>
                     </thead>
                     <tbody>

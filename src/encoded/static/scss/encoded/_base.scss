@@ -24,15 +24,19 @@ body { background: $mainThemeColor; }
 }
 
 dd::first-letter { text-transform: capitalize; } 
-dd:first-letter { text-transform: capitalize; } // IE 8 support
+dd:first-letter { text-transform: capitalize; } // IE 8 and below support
+.no-cap::first-letter { text-transform: none !important; } 
+.no-cap:first-letter { text-transform: none !important; } // IE 8 and below support
+
 
 
 /* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */
 
-.cap-me-once { display: inline-block; }
+.cap-me-once { display: block; }
 .cap-me-once:first-letter { text-transform: uppercase; }
+.cap-me-once::first-letter { text-transform: uppercase; } // older browser support
 
-dd ul {
+dd ul, .multi-value {
 	list-style: none;
 	margin: 0;
 }

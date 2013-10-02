@@ -9,28 +9,13 @@ def _type_length():
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     lengths = {}
     for name in ORDER:
-        with open(os.path.join(inserts, name + '.tsv')) as f:
+        with open(os.path.join(inserts, name + '.tsv'), 'U') as f:
             lengths[name] = len([l for l in f.readlines() if l.strip()]) - 1
 
     return lengths
 
 
 TYPE_LENGTH = _type_length()
-
-
-@pytest.fixture
-def users(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/labs/'
-    for item in URL_COLLECTION[url]:
-        testapp.post_json(url, item, status=201)
-    users = []
-    url = '/users/'
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-        res = testapp.get(res.location)
-        users.append(res.json)
-    return users
 
 
 def test_home(htmltestapp):
@@ -176,9 +161,10 @@ def test_users_post(users, anontestapp):
     res = anontestapp.get('/@@testing-user',
                           extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
-        'lab:2c334112-288e-4d45-9154-3f404c726daf',
+        'group:admin',
+        'lab:cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
         'remoteuser:%s' % email,
-        'submits_for:2c334112-288e-4d45-9154-3f404c726daf',
+        'submits_for:cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
         'system.Authenticated',
         'system.Everyone',
         'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',

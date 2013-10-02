@@ -1,15 +1,14 @@
 {
-    "title": "ENCODE Relationship Data File",
+    "title": "Data File Relationships",
+    "description": "Schema for submitting data file relationships.",
     "id": "/profiles/file_relation.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "description": "Schema for submitting datafile relationship and alias metadata for ENCODE",
     "type": "object",
     "required": [ "award", "lab"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
@@ -19,53 +18,47 @@
             "default": "1"
         },
         "encode2_dbxrefs": {
+            "title": "Previous ENCODE IDs",
+            "type": "array",
             "default": [],
-            "description": "List cross-references to the previous ENCODE2 system",
             "items": {
-                "description": "List of ENCODE2 Identifiers",
-                "title": "ID",
+                "title": "Previous ENCODE ID",
                 "type":  "string"
-            },
-            "title": "ENCODE2 DBXREFs",
-            "type": "array"
+            }
         },
         "derived_from": {
-            "default": [],
-            "description": "List of parent files (derived_from).",
-            "title": "Files",
+            "title": "Generated from",
+            "description": "The files participating as inputs into software to produce this output file.",
             "type":  "array",
+            "default": [],
             "items": {
-                "description": "File pointer",
-                "comment": "For automatic submission supply unique data File accessions or uuids",
-                "title": "Derived from File",
+                "comment": "See file.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "file"
             }
         },
         "controls_for": {
-            "default": [],
-            "description": "List of files this file is a control for",
-            "title": "Files",
+            "title": "Controls for",
+            "description": "The data files that this file serves as a scientific control. ",
             "type":  "array",
+            "default": [],
             "items": {
-                "description": "File pointer",
-                "comment": "For automatic submission supply unique data File accessions or uuids",
-                "title": "Controls for File",
+                "comment": "See file.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "file"
             }
         },
         "replaced_by": {
-            "description": "If this file has been deprecated, which file is the current one",
-            "comment": "For automatic submission supply unique data File accessions or uuids",
-            "title": "Replacing File",
+            "title": "Superseded by" ,
+            "description": "The file that has replaced this file.",
+            "comment": "See file.json for a list of available identifiers.",
             "type": "string",
             "linkTo": "file"
         },
         "paired_with": {
-            "description": "File this file is paired with.",
-            "comment": "For automatic submission supply unique data File accessions or uuids",
-            "title": "Paired File",
+            "title": "File Pairing",
+            "description": "The file that corresponds with this file.",
+            "comment": "See file.json for a list of available identifiers.",
             "type": "string",
             "linkTo": "file"
         }

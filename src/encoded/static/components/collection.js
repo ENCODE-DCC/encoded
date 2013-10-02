@@ -103,7 +103,9 @@ function (collection, $, class_, React, globals) {
             var updateData = false;
             if (nextProps.context !== this.props.context) {
                 updateData = true;
-                this.fetchAll(nextProps);
+                this.setState({
+                    communicating: this.fetchAll(nextProps)
+                });
             }
             if (nextProps.columns !== this.props.columns) {
                 updateData = true;
@@ -217,6 +219,7 @@ function (collection, $, class_, React, globals) {
             var sortOn = this.state.sortOn;
             var reversed = this.state.reversed;
             var searchTerm = this.state.searchTerm;
+            this.state.searchTerm = searchTerm;
             var titles = context.columns;
             var data = this.state.data;
             var params = this.props.location.params();
@@ -235,7 +238,7 @@ function (collection, $, class_, React, globals) {
                     </th>
                 );
             });
-            var searchTermLower = this.state.searchTerm.toLowerCase();
+            var searchTermLower = this.state.searchTerm.trim().toLowerCase();
             var matching = [];
             var not_matching = [];
             // Reorder rows so that the nth-child works
@@ -343,6 +346,7 @@ function (collection, $, class_, React, globals) {
 
         submit: function () {
             // form.submit() does not fire onsubmit handlers...
+            
             var event = new Event('submit', {bubbles: true, cancelable: true});
             this.refs.form.getDOMNode().dispatchEvent(event);
         },
