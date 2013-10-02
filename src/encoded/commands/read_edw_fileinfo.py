@@ -22,16 +22,6 @@ FILES_URL = '/files/'
 EXPERIMENTS_URL = '/experiments/'
 REPLICATES_URL = '/replicates/'
 
-# Some properties in JSON object from collection are links requiring a
-# further GET.
-# NOTE: It would be good to derive this info from schema
-# NOTE: Could save 1 GET by GETting the File object (has replicate & user info)
-LINKED_PROPERTIES = {
-    'replicate': 'biological_replicate_number',
-    'submitted_by': 'email',
-    'dataset': 'accession',
-}
-
 ENCODE_PHASE_2 = '2'
 ENCODE_PHASE_3 = '3'
 ENCODE_PHASE_ALL = 'all'
@@ -41,14 +31,31 @@ ENCODE_PHASE_ALL = 'all'
 # Support functions to localize handling of special fields
 # e.g. links, datetime
 
+# Some properties in JSON object from collection are links requiring a
+# further GET.
+# NOTE: It would be good to derive this info from schema
+
+# Some properties in JSON object from collection return nested objects requiring
+# pulling desired property
+FILE_NESTED_PROPERTIES = {
+    'replicate': 'biological_replicate_number',
+    'submitted_by': 'email',
+}
+
 def format_app_fileinfo(file_dict, app):
     # Handle links and nested propeties
-    for link_prop, dest_prop in LINKED_PROPERTIES.iteritems():
+    for link_prop, dest_prop in FILE_NESTED_PROPERTIES.iteritems():
         if link_prop in file_dict:
-            resp = app.get(file_dict[link_prop])
-            file_dict[link_prop] = resp.json[dest_prop]
+            file_dict[link_prop] = file_dict[link_prop][dest_prop]
         else:
             file_dict[link_prop] = edw_file.NA
+
+    # extract file and dataset accessionsfrom URLs in JSON
+    # NOTE: shouldn't 'accession' property of file JSON be the file's accession ?
+    # it's currently the dataset accession
+    file_dict['accession'] = file_dict['@id'].split('/')[2]
+    file_dict['dataset'] = file_dict['dataset'].split('/')[2]
+    sys.stderr.write('FILE: %s\n' % file_dict['accession'])
 
     # Filter out extra fields (not in FILE_INFO_FIELDS)
     for prop in file_dict.keys():
@@ -56,7 +63,7 @@ def format_app_fileinfo(file_dict, app):
             del file_dict[prop]
 
     # Assembly can be missing
-    if 'assembly' not in resp.json.keys():
+    if 'assembly' not in file_dict.keys():
         file_dict['assembly'] = edw_file.NA
 
 
