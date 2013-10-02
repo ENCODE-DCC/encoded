@@ -984,12 +984,13 @@ def collection_add(context, request):
     properties = request.validated
     item = context.add(properties)
     item_uri = request.resource_path(item)
+    rendered = embed(request, item_uri + '?embed=false')
     request.response.status = 201
     request.response.location = item_uri
     result = {
         'status': 'success',
         '@type': ['result'],
-        '@graph': [item_uri],
+        '@graph': [rendered],
     }
     return result
 

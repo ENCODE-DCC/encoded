@@ -5,8 +5,7 @@ def test_server_defaults(users, anontestapp):
         '/testing_server_default', {}, status=201,
         extra_environ=extra_environ,
     )
-    url = res.json['@graph'][0]
-    res = anontestapp.get(url, status=200, extra_environ=extra_environ)
-    assert res.json['now'].startswith('2')
-    assert res.json['user'] == users[0]['@id']
-    assert res.json['accession'].startswith('ENCXX')
+    item = res.json['@graph'][0]
+    assert item['now'].startswith('2')
+    assert item['user'] == users[0]['@id']
+    assert item['accession'].startswith('ENCXX')

@@ -127,7 +127,7 @@ def test_collection_put(testapp, url, execute_counter):
     collection = URL_COLLECTION[url]
     initial = collection[0]
     res = testapp.post_json(url, initial, status=201)
-    item_url = res.json['@graph'][0]
+    item_url = res.json['@graph'][0]['@id']
     uuid = initial['uuid']
 
     with execute_counter.expect(2):
