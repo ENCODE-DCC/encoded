@@ -90,6 +90,17 @@
             "description": "The utilization of sequencing both ends of the DNA fragment in a library.",
             "type": "boolean",
             "default": false
+        },
+        "read_length": {
+            "title": "Read length",
+            "type": "numeric"
+        },
+        "read_length_units": {
+            "title": "Read length units",
+             "type": "string",
+            "enum": [
+                "nt"
+            ]
         }
     }
 }
