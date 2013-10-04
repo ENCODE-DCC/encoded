@@ -280,6 +280,9 @@ class Root(object):
             raise KeyError(name)
         return resource
 
+    def __contains__(self, name):
+        return self.get(name, None) is not None
+
     def get(self, name, default=None):
         resource = self.collections.get(name, None)
         if resource is not None:
@@ -721,6 +724,9 @@ class Collection(object):
             raise KeyError(name)
         return item
 
+    def __contains__(self, name):
+        return self.get(name, None) is not None
+
     def get(self, name, default=None):
         resource = self.get_by_uuid(name, None)
         if resource is not None:
@@ -978,12 +984,13 @@ def collection_add(context, request):
     properties = request.validated
     item = context.add(properties)
     item_uri = request.resource_path(item)
+    rendered = embed(request, item_uri + '?embed=false')
     request.response.status = 201
     request.response.location = item_uri
     result = {
         'status': 'success',
         '@type': ['result'],
-        '@graph': [item_uri],
+        '@graph': [rendered],
     }
     return result
 
