@@ -30,26 +30,22 @@ class User(Collection):
     }
 
     __acl__ = [
-        (Allow, 'group.admin', 'list'),
-        (Allow, 'group.admin', 'view_details'),
-        (Deny, Everyone, 'list'),
-        (Deny, Everyone, 'view_details'),
+        (Allow, 'group.admin', ['list', 'view_details']),
+        (Allow, 'role.owner', ['edit', 'view_details']),
+        (Deny, Everyone, ['list', 'view_details']),
     ]
 
     class Item(Collection.Item):
         keys = ['email']
-        unique_key = 'user:email'
+        unique_key = 'user.email'
         template = {
             'title': '{first_name} {last_name}',
             '$templated': True,
         }
 
-        def __acl__(self):
-            owner = 'userid:%s' % self.uuid
-            return [
-                (Allow, owner, 'edit'),
-                (Allow, owner, 'view_details'),
-            ]
+        def __ac_local_roles__(self):
+            owner = 'userid.%s' % self.uuid
+            return {owner: 'role.owner'}
 
 
 @view_config(context=User.Item, permission='view', request_method='GET',

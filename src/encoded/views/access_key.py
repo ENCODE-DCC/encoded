@@ -41,6 +41,7 @@ class AccessKey(Collection):
     __acl__ = [
         (Allow, Authenticated, 'traverse'),
         (Deny, Everyone, 'traverse'),
+        (Allow, 'role.owner', ['edit', 'view']),
         (Allow, 'group.admin', 'view'),
         (Deny, Everyone, 'view'),
     ]
@@ -49,12 +50,9 @@ class AccessKey(Collection):
         keys = ['access_key_id']
         name_key = 'access_key_id'
 
-        def __acl__(self):
-            owner = 'userid:%s' % self.properties['user']
-            return [
-                (Allow, owner, 'edit'),
-                (Allow, owner, 'view'),
-            ]
+        def __ac_local_roles__(self):
+            owner = 'userid.%s' % self.properties['user']
+            return {owner: 'role.owner'}
 
 
 @view_config(context=AccessKey, permission='add', request_method='POST',
