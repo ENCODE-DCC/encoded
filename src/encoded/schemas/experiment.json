@@ -24,6 +24,9 @@
         "schema_version": {
             "default": "1"
         },
+        "accession": {
+            "accessionType": "SR"
+        },
         "description": {
             "title": "Description",
             "description": "A plain text description of the experiment.",
