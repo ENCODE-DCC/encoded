@@ -88,11 +88,12 @@ def main():
         for item in items:
             try:
                 item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
-                document_id = str(item_json.json['uuid'])
-                document = item_json.json
             except Exception as e:
                 print e
             else:
+                document_id = str(item_json.json['uuid'])
+                document = item_json.json
+
                 # For biosamples getting organ_slim and system_slim from ontology index
                 if url == 'biosample':
                     if document['biosample_term_id']:
