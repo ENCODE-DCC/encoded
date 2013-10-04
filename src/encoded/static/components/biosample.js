@@ -18,6 +18,7 @@ function (biosample, React, URI, globals) {
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
+            var aliasList = context.aliases.join(", ");
             return (
                 <div class={itemClass}>
                     <header class="row">
@@ -39,10 +40,10 @@ function (biosample, React, URI, globals) {
 
                             <dt>Term ID</dt>
                             <dd>{context.biosample_term_id}</dd>
-
+                            
                             <dt hidden={!context.description}>Description</dt>
                             <dd hidden={!context.description}>{context.description}</dd>
-
+                            
                             <dt>Source</dt>
                             <dd><a href={context.source.url}>{context.source.title}</a></dd>
 
@@ -60,6 +61,9 @@ function (biosample, React, URI, globals) {
 
                             <dt>Lab</dt>
                             <dd>{context.lab.title}</dd>
+                            
+                            <dt hidden={!context.aliases.length}>Aliases</dt>
+                            <dd hidden={!context.aliases.length}>{aliasList}</dd>
 
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
