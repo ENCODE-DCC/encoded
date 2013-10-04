@@ -184,7 +184,7 @@
         },
         "culture_start_date": {
             "title": "Culture start date",
-            "description": "For cultured samples, the date the culture was started.",
+            "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
             "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
