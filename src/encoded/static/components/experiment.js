@@ -153,7 +153,7 @@ function (experiment, React, globals, dbxref) {
                         var biosample = biosamples[key].biosample;
                         return (
                             <tr key={index}>
-                                <td>{biosample.accession}</td>
+                                <td><a href={biosample['@id']}>{biosample.accession}</a></td>
                                 <td>{biosample.biosample_term_name}</td>
                                 <td>{biosample.biosample_type}</td>
                                 <td>{biosample.donor.organism.name}</td>
