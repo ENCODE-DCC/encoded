@@ -55,7 +55,6 @@ def format_app_fileinfo(file_dict, app):
     # it's currently the dataset accession
     file_dict['accession'] = file_dict['@id'].split('/')[2]
     file_dict['dataset'] = file_dict['dataset'].split('/')[2]
-    sys.stderr.write('FILE: %s\n' % file_dict['accession'])
 
     # Filter out extra fields (not in FILE_INFO_FIELDS)
     for prop in file_dict.keys():
@@ -77,7 +76,6 @@ IMPORT_USER = 'IMPORT'
 def basic_auth(username, password):
     from base64 import b64encode
     return 'Basic ' + b64encode('%s:%s' % (username, password))
-
 
 def remote_app(base, username='', password=''):
     environ = {'HTTP_ACCEPT': 'application/json'}
@@ -144,7 +142,6 @@ def get_app_fileinfo(phase, application, user, password, limit=0):
     # Return list of fileinfo dictionaries
     app = make_app(application, user, password)
     rows = get_collection(app, FILES_URL)
-
     app_files = []
     for row in rows:
         if phase != ENCODE_PHASE_ALL:
@@ -373,13 +370,15 @@ def main():
     group.add_argument('-n', '--new', action='store_true',
                    help='show new files: in EDW not in app')
     parser.add_argument('-l', '--limit', type=int, default=0,
-                    help='limit number of files to show; '
+                   help='limit number of files to show; '
                           'for EDW, most recently submitted are listed first')
     parser.add_argument('-P', '--phase',  
-                    choices=[ENCODE_PHASE_2, ENCODE_PHASE_3, ENCODE_PHASE_ALL],                     default=ENCODE_PHASE_3,
-                help='limit EDW files by ENCODE phase accs (default 3)'),
+                choices=[ENCODE_PHASE_2, ENCODE_PHASE_3, ENCODE_PHASE_ALL], 
+                default=ENCODE_PHASE_ALL,
+                    help='limit EDW files by ENCODE phase accs (default %s)' %
+                            ENCODE_PHASE_ALL),
     parser.add_argument('-x', '--experiment', action='store_true',
-                        help='for EDW, show only files having experiment accession')
+                    help='for EDW, show only files having experiment accession')
     parser.add_argument('-d', '--data_host',
                         help='data warehouse host (default from ./edw.cfg)')
     parser.add_argument('-a', '--application', default=DEFAULT_INI,
