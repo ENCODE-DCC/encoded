@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "facets": {"Biosample Type": "biosample_type", "System": "system_slims", "Organism": "donor.organism.name", "Organ": "organ_slims", "Lab": "lab.title", "Source": "source.title", "Gender": "donor.sex", "Life Stage": "life_stage", "Phase": "phase"},
+    "facets": {"Biosample Type": "biosample_type", "System": "system_slims", "Organism": "donor.organism.name", "Developmental Slim": "developmental_slims", "Organ": "organ_slims", "Lab": "lab.title", "Source": "source.title", "Gender": "donor.sex", "Life Stage": "life_stage", "Phase": "phase", "Subcellular Fraction": "subcellular_fraction"},
     "identifyingProperties": ["uuid","accesion","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
