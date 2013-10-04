@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "XXXcomment": "is source required?",
-    "required": [ "award", "lab", "nucleic_acid_term_id"],
+    "required": [ "award", "lab", "nucleic_acid_term_id", "aliases"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [

@@ -4,7 +4,7 @@
     "id": "/profiles/rnai_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "characterizes" ],
+    "required": [ "award", "lab", "characterizes", "aliases" ],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },

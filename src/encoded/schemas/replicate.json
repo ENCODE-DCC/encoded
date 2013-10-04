@@ -4,7 +4,7 @@
     "id": "/profiles/replicate.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["experiment", "biological_replicate_number", "technical_replicate_number"],
+    "required": ["experiment", "biological_replicate_number", "technical_replicate_number", "aliases"],
     "approvalRequired": ["library"],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,

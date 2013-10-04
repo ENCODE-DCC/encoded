@@ -4,7 +4,7 @@
     "id": "/profiles/antibody_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "characterizes", "target" ],
+    "required": [ "award", "lab", "characterizes", "target", "aliases" ],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
