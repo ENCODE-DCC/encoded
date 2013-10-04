@@ -30,8 +30,8 @@ class User(Collection):
     }
 
     __acl__ = [
-        (Allow, 'group:admin', 'list'),
-        (Allow, 'group:admin', 'view_details'),
+        (Allow, 'group.admin', 'list'),
+        (Allow, 'group.admin', 'view_details'),
         (Deny, Everyone, 'list'),
         (Deny, Everyone, 'view_details'),
     ]
@@ -74,11 +74,11 @@ def user_basic_view(context, request):
 def current_user(request):
     request.environ['encoded.canonical_redirect'] = False
     for principal in effective_principals(request):
-        if principal.startswith('userid:'):
+        if principal.startswith('userid.'):
             break
     else:
         return {}
-    namespace, userid = principal.split(':', 1)
+    namespace, userid = principal.split('.', 1)
     collection = request.root.by_item_type[User.item_type]
     path = request.resource_path(collection, userid)
     subreq = make_subrequest(request, path)

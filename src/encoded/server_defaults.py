@@ -32,7 +32,7 @@ def userid(property, subschema):
     request = get_current_request()
     principals = effective_principals(request)
     for principal in principals:
-        if principal.startswith('userid:'):
+        if principal.startswith('userid.'):
             return principal[7:]
     return NO_DEFAULT
 

@@ -41,7 +41,7 @@ class AccessKey(Collection):
     __acl__ = [
         (Allow, Authenticated, 'traverse'),
         (Deny, Everyone, 'traverse'),
-        (Allow, 'group:admin', 'view'),
+        (Allow, 'group.admin', 'view'),
         (Deny, Everyone, 'view'),
     ]
 
@@ -67,9 +67,9 @@ def access_key_add(context, request):
 
     if 'user' not in request.validated:
         request.validated['user'], = [
-            principal.split(':', 1)[1]
+            principal.split('.', 1)[1]
             for principal in effective_principals(request)
-            if principal.startswith('userid:')
+            if principal.startswith('userid.')
         ]
 
     password = None

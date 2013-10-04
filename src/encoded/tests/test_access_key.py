@@ -29,12 +29,12 @@ def access_keys(app):
         principals = [
             'system.Authenticated',
             'system.Everyone',
-            'userid:' + item['uuid'],
+            'userid.' + item['uuid'],
         ]
-        principals.extend('lab:%s' % lab_name[name] for name in item['submits_for'])
-        principals.extend('submits_for:%s' % lab_name[name] for name in item['submits_for'])
+        principals.extend('lab.%s' % lab_name[name] for name in item['submits_for'])
+        principals.extend('submits_for.%s' % lab_name[name] for name in item['submits_for'])
         if 'cherry' in item['submits_for']:
-            principals.append('group:admin')
+            principals.append('group.admin')
         users.append({
             'location': res.location,
             'effective_principals': sorted(principals),
@@ -75,9 +75,9 @@ def test_access_key_principals(anontestapp, execute_counter, access_key):
     with execute_counter.expect(1):
         res = anontestapp.get('/@@testing-user', headers=headers)
 
-    assert res.json['authenticated_userid'] == 'accesskey:' + access_key['access_key_id']
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key['access_key_id']
     assert sorted(res.json['effective_principals']) == [
-        'accesskey:' + access_key['access_key_id'],
+        'accesskey.' + access_key['access_key_id'],
     ] + access_key['user']['effective_principals']
 
 
@@ -90,7 +90,7 @@ def test_access_key_reset(anontestapp, access_key):
     assert res.json['authenticated_userid'] is None
 
     res = anontestapp.get('/@@testing-user', headers=new_headers)
-    assert res.json['authenticated_userid'] == 'accesskey:' + access_key['access_key_id']
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key['access_key_id']
 
 
 def test_access_key_disable(anontestapp, access_key):
@@ -146,9 +146,9 @@ def test_edw_key_create(testapp, anontestapp, access_key):
 
     headers = {'Authorization': basic_auth(access_key_id, password)}
     res = anontestapp.get('/@@testing-user', headers=headers)
-    assert res.json['authenticated_userid'] == 'accesskey:' + access_key_id
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key_id
     assert sorted(res.json['effective_principals']) == [
-        'accesskey:' + access_key_id,
+        'accesskey.' + access_key_id,
     ] + access_key['user']['effective_principals']
 
 
@@ -169,7 +169,7 @@ def test_edw_key_update(testapp, anontestapp, access_key):
 
     headers = {'Authorization': basic_auth(access_key_id, password)}
     res = anontestapp.get('/@@testing-user', headers=headers)
-    assert res.json['authenticated_userid'] == 'accesskey:' + access_key_id
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key_id
     assert sorted(res.json['effective_principals']) == [
-        'accesskey:' + access_key_id,
+        'accesskey.' + access_key_id,
     ] + access_key['user']['effective_principals']
