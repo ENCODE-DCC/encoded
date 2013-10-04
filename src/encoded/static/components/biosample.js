@@ -255,7 +255,21 @@ function (biosample, React, URI, globals) {
 
                    	{context.description ?  <dt>Description</dt> : null}
                     {context.description ? <dd>{context.description}</dd> : null}
+                    
+                    <dt hidden={!context.tags.length}>Tags</dt>
+					<dd hidden={!context.tags.length}>
+						<ul>
+							{context.tags.map(function (tag) {
+								return (
+									<li key={tag['tag.name']}>
+										{tag.name} (Location: {tag.location})								
+									</li>
+								);
+							})}
+						</ul>
+                    </dd>
 
+                    
                     {context.source.title ? <dt>Source</dt> : null}
                     {context.source.title ? <dd>{context.source.title}</dd> : null}
 
