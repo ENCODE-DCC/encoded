@@ -42,6 +42,8 @@ def groupfinder(login, request):
     submits_for = user.properties.get('submits_for', [])
     principals.extend('lab.%s' % lab_uuid for lab_uuid in submits_for)
     principals.extend('submits_for.%s' % lab_uuid for lab_uuid in submits_for)
+    if submits_for:
+        principals.append('group.submitter')
     if CHERRY_LAB_UUID in submits_for:
         principals.append('group.admin')
     return principals

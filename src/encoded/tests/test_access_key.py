@@ -35,6 +35,8 @@ def access_keys(app):
         principals.extend('submits_for.%s' % lab_name[name] for name in item['submits_for'])
         if 'cherry' in item['submits_for']:
             principals.append('group.admin')
+        if item['submits_for']:
+            principals.append('group.submitter')
         users.append({
             'location': res.location,
             'effective_principals': sorted(principals),

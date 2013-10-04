@@ -1,3 +1,6 @@
+from pyramid.security import (
+    Allow,
+)
 from pyramid.view import view_config
 from ..contentbase import (
     Collection,
@@ -76,6 +79,9 @@ class TestingLinkTarget(Collection):
 @location('testing-post-put-patch')
 class TestingPostPutPatch(Collection):
     item_type = 'testing_post_put_patch'
+    __acl__ = [
+        (Allow, 'group.submitter', ['add', 'edit']),
+    ]
     schema = {
         'required': ['required'],
         'type': 'object',

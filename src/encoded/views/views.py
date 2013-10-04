@@ -1,12 +1,12 @@
-#from pyramid.security import (
-#    Allow,
-#    Authenticated,
-#    Deny,
-#    Everyone,
-#)
+from pyramid.security import (
+    Allow,
+    Authenticated,
+    Deny,
+    Everyone,
+)
 from .download import ItemWithAttachment
 from ..contentbase import (
-    Collection,
+    Collection as BaseCollection,
     location
 )
 from ..schema_utils import (
@@ -39,6 +39,36 @@ ALIAS_KEYS = [
         '$condition': 'aliases',
     },
 ]
+
+
+class Collection(BaseCollection):
+    def __init__(self, parent, name):
+        super(Collection, self).__init__(parent, name)
+        if hasattr(self, '__acl__'):
+            return
+        if 'lab' in self.schema['properties']:
+            self.__acl__ = [
+                (Allow, 'group.submitter', 'add')
+            ]
+
+    class Item(BaseCollection.Item):
+        STATUS_ACL = {
+            'CURRENT': [
+                (Allow, 'role.lab_submitter', 'edit'),
+            ],
+            'DELETED': [],
+        }
+
+        def __acl__(self):
+            status = self.properties.get('status')
+            return self.STATUS_ACL.get(status, ())
+
+        def __ac_local_roles__(self):
+            lab_uuid = self.properties.get('lab')
+            if lab_uuid is None:
+                return None
+            lab_submitters = 'submits_for.%s' % lab_uuid
+            return {lab_submitters: 'role.lab_submitter'}
 
 
 @location('labs')
@@ -201,7 +231,7 @@ class ConstructCharacterization(Collection):
         'description': 'Listing of biosample construct characterizations',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         embedded = ['submitted_by', 'lab', 'award']
         keys = ALIAS_KEYS
 
@@ -215,7 +245,7 @@ class Document(Collection):
         'description': 'Listing of Biosample Documents',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         keys = ALIAS_KEYS
         embedded = set(['submitted_by', 'lab', 'award'])
 
@@ -255,7 +285,7 @@ class BiosampleCharacterization(Collection):
         'description': 'Listing of biosample characterizations',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         embedded = ['submitted_by', 'lab', 'award']
         keys = ALIAS_KEYS
 
@@ -308,7 +338,7 @@ class AntibodyCharacterization(Collection):
         'description': 'Listing of antibody characterization documents',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         embedded = ['submitted_by', 'lab', 'award', 'target']
         keys = ALIAS_KEYS
 
@@ -455,7 +485,7 @@ class RNAiCharacterization(Collection):
         'description': 'Listing of biosample RNAi characterizations',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         embedded = ['submitted_by', 'lab', 'award']
         keys = ALIAS_KEYS
 

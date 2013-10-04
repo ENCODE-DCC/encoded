@@ -23,8 +23,6 @@ _app_settings = {
     'allow.view': 'Everyone',
     'allow.list': 'Everyone',
     'allow.traverse': 'Everyone',
-    'allow.add': 'group.submitter',
-    'allow.edit': 'group.submitter',  # XXX
     'allow.ALL_PERMISSIONS': 'group.admin',
     'allow.edw_key_create': 'accesskey.edw',
     'allow.edw_key_update': 'accesskey.edw',
