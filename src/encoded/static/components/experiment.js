@@ -140,7 +140,7 @@ function (experiment, React, globals, dbxref) {
                     <thead>
                         <tr>
                             <th>Accession</th>
-                            <th>Term</th>
+                            <th>Biosample</th>
                             <th>Type</th>
                             <th>Species</th>
                             <th>Source</th>
