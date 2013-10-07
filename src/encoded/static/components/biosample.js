@@ -72,12 +72,29 @@ function (biosample, React, URI, globals) {
                             <dd hidden={!context.note}>{context.note}</dd>
 
                         </dl>
-
+                        
                         {(context.donor && (context.biosample_type != "immortalized cell line")) ?
                             <section>
                                 <hr />
                                 <h4>Donor information</h4>
                                 <Panel context={context.donor} biosample={context} />
+                            </section>
+                        : null}
+                        
+                         {context.derived_from.length ?
+                            <section>
+                                <hr />
+                                <h4>Derived from biosamples</h4>
+                                <ul class="non-dl-list">
+									{context.derived_from.map(function (biosample) {
+										return (
+											<li key={biosample['@id']}>
+												<a href={biosample['@id']}>{biosample.accession}</a>								
+											</li>
+										);
+									})}
+								</ul>
+                                
                             </section>
                         : null}
 
@@ -112,21 +129,7 @@ function (biosample, React, URI, globals) {
                             {context.characterizations.map(Panel)}
                         </div>
                     : null}
-
-                    <h3 hidden={!context.related_biosample_uuid}>Related biosamples</h3>
-                    {context.derived_from.length ?
-                        <div class="panel data-display">
-                            <h4>Derived from biosamples</h4>
-                            <ul class="multi-value">{context.derived_from.map(function (biosample) {
-                                return (
-                                    <li key={biosample['@id']}>
-                                        <a href={biosample['@id']}>{biosample.accession}</a>
-                                    </li>
-                                );
-                            })}
-                           </ul>
-                        </div>
-                    : null}
+                    
                 </div>
             );
         }
@@ -144,7 +147,7 @@ function (biosample, React, URI, globals) {
             );
         }
     };
-
+	
     var HumanDonor = biosample.HumanDonor = React.createClass({
         render: function() {
             var context = this.props.context;
