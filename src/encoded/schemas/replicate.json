@@ -4,9 +4,9 @@
     "id": "/profiles/replicate.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["experiment", "biological_replicate_number", "technical_replicate_number", "aliases"],
+    "required": ["experiment", "biological_replicate_number", "technical_replicate_number"],
     "approvalRequired": ["library"],
-    "identifyingProperties": ["uuid"],
+    "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
