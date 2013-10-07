@@ -97,6 +97,23 @@ function (biosample, React, URI, globals) {
                                 
                             </section>
                         : null}
+                        
+                        {context.pooled_from.length ?
+                            <section>
+                                <hr />
+                                <h4>Pooled from biosamples</h4>
+                                <ul class="non-dl-list">
+									{context.pooled_from.map(function (biosample) {
+										return (
+											<li key={biosample['@id']}>
+												<a href={biosample['@id']}>{biosample.accession}</a>								
+											</li>
+										);
+									})}
+								</ul>
+                                
+                            </section>
+                        : null}
 
                         {context.treatments.length ?
                             <section>

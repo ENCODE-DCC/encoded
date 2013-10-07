@@ -228,7 +228,7 @@ class Biosample(Collection):
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     }
-    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'derived_from', 'characterizations'])
+    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'derived_from', 'pooled_from', 'characterizations'])
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     item_rev = {
