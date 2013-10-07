@@ -168,7 +168,7 @@ BAD_AWARDS = [  # UUID same as one of labs
 ]
 LABS = [
     {
-    'uuid': '2c334112-288e-4d45-9154-3f404c726daf',
+    'uuid': 'cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
     'name': 'cherry',
     'title': 'Cherry Lab',
     'institute_name': 'Stanford University'
@@ -210,7 +210,7 @@ USERS = [
     'first_name': 'Cricket',
     'last_name': 'Sloan',
     'email': 'cricket@stanford.edu',
-    'submits_for': ['2c334112-288e-4d45-9154-3f404c726daf'],
+    'submits_for': ['cfb789b8-46f3-4d59-a2b3-adc39e7df93a'],
     },
     {
     'uuid': 'bb319896-3f78-4e24-b6e1-e4961822bc9b',

@@ -429,6 +429,8 @@ class Step(FixtureRequestMixin, pytest.Item):
         super(Step, self).__init__(name, parent)
         self.step = self.model = model
         self._init_fixtures()
+        # Make -k happy on pytest 2.4
+        self.function = lambda: None
 
     def reportinfo(self):
         return self.fspath, self.model.line - 1, self.name

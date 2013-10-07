@@ -18,7 +18,7 @@ requirejs.config({
         'class': '../libs/class',
         registry: '../libs/registry',
         uri: '../libs/uri',
-        d3: '../libs/d3.v3.min'
+        d3: '../vendor/d3.v3.min'
     },
 
     shim: {

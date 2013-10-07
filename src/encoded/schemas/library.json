@@ -24,6 +24,9 @@
         "schema_version": {
             "default": "1"
         },
+        "accession": {
+            "accessionType": "LB"
+        },
         "biosample": {
             "title": "Biosample",
             "description": "The biosample that nucleic acid was isolated from to generate the library.",

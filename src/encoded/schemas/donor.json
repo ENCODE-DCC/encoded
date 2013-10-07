@@ -18,6 +18,9 @@
         "schema_version": {
             "hidden comment": "Bump the default in the subclasses."
         },
+        "accession": {
+            "accessionType": "DO"
+        },
         "sex": {
             "title": "Sex",
             "type": "string",
