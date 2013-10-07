@@ -98,6 +98,7 @@
         "read_length_units": {
             "title": "Read length units",
              "type": "string",
+             "default": "nt",
             "enum": [
                 "nt"
             ]
