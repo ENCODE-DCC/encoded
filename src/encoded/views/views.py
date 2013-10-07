@@ -399,18 +399,32 @@ class Library(Collection):
 class Replicates(Collection):
     item_type = 'replicate'
     schema = load_schema('replicate.json')
+    __acl__ = [
+        (Allow, 'group.submitter', 'add'),
+    ]
     properties = {
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
-    item_embedded = set(['library', 'platform', 'antibody'])
-    item_keys = ALIAS_KEYS + [
-        {
-            'name': '{item_type}:experiment_biological_technical',
-            'value': '{experiment}/{biological_replicate_number}/{technical_replicate_number}',
-            '$templated': True,
-        },
-    ]
+
+    class Item(Collection.Item):
+        embedded = set(['library', 'platform', 'antibody'])
+        keys = ALIAS_KEYS + [
+            {
+                'name': '{item_type}:experiment_biological_technical',
+                'value': '{experiment}/{biological_replicate_number}/{technical_replicate_number}',
+                '$templated': True,
+            },
+        ]
+
+        def __ac_local_roles__(self):
+            root = find_root(self)
+            experiment = root.get_by_uuid(self.properties['experiment'])
+            lab_uuid = experiment.properties.get('lab')
+            if lab_uuid is None:
+                return None
+            lab_submitters = 'submits_for.%s' % lab_uuid
+            return {lab_submitters: 'role.lab_submitter'}
 
 
 @location('software')
