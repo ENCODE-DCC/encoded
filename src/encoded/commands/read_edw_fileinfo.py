@@ -42,7 +42,7 @@ FILE_NESTED_PROPERTIES = {
     'submitted_by': 'email',
 }
 
-def format_app_fileinfo(file_dict, app, exclude=None):
+def format_app_fileinfo(file_dict, exclude=None):
     # Handle links and nested propeties
     for link_prop, dest_prop in FILE_NESTED_PROPERTIES.iteritems():
         if link_prop in file_dict:
@@ -152,7 +152,7 @@ def get_app_fileinfo(phase, app, exclude=None, limit=0):
         if phase != ENCODE_PHASE_ALL:
             if get_phase(row, app) != phase:
                 continue
-        format_app_fileinfo(row, app, exclude=exclude)
+        format_app_fileinfo(row, exclude=exclude)
         app_files.append(row)
         limit -= 1
         if limit == 0:
