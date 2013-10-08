@@ -173,6 +173,9 @@ function (biosample, React, URI, globals) {
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
+                    
+                    <dt hidden={!context.aliases.length}>Aliases</dt>
+                    <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -207,6 +210,9 @@ function (biosample, React, URI, globals) {
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
+                    
+                    <dt hidden={!context.aliases.length}>Aliases</dt>
+                    <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
