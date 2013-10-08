@@ -1,5 +1,4 @@
 from .contentbase import LOCATION_ROOT
-CHERRY_LAB_UUID = 'cfb789b8-46f3-4d59-a2b3-adc39e7df93a'
 
 
 def groupfinder(login, request):
@@ -44,6 +43,6 @@ def groupfinder(login, request):
     principals.extend('submits_for.%s' % lab_uuid for lab_uuid in submits_for)
     if submits_for:
         principals.append('group.submitter')
-    if CHERRY_LAB_UUID in submits_for:
-        principals.append('group.admin')
+    groups = user.properties.get('groups', [])
+    principals.extend('group.%s' % group for group in groups)
     return principals

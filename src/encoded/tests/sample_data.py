@@ -204,6 +204,7 @@ USERS = [
     'last_name': 'Hitz',
     'email': 'hitz@stanford.edu',
     'submits_for': ['cherry'],
+    'groups': ['admin', 'programmer'],
     },
     {
     'uuid': '1e945b04-aa54-4732-8b81-b41d4565f5f9',
@@ -211,6 +212,7 @@ USERS = [
     'last_name': 'Sloan',
     'email': 'cricket@stanford.edu',
     'submits_for': ['cfb789b8-46f3-4d59-a2b3-adc39e7df93a'],
+    'groups': ['admin', 'wrangler'],
     },
     {
     'uuid': 'bb319896-3f78-4e24-b6e1-e4961822bc9b',

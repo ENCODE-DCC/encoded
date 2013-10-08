@@ -33,8 +33,7 @@ def access_keys(app):
         ]
         principals.extend('lab.%s' % lab_name[name] for name in item['submits_for'])
         principals.extend('submits_for.%s' % lab_name[name] for name in item['submits_for'])
-        if 'cherry' in item['submits_for']:
-            principals.append('group.admin')
+        principals.extend('group.%s' % group for group in item.get('groups', []))
         if item['submits_for']:
             principals.append('group.submitter')
         users.append({

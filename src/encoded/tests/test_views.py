@@ -162,6 +162,7 @@ def test_users_post(users, anontestapp):
                           extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
         'group.admin',
+        'group.programmer',
         'group.submitter',
         'lab.cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
         'remoteuser.%s' % email,
