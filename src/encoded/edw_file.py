@@ -39,11 +39,22 @@ CHANGE_ME = 'CHANGEME'          # user/pass in .cfg file
 # Support functions to localize handling of special fields
 # e.g. links, datetime
 
-def format_edw_fileinfo(file_dict):
+def format_edw_fileinfo(file_dict, exclude=None):
     valid_time = file_dict['date_created']
     file_dict['date_created'] = datetime.datetime.fromtimestamp(
         valid_time).strftime('%Y-%m-%d')
         # TODO: should be isoformat() ?
+    for prop in FILE_INFO_FIELDS:
+        file_dict[prop] = unicode(file_dict[prop])
+    # not type-aware, so we need to force replicate to numeric
+        if file_dict['replicate'] == 'pooled' or file_dict['replicate'] == '':
+            file_dict['replicate'] = 0
+        else:
+            #print "File: ", file_dict['accession'], " Replicate: ", file_dict['replicate']
+            file_dict['replicate'] = int(file_dict['replicate'])
+    if exclude:
+        for prop in exclude:
+            del file_dict[prop]
 
 
 ################
@@ -107,7 +118,8 @@ def dump_fileinfo(fileinfos, header=True, typeField=None):
         writer.writerow(ordered)
 
 
-def get_edw_fileinfo(phase, data_host, limit=None, experiment=None):
+def get_edw_fileinfo(phase, data_host, limit=None, experiment=None,
+                     exclude=None):
     # Read info from file tables at EDW. 
     # Return list of file infos as dictionaries
 
@@ -156,7 +168,7 @@ def get_edw_fileinfo(phase, data_host, limit=None, experiment=None):
     edw_files = []
     for row in results:
         file_dict = dict(row)
-        format_edw_fileinfo(file_dict)
+        format_edw_fileinfo(file_dict, exclude)
         edw_files.append(file_dict)
     results.close()
     return edw_files
