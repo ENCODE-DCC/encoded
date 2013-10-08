@@ -317,7 +317,7 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    item_embedded = set(['antibody', 'target', 'characterizations'])
+    item_embedded = set(['antibody', 'target', 'characterizations', 'lab'])
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
     ]

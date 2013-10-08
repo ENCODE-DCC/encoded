@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "antibody", "status", "target" ],
-    "facets":{"Approval Status": "status", "Organism": "target.organism.name", "Clonality": "antibody.clonality", "Source": "antibody.source.title"},
+    "facets":{"Approval Status": "status", "Target Organism": "target.organism.name", "Clonality": "antibody.clonality", "Source": "antibody.source.title", "Host Organism": "antibody.host_organism.name", "Isotype": "antibody.isotype", "Lab": "lab.title"},
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
