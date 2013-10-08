@@ -42,13 +42,17 @@ FILE_NESTED_PROPERTIES = {
     'submitted_by': 'email',
 }
 
-def format_app_fileinfo(file_dict, app):
+def format_app_fileinfo(file_dict, app, exclude=None):
     # Handle links and nested propeties
     for link_prop, dest_prop in FILE_NESTED_PROPERTIES.iteritems():
         if link_prop in file_dict:
             file_dict[link_prop] = file_dict[link_prop][dest_prop]
         else:
-            file_dict[link_prop] = edw_file.NA
+            if link_prop == 'replicate':
+                # special handling of replicate -- only numeric field
+                file_dict[link_prop] = 0
+            else:
+                file_dict[link_prop] = edw_file.NA
 
     # extract file and dataset accessionsfrom URLs in JSON
     # NOTE: shouldn't 'accession' property of file JSON be the file's accession ?
@@ -56,14 +60,15 @@ def format_app_fileinfo(file_dict, app):
     file_dict['accession'] = file_dict['@id'].split('/')[2]
     file_dict['dataset'] = file_dict['dataset'].split('/')[2]
 
-    # Filter out extra fields (not in FILE_INFO_FIELDS)
+    # Filter out extra fields (not in FILE_INFO_FIELDS, or excluded)
     for prop in file_dict.keys():
-        if prop not in edw_file.FILE_INFO_FIELDS:
-            del file_dict[prop]
+        if (prop not in edw_file.FILE_INFO_FIELDS) or (exclude and prop in exclude):
+                del file_dict[prop]
 
     # Assembly can be missing
-    if 'assembly' not in file_dict.keys():
+    if ('assembly' not in file_dict.keys()) and (exclude and 'assembly' not in exclude):
         file_dict['assembly'] = edw_file.NA
+
 
 
 ################
@@ -138,7 +143,7 @@ def get_phase(fileinfo, app):
         return ENCODE_PHASE_2
 
 
-def get_app_fileinfo(phase, app, limit=0):
+def get_app_fileinfo(phase, app, exclude=None, limit=0):
     # Get file info from encoded web application
     # Return list of fileinfo dictionaries
     rows = get_collection(app, FILES_URL)
@@ -147,7 +152,7 @@ def get_app_fileinfo(phase, app, limit=0):
         if phase != ENCODE_PHASE_ALL:
             if get_phase(row, app) != phase:
                 continue
-        format_app_fileinfo(row, app)
+        format_app_fileinfo(row, app, exclude=exclude)
         app_files.append(row)
         limit -= 1
         if limit == 0:
@@ -288,13 +293,14 @@ def sync_app_fileinfo(phase, data_host, app):
         post_fileinfo(app, fileinfo)
 
 
-def show_diff_fileinfo(phase, data_host, app, detailed=False):
+def show_diff_fileinfo(phase, data_host, app, exclude=None, detailed=False):
     # Show differences between EDW experiment files and files in app
     sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
                       % (phase))
-    edw_files = edw_file.get_edw_fileinfo(phase, data_host, experiment=True)
+    edw_files = edw_file.get_edw_fileinfo(phase, data_host, experiment=True,
+                                          exclude=exclude)
     edw_dict = { d['accession']: d for d in edw_files }
-    app_files = get_app_fileinfo(phase, app)
+    app_files = get_app_fileinfo(phase, app, exclude=exclude)
     app_dict = { d['accession']: d for d in app_files }
 
     # Inventory files
@@ -373,12 +379,14 @@ def main():
     # modifiers
     parser.add_argument('-l', '--limit', type=int, default=0,
                    help='limit number of files to show; '
-                          'for EDW, most recently submitted are listed first')
+                        'for EDW, most recently submitted are listed first')
     parser.add_argument('-P', '--phase',  
                 choices=[ENCODE_PHASE_2, ENCODE_PHASE_3, ENCODE_PHASE_ALL], 
                 default=ENCODE_PHASE_ALL,
-                    help='limit EDW files by ENCODE phase accs (default %s)' %
-                            ENCODE_PHASE_ALL),
+                    help='restrict EDW files by ENCODE phase accs '
+                         '(default %s)' % ENCODE_PHASE_ALL),
+    parser.add_argument('-exclude', '--exclude_props', nargs='+', 
+                        help='for -c and -C, ignore excluded properties')
     parser.add_argument('-x', '--experiment', action='store_true',
                     help='for EDW, show only files having experiment accession')
     parser.add_argument('-d', '--data_host',
@@ -411,10 +419,12 @@ def main():
         show_new_fileinfo(args.phase, args.data_host, app)
 
     elif args.compare_summary:
-        show_diff_fileinfo(args.phase, args.data_host, app, detailed=False)
+        show_diff_fileinfo(args.phase, args.data_host, app, 
+                           args.exclude_props, detailed=False)
 
     elif args.compare_full:
-        show_diff_fileinfo(args.phase, args.data_host, app, detailed=True)
+        show_diff_fileinfo(args.phase, args.data_host, app, 
+                           args.exclude_props, detailed=True)
 
     else:
         show_edw_fileinfo(args.phase, args.data_host, args.limit, args.experiment)
