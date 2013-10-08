@@ -227,7 +227,7 @@ USERS = [
     'last_name': 'Login',
     'email': 'nologin@example.org',
     'submits_for': ['b635b4ed-dba3-4672-ace9-11d76a8d03af'],
-    'disable_login': True,
+    'status': 'DISABLED',
     },
 ]
 

@@ -59,10 +59,15 @@
                 "type": "string"
             }
         },
-        "disable_login": {
-            "title": "Disable login",
-            "type": "boolean",
-            "default": false
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "CURRENT",
+            "enum" : [
+                "CURRENT",
+                "DELETED",
+                "DISABLED"
+            ]
         },
         "job_title": {
             "title": "Job Title",

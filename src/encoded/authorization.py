@@ -36,7 +36,7 @@ def groupfinder(login, request):
 
     user_properties = user.properties
 
-    if user_properties.get('disable_login', False):
+    if user_properties.get('status') in ('DELETED', 'DISABLED'):
         return None
 
     principals = ['userid.%s' % user.uuid]
