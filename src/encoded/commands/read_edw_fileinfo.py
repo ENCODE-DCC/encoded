@@ -101,6 +101,7 @@ def internal_app(configfile, username=''):
 def make_app(application, username, password):
     # Configure test app pyramid .ini file or use application URL
     logging.basicConfig()
+    sys.stderr.write('Using encoded app: %s\n' % application)
 
     # CAUTION: pasted from import-data script
     url = urlparse(application)
@@ -137,10 +138,9 @@ def get_phase(fileinfo, app):
         return ENCODE_PHASE_2
 
 
-def get_app_fileinfo(phase, application, user, password, limit=0):
+def get_app_fileinfo(phase, app, limit=0):
     # Get file info from encoded web application
     # Return list of fileinfo dictionaries
-    app = make_app(application, user, password)
     rows = get_collection(app, FILES_URL)
     app_files = []
     for row in rows:
@@ -155,7 +155,7 @@ def get_app_fileinfo(phase, application, user, password, limit=0):
     return app_files
 
 
-def get_new_fileinfo(phase, data_host, application, user, password):
+def get_new_fileinfo(phase, data_host, app):
     # Find 'new' files: files in EDW having experiment accesion 
     #   but missing in app
     edw_files = edw_file.get_edw_fileinfo(phase, data_host, experiment=True)
@@ -244,63 +244,57 @@ def show_edw_fileinfo(phase, data_host, limit=None, experiment=None):
     edw_file.dump_fileinfo(edw_files)
 
 
-def show_app_fileinfo(phase, application, user, password, limit):
+def show_app_fileinfo(phase, app, limit):
     # Read info from file tables at EDW.
     # Write TSV file from list of application file info
-    sys.stderr.write('Exporting file info from %s\n' % application)
-    app_files = get_app_fileinfo(phase, application, user, password, limit)
+    sys.stderr.write('Exporting file info\n')
+    app_files = get_app_fileinfo(phase, app, limit)
     edw_file.dump_fileinfo(app_files)
 
 
-def show_new_fileinfo(phase, data_host, application, user, password):
+def show_new_fileinfo(phase, data_host, app):
     # Show 'new' files: files in EDW having experiment accesion 
-    sys.stderr.write('Showing new ENCODE %s files (at EDW but not in %s)\n' % 
-                     (phase, application))
-    new_files = get_new_fileinfo(phase, data_host, application, user, password)
+    sys.stderr.write('Showing new ENCODE %s files (at EDW but not in app)\n' % 
+                     (phase))
+    new_files = get_new_fileinfo(phase, data_host, app)
     edw_file.dump_fileinfo(new_files)
 
 
-def write_app_fileinfo(input_file, application, user, password):
+def write_app_fileinfo(input_file, app):
     # POST files from input file to app
-    sys.stderr.write('Importing file info from %s to %s\n' % 
-                     (input_file, application))
-    app = make_app(application, user, password)
+    sys.stderr.write('Importing file info from %s to app\n' % (input_file))
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
         for fileinfo in reader:
             post_fileinfo(app, fileinfo)
 
 
-def modify_app_fileinfo(input_file, application, user, password):
+def modify_app_fileinfo(input_file, app):
     # PUT changed file info from input file to app
-    sys.stderr.write('Updating file info from %s to %s\n' % 
-                     (input_file, application))
-    app = make_app(application, user, password)
+    sys.stderr.write('Updating file info from %s to app\n' % (input_file))
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
         for fileinfo in reader:
             put_fileinfo(app, fileinfo)
 
 
-def sync_app_fileinfo(phase, data_host, application, user, password):
+def sync_app_fileinfo(phase, data_host, app):
     # POST all new files from EDW to app
-    sys.stderr.write('Importing all new file info for ENCODE %s from %s to %s\n' % 
-                     (phase, data_host, application))
+    sys.stderr.write('Importing new file info for ENCODE %s from %s to app\n' % 
+                     (phase, data_host))
     # TODO: log imported files
-    new_files = get_new_fileinfo(phase, data_host, application, user, password)
-    app = make_app(application, user, password)
+    new_files = get_new_fileinfo(phase, data_host, app)
     for fileinfo in new_files:
         post_fileinfo(app, fileinfo)
 
 
-def show_diff_fileinfo(phase, data_host, application, user, password, 
-                       detailed=False):
+def show_diff_fileinfo(phase, data_host, app, detailed=False):
     # Show differences between EDW experiment files and files in app
-    sys.stderr.write('Comparing file info for ENCODE %s files at EDW with %s\n' % 
-                     (phase, application))
+    sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
+                      % (phase))
     edw_files = edw_file.get_edw_fileinfo(phase, data_host, experiment=True)
     edw_dict = { d['accession']: d for d in edw_files }
-    app_files = get_app_fileinfo(phase, application, user, password)
+    app_files = get_app_fileinfo(phase, app)
     app_dict = { d['accession']: d for d in app_files }
 
     # Inventory files
@@ -351,7 +345,10 @@ def show_diff_fileinfo(phase, data_host, application, user, password,
 def main():
     parser = argparse.ArgumentParser(
         description='Show ENCODE file info; import from EDW to encoded app')
+
     group = parser.add_mutually_exclusive_group()
+
+    # functions
     group.add_argument('-i', '--import_file',
                        help='import to app from TSV file')
 
@@ -359,6 +356,7 @@ def main():
     #group.add_argument('-I', '--import_all_new', action='store_true',
                        #help='import all new files from EDW to app; '
                             #'use -n to view new file info before import')
+
     group.add_argument('-m', '--modify_file',
                    help='modify files in app using info in TSV file')
     group.add_argument('-c', '--compare_summary', action='store_true',
@@ -369,6 +367,10 @@ def main():
                    help='export file info from app')
     group.add_argument('-n', '--new', action='store_true',
                    help='show new files: in EDW not in app')
+    group.add_argument('-w', '--edw', action='store_true',
+                   help='show file info at EDW')
+
+    # modifiers
     parser.add_argument('-l', '--limit', type=int, default=0,
                    help='limit number of files to show; '
                           'for EDW, most recently submitted are listed first')
@@ -389,27 +391,31 @@ def main():
                         help='HTTP password (secret_access_key)')
             
     args = parser.parse_args()
+
+    if not args.edw:
+        app = make_app(args.application, args.username, args.password)
+
     if args.import_file:
-        write_app_fileinfo(args.import_file, args.application, 
-                           args.username, args.password)
+        write_app_fileinfo(args.import_file, app)
+
     #elif args.import_all_new:
-        #sync_app_fileinfo(args.phase, args.data_host, args.application, 
-                           #args.username, args.password)
+        #sync_app_fileinfo(args.phase, args.data_host, app)
+
     elif args.modify_file:
-        modify_app_fileinfo(args.modify_file, args.application, 
-                           args.username, args.password)
+        modify_app_fileinfo(args.modify_file, app)
+
     elif args.export:
-        show_app_fileinfo(args.phase, args.application, 
-                          args.username, args.password, args.limit)
+        show_app_fileinfo(args.phase, app, args.limit)
+
     elif args.new:
-        show_new_fileinfo(args.phase, args.data_host,args.application, 
-                          args.username, args.password)
+        show_new_fileinfo(args.phase, app)
+
     elif args.compare_summary:
-        show_diff_fileinfo(args.phase, args.data_host,args.application, 
-                           args.username, args.password, detailed=False)
+        show_diff_fileinfo(args.phase, args.data_host, app, detailed=False)
+
     elif args.compare_full:
-        show_diff_fileinfo(args.phase, args.data_host,args.application, 
-                           args.username, args.password, detailed=True)
+        show_diff_fileinfo(args.phase, args.data_host, app, detailed=True)
+
     else:
         show_edw_fileinfo(args.phase, args.data_host, args.limit, args.experiment)
 
