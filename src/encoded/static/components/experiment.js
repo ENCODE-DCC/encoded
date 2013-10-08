@@ -96,6 +96,9 @@ function (experiment, React, globals, dbxref) {
 
                             <dt>Submitted by</dt>
                             <dd>{context.submitted_by.title}</dd>
+                            
+                            <dt hidden={!context.aliases.length}>Aliases</dt>
+                            <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                             <dt>Project</dt>
                             <dd>{context.award.rfa}</dd>
