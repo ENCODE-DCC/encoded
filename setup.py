@@ -29,7 +29,7 @@ requires = [
 tests_require = [
     'behave',
     'behaving',
-    'pytest',
+    'pytest>=2.4.0',
 ]
 
 setup(

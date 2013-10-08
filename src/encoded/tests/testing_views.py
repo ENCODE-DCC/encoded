@@ -118,3 +118,31 @@ class TestingPostPutPatch(Collection):
         'title': 'Test links',
         'description': 'Testing. Testing. 1, 2, 3.',
     }
+
+
+@location('testing-server-defaults')
+class TestingServerDefault(Collection):
+    item_type = 'testing_server_default'
+    schema = {
+        'type': 'object',
+        'properties': {
+            'uuid': {
+                'serverDefault': 'uuid4',
+            },
+            'user': {
+                'serverDefault': 'userid',
+                'linkTo': 'user',
+            },
+            'now': {
+                'serverDefault': 'now',
+            },
+            'accession': {
+                'serverDefault': 'accession',
+                'accessionType': 'XX',
+            },
+        }
+    }
+    properties = {
+        'title': 'Test server defaults',
+        'description': 'Testing. Testing. 1, 2, 3.',
+    }

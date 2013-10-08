@@ -25,6 +25,9 @@
         "schema_version": {
             "default": "1"
         },
+        "accession": {
+            "accessionType": "BS"
+        },
         "description": {
             "title": "Description",
             "description": "A plain text description of the biosample. Do not include experiment details, constructs or treatments.",
