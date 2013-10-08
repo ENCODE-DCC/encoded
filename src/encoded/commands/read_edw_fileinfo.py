@@ -16,7 +16,7 @@ from .. import edw_file
 ################
 # Globals
 
-DEFAULT_INI = 'edw.ini'  # Default application initialization file
+DEFAULT_INI = 'production.ini'  # Default application initialization file
 
 FILES_URL = '/files/'
 EXPERIMENTS_URL = '/experiments/'
@@ -160,7 +160,7 @@ def get_new_fileinfo(phase, data_host, app):
     #   but missing in app
     edw_files = edw_file.get_edw_fileinfo(phase, data_host, experiment=True)
     edw_dict = { d['accession']: d for d in edw_files }
-    app_files = get_app_fileinfo(phase, application, user, password)
+    app_files = get_app_fileinfo(phase, app)
     app_dict = { d['accession']: d for d in app_files }
     new_files = []
     for accession in edw_dict.keys():
@@ -408,7 +408,7 @@ def main():
         show_app_fileinfo(args.phase, app, args.limit)
 
     elif args.new:
-        show_new_fileinfo(args.phase, app)
+        show_new_fileinfo(args.phase, args.data_host, app)
 
     elif args.compare_summary:
         show_diff_fileinfo(args.phase, args.data_host, app, detailed=False)
