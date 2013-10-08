@@ -1,4 +1,4 @@
-test	uuid	email	first_name	last_name	lab	submits_for:array	job_title	timezone	fax	phone1	phone2	skype	google	groups:array
+test	uuid	email	first_name	last_name	lab	submits_for:array	job_title	timezone	fax	phone1	phone2	skype	google	groups:array	disable_login
 test	9f161054-aa2c-40b7-8239-04eb7f08b15d	netus.lorem@risus.lobortis	Ali	Mortazavi	Ali Mortazavi, UCI	Richard Myers, HAIB; Barbara Wold, Caltech; Ali Mortazavi, UCI; Ross Hardison, PennState; Tim Reddy, Duke; Greg Cooper, HAIB	PI	US/Pacific	000-000-0000	000-000-0000	000-000-0000	skype	google
 test	0d48e8c4-5954-4bf5-8c75-1e386eb27e31	felis.senectus@hymenaeos.nibh	Aleksandar	Milosavljevic	Roadmap Epigenomics, Baylor	Roadmap Epigenomics, Baylor	PI	US/Central	000-000-0000	000-000-0000	000-000-0000	skype	google
 test	5e99a8f5-2808-43c6-b1ba-13d5d110a6c1	ipsum.mi@torquent.eleifend	Mi	Neque-Primis	Len Pennacchio, JGI	Bing Ren, UCSD; Len Pennacchio, JGI; Joe Ecker, Salk	Submitter	US/Pacific	000-000-0000	000-000-0000	000-000-0000	skype	google

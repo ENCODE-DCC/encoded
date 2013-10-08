@@ -65,6 +65,11 @@ def access_key(access_keys):
     return access_keys[0]
 
 
+@pytest.fixture
+def no_login_access_key(access_keys):
+    return access_keys[-1]
+
+
 def test_access_key_current_user(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get('/@@current-user', headers=headers)
@@ -98,6 +103,13 @@ def test_access_key_disable(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.post_json(access_key['location'] + '/@@disable-secret', {}, headers=headers)
 
+    res = anontestapp.get('/@@testing-user', headers=headers)
+    assert res.json['authenticated_userid'] is None
+
+
+def test_access_key_user_disable_login(anontestapp, no_login_access_key):
+    access_key = no_login_access_key
+    headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get('/@@testing-user', headers=headers)
     assert res.json['authenticated_userid'] is None
 

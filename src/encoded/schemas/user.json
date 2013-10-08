@@ -59,6 +59,11 @@
                 "type": "string"
             }
         },
+        "disable_login": {
+            "title": "Disable login",
+            "type": "boolean",
+            "default": false
+        },
         "job_title": {
             "title": "Job Title",
             "type": "string"
