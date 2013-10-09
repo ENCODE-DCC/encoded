@@ -22,10 +22,6 @@ FILES_URL = '/files/'
 EXPERIMENTS_URL = '/experiments/'
 REPLICATES_URL = '/replicates/'
 
-ENCODE_PHASE_2 = '2'
-ENCODE_PHASE_3 = '3'
-ENCODE_PHASE_ALL = 'all'
-
 
 ################
 # Support functions to localize handling of special fields
@@ -138,18 +134,18 @@ def get_phase(fileinfo, app):
     # Determine phase of file (ENCODE 2 or ENCODE 3)
     resp = app.get(fileinfo['dataset']).maybe_follow()
     if len(resp.json['encode2_dbxrefs']) == 0:
-        return ENCODE_PHASE_3
+        return edw_file.ENCODE_PHASE_3
     else:
-        return ENCODE_PHASE_2
+        return edw_file.ENCODE_PHASE_2
 
 
-def get_app_fileinfo(app, phase=ENCODE_PHASE_ALL, exclude=None, limit=0):
+def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, exclude=None, limit=0):
     # Get file info from encoded web application
     # Return list of fileinfo dictionaries
     rows = get_collection(app, FILES_URL)
     app_files = []
     for row in rows:
-        if phase != ENCODE_PHASE_ALL:
+        if phase != edw_file.ENCODE_PHASE_ALL:
             if get_phase(row, app) != phase:
                 continue
         format_app_fileinfo(row, exclude=exclude)
@@ -160,11 +156,11 @@ def get_app_fileinfo(app, phase=ENCODE_PHASE_ALL, exclude=None, limit=0):
     return app_files
 
 
-def get_new_fileinfo(data_host, app, phase=ENCODE_PHASE_ALL):
+def get_new_fileinfo(data_host, app, phase=edw_file.ENCODE_PHASE_ALL):
     # Find 'new' files: files in EDW having experiment accesion 
     #   but missing in app
     edw_files = edw_file.get_edw_fileinfo(data_host, experiment=True, 
-                                          phase=ENCODE_PHASE_ALL,)
+                                          phase=phase)
     edw_dict = { d['accession']: d for d in edw_files }
     app_files = get_app_fileinfo(app, phase=phase)
     app_dict = { d['accession']: d for d in app_files }
@@ -243,16 +239,16 @@ def put_fileinfo(app, fileinfo):
 # Main functions
 
 def show_edw_fileinfo(data_host, limit=None, experiment=None, 
-                      phase=ENCODE_PHASE_ALL):
+                      phase=edw_file.ENCODE_PHASE_ALL):
     # Read info from file tables at EDW.
     # Format as TSV file with columns from 'encoded' File JSON schema
     sys.stderr.write('Showing ENCODE %s file info\n' % phase)
-    edw_files = edw_file.get_edw_fileinfo(data_host, limit, experiment, 
-                                            phase=phase)
+    edw_files = edw_file.get_edw_fileinfo(data_host, limit=limit, 
+                                          experiment=experiment, phase=phase)
     edw_file.dump_fileinfo(edw_files)
 
 
-def show_app_fileinfo(app, limit=0, phase=ENCODE_PHASE_ALL):
+def show_app_fileinfo(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
     # Read info from file tables at EDW.
     # Write TSV file from list of application file info
     sys.stderr.write('Exporting file info\n')
@@ -260,7 +256,7 @@ def show_app_fileinfo(app, limit=0, phase=ENCODE_PHASE_ALL):
     edw_file.dump_fileinfo(app_files)
 
 
-def show_new_fileinfo(data_host, app, phase=ENCODE_PHASE_ALL):
+def show_new_fileinfo(data_host, app, phase=edw_file.ENCODE_PHASE_ALL):
     # Show 'new' files: files in EDW having experiment accesion 
     sys.stderr.write('Showing new ENCODE %s files (at EDW but not in app)\n' % 
                      (phase))
@@ -286,7 +282,7 @@ def modify_app_fileinfo(input_file, app):
             put_fileinfo(app, fileinfo)
 
 
-def sync_app_fileinfo(data_host, app, phase=ENCODE_PHASE_ALL):
+def sync_app_fileinfo(data_host, app, phase=edw_file.ENCODE_PHASE_ALL):
     # POST all new files from EDW to app
     sys.stderr.write('Importing new file info for ENCODE %s from %s to app\n' % 
                      (phase, data_host))
@@ -297,7 +293,7 @@ def sync_app_fileinfo(data_host, app, phase=ENCODE_PHASE_ALL):
 
 
 def show_diff_fileinfo(data_host, app, exclude=None, detailed=False,
-                       phase=ENCODE_PHASE_ALL):
+                       phase=edw_file.ENCODE_PHASE_ALL):
     # Show differences between EDW experiment files and files in app
     sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
                       % (phase))
@@ -385,10 +381,10 @@ def main():
                    help='limit number of files to show; '
                         'for EDW, most recently submitted are listed first')
     parser.add_argument('-P', '--phase',  
-                choices=[ENCODE_PHASE_2, ENCODE_PHASE_3, ENCODE_PHASE_ALL], 
-                default=ENCODE_PHASE_ALL,
+                choices=[edw_file.ENCODE_PHASE_2, edw_file.ENCODE_PHASE_3, edw_file.ENCODE_PHASE_ALL], 
+                default=edw_file.ENCODE_PHASE_ALL,
                     help='restrict EDW files by ENCODE phase accs '
-                         '(default %s)' % ENCODE_PHASE_ALL),
+                         '(default %s)' % edw_file.ENCODE_PHASE_ALL),
     parser.add_argument('-exclude', '--exclude_props', nargs='+', 
                         help='for -c and -C, ignore excluded properties')
     parser.add_argument('-x', '--experiment', action='store_true',

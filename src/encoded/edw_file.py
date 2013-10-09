@@ -12,6 +12,10 @@ from sqlalchemy import MetaData, create_engine, select
 ################
 # Globals
 
+ENCODE_PHASE_2 = '2'
+ENCODE_PHASE_3 = '3'
+ENCODE_PHASE_ALL = 'all'
+
 # NOTE: ordering of fields currently needs to match query order below
 FILE_INFO_FIELDS = [
     'accession',
@@ -118,8 +122,8 @@ def dump_fileinfo(fileinfos, header=True, typeField=None):
         writer.writerow(ordered)
 
 
-def get_edw_fileinfo(phase, data_host, limit=None, experiment=None,
-                     exclude=None):
+def get_edw_fileinfo(data_host, limit=None, experiment=None,
+                     exclude=None, phase=ENCODE_PHASE_ALL):
     # Read info from file tables at EDW. 
     # Return list of file infos as dictionaries
 
