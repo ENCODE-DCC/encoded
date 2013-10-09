@@ -141,6 +141,7 @@ class TestingServerDefault(Collection):
             },
             'now': {
                 'serverDefault': 'now',
+                'format': 'date-time',
             },
             'accession': {
                 'serverDefault': 'accession',

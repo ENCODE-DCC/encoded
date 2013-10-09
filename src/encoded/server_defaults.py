@@ -39,7 +39,8 @@ def userid(property, subschema):
 
 @server_default
 def now(property, subschema):
-    return datetime.now().isoformat()
+    # jsonschema date-time format requires a timezone
+    return datetime.utcnow().isoformat() + '+00:00'
 
 
 @server_default
