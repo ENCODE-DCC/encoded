@@ -426,6 +426,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
             'strain_background',  # 'flowcell_details.machine',
         ),
         remove_keys('test'),
+        remove_keys('uuid') if method in ('PUT', 'PATCH') else noop,
         add_attachment(docsdir),
     ]
     if phase == 1:
