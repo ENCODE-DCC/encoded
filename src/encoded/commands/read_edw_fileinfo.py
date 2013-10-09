@@ -156,19 +156,25 @@ def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, exclude=None, limit=0
     return app_files
 
 
-def get_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+def get_new_fileinfo_from_lists(app_files, edw_files):
     # Find 'new' files: files in EDW having experiment accesion 
     #   but missing in app
-    edw_files = edw_file.get_edw_fileinfo(edw, experiment=True, 
-                                          phase=phase)
     edw_dict = { d['accession']: d for d in edw_files }
-    app_files = get_app_fileinfo(app, phase=phase)
     app_dict = { d['accession']: d for d in app_files }
     new_files = []
     for accession in edw_dict.keys():
         if accession not in app_dict:
             new_files.append(edw_dict[accession])
     return new_files
+
+
+def get_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+    # Find 'new' files: files in EDW having experiment accesion 
+    #   but missing in app
+    edw_files = edw_file.get_edw_fileinfo(edw, experiment=True, 
+                                          phase=phase)
+    app_files = get_app_fileinfo(app, phase=phase)
+    return get_new_fileinfo_from_lists(app_files, edw_files)
 
 
 def set_fileinfo_replicate(app, fileinfo):
