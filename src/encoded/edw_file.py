@@ -16,6 +16,7 @@ ENCODE_PHASE_2 = '2'
 ENCODE_PHASE_3 = '3'
 ENCODE_PHASE_ALL = 'all'
 
+
 # NOTE: ordering of fields currently needs to match query order below
 FILE_INFO_FIELDS = [
     'accession',
@@ -35,7 +36,7 @@ TECHNICAL_REPLICATE_NUM = 1     # always 1 for now (pending EDW changes)
 NA = 'n/a'
 
 # Configuration file
-EDW_CONFIG = 'edw.cfg'
+EDW_CONFIG = 'my.cnf'
 CHANGE_ME = 'CHANGEME'          # user/pass in .cfg file
 
 
@@ -64,15 +65,15 @@ def format_edw_fileinfo(file_dict, exclude=None):
 ################
 # Initialization
 
-def make_edw_db(data_host=None):
+def make_edw(data_host=None):
     # Connect with EDW database
 
     # Get configuration from config file
     config = ConfigParser.ConfigParser()
     config.read(EDW_CONFIG)
 
-    site = 'production'
-    engine = config.get(site, 'engine')
+    site = 'mysql'
+    engine = 'mysql'
     if (data_host):
         host = data_host
     else:
@@ -122,24 +123,21 @@ def dump_fileinfo(fileinfos, header=True, typeField=None):
         writer.writerow(ordered)
 
 
-def get_edw_fileinfo(data_host, limit=None, experiment=None,
+def get_edw_fileinfo(edw, limit=None, experiment=None,
                      exclude=None, phase=ENCODE_PHASE_ALL):
     # Read info from file tables at EDW. 
     # Return list of file infos as dictionaries
 
-    # Create interface to EDW db
-    db = make_edw_db(data_host)
-
     # Autoreflect the schema
     meta = MetaData()
-    meta.reflect(bind=db)
+    meta.reflect(bind=edw)
     f = meta.tables['edwFile']
     v = meta.tables['edwValidFile']
     u = meta.tables['edwUser']
     s = meta.tables['edwSubmit']
 
     # Make a connection
-    conn = db.connect()
+    conn = edw.connect()
 
     # Get info for EDW files
     # List files newest first
