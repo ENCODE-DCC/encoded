@@ -69,7 +69,7 @@ function (experiment, React, globals, dbxref) {
                             <dd hidden={!context.biosample_type}>{context.biosample_type}</dd>
 
                             {context.target ? <dt>Target</dt> : null}
-                            {context.target ? <dd>{context.target.label}</dd> : null}
+                            {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
 
                             {antibody_accessions.length ? <dt>Antibody</dt> : null}
                             {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
