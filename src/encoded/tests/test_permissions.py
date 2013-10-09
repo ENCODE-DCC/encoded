@@ -1,14 +1,7 @@
 import pytest
 
-@pytest.datafixture
-def users(app):
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST',
-    }
-    testapp = TestApp(app, environ)
-
+@pytest.fixture
+def users(testapp):
     from .sample_data import URL_COLLECTION
     url = '/labs/'
     for item in URL_COLLECTION[url]:
