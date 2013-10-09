@@ -1,0 +1,25 @@
+{
+   "status":"CURRENT",
+   "submitted_by":{
+      "first_name":"Julien",
+      "last_name":"Lagarde",
+      "uuid":"f5b7857d-208e-4acc-ac4d-4c2520814fe1",
+      "title":"Julien Lagarde",
+      "submits_for":[
+         "/labs/thomas-gingeras/",
+         "/labs/roderic-guigo/"
+      ],
+      "phone1":"+34 933 160 110",
+      "fax":"+34 933 969 983",
+      "schema_version":"1",
+      "email":"someone@foo.com",
+      "lab":"/labs/roderic-guigo/",
+      "timezone":"Europe/Madrid",
+      "@id":"/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/",
+      "@type":[
+         "user",
+         "item"
+      ],
+      "job_title":"Submitter"
+   }
+}
