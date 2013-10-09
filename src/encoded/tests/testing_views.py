@@ -25,6 +25,19 @@ def user(request):
     }
 
 
+@view_config(name='testing-allowed', request_method='GET')
+def allowed(context, request):
+    from pyramid.security import (
+        has_permission,
+        principals_allowed_by_permission,
+    )
+    permission = request.params.get('permission', 'view')
+    return {
+        'has_permission': bool(has_permission(permission, context, request)),
+        'principals_allowed_by_permission': principals_allowed_by_permission(context, permission),
+    }
+
+
 @location('testing-downloads')
 class TestingDownload(Collection):
     properties = {
