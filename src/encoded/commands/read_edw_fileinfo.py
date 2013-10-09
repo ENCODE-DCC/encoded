@@ -143,7 +143,7 @@ def get_phase(fileinfo, app):
         return ENCODE_PHASE_2
 
 
-def get_app_fileinfo(phase, app, exclude=None, limit=0):
+def get_app_fileinfo(app, phase=ENCODE_PHASE_ALL, exclude=None, limit=0):
     # Get file info from encoded web application
     # Return list of fileinfo dictionaries
     rows = get_collection(app, FILES_URL)
@@ -160,12 +160,13 @@ def get_app_fileinfo(phase, app, exclude=None, limit=0):
     return app_files
 
 
-def get_new_fileinfo(phase, data_host, app):
+def get_new_fileinfo(data_host, app, phase=ENCODE_PHASE_ALL):
     # Find 'new' files: files in EDW having experiment accesion 
     #   but missing in app
-    edw_files = edw_file.get_edw_fileinfo(phase, data_host, experiment=True)
+    edw_files = edw_file.get_edw_fileinfo(data_host, experiment=True, 
+                                          phase=ENCODE_PHASE_ALL,)
     edw_dict = { d['accession']: d for d in edw_files }
-    app_files = get_app_fileinfo(phase, app)
+    app_files = get_app_fileinfo(app, phase=phase)
     app_dict = { d['accession']: d for d in app_files }
     new_files = []
     for accession in edw_dict.keys():
@@ -241,27 +242,29 @@ def put_fileinfo(app, fileinfo):
 ################
 # Main functions
 
-def show_edw_fileinfo(phase, data_host, limit=None, experiment=None):
+def show_edw_fileinfo(data_host, limit=None, experiment=None, 
+                      phase=ENCODE_PHASE_ALL):
     # Read info from file tables at EDW.
     # Format as TSV file with columns from 'encoded' File JSON schema
     sys.stderr.write('Showing ENCODE %s file info\n' % phase)
-    edw_files = edw_file.get_edw_fileinfo(phase, data_host, limit, experiment)
+    edw_files = edw_file.get_edw_fileinfo(data_host, limit, experiment, 
+                                            phase=phase)
     edw_file.dump_fileinfo(edw_files)
 
 
-def show_app_fileinfo(phase, app, limit):
+def show_app_fileinfo(app, limit=0, phase=ENCODE_PHASE_ALL):
     # Read info from file tables at EDW.
     # Write TSV file from list of application file info
     sys.stderr.write('Exporting file info\n')
-    app_files = get_app_fileinfo(phase, app, limit)
+    app_files = get_app_fileinfo(app, limit=limit, phase=phase)
     edw_file.dump_fileinfo(app_files)
 
 
-def show_new_fileinfo(phase, data_host, app):
+def show_new_fileinfo(data_host, app, phase=ENCODE_PHASE_ALL):
     # Show 'new' files: files in EDW having experiment accesion 
     sys.stderr.write('Showing new ENCODE %s files (at EDW but not in app)\n' % 
                      (phase))
-    new_files = get_new_fileinfo(phase, data_host, app)
+    new_files = get_new_fileinfo(data_host, app, phase)
     edw_file.dump_fileinfo(new_files)
 
 
@@ -283,24 +286,25 @@ def modify_app_fileinfo(input_file, app):
             put_fileinfo(app, fileinfo)
 
 
-def sync_app_fileinfo(phase, data_host, app):
+def sync_app_fileinfo(data_host, app, phase=ENCODE_PHASE_ALL):
     # POST all new files from EDW to app
     sys.stderr.write('Importing new file info for ENCODE %s from %s to app\n' % 
                      (phase, data_host))
     # TODO: log imported files
-    new_files = get_new_fileinfo(phase, data_host, app)
+    new_files = get_new_fileinfo(data_host, app, phase=phase)
     for fileinfo in new_files:
         post_fileinfo(app, fileinfo)
 
 
-def show_diff_fileinfo(phase, data_host, app, exclude=None, detailed=False):
+def show_diff_fileinfo(data_host, app, exclude=None, detailed=False,
+                       phase=ENCODE_PHASE_ALL):
     # Show differences between EDW experiment files and files in app
     sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
                       % (phase))
-    edw_files = edw_file.get_edw_fileinfo(phase, data_host, experiment=True,
-                                          exclude=exclude)
+    edw_files = edw_file.get_edw_fileinfo(data_host, experiment=True,
+                                          exclude=exclude, phase=phase)
     edw_dict = { d['accession']: d for d in edw_files }
-    app_files = get_app_fileinfo(phase, app, exclude=exclude)
+    app_files = get_app_fileinfo(app, exclude=exclude, phase=phase)
     app_dict = { d['accession']: d for d in app_files }
 
     # Inventory files
@@ -413,21 +417,22 @@ def main():
         modify_app_fileinfo(args.modify_file, app)
 
     elif args.export:
-        show_app_fileinfo(args.phase, app, args.limit)
+        show_app_fileinfo(app, limit=args.limit, phase=args.phase)
 
     elif args.new:
-        show_new_fileinfo(args.phase, args.data_host, app)
+        show_new_fileinfo(args.data_host, app, phase=args.phase)
 
     elif args.compare_summary:
-        show_diff_fileinfo(args.phase, args.data_host, app, 
-                           args.exclude_props, detailed=False)
+        show_diff_fileinfo(args.data_host, app, exclude=args.exclude_props, 
+                           detailed=False, phase=args.phase)
 
     elif args.compare_full:
-        show_diff_fileinfo(args.phase, args.data_host, app, 
-                           args.exclude_props, detailed=True)
+        show_diff_fileinfo(args.data_host, app, exclude=args.exclude_props, 
+                           detailed=True, phase=args.phase)
 
     else:
-        show_edw_fileinfo(args.phase, args.data_host, args.limit, args.experiment)
+        show_edw_fileinfo(args.data_host, limit=args.limit, 
+                          experiment=args.experiment, phase=args.phase)
 
 if __name__ == '__main__':
     main()
