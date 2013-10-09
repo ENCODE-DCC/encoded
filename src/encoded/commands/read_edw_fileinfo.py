@@ -139,21 +139,35 @@ def get_phase(fileinfo, app):
         return edw_file.ENCODE_PHASE_2
 
 
-def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, exclude=None, limit=0):
+def get_app_fileinfo(app, full=True, limit=0, exclude=None,
+                     phase=edw_file.ENCODE_PHASE_ALL):
     # Get file info from encoded web application
     # Return list of fileinfo dictionaries
     rows = get_collection(app, FILES_URL)
     app_files = []
     for row in rows:
-        if phase != edw_file.ENCODE_PHASE_ALL:
-            if get_phase(row, app) != phase:
-                continue
-        format_app_fileinfo(row, exclude=exclude)
-        app_files.append(row)
+        if full:
+            if phase != edw_file.ENCODE_PHASE_ALL:
+                if get_phase(row, app) != phase:
+                    continue
+            format_app_fileinfo(row, exclude=exclude)
+            app_files.append(row)
+        else:
+            app_files.append(row['accession'])
         limit -= 1
         if limit == 0:
             break
     return app_files
+
+
+def get_new_filelist_from_lists(app_accs, edw_accs):
+    # Find 'new' file accessions: files in EDW having experiment accesion 
+    #   but missing in app
+    new_accs = []
+    for accession in edw_accs:
+        if accession not in app_accs:
+            new_accs.append(accession)
+    return new_accs
 
 
 def get_new_fileinfo_from_lists(app_files, edw_files):
@@ -168,11 +182,18 @@ def get_new_fileinfo_from_lists(app_files, edw_files):
     return new_files
 
 
+def get_new_filelist(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+    # Find 'new' accessions: files in EDW having experiment accesion 
+    #   but missing in app
+    edw_accs = edw_file.get_edw_filelist(edw, phase=phase)
+    app_accs = get_app_fileinfo(app, full=False, phase=phase)
+    return get_new_filelist_from_lists(app_accs, edw_accs)
+
+
 def get_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
     # Find 'new' files: files in EDW having experiment accesion 
     #   but missing in app
-    edw_files = edw_file.get_edw_fileinfo(edw, experiment=True, 
-                                          phase=phase)
+    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase)
     app_files = get_app_fileinfo(app, phase=phase)
     return get_new_fileinfo_from_lists(app_files, edw_files)
 
@@ -244,14 +265,20 @@ def put_fileinfo(app, fileinfo):
 ################
 # Main functions
 
-def show_edw_fileinfo(edw, limit=None, experiment=None, 
+def show_edw_fileinfo(edw, full=True, limit=None, experiment=True, 
                       phase=edw_file.ENCODE_PHASE_ALL):
     # Read info from file tables at EDW.
     # Format as TSV file with columns from 'encoded' File JSON schema
-    sys.stderr.write('Showing ENCODE %s file info\n' % phase)
-    edw_files = edw_file.get_edw_fileinfo(edw, limit=limit, 
-                                          experiment=experiment, phase=phase)
-    edw_file.dump_fileinfo(edw_files)
+    if (full):
+        sys.stderr.write('Showing ENCODE %s files\n' % phase)
+        edw_files = edw_file.get_edw_fileinfo(edw, limit=limit, phase=phase,
+                                              experiment=experiment)
+        edw_file.dump_fileinfo(edw_files)
+    else:
+        sys.stderr.write('Showing ENCODE %s file accessions\n' % phase)
+        edw_accs = edw_file.get_edw_filelist(edw, limit=limit, phase=phase,
+                                             experiment=experiment)
+        edw_file.dump_filelist(edw_accs)
 
 
 def show_app_fileinfo(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
@@ -262,12 +289,18 @@ def show_app_fileinfo(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
     edw_file.dump_fileinfo(app_files)
 
 
-def show_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+def show_new_fileinfo(app, edw, full=True, phase=edw_file.ENCODE_PHASE_ALL):
     # Show 'new' files: files in EDW having experiment accesion 
-    sys.stderr.write('Showing new ENCODE %s files (at EDW but not in app)\n' % 
-                     (phase))
-    new_files = get_new_fileinfo(app, edw, phase=phase)
-    edw_file.dump_fileinfo(new_files)
+    if (full):
+        sys.stderr.write('Showing new ENCODE %s files '
+                         '(at EDW but not in app)\n' % (phase))
+        new_files = get_new_fileinfo(app, edw, phase=phase)
+        edw_file.dump_fileinfo(new_files)
+    else:
+        sys.stderr.write('List new ENCODE %s file accessions '
+                         '(at EDW but not in app)\n' % (phase))
+        new_accs = get_new_filelist(app, edw, phase=phase)
+        edw_file.dump_filelist(new_accs)
 
 
 def write_app_fileinfo(input_file, app):
@@ -371,15 +404,19 @@ def main():
 
     group.add_argument('-m', '--modify_file',
                    help='modify files in app using info in TSV file')
-    group.add_argument('-c', '--compare_summary', action='store_true',
+    group.add_argument('-c', '--compare_summary', action='store_true', 
                    help='summary compare of experiment files in EDW with app')
     group.add_argument('-C', '--compare_full', action='store_true',
                    help='detailed compare of experiment files in EDW with app')
     group.add_argument('-e', '--export', action='store_true',
                    help='export file info from app')
-    group.add_argument('-n', '--new', action='store_true',
+    group.add_argument('-n', '--new_list', action='store_true',
+                   help='list new file accession: in EDW not in app')
+    group.add_argument('-N', '--new_files', action='store_true',
                    help='show new files: in EDW not in app')
-    group.add_argument('-w', '--edw', action='store_true',
+    group.add_argument('-w', '--edw_list', action='store_true',
+                   help='show file accessions at EDW')
+    group.add_argument('-W', '--edw_files', action='store_true',
                    help='show file info at EDW')
 
     # modifiers
@@ -393,8 +430,8 @@ def main():
                          '(default %s)' % edw_file.ENCODE_PHASE_ALL),
     parser.add_argument('-exclude', '--exclude_props', nargs='+', 
                         help='for -c and -C, ignore excluded properties')
-    parser.add_argument('-x', '--experiment', action='store_true',
-                    help='for EDW, show only files having experiment accession')
+    #parser.add_argument('-x', '--experiment', action='store_true',
+                    #help='for EDW, show only files having experiment accession')
     parser.add_argument('-d', '--data_host', default=None,
                         help='data warehouse host (default from my.cnf)')
     parser.add_argument('-a', '--application', default=DEFAULT_INI,
@@ -406,29 +443,37 @@ def main():
             
     args = parser.parse_args()
 
+    # CAUTION: fragile code here.  Should restructure with subcommands or
+    #   custom action
+
     # init encoded app
-    if not args.edw:
-        app = make_app(args.application, args.username, args.password)
+    if args.export or args.modify_file or args.import_file or \
+        args.new_list or args.new_files \
+        or args.compare_full or args.compare_summary:
+            app = make_app(args.application, args.username, args.password)
 
     # open connection to EDW
-    if not args.modify_file and not args.import_file and not args.export:
+    if args.edw_files or args.edw_list or args.new_list or args.new_files:
         edw = edw_file.make_edw(args.data_host)
 
     # pick a task
     if args.import_file:
-        write_app_fileinfo(args.import_file, app)
+        write_app_fileinfo(args.infile, app)
 
     #elif args.import_all_new:
         #sync_app_fileinfo(args.phase, args.data_host, app)
 
     elif args.modify_file:
-        modify_app_fileinfo(args.modify_file, app)
+        modify_app_fileinfo(args.infile, app)
 
     elif args.export:
         show_app_fileinfo(app, limit=args.limit, phase=args.phase)
 
-    elif args.new:
-        show_new_fileinfo(app, edw, phase=args.phase)
+    elif args.new_list:
+        show_new_fileinfo(app, edw, full=False, phase=args.phase)
+
+    elif args.new_files:
+        show_new_fileinfo(app, edw, full=True, phase=args.phase)
 
     elif args.compare_summary:
         show_diff_fileinfo(app, edw, detailed=False, 
@@ -438,9 +483,15 @@ def main():
         show_diff_fileinfo(app, edw, detailed=True, 
                            exclude=args.exclude_props, phase=args.phase)
 
+    elif args.edw_list:
+        show_edw_fileinfo(edw, full=False, limit=args.limit, phase=args.phase)
+
+    elif args.edw_files:
+        show_edw_fileinfo(edw, limit=args.limit, phase=args.phase)
+
     else:
-        show_edw_fileinfo(edw, limit=args.limit, 
-                          experiment=args.experiment, phase=args.phase)
+        parser.print_usage()
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()

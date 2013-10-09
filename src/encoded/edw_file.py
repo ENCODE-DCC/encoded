@@ -102,6 +102,11 @@ class FileinfoWriter(DictWriter):
                             delimiter='\t', lineterminator='\n',
                             extrasaction='ignore')
 
+def dump_filelist(fileaccs, header=True, typeField=None):
+    # Dump file accessions from list to stdout
+    for acc in sorted(fileaccs):
+        print acc
+
 def dump_fileinfo(fileinfos, header=True, typeField=None):
     # Dump file info from list of file info dicts to tab-sep file
     # TODO: should be method of FileInfoWriter
@@ -123,7 +128,42 @@ def dump_fileinfo(fileinfos, header=True, typeField=None):
         writer.writerow(ordered)
 
 
-def get_edw_fileinfo(edw, limit=None, experiment=None,
+def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
+    # Read info from file tables at EDW. 
+    # Return list of file infos as dictionaries
+
+    # Autoreflect the schema
+    meta = MetaData()
+    meta.reflect(bind=edw)
+    v = meta.tables['edwValidFile']
+
+    # Make a connection
+    conn = edw.connect()
+
+    # Get info for EDW files
+    # List files newest first
+    # NOTE: ordering must mirror FILE_INFO_FIELDS
+    query = select([v.c.licensePlate.label('accession')])
+
+    if experiment:
+        query.append_whereclause('edwValidFile.experiment <> ""')
+    if phase == '2':
+        query.append_whereclause('edwValidFile.experiment like "wgEncode%"')
+    elif phase  == '3':
+        query.append_whereclause('edwValidFile.experiment like "ENCSR%%"')
+
+    if limit:
+        query = query.limit(limit)
+    results = conn.execute(query)
+    edw_accs = []
+    for row in results:
+        file_dict = dict(row)
+        edw_accs.append(file_dict['accession'])
+    results.close()
+    return edw_accs
+
+
+def get_edw_fileinfo(edw, limit=None, experiment=True,
                      exclude=None, phase=ENCODE_PHASE_ALL):
     # Read info from file tables at EDW. 
     # Return list of file infos as dictionaries
@@ -157,7 +197,7 @@ def get_edw_fileinfo(edw, limit=None, experiment=None,
               (s.c.id == f.c.submitId) &
               (u.c.id == s.c.userId))
     if experiment:
-        query.append_whereclause('edwValidFile.experiment is not null')
+        query.append_whereclause('edwValidFile.experiment <> ""')
     if phase == '2':
         query.append_whereclause('edwValidFile.experiment like "wgEncode%"')
     elif phase  == '3':
@@ -174,4 +214,3 @@ def get_edw_fileinfo(edw, limit=None, experiment=None,
         edw_files.append(file_dict)
     results.close()
     return edw_files
-
