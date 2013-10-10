@@ -166,7 +166,7 @@ class Source(Collection):
 class DonorItem(Collection.Item):
     base_types = ['donor'] + Collection.Item.base_types
     embedded = set(['organism'])
-    item_name_key = 'accession'
+    name_key = 'accession'
     keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
