@@ -1043,18 +1043,22 @@ def item_view(context, request):
 
 @view_config(context=Item, permission='edit', request_method='PUT',
              validators=[validate_item_content_put])
-def item_edit(context, request):
+def item_edit(context, request, render=True):
     """ PUT replaces the current properties with the new body
     """
     properties = request.validated
     # This *sets* the property sheet
     context.update(properties)
     item_uri = request.resource_path(context)
+    if render:
+        rendered = embed(request, item_uri + '?embed=false')
+    else:
+        rendered = item_uri
     request.response.status = 200
     result = {
         'status': 'success',
         '@type': ['result'],
-        '@graph': [item_uri],
+        '@graph': [rendered],
     }
     return result
 
@@ -1073,10 +1077,11 @@ def item_patch(context, request):
     new_props.update(patch)
     context.update(new_props)
     item_uri = request.resource_path(context)
+    rendered = embed(request, item_uri + '?embed=false')
     request.response.status = 200
     result = {
         'status': 'success',
         '@type': ['result'],
-        '@graph': [item_uri],
+        '@graph': [rendered],
     }
     return result
