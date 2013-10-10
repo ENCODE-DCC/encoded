@@ -1,0 +1,3 @@
+accession	date_created	output_type	file_format	dataset	replicate	download_path	submitted_file_name	assembly	md5sum	submitted_by
+ENCFF999ZZZ	2013-10-08	Sites	bigBed	ENCSR000AER	1	2013/5/9/ENCFF999ZZZ.bam	../../../../pre-DCC/wgEncodeCshlLongRnaSeq/20130218_promocell_batches1-2_minus_batch1sFASTQ/SID38224_BC1HH9ACXX_5_1.txt.gz	hg19	e86328ea363afe5b339c3d2a1f634521	platea.a@volutpat.viverra
+ENCFF998ZZZ	2013-10-08	Sites	bigBed	ENCSR000AER	3	2013/5/9/ENCFF998ZZZ.txt.gz	../../../../pre-DCC/wgEncodeCshlLongRnaSeq/20130218_promocell_batches1-2_minus_batch1sFASTQ/SID38224_BC1HH9ACXX_5_1.txt.gz	hg19	e86328ea363afe5b339c3d2a1f634521	sit.duis@blandit.hendrerit

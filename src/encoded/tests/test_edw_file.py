@@ -1,5 +1,6 @@
 import pytest
 import json
+from csv import DictReader
 
 import encoded.commands.read_edw_fileinfo
 import edw_test_data
@@ -62,16 +63,27 @@ def test_list_new(workbook, testapp):
     assert new_accs == sorted(edw_test_data.new_out)
 
 
-#def test_get_app_fileinfo(workbook, testapp):
-    #app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
-
-
-#def test_new(workbook, app):
-    # Test find of new files (accession at EDW but not encoded)
-
-
-#def test_import(workbook, app)
+def test_import_file(workbook, testapp):
     # Test import of new file to encoded
 
+    test_num = 1    # for parametrization
+    input_file = 'import_in.' + str(test_num) + '.txt'
+    f = open(EDW_FILE_TEST_DATA_DIR + '/' + input_file)
+    reader = DictReader(f, delimiter='\t')
+    for fileinfo in reader:
+        encoded.commands.read_edw_fileinfo.post_fileinfo(testapp, fileinfo)
+        acc = fileinfo['accession']
+        url = '/files/' + acc
+        resp = testapp.get(url).maybe_follow()
+        file_dict = resp.json
+        encoded.commands.read_edw_fileinfo.format_app_fileinfo(testapp, file_dict)
+        set_out = set(file_dict.items())
+
+        # WARNING: type-unaware char conversion here, with field-specific
+        # correction of mis-formatted int field
+        unidict = {k.decode('utf8'): v.decode('utf8') for k, v in fileinfo.items()}
+        unidict['replicate'] = int(unidict['replicate'])
+        set_in = set(unidict.items())
+        assert len(set_in ^ set_out) == 0
 
 

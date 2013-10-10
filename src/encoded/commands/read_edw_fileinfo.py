@@ -5,7 +5,8 @@ import sys
 import logging
 import datetime
 import argparse
-from csv import DictReader, DictWriter
+import copy
+from csv import DictReader
 from urlparse import urlparse
 
 from pyramid import paster
@@ -239,10 +240,13 @@ def set_fileinfo_replicate(app, fileinfo):
             'technical_replicate_number': tech_rep_num
         }
         resp = app.post_json(REPLICATES_URL, rep)
-        rep_id = resp.json['@id']
+        # WARNING: ad-hoc char conversion here
+        rep_id = resp.json[unicode('@graph')][0][unicode('@id')]
 
     # Populate link to replicate
-    fileinfo['replicate'] = rep_id
+    new_fileinfo = copy.deepcopy(fileinfo)
+    new_fileinfo['replicate'] = str(rep_id)
+    return new_fileinfo
 
 
 def post_fileinfo(app, fileinfo):
@@ -251,11 +255,11 @@ def post_fileinfo(app, fileinfo):
     # Take care of replicate; may require creating one
     accession = fileinfo['accession']
     try:
-        set_fileinfo_replicate(app, fileinfo)
+        post_fileinfo = set_fileinfo_replicate(app, fileinfo)
     except AppError as e:
         logging.warning('Failed POST File %s: Replicate error\n%s', accession, e)
         return
-    resp = app.post_json(FILES_URL, fileinfo, expect_errors=True)
+    resp = app.post_json(FILES_URL, post_fileinfo, expect_errors=True)
     if resp.status_int == 409:
         logging.warning('Failed POST File %s: File already exists', accession)
     elif resp.status_int < 200 or resp.status_int >= 400:
@@ -267,8 +271,8 @@ def put_fileinfo(app, fileinfo):
 
     accession = fileinfo['accession']
     try:
-        set_fileinfo_replicate(app, fileinfo)
-        app.put_json(FILES_URL + accession, fileinfo)
+        putt_fileinfo = set_fileinfo_replicate(app, fileinfo)
+        app.put_json(FILES_URL + accession, put_fileinfo)
     except AppError as e:
         logging.warning('Failed PUT File %s\n%s', accession, e)
 
@@ -314,9 +318,9 @@ def show_new_fileinfo(app, edw, full=True, phase=edw_file.ENCODE_PHASE_ALL):
         edw_file.dump_filelist(new_accs)
 
 
-def write_app_fileinfo(input_file, app):
+def post_app_fileinfo(input_file, app):
     # POST files from input file to app
-    sys.stderr.write('Importing file info from %s to app\n' % (input_file))
+    sys.stderr.write('Importing file info from %s to app via POST\n' % (input_file))
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
         for fileinfo in reader:
@@ -469,13 +473,13 @@ def main():
 
     # pick a task
     if args.import_file:
-        write_app_fileinfo(args.infile, app)
+        post_app_fileinfo(args.import_file, app)
 
     #elif args.import_all_new:
         #sync_app_fileinfo(args.phase, args.data_host, app)
 
     elif args.modify_file:
-        modify_app_fileinfo(args.infile, app)
+        modify_app_fileinfo(args.modify_file, app)
 
     elif args.export:
         show_app_fileinfo(app, limit=args.limit, phase=args.phase)
