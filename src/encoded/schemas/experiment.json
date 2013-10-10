@@ -5,7 +5,7 @@
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "dataset_type"],
+    "required": ["award", "lab"],
     "facets": {"Lab": "lab.title", "Assay": "assay_term_name", "Organism": "target.organism.name"},
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
