@@ -216,7 +216,7 @@ class Construct(Collection):
         'description': 'Listing of Biosample Constructs',
     }
     item_embedded = set(['source', 'documents', 'characterizations', 'target'])
-    # item_keys = ['vector_name']
+    item_keys = ALIAS_KEYS  # ['vector_name']
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
