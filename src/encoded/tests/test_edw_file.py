@@ -5,19 +5,18 @@ from edw_test_data import format_app_file_out
 import json
 
 # globals
-
-# TEST_HASHES = {}
-#pytest.mark.parametrize(('field1', 'field2'), TEST_HASHES.items())
-# def test_fxn(field1, field2)
-
 EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
 
-def test_app_file_show():
-    assert(1 == 1)
+#@pytest.mark.parametrize('test_num', [1, 2])
+# resisting parameterization, as test 1 will go much quicker 
+# w/o loading workbook which isn't needed
 
-def test_format_app_fileinfo(testapp):
+def test_format_app_fileinfo_expanded(testapp):
     # Test extracting EDW-relevant fields from encoded file.json
-    EDW_TEST_FILE = 'format_app_file_in.json'
+    # Expanded JSON
+
+    test_num = 1
+    EDW_TEST_FILE = 'format_app_file_in.' + str(test_num) + '.json'
 
     # load input
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + EDW_TEST_FILE)
@@ -27,7 +26,26 @@ def test_format_app_fileinfo(testapp):
 
     # compare results for identity with expected
     set_app = set(file_dict.items())
-    set_edw = set(format_app_file_out.items())
+    set_edw = set(format_app_file_out[test_num-1].items())
+    assert len(set_edw ^ set_app) == 0
+
+
+def test_format_app_fileinfo_embedded(workbook, testapp):
+    # Test extracting EDW-relevant fields from encoded file.json
+    # Unexpanded JSON (requires GETs on embedded URLs)
+
+    test_num = 2
+    EDW_TEST_FILE = 'format_app_file_in.' + str(test_num) + '.json'
+
+    # load input
+    f = open(EDW_FILE_TEST_DATA_DIR + '/' + EDW_TEST_FILE)
+    file_dict = json.load(f)
+
+    encoded.commands.read_edw_fileinfo.format_app_fileinfo(testapp, file_dict)
+
+    # compare results for identity with expected
+    set_app = set(file_dict.items())
+    set_edw = set(format_app_file_out[test_num-1].items())
     assert len(set_edw ^ set_app) == 0
 
 
