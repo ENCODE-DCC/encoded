@@ -89,7 +89,7 @@ def test_access_key_principals(anontestapp, execute_counter, access_key):
 
 def test_access_key_reset(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.post_json(access_key['location'] + '/@@reset-secret', {}, headers=headers)
+    res = anontestapp.post_json(access_key['location'] + '@@reset-secret', {}, headers=headers)
     new_headers = {'Authorization': basic_auth(access_key['access_key_id'], res.json['secret_access_key'])}
 
     res = anontestapp.get('/@@testing-user', headers=headers)
@@ -101,7 +101,7 @@ def test_access_key_reset(anontestapp, access_key):
 
 def test_access_key_disable(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.post_json(access_key['location'] + '/@@disable-secret', {}, headers=headers)
+    res = anontestapp.post_json(access_key['location'] + '@@disable-secret', {}, headers=headers)
 
     res = anontestapp.get('/@@testing-user', headers=headers)
     assert res.json['authenticated_userid'] is None
