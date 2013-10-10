@@ -12,7 +12,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "email": {
             "title": "Email",
@@ -48,6 +48,26 @@
                 "type": "string",
                 "linkTo": "lab"
             }
+        },
+        "groups": {
+            "title": "Groups",
+            "description": "Additional access control groups",
+            "type": "array",
+            "default": [],
+            "uniqueItems": true,
+            "items": {
+                "type": "string"
+            }
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "CURRENT",
+            "enum" : [
+                "CURRENT",
+                "DELETED",
+                "DISABLED"
+            ]
         },
         "job_title": {
             "title": "Job Title",
