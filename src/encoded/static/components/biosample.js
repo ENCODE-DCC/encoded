@@ -130,6 +130,14 @@ function (biosample, React, URI, globals) {
                                 {context.constructs.map(Panel)}
                             </section>
                         : null}
+                        
+                    	{context.rnais.length ?
+                            <section>
+                                <hr />
+                                <h4>RNAi details</h4>
+                                {context.rnais.map(Panel)}
+                            </section>
+                        : null}
 
                     </div>
 
@@ -143,6 +151,13 @@ function (biosample, React, URI, globals) {
                     {context.characterizations.length ?
                         <div>
                             <h3>Characterizations</h3>
+                            {context.characterizations.map(Panel)}
+                        </div>
+                    : null}
+                    
+                    {context.constructs.length ?
+                        <div>
+                            <h3>Construct documents</h3>
                             {context.characterizations.map(Panel)}
                         </div>
                     : null}
@@ -311,6 +326,24 @@ function (biosample, React, URI, globals) {
     });
 
     globals.panel_views.register(Construct, 'construct');
+    
+    
+    var RNAi = biosample.RNAi = React.createClass({
+        render: function() {
+            var context = this.props.context;
+            return (
+                <dl class="key-value">
+                	{context.rnai_type ? <dt>RNAi type</dt> : null}
+                    {context.rnai_type ? <dd class="no-cap">{context.rnai_type}</dd> : null}
+
+                    {context.source.title ? <dt>Source</dt> : null}
+                    {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
+                </dl>
+            );
+        }
+    });
+
+    globals.panel_views.register(RNAi, 'rnai');
 
 
     var Document = biosample.Document = React.createClass({
