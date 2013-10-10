@@ -2,6 +2,8 @@
 
 import transaction
 import venusian
+from abc import ABCMeta
+from collections import Mapping
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -365,6 +367,13 @@ class MergedTemplateMeta(type):
             if template is not None:
                 self.merged_template.update(template)
 
+
+class MergedKeysMeta(MergedTemplateMeta):
+    """ Merge the keys from the subclass with its bases
+    """
+    def __init__(self, name, bases, attrs):
+        super(MergedKeysMeta, self).__init__(name, bases, attrs)
+
         self.merged_keys = []
         for cls in reversed(self.mro()):
             for key in vars(cls).get('keys', []):
@@ -375,7 +384,7 @@ class MergedTemplateMeta(type):
 
 
 class Item(object):
-    __metaclass__ = MergedTemplateMeta
+    __metaclass__ = MergedKeysMeta
     base_types = ['item']
     keys = []
     name_key = None
@@ -641,7 +650,7 @@ class Item(object):
         return to_add
 
 
-class CustomItemMeta(MergedTemplateMeta):
+class CustomItemMeta(MergedTemplateMeta, ABCMeta):
     """ Give each collection its own Item class to enable
         specific view registration.
     """
@@ -667,7 +676,7 @@ class CustomItemMeta(MergedTemplateMeta):
         self.Item = type('Item', item_bases, item_attrs)
 
 
-class Collection(object):
+class Collection(Mapping):
     __metaclass__ = CustomItemMeta
     Item = Item
     schema = None
@@ -724,8 +733,20 @@ class Collection(object):
             raise KeyError(name)
         return item
 
-    def __contains__(self, name):
-        return self.get(name, None) is not None
+    def __iter__(self, limit=None):
+        session = DBSession()
+        query = session.query(Resource.rid).filter(
+            Resource.item_type == self.item_type
+        )
+        for rid, in query.limit(limit):
+            yield rid
+
+    def __len__(self):
+        session = DBSession()
+        query = session.query(Resource.rid).filter(
+            Resource.item_type == self.item_type
+        )
+        return query.count()
 
     def get(self, name, default=None):
         resource = self.get_by_uuid(name, None)
