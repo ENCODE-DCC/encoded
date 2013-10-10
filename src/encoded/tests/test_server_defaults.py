@@ -9,3 +9,8 @@ def test_server_defaults(users, anontestapp):
     assert item['now'].startswith('2')
     assert item['user'] == users[0]['@id']
     assert item['accession'].startswith('ENCXX')
+
+    anontestapp.patch_json(
+        res.location, {}, status=200,
+        extra_environ=extra_environ,
+    )
