@@ -27,22 +27,35 @@ REPLICATES_URL = '/replicates/'
 # Support functions to localize handling of special fields
 # e.g. links, datetime
 
-# Some properties in JSON object from collection are links requiring a
-# further GET.
+# Some properties in JSON object from collection return nested objects requiring
+# pulling desired property (or an additional GET)
 # NOTE: It would be good to derive this info from schema
 
-# Some properties in JSON object from collection return nested objects requiring
-# pulling desired property
-FILE_NESTED_PROPERTIES = {
-    'replicate': 'biological_replicate_number',
+FILE_EMBEDDED_PROPERTIES = {
     'submitted_by': 'email',
+    'replicate': 'biological_replicate_number',
 }
 
-def format_app_fileinfo(file_dict, exclude=None):
+def format_app_fileinfo(app, file_dict, exclude=None):
     # Handle links and nested propeties
-    for link_prop, dest_prop in FILE_NESTED_PROPERTIES.iteritems():
+    for link_prop, dest_prop in FILE_EMBEDDED_PROPERTIES.iteritems():
         if link_prop in file_dict:
-            file_dict[link_prop] = file_dict[link_prop][dest_prop]
+            prop = file_dict[link_prop]
+            if type(prop) == dict:
+                file_dict[link_prop] = prop[dest_prop]
+            elif prop.startswith('/'):
+                # Must issue another GET as embedded prop hasn't been expanded
+                resp = app.get(prop)
+                prop = resp.json[dest_prop]
+                # Submitter email returned by test data (should be user dict)
+                if type(prop) == dict:
+                    file_dict[link_prop] = prop[dest_prop]
+                else:
+                    file_dict[link_prop] = prop
+            else:
+                # Seeing submitter email directly in submitted_by field
+                # Might be incorrect test data, but handling it for now
+                file_dict[link_prop] = prop
         else:
             if link_prop == 'replicate':
                 # special handling of replicate -- only numeric field
@@ -50,9 +63,7 @@ def format_app_fileinfo(file_dict, exclude=None):
             else:
                 file_dict[link_prop] = edw_file.NA
 
-    # extract file and dataset accessionsfrom URLs in JSON
-    # NOTE: shouldn't 'accession' property of file JSON be the file's accession ?
-    # it's currently the dataset accession
+    # Extract file and dataset accessionsfrom URLs in JSON
     file_dict['accession'] = file_dict['@id'].split('/')[2]
     file_dict['dataset'] = file_dict['dataset'].split('/')[2]
 
@@ -150,7 +161,7 @@ def get_app_fileinfo(app, full=True, limit=0, exclude=None,
             if phase != edw_file.ENCODE_PHASE_ALL:
                 if get_phase(row, app) != phase:
                     continue
-            format_app_fileinfo(row, exclude=exclude)
+            format_app_fileinfo(app, row, exclude=exclude)
             app_files.append(row)
         else:
             app_files.append(row['accession'])

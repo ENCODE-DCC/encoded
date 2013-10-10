@@ -15,7 +15,7 @@ EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
 def test_app_file_show():
     assert(1 == 1)
 
-def test_format_app_fileinfo():
+def test_format_app_fileinfo(testapp):
     # Test extracting EDW-relevant fields from encoded file.json
     EDW_TEST_FILE = 'format_app_file_in.json'
 
@@ -23,7 +23,7 @@ def test_format_app_fileinfo():
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + EDW_TEST_FILE)
     file_dict = json.load(f)
 
-    encoded.commands.read_edw_fileinfo.format_app_fileinfo(file_dict)
+    encoded.commands.read_edw_fileinfo.format_app_fileinfo(testapp, file_dict)
 
     # compare results for identity with expected
     set_app = set(file_dict.items())
@@ -31,8 +31,8 @@ def test_format_app_fileinfo():
     assert len(set_edw ^ set_app) == 0
 
 
-def test_get_app_fileinfo(workbook, testapp):
-    app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
+#def test_get_app_fileinfo(workbook, testapp):
+    #app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
 
 
 #def test_new(workbook, app):
