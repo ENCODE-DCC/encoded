@@ -23,6 +23,8 @@ FILES_URL = '/files/'
 EXPERIMENTS_URL = '/experiments/'
 REPLICATES_URL = '/replicates/'
 
+verbose = False
+
 
 ################
 # Support functions to localize handling of special fields
@@ -39,6 +41,8 @@ FILE_EMBEDDED_PROPERTIES = {
 
 def format_app_fileinfo(app, file_dict, exclude=None):
     # Handle links and nested propeties
+    #if verbose:
+    sys.stderr.write('Found app file: %s\n' % (file_dict['accession'])) 
     for link_prop, dest_prop in FILE_EMBEDDED_PROPERTIES.iteritems():
         if link_prop in file_dict:
             prop = file_dict[link_prop]
@@ -253,6 +257,8 @@ def set_fileinfo_replicate(app, fileinfo):
             'biological_replicate_number': bio_rep_num,
             'technical_replicate_number': tech_rep_num
         }
+        #if verbose:
+        sys.stderr.write('....POST replicate %d for experiment %s\n' % (bio_rep_num, experiment))
         resp = app.post_json(REPLICATES_URL, rep)
         # WARNING: ad-hoc char conversion here
         rep_id = resp.json[unicode('@graph')][0][unicode('@id')]
@@ -265,6 +271,8 @@ def set_fileinfo_replicate(app, fileinfo):
 def post_fileinfo(app, fileinfo):
     # POST file info dictionary to open app
 
+    #if verbose:
+    sys.stderr.write('....POST file: %s\n' % (fileinfo['accession']))
     # Take care of replicate; may require creating one
     accession = fileinfo['accession']
     try:
@@ -273,23 +281,24 @@ def post_fileinfo(app, fileinfo):
         logging.warning('Failed POST File %s: Replicate error\n%s', accession, e)
         return
     resp = app.post_json(FILES_URL, post_fileinfo, expect_errors=True)
-    import pdb
     if resp.status_int == 409:
         logging.warning('Failed POST File %s: File already exists', accession)
     elif resp.status_int < 200 or resp.status_int >= 400:
         logging.warning('Failed POST File %s\n%s', accession, resp)
     else:
-        sys.stderr.write('Successful POST\n')
+        sys.stderr.write('Successful POST File: %s\n' % (accession))
 
 
 def put_fileinfo(app, fileinfo):
     # PUT changed file info to open app
 
+    #if verbose:
+    sys.stderr.write('....PUT file: %s\n' % (fileinfo['accession']))
     accession = fileinfo['accession']
     try:
         put_fileinfo = set_fileinfo_replicate(app, fileinfo)
         app.put_json(FILES_URL + accession, put_fileinfo)
-        sys.stderr.write('Successful PUT\n')
+        sys.stderr.write('Successful PUT File %s\n', (accession))
     except AppError as e:
         logging.warning('Failed PUT File %s\n%s', accession, e)
 
@@ -323,6 +332,7 @@ def show_app_fileinfo(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
 
 def show_new_fileinfo(app, edw, full=True, phase=edw_file.ENCODE_PHASE_ALL):
     # Show 'new' files: files in EDW having experiment accesion 
+
     if (full):
         sys.stderr.write('Showing new ENCODE %s files '
                          '(at EDW but not in app)\n' % (phase))
@@ -456,14 +466,18 @@ def main():
                    help='limit number of files to show; '
                         'for EDW, most recently submitted are listed first')
     parser.add_argument('-P', '--phase',  
-                choices=[edw_file.ENCODE_PHASE_2, edw_file.ENCODE_PHASE_3, edw_file.ENCODE_PHASE_ALL], 
-                default=edw_file.ENCODE_PHASE_ALL,
+                            choices=[edw_file.ENCODE_PHASE_2, 
+                                     edw_file.ENCODE_PHASE_3, 
+                                     edw_file.ENCODE_PHASE_ALL], 
+                            default=edw_file.ENCODE_PHASE_ALL,
                     help='restrict EDW files by ENCODE phase accs '
                          '(default %s)' % edw_file.ENCODE_PHASE_ALL),
     parser.add_argument('-exclude', '--exclude_props', nargs='+', 
                         help='for -c and -C, ignore excluded properties')
     #parser.add_argument('-x', '--experiment', action='store_true',
                     #help='for EDW, show only files having experiment accession')
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='verbose mode')
     parser.add_argument('-d', '--data_host', default=None,
                         help='data warehouse host (default from my.cnf)')
     parser.add_argument('-a', '--application', default=DEFAULT_INI,
@@ -474,6 +488,9 @@ def main():
                         help='HTTP password (secret_access_key)')
             
     args = parser.parse_args()
+
+    verbose = args.verbose
+    edw_file.verbose = verbose
 
     # CAUTION: fragile code here.  Should restructure with subcommands or
     #   custom action

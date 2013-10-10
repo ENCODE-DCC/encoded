@@ -40,12 +40,15 @@ NA = 'n/a'
 EDW_CONFIG = 'my.cnf'
 CHANGE_ME = 'CHANGEME'          # user/pass in .cfg file
 
+verbose = False
 
 ################
 # Support functions to localize handling of special fields
 # e.g. links, datetime
 
 def format_edw_fileinfo(file_dict, exclude=None):
+    if verbose:
+        sys.stderr.write('Found EDW file: %s\n' % (file_dict['accession']))
     valid_time = file_dict['date_created']
     file_dict['date_created'] = datetime.datetime.fromtimestamp(
         valid_time).strftime('%Y-%m-%d')
