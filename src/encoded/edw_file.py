@@ -29,7 +29,8 @@ FILE_INFO_FIELDS = [
     'submitted_file_name',
     'assembly',
     'md5sum',
-    'submitted_by'
+    'submitted_by',
+    'status'
 ]
 
 TECHNICAL_REPLICATE_NUM = 1     # always 1 for now (pending EDW changes)
@@ -49,13 +50,16 @@ def format_edw_fileinfo(file_dict, exclude=None):
     file_dict['date_created'] = datetime.datetime.fromtimestamp(
         valid_time).strftime('%Y-%m-%d')
         # TODO: should be isoformat() ?
+    if file_dict['status'] == '':
+        file_dict['status'] = 'CURRENT'
+    else:
+        file_dict['status'] = 'OBSOLETE'
     for prop in FILE_INFO_FIELDS:
         file_dict[prop] = unicode(file_dict[prop])
-    # not type-aware, so we need to force replicate to numeric
+        # not type-aware, so we need to force replicate to numeric
         if file_dict['replicate'] == 'pooled' or file_dict['replicate'] == '':
             file_dict['replicate'] = 0
         else:
-            #print "File: ", file_dict['accession'], " Replicate: ", file_dict['replicate']
             file_dict['replicate'] = int(file_dict['replicate'])
     if exclude:
         for prop in exclude:
@@ -192,7 +196,8 @@ def get_edw_fileinfo(edw, limit=None, experiment=True,
                     f.c.submitFileName.label('submitted_file_name'),
                     v.c.ucscDb.label('assembly'),
                     f.c.md5.label('md5sum'),
-                    u.c.email.label('submitted_by')])
+                    u.c.email.label('submitted_by'),
+                    f.c.deprecated.label('status')])
     query = query.where((v.c.fileId == f.c.id) &
               (s.c.id == f.c.submitId) &
               (u.c.id == s.c.userId))
