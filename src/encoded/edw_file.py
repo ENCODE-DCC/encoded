@@ -54,6 +54,9 @@ def format_edw_fileinfo(file_dict, exclude=None):
         file_dict['status'] = 'CURRENT'
     else:
         file_dict['status'] = 'OBSOLETE'
+    # hide assembly for fastQ's -- (EDW retains it to represent organism)
+    if file_dict['file_format'] in ['fasta', 'fastq']:
+        file_dict['assembly'] = NA
     for prop in FILE_INFO_FIELDS:
         file_dict[prop] = unicode(file_dict[prop])
         # not type-aware, so we need to force replicate to numeric

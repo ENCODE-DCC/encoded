@@ -73,7 +73,7 @@ def format_app_fileinfo(app, file_dict, exclude=None):
         if (prop not in edw_file.FILE_INFO_FIELDS) or (exclude and prop in exclude):
                 del file_dict[prop]
 
-    # Assembly can be missing
+    # Assembly can be missing (e.g. for fastQ's)
     if ('assembly' not in file_dict.keys()) and (exclude and 'assembly' not in exclude):
         file_dict['assembly'] = edw_file.NA
 
@@ -213,17 +213,31 @@ def get_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
 def set_fileinfo_replicate(app, fileinfo):
     # Obtain replicate identifier from open app
     # using experiment accession and replicate numbers
-    # Create the replicate if it doesn't exist
+    # Replicate 0 in fileinfo indicates there is none (e.g. pooled data)
+    # If non-zero, Create the replicate if it doesn't exist
 
+    # Clone to preserve input
+    new_fileinfo = copy.deepcopy(fileinfo)
+
+    # Check for no replicate
+    bio_rep_num = int(fileinfo['replicate'])
+    if (bio_rep_num == 0):
+        del new_fileinfo['replicate']
+        return new_fileinfo
+
+    # Also trim out irrelevant assembly
+    if new_fileinfo['assembly'] == edw_file.NA:
+        del new_fileinfo['assembly']
+
+    # Faking technical replicate for now
+    tech_rep_num = int(edw_file.TECHNICAL_REPLICATE_NUM) # TODO, needs EDW changes
     # Find experiment id
-    experiment = fileinfo['dataset']
+    experiment = new_fileinfo['dataset']
     resp = app.get(EXPERIMENTS_URL + experiment).maybe_follow()
     exp_id = resp.json['@id']
 
     # Check for existence of replicate
     reps = get_collection(app, REPLICATES_URL)
-    bio_rep_num = int(fileinfo['replicate'])
-    tech_rep_num = int(edw_file.TECHNICAL_REPLICATE_NUM) # TODO, needs EDW changes
     rep_id = None
     for rep in reps:
         if rep['experiment'] == exp_id and \
@@ -243,8 +257,7 @@ def set_fileinfo_replicate(app, fileinfo):
         # WARNING: ad-hoc char conversion here
         rep_id = resp.json[unicode('@graph')][0][unicode('@id')]
 
-    # Populate link to replicate
-    new_fileinfo = copy.deepcopy(fileinfo)
+    # Populate link to replicate, and clone to preserve input
     new_fileinfo['replicate'] = str(rep_id)
     return new_fileinfo
 
@@ -260,10 +273,13 @@ def post_fileinfo(app, fileinfo):
         logging.warning('Failed POST File %s: Replicate error\n%s', accession, e)
         return
     resp = app.post_json(FILES_URL, post_fileinfo, expect_errors=True)
+    import pdb
     if resp.status_int == 409:
         logging.warning('Failed POST File %s: File already exists', accession)
     elif resp.status_int < 200 or resp.status_int >= 400:
         logging.warning('Failed POST File %s\n%s', accession, resp)
+    else:
+        sys.stderr.write('Successful POST\n')
 
 
 def put_fileinfo(app, fileinfo):
@@ -271,8 +287,9 @@ def put_fileinfo(app, fileinfo):
 
     accession = fileinfo['accession']
     try:
-        putt_fileinfo = set_fileinfo_replicate(app, fileinfo)
+        put_fileinfo = set_fileinfo_replicate(app, fileinfo)
         app.put_json(FILES_URL + accession, put_fileinfo)
+        sys.stderr.write('Successful PUT\n')
     except AppError as e:
         logging.warning('Failed PUT File %s\n%s', accession, e)
 
