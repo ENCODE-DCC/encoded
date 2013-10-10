@@ -516,7 +516,7 @@ class Item(object):
         cls.update_properties(resource, properties, sheets)
         session.add(resource)
         self = cls(parent, resource)
-        new_keys = self.update_keys()
+        keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
             session.flush()
@@ -534,7 +534,7 @@ class Item(object):
         except (IntegrityError, FlushError):
             msg = 'UUID conflict'
             raise HTTPConflict(msg)
-        conflicts = self.check_duplicate_keys(new_keys)
+        conflicts = self.check_duplicate_keys(keys_add)
         self.update_properties(properties, sheets)
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
@@ -556,7 +556,7 @@ class Item(object):
         session = DBSession()
         sp = transaction.savepoint()
         self.update_properties(self.model, properties, sheets)
-        new_keys = self.update_keys()
+        keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
             session.flush()
@@ -572,7 +572,7 @@ class Item(object):
         except (IntegrityError, FlushError):
             msg = 'Properties conflict'
             raise HTTPConflict(msg)
-        conflicts = self.check_duplicate_keys(new_keys)
+        conflicts = self.check_duplicate_keys(keys_add)
         self.update_properties(self.model, properties, sheets)
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
@@ -605,7 +605,7 @@ class Item(object):
             key = Key(rid=self.uuid, name=name, value=value)
             session.add(key)
 
-        return to_add
+        return to_add, to_remove
 
     def check_duplicate_keys(self, keys):
         session = DBSession()
@@ -647,7 +647,7 @@ class Item(object):
             link = Link(source_rid=source, rel=rel, target_rid=target)
             session.add(link)
 
-        return to_add
+        return to_add, to_remove
 
 
 class CustomItemMeta(MergedTemplateMeta, ABCMeta):
