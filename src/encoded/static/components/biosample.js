@@ -30,6 +30,17 @@ function (biosample, React, URI, globals) {
                     construct_documents[doc['@id']] = Panel({context: doc});
                 });
             })
+            
+            // set up RNAi documents panels
+            var rnais = _.sortBy(context.rnais, function(item) {
+                return item.uuid; //may need to change
+            });
+            var rnai_documents = {};
+            rnais.forEach(function (rnai) {
+                rnai.documents.forEach(function (doc) {
+                    rnai_documents[doc['@id']] = Panel({context: doc});
+                });
+            })
 
             return (
                 <div class={itemClass}>
@@ -170,6 +181,11 @@ function (biosample, React, URI, globals) {
                     <div hidden={!Object.keys(construct_documents).length}>
                         <h3>Construct documents</h3>
                         {construct_documents}
+                    </div>
+                    
+                    <div hidden={!Object.keys(rnai_documents).length}>
+                        <h3>RNAi documents</h3>
+                        {rnai_documents}
                     </div>
                     
                 </div>
