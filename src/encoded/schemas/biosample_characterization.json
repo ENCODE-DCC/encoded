@@ -1,5 +1,5 @@
 {
-    "title": "Biosample Characterization",
+    "title": "Biosample characterization",
     "description": "Schema for submitting biosample characterization data",
     "id": "/profiles/construct_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -20,7 +20,7 @@
             "default": "2"
         },
         "characterizes": {
-            "title": "Biosample Characterized",
+            "title": "Biosample characterized",
             "comment": "See biosample.json for available identifiers.",
             "linkTo": "biosample"
         }

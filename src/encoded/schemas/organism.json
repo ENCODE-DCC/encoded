@@ -16,13 +16,13 @@
             "default": "1"
         },
         "name": {
-            "title": "Common Name",
+            "title": "Common name",
             "description": "A short unique name for the organism (e.g. 'mouse' or 'human').",
             "type": "string",
             "pattern": "^[a-z\\-]+$"
         },
         "scientific_name": {
-            "title": "Binomial Name",
+            "title": "Binomial name",
             "description": "The genus species for the organism (e.g. 'Mus musculus').",
             "type": "string",
             "default": ""

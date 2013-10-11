@@ -30,12 +30,12 @@
             ]
         },
         "protocols": {
-            "title": "Protocol Documents",
+            "title": "Protocol documents",
             "description": "Documents that describe the treatment protocol.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Protocol Document",
+                "title": "Protocol document",
                 "description": "A document that describes the treatment protocol.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
@@ -58,7 +58,7 @@
             "pattern": "^(CHEBI:[0-9]{5,6})|(UniprotKB:P[0-9]{5})|(Taxon:[0-9]{6})$"
         },
         "treatment_term_name": {
-            "title": "Term Name",
+            "title": "Term name",
             "description": "Ontology term describing a component in the treatment.",
             "type":  "string"
         },
@@ -67,7 +67,7 @@
             "type": "number"
         },
         "concentration_units": {
-            "title": "Concentration Units",
+            "title": "Concentration units",
             "type": "string",
             "enum": [
                 "pM",
@@ -85,7 +85,7 @@
             "type": "number"
         },
         "duration_units": {
-            "title": "Duration Units",
+            "title": "Duration units",
             "type": "string",
             "enum": [
                 "second",
