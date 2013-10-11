@@ -81,6 +81,10 @@
                     "lane": {
                         "title": "Lane",
                         "type": "string"
+                    },
+                    "barcode": {
+                        "title": "Barcode",
+                        "type": "string"
                     }
                 }
             }
