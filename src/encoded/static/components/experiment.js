@@ -94,8 +94,8 @@ function (experiment, React, globals, dbxref) {
                                 <DbxrefList values={context.encode2_dbxrefs} prefix="ENCODE2" />
                             </dd>
 
-                            <dt>Submitted by</dt>
-                            <dd>{context.submitted_by.title}</dd>
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
                             
                             <dt hidden={!context.aliases.length}>Aliases</dt>
                             <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
