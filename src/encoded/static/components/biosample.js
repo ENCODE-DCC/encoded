@@ -314,9 +314,9 @@ function (biosample, React, URI, globals) {
                     <dt hidden={!context.tags.length}>Tags</dt>
 					<dd hidden={!context.tags.length}>
 						<ul>
-							{context.tags.map(function (tag) {
+							{context.tags.map(function (tag, index) {
 								return (
-									<li key={tag['tag.name']}>
+									<li key={index}>
 										{tag.name} (Location: {tag.location})								
 									</li>
 								);
