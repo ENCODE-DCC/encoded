@@ -41,8 +41,9 @@ FILE_EMBEDDED_PROPERTIES = {
 
 def format_app_fileinfo(app, file_dict, exclude=None):
     # Handle links and nested propeties
-    #if verbose:
-    sys.stderr.write('Found app file: %s\n' % (file_dict['accession'])) 
+    global verbose
+    if verbose:
+        sys.stderr.write('Found app file: %s\n' % (file_dict['accession'])) 
     for link_prop, dest_prop in FILE_EMBEDDED_PROPERTIES.iteritems():
         if link_prop in file_dict:
             prop = file_dict[link_prop]
@@ -257,8 +258,9 @@ def set_fileinfo_replicate(app, fileinfo):
             'biological_replicate_number': bio_rep_num,
             'technical_replicate_number': tech_rep_num
         }
-        #if verbose:
-        sys.stderr.write('....POST replicate %d for experiment %s\n' % (bio_rep_num, experiment))
+        global verbose
+        if verbose:
+            sys.stderr.write('....POST replicate %d for experiment %s\n' % (bio_rep_num, experiment))
         resp = app.post_json(REPLICATES_URL, rep)
         # WARNING: ad-hoc char conversion here
         rep_id = resp.json[unicode('@graph')][0][unicode('@id')]
@@ -271,8 +273,9 @@ def set_fileinfo_replicate(app, fileinfo):
 def post_fileinfo(app, fileinfo):
     # POST file info dictionary to open app
 
-    #if verbose:
-    sys.stderr.write('....POST file: %s\n' % (fileinfo['accession']))
+    global verbose
+    if verbose:
+        sys.stderr.write('....POST file: %s\n' % (fileinfo['accession']))
     # Take care of replicate; may require creating one
     accession = fileinfo['accession']
     try:
@@ -292,8 +295,9 @@ def post_fileinfo(app, fileinfo):
 def put_fileinfo(app, fileinfo):
     # PUT changed file info to open app
 
-    #if verbose:
-    sys.stderr.write('....PUT file: %s\n' % (fileinfo['accession']))
+    global verbose
+    if verbose:
+        sys.stderr.write('....PUT file: %s\n' % (fileinfo['accession']))
     accession = fileinfo['accession']
     try:
         put_fileinfo = set_fileinfo_replicate(app, fileinfo)
@@ -489,6 +493,7 @@ def main():
             
     args = parser.parse_args()
 
+    global verbose
     verbose = args.verbose
     edw_file.verbose = verbose
 

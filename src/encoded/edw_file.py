@@ -47,6 +47,7 @@ verbose = False
 # e.g. links, datetime
 
 def format_edw_fileinfo(file_dict, exclude=None):
+    global verbose
     if verbose:
         sys.stderr.write('Found EDW file: %s\n' % (file_dict['accession']))
     valid_time = file_dict['date_created']
