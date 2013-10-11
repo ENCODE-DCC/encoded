@@ -33,7 +33,7 @@ class TestNamespacedAuthenticationPolicy(unittest.TestCase):
     def test_unauthenticated_userid(self):
         request = DummyRequest({'REMOTE_USER':'fred'})
         policy = self._makeOne()
-        self.assertEqual(policy.unauthenticated_userid(request), 'user:fred')
+        self.assertEqual(policy.unauthenticated_userid(request), 'user.fred')
 
     def test_authenticated_userid_None(self):
         request = DummyRequest({})
@@ -43,7 +43,7 @@ class TestNamespacedAuthenticationPolicy(unittest.TestCase):
     def test_authenticated_userid(self):
         request = DummyRequest({'REMOTE_USER':'fred'})
         policy = self._makeOne()
-        self.assertEqual(policy.authenticated_userid(request), 'user:fred')
+        self.assertEqual(policy.authenticated_userid(request), 'user.fred')
 
     def test_effective_principals_None(self):
         from pyramid.security import Everyone
@@ -57,7 +57,7 @@ class TestNamespacedAuthenticationPolicy(unittest.TestCase):
         request = DummyRequest({'REMOTE_USER':'fred'})
         policy = self._makeOne()
         self.assertEqual(policy.effective_principals(request),
-                         [Everyone, Authenticated, 'user:fred'])
+                         [Everyone, Authenticated, 'user.fred'])
 
     def test_remember(self):
         request = DummyRequest({'REMOTE_USER':'fred'})
@@ -78,10 +78,10 @@ class TestNamespacedAuthenticationPolicy(unittest.TestCase):
         policy = self._makeOne(
                     base='pyramid.authentication.SessionAuthenticationPolicy',
                     prefix='')
-        result = policy.remember(request, 'user:fred')
+        result = policy.remember(request, 'user.fred')
         self.assertEqual(request.session.get('userid'), 'fred')
         self.assertEqual(result, [])
-        self.assertEqual(policy.unauthenticated_userid(request), 'user:fred')
+        self.assertEqual(policy.unauthenticated_userid(request), 'user.fred')
 
     def test_session_forget(self):
         request = DummyRequest(session={'userid':'fred'})

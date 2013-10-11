@@ -85,7 +85,7 @@ def login(request):
     model = session.query(Key).get(('user:email', email))
     if model is None:
         raise LoginDenied()
-    login = 'mailto:' + email
+    login = 'mailto.' + email
     request.response.headerlist.extend(remember(request, login))
     return data
 
@@ -111,7 +111,7 @@ def session(context, request):
     if login is None:
         return result
 
-    namespace, userid = login.split(':', 1)
+    namespace, userid = login.split('.', 1)
     if namespace != 'mailto':
         raise HTTPForbidden()
 

@@ -2,6 +2,8 @@
 
 import transaction
 import venusian
+from abc import ABCMeta
+from collections import Mapping
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -365,6 +367,13 @@ class MergedTemplateMeta(type):
             if template is not None:
                 self.merged_template.update(template)
 
+
+class MergedKeysMeta(MergedTemplateMeta):
+    """ Merge the keys from the subclass with its bases
+    """
+    def __init__(self, name, bases, attrs):
+        super(MergedKeysMeta, self).__init__(name, bases, attrs)
+
         self.merged_keys = []
         for cls in reversed(self.mro()):
             for key in vars(cls).get('keys', []):
@@ -375,7 +384,7 @@ class MergedTemplateMeta(type):
 
 
 class Item(object):
-    __metaclass__ = MergedTemplateMeta
+    __metaclass__ = MergedKeysMeta
     base_types = ['item']
     keys = []
     name_key = None
@@ -507,7 +516,7 @@ class Item(object):
         cls.update_properties(resource, properties, sheets)
         session.add(resource)
         self = cls(parent, resource)
-        new_keys = self.update_keys()
+        keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
             session.flush()
@@ -525,7 +534,7 @@ class Item(object):
         except (IntegrityError, FlushError):
             msg = 'UUID conflict'
             raise HTTPConflict(msg)
-        conflicts = self.check_duplicate_keys(new_keys)
+        conflicts = self.check_duplicate_keys(keys_add)
         self.update_properties(properties, sheets)
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
@@ -547,7 +556,7 @@ class Item(object):
         session = DBSession()
         sp = transaction.savepoint()
         self.update_properties(self.model, properties, sheets)
-        new_keys = self.update_keys()
+        keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
             session.flush()
@@ -563,7 +572,7 @@ class Item(object):
         except (IntegrityError, FlushError):
             msg = 'Properties conflict'
             raise HTTPConflict(msg)
-        conflicts = self.check_duplicate_keys(new_keys)
+        conflicts = self.check_duplicate_keys(keys_add)
         self.update_properties(self.model, properties, sheets)
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
@@ -596,7 +605,7 @@ class Item(object):
             key = Key(rid=self.uuid, name=name, value=value)
             session.add(key)
 
-        return to_add
+        return to_add, to_remove
 
     def check_duplicate_keys(self, keys):
         session = DBSession()
@@ -638,10 +647,10 @@ class Item(object):
             link = Link(source_rid=source, rel=rel, target_rid=target)
             session.add(link)
 
-        return to_add
+        return to_add, to_remove
 
 
-class CustomItemMeta(MergedTemplateMeta):
+class CustomItemMeta(MergedTemplateMeta, ABCMeta):
     """ Give each collection its own Item class to enable
         specific view registration.
     """
@@ -667,7 +676,7 @@ class CustomItemMeta(MergedTemplateMeta):
         self.Item = type('Item', item_bases, item_attrs)
 
 
-class Collection(object):
+class Collection(Mapping):
     __metaclass__ = CustomItemMeta
     Item = Item
     schema = None
@@ -724,8 +733,20 @@ class Collection(object):
             raise KeyError(name)
         return item
 
-    def __contains__(self, name):
-        return self.get(name, None) is not None
+    def __iter__(self, limit=None):
+        session = DBSession()
+        query = session.query(Resource.rid).filter(
+            Resource.item_type == self.item_type
+        )
+        for rid, in query.limit(limit):
+            yield rid
+
+    def __len__(self):
+        session = DBSession()
+        query = session.query(Resource.rid).filter(
+            Resource.item_type == self.item_type
+        )
+        return query.count()
 
     def get(self, name, default=None):
         resource = self.get_by_uuid(name, None)

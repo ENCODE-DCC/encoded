@@ -72,9 +72,12 @@
     "submitted": {
         "date_created": {
             "title": "Date created",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS+00:00.",
             "type": "string",
-            "format": "date",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ],
             "serverDefault": "now",
             "permission": "import_items"
         },
