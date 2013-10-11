@@ -19,6 +19,18 @@ function (biosample, React, URI, globals) {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
             var aliasList = context.aliases.join(", ");
+            
+            // set up construct documents panels
+            var constructs = _.sortBy(context.constructs, function(item) {
+                return item.uuid;
+            });
+            var construct_documents = {};
+            constructs.forEach(function (construct) {
+                construct.documents.forEach(function (doc) {
+                    construct_documents[doc['@id']] = Panel({context: doc});
+                });
+            })
+
             return (
                 <div class={itemClass}>
                     <header class="row">
@@ -155,12 +167,10 @@ function (biosample, React, URI, globals) {
                         </div>
                     : null}
                     
-                    {context.constructs.length ?
-                        <div>
-                            <h3>Construct documents</h3>
-                            {context.characterizations.map(Panel)}
-                        </div>
-                    : null}
+                    <div hidden={!Object.keys(construct_documents).length}>
+                        <h3>Construct documents</h3>
+                        {construct_documents}
+                    </div>
                     
                 </div>
             );
