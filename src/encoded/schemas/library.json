@@ -154,6 +154,27 @@
             "description": "The preparation of the library using a strand-specific protocol.",
             "type": "boolean",
             "default": false
+        },
+        "depelted_in_term_name": {
+            "title": "Depeleted in term",
+            "description": "SO (Sequence Ontology) term best matching the nucleic acid that was diminished from the library.",
+            "type": "string",
+            "enum": [
+                "rRNA",
+                "polyadenylated mRNA",
+                "capped mRNA"
+            ]
+        },
+        "depleted_in_term_id": {
+            "title": "Depeleted in ID",
+            "description": "SO (Sequence Ontology) identifier best matching the nucleic acid that was diminished from the library.",
+            "comment": "Based on the choice in depleted_int_term_name use the following guide: rRNA - SO:0000252,  polyadenylated mRNA - SO:0000871 or capped mRNA - SO:0000862" ,
+            "type": "string",
+            "enum": [
+                "SO:0000252",
+                "SO:0000871",
+                "SO:0000862"
+            ]
         }
     }
 }
