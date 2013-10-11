@@ -19,10 +19,18 @@ def is_uuid(instance):
     return bool(uuid_re.match(instance))
 
 
-@FormatChecker.cls_checks("accession")
 def is_accession(instance):
     ''' just a pattern checker '''
     # Unfortunately we cannot access the accessionType here
+    return (
+        accession_re.match(instance) is not None or
+        test_accession_re.match(instance) is not None
+    )
+
+
+@FormatChecker.cls_checks("accession")
+def is_accession_for_server(instance):
+    # Unfortunately we cannot access the accessionType here    
     if accession_re.match(instance):
         return True
     request = get_current_request()
