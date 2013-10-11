@@ -1045,8 +1045,13 @@ def item_view(context, request):
 
 @view_config(context=Item, permission='edit', request_method='PUT',
              validators=[validate_item_content_put])
+@view_config(context=Item, permission='edit', request_method='PATCH',
+             validators=[validate_item_content_patch])
 def item_edit(context, request, render=True):
-    """ PUT replaces the current properties with the new body
+    """ This handles both PUT and PATCH, difference is the validator
+
+    PUT - replaces the current properties with the new body
+    PATCH - updates the current properties with those supplied.
     """
     properties = request.validated
     # This *sets* the property sheet
@@ -1056,31 +1061,6 @@ def item_edit(context, request, render=True):
         rendered = embed(request, item_uri + '?embed=false')
     else:
         rendered = item_uri
-    request.response.status = 200
-    result = {
-        'status': 'success',
-        '@type': ['result'],
-        '@graph': [rendered],
-    }
-    return result
-
-
-@view_config(context=Item, permission='edit', request_method='PATCH',
-             validators=[validate_item_content_patch])
-def item_patch(context, request):
-    """ PATCH updates the current properties with those supplied.
-    """
-    # Ideally default values would not be added into request.validated.
-    supplied = request.json
-    patch = {
-        k: v for k, v in request.validated.iteritems()
-        if k in supplied or k == 'schema_version'
-    }
-    new_props = context.properties.copy()
-    new_props.update(patch)
-    context.update(new_props)
-    item_uri = request.resource_path(context)
-    rendered = embed(request, item_uri + '?embed=false')
     request.response.status = 200
     result = {
         'status': 'success',
