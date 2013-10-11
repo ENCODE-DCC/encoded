@@ -18,6 +18,30 @@ function (biosample, React, URI, globals) {
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
+            var aliasList = context.aliases.join(", ");
+            
+            // set up construct documents panels
+            var constructs = _.sortBy(context.constructs, function(item) {
+                return item.uuid;
+            });
+            var construct_documents = {};
+            constructs.forEach(function (construct) {
+                construct.documents.forEach(function (doc) {
+                    construct_documents[doc['@id']] = Panel({context: doc});
+                });
+            })
+            
+            // set up RNAi documents panels
+            var rnais = _.sortBy(context.rnais, function(item) {
+                return item.uuid; //may need to change
+            });
+            var rnai_documents = {};
+            rnais.forEach(function (rnai) {
+                rnai.documents.forEach(function (doc) {
+                    rnai_documents[doc['@id']] = Panel({context: doc});
+                });
+            })
+
             return (
                 <div class={itemClass}>
                     <header class="row">
@@ -39,10 +63,10 @@ function (biosample, React, URI, globals) {
 
                             <dt>Term ID</dt>
                             <dd>{context.biosample_term_id}</dd>
-
+                            
                             <dt hidden={!context.description}>Description</dt>
                             <dd hidden={!context.description}>{context.description}</dd>
-
+                            
                             <dt>Source</dt>
                             <dd><a href={context.source.url}>{context.source.title}</a></dd>
 
@@ -60,6 +84,9 @@ function (biosample, React, URI, globals) {
 
                             <dt>Lab</dt>
                             <dd>{context.lab.title}</dd>
+                            
+                            <dt hidden={!context.aliases.length}>Aliases</dt>
+                            <dd hidden={!context.aliases.length}>{aliasList}</dd>
 
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
@@ -68,12 +95,46 @@ function (biosample, React, URI, globals) {
                             <dd hidden={!context.note}>{context.note}</dd>
 
                         </dl>
-
+                        
                         {(context.donor && (context.biosample_type != "immortalized cell line")) ?
                             <section>
                                 <hr />
                                 <h4>Donor information</h4>
                                 <Panel context={context.donor} biosample={context} />
+                            </section>
+                        : null}
+                        
+                         {context.derived_from.length ?
+                            <section>
+                                <hr />
+                                <h4>Derived from biosamples</h4>
+                                <ul class="non-dl-list">
+									{context.derived_from.map(function (biosample) {
+										return (
+											<li key={biosample['@id']}>
+												<a href={biosample['@id']}>{biosample.accession}</a>								
+											</li>
+										);
+									})}
+								</ul>
+                                
+                            </section>
+                        : null}
+                        
+                        {context.pooled_from.length ?
+                            <section>
+                                <hr />
+                                <h4>Pooled from biosamples</h4>
+                                <ul class="non-dl-list">
+									{context.pooled_from.map(function (biosample) {
+										return (
+											<li key={biosample['@id']}>
+												<a href={biosample['@id']}>{biosample.accession}</a>								
+											</li>
+										);
+									})}
+								</ul>
+                                
                             </section>
                         : null}
 
@@ -92,6 +153,14 @@ function (biosample, React, URI, globals) {
                                 {context.constructs.map(Panel)}
                             </section>
                         : null}
+                        
+                    	{context.rnais.length ?
+                            <section>
+                                <hr />
+                                <h4>RNAi details</h4>
+                                {context.rnais.map(Panel)}
+                            </section>
+                        : null}
 
                     </div>
 
@@ -108,21 +177,17 @@ function (biosample, React, URI, globals) {
                             {context.characterizations.map(Panel)}
                         </div>
                     : null}
-
-                    <h3 hidden={!context.related_biosample_uuid}>Related biosamples</h3>
-                    {context.derived_from.length ?
-                        <div class="panel data-display">
-                            <h4>Derived from biosamples</h4>
-                            <ul class="multi-value">{context.derived_from.map(function (biosample) {
-                                return (
-                                    <li key={biosample['@id']}>
-                                        <a href={biosample['@id']}>{biosample.accession}</a>
-                                    </li>
-                                );
-                            })}
-                           </ul>
-                        </div>
-                    : null}
+                    
+                    <div hidden={!Object.keys(construct_documents).length}>
+                        <h3>Construct documents</h3>
+                        {construct_documents}
+                    </div>
+                    
+                    <div hidden={!Object.keys(rnai_documents).length}>
+                        <h3>RNAi documents</h3>
+                        {rnai_documents}
+                    </div>
+                    
                 </div>
             );
         }
@@ -140,7 +205,7 @@ function (biosample, React, URI, globals) {
             );
         }
     };
-
+	
     var HumanDonor = biosample.HumanDonor = React.createClass({
         render: function() {
             var context = this.props.context;
@@ -149,6 +214,9 @@ function (biosample, React, URI, globals) {
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
+                    
+                    <dt hidden={!context.aliases.length}>Aliases</dt>
+                    <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -183,6 +251,9 @@ function (biosample, React, URI, globals) {
                 <dl class="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
+                    
+                    <dt hidden={!context.aliases.length}>Aliases</dt>
+                    <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -255,7 +326,21 @@ function (biosample, React, URI, globals) {
 
                    	{context.description ?  <dt>Description</dt> : null}
                     {context.description ? <dd>{context.description}</dd> : null}
+                    
+                    <dt hidden={!context.tags.length}>Tags</dt>
+					<dd hidden={!context.tags.length}>
+						<ul>
+							{context.tags.map(function (tag, index) {
+								return (
+									<li key={index}>
+										{tag.name} (Location: {tag.location})								
+									</li>
+								);
+							})}
+						</ul>
+                    </dd>
 
+                    
                     {context.source.title ? <dt>Source</dt> : null}
                     {context.source.title ? <dd>{context.source.title}</dd> : null}
 
@@ -267,6 +352,36 @@ function (biosample, React, URI, globals) {
     });
 
     globals.panel_views.register(Construct, 'construct');
+    
+    
+    var RNAi = biosample.RNAi = React.createClass({
+        render: function() {
+            var context = this.props.context;
+            return (
+                <dl class="key-value">
+                	{context.rnai_type ? <dt>RNAi type</dt> : null}
+                    {context.rnai_type ? <dd class="no-cap">{context.rnai_type}</dd> : null}
+                    
+                    {context.product_id ? <dt>Product ID</dt> : null}
+                    {context.product_id ? <dd class="no-cap">{context.product_id}</dd> : null}
+                    
+                    {context.target ? <dt>Target</dt> : null}
+                    {context.target ? <dd class="no-cap"><a href={context.target}>{context.target}</a></dd> : null}
+                    
+                    {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
+                    {context.rnai_target_sequence ? <dd class="no-cap">{context.rnai_target_sequence}</dd> : null}
+                    
+                    {context.vector_backbone_name ? <dt>Vector backbone</dt> : null}
+                    {context.vector_backbone_name ? <dd class="no-cap">{context.vector_backbone_name}</dd> : null}
+
+                    {context.source.title ? <dt>Source</dt> : null}
+                    {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
+                </dl>
+            );
+        }
+    });
+
+    globals.panel_views.register(RNAi, 'rnai');
 
 
     var Document = biosample.Document = React.createClass({
