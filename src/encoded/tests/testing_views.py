@@ -158,7 +158,8 @@ class TestingServerDefault(Collection):
             },
             'accession': {
                 'serverDefault': 'accession',
-                'accessionType': 'XX',
+                'accessionType': 'AB',
+                'format': 'accession',
             },
         }
     }

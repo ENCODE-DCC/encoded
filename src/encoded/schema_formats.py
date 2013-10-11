@@ -1,9 +1,15 @@
 import re
 import rfc3987
 from jsonschema import FormatChecker
+from pyramid.threadlocal import get_current_request
+from .server_defaults import (
+    ACCESSION_FACTORY,
+    test_accession,
+)
 from uuid import UUID
 
 accession_re = re.compile(r'^ENC(FF|SR|AB|BS|DO|LB)[0-9][0-9][0-9][A-Z][A-Z][A-Z]$')
+test_accession_re = re.compile(r'^TST(FF|SR|AB|BS|DO|LB)[0-9][0-9][0-9][0-9][0-9][0-9]$')
 uuid_re = re.compile(r'(?i)\{?(?:[0-9a-f]{4}-?){8}\}?')
 
 @FormatChecker.cls_checks("uuid")
@@ -16,7 +22,14 @@ def is_uuid(instance):
 @FormatChecker.cls_checks("accession")
 def is_accession(instance):
     ''' just a pattern checker '''
-    return bool(accession_re.match(instance))
+    # Unfortunately we cannot access the accessionType here
+    if accession_re.match(instance):
+        return True
+    request = get_current_request()
+    if request.registry[ACCESSION_FACTORY] is test_accession:
+        if test_accession_re.match(instance):
+            return True
+    return False
 
 
 @FormatChecker.cls_checks("gene_name")
