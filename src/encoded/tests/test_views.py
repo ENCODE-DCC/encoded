@@ -161,13 +161,15 @@ def test_users_post(users, anontestapp):
     res = anontestapp.get('/@@testing-user',
                           extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
-        'group:admin',
-        'lab:cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
-        'remoteuser:%s' % email,
-        'submits_for:cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
+        'group.admin',
+        'group.programmer',
+        'group.submitter',
+        'lab.cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
+        'remoteuser.%s' % email,
+        'submits_for.cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
         'system.Authenticated',
         'system.Everyone',
-        'userid:e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
+        'userid.e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
     ]
 
 

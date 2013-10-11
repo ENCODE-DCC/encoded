@@ -32,14 +32,15 @@ def userid(property, subschema):
     request = get_current_request()
     principals = effective_principals(request)
     for principal in principals:
-        if principal.startswith('userid:'):
+        if principal.startswith('userid.'):
             return principal[7:]
     return NO_DEFAULT
 
 
 @server_default
 def now(property, subschema):
-    return datetime.now().isoformat()
+    # jsonschema date-time format requires a timezone
+    return datetime.utcnow().isoformat() + '+00:00'
 
 
 @server_default

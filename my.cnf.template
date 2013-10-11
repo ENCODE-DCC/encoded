@@ -1,0 +1,8 @@
+# Configuration file for ENCODE Data Warehouse access
+
+[mysql]
+host = encodedcc.sdsc.edu
+db = encodeDataWarehouse
+user = ChangeMe
+password = ChangeMe
+

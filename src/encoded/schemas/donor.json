@@ -73,13 +73,13 @@
             }
         },
         "fraternal_twin": {
-            "title": "Fraternal Twin",
+            "title": "Fraternal twin",
             "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
             "type": "string",
             "linkTo": "donor"
         },
         "identical_twin": {
-            "title": "Identical Twin",
+            "title": "Identical twin",
             "description": "A donor that have identical genetic material.",
             "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
             "type": "string",

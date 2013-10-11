@@ -1,5 +1,5 @@
 {
-    "title": "Base Characterization",
+    "title": "Base characterization",
     "description": "Schema for submitting a characterization of an object.",
     "id": "/profiles/characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -73,7 +73,7 @@
             }
         },
         "status": {
-            "title": "Approval Status",
+            "title": "Approval status",
             "description": "The current state of the characterization.",
             "comment": "Do not submit, value is assigned by the DCC.",
             "type": "string",
