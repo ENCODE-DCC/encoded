@@ -73,7 +73,10 @@
                 "pM",
                 "nM",
                 "μM",
+                "μg/mL",
                 "mM",
+                "mg/mL",
+                "M",
                 "percent"
             ]
         },
