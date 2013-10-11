@@ -18,12 +18,12 @@
             "default": "1"
         },
         "dbxref": {
-            "title": "External Identifiers",
+            "title": "External identifiers",
             "description": "Unique identifiers from external resources (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
 	"type": "array",
             "default": [],
             "items": {
-                "title": "External Identifier",
+                "title": "External identifier",
                 "description": "A unique identifier from external resource (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
                 "comment": "Submit as database name:target name (e.g. HGNC:HMFN0395, GeneID:22809)",
                 "type":  "string"
@@ -37,14 +37,14 @@
             "linkTo": "organism"
         },
         "gene_name": {
-            "title": "Gene Name",
+            "title": "Gene name",
             "description": "HGNC or MGI identifier for the target.",
             "comment": "Submit only the identifier (e.g. HMFN0395 or 22809).",
             "type": "string",
             "format": "gene_name"
         },
         "label": {
-            "title": "Common Name with Modification",
+            "title": "Common name with modification",
             "description": "Common name for the target including post-translational modifications, if any.",
             "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",

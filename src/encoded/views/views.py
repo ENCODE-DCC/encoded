@@ -166,7 +166,7 @@ class Source(Collection):
 class DonorItem(Collection.Item):
     base_types = ['donor'] + Collection.Item.base_types
     embedded = set(['organism'])
-    item_name_key = 'accession'
+    name_key = 'accession'
     keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
@@ -216,7 +216,7 @@ class Construct(Collection):
         'description': 'Listing of Biosample Constructs',
     }
     item_embedded = set(['source', 'documents', 'characterizations', 'target'])
-    # item_keys = ['vector_name']
+    item_keys = ALIAS_KEYS  # ['vector_name']
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }

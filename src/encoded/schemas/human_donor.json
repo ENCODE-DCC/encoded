@@ -1,5 +1,5 @@
 {
-    "title": "Human Donor",
+    "title": "Human donor",
     "description": "Schema for submitting a human donor.",
     "id": "/profiles/human_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",

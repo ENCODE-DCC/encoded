@@ -95,7 +95,8 @@ def access_key_reset_secret(context, request):
     password = generate_password()
     new_hash = crypt_context.encrypt(password)
     request.validated['secret_access_key_hash'] = new_hash
-    result = item_edit(context, request)
+    # Don't embed the access_key as the subsequent inclusion will fail
+    result = item_edit(context, request, render=False)
     result['secret_access_key'] = password
     return result
 
@@ -107,7 +108,7 @@ def access_key_disable_secret(context, request):
     crypt_context = request.registry[CRYPT_CONTEXT]
     new_hash = crypt_context.encrypt('', scheme='unix_disabled')
     request.validated['secret_access_key_hash'] = new_hash
-    result = item_edit(context, request)
+    result = item_edit(context, request, render=False)
     result['secret_access_key'] = None
     return result
 
