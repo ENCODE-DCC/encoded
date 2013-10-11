@@ -9,12 +9,10 @@
 # >>> x = json.dumps(dict, indent=4, separators=(',', ': '))
 #>>> print x
 
-format_app_file_out = [
-# 1
-{u'submitted_by': u'someone@gmail.com', u'file_format': u'fastq', u'md5sum': u'aeaea56e89ecb5acceece72f17d75717', u'accession': u'ENCFF001QZP', u'dataset': u'ENCSR000AAA', u'download_path': u'2013/5/9/ENCFF001QZP.txt.gz', u'replicate': 1, u'date_created': u'2013-05-09', u'output_type': u'reads2', u'submitted_file_name': u'../../../../pre-DCC/wgEncodeCshlLongRnaSeq/20130218_promocell_batches1-2_minus_batch1sFASTQ/SID38242_AC1GKKACXX_7_2.txt.gz', u'status': u'CURRENT'},
-# 2
-{u'submitted_by': u'risus.fermentum@vel.at', u'file_format': u'fastq', u'md5sum': u'de9e05ad88fea5664f1c5d90815df358', u'accession': u'ENCFF001REQ', u'dataset': u'ENCSR000AES', u'download_path': u'2013/6/14/ENCFF001REQ.txt.gz', u'replicate': 1, u'output_type': u'reads', u'date_created': u'2013-06-14', u'submitted_file_name': u'SID38822_AC1HYAACXX_5.txt.gz', u'status': u'CURRENT'}
-]
+format_app_file_out = {
+u'status': u'CURRENT', u'submitted_by': u'risus.fermentum@vel.at', u'file_format': u'fastq', u'md5sum': u'f73b8010630a28fe9ac1f93155a46e8b', u'accession': u'ENCFF001RET', u'dataset': u'ENCSR000AER', u'download_path': u'2013/6/14/ENCFF001RET.txt.gz', u'replicate': 1, u'output_type': u'reads1', u'date_created': u'2013-06-14', u'submitted_file_name': u'SID38815_AC1UHYACXX_7_1.txt.gz'
+}
+
 
 # test_list_new 
 # input is list of some accessions in test data set, and some not (the ZZZ's)
