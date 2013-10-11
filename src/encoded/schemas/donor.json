@@ -97,6 +97,11 @@
             "description": "An external resource with additional information about the donor.",
             "type": "string",
             "format": "uri"
+        },
+        "note": {
+            "title": "Note",
+            "description": "Additional information pertaining to the donor.",
+            "type": "string"
         }
     }
 }
