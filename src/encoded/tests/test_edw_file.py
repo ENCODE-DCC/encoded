@@ -30,7 +30,7 @@ def test_format_app_fileinfo_expanded(testapp):
     # compare results for identity with expected
     set_app = set(file_dict.items())
     set_edw = set(edw_test_data.format_app_file_out[test_num-1].items())
-    assert len(set_edw ^ set_app) == 0
+    assert set_app == set_edw
 
 
 def test_format_app_fileinfo_embedded(workbook, testapp):
@@ -49,7 +49,7 @@ def test_format_app_fileinfo_embedded(workbook, testapp):
     # compare results for identity with expected
     set_app = set(file_dict.items())
     set_edw = set(edw_test_data.format_app_file_out[test_num-1].items())
-    assert len(set_edw ^ set_app) == 0
+    assert set_app == set_edw
 
 
 def test_list_new(workbook, testapp):
@@ -84,6 +84,6 @@ def test_import_file(workbook, testapp):
         unidict = {k.decode('utf8'): v.decode('utf8') for k, v in fileinfo.items()}
         unidict['replicate'] = int(unidict['replicate'])
         set_in = set(unidict.items())
-        assert len(set_in ^ set_out) == 0
+        assert set_in == set_out
 
 
