@@ -1,5 +1,5 @@
 {
-    "title": "DNA Construct Characterization",
+    "title": "DNA construct characterization",
     "description": "Schema for submitting DNA construct characterization data.",
     "id": "/profiles/construct_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -21,7 +21,7 @@
             "default": "2"
         },
         "characterizes": {
-            "title": "Construct Characterized",
+            "title": "Construct characterized",
             "comment": "See contstruct.json for available identifiers.",
             "linkTo": "construct"
         }

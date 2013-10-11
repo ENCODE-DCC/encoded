@@ -20,12 +20,12 @@
             "format": "email"
         },
         "first_name": {
-            "title": "First Name",
+            "title": "First name",
             "description": "The user's first (given) name.",
             "type": "string"
         },
         "last_name": {
-            "title": "Last Name",
+            "title": "Last name",
             "description": "The user's last (family) name.",
             "type": "string"
         },
@@ -37,7 +37,7 @@
             "linkTo": "lab"
         },
         "submits_for": {
-            "title": "Submits For",
+            "title": "Submits for",
             "description": "Labs user is authorized to submit data for.",
             "type": "array",
             "default": [],
@@ -70,23 +70,23 @@
             ]
         },
         "job_title": {
-            "title": "Job Title",
+            "title": "Job title",
             "type": "string"
         },
         "phone1": {
-            "title": "Primary Phone Number",
+            "title": "Primary phone number",
             "description": "The user's primary phone number (with country code).",
             "type": "string",
             "format": "phone"
         },
         "phone2": {
-            "title": "Alternate Phone Number",
+            "title": "Alternate phone number",
             "description": "The user's secondary phone number (with country code).",
             "type": "string",
             "format": "phone"
         },
         "fax": {
-            "title": "Fax Number",
+            "title": "Fax number",
             "description": "A FAX number for the user (with country code).",
             "type": "string",
             "format": "phone"

@@ -1,5 +1,5 @@
 {
-    "title": "Admin Access key",
+    "title": "Admin access key",
     "id": "/profiles/access_key_admin.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "required": [],
@@ -25,13 +25,13 @@
             "default": ""
         },
         "access_key_id": {
-            "title": "Access Key ID",
+            "title": "Access key ID",
             "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "permission": "import_items"
         },
         "secret_access_key_hash": {
-            "title": "Secret Access Key Hash",
+            "title": "Secret access key Hash",
             "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "permission": "import_items"

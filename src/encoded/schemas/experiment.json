@@ -41,7 +41,7 @@
             "linkTo": "target"
         },
         "assay_term_name": {
-            "title": "Assay Name",
+            "title": "Assay name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "default": "",
             "type":  "string"
@@ -97,7 +97,7 @@
             "type": "array",
             "default": [],
             "items": {
-                "title": "Data File",
+                "title": "Data file",
                 "comment": "See file.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "file"
