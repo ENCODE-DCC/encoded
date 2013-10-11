@@ -99,6 +99,12 @@ class TestingPostPutPatch(Collection):
         'required': ['required'],
         'type': 'object',
         'properties': {
+            "schema_version": {
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d+)*$",
+                "requestMethod": [],
+                "default": "1",
+            },
             "uuid": {
                 "title": "UUID",
                 "description": "",

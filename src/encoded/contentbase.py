@@ -165,6 +165,8 @@ def validate_item_content_put(context, request):
 
 def validate_item_content_patch(context, request):
     data = context.properties.copy()
+    if 'schema_version' in data:
+        del data['schema_version']
     data.update(request.json)
     schema = context.schema
     if schema is None:
@@ -1071,7 +1073,8 @@ def item_patch(context, request):
     # Ideally default values would not be added into request.validated.
     supplied = request.json
     patch = {
-        k: v for k, v in request.validated.iteritems() if k in supplied
+        k: v for k, v in request.validated.iteritems()
+        if k in supplied or k == 'schema_version'
     }
     new_props = context.properties.copy()
     new_props.update(patch)
