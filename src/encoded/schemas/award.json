@@ -30,13 +30,13 @@
             "default": ""
         },
         "start_date": {
-            "title": "Start Date",
+            "title": "Start date",
             "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
         },
         "end_date": {
-            "title": "End Date",
+            "title": "End date",
              "comment": "Date can be submitted as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"

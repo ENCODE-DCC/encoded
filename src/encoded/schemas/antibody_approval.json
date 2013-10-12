@@ -1,5 +1,5 @@
 {
-    "title": "Antibody Lot Review",
+    "title": "Antibody lot review",
     "description": "Schema for submitting antibody lot review for application in immunoprecipitation assays.",
     "id": "/profiles/antibody_approval.json",
     "$schema": "http://json-schema.org/draft-04/schema#",

@@ -154,6 +154,7 @@ def read_single_sheet(path, name=None):
     """ Read an xlsx, csv or tsv from a zipfile or directory
     """
     from zipfile import ZipFile
+    import xlreader
 
     if name is None:
         root, ext = os.path.splitext(path)

@@ -9,9 +9,7 @@
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/standard_status" }
     ],
     "properties": {
         "schema_version": {
@@ -49,7 +47,7 @@
             }
         },
         "institute_label": {
-            "title": "Institute Label",
+            "title": "Institute label",
             "description": "An abbreviation for the institute the lab is associated with.",
             "type": "string",
             "default": ""
@@ -61,12 +59,12 @@
             "default": ""
         },
         "address1": {
-            "title": "Address Line 1",
+            "title": "Address line 1",
             "type": "string",
             "default": ""
         },
         "address2": {
-            "title": "Address Line 2",
+            "title": "Address line 2",
             "type": "string"
         },
         "city": {
@@ -85,27 +83,27 @@
             "default": ""
         },
         "postal_code": {
-            "title": "ZIP/Postal Code",
+            "title": "ZIP/Postal code",
             "type": "string",
             "default": "",
             "format": "postal-code"
         },
         "fax": {
-            "title": "Fax Number",
+            "title": "Fax number",
             "description":"A fax number for the lab (with country code).",
             "type": "string",
             "default": "",
             "format": "phone"
         },
         "phone1": {
-            "title": "Primary Phone Number",
+            "title": "Primary phone number",
             "description": "The lab's primary phone number (with country code).",
             "type": "string",
             "default": "",
             "format": "phone"
         },
         "phone2": {
-            "title": "Alternate Phone Number",
+            "title": "Alternate phone number",
             "description": "The lab's alternative phone number (with country code).",
             "type": "string",
             "default": "",

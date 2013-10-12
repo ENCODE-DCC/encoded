@@ -1,5 +1,5 @@
 {
-    "title": "Data File",
+    "title": "Data file",
     "description": "Schema for submitting metadata for a data file.",
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -18,7 +18,7 @@
             "default": "1"
         },
         "file_format": {
-            "title": "File Format",
+            "title": "File format",
             "comment": "Not all of the types are valid for new submissions, but are present for historical purposes.",
             "type": "string",
             "XXXenum": [
@@ -53,7 +53,7 @@
             "format": "hex"
         },
         "output_type": {
-            "title": "Output Type",
+            "title": "Output type",
             "description": "A description of the file's purpose or contents.",
             "type": "string",
             "XXXenum": [
@@ -86,14 +86,14 @@
             "XXXlinkTo": "software"
         },
         "assembly": {
-            "title": "Mapping Assembly",
+            "title": "Mapping assembly",
             "description": "UCSC genome assembly that files were mapped to.",
             "comment": "Applies for mapped files (e.g. BAM, BED and BigWig).",
             "type": "string",
             "enum": ["mm9", "hg19", "n/a"]
         },
         "submitted_file_name": {
-            "title": "Original File Name",
+            "title": "Original file name",
             "description": "The local file name used at time of submission.",
             "type": "string"
         },

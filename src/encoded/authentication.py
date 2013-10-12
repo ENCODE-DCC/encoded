@@ -47,7 +47,7 @@ class NamespacedAuthenticationPolicy(object):
 
     Example
 
-    To make a ``REMOTE_USER`` 'admin' be 'user:admin'
+    To make a ``REMOTE_USER`` 'admin' be 'user.admin'
 
     .. code-block:: python
 
@@ -61,7 +61,7 @@ class NamespacedAuthenticationPolicy(object):
         base = name_resolver.maybe_resolve(base)
         # Dynamically create a subclass
         name = 'Namespaced_%s_%s' % (namespace, base.__name__)
-        klass = type(name, (cls, base), {'_namespace_prefix': namespace + ':'})
+        klass = type(name, (cls, base), {'_namespace_prefix': namespace + '.'})
         return super(NamespacedAuthenticationPolicy, klass) \
             .__new__(klass, *args, **kw)
 
@@ -113,7 +113,7 @@ def basic_auth_check(username, password, request):
     #if new_hash:
     #    replace_user_hash(user, new_hash)
 
-    principals = ['userid:' + properties['user']]
+    principals = ['userid.' + properties['user']]
 
     return principals
 

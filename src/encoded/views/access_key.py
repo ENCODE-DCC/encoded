@@ -41,7 +41,8 @@ class AccessKey(Collection):
     __acl__ = [
         (Allow, Authenticated, 'traverse'),
         (Deny, Everyone, 'traverse'),
-        (Allow, 'group:admin', 'view'),
+        (Allow, 'role.owner', ['edit', 'view']),
+        (Allow, 'group.admin', 'view'),
         (Deny, Everyone, 'view'),
     ]
 
@@ -49,12 +50,9 @@ class AccessKey(Collection):
         keys = ['access_key_id']
         name_key = 'access_key_id'
 
-        def __acl__(self):
-            owner = 'userid:%s' % self.properties['user']
-            return [
-                (Allow, owner, 'edit'),
-                (Allow, owner, 'view'),
-            ]
+        def __ac_local_roles__(self):
+            owner = 'userid.%s' % self.properties['user']
+            return {owner: 'role.owner'}
 
 
 @view_config(context=AccessKey, permission='add', request_method='POST',
@@ -67,9 +65,9 @@ def access_key_add(context, request):
 
     if 'user' not in request.validated:
         request.validated['user'], = [
-            principal.split(':', 1)[1]
+            principal.split('.', 1)[1]
             for principal in effective_principals(request)
-            if principal.startswith('userid:')
+            if principal.startswith('userid.')
         ]
 
     password = None
@@ -97,7 +95,8 @@ def access_key_reset_secret(context, request):
     password = generate_password()
     new_hash = crypt_context.encrypt(password)
     request.validated['secret_access_key_hash'] = new_hash
-    result = item_edit(context, request)
+    # Don't embed the access_key as the subsequent inclusion will fail
+    result = item_edit(context, request, render=False)
     result['secret_access_key'] = password
     return result
 
@@ -109,7 +108,7 @@ def access_key_disable_secret(context, request):
     crypt_context = request.registry[CRYPT_CONTEXT]
     new_hash = crypt_context.encrypt('', scheme='unix_disabled')
     request.validated['secret_access_key_hash'] = new_hash
-    result = item_edit(context, request)
+    result = item_edit(context, request, render=False)
     result['secret_access_key'] = None
     return result
 

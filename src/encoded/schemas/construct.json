@@ -1,5 +1,5 @@
 {
-    "title": "DNA Construct",
+    "title": "DNA construct",
     "description": "Schema for submitting an expression or targeting vector stably or transiently transfected.",
     "id": "/profiles/construct.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -14,7 +14,6 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/source" }
     ],
@@ -51,12 +50,12 @@
             "linkTo": "target"
         },
         "tags": {
-            "title": "Protein Tags",
+            "title": "Protein tags",
             "description": "Recombinant tags in the construct.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Protein Tag",
+                "title": "Protein tag",
                 "description": "Recombinant tag in the construct.",
                 "comment": "Submit tag name and tag location.",
                 "type": "object",
@@ -92,12 +91,12 @@
             "type": "string"
         },
         "documents": {
-            "title": "Construct Documents",
+            "title": "Construct documents",
             "description": "Documents that describe the construct.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Construct Document",
+                "title": "Construct document",
                 "description": "Document that describes the construct.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
@@ -105,7 +104,7 @@
             }
         },
         "genomic_integration_site": {
-            "title": "Integration Site",
+            "title": "Integration site",
             "description": "Genomic coordinates where construct is integrated, if known. Use NCBI assembly version:chromosome number:5' nucleotide position (e.g. GRCh37:21:3393939).",
             "comment": "TODO",
             "type": "string",
@@ -119,7 +118,7 @@
             "requestMethod": []
         },
         "insert_genome_coordinates": {
-            "title": "Insert Genome Coordinates",
+            "title": "Insert genome coordinates",
             "description": "Genomic coordinates of the insert. Use NCBI assembly version:chromosome number:nucleotide range (e.g. GRCh37:15:2800021-28344458).",
             "comment": "TODO",
             "type": "string",

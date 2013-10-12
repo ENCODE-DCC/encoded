@@ -84,7 +84,7 @@ def choose_format(event):
             raise CSRFTokenError('Incorrect CSRF token')
         login = authenticated_userid(request)
         if login is not None:
-            namespace, userid = login.split(':', 1)
+            namespace, userid = login.split('.', 1)
             if namespace != 'mailto':
                 return
         raise CSRFTokenError('Missing CSRF token')
