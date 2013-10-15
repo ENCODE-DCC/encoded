@@ -31,6 +31,10 @@ function (experiment, React, globals, dbxref) {
                     documents[doc['@id']] = Panel({context: doc});
                 });
             })
+            // Adding experiment specific documents
+            context.documents.forEach(function (document) {
+                documents[document['@id']] = Panel({context: document})
+            });
             var antibodies = {};
             replicates.forEach(function (replicate) {
                 if (replicate.antibody) {
