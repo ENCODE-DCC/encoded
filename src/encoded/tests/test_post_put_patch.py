@@ -120,18 +120,19 @@ def test_patch(content, testapp):
     assert res.json['@graph'][0]['simple2'] == 'supplied simple2'
 
 
-def test_patch_new_schema_version(content, testapp):
+def test_patch_new_schema_version(content, testapp, monkeypatch):
+    from .testing_views import TestingPostPutPatch
+    properties = TestingPostPutPatch.schema['properties']
+
     url = content['@id']
     res = testapp.get(url)
     assert res.json['schema_version'] == '1'
 
-    from .testing_views import TestingPostPutPatch
-    TestingPostPutPatch.schema['properties']['schema_version']['default'] = '2'
-    try:
-        res = testapp.patch_json(url, {}, status=200)
-        assert res.json['@graph'][0]['schema_version'] == '2'
-    finally:
-        TestingPostPutPatch.schema['properties']['schema_version']['default'] = '1'
+    monkeypatch.setitem(properties['schema_version'], 'default', '2')
+    monkeypatch.setitem(properties, 'new_property', {'default': 'new'})
+    res = testapp.patch_json(url, {}, status=200)
+    assert res.json['@graph'][0]['schema_version'] == '2'
+    assert res.json['@graph'][0]['new_property'] == 'new'
 
 
 def test_admin_put_protected_link(link_targets, testapp):
