@@ -6,7 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab"],
-    "facets": {"Lab": "lab.title", "Assay": "assay_term_name", "Organism": "target.organism.name"},
+    "facets": {"Lab": "lab.title", "Assay": "assay_term_name", "Organism": "target.organism.name", "System": "system_slims", "Organism": "organism.name", "Developmental Slim": "developmental_slims"},
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,

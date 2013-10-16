@@ -89,7 +89,7 @@ def main():
                 document = item_json.json
                 
                 # For biosamples getting organ_slim and system_slim from ontology index
-                if COLLECTION_URL.get(url)[0] == 'biosample':
+                if COLLECTION_URL.get(url)[0] == 'biosample' or COLLECTION_URL.get(url)[0] == 'experiment':
                     if document['biosample_term_id']:
                         try:
                             document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
