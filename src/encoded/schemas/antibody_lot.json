@@ -1,5 +1,5 @@
 {
-    "title": "Antibody Lot",
+    "title": "Antibody lot",
     "description": "Schema for submitting an antibody lot (not including target or characterization information).",
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -33,7 +33,7 @@
             "type": "string"
         },
         "lot_id_alias": {
-            "title": "Lot ID Aliases",
+            "title": "Lot ID aliases",
             "description": "The lot identifiers for this lot deemed to be exactly the same by the vendor.",
             "type": "array",
             "default": [],
@@ -44,18 +44,18 @@
             }
         },
         "antigen_description": {
-            "title": "Antigen Description",
+            "title": "Antigen description",
             "description": "The plain text description of the antigen used in raising the antibody (e.g. amino acid residue locations of the antigen).",
             "type": "string",
             "default": ""
         },
         "antigen_sequence": {
-            "title": "Antigen Sequence",
+            "title": "Antigen sequence",
             "description": "The amino acid sequence of the antigen.",
             "type": "string"
         },
         "clonality": {
-            "title": "Antibody Clonality",
+            "title": "Antibody clonality",
             "description": "The diversification of the immune cell lineage to make the antibody.",
             "type": "string",
             "enum": [
@@ -80,7 +80,7 @@
             "linkTo": "organism"
         },
         "isotype": {
-            "title": "isotype",
+            "title": "Isotype",
             "description": "The class of antibody ( e.g. IgA, IgD, IgE, IgG or IgM)",
             "type": "string",
             "enum": [
@@ -112,12 +112,12 @@
             ]
         },
         "purifications": {
-            "title": "Purification Methods",
+            "title": "Purification methods",
             "description": "The purification protocols used to isolate the antibody.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Purification Method",
+                "title": "Purification method",
                 "description": "A purification protocol used to isolate the antibody.",
                 "type": "string",
                 "enum": [

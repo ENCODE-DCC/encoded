@@ -5,7 +5,7 @@
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["award", "lab", "dataset_type"],
+    "required": ["award", "lab"],
     "facets": {"Lab": "lab.title", "Assay": "assay_term_name", "Organism": "target.organism.name"},
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
@@ -41,7 +41,7 @@
             "linkTo": "target"
         },
         "assay_term_name": {
-            "title": "Assay Name",
+            "title": "Assay name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "default": "",
             "type":  "string"
@@ -97,7 +97,7 @@
             "type": "array",
             "default": [],
             "items": {
-                "title": "Data File",
+                "title": "Data file",
                 "comment": "See file.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "file"

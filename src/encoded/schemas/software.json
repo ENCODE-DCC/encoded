@@ -45,7 +45,7 @@
             "type": "string"
         },
         "arguments": {
-            "title": "Command Line Arguments",
+            "title": "Command line arguments",
             "description": "The arguments used to run the software.",
             "type": "string"
         },
@@ -55,12 +55,12 @@
             "type": "string"
         },
         "instructions": {
-            "title": "Instructional Documents",
+            "title": "Instructional documents",
             "description": "Documents with detailed instructions and protocols for running the software.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Instructional Document",
+                "title": "Instructional document",
                 "description": "A document with detailed instructions and protocols for running the software.",
                 "comment": "See document.json for a list of available identifiers.",
                 "type": "string",
@@ -89,7 +89,7 @@
             }
         },
         "bug_tracker_url": {
-            "title": "Bug Tracker URL",
+            "title": "Bug tracker URL",
             "description": "An external resource to track bugs for the software.",
             "type": "string",
             "format": "uri"

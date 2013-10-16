@@ -6,7 +6,7 @@
     "type": "object",
     "XXXcomment": "is source required?",
     "required": [ "award", "lab", "nucleic_acid_term_id"],
-    "identifyingProperties": ["uuid","accession"],
+    "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -35,7 +35,7 @@
             "linkTo": "biosample"
         },
         "nucleic_acid_term_name": {
-            "title": "Nucleic Acid Term",
+            "title": "Nucleic acid term",
             "description": "SO (Sequence Ontology) term best matching the nucleic acid isolated.",
             "type": "string",
             "enum": [
@@ -46,7 +46,7 @@
             ]
         },
         "nucleic_acid_term_id": {
-            "title": "Nucleic Acid ID",
+            "title": "Nucleic acid ID",
             "description": "SO (Sequence Ontology) identifier best matching the nucleic acid isolated.",
             "comment": "Based on the choice in nucleic_acid_term_name use the following guide: DNA - SO:0000352, RNA - SO:0000356,  polyadenylated mRNA - SO:0000871 or miRNA - SO:0000276" ,
             "type": "string",
@@ -58,12 +58,12 @@
             ]
         },
         "documents": {
-            "title": "Protocol Documents",
+            "title": "Protocol documents",
             "description": "Documents that describe the preparation of the library.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Protocol Document",
+                "title": "Protocol document",
                 "description": "A document that describe the preparation of the library. ",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
@@ -71,13 +71,13 @@
             }
         },
         "nucleic_acid_starting_quantity": {
-            "title": "Nucleic Acid Starting Quantity",
+            "title": "Nucleic acid starting quantity",
             "description": "The starting amount of nucleic acid before selection and purification.",
             "type": "string",
             "pattern": "[0-9]+"
         },
         "extraction_method": {
-            "title": "Extraction Method",
+            "title": "Extraction method",
             "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
             "type": "string",
             "default": "see document",
@@ -93,14 +93,14 @@
             "format": "semi-controlled"
         },
         "fragmentation_method": {
-            "title": "Fragmentation Method",
+            "title": "Fragmentation method",
             "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation, if applicable.",
             "type": "string",
             "default": "see document",
             "XXXenum": [
                 "sonication",
                 "see document",
-                "covaris sheering",
+                "covaris shearing",
                 "chemical (part of Illumina TruSeq mRNA Kit)",
                 "Illumina/Nextera tagmentation",
                 "bioruptor twin",
@@ -109,7 +109,7 @@
             "format": "semi-controlled"
         },
         "library_size_selection_method": {
-            "title": "Size Selection Method",
+            "title": "Size selection method",
             "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
             "type": "string",
             "default": "see document",
@@ -121,7 +121,7 @@
             "format": "semi-controlled"
         },
         "lysis_method": {
-            "title": "Lysis Method",
+            "title": "Lysis method",
             "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable",
             "type": "string",
             "default": "see document",
@@ -137,23 +137,44 @@
             "format": "semi-controlled"
         },
         "size_range": {
-            "title": "Size Range",
+            "title": "Size range",
             "description": "The measured size range of the purified nucleic acid, in kD.",
             "type": "string",
             "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },
         "paired_ended": {
-            "title": "Paired Ended",
+            "title": "Paired ended",
             "description": "Whether or not the library was prepared with paired ends",
             "XXXnote": "Is this redundant to the field found in replicate.json",
             "type": "boolean",
             "default": false
         },
         "strand_specificity": {
-            "title": "Strand Specificity",
+            "title": "Strand specificity",
             "description": "The preparation of the library using a strand-specific protocol.",
             "type": "boolean",
             "default": false
+        },
+        "depelted_in_term_name": {
+            "title": "Depeleted in term",
+            "description": "SO (Sequence Ontology) term best matching the nucleic acid that was diminished from the library.",
+            "type": "string",
+            "enum": [
+                "rRNA",
+                "polyadenylated mRNA",
+                "capped mRNA"
+            ]
+        },
+        "depleted_in_term_id": {
+            "title": "Depeleted in ID",
+            "description": "SO (Sequence Ontology) identifier best matching the nucleic acid that was diminished from the library.",
+            "comment": "Based on the choice in depleted_int_term_name use the following guide: rRNA - SO:0000252,  polyadenylated mRNA - SO:0000871 or capped mRNA - SO:0000862" ,
+            "type": "string",
+            "enum": [
+                "SO:0000252",
+                "SO:0000871",
+                "SO:0000862"
+            ]
         }
     }
 }

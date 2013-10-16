@@ -1,12 +1,12 @@
-#from pyramid.security import (
-#    Allow,
-#    Authenticated,
-#    Deny,
-#    Everyone,
-#)
+from pyramid.security import (
+    Allow,
+    Authenticated,
+    Deny,
+    Everyone,
+)
 from .download import ItemWithAttachment
 from ..contentbase import (
-    Collection,
+    Collection as BaseCollection,
     location
 )
 from ..schema_utils import (
@@ -39,6 +39,36 @@ ALIAS_KEYS = [
         '$condition': 'aliases',
     },
 ]
+
+
+class Collection(BaseCollection):
+    def __init__(self, parent, name):
+        super(Collection, self).__init__(parent, name)
+        if hasattr(self, '__acl__'):
+            return
+        if 'lab' in self.schema['properties']:
+            self.__acl__ = [
+                (Allow, 'group.submitter', 'add')
+            ]
+
+    class Item(BaseCollection.Item):
+        STATUS_ACL = {
+            'CURRENT': [
+                (Allow, 'role.lab_submitter', 'edit'),
+            ],
+            'DELETED': [],
+        }
+
+        def __acl__(self):
+            status = self.properties.get('status')
+            return self.STATUS_ACL.get(status, ())
+
+        def __ac_local_roles__(self):
+            lab_uuid = self.properties.get('lab')
+            if lab_uuid is None:
+                return None
+            lab_submitters = 'submits_for.%s' % lab_uuid
+            return {lab_submitters: 'role.lab_submitter'}
 
 
 @location('labs')
@@ -136,7 +166,7 @@ class Source(Collection):
 class DonorItem(Collection.Item):
     base_types = ['donor'] + Collection.Item.base_types
     embedded = set(['organism'])
-    item_name_key = 'accession'
+    name_key = 'accession'
     keys = ACCESSION_KEYS + ALIAS_KEYS
 
 
@@ -186,7 +216,7 @@ class Construct(Collection):
         'description': 'Listing of Biosample Constructs',
     }
     item_embedded = set(['source', 'documents', 'characterizations', 'target'])
-    # item_keys = ['vector_name']
+    item_keys = ALIAS_KEYS  # ['vector_name']
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
@@ -201,7 +231,7 @@ class ConstructCharacterization(Collection):
         'description': 'Listing of biosample construct characterizations',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         embedded = ['submitted_by', 'lab', 'award']
         keys = ALIAS_KEYS
 
@@ -215,7 +245,7 @@ class Document(Collection):
         'description': 'Listing of Biosample Documents',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         keys = ALIAS_KEYS
         embedded = set(['submitted_by', 'lab', 'award'])
 
@@ -228,7 +258,7 @@ class Biosample(Collection):
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     }
-    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'derived_from', 'characterizations'])
+    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'derived_from', 'pooled_from', 'characterizations', 'rnais', 'organism'])
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     item_rev = {
@@ -238,7 +268,7 @@ class Biosample(Collection):
         ('accession', 'Accession'),
         ('biosample_term_name', 'Term'),
         ('biosample_type', 'Type'),
-        ('donor.organism.name', 'Species'),
+        ('organism.name', 'Species'),
         ('source.title', 'Source'),
         ('lab.title', 'Submitter'),
         ('treatments.length', 'Treatments'),
@@ -255,7 +285,7 @@ class BiosampleCharacterization(Collection):
         'description': 'Listing of biosample characterizations',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         embedded = ['submitted_by', 'lab', 'award']
         keys = ALIAS_KEYS
 
@@ -308,7 +338,7 @@ class AntibodyCharacterization(Collection):
         'description': 'Listing of antibody characterization documents',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         embedded = ['submitted_by', 'lab', 'award', 'target']
         keys = ALIAS_KEYS
 
@@ -369,18 +399,32 @@ class Library(Collection):
 class Replicates(Collection):
     item_type = 'replicate'
     schema = load_schema('replicate.json')
+    __acl__ = [
+        (Allow, 'group.submitter', 'add'),
+    ]
     properties = {
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
-    item_embedded = set(['library', 'platform', 'antibody'])
-    item_keys = ALIAS_KEYS + [
-        {
-            'name': '{item_type}:experiment_biological_technical',
-            'value': '{experiment}/{biological_replicate_number}/{technical_replicate_number}',
-            '$templated': True,
-        },
-    ]
+
+    class Item(Collection.Item):
+        embedded = set(['library', 'platform', 'antibody'])
+        keys = ALIAS_KEYS + [
+            {
+                'name': '{item_type}:experiment_biological_technical',
+                'value': '{experiment}/{biological_replicate_number}/{technical_replicate_number}',
+                '$templated': True,
+            },
+        ]
+
+        def __ac_local_roles__(self):
+            root = find_root(self)
+            experiment = root.get_by_uuid(self.properties['experiment'])
+            lab_uuid = experiment.properties.get('lab')
+            if lab_uuid is None:
+                return None
+            lab_submitters = 'submits_for.%s' % lab_uuid
+            return {lab_submitters: 'role.lab_submitter'}
 
 
 @location('software')
@@ -414,7 +458,7 @@ class Experiments(Collection):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    item_embedded = set(['files', 'replicates', 'submitted_by', 'lab', 'award', 'possible_controls', 'target'])
+    item_embedded = set(['files', 'replicates', 'submitted_by', 'lab', 'award', 'possible_controls', 'target', 'documents'])
     item_rev = {
         'replicates': ('replicate', 'experiment'),
     }
@@ -455,7 +499,7 @@ class RNAiCharacterization(Collection):
         'description': 'Listing of biosample RNAi characterizations',
     }
 
-    class Item(ItemWithAttachment):
+    class Item(ItemWithAttachment, Collection.Item):
         embedded = ['submitted_by', 'lab', 'award']
         keys = ALIAS_KEYS
 

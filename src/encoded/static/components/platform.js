@@ -13,7 +13,7 @@ function (platform, React, globals, dbxref) {
             return (
                 <dl class={itemClass}>
                     <dt>Platform name</dt>
-                    <dd><a href="{context.url}">{context.title}</a></dd>
+                    <dd><a href={context.url}>{context.title}</a></dd>
 
                     <dt>GEO Platform ID(s)</dt>
                     <dd>

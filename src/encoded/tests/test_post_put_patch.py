@@ -92,15 +92,13 @@ def test_defaults_on_put(content, testapp):
     assert res.json['simple1'] == 'simple1 default'
     assert res.json['simple2'] == 'simple2 default'
 
-    testapp.put_json(url, simple1, status=200)
-    res = testapp.get(url)
-    assert res.json['simple1'] == 'supplied simple1'
-    assert res.json['simple2'] == 'simple2 default'
+    res = testapp.put_json(url, simple1, status=200)
+    assert res.json['@graph'][0]['simple1'] == 'supplied simple1'
+    assert res.json['@graph'][0]['simple2'] == 'simple2 default'
 
-    testapp.put_json(url, simple2, status=200)
-    res = testapp.get(url)
-    assert res.json['simple1'] == 'simple1 default'
-    assert res.json['simple2'] == 'supplied simple2'
+    res = testapp.put_json(url, simple2, status=200)
+    assert res.json['@graph'][0]['simple1'] == 'simple1 default'
+    assert res.json['@graph'][0]['simple2'] == 'supplied simple2'
 
 
 def test_patch(content, testapp):
@@ -109,20 +107,32 @@ def test_patch(content, testapp):
     assert res.json['simple1'] == 'simple1 default'
     assert res.json['simple2'] == 'simple2 default'
 
-    testapp.patch_json(url, {}, status=200)
-    res = testapp.get(url)
-    assert res.json['simple1'] == 'simple1 default'
-    assert res.json['simple2'] == 'simple2 default'
+    res = testapp.patch_json(url, {}, status=200)
+    assert res.json['@graph'][0]['simple1'] == 'simple1 default'
+    assert res.json['@graph'][0]['simple2'] == 'simple2 default'
 
-    testapp.patch_json(url, {'simple1': 'supplied simple1'}, status=200)
-    res = testapp.get(url)
-    assert res.json['simple1'] == 'supplied simple1'
-    assert res.json['simple2'] == 'simple2 default'
+    res = testapp.patch_json(url, {'simple1': 'supplied simple1'}, status=200)
+    assert res.json['@graph'][0]['simple1'] == 'supplied simple1'
+    assert res.json['@graph'][0]['simple2'] == 'simple2 default'
 
-    testapp.patch_json(url, {'simple2': 'supplied simple2'}, status=200)
+    res = testapp.patch_json(url, {'simple2': 'supplied simple2'}, status=200)
+    assert res.json['@graph'][0]['simple1'] == 'supplied simple1'
+    assert res.json['@graph'][0]['simple2'] == 'supplied simple2'
+
+
+def test_patch_new_schema_version(content, testapp, monkeypatch):
+    from .testing_views import TestingPostPutPatch
+    properties = TestingPostPutPatch.schema['properties']
+
+    url = content['@id']
     res = testapp.get(url)
-    assert res.json['simple1'] == 'supplied simple1'
-    assert res.json['simple2'] == 'supplied simple2'
+    assert res.json['schema_version'] == '1'
+
+    monkeypatch.setitem(properties['schema_version'], 'default', '2')
+    monkeypatch.setitem(properties, 'new_property', {'default': 'new'})
+    res = testapp.patch_json(url, {}, status=200)
+    assert res.json['@graph'][0]['schema_version'] == '2'
+    assert res.json['@graph'][0]['new_property'] == 'new'
 
 
 def test_admin_put_protected_link(link_targets, testapp):
