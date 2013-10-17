@@ -104,7 +104,7 @@ def main():
                         document['system_slims'] = []
                         document['developmental_slims'] = []
 
-                    es.index(index, DOCTYPE, document, document_id)
+                es.index(index, DOCTYPE, document, document_id)
                 counter = counter + 1
                 if counter % 50 == 0:
                     es.flush(index)
