@@ -130,7 +130,7 @@ def search(context, request):
             for d in data:
                 query.fields = data[d]
                 # Should have some limit on size to have better
-                s = es.search(query, index=schemas[d][:-5], size=1100)
+                s = es.search(query, index=schemas[d][:-5], size=10000)
                 for key, value in schemas.items():
                     if value == schemas[d]:
                         items['count'][key] = len(s['hits']['hits'])
@@ -151,11 +151,11 @@ def search(context, request):
     # We can get rid of this once we have a standard graphs for default search page
     if len(facets.keys()):
         for facet in facets:
-            face = {'terms': {'field': '', 'size': 1000}}
+            face = {'terms': {'field': '', 'size': 10000}}
             face['terms']['field'] = facets[facet]
             query.facets[facet] = face
 
-    s = es.search(query, index=index, size=1100)
+    s = es.search(query, index=index, size=10000)
     facet_results = s['facets']
     
     for facet in facet_results:
