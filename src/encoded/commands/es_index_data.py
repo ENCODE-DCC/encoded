@@ -92,15 +92,9 @@ def main():
                 if COLLECTION_URL.get(url)[0] == 'biosample' or COLLECTION_URL.get(url)[0] == 'experiment':
                     try:
                         if document['biosample_term_id']:
-                            try:
-                                document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
-                                document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
-                                document['developmental_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['developmental']
-                            except:
-                                document['organ_slims'] = []
-                                document['system_slims'] = []
-                                document['developmental_slims'] = []
-                                print "ID not found - " + document['biosample_term_id']
+                            document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
+                            document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
+                            document['developmental_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['developmental']
                         else:
                             document['organ_slims'] = []
                             document['system_slims'] = []
