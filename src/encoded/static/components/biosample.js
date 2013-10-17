@@ -86,7 +86,7 @@ function (biosample, React, URI, globals) {
                             <dd>{context.lab.title}</dd>
                             
                             <dt hidden={!context.aliases.length}>Aliases</dt>
-                            <dd hidden={!context.aliases.length}>{aliasList}</dd>
+                            <dd class="no-cap" hidden={!context.aliases.length}>{aliasList}</dd>
 
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
@@ -216,7 +216,7 @@ function (biosample, React, URI, globals) {
                     <dd>{context.accession}</dd>
                     
                     <dt hidden={!context.aliases.length}>Aliases</dt>
-                    <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                    <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -253,7 +253,7 @@ function (biosample, React, URI, globals) {
                     <dd>{context.accession}</dd>
                     
                     <dt hidden={!context.aliases.length}>Aliases</dt>
-                    <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                    <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}

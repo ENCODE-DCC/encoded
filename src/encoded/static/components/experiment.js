@@ -102,7 +102,7 @@ function (experiment, React, globals, dbxref) {
                             <dd>{context.lab.title}</dd>
                             
                             <dt hidden={!context.aliases.length}>Aliases</dt>
-                            <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                            <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                             <dt>Project</dt>
                             <dd>{context.award.rfa}</dd>
