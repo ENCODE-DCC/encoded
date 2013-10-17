@@ -155,7 +155,7 @@
             "type": "boolean",
             "default": false
         },
-        "depelted_in_term_name": {
+        "depleted_in_term_name": {
             "title": "Depeleted in term",
             "description": "SO (Sequence Ontology) term best matching the nucleic acid that was diminished from the library.",
             "type": "string",
