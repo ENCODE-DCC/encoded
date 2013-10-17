@@ -90,21 +90,27 @@ def main():
                 
                 # For biosamples getting organ_slim and system_slim from ontology index
                 if COLLECTION_URL.get(url)[0] == 'biosample' or COLLECTION_URL.get(url)[0] == 'experiment':
-                    if document['biosample_term_id']:
-                        try:
-                            document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
-                            document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
-                            document['developmental_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['developmental']
-                        except:
+                    try:
+                        if document['biosample_term_id']:
+                            try:
+                                document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
+                                document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
+                                document['developmental_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['developmental']
+                            except:
+                                document['organ_slims'] = []
+                                document['system_slims'] = []
+                                document['developmental_slims'] = []
+                                print "ID not found - " + document['biosample_term_id']
+                        else:
                             document['organ_slims'] = []
                             document['system_slims'] = []
                             document['developmental_slims'] = []
-                            print "ID not found - " + document['biosample_term_id']
-                    else:
+                    except:
                         document['organ_slims'] = []
                         document['system_slims'] = []
                         document['developmental_slims'] = []
-                es.index(index, DOCTYPE, document, document_id)
+
+                    es.index(index, DOCTYPE, document, document_id)
                 counter = counter + 1
                 if counter % 50 == 0:
                     es.flush(index)
