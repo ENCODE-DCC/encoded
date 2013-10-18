@@ -19,9 +19,13 @@ from .. import edw_file
 
 DEFAULT_INI = 'production.ini'  # Default application initialization file
 
-FILES_URL = '/files/'
-EXPERIMENTS_URL = '/experiments/'
-REPLICATES_URL = '/replicates/'
+# Schema object names
+FILES = 'files'
+EXPERIMENTS = 'experiments'
+REPLICATES = 'replicates'
+DATASETS = 'datasets'
+
+collections= {}  # Cache collections
 
 verbose = False
 
@@ -83,6 +87,10 @@ def format_app_fileinfo(app, file_dict, exclude=None):
         file_dict['assembly'] = edw_file.NA
 
 
+def format_reader_fileinfo(file_dict):
+    # Convert types when fileinfo read from TSV into strings
+    file_dict['replicate'] = int(file_dict['replicate'])
+
 
 ################
 # Initialization
@@ -139,17 +147,27 @@ def make_app(application, username, password):
 ################
 # Utility classes and functions
 
-def get_collection(app, url):
+def collection_url(collection):
+    # Form URL from collection name
+    return '/' + collection + '/'
+
+
+def get_collection(app, collection):
     # GET JSON objects from app as a list of JSON objects
     # NOTE: perhaps limit=all should be default for JSON output
     # and app should hide @graph (provide an iterator)
-    resp = app.get(url + '?limit=all')
-    return resp.json['@graph']
+    global collections
+    if collection not in collections:
+        url = collection_url(collection)
+        resp = app.get(url + '?collection_source=db&limit=all')
+        collections[collection] = resp.json['@graph']
+    return collections[collection]
 
 
 def get_phase(fileinfo, app):
     # Determine phase of file (ENCODE 2 or ENCODE 3)
-    resp = app.get(fileinfo['dataset']).maybe_follow()
+    url = collection_url(DATASETS) + fileinfo['dataset']
+    resp = app.get(url).maybe_follow()
     if len(resp.json['encode2_dbxrefs']) == 0:
         return edw_file.ENCODE_PHASE_3
     else:
@@ -160,7 +178,7 @@ def get_app_fileinfo(app, full=True, limit=0, exclude=None,
                      phase=edw_file.ENCODE_PHASE_ALL):
     # Get file info from encoded web application
     # Return list of fileinfo dictionaries
-    rows = get_collection(app, FILES_URL)
+    rows = get_collection(app, FILES)
     app_files = []
     for row in rows:
         if full:
@@ -225,7 +243,8 @@ def set_fileinfo_replicate(app, fileinfo):
     new_fileinfo = copy.deepcopy(fileinfo)
 
     # Check for no replicate
-    bio_rep_num = int(fileinfo['replicate'])
+    bio_rep_num = fileinfo['replicate']
+    # TODO: change replicate representation in filelinfo to int ?
     if (bio_rep_num == 0):
         del new_fileinfo['replicate']
         return new_fileinfo
@@ -235,17 +254,20 @@ def set_fileinfo_replicate(app, fileinfo):
         del new_fileinfo['assembly']
 
     # Faking technical replicate for now
-    tech_rep_num = int(edw_file.TECHNICAL_REPLICATE_NUM) # TODO, needs EDW changes
+    tech_rep_num = edw_file.TECHNICAL_REPLICATE_NUM # TODO, needs EDW changes
     # Find experiment id
     experiment = new_fileinfo['dataset']
-    resp = app.get(EXPERIMENTS_URL + experiment).maybe_follow()
+    url = collection_url(EXPERIMENTS) + experiment
+    resp = app.get(url).maybe_follow()
     exp_id = resp.json['@id']
 
     # Check for existence of replicate
-    reps = get_collection(app, REPLICATES_URL)
+
+    # GET all replicates
+    reps = get_collection(app, REPLICATES)
     rep_id = None
     for rep in reps:
-        if rep['experiment'] == exp_id and \
+        if rep['experiment'].rfind(exp_id) != -1 and \
             rep['biological_replicate_number'] == bio_rep_num and \
             rep['technical_replicate_number'] == tech_rep_num:
                 rep_id = rep['@id']
@@ -261,7 +283,8 @@ def set_fileinfo_replicate(app, fileinfo):
         global verbose
         if verbose:
             sys.stderr.write('....POST replicate %d for experiment %s\n' % (bio_rep_num, experiment))
-        resp = app.post_json(REPLICATES_URL, rep)
+        url = collection_url(REPLICATES)
+        resp = app.post_json(url, rep)
         # WARNING: ad-hoc char conversion here
         rep_id = resp.json[unicode('@graph')][0][unicode('@id')]
 
@@ -276,14 +299,16 @@ def post_fileinfo(app, fileinfo):
     global verbose
     if verbose:
         sys.stderr.write('....POST file: %s\n' % (fileinfo['accession']))
-    # Take care of replicate; may require creating one
+    # Replace replicate number (bio_rep) with URL for replicate
+    # (may require creating one)
     accession = fileinfo['accession']
     try:
         post_fileinfo = set_fileinfo_replicate(app, fileinfo)
     except AppError as e:
         logging.warning('Failed POST File %s: Replicate error\n%s', accession, e)
         return
-    resp = app.post_json(FILES_URL, post_fileinfo, expect_errors=True)
+    url = collection_url(FILES)
+    resp = app.post_json(url, post_fileinfo, expect_errors=True)
     if resp.status_int == 409:
         logging.warning('Failed POST File %s: File already exists', accession)
     elif resp.status_int < 200 or resp.status_int >= 400:
@@ -301,7 +326,8 @@ def put_fileinfo(app, fileinfo):
     accession = fileinfo['accession']
     try:
         put_fileinfo = set_fileinfo_replicate(app, fileinfo)
-        app.put_json(FILES_URL + accession, put_fileinfo)
+        url = collection_url(FILES) + accession
+        app.put_json(url, put_fileinfo)
         sys.stderr.write('Successful PUT File %s\n', (accession))
     except AppError as e:
         logging.warning('Failed PUT File %s\n%s', accession, e)
@@ -355,6 +381,7 @@ def post_app_fileinfo(input_file, app):
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
         for fileinfo in reader:
+            format_reader_fileinfo(fileinfo)
             post_fileinfo(app, fileinfo)
 
 
@@ -415,7 +442,6 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
         edw_file.dump_fileinfo(edw_only, typeField='EDW_ONLY')
         edw_file.dump_fileinfo(app_only, typeField='APP_ONLY', header=False)
 
-        #print len(diff_accessions), 'different files'
         for accession in diff_accessions:
             edw_diff_files = [ edw_dict[accession] ]
             app_diff_files = [ app_dict[accession] ]
