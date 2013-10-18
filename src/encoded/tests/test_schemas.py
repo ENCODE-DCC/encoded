@@ -32,3 +32,11 @@ def test_mixinProperties():
     from ..schema_utils import load_schema
     schema = load_schema('access_key.json')
     assert schema['properties']['uuid']['type'] == 'string'
+
+
+def test_dependencies(testapp):
+    collection_url = '/testing-dependencies/'
+    testapp.post_json(collection_url, {'dep1': 'dep1', 'dep2': 'dep2'}, status=201)
+    testapp.post_json(collection_url, {'dep1': 'dep1'}, status=422)
+    testapp.post_json(collection_url, {'dep2': 'dep2'}, status=422)
+    testapp.post_json(collection_url, {'dep1': 'dep1', 'dep2': 'disallowed'}, status=422)

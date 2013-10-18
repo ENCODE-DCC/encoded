@@ -173,3 +173,27 @@ class TestingServerDefault(Collection):
         'title': 'Test server defaults',
         'description': 'Testing. Testing. 1, 2, 3.',
     }
+
+@location('testing-dependencies')
+class TestingDependencies(Collection):
+    item_type = 'testing_dependencies'
+    schema = {
+        'type': 'object',
+        'dependencies': {
+            'dep1': ['dep2'],
+            'dep2': ['dep1'],
+        },
+        'properties': {
+            'dep1': {
+                'type': 'string',
+            },
+            'dep2': {
+                'type': 'string',
+                'enum': ['dep2'],
+            },
+        }
+    }
+    properties = {
+        'title': 'Test dependencies',
+        'description': 'Testing. Testing. 1, 2, 3.',
+    }
