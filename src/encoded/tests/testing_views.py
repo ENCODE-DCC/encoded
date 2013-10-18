@@ -1,3 +1,6 @@
+from pyramid.security import (
+    Allow,
+)
 from pyramid.view import view_config
 from ..contentbase import (
     Collection,
@@ -19,6 +22,19 @@ def user(request):
     return {
         'authenticated_userid': authenticated_userid(request),
         'effective_principals': effective_principals(request),
+    }
+
+
+@view_config(name='testing-allowed', request_method='GET')
+def allowed(context, request):
+    from pyramid.security import (
+        has_permission,
+        principals_allowed_by_permission,
+    )
+    permission = request.params.get('permission', 'view')
+    return {
+        'has_permission': bool(has_permission(permission, context, request)),
+        'principals_allowed_by_permission': principals_allowed_by_permission(context, permission),
     }
 
 
@@ -76,10 +92,19 @@ class TestingLinkTarget(Collection):
 @location('testing-post-put-patch')
 class TestingPostPutPatch(Collection):
     item_type = 'testing_post_put_patch'
+    __acl__ = [
+        (Allow, 'group.submitter', ['add', 'edit']),
+    ]
     schema = {
         'required': ['required'],
         'type': 'object',
         'properties': {
+            "schema_version": {
+                "type": "string",
+                "pattern": "^\\d+(\\.\\d+)*$",
+                "requestMethod": [],
+                "default": "1",
+            },
             "uuid": {
                 "title": "UUID",
                 "description": "",
@@ -116,5 +141,35 @@ class TestingPostPutPatch(Collection):
     }
     properties = {
         'title': 'Test links',
+        'description': 'Testing. Testing. 1, 2, 3.',
+    }
+
+
+@location('testing-server-defaults')
+class TestingServerDefault(Collection):
+    item_type = 'testing_server_default'
+    schema = {
+        'type': 'object',
+        'properties': {
+            'uuid': {
+                'serverDefault': 'uuid4',
+            },
+            'user': {
+                'serverDefault': 'userid',
+                'linkTo': 'user',
+            },
+            'now': {
+                'serverDefault': 'now',
+                'format': 'date-time',
+            },
+            'accession': {
+                'serverDefault': 'accession',
+                'accessionType': 'AB',
+                'format': 'accession',
+            },
+        }
+    }
+    properties = {
+        'title': 'Test server defaults',
         'description': 'Testing. Testing. 1, 2, 3.',
     }

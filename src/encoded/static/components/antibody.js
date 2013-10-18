@@ -59,6 +59,9 @@ function (antibody, React, URI, globals) {
 
                             <dt hidden={!context.antibody.antigen_sequence}>Antigen sequence</dt>
                             <dd hidden={!context.antibody.antigen_sequence}>{context.antibody.antigen_sequence}</dd>
+                            
+                            <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
+                            <dd class="no-cap" hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
                         </dl>
                     </div>
 

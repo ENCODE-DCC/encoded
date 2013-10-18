@@ -1,5 +1,5 @@
 {
-    "title": "Mouse Donor",
+    "title": "Mouse donor",
     "description": "Schema for submitting a mouse donor.",
     "id": "/profiles/mouse_donor.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
@@ -35,12 +35,12 @@
             }
         },
         "strain_background": {
-            "title": "Strain Background",
+            "title": "Strain background",
             "description": "The specific parent strain designation of a non-human donor.",
             "type": "string"
         },
         "strain_name": {
-            "title": "Strain Name",
+            "title": "Strain name",
             "description": "The specific strain designation of a non-human donor.",
             "type": "string"
         },

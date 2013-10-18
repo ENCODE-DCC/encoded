@@ -31,6 +31,10 @@ function (experiment, React, globals, dbxref) {
                     documents[doc['@id']] = Panel({context: doc});
                 });
             })
+            // Adding experiment specific documents
+            context.documents.forEach(function (document) {
+                documents[document['@id']] = Panel({context: document})
+            });
             var antibodies = {};
             replicates.forEach(function (replicate) {
                 if (replicate.antibody) {
@@ -69,7 +73,7 @@ function (experiment, React, globals, dbxref) {
                             <dd hidden={!context.biosample_type}>{context.biosample_type}</dd>
 
                             {context.target ? <dt>Target</dt> : null}
-                            {context.target ? <dd>{context.target.label}</dd> : null}
+                            {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
 
                             {antibody_accessions.length ? <dt>Antibody</dt> : null}
                             {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
@@ -94,8 +98,11 @@ function (experiment, React, globals, dbxref) {
                                 <DbxrefList values={context.encode2_dbxrefs} prefix="ENCODE2" />
                             </dd>
 
-                            <dt>Submitted by</dt>
-                            <dd>{context.submitted_by.title}</dd>
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                            
+                            <dt hidden={!context.aliases.length}>Aliases</dt>
+                            <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                             <dt>Project</dt>
                             <dd>{context.award.rfa}</dd>
@@ -140,7 +147,7 @@ function (experiment, React, globals, dbxref) {
                     <thead>
                         <tr>
                             <th>Accession</th>
-                            <th>Term</th>
+                            <th>Biosample</th>
                             <th>Type</th>
                             <th>Species</th>
                             <th>Source</th>
@@ -153,7 +160,7 @@ function (experiment, React, globals, dbxref) {
                         var biosample = biosamples[key].biosample;
                         return (
                             <tr key={index}>
-                                <td>{biosample.accession}</td>
+                                <td><a href={biosample['@id']}>{biosample.accession}</a></td>
                                 <td>{biosample.biosample_term_name}</td>
                                 <td>{biosample.biosample_type}</td>
                                 <td>{biosample.donor.organism.name}</td>

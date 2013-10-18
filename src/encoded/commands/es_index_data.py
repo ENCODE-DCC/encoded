@@ -20,6 +20,7 @@ antibodies_mapping = {'basic': {'properties': {'target': {'properties': {'lab': 
 # Part of this will be moved to schemas and other part should be in a proper dict
 COLLECTION_URL = OrderedDict([
     ('/users/', ['user', basic_mapping]),
+    ('/access-keys/', ['access_key', basic_mapping]),
     ('/awards/', ['award', basic_mapping]),
     ('/labs/', ['lab', basic_mapping]),
     ('/organisms/', ['organism', basic_mapping]),
@@ -41,7 +42,8 @@ COLLECTION_URL = OrderedDict([
     ('/platforms/', ['platform', basic_mapping]),
     ('/libraries/', ['library', basic_mapping]),
     ('/experiments/', ['experiment', experiments_mapping]),
-    ('/replicates/', ['replicate', replicates_mapping])
+    ('/replicates/', ['replicate', replicates_mapping]),
+    ('/files/', ['file', basic_mapping]),
 ])
 
 

@@ -71,7 +71,7 @@ def cast_row_values(dictrows):
     """ Wrapper generator for typing csv.DictReader rows
     """
     for row in dictrows:
-        yield dict(convert(name, value) for name, value in row.iteritems())
+        yield dict(convert(name, value or '') for name, value in row.iteritems())
 
 
 def remove_nulls(dictrows):

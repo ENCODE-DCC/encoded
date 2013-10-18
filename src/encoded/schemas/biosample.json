@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "facets": {"Biosample Type": "biosample_type", "System": "system_slims", "Organism": "donor.organism.name", "Organ": "organ_slims", "Lab": "lab.title", "Source": "source.title"},
+    "facets": {"Biosample Type": "biosample_type", "System": "system_slims", "Organism": "organism.name", "Organ": "organ_slims", "Lab": "lab.title", "Source": "source.title"},
     "identifyingProperties": ["uuid","accesion","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -25,6 +25,9 @@
         "schema_version": {
             "default": "1"
         },
+        "accession": {
+            "accessionType": "BS"
+        },
         "description": {
             "title": "Description",
             "description": "A plain text description of the biosample. Do not include experiment details, constructs or treatments.",
@@ -32,7 +35,7 @@
             "default": ""
         },
        "constructs": {
-            "title": "DNA Constructs",
+            "title": "DNA constructs",
             "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
             "type": "array",
             "default": [],
@@ -45,7 +48,7 @@
             }
         },
         "rnais": {
-            "title": "RNAi Vectors",
+            "title": "RNAi vectors",
             "description": "RNAi vectors stably or transiently transfected.",
             "type": "array",
             "default": [],
@@ -78,12 +81,12 @@
             }
         },
         "protocol_documents": {
-            "title": "Protocol Documents",
+            "title": "Protocol documents",
             "description": "Documents that describe the biosample preparation.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Protocol Document",
+                "title": "Protocol document",
                 "description": "A document that describes the biosample preparation.",
                 "comment": "See document.json for available identifiers.",
                 "type": "string",
@@ -103,7 +106,7 @@
             "linkTo": "organism"
         },
         "passage_number": {
-            "title": "Passage Number",
+            "title": "Passage number",
 	"description": "In calculating passage number, include passages from the source.",
             "type": "integer"
         },
@@ -149,7 +152,7 @@
             "type": "string"
         },
         "subcellular_fraction": {
-            "title": "Subcellular Fraction",
+            "title": "Subcellular fraction",
             "description": "The cellular component that constitutes the biosample.",
             "type": "string",
             "enum": ["nucleus", "cytosol"]
@@ -168,7 +171,7 @@
             ]
         },
         "transfection_type": {
-            "title": "Transfection Type",
+            "title": "Transfection type",
             "description": "The persistence of the transfection construct.",
             "type": "string",
             "enum": [
@@ -176,33 +179,33 @@
             ]
         },
         "culture_harvest_date": {
-            "title": "Culture Harvest Date",
+            "title": "Culture harvest date",
             "description": "For cultured samples, the date the biosample was taken.",
             "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
         },
         "culture_start_date": {
-            "title": "Culture Start Date",
-            "description": "For cultured samples, the date the culture was started.",
+            "title": "Culture start date",
+            "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
             "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
         },
         "date_obtained": {
-            "title": "Date Obtained",
+            "title": "Date obtained",
             "description": "For tissue samples, the date the biosample was taken.",
             "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
         },
         "starting_amount": {
-            "title": "Starting Amount",
+            "title": "Starting amount",
             "description": "The initial quantity of cells or tissue obtained.",
             "type": "string"
         },
         "starting_amount_units": {
-            "title": "Starting Amount Units",
+            "title": "Starting amount units",
             "type": "string",
             "enum": [
                 "g","mg","cells/ml","cells", "whole embryos", "items", "μg"
@@ -228,13 +231,13 @@
             ]
         },
         "age": {
-            "title": "Age",
+            "title": "Donor age",
             "description": " The age or age range of the donor organism when biological material was sampled.",
             "type": "string",
             "pattern": "^\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?$"
         },
         "age_units": {
-            "title": "Age Units",
+            "title": "Donor age units",
             "type": "string",
             "enum": [
                 "day",
@@ -244,7 +247,7 @@
             ]
         },
         "health_status": {
-            "title": "Health Status",
+            "title": "Donor health status",
             "type": "string"
         }
     }

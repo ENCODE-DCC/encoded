@@ -29,10 +29,13 @@ def access_keys(app):
         principals = [
             'system.Authenticated',
             'system.Everyone',
-            'userid:' + item['uuid'],
+            'userid.' + item['uuid'],
         ]
-        principals.extend('lab:%s' % lab_name[name] for name in item['submits_for'])
-        principals.extend('submits_for:%s' % lab_name[name] for name in item['submits_for'])
+        principals.extend('lab.%s' % lab_name[name] for name in item['submits_for'])
+        principals.extend('submits_for.%s' % lab_name[name] for name in item['submits_for'])
+        principals.extend('group.%s' % group for group in item.get('groups', []))
+        if item['submits_for']:
+            principals.append('group.submitter')
         users.append({
             'location': res.location,
             'effective_principals': sorted(principals),
@@ -62,6 +65,11 @@ def access_key(access_keys):
     return access_keys[0]
 
 
+@pytest.fixture
+def no_login_access_key(access_keys):
+    return access_keys[-1]
+
+
 def test_access_key_current_user(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get('/@@current-user', headers=headers)
@@ -73,28 +81,35 @@ def test_access_key_principals(anontestapp, execute_counter, access_key):
     with execute_counter.expect(1):
         res = anontestapp.get('/@@testing-user', headers=headers)
 
-    assert res.json['authenticated_userid'] == 'accesskey:' + access_key['access_key_id']
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key['access_key_id']
     assert sorted(res.json['effective_principals']) == [
-        'accesskey:' + access_key['access_key_id'],
+        'accesskey.' + access_key['access_key_id'],
     ] + access_key['user']['effective_principals']
 
 
 def test_access_key_reset(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.post_json(access_key['location'] + '/@@reset-secret', {}, headers=headers)
+    res = anontestapp.post_json(access_key['location'] + '@@reset-secret', {}, headers=headers)
     new_headers = {'Authorization': basic_auth(access_key['access_key_id'], res.json['secret_access_key'])}
 
     res = anontestapp.get('/@@testing-user', headers=headers)
     assert res.json['authenticated_userid'] is None
 
     res = anontestapp.get('/@@testing-user', headers=new_headers)
-    assert res.json['authenticated_userid'] == 'accesskey:' + access_key['access_key_id']
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key['access_key_id']
 
 
 def test_access_key_disable(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.post_json(access_key['location'] + '/@@disable-secret', {}, headers=headers)
+    res = anontestapp.post_json(access_key['location'] + '@@disable-secret', {}, headers=headers)
 
+    res = anontestapp.get('/@@testing-user', headers=headers)
+    assert res.json['authenticated_userid'] is None
+
+
+def test_access_key_user_disable_login(anontestapp, no_login_access_key):
+    access_key = no_login_access_key
+    headers = {'Authorization': access_key['auth_header']}
     res = anontestapp.get('/@@testing-user', headers=headers)
     assert res.json['authenticated_userid'] is None
 
@@ -144,9 +159,9 @@ def test_edw_key_create(testapp, anontestapp, access_key):
 
     headers = {'Authorization': basic_auth(access_key_id, password)}
     res = anontestapp.get('/@@testing-user', headers=headers)
-    assert res.json['authenticated_userid'] == 'accesskey:' + access_key_id
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key_id
     assert sorted(res.json['effective_principals']) == [
-        'accesskey:' + access_key_id,
+        'accesskey.' + access_key_id,
     ] + access_key['user']['effective_principals']
 
 
@@ -167,7 +182,7 @@ def test_edw_key_update(testapp, anontestapp, access_key):
 
     headers = {'Authorization': basic_auth(access_key_id, password)}
     res = anontestapp.get('/@@testing-user', headers=headers)
-    assert res.json['authenticated_userid'] == 'accesskey:' + access_key_id
+    assert res.json['authenticated_userid'] == 'accesskey.' + access_key_id
     assert sorted(res.json['effective_principals']) == [
-        'accesskey:' + access_key_id,
+        'accesskey.' + access_key_id,
     ] + access_key['user']['effective_principals']

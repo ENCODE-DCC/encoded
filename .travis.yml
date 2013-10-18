@@ -25,8 +25,9 @@ before_install:
     --logfile $CONNECT_LOG
     --tunnel-identifier $TRAVIS_JOB_NUMBER
     $SAUCE_USERNAME $SAUCE_ACCESS_KEY &
-  - 
   - pip install -U setuptools
+  - virtualenv clean-python
+  - source clean-python/bin/activate
   - sudo apt-get -qq --purge remove postgresql postgresql-9.1
   - source /etc/lsb-release
   - echo "deb http://apt.postgresql.org/pub/repos/apt/ $DISTRIB_CODENAME-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list

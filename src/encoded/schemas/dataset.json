@@ -4,7 +4,7 @@
     "id": "/profiles/dataset.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "files"],
+    "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -19,6 +19,9 @@
     "properties": {
         "schema_version": {
             "default": "1"
+        },
+        "accession": {
+            "accessionType": "SR"
         },
         "description": {
             "title": "Description",
@@ -61,11 +64,12 @@
             }
         },
         "files": {
-            "title": "Data Files",
+            "title": "Data files",
             "description": "List of data files to be associated with the dataset.",
             "type": "array",
+            "default": [],
             "items": {
-                "title": "Data File",
+                "title": "Data file",
                 "comment": "See file.json for available identifiers.",
                 "type": "string",
                 "linkTo": "file"
