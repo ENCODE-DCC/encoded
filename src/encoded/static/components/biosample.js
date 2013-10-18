@@ -328,7 +328,7 @@ function (biosample, React, URI, globals) {
                     {context.description ? <dd>{context.description}</dd> : null}
                     
                     <dt hidden={!context.tags.length}>Tags</dt>
-					<dd hidden={!context.tags.length}>
+					<dd hidden={!context.tags.length} class="no-cap">
 						<ul>
 							{context.tags.map(function (tag, index) {
 								return (
@@ -440,10 +440,10 @@ function (biosample, React, URI, globals) {
                             </div>
                             <div class="span5">
                                 <h3 class="cap-me-once">{context.document_type}</h3>
-                                <p>{context.description}</p>
+                                <p class="no-cap">{context.description}</p>
                                 <dl class="key-value">
                                 	{context.caption ? <dt>Caption</dt> : null}
-                                    {context.caption ? <dd>{context.caption}</dd> : null}
+                                    {context.caption ? <dd class="no-cap">{context.caption}</dd> : null}
 
                                     <dt>Submitted by</dt>
                                     <dd>{context.submitted_by.title}</dd>
