@@ -15,6 +15,10 @@
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" }
     ],
+    "dependencies": {
+        "read_length": ["read_length_units"],
+        "read_length_units": ["read_length"]
+    },
     "properties": {
         "schema_version": {
             "default": "2"
@@ -101,8 +105,7 @@
         },
         "read_length_units": {
             "title": "Read length units",
-             "type": "string",
-             "default": "nt",
+            "type": "string",
             "enum": [
                 "nt"
             ]
