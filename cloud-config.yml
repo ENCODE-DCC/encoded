@@ -11,17 +11,21 @@ packages:
 - build-essential
 - apache2-mpm-event
 - elasticsearch
+- envdir
 - git
 - libapache2-mod-wsgi
+- libevent-dev
 - libfreetype6-dev
 - libjpeg-dev
 - libmagic-dev
 - libssl-dev
 - libxml2-dev
 - libxslt1-dev
+- lzop
 - ruby-dev
 - postgresql-9.3
 - libpq-dev
+- pv
 - python2.7-dev
 - python-virtualenv
 - zlib1g-dev
@@ -58,8 +62,8 @@ runcmd:
 # - lrowe
 
 ## Or specify public keys:
-# ssh_authorized_keys:
-# - ssh-dss ...
+ssh_authorized_keys:
+- ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
 
 apt_sources:
 # This is not quite the latest version
