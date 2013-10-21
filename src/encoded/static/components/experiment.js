@@ -31,6 +31,10 @@ function (experiment, React, globals, dbxref) {
                     documents[doc['@id']] = Panel({context: doc});
                 });
             })
+            // Adding experiment specific documents
+            context.documents.forEach(function (document) {
+                documents[document['@id']] = Panel({context: document})
+            });
             var antibodies = {};
             replicates.forEach(function (replicate) {
                 if (replicate.antibody) {
@@ -98,7 +102,7 @@ function (experiment, React, globals, dbxref) {
                             <dd>{context.lab.title}</dd>
                             
                             <dt hidden={!context.aliases.length}>Aliases</dt>
-                            <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                            <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                             <dt>Project</dt>
                             <dd>{context.award.rfa}</dd>

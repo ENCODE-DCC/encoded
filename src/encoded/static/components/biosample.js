@@ -86,7 +86,7 @@ function (biosample, React, URI, globals) {
                             <dd>{context.lab.title}</dd>
                             
                             <dt hidden={!context.aliases.length}>Aliases</dt>
-                            <dd hidden={!context.aliases.length}>{aliasList}</dd>
+                            <dd class="no-cap" hidden={!context.aliases.length}>{aliasList}</dd>
 
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
@@ -216,7 +216,7 @@ function (biosample, React, URI, globals) {
                     <dd>{context.accession}</dd>
                     
                     <dt hidden={!context.aliases.length}>Aliases</dt>
-                    <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                    <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -253,7 +253,7 @@ function (biosample, React, URI, globals) {
                     <dd>{context.accession}</dd>
                     
                     <dt hidden={!context.aliases.length}>Aliases</dt>
-                    <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                    <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -328,7 +328,7 @@ function (biosample, React, URI, globals) {
                     {context.description ? <dd>{context.description}</dd> : null}
                     
                     <dt hidden={!context.tags.length}>Tags</dt>
-					<dd hidden={!context.tags.length}>
+					<dd hidden={!context.tags.length} class="no-cap">
 						<ul>
 							{context.tags.map(function (tag, index) {
 								return (
@@ -440,10 +440,10 @@ function (biosample, React, URI, globals) {
                             </div>
                             <div class="span5">
                                 <h3 class="cap-me-once">{context.document_type}</h3>
-                                <p>{context.description}</p>
+                                <p class="no-cap">{context.description}</p>
                                 <dl class="key-value">
                                 	{context.caption ? <dt>Caption</dt> : null}
-                                    {context.caption ? <dd>{context.caption}</dd> : null}
+                                    {context.caption ? <dd class="no-cap">{context.caption}</dd> : null}
 
                                     <dt>Submitted by</dt>
                                     <dd>{context.submitted_by.title}</dd>

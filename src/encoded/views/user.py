@@ -31,6 +31,7 @@ class User(Collection):
 
     __acl__ = [
         (Allow, 'group.admin', ['list', 'view_details']),
+        (Allow, 'group.read-only-admin', ['list', 'view_details']),
         (Allow, 'role.owner', ['edit', 'view_details']),
         (Deny, Everyone, ['list', 'view_details']),
     ]
