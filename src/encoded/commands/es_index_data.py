@@ -6,45 +6,78 @@ ES_URL = 'http://localhost:9200'
 DOCTYPE = 'basic'
 es = ElasticSearch(ES_URL)
 
-# Mapping will be moved to schemas eventually
-basic_mapping = {'basic': {}}
-libraries_mapping = {'basic': {'properties': {'size_range': {'type': 'string'}}}}
-replicates_mapping = {'basic': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}
-donors_mapping = {'basic': {'properties': {'age': {'type': 'string'}}}}
-
-targets_mapping = {'basic': {'properties': {'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'organism': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}}}}
-biosamples_mapping = {'basic': {'properties': {'source': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'system_slims': {'type': 'string', 'index': 'not_analyzed'}, 'organ_slims': {'type': 'string', 'index': 'not_analyzed'}, 'biosample_type': {'type': 'string', 'index': 'not_analyzed'}, 'treatments': {'type': 'nested'}, 'constructs': {'type': 'nested'}}}}
-experiments_mapping = {'basic': {'properties': {'system_slims': {'type': 'string', 'index': 'not_analyzed'}, 'organ_slims': {'type': 'string', 'index': 'not_analyzed'}, 'assay_term_name': {'type': 'string', 'index': 'not_analyzed'}, 'target': {'properties': {'organism': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}}}, 'files': {'type': 'nested', 'properties': {'replicate': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}}, 'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'replicates': {'type': 'nested', 'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}, 'library id (sanity)': {'type': 'string'}}}}}}
-antibodies_mapping = {'basic': {'properties': {'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'target': {'properties': {'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}}}, 'antibody': {'properties': {'host_organism': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}}}}}}
 
 # Part of this will be moved to schemas and other part should be in a proper dict
 COLLECTION_URL = OrderedDict([
-    ('/users/', ['user', basic_mapping]),
-    ('/access-keys/', ['access_key', basic_mapping]),
-    ('/awards/', ['award', basic_mapping]),
-    ('/labs/', ['lab', basic_mapping]),
-    ('/organisms/', ['organism', basic_mapping]),
-    ('/sources/', ['source', basic_mapping]),
-    ('/targets/', ['target', targets_mapping]),
-    ('/antibody-lots/', ['antibody_lot', basic_mapping]),
-    ('/antibody-characterizations/', ['antibody_characterization', basic_mapping]),
-    ('/antibodies/', ['antibody_approval', antibodies_mapping]),
-    ('/mouse-donors/', ['mouse_donor', donors_mapping]),
-    ('/human-donors/', ['human_donor', donors_mapping]),
-    ('/documents/', ['document', basic_mapping]),
-    ('/treatments/', ['treatment', basic_mapping]),
-    ('/constructs/', ['construct', basic_mapping]),
-    ('/construct-characterizations/', ['construct_characterization', basic_mapping]),
-    ('/rnais/', ['rnai', basic_mapping]),
-    ('/rnai-characterizations/', ['rnai_characterization', basic_mapping]),
-    ('/biosamples/', ['biosample', biosamples_mapping]),
-    ('/biosample-characterizations/', ['biosample_characterization', basic_mapping]),
-    ('/platforms/', ['platform', basic_mapping]),
-    ('/libraries/', ['library', basic_mapping]),
-    ('/experiments/', ['experiment', experiments_mapping]),
-    ('/replicates/', ['replicate', replicates_mapping]),
-    ('/files/', ['file', basic_mapping]),
+    ('user', '/users/'),
+    ('access_key', '/access-keys/'),
+    ('award', '/awards/'),
+    ('lab', '/labs/'),
+    ('organism', '/organisms/'),
+    ('source', '/sources/'),
+    ('target', '/targets/'),
+    ('antibody_lot', '/antibody-lots/'),
+    ('antibody_characterization', '/antibody-characterizations/'),
+    ('antibody_approval', '/antibodies/'),
+    ('mouse_donor', '/mouse-donors/'),
+    ('human_donor', '/human-donors/'),
+    ('treatment', '/treatments/'),
+    ('construct', '/constructs/'),
+    ('construct_characterization', '/construct-characterizations/'),
+    ('rnai', '/rnais/'),
+    ('rnai_characterization', '/rnai-characterizations/'),
+    ('biosample', '/biosamples/'),
+    ('biosample_characterization', '/biosample-characterizations/'),
+    ('platform', '/platforms/'),
+    ('library', '/libraries/'),
+    ('replicate', '/replicates/'),
+    ('file', '/files/'),
+    ('experiment', '/experiments/')
 ])
+
+
+# Should be refactored a bit n remove lots of hard coded props
+# TODO: For now ignores arrays. Should come up with a solution
+def update_mapping(index):
+    ''' Update the mapping for each index '''
+    
+    mapping = es.get_mapping(index)
+    new_mapping = {'basic': {'properties': {}}}
+    if mapping[index]:
+        for prop in mapping[index]['basic']['properties']:
+            # Default fields are ignored here
+            if prop not in ['@id', '@type', 'uuid', 'accession', 'schema_version', 'actions', 'attachment', 'documents', 'possible_controls', 'tags', 'protocol_documents', 'flowcell_details']:
+                if type(mapping[index]['basic']['properties'][prop]) is dict:
+                    if 'type' in mapping[index]['basic']['properties'][prop]:
+                        new_mapping['basic']['properties'][prop] = {'type': 'multi_field', 'fields': {prop: {'type': 'string'}, 'untouched': {'type': 'string', 'index': 'not_analyzed'}}}
+                    else:
+                        # edge cases
+                        if prop == 'host_organism':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('organism')['organism']['basic']
+                        elif prop == 'submitted_by':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('user')['user']['basic']
+                        elif prop == 'characterizations':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('antibody_characterization')['antibody_characterization']['basic']
+                        elif prop == 'antibody':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('antibody_lot')['antibody_lot']['basic']
+                        elif prop == 'rnais':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('rnai')['rnai']['basic']
+                        elif prop == 'donor':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('mouse_donor')['mouse_donor']['basic']
+                            new_mapping['basic']['properties'][prop]['properties']['ethinicity'] = {'type': 'multi_field', 'fields': {'ethinicity': {'type': 'string'}, 'untouched': {'type': 'string', 'index': 'not_analyzed'}}}
+                        elif prop == 'pooled_from' or prop == 'derived_from':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('biosample')['biosample']['basic']
+                        elif prop == 'constructs':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('construct')['construct']['basic']
+                        elif prop == 'treatments':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('treatment')['treatment']['basic']
+                        elif prop == 'replicates':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('replicate')['replicate']['basic']
+                        elif prop == 'files':
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('file')['file']['basic']
+                        else:
+                            new_mapping['basic']['properties'][prop] = es.get_mapping(prop)[prop]['basic']
+    es.put_mapping(index, DOCTYPE, new_mapping)
 
 
 def main():
@@ -65,18 +98,17 @@ def main():
     print
 
     for url in COLLECTION_URL:
-        print "Indexing " + COLLECTION_URL.get(url)[0] + " ...."
-        res = testapp.get(url + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
+        print "Indexing " + url + " collection!"
+        res = testapp.get(COLLECTION_URL[url] + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
         items = res.json['@graph']
 
-        # try creating index, if it exists already delete it and create it again and generate mapping
-        index = COLLECTION_URL.get(url)[0]
+        # try creating index, if it exists already delete it and create it
+        index = url
         try:
             es.create_index(index)
         except IndexAlreadyExistsError:
-            pass
-        else:
-            es.put_mapping(index, DOCTYPE, COLLECTION_URL.get(url)[1])
+            es.delete_index(index)
+            es.create_index(index)
 
         counter = 0
         for item in items:
@@ -89,7 +121,7 @@ def main():
                 document = item_json.json
                 
                 # For biosamples getting organ_slim and system_slim from ontology index
-                if COLLECTION_URL.get(url)[0] == 'biosample' or COLLECTION_URL.get(url)[0] == 'experiment':
+                if index == 'biosample' or index == 'experiment':
                     try:
                         if document['biosample_term_id']:
                             document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
@@ -111,7 +143,9 @@ def main():
 
         es.refresh(index)
         count = es.count('*:*', index=index)
-        print "Finished indexing " + str(count['count']) + " " + COLLECTION_URL.get(url)[0]
+        print "Finished indexing " + str(count['count']) + " " + index
+        print "Updating the mapping ..."
+        update_mapping(index)
         print ""
 
 if __name__ == '__main__':
