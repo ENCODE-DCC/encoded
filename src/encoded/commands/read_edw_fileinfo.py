@@ -33,6 +33,7 @@ collection_hashes= {}  # Cache collections
 encode2_to_encode3_map = {}     # Map ENCODE 2 wgEncode* accessions to ENCODE 3
 
 verbose = False
+quick = False       # Use elastic search rather than database
 
 
 ################
@@ -74,7 +75,7 @@ def format_app_fileinfo(app, file_dict, exclude=None):
         else:
             if link_prop == 'replicate':
                 # special handling of replicate -- only numeric field
-                file_dict[link_prop] = 0
+                file_dict[link_prop] = edw_file.NO_REPLICATE_INT
             else:
                 file_dict[link_prop] = edw_file.NA
 
@@ -164,7 +165,10 @@ def get_collection(app, collection):
     global collections
     if collection not in collections:
         url = collection_url(collection)
-        resp = app.get(url + '?collection_source=db&limit=all')
+        url += "?limit=all"
+        if not quick:
+            url += '&collection_source=db'
+        resp = app.get(url)
         collections[collection] = resp.json['@graph']
     return collections[collection]
 
@@ -177,8 +181,6 @@ def get_collection_hash(app, collection, key):
         coll_hash = {}
         coll = get_collection(app, collection)
         for item in coll:
-            if item['accession'] == unicode('ENCSR000ADH'):
-                pdb.set_trace()
             if unicode(key) in item:
                 item_key = item[unicode(key)]
                 print item_key
@@ -220,13 +222,26 @@ def get_encode2_to_encode3_map(app):
                     encode2_to_encode3_map[encode2_acc] = encode3_acc
     return encode2_to_encode3_map
 
+SEARCH_URL = '/search/?searchTerm='
 
 def get_encode3_accession(app, encode2_acc):
     # Map ENCODE2 experiment accession to ENCODE3
-    map = get_encode2_to_encode3_map(app)
-    if encode2_acc in map:
-        return map[encode2_acc]
-    return None
+    encode3_acc = None
+    if quick:
+        url = SEARCH_URL + encode2_acc + '&format=json'
+        resp = app.get(url).maybe_follow()
+        results = resp.json['@graph']['results']
+        if len(results) == 1:
+            # NOTE: no way to know which to use if there are multiples
+            encode3_acc = results[0]['accession']
+        elif len(results) > 1:
+            sys.stderr.write('Experiment ' + encode2_acc + 
+                             ' has multiple ENCODE3 accessions\n');
+    else:
+        map = get_encode2_to_encode3_map(app)
+        if encode2_acc in map:
+            encode3_acc = map[encode2_acc]
+    return encode3_acc
 
 
 def set_fileinfo_replicate(app, fileinfo):
@@ -241,7 +256,7 @@ def set_fileinfo_replicate(app, fileinfo):
     # Check for no replicate
     bio_rep_num = fileinfo['replicate']
     # TODO: change replicate representation in filelinfo to int ?
-    if (bio_rep_num == 0):
+    if (bio_rep_num == edw_file.NO_REPLICATES_INT):
         del new_fileinfo['replicate']
         return new_fileinfo
 
@@ -598,6 +613,8 @@ def main():
                         help='for -c and -C, ignore excluded properties')
     #parser.add_argument('-x', '--experiment', action='store_true',
                     #help='for EDW, show only files having experiment accession')
+    parser.add_argument('-q', '--quick', action='store_true',
+                        help='quick mode (use elastic search instead of database)')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='verbose mode')
     parser.add_argument('-d', '--data_host', default=None,
@@ -614,6 +631,9 @@ def main():
     global verbose
     verbose = args.verbose
     edw_file.verbose = verbose
+
+    global quick
+    quick = args.quick
 
     # CAUTION: fragile code here.  Should restructure with subcommands or
     #   custom action
