@@ -12,11 +12,15 @@ from sqlalchemy import MetaData, create_engine, select
 ################
 # Globals
 
+# ENCODE project -- phase 2 at UCSC, accessions like 'wgEncodeE*',
+#   ENCODE 3 at Stanford, accessions like 'ENCSR*'
+
 ENCODE_PHASE_2 = '2'
 ENCODE_PHASE_3 = '3'
 ENCODE_PHASE_ALL = 'all'
 
 
+# Column headers for file info TSV  
 # NOTE: ordering of fields currently needs to match query order below
 FILE_INFO_FIELDS = [
     'accession',
@@ -33,7 +37,11 @@ FILE_INFO_FIELDS = [
     'status'
 ]
 
-TECHNICAL_REPLICATE_NUM = 1     # always 1 for now (pending EDW changes)
+# Replicate representation
+TECHNICAL_REPLICATE_NUM = 1  # always 1 for now (pending EDW changes)
+NO_REPLICATE_TERMS = ['pooled', 'n/a', '']  # in manifest files and EDW tables
+NO_REPLICATE_INT = -1   # integer used in TSV replicate column
+
 NA = 'n/a'
 
 # Configuration file
@@ -44,7 +52,6 @@ verbose = False
 
 ################
 # Support functions to localize handling of special fields
-# e.g. links, datetime
 
 def format_edw_fileinfo(file_dict, exclude=None):
     global verbose
@@ -64,8 +71,8 @@ def format_edw_fileinfo(file_dict, exclude=None):
     for prop in FILE_INFO_FIELDS:
         file_dict[prop] = unicode(file_dict[prop])
         # not type-aware, so we need to force replicate to numeric
-        if file_dict['replicate'] == 'pooled' or file_dict['replicate'] == '':
-            file_dict['replicate'] = 0
+        if file_dict['replicate'] in NO_REPLICATE_TERMS:
+            file_dict['replicate'] = NO_REPLICATE_INT
         else:
             file_dict['replicate'] = int(file_dict['replicate'])
     if exclude:
