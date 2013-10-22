@@ -14,7 +14,8 @@
         { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "characterization.json#/properties" }
+        { "$ref": "characterization.json#/properties" },
+	{ "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
