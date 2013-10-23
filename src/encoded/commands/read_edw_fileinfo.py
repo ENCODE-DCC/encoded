@@ -17,6 +17,7 @@ from .. import edw_file
 ################
 # Globals
 
+
 DEFAULT_INI = 'production.ini'  # Default application initialization file
 
 ENCODE2_ACC = 'wgEncode'         # WARNING: Also in experiment.json and edw_file.py
@@ -28,12 +29,17 @@ EXPERIMENTS = 'experiments'
 REPLICATES = 'replicates'
 DATASETS = 'datasets'
 
+SEARCH_URL = '/search/?searchTerm='
+
 collections= {}  # Cache collections
 collection_hashes= {}  # Cache collections
 encode2_to_encode3_map = {}     # Map ENCODE 2 wgEncode* accessions to ENCODE 3
 
+app_host_name = 'localhost'
+
 verbose = False
 quick = False       # Use elastic search rather than database
+require_replicate = False  # Do not create  minimal replicate if not in database
 
 
 ################
@@ -135,6 +141,8 @@ def make_app(application, username, password):
     logging.basicConfig()
     sys.stderr.write('Using encoded app: %s\n' % application)
 
+    global app_host_name
+
     # CAUTION: pasted from import-data script
     url = urlparse(application)
     if url.scheme in ('http', 'https'):
@@ -145,8 +153,10 @@ def make_app(application, username, password):
             if url.password:
                 password = url.password
         app = remote_app(base, username, password)
+        app_host_name = url.netloc
     else:
         app = internal_app(application, username)
+        app_host_name = localhost
     # END CAUTION
     return app
 
@@ -190,20 +200,22 @@ def get_collection_hash(app, collection, key):
 
 ################
 def get_encode2_accessions(app, encode3_acc):
-    # Get ENCODE 2 accessions (or None)
-    url = collection_url(EXPERIMENTS) + encode3_acc
+    # Get list of ENCODE 2 accessions for this ENCODE 3 experiment(or None)
+
+    # TODO: Cache map of encode to encode 3
     if verbose:
-        print "EXPERIMENT: ", encode3_acc
+        print "Experiment: ", encode3_acc
+    url = collection_url(EXPERIMENTS) + encode3_acc
     resp = app.get(url).maybe_follow()
     if ENCODE2_PROP in resp.json:
         return resp.json[ENCODE2_PROP]
     return None
 
 
-def get_phase(fileinfo, app):
+def get_phase(app, fileinfo):
     # Determine phase of file (ENCODE 2 or ENCODE 3)
-    acc = get_encode2_accession(app, fileinfo['dataset'])
-    if acc is not None:
+    accs = get_encode2_accessions(app, fileinfo['dataset'])
+    if accs is not None:
         return edw_file.ENCODE_PHASE_2
     return edw_file.ENCODE_PHASE_3
 
@@ -222,7 +234,6 @@ def get_encode2_to_encode3_map(app):
                     encode2_to_encode3_map[encode2_acc] = encode3_acc
     return encode2_to_encode3_map
 
-SEARCH_URL = '/search/?searchTerm='
 
 def get_encode3_accession(app, encode2_acc):
     # Map ENCODE2 experiment accession to ENCODE3
@@ -231,12 +242,12 @@ def get_encode3_accession(app, encode2_acc):
         url = SEARCH_URL + encode2_acc + '&format=json'
         resp = app.get(url).maybe_follow()
         results = resp.json['@graph']['results']
-        if len(results) == 1:
-            # NOTE: no way to know which to use if there are multiples
+        # NOTE: using first if there are multiples. The scenario I have
+        # seen is ChIP-controls, which search returns for all experiments
+        # where the control was used.  The first ENCODE 3 experiment
+        # returned by search does seem to be the control itself
+        if len(results) >= 1:
             encode3_acc = results[0]['accession']
-        elif len(results) > 1:
-            sys.stderr.write('Experiment ' + encode2_acc + 
-                             ' has multiple ENCODE3 accessions\n');
     else:
         map = get_encode2_to_encode3_map(app)
         if encode2_acc in map:
@@ -247,16 +258,15 @@ def get_encode3_accession(app, encode2_acc):
 def set_fileinfo_replicate(app, fileinfo):
     # Obtain replicate identifier from open app
     # using experiment accession and replicate numbers
-    # Replicate 0 in fileinfo indicates there is none (e.g. pooled data)
-    # If non-zero, Create the replicate if it doesn't exist
+    # Replicate -1 in fileinfo indicates there is none (e.g. pooled data)
 
     # Clone to preserve input
     new_fileinfo = copy.deepcopy(fileinfo)
 
     # Check for no replicate
-    bio_rep_num = fileinfo['replicate']
+    bio_rep_num = int(fileinfo['replicate'])
     # TODO: change replicate representation in filelinfo to int ?
-    if (bio_rep_num == edw_file.NO_REPLICATES_INT):
+    if (bio_rep_num == edw_file.NO_REPLICATE_INT):
         del new_fileinfo['replicate']
         return new_fileinfo
 
@@ -266,11 +276,16 @@ def set_fileinfo_replicate(app, fileinfo):
 
     # Faking technical replicate for now
     tech_rep_num = edw_file.TECHNICAL_REPLICATE_NUM # TODO, needs EDW changes
+
     # Find experiment id
+    #experiment = new_fileinfo['dataset']
+
+    # TODO: maybe this GET unneeded ?
+    #url = collection_url(EXPERIMENTS) + experiment
+    #resp = app.get(url).maybe_follow()
+    #exp_id = resp.json['@id']
+
     experiment = new_fileinfo['dataset']
-    url = collection_url(EXPERIMENTS) + experiment
-    resp = app.get(url).maybe_follow()
-    exp_id = resp.json['@id']
 
     # Check for existence of replicate
 
@@ -278,16 +293,20 @@ def set_fileinfo_replicate(app, fileinfo):
     reps = get_collection(app, REPLICATES)
     rep_id = None
     for rep in reps:
-        if rep['experiment'].rfind(exp_id) != -1 and \
-            rep['biological_replicate_number'] == bio_rep_num and \
-            rep['technical_replicate_number'] == tech_rep_num:
+        if rep['experiment'].rfind(experiment) != -1 and \
+            int(rep['biological_replicate_number']) == bio_rep_num and \
+            int(rep['technical_replicate_number']) == tech_rep_num:
                 rep_id = rep['@id']
                 break
 
     if rep_id is None:
+        if require_replicate:
+            logging.warning('Ignore POST/PUT for File %s: replicate required\n', 
+                            new_fileinfo['accession'])
+            return None
         # Create a replicate
         rep = { 
-            'experiment': exp_id,
+            'experiment': experiment,
             'biological_replicate_number': bio_rep_num,
             'technical_replicate_number': tech_rep_num
         }
@@ -297,7 +316,7 @@ def set_fileinfo_replicate(app, fileinfo):
         url = collection_url(REPLICATES)
         resp = app.post_json(url, rep)
         if verbose:
-            print resp
+            sys.stderr.write(str(resp) + "\n")
         # WARNING: ad-hoc char conversion here
         rep_id = resp.json[unicode('@graph')][0][unicode('@id')]
 
@@ -310,8 +329,10 @@ def set_fileinfo_experiment(app, fileinfo):
     # Convert ENCODE2 experiment to ENCODE3
     acc = fileinfo['dataset']
     if (acc.startswith(ENCODE2_ACC)):
+        if verbose:
+            sys.stderr.write('Get ENCODE3 acc for: %s\n' % (acc))
         encode3_acc = get_encode3_accession(app, acc)
-        if encode3_acc:
+        if encode3_acc is not None:
             fileinfo['dataset'] = encode3_acc
 
 
@@ -323,10 +344,10 @@ def get_app_fileinfo(app, full=True, limit=0, exclude=None,
     app_files = []
     for row in rows:
         if full:
-            if phase != edw_file.ENCODE_PHASE_ALL:
-                if get_phase(row, app) != phase:
-                    continue
             format_app_fileinfo(app, row, exclude=exclude)
+            if phase != edw_file.ENCODE_PHASE_ALL:
+                if get_phase(app, row) != phase:
+                    continue
             app_files.append(row)
         else:
             app_files.append(row['accession'])
@@ -341,7 +362,7 @@ def get_app_filelist(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
     return get_app_fileinfo(app, full=False, limit=limit, phase=phase)
 
 
-def get_new_filelist_from_lists(app_accs, edw_accs):
+def get_missing_filelist_from_lists(app_accs, edw_accs):
     # Find 'new' file accessions: files in EDW having experiment accesion 
     #   but missing in app
     new_accs = []
@@ -351,7 +372,7 @@ def get_new_filelist_from_lists(app_accs, edw_accs):
     return new_accs
 
 
-def get_new_filelist(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+def get_missing_filelist(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
     # Find 'new' accessions: files in EDW having experiment accesion 
     #   but missing in app
     edw_accs = edw_file.get_edw_filelist(edw, phase=phase)
@@ -359,44 +380,48 @@ def get_new_filelist(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
     return get_new_filelist_from_lists(app_accs, edw_accs)
 
 
-def get_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
-    # Find 'new' files: files in EDW having experiment accession 
+def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+    # Find 'missing' files: files in EDW having experiment accession 
     #   but missing in app
     edw_files = edw_file.get_edw_fileinfo(edw, phase=phase)
     app_filelist = get_app_fileinfo(app, phase=phase)
 
     edw_dict = { d['accession']: d for d in edw_files }
     app_dict = { d['accession']: d for d in app_files }
-    new_files = []
+    missing_files = []
     experiments = get_collection(app, EXPERIMENTS)
     for acc in edw_dict.keys():
         if acc not in app_dict:
             # special handling of accession -- need to lookup ENCODE 3 
             #   accession at encoded for ENCODE 2 accession from EDW
-            new_file = edw_dict[acc]
-            set_fileinfo_experiment(app, new_file)
-            new_files.append(new_file)
-    return new_files
+            missing_file = edw_dict[acc]
+            set_fileinfo_experiment(app, missing_file)
+            missing_files.append(missing_file)
+    return missing_files
 
 
 def post_fileinfo(app, fileinfo):
     # POST file info dictionary to open app
 
     global verbose
+    accession = fileinfo['accession']
+
     if verbose:
-        sys.stderr.write('....POST file: %s\n' % (fileinfo['accession']))
+        sys.stderr.write('....POST file: %s\n' % (accession))
     # Replace replicate number (bio_rep) with URL for replicate
     # (may require creating one)
-    accession = fileinfo['accession']
     try:
+        set_fileinfo_experiment(app, fileinfo)
         post_fileinfo = set_fileinfo_replicate(app, fileinfo)
+        if post_fileinfo is None:
+            return
     except AppError as e:
         logging.warning('Failed POST File %s: Replicate error\n%s', accession, e)
         return
     url = collection_url(FILES)
     resp = app.post_json(url, post_fileinfo, expect_errors=True)
     if verbose:
-        print resp
+        sys.stderr.write(str(resp) + "\n")
     if resp.status_int == 409:
         logging.warning('Failed POST File %s: File already exists', accession)
     elif resp.status_int < 200 or resp.status_int >= 400:
@@ -409,18 +434,26 @@ def put_fileinfo(app, fileinfo):
     # PUT changed file info to open app
 
     global verbose
-    if verbose:
-        sys.stderr.write('....PUT file: %s\n' % (fileinfo['accession']))
     accession = fileinfo['accession']
+
+    if verbose:
+        sys.stderr.write('....PUT file: %s\n' % (accession))
     try:
+        set_fileinfo_experiment(app, fileinfo)
         put_fileinfo = set_fileinfo_replicate(app, fileinfo)
-        url = collection_url(FILES) + accession
-        resp = app.put_json(url, put_fileinfo)
-        if verbose:
-            print resp
-        sys.stderr.write('Successful PUT File %s\n', (accession))
+        if put_fileinfo is None:
+            return
     except AppError as e:
-        logging.warning('Failed PUT File %s\n%s', accession, e)
+        logging.warning('Failed PUT File %s: Replicate error\n%s', accession, e)
+        return
+    url = collection_url(FILES) + accession
+    resp = app.put_json(url, put_fileinfo)
+    if verbose:
+        sys.stderr.write(str(resp) + "\n")
+    if resp.status_int < 200 or resp.status_int >= 400:
+        logging.warning('Failed PUT File %s\n%s', accession, resp)
+    else:
+        sys.stderr.write('Successful PUT File: %s\n' % (accession))
 
 
 ################
@@ -450,19 +483,19 @@ def show_app_fileinfo(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
     edw_file.dump_fileinfo(app_files)
 
 
-def show_new_fileinfo(app, edw, full=True, phase=edw_file.ENCODE_PHASE_ALL):
-    # Show 'new' files: files in EDW having experiment accesion 
+def show_missing_fileinfo(app, edw, full=True, phase=edw_file.ENCODE_PHASE_ALL):
+    # Show 'missing' files: at EDW with experiment accession but not in app
 
     if (full):
-        sys.stderr.write('Showing new ENCODE %s files '
+        sys.stderr.write('Showing missing ENCODE %s files '
                          '(at EDW but not in app)\n' % (phase))
-        new_files = get_new_fileinfo(app, edw, phase=phase)
-        edw_file.dump_fileinfo(new_files)
+        missing_files = get_missing_fileinfo(app, edw, phase=phase)
+        edw_file.dump_fileinfo(missing_files)
     else:
-        sys.stderr.write('List new ENCODE %s file accessions '
+        sys.stderr.write('List missing ENCODE %s file accessions '
                          '(at EDW but not in app)\n' % (phase))
-        new_accs = get_new_filelist(app, edw, phase=phase)
-        edw_file.dump_filelist(new_accs)
+        missing_accs = get_missing_filelist(app, edw, phase=phase)
+        edw_file.dump_filelist(missing_accs)
 
 
 def post_app_fileinfo(input_file, app):
@@ -491,19 +524,64 @@ def convert_fileinfo(input_file, app):
         app_files = []
         for fileinfo in reader:
             format_reader_fileinfo(fileinfo)
+            experiment = fileinfo['dataset']
             set_fileinfo_experiment(app, fileinfo)
             app_files.append(fileinfo)
     edw_file.dump_fileinfo(app_files)
 
 
-def sync_app_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
-    # POST all new files from EDW to app
-    sys.stderr.write('Importing new file info for ENCODE %s to app\n' % 
-                     (phase))
+# Sync file contains last id seen at EDW
+# Since script has remote operation, construct sync file from hostname
+
+def get_sync_filename():
+    return 'edw.' + app_host_name + '.last_id'
+
+
+def get_last_id_synced():
+    sync_file = get_sync_filename()
+    try:
+        f = open(sync_file, 'r')
+        return int(f.readline().split()[0])
+    except IOError, e:
+        return 0
+
+
+def update_last_id_synced(last_id):
+    sync_file = get_sync_filename()
+    f = open(sync_file, 'w')
+    f.write(str(last_id) + '\n')
+    f.close()
+    
+
+def get_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL, limit=None):
+    # Get info for files at EDW having file id > last synced
+    # Id saved in edw.last_id for localhost, or edw.host.last_id for remote
+
+    last_id_synced = get_last_id_synced()
+    sys.stderr.write('Last EDW id synced: %d\n' % (last_id_synced))
+    new_files, max_id = edw_file.get_edw_fileinfo(edw, start_id=last_id_synced, 
+                                          phase=phase, limit=limit)
+    sys.stderr.write('...Max EDW id: %d\n' % (max_id))
+    return (new_files, max_id)
+
+
+def show_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL, limit=None):
+    # Show files at EDW having file id > last synced
+
+    sys.stderr.write('Showing new file info at EDW\n')
+    new_files, last_id = get_new_fileinfo(app, edw, phase=phase, limit=limit)
+    edw_file.dump_fileinfo(new_files)
+
+
+def sync_app_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL, limit=None):
+    # POST new files from EDW to app
+
+    sys.stderr.write('Importing new file info to app\n')
     # TODO: log imported files
-    new_files = get_new_fileinfo(app, edw, phase=phase)
+    new_files, last_id = get_new_fileinfo(app, edw, phase=phase, limit=limit)
     for fileinfo in new_files:
         post_fileinfo(app, fileinfo)
+    update_last_id_synced(last_id)
 
 
 def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
@@ -511,7 +589,7 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
     # Show differences between EDW experiment files and files in app
     sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
                       % (phase))
-    edw_files = edw_file.get_edw_fileinfo(edw, experiment=True,
+    edw_files, max_id = edw_file.get_edw_fileinfo(edw, experiment=True,
                                           exclude=exclude, phase=phase)
     edw_dict = { d['accession']: d for d in edw_files }
     app_files = get_app_fileinfo(app, exclude=exclude, phase=phase)
@@ -574,9 +652,9 @@ def main():
                        help='import to app from TSV file')
 
     # TODO:  Enable this code once tested
-    #group.add_argument('-I', '--import_all_new', action='store_true',
-                       #help='import all new files from EDW to app; '
-                            #'use -n to view new file info before import')
+    group.add_argument('-I', '--import_all_new', action='store_true',
+                       help='import all new files from EDW to app; '
+                            'use -n to view new file info before import')
 
     group.add_argument('-m', '--modify_file',
                    help='modify files in app using info in TSV file')
@@ -589,10 +667,12 @@ def main():
                    help='detailed compare of experiment files in EDW with app')
     group.add_argument('-e', '--export', action='store_true',
                    help='export file info from app')
-    group.add_argument('-n', '--new_list', action='store_true',
-                   help='list new file accession: in EDW not in app')
-    group.add_argument('-N', '--new_files', action='store_true',
-                   help='show new files: in EDW not in app')
+    group.add_argument('-f', '--find_missing', action='store_true',
+                   help='show info for files at EDW missing from app')
+    #group.add_argument('-n', '--missing_list', action='store_true',
+                   #help='list new file accession: in EDW not in app')
+    group.add_argument('-n', '--new_files', action='store_true',
+                   help='show new files: deposited at EDW after last app sync')
     group.add_argument('-w', '--edw_list', action='store_true',
                    help='show file accessions at EDW')
     group.add_argument('-W', '--edw_files', action='store_true',
@@ -613,6 +693,8 @@ def main():
                         help='for -c and -C, ignore excluded properties')
     #parser.add_argument('-x', '--experiment', action='store_true',
                     #help='for EDW, show only files having experiment accession')
+    parser.add_argument('-R', '--require_replicate', action='store_true',
+                        help='do not create replicate if not in database (else report)')
     parser.add_argument('-q', '--quick', action='store_true',
                         help='quick mode (use elastic search instead of database)')
     parser.add_argument('-v', '--verbose', action='store_true',
@@ -635,26 +717,31 @@ def main():
     global quick
     quick = args.quick
 
+    global require_replicate
+    require_replicate = args.require_replicate
+
     # CAUTION: fragile code here.  Should restructure with subcommands or
     #   custom action
 
     # init encoded app
-    if args.export or args.modify_file or args.import_file or args.convert_file or\
-        args.new_list or args.new_files \
+    if args.export or args.modify_file or args.import_file \
+        or args.convert_file or args.find_missing \
+        or args.import_all_new or args.new_files \
         or args.compare_full or args.compare_summary:
             app = make_app(args.application, args.username, args.password)
 
     # open connection to EDW
-    if args.edw_files or args.edw_list or args.new_list or args.new_files or \
-        args.compare_full or args.compare_summary:
+    if args.edw_files or args.edw_list or args.find_missing \
+        or args.import_all_new \
+        or args.new_files or args.compare_full or args.compare_summary:
             edw = edw_file.make_edw(args.data_host)
 
     # pick a task
     if args.import_file:
         post_app_fileinfo(args.import_file, app)
 
-    #elif args.import_all_new:
-        #sync_app_fileinfo(args.phase, args.data_host, app)
+    elif args.import_all_new:
+        sync_app_fileinfo(app, edw, phase=args.phase, limit=args.limit)
 
     elif args.modify_file:
         modify_app_fileinfo(args.modify_file, app)
@@ -665,11 +752,11 @@ def main():
     elif args.export:
         show_app_fileinfo(app, limit=args.limit, phase=args.phase)
 
-    elif args.new_list:
-        show_new_fileinfo(app, edw, full=False, phase=args.phase)
+    elif args.find_missing:
+        show_missing_fileinfo(app, edw, full=True, phase=args.phase)
 
     elif args.new_files:
-        show_new_fileinfo(app, edw, full=True, phase=args.phase)
+        show_new_fileinfo(app, edw, phase=args.phase, limit=args.limit)
 
     elif args.compare_summary:
         show_diff_fileinfo(app, edw, detailed=False, 
