@@ -100,10 +100,12 @@ def search(context, request):
 
     if 'type' not in params:
         schema = load_schema('biosample.json')
-        facets = schema['facets']
+        for f in schema['facets']:
+            facets[f] = schema['facets'][f] + '.untouched'
     else:
         schema = load_schema(schemas[params.get('type')])
-        facets = schema['facets']
+        for f in schema['facets']:
+            facets[f] = schema['facets'][f] + '.untouched'
 
     query = Query()
     index = ''
@@ -154,7 +156,7 @@ def search(context, request):
             face = {'terms': {'field': '', 'size': 10000}}
             face['terms']['field'] = facets[facet]
             query.facets[facet] = face
-
+    
     s = es.search(query, index=index, size=10000)
     facet_results = s['facets']
     

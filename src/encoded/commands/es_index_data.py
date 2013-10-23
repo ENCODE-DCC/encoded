@@ -38,7 +38,7 @@ COLLECTION_URL = OrderedDict([
 
 # Should be refactored a bit n remove lots of hard coded props
 # TODO: For now ignores arrays. Should come up with a solution
-def update_mapping(index):
+def update_mapping(index, url):
     ''' Update the mapping for each index '''
     
     mapping = es.get_mapping(index)
@@ -66,7 +66,7 @@ def update_mapping(index):
                             new_mapping['basic']['properties'][prop] = es.get_mapping('mouse_donor')['mouse_donor']['basic']
                             new_mapping['basic']['properties'][prop]['properties']['ethinicity'] = {'type': 'multi_field', 'fields': {'ethinicity': {'type': 'string'}, 'untouched': {'type': 'string', 'index': 'not_analyzed'}}}
                         elif prop == 'pooled_from' or prop == 'derived_from':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('biosample')['biosample']['basic']
+                            new_mapping['basic']['properties'][prop] = es.get_mapping('biosample-temp')['biosample-temp']['basic']
                         elif prop == 'constructs':
                             new_mapping['basic']['properties'][prop] = es.get_mapping('construct')['construct']['basic']
                         elif prop == 'treatments':
@@ -77,7 +77,25 @@ def update_mapping(index):
                             new_mapping['basic']['properties'][prop] = es.get_mapping('file')['file']['basic']
                         else:
                             new_mapping['basic']['properties'][prop] = es.get_mapping(prop)[prop]['basic']
-    es.put_mapping(index, DOCTYPE, new_mapping)
+    
+    try:
+        es.create_index(url)
+    except IndexAlreadyExistsError:
+        es.delete_index(url)
+        es.create_index(url)
+    
+    es.put_mapping(url, DOCTYPE, new_mapping)
+    
+    query = {'query': {'match_all': {}}}
+    results = es.search(query, index=index, size=10000)
+    docs = []
+    for d in results['hits']['hits']:
+        docs.append(d['_source'])
+    if docs:
+        es.bulk_index(url, DOCTYPE, docs, id_field='uuid')
+    
+    es.refresh(url)
+    es.delete_index(index)
 
 
 def main():
@@ -103,7 +121,7 @@ def main():
         items = res.json['@graph']
 
         # try creating index, if it exists already delete it and create it
-        index = url
+        index = url + '-temp'
         try:
             es.create_index(index)
         except IndexAlreadyExistsError:
@@ -121,7 +139,7 @@ def main():
                 document = item_json.json
                 
                 # For biosamples getting organ_slim and system_slim from ontology index
-                if index == 'biosample' or index == 'experiment':
+                if index == 'biosample-temp' or index == 'experiment-temp':
                     try:
                         if document['biosample_term_id']:
                             document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
@@ -143,9 +161,10 @@ def main():
 
         es.refresh(index)
         count = es.count('*:*', index=index)
-        print "Finished indexing " + str(count['count']) + " " + index
+        print "Finished indexing " + str(count['count']) + " " + url
         print "Updating the mapping ..."
-        update_mapping(index)
+        update_mapping(index, url)
+        print "Done Updating!"
         print ""
 
 if __name__ == '__main__':
