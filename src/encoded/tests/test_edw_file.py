@@ -58,7 +58,7 @@ def test_list_new(workbook, testapp):
     edw_accs = edw_test_data.new_in
     app_accs = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp, 
                                                                   full=False)
-    new_accs = sorted(encoded.commands.read_edw_fileinfo.get_new_filelist_from_lists(app_accs, edw_accs))
+    new_accs = sorted(encoded.commands.read_edw_fileinfo.get_missing_filelist_from_lists(app_accs, edw_accs))
     assert new_accs == sorted(edw_test_data.new_out)
 
 
