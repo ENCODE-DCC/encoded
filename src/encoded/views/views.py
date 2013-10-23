@@ -413,6 +413,7 @@ class Replicates(Collection):
         'description': 'Listing of Replicates',
     }
     columns = OrderedDict([
+        ('uuid', 'UUID'),
         ('library.accession', 'Library Accession'),
         ('platform.title', 'Platform'),
         ('experiment', 'Experiment'),
