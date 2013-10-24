@@ -397,6 +397,8 @@ class Library(Collection):
         ('accession', 'Accession'),
         ('award', 'Award'),
         ('lab', 'Lab'),
+        ('biosample.biosample_term_name', 'Biosample'),
+        ('biosample.organism.name', 'Species'),
         ('nucleic_acid_term_name', 'Nucleic Acid Term Name'),
     ])
 
