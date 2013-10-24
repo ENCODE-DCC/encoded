@@ -138,7 +138,9 @@ function (experiment, React, globals, dbxref) {
         var biosamples = {};
         replicates.forEach(function(replicate) {
             var biosample = replicate.library.biosample;
-            biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
+            if (biosample) {
+                biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
+            };
         });
         return (
             <div>
@@ -237,12 +239,12 @@ function (experiment, React, globals, dbxref) {
                     <dt>Library</dt>
                     <dd>{library.accession}</dd>
 
-                    <dt>Biosample</dt>
-                    <dd>
+                    {biosample ? <dt>Biosample</dt> : null}
+                    {biosample ? <dd>
                         <a href={biosample['@id']}>
                             {biosample.accession}
                         </a>{' '}-{' '}{biosample.biosample_term_name}
-                    </dd>
+                    </dd> : null}
                 </dl>
             </div>
         );
