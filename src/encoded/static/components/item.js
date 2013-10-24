@@ -12,13 +12,13 @@ function (item, React, globals) {
             var panel = globals.panel_views.lookup(context)();
             this.transferPropsTo(panel);
             return (
-                <div class={itemClass}>
-                    <header class="row">
-                        <div class="span12">
+                <div className={itemClass}>
+                    <header className="row">
+                        <div className="span12">
                             <h2>{title}</h2>
                         </div>
                     </header>
-                    <p class="description">{context.description}</p>
+                    <p className="description">{context.description}</p>
                     {panel}
                 </div>
             );
@@ -39,8 +39,8 @@ function (item, React, globals) {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-detail panel');
             return (
-                <section class={itemClass}>
-                    <div class="container">
+                <section className={itemClass}>
+                    <div className="container">
                         <pre>{JSON.stringify(context, null, 4)}</pre>
                     </div>
                 </section>

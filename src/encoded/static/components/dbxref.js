@@ -30,7 +30,7 @@ function (dbxref, React, globals) {
 
     dbxref.DbxrefList = function (props) { console.log(props);
         return (
-            <ul class={props.className}>{props.values.map(function (value) {
+            <ul className={props.className}>{props.values.map(function (value) {
                 return <li key={value}><Dbxref value={value} prefix={props.prefix} target_gene={props.target_gene} /></li>;
             })}</ul>
         );

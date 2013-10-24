@@ -69,7 +69,7 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
                 });
             }
             var errors = this.state.errors.map(function (error) {
-                return <div class="alert alert-error"></div>;
+                return <div className="alert alert-error"></div>;
             });
 
             var appClass;
@@ -80,10 +80,10 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
             }
 
             return (
-                <div id="application" class={appClass} onClick={this.handleClick} onSubmit={this.handleSubmit}>
+                <div id="application" className={appClass} onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <div id="layout">
                         <NavBar location={this.state.location} portal={this.state.portal} user_actions={this.state.user_actions} session={this.state.session} />
-                        <div id="content" class="container">
+                        <div id="content" className="container">
                             {content}
                         </div>
                         {errors}                        

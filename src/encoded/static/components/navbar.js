@@ -27,16 +27,16 @@ function (React, mixins) {
             var session = this.props.session;
             var user_actions = this.props.user_actions;
             return (
-                <div id="navbar" class="navbar navbar-fixed-top navbar-inverse">
-                    <div class="navbar-inner">
-                        <div class="container">
-                            <a class="btn btn-navbar" href="" data-toggle="collapse" data-target=".nav-collapse">
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
-                                <span class="icon-bar"></span>
+                <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
+                    <div className="navbar-inner">
+                        <div className="container">
+                            <a className="btn btn-navbar" href="" data-toggle="collapse" data-target=".nav-collapse">
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
                             </a>
-                            <a class="brand" href="/">{portal.portal_title}</a>
-                            <div class="nav-collapse collapse">
+                            <a className="brand" href="/">{portal.portal_title}</a>
+                            <div className="nav-collapse collapse">
                                 <GlobalSections global_sections={portal.global_sections} section={section} />
                                 <UserActions session={session} user_actions={user_actions} />
                             </div>
@@ -57,12 +57,12 @@ function (React, mixins) {
                     className += ' active';
                 }
                 return (
-                    <li class={className} key={action.id}>
+                    <li className={className} key={action.id}>
                         <a href={action.url}>{action.title}</a>
                     </li>
                 );
             });
-            return <ul id="global-sections" class="nav">{actions}</ul>;
+            return <ul id="global-sections" className="nav">{actions}</ul>;
         }
     });
 
@@ -72,14 +72,14 @@ function (React, mixins) {
             var session = this.props.session;
             if (!(session && session.persona)) {
                 return (
-                    <ul id="user-actions" class="nav pull-right" hidden={!session}>
+                    <ul id="user-actions" className="nav pull-right" hidden={!session}>
                         <li><a href="" data-trigger="login" data-id="signin">Sign in</a></li>
                     </ul>
                 );
             }
             var actions = this.props.user_actions.map(function (action) {
                 return (
-                    <li class={action.class} key={action.id}>
+                    <li className={action.class} key={action.id}>
                         <a href={action.url || ''} data-bypass={action.bypass} data-trigger={action.trigger}>
                             {action.title}
                         </a>
@@ -88,11 +88,11 @@ function (React, mixins) {
             });
             var fullname = session.user_properties.title;
             return (
-                <ul id="user-actions" class="nav pull-right">
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown">{fullname}
-                        <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
+                <ul id="user-actions" className="nav pull-right">
+                    <li className="dropdown">
+                        <a href="" className="dropdown-toggle" data-toggle="dropdown">{fullname}
+                        <b className="caret"></b></a>
+                        <ul className="dropdown-menu">
                             {actions}
                         </ul>
                     </li>

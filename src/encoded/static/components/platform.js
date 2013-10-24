@@ -11,7 +11,7 @@ function (platform, React, globals, dbxref) {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-detail panel key-value');
             return (
-                <dl class={itemClass}>
+                <dl className={itemClass}>
                     <dt>Platform name</dt>
                     <dd><a href={context.url}>{context.title}</a></dd>
 

@@ -11,9 +11,9 @@ function (target, React, globals, dbxref) {
             var itemClass = globals.itemClass(context, 'view-detail panel key-value');
            
             return (
-                <dl class={itemClass}>
+                <dl className={itemClass}>
                     <dt>Target name</dt>
-                    <dd class="no-cap">{context.label}</dd>
+                    <dd className="no-cap">{context.label}</dd>
 
                     <dt>Target gene</dt>
                     <dd><a href={globals.dbxref_prefix_map.HGNC + context.gene_name}>{context.gene_name}</a></dd>

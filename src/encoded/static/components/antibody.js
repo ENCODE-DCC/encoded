@@ -12,21 +12,21 @@ function (antibody, React, URI, globals) {
             });
             // Missing enncode
             return (
-                <div class={'type-antibody_approval view-item ' + statusClass}>
-                    <header class="row">
-                        <div class="span12">
+                <div className={'type-antibody_approval view-item ' + statusClass}>
+                    <header className="row">
+                        <div className="span12">
                             <h2>Approval for {context.antibody.accession}</h2>
                             <h3>Antibody against {context.target.organism.name}
                                 {' '}{context.target.label}
-                                <span class={'label ' + statusClass}>
+                                <span className={'label ' + statusClass}>
                                     {context.status}
                                 </span>
                             </h3>
                         </div>
                     </header>
 
-                    <div class="panel data-display">
-                        <dl class="key-value">
+                    <div className="panel data-display">
+                        <dl className="key-value">
                             <dt>Source (vendor)</dt>
                             <dd><a href={context.antibody.source.url}>{context.antibody.source.title}</a></dd>
                             
@@ -61,11 +61,11 @@ function (antibody, React, URI, globals) {
                             <dd hidden={!context.antibody.antigen_sequence}>{context.antibody.antigen_sequence}</dd>
                             
                             <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
-                            <dd class="no-cap" hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
+                            <dd className="no-cap" hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
                         </dl>
                     </div>
 
-                    <div class="characterizations">
+                    <div className="characterizations">
                         {characterizations}
                     </div>
                 </div>
@@ -103,7 +103,7 @@ function (antibody, React, URI, globals) {
                 }
                 figure = (
                     <a data-bypass="true" href={attachmentHref}>
-                        <img class={imgClass} src={src} height={height} width={width} alt={alt} />
+                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                     </a>
                 );
                 download = (
@@ -115,7 +115,7 @@ function (antibody, React, URI, globals) {
                 src = "/static/img/file-broken.png";
                 alt = "Characterization file broken icon";
                 figure = (
-                    <img class={imgClass} src={src} height={height} width={width} alt={alt} />
+                    <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                 );
                 download = (
                     <em>Document not available</em>
@@ -123,10 +123,10 @@ function (antibody, React, URI, globals) {
             }
 
             return (
-                <section class={'type-characterization view-detail panel ' + statusClass}>
-                    <div class="container">
-                        <div class="row">
-                            <div class="span6">
+                <section className={'type-characterization view-detail panel ' + statusClass}>
+                    <div className="container">
+                        <div className="row">
+                            <div className="span6">
                                 <figure>
                                     {figure}
                                     <figcaption>
@@ -134,13 +134,13 @@ function (antibody, React, URI, globals) {
                                     </figcaption>
                                 </figure>
                             </div>
-                            <div class="span5">
-                                <dl class="characterization-meta-data key-value">
-                                    <dt class="h3">Method</dt>
-                                    <dd class="h3">{context.characterization_method}</dd>
+                            <div className="span5">
+                                <dl className="characterization-meta-data key-value">
+                                    <dt className="h3">Method</dt>
+                                    <dd className="h3">{context.characterization_method}</dd>
 
-                                    <dt class="h4">Target species</dt>
-                                    <dd class="h4">{context.target.organism.name}</dd>
+                                    <dt className="h4">Target species</dt>
+                                    <dd className="h4">{context.target.organism.name}</dd>
 
                                     <dt hidden="hidden">Caption</dt>
                                     <dd>{context.caption}</dd>
@@ -160,9 +160,9 @@ function (antibody, React, URI, globals) {
                                     */}
 
                                     <dt>Image</dt>
-                                    <dd><span class={'label '+ statusClass}>{context.status}</span></dd>
+                                    <dd><span className={'label '+ statusClass}>{context.status}</span></dd>
 
-                                    <dt><i class="icon-download-alt"></i> Download</dt>
+                                    <dt><i className="icon-download-alt"></i> Download</dt>
                                     <dd>{download}</dd>
                                 </dl>
                             </div>

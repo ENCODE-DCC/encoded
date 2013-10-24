@@ -11,7 +11,7 @@ function (errors, React, globals, home) {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'panel-gray');
             return (
-                <div class={itemClass}>
+                <div className={itemClass}>
                     <h1>{context.title}</h1>
                     <p>{context.description}</p>
                 </div>
@@ -27,9 +27,9 @@ function (errors, React, globals, home) {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'panel-gray');
             return (
-                <div class={itemClass}>
-                    <div class="row">
-                        <div class="span7">
+                <div className={itemClass}>
+                    <div className="row">
+                        <div className="span7">
                             <h1>Login failure</h1>
                             <p>Access is restricted to ENCODE consortium members.
                                 <a href='mailto:encode-help@lists.stanford.edu'>Request an account</a>

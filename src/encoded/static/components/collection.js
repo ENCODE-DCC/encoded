@@ -9,12 +9,12 @@ function (collection, $, class_, React, globals) {
             var location = this.props.location;
             return (
                 <div>
-                    <header class="row">
-                        <div class="span12">
+                    <header className="row">
+                        <div className="span12">
                             <h2>{context.title}</h2>
                         </div>
                     </header>
-                    <p class="description">{context.description}</p>
+                    <p className="description">{context.description}</p>
                     <Table context={context} location={location} />
                 </div>
             );
@@ -234,7 +234,7 @@ function (collection, $, class_, React, globals) {
                 return (
                     <th onClick={self.handleClickHeader} key={index}>
                         {titles[column] || column}
-                        <i class={className}></i>
+                        <i className={className}></i>
                     </th>
                 );
             });
@@ -268,35 +268,35 @@ function (collection, $, class_, React, globals) {
             if (this.state.communicating) {
                 table_class += ' communicating';
                 loading_or_total = (
-                    <span class="table-count label label-warning spinner-warning">Loading...</span>
+                    <span className="table-count label label-warning spinner-warning">Loading...</span>
                 );
             } else {
                 loading_or_total = (
                     <span>
-                        <span class="table-count label label-invert">{matching.length}</span>
+                        <span className="table-count label label-invert">{matching.length}</span>
                         <span id="total-records">of {total} records</span>
                     </span>
                 );
             }
             return (
-                <table class={table_class}>
-                    <thead class="sticky-header">
-                        <tr class="nosort table-controls">
+                <table className={table_class}>
+                    <thead className="sticky-header">
+                        <tr className="nosort table-controls">
                             <th colSpan={columns.length}>
                                 {loading_or_total}
-                                <form ref="form" class="table-filter" onKeyUp={this.handleKeyUp} 
+                                <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
                                 	data-skiprequest="true" data-removeempty="true">
                                     <input ref="q" disabled={this.state.communicating || undefined} 
                                     	name="q" type="search" defaultValue={searchTerm} 
-                                    	placeholder="Filter table by..." class="filter" 
+                                    	placeholder="Filter table by..." className="filter" 
                                     	id="table-filter" /> 
-                                    <i class="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
+                                    <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
                                     <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                     <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                 </form>
                             </th>
                         </tr>
-                        <tr class="col-headers">
+                        <tr className="col-headers">
                             {headers}
                         </tr>
                     </thead>
