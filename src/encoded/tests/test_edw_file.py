@@ -89,10 +89,16 @@ def test_import_file(workbook, testapp):
 
 
 def test_encode2_experiments(workbook, testapp):
-    # Test obtaining list of ENCODE 2 experiments 
+    # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
+    # accessions are ENCODE2 experiments
+
+    # Test identifying an ENCODE 3 experiment
+    assert not encoded.commands.read_edw_fileinfo.is_encode2_experiment(testapp, edw_test_data.encode3)
 
     # Create hash of all ENCODE 2 experiments, map to ENCODE 3 accession
-    encode2_hash = encoded.commands.read_edw_fileinfo.get_encode2_to_encode3_map(testapp)
+    encode2_hash = encoded.commands.read_edw_fileinfo.get_encode2_to_encode3(testapp)
     assert sorted(encode2_hash.keys()) == sorted(edw_test_data.encode2)
 
+    # Test identifying an ENCODE 2 experiment
+    assert encoded.commands.read_edw_fileinfo.is_encode2_experiment(testapp, encode2_hash.values()[0])
 

@@ -20,7 +20,8 @@ from .. import edw_file
 
 DEFAULT_INI = 'production.ini'  # Default application initialization file
 
-ENCODE2_ACC = 'wgEncode'         # WARNING: Also in experiment.json and edw_file.py
+ENCODE2_ACC = 'wgEncodeE'  # WARNING: Also in experiment.json and edw_file.py
+ENCODE3_EXP_ACC = 'ENCSR'  # WARNING: Also in experiment.json
 ENCODE2_PROP = 'encode2_dbxrefs' # WARNING: Also in experiment.json
 
 # Schema object names
@@ -32,8 +33,7 @@ DATASETS = 'datasets'
 SEARCH_URL = '/search/?searchTerm='
 
 collections= {}  # Cache collections
-collection_hashes= {}  # Cache collections
-encode2_to_encode3_map = {}     # Map ENCODE 2 wgEncode* accessions to ENCODE 3
+collection_hashes = {}  # Cache collections
 
 app_host_name = 'localhost'
 
@@ -199,47 +199,78 @@ def get_collection_hash(app, collection, key):
 
 
 ################
+# ENCODE 2 vs. ENCODE 3 experiment accession conversion
+
+encode2_to_encode3 = None  # Dict of ENCODE3 accs, keyed by ENCODE 2 acc
+experiment_hash = {}       # Cache experiment JSONs for use by multiple files
+
+
+def get_experiment(app, encode3_acc):
+    global experiment_hash
+    if encode3_acc not in experiment_hash.keys():
+        if verbose:
+            print "Experiment: ", encode3_acc
+        url = collection_url(EXPERIMENTS) + encode3_acc
+        resp = app.get(url).maybe_follow()
+        experiment_hash[encode3_acc] = resp.json
+    return experiment_hash[encode3_acc]
+
+
 def get_encode2_accessions(app, encode3_acc):
     # Get list of ENCODE 2 accessions for this ENCODE 3 experiment(or None)
-
-    # TODO: Cache map of encode to encode 3
-    if verbose:
-        print "Experiment: ", encode3_acc
-    url = collection_url(EXPERIMENTS) + encode3_acc
-    resp = app.get(url).maybe_follow()
-    if ENCODE2_PROP in resp.json:
-        return resp.json[ENCODE2_PROP]
+    exp = get_experiment(app, encode3_acc)
+    if ENCODE2_PROP in exp:
+        encode2_accs = exp[ENCODE2_PROP]
+        if len(encode2_accs) >  0:
+            return encode2_accs
     return None
+
+
+def is_encode2_experiment(app, accession):
+    # Does this experiment have ENCODE2 accession
+    if accession.startswith(ENCODE2_ACC):
+        return True
+    if get_encode2_accessions(app, accession) is not None:
+        return True
+    return False
 
 
 def get_phase(app, fileinfo):
     # Determine phase of file (ENCODE 2 or ENCODE 3)
-    accs = get_encode2_accessions(app, fileinfo['dataset'])
-    if accs is not None:
+    if is_encode2_experiment(app, fileinfo['dataset']):
         return edw_file.ENCODE_PHASE_2
     return edw_file.ENCODE_PHASE_3
 
 
-def get_encode2_to_encode3_map(app):
-    # Map ENCODE2 experiment accession to ENCODE3
-    global encode2_to_encode3_map
-    if len(encode2_to_encode3_map) == 0:
-        experiments = get_collection(app, EXPERIMENTS)
-        for experiment in experiments:
-            #if item['accession'] != unicode('ENCSR000ADH'):
-            encode3_acc = experiment['accession']
-            encode2_accs = get_encode2_accessions(app, encode3_acc)
-            if encode2_accs is not None and len(encode2_accs) > 0:
-                for encode2_acc in encode2_accs:
-                    encode2_to_encode3_map[encode2_acc] = encode3_acc
-    return encode2_to_encode3_map
+def get_encode2_to_encode3(app):
+    # Create and cache list of ENCODE 3 experiments with ENCODE2 accessions
+    global encode2_to_encode3
+
+    if encode2_to_encode3 is not None:
+        return encode2_to_encode3
+    encode2_to_encode3 = {}
+    experiments = get_collection(app, EXPERIMENTS)
+    for experiment in experiments:
+        encode3_acc = experiment['accession']
+        encode2_accs = get_encode2_accessions(app, encode3_acc)
+        if encode2_accs is not None and len(encode2_accs) > 0:
+            for encode2_acc in encode2_accs:
+                if encode2_acc in encode2_to_encode3.keys():
+                    logging.warning('Multiple ENCODE3 accs for ENCODE2 acc %s,'
+                                    ' replacing %s with %s\n', 
+                                encode2_to_encode3[encode2_acc], encode3_acc)
+                encode2_to_encode3[encode2_acc] = encode3_acc
+    return encode2_to_encode3
 
 
-def get_encode3_accession(app, encode2_acc):
+def get_encode3_experiment(app, accession):
     # Map ENCODE2 experiment accession to ENCODE3
+    global encode2_to_encode3
+    if accession.startswith(ENCODE3_EXP_ACC):
+        return True
     encode3_acc = None
     if quick:
-        url = SEARCH_URL + encode2_acc + '&format=json'
+        url = SEARCH_URL + accession + '&format=json'
         resp = app.get(url).maybe_follow()
         results = resp.json['@graph']['results']
         # NOTE: using first if there are multiples. The scenario I have
@@ -249,10 +280,28 @@ def get_encode3_accession(app, encode2_acc):
         if len(results) >= 1:
             encode3_acc = results[0]['accession']
     else:
-        map = get_encode2_to_encode3_map(app)
-        if encode2_acc in map:
-            encode3_acc = map[encode2_acc]
+        encode2_to_encode3 = get_encode2_to_encode3(app)
+        if encode2_to_encode3 is not None:
+            if accession in encode2_to_encode3.keys():
+                encode3_acc = encode2_to_encode3[accession]
     return encode3_acc
+
+
+################
+# Special handling of a few file properties
+
+def set_fileinfo_experiment(app, fileinfo):
+    # Convert ENCODE2 experiment to ENCODE3
+    acc = fileinfo['dataset']
+    if (acc.startswith(ENCODE2_ACC)):
+        if verbose:
+            sys.stderr.write('Get ENCODE3 experiment acc for: %s\n' % (acc))
+        encode3_acc = get_encode3_experiment(app, acc)
+        if encode3_acc is not None:
+            if verbose:
+                sys.stderr.write('.. ENCODE3 experiment acc for: %s is %s\n' % 
+                                    (acc, encode3_acc))
+            fileinfo['dataset'] = encode3_acc
 
 
 def set_fileinfo_replicate(app, fileinfo):
@@ -325,16 +374,8 @@ def set_fileinfo_replicate(app, fileinfo):
     return new_fileinfo
 
 
-def set_fileinfo_experiment(app, fileinfo):
-    # Convert ENCODE2 experiment to ENCODE3
-    acc = fileinfo['dataset']
-    if (acc.startswith(ENCODE2_ACC)):
-        if verbose:
-            sys.stderr.write('Get ENCODE3 acc for: %s\n' % (acc))
-        encode3_acc = get_encode3_accession(app, acc)
-        if encode3_acc is not None:
-            fileinfo['dataset'] = encode3_acc
-
+################
+# Utility functions for sharing or testability
 
 def get_app_fileinfo(app, full=True, limit=0, exclude=None,
                      phase=edw_file.ENCODE_PHASE_ALL):
@@ -386,8 +427,8 @@ def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
     edw_files = edw_file.get_edw_fileinfo(edw, phase=phase)
     app_filelist = get_app_fileinfo(app, phase=phase)
 
-    edw_dict = { d['accession']: d for d in edw_files }
-    app_dict = { d['accession']: d for d in app_files }
+    edw_dict = { d['accession']:d for d in edw_files }
+    app_dict = { d['accession']:d for d in app_files }
     missing_files = []
     experiments = get_collection(app, EXPERIMENTS)
     for acc in edw_dict.keys():
@@ -399,6 +440,9 @@ def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
             missing_files.append(missing_file)
     return missing_files
 
+
+########
+# POST and PUT
 
 def post_fileinfo(app, fileinfo):
     # POST file info dictionary to open app
@@ -465,8 +509,9 @@ def show_edw_fileinfo(edw, full=True, limit=None, experiment=True,
     # Format as TSV file with columns from 'encoded' File JSON schema
     if (full):
         sys.stderr.write('Showing ENCODE %s files\n' % phase)
-        edw_files = edw_file.get_edw_fileinfo(edw, limit=limit, phase=phase,
-                                              experiment=experiment)
+        edw_files = edw_file.get_edw_fileinfo(edw, limit=limit, 
+                                                      phase=phase,
+                                                      experiment=experiment)
         edw_file.dump_fileinfo(edw_files)
     else:
         sys.stderr.write('Showing ENCODE %s file accessions\n' % phase)
@@ -516,6 +561,7 @@ def modify_app_fileinfo(input_file, app):
         for fileinfo in reader:
             put_fileinfo(app, fileinfo)
 
+
 def convert_fileinfo(input_file, app):
     # Convert ENCODE2 accessions in input file to ENCODE3 
     sys.stderr.write('Converting ENCODE2 file info in %s to ENCODE3\n' % (input_file))
@@ -559,7 +605,8 @@ def get_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL, limit=None):
 
     last_id_synced = get_last_id_synced()
     sys.stderr.write('Last EDW id synced: %d\n' % (last_id_synced))
-    new_files, max_id = edw_file.get_edw_fileinfo(edw, start_id=last_id_synced, 
+    max_id = edw_file.get_edw_max_id(edw)
+    new_files = edw_file.get_edw_fileinfo(edw, start_id=last_id_synced, 
                                           phase=phase, limit=limit)
     sys.stderr.write('...Max EDW id: %d\n' % (max_id))
     return (new_files, max_id)
@@ -589,11 +636,11 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
     # Show differences between EDW experiment files and files in app
     sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
                       % (phase))
-    edw_files, max_id = edw_file.get_edw_fileinfo(edw, experiment=True,
+    edw_files = edw_file.get_edw_fileinfo(edw, experiment=True,
                                           exclude=exclude, phase=phase)
-    edw_dict = { d['accession']: d for d in edw_files }
+    edw_dict = { d['accession']:d for d in edw_files }
     app_files = get_app_fileinfo(app, exclude=exclude, phase=phase)
-    app_dict = { d['accession']: d for d in app_files }
+    app_dict = { d['accession']:d for d in app_files }
 
     # Inventory files
     edw_only = []

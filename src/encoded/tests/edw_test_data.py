@@ -24,10 +24,13 @@ new_in = ['ENCFF000LSP', 'ENCFF999ZZZ', 'ENCFF998ZZZ', 'ENCFF001MXE',
 # ENCFF9??ZZZ not in app test database (may be reserved at EDW for testing)
 new_out = ['ENCFF999ZZZ', 'ENCFF998ZZZ', 'ENCFF997ZZZ', 'ENCFF996ZZZ']
 
-# ENCODE 2 experiments in test set
+# All ENCODE 2 experiments in test set
 encode2 = {
     'wgEncodeEM002001',
     'wgEncodeEM002004',
     'wgEncodeEH003317',
     'wgEncodeEH002229',
 }
+
+# An ENCODE 3 experiment in test set
+encode3 = 'ENCSR000AES'

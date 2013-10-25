@@ -180,12 +180,25 @@ def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
     return edw_accs
 
 
+def get_edw_max_id(edw):
+    # Get current maximum file id at EDW
+    conn = edw.connect()
+    query = 'select max(fileId) from edwValidFile'
+    results = conn.execute(query)
+    row = results.fetchone()
+    max_id = int(row[0])
+    results.close()
+    if verbose:
+        sys.stderr.write('EDW max id: %d\n' % (int(max_id)))
+    return max_id
+
+
 def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
                      exclude=None, phase=ENCODE_PHASE_ALL):
     # Read info from file tables at EDW
     # Optional param max_id limits to just files having EDW id greater
     # than the named value (typically, this was from previous sync)
-    # Return list of file infos as dictionaries, and current max id at EDW
+    # Return list of file infos as dictionaries
 
     # Autoreflect the schema
     meta = MetaData()
@@ -197,14 +210,6 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
 
     # Make a connection
     conn = edw.connect()
-
-    query = 'select max(fileId) from edwValidFile'
-    results = conn.execute(query)
-    row = results.fetchone()
-    max_id = int(row[0])
-    results.close()
-    if verbose:
-        sys.stderr.write('EDW max id: %d\n' % (int(max_id)))
 
     # Get info for EDW files
     # List files newest first
@@ -244,4 +249,5 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
         format_edw_fileinfo(file_dict, exclude)
         edw_files.append(file_dict)
     results.close()
-    return (edw_files, max_id)
+    conn.close()
+    return edw_files
