@@ -94,10 +94,7 @@ def format_app_fileinfo(app, file_dict, exclude=None):
         if (prop not in edw_file.FILE_INFO_FIELDS) or (exclude and prop in exclude):
                 del file_dict[prop]
 
-    # Assembly can be missing (e.g. for fastQ's)
-    if 'assembly' not in file_dict.keys():
-        if exclude is None or 'assembly' not in exclude:
-            file_dict['assembly'] = edw_file.NA
+    # NOTE: assembly can be missing (e.g. for fastQ's)
 
 
 def format_reader_fileinfo(file_dict):
