@@ -95,8 +95,9 @@ def format_app_fileinfo(app, file_dict, exclude=None):
                 del file_dict[prop]
 
     # Assembly can be missing (e.g. for fastQ's)
-    if ('assembly' not in file_dict.keys()) and (exclude and 'assembly' not in exclude):
-        file_dict['assembly'] = edw_file.NA
+    if 'assembly' not in file_dict.keys():
+        if exclude is None or 'assembly' not in exclude:
+            file_dict['assembly'] = edw_file.NA
 
 
 def format_reader_fileinfo(file_dict):
@@ -425,7 +426,7 @@ def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
     # Find 'missing' files: files in EDW having experiment accession 
     #   but missing in app
     edw_files = edw_file.get_edw_fileinfo(edw, phase=phase)
-    app_filelist = get_app_fileinfo(app, phase=phase)
+    app_files = get_app_fileinfo(app, phase=phase)
 
     edw_dict = { d['accession']:d for d in edw_files }
     app_dict = { d['accession']:d for d in app_files }
@@ -585,6 +586,8 @@ def get_sync_filename():
 
 def get_last_id_synced():
     sync_file = get_sync_filename()
+    if verbose:
+        sys.stderr.write('Using id file: %s\n' % (sync_file))
     try:
         f = open(sync_file, 'r')
         return int(f.readline().split()[0])
@@ -649,13 +652,15 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
     diff_accessions = []
 
     for accession in sorted(edw_dict.keys()):
+        edw_fileinfo = edw_dict[accession]
         if accession not in app_dict:
-            edw_only.append(edw_dict[accession])
+            edw_only.append(edw_fileinfo)
         else:
-            set_edw = set(edw_dict[accession].items())
+            set_fileinfo_experiment(app, edw_fileinfo)
+            set_edw = set(edw_fileinfo.items())
             set_app = set(app_dict[accession].items())
-            if len(set_edw ^ set_app) == 0:
-                same.append(edw_dict[accession])
+            if set_edw == set_edw:
+                same.append(edw_fileinfo)
             else:
                 diff_accessions.append(accession)
 
@@ -670,7 +675,9 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
         edw_file.dump_fileinfo(app_only, typeField='APP_ONLY', header=False)
 
         for accession in diff_accessions:
-            edw_diff_files = [ edw_dict[accession] ]
+            edw_fileinfo = edw_dict[accession]
+            set_fileinfo_experiment(app, edw_fileinfo)
+            edw_diff_files = [ edw_fileinfo ]
             app_diff_files = [ app_dict[accession] ]
             edw_file.dump_fileinfo(edw_diff_files, typeField='EDW_DIFF', header=False)
             edw_file.dump_fileinfo(app_diff_files, typeField='APP_DIFF', header=False)
