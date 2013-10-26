@@ -11,6 +11,7 @@ module.exports = function(grunt) {
                 ].map(require.resolve),
                 options: {
                     alias: [
+                        'domready:',
                         'react-tools/build/modules/React:react',
                         'underscore:',
                     ],
@@ -64,14 +65,16 @@ module.exports = function(grunt) {
                         './src/encoded/static/libs/class:class',
                         './src/encoded/static/libs/uri:uri',
                         './src/encoded/static/libs/registry:registry',
+                        './src/encoded/static/components/main:encoded',
                     ],
                     external: [
                         'jquery',
                         'react',
                         'underscore',
                         'd3',
+                        'domready',
                     ],
-                    shims: {
+                    shim: {
                         stickyheader: {
                             path: './src/encoded/static/libs/sticky_header',
                             exports: null,
@@ -80,12 +83,35 @@ module.exports = function(grunt) {
                     }
                 }
             },
+            specs: {
+                dest: 'build/specs.js',
+                src: [
+                    'src/encoded/tests/js/specs/*.js',
+                    'src/encoded/tests/js/testing.js',
+                ],
+                options: {
+                    debug: true,
+                    external: [
+                        'domready',
+                        'jquery',
+                        'jasmine',
+                        'jasmine_html',
+                        'underscore',
+                        'uri',
+                        'registry',
+                        'encoded',
+                    ],
+                },
+            },
         },
         concat: {
             'src/encoded/static/build/bundle.js': [
                 'build/vendor.js',
                 'build/bootstrap.js',
                 'build/app.js',
+            ],
+            'src/encoded/tests/js/build/bundle.js': [
+                'build/specs.js',
             ],
         },
     });

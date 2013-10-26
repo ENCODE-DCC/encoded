@@ -1,5 +1,4 @@
-define(['registry', 'jasmine'],
-function (Registry) {
+var Registry = require('registry');
 
     var test_obj = {'@type': ['test', 'item']};
     var specific_obj = {'@type': ['specific', 'item']};
@@ -41,5 +40,3 @@ function (Registry) {
         });
 
     });
-
-});

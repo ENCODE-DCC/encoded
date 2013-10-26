@@ -1,5 +1,4 @@
-define(['uri', 'jasmine'],
-function uri_spec(URI) {
+var URI = require('uri');
 
     // example from https://developer.mozilla.org/en-US/docs/Web/API/window.location
     var example_uri = 'http://www.example.com:8080/search?q=devmo#test';
@@ -125,5 +124,3 @@ function uri_spec(URI) {
 		});
 
     });
-
-});
