@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'uri', 'globals'],
-function (biosample, React, URI, globals) {
+define(['exports', 'react', 'underscore', 'uri', './globals'],
+function (exports, React, _, URI, globals) {
     'use strict';
 
     var Panel = function (props) {
@@ -14,7 +14,7 @@ function (biosample, React, URI, globals) {
     };
 
 
-    var Biosample = biosample.Biosample = React.createClass({
+    var Biosample = exports.Biosample = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
@@ -206,7 +206,7 @@ function (biosample, React, URI, globals) {
         }
     };
 	
-    var HumanDonor = biosample.HumanDonor = React.createClass({
+    var HumanDonor = exports.HumanDonor = React.createClass({
         render: function() {
             var context = this.props.context;
             var biosample = this.props.biosample;
@@ -243,7 +243,7 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(HumanDonor, 'human_donor');
 
 
-    var MouseDonor = biosample.MouseDonor = React.createClass({
+    var MouseDonor = exports.MouseDonor = React.createClass({
         render: function() {
             var context = this.props.context;
             var biosample = this.props.biosample;
@@ -283,7 +283,7 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(MouseDonor, 'mouse_donor');
 
 
-    var Treatment = biosample.Treatment = React.createClass({
+    var Treatment = exports.Treatment = React.createClass({
         render: function() {
             var context = this.props.context;
             var title = '';
@@ -310,7 +310,7 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(Treatment, 'treatment');
 
 
-    var Construct = biosample.Construct = React.createClass({
+    var Construct = exports.Construct = React.createClass({
         render: function() {
             var context = this.props.context;
             return (
@@ -354,7 +354,7 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(Construct, 'construct');
     
     
-    var RNAi = biosample.RNAi = React.createClass({
+    var RNAi = exports.RNAi = React.createClass({
         render: function() {
             var context = this.props.context;
             return (
@@ -384,7 +384,7 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(RNAi, 'rnai');
 
 
-    var Document = biosample.Document = React.createClass({
+    var Document = exports.Document = React.createClass({
         render: function() {
             var context = this.props.context;
             var attachmentHref, attachmentUri;
@@ -469,5 +469,5 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(Document, 'biosample_characterization');
 
 
-    return biosample;
+    return exports;
 });

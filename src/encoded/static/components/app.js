@@ -1,5 +1,5 @@
 /** @jsx React.DOM */
-define(['jquery', 'react', 'uri', 'globals', 'mixins', 'jsx!navbar', 'jsx!footer'],
+define(['jquery', 'react', 'uri', './globals', './mixins', './navbar', './footer'],
 function ($, React, URI, globals, mixins, NavBar, Footer) {
     /*jshint devel: true*/
     'use strict';

@@ -1,10 +1,10 @@
-define(['exports', 'jquery', 'react', 'uri', 'persona'],
-function (mixins, $, React, URI) {
+define(['exports', 'jquery', 'react', 'uri'],
+function (exports, $, React, URI) {
     /*jshint devel: true*/
     'use strict';
 
         
-    var parseError = mixins.parseError = function (xhr, status) {
+    var parseError = exports.parseError = function (xhr, status) {
         var data;
         if (status == 'abort') return;
         if (status == 'timeout') {
@@ -43,13 +43,13 @@ function (mixins, $, React, URI) {
                 status: '' + status,
                 title: 'Error',
                 '@type': ['ajax_error', 'error']
-            };   
+            };
         }
         return data;
     };
 
 
-    mixins.RenderLess = {
+    exports.RenderLess = {
         shouldComponentUpdate: function (nextProps, nextState) {
             var key;
             if (nextProps) {
@@ -72,7 +72,7 @@ function (mixins, $, React, URI) {
         },
     };
 
-    mixins.Persona = {
+    exports.Persona = {
         componentDidMount: function () {
             // Login / logout actions must be deferred until persona is ready.
             $.ajaxPrefilter(this.ajaxPrefilter);
@@ -191,7 +191,7 @@ function (mixins, $, React, URI) {
     };
 
 
-    mixins.HistoryAndTriggers = {
+    exports.HistoryAndTriggers = {
         // Detect HTML5 history support
         historyEnabled: !!(window.history && window.history.pushState),
 
@@ -275,7 +275,7 @@ function (mixins, $, React, URI) {
             var uri = URI(target.action);
             if (!uri.sameOrigin()) return;
 
-            var options = {}
+            var options = {};
             options.replace = uri.pathname == URI(this.props.href).pathname;
             var search = $(target).serialize();
             if (target.getAttribute('data-removeempty')) {
@@ -377,5 +377,5 @@ function (mixins, $, React, URI) {
         }
     };
 
-    return mixins;
+    return exports;
 });

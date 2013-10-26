@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'globals', 'jsx!dbxref'],
-function (experiment, React, globals, dbxref) {
+define(['exports', 'react', 'underscore', './globals', './dbxref'],
+function (exports, React, _, globals, dbxref) {
     'use strict';
 
     var DbxrefList = dbxref.DbxrefList;
@@ -17,7 +17,7 @@ function (experiment, React, globals, dbxref) {
 
 
 
-    var Experiment = experiment.Experiment = React.createClass({
+    var Experiment = exports.Experiment = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
@@ -132,7 +132,7 @@ function (experiment, React, globals, dbxref) {
 
     globals.content_views.register(Experiment, 'experiment');
 
-    var BiosamplesUsed = experiment.BiosamplesUsed = function (props) {
+    var BiosamplesUsed = exports.BiosamplesUsed = function (props) {
         var replicates = props.replicates;
         if (!replicates.length) return (<div hidden={true}></div>);
         var biosamples = {};
@@ -183,7 +183,7 @@ function (experiment, React, globals, dbxref) {
     };
 
 
-    var AssayDetails = experiment.AssayDetails = function (props) {
+    var AssayDetails = exports.AssayDetails = function (props) {
         var replicates = props.replicates.sort(function(a, b) {
             if (b.biological_replicate_number === a.biological_replicate_number) {
                 return a.technical_replicate_number - b.technical_replicate_number;
@@ -225,7 +225,7 @@ function (experiment, React, globals, dbxref) {
     };
 
 
-    var Replicate = experiment.Replicate = function (props) {
+    var Replicate = exports.Replicate = function (props) {
         var replicate = props.replicate;
         var library = replicate.library;
         var biosample = library.biosample;
@@ -254,7 +254,7 @@ function (experiment, React, globals, dbxref) {
     //globals.panel_views.register(Replicate, 'replicate');
 
 
-    var FilesLinked = experiment.FilesLinked = function (props) {
+    var FilesLinked = exports.FilesLinked = function (props) {
         var context = props.context;
         var files = context.files;
         if (!files.length) return (<div hidden={true}></div>);
@@ -301,5 +301,5 @@ function (experiment, React, globals, dbxref) {
     };
 
 
-    return experiment;
+    return exports;
 });

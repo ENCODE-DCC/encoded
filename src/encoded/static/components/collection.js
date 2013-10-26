@@ -1,9 +1,9 @@
 /** @jsx React.DOM */
-define(['exports', 'jquery', 'class', 'react', 'globals'],
-function (collection, $, class_, React, globals) {
+define(['exports', 'jquery', 'class', 'react', './globals'],
+function (exports, $, class_, React, globals) {
     'use strict';
 
-    var Collection = collection.Collection = React.createClass({
+    var Collection = exports.Collection = React.createClass({
         render: function () {
             var context = this.props.context;
             var location = this.props.location;
@@ -84,7 +84,7 @@ function (collection, $, class_, React, globals) {
         );
     };
 
-    var Table = collection.Table = React.createClass({
+    var Table = exports.Table = React.createClass({
         getDefaultProps: function () {
             return {
                 defaultSortOn: 0
@@ -368,5 +368,5 @@ function (collection, $, class_, React, globals) {
     });
 
 
-    return collection;
+    return exports;
 });

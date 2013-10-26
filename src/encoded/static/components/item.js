@@ -1,10 +1,10 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'globals'],
-function (item, React, globals) {
+define(['exports', 'react', './globals'],
+function (exports, React, globals) {
     'use strict';
 
 
-    var Item = item.Item = React.createClass({
+    var Item = exports.Item = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
@@ -34,7 +34,7 @@ function (item, React, globals) {
     };
 
 
-    var Panel = item.Panel = React.createClass({
+    var Panel = exports.Panel = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-detail panel');
@@ -57,12 +57,12 @@ function (item, React, globals) {
     };
 
 
-    var title = item.title = function (props) {
+    var title = exports.title = function (props) {
         var context = props.context;
         return context.title || context.name || context.accession || context['@id'];
     };
 
-    globals.listing_titles.register(item.generic_title, 'item');
+    globals.listing_titles.register(title, 'item');
 
 
     // Also use this view as a fallback for anything we haven't registered
@@ -71,5 +71,5 @@ function (item, React, globals) {
     };
 
 
-    return item;
+    return exports;
 });

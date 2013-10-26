@@ -1,7 +1,8 @@
 /** @jsx React.DOM */
-define(['exports', 'jquery', 'react', 'globals', 'd3'],
-function (search, $, React, globals, d3) {
+define(['exports', 'jquery', 'react', './globals', 'd3'],
+function (exports, $, React, globals, d3) {
     'use strict';
+    var search = exports;
 
     var FacetBuilder = search.FacetBuilder = React.createClass({
         render: function() {

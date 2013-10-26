@@ -1,5 +1,5 @@
 /** @jsx React.DOM */
-define(['react', 'mixins'],
+define(['react', './mixins'],
 function (React, mixins) {
     'use strict';
 
