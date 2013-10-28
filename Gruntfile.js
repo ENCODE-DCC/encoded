@@ -61,7 +61,6 @@ module.exports = function(grunt) {
                         'deamdify',
                     ],
                     alias: [
-                        'react-tools/build/modules/React:react',
                         './src/encoded/static/libs/class:class',
                         './src/encoded/static/libs/uri:uri',
                         './src/encoded/static/libs/registry:registry',
