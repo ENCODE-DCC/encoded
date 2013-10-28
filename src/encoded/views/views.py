@@ -258,12 +258,6 @@ class Biosample(Collection):
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     }
-    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'derived_from', 'pooled_from', 'characterizations', 'rnais', 'organism'])
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS + ALIAS_KEYS
-    item_rev = {
-        'characterizations': ('biosample_characterization', 'characterizes'),
-    }
     columns = OrderedDict([
         ('accession', 'Accession'),
         ('biosample_term_name', 'Term'),
@@ -274,6 +268,36 @@ class Biosample(Collection):
         ('treatments.length', 'Treatments'),
         ('constructs.length', 'Constructs')
     ])
+
+    class Item(Collection.Item):
+        template = {
+            'organ_slims': [
+                {'$value': '{slim}', '$repeat': 'slim organ_slims', '$templated': True}
+            ],
+            'system_slims': [
+                {'$value': '{slim}', '$repeat': 'slim system_slims', '$templated': True}
+            ],
+            'developmental_slims': [
+                {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
+            ],
+        }
+        embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'derived_from', 'pooled_from', 'characterizations', 'rnais', 'organism'])
+        name_key = 'accession'
+        keys = ACCESSION_KEYS + ALIAS_KEYS
+        rev = {
+            'characterizations': ('biosample_characterization', 'characterizes'),
+        }
+
+        def template_namespace(self, request=None):
+            terms = request.registry['ontology']
+            ns = Collection.Item.template_namespace(self, request)
+            if ns['biosample_term_id'] in terms:
+                ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
+                ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
+                ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+            else:
+                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+            return ns
 
 
 @location('biosample-characterizations')
@@ -458,12 +482,6 @@ class Experiments(Collection):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    item_embedded = set(['files', 'replicates', 'submitted_by', 'lab', 'award', 'possible_controls', 'target', 'documents'])
-    item_rev = {
-        'replicates': ('replicate', 'experiment'),
-    }
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
         ('assay_term_name', 'Assay type'),
@@ -474,6 +492,36 @@ class Experiments(Collection):
         ('lab.title', 'Lab'),
         ('award.rfa', 'Project'),
     ])
+    
+    class Item(Collection.Item):
+        template = {
+            'organ_slims': [
+                {'$value': '{slim}', '$repeat': 'slim organ_slims', '$templated': True}
+            ],
+            'system_slims': [
+                {'$value': '{slim}', '$repeat': 'slim system_slims', '$templated': True}
+            ],
+            'developmental_slims': [
+                {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
+            ],
+        }
+        embedded = set(['files', 'replicates', 'submitted_by', 'lab', 'award', 'possible_controls', 'target', 'documents'])
+        rev = {
+            'replicates': ('replicate', 'experiment'),
+        }
+        name_key = 'accession'
+        keys = ACCESSION_KEYS + ALIAS_KEYS
+
+        def template_namespace(self, request=None):
+            terms = request.registry['ontology']
+            ns = Collection.Item.template_namespace(self, request)
+            if ns['biosample_term_id'] in terms:
+                ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
+                ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
+                ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+            else:
+                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+            return ns
 
 
 @location('rnais')

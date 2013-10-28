@@ -1,3 +1,4 @@
+import json
 from pyramid.config import Configurator
 from pyramid.session import UnencryptedCookieSessionFactoryConfig
 from pyramid.settings import asbool
@@ -114,6 +115,15 @@ def load_workbook(app, workbook_filename, docsdir, test=False):
     load_all(testapp, workbook_filename, docsdir, test=test)
 
 
+def load_ontology(config):
+    settings = config.registry.settings
+    path = settings.get('ontology_path')
+    if path is None:
+        config.registry['ontology'] = None
+        return
+    config.registry['ontology'] = json.load(open(path))
+
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
@@ -153,6 +163,7 @@ def main(global_config, **settings):
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
 
     config.include(static_resources)
+    config.include(load_ontology)
 
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')
