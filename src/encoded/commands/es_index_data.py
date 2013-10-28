@@ -1,11 +1,10 @@
 from pyramid import paster
-from pyelasticsearch import ElasticSearch, IndexAlreadyExistsError
+from pyelasticsearch import ElasticSearch
 from collections import OrderedDict
 
 ES_URL = 'http://localhost:9200'
 DOCTYPE = 'basic'
 es = ElasticSearch(ES_URL)
-
 
 # Part of this will be moved to schemas and other part should be in a proper dict
 COLLECTION_URL = OrderedDict([
@@ -36,68 +35,6 @@ COLLECTION_URL = OrderedDict([
 ])
 
 
-# Should be refactored a bit n remove lots of hard coded props
-# TODO: For now ignores arrays. Should come up with a solution
-def update_mapping(index, url):
-    ''' Update the mapping for each index '''
-    
-    mapping = es.get_mapping(index)
-    new_mapping = {'basic': {'properties': {}}}
-    if mapping[index]:
-        for prop in mapping[index]['basic']['properties']:
-            # Default fields are ignored here
-            if prop not in ['@id', '@type', 'uuid', 'accession', 'schema_version', 'actions', 'attachment', 'documents', 'possible_controls', 'tags', 'protocol_documents', 'flowcell_details']:
-                if type(mapping[index]['basic']['properties'][prop]) is dict:
-                    if 'type' in mapping[index]['basic']['properties'][prop]:
-                        new_mapping['basic']['properties'][prop] = {'type': 'multi_field', 'fields': {prop: {'type': 'string'}, 'untouched': {'type': 'string', 'index': 'not_analyzed'}}}
-                    else:
-                        # edge cases
-                        if prop == 'host_organism':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('organism')['organism']['basic']
-                        elif prop == 'submitted_by':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('user')['user']['basic']
-                        elif prop == 'characterizations':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('antibody_characterization')['antibody_characterization']['basic']
-                        elif prop == 'antibody':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('antibody_lot')['antibody_lot']['basic']
-                        elif prop == 'rnais':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('rnai')['rnai']['basic']
-                        elif prop == 'donor':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('mouse_donor')['mouse_donor']['basic']
-                            new_mapping['basic']['properties'][prop]['properties']['ethinicity'] = {'type': 'multi_field', 'fields': {'ethinicity': {'type': 'string'}, 'untouched': {'type': 'string', 'index': 'not_analyzed'}}}
-                        elif prop == 'pooled_from' or prop == 'derived_from':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('biosample-temp')['biosample-temp']['basic']
-                        elif prop == 'constructs':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('construct')['construct']['basic']
-                        elif prop == 'treatments':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('treatment')['treatment']['basic']
-                        elif prop == 'replicates':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('replicate')['replicate']['basic']
-                        elif prop == 'files':
-                            new_mapping['basic']['properties'][prop] = es.get_mapping('file')['file']['basic']
-                        else:
-                            new_mapping['basic']['properties'][prop] = es.get_mapping(prop)[prop]['basic']
-    
-    try:
-        es.create_index(url)
-    except IndexAlreadyExistsError:
-        es.delete_index(url)
-        es.create_index(url)
-    
-    es.put_mapping(url, DOCTYPE, new_mapping)
-    
-    query = {'query': {'match_all': {}}}
-    results = es.search(query, index=index, size=10000)
-    docs = []
-    for d in results['hits']['hits']:
-        docs.append(d['_source'])
-    if docs:
-        es.bulk_index(url, DOCTYPE, docs, id_field='uuid')
-    
-    es.refresh(url)
-    es.delete_index(index)
-
-
 def main():
     ''' Indexes app data loaded to th elasticsearch '''
 
@@ -121,13 +58,7 @@ def main():
         items = res.json['@graph']
 
         # try creating index, if it exists already delete it and create it
-        index = url + '-temp'
-        try:
-            es.create_index(index)
-        except IndexAlreadyExistsError:
-            es.delete_index(index)
-            es.create_index(index)
-
+        index = url
         counter = 0
         for item in items:
             try:
@@ -137,23 +68,6 @@ def main():
             else:
                 document_id = str(item_json.json['uuid'])
                 document = item_json.json
-                
-                # For biosamples getting organ_slim and system_slim from ontology index
-                if index == 'biosample-temp' or index == 'experiment-temp':
-                    try:
-                        if document['biosample_term_id']:
-                            document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
-                            document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
-                            document['developmental_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['developmental']
-                        else:
-                            document['organ_slims'] = []
-                            document['system_slims'] = []
-                            document['developmental_slims'] = []
-                    except:
-                        document['organ_slims'] = []
-                        document['system_slims'] = []
-                        document['developmental_slims'] = []
-
                 es.index(index, DOCTYPE, document, document_id)
                 counter = counter + 1
                 if counter % 50 == 0:
@@ -162,10 +76,7 @@ def main():
         es.refresh(index)
         count = es.count('*:*', index=index)
         print "Finished indexing " + str(count['count']) + " " + url
-        print "Updating the mapping ..."
-        update_mapping(index, url)
-        print "Done Updating!"
-        print ""
+        print
 
 if __name__ == '__main__':
     main()
