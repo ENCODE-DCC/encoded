@@ -2,7 +2,7 @@ import json
 
 from urllib2 import Request, urlopen
 
-uberonURL = "http://svn.code.sf.net/p/obo/svn/uberon/trunk/composite-vertebrate.obo"
+uberonURL = "http://sourceforge.net/p/obo/svn/5037/tree/uberon/trunk/composite-vertebrate.obo?format=raw"
 urls = [uberonURL]
 
 

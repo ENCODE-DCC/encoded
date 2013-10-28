@@ -1,9 +1,39 @@
 from pyramid import paster
 from pyelasticsearch import ElasticSearch, IndexAlreadyExistsError
+from collections import OrderedDict
 
 ES_URL = 'http://localhost:9200'
 DOCTYPE = 'basic'
 es = ElasticSearch(ES_URL)
+
+# Part of this will be moved to schemas and other part should be in a proper dict
+COLLECTION_URL = OrderedDict([
+    ('user', '/users/'),
+    ('access_key', '/access-keys/'),
+    ('award', '/awards/'),
+    ('lab', '/labs/'),
+    ('organism', '/organisms/'),
+    ('source', '/sources/'),
+    ('target', '/targets/'),
+    ('antibody_lot', '/antibody-lots/'),
+    ('antibody_characterization', '/antibody-characterizations/'),
+    ('antibody_approval', '/antibodies/'),
+    ('mouse_donor', '/mouse-donors/'),
+    ('human_donor', '/human-donors/'),
+    ('document', '/documents/'),
+    ('treatment', '/treatments/'),
+    ('construct', '/constructs/'),
+    ('construct_characterization', '/construct-characterizations/'),
+    ('rnai', '/rnais/'),
+    ('rnai_characterization', '/rnai-characterizations/'),
+    ('biosample', '/biosamples/'),
+    ('biosample_characterization', '/biosample-characterizations/'),
+    ('platform', '/platforms/'),
+    ('library', '/libraries/'),
+    ('replicate', '/replicates/'),
+    ('file', '/files/'),
+    ('experiment', '/experiments/')
+])
 
 
 class Mapper(dict):
@@ -34,32 +64,40 @@ class Mapper(dict):
 def main():
     app = paster.get_app('production.ini')
     root = app.root_factory(app)
-    collections = root.by_item_type.keys()
+    ignore_properties = ['attachment', 'schema_version', 'uuid', 'tags', 'flowcell_details']
 
-    for collection_name in collections:
-        print collection_name
+    for collection_name in COLLECTION_URL:
         collection = root[collection_name]
         schema = collection.schema
         embedded = collection.Item.embedded
-
-        mapping = Mapper()
-        import pdb; pdb.set_trace();
-        for prop in schema['properties']:
-            if prop in embedded:
-                try:
-                    schema['properties'][prop]['items']['linkTo']
-                except:
-                    pass
-                else:
-                    pass
-            else:
-                mapping.__setprop__(prop)
 
         try:
             es.create_index(collection_name)
         except IndexAlreadyExistsError:
             es.delete_index(collection_name)
             es.create_index(collection_name)
+        
+        mapping = Mapper()
+        if 'calculated_props' in schema:
+            calculated_props = schema['calculated_props']
+            for calculated_prop in calculated_props:
+                mapping.__setprop__(calculated_prop)
+
+        for prop in schema['properties']:
+            if prop not in ignore_properties:
+                if prop in embedded:
+                    try:
+                        inner_object = schema['properties'][prop]['linkTo']
+                    except:
+                        inner_object = schema['properties'][prop]['items']['linkTo']
+                    # Handling donors edge case here
+                    if inner_object == 'donor':
+                        inner_object = 'human_donor'
+                    # If they are embedding same object
+                    if inner_object != collection_name:
+                        mapping.__setobjprop__(prop, es.get_mapping(inner_object)[inner_object]['basic'])
+                else:
+                    mapping.__setprop__(prop)
         es.put_mapping(collection_name, DOCTYPE, mapping)
         es.refresh(collection_name)
 
