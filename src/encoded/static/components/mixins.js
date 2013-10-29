@@ -173,8 +173,8 @@ function (exports, $, React, URI) {
 
         handlePersonaReady: function () {
             this.personaDeferred.resolve();
-            this.setState({personaReady: true});
             console.log('persona ready');
+            this.setState({personaReady: true});
         },
 
         triggerLogin: function (event) {
@@ -234,6 +234,11 @@ function (exports, $, React, URI) {
                 target = target.parentElement;
             }
             if (!target) return;
+
+            if (target.getAttribute('disabled')) {
+                event.preventDefault();
+                return;
+            }
 
             // data-trigger links invoke custom handlers.
             var data_trigger = target.getAttribute('data-trigger');

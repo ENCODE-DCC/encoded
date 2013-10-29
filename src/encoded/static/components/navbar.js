@@ -8,6 +8,7 @@ function (React, mixins) {
         render: function() {
             var section = this.props.location.pathname.split('/', 2)[1] || '';
             return NavBarLayout({
+                personaReady: this.props.personaReady,
                 portal: this.props.portal,
                 section: section,
                 session: this.props.session,
@@ -38,7 +39,7 @@ function (React, mixins) {
                             <a className="brand" href="/">{portal.portal_title}</a>
                             <div className="nav-collapse collapse">
                                 <GlobalSections global_sections={portal.global_sections} section={section} />
-                                <UserActions session={session} user_actions={user_actions} />
+                                {this.transferPropsTo(<UserActions />)}
                             </div>
                         </div>
                     </div>
@@ -70,10 +71,11 @@ function (React, mixins) {
     var UserActions = React.createClass({
         render: function() {
             var session = this.props.session;
+            var disabled = !this.props.personaReady;
             if (!(session && session.persona)) {
                 return (
                     <ul id="user-actions" className="nav pull-right" hidden={!session}>
-                        <li><a href="" data-trigger="login" data-id="signin">Sign in</a></li>
+                        <li><a href="" disabled={disabled} data-trigger="login" data-id="signin">Sign in</a></li>
                     </ul>
                 );
             }

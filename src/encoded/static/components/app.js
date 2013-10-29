@@ -65,7 +65,8 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
                 content = ContentView({
                     context: this.state.context,
                     location: this.state.location,
-                    session:this.state.session
+                    personaReady: this.state.personaReady,
+                    session: this.state.session
                 });
             }
             var errors = this.state.errors.map(function (error) {
@@ -82,7 +83,9 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
             return (
                 <div id="application" className={appClass} onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <div id="layout">
-                        <NavBar location={this.state.location} portal={this.state.portal} user_actions={this.state.user_actions} session={this.state.session} />
+                        <NavBar location={this.state.location} portal={this.state.portal}
+                                user_actions={this.state.user_actions} session={this.state.session}
+                                personaReady={this.state.personaReady} />
                         <div id="content" className="container">
                             {content}
                         </div>

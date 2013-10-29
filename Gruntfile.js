@@ -13,6 +13,7 @@ module.exports = function(grunt) {
                     alias: [
                         'domready:',
                         'react-tools/build/modules/React:react',
+                        'react-tools/build/modules/DOMProperty:DOMProperty',  // XXX https://github.com/facebook/react/pull/450                        
                         'underscore:',
                     ],
                     shim: {
@@ -69,6 +70,7 @@ module.exports = function(grunt) {
                     external: [
                         'jquery',
                         'react',
+                        'DOMProperty',  // XXX https://github.com/facebook/react/pull/450
                         'underscore',
                         'd3',
                         'domready',
