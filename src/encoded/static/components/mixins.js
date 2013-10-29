@@ -77,7 +77,12 @@ function (exports, $, React, URI) {
             // Login / logout actions must be deferred until persona is ready.
             $.ajaxPrefilter(this.ajaxPrefilter);
             this.personaDeferred = $.Deferred();
-            this.refreshSession();
+            if (!navigator.id) {
+                this.personaLoaded = $.Deferred();
+                var script = document.querySelector('script[src="https://login.persona.org/include.js"]');
+                script.onload = this.personaLoaded.resolve.bind(this.personaLoaded);
+            }
+            $.when(this.refreshSession(), this.personaLoaded).done(this.configurePersona);
         },
 
         ajaxPrefilter: function (options, original, xhr) {
@@ -103,16 +108,13 @@ function (exports, $, React, URI) {
             return this.sessionRequest;
         },
 
-        componentDidUpdate: function (prevProps, prevState) {
-            // Defer persona setup until we have the session
-            if (!prevState.session && this.state.session) {
-                navigator.id.watch({
-                    loggedInUser: this.state.session.persona,
-                    onlogin: this.handlePersonaLogin,
-                    onlogout: this.handlePersonaLogout,
-                    onready: this.handlePersonaReady
-                });
-            }
+        configurePersona: function (session) {
+            navigator.id.watch({
+                loggedInUser: session.persona,
+                onlogin: this.handlePersonaLogin,
+                onlogout: this.handlePersonaLogout,
+                onready: this.handlePersonaReady
+            });
         },
 
         handlePersonaLogin: function (assertion, retrying) {
@@ -172,6 +174,7 @@ function (exports, $, React, URI) {
         handlePersonaReady: function () {
             this.personaDeferred.resolve();
             this.setState({personaReady: true});
+            console.log('persona ready');
         },
 
         triggerLogin: function (event) {
