@@ -77,7 +77,8 @@
                 "mM",
                 "mg/mL",
                 "M",
-                "percent"
+                "percent",
+                "units"
             ]
         },
         "duration": {
