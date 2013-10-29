@@ -108,7 +108,8 @@ function (exports, $, React, URI) {
             return this.sessionRequest;
         },
 
-        configurePersona: function (session) {
+        configurePersona: function (refresh, loaded) {
+            var session = refresh[0];
             navigator.id.watch({
                 loggedInUser: session.persona,
                 onlogin: this.handlePersonaLogin,
