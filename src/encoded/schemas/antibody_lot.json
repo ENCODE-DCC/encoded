@@ -17,7 +17,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/product_id" },
-	{ "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" }
 
     ],
     "properties": {

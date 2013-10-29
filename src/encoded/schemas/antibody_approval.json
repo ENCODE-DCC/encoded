@@ -12,7 +12,7 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
-	{ "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
