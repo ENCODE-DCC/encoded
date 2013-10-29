@@ -39,6 +39,8 @@ module.exports = function(grunt) {
                         'bootstrap-alert': {path: require.resolve('twitter-bootstrap/js/bootstrap-alert'), exports: null, depends: {jquery: 'jQuery'}},
                         'bootstrap-button': {path: require.resolve('twitter-bootstrap/js/bootstrap-button'), exports: null, depends: {jquery: 'jQuery'}},
                         'bootstrap-carousel': {path: require.resolve('twitter-bootstrap/js/bootstrap-carousel'), exports: null, depends: {jquery: 'jQuery'}},
+                        'bootstrap-collapse': {path: require.resolve('twitter-bootstrap/js/bootstrap-collapse'), exports: null, depends: {jquery: 'jQuery'}},
+                        'bootstrap-dropdown': {path: require.resolve('twitter-bootstrap/js/bootstrap-dropdown'), exports: null, depends: {jquery: 'jQuery'}},
                         'bootstrap-modal': {path: require.resolve('twitter-bootstrap/js/bootstrap-modal'), exports: null, depends: {jquery: 'jQuery'}},
                         'bootstrap-popover': {path: require.resolve('twitter-bootstrap/js/bootstrap-popover'), exports: null, depends: {jquery: 'jQuery', 'bootstrap-tooltip': null}},
                         'bootstrap-scrollspy': {path: require.resolve('twitter-bootstrap/js/bootstrap-scrollspy'), exports: null, depends: {jquery: 'jQuery'}},
