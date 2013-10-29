@@ -306,6 +306,8 @@ function (exports, $, React, URI) {
 
         handlePopState: function (event) {
             if (this.DISABLE_POPSTATE) return;
+            // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
+            if (!this.havePushedState) return;
             if (!this.historyEnabled) {
                 window.location.reload();
                 return;
@@ -320,8 +322,8 @@ function (exports, $, React, URI) {
 
         navigate: function (href, options) {
             options = options || {}; 
-            var self = this;
             this.setProps({href: href});
+            this.havePushedState = true;
 
             if (this.contextRequest && this.contextRequest.state() == 'pending') {
                 this.contextRequest.abort();
