@@ -21,7 +21,8 @@ from .. import edw_file
 DEFAULT_INI = 'production.ini'  # Default application initialization file
 
 ENCODE2_ACC = 'wgEncodeE'  # WARNING: Also in experiment.json and edw_file.py
-ENCODE3_EXP_ACC = 'ENCSR'  # WARNING: Also in experiment.json
+ENCODE3_ACC = 'ENC'
+ENCODE3_EXP_ACC = ENCODE3_ACC + 'SR'  # WARNING: Also in experiment.json
 ENCODE2_PROP = 'encode2_dbxrefs' # WARNING: Also in experiment.json
 
 # Schema object names
@@ -32,9 +33,6 @@ DATASETS = 'datasets'
 
 SEARCH_URL = '/search/?searchTerm='
 
-collections= {}  # Cache collections
-collection_hashes = {}  # Cache collections
-
 app_host_name = 'localhost'
 
 verbose = False
@@ -43,16 +41,12 @@ require_replicate = False  # Do not create  minimal replicate if not in database
 
 
 ################
-# Support functions to localize handling of special fields
-# e.g. links, datetime
+# Support for special fields (would be nice to get this from JSON schema)
 
-# Some properties in JSON object from collection return nested objects requiring
-# pulling desired property (or an additional GET)
-# NOTE: It would be good to derive this info from schema
-
-FILE_EMBEDDED_PROPERTIES = {
+FILE_NESTED_PROPERTIES = {
     'submitted_by': 'email',
     'replicate': 'biological_replicate_number',
+    # TODO: support tech repnum when available from EDW
 }
 
 def format_app_fileinfo(app, file_dict, exclude=None):
@@ -60,41 +54,31 @@ def format_app_fileinfo(app, file_dict, exclude=None):
     global verbose
     if verbose:
         sys.stderr.write('Found app file: %s\n' % (file_dict['accession'])) 
-    for link_prop, dest_prop in FILE_EMBEDDED_PROPERTIES.iteritems():
-        if link_prop in file_dict:
-            prop = file_dict[link_prop]
-            if type(prop) == dict:
-                file_dict[link_prop] = prop[dest_prop]
-            elif prop.startswith('/'):
-                # Must issue another GET as embedded prop hasn't been expanded
-                resp = app.get(prop)
-                prop = resp.json[dest_prop]
-                # Submitter email returned by test data (should be user dict)
-                if type(prop) == dict:
-                    file_dict[link_prop] = prop[dest_prop]
-                else:
-                    file_dict[link_prop] = prop
-            else:
-                # Seeing submitter email directly in submitted_by field
-                # Might be incorrect test data, but handling it for now
-                file_dict[link_prop] = prop
+    fileinfo = {}
+    for prop in edw_file.FILE_INFO_FIELDS:
+        if exclude and prop in exclude:
+            continue
+        if prop not in file_dict:
+            # special handling of replicate -- numeric field
+            if prop == 'replicate':
+                fileinfo[prop] = edw_file.NO_REPLICATE_INT
+            elif prop != 'assembly':
+                # assembly can properly be missing
+                fileinfo[prop] = edw_file.NA
+
+        # special handling of nested properties
+        elif prop in FILE_NESTED_PROPERTIES.keys():
+            nested_prop = FILE_NESTED_PROPERTIES[prop]
+            fileinfo[prop] = file_dict[prop][nested_prop]
+
         else:
-            if link_prop == 'replicate':
-                # special handling of replicate -- only numeric field
-                file_dict[link_prop] = edw_file.NO_REPLICATE_INT
-            else:
-                file_dict[link_prop] = edw_file.NA
-
-    # Extract file and dataset accessionsfrom URLs in JSON
-    file_dict['accession'] = file_dict['@id'].split('/')[2]
-    file_dict['dataset'] = file_dict['dataset'].split('/')[2]
-
-    # Filter out extra fields (not in FILE_INFO_FIELDS, or excluded)
-    for prop in file_dict.keys():
-        if (prop not in edw_file.FILE_INFO_FIELDS) or (exclude and prop in exclude):
-                del file_dict[prop]
-
-    # NOTE: assembly can be missing (e.g. for fastQ's)
+            value = file_dict[prop]
+            fileinfo[prop] = value
+            if value.startswith('/'):
+                acc = value.split('/')[2]
+                if acc.startswith(ENCODE3_ACC):
+                    fileinfo[prop] = acc
+    return fileinfo
 
 
 def format_reader_fileinfo(file_dict):
@@ -158,6 +142,7 @@ def make_app(application, username, password):
     # END CAUTION
     return app
 
+
 ################
 # Utility classes and functions
 
@@ -171,56 +156,33 @@ def get_collection(app, collection):
     # NOTE: perhaps limit=all should be default for JSON output
     # and app should hide @graph (provide an iterator)
     global collections
-    if collection not in collections:
-        url = collection_url(collection)
-        url += "?limit=all"
-        if not quick:
-            url += '&collection_source=db'
-        resp = app.get(url)
-        collections[collection] = resp.json['@graph']
-    return collections[collection]
-
-
-def get_collection_hash(app, collection, key):
-    # GET JSON objects from app as a hash
-    global collection_hashes
-    coll_hash_key = collection + '.' + key
-    if coll_hash_key not in collection_hashes:
-        coll_hash = {}
-        coll = get_collection(app, collection)
-        for item in coll:
-            if unicode(key) in item:
-                item_key = item[unicode(key)]
-                print item_key
-                coll_hash[item_key] = item
-        collection_hashes[coll_hash_key] = coll_hash
+    url = collection_url(collection)
+    url += "?limit=all"
+    if not quick:
+        url += '&collection_source=db'
+    resp = app.get(url)
+    return resp.json['@graph']
 
 
 ################
 # ENCODE 2 vs. ENCODE 3 experiment accession conversion
 
 encode2_to_encode3 = None  # Dict of ENCODE3 accs, keyed by ENCODE 2 acc
-experiment_hash = {}       # Cache experiment JSONs for use by multiple files
-
-
-def get_experiment(app, encode3_acc):
-    global experiment_hash
-    if encode3_acc not in experiment_hash.keys():
-        if verbose:
-            print "Experiment: ", encode3_acc
-        url = collection_url(EXPERIMENTS) + encode3_acc
-        resp = app.get(url).maybe_follow()
-        experiment_hash[encode3_acc] = resp.json
-    return experiment_hash[encode3_acc]
+encode3_to_encode2 = {}    # Cache experiment ENCODE 2 ref lists
 
 
 def get_encode2_accessions(app, encode3_acc):
     # Get list of ENCODE 2 accessions for this ENCODE 3 experiment(or None)
-    exp = get_experiment(app, encode3_acc)
-    if ENCODE2_PROP in exp:
-        encode2_accs = exp[ENCODE2_PROP]
-        if len(encode2_accs) >  0:
-            return encode2_accs
+    global encode3_to_encode2
+    if encode3_acc not in encode3_to_encode2:
+        if verbose:
+            print "GET Experiment: ", encode3_acc
+        url = collection_url(EXPERIMENTS) + encode3_acc
+        resp = app.get(url).maybe_follow()
+        encode3_to_encode2[encode3_acc] = resp.json[ENCODE2_PROP]
+    encode2_accs = encode3_to_encode2[encode3_acc]
+    if len(encode2_accs) > 0:
+        return encode2_accs
     return None
 
 
@@ -242,14 +204,18 @@ def get_phase(app, fileinfo):
 
 def get_encode2_to_encode3(app):
     # Create and cache list of ENCODE 3 experiments with ENCODE2 accessions
+    # Used to map EDW ENCODE 2 accessions to ENCODE3 accession
     global encode2_to_encode3
 
     if encode2_to_encode3 is not None:
         return encode2_to_encode3
     encode2_to_encode3 = {}
     experiments = get_collection(app, EXPERIMENTS)
-    for experiment in experiments:
-        encode3_acc = experiment['accession']
+    for item in experiments:
+        url = item['@id']
+        resp = app.get(url).maybe_follow()
+        exp = resp.json
+        encode3_acc = exp['accession']
         encode2_accs = get_encode2_accessions(app, encode3_acc)
         if encode2_accs is not None and len(encode2_accs) > 0:
             for encode2_acc in encode2_accs:
@@ -289,8 +255,10 @@ def get_encode3_experiment(app, accession):
 # Special handling of a few file properties
 
 def set_fileinfo_experiment(app, fileinfo):
-    # Convert ENCODE2 experiment to ENCODE3
-    acc = fileinfo['dataset']
+
+    # Clone to preserve input
+    new_fileinfo = copy.deepcopy(fileinfo)
+    acc = new_fileinfo['dataset']
     if (acc.startswith(ENCODE2_ACC)):
         if verbose:
             sys.stderr.write('Get ENCODE3 experiment acc for: %s\n' % (acc))
@@ -299,54 +267,56 @@ def set_fileinfo_experiment(app, fileinfo):
             if verbose:
                 sys.stderr.write('.. ENCODE3 experiment acc for: %s is %s\n' % 
                                     (acc, encode3_acc))
-            fileinfo['dataset'] = encode3_acc
+            new_fileinfo['dataset'] = encode3_acc
+    return new_fileinfo
 
+
+experiment_replicates = {}  # Cache replicate info when an experiment accessed
+
+def replicate_key(experiment, bio_rep, tech_rep):
+    # Return a key to retrieve replicate url
+    key = experiment
+    key += '+' + str(bio_rep)
+    key += '+' + str(tech_rep)
+    return key
 
 def set_fileinfo_replicate(app, fileinfo):
     # Obtain replicate identifier from open app
     # using experiment accession and replicate numbers
     # Replicate -1 in fileinfo indicates there is none (e.g. pooled data)
+    global experiment_replicates
 
     # Clone to preserve input
     new_fileinfo = copy.deepcopy(fileinfo)
-
-    # Check for no replicate
-    bio_rep_num = int(fileinfo['replicate'])
-    # TODO: change replicate representation in filelinfo to int ?
-    if (bio_rep_num == edw_file.NO_REPLICATE_INT):
-        del new_fileinfo['replicate']
-        return new_fileinfo
 
     # Also trim out irrelevant assembly
     if new_fileinfo['assembly'] == edw_file.NA:
         del new_fileinfo['assembly']
 
-    # Faking technical replicate for now
-    tech_rep_num = edw_file.TECHNICAL_REPLICATE_NUM # TODO, needs EDW changes
+    # Check for no replicate
+    if 'replicate' not in fileinfo:
+        return new_fileinfo
 
-    # Find experiment id
-    #experiment = new_fileinfo['dataset']
-
-    # TODO: maybe this GET unneeded ?
-    #url = collection_url(EXPERIMENTS) + experiment
-    #resp = app.get(url).maybe_follow()
-    #exp_id = resp.json['@id']
-
-    experiment = new_fileinfo['dataset']
+    bio_rep_num = int(fileinfo['replicate'])
+    if (bio_rep_num == edw_file.NO_REPLICATE_INT):
+        del new_fileinfo['replicate']
+        return new_fileinfo
 
     # Check for existence of replicate
-
-    # GET all replicates
-    reps = get_collection(app, REPLICATES)
-    rep_id = None
-    for rep in reps:
-        if rep['experiment'].rfind(experiment) != -1 and \
-            int(rep['biological_replicate_number']) == bio_rep_num and \
-            int(rep['technical_replicate_number']) == tech_rep_num:
-                rep_id = rep['@id']
-                break
-
-    if rep_id is None:
+    experiment = new_fileinfo['dataset']
+    bio_rep_num = fileinfo['replicate']
+    tech_rep_num = edw_file.TECHNICAL_REPLICATE_NUM # TODO, needs EDW changes
+    key = replicate_key(experiment, bio_rep_num, tech_rep_num)
+    if key not in experiment_replicates:
+        url = collection_url(EXPERIMENTS)
+        url += experiment
+        resp = app.get(url).maybe_follow()
+        reps = resp.json['replicates']
+        for rep in reps:
+            add_key = replicate_key(experiment, rep['biological_replicate_number'],
+                                edw_file.TECHNICAL_REPLICATE_NUM)
+            experiment_replicates[add_key] = rep['@id']
+    if key not in experiment_replicates:
         if require_replicate:
             logging.warning('Ignore POST/PUT for File %s: replicate required\n', 
                             new_fileinfo['accession'])
@@ -365,10 +335,13 @@ def set_fileinfo_replicate(app, fileinfo):
         if verbose:
             sys.stderr.write(str(resp) + "\n")
         # WARNING: ad-hoc char conversion here
-        rep_id = resp.json[unicode('@graph')][0][unicode('@id')]
+        rep_id = str(resp.json[unicode('@graph')][0][unicode('@id')])
+        experiment_replicates[key] = rep_id
+    else:
+        rep_id = experiment_replicates[key]
 
-    # Populate link to replicate, and clone to preserve input
-    new_fileinfo['replicate'] = str(rep_id)
+    # Populate link to replicate
+    new_fileinfo['replicate'] = rep_id
     return new_fileinfo
 
 
@@ -383,13 +356,16 @@ def get_app_fileinfo(app, full=True, limit=0, exclude=None,
     app_files = []
     for row in rows:
         if full:
-            format_app_fileinfo(app, row, exclude=exclude)
+            url = row['@id']
+            resp = app.get(url).maybe_follow()
+            fileinfo = format_app_fileinfo(app, resp.json, exclude=exclude)
             if phase != edw_file.ENCODE_PHASE_ALL:
-                if get_phase(app, row) != phase:
+                if get_phase(app, fileinfo) != phase:
                     continue
-            app_files.append(row)
+            app_files.append(fileinfo)
         else:
-            app_files.append(row['accession'])
+            acc = row['@id'].split('/')[2]
+            app_files.append(acc)
         limit -= 1
         if limit == 0:
             break
@@ -434,8 +410,8 @@ def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
             # special handling of accession -- need to lookup ENCODE 3 
             #   accession at encoded for ENCODE 2 accession from EDW
             missing_file = edw_dict[acc]
-            set_fileinfo_experiment(app, missing_file)
-            missing_files.append(missing_file)
+            file_info = set_fileinfo_experiment(app, missing_file)
+            missing_files.append(file_info)
     return missing_files
 
 
@@ -453,10 +429,10 @@ def post_fileinfo(app, fileinfo):
     # Replace replicate number (bio_rep) with URL for replicate
     # (may require creating one)
     try:
-        set_fileinfo_experiment(app, fileinfo)
-        post_fileinfo = set_fileinfo_replicate(app, fileinfo)
+        exp_fileinfo = set_fileinfo_experiment(app, fileinfo)
+        post_fileinfo = set_fileinfo_replicate(app, exp_fileinfo)
         if post_fileinfo is None:
-            return
+            return None
     except AppError as e:
         logging.warning('Failed POST File %s: Replicate error\n%s', accession, e)
         return
@@ -470,6 +446,7 @@ def post_fileinfo(app, fileinfo):
         logging.warning('Failed POST File %s\n%s', accession, resp)
     else:
         sys.stderr.write('Successful POST File: %s\n' % (accession))
+    return resp
 
 
 def put_fileinfo(app, fileinfo):
@@ -481,8 +458,8 @@ def put_fileinfo(app, fileinfo):
     if verbose:
         sys.stderr.write('....PUT file: %s\n' % (accession))
     try:
-        set_fileinfo_experiment(app, fileinfo)
-        put_fileinfo = set_fileinfo_replicate(app, fileinfo)
+        exp_fileinfo = set_fileinfo_experiment(app, fileinfo)
+        put_fileinfo = set_fileinfo_replicate(app, exp_fileinfo)
         if put_fileinfo is None:
             return
     except AppError as e:
@@ -569,8 +546,8 @@ def convert_fileinfo(input_file, app):
         for fileinfo in reader:
             format_reader_fileinfo(fileinfo)
             experiment = fileinfo['dataset']
-            set_fileinfo_experiment(app, fileinfo)
-            app_files.append(fileinfo)
+            exp_fileinfo = set_fileinfo_experiment(app, fileinfo)
+            app_files.append(exp_fileinfo)
     edw_file.dump_fileinfo(app_files)
 
 
@@ -636,11 +613,13 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
     # Show differences between EDW experiment files and files in app
     sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
                       % (phase))
-    edw_files = edw_file.get_edw_fileinfo(edw, experiment=True,
+    edw_files = edw_file.get_edw_fileinfo(edw, experiment=True, 
                                           exclude=exclude, phase=phase)
     edw_dict = { d['accession']:d for d in edw_files }
     app_files = get_app_fileinfo(app, exclude=exclude, phase=phase)
     app_dict = { d['accession']:d for d in app_files }
+    import pdb
+    pdb.set_trace()
 
     # Inventory files
     edw_only = []
@@ -653,8 +632,8 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
         if accession not in app_dict:
             edw_only.append(edw_fileinfo)
         else:
-            set_fileinfo_experiment(app, edw_fileinfo)
-            set_edw = set(edw_fileinfo.items())
+            edw_exp_fileinfo = set_fileinfo_experiment(app, edw_fileinfo)
+            set_edw = set(edw_exp_fileinfo.items())
             set_app = set(app_dict[accession].items())
             if set_edw == set_edw:
                 same.append(edw_fileinfo)
@@ -673,8 +652,8 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
 
         for accession in diff_accessions:
             edw_fileinfo = edw_dict[accession]
-            set_fileinfo_experiment(app, edw_fileinfo)
-            edw_diff_files = [ edw_fileinfo ]
+            edw_exp_fileinfo = set_fileinfo_experiment(app, edw_fileinfo)
+            edw_diff_files = [ edw_exp_fileinfo ]
             app_diff_files = [ app_dict[accession] ]
             edw_file.dump_fileinfo(edw_diff_files, typeField='EDW_DIFF', header=False)
             edw_file.dump_fileinfo(app_diff_files, typeField='APP_DIFF', header=False)

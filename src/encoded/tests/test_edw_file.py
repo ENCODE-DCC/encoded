@@ -26,27 +26,10 @@ def test_format_app_fileinfo_expanded(workbook, testapp):
     resp = testapp.get(url).maybe_follow()
     file_dict = resp.json
 
-    encoded.commands.read_edw_fileinfo.format_app_fileinfo(testapp, file_dict)
+    fileinfo = encoded.commands.read_edw_fileinfo.format_app_fileinfo(testapp, file_dict)
 
     # compare results for identity with expected
-    set_app = set(file_dict.items())
-    set_edw = set(edw_test_data.format_app_file_out.items())
-    assert set_app == set_edw
-
-
-def test_format_app_fileinfo_embedded(workbook, testapp):
-    # Test extracting EDW-relevant fields from encoded file.json
-    # Unexpanded JSON (requires GETs on embedded URLs)
-
-    # load input
-    url = '/files/' + TEST_ACCESSION + '/?embed=false/'
-    resp = testapp.get(url).maybe_follow()
-    file_dict = resp.json
-
-    encoded.commands.read_edw_fileinfo.format_app_fileinfo(testapp, file_dict)
-
-    # compare results for identity with expected
-    set_app = set(file_dict.items())
+    set_app = set(fileinfo.items())
     set_edw = set(edw_test_data.format_app_file_out.items())
     assert set_app == set_edw
 
@@ -65,7 +48,7 @@ def test_list_new(workbook, testapp):
 def test_import_file(workbook, testapp):
     # Test import of new file to encoded
 
-    test_num = 1    # for parametrization
+    test_num = 1    # for parameterization
     input_file = 'import_in.' + str(test_num) + '.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + input_file)
     reader = DictReader(f, delimiter='\t')
@@ -77,13 +60,13 @@ def test_import_file(workbook, testapp):
         set_in = set(unidict.items())
 
         encoded.commands.read_edw_fileinfo.format_reader_fileinfo(fileinfo)
-        encoded.commands.read_edw_fileinfo.post_fileinfo(testapp, fileinfo)
+        resp = encoded.commands.read_edw_fileinfo.post_fileinfo(testapp, fileinfo)
         acc = fileinfo['accession']
         url = encoded.commands.read_edw_fileinfo.collection_url(encoded.commands.read_edw_fileinfo.FILES) + acc
         resp = testapp.get(url).maybe_follow()
         file_dict = resp.json
-        encoded.commands.read_edw_fileinfo.format_app_fileinfo(testapp, file_dict)
-        set_out = set(file_dict.items())
+        fileinfo = encoded.commands.read_edw_fileinfo.format_app_fileinfo(testapp, file_dict)
+        set_out = set(fileinfo.items())
 
         assert set_in == set_out
 
