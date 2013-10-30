@@ -6,7 +6,7 @@
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
     "facets": {"Biosample Type": "biosample_type", "System": "system_slims", "Organism": "organism.name", "Organ": "organ_slims", "Lab": "lab.title", "Source": "source.title"},
-    "identifyingProperties": ["uuid","accesion","aliases"],
+    "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
