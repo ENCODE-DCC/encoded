@@ -500,14 +500,28 @@ class Item(object):
         embedded = self.embedded
         if self.schema is None:
             return
-        for name in embedded:
-            value = properties.get(name)
+        paths = set()
+
+        for path in embedded:
+            path = path.split('.')
+            for n in xrange(len(path)):
+                paths.add(tuple(path[:n+1]))
+
+        paths = sorted(paths)
+        for path in paths:
+            p = list(path)
+            name = p.pop()
+            obj = properties
+            for segment in p:
+                obj = obj[segment]
+            value = obj.get(name)
+            assert not isinstance(value, dict)
             if value is None:
                 continue
             if isinstance(value, list):
-                properties[name] = [embed(request, member) for member in value]
+                obj[name] = [embed(request, member + '?embed=false') for member in value]
             else:
-                properties[name] = embed(request, value)
+                obj[name] = embed(request, value + '?embed=false')
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -541,7 +555,6 @@ class Item(object):
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
         raise HTTPConflict(msg)
-
 
     @classmethod
     def update_properties(cls, model, properties, sheets=None):
