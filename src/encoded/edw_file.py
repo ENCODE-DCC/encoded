@@ -6,6 +6,7 @@ import datetime
 import ConfigParser
 from csv import DictReader, DictWriter
 from collections import OrderedDict
+from operator import itemgetter
 
 from sqlalchemy import MetaData, create_engine, select
 
@@ -135,7 +136,7 @@ def dump_fileinfo(fileinfos, header=True, typeField=None):
             sys.stdout.write('%s\t' % 'type')
         writer.writeheader()
 
-    for fileinfo in sorted(fileinfos):
+    for fileinfo in sorted(fileinfos, key=itemgetter('accession')):
         if typeField is not None:
             sys.stdout.write('%s\t' % typeField) 
         ordered = OrderedDict.fromkeys(FILE_INFO_FIELDS)
@@ -227,9 +228,15 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
                     f.c.md5.label('md5sum'),
                     u.c.email.label('submitted_by'),
                     f.c.deprecated.label('status')])
-    query = query.where((v.c.fileId == f.c.id) &
+    query = query.where(
+              (v.c.fileId == f.c.id) &
+              (u.c.id == s.c.userId) &
               (s.c.id == f.c.submitId) &
               (u.c.id == s.c.userId))
+              #(f.c.errorMessage != None))
+    # Occasional file ends up in valid table, even though in error -- filter out if 
+    # there is an error message in edwFile table
+    query.append_whereclause('edwFile.errorMessage = ""')
     if start_id > 0:
         query.append_whereclause('edwValidFile.fileId > ' + str(start_id))
     if experiment:
