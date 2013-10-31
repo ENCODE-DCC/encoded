@@ -231,6 +231,7 @@ class ConstructCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
+        embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
 
 
@@ -244,8 +245,9 @@ class Document(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
+        embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
-
+        
 
 @location('biosamples')
 class Biosample(Collection):
@@ -278,7 +280,7 @@ class Biosample(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set(['donor', 'donor.organism', 'submitted_by', 'lab', 'award', 'source', 'treatments.protocols', 'constructs.documents', 'constructs.target', 'protocol_documents.lab', 'protocol_documents.award', 'protocol_documents.submitted_by', 'derived_from', 'pooled_from', 'characterizations', 'rnais.target', 'rnais.source', 'organism'])
+        embedded = set(['donor.organism', 'submitted_by', 'lab', 'award', 'source', 'treatments.protocols.submitted_by', 'treatments.protocols.lab', 'treatments.protocols.award', 'constructs.documents.submitted_by', 'constructs.documents.award', 'constructs.documents.lab', 'constructs.target', 'protocol_documents.lab', 'protocol_documents.award', 'protocol_documents.submitted_by', 'derived_from', 'pooled_from', 'characterizations', 'rnais.target.organism', 'rnais.source', 'organism'])
         name_key = 'accession'
 
         keys = ACCESSION_KEYS + ALIAS_KEYS
@@ -308,6 +310,7 @@ class BiosampleCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
+        embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
 
 
@@ -331,7 +334,7 @@ class Target(Collection):
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
             'title': {'$value': '{label} ({organism_name})', '$templated': True},
         }
-        embedded = set(['organism', 'submitted_by', 'lab', 'award'])
+        embedded = set(['organism'])
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
         ]
@@ -360,6 +363,7 @@ class AntibodyCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
+        embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
 
 
@@ -371,7 +375,7 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    item_embedded = set(['antibody.source', 'antibody.host_organism', 'target.organism', 'characterizations.target', 'characterizations.award', 'characterizations.submitted_by', 'characterizations.lab', 'lab'])
+    item_embedded = set(['antibody.source', 'antibody.host_organism', 'target.organism', 'characterizations.target.organism', 'characterizations.award', 'characterizations.submitted_by', 'characterizations.lab', 'lab'])
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
     ]
@@ -523,7 +527,7 @@ class Experiments(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set(['files', 'replicates.antibody', 'replicates.library.documents', 'replicates.library.biosample.donor', 'replicates.library.biosample.submitted_by', 'submitted_by', 'lab', 'award', 'possible_controls', 'target', 'documents'])
+        embedded = set(['files', 'replicates.antibody', 'replicates.library.documents.lab', 'replicates.library.documents.submitted_by', 'replicates.library.documents.award', 'replicates.library.biosample.donor', 'replicates.library.biosample.submitted_by', 'submitted_by', 'lab', 'award', 'possible_controls', 'target.organism', 'documents.lab', 'documents.award', 'documents.submitted_by'])
         rev = {
             'replicates': ('replicate', 'experiment'),
         }
@@ -550,7 +554,7 @@ class RNAi(Collection):
         'title': 'RNAi',
         'description': 'Listing of RNAi',
     }
-    item_embedded = set(['source', 'documents', 'characterizations'])
+    item_embedded = set(['source', 'documents'])
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }

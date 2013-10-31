@@ -6,6 +6,9 @@ ES_URL = 'http://localhost:9200'
 DOCTYPE = 'basic'
 es = ElasticSearch(ES_URL)
 
+app = paster.get_app('production.ini')
+root = app.root_factory(app)
+
 # Part of this will be moved to schemas and other part should be in a proper dict
 COLLECTION_URL = OrderedDict([
     ('user', '/users/'),
@@ -39,7 +42,7 @@ COLLECTION_URL = OrderedDict([
 class Mapper(dict):
 
     def __init__(self):
-        self.basic = dict({'properties': {}})
+        self.properties = dict()
 
     def __setattr__(self, k, v):
         if k in self.keys():
@@ -55,21 +58,32 @@ class Mapper(dict):
         raise AttributeError
 
     def __setprop__(self, v):
-        self['basic']['properties'][v] = {'type': 'multi_field', 'fields': {v: {'type': 'string'}, 'untouched': {'type': 'string', 'index': 'not_analyzed'}}}
+        self['properties'][v] = {'type': 'multi_field', 'fields': {v: {'type': 'string'}, 'untouched': {'type': 'string', 'index': 'not_analyzed'}}}
 
     def __setobjprop__(self, k, v):
-        self['basic']['properties'][k] = v
+        self['properties'][k] = v
+
+
+def create_mapping(collection_name, embedded):
+    mapping = Mapper()
+    ignore_properties = ['attachment', 'schema_version', 'uuid', 'tags', 'flowcell_details']
+    properties = root[collection_name].schema['properties']
+    for p in properties:
+        if p not in mapping['properties'] and p not in ignore_properties and p not in embedded:
+            mapping.__setprop__(p)
+    return mapping
 
 
 def main():
-    app = paster.get_app('production.ini')
-    root = app.root_factory(app)
-    ignore_properties = ['attachment', 'schema_version', 'uuid', 'tags', 'flowcell_details']
-
     for collection_name in COLLECTION_URL:
         collection = root[collection_name]
         schema = collection.schema
         embedded = collection.Item.embedded
+        rev_links = dict()
+        try:
+            rev_links = collection.Item.rev
+        except:
+            pass
 
         try:
             es.create_index(collection_name)
@@ -77,28 +91,56 @@ def main():
             es.delete_index(collection_name)
             es.create_index(collection_name)
         
-        mapping = Mapper()
+        mapping = create_mapping(collection_name, embedded)
         if 'calculated_props' in schema:
             calculated_props = schema['calculated_props']
             for calculated_prop in calculated_props:
                 mapping.__setprop__(calculated_prop)
 
-        for prop in schema['properties']:
-            if prop not in ignore_properties:
-                if prop in embedded:
-                    try:
-                        inner_object = schema['properties'][prop]['linkTo']
-                    except:
-                        inner_object = schema['properties'][prop]['items']['linkTo']
-                    # Handling donors edge case here
-                    if inner_object == 'donor':
-                        inner_object = 'human_donor'
-                    # If they are embedding same object
-                    if inner_object != collection_name:
-                        mapping.__setobjprop__(prop, es.get_mapping(inner_object)[inner_object]['basic'])
-                else:
-                    mapping.__setprop__(prop)
-        es.put_mapping(collection_name, DOCTYPE, mapping)
+        for prop in embedded:
+            if '.' in prop:
+                new_mpping = mapping
+                new_schema = schema
+                for p in prop.split('.'):
+                    if rev_links:
+                        if p in rev_links:
+                            name = rev_links[p][0]
+                        else:
+                            try:
+                                name = new_schema['properties'][p]['linkTo']
+                            except:
+                                name = new_schema['properties'][p]['items']['linkTo']
+                    else:
+                        try:
+                            name = new_schema['properties'][p]['linkTo']
+                        except:
+                            name = new_schema['properties'][p]['items']['linkTo']
+                    if name == 'donor':
+                        name = 'human_donor'
+                    if p in new_mpping['properties']:
+                        n = new_mpping['properties'][p]
+                        if 'type' not in n:
+                            new_mpping = new_mpping['properties'][p]
+                            new_schema = root[name].schema
+                            continue
+                    new_mpping['properties'][p] = create_mapping(name, [])
+                    new_mpping = new_mpping['properties'][p]
+                    new_schema = root[name].schema
+            else:
+                if rev_links:
+                    if prop in rev_links:
+                        name = rev_links[prop][0]
+                        mapping['properties'][prop] = create_mapping(name, [])
+                        continue
+                name = ''
+                try:
+                    name = schema['properties'][prop]['linkTo']
+                except:
+                    name = schema['properties'][prop]['items']['linkTo']
+                if name == 'donor':
+                    name = 'human_donor'
+                mapping['properties'][prop] = create_mapping(name, [])
+        es.put_mapping(collection_name, DOCTYPE, {'basic': mapping})
         es.refresh(collection_name)
 
 if __name__ == '__main__':
