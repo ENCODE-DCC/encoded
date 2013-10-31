@@ -412,6 +412,14 @@ class Library(Collection):
     }
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
+    columns = OrderedDict([
+        ('accession', 'Accession'),
+        ('award', 'Award'),
+        ('lab', 'Lab'),
+        ('biosample.biosample_term_name', 'Biosample'),
+        ('biosample.organism.name', 'Species'),
+        ('nucleic_acid_term_name', 'Nucleic Acid Term Name'),
+    ])
 
 
 @location('replicates')
@@ -425,6 +433,14 @@ class Replicates(Collection):
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
+    columns = OrderedDict([
+        ('uuid', 'UUID'),
+        ('library.accession', 'Library Accession'),
+        ('platform.title', 'Platform'),
+        ('experiment', 'Experiment'),
+        ('technical_replicate_number', 'Technical Replicate Number'),
+        ('biological_replicate_number', 'Biological Replicate Number'),
+    ])
 
     class Item(Collection.Item):
         keys = ALIAS_KEYS + [
@@ -465,6 +481,13 @@ class Files(Collection):
     }
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
+    columns = OrderedDict([
+        ('accession', 'Accession'),
+        ('dataset', 'Dataset'),
+        ('file_format', 'File Format'),
+        ('md5sum', 'MD5 Sum'),
+        ('output_type', 'Output Type'),
+    ])
 
 
 @location('experiments')
