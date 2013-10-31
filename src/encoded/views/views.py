@@ -410,6 +410,7 @@ class Library(Collection):
         'title': 'Libraries',
         'description': 'Listing of Libraries',
     }
+    item_embedded = set(['biosample'])
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
@@ -450,6 +451,7 @@ class Replicates(Collection):
                 '$templated': True,
             },
         ]
+        embedded = set(['library', 'platform'])
 
         def __ac_local_roles__(self):
             root = find_root(self)
