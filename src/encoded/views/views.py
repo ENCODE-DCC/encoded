@@ -289,12 +289,17 @@ class Biosample(Collection):
         }
 
         def template_namespace(self, request=None):
-            terms = request.registry['ontology']
             ns = Collection.Item.template_namespace(self, request)
-            if ns['biosample_term_id'] in terms:
-                ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
-                ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
-                ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+            if request is None:
+                return ns
+            terms = request.registry['ontology']
+            if 'biosample_term_id' in ns:
+                if ns['biosample_term_id'] in terms:
+                    ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
+                    ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
+                    ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+                else:
+                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
             return ns
@@ -363,7 +368,7 @@ class AntibodyCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
-        embedded = set(['lab', 'award', 'submitted_by'])
+        embedded = ['submitted_by', 'lab', 'award', 'target']
         keys = ALIAS_KEYS
 
 
@@ -535,12 +540,17 @@ class Experiments(Collection):
         keys = ACCESSION_KEYS + ALIAS_KEYS
 
         def template_namespace(self, request=None):
-            terms = request.registry['ontology']
             ns = Collection.Item.template_namespace(self, request)
-            if ns['biosample_term_id'] in terms:
-                ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
-                ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
-                ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+            if request is None:
+                return ns
+            terms = request.registry['ontology']
+            if 'biosample_term_id' in ns:
+                if ns['biosample_term_id'] in terms:
+                    ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
+                    ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
+                    ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+                else:
+                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
             return ns

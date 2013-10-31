@@ -119,7 +119,7 @@ def load_ontology(config):
     settings = config.registry.settings
     path = settings.get('ontology_path')
     if path is None:
-        config.registry['ontology'] = None
+        config.registry['ontology'] = {}
         return
     config.registry['ontology'] = json.load(open(path))
 
