@@ -101,6 +101,7 @@
         },
         "read_length": {
             "title": "Read length",
+            "description": "For high-throughput sequencing, the number of nucleotides sequenced for each fragment.",
             "type": "numeric"
         },
         "read_length_units": {
