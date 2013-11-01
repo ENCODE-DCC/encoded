@@ -183,9 +183,9 @@ def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
 
 
 def get_edw_max_id(edw):
-    # Get current maximum file id at EDW
+    # Get current largest id from edwValidFile table at EDW
     conn = edw.connect()
-    query = 'select max(fileId) from edwValidFile'
+    query = 'select max(id) from edwValidFile'
     results = conn.execute(query)
     row = results.fetchone()
     max_id = int(row[0])
