@@ -238,7 +238,7 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
     # there is an error message in edwFile table
     query.append_whereclause('edwFile.errorMessage = ""')
     if start_id > 0:
-        query.append_whereclause('edwValidFile.fileId > ' + str(start_id))
+        query.append_whereclause('edwValidFile.id > ' + str(start_id))
     if experiment:
         query.append_whereclause('edwValidFile.experiment <> ""')
     if phase == '2':

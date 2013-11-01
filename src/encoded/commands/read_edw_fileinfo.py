@@ -290,8 +290,9 @@ def set_fileinfo_replicate(app, fileinfo):
     new_fileinfo = copy.deepcopy(fileinfo)
 
     # Also trim out irrelevant assembly
-    if new_fileinfo['assembly'] == edw_file.NA:
-        del new_fileinfo['assembly']
+    if 'assembly' in new_fileinfo:
+        if new_fileinfo['assembly'] == edw_file.NA:
+            del new_fileinfo['assembly']
 
     # Check for no replicate
     if 'replicate' not in fileinfo:
