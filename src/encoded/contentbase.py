@@ -304,7 +304,7 @@ class Root(object):
         if ':' in name:
             resource = self.get_by_unique_key('alias', name)
             if resource is not None:
-                return resource            
+                return resource
         return default
 
     def __setitem__(self, name, value):
@@ -391,7 +391,7 @@ class Item(object):
     keys = []
     name_key = None
     rev = None
-    embedded = {}
+    embedded = ()
     template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
         # 'collection': '{collection_uri}',
@@ -497,17 +497,11 @@ class Item(object):
         return compiled(ns)
 
     def expand_embedded(self, request, properties):
-        embedded = self.embedded
         if self.schema is None:
             return
-        for name in embedded:
-            value = properties.get(name)
-            if value is None:
-                continue
-            if isinstance(value, list):
-                properties[name] = [embed(request, member) for member in value]
-            else:
-                properties[name] = embed(request, value)
+        paths = [p.split('.') for p in self.embedded]
+        for path in paths:
+            expand_path(request, properties, path)
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -541,7 +535,6 @@ class Item(object):
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
         raise HTTPConflict(msg)
-
 
     @classmethod
     def update_properties(cls, model, properties, sheets=None):
@@ -674,7 +667,7 @@ class CustomItemMeta(MergedTemplateMeta, ABCMeta):
         item_attrs = {'__module__': self.__module__}
         for name in NAMES_TO_TRANSFER:
             if 'item_' + name in attrs:
-                item_attrs[name] = attrs['item_' + name ]
+                item_attrs[name] = attrs['item_' + name]
         self.Item = type('Item', item_bases, item_attrs)
 
 
@@ -869,7 +862,6 @@ class Collection(Mapping):
                 lengthColumns.append(column.split('.')[0])
             else:
                 columns.append(column)
-        
         # Hack to check if the views have columns for the collection.
         if len(columns) > 2:
             query = {'query': {'match_all': {}}, 'fields': columns}
@@ -900,7 +892,6 @@ class Collection(Mapping):
         compiled = ObjectTemplate(self.merged_template)
         links = compiled(ns)
         properties.update(links)
-        
         properties['columns'] = self.columns
         collection_source = request.params.get('collection_source', None)
         if collection_source is None:

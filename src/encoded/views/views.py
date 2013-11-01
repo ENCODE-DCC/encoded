@@ -112,7 +112,6 @@ class AntibodyLot(Collection):
         'title': '{accession}',
         '$templated': True,
     }
-    item_embedded = set(['source', 'host_organism'])
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS + [
         {
@@ -130,6 +129,7 @@ class AntibodyLot(Collection):
     item_rev = {
         'characterizations': ('antibody_characterization', 'characterizes'),
     }
+
 
 @location('organisms')
 class Organism(Collection):
@@ -215,7 +215,6 @@ class Construct(Collection):
         'title': 'Constructs',
         'description': 'Listing of Biosample Constructs',
     }
-    item_embedded = set(['source', 'documents', 'characterizations', 'target'])
     item_keys = ALIAS_KEYS  # ['vector_name']
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
@@ -232,7 +231,7 @@ class ConstructCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
-        embedded = ['submitted_by', 'lab', 'award']
+        embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
 
 
@@ -246,9 +245,9 @@ class Document(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
+        embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
-        embedded = set(['submitted_by', 'lab', 'award'])
-
+        
 
 @location('biosamples')
 class Biosample(Collection):
@@ -257,12 +256,6 @@ class Biosample(Collection):
     properties = {
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
-    }
-    item_embedded = set(['donor', 'submitted_by', 'lab', 'award', 'source', 'treatments', 'constructs', 'protocol_documents', 'derived_from', 'pooled_from', 'characterizations', 'rnais', 'organism'])
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS + ALIAS_KEYS
-    item_rev = {
-        'characterizations': ('biosample_characterization', 'characterizes'),
     }
     columns = OrderedDict([
         ('accession', 'Accession'),
@@ -275,6 +268,42 @@ class Biosample(Collection):
         ('constructs.length', 'Constructs')
     ])
 
+    class Item(Collection.Item):
+        template = {
+            'organ_slims': [
+                {'$value': '{slim}', '$repeat': 'slim organ_slims', '$templated': True}
+            ],
+            'system_slims': [
+                {'$value': '{slim}', '$repeat': 'slim system_slims', '$templated': True}
+            ],
+            'developmental_slims': [
+                {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
+            ],
+        }
+        embedded = set(['donor.organism', 'submitted_by', 'lab', 'award', 'source', 'treatments.protocols.submitted_by', 'treatments.protocols.lab', 'treatments.protocols.award', 'constructs.documents.submitted_by', 'constructs.documents.award', 'constructs.documents.lab', 'constructs.target', 'protocol_documents.lab', 'protocol_documents.award', 'protocol_documents.submitted_by', 'derived_from', 'pooled_from', 'characterizations', 'rnais.target.organism', 'rnais.source', 'organism'])
+        name_key = 'accession'
+
+        keys = ACCESSION_KEYS + ALIAS_KEYS
+        rev = {
+            'characterizations': ('biosample_characterization', 'characterizes'),
+        }
+
+        def template_namespace(self, request=None):
+            ns = Collection.Item.template_namespace(self, request)
+            if request is None:
+                return ns
+            terms = request.registry['ontology']
+            if 'biosample_term_id' in ns:
+                if ns['biosample_term_id'] in terms:
+                    ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
+                    ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
+                    ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+                else:
+                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+            else:
+                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+            return ns
+
 
 @location('biosample-characterizations')
 class BiosampleCharacterization(Collection):
@@ -286,7 +315,7 @@ class BiosampleCharacterization(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
-        embedded = ['submitted_by', 'lab', 'award']
+        embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
 
 
@@ -310,8 +339,8 @@ class Target(Collection):
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
             'title': {'$value': '{label} ({organism_name})', '$templated': True},
         }
-        embedded = set(['organism', 'submitted_by', 'lab', 'award'])
-        keys =  ALIAS_KEYS + [
+        embedded = set(['organism'])
+        keys = ALIAS_KEYS + [
             {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
         ]
 
@@ -351,7 +380,7 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    item_embedded = set(['antibody', 'target', 'characterizations'])
+    item_embedded = set(['antibody.source', 'antibody.host_organism', 'target.organism', 'characterizations.target.organism', 'characterizations.award', 'characterizations.submitted_by', 'characterizations.lab', 'lab'])
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
     ]
@@ -390,7 +419,7 @@ class Library(Collection):
         'title': 'Libraries',
         'description': 'Listing of Libraries',
     }
-    item_embedded = set(['biosample', 'documents'])
+    item_embedded = set(['biosample'])
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
@@ -424,7 +453,6 @@ class Replicates(Collection):
     ])
 
     class Item(Collection.Item):
-        embedded = set(['library', 'platform', 'antibody'])
         keys = ALIAS_KEYS + [
             {
                 'name': '{item_type}:experiment_biological_technical',
@@ -432,6 +460,7 @@ class Replicates(Collection):
                 '$templated': True,
             },
         ]
+        embedded = set(['library', 'platform'])
 
         def __ac_local_roles__(self):
             root = find_root(self)
@@ -461,7 +490,6 @@ class Files(Collection):
         'title': 'Files',
         'description': 'Listing of Files',
     }
-    item_embedded = set(['submitted_by', 'lab', 'award', 'replicate'])
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
     columns = OrderedDict([
@@ -481,12 +509,6 @@ class Experiments(Collection):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    item_embedded = set(['files', 'replicates', 'submitted_by', 'lab', 'award', 'possible_controls', 'target', 'documents'])
-    item_rev = {
-        'replicates': ('replicate', 'experiment'),
-    }
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
         ('assay_term_name', 'Assay type'),
@@ -497,6 +519,41 @@ class Experiments(Collection):
         ('lab.title', 'Lab'),
         ('award.rfa', 'Project'),
     ])
+    
+    class Item(Collection.Item):
+        template = {
+            'organ_slims': [
+                {'$value': '{slim}', '$repeat': 'slim organ_slims', '$templated': True}
+            ],
+            'system_slims': [
+                {'$value': '{slim}', '$repeat': 'slim system_slims', '$templated': True}
+            ],
+            'developmental_slims': [
+                {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
+            ],
+        }
+        embedded = set(['files', 'replicates.antibody', 'replicates.library.documents.lab', 'replicates.library.documents.submitted_by', 'replicates.library.documents.award', 'replicates.library.biosample.donor', 'replicates.library.biosample.submitted_by', 'submitted_by', 'lab', 'award', 'possible_controls', 'target.organism', 'documents.lab', 'documents.award', 'documents.submitted_by'])
+        rev = {
+            'replicates': ('replicate', 'experiment'),
+        }
+        name_key = 'accession'
+        keys = ACCESSION_KEYS + ALIAS_KEYS
+
+        def template_namespace(self, request=None):
+            ns = Collection.Item.template_namespace(self, request)
+            if request is None:
+                return ns
+            terms = request.registry['ontology']
+            if 'biosample_term_id' in ns:
+                if ns['biosample_term_id'] in terms:
+                    ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
+                    ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
+                    ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+                else:
+                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+            else:
+                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+            return ns
 
 
 @location('rnais')
@@ -507,7 +564,7 @@ class RNAi(Collection):
         'title': 'RNAi',
         'description': 'Listing of RNAi',
     }
-    item_embedded = set(['source', 'documents', 'characterizations'])
+    item_embedded = set(['source', 'documents'])
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
