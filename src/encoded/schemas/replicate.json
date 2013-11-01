@@ -101,7 +101,7 @@
         },
         "read_length": {
             "title": "Read length",
-            "type": "numeric"
+            "type": "integer"
         },
         "read_length_units": {
             "title": "Read length units",
