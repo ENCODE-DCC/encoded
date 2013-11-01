@@ -618,8 +618,6 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
     edw_dict = { d['accession']:d for d in edw_files }
     app_files = get_app_fileinfo(app, exclude=exclude, phase=phase)
     app_dict = { d['accession']:d for d in app_files }
-    import pdb
-    pdb.set_trace()
 
     # Inventory files
     edw_only = []
