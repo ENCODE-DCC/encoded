@@ -15,8 +15,8 @@
       "from": "es5-shim@~2.1.0"
     },
     "react-tools": {
-      "version": "0.5.0",
-      "from": "react-tools@~0.5.0",
+      "version": "0.5.1",
+      "from": "react-tools@~0.5.1",
       "dependencies": {
         "commoner": {
           "version": "0.8.6",

@@ -3,12 +3,6 @@ var App = require('./app');
 var domready = require('domready');
 module.exports.App = App;
 
-// XXX https://github.com/facebook/react/pull/450
-var DOMProperty = require('DOMProperty');
-DOMProperty.mustUseAttribute.disabled = 1;
-DOMProperty.mustUseProperty.disabled = 0;
-
-
 // Treat the jQuery ready function as the entry point to the application.
 // Inside this function, kick-off all initialization, everything up to this
 // point should be definitions.
