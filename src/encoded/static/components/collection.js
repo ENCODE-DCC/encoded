@@ -346,9 +346,12 @@ function (exports, class_, React, url, globals) {
 
         submit: function () {
             // form.submit() does not fire onsubmit handlers...
-            
-            var event = new Event('submit', {bubbles: true, cancelable: true});
-            this.refs.form.getDOMNode().dispatchEvent(event);
+            var target = this.refs.form.getDOMNode();
+            // Not IE8 compatible
+            //var event = new Event('submit', {bubbles: true, cancelable: true});
+            //target.dispatchEvent(event);
+            var $ = require('jquery');
+            $(target).trigger('submit');
         },
         
         clearFilter: function (event) {

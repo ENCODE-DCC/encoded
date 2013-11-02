@@ -135,7 +135,15 @@ function (exports, React, url, origin) {
                 if (window.location.hash == '#logged-out') {
                     next_url = window.location.pathname + window.location.search;
                 }
-                self.navigate(next_url, {replace: true});
+                if (this.historyEnabled) {
+                    self.navigate(next_url, {replace: true});
+                } else {
+                    var old_path = window.location.pathname + window.location.search;
+                    window.location.assign(next_url);
+                    if (old_path == next_url) {
+                        window.location.reload();
+                    }
+                }
             }).fail(function (xhr, status, err) {
                 // If there is an error, show the error messages
                 navigator.id.logout();
