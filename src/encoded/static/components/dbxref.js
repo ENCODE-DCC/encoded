@@ -15,7 +15,6 @@ function (exports, React, globals) {
             prefix = value.slice(0, sep);
             local = value.slice(sep + 1);
         }
-        console.log(props);
         if (prefix) {
             var base = globals.dbxref_prefix_map[prefix];
             if (base) {
