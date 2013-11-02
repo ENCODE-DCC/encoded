@@ -11,8 +11,9 @@ if (window && !window.TEST_RUNNER) {
     domready(function ready() {
         "use strict";
         console.log('ready');
+        var context = JSON.parse(document.getElementById('data-context').text);
         var app = App({
-            contextDataElement: document.getElementById('data-context'),
+            context: context,
             href: window.location.href,
         });
         React.renderComponent(app, document.getElementById('slot-application'));

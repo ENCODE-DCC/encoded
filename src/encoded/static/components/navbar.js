@@ -1,12 +1,12 @@
 /** @jsx React.DOM */
-define(['react', './mixins'],
-function (React, mixins) {
+define(['react', 'url', './mixins'],
+function (React, url, mixins) {
     'use strict';
 
     // Hide data from NavBarLayout
     var NavBar = React.createClass({
         render: function() {
-            var section = this.props.location.pathname.split('/', 2)[1] || '';
+            var section = url.parse(this.props.href).pathname.split('/', 2)[1] || '';
             return NavBarLayout({
                 personaReady: this.props.personaReady,
                 portal: this.props.portal,
@@ -81,7 +81,7 @@ function (React, mixins) {
             }
             var actions = this.props.user_actions.map(function (action) {
                 return (
-                    <li className={action.class} key={action.id}>
+                    <li className={action['class']} key={action.id}>
                         <a href={action.url || ''} data-bypass={action.bypass} data-trigger={action.trigger}>
                             {action.title}
                         </a>

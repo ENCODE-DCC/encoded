@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['jquery', 'react', 'uri', './globals', './mixins', './navbar', './footer'],
-function ($, React, URI, globals, mixins, NavBar, Footer) {
+define(['react', './globals', './mixins', './navbar', './footer'],
+function (React, globals, mixins, NavBar, Footer) {
     /*jshint devel: true*/
     'use strict';
 
@@ -31,43 +31,24 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
         },
 
         getInitialState: function() {
-            var context;
-            var location = URI(this.props.href);
-            // The initial context is read in from the contextDataElement
-            // That element is then kept in sync for easier debugging.
-            if (this.props.contextDataElement) {
-                context = JSON.parse(this.props.contextDataElement.text);
-            } else {
-                this.navigate(location.href, {replace: true});
-            }
             return {
-                context: context,
                 errors: [],
-                location: location,
                 portal: portal,
                 session: null,
                 user_actions: user_actions
             };
         },
 
-        componentWillReceiveProps: function (nextProps) {
-            this.setState({
-                location: URI(nextProps.href)
-            });
-        },
-
         render: function() {
             console.log('render app');
             var content;
-            var context = this.state.context;
+            var context = this.props.context;
             if (context) {
                 var ContentView = globals.content_views.lookup(context);
-                content = ContentView({
-                    context: this.state.context,
-                    location: this.state.location,
+                content = this.transferPropsTo(ContentView({
                     personaReady: this.state.personaReady,
                     session: this.state.session
-                });
+                }));
             }
             var errors = this.state.errors.map(function (error) {
                 return <div className="alert alert-error"></div>;
@@ -83,7 +64,7 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
             return (
                 <div id="application" className={appClass} onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <div id="layout">
-                        <NavBar location={this.state.location} portal={this.state.portal}
+                        <NavBar href={this.props.href} portal={this.state.portal}
                                 user_actions={this.state.user_actions} session={this.state.session}
                                 personaReady={this.state.personaReady} />
                         <div id="content" className="container">
@@ -95,11 +76,6 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
                     <Footer />
                 </div>
             );
-        },
-
-        componentDidUpdate: function () {
-            // XXX The templates should be updated to always define an h1.
-            $('title').text($('h1, h2').first().text() + ' - ' + $('#navbar .brand').first().text());
         }
 
     });

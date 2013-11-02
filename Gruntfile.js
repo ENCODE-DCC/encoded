@@ -14,6 +14,7 @@ module.exports = function(grunt) {
                         'domready:',
                         'react-tools/build/modules/React:react',
                         'underscore:',
+                        'url:',
                     ],
                     shim: {
                         d3: {
@@ -64,9 +65,9 @@ module.exports = function(grunt) {
                     ],
                     alias: [
                         './src/encoded/static/libs/class:class',
-                        './src/encoded/static/libs/uri:uri',
+                        './src/encoded/static/libs/origin:origin',
                         './src/encoded/static/libs/registry:registry',
-                        './src/encoded/static/components/main:encoded',
+                        './src/encoded/static/components/main:main',
                     ],
                     external: [
                         'jquery',
@@ -98,9 +99,10 @@ module.exports = function(grunt) {
                         'jasmine',
                         'jasmine_html',
                         'underscore',
-                        'uri',
+                        'url',
+                        'origin',
                         'registry',
-                        'encoded',
+                        'main',
                     ],
                 },
             },

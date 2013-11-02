@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'underscore', 'uri', './globals'],
-function (exports, React, _, URI, globals) {
+define(['exports', 'react', 'underscore', 'url', './globals'],
+function (exports, React, _, url, globals) {
     'use strict';
 
     var Panel = function (props) {
@@ -393,8 +393,7 @@ function (exports, React, _, URI, globals) {
             var height = "100";
             var width = "100";
             if (context.attachment) {
-                attachmentUri = URI(context.attachment.href, URI(context['@id']).href);
-                attachmentHref = attachmentUri.pathname + attachmentUri.search;
+                attachmentHref = url.resolve(context['@id'], context.attachment.href);
                 if (context.attachment.type.split('/', 1)[0] == 'image') {
                     imgClass = 'characterization-img';
                     src = attachmentHref;

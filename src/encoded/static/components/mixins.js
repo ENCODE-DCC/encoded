@@ -1,8 +1,7 @@
-define(['exports', 'jquery', 'react', 'uri'],
-function (exports, $, React, URI) {
+define(['exports', 'react', 'url', 'origin'],
+function (exports, React, url, origin) {
     /*jshint devel: true*/
     'use strict';
-
         
     var parseError = exports.parseError = function (xhr, status) {
         var data;
@@ -74,6 +73,7 @@ function (exports, $, React, URI) {
 
     exports.Persona = {
         componentDidMount: function () {
+            var $ = require('jquery');
             // Login / logout actions must be deferred until persona is ready.
             $.ajaxPrefilter(this.ajaxPrefilter);
             this.personaDeferred = $.Deferred();
@@ -94,6 +94,7 @@ function (exports, $, React, URI) {
         },
 
         refreshSession: function () {
+            var $ = require('jquery');
             var self = this;
             if (this.sessionRequest && this.sessionRequest.state() == 'pending') {
                 this.sessionRequest.abort();
@@ -119,6 +120,7 @@ function (exports, $, React, URI) {
         },
 
         handlePersonaLogin: function (assertion, retrying) {
+            var $ = require('jquery');
             var self = this;
             if (!assertion) return;
             $.ajax({
@@ -146,11 +148,12 @@ function (exports, $, React, URI) {
                     return;
                     }
                 }
-                self.setState({context: data});
+                self.setProps({context: data});
             });
         },
 
         handlePersonaLogout: function () {
+            var $ = require('jquery');
             console.log("Persona thinks we need to log out");
             if (this.state.session.persona === null) return;
             var self = this;
@@ -168,7 +171,7 @@ function (exports, $, React, URI) {
             }).fail(function (xhr, status, err) {
                 data = parseError(xhr, status);
                 data.title = 'Logout failure: ' + data.title;
-                self.setState({context: data});
+                self.setProps({context: data});
             });
         },
 
@@ -197,18 +200,16 @@ function (exports, $, React, URI) {
 
     exports.HistoryAndTriggers = {
         // Detect HTML5 history support
-        historyEnabled: !!(window.history && window.history.pushState),
+        historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
 
         componentDidMount: function () {
             if (this.historyEnabled) {
-                if (this.state.context) {
-                    var data = this.state.context;
-                    try {
-                        window.history.replaceState(data, '', window.location.href);
-                    } catch (exc) {
-                        // Might fail due to too large data
-                        window.history.replaceState(null, '', window.location.href);
-                    }
+                var data = this.props.context;
+                try {
+                    window.history.replaceState(data, '', window.location.href);
+                } catch (exc) {
+                    // Might fail due to too large data
+                    window.history.replaceState(null, '', window.location.href);
                 }
                 window.addEventListener('popstate', this.handlePopState, true);
                 window.addEventListener('error', this.handleError, false);
@@ -260,7 +261,7 @@ function (exports, $, React, URI) {
             if (href === null) return;
 
             // Skip external links
-            if (!URI(href).sameOrigin()) return;
+            if (!origin.same(href)) return;
 
             // With HTML5 history supported, local navigation is passed
             // through the navigate method.
@@ -272,6 +273,7 @@ function (exports, $, React, URI) {
 
         // Submitted forms are treated the same as links
         handleSubmit: function(event) {
+            var $ = require('jquery');
             var target = event.target;
 
             // Skip POST forms
@@ -281,18 +283,18 @@ function (exports, $, React, URI) {
             if (target.getAttribute('data-bypass')) return;
 
             // Skip external forms
-            var uri = URI(target.action);
-            if (!uri.sameOrigin()) return;
+            if (!origin.same(target.action)) return;
 
             var options = {};
-            options.replace = uri.pathname == URI(this.props.href).pathname;
+            var action_url = url.parse(target.action);
+            options.replace = action_url.pathname == url.parse(this.props.href).pathname;
             var search = $(target).serialize();
             if (target.getAttribute('data-removeempty')) {
                 search = search.split('&').filter(function (item) {
                     return item.slice(-1) != '=';
                 }).join('&');
             }
-            var href = uri.pathname;
+            var href = action_url.pathname;
             if (search) {
                 href += '?' + search;
             }
@@ -315,13 +317,14 @@ function (exports, $, React, URI) {
             }
             var href = window.location.href;
             if (event.state) {
-                this.setState({context: event.state})
+                this.setProps({context: event.state})
             }
             // Always async update in case of server side changes
             this.navigate(href, {replace: true});
         },
 
         navigate: function (href, options) {
+            var $ = require('jquery');
             options = options || {}; 
             this.setProps({href: href});
             this.havePushedState = true;
@@ -338,9 +341,6 @@ function (exports, $, React, URI) {
             if (options.skipRequest) return;
 
             this.setState({communicating: true});
-
-            // The contextDataElement is kept in sync with the context request result.
-            this.props.contextDataElement.text = '';
 
             this.contextRequest = $.ajax({
                 url: href,
@@ -360,10 +360,8 @@ function (exports, $, React, URI) {
         },
 
         receiveContextResponse: function (data, status, xhr) {
-            this.setState({
-                communicating: false,
-                context: data
-            });
+            this.setState({communicating: false});
+            this.setProps({context: data});
 
             // title currently ignored by browsers
             try {
@@ -371,10 +369,6 @@ function (exports, $, React, URI) {
             } catch (exc) {
                 // Might fail due to too large data
                 window.history.replaceState(null, '', window.location.href);
-            }
-            // Set the contextDataElement as a debugging aid
-            if (this.props.contextDataElement) {
-                this.props.contextDataElement.text = xhr.responseText;
             }
         },
 

@@ -1,12 +1,11 @@
 /** @jsx React.DOM */
-define(['exports', 'jquery', 'class', 'react', './globals'],
-function (exports, $, class_, React, globals) {
+define(['exports', 'class', 'react', 'url', './globals'],
+function (exports, class_, React, url, globals) {
     'use strict';
 
     var Collection = exports.Collection = React.createClass({
         render: function () {
             var context = this.props.context;
-            var location = this.props.location;
             return (
                 <div>
                     <header className="row">
@@ -15,7 +14,7 @@ function (exports, $, class_, React, globals) {
                         </div>
                     </header>
                     <p className="description">{context.description}</p>
-                    <Table context={context} location={location} />
+                    {this.transferPropsTo(<Table />)}
                 </div>
             );
         }
@@ -114,14 +113,14 @@ function (exports, $, class_, React, globals) {
                 var columns = this.guessColumns(nextProps);
                 this.extractData(nextProps, columns);
             }
-            if (nextProps.location.href !== this.props.location.href) {
+            if (nextProps.href !== this.props.href) {
                 this.extractParams(nextProps);
             }
 
         },
 
         extractParams: function(props) {
-            var params = props.location.params();
+            var params = url.parse(props.href, true).query;
             var sorton = parseInt(params.sorton, 10);
             if (isNaN(sorton)) {
                 sorton = props.defaultSortOn;
@@ -197,6 +196,7 @@ function (exports, $, class_, React, globals) {
                 this.allRequest.abort();
             }
             var self = this;
+            var $ = require('jquery');
             if (context.all) {
                 communicating = true;
                 this.setState({communicating: true});
@@ -222,7 +222,7 @@ function (exports, $, class_, React, globals) {
             this.state.searchTerm = searchTerm;
             var titles = context.columns;
             var data = this.state.data;
-            var params = this.props.location.params();
+            var params = url.parse(this.props.href, true).query;
             var total = context.count || data.rows.length;
             data.sort(sortOn, reversed);
             var self = this;

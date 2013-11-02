@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['exports', 'jquery', 'react', './globals', 'd3'],
-function (exports, $, React, globals, d3) {
+define(['exports', 'react', 'url', './globals'],
+function (exports, React, url, globals) {
     'use strict';
     var search = exports;
 
@@ -10,7 +10,7 @@ function (exports, $, React, globals, d3) {
             var result_count = context['@graph']['results'].length;
             var facets = context['@graph']['facets'];
             var terms = [];
-            var url = (this.props.location)['search'];
+            var url = url.parse(this.props.href).search;
             for (var i in facets) {
                 terms.push(i);
             }
@@ -113,7 +113,7 @@ function (exports, $, React, globals, d3) {
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var url = (this.props.location)['search'];
+            var url = url.parse(this.props.href).search;
             var facets = context['@graph']['facets'];
             var myNode = document.getElementById("viz");
             if(myNode) {
@@ -151,6 +151,7 @@ function (exports, $, React, globals, d3) {
                 var barLink  = function(d) { return d['link'] + d['label']; };
                  
                 // scales
+                var d3 = require('d3');
                 var yScale = d3.scale.ordinal().domain(d3.range(0, data.length)).rangeBands([0, data.length * barHeight]);
                 var y = function(d, i) { return yScale(i); };
                 var yText = function(d, i) { return y(d, i) + yScale.rangeBand() / 2; };
@@ -327,14 +328,14 @@ function (exports, $, React, globals, d3) {
                                                 </ul>
                                             </div>
                                             {Object.keys(results['facets']).length ?
-                                                <FacetBuilder location={this.props.location} context={this.props.context} />
+                                                this.transferPropsTo(<FacetBuilder />)
                                             :null }
                                         </section>
                                     </div>
                                     <div className="span8">
                                         <legend>{results['results'].length} Results Found</legend>
                                         <div className="results">
-                                            <ul class = "nav">
+                                            <ul className="nav">
                                                 {results['results'].length ?
                                                     results['results'].map(resultsView)
                                                 : null}
@@ -364,7 +365,7 @@ function (exports, $, React, globals, d3) {
                         <input className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
                     </form>
                     {Object.keys(results).length ?
-                        <ResultTable location={this.props.location} context={this.props.context} />
+                        this.transferPropsTo(<ResultTable />)
                     :null }
                 </div>
             );
