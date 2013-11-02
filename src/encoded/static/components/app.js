@@ -76,6 +76,12 @@ function (React, globals, mixins, NavBar, Footer) {
                     <Footer />
                 </div>
             );
+        },
+
+        componentDidUpdate: function () {
+            // XXX The templates should be updated to always define an h1.
+            var $ = require('jquery');
+            $('title').text($('h1, h2').first().text() + ' - ' + $('#navbar .brand').first().text());
         }
 
     });
