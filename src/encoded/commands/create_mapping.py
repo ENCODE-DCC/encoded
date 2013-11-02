@@ -1,6 +1,5 @@
 from pyramid import paster
 from pyelasticsearch import ElasticSearch, IndexAlreadyExistsError
-from collections import OrderedDict
 
 ES_URL = 'http://localhost:9200'
 DOCTYPE = 'basic'
@@ -8,35 +7,6 @@ es = ElasticSearch(ES_URL)
 
 app = paster.get_app('production.ini')
 root = app.root_factory(app)
-
-# Part of this will be moved to schemas and other part should be in a proper dict
-COLLECTION_URL = OrderedDict([
-    ('user', '/users/'),
-    ('access_key', '/access-keys/'),
-    ('award', '/awards/'),
-    ('lab', '/labs/'),
-    ('organism', '/organisms/'),
-    ('source', '/sources/'),
-    ('target', '/targets/'),
-    ('antibody_lot', '/antibody-lots/'),
-    ('antibody_characterization', '/antibody-characterizations/'),
-    ('antibody_approval', '/antibodies/'),
-    ('mouse_donor', '/mouse-donors/'),
-    ('human_donor', '/human-donors/'),
-    ('document', '/documents/'),
-    ('treatment', '/treatments/'),
-    ('construct', '/constructs/'),
-    ('construct_characterization', '/construct-characterizations/'),
-    ('rnai', '/rnais/'),
-    ('rnai_characterization', '/rnai-characterizations/'),
-    ('biosample', '/biosamples/'),
-    ('biosample_characterization', '/biosample-characterizations/'),
-    ('platform', '/platforms/'),
-    ('library', '/libraries/'),
-    ('replicate', '/replicates/'),
-    ('file', '/files/'),
-    ('experiment', '/experiments/')
-])
 
 
 class Mapper(dict):
@@ -75,7 +45,8 @@ def create_mapping(collection_name, embedded):
 
 
 def main():
-    for collection_name in COLLECTION_URL:
+    collections = root.by_item_type.keys()
+    for collection_name in collections:
         collection = root[collection_name]
         schema = collection.schema
         embedded = collection.Item.embedded

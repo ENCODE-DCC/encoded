@@ -1,39 +1,13 @@
 from pyramid import paster
 from pyelasticsearch import ElasticSearch
-from collections import OrderedDict
 
 ES_URL = 'http://localhost:9200'
 DOCTYPE = 'basic'
 es = ElasticSearch(ES_URL)
 
-# Part of this will be moved to schemas and other part should be in a proper dict
-COLLECTION_URL = OrderedDict([
-    ('user', '/users/'),
-    ('access_key', '/access-keys/'),
-    ('award', '/awards/'),
-    ('lab', '/labs/'),
-    ('organism', '/organisms/'),
-    ('source', '/sources/'),
-    ('target', '/targets/'),
-    ('antibody_lot', '/antibody-lots/'),
-    ('antibody_characterization', '/antibody-characterizations/'),
-    ('antibody_approval', '/antibodies/'),
-    ('mouse_donor', '/mouse-donors/'),
-    ('human_donor', '/human-donors/'),
-    ('document', '/documents/'),
-    ('treatment', '/treatments/'),
-    ('construct', '/constructs/'),
-    ('construct_characterization', '/construct-characterizations/'),
-    ('rnai', '/rnais/'),
-    ('rnai_characterization', '/rnai-characterizations/'),
-    ('biosample', '/biosamples/'),
-    ('biosample_characterization', '/biosample-characterizations/'),
-    ('platform', '/platforms/'),
-    ('library', '/libraries/'),
-    ('replicate', '/replicates/'),
-    ('file', '/files/'),
-    ('experiment', '/experiments/')
-])
+app = paster.get_app('production.ini')
+root = app.root_factory(app)
+collections = root.by_item_type.keys()
 
 
 def main():
@@ -53,13 +27,12 @@ def main():
     print "Indexing ENCODE Data in Elastic Search"
     print
 
-    for url in COLLECTION_URL:
-        print "Indexing " + url + " collection!"
-        res = testapp.get(COLLECTION_URL[url] + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
+    for collection_name in collections:
+        print "Indexing " + root.by_item_type[collection_name].__name__ + " collection!"
+        res = testapp.get('/' + root.by_item_type[collection_name].__name__ + '/' + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
         items = res.json['@graph']
 
         # try creating index, if it exists already delete it and create it
-        index = url
         counter = 0
         for item in items:
             try:
@@ -69,14 +42,14 @@ def main():
             else:
                 document_id = str(item_json.json['uuid'])
                 document = item_json.json
-                es.index(index, DOCTYPE, document, document_id)
+                es.index(collection_name, DOCTYPE, document, document_id)
                 counter = counter + 1
                 if counter % 50 == 0:
-                    es.flush(index)
+                    es.flush(collection_name)
 
-        es.refresh(index)
-        count = es.count('*:*', index=index)
-        print "Finished indexing " + str(count['count']) + " " + url
+        es.refresh(collection_name)
+        count = es.count('*:*', index=collection_name)
+        print "Finished indexing " + str(count['count']) + " " + root.by_item_type[collection_name].__name__
         print
 
 if __name__ == '__main__':

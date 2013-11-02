@@ -2,6 +2,7 @@
 
 import transaction
 import venusian
+import json
 from abc import ABCMeta
 from collections import Mapping
 from pyramid.events import (
@@ -64,6 +65,8 @@ from .storage import (
 from collections import OrderedDict
 from .validation import ValidationFailure
 from pyelasticsearch import ElasticSearch
+from pyramid.events import BeforeRender
+
 
 LOCATION_ROOT = __name__ + ':location_root'
 ELASTIC_SEARCH = __name__ + ':elasticsearch'
@@ -997,6 +1000,7 @@ def collection_list(context, request):
 def collection_add(context, request):
     properties = request.validated
     item = context.add(properties)
+    request.registry.notify(Created(item, request))
     item_uri = request.resource_path(item)
     rendered = embed(request, item_uri + '?embed=false')
     request.response.status = 201
@@ -1046,7 +1050,9 @@ def item_edit(context, request, render=True):
     """
     properties = request.validated
     # This *sets* the property sheet
+    request.registry.notify(BeforeModified(context, request))
     context.update(properties)
+    request.registry.notify(AfterModified(context, request))
     item_uri = request.resource_path(context)
     if render:
         rendered = embed(request, item_uri + '?embed=false')
@@ -1059,3 +1065,49 @@ def item_edit(context, request, render=True):
         '@graph': [rendered],
     }
     return result
+
+
+class Created(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
+
+
+class BeforeModified(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
+
+
+class AfterModified(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
+
+
+@subscriber(Created)
+@subscriber(BeforeModified)
+@subscriber(AfterModified)
+def record_created(event):
+    try:
+        dirty = event.request._encoded_dirty
+    except:
+        dirty = event.request._encoded_dirty = {}
+
+
+def es_update(request, data):
+    uuid = data['uuid']
+    item_type = data['@type'][0]
+    subreq = make_subrequest(request, data['@id'])
+    new_response = request.invoke_subrequest(subreq)
+    new_result = json.loads(new_response._app_iter[0])['@graph'][0]
+    es = request.registry[ELASTIC_SEARCH]
+    es.index(item_type, 'basic', new_result, uuid)
+
+
+@subscriber(BeforeRender)
+def es_update_data(event):
+    dirty = getattr(event['request'], '_encoded_created', None)
+    if dirty is None:
+        return
+    
