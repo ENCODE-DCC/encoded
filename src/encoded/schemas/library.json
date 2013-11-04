@@ -18,7 +18,8 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/product_id" },
-        { "$ref": "mixins.json#/lot_id" }
+        { "$ref": "mixins.json#/lot_id" },
+        { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
