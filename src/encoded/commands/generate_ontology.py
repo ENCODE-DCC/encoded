@@ -1,12 +1,8 @@
 import json
 
-from pyramid import paster
 from urllib2 import Request, urlopen
 
-app = paster.get_app('production.ini')
-uberonLink = "http://sourceforge.net/p/obo/svn/"
-path = "/tree/uberon/trunk/composite-vertebrate.obo?format=raw"
-uberonURL = uberonLink + app.registry.settings['uberon_version'] + path
+uberonURL = "http://sourceforge.net/p/obo/svn/5037/tree/uberon/trunk/composite-vertebrate.obo?format=raw"
 urls = [uberonURL]
 
 
