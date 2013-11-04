@@ -7,6 +7,7 @@ app = paster.get_app('production.ini')
 uberonLink = "http://sourceforge.net/p/obo/svn/"
 path = "/tree/uberon/trunk/composite-vertebrate.obo?format=raw"
 uberonURL = uberonLink + app.registry.settings['uberon_version'] + path
+urls = [uberonURL]
 
 
 def getTerm(stream):
