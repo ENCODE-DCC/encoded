@@ -1108,6 +1108,8 @@ def es_update_object(request, objects):
         if len(objects) == 0:
             break
         for data_object in objects:
+            
+            # Indexing the object in ES
             uuid = data_object.rid
             item_type = data_object.item_type
             es = request.registry[ELASTIC_SEARCH]
@@ -1117,6 +1119,7 @@ def es_update_object(request, objects):
             es.index(item_type, 'basic', json.loads(result._app_iter[0]), str(uuid))
             updated_objects.append(str(uuid))
             
+            # Getting the dependent objects for the indexed object
             results = session.query(Link).filter(Link.target == data_object).all()
             for d in results:
                 if not any(x.rid == d.source.rid for x in new_objects):
@@ -1132,9 +1135,10 @@ def es_update_data(event):
         return
     es_update_object(event['request'], dirty)
     es = event['request'].registry[ELASTIC_SEARCH]
-    path = event.rendering_val['@graph'][0]['@id']
-    item_type = event.rendering_val['@graph'][0]['@type'][0]
+    data = event.rendering_val['@graph'][0]
+    path = data['@id']
+    item_type = data['@type'][0]
     subreq = make_subrequest(event['request'], path)
-    uuid = event.rendering_val['@graph'][0]['uuid']
+    uuid = data['uuid']
     result = event['request'].invoke_subrequest(subreq)
     es.index(item_type, 'basic', json.loads(result._app_iter[0]), uuid)
