@@ -204,7 +204,9 @@
     "notes": {
         "notes": {
             "title": "Notes",
-            "description": "Additional information."
+            "description": "Additional information.",
+            "type": "string",
+            "permission": "import_items"
         }
     }
 }
