@@ -1089,15 +1089,19 @@ class AfterModified(object):
 @subscriber(BeforeModified)
 @subscriber(AfterModified)
 def record_created(event):
-    session = DBSession()
+    
+    # Handling different types of POST s here
+    try:
+        event.object.model
+    except:
+        return
+
+    # Create property if that doesn't exist
     try:
         dirty = event.request._encoded_dirty
     except:
         dirty = event.request._encoded_dirty = []
-    data = session.query(Link).filter(Link.target == event.object.model).all()
-    for d in data:
-        if not any(x.rid == d.source.rid for x in dirty):
-            dirty.append(d.source)
+        dirty.append(event.object.model)
 
 
 def es_update_object(request, objects):
@@ -1108,15 +1112,19 @@ def es_update_object(request, objects):
         if len(objects) == 0:
             break
         for data_object in objects:
-            
             # Indexing the object in ES
             uuid = data_object.rid
             item_type = data_object.item_type
             es = request.registry[ELASTIC_SEARCH]
             item = es.get(item_type, 'basic', str(uuid))
+            
             subreq = make_subrequest(request, item['_source']['@id'])
+            subreq.override_renderer = 'null_renderer'
             result = request.invoke_subrequest(subreq)
-            es.index(item_type, 'basic', json.loads(result._app_iter[0]), str(uuid))
+            try:
+                es.index(item_type, 'basic', result, str(uuid))
+            except:
+                import pdb; pdb.set_trace();
             updated_objects.append(str(uuid))
             
             # Getting the dependent objects for the indexed object
@@ -1134,11 +1142,3 @@ def es_update_data(event):
     if dirty is None:
         return
     es_update_object(event['request'], dirty)
-    es = event['request'].registry[ELASTIC_SEARCH]
-    data = event.rendering_val['@graph'][0]
-    path = data['@id']
-    item_type = data['@type'][0]
-    subreq = make_subrequest(event['request'], path)
-    uuid = data['uuid']
-    result = event['request'].invoke_subrequest(subreq)
-    es.index(item_type, 'basic', json.loads(result._app_iter[0]), uuid)

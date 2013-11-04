@@ -30,6 +30,7 @@ _app_settings = {
     'load_sample_data': False,
     'testing': True,
     'collection_source': 'database',
+    'elasticsearch.server': 'http://localhost:9200',
 }
 
 
