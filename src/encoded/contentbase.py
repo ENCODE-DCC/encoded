@@ -1094,16 +1094,13 @@ def record_created(event):
         dirty = event.request._encoded_dirty
     except:
         dirty = event.request._encoded_dirty = []
-
-    data = session.query(Link).filter(Link.rel == event.object.model.item_type).all()
+    data = session.query(Link).filter(Link.target == event.object.model).all()
     for d in data:
-        if d.target.rid == event.object.model.rid:
-            if not any(x.rid == d.source.rid for x in dirty):
-                dirty.append(d.source)
+        if not any(x.rid == d.source.rid for x in dirty):
+            dirty.append(d.source)
 
 
-# Iterative loop to update all the dependent object in ElasticSearch
-def es_update(request, objects):
+def es_update_object(request, objects):
     session = DBSession()
     updated_objects = []
     while 1:
@@ -1120,15 +1117,11 @@ def es_update(request, objects):
             es.index(item_type, 'basic', json.loads(result._app_iter[0]), str(uuid))
             updated_objects.append(str(uuid))
             
-            results = session.query(Link).filter(Link.rel == data_object.item_type).all()
-            if not results:
-                results = session.query(Link).filter(Link.rel == item['_source']['@id'].split('/')[1]).all()
-            
+            results = session.query(Link).filter(Link.target == data_object).all()
             for d in results:
-                if d.target.rid == data_object.rid:
-                    if not any(x.rid == d.source.rid for x in new_objects):
-                        if str(d.source.rid) not in updated_objects:
-                            new_objects.append(d.source)
+                if not any(x.rid == d.source.rid for x in new_objects):
+                    if str(d.source.rid) not in updated_objects:
+                        new_objects.append(d.source)
         objects = new_objects
 
 
@@ -1137,7 +1130,7 @@ def es_update_data(event):
     dirty = getattr(event['request'], '_encoded_dirty', None)
     if dirty is None:
         return
-    es_update(event['request'], dirty)
+    es_update_object(event['request'], dirty)
     es = event['request'].registry[ELASTIC_SEARCH]
     path = event.rendering_val['@graph'][0]['@id']
     item_type = event.rendering_val['@graph'][0]['@type'][0]
