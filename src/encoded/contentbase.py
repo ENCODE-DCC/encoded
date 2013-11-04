@@ -1089,25 +1089,59 @@ class AfterModified(object):
 @subscriber(BeforeModified)
 @subscriber(AfterModified)
 def record_created(event):
+    session = DBSession()
     try:
         dirty = event.request._encoded_dirty
     except:
-        dirty = event.request._encoded_dirty = {}
+        dirty = event.request._encoded_dirty = []
+
+    data = session.query(Link).filter(Link.rel == event.object.model.item_type).all()
+    for d in data:
+        if d.target.rid == event.object.model.rid:
+            if not any(x.rid == d.source.rid for x in dirty):
+                dirty.append(d.source)
 
 
-def es_update(request, data):
-    uuid = data['uuid']
-    item_type = data['@type'][0]
-    subreq = make_subrequest(request, data['@id'])
-    new_response = request.invoke_subrequest(subreq)
-    new_result = json.loads(new_response._app_iter[0])['@graph'][0]
-    es = request.registry[ELASTIC_SEARCH]
-    es.index(item_type, 'basic', new_result, uuid)
+# Iterative loop to update all the dependent object in ElasticSearch
+def es_update(request, objects):
+    session = DBSession()
+    updated_objects = []
+    while 1:
+        new_objects = []
+        if len(objects) == 0:
+            break
+        for data_object in objects:
+            uuid = data_object.rid
+            item_type = data_object.item_type
+            es = request.registry[ELASTIC_SEARCH]
+            item = es.get(item_type, 'basic', str(uuid))
+            subreq = make_subrequest(request, item['_source']['@id'])
+            result = request.invoke_subrequest(subreq)
+            es.index(item_type, 'basic', json.loads(result._app_iter[0]), str(uuid))
+            updated_objects.append(str(uuid))
+            
+            results = session.query(Link).filter(Link.rel == data_object.item_type).all()
+            if not results:
+                results = session.query(Link).filter(Link.rel == item['_source']['@id'].split('/')[1]).all()
+            
+            for d in results:
+                if d.target.rid == data_object.rid:
+                    if not any(x.rid == d.source.rid for x in new_objects):
+                        if str(d.source.rid) not in updated_objects:
+                            new_objects.append(d.source)
+        objects = new_objects
 
 
 @subscriber(BeforeRender)
 def es_update_data(event):
-    dirty = getattr(event['request'], '_encoded_created', None)
+    dirty = getattr(event['request'], '_encoded_dirty', None)
     if dirty is None:
         return
-    
+    es_update(event['request'], dirty)
+    es = event['request'].registry[ELASTIC_SEARCH]
+    path = event.rendering_val['@graph'][0]['@id']
+    item_type = event.rendering_val['@graph'][0]['@type'][0]
+    subreq = make_subrequest(event['request'], path)
+    uuid = event.rendering_val['@graph'][0]['uuid']
+    result = event['request'].invoke_subrequest(subreq)
+    es.index(item_type, 'basic', json.loads(result._app_iter[0]), uuid)
