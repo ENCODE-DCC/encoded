@@ -2,6 +2,25 @@ from behave import step
 import behaving.web.steps  # NOQA
 
 
+def is_text_present_in_element_by_css(self, selector, text, wait_time=None):
+    import time
+    wait_time = wait_time or self.wait_time
+    end_time = time.time() + wait_time
+
+    while time.time() < end_time:
+        try:
+            self.driver.find_element_by_css_selector(selector).text.index(text)
+            return True
+        except ValueError:
+            pass
+        except NoSuchElementException:
+            # This exception will be thrown if the body tag isn't present
+            # This has occasionally been observed. Assume that the
+            # page isn't fully loaded yet
+            pass
+    return False
+
+
 @step(u'I should see at least {count:d} elements with the css selector "{css}"')
 def should_see_at_least_count_elements_with_css(context, css, count):
     element_count = len(context.browser.find_by_css(css))
@@ -18,7 +37,7 @@ def should_see_count_elements_with_css(context, css, count):
 def should_see_element_with_css_and_text(context, css, text):
     elements = context.browser.find_by_css(css)
     assert len(elements) == 1
-    assert elements.first.text == text
+    assert is_text_present_in_element_by_css(context.browser, css, text)
 
 
 @step(u'I click the element with the css selector "{css}"')
