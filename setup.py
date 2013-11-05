@@ -24,7 +24,6 @@ requires = [
     'zope.sqlalchemy',
     'PyBrowserID',
     'pyelasticsearch',
-    'MySQL-python',
 ]
 
 tests_require = [
