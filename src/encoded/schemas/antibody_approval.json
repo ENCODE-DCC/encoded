@@ -51,11 +51,11 @@
             "type": "string",
             "default": "INCOMPLETE",
             "enum" : [
-                "APPROVED",
-                "SUBMITTED",
-                "UNSUBMITTED",
-                "FAILED",
-                "INCOMPLETE",
+                "AWAITING LAB CHARACTERIZATION",
+                "PENDING DCC REVIEW",
+                "ELIGIBLE FOR NEW DATA",
+                "NOT ELIGIBLE FOR NEW DATA",
+                "NOT PURSUED",
                 "DELETED"
             ]
         }
