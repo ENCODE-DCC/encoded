@@ -532,7 +532,7 @@ class Experiments(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set(['files', 'replicates.antibody', 'replicates.library.documents.lab', 'replicates.library.documents.submitted_by', 'replicates.library.documents.award', 'replicates.library.biosample.donor.organism', 'replicates.library.biosample.submitted_by', 'submitted_by', 'lab', 'award', 'possible_controls', 'target.organism', 'documents.lab', 'documents.award', 'documents.submitted_by'])
+        embedded = set(['files', 'replicates.antibody', 'replicates.library.documents.lab', 'replicates.library.documents.submitted_by', 'replicates.library.documents.award', 'replicates.library.biosample.submitted_by', 'replicates.library.biosample.donor.organism', 'submitted_by', 'lab', 'award', 'possible_controls', 'target.organism', 'documents.lab', 'documents.award', 'documents.submitted_by'])
         rev = {
             'replicates': ('replicate', 'experiment'),
         }

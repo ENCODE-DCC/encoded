@@ -2,9 +2,9 @@
 
 import transaction
 import venusian
-import json
 from abc import ABCMeta
 from collections import Mapping
+from copy import deepcopy
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -118,11 +118,11 @@ def embed(request, path, result=None):
     if manager.stack:
         embedded = manager.stack[0].setdefault('encoded_embedded', {})
     if result is not None:
-        embedded[path] = result
+        embedded[path] = deepcopy(result)
         return result
     result = embedded.get(path, None)
     if result is not None:
-        return result
+        return deepcopy(result)
     subreq = make_subrequest(request, path)
     subreq.override_renderer = 'null_renderer'
     try:
@@ -130,7 +130,7 @@ def embed(request, path, result=None):
     except HTTPNotFound:
         raise KeyError(path)
     if embedded is not None:
-        embedded[path] = result
+        embedded[path] = deepcopy(result)
     return result
 
 
@@ -1089,12 +1089,6 @@ class AfterModified(object):
 @subscriber(BeforeModified)
 @subscriber(AfterModified)
 def record_created(event):
-    
-    # Handling different types of POST s here
-    try:
-        event.object.model
-    except:
-        return
 
     # Create property if that doesn't exist
     try:
@@ -1116,15 +1110,10 @@ def es_update_object(request, objects):
             uuid = data_object.rid
             item_type = data_object.item_type
             es = request.registry[ELASTIC_SEARCH]
-            item = es.get(item_type, 'basic', str(uuid))
-            
-            subreq = make_subrequest(request, item['_source']['@id'])
+            subreq = make_subrequest(request, '/' + item_type + '/' + str(uuid) + '/')
             subreq.override_renderer = 'null_renderer'
             result = request.invoke_subrequest(subreq)
-            try:
-                es.index(item_type, 'basic', result, str(uuid))
-            except:
-                import pdb; pdb.set_trace();
+            es.index(item_type, 'basic', result, str(uuid))
             updated_objects.append(str(uuid))
             
             # Getting the dependent objects for the indexed object
@@ -1139,6 +1128,5 @@ def es_update_object(request, objects):
 @subscriber(BeforeRender)
 def es_update_data(event):
     dirty = getattr(event['request'], '_encoded_dirty', None)
-    if dirty is None:
-        return
-    es_update_object(event['request'], dirty)
+    if dirty is not None:
+        es_update_object(event['request'], dirty)
