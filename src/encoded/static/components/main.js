@@ -2,6 +2,15 @@ var React = require('react');
 var App = require('./app');
 module.exports = App;
 
+// XXX https://github.com/facebook/react/pull/472
+var DOMProperty = require('react-tools/build/modules/DOMProperty');
+DOMProperty.injection.injectDOMPropertyConfig({
+    Properties: {
+        async: DOMProperty.injection.HAS_BOOLEAN_VALUE,
+        defer: DOMProperty.injection.HAS_BOOLEAN_VALUE
+    }
+});
+
 var ReactMount = require('react-tools/build/modules/ReactMount');
 ReactMount.allowFullPageRender = true;
 

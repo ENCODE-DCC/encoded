@@ -11,6 +11,7 @@ module.exports = function(grunt) {
                         'domready:',
                         'react-tools/build/modules/React:react',
                         'react-tools/build/modules/ReactMount:',
+                        'react-tools/build/modules/DOMProperty:',
                         'underscore:',
                         'url:',
                     ],
@@ -74,6 +75,7 @@ module.exports = function(grunt) {
                         'jquery',
                         'react',
                         'react-tools/build/modules/ReactMount',
+                        'react-tools/build/modules/DOMProperty',
                         'underscore',
                         'd3',
                         'domready',
@@ -116,6 +118,7 @@ module.exports = function(grunt) {
                         './src/encoded/static/libs/streams:streams',
                         'react-tools/build/modules/React:react',
                         'react-tools/build/modules/ReactMount:',
+                        'react-tools/build/modules/DOMProperty:',
                         'underscore:',
                     ],
                     external: [
