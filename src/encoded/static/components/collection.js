@@ -94,7 +94,9 @@ function (exports, class_, React, url, globals) {
             var state = this.extractParams(this.props);
             var columns = state.columns = this.guessColumns(this.props);
             state.data = this.extractData(this.props, columns);
-            state.communicating = true;
+            if (this.props.context.all) {
+                state.communicating = true;
+            }
             return state;
         },
 
