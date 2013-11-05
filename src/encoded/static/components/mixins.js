@@ -78,9 +78,8 @@ function (exports, React, url, origin) {
             $.ajaxPrefilter(this.ajaxPrefilter);
             this.personaDeferred = $.Deferred();
             if (!navigator.id) {
-                this.personaLoaded = $.Deferred();
-                var script = document.querySelector('script[src="https://login.persona.org/include.js"]');
-                script.onload = this.personaLoaded.resolve.bind(this.personaLoaded);
+                // Ensure DOM is clean for React when mounting
+                this.personaLoaded = $.getScript("https://login.persona.org/include.js");
             }
             $.when(this.refreshSession(), this.personaLoaded).done(this.configurePersona);
         },

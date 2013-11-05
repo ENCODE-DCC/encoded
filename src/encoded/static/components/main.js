@@ -1,22 +1,30 @@
 var React = require('react');
 var App = require('./app');
-var domready = require('domready');
-module.exports.App = App;
+module.exports = App;
 
-// Treat the jQuery ready function as the entry point to the application.
+var ReactMount = require('react-tools/build/modules/ReactMount');
+ReactMount.allowFullPageRender = true;
+
+
+// Treat domready function as the entry point to the application.
 // Inside this function, kick-off all initialization, everything up to this
 // point should be definitions.
-console.log('loaded main');
-if (window && !window.TEST_RUNNER) {
+if (typeof window != 'undefined' && !window.TEST_RUNNER) {
+    var domready = require('domready');
     domready(function ready() {
         "use strict";
         console.log('ready');
-        var context = JSON.parse(document.getElementById('data-context').text);
-        var app = App({
-            context: context,
-            href: window.location.href,
-        });
-        React.renderComponent(app, document.getElementById('slot-application'));
+        var props = {};
+        // Ensure the initial render is exactly the same
+        props.href = document.querySelector('link[rel="canonical"]').href;
+        var script_props = document.querySelectorAll('script[data-prop-name]');
+        for (var i = 0; i < script_props.length; i++) {
+            var elem = script_props[i];
+            props[elem.getAttribute('data-prop-name')] = JSON.parse(elem.text);
+        }
+
+        var app= App(props);
+        React.renderComponent(app, document);
 
         // Simplify debugging
         window.app = app;

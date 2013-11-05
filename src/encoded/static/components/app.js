@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['react', './globals', './mixins', './navbar', './footer'],
-function (React, globals, mixins, NavBar, Footer) {
+define(['react', 'jsonScriptEscape', './globals', './mixins', './navbar', './footer'],
+function (React, jsonScriptEscape, globals, mixins, NavBar, Footer) {
     /*jshint devel: true*/
     'use strict';
 
@@ -61,27 +61,48 @@ function (React, globals, mixins, NavBar, Footer) {
                 appClass = 'done';
             }
 
-            return (
-                <div id="application" className={appClass} onClick={this.handleClick} onSubmit={this.handleSubmit}>
-                    <div id="layout">
-                        <NavBar href={this.props.href} portal={this.state.portal}
-                                user_actions={this.state.user_actions} session={this.state.session}
-                                personaReady={this.state.personaReady} />
-                        <div id="content" className="container">
-                            {content}
-                        </div>
-                        {errors}                        
-                        <div id="layout-footer"></div>
-                    </div>
-                    <Footer />
-                </div>
-            );
-        },
+            var title = globals.listing_titles.lookup(context)({context: context});
+            if (title) {
+                title = portal.portal_title + ' – ' + title;
+            } else {
+                title = portal.portal_title;
+            }
 
-        componentDidUpdate: function () {
-            // XXX The templates should be updated to always define an h1.
-            var $ = require('jquery');
-            $('title').text($('h1, h2').first().text() + ' - ' + $('#navbar .brand').first().text());
+            return (
+                <html>
+                    <head>
+                        <meta charset="utf-8" />
+                        <meta http-equiv="content-language" content="en" />
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <title>{title}</title>
+                        <link rel="canonical" href={this.props.href} />
+                        <link rel="stylesheet" href="/static/css/style.css" />
+                        <link rel="stylesheet" href="/static/css/responsive.css" />
+                        <script src="/static/build/bundle.js" async={true} defer={true}></script>
+                    </head>
+                    <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
+                        <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
+                            __html: jsonScriptEscape(JSON.stringify(this.props.context))
+                        }}></script>
+                        <div id="slot-application">
+                            <div id="application" className={appClass}>
+                                <div id="layout">
+                                    <NavBar href={this.props.href} portal={this.state.portal}
+                                            user_actions={this.state.user_actions} session={this.state.session}
+                                            personaReady={this.state.personaReady} />
+                                    <div id="content" className="container">
+                                        {content}
+                                    </div>
+                                    {errors}                        
+                                    <div id="layout-footer"></div>
+                                </div>
+                                <Footer />
+                            </div>
+                        </div>
+                    </body>
+                </html>
+            );
         }
 
     });

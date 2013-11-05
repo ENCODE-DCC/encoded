@@ -5,14 +5,12 @@ module.exports = function(grunt) {
             vendor: {
                 dest: 'build/vendor.js',
                 // The shims should execute first
-                src: [
-                    'es5-shim',
-                    'es5-shim/es5-sham',
-                ].map(require.resolve),
+                src: ['./src/encoded/static/libs/compat.js'],
                 options: {
                     alias: [
                         'domready:',
                         'react-tools/build/modules/React:react',
+                        'react-tools/build/modules/ReactMount:',
                         'underscore:',
                         'url:',
                     ],
@@ -30,7 +28,10 @@ module.exports = function(grunt) {
             },
             bootstrap: {
                 dest: 'build/bootstrap.js',
-                src: ['./src/encoded/static/libs/bootstrap.js'],  // simply requires all bootstrap plugins
+                src: [
+                    './src/encoded/static/libs/bootstrap.js', // simply requires all bootstrap plugins
+                    'src/encoded/static/libs/sticky_header.js',
+                    ],
                 alias: ['./src/encoded/static/libs/bootstrap:bootstrap'],
                 options: {
                     external: ['jquery'],
@@ -55,7 +56,6 @@ module.exports = function(grunt) {
                 dest: 'build/app.js',
                 src: [
                     'src/encoded/static/components/*.js',
-                    'src/encoded/static/libs/sticky_header.js',
                 ],
                 options: {
                     //debug: true,
@@ -65,6 +65,7 @@ module.exports = function(grunt) {
                     ],
                     alias: [
                         './src/encoded/static/libs/class:class',
+                        './src/encoded/static/libs/jsonScriptEscape:jsonScriptEscape',
                         './src/encoded/static/libs/origin:origin',
                         './src/encoded/static/libs/registry:registry',
                         './src/encoded/static/components/main:main',
@@ -72,6 +73,7 @@ module.exports = function(grunt) {
                     external: [
                         'jquery',
                         'react',
+                        'react-tools/build/modules/ReactMount',
                         'underscore',
                         'd3',
                         'domready',
@@ -106,6 +108,25 @@ module.exports = function(grunt) {
                     ],
                 },
             },
+            server: {
+                dest: 'build/server_vendor.js',
+                src: ['./src/encoded/static/libs/streams.js'],
+                options: {
+                    alias: [
+                        './src/encoded/static/libs/streams:streams',
+                        'react-tools/build/modules/React:react',
+                        'react-tools/build/modules/ReactMount:',
+                        'underscore:',
+                    ],
+                    external: [
+                        'util',
+                        'assert',
+                        'string_decoder',
+                        'stream',
+                    ],
+                },
+            },
+
         },
         concat: {
             'src/encoded/static/build/bundle.js': [
@@ -115,6 +136,11 @@ module.exports = function(grunt) {
             ],
             'src/encoded/tests/js/build/bundle.js': [
                 'build/specs.js',
+            ],
+            'src/encoded/static/build/renderer.js': [
+                'build/server_vendor.js',
+                'build/app.js',
+                'src/encoded/static/libs/server.js',
             ],
         },
     });

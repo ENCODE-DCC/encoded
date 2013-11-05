@@ -94,7 +94,7 @@ function (exports, class_, React, url, globals) {
             var state = this.extractParams(this.props);
             var columns = state.columns = this.guessColumns(this.props);
             state.data = this.extractData(this.props, columns);
-            state.communicating = this.fetchAll(this.props);
+            state.communicating = true;
             return state;
         },
 
@@ -305,6 +305,10 @@ function (exports, class_, React, url, globals) {
                     </tbody>
                 </table>
             );
+        },
+
+        componentDidMount: function () {
+            this.setState({communicating: this.fetchAll(this.props)});
         },
 
         componentDidUpdate: function (prevProps, prevState, domNode) {
