@@ -62,8 +62,8 @@ function (React, jsonScriptEscape, globals, mixins, NavBar, Footer) {
             }
 
             var title = globals.listing_titles.lookup(context)({context: context});
-            if (title) {
-                title = portal.portal_title + ' – ' + title;
+            if (title && title != 'Home') {
+                title = title + ' – ' + portal.portal_title;
             } else {
                 title = portal.portal_title;
             }
