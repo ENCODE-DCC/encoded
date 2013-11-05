@@ -200,5 +200,13 @@
 	   "type": "string",
 	   "linkTo": "source"
             }
+    },
+    "notes": {
+        "notes": {
+            "title": "Notes",
+            "description": "Additional information.",
+            "type": "string",
+            "permission": "import_items"
+        }
     }
 }
