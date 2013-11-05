@@ -77,13 +77,14 @@
             "description": "The current state of the characterization.",
             "comment": "Do not submit, value is assigned by the DCC.",
             "type": "string",
-            "default": "INCOMPLETE",
+            "default": "IN PROGRESS",
             "enum" : [
-                "APPROVED",
-                "SUBMITTED",
-                "UNSUBMITTED",
-                "FAILED",
-                "INCOMPLETE",
+                "IN PROGRESS",
+                "PENDING DCC REVIEW",
+                "COMPLIANT",
+                "NOT COMPLIANT",
+                "NOT REVIEWED",
+                "WITHDRAWN BY LAB"
                 "DELETED"
             ]
         },
