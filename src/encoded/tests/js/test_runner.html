@@ -4,7 +4,14 @@
   <title>Jasmine Spec Runner</title>
 
   <link rel="stylesheet" type="text/css" href="./vendor/jasmine/jasmine.css"/>
-  <script data-main="./testing.js" src="/static/vendor/require.js"></script>
+  <script>
+        window.TEST_RUNNER = true;
+  </script>
+
+  <script src="./vendor/jasmine/jasmine.js"></script>
+  <script src="./vendor/jasmine/jasmine-html.js"></script>
+  <script src="../../static/build/bundle.js" charset="utf-8"></script>
+  <script src="./build/bundle.js"></script>
 
 </head>
 <body>

@@ -1,10 +1,9 @@
-define(['exports', 'jquery', 'react', 'uri', 'persona'],
-function (mixins, $, React, URI) {
+define(['exports', 'react', 'url', 'origin'],
+function (exports, React, url, origin) {
     /*jshint devel: true*/
     'use strict';
-
         
-    var parseError = mixins.parseError = function (xhr, status) {
+    var parseError = exports.parseError = function (xhr, status) {
         var data;
         if (status == 'abort') return;
         if (status == 'timeout') {
@@ -43,13 +42,13 @@ function (mixins, $, React, URI) {
                 status: '' + status,
                 title: 'Error',
                 '@type': ['ajax_error', 'error']
-            };   
+            };
         }
         return data;
     };
 
 
-    mixins.RenderLess = {
+    exports.RenderLess = {
         shouldComponentUpdate: function (nextProps, nextState) {
             var key;
             if (nextProps) {
@@ -72,12 +71,17 @@ function (mixins, $, React, URI) {
         },
     };
 
-    mixins.Persona = {
+    exports.Persona = {
         componentDidMount: function () {
+            var $ = require('jquery');
             // Login / logout actions must be deferred until persona is ready.
             $.ajaxPrefilter(this.ajaxPrefilter);
             this.personaDeferred = $.Deferred();
-            this.refreshSession();
+            if (!navigator.id) {
+                // Ensure DOM is clean for React when mounting
+                this.personaLoaded = $.getScript("https://login.persona.org/include.js");
+            }
+            $.when(this.refreshSession(), this.personaLoaded).done(this.configurePersona);
         },
 
         ajaxPrefilter: function (options, original, xhr) {
@@ -89,6 +93,7 @@ function (mixins, $, React, URI) {
         },
 
         refreshSession: function () {
+            var $ = require('jquery');
             var self = this;
             if (this.sessionRequest && this.sessionRequest.state() == 'pending') {
                 this.sessionRequest.abort();
@@ -103,19 +108,18 @@ function (mixins, $, React, URI) {
             return this.sessionRequest;
         },
 
-        componentDidUpdate: function (prevProps, prevState) {
-            // Defer persona setup until we have the session
-            if (!prevState.session && this.state.session) {
-                navigator.id.watch({
-                    loggedInUser: this.state.session.persona,
-                    onlogin: this.handlePersonaLogin,
-                    onlogout: this.handlePersonaLogout,
-                    onready: this.handlePersonaReady
-                });
-            }
+        configurePersona: function (refresh, loaded) {
+            var session = refresh[0];
+            navigator.id.watch({
+                loggedInUser: session.persona,
+                onlogin: this.handlePersonaLogin,
+                onlogout: this.handlePersonaLogout,
+                onready: this.handlePersonaReady
+            });
         },
 
         handlePersonaLogin: function (assertion, retrying) {
+            var $ = require('jquery');
             var self = this;
             if (!assertion) return;
             $.ajax({
@@ -130,7 +134,15 @@ function (mixins, $, React, URI) {
                 if (window.location.hash == '#logged-out') {
                     next_url = window.location.pathname + window.location.search;
                 }
-                self.navigate(next_url, {replace: true});
+                if (this.historyEnabled) {
+                    self.navigate(next_url, {replace: true});
+                } else {
+                    var old_path = window.location.pathname + window.location.search;
+                    window.location.assign(next_url);
+                    if (old_path == next_url) {
+                        window.location.reload();
+                    }
+                }
             }).fail(function (xhr, status, err) {
                 // If there is an error, show the error messages
                 navigator.id.logout();
@@ -143,11 +155,12 @@ function (mixins, $, React, URI) {
                     return;
                     }
                 }
-                self.setState({context: data});
+                self.setProps({context: data});
             });
         },
 
         handlePersonaLogout: function () {
+            var $ = require('jquery');
             console.log("Persona thinks we need to log out");
             if (this.state.session.persona === null) return;
             var self = this;
@@ -165,12 +178,13 @@ function (mixins, $, React, URI) {
             }).fail(function (xhr, status, err) {
                 data = parseError(xhr, status);
                 data.title = 'Logout failure: ' + data.title;
-                self.setState({context: data});
+                self.setProps({context: data});
             });
         },
 
         handlePersonaReady: function () {
             this.personaDeferred.resolve();
+            console.log('persona ready');
             this.setState({personaReady: true});
         },
 
@@ -191,20 +205,18 @@ function (mixins, $, React, URI) {
     };
 
 
-    mixins.HistoryAndTriggers = {
+    exports.HistoryAndTriggers = {
         // Detect HTML5 history support
-        historyEnabled: !!(window.history && window.history.pushState),
+        historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
 
         componentDidMount: function () {
             if (this.historyEnabled) {
-                if (this.state.context) {
-                    var data = this.state.context;
-                    try {
-                        window.history.replaceState(data, '', window.location.href);
-                    } catch (exc) {
-                        // Might fail due to too large data
-                        window.history.replaceState(null, '', window.location.href);
-                    }
+                var data = this.props.context;
+                try {
+                    window.history.replaceState(data, '', window.location.href);
+                } catch (exc) {
+                    // Might fail due to too large data
+                    window.history.replaceState(null, '', window.location.href);
                 }
                 window.addEventListener('popstate', this.handlePopState, true);
                 window.addEventListener('error', this.handleError, false);
@@ -232,6 +244,11 @@ function (mixins, $, React, URI) {
             }
             if (!target) return;
 
+            if (target.getAttribute('disabled')) {
+                event.preventDefault();
+                return;
+            }
+
             // data-trigger links invoke custom handlers.
             var data_trigger = target.getAttribute('data-trigger');
             if (data_trigger !== null) {
@@ -251,7 +268,7 @@ function (mixins, $, React, URI) {
             if (href === null) return;
 
             // Skip external links
-            if (!URI(href).sameOrigin()) return;
+            if (!origin.same(href)) return;
 
             // With HTML5 history supported, local navigation is passed
             // through the navigate method.
@@ -263,6 +280,7 @@ function (mixins, $, React, URI) {
 
         // Submitted forms are treated the same as links
         handleSubmit: function(event) {
+            var $ = require('jquery');
             var target = event.target;
 
             // Skip POST forms
@@ -272,18 +290,18 @@ function (mixins, $, React, URI) {
             if (target.getAttribute('data-bypass')) return;
 
             // Skip external forms
-            var uri = URI(target.action);
-            if (!uri.sameOrigin()) return;
+            if (!origin.same(target.action)) return;
 
-            var options = {}
-            options.replace = uri.pathname == URI(this.props.href).pathname;
+            var options = {};
+            var action_url = url.parse(target.action);
+            options.replace = action_url.pathname == url.parse(this.props.href).pathname;
             var search = $(target).serialize();
             if (target.getAttribute('data-removeempty')) {
                 search = search.split('&').filter(function (item) {
                     return item.slice(-1) != '=';
                 }).join('&');
             }
-            var href = uri.pathname;
+            var href = action_url.pathname;
             if (search) {
                 href += '?' + search;
             }
@@ -298,22 +316,25 @@ function (mixins, $, React, URI) {
 
         handlePopState: function (event) {
             if (this.DISABLE_POPSTATE) return;
+            // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
+            if (!this.havePushedState) return;
             if (!this.historyEnabled) {
                 window.location.reload();
                 return;
             }
             var href = window.location.href;
             if (event.state) {
-                this.setState({context: event.state})
+                this.setProps({context: event.state})
             }
             // Always async update in case of server side changes
             this.navigate(href, {replace: true});
         },
 
         navigate: function (href, options) {
+            var $ = require('jquery');
             options = options || {}; 
-            var self = this;
             this.setProps({href: href});
+            this.havePushedState = true;
 
             if (this.contextRequest && this.contextRequest.state() == 'pending') {
                 this.contextRequest.abort();
@@ -327,9 +348,6 @@ function (mixins, $, React, URI) {
             if (options.skipRequest) return;
 
             this.setState({communicating: true});
-
-            // The contextDataElement is kept in sync with the context request result.
-            this.props.contextDataElement.text = '';
 
             this.contextRequest = $.ajax({
                 url: href,
@@ -349,10 +367,8 @@ function (mixins, $, React, URI) {
         },
 
         receiveContextResponse: function (data, status, xhr) {
-            this.setState({
-                communicating: false,
-                context: data
-            });
+            this.setState({communicating: false});
+            this.setProps({context: data});
 
             // title currently ignored by browsers
             try {
@@ -360,10 +376,6 @@ function (mixins, $, React, URI) {
             } catch (exc) {
                 // Might fail due to too large data
                 window.history.replaceState(null, '', window.location.href);
-            }
-            // Set the contextDataElement as a debugging aid
-            if (this.props.contextDataElement) {
-                this.props.contextDataElement.text = xhr.responseText;
             }
         },
 
@@ -377,5 +389,5 @@ function (mixins, $, React, URI) {
         }
     };
 
-    return mixins;
+    return exports;
 });

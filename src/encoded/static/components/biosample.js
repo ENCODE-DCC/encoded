@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'uri', 'globals'],
-function (biosample, React, URI, globals) {
+define(['exports', 'react', 'underscore', 'url', './globals'],
+function (exports, React, _, url, globals) {
     'use strict';
 
     var Panel = function (props) {
@@ -14,7 +14,7 @@ function (biosample, React, URI, globals) {
     };
 
 
-    var Biosample = biosample.Biosample = React.createClass({
+    var Biosample = exports.Biosample = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
@@ -43,21 +43,21 @@ function (biosample, React, URI, globals) {
             })
 
             return (
-                <div class={itemClass}>
-                    <header class="row">
-                        <div class="span12">
-                            <ul class="breadcrumb">
-                                <li>Biosamples <span class="divider">/</span></li>
-                                <li>{context.biosample_type}{' '}<span class="divider">/</span></li>{' '}
+                <div className={itemClass}>
+                    <header className="row">
+                        <div className="span12">
+                            <ul className="breadcrumb">
+                                <li>Biosamples <span className="divider">/</span></li>
+                                <li>{context.biosample_type}{' '}<span className="divider">/</span></li>{' '}
                                 {context.donor ?
-                                    <li class="active">{context.donor.organism.name}</li>
+                                    <li className="active">{context.donor.organism.name}</li>
                                 : null }
                             </ul>
-                            <h2>{context.accession}{' / '}<span class="cap-me-once">{context.biosample_type}</span></h2>
+                            <h2>{context.accession}{' / '}<span className="cap-me-once">{context.biosample_type}</span></h2>
                         </div>
                     </header>
-                    <div class="panel data-display">
-                        <dl class="key-value">
+                    <div className="panel data-display">
+                        <dl className="key-value">
                             <dt>Term name</dt>
                             <dd>{context.biosample_term_name}</dd>
 
@@ -86,7 +86,7 @@ function (biosample, React, URI, globals) {
                             <dd>{context.lab.title}</dd>
                             
                             <dt hidden={!context.aliases.length}>Aliases</dt>
-                            <dd class="no-cap" hidden={!context.aliases.length}>{aliasList}</dd>
+                            <dd className="no-cap" hidden={!context.aliases.length}>{aliasList}</dd>
 
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
@@ -108,7 +108,7 @@ function (biosample, React, URI, globals) {
                             <section>
                                 <hr />
                                 <h4>Derived from biosamples</h4>
-                                <ul class="non-dl-list">
+                                <ul className="non-dl-list">
 									{context.derived_from.map(function (biosample) {
 										return (
 											<li key={biosample['@id']}>
@@ -125,7 +125,7 @@ function (biosample, React, URI, globals) {
                             <section>
                                 <hr />
                                 <h4>Pooled from biosamples</h4>
-                                <ul class="non-dl-list">
+                                <ul className="non-dl-list">
 									{context.pooled_from.map(function (biosample) {
 										return (
 											<li key={biosample['@id']}>
@@ -206,17 +206,17 @@ function (biosample, React, URI, globals) {
         }
     };
 	
-    var HumanDonor = biosample.HumanDonor = React.createClass({
+    var HumanDonor = exports.HumanDonor = React.createClass({
         render: function() {
             var context = this.props.context;
             var biosample = this.props.biosample;
             return (
-                <dl class="key-value">
+                <dl className="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
                     
                     <dt hidden={!context.aliases.length}>Aliases</dt>
-                    <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                    <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -243,17 +243,17 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(HumanDonor, 'human_donor');
 
 
-    var MouseDonor = biosample.MouseDonor = React.createClass({
+    var MouseDonor = exports.MouseDonor = React.createClass({
         render: function() {
             var context = this.props.context;
             var biosample = this.props.biosample;
             return (
-                <dl class="key-value">
+                <dl className="key-value">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
                     
                     <dt hidden={!context.aliases.length}>Aliases</dt>
-                    <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                    <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                     {context.organism.name ? <dt>Species</dt> : null}
                     {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -283,7 +283,7 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(MouseDonor, 'mouse_donor');
 
 
-    var Treatment = biosample.Treatment = React.createClass({
+    var Treatment = exports.Treatment = React.createClass({
         render: function() {
             var context = this.props.context;
             var title = '';
@@ -295,7 +295,7 @@ function (biosample, React, URI, globals) {
                 title += 'for ' + context.duration + ' ' + context.duration_units;
             }
             return (
-                <dl class="key-value">
+                <dl className="key-value">
                     <dt>Treatment</dt>
                     <dd>{title}</dd>
 
@@ -310,13 +310,13 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(Treatment, 'treatment');
 
 
-    var Construct = biosample.Construct = React.createClass({
+    var Construct = exports.Construct = React.createClass({
         render: function() {
             var context = this.props.context;
             return (
-                <dl class="key-value">
+                <dl className="key-value">
                 	{context.target ? <dt>Target</dt> : null}
-                    {context.target ? <dd class="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+                    {context.target ? <dd className="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
 
                     {context.vector_backbone_name ? <dt>Vector</dt> : null}
                     {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}
@@ -328,7 +328,7 @@ function (biosample, React, URI, globals) {
                     {context.description ? <dd>{context.description}</dd> : null}
                     
                     <dt hidden={!context.tags.length}>Tags</dt>
-					<dd hidden={!context.tags.length} class="no-cap">
+					<dd hidden={!context.tags.length} className="no-cap">
 						<ul>
 							{context.tags.map(function (tag, index) {
 								return (
@@ -354,25 +354,25 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(Construct, 'construct');
     
     
-    var RNAi = biosample.RNAi = React.createClass({
+    var RNAi = exports.RNAi = React.createClass({
         render: function() {
             var context = this.props.context;
             return (
-                <dl class="key-value">
+                <dl className="key-value">
                 	{context.rnai_type ? <dt>RNAi type</dt> : null}
-                    {context.rnai_type ? <dd class="no-cap">{context.rnai_type}</dd> : null}
+                    {context.rnai_type ? <dd className="no-cap">{context.rnai_type}</dd> : null}
                     
                     {context.product_id ? <dt>Product ID</dt> : null}
-                    {context.product_id ? <dd class="no-cap">{context.product_id}</dd> : null}
+                    {context.product_id ? <dd className="no-cap">{context.product_id}</dd> : null}
                     
                     {context.target ? <dt>Target</dt> : null}
-                    {context.target ? <dd class="no-cap"><a href={context.target}>{context.target}</a></dd> : null}
+                    {context.target ? <dd className="no-cap"><a href={context.target}>{context.target}</a></dd> : null}
                     
                     {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
-                    {context.rnai_target_sequence ? <dd class="no-cap">{context.rnai_target_sequence}</dd> : null}
+                    {context.rnai_target_sequence ? <dd className="no-cap">{context.rnai_target_sequence}</dd> : null}
                     
                     {context.vector_backbone_name ? <dt>Vector backbone</dt> : null}
-                    {context.vector_backbone_name ? <dd class="no-cap">{context.vector_backbone_name}</dd> : null}
+                    {context.vector_backbone_name ? <dd className="no-cap">{context.vector_backbone_name}</dd> : null}
 
                     {context.source.title ? <dt>Source</dt> : null}
                     {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
@@ -384,7 +384,7 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(RNAi, 'rnai');
 
 
-    var Document = biosample.Document = React.createClass({
+    var Document = exports.Document = React.createClass({
         render: function() {
             var context = this.props.context;
             var attachmentHref, attachmentUri;
@@ -393,8 +393,7 @@ function (biosample, React, URI, globals) {
             var height = "100";
             var width = "100";
             if (context.attachment) {
-                attachmentUri = URI(context.attachment.href, URI(context['@id']).href);
-                attachmentHref = attachmentUri.pathname + attachmentUri.search;
+                attachmentHref = url.resolve(context['@id'], context.attachment.href);
                 if (context.attachment.type.split('/', 1)[0] == 'image') {
                     imgClass = 'characterization-img';
                     src = attachmentHref;
@@ -410,7 +409,7 @@ function (biosample, React, URI, globals) {
                 }
                 figure = (
                     <a data-bypass="true" href={attachmentHref}>
-                        <img class={imgClass} src={src} height={height} width={width} alt={alt} />
+                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                     </a>
                 );
                 download = (
@@ -422,7 +421,7 @@ function (biosample, React, URI, globals) {
                 src = "/static/img/file-broken.png";
                 alt = "Characterization File Broken Icon";
                 figure = (
-                    <img class={imgClass} src={src} height={height} width={width} alt={alt} />
+                    <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                 );
                 download = (
                     <em>Document not available</em>
@@ -430,20 +429,20 @@ function (biosample, React, URI, globals) {
             }
 
             return (
-                <section class="type-document view-detail panel status-none">
-                    <div class="container">
-                        <div class="row">
-                            <div class="span6">
+                <section className="type-document view-detail panel status-none">
+                    <div className="container">
+                        <div className="row">
+                            <div className="span6">
                                 <figure>
                                     {figure}
                                 </figure>
                             </div>
-                            <div class="span5">
-                                <h3 class="cap-me-once">{context.document_type}</h3>
-                                <p class="no-cap">{context.description}</p>
-                                <dl class="key-value">
+                            <div className="span5">
+                                <h3 className="cap-me-once">{context.document_type}</h3>
+                                <p className="no-cap">{context.description}</p>
+                                <dl className="key-value">
                                 	{context.caption ? <dt>Caption</dt> : null}
-                                    {context.caption ? <dd class="no-cap">{context.caption}</dd> : null}
+                                    {context.caption ? <dd className="no-cap">{context.caption}</dd> : null}
 
                                     <dt>Submitted by</dt>
                                     <dd>{context.submitted_by.title}</dd>
@@ -454,7 +453,7 @@ function (biosample, React, URI, globals) {
                                     <dt>Grant</dt>
                                     <dd>{context.award.name}</dd>
 
-                                    <dt><i class="icon-download-alt"></i> Download</dt>
+                                    <dt><i className="icon-download-alt"></i> Download</dt>
                                     <dd>{download}</dd>
                                 </dl>
                             </div>
@@ -469,5 +468,5 @@ function (biosample, React, URI, globals) {
     globals.panel_views.register(Document, 'biosample_characterization');
 
 
-    return biosample;
+    return exports;
 });
