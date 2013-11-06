@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'globals', 'jsx!dbxref'],
-function (experiment, React, globals, dbxref) {
+define(['exports', 'react', 'underscore', './globals', './dbxref'],
+function (exports, React, _, globals, dbxref) {
     'use strict';
 
     var DbxrefList = dbxref.DbxrefList;
@@ -17,7 +17,7 @@ function (experiment, React, globals, dbxref) {
 
 
 
-    var Experiment = experiment.Experiment = React.createClass({
+    var Experiment = exports.Experiment = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
@@ -48,18 +48,18 @@ function (experiment, React, globals, dbxref) {
             // XXX This makes no sense.
             //var control = context.possible_controls[0];
             return (
-                <div class={itemClass}>
-                    <header class="row">
-                        <div class="span12">
-                            <ul class="breadcrumb">
-                                <li>Experiment <span class="divider">/</span></li>
-                                <li class="active">{context.assay_term_name}</li>
+                <div className={itemClass}>
+                    <header className="row">
+                        <div className="span12">
+                            <ul className="breadcrumb">
+                                <li>Experiment <span className="divider">/</span></li>
+                                <li className="active">{context.assay_term_name}</li>
                             </ul>
                             <h2>Experiment summary for {context.accession}</h2>
                         </div>
                     </header>
-                    <div class="panel data-display">
-                        <dl class="key-value">
+                    <div className="panel data-display">
+                        <dl className="key-value">
                             <dt>Accession</dt>
                             <dd>{context.accession}</dd>
 
@@ -94,7 +94,7 @@ function (experiment, React, globals, dbxref) {
                             </dd>
 
                             <dt hidden={!context.encode2_dbxrefs.length}>ENCODE2 ID</dt>
-                            <dd hidden={!context.encode2_dbxrefs.length} class="no-cap">
+                            <dd hidden={!context.encode2_dbxrefs.length} className="no-cap">
                                 <DbxrefList values={context.encode2_dbxrefs} prefix="ENCODE2" />
                             </dd>
 
@@ -102,7 +102,7 @@ function (experiment, React, globals, dbxref) {
                             <dd>{context.lab.title}</dd>
                             
                             <dt hidden={!context.aliases.length}>Aliases</dt>
-                            <dd class="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                            <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                             <dt>Project</dt>
                             <dd>{context.award.rfa}</dd>
@@ -132,7 +132,7 @@ function (experiment, React, globals, dbxref) {
 
     globals.content_views.register(Experiment, 'experiment');
 
-    var BiosamplesUsed = experiment.BiosamplesUsed = function (props) {
+    var BiosamplesUsed = exports.BiosamplesUsed = function (props) {
         var replicates = props.replicates;
         if (!replicates.length) return (<div hidden={true}></div>);
         var biosamples = {};
@@ -183,7 +183,7 @@ function (experiment, React, globals, dbxref) {
     };
 
 
-    var AssayDetails = experiment.AssayDetails = function (props) {
+    var AssayDetails = exports.AssayDetails = function (props) {
         var replicates = props.replicates.sort(function(a, b) {
             if (b.biological_replicate_number === a.biological_replicate_number) {
                 return a.technical_replicate_number - b.technical_replicate_number;
@@ -217,7 +217,7 @@ function (experiment, React, globals, dbxref) {
         return (
             <div>
                 <h3>Assay details</h3>
-                <dl class="panel key-value">
+                <dl className="panel key-value">
                     {children}
                 </dl>
             </div>
@@ -225,14 +225,14 @@ function (experiment, React, globals, dbxref) {
     };
 
 
-    var Replicate = experiment.Replicate = function (props) {
+    var Replicate = exports.Replicate = function (props) {
         var replicate = props.replicate;
         var library = replicate.library;
         var biosample = library.biosample;
         return (
             <div key={props.key}>
                 <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
-                <dl class="panel key-value">
+                <dl className="panel key-value">
                     <dt>Technical replicate</dt>
                     <dd>{replicate.technical_replicate_number}</dd>
 
@@ -254,7 +254,7 @@ function (experiment, React, globals, dbxref) {
     //globals.panel_views.register(Replicate, 'replicate');
 
 
-    var FilesLinked = experiment.FilesLinked = function (props) {
+    var FilesLinked = exports.FilesLinked = function (props) {
         var context = props.context;
         var files = context.files;
         if (!files.length) return (<div hidden={true}></div>);
@@ -285,7 +285,7 @@ function (experiment, React, globals, dbxref) {
                                 </td>
                                 <td>{file.submitted_by.title}</td>
                                 <td>{file.date_created}</td>
-                                <td><a href={href} download><i class="icon-download-alt"></i> Download</a></td>
+                                <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
                             </tr>
                         );
                     })}
@@ -301,5 +301,5 @@ function (experiment, React, globals, dbxref) {
     };
 
 
-    return experiment;
+    return exports;
 });

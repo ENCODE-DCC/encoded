@@ -425,7 +425,8 @@ class Step(FixtureRequestMixin, pytest.Item):
     fixture_scope = 'subfunction'
 
     def __init__(self, model, parent):
-        name = '%s %s' % (model.keyword, model.name)
+        name = u'%s %s' % (model.keyword, model.name)
+        name = name.encode('ascii', 'backslashreplace')
         super(Step, self).__init__(name, parent)
         self.step = self.model = model
         self._init_fixtures()

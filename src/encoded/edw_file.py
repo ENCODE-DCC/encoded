@@ -98,7 +98,7 @@ def make_edw(data_host=None):
         host = data_host
     else:
         host = config.get(site, 'host')
-    db = config.get(site, 'db')
+    db = config.get(site, 'database')
     user = config.get(site, 'user')
     password = config.get(site, 'password')
     if user ==CHANGE_ME or password == CHANGE_ME:

@@ -138,7 +138,6 @@ def make_app(application, username, password):
         app_host_name = url.netloc
     else:
         app = internal_app(application, username)
-        app_host_name = localhost
     # END CAUTION
     return app
 

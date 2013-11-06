@@ -527,7 +527,7 @@ class RNAiCharacterization(Collection):
         keys = ALIAS_KEYS
 
 
-@location('dataset')
+@location('datasets')
 class Dataset(Collection):
     item_type = 'dataset'
     schema = load_schema('dataset.json')
@@ -535,4 +535,4 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
-    item_keys = ALIAS_KEYS
+    item_keys = ACCESSION_KEYS + ALIAS_KEYS

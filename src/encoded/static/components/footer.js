@@ -13,7 +13,7 @@ function (React) {
             console.log('render footer');
             return (
                 <footer id="page-footer">
-					<div class="container">
+					<div className="container">
 						<div id="footer-links">
 							<ul>
 								<li><a href="/"><img src="/static/img/encode-logo-small.png" alt="ENCODE" id="encode-logo" /></a></li>
