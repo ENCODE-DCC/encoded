@@ -1089,13 +1089,18 @@ class AfterModified(object):
 @subscriber(BeforeModified)
 @subscriber(AfterModified)
 def record_created(event):
-
+    session = DBSession()
     # Create property if that doesn't exist
     try:
         dirty = event.request._encoded_dirty
     except:
         dirty = event.request._encoded_dirty = []
         dirty.append(event.object.model)
+    updated_object = event.object.model
+    results = session.query(Link).filter(Link.target == updated_object).all()
+    for d in results:
+        if not any(x.rid == d.source.rid for x in dirty):
+            dirty.append(d.source)
 
 
 def es_update_object(request, objects):
