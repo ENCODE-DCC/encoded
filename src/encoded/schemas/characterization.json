@@ -27,24 +27,21 @@
             "description": "Experimental method of the characterization.",
             "type": "string",
             "enum": [
-                "western blot",
-                "western blot after IP",
+                "immunoblot"
                 "immunoprecipitation",
                 "immunofluorescence",
-                "knockdowns",
-                "mass spectrometry after IP",
-                "chIP comparison",
-                "tagged epitopes",
+                "knockdown or knockout",
+                "immunoprecipitation followed by mass spectrometry",
+                "ChIP-seq comparison",
                 "motif enrichment",
-                "dot blot",
-                "peptide ELISA",
-                "competitor peptides",
+                "peptide binding test",
+                "peptide competition assay",
                 "mutant organisms",
-                "mutant histones",
+                "mutant histone modifer",
+                "mutant histone",
                 "annotation enrichment",
-                "XXX NEED REVIEW",
-                "Western blot, Western blot after IP",
-                "immunoblot"
+                "FACs analysis",
+                "qPCR analysis"
             ]
         },
         "caption": {
