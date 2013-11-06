@@ -84,7 +84,7 @@
                 "COMPLIANT",
                 "NOT COMPLIANT",
                 "NOT REVIEWED",
-                "WITHDRAWN BY LAB"
+                "WITHDRAWN BY LAB",
                 "DELETED"
             ]
         },
