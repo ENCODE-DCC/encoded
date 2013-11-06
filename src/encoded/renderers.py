@@ -1,11 +1,12 @@
 from .json_script_escape import json_script_escape
-from pkg_resources import resource_string
+from pkg_resources import resource_filename
 from pyramid.events import (
     NewRequest,
     subscriber,
 )
 from pyramid.httpexceptions import (
     HTTPBadRequest,
+    HTTPInternalServerError,
     HTTPMovedPermanently,
 )
 from pyramid.security import authenticated_userid
@@ -13,7 +14,12 @@ from pyramid.threadlocal import (
     get_current_request,
     manager,
 )
+import json
+import os
 import pyramid.renderers
+import subprocess
+import threading
+import time
 import uuid
 
 
@@ -51,14 +57,52 @@ class NullRenderer:
 
 
 class PageRenderer:
+    process_args = [
+        'node',
+        resource_filename(__name__, 'static/build/renderer.js'),
+    ]
+
     def __init__(self, info):
-        self.page = resource_string('encoded', 'index.html')
+        node_env = os.environ.copy()
+        node_env['NODE_PATH']= ''
+        self.process = subprocess.Popen(
+            self.process_args, close_fds=True,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            env=node_env,
+        )
+        self.lock = threading.Lock()
 
     def __call__(self, value, system):
-        request = system.get('request')
-        if request is not None:
-            request.response.content_type = 'text/html'
-        return self.page.format(json=json_script_escape(value))
+        request = system['request']
+        request.response.content_type = 'text/html'
+        data = '{"href":%s,"context":%s}\0' % (json.dumps(request.url), value)
+
+        with self.lock:
+            start = int(time.time() * 1e6)
+            self.process.stdin.write(data)
+            header = self.process.stdout.readline()
+            result_type, content_length = header.split(' ', 1)
+            content_length = int(content_length)
+            output = []
+            pos = 0
+
+            while pos < content_length:
+                out = self.process.stdout.read(content_length - pos)
+                pos += len(out)
+                output.append(out)
+
+            end = int(time.time() * 1e6)
+
+        stats = request._stats
+        stats['render_count'] = stats.get('render_count', 0) + 1
+        duration = end - start
+        stats['render_time'] = stats.get('render_time', 0) + duration
+
+        result = ''.join(output)
+        if result_type == 'RESULT':
+            return result
+        else:
+            raise HTTPInternalServerError(result)
 
 
 class CSRFTokenError(HTTPBadRequest):

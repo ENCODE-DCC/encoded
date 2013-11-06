@@ -1,17 +1,17 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'globals', 'jsx!dbxref'],
-function (platform, React, globals, dbxref) {
+define(['exports', 'react', './globals', './dbxref'],
+function (exports, React, globals, dbxref) {
     'use strict';
 
     var DbxrefList = dbxref.DbxrefList;
     var Dbxref = dbxref.Dbxref;
 
-    var Panel = platform.Panel = React.createClass({
+    var Panel = exports.Panel = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-detail panel key-value');
             return (
-                <dl class={itemClass}>
+                <dl className={itemClass}>
                     <dt>Platform name</dt>
                     <dd><a href={context.url}>{context.title}</a></dd>
 
@@ -38,5 +38,5 @@ function (platform, React, globals, dbxref) {
 
     globals.panel_views.register(Panel, 'platform');
 
-    return platform;
+    return exports;
 });

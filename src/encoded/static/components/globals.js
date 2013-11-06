@@ -1,19 +1,19 @@
 define(['exports', 'registry'],
-function (globals, Registry) {
+function (exports, Registry) {
     /*jshint devel: true*/
     'use strict';
 
     // Item pages
-    globals.content_views = Registry();
+    exports.content_views = Registry();
 
     // Panel detail views
-    globals.panel_views = Registry();
+    exports.panel_views = Registry();
 
     // Cell name listing titles
-    globals.listing_titles = Registry();
+    exports.listing_titles = Registry();
 
 
-    globals.itemClass = function (context, htmlClass) {
+    exports.itemClass = function (context, htmlClass) {
         htmlClass = htmlClass || '';
         (context['@type'] || []).forEach(function (type) {
             htmlClass += ' type-' + type;
@@ -24,7 +24,7 @@ function (globals, Registry) {
         return htmlClass;
     };
 
-    globals.dbxref_prefix_map = {
+    exports.dbxref_prefix_map = {
         "UniProtKB": "http://www.uniprot.org/uniprot/",
         "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",
         // ENSEMBL link only works for human
@@ -34,5 +34,5 @@ function (globals, Registry) {
         "Caltech": "http://jumpgate.caltech.edu/library/"
     };
 
-    return globals;
+    return exports;
 });
