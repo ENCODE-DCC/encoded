@@ -27,7 +27,7 @@
             "description": "Experimental method of the characterization.",
             "type": "string",
             "enum": [
-                "immunoblot"
+                "immunoblot",
                 "immunoprecipitation",
                 "immunofluorescence",
                 "knockdown or knockout",
