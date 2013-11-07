@@ -146,12 +146,12 @@ function (exports, React, url, origin) {
             }).fail(function (xhr, status, err) {
                 // If there is an error, show the error messages
                 navigator.id.logout();
-                var data = parseError(xhr, status)
+                var data = parseError(xhr, status);
                 if (xhr.status === 400 && data.detail.indexOf('CSRF') !== -1) {
                     if (!retrying) {
                         self.refreshSession().done(function () {
                             self.handlePersonaLogin(assertion, true);
-                        })
+                        });
                     return;
                     }
                 }
@@ -324,7 +324,7 @@ function (exports, React, url, origin) {
             }
             var href = window.location.href;
             if (event.state) {
-                this.setProps({context: event.state})
+                this.setProps({context: event.state});
             }
             // Always async update in case of server side changes
             this.navigate(href, {replace: true});
@@ -332,7 +332,7 @@ function (exports, React, url, origin) {
 
         navigate: function (href, options) {
             var $ = require('jquery');
-            options = options || {}; 
+            options = options || {};
             this.setProps({href: href});
             this.havePushedState = true;
 
