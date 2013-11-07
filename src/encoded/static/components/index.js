@@ -9,6 +9,7 @@ require('./experiment');
 require('./footer');
 require('./globals');
 require('./home');
+require('./item');
 require('./mixins');
 require('./navbar');
 require('./platform');
