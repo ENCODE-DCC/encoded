@@ -348,6 +348,8 @@ function (exports, class_, React, url, globals) {
             }
             // Skip when enter key is pressed
             if (event.nativeEvent.keyCode == 13) return;
+            // IE8 should only submit on enter as page reload is triggered
+            if (!this.hasEvent) return;
             this.submitTimer = setTimeout(this.submit, 200);
         },
 
