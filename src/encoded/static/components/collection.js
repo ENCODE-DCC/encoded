@@ -338,6 +338,7 @@ function (exports, class_, React, url, globals) {
             }
             this.refs.reversed.getDOMNode().value = reversed;
             event.preventDefault();
+            event.stopPropagation();
             this.submit();
         },
 
@@ -350,14 +351,20 @@ function (exports, class_, React, url, globals) {
             this.submitTimer = setTimeout(this.submit, 200);
         },
 
+        hasEvent: typeof Event !== 'undefined',
+
         submit: function () {
             // form.submit() does not fire onsubmit handlers...
             var target = this.refs.form.getDOMNode();
-            // Not IE8 compatible
-            //var event = new Event('submit', {bubbles: true, cancelable: true});
-            //target.dispatchEvent(event);
-            var $ = require('jquery');
-            $(target).trigger('submit');
+
+            // IE8 does not support the Event constructor
+            if (!this.hasEvent) {
+                target.submit();
+                return;
+            }
+
+            var event = new Event('submit', {bubbles: true, cancelable: true});
+            target.dispatchEvent(event);
         },
         
         clearFilter: function (event) {
