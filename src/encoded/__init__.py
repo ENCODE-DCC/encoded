@@ -147,9 +147,7 @@ def main(global_config, **settings):
     configure_engine(settings)
 
     # Render an HTML page to browsers and a JSON document for API clients
-    config.add_renderer(None, 'encoded.renderers.PageOrJSON')
-    config.add_renderer('null_renderer', 'encoded.renderers.NullRenderer')
-    config.scan('encoded.renderers')
+    config.include('.renderers')
     config.include('.authentication')
     config.include('.validation')
     config.include('.predicates')

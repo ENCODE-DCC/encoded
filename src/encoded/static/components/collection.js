@@ -92,11 +92,9 @@ function (exports, class_, React, url, globals) {
 
         getInitialState: function () {
             var state = this.extractParams(this.props);
-            var columns = state.columns = this.guessColumns(this.props);
-            state.data = this.extractData(this.props, columns);
-            if (this.props.context.all) {
-                state.communicating = true;
-            }
+            state.columns = this.guessColumns(this.props);
+            state.data = Data([]);  // Tables may be long so render empty first
+            state.communicating = true;
             return state;
         },
 
@@ -310,14 +308,11 @@ function (exports, class_, React, url, globals) {
         },
 
         componentDidMount: function () {
-            this.setState({communicating: this.fetchAll(this.props)});
-        },
-
-        componentDidUpdate: function (prevProps, prevState, domNode) {
-            // Switching between collections may leave component in place
-            if (prevProps.context != this.props.context) {
-                this.refs.q.getDOMNode().value = this.state.searchTerm;
-            }
+            this.setState({
+                data: this.extractData(this.props),
+                communicating: this.fetchAll(this.props),
+                mounted: true,
+            });
         },
 
         handleClickHeader: function (event) {
@@ -338,6 +333,7 @@ function (exports, class_, React, url, globals) {
             }
             this.refs.reversed.getDOMNode().value = reversed;
             event.preventDefault();
+            event.stopPropagation();
             this.submit();
         },
 
@@ -347,17 +343,25 @@ function (exports, class_, React, url, globals) {
             }
             // Skip when enter key is pressed
             if (event.nativeEvent.keyCode == 13) return;
+            // IE8 should only submit on enter as page reload is triggered
+            if (!this.hasEvent) return;
             this.submitTimer = setTimeout(this.submit, 200);
         },
+
+        hasEvent: typeof Event !== 'undefined',
 
         submit: function () {
             // form.submit() does not fire onsubmit handlers...
             var target = this.refs.form.getDOMNode();
-            // Not IE8 compatible
-            //var event = new Event('submit', {bubbles: true, cancelable: true});
-            //target.dispatchEvent(event);
-            var $ = require('jquery');
-            $(target).trigger('submit');
+
+            // IE8 does not support the Event constructor
+            if (!this.hasEvent) {
+                target.submit();
+                return;
+            }
+
+            var event = new Event('submit', {bubbles: true, cancelable: true});
+            target.dispatchEvent(event);
         },
         
         clearFilter: function (event) {

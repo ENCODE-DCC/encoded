@@ -46,6 +46,7 @@ function (React, jsonScriptEscape, globals, mixins, NavBar, Footer) {
             if (context) {
                 var ContentView = globals.content_views.lookup(context);
                 content = this.transferPropsTo(ContentView({
+                    key: context['@id'],  // Switching between collections may leave component in place
                     personaReady: this.state.personaReady,
                     session: this.state.session
                 }));
