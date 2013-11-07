@@ -307,7 +307,7 @@ function (exports, React, url, globals) {
                         {results['results'].length == 0 ?
                             <div className="panel data-display">
                                 <legend>Biosample Facet Distribution</legend>
-                                this.transferPropsTo(<Viz />)
+                                {this.transferPropsTo(<Viz />)}
                             </div>
                         : null}
                         {results['results'].length ?
