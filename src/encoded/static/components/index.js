@@ -1,3 +1,21 @@
+// Require all components to ensure javascript load ordering
+require('./antibody');
+require('./app');
+require('./biosample');
+require('./collection');
+require('./dbxref');
+require('./errors');
+require('./experiment');
+require('./footer');
+require('./globals');
+require('./home');
+require('./item');
+require('./mixins');
+require('./navbar');
+require('./platform');
+require('./search');
+require('./target');
+
 var React = require('react');
 var App = require('./app');
 module.exports = App;
