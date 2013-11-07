@@ -118,17 +118,27 @@ function (exports, React, url, globals) {
                 </div>
             );
         },
+
         componentDidMount: function() {
-            var context = this.props.context;
-            var results = context['@graph'];
-            var href_search = url.parse(this.props.href).search;
-            var facets = context['@graph']['facets'];
+            this.renderGraph();
+        },
+
+        componentDidUpdate: function() {
             var myNode = this.refs.viz;
             if(myNode) {
                 while (myNode.firstChild) {
                     myNode.removeChild(myNode.firstChild);
                 }
             }
+            this.renderGraph();
+        },
+
+        renderGraph: function() {
+            var context = this.props.context;
+            var results = context['@graph'];
+            var href_search = url.parse(this.props.href).search;
+            var facets = context['@graph']['facets'];
+
             for (var key in facets) {
                 var data = [];
                 for (var key1 in facets[key]) {
