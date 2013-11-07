@@ -60,7 +60,7 @@ module.exports = function(grunt) {
             app: {
                 dest: 'build/app.js',
                 src: [
-                    'src/encoded/static/components',
+                    'src/encoded/static/components/index.js',
                 ],
                 options: {
                     //debug: true,
