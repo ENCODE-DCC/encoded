@@ -109,13 +109,21 @@ function (exports, React, url, globals) {
         }
     });
 
-    var ResultTable = search.ResultTable = React.createClass({
+    var Viz = search.Viz = React.createClass({
         render: function() {
+            return (
+                <div className="panel data-display">
+                    <legend>Biosample Facet Distribution</legend>
+                    <div id="viz" ref="viz"></div>
+                </div>
+            );
+        },
+        componentDidMount: function() {
             var context = this.props.context;
             var results = context['@graph'];
             var href_search = url.parse(this.props.href).search;
             var facets = context['@graph']['facets'];
-            var myNode = document.getElementById("viz");
+            var myNode = this.refs.viz;
             if(myNode) {
                 while (myNode.firstChild) {
                     myNode.removeChild(myNode.firstChild);
@@ -238,6 +246,16 @@ function (exports, React, url, globals) {
                     .text(key)
                     .attr("fill", "steelblue");
             }
+        }
+    });
+
+
+    var ResultTable = search.ResultTable = React.createClass({
+        render: function() {
+            var context = this.props.context;
+            var results = context['@graph'];
+            var href_search = url.parse(this.props.href).search;
+            var facets = context['@graph']['facets'];
 
             var resultsView = function(result) {
                 var highlight = result['highlight'];
@@ -289,7 +307,7 @@ function (exports, React, url, globals) {
                         {results['results'].length == 0 ?
                             <div className="panel data-display">
                                 <legend>Biosample Facet Distribution</legend>
-                                <div id="viz"></div>
+                                this.transferPropsTo(<Viz />)
                             </div>
                         : null}
                         {results['results'].length ?
