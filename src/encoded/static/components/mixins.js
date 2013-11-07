@@ -325,7 +325,10 @@ function (exports, React, url, origin) {
             }
             var href = window.location.href;
             if (event.state) {
-                this.setProps({context: event.state});
+                this.setProps({
+                    context: event.state,
+                    href: href  // href should be consistent with context
+                });
             }
             // Always async update in case of server side changes
             this.navigate(href, {replace: true});
