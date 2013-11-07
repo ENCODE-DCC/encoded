@@ -293,7 +293,7 @@ function (exports, React, url, origin) {
             if (!origin.same(target.action)) return;
 
             var options = {};
-            var action_url = url.parse(target.action);
+            var action_url = url.parse(url.resolve(target.action, this.props.href));
             options.replace = action_url.pathname == url.parse(this.props.href).pathname;
             var search = $(target).serialize();
             if (target.getAttribute('data-removeempty')) {
