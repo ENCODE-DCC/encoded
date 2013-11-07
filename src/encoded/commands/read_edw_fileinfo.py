@@ -675,38 +675,44 @@ def main():
 
     # functions
 
-    # file-based
-    group.add_argument('-i', '--import_file',
-                       help='import to app from TSV file')
+    # Core functions
+    # Inventory
+    group.add_argument('-W', '--edw_files', action='store_true',
+                   help='show file info at EDW')
+    group.add_argument('-e', '--export', action='store_true',
+                   help='export file info from app')
+    group.add_argument('-n', '--new_files', action='store_true',
+                   help='show new files: deposited at EDW after last app sync')
+    group.add_argument('-C', '--compare_full', action='store_true',
+                   help='detailed compare of experiment files in EDW with app')
 
-    # TODO:  Enable this code once tested
+    # Update
     group.add_argument('-I', '--import_all_new', action='store_true',
                        help='import all new files from EDW to app; '
                             'use -n to view new file info before import')
-
     group.add_argument('-m', '--modify_file',
                    help='modify files in app using info in TSV file')
+
+    # Less common 
     group.add_argument('-23', '--convert_file',
                    help='convert ENCODE2 entries in TSV file to ENCODE3')
-
     group.add_argument('-c', '--compare_summary', action='store_true', 
                    help='summary compare of experiment files in EDW with app')
-    group.add_argument('-C', '--compare_full', action='store_true',
-                   help='detailed compare of experiment files in EDW with app')
-    group.add_argument('-e', '--export', action='store_true',
-                   help='export file info from app')
     group.add_argument('-f', '--find_missing', action='store_true',
                    help='show info for files at EDW missing from app')
-    #group.add_argument('-n', '--missing_list', action='store_true',
-                   #help='list new file accession: in EDW not in app')
-    group.add_argument('-n', '--new_files', action='store_true',
-                   help='show new files: deposited at EDW after last app sync')
     group.add_argument('-w', '--edw_list', action='store_true',
                    help='show file accessions at EDW')
-    group.add_argument('-W', '--edw_files', action='store_true',
-                   help='show file info at EDW')
+    group.add_argument('-i', '--import_file',
+                       help='import to app from TSV file. WARNING: This option is for testing and specialized use. TSV should contain valid EDW files.')
+
 
     # modifiers
+    parser.add_argument('-v', '--verbose', action='store_true',
+                        help='verbose mode')
+    parser.add_argument('-q', '--quick', action='store_true',
+                        help='quick mode (use elastic search instead of database)')
+    parser.add_argument('-R', '--require_replicate', action='store_true',
+                        help='do not create replicate if not in database (else report)')
     parser.add_argument('-l', '--limit', type=int, default=0,
                    help='limit number of files to show; '
                         'for EDW, most recently submitted are listed first')
@@ -721,19 +727,15 @@ def main():
                         help='for -c and -C, ignore excluded properties')
     #parser.add_argument('-x', '--experiment', action='store_true',
                     #help='for EDW, show only files having experiment accession')
-    parser.add_argument('-R', '--require_replicate', action='store_true',
-                        help='do not create replicate if not in database (else report)')
-    parser.add_argument('-q', '--quick', action='store_true',
-                        help='quick mode (use elastic search instead of database)')
-    parser.add_argument('-v', '--verbose', action='store_true',
-                        help='verbose mode')
+
+    # Change target EDW or app
     parser.add_argument('-d', '--data_host', default=None,
                         help='data warehouse host (default from my.cnf)')
     parser.add_argument('-a', '--application', default=DEFAULT_INI,
                     help='application url or .ini (default %s)' % DEFAULT_INI)
-    parser.add_argument('--username', '-u', default='',
+    parser.add_argument('-u', '--username', default='',
                     help='HTTP username (access_key_id) or import user')
-    parser.add_argument('--password', '-p', default='',
+    parser.add_argument('-p', '--password', default='',
                         help='HTTP password (secret_access_key)')
             
     args = parser.parse_args()
