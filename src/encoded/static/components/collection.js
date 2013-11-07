@@ -315,13 +315,6 @@ function (exports, class_, React, url, globals) {
             });
         },
 
-        componentDidUpdate: function (prevProps, prevState, domNode) {
-            // Switching between collections may leave component in place
-            if (prevProps.context != this.props.context) {
-                this.refs.q.getDOMNode().value = this.state.searchTerm;
-            }
-        },
-
         handleClickHeader: function (event) {
             var target = event.target;
             while (target.tagName != 'TH') {
