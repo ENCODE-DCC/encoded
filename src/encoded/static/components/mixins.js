@@ -333,6 +333,7 @@ function (exports, React, url, origin) {
         navigate: function (href, options) {
             var $ = require('jquery');
             options = options || {};
+            href = url.resolve(this.props.href, href);
             this.setProps({href: href});
             this.havePushedState = true;
 
