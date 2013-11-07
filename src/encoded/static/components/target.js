@@ -1,22 +1,32 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'globals', 'jsx!dbxref'],
-function (target, React, globals, dbxref) {
+define(['exports', 'react', './globals', './dbxref'],
+function (exports, React, globals, dbxref) {
     'use strict';
 
     var DbxrefList = dbxref.DbxrefList;
+	var Dbxref = dbxref.Dbxref;
 
-    var Panel = target.Panel = React.createClass({
+    var Panel = exports.Panel = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-detail panel key-value');
-           
-            return (
-                <dl class={itemClass}>
-                    <dt>Target name</dt>
-                    <dd class="no-cap">{context.label}</dd>
+            var geneLink;
 
-                    <dt>Target gene</dt>
-                    <dd><a href={globals.dbxref_prefix_map.HGNC + context.gene_name}>{context.gene_name}</a></dd>
+            if (context.organism.name == "human") {
+            	geneLink = globals.dbxref_prefix_map.HGNC + context.gene_name;
+            } else if (context.organism.name == "mouse") {
+            	var uniProtValue = JSON.stringify(context.dbxref);
+            	var sep = uniProtValue.indexOf(":") + 1;
+            	var uniProtID = uniProtValue.substring(sep, uniProtValue.length - 2);
+            	geneLink = globals.dbxref_prefix_map.UniProtKB + uniProtID;
+            }
+            return (
+                <dl className={itemClass}>
+                    <dt>Target name</dt>
+                    <dd className="no-cap">{context.label}</dd>
+
+                    <dt hidden={!context.gene_name}>Target gene</dt>
+                    <dd hidden={!context.gene_name}><a href={geneLink}>{context.gene_name}</a></dd>
 
                     <dt>External resources</dt>
                     <dd>
@@ -31,5 +41,5 @@ function (target, React, globals, dbxref) {
 
     globals.panel_views.register(Panel, 'target');
 
-    return target;
+    return exports;
 });

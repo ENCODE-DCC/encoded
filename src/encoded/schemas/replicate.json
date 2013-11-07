@@ -13,7 +13,8 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
         "read_length": ["read_length_units"],
@@ -101,7 +102,7 @@
         },
         "read_length": {
             "title": "Read length",
-            "type": "numeric"
+            "type": "integer"
         },
         "read_length_units": {
             "title": "Read length units",

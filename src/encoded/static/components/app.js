@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['jquery', 'react', 'uri', 'globals', 'mixins', 'jsx!navbar', 'jsx!footer'],
-function ($, React, URI, globals, mixins, NavBar, Footer) {
+define(['react', 'jsonScriptEscape', './globals', './mixins', './navbar', './footer'],
+function (React, jsonScriptEscape, globals, mixins, NavBar, Footer) {
     /*jshint devel: true*/
     'use strict';
 
@@ -31,45 +31,27 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
         },
 
         getInitialState: function() {
-            var context;
-            var location = URI(this.props.href);
-            // The initial context is read in from the contextDataElement
-            // That element is then kept in sync for easier debugging.
-            if (this.props.contextDataElement) {
-                context = JSON.parse(this.props.contextDataElement.text);
-            } else {
-                this.navigate(location.href, {replace: true});
-            }
             return {
-                context: context,
                 errors: [],
-                location: location,
                 portal: portal,
                 session: null,
                 user_actions: user_actions
             };
         },
 
-        componentWillReceiveProps: function (nextProps) {
-            this.setState({
-                location: URI(nextProps.href)
-            });
-        },
-
         render: function() {
             console.log('render app');
             var content;
-            var context = this.state.context;
+            var context = this.props.context;
             if (context) {
                 var ContentView = globals.content_views.lookup(context);
-                content = ContentView({
-                    context: this.state.context,
-                    location: this.state.location,
-                    session:this.state.session
-                });
+                content = this.transferPropsTo(ContentView({
+                    personaReady: this.state.personaReady,
+                    session: this.state.session
+                }));
             }
             var errors = this.state.errors.map(function (error) {
-                return <div class="alert alert-error"></div>;
+                return <div className="alert alert-error"></div>;
             });
 
             var appClass;
@@ -79,24 +61,48 @@ function ($, React, URI, globals, mixins, NavBar, Footer) {
                 appClass = 'done';
             }
 
-            return (
-                <div id="application" class={appClass} onClick={this.handleClick} onSubmit={this.handleSubmit}>
-                    <div id="layout">
-                        <NavBar location={this.state.location} portal={this.state.portal} user_actions={this.state.user_actions} session={this.state.session} />
-                        <div id="content" class="container">
-                            {content}
-                        </div>
-                        {errors}                        
-                        <div id="layout-footer"></div>
-                    </div>
-                    <Footer />
-                </div>
-            );
-        },
+            var title = globals.listing_titles.lookup(context)({context: context});
+            if (title && title != 'Home') {
+                title = title + ' – ' + portal.portal_title;
+            } else {
+                title = portal.portal_title;
+            }
 
-        componentDidUpdate: function () {
-            // XXX The templates should be updated to always define an h1.
-            $('title').text($('h1, h2').first().text() + ' - ' + $('#navbar .brand').first().text());
+            return (
+                <html>
+                    <head>
+                        <meta charset="utf-8" />
+                        <meta http-equiv="content-language" content="en" />
+                        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                        <title>{title}</title>
+                        <link rel="canonical" href={this.props.href} />
+                        <link rel="stylesheet" href="/static/css/style.css" />
+                        <link rel="stylesheet" href="/static/css/responsive.css" />
+                        <script src="/static/build/bundle.js" async={true} defer={true}></script>
+                    </head>
+                    <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
+                        <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
+                            __html: jsonScriptEscape(JSON.stringify(this.props.context))
+                        }}></script>
+                        <div id="slot-application">
+                            <div id="application" className={appClass}>
+                                <div id="layout">
+                                    <NavBar href={this.props.href} portal={this.state.portal}
+                                            user_actions={this.state.user_actions} session={this.state.session}
+                                            personaReady={this.state.personaReady} />
+                                    <div id="content" className="container">
+                                        {content}
+                                    </div>
+                                    {errors}                        
+                                    <div id="layout-footer"></div>
+                                </div>
+                                <Footer />
+                            </div>
+                        </div>
+                    </body>
+                </html>
+            );
         }
 
     });

@@ -6,17 +6,22 @@ import datetime
 import ConfigParser
 from csv import DictReader, DictWriter
 from collections import OrderedDict
+from operator import itemgetter
 
 from sqlalchemy import MetaData, create_engine, select
 
 ################
 # Globals
 
+# ENCODE project -- phase 2 at UCSC, accessions like 'wgEncodeE*',
+#   ENCODE 3 at Stanford, accessions like 'ENCSR*'
+
 ENCODE_PHASE_2 = '2'
 ENCODE_PHASE_3 = '3'
 ENCODE_PHASE_ALL = 'all'
 
 
+# Column headers for file info TSV  
 # NOTE: ordering of fields currently needs to match query order below
 FILE_INFO_FIELDS = [
     'accession',
@@ -30,10 +35,14 @@ FILE_INFO_FIELDS = [
     'assembly',
     'md5sum',
     'submitted_by',
-    'status'
+    'status', 
 ]
 
-TECHNICAL_REPLICATE_NUM = 1     # always 1 for now (pending EDW changes)
+# Replicate representation
+TECHNICAL_REPLICATE_NUM = 1  # always 1 for now (pending EDW changes)
+NO_REPLICATE_TERMS = ['pooled', 'n/a', '']  # in manifest files and EDW tables
+NO_REPLICATE_INT = -1   # integer used in TSV replicate column
+
 NA = 'n/a'
 
 # Configuration file
@@ -44,7 +53,6 @@ verbose = False
 
 ################
 # Support functions to localize handling of special fields
-# e.g. links, datetime
 
 def format_edw_fileinfo(file_dict, exclude=None):
     global verbose
@@ -58,19 +66,20 @@ def format_edw_fileinfo(file_dict, exclude=None):
         file_dict['status'] = 'CURRENT'
     else:
         file_dict['status'] = 'OBSOLETE'
-    # hide assembly for fastQ's -- (EDW retains it to represent organism)
-    if file_dict['file_format'] in ['fasta', 'fastq']:
-        file_dict['assembly'] = NA
     for prop in FILE_INFO_FIELDS:
         file_dict[prop] = unicode(file_dict[prop])
         # not type-aware, so we need to force replicate to numeric
-        if file_dict['replicate'] == 'pooled' or file_dict['replicate'] == '':
-            file_dict['replicate'] = 0
+        if file_dict['replicate'] in NO_REPLICATE_TERMS:
+            file_dict['replicate'] = NO_REPLICATE_INT
         else:
             file_dict['replicate'] = int(file_dict['replicate'])
+    # hide assembly for fastQ's -- (EDW retains it to represent organism)
+    if file_dict['file_format'] in ['fasta', 'fastq']:
+        del file_dict['assembly']
     if exclude:
         for prop in exclude:
-            del file_dict[prop]
+            if prop in file_dict:
+                del file_dict[prop]
 
 
 ################
@@ -89,7 +98,7 @@ def make_edw(data_host=None):
         host = data_host
     else:
         host = config.get(site, 'host')
-    db = config.get(site, 'db')
+    db = config.get(site, 'database')
     user = config.get(site, 'user')
     password = config.get(site, 'password')
     if user ==CHANGE_ME or password == CHANGE_ME:
@@ -127,7 +136,7 @@ def dump_fileinfo(fileinfos, header=True, typeField=None):
             sys.stdout.write('%s\t' % 'type')
         writer.writeheader()
 
-    for fileinfo in sorted(fileinfos):
+    for fileinfo in sorted(fileinfos, key=itemgetter('accession')):
         if typeField is not None:
             sys.stdout.write('%s\t' % typeField) 
         ordered = OrderedDict.fromkeys(FILE_INFO_FIELDS)
@@ -162,7 +171,6 @@ def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
         query.append_whereclause('edwValidFile.experiment like "wgEncode%"')
     elif phase  == '3':
         query.append_whereclause('edwValidFile.experiment like "ENCSR%%"')
-
     if limit:
         query = query.limit(limit)
     results = conn.execute(query)
@@ -174,9 +182,24 @@ def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
     return edw_accs
 
 
-def get_edw_fileinfo(edw, limit=None, experiment=True,
+def get_edw_max_id(edw):
+    # Get current largest id from edwValidFile table at EDW
+    conn = edw.connect()
+    query = 'select max(id) from edwValidFile'
+    results = conn.execute(query)
+    row = results.fetchone()
+    max_id = int(row[0])
+    results.close()
+    if verbose:
+        sys.stderr.write('EDW max id: %d\n' % (int(max_id)))
+    return max_id
+
+
+def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
                      exclude=None, phase=ENCODE_PHASE_ALL):
-    # Read info from file tables at EDW. 
+    # Read info from file tables at EDW
+    # Optional param max_id limits to just files having EDW id greater
+    # than the named value (typically, this was from previous sync)
     # Return list of file infos as dictionaries
 
     # Autoreflect the schema
@@ -205,13 +228,21 @@ def get_edw_fileinfo(edw, limit=None, experiment=True,
                     f.c.md5.label('md5sum'),
                     u.c.email.label('submitted_by'),
                     f.c.deprecated.label('status')])
-    query = query.where((v.c.fileId == f.c.id) &
+    query = query.where(
+              (v.c.fileId == f.c.id) &
+              (u.c.id == s.c.userId) &
               (s.c.id == f.c.submitId) &
               (u.c.id == s.c.userId))
+              #(f.c.errorMessage != None))
+    # Occasional file ends up in valid table, even though in error -- filter out if 
+    # there is an error message in edwFile table
+    query.append_whereclause('edwFile.errorMessage = ""')
+    if start_id > 0:
+        query.append_whereclause('edwValidFile.id > ' + str(start_id))
     if experiment:
         query.append_whereclause('edwValidFile.experiment <> ""')
     if phase == '2':
-        query.append_whereclause('edwValidFile.experiment like "wgEncode%"')
+        query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
     elif phase  == '3':
         query.append_whereclause('edwValidFile.experiment like "ENCSR%%"')
 
@@ -219,10 +250,12 @@ def get_edw_fileinfo(edw, limit=None, experiment=True,
     if limit:
         query = query.limit(limit)
     results = conn.execute(query)
+
     edw_files = []
     for row in results:
         file_dict = dict(row)
         format_edw_fileinfo(file_dict, exclude)
         edw_files.append(file_dict)
     results.close()
+    conn.close()
     return edw_files
