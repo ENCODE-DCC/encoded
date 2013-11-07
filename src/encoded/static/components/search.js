@@ -10,7 +10,7 @@ function (exports, React, url, globals) {
             var result_count = context['@graph']['results'].length;
             var facets = context['@graph']['facets'];
             var terms = [];
-            var href_search = url.parse(this.props.href).search;
+            var href_search = url.parse(this.props.href).search || '';
             for (var i in facets) {
                 terms.push(i);
             }
@@ -136,7 +136,7 @@ function (exports, React, url, globals) {
         renderGraph: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var href_search = url.parse(this.props.href).search;
+            var href_search = url.parse(this.props.href).search || '';
             var facets = context['@graph']['facets'];
 
             for (var key in facets) {
@@ -264,7 +264,7 @@ function (exports, React, url, globals) {
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var href_search = url.parse(this.props.href).search;
+            var href_search = url.parse(this.props.href).search || '';
             var facets = context['@graph']['facets'];
 
             var resultsView = function(result) {
