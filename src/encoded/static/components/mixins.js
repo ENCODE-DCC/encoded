@@ -239,7 +239,8 @@ function (exports, React, url, origin) {
             var target = event.target;
             var nativeEvent = event.nativeEvent;
 
-            while (target && (target.tagName != 'A' || target.getAttribute('data-href'))) {
+            // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
+            while (target && (target.tagName.toLowerCase() != 'a' || target.getAttribute('data-href'))) {
                 target = target.parentElement;
             }
             if (!target) return;
