@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'href_search', './globals'],
-function (exports, React, href_search, globals) {
+define(['exports', 'react', 'url', './globals'],
+function (exports, React, url, globals) {
     'use strict';
     var search = exports;
 
