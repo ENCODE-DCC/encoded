@@ -31,7 +31,6 @@ module.exports = function(grunt) {
                 dest: 'build/bootstrap.js',
                 src: [
                     './src/encoded/static/libs/bootstrap.js', // simply requires all bootstrap plugins
-                    'src/encoded/static/libs/sticky_header.js',
                     ],
                 alias: ['./src/encoded/static/libs/bootstrap:bootstrap'],
                 options: {
@@ -50,6 +49,11 @@ module.exports = function(grunt) {
                         'bootstrap-tooltip': {path: require.resolve('twitter-bootstrap/js/bootstrap-tooltip'), exports: null, depends: {jquery: 'jQuery'}},
                         'bootstrap-transition': {path: require.resolve('twitter-bootstrap/js/bootstrap-transition'), exports: null, depends: {jquery: 'jQuery'}},
                         'bootstrap-typeahead': {path: require.resolve('twitter-bootstrap/js/bootstrap-typeahead'), exports: null, depends: {jquery: 'jQuery'}},
+                        stickyheader: {
+                            path: './src/encoded/static/libs/sticky_header',
+                            exports: null,
+                            depends: {jquery: 'jQuery'},
+                        },
                     },
                 }
             },
@@ -80,14 +84,7 @@ module.exports = function(grunt) {
                         'd3',
                         'domready',
                     ],
-                    shim: {
-                        stickyheader: {
-                            path: './src/encoded/static/libs/sticky_header',
-                            exports: null,
-                            depends: {jquery: 'jQuery'},
-                        },
-                    }
-                }
+                },
             },
             specs: {
                 dest: 'build/specs.js',
