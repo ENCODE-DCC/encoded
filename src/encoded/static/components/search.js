@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'url', './globals'],
-function (exports, React, url, globals) {
+define(['exports', 'react', 'href_search', './globals'],
+function (exports, React, href_search, globals) {
     'use strict';
     var search = exports;
 
@@ -10,7 +10,7 @@ function (exports, React, url, globals) {
             var result_count = context['@graph']['results'].length;
             var facets = context['@graph']['facets'];
             var terms = [];
-            var url = url.parse(this.props.href).search;
+            var href_search = url.parse(this.props.href).search;
             for (var i in facets) {
                 terms.push(i);
             }
@@ -35,7 +35,7 @@ function (exports, React, url, globals) {
                             </li>
                     }else {
                         return <li>
-                                <a href={url+'&'+field+'='+id}>
+                                <a href={href_search+'&'+field+'='+id}>
                                     <label><small>{id} ({count})</small></label>
                                 </a>
                             </li>
@@ -62,7 +62,7 @@ function (exports, React, url, globals) {
                             </li>
                     }else {
                         return <li>
-                                <a href={url+'&'+field+'='+id}>
+                                <a href={href_search+'&'+field+'='+id}>
                                     <label><small>{id} ({count})</small></label>
                                 </a>
                             </li>
@@ -113,7 +113,7 @@ function (exports, React, url, globals) {
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var url = url.parse(this.props.href).search;
+            var href_search = url.parse(this.props.href).search;
             var facets = context['@graph']['facets'];
             var myNode = document.getElementById("viz");
             if(myNode) {
@@ -131,7 +131,7 @@ function (exports, React, url, globals) {
                             data1['count'] = facets[key][key1][key2];
                         }
                         if(key2 == 'field') {
-                            data1['link'] = url + '?searchTerm=*&type=biosamples&' + facets[key][key1][key2] + "="; 
+                            data1['link'] = href_search + '?searchTerm=*&type=biosamples&' + facets[key][key1][key2] + "="; 
                         }
                     }
                     data.push(data1);
@@ -304,25 +304,25 @@ function (exports, React, url, globals) {
                                                     {results['count']['antibodies'] ?
                                                         <li>
                                                             <span className="badge pull-right">{results['count']['antibodies']}</span>
-                                                            <a href={url+'&type=antibodies'}><small>Antibodies</small></a>
+                                                            <a href={href_search+'&type=antibodies'}><small>Antibodies</small></a>
                                                         </li>
                                                     : null}
                                                     {results['count']['biosamples'] ?
                                                         <li>
                                                             <span className="badge pull-right">{results['count']['biosamples']}</span>
-                                                            <a href={url+'&type=biosamples'}><small>Biosamples</small></a>
+                                                            <a href={href_search+'&type=biosamples'}><small>Biosamples</small></a>
                                                         </li>
                                                     : null}
                                                     {results['count']['experiments'] ?
                                                         <li>
                                                             <span className="badge pull-right">{results['count']['experiments']}</span>
-                                                            <a href={url+'&type=experiments'}><small>Experiments</small></a>
+                                                            <a href={href_search+'&type=experiments'}><small>Experiments</small></a>
                                                         </li>
                                                     : null}
                                                     {results['count']['targets'] ?
                                                         <li>
                                                             <span className="badge pull-right">{results['count']['targets']}</span>
-                                                            <a href={url+'&type=targets'}><small>Targets</small></a>
+                                                            <a href={href_search+'&type=targets'}><small>Targets</small></a>
                                                         </li>
                                                     : null}
                                                 </ul>
