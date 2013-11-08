@@ -109,6 +109,13 @@
             ],
             "format": "semi-controlled"
         },
+        "fragmentation_date":{
+            "title": "Fragmentation date",
+            "description": "The date that the nucleic acid was fragmented on.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
+            "type": "string",
+            "format": "date"
+        },
         "library_size_selection_method": {
             "title": "Size selection method",
             "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
