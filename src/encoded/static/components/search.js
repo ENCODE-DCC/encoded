@@ -10,7 +10,7 @@ function (exports, React, url, globals) {
             var result_count = context['@graph']['results'].length;
             var facets = context['@graph']['facets'];
             var terms = [];
-            var href_search = url.parse(this.props.href).search;
+            var href_search = url.parse(this.props.href).search || '';
             for (var i in facets) {
                 terms.push(i);
             }
@@ -136,7 +136,7 @@ function (exports, React, url, globals) {
         renderGraph: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var href_search = url.parse(this.props.href).search;
+            var href_search = url.parse(this.props.href).search || '';
             var facets = context['@graph']['facets'];
 
             for (var key in facets) {
@@ -264,7 +264,7 @@ function (exports, React, url, globals) {
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var href_search = url.parse(this.props.href).search;
+            var href_search = url.parse(this.props.href).search || '';
             var facets = context['@graph']['facets'];
 
             var resultsView = function(result) {
@@ -314,9 +314,6 @@ function (exports, React, url, globals) {
             };  
             return (
                     <div>
-                        {results['results'].length == 0 ?
-                            this.transferPropsTo(<Viz />)
-                        : null}
                         {results['results'].length ?
                             <div className="panel data-display">
                                 <div className="row">
@@ -369,11 +366,12 @@ function (exports, React, url, globals) {
                                     </div>
                                 </div>
                             </div>  
-                    : null}
-                </div>  
-            );
+                        : (Object.keys(results['facets']).length ? this.transferPropsTo(<Viz />) : <h4>No Results Found</h4>) }
+                    </div>  
+                );
+            }
         }
-    });
+    );
 
 
     var Search = search.Search = React.createClass({
@@ -387,11 +385,11 @@ function (exports, React, url, globals) {
                 <div >
                     <form className="input-prepend">
                         <span className="add-on"><i className="icon-search"></i></span>
-                        <input className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
+                        <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
                     </form>
                     {Object.keys(results).length ?
                         this.transferPropsTo(<ResultTable />)
-                    :null }
+                    : <h4>Please enter a search term </h4>}
                 </div>
             );
         }

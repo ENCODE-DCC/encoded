@@ -239,7 +239,8 @@ function (exports, React, url, origin) {
             var target = event.target;
             var nativeEvent = event.nativeEvent;
 
-            while (target && (target.tagName != 'A' || target.getAttribute('data-href'))) {
+            // SVG anchor elements have tagName == 'a' while HTML anchor elements have tagName == 'A'
+            while (target && (target.tagName.toLowerCase() != 'a' || target.getAttribute('data-href'))) {
                 target = target.parentElement;
             }
             if (!target) return;
@@ -324,7 +325,10 @@ function (exports, React, url, origin) {
             }
             var href = window.location.href;
             if (event.state) {
-                this.setProps({context: event.state});
+                this.setProps({
+                    context: event.state,
+                    href: href  // href should be consistent with context
+                });
             }
             // Always async update in case of server side changes
             this.navigate(href, {replace: true});
