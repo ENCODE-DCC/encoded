@@ -28,7 +28,7 @@ class Mapper(dict):
         raise AttributeError
 
     def __setprop__(self, v):
-        self['properties'][v] = {'type': 'multi_field', 'fields': {v: {'type': 'string'}, 'untouched': {'type': 'string', 'index': 'not_analyzed'}}}
+        self['properties'][v] = {'_boost': 1, 'type': 'multi_field', 'fields': {v: {'type': 'string'}, 'untouched': {'type': 'string', 'index': 'not_analyzed'}}}
 
     def __setobjprop__(self, k, v):
         self['properties'][k] = v
