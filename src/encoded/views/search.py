@@ -112,39 +112,42 @@ def search(context, request):
 
     # Check if we are searching for a specified string or searching everything
     if 'searchTerm' in params:
-        if 'type' in params:
-            index = schemas[params.get('type')][:-5]
-            if len(params) > 2:
-                query = FilteredQuery()
-                query.__setterm__(params.get('searchTerm'))
-                query.fields = data[params.get('type')]
-                for key, value in params.iteritems():
-                    if value == 'other':
-                        query.__setmissingfilter__(key)
-                    elif key != 'searchTerm' and key != 'type':
-                        query.__setfilter__(key, value)
+        if params['searchTerm']:
+            if 'type' in params:
+                index = schemas[params.get('type')][:-5]
+                if len(params) > 2:
+                    query = FilteredQuery()
+                    query.__setterm__(params.get('searchTerm'))
+                    query.fields = data[params.get('type')]
+                    for key, value in params.iteritems():
+                        if value == 'other':
+                            query.__setmissingfilter__(key)
+                        elif key != 'searchTerm' and key != 'type':
+                            query.__setfilter__(key, value)
+                else:
+                    query.fields = data[params.get('type')]
+                    query.query = {'query_string': {'query': params.get('searchTerm')}}
             else:
-                query.fields = data[params.get('type')]
+                # This code block executes the search for all the types of data
                 query.query = {'query_string': {'query': params.get('searchTerm')}}
+                for d in data:
+                    query.fields = data[d]
+                    # Should have some limit on size to have better
+                    s = es.search(query, index=schemas[d][:-5], size=1100)
+                    for key, value in schemas.items():
+                        if value == schemas[d]:
+                            items['count'][key] = len(s['hits']['hits'])
+                    for dataS in s['hits']['hits']:
+                        data_highlight = dataS['fields']
+                        if 'highlight' in dataS:
+                            for key in dataS['highlight'].keys():
+                                data_highlight['highlight'] = dataS['highlight'][key]
+                        else:
+                            data_highlight['highlight'] = []
+                        items['results'].append(data_highlight)
+                result['@graph'] = items
+                return result
         else:
-            # This code block executes the search for all the types of data
-            query.query = {'query_string': {'query': params.get('searchTerm')}}
-            for d in data:
-                query.fields = data[d]
-                # Should have some limit on size to have better
-                s = es.search(query, index=schemas[d][:-5], size=10000)
-                for key, value in schemas.items():
-                    if value == schemas[d]:
-                        items['count'][key] = len(s['hits']['hits'])
-                for dataS in s['hits']['hits']:
-                    data_highlight = dataS['fields']
-                    if 'highlight' in dataS:
-                        for key in dataS['highlight'].keys():
-                            data_highlight['highlight'] = dataS['highlight'][key]
-                    else:
-                        data_highlight['highlight'] = []
-                    items['results'].append(data_highlight)
-            result['@graph'] = items
             return result
     else:
         index = 'biosample'

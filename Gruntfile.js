@@ -60,7 +60,7 @@ module.exports = function(grunt) {
             app: {
                 dest: 'build/app.js',
                 src: [
-                    'src/encoded/static/components/*.js',
+                    'src/encoded/static/components/index.js',
                 ],
                 options: {
                     //debug: true,
@@ -73,7 +73,7 @@ module.exports = function(grunt) {
                         './src/encoded/static/libs/jsonScriptEscape:jsonScriptEscape',
                         './src/encoded/static/libs/origin:origin',
                         './src/encoded/static/libs/registry:registry',
-                        './src/encoded/static/components/main:main',
+                        './src/encoded/static/components:main',
                     ],
                     external: [
                         'jquery',
