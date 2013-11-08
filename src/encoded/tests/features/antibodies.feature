@@ -19,18 +19,18 @@ Feature: Antibodies
         And I wait for the table to fully load
         When I click the link to "/antibodies/c808814f-376f-41ee-b93e-ddd00294ca3d/"
         Then I should see an element with the css selector "div.data-display"
-        And I should see "Approval for ENCAB000AOF"
+        And I should see "ELIGIBLE FOR NEW DATA for ENCAB000AOF"
 
         When I go back
         And I wait for the table to fully load
         When I click the link to "/antibodies/35cf08c4-72cf-4408-8552-231e3e35b279/"
         And I should see an element with the css selector "div.data-display"
-        And I should see "Approval for ENCAB000ANU"
+        And I should see "ELIGIBLE FOR NEW DATA for ENCAB000ANU"
 
     Scenario: Detail page
         When I visit "/antibodies/35cf08c4-72cf-4408-8552-231e3e35b279/"
         Then I should see an element with the css selector "div.data-display"
-        And I should see "APPROVED"
+        And I should see "ELIGIBLE FOR NEW DATA"
         And I should see an element with the css selector "div.characterizations"
         And I should see at least 1 elements with the css selector "section"
         And I should see at least 1 elements with the css selector "figure"
