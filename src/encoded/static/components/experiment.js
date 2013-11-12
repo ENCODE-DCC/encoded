@@ -206,7 +206,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         library_size_selection_method: 'Size selection method',
     };
     var children = [];
-    for (name in titles) {
+    for (var name in titles) {
         if (library[name]) {
             children.push(<dt key={'dt-' + name}>{titles[name]}</dt>);
             children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
