@@ -89,14 +89,11 @@ def search(context, request):
         '@id': '/search/',
         '@type': ['search'],
         'title': 'Search ENCODE',
-        '@graph': {}
+        'count': {},
+        'facets': [],
+        '@graph': []
     })
-    items = {}
-    items['results'] = []
-    items['count'] = {}
-    items['facets'] = {}
     params = request.params
-    facets = {}
 
     if 'type' not in params:
         schema = load_schema('biosample.json')
@@ -108,83 +105,74 @@ def search(context, request):
     query = Query()
     index = ''
 
-    # Check if we are searching for a specified string or searching everything
-    if 'searchTerm' in params:
-        if params['searchTerm']:
-            if 'type' in params:
-                index = schemas[params.get('type')][:-5]
-                if len(params) > 2:
-                    query = FilteredQuery()
-                    query.__setterm__(params.get('searchTerm'))
-                    query.fields = data[params.get('type')]
-                    for key, value in params.iteritems():
-                        if value == 'other':
-                            query.__setmissingfilter__(key)
-                        elif key != 'searchTerm' and key != 'type':
-                            query.__setfilter__(key, value)
-                else:
-                    query.fields = data[params.get('type')]
-                    query.query = {'query_string': {'query': params.get('searchTerm')}}
+    if params['searchTerm']:
+        if 'type' in params:
+            index = schemas[params.get('type')][:-5]
+            if len(params) > 2:
+                query = FilteredQuery()
+                query.__setterm__(params.get('searchTerm'))
+                query.fields = data[params.get('type')]
+                for key, value in params.iteritems():
+                    if value == 'other':
+                        query.__setmissingfilter__(key)
+                    elif key != 'searchTerm' and key != 'type':
+                        query.__setfilter__(key, value)
             else:
-                # This code block executes the search for all the types of data
+                query.fields = data[params.get('type')]
                 query.query = {'query_string': {'query': params.get('searchTerm')}}
-                for d in data:
-                    query.fields = data[d]
-                    # Should have some limit on size to have better
-                    s = es.search(query, index=schemas[d][:-5], size=1100)
-                    for key, value in schemas.items():
-                        if value == schemas[d]:
-                            items['count'][key] = len(s['hits']['hits'])
-                    for dataS in s['hits']['hits']:
-                        data_highlight = dataS['fields']
-                        if 'highlight' in dataS:
-                            for key in dataS['highlight'].keys():
-                                data_highlight['highlight'] = dataS['highlight'][key]
-                        else:
-                            data_highlight['highlight'] = []
-                        items['results'].append(data_highlight)
-                result['@graph'] = items
-                return result
+
+            if len(facets.keys()):
+                for facet in facets:
+                    face = {'terms': {'field': '', 'size': 999999}}
+                    face['terms']['field'] = facets[facet]
+                    query.facets[facet] = face
+
+            s = es.search(query, index=index, size=999999)
+            facet_results = s['facets']
+            
+            for facet in facet_results:
+                face = {}
+                face['field'] = facet_results[facet]
+                face[facet] = []
+                for term in facet_results[facet]['terms']:
+                    face[facet].append({term['term']: term['count']})
+                if facet_results[facet]['missing'] != 0:
+                    face[facet].append({'other': facet_results[facet]['missing']})
+                result['facets'].append(face)
+
+            for key, value in schemas.items():
+                if value == index + '.json':
+                    result['count'][key] = len(s['hits']['hits'])
+            
+            for dataS in s['hits']['hits']:
+                data_highlight = dataS['fields']
+                if 'highlight' in dataS:
+                    for key in dataS['highlight'].keys():
+                        data_highlight['highlight'] = dataS['highlight'][key]
+                else:
+                    data_highlight['highlight'] = []
+                result['@graph'].append(data_highlight)
+            return result
         else:
+            # This code block executes the search for all the types of data
+            query.query = {'query_string': {'query': params.get('searchTerm')}}
+            for d in data:
+                query.fields = data[d]
+                # Should have some limit on size to have better
+                s = es.search(query, index=schemas[d][:-5], size=999999)
+                for key, value in schemas.items():
+                    if value == schemas[d]:
+                        result['count'][key] = len(s['hits']['hits'])
+                for dataS in s['hits']['hits']:
+                    data_highlight = dataS['fields']
+                    if 'highlight' in dataS:
+                        for key in dataS['highlight'].keys():
+                            data_highlight['highlight'] = dataS['highlight'][key]
+                    else:
+                        data_highlight['highlight'] = []
+                    result['@graph'].append(data_highlight)
             return result
     else:
-        index = 'biosample'
-        query.query = {'match_all': {}}
+        return result
     
-    # We can get rid of this once we have a standard graphs for default search page
-    if len(facets.keys()):
-        for facet in facets:
-            face = {'terms': {'field': '', 'size': 1000}}
-            face['terms']['field'] = facets[facet]
-            query.facets[facet] = face
-
-    s = es.search(query, index=index, size=1100)
-    facet_results = s['facets']
     
-    for facet in facet_results:
-        face = []
-        for term in facet_results[facet]['terms']:
-            face.append({term['term']: term['count'], 'field': facets[facet]})
-        if facet_results[facet]['missing'] != 0:
-            face.append({'other': facet_results[facet]['missing'], 'field': facets[facet]})
-        if len(face):
-            items['facets'][facet] = face
-
-    if 'searchTerm' in params:
-        for key, value in schemas.items():
-            if value == index + '.json':
-                items['count'][key] = len(s['hits']['hits'])
-        for dataS in s['hits']['hits']:
-            data_highlight = dataS['fields']
-            if 'highlight' in dataS:
-                for key in dataS['highlight'].keys():
-                    data_highlight['highlight'] = dataS['highlight'][key]
-            else:
-                data_highlight['highlight'] = []
-            items['results'].append(data_highlight)
-
-    else:
-        items['count']['biosamples'] = len(s['hits']['hits'])
-    
-    result['@graph'] = items
-    return result
