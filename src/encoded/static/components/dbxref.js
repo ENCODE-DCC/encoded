@@ -1,10 +1,9 @@
 /** @jsx React.DOM */
-define(['exports', 'react', './globals'],
-function (exports, React, globals) {
-    /*jshint devel: true*/
-    'use strict';
+'use strict';
+var React = require('react');
+var globals = require('./globals');
 
-    var Dbxref = exports.Dbxref = function (props) {
+    var Dbxref = module.exports.Dbxref = function (props) {
         var value = props.value || '';
         var sep = value.indexOf(':');
         var prefix = props.prefix;
@@ -27,13 +26,10 @@ function (exports, React, globals) {
         return <span>{value}</span>;
     };
 
-    exports.DbxrefList = function (props) { console.log(props);
+    module.exports.DbxrefList = function (props) { console.log(props);
         return (
             <ul className={props.className}>{props.values.map(function (value) {
                 return <li key={value}><Dbxref value={value} prefix={props.prefix} target_gene={props.target_gene} /></li>;
             })}</ul>
         );
     };
-
-    return exports;
-});

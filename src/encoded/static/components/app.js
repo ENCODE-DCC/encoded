@@ -1,8 +1,11 @@
 /** @jsx React.DOM */
-define(['react', 'jsonScriptEscape', './globals', './mixins', './navbar', './footer'],
-function (React, jsonScriptEscape, globals, mixins, NavBar, Footer) {
-    /*jshint devel: true*/
-    'use strict';
+'use strict';
+var React = require('react');
+var jsonScriptEscape = require('jsonScriptEscape');
+var globals = require('./globals');
+var mixins = require('./mixins');
+var NavBar = require('./navbar');
+var Footer = require('./footer');
 
     var portal = {
         portal_title: 'ENCODE',
@@ -108,7 +111,4 @@ function (React, jsonScriptEscape, globals, mixins, NavBar, Footer) {
 
     });
 
-
-    return App;
-
-});
+module.exports = App;

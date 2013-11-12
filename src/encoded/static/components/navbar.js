@@ -1,7 +1,8 @@
 /** @jsx React.DOM */
-define(['react', 'url', './mixins'],
-function (React, url, mixins) {
-    'use strict';
+'use strict';
+var React = require('react');
+var url = require('url');
+var mixins = require('./mixins');
 
     // Hide data from NavBarLayout
     var NavBar = React.createClass({
@@ -103,6 +104,4 @@ function (React, url, mixins) {
         }
     });
 
-
-    return NavBar;
-});
+module.exports = NavBar;

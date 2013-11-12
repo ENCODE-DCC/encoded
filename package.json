@@ -12,7 +12,6 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "browserify": "~2.34.3",
-    "grunt-browserify": "~1.2.9",
     "reactify": "~0.4.0",
     "deamdify": "~0.1.1",
     "grunt-cli": "~0.1.9",

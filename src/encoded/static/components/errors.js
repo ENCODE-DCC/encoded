@@ -1,12 +1,13 @@
 /** @jsx React.DOM */
-define(['exports', 'react', './globals', './home'],
-function (exports, React, globals, home) {
-    'use strict';
+'use strict';
+var React = require('react');
+var globals = require('./globals');
+var home = require('./home');
 
     var SignIn = home.SignIn;
 
 
-    var Error = exports.Error = React.createClass({
+    var Error = module.exports.Error = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'panel-gray');
@@ -22,7 +23,7 @@ function (exports, React, globals, home) {
     globals.content_views.register(Error, 'error');
 
 
-    var LoginDenied = exports.LoginDenied = React.createClass({
+    var LoginDenied = module.exports.LoginDenied = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'panel-gray');
@@ -43,7 +44,3 @@ function (exports, React, globals, home) {
     });
 
     globals.content_views.register(LoginDenied, 'LoginDenied');
-
-
-    return exports;
-});

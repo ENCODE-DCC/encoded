@@ -1,8 +1,6 @@
 /** @jsx React.DOM */
-define(['react'],
-function (React) {
-    'use strict';
-
+'use strict';
+var React = require('react');
 
     var Footer = React.createClass({
         shouldComponentUpdate: function (nextProps, nextState) {
@@ -37,6 +35,4 @@ function (React) {
         }
     });
 
-
-    return Footer;
-});
+module.exports = Footer;

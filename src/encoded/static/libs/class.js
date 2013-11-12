@@ -1,5 +1,4 @@
-define(function () {
-    'use strict';
+'use strict';
 
     // http://www.ianbicking.org/blog/2013/04/new-considered-harmful.html
     var class_ = function (superclass, properties) {
@@ -26,5 +25,4 @@ define(function () {
         return ClassObject;
     };
 
-    return class_;
-});
+module.exports = class_;

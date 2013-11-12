@@ -1,12 +1,13 @@
 /** @jsx React.DOM */
-define(['exports', 'react', './globals', './dbxref'],
-function (exports, React, globals, dbxref) {
-    'use strict';
+'use strict';
+var React = require('react');
+var globals = require('./globals');
+var dbxref = require('./dbxref');
 
     var DbxrefList = dbxref.DbxrefList;
 	var Dbxref = dbxref.Dbxref;
 
-    var Panel = exports.Panel = React.createClass({
+    var Panel = module.exports.Panel = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-detail panel key-value');
@@ -40,6 +41,3 @@ function (exports, React, globals, dbxref) {
     });
 
     globals.panel_views.register(Panel, 'target');
-
-    return exports;
-});

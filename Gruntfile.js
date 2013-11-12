@@ -55,7 +55,6 @@ module.exports = function(grunt) {
                 },
                 transform: [
                     'reactify',
-                    'deamdify',
                 ],
                 bundle: {
                     debug: true,
@@ -99,7 +98,6 @@ module.exports = function(grunt) {
                 },
                 transform: [
                     'reactify',
-                    'deamdify',
                 ],
                 external: [
                     'assert',

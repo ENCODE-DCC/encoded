@@ -1,9 +1,10 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'url', './globals'],
-function (exports, React, url, globals) {
-    'use strict';
+'use strict';
+var React = require('react');
+var url = require('url');
+var globals = require('./globals');
 
-    var Approval = exports.Approval = React.createClass({
+    var Approval = module.exports.Approval = React.createClass({
         render: function() {
             var context = this.props.context;
             var statusClass = 'status-' + (context.status || '').toLowerCase();
@@ -76,7 +77,7 @@ function (exports, React, url, globals) {
     globals.content_views.register(Approval, 'antibody_approval');
 
 
-    var Characterization = exports.Characterization = React.createClass({
+    var Characterization = module.exports.Characterization = React.createClass({
         render: function() {
             var context = this.props.context;
             var statusClass = 'status-' + (context.status || '').toLowerCase();
@@ -185,7 +186,3 @@ function (exports, React, url, globals) {
     };
 
     globals.listing_titles.register(antibody_approval_title, 'antibody_approval');
-
-
-    return exports;
-});

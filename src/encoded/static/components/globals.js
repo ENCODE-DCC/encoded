@@ -1,19 +1,18 @@
-define(['exports', 'registry'],
-function (exports, Registry) {
-    /*jshint devel: true*/
-    'use strict';
+/** @jsx React.DOM */
+'use strict';
+var Registry = require('registry');
 
     // Item pages
-    exports.content_views = Registry();
+    module.exports.content_views = Registry();
 
     // Panel detail views
-    exports.panel_views = Registry();
+    module.exports.panel_views = Registry();
 
     // Cell name listing titles
-    exports.listing_titles = Registry();
+    module.exports.listing_titles = Registry();
 
 
-    exports.itemClass = function (context, htmlClass) {
+    module.exports.itemClass = function (context, htmlClass) {
         htmlClass = htmlClass || '';
         (context['@type'] || []).forEach(function (type) {
             htmlClass += ' type-' + type;
@@ -24,7 +23,7 @@ function (exports, Registry) {
         return htmlClass;
     };
 
-    exports.dbxref_prefix_map = {
+    module.exports.dbxref_prefix_map = {
         "UniProtKB": "http://www.uniprot.org/uniprot/",
         "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",
         // ENSEMBL link only works for human
@@ -33,6 +32,3 @@ function (exports, Registry) {
         "GEO": "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
         "Caltech": "http://jumpgate.caltech.edu/library/"
     };
-
-    return exports;
-});

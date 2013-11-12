@@ -1,6 +1,6 @@
-define(['class', 'underscore'],
-function (class_, _) {
-    'use strict';
+'use strict';
+var class_ = require('class');
+var _ = require('underscore');
 
     var Registry = class_({
         constructor: function (options) {
@@ -51,5 +51,4 @@ function (class_, _) {
         }
     });
 
-    return Registry;
-});
+module.exports = Registry;

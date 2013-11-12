@@ -1,9 +1,10 @@
-define(['exports', 'react', 'url', 'origin'],
-function (exports, React, url, origin) {
-    /*jshint devel: true*/
-    'use strict';
+/** @jsx React.DOM */
+'use strict';
+var React = require('react');
+var url = require('url');
+var origin = require('origin');
         
-    var parseError = exports.parseError = function (xhr, status) {
+    var parseError = module.exports.parseError = function (xhr, status) {
         var data;
         if (status == 'abort') return;
         if (status == 'timeout') {
@@ -48,7 +49,7 @@ function (exports, React, url, origin) {
     };
 
 
-    exports.RenderLess = {
+    module.exports.RenderLess = {
         shouldComponentUpdate: function (nextProps, nextState) {
             var key;
             if (nextProps) {
@@ -71,7 +72,7 @@ function (exports, React, url, origin) {
         },
     };
 
-    exports.Persona = {
+    module.exports.Persona = {
         componentDidMount: function () {
             var $ = require('jquery');
             // Login / logout actions must be deferred until persona is ready.
@@ -205,7 +206,7 @@ function (exports, React, url, origin) {
     };
 
 
-    exports.HistoryAndTriggers = {
+    module.exports.HistoryAndTriggers = {
         // Detect HTML5 history support
         historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
 
@@ -393,6 +394,3 @@ function (exports, React, url, origin) {
             }
         }
     };
-
-    return exports;
-});

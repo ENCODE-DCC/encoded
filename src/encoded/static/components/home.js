@@ -1,9 +1,9 @@
 /** @jsx React.DOM */
-define(['exports', 'react', './globals'],
-function (exports, React, globals) {
-    'use strict';
+'use strict';
+var React = require('react');
+var globals = require('./globals');
 
-    var SignIn = exports.SignIn = React.createClass({
+    var SignIn = module.exports.SignIn = React.createClass({
         render: function() {
             var hidden = !this.props.session || this.props.session.persona;
             var disabled = !this.props.personaReady;
@@ -19,7 +19,7 @@ function (exports, React, globals) {
     });
 
 
-    var Home = exports.Home = React.createClass({
+    var Home = module.exports.Home = React.createClass({
         render: function() {
             return (
                 <div className="homepage-main-box panel-gray">
@@ -37,5 +37,3 @@ function (exports, React, globals) {
 
 
     globals.content_views.register(Home, 'portal');
-    return exports;
-});
