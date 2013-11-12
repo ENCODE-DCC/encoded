@@ -169,6 +169,8 @@ module.exports = function(grunt) {
         var dest = path.resolve(data.dest);
         var root = data.root ? path.resolve(data.root) : path.resolve(path.dirname(dest));
 
+        grunt.file.mkdir(path.dirname(dest));
+
         // See: https://github.com/thlorenz/mold-source-map/pull/1
         function mapPathRelativeTo (root) {
             return function (file) {
