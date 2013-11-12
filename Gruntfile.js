@@ -93,6 +93,9 @@ module.exports = function(grunt) {
                     ['./src/encoded/static/libs/registry' , {expose: 'registry'}],
                     ['./src/encoded/static/components', {expose: 'main'}],
                 ],
+                options: {
+                    noParse: ['./src/encoded/static/libs/streams.js'],
+                },
                 bundle: {
                     debug: true,
                 },
@@ -101,8 +104,6 @@ module.exports = function(grunt) {
                 ],
                 external: [
                     'assert',
-                    'string_decoder',
-                    'stream',
                 ],
                 ignore: [
                     'jquery',

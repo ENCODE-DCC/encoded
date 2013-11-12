@@ -38,7 +38,8 @@ module.exports.run = function run(Component, options) {
     json_objects.pipe(render);
     render.pipe(output_length);
     render.on('error_result', function (err) {
-        error_output_length.write(err.stack + '\n--\n' + log.getValue());
+        var value = err.stack + '\n--\n' + log.getValue();
+        error_output_length.write(value);
     });
     output_length.pipe(stdout);
     output_length.on('data', log.clear.bind(log));
