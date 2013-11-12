@@ -5,7 +5,7 @@ module.exports.run = function run(Component, options) {
     // Pass process to avoid browserify problems
     options = options || {};
     var doctype = options.doctype || '<!DOCTYPE html>';
-    doctype += '\n';    
+    doctype += '\n';
 
     // Avoid browserify
     var stdin = options.stdin || eval('process.stdin');
