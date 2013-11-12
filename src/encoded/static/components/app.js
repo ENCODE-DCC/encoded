@@ -84,7 +84,7 @@ function (React, jsonScriptEscape, globals, mixins, NavBar, Footer) {
                     </head>
                     <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                         <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
-                            __html: jsonScriptEscape(JSON.stringify(this.props.context))
+                            __html: '\n\n' + jsonScriptEscape(JSON.stringify(this.props.context)) + '\n\n'
                         }}></script>
                         <div id="slot-application">
                             <div id="application" className={appClass}>
