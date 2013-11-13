@@ -44,3 +44,20 @@ var LoginDenied = module.exports.LoginDenied = React.createClass({
 });
 
 globals.content_views.register(LoginDenied, 'LoginDenied');
+
+
+var RenderingError = module.exports.RenderingError = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var itemClass = globals.itemClass(context, 'panel-gray');
+        return (
+            <div className={itemClass}>
+                <h1>{context.title}</h1>
+                <p>{context.description}</p>
+                <pre>{context.detail}</pre>
+            </div>
+        );
+    }
+});
+
+globals.content_views.register(RenderingError, 'RenderingError');

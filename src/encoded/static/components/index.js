@@ -15,6 +15,7 @@ require('./navbar');
 require('./platform');
 require('./search');
 require('./target');
+require('./testing');
 
 var React = require('react');
 var App = require('./app');
