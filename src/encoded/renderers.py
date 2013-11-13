@@ -7,7 +7,7 @@ from pyramid.events import (
 from pyramid.decorator import reify
 from pyramid.httpexceptions import (
     HTTPBadRequest,
-    HTTPInternalServerError,
+    HTTPServerError,
     HTTPMovedPermanently,
 )
 from pyramid.security import authenticated_userid
@@ -63,6 +63,11 @@ class NullRenderer:
         return None
 
 
+class RenderingError(HTTPServerError):
+    title = 'Server Rendering Error'
+    explanation = 'The server erred while rendering the page.'
+
+
 class PageWorker(threading.local):
     """ We only want one of these per thread
     """
@@ -112,15 +117,12 @@ class PageWorker(threading.local):
         if result_type == 'RESULT':
             return result
         else:
-            raise HTTPInternalServerError(result)
+            raise RenderingError(result)
 
     def __call__(self, info):
         """ Called per view
         """
-        def _render(value, system):
-            return self.render(value, system)
-
-        return _render
+        return self.render
 
 
 page_renderer = PageWorker()

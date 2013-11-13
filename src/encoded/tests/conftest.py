@@ -99,9 +99,18 @@ def workbook(app, app_settings):
 
 
 @fixture
-def htmltestapp(request, app, external_tx, zsa_savepoints):
+def anonhtmltestapp(request, app, external_tx, zsa_savepoints):
     from webtest import TestApp
     return TestApp(app)
+
+
+@fixture
+def htmltestapp(request, app, external_tx, zsa_savepoints):
+    from webtest import TestApp
+    environ = {
+        'REMOTE_USER': 'TEST',
+    }
+    return TestApp(app, environ)
 
 
 @fixture
