@@ -18,8 +18,8 @@ def _type_length():
 TYPE_LENGTH = _type_length()
 
 
-def test_home(htmltestapp):
-    res = htmltestapp.get('/', status=200)
+def test_home(anonhtmltestapp):
+    res = anonhtmltestapp.get('/', status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
 
@@ -29,8 +29,8 @@ def test_home_json(testapp):
 
 
 @pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
-def test_html(htmltestapp, item_type):
-    res = htmltestapp.get('/' + item_type).follow(status=200)
+def test_html(anonhtmltestapp, item_type):
+    res = anonhtmltestapp.get('/' + item_type).follow(status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
 
@@ -40,11 +40,11 @@ def test_json(testapp, item_type):
     assert res.json['@type']
 
 
-def test_json_basic_auth(htmltestapp):
+def test_json_basic_auth(anonhtmltestapp):
     import base64
     url = '/'
     value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
-    res = htmltestapp.get(url, headers={'Authorization': value}, status=200)
+    res = anonhtmltestapp.get(url, headers={'Authorization': value}, status=200)
     assert res.json['@id']
 
 
