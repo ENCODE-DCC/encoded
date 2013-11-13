@@ -117,10 +117,7 @@ class PageWorker(threading.local):
     def __call__(self, info):
         """ Called per view
         """
-        def _render(value, system):
-            return self.render(value, system)
-
-        return _render
+        return self.render
 
 
 page_renderer = PageWorker()
