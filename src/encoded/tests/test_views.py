@@ -29,9 +29,24 @@ def test_home_json(testapp):
 
 
 @pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
-def test_html(anonhtmltestapp, item_type):
+def test_html_collections_anon(anonhtmltestapp, item_type):
     res = anonhtmltestapp.get('/' + item_type).follow(status=200)
     assert res.body.startswith('<!DOCTYPE html>')
+
+
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_html_collections(workbook, htmltestapp, item_type):
+    res = htmltestapp.get('/' + item_type).follow(status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_html_pages(workbook, testapp, htmltestapp, item_type):
+    res = testapp.get('/%s?limit=all' % item_type).follow(status=200)
+    for item in res.json['@graph']:
+        res = htmltestapp.get(item['@id'])
+        assert res.body.startswith('<!DOCTYPE html>')
 
 
 @pytest.mark.parametrize('item_type', TYPE_LENGTH)
