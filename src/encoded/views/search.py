@@ -78,7 +78,6 @@ def search(context, request):
         'columns': {},
         'count': {}
     })
-
     size = 999999
     
     # if no searchTerm

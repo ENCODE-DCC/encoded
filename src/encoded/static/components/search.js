@@ -1,8 +1,9 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'url', './globals'],
-function (exports, React, url, globals) {
-    'use strict';
-    var search = exports;
+'use strict';
+var React = require('react');
+var url = require('url');
+var globals = require('./globals');
+var search = module.exports;
 
     var FacetBuilder = search.FacetBuilder = React.createClass({
         render: function() {
@@ -236,5 +237,3 @@ function (exports, React, url, globals) {
     });
 
     globals.content_views.register(Search, 'search');
-    return search;
-});

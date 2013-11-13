@@ -53,7 +53,6 @@ def access_keys(app):
             'access_key_id': res.json['access_key_id'],
             'secret_access_key': res.json['secret_access_key'],
             'auth_header': basic_auth(res.json['access_key_id'], res.json['secret_access_key']),
-            'user': user['uuid'],
             'description': description,
             'user': user,
         })
@@ -89,7 +88,8 @@ def test_access_key_principals(anontestapp, execute_counter, access_key):
 
 def test_access_key_reset(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.post_json(access_key['location'] + '@@reset-secret', {}, headers=headers)
+    extra_environ = {'REMOTE_USER': str(access_key['user']['email'])}
+    res = anontestapp.post_json(access_key['location'] + '@@reset-secret', {}, extra_environ=extra_environ)
     new_headers = {'Authorization': basic_auth(access_key['access_key_id'], res.json['secret_access_key'])}
 
     res = anontestapp.get('/@@testing-user', headers=headers)
@@ -101,7 +101,8 @@ def test_access_key_reset(anontestapp, access_key):
 
 def test_access_key_disable(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.post_json(access_key['location'] + '@@disable-secret', {}, headers=headers)
+    extra_environ = {'REMOTE_USER': str(access_key['user']['email'])}
+    res = anontestapp.post_json(access_key['location'] + '@@disable-secret', {}, extra_environ=extra_environ)
 
     res = anontestapp.get('/@@testing-user', headers=headers)
     assert res.json['authenticated_userid'] is None
