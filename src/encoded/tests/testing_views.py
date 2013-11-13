@@ -197,3 +197,12 @@ class TestingDependencies(Collection):
         'title': 'Test dependencies',
         'description': 'Testing. Testing. 1, 2, 3.',
     }
+
+
+@view_config(name='testing-render-error', request_method='GET')
+def testing_render_error(request):
+    return {
+        '@type': ['testing_render_error', 'item'],
+        '@id': request.path,
+        'title': 'Item triggering a render error',
+    }
