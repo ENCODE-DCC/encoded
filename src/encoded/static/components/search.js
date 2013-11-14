@@ -4,6 +4,7 @@ var React = require('react');
 var url = require('url');
 var globals = require('./globals');
 var search = module.exports;
+var dbxref = require('./dbxref');
 
     var FacetBuilder = search.FacetBuilder = React.createClass({
         render: function() {
@@ -87,7 +88,7 @@ var search = module.exports;
                     </div>
             };
             return (
-                <div>
+                <div className="box">
                     {facets.length ?
                         facets.map(buildSection)
                     : null}
@@ -95,7 +96,7 @@ var search = module.exports;
             );
         }
     });
-
+    
     var ResultTable = search.ResultTable = React.createClass({
         render: function() {
             var context = this.props.context;
@@ -109,47 +110,53 @@ var search = module.exports;
                 var highlight = result['highlight'];
                 switch (result['@type'][0]) {
                     case "biosample":
-                        return <li className="post">
-                                    <h4><a href={result['@id']}>{result['accession']}</a></h4>
-                                    <div className="well">
-                                        <strong>{columns['biosample_term_name']}</strong>: {result['biosample_term_name']}
-                                        <span className="pull-right"><strong>{columns['biosample_type']}</strong>: {result['biosample_type']}</span><br />
-                                        <strong>{columns['organism.name']}</strong>: {result['organism.name']}
-                                        <span className="pull-right"><strong>{columns['source.title']}</strong>: {result['source.title']}</span><br />
+                        return <li>
+                                    <div className="accession">
+                                        <span className="pull-right">Biosample - {result['organism.name']}</span>
+                                        <a href={result['@id']}>{result['accession']}</a>
+                                    </div>
+                                    <div className="data-row">
+                                        <strong>{columns['biosample_term_name']}</strong>: {result['biosample_term_name']}<br />
+                                        <strong>{columns['biosample_type']}</strong>: {result['biosample_type']}<br />
+                                        <strong>{columns['source.title']}</strong>: {result['source.title']}<br />
                                         <strong>{columns['lab.title']}</strong>: {result['lab.title']}
                                     </div>
                             </li>
                         break;
                     case "experiment":
-                        return <li className="post">
-                                    <h4><a href={result['@id']}>{result['accession']}</a></h4>
-                                    <div className="well">
-                                        <strong>{columns['assay_term_name']}</strong>: {result['assay_term_name']}
-                                        <span className="pull-right"><strong>{columns['target.label']}</strong>: {result['target.label']}</span><br />
-                                        <strong>{columns['biosample_term_name']}</strong>: {result['biosample_term_name']}
-                                        <span className="pull-right"><strong>{columns['lab.title']}</strong>: {result['lab.title']}</span><br />
+                        return <li>
+                                    <div className="accession">
+                                        <span className="pull-right">Experiment - {result['assay_term_name']}</span>
+                                        <a href={result['@id']}>{result['accession']}</a>
+                                    </div>
+                                    <div className="data-row">
+                                        <strong>{columns['biosample_term_name']}</strong>: {result['biosample_term_name']}<br />
+                                        <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
                                         <strong>{columns['award.rfa']}</strong>: {result['award.rfa']}
                                     </div>
                             </li>
                         break;
                     case "antibody_approval":
-                        return <li className="post">
-                                    <h4><a href={result['@id']}>{result['antibody.accession']}</a></h4>
-                                    <div className="well">
-                                        <strong>{columns['target.label']}</strong>: {result['target.label']}
-                                        <span className="pull-right"><strong>{columns['target.organism.name']}</strong>: {result['target.organism.name']}</span><br />
-                                        <strong>{columns['antibody.source.title']}</strong>: {result['antibody.source.title']}
-                                        <span className="pull-right"><strong>{columns['antibody.product_id']}</strong>: {result['antibody.product_id']}</span><br />
-                                        <strong>{columns['antibody.lot_id']}</strong>: {result['antibody.lot_id']}
-                                        <span className="pull-right"><strong>{columns['status']}</strong>: {result['status']}</span>
+                        return <li>
+                                    <div className="accession">
+                                        <span className="pull-right">Antibody - {result['target.organism.name']}</span>
+                                        <a href={result['@id']}>{result['antibody.accession']}</a>
+                                    </div>
+                                    <div className="data-row"> 
+                                        <strong>{columns['target.label']}</strong>: {result['target.label']}<br />
+                                        <strong>{columns['antibody.source.title']}</strong>: {result['antibody.source.title']}<br />
+                                        <strong>{columns['antibody.product_id']}/{columns['antibody.lot_id']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
+                                        <strong>{columns['status']}</strong>: {result['status']}
                                     </div>
                             </li>
                         break;
                     case "target":
-                        return <li className="post">
-                                    <h4><a href={result['@id']}>{result['label']}</a></h4>
-                                    <div className="well">
-                                        <strong>{columns['organism.name']}</strong>: {result['organism.name']}<br />
+                        return <li>
+                                    <div className="accession">
+                                        <span className="pull-right">Target - {result['organism.name']}</span>
+                                        <a href={result['@id']}>{result['label']}</a>
+                                    </div>
+                                    <div className="data-row">
                                         <strong>{columns['dbxref']}</strong>: {result['dbxref']}
                                     </div>
                             </li>
@@ -185,14 +192,18 @@ var search = module.exports;
                                             : null}
                                         </ul>
                                     </div>
-                                    <div className="box">
-                                        {facets.length ?
-                                            this.transferPropsTo(<FacetBuilder />)
-                                        :null }
-                                    </div>
+                                    {facets.length ?
+                                        this.transferPropsTo(<FacetBuilder />)
+                                    :null}
                                 </div>
+
                                 <div className="span8">
-                                    <ul className="nav">
+                                    <h4>Showing {results.length} of {(count['antibodies'] ? parseInt(count['antibodies']) : 0) + 
+                                            (count['biosamples'] ? parseInt(count['biosamples']) : 0) + 
+                                            (count['targets'] ? parseInt(count['targets']) : 0) + 
+                                            (count['experiments'] ? parseInt(count['experiments']) : 0)}</h4>
+                                    <hr />
+                                    <ul className="nav result-table">
                                         {results.length ?
                                             results.map(resultsView)
                                         : null}

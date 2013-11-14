@@ -27,18 +27,68 @@
 
 button.btn.collapsed:before
 {
-    content:'+ See More...' ;
+    content:'+ See more...' ;
     display: block;
     text-decoration: none;
     font-size: small;
 }
 
+.accession {
+	font-size: 1.6em;
+	font-weight: bold; 	
+}
+
+.accession span {
+	font-size: 0.8em;
+	font-weight: normal;
+	color: #808080;
+}
+
+.accession a:hover {
+	text-decoration: none;
+}
+
+.data-row {
+	margin-top: 10px;
+	margin-left: 50px;
+	margin-bottom: 10px;
+}
+
 button.btn:before
 {
-    content:'- See Fewer';
+    content:'- See fewer';
     display: block;
     text-decoration: none;
     font-size: small;
+}
+
+.result-table {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.result-table li {
+	margin-top: 20px;
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 20px;
+	font-size: 0.9em;
+}
+
+.result-table li:last-child {
+ 	border: none;
+}
+ 
+.result-table li a {
+	text-decoration: none;
+	display: block;
+	width: 220px;
+
+	-webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
+	-moz-transition: font-size 0.3s ease, background-color 0.3s ease;
+	-o-transition: font-size 0.3s ease, background-color 0.3s ease;
+	-ms-transition: font-size 0.3s ease, background-color 0.3s ease;
+	transition: font-size 0.3s ease, background-color 0.3s ease;
 }
 
 .highlight {

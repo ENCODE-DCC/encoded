@@ -79,7 +79,6 @@ def search(context, request):
         'count': {}
     })
     size = 999999
-    
     # if no searchTerm
     try:
         search_term = params['searchTerm']
@@ -150,9 +149,8 @@ def search(context, request):
         if len(params) > 2:
             for param in params:
                 if param not in ['searchTerm', 'type']:
-                    query['filter'] = {'term': {param+'.untouched': params[param]}}
-        
-        results = es.search(query, index=index, size=size)
+                    query['filter'] = {'term': {param + '.untouched': params[param]}}
+        results = es.search(query, index=index, size=100)
         facet_results = results['facets']
         for facet in facet_results:
             face = {}
@@ -172,5 +170,6 @@ def search(context, request):
             else:
                 data_highlight['highlight'] = []
             result['@graph'].append(data_highlight)
-        result['count'][search_type] = len(results['hits']['hits'])
+
+        result['count'][search_type] = results['hits']['total']
         return result
