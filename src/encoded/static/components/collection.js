@@ -1,9 +1,11 @@
 /** @jsx React.DOM */
-define(['exports', 'class', 'react', 'url', './globals'],
-function (exports, class_, React, url, globals) {
-    'use strict';
+'use strict';
+var class_ = require('class');
+var React = require('react');
+var url = require('url');
+var globals = require('./globals');
 
-    var Collection = exports.Collection = React.createClass({
+    var Collection = module.exports.Collection = React.createClass({
         render: function () {
             var context = this.props.context;
             return (
@@ -83,7 +85,7 @@ function (exports, class_, React, url, globals) {
         );
     };
 
-    var Table = exports.Table = React.createClass({
+    var Table = module.exports.Table = React.createClass({
         getDefaultProps: function () {
             return {
                 defaultSortOn: 0
@@ -379,7 +381,3 @@ function (exports, class_, React, url, globals) {
         }
 
     });
-
-
-    return exports;
-});
