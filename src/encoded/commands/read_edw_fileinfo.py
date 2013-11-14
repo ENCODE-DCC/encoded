@@ -466,15 +466,19 @@ def put_fileinfo(app, fileinfo):
         sys.stderr.write('....PUT file: %s\n' % (accession))
     try:
         exp_fileinfo = set_fileinfo_experiment(app, fileinfo)
-        put_fileinfo = set_fileinfo_replicate(app, exp_fileinfo)
-        if put_fileinfo is None:
+        new_fileinfo = set_fileinfo_replicate(app, exp_fileinfo)
+        if new_fileinfo is None:
             return
     except AppError as e:
         logging.warning('Failed PUT File %s: Replicate error\n%s', accession, e)
         return
-    url = collection_url(FILES) + accession
-    # TODO: Get first and merge in new info
-    resp = app.put_json(url, put_fileinfo)
+    url = collection_url(FILES) + accession + "/?embed=false"
+    # TODO: Get first and merge in new info (is this needed ?)
+    #resp = app.get(url).maybe_follow()
+    #old_fileinfo = dict(resp.json)
+    #fileinfo.update(new_fileinfo)
+    #resp = app.put_json(url, fileinfo)
+    resp = app.put_json(url, new_fileinfo)
     if verbose:
         sys.stderr.write(str(resp) + "\n")
     if resp.status_int < 200 or resp.status_int >= 400:
