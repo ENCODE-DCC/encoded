@@ -117,8 +117,12 @@ def make_edw(data_host=None):
 
 class FileinfoWriter(DictWriter):
     # Write tab-sep file of file info
-    def __init__(self, filename=sys.stdout):
-        DictWriter.__init__(self, filename, fieldnames=FILE_INFO_FIELDS,
+    def __init__(self, filename=sys.stdout, exclude=None):
+        if exclude:
+            fields = list(set(FILE_INFO_FIELDS) ^ set(exclude))
+        else:
+            fields = FILE_INFO_FIELDS
+        DictWriter.__init__(self, filename, fieldnames=fields,
                             delimiter='\t', lineterminator='\n',
                             extrasaction='ignore')
 
@@ -127,10 +131,10 @@ def dump_filelist(fileaccs, header=True, typeField=None):
     for acc in sorted(fileaccs):
         print acc
 
-def dump_fileinfo(fileinfos, header=True, typeField=None):
+def dump_fileinfo(fileinfos, header=True, typeField=None, exclude=None):
     # Dump file info from list of file info dicts to tab-sep file
     # TODO: should be method of FileInfoWriter
-    writer = FileinfoWriter()
+    writer = FileinfoWriter(exclude=exclude)
     if header:
         if typeField is not None:
             sys.stdout.write('%s\t' % 'type')
