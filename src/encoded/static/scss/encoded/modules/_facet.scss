@@ -14,7 +14,7 @@
 }
 
 .facet-list li a {
-	color: #808080;
+	color: #000;
 }
 
 .facet-list li:hover {
@@ -28,6 +28,7 @@
 button.btn.collapsed:before
 {
     content:'+ See More...' ;
+    display: block;
     text-decoration: none;
     font-size: small;
 }
@@ -35,6 +36,7 @@ button.btn.collapsed:before
 button.btn:before
 {
     content:'- See Fewer';
+    display: block;
     text-decoration: none;
     font-size: small;
 }

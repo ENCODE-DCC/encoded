@@ -12,18 +12,14 @@ var search = module.exports;
             var facets = context['facets'];
             var href_search = url.parse(this.props.href).search || '';
             var counter, counter1 = 0;
+            var field = '';
             var buildTerms = function(map) {
                 var id;
                 var count;
-                var field;
                 counter = counter + 1;
                 for (var j in map) {
-                    if(j == "field") {
-                        field = map[j];
-                    }else {
-                        id = j;
-                        count = map[j];
-                    }
+                    id = j;
+                    count = map[j];
                 }
                 if(counter < 4) {
                     if(count == result_count) {
@@ -36,15 +32,10 @@ var search = module.exports;
             var buildCollapsingTerms = function(map) {
                 var id;
                 var count;
-                var field;
                 counter1 = counter1 + 1;
                 for (var j in map) {
-                    if(j == "field") {
-                        field = map[j];
-                    }else {
-                        id = j;
-                        count = map[j];
-                    }
+                    id = j;
+                    count = map[j];
                 }
                 if (counter1 >= 4) {
                    if(count == result_count) {
@@ -65,6 +56,8 @@ var search = module.exports;
                         term = f;
                         termID = f.replace(/\s+/g, '');
                         terms = facet[f];
+                    } else {
+                        field = facet[f];
                     }
                 }
                 return <div>
@@ -90,6 +83,7 @@ var search = module.exports;
                                 </label>
                             : null}
                         </ul>
+                        <hr />
                     </div>
             };
             return (
@@ -191,9 +185,11 @@ var search = module.exports;
                                             : null}
                                         </ul>
                                     </div>
-                                    {facets.length ?
-                                        this.transferPropsTo(<FacetBuilder />)
-                                    :null }
+                                    <div className="box">
+                                        {facets.length ?
+                                            this.transferPropsTo(<FacetBuilder />)
+                                        :null }
+                                    </div>
                                 </div>
                                 <div className="span8">
                                     <ul className="nav">
@@ -220,12 +216,10 @@ var search = module.exports;
             var results = context['@graph'];
             return (
                 <div>
-                    <div className="panel data-display">
-                        <form className="input-prepend">
-                            <span className="add-on"><i className="icon-search"></i></span>
-                            <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
-                        </form>
-                    </div>
+                    <form className="input-prepend">
+                        <span className="add-on"><i className="icon-search"></i></span>
+                        <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
+                    </form>
                     <div className="panel data-display"> 
                         {Object.keys(results).length ?
                             this.transferPropsTo(<ResultTable />)

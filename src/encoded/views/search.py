@@ -140,17 +140,23 @@ def search(context, request):
             fields.append(column)
         query.fields = fields
         query.query = {'query_string': {'query': search_term}}
-
+        
         for facet in schema['facets']:
             face = {'terms': {'field': '', 'size': size}}
-            face['terms']['field'] = schema['facets'][facet]
+            face['terms']['field'] = schema['facets'][facet] + '.untouched'
             query.facets[facet] = face
-
+        
+        # Builds filtered query which supports multiple facet selection
+        if len(params) > 2:
+            for param in params:
+                if param not in ['searchTerm', 'type']:
+                    query['filter'] = {'term': {param+'.untouched': params[param]}}
+        
         results = es.search(query, index=index, size=size)
         facet_results = results['facets']
         for facet in facet_results:
             face = {}
-            face['field'] = facet_results[facet]
+            face['field'] = schema['facets'][facet]
             face[facet] = []
             for term in facet_results[facet]['terms']:
                 face[facet].append({term['term']: term['count']})
