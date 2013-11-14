@@ -19,7 +19,7 @@ def includeme(config):
 class EncodedRoot(Root):
     properties = {
         'title': 'Home',
-        'portal_title': 'ENCODE 3',
+        'portal_title': 'ENCODE',
     }
 
 

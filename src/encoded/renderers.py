@@ -1,11 +1,13 @@
 from .json_script_escape import json_script_escape
-from pkg_resources import resource_string
+from pkg_resources import resource_filename
 from pyramid.events import (
     NewRequest,
     subscriber,
 )
+from pyramid.decorator import reify
 from pyramid.httpexceptions import (
     HTTPBadRequest,
+    HTTPServerError,
     HTTPMovedPermanently,
 )
 from pyramid.security import authenticated_userid
@@ -13,8 +15,19 @@ from pyramid.threadlocal import (
     get_current_request,
     manager,
 )
+import json
+import os
 import pyramid.renderers
+import subprocess
+import threading
+import time
 import uuid
+
+
+def includeme(config):
+    config.add_renderer(None, PageOrJSON)
+    config.add_renderer('null_renderer', NullRenderer)
+    config.scan(__name__)
 
 
 class JSON(pyramid.renderers.JSON):
@@ -50,15 +63,69 @@ class NullRenderer:
         return None
 
 
-class PageRenderer:
-    def __init__(self, info):
-        self.page = resource_string('encoded', 'index.html')
+class RenderingError(HTTPServerError):
+    title = 'Server Rendering Error'
+    explanation = 'The server erred while rendering the page.'
 
-    def __call__(self, value, system):
-        request = system.get('request')
-        if request is not None:
-            request.response.content_type = 'text/html'
-        return self.page.format(json=json_script_escape(value))
+
+class PageWorker(threading.local):
+    """ We only want one of these per thread
+    """
+    process_args = [
+        'node',
+        resource_filename(__name__, 'static/build/renderer.js'),
+    ]
+
+    @reify
+    def process(self):
+        """ defer creation as __init__ also called in management thread
+        """
+        node_env = os.environ.copy()
+        node_env['NODE_PATH']= ''
+        return subprocess.Popen(
+            self.process_args, close_fds=True,
+            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            env=node_env,
+        )
+
+    def render(self, value, system):
+        request = system['request']
+        request.response.content_type = 'text/html'
+        data = '{"href":%s,"context":%s}\0' % (json.dumps(request.url), value)
+
+        start = int(time.time() * 1e6)
+        self.process.stdin.write(data)
+        header = self.process.stdout.readline()
+        result_type, content_length = header.split(' ', 1)
+        content_length = int(content_length)
+        output = []
+        pos = 0
+
+        while pos < content_length:
+            out = self.process.stdout.read(content_length - pos)
+            pos += len(out)
+            output.append(out)
+
+        end = int(time.time() * 1e6)
+
+        stats = request._stats
+        stats['render_count'] = stats.get('render_count', 0) + 1
+        duration = end - start
+        stats['render_time'] = stats.get('render_time', 0) + duration
+
+        result = ''.join(output)
+        if result_type == 'RESULT':
+            return result
+        else:
+            raise RenderingError(result)
+
+    def __call__(self, info):
+        """ Called per view
+        """
+        return self.render
+
+
+page_renderer = PageWorker()
 
 
 class CSRFTokenError(HTTPBadRequest):
@@ -110,7 +177,7 @@ class PageOrJSON:
     '''
     def __init__(self, info):
         self.json_renderer = json_renderer(info)
-        self.page_renderer = PageRenderer(info)
+        self.page_renderer = page_renderer(info)
 
     def __call__(self, value, system):
         request = system.get('request')

@@ -1,21 +1,22 @@
 /** @jsx React.DOM */
-define(['exports', 'jquery', 'class', 'react', 'globals'],
-function (collection, $, class_, React, globals) {
-    'use strict';
+'use strict';
+var class_ = require('class');
+var React = require('react');
+var url = require('url');
+var globals = require('./globals');
 
-    var Collection = collection.Collection = React.createClass({
+    var Collection = module.exports.Collection = React.createClass({
         render: function () {
             var context = this.props.context;
-            var location = this.props.location;
             return (
                 <div>
-                    <header class="row">
-                        <div class="span12">
+                    <header className="row">
+                        <div className="span12">
                             <h2>{context.title}</h2>
                         </div>
                     </header>
-                    <p class="description">{context.description}</p>
-                    <Table context={context} location={location} />
+                    <p className="description">{context.description}</p>
+                    {this.transferPropsTo(<Table />)}
                 </div>
             );
         }
@@ -84,7 +85,7 @@ function (collection, $, class_, React, globals) {
         );
     };
 
-    var Table = collection.Table = React.createClass({
+    var Table = module.exports.Table = React.createClass({
         getDefaultProps: function () {
             return {
                 defaultSortOn: 0
@@ -93,9 +94,9 @@ function (collection, $, class_, React, globals) {
 
         getInitialState: function () {
             var state = this.extractParams(this.props);
-            var columns = state.columns = this.guessColumns(this.props);
-            state.data = this.extractData(this.props, columns);
-            state.communicating = this.fetchAll(this.props);
+            state.columns = this.guessColumns(this.props);
+            state.data = Data([]);  // Tables may be long so render empty first
+            state.communicating = true;
             return state;
         },
 
@@ -114,14 +115,14 @@ function (collection, $, class_, React, globals) {
                 var columns = this.guessColumns(nextProps);
                 this.extractData(nextProps, columns);
             }
-            if (nextProps.location.href !== this.props.location.href) {
+            if (nextProps.href !== this.props.href) {
                 this.extractParams(nextProps);
             }
 
         },
 
         extractParams: function(props) {
-            var params = props.location.params();
+            var params = url.parse(props.href, true).query;
             var sorton = parseInt(params.sorton, 10);
             if (isNaN(sorton)) {
                 sorton = props.defaultSortOn;
@@ -197,6 +198,7 @@ function (collection, $, class_, React, globals) {
                 this.allRequest.abort();
             }
             var self = this;
+            var $ = require('jquery');
             if (context.all) {
                 communicating = true;
                 this.setState({communicating: true});
@@ -222,7 +224,7 @@ function (collection, $, class_, React, globals) {
             this.state.searchTerm = searchTerm;
             var titles = context.columns;
             var data = this.state.data;
-            var params = this.props.location.params();
+            var params = url.parse(this.props.href, true).query;
             var total = context.count || data.rows.length;
             data.sort(sortOn, reversed);
             var self = this;
@@ -234,7 +236,7 @@ function (collection, $, class_, React, globals) {
                 return (
                     <th onClick={self.handleClickHeader} key={index}>
                         {titles[column] || column}
-                        <i class={className}></i>
+                        <i className={className}></i>
                     </th>
                 );
             });
@@ -268,35 +270,35 @@ function (collection, $, class_, React, globals) {
             if (this.state.communicating) {
                 table_class += ' communicating';
                 loading_or_total = (
-                    <span class="table-count label label-warning spinner-warning">Loading...</span>
+                    <span className="table-count label label-warning spinner-warning">Loading...</span>
                 );
             } else {
                 loading_or_total = (
                     <span>
-                        <span class="table-count label label-invert">{matching.length}</span>
+                        <span className="table-count label label-invert">{matching.length}</span>
                         <span id="total-records">of {total} records</span>
                     </span>
                 );
             }
             return (
-                <table class={table_class}>
-                    <thead class="sticky-header">
-                        <tr class="nosort table-controls">
+                <table className={table_class}>
+                    <thead className="sticky-header">
+                        <tr className="nosort table-controls">
                             <th colSpan={columns.length}>
                                 {loading_or_total}
-                                <form ref="form" class="table-filter" onKeyUp={this.handleKeyUp} 
+                                <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
                                 	data-skiprequest="true" data-removeempty="true">
                                     <input ref="q" disabled={this.state.communicating || undefined} 
                                     	name="q" type="search" defaultValue={searchTerm} 
-                                    	placeholder="Filter table by..." class="filter" 
+                                    	placeholder="Filter table by..." className="filter" 
                                     	id="table-filter" /> 
-                                    <i class="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
+                                    <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
                                     <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                     <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                 </form>
                             </th>
                         </tr>
-                        <tr class="col-headers">
+                        <tr className="col-headers">
                             {headers}
                         </tr>
                     </thead>
@@ -307,11 +309,12 @@ function (collection, $, class_, React, globals) {
             );
         },
 
-        componentDidUpdate: function (prevProps, prevState, domNode) {
-            // Switching between collections may leave component in place
-            if (prevProps.context != this.props.context) {
-                this.refs.q.getDOMNode().value = this.state.searchTerm;
-            }
+        componentDidMount: function () {
+            this.setState({
+                data: this.extractData(this.props),
+                communicating: this.fetchAll(this.props),
+                mounted: true,
+            });
         },
 
         handleClickHeader: function (event) {
@@ -332,6 +335,7 @@ function (collection, $, class_, React, globals) {
             }
             this.refs.reversed.getDOMNode().value = reversed;
             event.preventDefault();
+            event.stopPropagation();
             this.submit();
         },
 
@@ -341,14 +345,25 @@ function (collection, $, class_, React, globals) {
             }
             // Skip when enter key is pressed
             if (event.nativeEvent.keyCode == 13) return;
+            // IE8 should only submit on enter as page reload is triggered
+            if (!this.hasEvent) return;
             this.submitTimer = setTimeout(this.submit, 200);
         },
 
+        hasEvent: typeof Event !== 'undefined',
+
         submit: function () {
             // form.submit() does not fire onsubmit handlers...
-            
+            var target = this.refs.form.getDOMNode();
+
+            // IE8 does not support the Event constructor
+            if (!this.hasEvent) {
+                target.submit();
+                return;
+            }
+
             var event = new Event('submit', {bubbles: true, cancelable: true});
-            this.refs.form.getDOMNode().dispatchEvent(event);
+            target.dispatchEvent(event);
         },
         
         clearFilter: function (event) {
@@ -366,7 +381,3 @@ function (collection, $, class_, React, globals) {
         }
 
     });
-
-
-    return collection;
-});
