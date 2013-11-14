@@ -78,7 +78,11 @@ def search(context, request):
         'columns': {},
         'count': {}
     })
-    size = 999999
+
+    if 'limit' in params:
+        size = 999999
+    else:
+        size = 100
     # if no searchTerm
     try:
         search_term = params['searchTerm']
@@ -148,9 +152,9 @@ def search(context, request):
         # Builds filtered query which supports multiple facet selection
         if len(params) > 2:
             for param in params:
-                if param not in ['searchTerm', 'type']:
+                if param not in ['searchTerm', 'type', 'limit']:
                     query['filter'] = {'term': {param + '.untouched': params[param]}}
-        results = es.search(query, index=index, size=100)
+        results = es.search(query, index=index, size=size)
         facet_results = results['facets']
         for facet in facet_results:
             face = {}
