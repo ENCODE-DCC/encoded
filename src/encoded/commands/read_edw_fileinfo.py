@@ -8,6 +8,7 @@ import argparse
 import copy
 from csv import DictReader
 from urlparse import urlparse
+from operator import itemgetter
 
 from pyramid import paster
 from webtest import TestApp, AppError
@@ -37,6 +38,8 @@ app_host_name = 'localhost'
 
 verbose = False
 quick = False       # Use elastic search rather than database
+transitional = False    # Use during ENCODE 3 initial transition, before 
+                        #     import of ENCODE 2 files to for speed
 require_replicate = False  # Do not create  minimal replicate if not in database
 
 
@@ -67,6 +70,7 @@ def format_app_fileinfo(app, file_dict, exclude=None):
                 fileinfo[prop] = edw_file.NA
 
         # special handling of nested properties
+        # TODO: embed=false (slower)
         elif prop in FILE_NESTED_PROPERTIES.keys():
             nested_prop = FILE_NESTED_PROPERTIES[prop]
             fileinfo[prop] = file_dict[prop][nested_prop]
@@ -221,7 +225,9 @@ def get_encode2_to_encode3(app):
                 if encode2_acc in encode2_to_encode3.keys():
                     logging.warning('Multiple ENCODE3 accs for ENCODE2 acc %s,'
                                     ' replacing %s with %s\n', 
-                                encode2_to_encode3[encode2_acc], encode3_acc)
+                                encode2_acc,
+                                encode2_to_encode3[encode2_acc], 
+                                encode3_acc)
                 encode2_to_encode3[encode2_acc] = encode3_acc
     return encode2_to_encode3
 
@@ -230,7 +236,7 @@ def get_encode3_experiment(app, accession):
     # Map ENCODE2 experiment accession to ENCODE3
     global encode2_to_encode3
     if accession.startswith(ENCODE3_EXP_ACC):
-        return True
+        return accession
     encode3_acc = None
     if quick:
         url = SEARCH_URL + accession + '&format=json'
@@ -280,7 +286,7 @@ def replicate_key(experiment, bio_rep, tech_rep):
     return key
 
 def set_fileinfo_replicate(app, fileinfo):
-    # Obtain replicate identifier from open app
+    # Obtain replicate identifier from app
     # using experiment accession and replicate numbers
     # Replicate -1 in fileinfo indicates there is none (e.g. pooled data)
     global experiment_replicates
@@ -354,14 +360,15 @@ def get_app_fileinfo(app, full=True, limit=0, exclude=None,
     # Return list of fileinfo dictionaries
     rows = get_collection(app, FILES)
     app_files = []
-    for row in rows:
+    for row in sorted(rows, key=itemgetter('accession')):
         if full:
             url = row['@id']
             resp = app.get(url).maybe_follow()
             fileinfo = format_app_fileinfo(app, resp.json, exclude=exclude)
             if phase != edw_file.ENCODE_PHASE_ALL:
-                if get_phase(app, fileinfo) != phase:
-                    continue
+                if not (transitional and phase == edw_file.ENCODE_PHASE_3):
+                    if get_phase(app, fileinfo) != phase:
+                        continue
             app_files.append(fileinfo)
         else:
             acc = row['@id'].split('/')[2]
@@ -466,6 +473,7 @@ def put_fileinfo(app, fileinfo):
         logging.warning('Failed PUT File %s: Replicate error\n%s', accession, e)
         return
     url = collection_url(FILES) + accession
+    # TODO: Get first and merge in new info
     resp = app.put_json(url, put_fileinfo)
     if verbose:
         sys.stderr.write(str(resp) + "\n")
@@ -473,6 +481,28 @@ def put_fileinfo(app, fileinfo):
         logging.warning('Failed PUT File %s\n%s', accession, resp)
     else:
         sys.stderr.write('Successful PUT File: %s\n' % (accession))
+
+
+def patch_fileinfo(app, props, propinfo):
+    # PATCH properties to file in app
+
+    global verbose
+    accession = propinfo['accession']
+
+    if verbose:
+        sys.stderr.write('....PATCH file: %s\n' % (accession))
+    if 'replicate' in props:
+        # TODO: Handle finding/creating replicate
+        # get or create replicate
+        sys.stderr.write('Cannot patch %s: replicate change\n' % (accession))
+    url = collection_url(FILES) + accession
+    resp = app.patch_json(url, propinfo)
+    if verbose:
+        sys.stderr.write(str(resp) + "\n")
+    if resp.status_int < 200 or resp.status_int >= 400:
+        logging.warning('Failed PATCH File %s\n%s', accession, resp)
+    else:
+        sys.stderr.write('Successful PATCH File: %s\n' % (accession))
 
 
 ################
@@ -529,8 +559,18 @@ def post_app_fileinfo(input_file, app):
 
 
 def modify_app_fileinfo(input_file, app):
+    # PATCH proerties in input file to app
+    sys.stderr.write('Modifying file info from %s to app (PATCH)\n' % (input_file))
+    with open(input_file, 'rb') as f:
+        reader = DictReader(f, delimiter='\t')
+        props = reader.readheader()
+        for propinfo in reader:
+            patch_fileinfo(app, props, propinfo)
+
+
+def update_app_fileinfo(input_file, app):
     # PUT changed file info from input file to app
-    sys.stderr.write('Updating file info from %s to app\n' % (input_file))
+    sys.stderr.write('Updating file info from %s to app (PUT)\n' % (input_file))
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
         for fileinfo in reader:
@@ -617,6 +657,7 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
                                           exclude=exclude, phase=phase)
     edw_dict = { d['accession']:d for d in edw_files }
     app_files = get_app_fileinfo(app, exclude=exclude, phase=phase)
+    #app_files = get_app_fileinfo(app, exclude=exclude, phase=phase, limit=3)
     app_dict = { d['accession']:d for d in app_files }
 
     # Inventory files
@@ -633,7 +674,7 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
             edw_exp_fileinfo = set_fileinfo_experiment(app, edw_fileinfo)
             set_edw = set(edw_exp_fileinfo.items())
             set_app = set(app_dict[accession].items())
-            if set_edw == set_edw:
+            if set_edw == set_app:
                 same.append(edw_fileinfo)
             else:
                 diff_accessions.append(accession)
@@ -645,7 +686,7 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
 
     # Dump out
     if (detailed):
-        edw_file.dump_fileinfo(edw_only, typeField='EDW_ONLY')
+        edw_file.dump_fileinfo(edw_only, typeField='EDW_ONLY', exclude=exclude)
         edw_file.dump_fileinfo(app_only, typeField='APP_ONLY', header=False)
 
         for accession in diff_accessions:
@@ -691,7 +732,9 @@ def main():
                        help='import all new files from EDW to app; '
                             'use -n to view new file info before import')
     group.add_argument('-m', '--modify_file',
-                   help='modify files in app using info in TSV file')
+                   help='modify files in app using TSV file with accession and properties to change (PATCH)')
+    group.add_argument('-U', '--update_file',
+                   help='update files in app using TSV file with all shared file props (PUT)')
 
     # Less common 
     group.add_argument('-23', '--convert_file',
@@ -711,6 +754,8 @@ def main():
                         help='verbose mode')
     parser.add_argument('-q', '--quick', action='store_true',
                         help='quick mode (use elastic search instead of database)')
+    parser.add_argument('-t', '--transitional', action='store_true',
+                        help='use with -P 3 before ENCODE 2 files are loaded at encoded to improve performance')
     parser.add_argument('-R', '--require_replicate', action='store_true',
                         help='do not create replicate if not in database (else report)')
     parser.add_argument('-l', '--limit', type=int, default=0,
@@ -750,11 +795,14 @@ def main():
     global require_replicate
     require_replicate = args.require_replicate
 
+    global transitional
+    transitional = args.transitional
+
     # CAUTION: fragile code here.  Should restructure with subcommands or
     #   custom action
 
     # init encoded app
-    if args.export or args.modify_file or args.import_file \
+    if args.export or args.modify_file or args.update_file or args.import_file \
         or args.convert_file or args.find_missing \
         or args.import_all_new or args.new_files \
         or args.compare_full or args.compare_summary:
@@ -775,6 +823,9 @@ def main():
 
     elif args.modify_file:
         modify_app_fileinfo(args.modify_file, app)
+
+    elif args.update_file:
+        update_app_fileinfo(args.update_file, app)
 
     elif args.convert_file:
         convert_fileinfo(args.convert_file, app)
