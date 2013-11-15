@@ -23,11 +23,7 @@ var dbxref = require('./dbxref');
                     count = map[j];
                 }
                 if(counter < 4) {
-                    if(count == result_count) {
-                        return <li>{id}<span className="pull-right">{count}</span></li>
-                    }else {
-                        return <li><a href={href_search+'&'+field+'='+id}>{id}<span className="pull-right">{count}</span></a></li>
-                    }
+                    return <li><a href={href_search+'&'+field+'='+id}>{id}<span className="pull-right">{count}</span></a></li>
                 } 
             };
             var buildCollapsingTerms = function(map) {
@@ -39,11 +35,7 @@ var dbxref = require('./dbxref');
                     count = map[j];
                 }
                 if (counter1 >= 4) {
-                   if(count == result_count) {
-                        return <li>{id}<span className="pull-right">{count}</span></li>
-                    }else {
-                        return <li><a href={href_search+'&'+field+'='+id}>{id}<span className="pull-right">{count}</span></a></li>
-                    }
+                    return <li><a href={href_search+'&'+field+'='+id}>{id}<span className="pull-right">{count}</span></a></li>
                 }
             };
             var buildSection = function(facet) {
@@ -60,6 +52,9 @@ var dbxref = require('./dbxref');
                     } else {
                         field = facet[f];
                     }
+                }
+                if(terms.length == 1) {
+                    return
                 }
                 return <div>
                         <h5>{term}</h5>
@@ -105,7 +100,13 @@ var dbxref = require('./dbxref');
             var facets = context['facets'];
             var count = context['count'];
             var columns = context['columns'];
+            var filters = context['filters'];
 
+            var unfacetButtons = function(filter) {
+                for (var key in filter) {
+                    return <a className="btn btn-small btn-success" href="#">{filter[key]} <i className="icon-remove"></i></a>
+                }
+            };
             var resultsView = function(result) {
                 var highlight = result['highlight'];
                 switch (result['@type'][0]) {
@@ -172,22 +173,22 @@ var dbxref = require('./dbxref');
                                         <ul className="nav nav-tabs nav-stacked">
                                             {count['antibodies'] ?
                                                 <li>
-                                                    <a href={href_search+'&type=antibodies'}>Antibodies<span className="pull-right">{count['antibodies']}</span></a>
+                                                    <a href={href_search+'&type=antibody_approval'}>Antibodies<span className="pull-right">{count['antibodies']}</span></a>
                                                 </li>
                                             : null}
                                             {count['biosamples'] ?
                                                 <li>
-                                                    <a href={href_search+'&type=biosamples'}>Biosamples<span className="pull-right">{count['biosamples']}</span></a>
+                                                    <a href={href_search+'&type=biosample'}>Biosample<span className="pull-right">{count['biosamples']}</span></a>
                                                 </li>
                                             : null}
                                             {count['experiments'] ?
                                                 <li>
-                                                    <a href={href_search+'&type=experiments'}>Experiments<span className="pull-right">{count['experiments']}</span></a>
+                                                    <a href={href_search+'&type=experiment'}>Experiments<span className="pull-right">{count['experiments']}</span></a>
                                                 </li>
                                             : null}
                                             {count['targets'] ?
                                                 <li>
-                                                    <a href={href_search+'&type=targets'}>Targets<span className="pull-right">{count['targets']}</span></a>
+                                                    <a href={href_search+'&type=target'}>Targets<span className="pull-right">{count['targets']}</span></a>
                                                 </li>
                                             : null}
                                         </ul>
@@ -202,6 +203,11 @@ var dbxref = require('./dbxref');
                                             (count['biosamples'] ? parseInt(count['biosamples']) : 0) + 
                                             (count['targets'] ? parseInt(count['targets']) : 0) + 
                                             (count['experiments'] ? parseInt(count['experiments']) : 0)}</h4>
+                                    <div className="btn-group">        
+                                        {filters.length ?
+                                            filters.map(unfacetButtons)
+                                        : null}
+                                    </div>
                                     <hr />
                                     <ul className="nav result-table">
                                         {results.length ?

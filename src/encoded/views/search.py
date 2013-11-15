@@ -56,7 +56,7 @@ class FilteredQuery(dict):
         self['query']['filtered']['query']['queryString']['query'] = v
 
     def __setfilter__(self, k, v):
-        self['query']['filtered']['filter']['and']['filters'].append({'bool': {'must': {'term': {k: v}}}})
+        self['query']['filtered']['filter']['and']['filters'].append({'bool': {'must': {'term': {k + '.untouched': v}}}})
 
     def __setmissingfilter__(self, v):
         self['query']['filtered']['filter']['and']['filters'].append({'missing': {'field': v}})
@@ -76,24 +76,32 @@ def search(context, request):
         'facets': [],
         '@graph': [],
         'columns': {},
-        'count': {}
+        'count': {},
+        'filters': []
     })
 
     if 'limit' in params:
         size = 999999
     else:
         size = 100
-    # if no searchTerm
+
     try:
         search_term = params['searchTerm']
     except:
-        return result
+        if 'type' in params:
+            if params['type'] == '*':
+                return result
+            else:
+                search_term = "*"
+        else:
+            return result
 
     try:
+        # Checking for index type
         search_type = params['type']
     except:
-        query = Query()
         # This code block executes the search for all the types of data
+        query = Query()
         query.query = {'query_string': {'query': search_term}}
         indices = ['antibody_approval', 'biosample', 'experiment', 'target']
         fields = ['@id', '@type']
@@ -104,6 +112,7 @@ def search(context, request):
                 fields.append(column)
 
         query.fields = list(set(fields))
+        
         # Should have some limit on size to have better
         s = es.search(query, index=indices, size=999999)
         antibody_count = biosample_count = experiment_count = target_count = 0
@@ -127,44 +136,70 @@ def search(context, request):
             else:
                 data_highlight['highlight'] = []
             result['@graph'].append(data_highlight)
+        
         return result
     else:
+        
+        # Handling wild card searches for all types
+        search_type = params['type']
+        if search_term == '*' and search_type == '*':
+            return result
+        
+        # Building query for filters
         collections = root.by_item_type
         fields = ['@id', '@type']
         for collection_name in collections:
-            if search_type == root.by_item_type[collection_name].__name__:
+            if search_type == collection_name:
                 collection = root[collection_name]
                 index = collection_name
                 schema = collection.schema
                 result['columns'] = columns = collection.columns
                 break
-        query = Query()
+
+        # Builds filtered query which supports multiple facet selection
+        query = FilteredQuery()
+        regular_query = 1
+        for key, value in params.iteritems():
+            if key not in ['type', 'searchTerm', 'limit', 'format']:
+                regular_query = 0
+                query.__setterm__(search_term)
+                if value == 'other':
+                    query.__setmissingfilter__(key)
+                else:
+                    query.__setfilter__(key, value)
+                result['filters'].append({key: value})
+        
+        # If not FQ use regular Query
+        if regular_query:
+            query = Query()
+            query.query = {'query_string': {'query': search_term}}
+        
+        # Adding fields to the query
         for column in columns:
             fields.append(column)
         query.fields = fields
-        query.query = {'query_string': {'query': search_term}}
-        
-        for facet in schema['facets']:
-            face = {'terms': {'field': '', 'size': size}}
-            face['terms']['field'] = schema['facets'][facet] + '.untouched'
-            query.facets[facet] = face
-        
-        # Builds filtered query which supports multiple facet selection
-        if len(params) > 2:
-            for param in params:
-                if param not in ['searchTerm', 'type', 'limit']:
-                    query['filter'] = {'term': {param + '.untouched': params[param]}}
+
+        if 'facets' in schema:
+            for facet in schema['facets']:
+                face = {'terms': {'field': '', 'size': size}}
+                face['terms']['field'] = schema['facets'][facet] + '.untouched'
+                query.facets[facet] = face
+        else:
+            del(query['facets'])
         results = es.search(query, index=index, size=size)
-        facet_results = results['facets']
-        for facet in facet_results:
-            face = {}
-            face['field'] = schema['facets'][facet]
-            face[facet] = []
-            for term in facet_results[facet]['terms']:
-                face[facet].append({term['term']: term['count']})
-            if facet_results[facet]['missing'] != 0:
-                face[facet].append({'other': facet_results[facet]['missing']})
-            result['facets'].append(face)
+
+        # Loading facets in to the results
+        if 'facets' in results:
+            facet_results = results['facets']
+            for facet in facet_results:
+                face = {}
+                face['field'] = schema['facets'][facet]
+                face[facet] = []
+                for term in facet_results[facet]['terms']:
+                    face[facet].append({term['term']: term['count']})
+                if facet_results[facet]['missing'] != 0:
+                    face[facet].append({'other': facet_results[facet]['missing']})
+                result['facets'].append(face)
 
         for dataS in results['hits']['hits']:
             data_highlight = dataS['fields']
@@ -175,5 +210,7 @@ def search(context, request):
                 data_highlight['highlight'] = []
             result['@graph'].append(data_highlight)
 
-        result['count'][search_type] = results['hits']['total']
+        result['count'][root.by_item_type[collection_name].__name__] = results['hits']['total']
         return result
+
+        
