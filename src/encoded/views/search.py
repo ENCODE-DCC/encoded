@@ -7,30 +7,7 @@ from pyelasticsearch import ElasticSearch
 es = ElasticSearch('http://localhost:9200')
 
 
-# Query class should be improved to accomodate filters and other ES functionality
-class Query(dict):
-
-    def __init__(self):
-        self.query = dict()
-        self.facets = dict()
-        self.fields = []
-        self.highlight = dict({'fields': {"*": {}}})
-
-    def __setattr__(self, k, v):
-        if k in self.keys():
-            self[k] = v
-        elif not hasattr(self, k):
-            self[k] = v
-        else:
-            raise AttributeError("Cannot set '%s', cls attribute already exists" % (k, ))
-
-    def __getattr__(self, k):
-        if k in self.keys():
-            return self[k]
-        raise AttributeError
-
-
-#FilteredQuery class is extended version of Query class
+# TODO: FilteredQuery should be improved
 class FilteredQuery(dict):
 
     def __init__(self):
@@ -100,9 +77,11 @@ def search(context, request):
         # Checking for index type
         search_type = params['type']
     except:
+        if not search_term:
+            return result
         # This code block executes the search for all the types of data
-        query = Query()
-        query.query = {'query_string': {'query': search_term}}
+        query = {'query': {}, 'facets': {}, 'fields': [], 'highlight': {'fields': {"*": {}}}}
+        query['query'] = {'query_string': {'query': search_term}}
         indices = ['antibody_approval', 'biosample', 'experiment', 'target']
         fields = ['@id', '@type']
         for index in indices:
@@ -111,9 +90,10 @@ def search(context, request):
             for column in collection.columns:
                 fields.append(column)
 
-        query.fields = list(set(fields))
+        query['fields'] = list(set(fields))
         
-        # Should have some limit on size to have better
+        # Should have some limit on size
+        # Should have a better way to organize the count
         s = es.search(query, index=indices, size=999999)
         antibody_count = biosample_count = experiment_count = target_count = 0
         for dataS in s['hits']['hits']:
@@ -171,25 +151,29 @@ def search(context, request):
         
         # If not FQ use regular Query
         if regular_query:
-            query = Query()
-            query.query = {'query_string': {'query': search_term}}
+            query = {'query': {}, 'facets': {}, 'fields': [], 'highlight': {'fields': {"*": {}}}}
+            query['query'] = {'query_string': {'query': search_term}}
         
         # Adding fields to the query
         for column in columns:
             fields.append(column)
-        query.fields = fields
+        query['fields'] = fields
 
         if 'facets' in schema:
             for facet in schema['facets']:
                 face = {'terms': {'field': '', 'size': size}}
                 face['terms']['field'] = schema['facets'][facet] + '.untouched'
-                query.facets[facet] = face
+                query['facets'][facet] = face
+
+                # Remove the facet if is already selected
                 for f in result['filters']:
                     if schema['facets'][facet] == f.keys()[0]:
-                        del(query.facets[facet])
+                        del(query['facets'][facet])
         else:
+            # If no facets are present remove attribute from query
             del(query['facets'])
 
+        # Execute the query
         results = es.search(query, index=index, size=size)
 
         # Loading facets in to the results
