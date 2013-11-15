@@ -184,8 +184,12 @@ def search(context, request):
                 face = {'terms': {'field': '', 'size': size}}
                 face['terms']['field'] = schema['facets'][facet] + '.untouched'
                 query.facets[facet] = face
+                for f in result['filters']:
+                    if schema['facets'][facet] == f.keys()[0]:
+                        del(query.facets[facet])
         else:
             del(query['facets'])
+
         results = es.search(query, index=index, size=size)
 
         # Loading facets in to the results

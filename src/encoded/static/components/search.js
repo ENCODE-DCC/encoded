@@ -104,7 +104,15 @@ var dbxref = require('./dbxref');
 
             var unfacetButtons = function(filter) {
                 for (var key in filter) {
-                    return <a className="btn btn-small btn-success" href="#">{filter[key]} <i className="icon-remove"></i></a>
+                    var unfacet_url = '';
+                    var args = href_search.split('&');
+                    for(var prop in args) {
+                        if(args[prop].indexOf(key) !== -1) {
+                            unfacet_url = '&' + unfacet_url + args[prop]
+                        }
+                    }
+                    var url_unfacet = href_search.replace(unfacet_url, "");
+                    return <a className="btn btn-success" href={url_unfacet}>{filter[key] + ' '}<i className="icon-remove-circle"></i></a>
                 }
             };
             var resultsView = function(result) {
@@ -203,11 +211,12 @@ var dbxref = require('./dbxref');
                                             (count['biosamples'] ? parseInt(count['biosamples']) : 0) + 
                                             (count['targets'] ? parseInt(count['targets']) : 0) + 
                                             (count['experiments'] ? parseInt(count['experiments']) : 0)}</h4>
-                                    <div className="btn-group">        
-                                        {filters.length ?
-                                            filters.map(unfacetButtons)
-                                        : null}
-                                    </div>
+                                           
+                                    {filters.length ?
+                                        <div className="btn-group"> 
+                                            {filters.map(unfacetButtons)}
+                                        </div>
+                                    : null}
                                     <hr />
                                     <ul className="nav result-table">
                                         {results.length ?
