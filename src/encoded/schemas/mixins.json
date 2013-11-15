@@ -72,7 +72,7 @@
     "submitted": {
         "date_created": {
             "title": "Date created",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS+00:00.",
+            "comment": "Do not submit, value is assigned by the server. The date the object is created.",
             "type": "string",
             "anyOf": [
                 {"format": "date-time"},
@@ -83,7 +83,7 @@
         },
         "submitted_by": {
             "title": "Submitted by",
-            "comment": "See user.son for list of available identifiers.",
+            "comment": "Do not submit, value is assigned by the server. The user that created the object.",
             "type": "string",
             "linkTo": "user",
             "serverDefault": "userid",
