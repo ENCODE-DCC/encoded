@@ -6,6 +6,7 @@
     "type": "object",
     "required": [ "award", "lab", "antibody", "status", "target" ],
     "facets":{"Approval Status": "status", "Lab": "target.lab.title", "Organism": "antibody.host_organism.name"},
+    "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
