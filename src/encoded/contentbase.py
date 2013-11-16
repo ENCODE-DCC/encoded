@@ -1089,38 +1089,49 @@ class AfterModified(object):
 @subscriber(BeforeModified)
 @subscriber(AfterModified)
 def record_created(event):
+    request = event.request
     # Create property if that doesn't exist
     try:
-        dirty = event.request._encoded_dirty
+        referencing = request._encoded_referencing
     except:
-        dirty = event.request._encoded_dirty = set()
-    dirty.add(event.object.uuid)
+        referencing = request._encoded_referencing = set()
+    try:
+        updated = request._encoded_updated
+    except:
+        updated = request._encoded_updated = set()
+
+    uuid = event.object.uuid
+    updated.add(uuid)
+
+    # Record dependencies here to catch any to be removed links
+    add_dependent_objects(request, {uuid}, referencing)
 
 
-def es_update_object(request, objects):
+def add_dependent_objects(request, new, existing):
     # Getting the dependent objects for the indexed object
     root = request.root
-    updated_objects = set()
+    objects = new.difference(existing)
     while objects:
-        new_objects = set()
+        dependents = set()
         for uuid in objects:
             item = root.get_by_uuid(uuid)
 
-            # XXX needs to consult with item.embedded
-
-            new_objects.update({
+            # XXX needs to consult with item.embedded and item.revs
+            dependents.update({
                 model.source_rid for model in item.model.revs
             })
 
-        updated_objects.update(objects)
-        objects = new_objects.difference(updated_objects)
+        existing.update(objects)
+        objects = dependents.difference(existing)
 
+
+def es_update_object(request, objects):
     es = request.registry.get(ELASTIC_SEARCH, None)
     if es is None:
         return
 
     # Indexing the object in ES
-    for uuid in updated_objects:
+    for uuid in objects:
         subreq = make_subrequest(request, '/%s' % uuid)
         subreq.override_renderer = 'null_renderer'
         result = request.invoke_subrequest(subreq)
@@ -1130,6 +1141,10 @@ def es_update_object(request, objects):
 
 @subscriber(BeforeRender)
 def es_update_data(event):
-    dirty = getattr(event['request'], '_encoded_dirty', None)
-    if dirty is not None:
-        es_update_object(event['request'], dirty)
+    request = event['request']
+    referencing = getattr(request, '_encoded_referencing', set())
+    updated = getattr(request, '_encoded_updated', set())
+    if updated or referencing:
+        new_referencing = set()
+        add_dependent_objects(request, updated, new_referencing)
+        es_update_object(request, referencing.union(new_referencing))
