@@ -109,7 +109,7 @@
             "description": "The Pubmed identifiers that reference data found in the experiment.",
             "type": "array",
             "default": [],
-            "reference": {
+            "items": {
                 "title": "Reference",
                 "description": "A Pubmed identifier that references data found in the experiment.",
                 "type": "string",

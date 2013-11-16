@@ -65,7 +65,7 @@
             "description": "The Pubmed identifiers used as references for the characterization, if previously published.",
             "type": "array",
             "default": [],
-            "reference": {
+            "items": {
                 "title": "Reference",
                 "description": "The Pubmed identifier used as a reference for the characterization, if previously published",
                 "type": "string",
