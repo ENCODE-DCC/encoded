@@ -60,6 +60,7 @@
                 "description": "Recombinant tag in the construct.",
                 "comment": "Submit tag name and tag location.",
                 "type": "object",
+                "additionalProperties": false,
                 "properties": {
                     "name": {
                         "type": "string",
