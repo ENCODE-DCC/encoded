@@ -14,7 +14,6 @@ class FilteredQuery(dict):
         self.query = dict({'filtered': {'query': {'queryString': {"query": ''}}, 'filter': {'and': {'filters': []}}}})
         self.facets = dict()
         self.fields = []
-        self.highlight = dict({'fields': {"*": {}}})
 
     def __setattr__(self, k, v):
         if k in self.keys():
@@ -135,7 +134,7 @@ def search(context, request):
                 schema = collection.schema
                 result['columns'] = columns = collection.columns
                 break
-
+        
         # Builds filtered query which supports multiple facet selection
         query = FilteredQuery()
         regular_query = 1
@@ -151,7 +150,7 @@ def search(context, request):
         
         # If not FQ use regular Query
         if regular_query:
-            query = {'query': {}, 'facets': {}, 'fields': [], 'highlight': {'fields': {"*": {}}}}
+            query = {'query': {}, 'facets': {}, 'fields': []}
             query['query'] = {'query_string': {'query': search_term}}
         
         # Adding fields to the query
@@ -200,5 +199,3 @@ def search(context, request):
 
         result['count'][root.by_item_type[collection_name].__name__] = results['hits']['total']
         return result
-
-        
