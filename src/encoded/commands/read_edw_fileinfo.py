@@ -177,9 +177,10 @@ encode3_to_encode2 = {}    # Cache experiment ENCODE 2 ref lists
 def get_encode2_accessions(app, encode3_acc):
     # Get list of ENCODE 2 accessions for this ENCODE 3 experiment(or None)
     global encode3_to_encode2
+    global verbose
     if encode3_acc not in encode3_to_encode2:
         if verbose:
-            print "GET Experiment: ", encode3_acc
+            sys.stderr.write('Get experiment (get e2): %s\n' % (encode3_acc))
         url = collection_url(EXPERIMENTS) + encode3_acc
         resp = app.get(url).maybe_follow()
         encode3_to_encode2[encode3_acc] = resp.json[ENCODE2_PROP]
@@ -209,6 +210,7 @@ def get_encode2_to_encode3(app):
     # Create and cache list of ENCODE 3 experiments with ENCODE2 accessions
     # Used to map EDW ENCODE 2 accessions to ENCODE3 accession
     global encode2_to_encode3
+    global verbose
 
     if encode2_to_encode3 is not None:
         return encode2_to_encode3
@@ -216,6 +218,8 @@ def get_encode2_to_encode3(app):
     experiments = get_collection(app, EXPERIMENTS)
     for item in experiments:
         url = item['@id']
+        if verbose:
+            sys.stderr.write('Get experiment (e2-e3): %s\n' % (encode3_acc))
         resp = app.get(url).maybe_follow()
         exp = resp.json
         encode3_acc = exp['accession']
@@ -260,13 +264,13 @@ def get_encode3_experiment(app, accession):
 # Special handling of a few file properties
 
 def set_fileinfo_experiment(app, fileinfo):
+    global verbose
 
     # Clone to preserve input
     new_fileinfo = copy.deepcopy(fileinfo)
     acc = new_fileinfo['dataset']
     if (acc.startswith(ENCODE2_ACC)):
-        if verbose:
-            sys.stderr.write('Get ENCODE3 experiment acc for: %s\n' % (acc))
+        sys.stderr.write('Get ENCODE3 experiment acc for: %s\n' % (acc))
         encode3_acc = get_encode3_experiment(app, acc)
         if encode3_acc is not None:
             if verbose:
@@ -290,6 +294,7 @@ def set_fileinfo_replicate(app, fileinfo):
     # using experiment accession and replicate numbers
     # Replicate -1 in fileinfo indicates there is none (e.g. pooled data)
     global experiment_replicates
+    global verbose
 
     # Clone to preserve input
     new_fileinfo = copy.deepcopy(fileinfo)
@@ -316,6 +321,8 @@ def set_fileinfo_replicate(app, fileinfo):
     if key not in experiment_replicates:
         url = collection_url(EXPERIMENTS)
         url += experiment
+        if verbose:
+            sys.stderr.write('Get experiment (get rep): %s\n' % (encode3_acc))
         resp = app.get(url).maybe_follow()
         reps = resp.json['replicates']
         for rep in reps:
@@ -333,7 +340,6 @@ def set_fileinfo_replicate(app, fileinfo):
             'biological_replicate_number': bio_rep_num,
             'technical_replicate_number': tech_rep_num
         }
-        global verbose
         if verbose:
             sys.stderr.write('....POST replicate %d for experiment %s\n' % (bio_rep_num, experiment))
         url = collection_url(REPLICATES)
@@ -411,7 +417,6 @@ def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
     edw_dict = { d['accession']:d for d in edw_files }
     app_dict = { d['accession']:d for d in app_files }
     missing_files = []
-    experiments = get_collection(app, EXPERIMENTS)
     for acc in edw_dict.keys():
         if acc not in app_dict:
             # special handling of accession -- need to lookup ENCODE 3 
