@@ -240,15 +240,15 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
               #(f.c.errorMessage != None))
     # Occasional file ends up in valid table, even though in error -- filter out if 
     # there is an error message in edwFile table
-    query.append_whereclause('edwFile.errorMessage = ""')
+    query.append_whereclause('edwFile.errorMessage = \"\"')
     if start_id > 0:
         query.append_whereclause('edwValidFile.id > ' + str(start_id))
     if experiment:
-        query.append_whereclause('edwValidFile.experiment <> ""')
+        query.append_whereclause('(edwValidFile.experiment like "wgEncodeE%" or edwValidFile.experiment like "ENCSR%")')
     if phase == '2':
         query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
     elif phase  == '3':
-        query.append_whereclause('edwValidFile.experiment like "ENCSR%%"')
+        query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
 
     query = query.order_by(f.c.endUploadTime.desc())
     if limit:
