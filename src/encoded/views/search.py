@@ -48,7 +48,7 @@ def search(context, request):
     result.update({
         '@id': '/search/',
         '@type': ['search'],
-        'title': 'Search ENCODE',
+        'title': 'Search',
         'facets': [],
         '@graph': [],
         'columns': {},

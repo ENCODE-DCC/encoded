@@ -120,12 +120,13 @@ var dbxref = require('./dbxref');
                 switch (result['@type'][0]) {
                     case "biosample":
                         return <li>
-                                    <div className="accession">
-                                        <span className="pull-right">Biosample - {result['organism.name']}</span>
-                                        <a href={result['@id']}>{result['accession']}</a>
+                                    <div>
+                                        <span className="pull-right type">Biosample</span>
+                                        <div  className="accession">
+                                            <a href={result['@id']}>{result['biosample_term_name'] + ' - ' + result['organism.name']}<div>({result['accession']})</div></a> 
+                                        </div>
                                     </div>
                                     <div className="data-row">
-                                        <strong>{columns['biosample_term_name']}</strong>: {result['biosample_term_name']}<br />
                                         <strong>{columns['biosample_type']}</strong>: {result['biosample_type']}<br />
                                         <strong>{columns['source.title']}</strong>: {result['source.title']}<br />
                                         <strong>{columns['lab.title']}</strong>: {result['lab.title']}
