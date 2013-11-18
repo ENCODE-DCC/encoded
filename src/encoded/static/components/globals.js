@@ -8,6 +8,9 @@ module.exports.content_views = Registry();
 // Panel detail views
 module.exports.panel_views = Registry();
 
+// Listing detail views
+module.exports.listing_views = Registry();
+
 // Cell name listing titles
 module.exports.listing_titles = Registry();
 

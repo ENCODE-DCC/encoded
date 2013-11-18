@@ -35,14 +35,33 @@ button.btn.collapsed:before
 }
 
 .accession {
-	font-size: 1.4em;
+	font-size: 1.3em;
 	font-weight: bold;
-	display: block; 	
+	display: block;
+	width: 90%;
 }
 
-.accession a div {
+.accession a {
+	width: 90%;
+	display:block;
+	first-letter: uppercase;
+}
+
+.accession a:first-letter {
+	width: 90%;
+	text-transform: uppercase;
+}
+
+.accession div {
 	font-size: 0.8em;
-	font-weigt: normal;	
+	font-weigt: normal;
+	display: block;
+	width: 90%;	
+}
+
+.accession-str {
+	margin-left: 5px;
+	font-size: 0.8em;
 }
 
 .type {
@@ -56,9 +75,20 @@ button.btn.collapsed:before
 }
 
 .data-row {
-	margin-top: 10px;
 	margin-left: 50px;
 	margin-bottom: 10px;
+}
+
+.data-row ul {
+	text-decoration: none;
+	list-style-type: none;
+	padding: 0px;
+	margin-left: 25px;
+}
+
+.data-row ul li {
+	border: none;
+	margin: 0px;	
 }
 
 button.btn:before
@@ -76,29 +106,25 @@ button.btn:before
 }
 
 .result-table li {
-	margin-top: 20px;
+	margin-top: 10px;
 	border-bottom: 1px solid #ccc;
-	margin-bottom: 20px;
+	margin-bottom: 10px;
+	font-size: 0.9em;
+}
+
+.result-table li:first {
+	border-bottom: 1px solid #ccc;
+	margin-bottom: 10px;
 	font-size: 0.9em;
 }
  
 .result-table li a {
 	text-decoration: none;
 	display: block;
-	width: 220px;
 
 	-webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
 	-moz-transition: font-size 0.3s ease, background-color 0.3s ease;
 	-o-transition: font-size 0.3s ease, background-color 0.3s ease;
 	-ms-transition: font-size 0.3s ease, background-color 0.3s ease;
 	transition: font-size 0.3s ease, background-color 0.3s ease;
-}
-
-.highlight {
-	color: #8B8A88;	
-}
-
-.highlight em {
-	font-size: 1.2em;
-	font-weight: bold;
 }

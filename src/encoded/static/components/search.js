@@ -5,6 +5,113 @@ var url = require('url');
 var globals = require('./globals');
 var search = module.exports;
 var dbxref = require('./dbxref');
+var DbxrefList = dbxref.DbxrefList;
+var Dbxref = dbxref.Dbxref;
+
+    var Listing = function (props) {
+        // XXX not all panels have the same markup
+        var context;
+        if (props['@id']) {
+            context = props;
+            props = {context: context,  key: context['@id']};
+        }
+        return globals.listing_views.lookup(props.context)(props);
+    };
+
+    var Antibody = module.exports.Antibody = React.createClass({
+        render: function() {
+            var result = this.props.context;
+            var columns = this.props.columns;
+            return (<li>
+                        <div>
+                            <span className="pull-right type">Antibody</span>
+                            <div className="accession">
+                                <a href={result['@id']}>{result['target.organism.name']+ ' ' + result['target.label']}<span className="accession-str">({result['antibody.accession']})</span></a> 
+                            </div>
+                        </div>
+                        <div className="data-row"> 
+                            <strong>{columns['antibody.source.title']}</strong>: {result['antibody.source.title']}<br />
+                            <strong>{columns['antibody.product_id']}/{columns['antibody.lot_id']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
+                            <strong>{columns['status']}</strong>: {result['status']}
+                        </div>
+                </li>
+            );
+        }
+    });
+    globals.listing_views.register(Antibody, 'antibody_approval');
+
+    var Biosample = module.exports.Biosample = React.createClass({
+        render: function() {
+            var result = this.props.context;
+            var columns = this.props.columns;
+            return (<li>
+                        <div>
+                            <span className="pull-right type">Biosample</span>
+                            <div className="accession">
+                                <a href={result['@id']}>{ result['organism.name'] + ' ' + result['biosample_term_name']}<span className="accession-str">({result['accession']})</span></a> 
+                            </div>
+                        </div>
+                        <div className="data-row">
+                            <strong>{columns['biosample_type']}</strong>: {result['biosample_type']}<br />
+                            <strong>{columns['source.title']}</strong>: {result['source.title']}
+                            {result['life_stage'] ? <br /> : null}
+                            {result['life_stage'] ? <strong>{columns['life_stage'] + ': '}</strong> :null}
+                            {result['life_stage'] ? result['life_stage'] : null}<br />
+                            {result['treatments.treatment_term_name'].length ? <strong>{columns['treatments.treatment_term_name'] + ': '}</strong> :null}
+                            {result['treatments.treatment_term_name'].length ? result['treatments.treatment_term_name'].join(', ') : null}
+                        </div>
+                </li>   
+            );
+        }
+    });
+    globals.listing_views.register(Biosample, 'biosample');
+
+    var Experiment = module.exports.Experiment = React.createClass({
+        render: function() {
+            var result = this.props.context;
+            var columns = this.props.columns;
+            return (<li>
+                        <div>
+                            <span className="pull-right type">Experiment</span>
+                            <div className="accession">
+                                <a href={result['@id']}>{result['assay_term_name']+ ' of ' + result['biosample_term_name']}<span className="accession-str">({result['accession']})</span></a> 
+                            </div>
+                        </div>
+                        <div className="data-row">
+                            {result['target.label'] ? <strong>{columns['target.label'] + ': '}</strong>: null}
+                            {result['target.label'] ? result['target.label'] : null}
+                            {result['target.label'] ? <br /> : null}
+                            <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.rfa']}</strong>: {result['award.rfa']}
+                        </div>
+                </li>
+            );
+        }
+    });
+    globals.listing_views.register(Experiment, 'experiment');
+
+    var Target = module.exports.Target = React.createClass({
+        render: function() {
+            var result = this.props.context;
+            var columns = this.props.columns;
+            return (<li>
+                        <div>
+                            <span className="pull-right type">Target</span>
+                            <div className="accession">
+                                <a href={result['@id']}>{result['label'] + ' - ' + result['organism.name']}</a> 
+                            </div>
+                        </div>
+                        <div className="data-row">
+                            <strong>{columns['dbxref']}</strong>: 
+                            {result.dbxref.length ?
+                                <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
+                                : <em>None submitted</em> }
+                        </div>
+                </li>
+            );
+        }
+    });
+    globals.listing_views.register(Target, 'target');
 
     var FacetBuilder = search.FacetBuilder = React.createClass({
         render: function() {
@@ -115,64 +222,6 @@ var dbxref = require('./dbxref');
                     return <a className="btn btn-success" href={url_unfacet}>{filter[key] + ' '}<i className="icon-remove-circle"></i></a>
                 }
             };
-            var resultsView = function(result) {
-                var highlight = result['highlight'];
-                switch (result['@type'][0]) {
-                    case "biosample":
-                        return <li>
-                                    <div>
-                                        <span className="pull-right type">Biosample</span>
-                                        <div  className="accession">
-                                            <a href={result['@id']}>{result['biosample_term_name'] + ' - ' + result['organism.name']}<div>({result['accession']})</div></a> 
-                                        </div>
-                                    </div>
-                                    <div className="data-row">
-                                        <strong>{columns['biosample_type']}</strong>: {result['biosample_type']}<br />
-                                        <strong>{columns['source.title']}</strong>: {result['source.title']}<br />
-                                        <strong>{columns['lab.title']}</strong>: {result['lab.title']}
-                                    </div>
-                            </li>
-                        break;
-                    case "experiment":
-                        return <li>
-                                    <div className="accession">
-                                        <span className="pull-right">Experiment - {result['assay_term_name']}</span>
-                                        <a href={result['@id']}>{result['accession']}</a>
-                                    </div>
-                                    <div className="data-row">
-                                        <strong>{columns['biosample_term_name']}</strong>: {result['biosample_term_name']}<br />
-                                        <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
-                                        <strong>{columns['award.rfa']}</strong>: {result['award.rfa']}
-                                    </div>
-                            </li>
-                        break;
-                    case "antibody_approval":
-                        return <li>
-                                    <div className="accession">
-                                        <span className="pull-right">Antibody - {result['target.organism.name']}</span>
-                                        <a href={result['@id']}>{result['antibody.accession']}</a>
-                                    </div>
-                                    <div className="data-row"> 
-                                        <strong>{columns['target.label']}</strong>: {result['target.label']}<br />
-                                        <strong>{columns['antibody.source.title']}</strong>: {result['antibody.source.title']}<br />
-                                        <strong>{columns['antibody.product_id']}/{columns['antibody.lot_id']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
-                                        <strong>{columns['status']}</strong>: {result['status']}
-                                    </div>
-                            </li>
-                        break;
-                    case "target":
-                        return <li>
-                                    <div className="accession">
-                                        <span className="pull-right">Target - {result['organism.name']}</span>
-                                        <a href={result['@id']}>{result['label']}</a>
-                                    </div>
-                                    <div className="data-row">
-                                        <strong>{columns['dbxref']}</strong>: {result['dbxref']}
-                                    </div>
-                            </li>
-                        break;
-                }
-            };  
             return (
                     <div>
                         {results.length ?
@@ -221,7 +270,9 @@ var dbxref = require('./dbxref');
                                     <hr />
                                     <ul className="nav result-table">
                                         {results.length ?
-                                            results.map(resultsView)
+                                            results.map(function (result) {
+                                                return Listing({context:result, columns: columns});
+                                            })
                                         : null}
                                     </ul>
                                 </div>
