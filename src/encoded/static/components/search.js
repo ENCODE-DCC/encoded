@@ -240,17 +240,18 @@ var dbxref = require('./dbxref');
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
+            var notification = context['notification']
             return (
                 <div>
                     <form className="input-prepend">
                         <span className="add-on"><i className="icon-search"></i></span>
                         <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
                     </form>
-                    <div className="panel data-display"> 
-                        {Object.keys(results).length ?
-                            this.transferPropsTo(<ResultTable />)
-                        : <h4>Please enter a search term </h4>}
-                    </div>
+                    {notification === 'Success' ?
+                        <div className="panel data-display"> 
+                            {this.transferPropsTo(<ResultTable />)}
+                        </div>
+                    : <h4>{notification}</h4>}
                 </div>
             );
         }

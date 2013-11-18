@@ -53,7 +53,8 @@ def search(context, request):
         '@graph': [],
         'columns': {},
         'count': {},
-        'filters': []
+        'filters': [],
+        'notification': ''
     })
 
     if 'limit' in params:
@@ -66,10 +67,12 @@ def search(context, request):
     except:
         if 'type' in params:
             if params['type'] == '*':
+                result['notification'] = 'Please enter search term'
                 return result
             else:
                 search_term = "*"
         else:
+            result['notification'] = 'Please enter search term'
             return result
 
     try:
@@ -77,9 +80,10 @@ def search(context, request):
         search_type = params['type']
     except:
         if not search_term:
+            result['notification'] = 'Please enter search term'
             return result
         # This code block executes the search for all the types of data
-        query = {'query': {}, 'facets': {}, 'fields': [], 'highlight': {'fields': {"*": {}}}}
+        query = {'query': {}, 'facets': {}, 'fields': []}
         query['query'] = {'query_string': {'query': search_term}}
         indices = ['antibody_approval', 'biosample', 'experiment', 'target']
         fields = ['@id', '@type']
@@ -116,12 +120,18 @@ def search(context, request):
                 data_highlight['highlight'] = []
             result['@graph'].append(data_highlight)
         
+        if len(result['@graph']):
+            result['notification'] = 'Success'
+        else:
+            result['notification'] = 'No results found'
+        
         return result
     else:
         
         # Handling wild card searches for all types
         search_type = params['type']
         if search_term == '*' and search_type == '*':
+            result['notification'] = 'Please enter search terme'
             return result
         
         # Building query for filters
@@ -198,4 +208,8 @@ def search(context, request):
             result['@graph'].append(data_highlight)
 
         result['count'][root.by_item_type[collection_name].__name__] = results['hits']['total']
+        if len(result['@graph']):
+            result['notification'] = 'Success'
+        else:
+            result['notification'] = 'No results found'
         return result
