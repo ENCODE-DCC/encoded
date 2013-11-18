@@ -7,6 +7,7 @@ To load the initial data:
 
 """
 from pyramid.paster import get_app
+from pyramid.traversal import find_root
 from pyelasticsearch import IndexAlreadyExistsError
 from ..contentbase import ELASTIC_SEARCH
 import collections
@@ -33,11 +34,10 @@ def schema_mapping(name, schema):
         return schema_mapping(name, schema['items'])
 
     if type_ == 'object':
-        return {
-            'properties': {
-                k: schema_mapping(k, v) for k, v in schema['properties'].items()
-            },
+        properties = {
+            k: schema_mapping(k, v) for k, v in schema['properties'].items()
         }
+        return {'properties': properties}
 
     if type_ == 'string':
         return {
@@ -62,8 +62,11 @@ def schema_mapping(name, schema):
         return {'type': type_}
 
 
-def collection_mapping(collection):
+def collection_mapping(collection, embed=True):
     schema = collection.schema
+
+    if schema is None:
+        return None
 
     mapping = schema_mapping(collection.item_type, schema)
 
@@ -72,6 +75,42 @@ def collection_mapping(collection):
 
     for name in calculated_props:
         mapping['properties'][name] = schema_mapping(name, {'type': 'string'})
+
+    if not embed:
+        return mapping
+
+    root = find_root(collection)
+    rev_links = collection.Item.rev or {}
+
+    for prop in collection.Item.embedded:
+        new_mapping = mapping
+        new_schema = schema
+
+        for i, p in enumerate(prop.split('.')):
+            if i == 0 and p in rev_links:
+                name = rev_links[p][0]
+            else:
+                try:
+                    name = new_schema['properties'][p]['linkTo']
+                except KeyError:
+                    name = new_schema['properties'][p]['items']['linkTo']
+
+            # XXX Need to union with mouse_donor here
+            if name == 'donor':
+                name = 'human_donor'
+
+            # XXX file has "linkTo": ["experiment", "dataset"]
+
+            # Check if mapping for property is already an object
+            # multiple subobjects may be embedded, so be carful here
+            try:
+                new_mapping['properties'][p]['properties']
+            except KeyError:
+                new_mapping['properties'][p] = collection_mapping(
+                    root.by_item_type[name], embed=False)
+
+            new_mapping = new_mapping['properties'][p]
+            new_schema = root[name].schema
 
     return mapping
 
@@ -85,58 +124,25 @@ def run(app, collections=None, dry_run=False):
         collections = root.by_item_type.keys()
 
     for collection_name in collections:
-        collection = root[collection_name]
-        schema = collection.schema
-
-        if schema is None:
-            continue  # Testing collections
-
-        embedded = collection.Item.embedded
-        rev_links = collection.Item.rev or {}
-
-        if not dry_run:
-            try:
-                es.create_index(collection_name)
-            except IndexAlreadyExistsError:
-                es.delete_index(collection_name)
-                es.create_index(collection_name)
-        
+        collection = root.by_item_type[collection_name]
         mapping = collection_mapping(collection)
 
-        for prop in embedded:
-            new_mapping = mapping
-            new_schema = schema
-    
-            for i, p in enumerate(prop.split('.')):
-                if i == 0 and p in rev_links:
-                    name = rev_links[p][0]
-                else:
-                    try:
-                        name = new_schema['properties'][p]['linkTo']
-                    except KeyError:
-                        name = new_schema['properties'][p]['items']['linkTo']
-    
-                # XXX Need to union with mouse_donor here
-                if name == 'donor':
-                    name = 'human_donor'
-
-                # XXX file has "linkTo": ["experiment", "dataset"]
-
-                # Check if mapping for property is already an object
-                # multiple subobjects may be embedded, so be carful here
-                try:
-                    new_mapping['properties'][p]['properties']
-                except KeyError:
-                    new_mapping['properties'][p] = collection_mapping(root[name])
-
-                new_mapping = new_mapping['properties'][p]
-                new_schema = root[name].schema
-
+        if mapping is None:
+            continue  # Testing collections
+        
         if dry_run:
-            print json.dumps(sorted_dict({collection_name: {'basic': mapping}}), indent=4)
-        else:
-            es.put_mapping(collection_name, DOCTYPE, {'basic': mapping})
-            es.refresh(collection_name)
+            print json.dumps(
+                sorted_dict({collection_name: {'basic': mapping}}), indent=4)
+            continue
+
+        try:
+            es.create_index(collection_name)
+        except IndexAlreadyExistsError:
+            es.delete_index(collection_name)
+            es.create_index(collection_name)
+
+        es.put_mapping(collection_name, DOCTYPE, {'basic': mapping})
+        es.refresh(collection_name)
 
 
 def main():
@@ -147,7 +153,8 @@ def main():
     )
     parser.add_argument('--item-type', action='append', help="Item type")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
-    parser.add_argument('--dry-run', action='store_true', help="Don't post to ES, just print")
+    parser.add_argument(
+        '--dry-run', action='store_true', help="Don't post to ES, just print")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()
 
