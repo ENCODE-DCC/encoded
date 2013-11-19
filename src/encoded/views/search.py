@@ -164,13 +164,13 @@ def search(context, request):
             query['query'] = {'query_string': {'query': search_term}}
 
         if search_type == 'biosample':
-            query['sort'] = {'date_created': {'order': 'asc'}}
+            query['sort'] = {'accession': {'order': 'asc'}}
         elif search_type == 'target':
             query['sort'] = {'gene_name.untouched': {'ignore_unmapped': 'true', 'order': 'asc'}}
         elif search_type == 'antibody_approval':
             query['sort'] = {'status': {'order': 'asc'}}
         elif search_type == 'experiment':
-            query['sort'] = {'files.date_created': {'order': 'asc'}, 'replicates.date_created': {'order': 'asc'}, 'date_created': {'order': 'asc'}}
+            query['sort'] = {'accession': {'order': 'asc'}}
         else:
             del(query['sort'])
 
