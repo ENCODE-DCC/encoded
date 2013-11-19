@@ -111,7 +111,7 @@
         },
         "fragmentation_date":{
             "title": "Fragmentation date",
-            "description": "The date that the nucleic acid was fragmented on.",
+            "description": "The date that the nucleic acid was fragmented.",
             "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
             "type": "string",
             "format": "date"
