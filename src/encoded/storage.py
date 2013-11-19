@@ -11,6 +11,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.sql.functions import GenericFunction
 from sqlalchemy.orm import collections
 from zope.sqlalchemy import ZopeTransactionExtension
 from .renderers import json_renderer
@@ -23,6 +24,21 @@ DBSession = orm.scoped_session(orm.sessionmaker(
     weak_identity_map=False,
 ))
 Base = declarative_base()
+
+
+# This is only relevant for postgresql
+class txid_current(GenericFunction):
+    type = types.BigInteger
+
+
+@compiles(txid_current)
+def visit_txid_current(element, compiler, **kw):
+    return 'NULL'
+
+
+@compiles(txid_current, 'postgresql')
+def visit_txid_current_postgresql(element, compiler, **kw):
+    return '%s()' % element.name
 
 
 class UUID(types.TypeDecorator):
@@ -227,6 +243,8 @@ class TransactionRecord(Base):
     data = Column(JSON)
     timestamp = Column(
         types.DateTime, nullable=False, server_default=func.now())
+    xid = Column(
+        types.BigInteger, nullable=True, server_default=txid_current())
 
 
 @event.listens_for(PropertySheet, 'before_insert')
