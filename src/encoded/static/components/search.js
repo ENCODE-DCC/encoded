@@ -56,9 +56,7 @@ var Dbxref = dbxref.Dbxref;
                             <strong>{columns['source.title']}</strong>: {result['source.title']}
                             {result['life_stage'] ? <br /> : null}
                             {result['life_stage'] ? <strong>{columns['life_stage'] + ': '}</strong> :null}
-                            {result['life_stage'] ? result['life_stage'] : null}<br />
-                            {result['treatments.treatment_term_name'].length ? <strong>{columns['treatments.treatment_term_name'] + ': '}</strong> :null}
-                            {result['treatments.treatment_term_name'].length ? result['treatments.treatment_term_name'].join(', ') : null}
+                            {result['life_stage'] ? result['life_stage'] : null}
                         </div>
                 </li>   
             );
