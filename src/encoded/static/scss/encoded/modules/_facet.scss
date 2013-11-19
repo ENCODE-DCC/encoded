@@ -107,12 +107,13 @@ button.btn:before
 
 .result-table li {
 	margin-top: 10px;
-	border-bottom: 1px solid #ccc;
+	border-bottom: 1px solid #E8E8E8;
 	margin-bottom: 10px;
 	font-size: 0.9em;
 }
 
 .result-table li:first {
+	margin-top: 0px;
 	border-bottom: 1px solid #ccc;
 	margin-bottom: 10px;
 	font-size: 0.9em;
