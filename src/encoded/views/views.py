@@ -264,7 +264,9 @@ class Biosample(Collection):
         ('organism.name', 'Species'),
         ('source.title', 'Source'),
         ('lab.title', 'Submitter'),
-        ('treatments.length', 'Treatments'),
+        ('life_stage', 'Life stage'),
+        ('treatments.treatment_term_name', 'Treatments'),
+        ('treatments.length', 'Treatments length'),
         ('constructs.length', 'Constructs')
     ])
 

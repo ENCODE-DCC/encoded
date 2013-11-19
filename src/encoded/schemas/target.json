@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["organism", "label"],
-    "facets": {"Lab": "lab.title", "Organism": "organism.name"},
+    "facets": {"Organism": "organism.name"},
     "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
