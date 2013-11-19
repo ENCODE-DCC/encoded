@@ -204,82 +204,87 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--uberon-url', help="Uberon version URL")
+    parser.add_argument('--efo-url', help="EFO version URL")
     args = parser.parse_args()
 
-    term_prefixs = ['UBERON', 'CL', 'CHEBI', 'GO', 'IAO', 'PATO', 'PR', 'NCBITaxon']
+    term_prefixs = ['UBERON', 'CL', 'CHEBI', 'GO', 'IAO', 'PATO', 'PR', 'NCBITaxon', 'EFO', 'BFO']
     stupid_terms = []
-    url = args.uberon_url
-    req = Request(url)
-    oboFile = urlopen(req)
 
-    #skip the file header lines
-    getTerm(oboFile)
+    uberon_url = args.uberon_url
+    efo_url = args.efo_url
+    urls = [uberon_url, efo_url]
+    for url in urls:
+        req = Request(url)
+        oboFile = urlopen(req)
 
-    #infinite loop to go through the obo file.
-    #Breaks when the term returned is empty, indicating end of file
-    while 1:
-        #get the term using the two parsing functions
-        term = parseTagValue(getTerm(oboFile))
-        if len(term) != 0:
-            if (term['id'][0]).find(':') != -1:
-                if ((term['id'][0]).split(':'))[0] in term_prefixs:
-                    try:
-                        termID = term['id'][0]
-                        termName = ''
+        #skip the file header lines
+        getTerm(oboFile)
+
+        #infinite loop to go through the obo file.
+        #Breaks when the term returned is empty, indicating end of file
+        while 1:
+            #get the term using the two parsing functions
+            term = parseTagValue(getTerm(oboFile))
+            if len(term) != 0:
+                if (term['id'][0]).find(':') != -1:
+                    if ((term['id'][0]).split(':'))[0] in term_prefixs:
                         try:
-                            termName = term['name'][0]
-                        except KeyError:
-                            pass
+                            termID = term['id'][0]
+                            termName = ''
+                            try:
+                                termName = term['name'][0]
+                            except KeyError:
+                                pass
 
-                        if 'is_a' in term:
-                            termParents = [p.split()[0] for p in term['is_a']]
+                            if 'is_a' in term:
+                                termParents = [p.split()[0] for p in term['is_a']]
 
-                            if not termID in terms:
-                                terms[termID] = {'id': '', 'name': '', 'parents': [], 'children': [], 'part_of': [], 'develops_from': [], 'organs': [], 'closure': [], 'slims': [], 'data': [], 'closure_with_develops_from': [], 'data_with_develops_from': []}
+                                if not termID in terms:
+                                    terms[termID] = {'id': '', 'name': '', 'parents': [], 'children': [], 'part_of': [], 'develops_from': [], 'organs': [], 'closure': [], 'slims': [], 'data': [], 'closure_with_develops_from': [], 'data_with_develops_from': []}
 
-                            #append termID and termName to the dict
-                            terms[termID]['id'] = termID
-                            terms[termID]['name'] = termName
-
-                            #for every parent term, add this current term as children
-                            for termParent in termParents:
-                                if (termParent.split(':'))[0] in term_prefixs:
-                                    if termParent != 'CL:0000812':
-                                        terms[termID]['parents'].append(termParent)
-                                        if not termParent in terms:
-                                            terms[termParent] = {'parents': [], 'children': [], 'part_of': [], 'develops_from': [], 'organs': [], 'closure': [], 'slims': [], 'data': [], 'closure_with_develops_from': [], 'data_with_develops_from': []}
-                                        terms[termParent]['children'].append(termID)
-                            if 'relationship' in term:
-                                relations = [p.split()[0] for p in term['relationship']]
-                                relationTerms = [p.split()[1] for p in term['relationship']]
-                                relationCheck = []
-                                for p in term['relationship']:
-                                    try:
-                                        relationCheck.append(p.split()[2])
-                                    except:
-                                        relationCheck.append("N/A")
-                                count = 0
-                                relationships = ['part_of', 'develops_from']
-                                for relation in relations:
-                                    if relation in relationships:
-                                        if relationTerms[count] != 'CL:0000812':
-                                            if ((relationTerms[count]).split(':'))[0] in term_prefixs:
-                                                if relationCheck[count] == '!' or 'NCBITaxon:9606' in relationCheck[count] or 'source' in relationCheck[count]:
-                                                    terms[termID][relation].append(relationTerms[count])
-                                    count = count + 1
-                        else:
-                            if term['id'][0] not in terms:
-                                terms[termID] = {'id': '', 'name': '', 'parents': [], 'children': [], 'part_of': [], 'develops_from': [], 'organs': [], 'closure': [], 'slims': [], 'data': [], 'closure_with_develops_from': [], 'data_with_develops_from': []}
                                 #append termID and termName to the dict
                                 terms[termID]['id'] = termID
                                 terms[termID]['name'] = termName
+
+                                #for every parent term, add this current term as children
+                                for termParent in termParents:
+                                    if (termParent.split(':'))[0] in term_prefixs:
+                                        if termParent != 'CL:0000812':
+                                            terms[termID]['parents'].append(termParent)
+                                            if not termParent in terms:
+                                                terms[termParent] = {'parents': [], 'children': [], 'part_of': [], 'develops_from': [], 'organs': [], 'closure': [], 'slims': [], 'data': [], 'closure_with_develops_from': [], 'data_with_develops_from': []}
+                                            terms[termParent]['children'].append(termID)
+                                if 'relationship' in term:
+                                    relations = [p.split()[0] for p in term['relationship']]
+                                    relationTerms = [p.split()[1] for p in term['relationship']]
+                                    relationCheck = []
+                                    for p in term['relationship']:
+                                        try:
+                                            relationCheck.append(p.split()[2])
+                                        except:
+                                            relationCheck.append("N/A")
+                                    count = 0
+                                    relationships = ['part_of', 'develops_from']
+                                    for relation in relations:
+                                        if relation in relationships:
+                                            if relationTerms[count] != 'CL:0000812':
+                                                if ((relationTerms[count]).split(':'))[0] in term_prefixs:
+                                                    if relationCheck[count] == '!' or 'NCBITaxon:9606' in relationCheck[count] or 'source' in relationCheck[count]:
+                                                        terms[termID][relation].append(relationTerms[count])
+                                        count = count + 1
                             else:
-                                terms[termID]['id'] = termID
-                                terms[termID]['name'] = termName
-                    except KeyError:
-                        stupid_terms.append(termID)
-        else:
-            break
+                                if term['id'][0] not in terms:
+                                    terms[termID] = {'id': '', 'name': '', 'parents': [], 'children': [], 'part_of': [], 'develops_from': [], 'organs': [], 'closure': [], 'slims': [], 'data': [], 'closure_with_develops_from': [], 'data_with_develops_from': []}
+                                    #append termID and termName to the dict
+                                    terms[termID]['id'] = termID
+                                    terms[termID]['name'] = termName
+                                else:
+                                    terms[termID]['id'] = termID
+                                    terms[termID]['name'] = termName
+                        except KeyError:
+                            stupid_terms.append(termID)
+            else:
+                break
 
     # Deleting all useless, time wasting terms
     for stupid_term in stupid_terms:
@@ -319,6 +324,7 @@ def main():
         terms[term]['organs'] = getOrganSlims(term)
         terms[term]['developmental'] = getDevelopmentSlims(term)
 
+    import pdb; pdb.set_trace();
     for term in terms:
         del(terms[term]['parents'])
         del(terms[term]['children'])
@@ -329,6 +335,7 @@ def main():
         del(terms[term]['closure_with_develops_from'])
         del(terms[term]['data'])
         del(terms[term]['data_with_develops_from'])
+
 
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)
