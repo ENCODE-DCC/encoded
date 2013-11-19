@@ -324,7 +324,6 @@ def main():
         terms[term]['organs'] = getOrganSlims(term)
         terms[term]['developmental'] = getDevelopmentSlims(term)
 
-    import pdb; pdb.set_trace();
     for term in terms:
         del(terms[term]['parents'])
         del(terms[term]['children'])
@@ -335,7 +334,6 @@ def main():
         del(terms[term]['closure_with_develops_from'])
         del(terms[term]['data'])
         del(terms[term]['data_with_develops_from'])
-
 
     with open('ontology.json', 'w') as outfile:
         json.dump(terms, outfile)
