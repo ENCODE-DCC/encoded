@@ -160,9 +160,20 @@ def search(context, request):
         
         # If not FQ use regular Query
         if regular_query:
-            query = {'query': {}, 'facets': {}, 'fields': []}
+            query = {'query': {}, 'facets': {}, 'fields': [], "sort": []}
             query['query'] = {'query_string': {'query': search_term}}
-        
+
+        if search_type == 'biosample':
+            query['sort'] = {'date_created': {'order': 'asc'}}
+        elif search_type == 'target':
+            query['sort'] = {'gene_name.untouched': {'ignore_unmapped': 'true', 'order': 'asc'}}
+        elif search_type == 'antibody_approval':
+            query['sort'] = {'status': {'order': 'asc'}}
+        elif search_type == 'experiment':
+            query['sort'] = {'files.date_created': {'order': 'asc'}, 'replicates.date_created': {'order': 'asc'}, 'date_created': {'order': 'asc'}}
+        else:
+            del(query['sort'])
+
         # Adding fields to the query
         for column in columns:
             fields.append(column)
