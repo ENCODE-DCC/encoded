@@ -1089,49 +1089,62 @@ class AfterModified(object):
 @subscriber(BeforeModified)
 @subscriber(AfterModified)
 def record_created(event):
-    session = DBSession()
+    request = event.request
     # Create property if that doesn't exist
     try:
-        dirty = event.request._encoded_dirty
+        referencing = request._encoded_referencing
     except:
-        dirty = event.request._encoded_dirty = []
-        dirty.append(event.object.model)
-    updated_object = event.object.model
-    results = session.query(Link).filter(Link.target == updated_object).all()
-    for d in results:
-        if not any(x.rid == d.source.rid for x in dirty):
-            dirty.append(d.source)
+        referencing = request._encoded_referencing = set()
+    try:
+        updated = request._encoded_updated
+    except:
+        updated = request._encoded_updated = set()
+
+    uuid = event.object.uuid
+    updated.add(uuid)
+
+    # Record dependencies here to catch any to be removed links
+    add_dependent_objects(request, {uuid}, referencing)
+
+
+def add_dependent_objects(request, new, existing):
+    # Getting the dependent objects for the indexed object
+    root = request.root
+    objects = new.difference(existing)
+    while objects:
+        dependents = set()
+        for uuid in objects:
+            item = root.get_by_uuid(uuid)
+
+            # XXX needs to consult with item.embedded and item.revs
+            dependents.update({
+                model.source_rid for model in item.model.revs
+            })
+
+        existing.update(objects)
+        objects = dependents.difference(existing)
 
 
 def es_update_object(request, objects):
-    session = DBSession()
-    updated_objects = []
-    while 1:
-        new_objects = []
-        if len(objects) == 0:
-            break
-        for data_object in objects:
-            # Indexing the object in ES
-            uuid = data_object.rid
-            item_type = data_object.item_type
-            es = request.registry[ELASTIC_SEARCH]
-            subreq = make_subrequest(request, '/' + item_type + '/' + str(uuid) + '/')
-            subreq.override_renderer = 'null_renderer'
-            result = request.invoke_subrequest(subreq)
-            es.index(item_type, 'basic', result, str(uuid))
-            updated_objects.append(str(uuid))
-            
-            # Getting the dependent objects for the indexed object
-            results = session.query(Link).filter(Link.target == data_object).all()
-            for d in results:
-                if not any(x.rid == d.source.rid for x in new_objects):
-                    if str(d.source.rid) not in updated_objects:
-                        new_objects.append(d.source)
-        objects = new_objects
+    es = request.registry.get(ELASTIC_SEARCH, None)
+    if es is None:
+        return
+
+    # Indexing the object in ES
+    for uuid in objects:
+        subreq = make_subrequest(request, '/%s' % uuid)
+        subreq.override_renderer = 'null_renderer'
+        result = request.invoke_subrequest(subreq)
+        if es is not None:
+            es.index(result['@type'][0], 'basic', result, str(uuid))
 
 
 @subscriber(BeforeRender)
 def es_update_data(event):
-    dirty = getattr(event['request'], '_encoded_dirty', None)
-    if dirty is not None:
-        es_update_object(event['request'], dirty)
+    request = event['request']
+    referencing = getattr(request, '_encoded_referencing', set())
+    updated = getattr(request, '_encoded_updated', set())
+    if updated or referencing:
+        new_referencing = set()
+        add_dependent_objects(request, updated, new_referencing)
+        es_update_object(request, referencing.union(new_referencing))

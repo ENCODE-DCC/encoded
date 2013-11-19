@@ -67,6 +67,7 @@ class TestingKey(Collection):
 class TestingLinkSource(Collection):
     item_type = 'testing_link_source'
     schema = {
+        'type': 'object',
         'properties': {
             'target': {
                 'type': 'string',
@@ -153,19 +154,23 @@ class TestingServerDefault(Collection):
         'properties': {
             'uuid': {
                 'serverDefault': 'uuid4',
+                'type': 'string',
             },
             'user': {
                 'serverDefault': 'userid',
                 'linkTo': 'user',
+                'type': 'string',
             },
             'now': {
                 'serverDefault': 'now',
                 'format': 'date-time',
+                'type': 'string',
             },
             'accession': {
                 'serverDefault': 'accession',
                 'accessionType': 'AB',
                 'format': 'accession',
+                'type': 'string',
             },
         }
     }
