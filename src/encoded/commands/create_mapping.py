@@ -44,7 +44,7 @@ def schema_mapping(name, schema):
             'type': 'multi_field',
             'fields': {
                 # by default ES uses the same named field of a multi_field
-                name: {'type': 'string'},
+                name: {'type': 'string', 'include_in_all': False},
                 'untouched': {
                     'type': 'string',
                     'index': 'not_analyzed',
@@ -111,6 +111,17 @@ def collection_mapping(collection, embed=True):
             new_mapping = new_mapping['properties'][p]
             new_schema = root[name].schema
 
+    boost_values = schema.get('boost_values', ())
+    for value in boost_values:
+        props = value.split('.')
+        new_mapping = mapping['properties']
+        for prop in props:
+            if len(props) == props.index(prop) + 1:
+                new_mapping[prop]['boost'] = boost_values[value]
+                del(new_mapping[prop]['fields'][prop]['include_in_all'])
+                new_mapping = mapping['properties']
+            else:
+                new_mapping = new_mapping[prop]['properties']
     return mapping
 
 

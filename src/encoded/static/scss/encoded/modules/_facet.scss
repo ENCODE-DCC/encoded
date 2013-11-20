@@ -7,7 +7,7 @@
 
 .facet-list li {
 	padding: 0 10px;
-	margin: 0 0 6px 0;
+	margin: 0 0 0 0;
 	border-radius: 10px;
 	position: relative;
 	font-size: 0.9em;
@@ -26,10 +26,14 @@
 	text-decoration: none;
 }
 
-button.btn.collapsed:before
-{
+.facet-list button.btn.collapsed:before {
     content:'+ See more...' ;
-    display: block;
+    text-decoration: none;
+    font-size: small;
+}
+
+.facet-list button.btn:before {
+    content:'- See fewer';
     text-decoration: none;
     font-size: small;
 }
@@ -89,14 +93,6 @@ button.btn.collapsed:before
 .data-row ul li {
 	border: none;
 	margin: 0px;	
-}
-
-button.btn:before
-{
-    content:'- See fewer';
-    display: block;
-    text-decoration: none;
-    font-size: small;
 }
 
 .result-table {
