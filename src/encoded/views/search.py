@@ -97,7 +97,7 @@ def search(context, request):
         
         # Should have some limit on size
         # Should have a better way to organize the count
-        s = es.search(query, index=indices, size=999999)
+        s = es.search(query, index=indices, size=99999)
         antibody_count = biosample_count = experiment_count = target_count = 0
         for dataS in s['hits']['hits']:
             data_highlight = dataS['fields']
@@ -118,13 +118,13 @@ def search(context, request):
                     data_highlight['highlight'] = dataS['highlight'][key]
             else:
                 data_highlight['highlight'] = []
+            data_highlight['score'] = dataS['_score']
             result['@graph'].append(data_highlight)
         
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
             result['notification'] = 'No results found'
-        
         return result
     else:
         
@@ -163,16 +163,14 @@ def search(context, request):
             query = {'query': {}, 'facets': {}, 'fields': [], "sort": []}
             query['query'] = {'query_string': {'query': search_term}}
 
-        if search_type == 'biosample':
+        if search_type == 'biosample' and search_term == '*':
             query['sort'] = {'accession': {'order': 'asc'}}
-        elif search_type == 'target':
+        elif search_type == 'target' and search_term == '*':
             query['sort'] = {'gene_name.untouched': {'ignore_unmapped': 'true', 'order': 'asc'}}
-        elif search_type == 'antibody_approval':
+        elif search_type == 'antibody_approval' and search_term == '*':
             query['sort'] = {'status': {'order': 'asc'}}
-        elif search_type == 'experiment':
+        elif search_type == 'experiment' and search_term == '*':
             query['sort'] = {'accession': {'order': 'asc'}}
-        else:
-            del(query['sort'])
 
         # Adding fields to the query
         for column in columns:
@@ -216,6 +214,7 @@ def search(context, request):
                     data_highlight['highlight'] = dataS['highlight'][key]
             else:
                 data_highlight['highlight'] = []
+            data_highlight['score'] = dataS['_score']
             result['@graph'].append(data_highlight)
 
         result['count'][root.by_item_type[collection_name].__name__] = results['hits']['total']
