@@ -156,7 +156,17 @@
             "title": "Subcellular fraction",
             "description": "The cellular component that constitutes the biosample.",
             "type": "string",
-            "enum": ["nucleus", "cytosol"]
+            "enum": [
+                "nucleus", 
+                "cytosol", 
+                "chromatin",
+                "membrane fraction",
+                "mitochondria",
+                "nuclear matrix",
+                "nucleolus",
+                "nucloplasm",
+                "polysome"
+            ]
         },
         "phase": {
             "title": "Cell-cycle phase",
