@@ -26,8 +26,9 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Antibody</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['target.organism.name']+ ' - ' + result['target.label']}<span className="accession-str">({result['antibody.accession']})</span></a> 
+                                <a href={result['@id']}>{result['target.organism.name']+ ' - ' + result['target.label']}</a> 
                             </div>
+                            <div className="accession-str">{result['antibody.accession']}</div>
                         </div>
                         <div className="data-row"> 
                             {result['score'] ? <small>{'Score: ' + result['score']}</small>: null }
@@ -50,8 +51,9 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Biosample</span>
                             <div className="accession">
-                                <a href={result['@id']}>{ result['organism.name'] + ' - ' + result['biosample_term_name']}<span className="accession-str">({result['accession']})</span></a> 
+                                <a href={result['@id']}>{ result['organism.name'] + ' - ' + result['biosample_term_name']}</a> 
                             </div>
+                            <div className="accession-str">{result['accession']}</div>
                         </div>
                         <div className="data-row">
                             {result['score'] ? <small>{'Score: ' + result['score']}</small>: null }
@@ -76,8 +78,9 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Experiment</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['assay_term_name']+ ' of ' + result['biosample_term_name']}<span className="accession-str">({result['accession']})</span></a> 
+                                <a href={result['@id']}>{result['assay_term_name']+ ' of ' + result['biosample_term_name']}</a> 
                             </div>
+                            <div className="accession-str">{result['accession']}</div>
                         </div>
                         <div className="data-row">
                             {result['score'] ? <small>{'Score: ' + result['score']}</small>: null }

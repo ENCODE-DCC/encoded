@@ -7,35 +7,37 @@ from pyelasticsearch import ElasticSearch
 es = ElasticSearch('http://localhost:9200')
 
 
-# TODO: FilteredQuery should be improved
-class FilteredQuery(dict):
+def get_filtered_query(term, fields):
+    return {
+        'query': {
+            'filtered': {
+                'query': {
+                    'queryString': {
+                        'query': term 
+                    }
+                }, 
+                'filter': {
+                    'and': {
+                        'filters': []
+                    }
+                }
+            }
+        },
+        'facets': {},
+        'fields': fields
+    }
 
-    def __init__(self):
-        self.query = dict({'filtered': {'query': {'queryString': {"query": ''}}, 'filter': {'and': {'filters': []}}}})
-        self.facets = dict()
-        self.fields = []
 
-    def __setattr__(self, k, v):
-        if k in self.keys():
-            self[k] = v
-        elif not hasattr(self, k):
-            self[k] = v
-        else:
-            raise AttributeError("Cannot set '%s', cls attribute already exists" % (k, ))
-
-    def __getattr__(self, k):
-        if k in self.keys():
-            return self[k]
-        raise AttributeError
-
-    def __setterm__(self, v):
-        self['query']['filtered']['query']['queryString']['query'] = v
-
-    def __setfilter__(self, k, v):
-        self['query']['filtered']['filter']['and']['filters'].append({'bool': {'must': {'term': {k + '.untouched': v}}}})
-
-    def __setmissingfilter__(self, v):
-        self['query']['filtered']['filter']['and']['filters'].append({'missing': {'field': v}})
+def get_query(term, fields):
+    return {
+        'query': {
+            'query_string': {
+                'query': term
+            }
+        }, 
+        'facets': {}, 
+        'fields': fields
+    }
 
 
 @view_config(name='search', context=Root, request_method='GET', permission='search')
@@ -76,15 +78,12 @@ def search(context, request):
             return result
 
     try:
-        # Checking for index type
         search_type = params['type']
     except:
         if not search_term:
             result['notification'] = 'Please enter search term'
             return result
-        # This code block executes the search for all the types of data
-        query = {'query': {}, 'facets': {}, 'fields': []}
-        query['query'] = {'query_string': {'query': search_term}}
+        
         indices = ['antibody_approval', 'biosample', 'experiment', 'target']
         fields = ['@id', '@type']
         for index in indices:
@@ -93,33 +92,23 @@ def search(context, request):
             for column in collection.columns:
                 fields.append(column)
 
-        query['fields'] = list(set(fields))
+        query = get_query(search_term, list(set(fields)))
         
-        # Should have some limit on size
-        # Should have a better way to organize the count
         s = es.search(query, index=indices, size=99999)
-        antibody_count = biosample_count = experiment_count = target_count = 0
-        for dataS in s['hits']['hits']:
-            data_highlight = dataS['fields']
-            if dataS['fields']['@type'][0] == 'antibody_approval':
-                antibody_count = antibody_count + 1
-            elif dataS['fields']['@type'][0] == 'biosample':
-                biosample_count = biosample_count + 1
-            elif dataS['fields']['@type'][0] == 'experiment':
-                experiment_count = experiment_count + 1
-            elif dataS['fields']['@type'][0] == 'target':
-                target_count = target_count + 1
-            result['count']['biosamples'] = biosample_count
-            result['count']['antibodies'] = antibody_count
-            result['count']['experiments'] = experiment_count
-            result['count']['targets'] = target_count
-            if 'highlight' in dataS:
-                for key in dataS['highlight'].keys():
-                    data_highlight['highlight'] = dataS['highlight'][key]
-            else:
-                data_highlight['highlight'] = []
-            data_highlight['score'] = dataS['_score']
-            result['@graph'].append(data_highlight)
+
+        for hit in s['hits']['hits']:
+            result_hit = hit['fields']
+            if result_hit['@type'][0] == 'antibody_approval':
+                result['count']['antibodies'] += 1
+            elif result_hit['@type'][0] == 'biosample':
+                result['count']['biosamples'] += 1
+            elif result_hit['@type'][0] == 'experiment':
+                result['count']['experiments'] += 1
+            elif result_hit['@type'][0] == 'target':
+               result['count']['targets'] += 1
+
+            result_hit['score'] = hit['_score']
+            result['@graph'].append(result_hit)
         
         if len(result['@graph']):
             result['notification'] = 'Success'
@@ -127,8 +116,6 @@ def search(context, request):
             result['notification'] = 'No results found'
         return result
     else:
-        
-        # Handling wild card searches for all types
         search_type = params['type']
         if search_term == '*' and search_type == '*':
             result['notification'] = 'Please enter search terme'
@@ -145,23 +132,23 @@ def search(context, request):
                 result['columns'] = columns = collection.columns
                 break
         
+        for column in columns:
+            fields.append(column)
+        
         # Builds filtered query which supports multiple facet selection
-        query = FilteredQuery()
+        query = get_filtered_query(search_term, fields)
         regular_query = 1
         for key, value in params.iteritems():
             if key not in ['type', 'searchTerm', 'limit', 'format']:
                 regular_query = 0
-                query.__setterm__(search_term)
                 if value == 'other':
-                    query.__setmissingfilter__(key)
+                    query['query']['filtered']['filter']['and']['filters'].append({'missing': {'field': key}})
                 else:
-                    query.__setfilter__(key, value)
+                    query['query']['filtered']['filter']['and']['filters'].append({'bool': {'must': {'term': {key + '.untouched': value}}}})
                 result['filters'].append({key: value})
         
-        # If not FQ use regular Query
         if regular_query:
-            query = {'query': {}, 'facets': {}, 'fields': [], "sort": []}
-            query['query'] = {'query_string': {'query': search_term}}
+            query = get_query(search_term, fields)
 
         if search_type == 'biosample' and search_term == '*':
             query['sort'] = {'accession': {'order': 'asc'}}
@@ -172,23 +159,15 @@ def search(context, request):
         elif search_type == 'experiment' and search_term == '*':
             query['sort'] = {'accession': {'order': 'asc'}}
 
-        # Adding fields to the query
-        for column in columns:
-            fields.append(column)
-        query['fields'] = fields
-
         if 'facets' in schema:
             for facet in schema['facets']:
                 face = {'terms': {'field': '', 'size': size}}
                 face['terms']['field'] = schema['facets'][facet] + '.untouched'
                 query['facets'][facet] = face
-
-                # Remove the facet if is already selected
                 for f in result['filters']:
                     if schema['facets'][facet] == f.keys()[0]:
                         del(query['facets'][facet])
         else:
-            # If no facets are present remove attribute from query
             del(query['facets'])
 
         # Execute the query
@@ -207,15 +186,10 @@ def search(context, request):
                     face[facet].append({'other': facet_results[facet]['missing']})
                 result['facets'].append(face)
 
-        for dataS in results['hits']['hits']:
-            data_highlight = dataS['fields']
-            if 'highlight' in dataS:
-                for key in dataS['highlight'].keys():
-                    data_highlight['highlight'] = dataS['highlight'][key]
-            else:
-                data_highlight['highlight'] = []
-            data_highlight['score'] = dataS['_score']
-            result['@graph'].append(data_highlight)
+        for hit in results['hits']['hits']:
+            result_hit = hit['fields']
+            result_hit['score'] = hit['_score']
+            result['@graph'].append(result_hit)
 
         result['count'][root.by_item_type[collection_name].__name__] = results['hits']['total']
         if len(result['@graph']):
