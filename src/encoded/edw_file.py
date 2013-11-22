@@ -231,16 +231,14 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
                     v.c.ucscDb.label('assembly'),
                     f.c.md5.label('md5sum'),
                     u.c.email.label('submitted_by'),
-                    f.c.deprecated.label('status')])
+                    # either of these two error fields will cause status to be OBSOLETE
+                    f.c.deprecated.label('lab_error_message'),
+                    f.c.errorMessage.label('edw_error_message')])
     query = query.where(
               (v.c.fileId == f.c.id) &
               (u.c.id == s.c.userId) &
               (s.c.id == f.c.submitId) &
               (u.c.id == s.c.userId))
-              #(f.c.errorMessage != None))
-    # Occasional file ends up in valid table, even though in error -- filter out if 
-    # there is an error message in edwFile table
-    query.append_whereclause('edwFile.errorMessage = \"\"')
     if start_id > 0:
         query.append_whereclause('edwValidFile.id > ' + str(start_id))
     if experiment:
@@ -258,6 +256,9 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
     edw_files = []
     for row in results:
         file_dict = dict(row)
+        file_dict['status'] = file_dict['lab_error_message'] + file_dict['edw_error_message']
+        del file_dict['lab_error_message']
+        del file_dict['edw_error_message']
         format_edw_fileinfo(file_dict, exclude)
         edw_files.append(file_dict)
     results.close()
