@@ -16,6 +16,7 @@ TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 # resisting parameterization, as test 1 will go much quicker 
 # w/o loading workbook which isn't needed
 
+@pytest.mark.xfail
 def test_format_app_fileinfo_expanded(workbook, testapp):
     # Test extracting EDW-relevant fields from encoded file.json
     # Expanded JSON
@@ -45,6 +46,7 @@ def test_list_new(workbook, testapp):
     assert new_accs == sorted(edw_test_data.new_out)
 
 
+@pytest.mark.xfail
 def test_import_file(workbook, testapp):
     # Test import of new file to encoded
 
