@@ -30,7 +30,6 @@ _app_settings = {
     'load_sample_data': False,
     'testing': True,
     'collection_source': 'database',
-    'elasticsearch.server': 'http://localhost:9200',
 }
 
 
@@ -75,7 +74,7 @@ def dummy_request():
 
 
 @fixture(scope='session')
-def app(request, check_constraints, zsa_savepoints, app_settings):
+def app(check_constraints, zsa_savepoints, app_settings):
     '''WSGI application level functional testing.
     '''
     from encoded import main
@@ -99,13 +98,13 @@ def workbook(app, app_settings):
 
 
 @fixture
-def anonhtmltestapp(request, app, external_tx, zsa_savepoints):
+def anonhtmltestapp(app, external_tx):
     from webtest import TestApp
     return TestApp(app)
 
 
 @fixture
-def htmltestapp(request, app, external_tx, zsa_savepoints):
+def htmltestapp(app, external_tx):
     from webtest import TestApp
     environ = {
         'REMOTE_USER': 'TEST',
@@ -114,7 +113,7 @@ def htmltestapp(request, app, external_tx, zsa_savepoints):
 
 
 @fixture
-def testapp(request, app, external_tx, zsa_savepoints):
+def testapp(app, external_tx):
     '''TestApp with JSON accept header.
     '''
     from webtest import TestApp
@@ -126,7 +125,7 @@ def testapp(request, app, external_tx, zsa_savepoints):
 
 
 @fixture
-def anontestapp(request, app, external_tx, zsa_savepoints):
+def anontestapp(app, external_tx):
     '''TestApp with JSON accept header.
     '''
     from webtest import TestApp
@@ -137,7 +136,7 @@ def anontestapp(request, app, external_tx, zsa_savepoints):
 
 
 @fixture
-def authenticated_testapp(request, app, external_tx, zsa_savepoints):
+def authenticated_testapp(app, external_tx):
     '''TestApp with JSON accept header for non-admin user.
     '''
     from webtest import TestApp
@@ -149,7 +148,7 @@ def authenticated_testapp(request, app, external_tx, zsa_savepoints):
 
 
 @fixture
-def submitter_testapp(request, app, external_tx, zsa_savepoints):
+def submitter_testapp(app, external_tx):
     '''TestApp with JSON accept header for non-admin user.
     '''
     from webtest import TestApp
@@ -167,7 +166,7 @@ def server_host_port():
 
 
 @fixture(scope='session')
-def _server(request, app, zsa_savepoints, server_host_port):
+def _server(request, app, server_host_port):
     from webtest.http import StopableWSGIServer
     host, port = server_host_port
 
