@@ -28,13 +28,13 @@ before_install:
   - pip install -U setuptools
   - virtualenv clean-python
   - source clean-python/bin/activate
-  - sudo apt-get -qq --purge remove postgresql postgresql-9.1
+  - sudo apt-get -qq --purge remove postgresql*
   - source /etc/lsb-release
   - echo "deb http://apt.postgresql.org/pub/repos/apt/ $DISTRIB_CODENAME-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
   - curl http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
   - sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/pgdg.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
   - sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install postgresql-9.3 libpq-dev
-  - sudo service postgresql-9.3 start
+  - sudo service postgresql start
 install:
   - python bootstrap.py
   - bin/buildout
