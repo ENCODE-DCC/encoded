@@ -30,12 +30,11 @@ before_install:
   - source clean-python/bin/activate
   - sudo service postgresql stop
   - sudo service postgresql start 9.3
+  - sudo -u postgres createdb --owner=$USER encoded
 install:
   - python bootstrap.py
   - bin/buildout
 before_script:
-  - sudo -u postgres createuser $USER
-  - sudo -u postgres createdb --owner=$USER encoded
   - while [ ! -f $READY_FILE ]; do sleep .5; done
 script: >
   bin/test -v -v --timeout=200 --remote-webdriver
