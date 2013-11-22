@@ -44,7 +44,11 @@ def schema_mapping(name, schema):
             'type': 'multi_field',
             'fields': {
                 # by default ES uses the same named field of a multi_field
-                name: {'type': 'string', 'include_in_all': False},
+                name: {
+                    'type': 'string',
+                    'analyzer': 'simple',
+                    'include_in_all': False
+                },
                 'untouched': {
                     'type': 'string',
                     'index': 'not_analyzed',
@@ -139,7 +143,6 @@ def run(app, collections=None, dry_run=False):
 
         if mapping is None:
             continue  # Testing collections
-        
         if dry_run:
             print json.dumps(
                 sorted_dict({collection_name: {'basic': mapping}}), indent=4)

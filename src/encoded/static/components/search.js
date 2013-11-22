@@ -24,11 +24,10 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Antibody</span>
+                            <span className="pull-right type">Antibody: {' ' + result['antibody.accession']}</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['target.organism.name']+ ' - ' + result['target.label']}</a> 
+                                <a href={result['@id']}>{result['target.label'] + ' (' + result['target.organism.name'] + ')'}</a> 
                             </div>
-                            <div className="accession-str">{result['antibody.accession']}</div>
                         </div>
                         <div className="data-row"> 
                             {result['score'] ? <small>{'Score: ' + result['score']}</small>: null }
@@ -49,11 +48,10 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Biosample</span>
+                            <span className="pull-right type">Biosample: {' ' + result['accession']}</span>
                             <div className="accession">
-                                <a href={result['@id']}>{ result['organism.name'] + ' - ' + result['biosample_term_name']}</a> 
+                                <a href={result['@id']}>{result['biosample_term_name'] + ' (' + result['organism.name'] + ')'}</a> 
                             </div>
-                            <div className="accession-str">{result['accession']}</div>
                         </div>
                         <div className="data-row">
                             {result['score'] ? <small>{'Score: ' + result['score']}</small>: null }
@@ -76,11 +74,10 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Experiment</span>
+                            <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
                             <div className="accession">
                                 <a href={result['@id']}>{result['assay_term_name']+ ' of ' + result['biosample_term_name']}</a> 
                             </div>
-                            <div className="accession-str">{result['accession']}</div>
                         </div>
                         <div className="data-row">
                             {result['score'] ? <small>{'Score: ' + result['score']}</small>: null }
@@ -105,7 +102,7 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Target</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['label'] + ' - ' + result['organism.name']}</a> 
+                                <a href={result['@id']}>{result['label'] + ' (' + result['organism.name'] + ')'}</a> 
                             </div>
                         </div>
                         <div className="data-row">

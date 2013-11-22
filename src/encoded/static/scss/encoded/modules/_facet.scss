@@ -64,11 +64,6 @@
 	margin: 0 0 0 0;
 }
 
-.accession-str {
-	color: #28A828;
-	font-weight: bold;
-}
-
 .type {
 	font-size: 0.9em;
 	font-weight: normal;
@@ -92,8 +87,14 @@
 }
 
 .data-row ul li {
+	display: inline;
+	list-style-type: none;
 	border: none;
-	margin: 0px;	
+	margin-right: 5px;	
+}
+
+.data-row ul li a{
+	display: inline;	
 }
 
 .result-table {

@@ -13,9 +13,9 @@ def get_filtered_query(term, fields):
             'filtered': {
                 'query': {
                     'queryString': {
-                        'query': term 
+                        'query': term
                     }
-                }, 
+                },
                 'filter': {
                     'and': {
                         'filters': []
@@ -34,8 +34,8 @@ def get_query(term, fields):
             'query_string': {
                 'query': term
             }
-        }, 
-        'facets': {}, 
+        },
+        'facets': {},
         'fields': fields
     }
 
@@ -65,7 +65,8 @@ def search(context, request):
         size = 100
 
     try:
-        search_term = params['searchTerm']
+        # Wrong way adding wildcards, analyzer should b configured for this functionality
+        search_term = params['searchTerm'] + '*'
     except:
         if 'type' in params:
             if params['type'] == '*':
@@ -95,7 +96,7 @@ def search(context, request):
         query = get_query(search_term, list(set(fields)))
         
         s = es.search(query, index=indices, size=99999)
-
+        result['count']['targets'] = result['count']['antibodies'] = result['count']['experiments'] = result['count']['biosamples'] = 0
         for hit in s['hits']['hits']:
             result_hit = hit['fields']
             if result_hit['@type'][0] == 'antibody_approval':
@@ -105,7 +106,7 @@ def search(context, request):
             elif result_hit['@type'][0] == 'experiment':
                 result['count']['experiments'] += 1
             elif result_hit['@type'][0] == 'target':
-               result['count']['targets'] += 1
+                result['count']['targets'] += 1
 
             result_hit['score'] = hit['_score']
             result['@graph'].append(result_hit)
@@ -161,30 +162,31 @@ def search(context, request):
 
         if 'facets' in schema:
             for facet in schema['facets']:
-                face = {'terms': {'field': '', 'size': size}}
-                face['terms']['field'] = schema['facets'][facet] + '.untouched'
-                query['facets'][facet] = face
+                face = {'terms': {'field': '', 'size': 99999}}
+                face['terms']['field'] = facet[facet.keys()[0]] + '.untouched'
+                query['facets'][facet.keys()[0]] = face
                 for f in result['filters']:
-                    if schema['facets'][facet] == f.keys()[0]:
-                        del(query['facets'][facet])
+                    if facet[facet.keys()[0]] == f.keys()[0]:
+                        del(query['facets'][facet.keys()[0]])
         else:
             del(query['facets'])
 
         # Execute the query
         results = es.search(query, index=index, size=size)
-
+        
         # Loading facets in to the results
         if 'facets' in results:
             facet_results = results['facets']
-            for facet in facet_results:
-                face = {}
-                face['field'] = schema['facets'][facet]
-                face[facet] = []
-                for term in facet_results[facet]['terms']:
-                    face[facet].append({term['term']: term['count']})
-                if facet_results[facet]['missing'] != 0:
-                    face[facet].append({'other': facet_results[facet]['missing']})
-                result['facets'].append(face)
+            for facet in schema['facets']:
+                if facet.keys()[0] in facet_results:
+                    face = {}
+                    face['field'] = facet[facet.keys()[0]]
+                    face[facet.keys()[0]] = []
+                    for term in facet_results[facet.keys()[0]]['terms']:
+                        face[facet.keys()[0]].append({term['term']: term['count']})
+                    if facet_results[facet.keys()[0]]['missing'] != 0:
+                        face[facet.keys()[0]].append({'other': facet_results[facet.keys()[0]]['missing']})
+                    result['facets'].append(face)
 
         for hit in results['hits']['hits']:
             result_hit = hit['fields']
