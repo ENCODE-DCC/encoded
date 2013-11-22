@@ -9,6 +9,7 @@ from collections import OrderedDict
 from operator import itemgetter
 
 from sqlalchemy import MetaData, create_engine, select
+from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 
 ################
 # Globals
@@ -209,18 +210,24 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
     # Autoreflect the schema
     meta = MetaData()
     meta.reflect(bind=edw)
-    f = meta.tables['edwFile']
-    v = meta.tables['edwValidFile']
-    u = meta.tables['edwUser']
-    s = meta.tables['edwSubmit']
 
+    try:
+        f = meta.tables['edwFile']
+        v = meta.tables['edwValidFile']
+        u = meta.tables['edwUser']
+        s = meta.tables['edwSubmit']
+    except (DBAPIError, SQLAlchemyError) as e:
+        sys.stderr.write("ERROR: EDW schema binding failed (suspect schema change)\n")
+        exit(-1)
+        
     # Make a connection
     conn = edw.connect()
 
     # Get info for EDW files
     # List files newest first
     # NOTE: ordering must mirror FILE_INFO_FIELDS
-    query = select([v.c.licensePlate.label('accession'),
+    try:
+        query = select([v.c.licensePlate.label('accession'),
                     f.c.endUploadTime.label('date_created'),
                     v.c.outputType.label('output_type'),
                     v.c.format.label('file_format'),
@@ -234,24 +241,27 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
                     # either of these two error fields will cause status to be OBSOLETE
                     f.c.deprecated.label('lab_error_message'),
                     f.c.errorMessage.label('edw_error_message')])
-    query = query.where(
+        query = query.where(
               (v.c.fileId == f.c.id) &
               (u.c.id == s.c.userId) &
               (s.c.id == f.c.submitId) &
               (u.c.id == s.c.userId))
-    if start_id > 0:
-        query.append_whereclause('edwValidFile.id > ' + str(start_id))
-    if experiment:
-        query.append_whereclause('(edwValidFile.experiment like "wgEncodeE%" or edwValidFile.experiment like "ENCSR%")')
-    if phase == '2':
-        query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
-    elif phase  == '3':
-        query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
+        if start_id > 0:
+            query.append_whereclause('edwValidFile.id > ' + str(start_id))
+        if experiment:
+            query.append_whereclause('(edwValidFile.experiment like "wgEncodeE%" or edwValidFile.experiment like "ENCSR%")')
+        if phase == '2':
+            query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
+        elif phase  == '3':
+            query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
 
-    query = query.order_by(f.c.endUploadTime.desc())
-    if limit:
-        query = query.limit(limit)
-    results = conn.execute(query)
+        query = query.order_by(f.c.endUploadTime.desc())
+        if limit:
+            query = query.limit(limit)
+        results = conn.execute(query)
+    except (DBAPIError, SQLAlchemyError) as e:
+        sys.stderr.write("ERROR: EDW SQL query failed (suspect schema change)\n")
+        exit(-1)
 
     edw_files = []
     for row in results:
