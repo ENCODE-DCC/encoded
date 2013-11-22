@@ -66,7 +66,7 @@ def search(context, request):
 
     try:
         # Wrong way adding wildcards, analyzer should b configured for this functionality
-        search_term = params['searchTerm'] + '*'
+        search_term = params['searchTerm']
     except:
         if 'type' in params:
             if params['type'] == '*':

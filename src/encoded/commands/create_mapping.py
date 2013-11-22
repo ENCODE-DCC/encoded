@@ -46,7 +46,7 @@ def schema_mapping(name, schema):
                 # by default ES uses the same named field of a multi_field
                 name: {
                     'type': 'string',
-                    'analyzer': 'simple',
+                    'analyzer': 'encoded',
                     'include_in_all': False
                 },
                 'untouched': {
@@ -64,6 +64,39 @@ def schema_mapping(name, schema):
 
     if type_ in ('boolean', 'integer'):
         return {'type': type_}
+
+
+def index_settings(index):
+    return {
+        'settings': {
+            'analysis': {
+                'analyzer': {
+                    'encoded': {
+                        'type': 'custom',
+                        'tokenizer': 'standard',
+                        'filter': ['standard', 'lowercase', 'stop', 'kstem', 'ngram']
+                    },
+                    'dash_path': {
+                        'type': 'custom',
+                        'tokenizer': 'dash_path'
+                    }
+                },
+                'tokenizer': {
+                    'dash_path': {
+                        'type': 'path_hierarchy',
+                        'delimiter': '-'
+                    }
+                },
+                'filter': {
+                    'ngram': {
+                        'type': 'ngram',
+                        'min_gram': 3,
+                        'max_gram': 50
+                    }
+                }
+            }
+        }
+    }
 
 
 def collection_mapping(collection, embed=True):
@@ -122,10 +155,13 @@ def collection_mapping(collection, embed=True):
         for prop in props:
             if len(props) == props.index(prop) + 1:
                 new_mapping[prop]['boost'] = boost_values[value]
+                if prop == 'assay_term_name':
+                    new_mapping[prop]['analyzer'] = 'dash_path'
                 del(new_mapping[prop]['fields'][prop]['include_in_all'])
                 new_mapping = mapping['properties']
             else:
                 new_mapping = new_mapping[prop]['properties']
+    mapping['_all'] = {'analyzer': 'encoded'}
     return mapping
 
 
@@ -149,10 +185,10 @@ def run(app, collections=None, dry_run=False):
             continue
 
         try:
-            es.create_index(collection_name)
+            es.create_index(collection_name, index_settings(collection_name))
         except IndexAlreadyExistsError:
             es.delete_index(collection_name)
-            es.create_index(collection_name)
+            es.create_index(collection_name, index_settings(collection_name))
 
         es.put_mapping(collection_name, DOCTYPE, {'basic': mapping})
         es.refresh(collection_name)
