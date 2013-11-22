@@ -18,6 +18,8 @@ from .. import edw_file
 ################
 # Globals
 
+# Change this when file schema changes
+FILE_SCHEMA_VERSION = '1'
 
 DEFAULT_INI = 'production.ini'  # Default application initialization file
 
@@ -33,6 +35,7 @@ REPLICATES = 'replicates'
 DATASETS = 'datasets'
 
 SEARCH_URL = '/search/?searchTerm='
+FILE_PROFILE_URL = '/profiles/file.json'
 
 app_host_name = 'localhost'
 
@@ -143,6 +146,14 @@ def make_app(application, username, password):
     else:
         app = internal_app(application, username)
     # END CAUTION
+
+    # check schema version
+    resp = app.get(FILE_PROFILE_URL)
+    schema = resp.json['properties']['schema_version']['default']
+    if schema != FILE_SCHEMA_VERSION:
+        sys.stderr.write('ERROR: File schema has changed: is %s, expecting %s\n' %
+                        (schema, FILE_SCHEMA_VERSION))
+        sys.exit(1)
     return app
 
 
