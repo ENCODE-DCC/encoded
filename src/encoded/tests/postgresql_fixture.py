@@ -1,6 +1,7 @@
 import os.path
 
 def server_process(datadir, prefix='', echo=False):
+    from urllib import quote
     import subprocess
     init_args = [
         os.path.join(prefix, 'initdb'),
@@ -49,7 +50,7 @@ def server_process(datadir, prefix='', echo=False):
         process.stdout.close()
 
     if echo:
-        print 'Created: postgresql://postgres@:5432/postgres?host=%s' % datadir
+        print 'Created: postgresql://postgres@:5432/postgres?host=%s' % quote(datadir)
 
     return process
 

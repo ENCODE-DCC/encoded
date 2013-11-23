@@ -11,11 +11,12 @@ pytestmark = [pytest.mark.indexing]
 
 @pytest.yield_fixture(scope='session')
 def postgresql_server():
+    from urllib import quote
     from .postgresql_fixture import server_process
-    tmpdir = pytest.ensuretemp('postgresql')
-    process = server_process(str(tmpdir))
+    tmpdir = str(pytest.ensuretemp('postgresql'))
+    process = server_process(tmpdir)
 
-    yield 'postgresql://postgres@:5432/postgres?host=%s' % tmpdir
+    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
 
     if process.poll() is None:
         process.terminate()
