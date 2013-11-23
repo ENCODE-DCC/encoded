@@ -89,7 +89,7 @@ def index_settings(index):
                 },
                 'filter': {
                     'ngram': {
-                        'type': 'ngram',
+                        'type': 'edgeNgram',
                         'min_gram': 3,
                         'max_gram': 50
                     }
