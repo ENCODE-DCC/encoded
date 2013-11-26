@@ -12,7 +12,8 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
@@ -81,7 +82,7 @@
             "description": "The Pubmed identifiers used as references for the software.",
             "type": "array",
             "default": [],
-            "reference": {
+            "items": {
                 "title": "Reference",
                 "description": "A Pubmed identifier used as a reference for the software.",
                 "type": "string",

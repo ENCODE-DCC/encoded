@@ -29,3 +29,14 @@
 .navbar-inverse .brand:hover {
     @include text-shadow(0px 0px 8px rgba(255, 255, 255, 0.8));
 }
+
+/* Disabled sign in link */
+.navbar .nav > li > a[disabled] {
+    color: $grayLight;
+}
+.navbar .nav > li > a[disabled]:focus,
+.navbar .nav > li > a[disabled]:hover {
+  background-color: transparent;
+  color: $grayLight;
+  cursor: default;
+}

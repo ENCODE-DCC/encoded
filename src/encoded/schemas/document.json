@@ -14,7 +14,8 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" }
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
@@ -51,7 +52,7 @@
             "description": "The Pubmed identifiers that the document references.",
             "type": "array",
             "default": [],
-            "reference": {
+            "items": {
                 "title": "Reference",
                 "description": "A Pubmed identifier that the document references.",
                 "type": "string",
@@ -63,7 +64,7 @@
             "description": "External resources with additional information to the document.",
             "type": "array",
             "default": [],
-            "reference": {
+            "items": {
                 "title": "URL",
                 "description": "An external resource with additional information to the document.",
                 "type": "string",

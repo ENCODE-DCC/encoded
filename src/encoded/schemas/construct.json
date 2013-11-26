@@ -15,7 +15,8 @@
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/product_id" },
-        { "$ref": "mixins.json#/source" }
+        { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
@@ -59,6 +60,7 @@
                 "description": "Recombinant tag in the construct.",
                 "comment": "Submit tag name and tag location.",
                 "type": "object",
+                "additionalProperties": false,
                 "properties": {
                     "name": {
                         "type": "string",

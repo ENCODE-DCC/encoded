@@ -1,7 +1,9 @@
 /** @jsx React.DOM */
-define(['exports', 'jquery', 'react', 'globals', 'd3'],
-function (search, $, React, globals, d3) {
-    'use strict';
+'use strict';
+var React = require('react');
+var url = require('url');
+var globals = require('./globals');
+var search = module.exports;
 
     var FacetBuilder = search.FacetBuilder = React.createClass({
         render: function() {
@@ -9,7 +11,7 @@ function (search, $, React, globals, d3) {
             var result_count = context['@graph']['results'].length;
             var facets = context['@graph']['facets'];
             var terms = [];
-            var url = (this.props.location)['search'];
+            var href_search = url.parse(this.props.href).search || '';
             for (var i in facets) {
                 terms.push(i);
             }
@@ -34,7 +36,7 @@ function (search, $, React, globals, d3) {
                             </li>
                     }else {
                         return <li>
-                                <a href={url+'&'+field+'='+id}>
+                                <a href={href_search+'&'+field+'='+id}>
                                     <label><small>{id} ({count})</small></label>
                                 </a>
                             </li>
@@ -61,7 +63,7 @@ function (search, $, React, globals, d3) {
                             </li>
                     }else {
                         return <li>
-                                <a href={url+'&'+field+'='+id}>
+                                <a href={href_search+'&'+field+'='+id}>
                                     <label><small>{id} ({count})</small></label>
                                 </a>
                             </li>
@@ -74,14 +76,14 @@ function (search, $, React, globals, d3) {
                 var termID = term.replace(/\s+/g, '');
                 return <div>
                         <legend><small>{term}</small></legend>
-                        <ul class="facet-list">
+                        <ul className="facet-list">
                             {facets[term].length ?
                                 facets[term].map(buildTerms)
                             : null}
                         </ul>
                         {facets[term].length > 3 ?
-                            <ul class="facet-list">
-                                <div id={termID} class="collapse">
+                            <ul className="facet-list">
+                                <div id={termID} className="collapse">
                                     {facets[term].length ?
                                         facets[term].map(buildCollapsingTerms)
                                     : null}
@@ -89,9 +91,9 @@ function (search, $, React, globals, d3) {
                             </ul>
                         : null}
                         {facets[term].length > 3 ?
-                            <label class="pull-right">
+                            <label className="pull-right">
                                     <small>
-                                        <button type="button" class="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
+                                        <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
                                     </small>
                             </label>
                         : null}
@@ -108,18 +110,36 @@ function (search, $, React, globals, d3) {
         }
     });
 
-    var ResultTable = search.ResultTable = React.createClass({
+    var Viz = search.Viz = React.createClass({
         render: function() {
-            var context = this.props.context;
-            var results = context['@graph'];
-            var url = (this.props.location)['search'];
-            var facets = context['@graph']['facets'];
-            var myNode = document.getElementById("viz");
+            return (
+                <div className="panel data-display">
+                    <legend>Biosample Facet Distribution</legend>
+                    <div id="viz" ref="viz"></div>
+                </div>
+            );
+        },
+
+        componentDidMount: function() {
+            this.renderGraph();
+        },
+
+        componentDidUpdate: function() {
+            var myNode = this.refs.viz;
             if(myNode) {
                 while (myNode.firstChild) {
                     myNode.removeChild(myNode.firstChild);
                 }
             }
+            this.renderGraph();
+        },
+
+        renderGraph: function() {
+            var context = this.props.context;
+            var results = context['@graph'];
+            var href_search = url.parse(this.props.href).search || '';
+            var facets = context['@graph']['facets'];
+
             for (var key in facets) {
                 var data = [];
                 for (var key1 in facets[key]) {
@@ -130,7 +150,7 @@ function (search, $, React, globals, d3) {
                             data1['count'] = facets[key][key1][key2];
                         }
                         if(key2 == 'field') {
-                            data1['link'] = url + '?searchTerm=*&type=biosamples&' + facets[key][key1][key2] + "="; 
+                            data1['link'] = href_search + '?searchTerm=*&type=biosamples&' + facets[key][key1][key2] + "="; 
                         }
                     }
                     data.push(data1);
@@ -150,6 +170,7 @@ function (search, $, React, globals, d3) {
                 var barLink  = function(d) { return d['link'] + d['label']; };
                  
                 // scales
+                var d3 = require('d3');
                 var yScale = d3.scale.ordinal().domain(d3.range(0, data.length)).rangeBands([0, data.length * barHeight]);
                 var y = function(d, i) { return yScale(i); };
                 var yText = function(d, i) { return y(d, i) + yScale.rangeBand() / 2; };
@@ -236,47 +257,57 @@ function (search, $, React, globals, d3) {
                     .text(key)
                     .attr("fill", "steelblue");
             }
+        }
+    });
+
+
+    var ResultTable = search.ResultTable = React.createClass({
+        render: function() {
+            var context = this.props.context;
+            var results = context['@graph'];
+            var href_search = url.parse(this.props.href).search || '';
+            var facets = context['@graph']['facets'];
 
             var resultsView = function(result) {
                 var highlight = result['highlight'];
                 switch (result['@type'][0]) {
                     case "biosample":
-                        return <li class="post">
+                        return <li className="post">
                                     <strong><small>Biosample</small></strong>
-                                    <div class="accession"><a href={result['@id']}>{result['accession']}</a></div>
+                                    <div className="accession"><a href={result['@id']}>{result['accession']}</a></div>
                                     <small>{result['biosample_term_name']} - {result['biosample_term_id']} - {result['lab.title']}
                                         <br />
-                                        <div class="highlight"dangerouslySetInnerHTML={{__html: highlight.toString()}} />
+                                        <div className="highlight"dangerouslySetInnerHTML={{__html: highlight.toString()}} />
                                     </small>
                             </li>
                         break;
                     case "experiment":
-                        return <li class="post">
+                        return <li className="post">
                                     <strong><small>Experiment</small></strong>
-                                    <div class="accession"><a href={result['@id']}>{result['accession']}</a></div>
+                                    <div className="accession"><a href={result['@id']}>{result['accession']}</a></div>
                                     <small>{result['description']} - {result['assay_term_name']} - {result['lab.title']}
                                         <br />
-                                        <div class="highlight" dangerouslySetInnerHTML={{__html: highlight.toString()}} />
+                                        <div className="highlight" dangerouslySetInnerHTML={{__html: highlight.toString()}} />
                                     </small>
                             </li>
                         break;
                     case "antibody_approval":
-                        return <li class="post">
+                        return <li className="post">
                                 <strong><small>Antibody</small></strong>
-                                <div class="accession"><a href={result['@id']}>{result['antibody.accession']}</a></div>
+                                <div className="accession"><a href={result['@id']}>{result['antibody.accession']}</a></div>
                                 <small>{result['target.label']} - {result['antibody.source.title']}
                                     <br />
-                                    <div class="highlight" dangerouslySetInnerHTML={{__html: highlight.toString()}} />
+                                    <div className="highlight" dangerouslySetInnerHTML={{__html: highlight.toString()}} />
                                 </small>
                             </li>
                         break;
                     case "target":
-                        return <li class="post">
+                        return <li className="post">
                                 <strong><small>Target</small></strong>
-                                <div class="accession"><a href={result['@id']}>{result['label']}</a></div>
+                                <div className="accession"><a href={result['@id']}>{result['label']}</a></div>
                                 <small>{result['organism.name']}
                                     <br />
-                                    <div  class="highlight" dangerouslySetInnerHTML={{__html: highlight.toString()}} />
+                                    <div  className="highlight" dangerouslySetInnerHTML={{__html: highlight.toString()}} />
                                 </small>
                             </li>
                         break;
@@ -284,56 +315,50 @@ function (search, $, React, globals, d3) {
             };  
             return (
                     <div>
-                        {results['results'].length == 0 ?
-                            <div class="panel data-display">
-                                <legend>Biosample Facet Distribution</legend>
-                                <div id="viz"></div>
-                            </div>
-                        : null}
                         {results['results'].length ?
-                            <div class="panel data-display">
-                                <div class="row">
-                                    <div class="span3" id="facets">
+                            <div className="panel data-display">
+                                <div className="row">
+                                    <div className="span3" id="facets">
                                         <h4>Filter Results</h4>
-                                        <section class="facet box">
+                                        <section className="facet box">
                                             <div>
                                                 <legend><small>Data Type</small></legend>
-                                                <ul class="facet-list">
+                                                <ul className="facet-list">
                                                     {results['count']['antibodies'] ?
                                                         <li>
-                                                            <span class="badge pull-right">{results['count']['antibodies']}</span>
-                                                            <a href={url+'&type=antibodies'}><small>Antibodies</small></a>
+                                                            <span className="badge pull-right">{results['count']['antibodies']}</span>
+                                                            <a href={href_search+'&type=antibodies'}><small>Antibodies</small></a>
                                                         </li>
                                                     : null}
                                                     {results['count']['biosamples'] ?
                                                         <li>
-                                                            <span class="badge pull-right">{results['count']['biosamples']}</span>
-                                                            <a href={url+'&type=biosamples'}><small>Biosamples</small></a>
+                                                            <span className="badge pull-right">{results['count']['biosamples']}</span>
+                                                            <a href={href_search+'&type=biosamples'}><small>Biosamples</small></a>
                                                         </li>
                                                     : null}
                                                     {results['count']['experiments'] ?
                                                         <li>
-                                                            <span class="badge pull-right">{results['count']['experiments']}</span>
-                                                            <a href={url+'&type=experiments'}><small>Experiments</small></a>
+                                                            <span className="badge pull-right">{results['count']['experiments']}</span>
+                                                            <a href={href_search+'&type=experiments'}><small>Experiments</small></a>
                                                         </li>
                                                     : null}
                                                     {results['count']['targets'] ?
                                                         <li>
-                                                            <span class="badge pull-right">{results['count']['targets']}</span>
-                                                            <a href={url+'&type=targets'}><small>Targets</small></a>
+                                                            <span className="badge pull-right">{results['count']['targets']}</span>
+                                                            <a href={href_search+'&type=targets'}><small>Targets</small></a>
                                                         </li>
                                                     : null}
                                                 </ul>
                                             </div>
                                             {Object.keys(results['facets']).length ?
-                                                <FacetBuilder location={this.props.location} context={this.props.context} />
+                                                this.transferPropsTo(<FacetBuilder />)
                                             :null }
                                         </section>
                                     </div>
-                                    <div class="span8">
+                                    <div className="span8">
                                         <legend>{results['results'].length} Results Found</legend>
-                                        <div class="results">
-                                            <ul class = "nav">
+                                        <div className="results">
+                                            <ul className="nav">
                                                 {results['results'].length ?
                                                     results['results'].map(resultsView)
                                                 : null}
@@ -342,11 +367,12 @@ function (search, $, React, globals, d3) {
                                     </div>
                                 </div>
                             </div>  
-                    : null}
-                </div>  
-            );
+                        : (Object.keys(results['facets']).length ? this.transferPropsTo(<Viz />) : <h4>No Results Found</h4>) }
+                    </div>  
+                );
+            }
         }
-    });
+    );
 
 
     var Search = search.Search = React.createClass({
@@ -358,18 +384,16 @@ function (search, $, React, globals, d3) {
             var results = context['@graph'];
             return (
                 <div >
-                    <form class="input-prepend">
-                        <span class="add-on"><i class="icon-search"></i></span>
-                        <input class="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
+                    <form className="input-prepend">
+                        <span className="add-on"><i className="icon-search"></i></span>
+                        <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
                     </form>
                     {Object.keys(results).length ?
-                        <ResultTable location={this.props.location} context={this.props.context} />
-                    :null }
+                        this.transferPropsTo(<ResultTable />)
+                    : <h4>Please enter a search term </h4>}
                 </div>
             );
         }
     });
 
     globals.content_views.register(Search, 'search');
-    return search;
-});

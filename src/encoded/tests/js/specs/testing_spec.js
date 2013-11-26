@@ -1,10 +1,8 @@
-define(['jquery', 'underscore', 'jsx!app', 'jasmine'],
-function testing_spec($, _, app) {
+var _ = require('underscore');
+var encoded = require('main');
 
-    describe("The testing setup", function() {
-        it("is able to import the application", function() {
-            expect(_.isObject(app)).toBe(true);
-        });
+describe("The testing setup", function() {
+    it("is able to import the application", function() {
+        expect(_.isObject(encoded)).toBe(true);
     });
-
 });

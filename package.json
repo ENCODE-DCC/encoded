@@ -1,0 +1,31 @@
+{
+  "name": "encoded",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "files": [],
+  "repository": "ENCODE-DCC/encoded",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "browserify": "~2.34.3",
+    "reactify": "~0.4.0",
+    "deamdify": "~0.1.1",
+    "grunt-cli": "~0.1.9",
+    "mold-source-map": "~0.2.0",
+    "browserify-shim": "~2.0.8"
+  },
+  "dependencies": {
+    "underscore": "~1.5.2",
+    "domready": "~0.2.13",
+    "es5-shim": "~2.1.0",
+    "react-tools": "~0.5.1",
+    "twitter-bootstrap": "~2.1.1",
+    "jquery-browser": "~1.10.2-1",
+    "d3-browser": "~3.2.1-1",
+    "source-map-support": "~0.2.4"
+  }
+}

@@ -98,9 +98,18 @@ def workbook(app, app_settings):
 
 
 @fixture
-def htmltestapp(request, app, external_tx, zsa_savepoints):
+def anonhtmltestapp(request, app, external_tx, zsa_savepoints):
     from webtest import TestApp
     return TestApp(app)
+
+
+@fixture
+def htmltestapp(request, app, external_tx, zsa_savepoints):
+    from webtest import TestApp
+    environ = {
+        'REMOTE_USER': 'TEST',
+    }
+    return TestApp(app, environ)
 
 
 @fixture
@@ -159,28 +168,9 @@ def server_host_port():
 @fixture(scope='session')
 def _server(request, app, zsa_savepoints, server_host_port):
     from webtest.http import StopableWSGIServer
-    import threading
-    from webtest.http import get_free_port
-
-    def create(cls, application, **kwargs):
-        """Start a server to serve ``application``. Return a server
-        instance."""
-        host, port = get_free_port()
-        kwargs['port'] = port
-        if 'host' not in kwargs:
-            kwargs['host'] = host
-        if 'expose_tracebacks' not in kwargs:
-            kwargs['expose_tracebacks'] = True
-        server = cls(application, **kwargs)
-        server.runner = threading.Thread(target=server.run)
-        server.runner.daemon = True
-        server.runner.start()
-        return server
-
     host, port = server_host_port
 
-    server = create(
-        StopableWSGIServer,
+    server = StopableWSGIServer.create(
         app,
         host=host,
         port=port,
