@@ -11,3 +11,4 @@ require('bootstrap-tab');
 require('bootstrap-tooltip');
 require('bootstrap-transition');
 require('bootstrap-typeahead');
+require('stickyheader');

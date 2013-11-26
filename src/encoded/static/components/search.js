@@ -1,8 +1,9 @@
 /** @jsx React.DOM */
-define(['exports', 'react', 'url', './globals'],
-function (exports, React, url, globals) {
-    'use strict';
-    var search = exports;
+'use strict';
+var React = require('react');
+var url = require('url');
+var globals = require('./globals');
+var search = module.exports;
 
     var FacetBuilder = search.FacetBuilder = React.createClass({
         render: function() {
@@ -10,7 +11,7 @@ function (exports, React, url, globals) {
             var result_count = context['@graph']['results'].length;
             var facets = context['@graph']['facets'];
             var terms = [];
-            var url = url.parse(this.props.href).search;
+            var href_search = url.parse(this.props.href).search || '';
             for (var i in facets) {
                 terms.push(i);
             }
@@ -35,7 +36,7 @@ function (exports, React, url, globals) {
                             </li>
                     }else {
                         return <li>
-                                <a href={url+'&'+field+'='+id}>
+                                <a href={href_search+'&'+field+'='+id}>
                                     <label><small>{id} ({count})</small></label>
                                 </a>
                             </li>
@@ -62,7 +63,7 @@ function (exports, React, url, globals) {
                             </li>
                     }else {
                         return <li>
-                                <a href={url+'&'+field+'='+id}>
+                                <a href={href_search+'&'+field+'='+id}>
                                     <label><small>{id} ({count})</small></label>
                                 </a>
                             </li>
@@ -109,18 +110,36 @@ function (exports, React, url, globals) {
         }
     });
 
-    var ResultTable = search.ResultTable = React.createClass({
+    var Viz = search.Viz = React.createClass({
         render: function() {
-            var context = this.props.context;
-            var results = context['@graph'];
-            var url = url.parse(this.props.href).search;
-            var facets = context['@graph']['facets'];
-            var myNode = document.getElementById("viz");
+            return (
+                <div className="panel data-display">
+                    <legend>Biosample Facet Distribution</legend>
+                    <div id="viz" ref="viz"></div>
+                </div>
+            );
+        },
+
+        componentDidMount: function() {
+            this.renderGraph();
+        },
+
+        componentDidUpdate: function() {
+            var myNode = this.refs.viz;
             if(myNode) {
                 while (myNode.firstChild) {
                     myNode.removeChild(myNode.firstChild);
                 }
             }
+            this.renderGraph();
+        },
+
+        renderGraph: function() {
+            var context = this.props.context;
+            var results = context['@graph'];
+            var href_search = url.parse(this.props.href).search || '';
+            var facets = context['@graph']['facets'];
+
             for (var key in facets) {
                 var data = [];
                 for (var key1 in facets[key]) {
@@ -131,7 +150,7 @@ function (exports, React, url, globals) {
                             data1['count'] = facets[key][key1][key2];
                         }
                         if(key2 == 'field') {
-                            data1['link'] = url + '?searchTerm=*&type=biosamples&' + facets[key][key1][key2] + "="; 
+                            data1['link'] = href_search + '?searchTerm=*&type=biosamples&' + facets[key][key1][key2] + "="; 
                         }
                     }
                     data.push(data1);
@@ -238,6 +257,16 @@ function (exports, React, url, globals) {
                     .text(key)
                     .attr("fill", "steelblue");
             }
+        }
+    });
+
+
+    var ResultTable = search.ResultTable = React.createClass({
+        render: function() {
+            var context = this.props.context;
+            var results = context['@graph'];
+            var href_search = url.parse(this.props.href).search || '';
+            var facets = context['@graph']['facets'];
 
             var resultsView = function(result) {
                 var highlight = result['highlight'];
@@ -286,12 +315,6 @@ function (exports, React, url, globals) {
             };  
             return (
                     <div>
-                        {results['results'].length == 0 ?
-                            <div className="panel data-display">
-                                <legend>Biosample Facet Distribution</legend>
-                                <div id="viz"></div>
-                            </div>
-                        : null}
                         {results['results'].length ?
                             <div className="panel data-display">
                                 <div className="row">
@@ -304,25 +327,25 @@ function (exports, React, url, globals) {
                                                     {results['count']['antibodies'] ?
                                                         <li>
                                                             <span className="badge pull-right">{results['count']['antibodies']}</span>
-                                                            <a href={url+'&type=antibodies'}><small>Antibodies</small></a>
+                                                            <a href={href_search+'&type=antibodies'}><small>Antibodies</small></a>
                                                         </li>
                                                     : null}
                                                     {results['count']['biosamples'] ?
                                                         <li>
                                                             <span className="badge pull-right">{results['count']['biosamples']}</span>
-                                                            <a href={url+'&type=biosamples'}><small>Biosamples</small></a>
+                                                            <a href={href_search+'&type=biosamples'}><small>Biosamples</small></a>
                                                         </li>
                                                     : null}
                                                     {results['count']['experiments'] ?
                                                         <li>
                                                             <span className="badge pull-right">{results['count']['experiments']}</span>
-                                                            <a href={url+'&type=experiments'}><small>Experiments</small></a>
+                                                            <a href={href_search+'&type=experiments'}><small>Experiments</small></a>
                                                         </li>
                                                     : null}
                                                     {results['count']['targets'] ?
                                                         <li>
                                                             <span className="badge pull-right">{results['count']['targets']}</span>
-                                                            <a href={url+'&type=targets'}><small>Targets</small></a>
+                                                            <a href={href_search+'&type=targets'}><small>Targets</small></a>
                                                         </li>
                                                     : null}
                                                 </ul>
@@ -344,11 +367,12 @@ function (exports, React, url, globals) {
                                     </div>
                                 </div>
                             </div>  
-                    : null}
-                </div>  
-            );
+                        : (Object.keys(results['facets']).length ? this.transferPropsTo(<Viz />) : <h4>No Results Found</h4>) }
+                    </div>  
+                );
+            }
         }
-    });
+    );
 
 
     var Search = search.Search = React.createClass({
@@ -362,16 +386,14 @@ function (exports, React, url, globals) {
                 <div >
                     <form className="input-prepend">
                         <span className="add-on"><i className="icon-search"></i></span>
-                        <input className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
+                        <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
                     </form>
                     {Object.keys(results).length ?
                         this.transferPropsTo(<ResultTable />)
-                    :null }
+                    : <h4>Please enter a search term </h4>}
                 </div>
             );
         }
     });
 
     globals.content_views.register(Search, 'search');
-    return search;
-});

@@ -1,10 +1,9 @@
 /** @jsx React.DOM */
-define(['exports', 'react', './globals'],
-function (exports, React, globals) {
-    'use strict';
+'use strict';
+var React = require('react');
+var globals = require('./globals');
 
-
-    var Item = exports.Item = React.createClass({
+    var Item = module.exports.Item = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
@@ -34,7 +33,7 @@ function (exports, React, globals) {
     };
 
 
-    var Panel = exports.Panel = React.createClass({
+    var Panel = module.exports.Panel = React.createClass({
         render: function() {
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-detail panel');
@@ -57,7 +56,7 @@ function (exports, React, globals) {
     };
 
 
-    var title = exports.title = function (props) {
+    var title = module.exports.title = function (props) {
         var context = props.context;
         return context.title || context.name || context.accession || context['@id'];
     };
@@ -69,7 +68,3 @@ function (exports, React, globals) {
     globals.listing_titles.fallback = function () {
         return title;
     };
-
-
-    return exports;
-});
