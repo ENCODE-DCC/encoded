@@ -18,16 +18,18 @@ packages:
 - libfreetype6-dev
 - libjpeg-dev
 - libmagic-dev
+- libpq-dev
 - libssl-dev
 - libxml2-dev
 - libxslt1-dev
 - lzop
-- ruby-dev
+- mysql-devel
+- npm
 - postgresql-9.3
-- libpq-dev
 - pv
 - python2.7-dev
 - python-virtualenv
+- ruby-dev
 - zlib1g-dev
 
 users:
