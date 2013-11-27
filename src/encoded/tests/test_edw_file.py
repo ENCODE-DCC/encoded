@@ -13,8 +13,53 @@ TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 # test_format_app
 
 #@pytest.mark.parametrize('test_num', [1, 2])
-# resisting parameterization, as test 1 will go much quicker 
+# resisting parameterization, as test 1 will go much quicker
 # w/o loading workbook which isn't needed
+
+# def format_app_fileinfo(app, file_dict, exclude=None):
+# def format_reader_fileinfo(file_dict):
+# def basic_auth(username, password):
+# def remote_app(base, username='', password=''):
+# def internal_app(configfile, username=''):
+# def make_app(application, username, password):
+# def collection_url(collection):
+# def get_collection(app, collection):
+# def get_encode2_accessions(app, encode3_acc):
+# def is_encode2_experiment(app, accession):
+# def get_phase(app, fileinfo):
+# def get_encode2_to_encode3(app):
+# def get_encode3_experiment(app, accession):
+# def set_fileinfo_experiment(app, fileinfo):
+# def replicate_key(experiment, bio_rep, tech_rep):
+# def set_fileinfo_replicate(app, fileinfo):
+# def get_app_fileinfo(app, full=True, limit=0, exclude=None,
+# def get_app_filelist(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
+# def get_missing_filelist_from_lists(app_accs, edw_accs):
+# def get_missing_filelist(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+# def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+# def post_fileinfo(app, fileinfo):
+# def put_fileinfo(app, fileinfo):
+# def patch_fileinfo(app, props, propinfo):
+# def show_edw_fileinfo(edw, full=True, limit=None, experiment=True,
+# def show_app_fileinfo(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
+# def show_missing_fileinfo(app, edw, full=True, phase=edw_file.ENCODE_PHASE_ALL):
+# def post_app_fileinfo(input_file, app):
+# def modify_app_fileinfo(input_file, app):
+# def update_app_fileinfo(input_file, app):
+# def convert_fileinfo(input_file, app):
+# def get_sync_filename():
+# def get_last_id_synced():
+# def update_last_id_synced(last_id):
+
+## edw_file
+# def format_edw_fileinfo(file_dict, exclude=None):
+# def make_edw(data_host=None):
+# def dump_filelist(fileaccs, header=True, typeField=None):
+# def dump_fileinfo(fileinfos, header=True, typeField=None, exclude=None):
+# def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
+# def get_edw_max_id(edw):
+# def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
+
 
 def test_format_app_fileinfo_expanded(workbook, testapp):
     # Test extracting EDW-relevant fields from encoded file.json
@@ -37,9 +82,9 @@ def test_format_app_fileinfo_expanded(workbook, testapp):
 def test_list_new(workbook, testapp):
     # Test obtaining list of 'new' accessions (at EDW, not at app)
     # Unexpanded JSON (requires GETs on embedded URLs)
-    
+
     edw_accs = edw_test_data.new_in
-    app_accs = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp, 
+    app_accs = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp,
                                                                   full=False)
     new_accs = sorted(encoded.commands.read_edw_fileinfo.get_missing_filelist_from_lists(app_accs, edw_accs))
     assert new_accs == sorted(edw_test_data.new_out)
@@ -61,6 +106,7 @@ def test_import_file(workbook, testapp):
 
         encoded.commands.read_edw_fileinfo.format_reader_fileinfo(fileinfo)
         resp = encoded.commands.read_edw_fileinfo.post_fileinfo(testapp, fileinfo)
+        # exercises: set_fileinfo_experiment, set_fileinfo_replicate, POST
         acc = fileinfo['accession']
         url = encoded.commands.read_edw_fileinfo.collection_url(encoded.commands.read_edw_fileinfo.FILES) + acc
         resp = testapp.get(url).maybe_follow()
