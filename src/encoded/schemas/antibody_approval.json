@@ -65,7 +65,6 @@
         "antibody.lot_id": 1.0,
         "antibody.lot_id_alias": 1.0,
         "antibody.antigen_description": 1.0,
-        "antibody.antigen_sequence": 1.0,
         "antibody.clonality": 1.1,
         "antibody.isotype": 1.1,
         "antibody.purifications": 1.1,

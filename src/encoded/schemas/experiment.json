@@ -151,7 +151,6 @@
         "replicates.antibody.lot_id": 1.0,
         "replicates.antibody.lot_id_alias": 1.0,
         "replicates.antibody.antigen_description": 1.0,
-        "replicates.antibody.antigen_sequence": 1.0,
         "replicates.antibody.clonality": 1.1,
         "replicates.antibody.isotype": 1.1,
         "replicates.antibody.purifications": 1.1,
