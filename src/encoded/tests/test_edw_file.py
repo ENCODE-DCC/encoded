@@ -5,6 +5,8 @@ from csv import DictReader
 import encoded.commands.read_edw_fileinfo
 import edw_test_data
 
+pytestmark = [pytest.mark.edw_file]
+
 # globals
 EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
 
