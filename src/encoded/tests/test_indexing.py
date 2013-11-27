@@ -54,39 +54,43 @@ def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     return settings
 
 
-# Renamed because https://bitbucket.org/hpk42/pytest/issue/392
-
-@pytest.yield_fixture(scope='session')
-def real_app(app_settings):
+@pytest.fixture(scope='session')
+def app(request, app_settings):
     '''WSGI application level functional testing.
     '''
+    from encoded.storage import DBSession
+
+    DBSession.remove()
+    DBSession.configure(bind=None)
+
     from encoded import main
     app = main({}, **app_settings)
 
     from encoded.commands import create_mapping
     create_mapping.run(app)
 
-    yield app
+    @request.addfinalizer
+    def teardown_app():
+        # Dispose connections so postgres can tear down
+        DBSession.bind.pool.dispose()
+        DBSession.remove()
+        DBSession.configure(bind=None)
 
-    # Dispose connections so postgres can tear down
-    from encoded.storage import DBSession
-    DBSession.bind.pool.dispose()
-    DBSession.remove()
-    DBSession.configure(bind=None)
+    return app
 
 
 @pytest.fixture
-def real_testapp(real_app):
+def testapp(app):
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'TEST',
     }
-    return TestApp(real_app, environ)
+    return TestApp(app, environ)
 
 
 @pytest.yield_fixture
-def dbapi_conn(real_app):
+def dbapi_conn(app):
     from encoded.storage import DBSession
     connection = DBSession.bind.pool.unique_connection()
     connection.detach()
@@ -104,29 +108,30 @@ def listening_conn(dbapi_conn):
     cursor.close()
 
 
-def test_indexing_workbook(real_testapp):
+@pytest.mark.slow
+def test_indexing_workbook(testapp):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(real_testapp, inserts, docsdir)
-    res = real_testapp.post_json('/index', {})
+    load_all(testapp, inserts, docsdir)
+    res = testapp.post_json('/index', {})
     assert res.json['invalidated']
 
 
-def test_indexing(real_testapp):
-    res = real_testapp.post_json('/index', {})
+def test_indexing(testapp):
+    res = testapp.post_json('/index', {})
     assert res.json['txn_count'] == 0
     assert res.json['invalidated'] == []
-    res = real_testapp.post_json('/testing-post-put-patch/', {'required': ''})
+    res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
     uuid = res.json['@graph'][0]['uuid']
-    res = real_testapp.post_json('/index', {})
+    res = testapp.post_json('/index', {})
     assert res.json['txn_count'] == 1
     assert res.json['invalidated'] == [uuid]
 
 
-def test_listening(real_testapp, listening_conn):
-    res = real_testapp.post_json('/testing-post-put-patch/', {'required': ''})
+def test_listening(testapp, listening_conn):
+    res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
     listening_conn.poll()
     assert len(listening_conn.notifies) == 1
     notify = listening_conn.notifies.pop()
