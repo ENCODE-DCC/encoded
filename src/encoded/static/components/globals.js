@@ -18,7 +18,7 @@ module.exports.itemClass = function (context, htmlClass) {
         htmlClass += ' type-' + type;
     });
     if (typeof context.status == 'string') {
-        htmlClass += ' status-' + context.status.toLowerCase();
+        htmlClass += ' status-' + context.status.toLowerCase().replace(' ', '-');
     }
     return htmlClass;
 };
