@@ -34,7 +34,7 @@ _app_settings = {
 
 
 @fixture(scope='session')
-def app_settings(server_host_port):
+def app_settings(request, server_host_port, connection):
     settings = _app_settings.copy()
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
     return settings
@@ -74,28 +74,34 @@ def dummy_request():
 
 
 @fixture(scope='session')
-def app(check_constraints, zsa_savepoints, app_settings):
+def app(zsa_savepoints, check_constraints, app_settings):
     '''WSGI application level functional testing.
     '''
     from encoded import main
     return main({}, **app_settings)
 
 
-@pytest.datafixture
-def workbook(app, app_settings):
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST',
-    }
-    testapp = TestApp(app, environ)
+@pytest.mark.fixture_cost(1000)
+@pytest.yield_fixture(scope='session')
+def workbook(connection, app, app_settings):
+    tx = connection.begin_nested()
+    try:
+        from webtest import TestApp
+        environ = {
+            'HTTP_ACCEPT': 'application/json',
+            'REMOTE_USER': 'TEST',
+        }
+        testapp = TestApp(app, environ)
 
-    from ..loadxl import load_all
-    from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir)
+        from ..loadxl import load_all
+        from pkg_resources import resource_filename
+        inserts = resource_filename('encoded', 'tests/data/inserts/')
+        docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+        load_all(testapp, inserts, docsdir)
 
+        yield
+    finally:
+        tx.rollback()
 
 @fixture
 def anonhtmltestapp(app, external_tx):
@@ -165,6 +171,7 @@ def server_host_port():
     return get_free_port()
 
 
+@pytest.mark.fixture_cost(10)
 @fixture(scope='session')
 def _server(request, app, server_host_port):
     from webtest.http import StopableWSGIServer
@@ -185,7 +192,7 @@ def _server(request, app, server_host_port):
     def shutdown():
         server.shutdown()
 
-    return server
+    return 'http://%s:%s' % server_host_port
 
 
 @fixture
@@ -197,33 +204,24 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
-@pytest.datafixture_connection_factory
-def connection_factory(config, name):
+@pytest.yield_fixture(scope='session')
+def connection(request):
     from encoded import configure_engine
     from encoded.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
 
-    scopefunc = config.pluginmanager.getplugin('data').scopefunc
-
+    # ``server`` thread must be in same scope
     if type(DBSession.registry) is not ScopedRegistry:
-        DBSession.registry = ScopedRegistry(DBSession.session_factory, scopefunc)
+        DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
 
     engine_settings = {
-        'sqlalchemy.url': config.option.engine_url,
+        'sqlalchemy.url': request.session.config.option.engine_url,
     }
 
     engine = configure_engine(engine_settings, test_setup=True)
     connection = engine.connect()
     tx = connection.begin()
     try:
-        if engine.url.drivername == 'postgresql':
-            # Create the different test sets in different schemas
-            if name is None:
-                schema_name = 'tests'
-            else:
-                schema_name = 'tests_%s' % name
-            connection.execute('CREATE SCHEMA %s' % schema_name)
-            connection.execute('SET search_path TO %s,public' % schema_name)
         Base.metadata.create_all(bind=connection)
         session = DBSession(scope=None, bind=connection)
         DBSession.registry.set(session)
@@ -236,6 +234,7 @@ def connection_factory(config, name):
 
 @fixture
 def external_tx(request, connection):
+    print 'BEGIN external_tx'
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
     ## The database should be empty unless a data fixture was loaded
@@ -254,7 +253,7 @@ def transaction(request, external_tx, zsa_savepoints, check_constraints):
 
 
 @fixture(scope='session')
-def zsa_savepoints(request, connection_proxy):
+def zsa_savepoints(request, connection):
     """ Place a savepoint at the start of the zope transaction
 
     This means failed requests rollback to the db state when they began rather
@@ -287,7 +286,7 @@ def zsa_savepoints(request, connection_proxy):
             self.sp = self.connection.begin_nested()
             self.state = 'begun'
 
-    zsa_savepoints = Savepoints(connection_proxy)
+    zsa_savepoints = Savepoints(connection)
 
     import transaction
     transaction.manager.registerSynch(zsa_savepoints)
@@ -310,7 +309,7 @@ def session(transaction):
 
 
 @fixture(scope='session')
-def check_constraints(request, connection_proxy):
+def check_constraints(request, connection):
     '''Check deffered constraints on zope transaction commit.
 
     Deferred foreign key constraints are only checked at the outer transaction
@@ -357,7 +356,7 @@ def check_constraints(request, connection_proxy):
                     sp.commit()
                     self.state = None
 
-    check_constraints = CheckConstraints(connection_proxy)
+    check_constraints = CheckConstraints(connection)
 
     import transaction
     transaction.manager.registerSynch(check_constraints)

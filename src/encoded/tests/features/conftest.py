@@ -28,7 +28,7 @@ def browser(context, before_all, set_webdriver):
 def before_all(request, _server, context):
     import behaving.web
     behaving.web.setup(context)
-    context.base_url = _server.application_url
+    context.base_url = _server
 
     @request.addfinalizer
     def after_all():
