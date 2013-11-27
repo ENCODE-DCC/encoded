@@ -9,6 +9,7 @@ import pytest
 pytestmark = [pytest.mark.indexing]
 
 
+@pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')
 def postgresql_server():
     from urllib import quote
@@ -29,6 +30,7 @@ def elasticsearch_host_port():
     return get_free_port()
 
 
+@pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')
 def elasticsearch_server(elasticsearch_host_port):
     from .elasticsearch_fixture import server_process
