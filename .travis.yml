@@ -15,9 +15,11 @@ env:
   - CONNECT_DOWNLOAD=Sauce_Connect.zip
   - CONNECT_LOG=sauce_connect.log
   - READY_FILE=connect.ready
+  - PATH="/usr/share/elasticsearch/bin:$PATH"
 services:
   - elasticsearch
 before_install:
+  - whereis elasticsearch
   - curl $CONNECT_URL > $CONNECT_DOWNLOAD
   - unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
   - >
