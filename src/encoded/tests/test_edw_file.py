@@ -93,8 +93,7 @@ def test_list_new(workbook, testapp):
 def test_import_file(workbook, testapp):
     # Test import of new file to encoded
 
-    test_num = 1    # for parameterization
-    input_file = 'import_in.' + str(test_num) + '.tsv'
+    input_file = 'import_in.1.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + input_file)
     reader = DictReader(f, delimiter='\t')
     for fileinfo in reader:
