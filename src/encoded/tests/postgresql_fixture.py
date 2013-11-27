@@ -1,6 +1,6 @@
 import os.path
 
-def server_process(datadir, prefix='', echo=False):
+def server_process(datadir, prefix='', echo=True):
     from urllib import quote
     import subprocess
     init_args = [
@@ -9,6 +9,8 @@ def server_process(datadir, prefix='', echo=False):
         '-U', 'postgres',
         '--auth=trust',
     ]
+    if echo:
+        print init_args
     output = subprocess.check_output(
         init_args,
         close_fds=True,
