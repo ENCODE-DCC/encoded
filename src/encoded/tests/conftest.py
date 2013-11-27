@@ -171,7 +171,7 @@ def server_host_port():
     return get_free_port()
 
 
-@pytest.mark.fixture_cost(10)
+@pytest.mark.fixture_cost(100)
 @fixture(scope='session')
 def _server(request, app, server_host_port):
     from webtest.http import StopableWSGIServer
