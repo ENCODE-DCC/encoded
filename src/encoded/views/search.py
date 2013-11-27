@@ -13,7 +13,9 @@ def get_filtered_query(term, fields):
             'filtered': {
                 'query': {
                     'queryString': {
-                        'query': term
+                        'query': term,
+                        'analyze_wildcard': True,
+                        'analyzer': 'encoded_search_analyzer'
                     }
                 },
                 'filter': {
@@ -32,11 +34,13 @@ def get_query(term, fields):
     return {
         'query': {
             'query_string': {
-                'query': term
+                'query': term,
+                'analyze_wildcard': True,
+                'analyzer': 'encoded_search_analyzer'
             }
         },
         'facets': {},
-        'fields': fields
+        'fields': fields,
     }
 
 
@@ -108,7 +112,6 @@ def search(context, request):
             elif result_hit['@type'][0] == 'target':
                 result['count']['targets'] += 1
 
-            result_hit['score'] = hit['_score']
             result['@graph'].append(result_hit)
         
         if len(result['@graph']):
@@ -190,7 +193,6 @@ def search(context, request):
 
         for hit in results['hits']['hits']:
             result_hit = hit['fields']
-            result_hit['score'] = hit['_score']
             result['@graph'].append(result_hit)
 
         result['count'][root.by_item_type[collection_name].__name__] = results['hits']['total']

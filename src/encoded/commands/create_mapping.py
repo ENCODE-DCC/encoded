@@ -46,7 +46,8 @@ def schema_mapping(name, schema):
                 # by default ES uses the same named field of a multi_field
                 name: {
                     'type': 'string',
-                    'analyzer': 'encoded',
+                    'search_analyzer': 'encoded_search_analyzer',
+                    'index_amalyzer': 'encoded_index_analyzer',
                     'include_in_all': False
                 },
                 'untouched': {
@@ -71,25 +72,18 @@ def index_settings(index):
         'settings': {
             'analysis': {
                 'analyzer': {
-                    'encoded': {
-                        'type': 'custom',
-                        'tokenizer': 'standard',
-                        'filter': ['standard', 'lowercase', 'stop', 'kstem', 'ngram']
+                    'encoded_search_analyzer': {
+                        'tokenizer': 'keyword',
+                        'filter': ['lowercase']
                     },
-                    'dash_path': {
-                        'type': 'custom',
-                        'tokenizer': 'dash_path'
-                    }
-                },
-                'tokenizer': {
-                    'dash_path': {
-                        'type': 'path_hierarchy',
-                        'delimiter': '-'
+                    'encoded_index_analyzer': {
+                        'tokenizer': 'keyword',
+                        'filter': ['lowercase', 'substring']
                     }
                 },
                 'filter': {
-                    'ngram': {
-                        'type': 'edgeNgram',
+                    'substring': {
+                        'type': 'nGram',
                         'min_gram': 3,
                         'max_gram': 50
                     }
@@ -161,7 +155,7 @@ def collection_mapping(collection, embed=True):
                 new_mapping = mapping['properties']
             else:
                 new_mapping = new_mapping[prop]['properties']
-    mapping['_all'] = {'analyzer': 'encoded'}
+    mapping['_all'] = {'analyzer': 'encoded_index_analyzer'}
     return mapping
 
 
