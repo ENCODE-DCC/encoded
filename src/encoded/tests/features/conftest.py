@@ -29,10 +29,14 @@ def before_all(request, _server, context):
     import behaving.web
     behaving.web.setup(context)
     context.base_url = _server
+    from selenium.common.exceptions import WebDriverException
 
     @request.addfinalizer
     def after_all():
-        behaving.web.teardown(context)
+        try:
+            behaving.web.teardown(context)
+        except WebDriverException:
+            pass  # remote webdriver may already have gone away
 
 
 #@pytest.fixture(scope='function', autouse=True)
