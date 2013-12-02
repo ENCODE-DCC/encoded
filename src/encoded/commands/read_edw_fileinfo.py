@@ -668,11 +668,8 @@ def sync_app_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL, limit=None):
     update_last_id_synced(last_id)
 
 
-def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
-                       phase=edw_file.ENCODE_PHASE_ALL):
-    # Show differences between EDW experiment files and files in app
-    sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
-                      % (phase))
+def get_dicts(edw, app, exclude, phase):
+
     edw_files = edw_file.get_edw_fileinfo(edw, experiment=True,
                                           exclude=exclude, phase=phase)
     edw_dict = { d['accession']:d for d in edw_files }
@@ -680,6 +677,10 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
     #app_files = get_app_fileinfo(app, exclude=exclude, phase=phase, limit=3)
     app_dict = { d['accession']:d for d in app_files }
 
+    return edw_dict, app_dict
+
+
+def inventory_files(app, edw_dict, app_dict):
     # Inventory files
     edw_only = []
     app_only = []
@@ -704,6 +705,24 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
         if accession not in edw_dict:
             app_only.append(app_dict[accession])
 
+    return edw_only, app_only, same, diff_accessions
+
+
+def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
+                       phase=edw_file.ENCODE_PHASE_ALL):
+    # Show differences between EDW experiment files and files in app
+    sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
+                      % (phase))
+
+    edw_dict, app_dict = get_dicts(edw, app, exclude=exclude, phase=phase)
+
+    edw_only, app_only, same, diff_accession = inventory_files(app, edw_dict, app_dict)
+
+    dump_diff(detailed, app, edw_only, app_only, same, diff_accessions)
+
+
+def dump_diff(detailed, app, edw_only, app_only, same, diff_accession):
+
     # Dump out
     if (detailed):
         edw_file.dump_fileinfo(edw_only, typeField='EDW_ONLY', exclude=exclude)
@@ -724,6 +743,16 @@ def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
         sys.stdout.write('SAME: %d\n' % len(same))
         sys.stdout.write('DIFFERENT: %d\n' % len(diff_accessions))
 
+
+def compare_files(a, b):
+    a_keys = set(a.keys())
+    b_keys = set(b.keys())
+    intersect_keys = a_keys.intersection(b_keys)
+    added = a_keys - b_keys
+    removed = b_keys - a_keys
+    #assert(not added and not removed)
+    modified = { o : (a[o], b[o]) for o in intersect_keys if a[o] != b[o] }
+    return modified
 
 ################
 # Main

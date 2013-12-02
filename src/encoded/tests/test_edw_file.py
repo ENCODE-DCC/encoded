@@ -3,6 +3,7 @@ import json
 from csv import DictReader
 
 import encoded.commands.read_edw_fileinfo
+import encoded.edw_file
 import edw_test_data
 
 # globals
@@ -129,4 +130,43 @@ def test_encode2_experiments(workbook, testapp):
 
     # Test identifying an ENCODE 2 experiment
     assert encoded.commands.read_edw_fileinfo.is_encode2_experiment(testapp, encode2_hash.values()[0])
+
+def test_file_sync(workbook, testapp):
+
+    mock_edw_file = 'edw_file_mock.tsv'
+    f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file)
+    reader = DictReader(f, delimiter='\t')
+
+    edw_mock = {}
+    for fileinfo in reader:
+        unidict = {k.decode('utf8'): v.decode('utf8') for k, v in fileinfo.items()}
+        unidict['replicate'] = int(unidict['replicate'])
+        if unidict['replicate'] == encoded.edw_file.NO_REPLICATE_INT:
+            del unidict['replicate']
+        del unidict['test']  # this is in the file for notation purposes only
+        edw_mock[unidict['accession']] = unidict
+
+    assert len(edw_mock) == 23
+
+    app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
+    app_dict = { d['accession']:d for d in app_files }
+    assert len(app_files) == 24  ## just a place holder, could use TYPE_LENGTH from test_views.py
+
+    edw_only, app_only, same, patch = encoded.commands.read_edw_fileinfo.inventory_files(testapp, edw_mock, app_dict)
+    assert len(edw_only) == 10
+    assert len(app_only) == 11
+    for acc in patch:
+        # convert encode2 experiments to 3.
+        edw_mock[acc] = encoded.commands.read_edw_fileinfo.set_fileinfo_experiment(testapp,edw_mock[acc])
+
+        diffs = encoded.commands.read_edw_fileinfo.compare_files(edw_mock[acc], app_dict[acc])
+        import sys
+        sys.stdout.write("File: %s has %s diffs\n" % (acc, diffs))
+
+    assert len(same) == 5
+    assert len(patch) == 8
+
+
+
+
 
