@@ -295,7 +295,7 @@ var Dbxref = dbxref.Dbxref;
                 <div>
                     <form className="input-prepend">
                         <span className="add-on"><i className="icon-search"></i></span>
-                        <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search ENCODE" name="searchTerm" defaultValue={this.state.text} />
+                        <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" name="searchTerm" defaultValue={this.state.text} />
                     </form>
                     {notification === 'Success' ?
                         <div className="panel data-display"> 
