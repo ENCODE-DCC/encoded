@@ -7,7 +7,7 @@ var globals = require('./globals');
 var Approval = module.exports.Approval = React.createClass({
     render: function() {
         var context = this.props.context;
-        var statusClass = 'status-' + (context.status || '').toLowerCase();
+        var statusClass = 'status-' + (context.status || '').toLowerCase().replace(' ', '-');
         var characterizations = context.characterizations.map(function (item) {
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
@@ -80,7 +80,7 @@ globals.content_views.register(Approval, 'antibody_approval');
 var Characterization = module.exports.Characterization = React.createClass({
     render: function() {
         var context = this.props.context;
-        var statusClass = 'status-' + (context.status || '').toLowerCase();
+        var statusClass = 'status-' + (context.status || '').toLowerCase().replace(' ', '-');
         var attachmentHref, attachmentUri;
         var figure, download, src, imgClass, alt;
         var imgClass = "characterization-img characterization-file";
