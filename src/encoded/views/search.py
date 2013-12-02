@@ -69,8 +69,11 @@ def search(context, request):
         size = 100
 
     try:
-        # Wrong way adding wildcards, analyzer should b configured for this functionality
-        search_term = params['searchTerm']
+        search_term = params['searchTerm'].strip()
+        # Handling whitespaces in the search term
+        if not search_term:
+            result['notification'] = 'Please enter search term'
+            return result
     except:
         if 'type' in params:
             if params['type'] == '*':
