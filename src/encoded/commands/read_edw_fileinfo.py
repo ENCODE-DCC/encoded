@@ -689,14 +689,15 @@ def inventory_files(app, edw_dict, app_dict):
 
     for accession in sorted(edw_dict.keys()):
         edw_fileinfo = edw_dict[accession]
+        edw_exp_fileinfo = set_fileinfo_experiment(app, edw_fileinfo)
+        edw_dict[accession] =  edw_exp_fileinfo  # replaced Encode2 exps with Encode3
         if accession not in app_dict:
-            edw_only.append(edw_fileinfo)
+            edw_only.append(edw_exp_fileinfo)
         else:
-            edw_exp_fileinfo = set_fileinfo_experiment(app, edw_fileinfo)
-            set_edw = set(edw_exp_fileinfo.items())
-            set_app = set(app_dict[accession].items())
-            if set_edw == set_app:
-                same.append(edw_fileinfo)
+            diff = compare_files(edw_exp_fileinfo, app_dict[accession])
+            if diff:
+                same.append(edw_exp_fileinfo)
+                sys.stderr.write("File: %s has %s diffs\n" % (accession, diff))
             else:
                 diff_accessions.append(accession)
 
@@ -744,14 +745,14 @@ def dump_diff(detailed, app, edw_only, app_only, same, diff_accession):
         sys.stdout.write('DIFFERENT: %d\n' % len(diff_accessions))
 
 
-def compare_files(a, b):
-    a_keys = set(a.keys())
-    b_keys = set(b.keys())
+def compare_files(aa, bb):
+    a_keys = set(aa.keys())
+    b_keys = set(bb.keys())
     intersect_keys = a_keys.intersection(b_keys)
-    added = a_keys - b_keys
-    removed = b_keys - a_keys
-    #assert(not added and not removed)
-    modified = { o : (a[o], b[o]) for o in intersect_keys if a[o] != b[o] }
+    a_only_keys = a_keys - b_keys
+    b_only_keys = b_keys - a_keys
+
+    modified = { o : (aa[o], bb[o]) for o in intersect_keys if aa[o] != bb[o] }
     return modified
 
 ################

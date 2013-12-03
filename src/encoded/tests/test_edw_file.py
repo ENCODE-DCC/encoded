@@ -155,16 +155,9 @@ def test_file_sync(workbook, testapp):
     edw_only, app_only, same, patch = encoded.commands.read_edw_fileinfo.inventory_files(testapp, edw_mock, app_dict)
     assert len(edw_only) == 10
     assert len(app_only) == 11
-    for acc in patch:
-        # convert encode2 experiments to 3.
-        edw_mock[acc] = encoded.commands.read_edw_fileinfo.set_fileinfo_experiment(testapp,edw_mock[acc])
+    assert len(same) == 7
+    assert len(patch) == 6
 
-        diffs = encoded.commands.read_edw_fileinfo.compare_files(edw_mock[acc], app_dict[acc])
-        import sys
-        sys.stdout.write("File: %s has %s diffs\n" % (acc, diffs))
-
-    assert len(same) == 5
-    assert len(patch) == 8
 
 
 
