@@ -1,4 +1,4 @@
-################
+###############
 # File metadata generated at ENCODE Data Warehouse (EDW) and mirrored at encoded
 
 import sys
@@ -93,8 +93,10 @@ def make_edw(data_host=None):
     config = ConfigParser.ConfigParser()
     config.read(EDW_CONFIG)
 
-    site = 'mysql'
     engine = 'mysql'
+    site = 'mysql'
+    # TODO: Change to more informative identifier (also need to change my.cnf*)
+    # site = 'edw'
     if (data_host):
         host = data_host
     else:
@@ -109,6 +111,17 @@ def make_edw(data_host=None):
     sys.stderr.write('Connecting to %s://%s/%s...' % (engine, host, db))
     edw_db = create_engine('%s://%s:%s@%s/%s' %
                           (engine, user, password, host, db))
+
+    # TODO: A nice-to-have suggested by Laurence -- have MySQL directly read conf file.
+    # Something like the commented-out code below should do the trick. 
+    # Could be a path problem preventing mysql from finding the proper user 
+    # (is using invoker, not user in .cnf file)
+    
+    # Create db engine
+    # from sqlalchemy.engine.url import URL
+    # url = URL(drivername=engine, host=host, query={'read_default_file': EDW_CONFIG, 'read_default_group': site})
+    # edw_db = create_engine(name_or_url=url)
+
     sys.stderr.write('\n')
     return edw_db
 
