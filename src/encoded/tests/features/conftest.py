@@ -24,6 +24,7 @@ def browser(context, before_all, set_webdriver):
 
 
 # These are equivalent to the environment.py hooks
+@pytest.mark.fixture_cost(1000)
 @pytest.fixture(scope='session', autouse=True)
 def before_all(request, _server, context):
     import behaving.web

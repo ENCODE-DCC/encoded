@@ -81,7 +81,7 @@ def app(zsa_savepoints, check_constraints, app_settings):
     return main({}, **app_settings)
 
 
-@pytest.mark.fixture_cost(1000)
+@pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
 def workbook(connection, app, app_settings):
     tx = connection.begin_nested()
