@@ -6,7 +6,16 @@ import behave.runner
 import behave.step_registry
 from contextlib import contextmanager
 import pytest
-from _pytest.python import FixtureRequest, scopeproperty, scopemismatch
+from _pytest.python import (
+    FixtureRequest,
+    NOTSET,
+    ScopeMismatchError,
+    SubRequest,
+    scopemismatch,
+    scopenum_subfunction,
+    scopeproperty,
+    scopes,
+)
 import re
 
 
@@ -202,6 +211,62 @@ class BDDFixtureRequest(FixtureRequest):
         raise ValueError("unknown finalization scope %r" % (scope,))
 
 
+    def _getfuncargvalue(self, fixturedef):
+        try:
+            return fixturedef.cached_result # set by fixturedef.execute()
+        except AttributeError:
+            pass
+        # prepare a subrequest object before calling fixture function
+        # (latter managed by fixturedef)
+        argname = fixturedef.argname
+        node = self._pyfuncitem
+        scope = fixturedef.scope
+        try:
+            param = node.callspec.getparam(argname)
+        except (AttributeError, ValueError):
+            param = NOTSET
+        else:
+            # if a parametrize invocation set a scope it will override
+            # the static scope defined with the fixture function
+            paramscopenum = node.callspec._arg2scopenum.get(argname)
+            if paramscopenum is not None and \
+               paramscopenum != scopenum_subfunction:
+                scope = scopes[paramscopenum]
+    
+        subrequest = BDDSubRequest(self, scope, param, fixturedef)
+    
+        # check if a higher-level scoped fixture accesses a lower level one
+        if scope is not None:
+            __tracebackhide__ = True
+            if scopemismatch(self.scope, scope):
+                # try to report something helpful
+                lines = subrequest._factorytraceback()
+                raise ScopeMismatchError("You tried to access the %r scoped "
+                    "fixture %r with a %r scoped request object, "
+                    "involved factories\n%s" %(
+                    (scope, argname, self.scope, "\n".join(lines))))
+            __tracebackhide__ = False
+    
+        try:
+            # perform the fixture call
+            val = fixturedef.execute(request=subrequest)
+        finally:
+            # if the fixture function failed it might still have
+            # registered finalizers so we can register
+            # prepare finalization according to scope
+            # (XXX analyse exact finalizing mechanics / cleanup)
+            self.session._setupstate.addfinalizer(fixturedef.finish,
+                                                  subrequest.node)
+
+        return val
+
+
+class BDDSubRequest(BDDFixtureRequest, SubRequest):
+    def __init__(self, *args, **kw):
+        SubRequest.__init__(self, *args, **kw)
+
+
+
 class FixtureRequestMixin(object):
     funcargs = {}
     nofuncargs = True
@@ -220,6 +285,7 @@ class FixtureRequestMixin(object):
 
     def _init_fixtures(self, markers=()):
         self.obj = lambda: None
+        self.obj.__name__ = self.name.encode('utf-8')
         if hasattr(self.parent.obj, 'usefixtures'):
             info = self.parent.obj.usefixtures
             pytest.mark.usefixtures(*info.args, **info.kwargs)(self.obj)

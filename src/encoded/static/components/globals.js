@@ -12,13 +12,18 @@ module.exports.panel_views = Registry();
 module.exports.listing_titles = Registry();
 
 
-module.exports.itemClass = function (context, htmlClass) {
+var itemClass = module.exports.itemClass = function (context, htmlClass) {
     htmlClass = htmlClass || '';
     (context['@type'] || []).forEach(function (type) {
         htmlClass += ' type-' + type;
     });
-    if (typeof context.status == 'string') {
-        htmlClass += ' status-' + context.status.toLowerCase();
+    return statusClass(context.status, htmlClass);
+};
+
+var statusClass = module.exports.statusClass = function (status, htmlClass) {
+    htmlClass = htmlClass || '';
+    if (typeof status == 'string') {
+        htmlClass += ' status-' + status.toLowerCase().replace(' ', '-');
     }
     return htmlClass;
 };

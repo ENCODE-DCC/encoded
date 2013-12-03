@@ -122,6 +122,7 @@
                 },
                 "type": {
                     "title": "MIME type",
+                    "type": "string",
                     "enum": [
                         "application/pdf",
                         "text/plain",
