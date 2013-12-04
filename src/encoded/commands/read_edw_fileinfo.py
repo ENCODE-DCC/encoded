@@ -354,9 +354,7 @@ def set_fileinfo_replicate(app, fileinfo):
     if key not in experiment_replicates:
         logging.warning('Ignore POST/PUT for File %s: replicate required\n',
                             new_fileinfo['accession'])
-        return None
-        '''
-        Replicates are currently ALWAYS required until EDW tracks technical replicates.
+        ## Replicates are currently ALWAYS required until EDW tracks technical replicates.
         if require_replicate:
             logging.warning('Ignore POST/PUT for File %s: replicate required\n',
                             new_fileinfo['accession'])
@@ -376,7 +374,6 @@ def set_fileinfo_replicate(app, fileinfo):
         # WARNING: ad-hoc char conversion here
         rep_id = str(resp.json[unicode('@graph')][0][unicode('@id')])
         experiment_replicates[key] = rep_id
-        '''
     else:
         rep_id = experiment_replicates[key]
 

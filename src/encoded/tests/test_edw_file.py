@@ -116,8 +116,8 @@ def test_import_file(workbook, testapp):
         # exercises: set_fileinfo_experiment, set_fileinfo_replicate, POST
         acc = fileinfo['accession']
         url = encoded.commands.read_edw_fileinfo.collection_url(encoded.commands.read_edw_fileinfo.FILES) + acc
-        resp = testapp.get(url).maybe_follow()
-        file_dict = resp.json
+        get_resp = testapp.get(url).maybe_follow()
+        file_dict = get_resp.json
         fileinfo = encoded.commands.read_edw_fileinfo.format_app_fileinfo(testapp, file_dict)
         set_out = set(fileinfo.items())
 
@@ -184,7 +184,7 @@ def test_file_sync(workbook, testapp):
         assert(resp.status_code == 409)
 
     for update in patch:
-
+        pass
 
 
 
