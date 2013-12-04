@@ -37,8 +37,7 @@ def run(testapp, dry_run=False):
                 notify = conn.notifies.pop()
                 xid = int(notify.payload)
                 max_xid = max(max_xid, xid)
-                if dry_run:
-                    log.info('NOTIFY %s, %s' % (notify.channel, notify.payload))
+                log.debug('NOTIFY %s, %s' % (notify.channel, notify.payload))
 
             post_data = {}
             if dry_run:
@@ -49,8 +48,7 @@ def run(testapp, dry_run=False):
             except Exception:
                 log.exception('index failed at max xid: %d' % max_xid)
             else:
-                if dry_run:
-                    log.info(res.json)
+                log.debug(res.json)
 
     finally:
         conn.close()
@@ -81,6 +79,8 @@ def main():
         '--username', '-u', default='INDEXER', help="Import username")
     parser.add_argument(
         '--dry-run', action='store_true', help="Don't post to ES, just print")
+    parser.add_argument(
+        '-v', '--verbose', action='store_true', help="Print debug level logging.")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()
 
@@ -88,7 +88,8 @@ def main():
     testapp = internal_app(args.config_uri, args.app, args.username)
 
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    if args.verbose or args.dry_run:
+        logging.getLogger('encoded').setLevel(logging.DEBUG)
 
     return run(testapp, args.dry_run)
 
