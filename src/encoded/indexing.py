@@ -17,6 +17,7 @@ from .storage import (
     DBSession,
     TransactionRecord,
 )
+import functools
 import transaction
 
 ELASTIC_SEARCH = __name__ + ':elasticsearch'
@@ -128,6 +129,23 @@ def es_update_object(request, objects, dry_run=False):
             es.index(result['@type'][0], 'basic', result, str(uuid))
 
 
+def run_in_doomed_transaction(fn, committed, *args, **kw):
+    if not committed:
+        return
+    txn = transaction.begin()
+    txn.doom()  # enables SET TRANSACTION READ ONLY;
+    try:
+        fn(*args, **kw)
+    finally:
+        txn.abort()
+
+
+# After commit hook needs own transaction
+es_update_object_in_txn = functools.partial(
+    run_in_doomed_transaction, es_update_object,
+)
+
+
 @subscriber(Created)
 @subscriber(BeforeModified)
 @subscriber(AfterModified)
@@ -147,6 +165,7 @@ def record_created(event):
     updated.add(uuid)
 
     # Record dependencies here to catch any to be removed links
+    # XXX replace with uuid_closure in elasticsearch document
     add_dependent_objects(request, {uuid}, referencing)
 
 
@@ -164,5 +183,5 @@ def es_update_data(event):
     txn._extension['updated'] = [str(uuid) for uuid in updated]
     txn._extension['invalidated'] = [str(uuid) for uuid in invalidated]
 
-    # XXX Update directly updated objects now. Should move to after transaction commit.
-    es_update_object(request, updated)
+    txn = transaction.get()
+    txn.addAfterCommitHook(es_update_object_in_txn, (request, updated))
