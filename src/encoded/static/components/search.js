@@ -217,7 +217,7 @@ var Dbxref = dbxref.Dbxref;
                         }
                     }
                     var url_unfacet = href_search.replace(unfacet_url, "");
-                    return <a className="btn btn-success" href={url_unfacet}>{filter[key] + ' '}<i className="icon-remove-circle"></i></a>
+                    return <a className="btn btn-success" href={url_unfacet}>{filter[key] + ' '}<i className="icon-remove-sign"></i></a>
                 }
             };
             return (
