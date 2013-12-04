@@ -47,14 +47,13 @@ def schema_mapping(name, schema):
                 name: {
                     'type': 'string',
                     'search_analyzer': 'encoded_search_analyzer',
-                    'index_amalyzer': 'encoded_index_analyzer',
+                    'index_analyzer': 'encoded_index_analyzer',
                     'include_in_all': False
                 },
                 'untouched': {
                     'type': 'string',
                     'index': 'not_analyzed',
                     'include_in_all': False,
-                    'index_options': 'docs',
                     'omit_norms': True,
                 },
             },
@@ -78,10 +77,15 @@ def index_settings(index):
                     },
                     'encoded_index_analyzer': {
                         'tokenizer': 'keyword',
-                        'filter': ['lowercase', 'substring']
+                        'filter': ['lowercase', 'exact_phrase', 'substring']
                     }
                 },
                 'filter': {
+                    'exact_phrase': {
+                        'type': 'shingle',
+                        'min_shingle_size': 2,
+                        'max_shingle_size': 5
+                    },
                     'substring': {
                         'type': 'nGram',
                         'min_gram': 3,
