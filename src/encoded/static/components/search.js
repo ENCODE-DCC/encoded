@@ -294,8 +294,10 @@ var Dbxref = dbxref.Dbxref;
             return (
                 <div>
                     <form className="input-prepend">
-                        <span className="add-on"><i className="icon-search"></i></span>
-                        <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" name="searchTerm" defaultValue={this.state.text} />
+                    	<div className="input-append">
+							<input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" name="searchTerm" defaultValue={this.state.text} />
+							<button type="submit" className="btn"><i className="icon-search"></i></button>
+						</div>
                     </form>
                     {notification === 'Success' ?
                         <div className="panel data-display"> 
