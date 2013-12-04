@@ -183,5 +183,11 @@ def es_update_data(event):
     txn._extension['updated'] = [str(uuid) for uuid in updated]
     txn._extension['invalidated'] = [str(uuid) for uuid in invalidated]
 
-    txn = transaction.get()
-    txn.addAfterCommitHook(es_update_object_in_txn, (request, updated))
+    # XXX How can we ensure consistency here but update written records
+    # immediately? The listener might already be indexing on another
+    # connection. SERIALIZABLE isolation insufficient because ES writes not
+    # serialized. Could either:
+    # - Queue up another reindex on the listener
+    # - Use conditional puts to ES based on serial before commit.
+    # txn = transaction.get()
+    # txn.addAfterCommitHook(es_update_object_in_txn, (request, updated))
