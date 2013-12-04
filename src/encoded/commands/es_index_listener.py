@@ -16,7 +16,7 @@ EPILOG = __doc__
 # We need this because of MVCC visibility.
 # See slide 9 at http://momjian.us/main/writings/pgsql/mvcc.pdf
 
-def run(testapp, dry_run=False):
+def run(testapp, poll_interval=60, dry_run=False):
     max_xid = 0
 
     engine = DBSession.bind  # DBSession.bind is configured by app init
@@ -30,7 +30,7 @@ def run(testapp, dry_run=False):
         # http://initd.org/psycopg/docs/advanced.html#asynchronous-notifications
         cursor.execute("""LISTEN "encoded.transaction";""")
         while True:
-            if any(select.select([conn], [], [], 5)):
+            if any(select.select([conn], [], [], poll_interval)):
                 conn.poll()
 
             while conn.notifies:
@@ -80,7 +80,9 @@ def main():
     parser.add_argument(
         '--dry-run', action='store_true', help="Don't post to ES, just print")
     parser.add_argument(
-        '-v', '--verbose', action='store_true', help="Print debug level logging.")
+        '-v', '--verbose', action='store_true', help="Print debug level logging")
+    parser.add_argument(
+        '--poll-interval', type=int, default=60, help="Poll interval between notifications")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()
 
@@ -91,7 +93,7 @@ def main():
     if args.verbose or args.dry_run:
         logging.getLogger('encoded').setLevel(logging.DEBUG)
 
-    return run(testapp, args.dry_run)
+    return run(testapp, args.poll_interval, args.dry_run)
 
 
 if __name__ == '__main__':
