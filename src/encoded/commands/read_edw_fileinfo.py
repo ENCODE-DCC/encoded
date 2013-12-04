@@ -67,7 +67,8 @@ def format_app_fileinfo(app, file_dict, exclude=None):
         if prop not in file_dict:
             # special handling of replicate -- numeric field
             if prop == 'replicate':
-                fileinfo[prop] = edw_file.NO_REPLICATE_INT
+                pass ## just going to drop this.
+                #fileinfo[prop] = edw_file.NO_REPLICATE_INT
             elif prop != 'assembly':
                 # assembly can properly be missing
                 fileinfo[prop] = edw_file.NA
@@ -90,8 +91,12 @@ def format_app_fileinfo(app, file_dict, exclude=None):
 
 def format_reader_fileinfo(file_dict):
     # Convert types when fileinfo read from TSV into strings
-    file_dict['replicate'] = int(file_dict['replicate'])
-
+    # TODO -1s -> no such property
+    try:
+        file_dict['replicate'] = int(file_dict['replicate'])
+    except:
+        # non numeric replicates are dropped
+        del file_dict['replicate']
 
 ################
 # Initialization
@@ -288,6 +293,7 @@ def set_fileinfo_experiment(app, fileinfo):
                 sys.stderr.write('.. ENCODE3 experiment acc for: %s is %s\n' %
                                     (acc, encode3_acc))
             new_fileinfo['dataset'] = encode3_acc
+
     return new_fileinfo
 
 
@@ -324,8 +330,9 @@ def set_fileinfo_replicate(app, fileinfo):
         del new_fileinfo['replicate']
         return new_fileinfo
 
-    # Check for existence of replicate
+    # Check for existence of dataset
     experiment = new_fileinfo['dataset']
+   # Check for existence of replicate/experiment
     bio_rep_num = fileinfo['replicate']
     tech_rep_num = edw_file.TECHNICAL_REPLICATE_NUM # TODO, needs EDW changes
     key = replicate_key(experiment, bio_rep_num, tech_rep_num)
@@ -335,12 +342,21 @@ def set_fileinfo_replicate(app, fileinfo):
         if verbose:
             sys.stderr.write('Get experiment (get rep): %s \n' % key)
         resp = app.get(url).maybe_follow()
+        if (resp.status_code != 200):
+            if verbose:
+                logging.warning("Dataset not found: %s \n" % url)
+                return None
         reps = resp.json['replicates']
         for rep in reps:
             add_key = replicate_key(experiment, rep['biological_replicate_number'],
                                 edw_file.TECHNICAL_REPLICATE_NUM)
             experiment_replicates[add_key] = rep['@id']
     if key not in experiment_replicates:
+        logging.warning('Ignore POST/PUT for File %s: replicate required\n',
+                            new_fileinfo['accession'])
+        return None
+        '''
+        Replicates are currently ALWAYS required until EDW tracks technical replicates.
         if require_replicate:
             logging.warning('Ignore POST/PUT for File %s: replicate required\n',
                             new_fileinfo['accession'])
@@ -360,6 +376,7 @@ def set_fileinfo_replicate(app, fileinfo):
         # WARNING: ad-hoc char conversion here
         rep_id = str(resp.json[unicode('@graph')][0][unicode('@id')])
         experiment_replicates[key] = rep_id
+        '''
     else:
         rep_id = experiment_replicates[key]
 
@@ -696,10 +713,10 @@ def inventory_files(app, edw_dict, app_dict):
         else:
             diff = compare_files(edw_exp_fileinfo, app_dict[accession])
             if diff:
-                same.append(edw_exp_fileinfo)
+                diff_accessions.append(accession)
                 sys.stderr.write("File: %s has %s diffs\n" % (accession, diff))
             else:
-                diff_accessions.append(accession)
+                same.append(edw_exp_fileinfo)
 
     # APP-only files
     for accession in sorted(app_dict.keys()):

@@ -100,11 +100,18 @@ def test_import_file(workbook, testapp):
     for fileinfo in reader:
         # WARNING: type-unaware char conversion here, with field-specific
         # correction of mis-formatted int field
+        # does this do anything?
+        '''
         unidict = {k.decode('utf8'): v.decode('utf8') for k, v in fileinfo.items()}
+        encoded.commands.read_edw_fileinfo.format_reader_fileinfo(unidict)
         unidict['replicate'] = int(unidict['replicate'])
+        if unidict['replicate'] == -1:
+            del unidict['replicate']
         set_in = set(unidict.items())
+        '''
 
         encoded.commands.read_edw_fileinfo.format_reader_fileinfo(fileinfo)
+        set_in = set(fileinfo.items())
         resp = encoded.commands.read_edw_fileinfo.post_fileinfo(testapp, fileinfo)
         # exercises: set_fileinfo_experiment, set_fileinfo_replicate, POST
         acc = fileinfo['accession']
@@ -139,12 +146,13 @@ def test_file_sync(workbook, testapp):
 
     edw_mock = {}
     for fileinfo in reader:
-        unidict = {k.decode('utf8'): v.decode('utf8') for k, v in fileinfo.items()}
-        unidict['replicate'] = int(unidict['replicate'])
-        if unidict['replicate'] == encoded.edw_file.NO_REPLICATE_INT:
-            del unidict['replicate']
-        del unidict['test']  # this is in the file for notation purposes only
-        edw_mock[unidict['accession']] = unidict
+        #unidict = {k.decode('utf8'): v.decode('utf8') for k, v in fileinfo.items()}
+        #unidict['replicate'] = int(unidict['replicate'])
+        #if unidict['replicate'] == encoded.edw_file.NO_REPLICATE_INT:
+        #    del unidict['replicate']
+        encoded.commands.read_edw_fileinfo.format_reader_fileinfo(fileinfo)
+        del fileinfo['test']  # this is in the file for notation purposes only
+        edw_mock[fileinfo['accession']] = fileinfo
 
     assert len(edw_mock) == 23
 
@@ -157,6 +165,27 @@ def test_file_sync(workbook, testapp):
     assert len(app_only) == 11
     assert len(same) == 7
     assert len(patch) == 6
+
+    for add in edw_only:
+        acc = add['accession']
+        url = encoded.commands.read_edw_fileinfo.collection_url(encoded.commands.read_edw_fileinfo.FILES) + acc
+        resp = encoded.commands.read_edw_fileinfo.post_fileinfo(testapp, add)
+        # check experiment status
+        if not resp:
+            assert(add['dataset'] == 'ENCSR000AEO') # experiment does not exist in test database
+        else:
+            assert(resp.status_code == 201)
+
+
+    for ignore in same:
+        acc = ignore['accession']
+        url = encoded.commands.read_edw_fileinfo.collection_url(encoded.commands.read_edw_fileinfo.FILES) + acc
+        resp = encoded.commands.read_edw_fileinfo.post_fileinfo(testapp, ignore)
+        assert(resp.status_code == 409)
+
+    for update in patch:
+
+
 
 
 

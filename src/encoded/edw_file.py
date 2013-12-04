@@ -22,7 +22,7 @@ ENCODE_PHASE_3 = '3'
 ENCODE_PHASE_ALL = 'all'
 
 
-# Column headers for file info TSV  
+# Column headers for file info TSV
 # NOTE: ordering of fields currently needs to match query order below
 FILE_INFO_FIELDS = [
     'accession',
@@ -36,7 +36,7 @@ FILE_INFO_FIELDS = [
     'assembly',
     'md5sum',
     'submitted_by',
-    'status', 
+    'status',
 ]
 
 # Replicate representation
@@ -71,7 +71,8 @@ def format_edw_fileinfo(file_dict, exclude=None):
         file_dict[prop] = unicode(file_dict[prop])
         # not type-aware, so we need to force replicate to numeric
         if file_dict['replicate'] in NO_REPLICATE_TERMS:
-            file_dict['replicate'] = NO_REPLICATE_INT
+            #file_dict['replicate'] = NO_REPLICATE_INT
+            del file_dict['replicate']
         else:
             file_dict['replicate'] = int(file_dict['replicate'])
     # hide assembly for fastQ's -- (EDW retains it to represent organism)
@@ -143,7 +144,7 @@ def dump_fileinfo(fileinfos, header=True, typeField=None, exclude=None):
 
     for fileinfo in sorted(fileinfos, key=itemgetter('accession')):
         if typeField is not None:
-            sys.stdout.write('%s\t' % typeField) 
+            sys.stdout.write('%s\t' % typeField)
         ordered = OrderedDict.fromkeys(FILE_INFO_FIELDS)
         for key in FILE_INFO_FIELDS:
             if key in fileinfo:
@@ -154,7 +155,7 @@ def dump_fileinfo(fileinfos, header=True, typeField=None, exclude=None):
 
 
 def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
-    # Read info from file tables at EDW. 
+    # Read info from file tables at EDW.
     # Return list of file infos as dictionaries
 
     # Autoreflect the schema
@@ -219,7 +220,7 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
     except (DBAPIError, SQLAlchemyError) as e:
         sys.stderr.write("ERROR: EDW schema binding failed (suspect schema change)\n")
         exit(-1)
-        
+
     # Make a connection
     conn = edw.connect()
 
