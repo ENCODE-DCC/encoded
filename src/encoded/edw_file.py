@@ -70,7 +70,9 @@ def format_edw_fileinfo(file_dict, exclude=None):
     for prop in FILE_INFO_FIELDS:
         file_dict[prop] = unicode(file_dict[prop])
         # not type-aware, so we need to force replicate to numeric
-        if file_dict['replicate'] in NO_REPLICATE_TERMS:
+        if not file_dict.get('replicate'):
+            pass
+        elif file_dict['replicate'] in NO_REPLICATE_TERMS:
             #file_dict['replicate'] = NO_REPLICATE_INT
             del file_dict['replicate']
         else:
@@ -114,10 +116,10 @@ def make_edw(data_host=None):
                           (engine, user, password, host, db))
 
     # TODO: A nice-to-have suggested by Laurence -- have MySQL directly read conf file.
-    # Something like the commented-out code below should do the trick. 
-    # Could be a path problem preventing mysql from finding the proper user 
+    # Something like the commented-out code below should do the trick.
+    # Could be a path problem preventing mysql from finding the proper user
     # (is using invoker, not user in .cnf file)
-    
+
     # Create db engine
     # from sqlalchemy.engine.url import URL
     # url = URL(drivername=engine, host=host, query={'read_default_file': EDW_CONFIG, 'read_default_group': site})
