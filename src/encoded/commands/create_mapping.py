@@ -9,13 +9,28 @@ To load the initial data:
 from pyramid.paster import get_app
 from pyramid.traversal import find_root
 from pyelasticsearch import IndexAlreadyExistsError
-from ..contentbase import ELASTIC_SEARCH
+from ..indexing import ELASTIC_SEARCH
 import collections
 import json
 import logging
 
 EPILOG = __doc__
-DOCTYPE = 'basic'
+
+
+# An index to store non-content metadata
+META_MAPPING = {
+    "dynamic_templates" : [
+        {
+            "store_generic" : {
+                "match" : "*",
+                "mapping" : {
+                    "index": "no",
+                    "store" : "yes",
+                },
+            },
+        },
+    ],
+}
 
 
 def sorted_pairs_hook(pairs):
@@ -169,17 +184,22 @@ def run(app, collections=None, dry_run=False):
         es = app.registry[ELASTIC_SEARCH]
 
     if not collections:
-        collections = root.by_item_type.keys()
+        collections = ['meta'] + root.by_item_type.keys()
 
     for collection_name in collections:
-        collection = root.by_item_type[collection_name]
-        mapping = collection_mapping(collection)
+        if collection_name == 'meta':
+            doc_type = 'meta'
+            mapping = META_MAPPING
+        else:
+            doc_type = 'basic'
+            collection = root.by_item_type[collection_name]
+            mapping = collection_mapping(collection)
 
         if mapping is None:
             continue  # Testing collections
         if dry_run:
             print json.dumps(
-                sorted_dict({collection_name: {'basic': mapping}}), indent=4)
+                sorted_dict({collection_name: {doc_type: mapping}}), indent=4)
             continue
 
         try:
@@ -188,7 +208,7 @@ def run(app, collections=None, dry_run=False):
             es.delete_index(collection_name)
             es.create_index(collection_name, index_settings(collection_name))
 
-        es.put_mapping(collection_name, DOCTYPE, {'basic': mapping})
+        es.put_mapping(collection_name, doc_type, {doc_type: mapping})
         es.refresh(collection_name)
 
 

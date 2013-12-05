@@ -152,6 +152,7 @@ def main(global_config, **settings):
     config.include('.validation')
     config.include('.predicates')
     config.include('.contentbase')
+    config.include('.indexing')
     config.include('.server_defaults')
     config.include('.views')
     config.include('.persona')

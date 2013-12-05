@@ -221,18 +221,21 @@ class Construct(Collection):
     }
 
 
+class Characterization(Collection):
+    class Item(ItemWithAttachment, Collection.Item):
+        base_types = ['characterization'] + Collection.Item.base_types
+        embedded = set(['lab', 'award', 'submitted_by'])
+        keys = ALIAS_KEYS
+
+
 @location('construct-characterizations')
-class ConstructCharacterization(Collection):
+class ConstructCharacterization(Characterization):
     item_type = 'construct_characterization'
     schema = load_schema('construct_characterization.json')
     properties = {
         'title': 'Constructs characterizations',
         'description': 'Listing of biosample construct characterizations',
     }
-
-    class Item(ItemWithAttachment, Collection.Item):
-        embedded = set(['lab', 'award', 'submitted_by'])
-        keys = ALIAS_KEYS
 
 
 @location('documents')
@@ -307,17 +310,13 @@ class Biosample(Collection):
 
 
 @location('biosample-characterizations')
-class BiosampleCharacterization(Collection):
+class BiosampleCharacterization(Characterization):
     item_type = 'biosample_characterization'
     schema = load_schema('biosample_characterization.json')
     properties = {
         'title': 'Biosample characterizations',
         'description': 'Listing of biosample characterizations',
     }
-
-    class Item(ItemWithAttachment, Collection.Item):
-        embedded = set(['lab', 'award', 'submitted_by'])
-        keys = ALIAS_KEYS
 
 
 @location('targets')
@@ -360,7 +359,7 @@ class Target(Collection):
 
 # The following should really be child collections.
 @location('antibody-characterizations')
-class AntibodyCharacterization(Collection):
+class AntibodyCharacterization(Characterization):
     item_type = 'antibody_characterization'
     schema = load_schema('antibody_characterization.json')
     properties = {
@@ -368,9 +367,8 @@ class AntibodyCharacterization(Collection):
         'description': 'Listing of antibody characterization documents',
     }
 
-    class Item(ItemWithAttachment, Collection.Item):
+    class Item(Characterization.Item):
         embedded = ['submitted_by', 'lab', 'award', 'target']
-        keys = ALIAS_KEYS
 
 
 @location('antibodies')
@@ -572,17 +570,13 @@ class RNAi(Collection):
 
 
 @location('rnai-characterizations')
-class RNAiCharacterization(Collection):
+class RNAiCharacterization(Characterization):
     item_type = 'rnai_characterization'
     schema = load_schema('rnai_characterization.json')
     properties = {
         'title': 'RNAi characterizations',
         'description': 'Listing of biosample RNAi characterizations',
     }
-
-    class Item(ItemWithAttachment, Collection.Item):
-        embedded = ['submitted_by', 'lab', 'award']
-        keys = ALIAS_KEYS
 
 
 @location('datasets')
