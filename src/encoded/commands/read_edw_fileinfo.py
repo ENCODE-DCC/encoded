@@ -343,7 +343,7 @@ def set_fileinfo_replicate(app, fileinfo):
         url = collection_url(EXPERIMENTS)
         url += experiment
         if verbose:
-            sys.stderr.write('Get experiment (get rep): %s\n' % (encode3_acc))
+            sys.stderr.write('Get experiment (get rep): %s\n' % (experiment))
         resp = app.get(url).maybe_follow()
         reps = resp.json['replicates']
         for rep in reps:
