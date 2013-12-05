@@ -14,11 +14,11 @@ u'status': u'CURRENT', u'submitted_by': u'risus.fermentum@vel.at', u'file_format
 }
 
 
-# test_list_new 
+# test_list_new
 # input is list of some accessions in test data set, and some not (the ZZZ's)
 # output should be just those not (the new ones)
 
-new_in = ['ENCFF000LSP', 'ENCFF999ZZZ', 'ENCFF998ZZZ', 'ENCFF001MXE', 
+new_in = ['ENCFF000LSP', 'ENCFF999ZZZ', 'ENCFF998ZZZ', 'ENCFF001MXE',
           'ENCFF001MXG', 'ENCFF001MYM', 'ENCFF997ZZZ', 'ENCFF996ZZZ']
 
 # ENCFF9??ZZZ not in app test database (may be reserved at EDW for testing)

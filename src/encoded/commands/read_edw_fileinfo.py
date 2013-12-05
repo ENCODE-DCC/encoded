@@ -1,5 +1,8 @@
 ################
-# Console script to read file metadata generated at ENCODE Data Warehouse (EDW)
+# Console script to read file metadata generated at ENCODE Data Warehouse (EDW) and manage
+# import and comparison with file objects at encoded app
+
+# TODO: Cache experiments to improve performance
 
 import sys
 import logging
@@ -33,6 +36,7 @@ FILES = 'files'
 EXPERIMENTS = 'experiments'
 REPLICATES = 'replicates'
 DATASETS = 'datasets'
+USERS = 'users'
 
 SEARCH_URL = '/search/?searchTerm='
 FILE_PROFILE_URL = '/profiles/file.json'
@@ -48,15 +52,14 @@ require_replicate = False  # Do not create  minimal replicate if not in database
 
 ################
 # Support for special fields (would be nice to get this from JSON schema)
-
 FILE_NESTED_PROPERTIES = {
     'submitted_by': 'email',
     'replicate': 'biological_replicate_number',
     # TODO: support tech repnum when available from EDW
 }
-
 def format_app_fileinfo(app, file_dict, exclude=None):
-    # Handle links and nested propeties
+
+    ''' this tries to convert an encoded file into a EDW like data structure'''
     global verbose
     if verbose:
         sys.stderr.write('Found app file: %s\n' % (file_dict['accession']))
@@ -72,12 +75,12 @@ def format_app_fileinfo(app, file_dict, exclude=None):
             elif prop != 'assembly':
                 # assembly can properly be missing
                 fileinfo[prop] = edw_file.NA
-
-        # special handling of nested properties
-        # TODO: embed=false (slower)
         elif prop in FILE_NESTED_PROPERTIES.keys():
+            # substitute
             nested_prop = FILE_NESTED_PROPERTIES[prop]
-            fileinfo[prop] = file_dict[prop][nested_prop]
+            resp = app.get(file_dict[prop]).maybe_follow()
+            assert(resp.status_code == 200)
+            fileinfo[prop] = resp.json[nested_prop]
 
         else:
             value = file_dict[prop]
@@ -178,13 +181,16 @@ def get_collection(app, collection):
     url = collection_url(collection)
     url += "?limit=all"
     if not quick:
-        url += '&collection_source=db'
+        url += '&collection_source=database'
     resp = app.get(url)
     return resp.json['@graph']
 
 
 ################
 # ENCODE 2 vs. ENCODE 3 experiment accession conversion
+
+# WARNING: this section is complex, inefficient, and subject to change (hopefully can be simplified)
+#   with expected changes to encoded app
 
 encode2_to_encode3 = None  # Dict of ENCODE3 accs, keyed by ENCODE 2 acc
 encode3_to_encode2 = {}    # Cache experiment ENCODE 2 ref lists
@@ -593,7 +599,7 @@ def post_app_fileinfo(input_file, app):
 
 
 def modify_app_fileinfo(input_file, app):
-    # PATCH proerties in input file to app
+    # PATCH properties in input file to app
     sys.stderr.write('Modifying file info from %s to app (PATCH)\n' % (input_file))
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
@@ -801,6 +807,8 @@ def main():
                    help='update files in app using TSV file with all shared file props (PUT)')
 
     # Less common
+    # TODO: consider removing these -- they are of limited use, and complicate code
+
     group.add_argument('-23', '--convert_file',
                    help='convert ENCODE2 entries in TSV file to ENCODE3')
     group.add_argument('-c', '--compare_summary', action='store_true',
@@ -818,6 +826,9 @@ def main():
                         help='verbose mode')
     parser.add_argument('-q', '--quick', action='store_true',
                         help='quick mode (use elastic search instead of database)')
+
+    # additional  modifiers
+    # TODO: consider removing support for these
     parser.add_argument('-t', '--transitional', action='store_true',
                         help='use with -P 3 before ENCODE 2 files are loaded at encoded to improve performance')
     parser.add_argument('-R', '--require_replicate', action='store_true',
@@ -834,8 +845,6 @@ def main():
                          '(default %s)' % edw_file.ENCODE_PHASE_ALL),
     parser.add_argument('-exclude', '--exclude_props', nargs='+',
                         help='for -c and -C, ignore excluded properties')
-    #parser.add_argument('-x', '--experiment', action='store_true',
-                    #help='for EDW, show only files having experiment accession')
 
     # Change target EDW or app
     parser.add_argument('-d', '--data_host', default=None,
@@ -886,6 +895,7 @@ def main():
         sync_app_fileinfo(app, edw, phase=args.phase, limit=args.limit)
 
     elif args.modify_file:
+        # WARNING: patch not tested
         modify_app_fileinfo(args.modify_file, app)
 
     elif args.update_file:

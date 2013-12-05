@@ -6,16 +6,13 @@ import encoded.commands.read_edw_fileinfo
 import encoded.edw_file
 import edw_test_data
 
+pytestmark = [pytest.mark.edw_file]
+
 # globals
 EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
 
 TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 
-# test_format_app
-
-#@pytest.mark.parametrize('test_num', [1, 2])
-# resisting parameterization, as test 1 will go much quicker
-# w/o loading workbook which isn't needed
 
 # def format_app_fileinfo(app, file_dict, exclude=None):
 # def format_reader_fileinfo(file_dict):
@@ -93,6 +90,7 @@ def test_list_new(workbook, testapp):
 
 def test_import_file(workbook, testapp):
     # Test import of new file to encoded
+    # this tests adds replicates, but never checks their validity
 
     input_file = 'import_in.1.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + input_file)

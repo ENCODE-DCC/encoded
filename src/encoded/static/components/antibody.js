@@ -4,24 +4,34 @@ var React = require('react');
 var url = require('url');
 var globals = require('./globals');
 
+
+var StatusLabel = module.exports.StatusLabel = React.createClass({
+    render: function() {
+        var status = this.props.status;
+        return (
+            <span className={globals.statusClass(status, 'label')}>
+                {status}
+            </span>
+        );
+    }
+});
+
+
 var Approval = module.exports.Approval = React.createClass({
     render: function() {
         var context = this.props.context;
-        var statusClass = 'status-' + (context.status || '').toLowerCase();
         var characterizations = context.characterizations.map(function (item) {
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
         // Missing enncode
         return (
-            <div className={'type-antibody_approval view-item ' + statusClass}>
+            <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="span12">
                         <h2>Approval for {context.antibody.accession}</h2>
                         <h3>Antibody against {context.target.organism.name}
                             {' '}{context.target.label}
-                            <span className={'label ' + statusClass}>
-                                {context.status}
-                            </span>
+                            <StatusLabel status={context.status} />
                         </h3>
                     </div>
                 </header>
@@ -80,7 +90,6 @@ globals.content_views.register(Approval, 'antibody_approval');
 var Characterization = module.exports.Characterization = React.createClass({
     render: function() {
         var context = this.props.context;
-        var statusClass = 'status-' + (context.status || '').toLowerCase();
         var attachmentHref, attachmentUri;
         var figure, download, src, imgClass, alt;
         var imgClass = "characterization-img characterization-file";
@@ -123,7 +132,7 @@ var Characterization = module.exports.Characterization = React.createClass({
         }
 
         return (
-            <section className={'type-characterization view-detail panel ' + statusClass}>
+            <section className={globals.itemClass(context, 'view-detail panel')}>
                 <div className="container">
                     <div className="row">
                         <div className="span6">
@@ -160,7 +169,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                                 */}
 
                                 <dt>Image</dt>
-                                <dd><span className={'label '+ statusClass}>{context.status}</span></dd>
+                                <dd><StatusLabel status={context.status} /></dd>
 
                                 <dt><i className="icon-download-alt"></i> Download</dt>
                                 <dd>{download}</dd>
