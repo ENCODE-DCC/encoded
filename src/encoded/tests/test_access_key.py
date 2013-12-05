@@ -6,8 +6,9 @@ def basic_auth(username, password):
     return 'Basic ' + b64encode('%s:%s' % (username, password))
 
 
-@pytest.datafixture
-def access_keys(app):
+@pytest.yield_fixture(scope='session')
+def access_keys(app, connection):
+    tx = connection.begin_nested()
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
@@ -56,7 +57,8 @@ def access_keys(app):
             'description': description,
             'user': user,
         })
-    return access_keys
+    yield access_keys
+    tx.rollback()
 
 
 @pytest.fixture

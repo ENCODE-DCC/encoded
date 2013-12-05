@@ -53,7 +53,6 @@ from uuid import (
 from .objtemplate import ObjectTemplate
 from .schema_formats import is_accession
 from .schema_utils import validate_request
-from .stats import requests_timing_hook
 from .storage import (
     DBSession,
     CurrentPropertySheet,
@@ -64,23 +63,15 @@ from .storage import (
 )
 from collections import OrderedDict
 from .validation import ValidationFailure
-from pyelasticsearch import ElasticSearch
-from pyramid.events import BeforeRender
 
 
 LOCATION_ROOT = __name__ + ':location_root'
-ELASTIC_SEARCH = __name__ + ':elasticsearch'
 _marker = object()
 
 
 def includeme(config):
     config.scan(__name__)
     config.set_root_factory(root_factory)
-
-    if 'elasticsearch.server' in config.registry.settings:
-        es = ElasticSearch(config.registry.settings['elasticsearch.server'])
-        es.session.hooks['response'].append(requests_timing_hook('es'))
-        config.registry[ELASTIC_SEARCH] = es
 
 
 def root_factory(request):
@@ -872,6 +863,7 @@ class Collection(Mapping):
             query = {'query': {'match_all': {}}}
 
         items = []
+        from .indexing import ELASTIC_SEARCH
         es = request.registry[ELASTIC_SEARCH]
         results = es.search(query, index=self.item_type, size=10000)
         for model in results['hits']['hits']:
@@ -1083,68 +1075,3 @@ class AfterModified(object):
     def __init__(self, object, request):
         self.object = object
         self.request = request
-
-
-@subscriber(Created)
-@subscriber(BeforeModified)
-@subscriber(AfterModified)
-def record_created(event):
-    request = event.request
-    # Create property if that doesn't exist
-    try:
-        referencing = request._encoded_referencing
-    except:
-        referencing = request._encoded_referencing = set()
-    try:
-        updated = request._encoded_updated
-    except:
-        updated = request._encoded_updated = set()
-
-    uuid = event.object.uuid
-    updated.add(uuid)
-
-    # Record dependencies here to catch any to be removed links
-    add_dependent_objects(request, {uuid}, referencing)
-
-
-def add_dependent_objects(request, new, existing):
-    # Getting the dependent objects for the indexed object
-    root = request.root
-    objects = new.difference(existing)
-    while objects:
-        dependents = set()
-        for uuid in objects:
-            item = root.get_by_uuid(uuid)
-
-            # XXX needs to consult with item.embedded and item.revs
-            dependents.update({
-                model.source_rid for model in item.model.revs
-            })
-
-        existing.update(objects)
-        objects = dependents.difference(existing)
-
-
-def es_update_object(request, objects):
-    es = request.registry.get(ELASTIC_SEARCH, None)
-    if es is None:
-        return
-
-    # Indexing the object in ES
-    for uuid in objects:
-        subreq = make_subrequest(request, '/%s' % uuid)
-        subreq.override_renderer = 'null_renderer'
-        result = request.invoke_subrequest(subreq)
-        if es is not None:
-            es.index(result['@type'][0], 'basic', result, str(uuid))
-
-
-@subscriber(BeforeRender)
-def es_update_data(event):
-    request = event['request']
-    referencing = getattr(request, '_encoded_referencing', set())
-    updated = getattr(request, '_encoded_updated', set())
-    if updated or referencing:
-        new_referencing = set()
-        add_dependent_objects(request, updated, new_referencing)
-        es_update_object(request, referencing.union(new_referencing))
