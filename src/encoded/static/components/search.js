@@ -161,7 +161,7 @@ var Dbxref = dbxref.Dbxref;
                 if(terms.length == 1) {
                     return
                 }
-                return <div>
+                return <div className="facet">
                         <h5>{term}</h5>
                         <ul className="facet-list nav">
                             <div>
@@ -184,11 +184,10 @@ var Dbxref = dbxref.Dbxref;
                                 </label>
                             : null}
                         </ul>
-                        <hr />
                     </div>
             };
             return (
-                <div className="box">
+                <div className="box facets">
                     {facets.length ?
                         facets.map(buildSection)
                     : null}
