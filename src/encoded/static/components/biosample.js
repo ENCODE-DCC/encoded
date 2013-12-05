@@ -68,6 +68,9 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                         <dt hidden={!context.description}>Description</dt>
                         <dd hidden={!context.description}>{context.description}</dd>
+                        
+                        <dt hidden={!context.subcellular_fraction}>Subcellular fraction</dt>
+                        <dd hidden={!context.subcellular_fraction}>{context.subcellular_fraction}</dd>
 
                         <dt>Source</dt>
                         <dd><a href={context.source.url}>{context.source.title}</a></dd>
