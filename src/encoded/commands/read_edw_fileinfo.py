@@ -57,12 +57,14 @@ FILE_NESTED_PROPERTIES = {
     'replicate': 'biological_replicate_number',
     # TODO: support tech repnum when available from EDW
 }
+
+NO_UPDATE = ['md5sum', 'replicate', 'dataset']
 def format_app_fileinfo(app, file_dict, exclude=None):
 
     ''' this tries to convert an encoded file into a EDW like data structure'''
     global verbose
     if verbose:
-        sys.stderr.write('Found app file: %s\n' % (file_dict['accession']))
+        logging.info('Found app file: %s\n' % (file_dict['accession']))
     fileinfo = {}
     for prop in edw_file.FILE_INFO_FIELDS:
         if exclude and prop in exclude:
@@ -136,7 +138,7 @@ def internal_app(configfile, username=''):
 def make_app(application, username, password):
     # Configure test app pyramid .ini file or use application URL
     logging.basicConfig()
-    sys.stderr.write('Using encoded app: %s\n' % application)
+    logging.info('Using encoded app: %s\n' % application)
 
     global app_host_name
 
@@ -159,7 +161,7 @@ def make_app(application, username, password):
     resp = app.get(FILE_PROFILE_URL)
     schema = resp.json['properties']['schema_version']['default']
     if schema != FILE_SCHEMA_VERSION:
-        sys.stderr.write('ERROR: File schema has changed: is %s, expecting %s\n' %
+        logging.error('ERROR: File schema has changed: is %s, expecting %s\n' %
                         (schema, FILE_SCHEMA_VERSION))
         sys.exit(1)
     return app
@@ -177,7 +179,7 @@ def get_collection(app, collection):
     # GET JSON objects from app as a list
     # NOTE: perhaps limit=all should be default for JSON output
     # and app should hide @graph (provide an iterator)
-    global collections
+    #global collections
     url = collection_url(collection)
     url += "?limit=all"
     if not quick:
@@ -202,7 +204,7 @@ def get_encode2_accessions(app, encode3_acc):
     global verbose
     if encode3_acc not in encode3_to_encode2:
         if verbose:
-            sys.stderr.write('Get experiment (get e2): %s\n' % (encode3_acc))
+            logging.info('Get experiment (get e2): %s\n' % (encode3_acc))
         url = collection_url(EXPERIMENTS) + encode3_acc
         resp = app.get(url).maybe_follow()
         encode3_to_encode2[encode3_acc] = resp.json[ENCODE2_PROP]
@@ -244,7 +246,7 @@ def get_encode2_to_encode3(app):
         exp = resp.json
         encode3_acc = exp['accession']
         if verbose:
-            sys.stderr.write('Get experiment (e2-e3): %s\n' % (encode3_acc))
+            logging.info('Get experiment (e2-e3): %s\n' % (encode3_acc))
         encode2_accs = get_encode2_accessions(app, encode3_acc)
         if encode2_accs is not None and len(encode2_accs) > 0:
             for encode2_acc in encode2_accs:
@@ -292,11 +294,11 @@ def set_fileinfo_experiment(app, fileinfo):
     new_fileinfo = copy.deepcopy(fileinfo)
     acc = new_fileinfo['dataset']
     if (acc.startswith(ENCODE2_ACC)):
-        sys.stderr.write('Get ENCODE3 experiment acc for: %s\n' % (acc))
+        logging.info('Get ENCODE3 experiment acc for: %s\n' % (acc))
         encode3_acc = get_encode3_experiment(app, acc)
         if encode3_acc is not None:
             if verbose:
-                sys.stderr.write('.. ENCODE3 experiment acc for: %s is %s\n' %
+                logging.info('.. ENCODE3 experiment acc for: %s is %s\n' %
                                     (acc, encode3_acc))
             new_fileinfo['dataset'] = encode3_acc
 
@@ -346,7 +348,7 @@ def set_fileinfo_replicate(app, fileinfo):
         url = collection_url(EXPERIMENTS)
         url += experiment
         if verbose:
-            sys.stderr.write('Get experiment (get rep): %s \n' % key)
+            logging.info('Get experiment (get rep): %s \n' % key)
         resp = app.get(url).maybe_follow()
         if (resp.status_code != 200):
             if verbose:
@@ -372,11 +374,11 @@ def set_fileinfo_replicate(app, fileinfo):
             'technical_replicate_number': tech_rep_num
         }
         if verbose:
-            sys.stderr.write('....POST replicate %d for experiment %s\n' % (bio_rep_num, experiment))
+            logging.info('....POST replicate %d for experiment %s\n' % (bio_rep_num, experiment))
         url = collection_url(REPLICATES)
         resp = app.post_json(url, rep)
         if verbose:
-            sys.stderr.write(str(resp) + "\n")
+            logging.info(str(resp) + "\n")
         # WARNING: ad-hoc char conversion here
         rep_id = str(resp.json[unicode('@graph')][0][unicode('@id')])
         experiment_replicates[key] = rep_id
@@ -468,7 +470,7 @@ def post_fileinfo(app, fileinfo):
     accession = fileinfo['accession']
 
     if verbose:
-        sys.stderr.write('....POST file: %s\n' % (accession))
+        logging.info('....POST file: %s\n' % (accession))
     # Replace replicate number (bio_rep) with URL for replicate
     # (may require creating one)
     try:
@@ -477,18 +479,18 @@ def post_fileinfo(app, fileinfo):
         if post_fileinfo is None:
             return None
     except AppError as e:
-        logging.warning('Failed POST File %s: Replicate error\n%s', accession, e)
-        return
+        logging.error('Failed POST File %s: Replicate error\n%s', accession, e)
+        return None
     url = collection_url(FILES)
     resp = app.post_json(url, post_fileinfo, expect_errors=True)
     if verbose:
-        sys.stderr.write(str(resp) + "\n")
+        logging.info(str(resp) + "\n")
     if resp.status_int == 409:
         logging.warning('Failed POST File %s: File already exists', accession)
     elif resp.status_int < 200 or resp.status_int >= 400:
-        logging.warning('Failed POST File %s\n%s', accession, resp)
+        logging.error('Failed POST File %s\n%s', accession, resp)
     else:
-        sys.stderr.write('Successful POST File: %s\n' % (accession))
+        logging.info('Successful POST File: %s\n' % (accession))
     return resp
 
 
@@ -499,7 +501,7 @@ def put_fileinfo(app, fileinfo):
     accession = fileinfo['accession']
 
     if verbose:
-        sys.stderr.write('....PUT file: %s\n' % (accession))
+        logging.info('....PUT file: %s\n' % (accession))
     try:
         exp_fileinfo = set_fileinfo_experiment(app, fileinfo)
         new_fileinfo = set_fileinfo_replicate(app, exp_fileinfo)
@@ -516,11 +518,11 @@ def put_fileinfo(app, fileinfo):
     #resp = app.put_json(url, fileinfo)
     resp = app.put_json(url, new_fileinfo)
     if verbose:
-        sys.stderr.write(str(resp) + "\n")
+        logging.info(str(resp) + "\n")
     if resp.status_int < 200 or resp.status_int >= 400:
         logging.warning('Failed PUT File %s\n%s', accession, resp)
     else:
-        sys.stderr.write('Successful PUT File: %s\n' % (accession))
+        logging.info('Successful PUT File: %s\n' % (accession))
 
 
 def patch_fileinfo(app, props, propinfo):
@@ -530,19 +532,29 @@ def patch_fileinfo(app, props, propinfo):
     accession = propinfo['accession']
 
     if verbose:
-        sys.stderr.write('....PATCH file: %s\n' % (accession))
-    if 'replicate' in props:
-        # TODO: Handle finding/creating replicate
-        # get or create replicate
-        sys.stderr.write('Cannot patch %s: replicate change\n' % (accession))
+        logging.info('....PATCH file: %s\n' % (accession))
+    for prop in props:
+        if prop in NO_UPDATE:
+            logging.error('Refusing to PATCH %s (%s): for %s\n' % (prop, propinfo[prop], accession))
+            return None
+    try:
+        exp_fileinfo = set_fileinfo_experiment(app, propinfo)
+        patch_fileinfo = set_fileinfo_replicate(app, exp_fileinfo)
+        if patch_fileinfo is None:
+            return None
+    except AppError as e:
+        logging.error('Failed PATCH File %s:  error\n%s', accession, e)
+        return None
     url = collection_url(FILES) + accession
-    resp = app.patch_json(url, propinfo)
+    resp = app.patch_json(url, patch_fileinfo)
     if verbose:
-        sys.stderr.write(str(resp) + "\n")
+        logging.info(str(resp) + "\n")
     if resp.status_int < 200 or resp.status_int >= 400:
-        logging.warning('Failed PATCH File %s\n%s', accession, resp)
+        logging.error('Failed PATCH File %s\n%s', accession, resp)
+        return None
     else:
-        sys.stderr.write('Successful PATCH File: %s\n' % (accession))
+        logging.info('Successful PATCH File: %s\n' % (accession))
+        return resp
 
 
 ################
@@ -553,13 +565,13 @@ def show_edw_fileinfo(edw, full=True, limit=None, experiment=True,
     # Read info from file tables at EDW.
     # Format as TSV file with columns from 'encoded' File JSON schema
     if (full):
-        sys.stderr.write('Showing ENCODE %s files\n' % phase)
+        logging.info('Showing ENCODE %s files\n' % phase)
         edw_files = edw_file.get_edw_fileinfo(edw, limit=limit,
                                                       phase=phase,
                                                       experiment=experiment)
         edw_file.dump_fileinfo(edw_files)
     else:
-        sys.stderr.write('Showing ENCODE %s file accessions\n' % phase)
+        logging.info('Showing ENCODE %s file accessions\n' % phase)
         edw_accs = edw_file.get_edw_filelist(edw, limit=limit, phase=phase,
                                              experiment=experiment)
         edw_file.dump_filelist(edw_accs)
@@ -568,7 +580,7 @@ def show_edw_fileinfo(edw, full=True, limit=None, experiment=True,
 def show_app_fileinfo(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
     # Read info from file tables at EDW.
     # Write TSV file from list of application file info
-    sys.stderr.write('Exporting file info\n')
+    logging.info('Exporting file info\n')
     app_files = get_app_fileinfo(app, limit=limit, phase=phase)
     edw_file.dump_fileinfo(app_files)
 
@@ -577,12 +589,12 @@ def show_missing_fileinfo(app, edw, full=True, phase=edw_file.ENCODE_PHASE_ALL):
     # Show 'missing' files: at EDW with experiment accession but not in app
 
     if (full):
-        sys.stderr.write('Showing missing ENCODE %s files '
+        logging.info('Showing missing ENCODE %s files '
                          '(at EDW but not in app)\n' % (phase))
         missing_files = get_missing_fileinfo(app, edw, phase=phase)
         edw_file.dump_fileinfo(missing_files)
     else:
-        sys.stderr.write('List missing ENCODE %s file accessions '
+        logging.info('List missing ENCODE %s file accessions '
                          '(at EDW but not in app)\n' % (phase))
         missing_accs = get_missing_filelist(app, edw, phase=phase)
         edw_file.dump_filelist(missing_accs)
@@ -590,7 +602,7 @@ def show_missing_fileinfo(app, edw, full=True, phase=edw_file.ENCODE_PHASE_ALL):
 
 def post_app_fileinfo(input_file, app):
     # POST files from input file to app
-    sys.stderr.write('Importing file info from %s to app via POST\n' % (input_file))
+    logging.info('Importing file info from %s to app via POST\n' % (input_file))
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
         for fileinfo in reader:
@@ -600,7 +612,7 @@ def post_app_fileinfo(input_file, app):
 
 def modify_app_fileinfo(input_file, app):
     # PATCH properties in input file to app
-    sys.stderr.write('Modifying file info from %s to app (PATCH)\n' % (input_file))
+    logging.info('Modifying file info from %s to app (PATCH)\n' % (input_file))
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
         props = reader.readheader()
@@ -610,7 +622,7 @@ def modify_app_fileinfo(input_file, app):
 
 def update_app_fileinfo(input_file, app):
     # PUT changed file info from input file to app
-    sys.stderr.write('Updating file info from %s to app (PUT)\n' % (input_file))
+    logging.info('Updating file info from %s to app (PUT)\n' % (input_file))
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
         for fileinfo in reader:
@@ -619,7 +631,7 @@ def update_app_fileinfo(input_file, app):
 
 def convert_fileinfo(input_file, app):
     # Convert ENCODE2 accessions in input file to ENCODE3
-    sys.stderr.write('Converting ENCODE2 file info in %s to ENCODE3\n' % (input_file))
+    logging.info('Converting ENCODE2 file info in %s to ENCODE3\n' % (input_file))
     with open(input_file, 'rb') as f:
         reader = DictReader(f, delimiter='\t')
         app_files = []
@@ -641,7 +653,7 @@ def get_sync_filename():
 def get_last_id_synced():
     sync_file = get_sync_filename()
     if verbose:
-        sys.stderr.write('Using id file: %s\n' % (sync_file))
+        logging.info('Using id file: %s\n' % (sync_file))
     try:
         f = open(sync_file, 'r')
         return int(f.readline().split()[0])
@@ -661,18 +673,18 @@ def get_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL, limit=None):
     # Id saved in edw.last_id for localhost, or edw.host.last_id for remote
 
     last_id_synced = get_last_id_synced()
-    sys.stderr.write('Last EDW id synced: %d\n' % (last_id_synced))
+    logging.info('Last EDW id synced: %d\n' % (last_id_synced))
     max_id = edw_file.get_edw_max_id(edw)
     new_files = edw_file.get_edw_fileinfo(edw, start_id=last_id_synced,
                                           phase=phase, limit=limit)
-    sys.stderr.write('...Max EDW id: %d\n' % (max_id))
+    logging.info('...Max EDW id: %d\n' % (max_id))
     return (new_files, max_id)
 
 
 def show_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL, limit=None):
     # Show files at EDW having file id > last synced
 
-    sys.stderr.write('Showing new file info at EDW\n')
+    logging.info('Showing new file info at EDW\n')
     new_files, last_id = get_new_fileinfo(app, edw, phase=phase, limit=limit)
     edw_file.dump_fileinfo(new_files)
 
@@ -680,7 +692,7 @@ def show_new_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL, limit=None):
 def sync_app_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL, limit=None):
     # POST new files from EDW to app
 
-    sys.stderr.write('Importing new file info to app\n')
+    logging.info('Importing new file info to app\n')
     # TODO: log imported files
     new_files, last_id = get_new_fileinfo(app, edw, phase=phase, limit=limit)
     for fileinfo in new_files:
@@ -717,7 +729,7 @@ def inventory_files(app, edw_dict, app_dict):
             diff = compare_files(edw_exp_fileinfo, app_dict[accession])
             if diff:
                 diff_accessions.append(accession)
-                sys.stderr.write("File: %s has %s diffs\n" % (accession, diff))
+                logging.info("File: %s has %s diffs\n" % (accession, diff))
             else:
                 same.append(edw_exp_fileinfo)
 
@@ -732,7 +744,7 @@ def inventory_files(app, edw_dict, app_dict):
 def show_diff_fileinfo(app, edw, exclude=None, detailed=False,
                        phase=edw_file.ENCODE_PHASE_ALL):
     # Show differences between EDW experiment files and files in app
-    sys.stderr.write('Comparing file info for ENCODE %s files at EDW with app\n'
+    logging.info('Comparing file info for ENCODE %s files at EDW with app\n'
                       % (phase))
 
     edw_dict, app_dict = get_dicts(edw, app, exclude=exclude, phase=phase)

@@ -14,40 +14,6 @@ EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
 TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 
 
-# def format_app_fileinfo(app, file_dict, exclude=None):
-# def format_reader_fileinfo(file_dict):
-# def basic_auth(username, password):
-# def remote_app(base, username='', password=''):
-# def internal_app(configfile, username=''):
-# def make_app(application, username, password):
-# def collection_url(collection):
-# def get_collection(app, collection):
-# def get_encode2_accessions(app, encode3_acc):
-# def is_encode2_experiment(app, accession):
-# def get_phase(app, fileinfo):
-# def get_encode2_to_encode3(app):
-# def get_encode3_experiment(app, accession):
-# def set_fileinfo_experiment(app, fileinfo):
-# def replicate_key(experiment, bio_rep, tech_rep):
-# def set_fileinfo_replicate(app, fileinfo):
-# def get_app_fileinfo(app, full=True, limit=0, exclude=None,
-# def get_app_filelist(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
-# def get_missing_filelist_from_lists(app_accs, edw_accs):
-# def get_missing_filelist(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
-# def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
-# def post_fileinfo(app, fileinfo):
-# def put_fileinfo(app, fileinfo):
-# def patch_fileinfo(app, props, propinfo):
-# def show_edw_fileinfo(edw, full=True, limit=None, experiment=True,
-# def show_app_fileinfo(app, limit=0, phase=edw_file.ENCODE_PHASE_ALL):
-# def show_missing_fileinfo(app, edw, full=True, phase=edw_file.ENCODE_PHASE_ALL):
-# def post_app_fileinfo(input_file, app):
-# def modify_app_fileinfo(input_file, app):
-# def update_app_fileinfo(input_file, app):
-# def convert_fileinfo(input_file, app):
-# def get_sync_filename():
-# def get_last_id_synced():
-# def update_last_id_synced(last_id):
 
 ## edw_file
 # def format_edw_fileinfo(file_dict, exclude=None):
@@ -157,6 +123,7 @@ def test_file_sync(workbook, testapp):
     app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
     app_dict = { d['accession']:d for d in app_files }
     assert len(app_files) == 24  ## just a place holder, could use TYPE_LENGTH from test_views.py
+    assert(len(app_files) == len(app_dict.keys())) # this should never duplicate
 
     edw_only, app_only, same, patch = encoded.commands.read_edw_fileinfo.inventory_files(testapp, edw_mock, app_dict)
     assert len(edw_only) == 10
@@ -182,7 +149,33 @@ def test_file_sync(workbook, testapp):
         assert(resp.status_code == 409)
 
     for update in patch:
-        pass
+        diff = encoded.commands.read_edw_fileinfo.compare_files(app_dict[update], edw_mock[update])
+        patched = encoded.commands.read_edw_fileinfo.patch_fileinfo(testapp, diff.keys(), edw_mock[update])
+        should_fail = False
+        for patch_prop in diff.keys():
+            if patch_prop in encoded.commands.read_edw_fileinfo.NO_UPDATE:
+                should_fail = True
+        if should_fail:
+            assert not patched
+        else:
+            assert patched
+
+    post_app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
+    post_app_dict = { d['accession']:d for d in post_app_files }
+    assert(len(post_app_files) == len(post_app_dict.keys()))
+
+    encoded.commands.read_edw_fileinfo.collections = []
+    # reset global var!
+    post_edw, post_app, post_same, post_patch= encoded.commands.read_edw_fileinfo.inventory_files(testapp, edw_mock, post_app_dict)
+    assert len(post_edw) == 2
+    assert len(post_app) == 11 # unchanged
+    assert len(post_patch) == 3
+    assert len(post_same) == 32-(11+3)  # total minus ( encoded only + re-patch)
+    assert len(post_app_files) == (len(app_files) + len(edw_only) - 2 )
+    # original + edw_only
+
+
+
 
 
 

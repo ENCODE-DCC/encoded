@@ -43,7 +43,7 @@ def app_settings(request, server_host_port, connection):
 def pytest_configure():
     import logging
     logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
     logging.getLogger('selenium').setLevel(logging.DEBUG)
 
     class Shorten(logging.Filter):
