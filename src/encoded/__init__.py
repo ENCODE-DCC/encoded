@@ -54,9 +54,11 @@ def configure_engine(settings, test_setup=False):
         enable_sqlite_savepoints(engine)
     elif engine.url.drivername == 'postgresql':
         set_postgresql_statement_timeout(engine)
-    if not test_setup:
+    if test_setup:
+        return engine
+    if asbool(settings.get('create_tables', True)):
         Base.metadata.create_all(engine)
-        DBSession.configure(bind=engine)
+    DBSession.configure(bind=engine)
     return engine
 
 
