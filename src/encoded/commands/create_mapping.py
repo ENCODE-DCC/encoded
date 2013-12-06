@@ -19,13 +19,13 @@ EPILOG = __doc__
 
 # An index to store non-content metadata
 META_MAPPING = {
-    "dynamic_templates" : [
+    "dynamic_templates": [
         {
-            "store_generic" : {
-                "match" : "*",
-                "mapping" : {
+            "store_generic": {
+                "match": "*",
+                "mapping": {
                     "index": "no",
-                    "store" : "yes",
+                    "store": "yes",
                 },
             },
         },
@@ -63,7 +63,6 @@ def schema_mapping(name, schema):
                     'type': 'string',
                     'search_analyzer': 'encoded_search_analyzer',
                     'index_analyzer': 'encoded_index_analyzer',
-                    'omit_term_freq_and_positions': True,
                     'include_in_all': False
                 },
                 'untouched': {
@@ -89,11 +88,11 @@ def index_settings(index):
                 'analyzer': {
                     'encoded_search_analyzer': {
                         'tokenizer': 'keyword',
-                        'filter': ['lowercase', 'keyword_repeat']
+                        'filter': ['lowercase']
                     },
                     'encoded_index_analyzer': {
                         'tokenizer': 'keyword',
-                        'filter': ['lowercase', 'keyword_repeat', 'substring']
+                        'filter': ['lowercase', 'substring']
                     }
                 },
                 'filter': {
@@ -163,14 +162,15 @@ def collection_mapping(collection, embed=True):
         new_mapping = mapping['properties']
         for prop in props:
             if len(props) == props.index(prop) + 1:
-                new_mapping[prop]['boost'] = boost_values[value]
+                new_mapping[prop]['fields'][prop]['boost'] = boost_values[value]
                 if prop == 'assay_term_name':
                     new_mapping[prop]['analyzer'] = 'dash_path'
                 del(new_mapping[prop]['fields'][prop]['include_in_all'])
+                del(new_mapping[prop]['fields']['untouched']['include_in_all'])
                 new_mapping = mapping['properties']
             else:
                 new_mapping = new_mapping[prop]['properties']
-    mapping['_all'] = {'analyzer': 'encoded_index_analyzer'}
+    mapping['_all'] = {'analyzer': 'encoded_index_analyzer', 'auto_boost': False}
     return mapping
 
 

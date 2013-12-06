@@ -158,9 +158,6 @@ var Dbxref = dbxref.Dbxref;
                         field = facet[f];
                     }
                 }
-                if(terms.length == 1) {
-                    return
-                }
                 return <div>
                         <h5>{term}</h5>
                         <ul className="facet-list nav">
@@ -227,26 +224,33 @@ var Dbxref = dbxref.Dbxref;
                                 <div className="span3">
                                     <div>
                                         <ul className="nav nav-tabs nav-stacked">
-                                            {count['antibodies'] ?
-                                                <li>
-                                                    <a href={href_search+'&type=antibody_approval'}>Antibodies<span className="pull-right">{count['antibodies']}</span></a>
-                                                </li>
-                                            : null}
-                                            {count['biosamples'] ?
-                                                <li>
-                                                    <a href={href_search+'&type=biosample'}>Biosample<span className="pull-right">{count['biosamples']}</span></a>
-                                                </li>
-                                            : null}
-                                            {count['experiments'] ?
-                                                <li>
-                                                    <a href={href_search+'&type=experiment'}>Experiments<span className="pull-right">{count['experiments']}</span></a>
-                                                </li>
-                                            : null}
-                                            {count['targets'] ?
-                                                <li>
-                                                    <a href={href_search+'&type=target'}>Targets<span className="pull-right">{count['targets']}</span></a>
-                                                </li>
-                                            : null}
+                                            {href_search.indexOf('type=antibody_approval') >= 0 ?
+                                                <li><a href={href_search.replace("type=antibody_approval", "")}>Antibodies<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                            : count['antibodies'] ? 
+                                                    <li><a href={href_search+'&type=antibody_approval'}>Antibodies<span className="pull-right">{count['antibodies']}</span></a></li> 
+                                                : null 
+                                            }
+                                            
+                                            {href_search.indexOf('type=biosample') >= 0 ?
+                                                <li><a href={href_search.replace("type=biosample", "")}>Biosamples<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                            : count['biosamples'] ?
+                                                    <li><a href={href_search+'&type=biosample'}>Biosample<span className="pull-right">{count['biosamples']}</span></a></li>
+                                                : null
+                                            }
+                                            
+                                            {href_search.indexOf('type=experiment') >= 0 ?
+                                                <li><a href={href_search.replace("type=experiment", "")}>Experiments<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                            : count['experiments'] ?
+                                                    <li><a href={href_search+'&type=experiment'}>Experiments<span className="pull-right">{count['experiments']}</span></a></li>
+                                                : null
+                                            }
+                                            
+                                            {href_search.indexOf('type=target') >= 0 ?
+                                                <li><a href={href_search.replace("type=target", "")}>Targets<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                            : count['targets'] ?
+                                                    <li><a href={href_search+'&type=target'}>Targets<span className="pull-right">{count['targets']}</span></a></li>
+                                                : null 
+                                            }
                                         </ul>
                                     </div>
                                     {facets.length ?

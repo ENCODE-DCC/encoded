@@ -192,7 +192,8 @@ def search(context, request):
                         face[facet.keys()[0]].append({term['term']: term['count']})
                     '''if facet_results[facet.keys()[0]]['missing'] != 0:
                         face[facet.keys()[0]].append({'other': facet_results[facet.keys()[0]]['missing']})'''
-                    result['facets'].append(face)
+                    if len(face[facet.keys()[0]]) > 1:
+                        result['facets'].append(face)
 
         for hit in results['hits']['hits']:
             result_hit = hit['fields']
