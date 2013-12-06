@@ -30,7 +30,8 @@ FILE_INFO_FIELDS = [
     'output_type',
     'file_format',
     'dataset',
-    'replicate',
+    'biological_replicate',
+    'technical_replicate',
     'download_path',
     'submitted_file_name',
     'assembly',
@@ -40,7 +41,7 @@ FILE_INFO_FIELDS = [
 ]
 
 # Replicate representation
-TECHNICAL_REPLICATE_NUM = 1  # always 1 for now (pending EDW changes)
+#TECHNICAL_REPLICATE_NUM = 1  # always 1 for now (pending EDW changes)
 NO_REPLICATE_TERMS = ['pooled', 'n/a', '']  # in manifest files and EDW tables
 NO_REPLICATE_INT = -1   # integer used in TSV replicate column
 
@@ -56,6 +57,7 @@ verbose = False
 # Support functions to localize handling of special fields
 
 def format_edw_fileinfo(file_dict, exclude=None):
+    ''' depecated here, conversion functionality moved to read_edw_fileinfo'''
     global verbose
     if verbose:
         sys.stderr.write('Found EDW file: %s\n' % (file_dict['accession']))
@@ -63,6 +65,15 @@ def format_edw_fileinfo(file_dict, exclude=None):
     file_dict['date_created'] = datetime.datetime.fromtimestamp(
         valid_time).strftime('%Y-%m-%d')
         # TODO: should be isoformat() ?
+    ''' from previous method
+    file_dict = dict(row)
+    file_dict['status'] = file_dict['lab_error_message'] + file_dict['edw_error_message']
+    del file_dict['lab_error_message']
+    del file_dict['edw_error_message']
+    format_edw_fileinfo(file_dict, exclude)
+    edw_files.append(file_dict)
+    '''
+
     if file_dict['status'] == '':
         file_dict['status'] = 'CURRENT'
     else:
@@ -70,13 +81,14 @@ def format_edw_fileinfo(file_dict, exclude=None):
     for prop in FILE_INFO_FIELDS:
         file_dict[prop] = unicode(file_dict[prop])
         # not type-aware, so we need to force replicate to numeric
-        if not file_dict.get('replicate'):
+        '''if not file_dict.get('biological_replicate'):
             pass
-        elif file_dict['replicate'] in NO_REPLICATE_TERMS:
+        elif file_dict['biological_replicate'] in NO_REPLICATE_TERMS:
             #file_dict['replicate'] = NO_REPLICATE_INT
-            del file_dict['replicate']
+            del file_dict['biological_replicate']
         else:
-            file_dict['replicate'] = int(file_dict['replicate'])
+            file_dict['biological_replicate'] = int(file_dict['biological_replicate'])
+        '''
     # hide assembly for fastQ's -- (EDW retains it to represent organism)
     if file_dict['file_format'] in ['fasta', 'fastq']:
         del file_dict['assembly']
@@ -217,7 +229,7 @@ def get_edw_max_id(edw):
 
 
 def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
-                     exclude=None, phase=ENCODE_PHASE_ALL):
+                     phase=ENCODE_PHASE_ALL):
     # Read info from file tables at EDW
     # Optional param max_id limits to just files having EDW id greater
     # than the named value (typically, this was from previous sync)
@@ -248,7 +260,8 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
                     v.c.outputType.label('output_type'),
                     v.c.format.label('file_format'),
                     v.c.experiment.label('dataset'),
-                    v.c.replicate.label('replicate'),
+                    v.c.replicate.label('biological_replicate'),
+                    v.c.technicalReplicate.label('technical_replicate'),
                     f.c.edwFileName.label('download_path'),
                     f.c.submitFileName.label('submitted_file_name'),
                     v.c.ucscDb.label('assembly'),
@@ -279,14 +292,7 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
         sys.stderr.write("ERROR: EDW SQL query failed (suspect schema change)\n")
         exit(-1)
 
-    edw_files = []
-    for row in results:
-        file_dict = dict(row)
-        file_dict['status'] = file_dict['lab_error_message'] + file_dict['edw_error_message']
-        del file_dict['lab_error_message']
-        del file_dict['edw_error_message']
-        format_edw_fileinfo(file_dict, exclude)
-        edw_files.append(file_dict)
+    files =  [ dict(row) for row in results ]
     results.close()
     conn.close()
-    return edw_files
+    return files
