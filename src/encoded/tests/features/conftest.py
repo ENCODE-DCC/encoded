@@ -6,16 +6,9 @@ pytest_plugins = 'encoded.tests.bdd'
 @pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')
 def postgresql_server():
-    from urllib import quote
-    from ..postgresql_fixture import server_process
-    tmpdir = str(pytest.ensuretemp('postgresql'))
-    process = server_process(tmpdir)
-
-    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
-
-    if process.poll() is None:
-        process.terminate()
-        process.wait()
+    from .. import test_indexing
+    for fixture in test_indexing.postgresql_server():
+        yield fixture
 
 
 @pytest.fixture(scope='session')
@@ -41,63 +34,24 @@ def elasticsearch_server(elasticsearch_host_port):
 
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
-    from ..conftest import _app_settings
-    settings = _app_settings.copy()
-    settings['persona.audiences'] = 'http://%s:%s' % server_host_port
-    settings['elasticsearch.server'] = elasticsearch_server
-    settings['sqlalchemy.url'] = postgresql_server
-    settings['collection_source'] = 'elasticsearch'
-    return settings
+    from .. import test_indexing
+    return test_indexing.app_settings(server_host_port, elasticsearch_server, postgresql_server)
 
 
 @pytest.fixture(scope='session')
 def app(request, app_settings):
-    '''WSGI application level functional testing.
-    '''
-    from encoded.storage import DBSession
-
-    DBSession.remove()
-    DBSession.configure(bind=None)
-
-    from encoded import main
-    app = main({}, **app_settings)
-
-    from encoded.commands import create_mapping
-    create_mapping.run(app)
-
-    @request.addfinalizer
-    def teardown_app():
-        # Dispose connections so postgres can tear down
-        DBSession.bind.pool.dispose()
-        DBSession.remove()
-        DBSession.configure(bind=None)
-
-    return app
+    from .. import test_indexing
+    return test_indexing.app(request, app_settings)
 
 
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
 def workbook(connection, app, app_settings):
-    tx = connection.begin_nested()
-    try:
-        from webtest import TestApp
-        environ = {
-            'HTTP_ACCEPT': 'application/json',
-            'REMOTE_USER': 'TEST',
-        }
-        testapp = TestApp(app, environ)
-
-        from ...loadxl import load_all
-        from pkg_resources import resource_filename
-        inserts = resource_filename('encoded', 'tests/data/inserts/')
-        docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-        load_all(testapp, inserts, docsdir)
-        from encoded.commands import es_index_data
+    from .. import conftest
+    from encoded.commands import es_index_data
+    for fixture in conftest.workbook(connection, app, app_settings):
         es_index_data.run(app)
-
-        yield
-    finally:
-        tx.rollback()
+        yield fixture
 
 
 @pytest.fixture(autouse=True)
