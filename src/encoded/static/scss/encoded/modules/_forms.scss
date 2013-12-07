@@ -22,6 +22,14 @@ input.search-query {
 	@include border-radius($borderRadiusSmall);
 }
 
+// large text inputBorder
+.input-lg {
+	font-size: 26px !important;
+    height: 36px !important;
+    line-height: 30px !important;
+    padding: 4px 6px !important;
+}
+
 #submit-controls { /* is this used anywhere other than a mockup? */
 	padding: 5px;
 	background-color: #f7fbfe;
