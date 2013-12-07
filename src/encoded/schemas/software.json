@@ -82,7 +82,7 @@
             "description": "The Pubmed identifiers used as references for the software.",
             "type": "array",
             "default": [],
-            "reference": {
+            "items": {
                 "title": "Reference",
                 "description": "A Pubmed identifier used as a reference for the software.",
                 "type": "string",
