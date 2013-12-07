@@ -26,7 +26,7 @@ var Dbxref = module.exports.Dbxref = function (props) {
     return <span>{value}</span>;
 };
 
-module.exports.DbxrefList = function (props) { console.log(props);
+module.exports.DbxrefList = function (props) {
     return (
         <ul className={props.className}>{props.values.map(function (value) {
             return <li key={value}><Dbxref value={value} prefix={props.prefix} target_gene={props.target_gene} /></li>;

@@ -1,10 +1,6 @@
 @antibodies @usefixtures(workbook)
 Feature: Antibodies
 
-    Scenario: Active section
-        When I visit "/antibodies/"
-        Then the "/antibodies/" section should be active
-
     Scenario: Table
         When I visit "/antibodies/"
         And I wait for the table to fully load
