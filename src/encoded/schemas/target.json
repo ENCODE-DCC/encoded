@@ -53,12 +53,12 @@
         }
     },
     "boost_values": {
-        "gene_name": 1.4, 
-        "label": 1.0, 
-        "dbxref": 1.3, 
-        "aliases": 1.2, 
-        "organism.name": 1.2,  
-        "organism.scientific_name": 1.2, 
+        "gene_name": 2.0, 
+        "label": 1.8, 
+        "dbxref": 1.2, 
+        "aliases": 1.0, 
+        "organism.name": 1.6,  
+        "organism.scientific_name": 1.5, 
         "organism.taxon_id": 1.0
     }
 }

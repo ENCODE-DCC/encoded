@@ -9,13 +9,15 @@ es = ElasticSearch('http://localhost:9200')
 
 def get_filtered_query(term, fields):
     return {
+        'explain': True,
         'query': {
             'filtered': {
                 'query': {
                     'queryString': {
                         'query': term,
                         'analyze_wildcard': True,
-                        'analyzer': 'encoded_search_analyzer'
+                        'analyzer': 'encoded_search_analyzer',
+                        'default_operator': 'AND'
                     }
                 },
                 'filter': {
@@ -32,11 +34,13 @@ def get_filtered_query(term, fields):
 
 def get_query(term, fields):
     return {
+        'explain': True,
         'query': {
             'query_string': {
                 'query': term,
                 'analyze_wildcard': True,
-                'analyzer': 'encoded_search_analyzer'
+                'analyzer': 'encoded_search_analyzer',
+                'default_operator': 'AND'
             }
         },
         'facets': {},
@@ -44,7 +48,7 @@ def get_query(term, fields):
     }
 
 
-@view_config(name='search', context=Root, request_method='GET', permission='search')
+@view_config(name='search', context=Root, request_method='GET', permission='view')
 def search(context, request):
     ''' Search view connects to ElasticSearch and returns the results'''
 
@@ -91,7 +95,6 @@ def search(context, request):
         if not search_term:
             result['notification'] = 'Please enter search term'
             return result
-        
         indices = ['antibody_approval', 'biosample', 'experiment', 'target']
         fields = ['@id', '@type']
         for index in indices:
@@ -101,7 +104,7 @@ def search(context, request):
                 fields.append(column)
 
         query = get_query(search_term, list(set(fields)))
-        
+
         s = es.search(query, index=indices, size=99999)
         result['count']['targets'] = result['count']['antibodies'] = result['count']['experiments'] = result['count']['biosamples'] = 0
         for hit in s['hits']['hits']:
@@ -114,9 +117,7 @@ def search(context, request):
                 result['count']['experiments'] += 1
             elif result_hit['@type'][0] == 'target':
                 result['count']['targets'] += 1
-
             result['@graph'].append(result_hit)
-        
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
@@ -127,7 +128,7 @@ def search(context, request):
         if search_term == '*' and search_type == '*':
             result['notification'] = 'Please enter search terme'
             return result
-        
+
         # Building query for filters
         collections = root.by_item_type
         fields = ['@id', '@type']
@@ -138,10 +139,9 @@ def search(context, request):
                 schema = collection.schema
                 result['columns'] = columns = collection.columns
                 break
-        
         for column in columns:
             fields.append(column)
-        
+
         # Builds filtered query which supports multiple facet selection
         query = get_filtered_query(search_term, fields)
         regular_query = 1
@@ -153,7 +153,7 @@ def search(context, request):
                 else:
                     query['query']['filtered']['filter']['and']['filters'].append({'bool': {'must': {'term': {key + '.untouched': value}}}})
                 result['filters'].append({key: value})
-        
+
         if regular_query:
             query = get_query(search_term, fields)
 
@@ -179,7 +179,7 @@ def search(context, request):
 
         # Execute the query
         results = es.search(query, index=index, size=size)
-        
+
         # Loading facets in to the results
         if 'facets' in results:
             facet_results = results['facets']
@@ -190,9 +190,10 @@ def search(context, request):
                     face[facet.keys()[0]] = []
                     for term in facet_results[facet.keys()[0]]['terms']:
                         face[facet.keys()[0]].append({term['term']: term['count']})
-                    if facet_results[facet.keys()[0]]['missing'] != 0:
-                        face[facet.keys()[0]].append({'other': facet_results[facet.keys()[0]]['missing']})
-                    result['facets'].append(face)
+                    '''if facet_results[facet.keys()[0]]['missing'] != 0:
+                        face[facet.keys()[0]].append({'other': facet_results[facet.keys()[0]]['missing']})'''
+                    if len(face[facet.keys()[0]]) > 1:
+                        result['facets'].append(face)
 
         for hit in results['hits']['hits']:
             result_hit = hit['fields']
