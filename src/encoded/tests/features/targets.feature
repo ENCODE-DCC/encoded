@@ -1,10 +1,6 @@
 @targets @usefixtures(workbook)
 Feature: Targets
 
-    Scenario: Active section
-        When I visit "/targets/"
-        Then the "/targets/" section should be active
-
     Scenario: Table
         When I visit "/targets/"
         And I wait for the table to fully load

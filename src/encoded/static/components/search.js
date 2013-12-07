@@ -203,6 +203,7 @@ var Dbxref = dbxref.Dbxref;
             var count = context['count'];
             var columns = context['columns'];
             var filters = context['filters'];
+            var search_id = context['@type'][1]
 
             var unfacetButtons = function(filter) {
                 for (var key in filter) {
@@ -224,32 +225,32 @@ var Dbxref = dbxref.Dbxref;
                                 <div className="span3">
                                     <div>
                                         <ul className="nav nav-tabs nav-stacked">
-                                            {href_search.indexOf('type=antibody_approval') >= 0 ?
-                                                <li><a href={href_search.replace("type=antibody_approval", "")}>Antibodies<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
-                                            : count['antibodies'] ? 
-                                                    <li><a href={href_search+'&type=antibody_approval'}>Antibodies<span className="pull-right">{count['antibodies']}</span></a></li> 
-                                                : null 
+                                            {search_id.indexOf("type=antibody_approval") > 0 ?
+                                                <li><a href={search_id.replace("type=antibody_approval", "")}>Antibodies<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                            : (count['antibodies'] ? 
+                                                    <li><a href={search_id+'&type=antibody_approval'}>Antibodies<span className="pull-right">{count['antibodies']}</span></a></li> 
+                                                : null)
                                             }
                                             
-                                            {href_search.indexOf('type=biosample') >= 0 ?
-                                                <li><a href={href_search.replace("type=biosample", "")}>Biosamples<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
-                                            : count['biosamples'] ?
-                                                    <li><a href={href_search+'&type=biosample'}>Biosample<span className="pull-right">{count['biosamples']}</span></a></li>
-                                                : null
+                                            {search_id.indexOf("type=biosample") > 0 ?
+                                                <li><a href={search_id.replace("type=biosample", "")}>Biosamples<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                            : (count['biosamples'] ?
+                                                    <li><a href={search_id+'&type=biosample'}>Biosamples<span className="pull-right">{count['biosamples']}</span></a></li>
+                                                : null)
                                             }
                                             
-                                            {href_search.indexOf('type=experiment') >= 0 ?
-                                                <li><a href={href_search.replace("type=experiment", "")}>Experiments<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
-                                            : count['experiments'] ?
-                                                    <li><a href={href_search+'&type=experiment'}>Experiments<span className="pull-right">{count['experiments']}</span></a></li>
-                                                : null
+                                            {search_id.indexOf("type=experiment") > 0 ?
+                                                <li><a href={search_id.replace("type=experiment", "")}>Experiments<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                            : (count['experiments'] ?
+                                                    <li><a href={search_id+'&type=experiment'}>Experiments<span className="pull-right">{count['experiments']}</span></a></li>
+                                                : null)
                                             }
                                             
-                                            {href_search.indexOf('type=target') >= 0 ?
-                                                <li><a href={href_search.replace("type=target", "")}>Targets<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
-                                            : count['targets'] ?
-                                                    <li><a href={href_search+'&type=target'}>Targets<span className="pull-right">{count['targets']}</span></a></li>
-                                                : null 
+                                            {search_id.indexOf("type=target") > 0 ?
+                                                <li><a href={search_id.replace("type=target", "")}>Targets<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                            : (count['targets'] ?
+                                                    <li><a href={search_id+'&type=target'}>Targets<span className="pull-right">{count['targets']}</span></a></li>
+                                                : null)
                                             }
                                         </ul>
                                     </div>
@@ -262,7 +263,19 @@ var Dbxref = dbxref.Dbxref;
                                     <h4>Showing {results.length} of {(count['antibodies'] ? parseInt(count['antibodies']) : 0) + 
                                             (count['biosamples'] ? parseInt(count['biosamples']) : 0) + 
                                             (count['targets'] ? parseInt(count['targets']) : 0) + 
-                                            (count['experiments'] ? parseInt(count['experiments']) : 0)}</h4>
+                                            (count['experiments'] ? parseInt(count['experiments']) : 0)}
+                                            {((count['antibodies'] ? parseInt(count['antibodies']) : 0) + 
+                                                (count['biosamples'] ? parseInt(count['biosamples']) : 0) + 
+                                                (count['targets'] ? parseInt(count['targets']) : 0) + 
+                                                (count['experiments'] ? parseInt(count['experiments']) : 0)) > 100 ?
+                                                <span className="pull-right">
+                                                    {search_id.indexOf('&limit=all') !== -1 ? 
+                                                        <a className="btn btn-info btn-small" href={search_id.replace("&limit=all", "")}>View 100</a>
+                                                    : <a className="btn btn-info btn-small" href={search_id+ '&limit=all'}>View All</a>}
+                                                </span>
+                                            : null }
+                                    </h4>
+                                            
                                            
                                     {filters.length ?
                                         <div className="btn-group"> 

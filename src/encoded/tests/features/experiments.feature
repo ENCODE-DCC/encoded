@@ -1,10 +1,6 @@
 @experiments @usefixtures(workbook)
 Feature: Experiments
 
-    Scenario: Active section
-        When I visit "/experiments/"
-        Then the "/experiments/" section should be active
-
     Scenario: Table
         When I visit "/experiments/"
         And I should see an element with the css selector "table.sticky-area > tbody > tr"

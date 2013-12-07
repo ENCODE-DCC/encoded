@@ -1,34 +1,29 @@
-from pyramid import paster
-from pyelasticsearch import ElasticSearch
+from pyramid.paster import get_app
+from ..indexing import ELASTIC_SEARCH
+import logging
+from webtest import TestApp
 
-ES_URL = 'http://localhost:9200'
 DOCTYPE = 'basic'
-es = ElasticSearch(ES_URL)
 
-app = paster.get_app('production.ini')
-root = app.root_factory(app)
-collections = root.by_item_type.keys()
+EPILOG = __doc__
 
 
-def main():
-    ''' Indexes app data loaded to th elasticsearch '''
-
-    app = paster.get_app('production.ini')
-    from webtest import TestApp
+def run(app, collections=None):
+    root = app.root_factory(app)
+    es = app.registry[ELASTIC_SEARCH]
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'IMPORT',
     }
     testapp = TestApp(app, environ)
 
-    print
-    print "*******************************************************************"
-    print
-    print "Indexing ENCODE Data in Elastic Search"
-    print
+    if not collections:
+        collections = root.by_item_type.keys()
 
     for collection_name in collections:
-        print "Indexing " + root.by_item_type[collection_name].__name__ + " collection!"
+        collection = root.by_item_type[collection_name]
+        if collection.schema is None:
+            continue
         res = testapp.get('/' + root.by_item_type[collection_name].__name__ + '/' + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
         items = res.json['@graph']
 
@@ -48,9 +43,28 @@ def main():
                     es.flush(collection_name)
 
         es.refresh(collection_name)
-        count = es.count('*:*', index=collection_name)
-        print "Finished indexing " + str(count['count']) + " " + root.by_item_type[collection_name].__name__
-        print
+
+
+def main():
+    ''' Indexes app data loaded to elasticsearch '''
+
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Index data in Elastic Search", epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument('--item-type', help="encode item type to be indexed")
+    parser.add_argument('--app-name', help="Pyramid app name in configfile")
+    parser.add_argument('config_uri', help="path to configfile")
+    args = parser.parse_args()
+
+    logging.basicConfig()
+    app = get_app(args.config_uri, args.app_name)
+
+    # Loading app will have configured from config file. Reconfigure here:
+    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    return run(app, args.item_type)
+
 
 if __name__ == '__main__':
     main()

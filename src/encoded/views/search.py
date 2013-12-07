@@ -3,8 +3,7 @@ from pyramid.view import view_config
 from ..contentbase import (
     Root
 )
-from pyelasticsearch import ElasticSearch
-es = ElasticSearch('http://localhost:9200')
+from ..indexing import ELASTIC_SEARCH
 
 
 def get_filtered_query(term, fields):
@@ -57,7 +56,7 @@ def search(context, request):
     root = request.root
     result.update({
         '@id': '/search/',
-        '@type': ['search'],
+        '@type': ['search', request.environ.get('PATH_INFO') + '?' + request.environ.get('QUERY_STRING')],
         'title': 'Search',
         'facets': [],
         '@graph': [],
@@ -67,6 +66,7 @@ def search(context, request):
         'notification': ''
     })
 
+    es = request.registry[ELASTIC_SEARCH]
     if 'limit' in params:
         size = 999999
     else:
