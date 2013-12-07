@@ -68,6 +68,9 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                         <dt hidden={!context.description}>Description</dt>
                         <dd hidden={!context.description}>{context.description}</dd>
+                        
+                        <dt hidden={!context.subcellular_fraction}>Subcellular fraction</dt>
+                        <dd hidden={!context.subcellular_fraction}>{context.subcellular_fraction}</dd>
 
                         <dt>Source</dt>
                         <dd><a href={context.source.url}>{context.source.title}</a></dd>
@@ -95,7 +98,21 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                         <dt hidden={!context.note}>Note</dt>
                         <dd hidden={!context.note}>{context.note}</dd>
-
+                        
+                        <dt hidden={!context.date_obtained}>Date obtained</dt>
+						<dd hidden={!context.date_obtained}>{context.date_obtained}</dd>
+						
+						<dt hidden={!context.starting_amount}>Starting amount</dt>
+						<dd hidden={!context.starting_amount}>{context.starting_amount} {context.starting_amount_units}</dd>
+                        
+                        <dt hidden={!context.culture_start_date}>Culture start date</dt>
+						<dd hidden={!context.culture_start_date}>{context.culture_start_date}</dd>
+				
+						<dt hidden={!context.culture_harvest_date}>Culture harvest date</dt>
+						<dd hidden={!context.culture_harvest_date}>{context.culture_harvest_date}</dd>
+				
+						<dt hidden={!context.passage_number}>Passage number</dt>
+						<dd hidden={!context.passage_number}>{context.passage_number}</dd>
                     </dl>
 
                     {(context.donor && (context.biosample_type != "immortalized cell line")) ?
