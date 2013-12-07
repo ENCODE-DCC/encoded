@@ -377,24 +377,24 @@ var RNAi = module.exports.RNAi = React.createClass({
     render: function() {
         var context = this.props.context;
         return (
-            <dl className="key-value">
+             <dl className="key-value">
+            	{context.target ? <dt>Target</dt> : null}
+                {context.target ? <dd className="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+                
                 {context.rnai_type ? <dt>RNAi type</dt> : null}
                 {context.rnai_type ? <dd className="no-cap">{context.rnai_type}</dd> : null}
+                
+                {context.source.title ? <dt>Source</dt> : null}
+                {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
 
                 {context.product_id ? <dt>Product ID</dt> : null}
-                {context.product_id ? <dd className="no-cap">{context.product_id}</dd> : null}
-
-                {context.target ? <dt>Target</dt> : null}
-                {context.target ? <dd className="no-cap"><a href={context.target}>{context.target}</a></dd> : null}
+                {context.product_id ? <dd className="no-cap"><a href={context.url}>{context.product_id}</a></dd> : null}
 
                 {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
                 {context.rnai_target_sequence ? <dd className="no-cap">{context.rnai_target_sequence}</dd> : null}
 
                 {context.vector_backbone_name ? <dt>Vector backbone</dt> : null}
-                {context.vector_backbone_name ? <dd className="no-cap">{context.vector_backbone_name}</dd> : null}
-
-                {context.source.title ? <dt>Source</dt> : null}
-                {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
+                {context.vector_backbone_name ? <dd className="no-cap">{context.vector_backbone_name}</dd> : null}                
             </dl>
         );
     }
