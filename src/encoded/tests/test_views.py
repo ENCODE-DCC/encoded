@@ -49,6 +49,26 @@ def test_html_pages(workbook, testapp, htmltestapp, item_type):
         assert res.body.startswith('<!DOCTYPE html>')
 
 
+@pytest.mark.slow
+@pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
+def test_html_server_pages(workbook, item_type, server):
+    from webtest import TestApp
+    testapp = TestApp(server)
+    # XXX https://github.com/gawel/WSGIProxy2/pull/5
+    for name in ['uri', 'scheme', 'net_loc']:
+        setattr(testapp.app, name, str(getattr(testapp.app, name)))
+    res = testapp.get('/%s?limit=all' % item_type,
+        headers={'Accept': 'application/json'},
+    ).follow(
+        status=200,
+        headers={'Accept': 'application/json'},
+    )
+    for item in res.json['@graph']:
+        res = testapp.get(item['@id'], status=200)
+        assert res.body.startswith('<!DOCTYPE html>')
+        assert 'Internal Server Error' not in res.body
+
+
 @pytest.mark.parametrize('item_type', TYPE_LENGTH)
 def test_json(testapp, item_type):
     res = testapp.get('/' + item_type).follow(status=200)
