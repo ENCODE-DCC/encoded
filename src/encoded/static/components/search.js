@@ -158,7 +158,7 @@ var Dbxref = dbxref.Dbxref;
                         field = facet[f];
                     }
                 }
-                return <div>
+                return <div className="facet">
                         <h5>{term}</h5>
                         <ul className="facet-list nav">
                             <div>
@@ -181,11 +181,10 @@ var Dbxref = dbxref.Dbxref;
                                 </label>
                             : null}
                         </ul>
-                        <hr />
                     </div>
             };
             return (
-                <div className="box">
+                <div className="box facets">
                     {facets.length ?
                         facets.map(buildSection)
                     : null}
@@ -215,7 +214,7 @@ var Dbxref = dbxref.Dbxref;
                         }
                     }
                     var url_unfacet = href_search.replace(unfacet_url, "");
-                    return <a className="btn btn-success" href={url_unfacet}>{filter[key] + ' '}<i className="icon-remove-circle"></i></a>
+                    return <a className="btn btn-success" href={url_unfacet}>{filter[key] + ' '}<i className="icon-remove-sign"></i></a>
                 }
             };
             return (
@@ -311,8 +310,10 @@ var Dbxref = dbxref.Dbxref;
             return (
                 <div>
                     <form className="input-prepend">
-                        <span className="add-on"><i className="icon-search"></i></span>
-                        <input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" name="searchTerm" defaultValue={this.state.text} />
+                    	<div className="input-append">
+							<input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" name="searchTerm" defaultValue={this.state.text} />
+							<button type="submit" className="btn"><i className="icon-search"></i></button>
+						</div>
                     </form>
                     {notification === 'Success' ?
                         <div className="panel data-display"> 

@@ -5,9 +5,28 @@
 	overflow: hidden;
 }
 
+.facets h5 {
+	margin: 2px 0;
+}
+
+.facet {
+	padding-bottom: 7px;
+	margin-bottom: 7px;
+	border-bottom: 1px solid #eee;
+	overflow: hidden;
+}
+
+.facet:last-child {
+	border-bottom: none;
+	padding-bottom: 0;
+	margin-bottom: 0;
+}
+
+.facet-list { margin: 0; }
+
 .facet-list li {
 	padding: 0 10px;
-	margin: 0 0 0 0;
+	margin: 0;
 	border-radius: 10px;
 	position: relative;
 	font-size: 0.9em;
@@ -26,6 +45,10 @@
 	text-decoration: none;
 }
 
+.facet-list button {
+	padding: 0;
+}
+
 .facet-list button.btn.collapsed:before {
     content:'+ See more...' ;
     text-decoration: none;
@@ -36,6 +59,10 @@
     content:'- See fewer';
     text-decoration: none;
     font-size: small;
+}
+
+.facet-list label {
+	margin: 0;
 }
 
 .accession {
