@@ -214,7 +214,7 @@ var Dbxref = dbxref.Dbxref;
                         }
                     }
                     var url_unfacet = href_search.replace(unfacet_url, "");
-                    return <a className="btn btn-success" href={url_unfacet}>{filter[key] + ' '}<i className="icon-remove-sign"></i></a>
+                    return <a className="btn btn-small btn-info" href={url_unfacet}>{filter[key] + ' '}<i className="icon-remove-sign"></i></a>
                 }
             };
             return (
@@ -300,6 +300,10 @@ var Dbxref = dbxref.Dbxref;
 
 
     var Search = search.Search = React.createClass({
+        clearFilter: function (event) {
+            this.refs.searchTerm.getDOMNode().value = '';
+            this.submitTimer = setTimeout(this.submit);
+        }, 
         getInitialState: function() {
             return {items: [], text: ''};
         },
@@ -307,14 +311,15 @@ var Dbxref = dbxref.Dbxref;
             var context = this.props.context;
             var results = context['@graph'];
             var notification = context['notification']
+            var searchTerm = '';
             return (
                 <div>
-                    <form className="input-prepend">
-                    	<div className="input-append">
-							<input id='inputValidate' className="input-xxlarge" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" name="searchTerm" defaultValue={this.state.text} />
-							<button type="submit" className="btn"><i className="icon-search"></i></button>
-						</div>
-                    </form>
+                    <div className="three-d-box">
+                        <form className="input-prepend">
+                            <input id='inputValidate' className="input-lg" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" 
+                                ref="searchTerm" name="searchTerm" defaultValue={this.state.text} />
+                        </form>
+                    </div>
                     {notification === 'Success' ?
                         <div className="panel data-display"> 
                             {this.transferPropsTo(<ResultTable />)}

@@ -23,15 +23,6 @@ var Home = module.exports.Home = React.createClass({
     render: function() {
         return (
             <div className="homepage-main-box panel-gray">
-            	<div className="row">
-            		<div>
-            			<div className="three-d-box">
-							<form>
-								<input className="input-lg" type="text" placeholder="Search" />
-							</form>
-						</div>
-					</div>
-            	</div>
                 <div className="row">
                     <div className="project-info home-panel-left span7">
                         <h1>ENCODE</h1>
