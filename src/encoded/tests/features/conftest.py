@@ -17,8 +17,9 @@ def app(request, app_settings):
 
 # Though this is expensive, set up first within browser tests to avoid remote
 # browser timeout
+# XXX Ideally this wouldn't be autouse...
 @pytest.mark.fixture_cost(-1)
-@pytest.yield_fixture(scope='session')
+@pytest.yield_fixture(scope='session', autouse=True)
 def workbook(connection, app, app_settings):
     from .. import conftest
     from encoded.commands import es_index_data
