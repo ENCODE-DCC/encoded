@@ -1,7 +1,7 @@
-Search Documentation:
+**Search Documentation:**
 
 
-URIS
+**URIS**
 
 http://{SERVER_NAME}/search/?searchTerm={term}
 
