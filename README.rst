@@ -20,6 +20,8 @@ First run buildout::
 
     $ python2.7 bootstrap.py
     $ bin/buildout
+    $ bin/create-mapping production.ini
+    $ bin/es-index-data production.ini
 
 To start the application::
 
