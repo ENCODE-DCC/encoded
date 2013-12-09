@@ -1,4 +1,4 @@
-################
+###############
 # File metadata generated at ENCODE Data Warehouse (EDW) and mirrored at encoded
 
 import sys
@@ -9,6 +9,7 @@ from collections import OrderedDict
 from operator import itemgetter
 
 from sqlalchemy import MetaData, create_engine, select
+from sqlalchemy.exc import DBAPIError, SQLAlchemyError
 
 ################
 # Globals
@@ -92,8 +93,10 @@ def make_edw(data_host=None):
     config = ConfigParser.ConfigParser()
     config.read(EDW_CONFIG)
 
-    site = 'mysql'
     engine = 'mysql'
+    site = 'mysql'
+    # TODO: Change to more informative identifier (also need to change my.cnf*)
+    # site = 'edw'
     if (data_host):
         host = data_host
     else:
@@ -108,6 +111,17 @@ def make_edw(data_host=None):
     sys.stderr.write('Connecting to %s://%s/%s...' % (engine, host, db))
     edw_db = create_engine('%s://%s:%s@%s/%s' %
                           (engine, user, password, host, db))
+
+    # TODO: A nice-to-have suggested by Laurence -- have MySQL directly read conf file.
+    # Something like the commented-out code below should do the trick. 
+    # Could be a path problem preventing mysql from finding the proper user 
+    # (is using invoker, not user in .cnf file)
+    
+    # Create db engine
+    # from sqlalchemy.engine.url import URL
+    # url = URL(drivername=engine, host=host, query={'read_default_file': EDW_CONFIG, 'read_default_group': site})
+    # edw_db = create_engine(name_or_url=url)
+
     sys.stderr.write('\n')
     return edw_db
 
@@ -117,8 +131,12 @@ def make_edw(data_host=None):
 
 class FileinfoWriter(DictWriter):
     # Write tab-sep file of file info
-    def __init__(self, filename=sys.stdout):
-        DictWriter.__init__(self, filename, fieldnames=FILE_INFO_FIELDS,
+    def __init__(self, filename=sys.stdout, exclude=None):
+        if exclude:
+            fields = list(set(FILE_INFO_FIELDS) ^ set(exclude))
+        else:
+            fields = FILE_INFO_FIELDS
+        DictWriter.__init__(self, filename, fieldnames=fields,
                             delimiter='\t', lineterminator='\n',
                             extrasaction='ignore')
 
@@ -127,10 +145,10 @@ def dump_filelist(fileaccs, header=True, typeField=None):
     for acc in sorted(fileaccs):
         print acc
 
-def dump_fileinfo(fileinfos, header=True, typeField=None):
+def dump_fileinfo(fileinfos, header=True, typeField=None, exclude=None):
     # Dump file info from list of file info dicts to tab-sep file
     # TODO: should be method of FileInfoWriter
-    writer = FileinfoWriter()
+    writer = FileinfoWriter(exclude=exclude)
     if header:
         if typeField is not None:
             sys.stdout.write('%s\t' % 'type')
@@ -205,18 +223,24 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
     # Autoreflect the schema
     meta = MetaData()
     meta.reflect(bind=edw)
-    f = meta.tables['edwFile']
-    v = meta.tables['edwValidFile']
-    u = meta.tables['edwUser']
-    s = meta.tables['edwSubmit']
 
+    try:
+        f = meta.tables['edwFile']
+        v = meta.tables['edwValidFile']
+        u = meta.tables['edwUser']
+        s = meta.tables['edwSubmit']
+    except (DBAPIError, SQLAlchemyError) as e:
+        sys.stderr.write("ERROR: EDW schema binding failed (suspect schema change)\n")
+        exit(-1)
+        
     # Make a connection
     conn = edw.connect()
 
     # Get info for EDW files
     # List files newest first
     # NOTE: ordering must mirror FILE_INFO_FIELDS
-    query = select([v.c.licensePlate.label('accession'),
+    try:
+        query = select([v.c.licensePlate.label('accession'),
                     f.c.endUploadTime.label('date_created'),
                     v.c.outputType.label('output_type'),
                     v.c.format.label('file_format'),
@@ -227,33 +251,37 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
                     v.c.ucscDb.label('assembly'),
                     f.c.md5.label('md5sum'),
                     u.c.email.label('submitted_by'),
-                    f.c.deprecated.label('status')])
-    query = query.where(
+                    # either of these two error fields will cause status to be OBSOLETE
+                    f.c.deprecated.label('lab_error_message'),
+                    f.c.errorMessage.label('edw_error_message')])
+        query = query.where(
               (v.c.fileId == f.c.id) &
               (u.c.id == s.c.userId) &
               (s.c.id == f.c.submitId) &
               (u.c.id == s.c.userId))
-              #(f.c.errorMessage != None))
-    # Occasional file ends up in valid table, even though in error -- filter out if 
-    # there is an error message in edwFile table
-    query.append_whereclause('edwFile.errorMessage = ""')
-    if start_id > 0:
-        query.append_whereclause('edwValidFile.id > ' + str(start_id))
-    if experiment:
-        query.append_whereclause('edwValidFile.experiment <> ""')
-    if phase == '2':
-        query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
-    elif phase  == '3':
-        query.append_whereclause('edwValidFile.experiment like "ENCSR%%"')
+        if start_id > 0:
+            query.append_whereclause('edwValidFile.id > ' + str(start_id))
+        if experiment:
+            query.append_whereclause('(edwValidFile.experiment like "wgEncodeE%" or edwValidFile.experiment like "ENCSR%")')
+        if phase == '2':
+            query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
+        elif phase  == '3':
+            query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
 
-    query = query.order_by(f.c.endUploadTime.desc())
-    if limit:
-        query = query.limit(limit)
-    results = conn.execute(query)
+        query = query.order_by(f.c.endUploadTime.desc())
+        if limit:
+            query = query.limit(limit)
+        results = conn.execute(query)
+    except (DBAPIError, SQLAlchemyError) as e:
+        sys.stderr.write("ERROR: EDW SQL query failed (suspect schema change)\n")
+        exit(-1)
 
     edw_files = []
     for row in results:
         file_dict = dict(row)
+        file_dict['status'] = file_dict['lab_error_message'] + file_dict['edw_error_message']
+        del file_dict['lab_error_message']
+        del file_dict['edw_error_message']
         format_edw_fileinfo(file_dict, exclude)
         edw_files.append(file_dict)
     results.close()
