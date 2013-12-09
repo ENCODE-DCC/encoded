@@ -65,5 +65,8 @@ setup(
 
         [paste.app_factory]
         main = encoded:main
+
+        [paste.composite_factory]
+        indexer = encoded.commands.es_index_listener:composite
         ''',
 )
