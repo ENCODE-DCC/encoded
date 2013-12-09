@@ -20,7 +20,13 @@ First run buildout::
 
     $ python2.7 bootstrap.py
     $ bin/buildout
+
+Create ElasticSearch mapping for ENCODE data::
+    
     $ bin/create-mapping production.ini
+
+Index ENCODE data in ElasticSearch::
+
     $ bin/es-index-data production.ini
 
 To start the application::
