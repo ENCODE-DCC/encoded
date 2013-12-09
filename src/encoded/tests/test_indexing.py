@@ -9,42 +9,6 @@ import pytest
 pytestmark = [pytest.mark.indexing]
 
 
-@pytest.mark.fixture_cost(10)
-@pytest.yield_fixture(scope='session')
-def postgresql_server():
-    from urllib import quote
-    from .postgresql_fixture import server_process
-    tmpdir = str(pytest.ensuretemp('postgresql'))
-    process = server_process(tmpdir)
-
-    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
-
-    if process.poll() is None:
-        process.terminate()
-        process.wait()
-
-
-@pytest.fixture(scope='session')
-def elasticsearch_host_port():
-    from webtest.http import get_free_port
-    return get_free_port()
-
-
-@pytest.mark.fixture_cost(10)
-@pytest.yield_fixture(scope='session')
-def elasticsearch_server(elasticsearch_host_port):
-    from .elasticsearch_fixture import server_process
-    host, port = elasticsearch_host_port
-    tmpdir = pytest.ensuretemp('elasticsearch')
-    process = server_process(str(tmpdir), host=host, port=port)
-
-    yield 'http://%s:%d' % (host, port)
-
-    if process.poll() is None:
-        process.terminate()
-        process.wait()
-
-
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings
