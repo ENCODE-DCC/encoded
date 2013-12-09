@@ -35,6 +35,8 @@ before_install:
   - sudo -u postgres createdb --owner=$USER encoded
   - postgres --version
   - initdb --version
+  - sudo service elasticsearch stop
+  - elasticsearch -v
 install:
   - python bootstrap.py
   - bin/buildout
