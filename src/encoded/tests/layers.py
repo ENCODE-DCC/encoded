@@ -122,11 +122,13 @@ class LayerManager(object):
             if fixturedef is None:
                 continue
             if fixturedef[-1].scopenum < scopenum_function:
-                key = (fixturedef[-1].scopenum, argname)
+                layer = self.layers.get(layer_key([fixturedef]), None)
+                weight = 1 if layer is None else layer.weight
+                key = (fixturedef[-1].scopenum, weight, argname)
                 keylist.append(key)
 
         keylist.sort()
-        for scopenum, argname in keylist:
+        for scopenum, weight, argname in keylist:
             if argname not in item.funcargs and argname not in item._request._fixturemanager._arg2finish:
                 #print 'SETUP %s' % argname
                 item.funcargs[argname] = item._request.getfuncargvalue(argname)

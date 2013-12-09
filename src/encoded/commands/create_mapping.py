@@ -19,13 +19,13 @@ EPILOG = __doc__
 
 # An index to store non-content metadata
 META_MAPPING = {
-    "dynamic_templates" : [
+    "dynamic_templates": [
         {
-            "store_generic" : {
-                "match" : "*",
-                "mapping" : {
+            "store_generic": {
+                "match": "*",
+                "mapping": {
                     "index": "no",
-                    "store" : "yes",
+                    "store": "yes",
                 },
             },
         },
@@ -58,13 +58,17 @@ def schema_mapping(name, schema):
         return {
             'type': 'multi_field',
             'fields': {
-                # by default ES uses the same named field of a multi_field 
-                name: {'type': 'string'},
+                # by default ES uses the same named field of a multi_field
+                name: {
+                    'type': 'string',
+                    'search_analyzer': 'encoded_search_analyzer',
+                    'index_analyzer': 'encoded_index_analyzer',
+                    'include_in_all': False
+                },
                 'untouched': {
                     'type': 'string',
                     'index': 'not_analyzed',
                     'include_in_all': False,
-                    'index_options': 'docs',
                     'omit_norms': True,
                 },
             },
@@ -77,9 +81,34 @@ def schema_mapping(name, schema):
         return {'type': type_}
 
 
+def index_settings(index):
+    return {
+        'settings': {
+            'analysis': {
+                'analyzer': {
+                    'encoded_search_analyzer': {
+                        'tokenizer': 'keyword',
+                        'filter': ['lowercase']
+                    },
+                    'encoded_index_analyzer': {
+                        'tokenizer': 'keyword',
+                        'filter': ['lowercase', 'substring']
+                    }
+                },
+                'filter': {
+                    'substring': {
+                        'type': 'nGram',
+                        'min_gram': 3,
+                        'max_gram': 50
+                    }
+                }
+            }
+        }
+    }
+
+
 def collection_mapping(collection, embed=True):
     schema = collection.schema
-
     if schema is None:
         return None
 
@@ -127,6 +156,21 @@ def collection_mapping(collection, embed=True):
             new_mapping = new_mapping['properties'][p]
             new_schema = root[name].schema
 
+    boost_values = schema.get('boost_values', ())
+    for value in boost_values:
+        props = value.split('.')
+        new_mapping = mapping['properties']
+        for prop in props:
+            if len(props) == props.index(prop) + 1:
+                new_mapping[prop]['fields'][prop]['boost'] = boost_values[value]
+                if prop == 'assay_term_name':
+                    new_mapping[prop]['analyzer'] = 'dash_path'
+                del(new_mapping[prop]['fields'][prop]['include_in_all'])
+                del(new_mapping[prop]['fields']['untouched']['include_in_all'])
+                new_mapping = mapping['properties']
+            else:
+                new_mapping = new_mapping[prop]['properties']
+    mapping['_all'] = {'analyzer': 'encoded_index_analyzer', 'auto_boost': False}
     return mapping
 
 
@@ -149,17 +193,16 @@ def run(app, collections=None, dry_run=False):
 
         if mapping is None:
             continue  # Testing collections
-        
         if dry_run:
             print json.dumps(
                 sorted_dict({collection_name: {doc_type: mapping}}), indent=4)
             continue
 
         try:
-            es.create_index(collection_name)
+            es.create_index(collection_name, index_settings(collection_name))
         except IndexAlreadyExistsError:
             es.delete_index(collection_name)
-            es.create_index(collection_name)
+            es.create_index(collection_name, index_settings(collection_name))
 
         es.put_mapping(collection_name, doc_type, {doc_type: mapping})
         es.refresh(collection_name)
