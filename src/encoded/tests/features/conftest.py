@@ -44,7 +44,9 @@ def app(request, app_settings):
     return test_indexing.app(request, app_settings)
 
 
-@pytest.mark.fixture_cost(500)
+# Though this is expensive, set up first within browser tests to avoid remote
+# browser timeout
+@pytest.mark.fixture_cost(-1)
 @pytest.yield_fixture(scope='session')
 def workbook(connection, app, app_settings):
     from .. import conftest
@@ -66,6 +68,7 @@ def set_webdriver(request, context):
     context.browser_args = dict(request.config.option.browser_args or ())
 
 
+@pytest.mark.fixture_cost(1000)
 @pytest.fixture(scope='session', autouse=True)
 def browser(context, before_all, set_webdriver):
     from behaving.web.steps.browser import given_a_browser
@@ -75,7 +78,6 @@ def browser(context, before_all, set_webdriver):
 
 
 # These are equivalent to the environment.py hooks
-@pytest.mark.fixture_cost(1000)
 @pytest.fixture(scope='session', autouse=True)
 def before_all(request, _server, context):
     import behaving.web
