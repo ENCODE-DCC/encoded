@@ -1,8 +1,11 @@
+import re
 from pyramid.view import view_config
 from ..contentbase import (
     Root
 )
 from ..indexing import ELASTIC_SEARCH
+
+sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:]')
 
 
 def get_filtered_query(term, fields):
@@ -47,10 +50,7 @@ def get_query(term, fields):
 
 
 def sanitize_search_string(text):
-    characters = '\\+-&|!(){}[]^~:'
-    for character in characters:
-        text = text.replace(character, '\\' + character)
-    return text
+    return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
 @view_config(name='search', context=Root, request_method='GET', permission='view')
