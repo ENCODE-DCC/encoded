@@ -1,6 +1,9 @@
 # Configuration file for ENCODE Data Warehouse access
 # Copy to encoded/my.cnf
 
+# TODO: change to more informative section name (also must change in edw_file.py
+#[edw]
+
 [mysql]
 host = encodedcc.sdsc.edu
 database = encodeDataWarehouse
