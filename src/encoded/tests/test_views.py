@@ -224,15 +224,16 @@ def test_users_list_denied_anon(anontestapp):
 
 
 def test_etags(testapp):
-    url = '/organisms/'
+    collection_url = '/organisms/'
     from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[url]
+    collection = URL_COLLECTION[collection_url]
     item = collection[0]
-    res = testapp.post_json(url, item, status=201)
+    res = testapp.post_json(collection_url, item, status=201)
+    url = res.location
     res = testapp.get(url, status=200)
     etag = res.etag
     res = testapp.get(url, headers={'If-None-Match': etag}, status=304)
     item = collection[1]
-    res = testapp.post_json(url, item, status=201)
+    res = testapp.post_json(collection_url, item, status=201)
     res = testapp.get(url, headers={'If-None-Match': etag}, status=200)
     assert res.etag != etag

@@ -981,8 +981,7 @@ def etag_conditional(view_callable):
     return wrapped
 
 
-@view_config(context=Collection, permission='list', request_method='GET',
-             decorator=etag_conditional)
+@view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
     return item_view(context, request)
 
