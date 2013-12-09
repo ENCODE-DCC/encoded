@@ -1,4 +1,3 @@
-import re
 from pyramid.view import view_config
 from ..contentbase import (
     Root
