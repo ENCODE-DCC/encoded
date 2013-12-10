@@ -33,4 +33,4 @@ encode2 = {
 }
 
 # An ENCODE 3 experiment in test set
-encode3 = 'ENCSR000AES'
+encode3 = '/experiments/ENCSR000AES/'

@@ -40,7 +40,7 @@ DATASETS = 'datasets'
 USERS = 'users'
 
 SEARCH_URL = '/search/?searchTerm='
-SEARCH_EC2 = 'search/?searchTerm=*&encode2_dbxrefs='
+SEARCH_EC2 = '/search/?searchTerm=*&encode2_dbxrefs='
 FILE_PROFILE_URL = '/profiles/file.json'
 
 app_host_name = 'localhost'
@@ -341,11 +341,12 @@ def get_encode3_experiment(app, accession):
     if accession.startswith(ENCODE3_EXP_ACC):
         return exp_or_dataset(app, accession)
 
-    url = SEARCH_EC2 + accession + '&type=experiment'
+    url = SEARCH_EC2 + accession + '&type=experiments'
     resp = app.get(url, headers={'Accept': 'application/json'}).maybe_follow()
     results = resp.json['@graph']
     if not results:
-        url = SEARCH_EC2 + accession + '&type=dataset'
+        return None # datasets not implemented in search yet
+        url = SEARCH_EC2 + accession + '&type=datasets'
         results = resp.json['@graph']
 
     assert(len(results==1))
