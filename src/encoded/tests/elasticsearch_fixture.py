@@ -17,6 +17,7 @@ def server_process(datadir, host='127.0.0.1', port=9200, prefix='', echo=False):
         '-Des.index.store.fs.memory.enabled=true',
         '-Des.index.gateway.type=none',
         '-Des.gateway.type=none',
+        '-XX:MaxDirectMemorySize=4096m',
     ]
     # elasticsearch.deb setup
     if os.path.exists('/etc/elasticsearch'):

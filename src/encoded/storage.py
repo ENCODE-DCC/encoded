@@ -299,3 +299,16 @@ def record_transaction_data(session):
 
     record.data = data.copy()
     session.add(record)
+
+
+@event.listens_for(DBSession, 'after_begin')
+def read_only_doomed_transaction(session, sqla_txn, connection):
+    ''' Doomed transactions can be read-only.
+
+    ``transaction.doom()`` must be called before the connection is used.
+    '''
+    if not transaction.isDoomed():
+        return
+    if connection.engine.url.drivername != 'postgresql':
+        return
+    connection.execute("SET TRANSACTION READ ONLY;")
