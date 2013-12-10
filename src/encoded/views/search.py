@@ -1,9 +1,11 @@
-
+import re
 from pyramid.view import view_config
 from ..contentbase import (
     Root
 )
 from ..indexing import ELASTIC_SEARCH
+
+sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:]')
 
 
 def get_filtered_query(term, fields):
@@ -47,6 +49,10 @@ def get_query(term, fields):
     }
 
 
+def sanitize_search_string(text):
+    return sanitize_search_string_re.sub(r'\\\g<0>', text)
+
+
 @view_config(name='search', context=Root, request_method='GET', permission='view')
 def search(context, request):
     ''' Search view connects to ElasticSearch and returns the results'''
@@ -74,6 +80,7 @@ def search(context, request):
 
     try:
         search_term = params['searchTerm'].strip()
+        search_term = sanitize_search_string(search_term)
         # Handling whitespaces in the search term
         if not search_term:
             result['notification'] = 'Please enter search term'
