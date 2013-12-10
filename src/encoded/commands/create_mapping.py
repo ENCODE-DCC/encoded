@@ -85,21 +85,23 @@ def index_settings(index):
     return {
         'settings': {
             'analysis': {
-                'analyzer': {
-                    'encoded_search_analyzer': {
-                        'tokenizer': 'keyword',
-                        'filter': ['lowercase']
-                    },
-                    'encoded_index_analyzer': {
-                        'tokenizer': 'keyword',
-                        'filter': ['lowercase', 'substring']
-                    }
-                },
                 'filter': {
                     'substring': {
                         'type': 'nGram',
                         'min_gram': 3,
-                        'max_gram': 50
+                        'max_gram': 8
+                    }
+                },
+                'analyzer': {
+                    'encoded_index_analyzer': {
+                        'type': 'custom',
+                        'tokenizer': 'keyword',
+                        'filter': ['lowercase', 'substring']
+                    },
+                    'encoded_search_analyzer': {
+                        'type': 'custom',
+                        'tokenizer': 'keyword',
+                        'filter': ['lowercase']
                     }
                 }
             }
