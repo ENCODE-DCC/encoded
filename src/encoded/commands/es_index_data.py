@@ -7,6 +7,8 @@ DOCTYPE = 'basic'
 
 EPILOG = __doc__
 
+log = logging.getLogger(__name__)
+
 
 def run(app, collections=None):
     root = app.root_factory(app)
@@ -41,6 +43,7 @@ def run(app, collections=None):
                 counter = counter + 1
                 if counter % 50 == 0:
                     es.flush(collection_name)
+                    log.info('Indexing %s %d', collection_name, counter)
 
         es.refresh(collection_name)
 
