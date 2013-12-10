@@ -345,7 +345,7 @@ def get_encode3_experiment(app, accession):
     resp = app.get(url, headers={'Accept': 'application/json'}).maybe_follow()
     results = resp.json['@graph']
     if not results:
-        return None # datasets not implemented in search yet
+        #return None #  are datasets implemented in search yet?
         url = SEARCH_EC2 + accession + '&type=datasets'
         results = resp.json['@graph']
 

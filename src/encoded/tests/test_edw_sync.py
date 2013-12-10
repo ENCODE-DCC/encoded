@@ -99,7 +99,7 @@ def test_encode2_experiments(workbook, testapp, elasticsearch_server):
     # Test identifying an ENCODE 2 experiment
     assert encoded.commands.read_edw_fileinfo.is_encode2_experiment(testapp, encode2_hash.values()[0])
 
-def test_file_sync(workbook, testapp):
+def test_file_sync(workbook, testapp, elasticsearch_server):
 
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file)
