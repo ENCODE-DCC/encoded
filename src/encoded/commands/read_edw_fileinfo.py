@@ -9,6 +9,7 @@ import logging
 import datetime
 import argparse
 import copy
+import re
 from csv import DictReader
 from urlparse import urlparse
 from operator import itemgetter
@@ -39,6 +40,7 @@ DATASETS = 'datasets'
 USERS = 'users'
 
 SEARCH_URL = '/search/?searchTerm='
+SEARCH_EC2 = 'search/?searchTerm=*&encode2_dbxrefs='
 FILE_PROFILE_URL = '/profiles/file.json'
 
 app_host_name = 'localhost'
@@ -93,6 +95,73 @@ def format_app_fileinfo(app, file_dict, exclude=None):
                     fileinfo[prop] = acc
     return fileinfo
 
+def strip_file_json(file_dict):
+    ''' this just removes all fields that EDW doesn't care about '''
+    return { i : j for i,j in file_dict.items() if i in edw_file.FILE_INFO_FIELDS }
+
+def convert_edw(app, file_dict):
+    ''' converts EDW file structure to encoded object'''
+
+    logging.info('Found EDW file: %s\n' % (file_dict['accession']))
+
+    # convert time stamp
+    valid_time = file_dict['date_created']
+    if (type(valid_time) == float):
+        file_dict['date_created'] = datetime.datetime.fromtimestamp(
+           valid_time).strftime('%Y-%m-%d')
+    elif not re.match('\d+-\d+\d+', valid_time):
+        logging.error("Invalid time string: %s" % valid_time)
+        sys.exit(1)
+
+
+    if (file_dict['lab_error_message'] or file_dict['edw_error_message'] ):
+        file_dict['status'] = 'OBSOLETE'
+    else:
+        file_dict['status'] = 'CURRENT'
+
+    del file_dict['lab_error_message']
+    del file_dict['edw_error_message']
+     # hide assembly for fastQ's -- (EDW retains it to represent organism)
+    if file_dict['file_format'] in ['fasta', 'fastq']:
+        del file_dict['assembly']
+
+    resp = app.get('/users/'+file_dict['submitted_by'],headers={'Accept': 'application/json'}).maybe_follow()
+    if not file_dict['submitted_by'] or resp.status_code != 200:
+        logging.error('EDW submitter %s cannot be found' % file_dict['submitted_by'])
+    else:
+        file_dict['submitted_by'] = resp.json['@id']
+
+    try:
+        ds_acc = file_dict['dataset']
+    except:
+        logging.error('EDW file %s has no dataset' % file_dict['accession'])
+        ds_acc = None
+
+    if ds_acc:
+        ds = get_encode3_experiment(app, ds_acc)
+        file_dict['dataset'] = ds['@id']
+        if ds['dataset_type'] == 'experiment':
+            file_dict['replicate'] = find_replicate(ds, file_dict['biological_replicate'], file_dict['technical_replicate'])
+        if file_dict['replicate']:
+            del file_dict['biological_replicate']
+            del file_dict['technical_replicate']
+            # otherwise we will try tor create the specified one.
+
+    return { i : unicode(j) for i,j in file_dict.items() }
+
+def find_replicate(experiment, bio_rep, tech_rep):
+
+    if (not bio_rep or not tech_rep):
+        logging.warn("No replicate specified for experiment")
+        return None
+    matches = [ rep for rep in experiment['replicates']
+      if rep['biological_replicate_number'] == int(bio_rep) and
+         rep['technical_replicate_number'] == int(tech_rep)]
+    assert(len(matches)<=1)
+    if matches:
+        return matches[0]['@id']
+    else:
+        return None
 
 def format_reader_fileinfo(file_dict):
     # Convert types when fileinfo read from TSV into strings
@@ -205,8 +274,7 @@ def get_encode2_accessions(app, encode3_acc):
     if encode3_acc not in encode3_to_encode2:
         if verbose:
             logging.info('Get experiment (get e2): %s\n' % (encode3_acc))
-        url = collection_url(EXPERIMENTS) + encode3_acc
-        resp = app.get(url).maybe_follow()
+        resp = app.get(encode3_acc).maybe_follow()
         encode3_to_encode2[encode3_acc] = resp.json[ENCODE2_PROP]
     encode2_accs = encode3_to_encode2[encode3_acc]
     if len(encode2_accs) > 0:
@@ -244,7 +312,7 @@ def get_encode2_to_encode3(app):
         url = item['@id']
         resp = app.get(url).maybe_follow()
         exp = resp.json
-        encode3_acc = exp['accession']
+        encode3_acc = exp['@id']
         if verbose:
             logging.info('Get experiment (e2-e3): %s\n' % (encode3_acc))
         encode2_accs = get_encode2_accessions(app, encode3_acc)
@@ -259,29 +327,29 @@ def get_encode2_to_encode3(app):
                 encode2_to_encode3[encode2_acc] = encode3_acc
     return encode2_to_encode3
 
+def exp_or_dataset(app, accession):
+
+    url = '/' + accession + '/'
+    resp = app.get(url, headers={'Accept': 'application/json'}).maybe_follow()
+    assert(resp.status_code == 200)
+    return resp.json
 
 def get_encode3_experiment(app, accession):
     # Map ENCODE2 experiment accession to ENCODE3
-    global encode2_to_encode3
+    # This will fail if EDW references a dataset instead of expt.
+    global datasets
     if accession.startswith(ENCODE3_EXP_ACC):
-        return accession
-    encode3_acc = None
-    if quick:
-        url = SEARCH_URL + accession + '&format=json'
-        resp = app.get(url).maybe_follow()
-        results = resp.json['@graph']['results']
-        # NOTE: using first if there are multiples. The scenario I have
-        # seen is ChIP-controls, which search returns for all experiments
-        # where the control was used.  The first ENCODE 3 experiment
-        # returned by search does seem to be the control itself
-        if len(results) >= 1:
-            encode3_acc = results[0]['accession']
-    else:
-        encode2_to_encode3 = get_encode2_to_encode3(app)
-        if encode2_to_encode3 is not None:
-            if accession in encode2_to_encode3.keys():
-                encode3_acc = encode2_to_encode3[accession]
-    return encode3_acc
+        return exp_or_dataset(app, accession)
+
+    url = SEARCH_EC2 + accession + '&type=experiment'
+    resp = app.get(url, headers={'Accept': 'application/json'}).maybe_follow()
+    results = resp.json['@graph']
+    if not results:
+        url = SEARCH_EC2 + accession + '&type=dataset'
+        results = resp.json['@graph']
+
+    assert(len(results==1))
+    return app.get(results[0]['@id'],headers={'Accept': 'application/json'})
 
 
 ################
@@ -295,7 +363,7 @@ def set_fileinfo_experiment(app, fileinfo):
     acc = new_fileinfo['dataset']
     if (acc.startswith(ENCODE2_ACC)):
         logging.info('Get ENCODE3 experiment acc for: %s\n' % (acc))
-        encode3_acc = get_encode3_experiment(app, acc)
+        encode3_acc = get_encode3_experiment(app, acc)['accession']
         if encode3_acc is not None:
             if verbose:
                 logging.info('.. ENCODE3 experiment acc for: %s is %s\n' %
@@ -356,7 +424,7 @@ def set_fileinfo_replicate(app, fileinfo):
                 return None
         reps = resp.json['replicates']
         for rep in reps:
-            add_key = replicate_key(experiment, rep['biological_replicate_number'],
+            add_key = replicate_key(experiment, rep['biological_replicate'],
                                 edw_file.TECHNICAL_REPLICATE_NUM)
             experiment_replicates[add_key] = rep['@id']
     if key not in experiment_replicates:
@@ -462,6 +530,20 @@ def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
 
 ########
 # POST and PUT
+def create_replicate(app, exp, bio_rep_num, tech_rep_num):
+    # create a replicate
+    rep = {
+        'experiment': exp,
+        'biological_replicate_number': bio_rep_num,
+        'technical_replicate_number': tech_rep_num
+    }
+    logging.info('....POST replicate %d - %d for experiment %s\n' % (bio_rep_num, tech_rep_num, exp))
+    url = collection_url(REPLICATES)
+    resp = app.post_json(url, rep)
+    logging.info(str(resp) + "\n")
+    # WARNING: ad-hoc char conversion here
+    rep_id = str(resp.json[unicode('@graph')][0][unicode('@id')])
+    return rep_id
 
 def post_fileinfo(app, fileinfo):
     # POST file info dictionary to open app
@@ -469,20 +551,39 @@ def post_fileinfo(app, fileinfo):
     global verbose
     accession = fileinfo['accession']
 
-    if verbose:
-        logging.info('....POST file: %s\n' % (accession))
-    # Replace replicate number (bio_rep) with URL for replicate
-    # (may require creating one)
-    try:
-        exp_fileinfo = set_fileinfo_experiment(app, fileinfo)
-        post_fileinfo = set_fileinfo_replicate(app, exp_fileinfo)
-        if post_fileinfo is None:
+    logging.info('....POST file: %s\n' % (accession))
+
+    ds = fileinfo.get('dataset', None)
+    dataset = None
+    if not ds:
+        ds_resp = app.get(ds).maybe_follow()
+        if ds_resp.status_code != 200:
+            logging.error("Refusing to POST file with invalid dataset: %s" % ds)
             return None
-    except AppError as e:
-        logging.error('Failed POST File %s: Replicate error\n%s', accession, e)
-        return None
+        else:
+            dataset = ds_response.json
+    rep = fileinfo.get('replicate', None)
+    if ds and ( not rep or app.get(rep).maybe_follow().status_code != 200 ):
+        # try to create one
+        try:
+            br = int(fileinfo['biological_replicate'])
+            tr = int(fileinfo['technical_replicate'])
+            fileinfo['replicate'] = create_replicate(app, ds, br, tr)
+            del fileinfo['biological_replicate']
+            del fileinfo['technical_replicate']
+        except ValueError:
+            logging.error("Refusing to POST file with confusing replicate ids: %s %s" %
+               (fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            return None
+        except KeyError:
+            logging.error("Refusing to POST file with missing replicate ids: %s  %s" %
+               (fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            return None
+        except Exception, e:
+            logging.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
+            sys.exit(1)
     url = collection_url(FILES)
-    resp = app.post_json(url, post_fileinfo, expect_errors=True)
+    resp = app.post_json(url, fileinfo, expect_errors=True)
     if verbose:
         logging.info(str(resp) + "\n")
     if resp.status_int == 409:
@@ -857,7 +958,6 @@ def main():
                          '(default %s)' % edw_file.ENCODE_PHASE_ALL),
     parser.add_argument('-exclude', '--exclude_props', nargs='+',
                         help='for -c and -C, ignore excluded properties')
-
     # Change target EDW or app
     parser.add_argument('-d', '--data_host', default=None,
                         help='data warehouse host (default from my.cnf)')
