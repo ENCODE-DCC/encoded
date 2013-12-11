@@ -139,7 +139,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
     if (!replicates.length) return (<div hidden={true}></div>);
     var biosamples = {};
     replicates.forEach(function(replicate) {
-        var biosample = replicate.library.biosample;
+        var biosample = replicate.library && replicate.library.biosample;
         if (biosample) {
             biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
         };
