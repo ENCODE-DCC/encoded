@@ -15,7 +15,29 @@ EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
 
 TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 
+@pytest.fixture(scope='session')
+def app_settings(server_host_port, elasticsearch_server, postgresql_server):
+    from . import test_indexing
+    return test_indexing.app_settings(server_host_port, elasticsearch_server, postgresql_server)
 
+
+@pytest.fixture(scope='session')
+def app(request, app_settings):
+    from . import test_indexing
+    return test_indexing.app(request, app_settings)
+
+
+# Though this is expensive, set up first within browser tests to avoid remote
+# browser timeout
+# XXX Ideally this wouldn't be autouse...
+@pytest.mark.fixture_cost(-1)
+@pytest.yield_fixture(scope='session', autouse=True)
+def workbook(connection, app, app_settings):
+    from . import conftest
+    from encoded.commands import es_index_data
+    for fixture in conftest.workbook(connection, app, app_settings):
+        es_index_data.run(app)
+        yield fixture
 
 def test_format_app_fileinfo_expanded(workbook, testapp):
     # Test extracting EDW-relevant fields from encoded file.json
@@ -90,6 +112,7 @@ def test_encode2_experiments(workbook, testapp, elasticsearch_server):
     # accessions are ENCODE2 experiments
 
     # Test identifying an ENCODE 3 experiment
+    #res = testapp.post_json('/index', {})
     assert not encoded.commands.read_edw_fileinfo.is_encode2_experiment(testapp, edw_test_data.encode3)
 
     # Create hash of all ENCODE 2 experiments, map to ENCODE 3 accession

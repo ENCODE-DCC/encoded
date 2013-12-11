@@ -341,12 +341,12 @@ def get_encode3_experiment(app, accession):
     if accession.startswith(ENCODE3_EXP_ACC):
         return exp_or_dataset(app, accession)
 
-    url = SEARCH_EC2 + accession + '&type=experiments'
+    url = SEARCH_EC2 + accession + '&type=experiment'
     resp = app.get(url, headers={'Accept': 'application/json'}).maybe_follow()
     results = resp.json['@graph']
     if not results:
-        #return None #  are datasets implemented in search yet?
-        url = SEARCH_EC2 + accession + '&type=datasets'
+        return None #  are datasets implemented in search yet?
+        url = SEARCH_EC2 + accession + '&type=dataset'
         results = resp.json['@graph']
 
     assert(len(results==1))
