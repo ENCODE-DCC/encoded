@@ -206,10 +206,12 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         library_size_selection_method: 'Size selection method',
     };
     var children = [];
-    for (var name in titles) {
-        if (library[name]) {
-            children.push(<dt key={'dt-' + name}>{titles[name]}</dt>);
-            children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
+    if (library) {
+        for (var name in titles) {
+            if (library[name]) {
+                children.push(<dt key={'dt-' + name}>{titles[name]}</dt>);
+                children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
+            }
         }
     }
     if (typeof(platform) != 'undefined' && platform.title) {
@@ -230,7 +232,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
 var Replicate = module.exports.Replicate = function (props) {
     var replicate = props.replicate;
     var library = replicate.library;
-    var biosample = library.biosample;
+    var biosample = library && library.biosample;
     return (
         <div key={props.key}>
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
