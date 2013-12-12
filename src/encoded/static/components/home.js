@@ -21,14 +21,23 @@ var SignIn = module.exports.SignIn = React.createClass({
 
 var Home = module.exports.Home = React.createClass({
     render: function() {
+        var hidden = !this.props.session || this.props.session.persona;
         return (
-            <div className="homepage-main-box panel-gray">
-                <div className="row">
-                    <div className="project-info home-panel-left span7">
-                        <h1>ENCODE</h1>
-                        <h2>The Encyclopedia of DNA Elements</h2>
+            <div>
+                <div className="three-d-box" hidden={!hidden}>
+                    <form className="input-prepend" action="/search/" method="GET">
+                        <input id='inputValidate' className="input-lg" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" 
+                            ref="searchTerm" name="searchTerm" />
+                    </form>
+                </div>
+                <div className="homepage-main-box panel-gray">
+                    <div className="row">
+                        <div className="project-info home-panel-left span7">
+                            <h1>ENCODE</h1>
+                            <h2>The Encyclopedia of DNA Elements</h2>
+                        </div>
+                        {this.transferPropsTo(<SignIn />)}
                     </div>
-                    {this.transferPropsTo(<SignIn />)}
                 </div>
             </div>
         );

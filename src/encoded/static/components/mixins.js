@@ -295,7 +295,7 @@ module.exports.HistoryAndTriggers = {
         if (!origin.same(target.action)) return;
 
         var options = {};
-        var action_url = url.parse(url.resolve(target.action, this.props.href));
+        var action_url = url.parse(url.resolve(this.props.href, target.action));
         options.replace = action_url.pathname == url.parse(this.props.href).pathname;
         var search = $(target).serialize();
         if (target.getAttribute('data-removeempty')) {

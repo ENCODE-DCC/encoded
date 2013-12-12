@@ -202,7 +202,7 @@ var Dbxref = dbxref.Dbxref;
             var count = context['count'];
             var columns = context['columns'];
             var filters = context['filters'];
-            var search_id = context['@type'][1]
+            var search_id = context['@id']
 
             var unfacetButtons = function(filter) {
                 for (var key in filter) {
@@ -304,20 +304,18 @@ var Dbxref = dbxref.Dbxref;
             this.refs.searchTerm.getDOMNode().value = '';
             this.submitTimer = setTimeout(this.submit);
         }, 
-        getInitialState: function() {
-            return {items: [], text: ''};
-        },
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
             var notification = context['notification']
-            var searchTerm = '';
+            var id = url.parse(this.props.href, true);
+            var searchTerm = id.query['searchTerm'] || '';
             return (
                 <div>
                     <div className="three-d-box">
                         <form className="input-prepend">
                             <input id='inputValidate' className="input-lg" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" 
-                                ref="searchTerm" name="searchTerm" defaultValue={this.state.text} />
+                                ref="searchTerm" name="searchTerm" defaultValue={searchTerm} />
                         </form>
                     </div>
                     {notification === 'Success' ?
