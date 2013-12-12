@@ -17,27 +17,33 @@ EPILOG = __doc__
 
 logger = logging.getLogger(__name__)
 
+def check_path(testapp, path):
+    try:
+        res = testapp.get(path, status='*').maybe_follow(status='*')
+    except Exception:
+        logger.exception('Render failed: %s', path)
+        return False
+    if res.status_int != 200:
+        logger.error('Render failed (%s): %s', res.status, path)
+        return False
+    return True
+
 
 def run(testapp, collections=None):
     app = testapp.app
     root = app.root_factory(app)
     if not collections:
         collections = root.by_item_type.keys()
+        check_path(testapp, '/')
     for collection_name in collections:
         collection = root[collection_name]
         collection_path = resource_path(collection, '')
+        check_path(testapp, collection_path)
         failed = 0
         for count, item in enumerate(collection.itervalues()):
             path = resource_path(item, '')
-            try:
-                res = testapp.get(path, status='*')
-            except Exception:
+            if not check_path(testapp, path):
                 failed += 1
-                logger.exception('Render failed: %s', path)
-            else:
-                if res.status_int != 200:
-                    failed += 1
-                    logger.error('Render failed (%s): %s', res.status, path)
         if failed:
             logger.info('Collection %s: %d of %d failed to render.',
                 collection_path, failed, count)
@@ -68,6 +74,7 @@ def main():
     parser.add_argument('--username', '-u', default='TEST',
         help="User uuid/email")
     parser.add_argument('config_uri', help="path to configfile")
+    parser.add_argument('path', nargs='*', help="path to test")
     args = parser.parse_args()
 
     logging.basicConfig()
@@ -75,7 +82,18 @@ def main():
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)
 
-    run(testapp, args.item_type)
+    if args.path:
+        failed = 0
+        for path in args.path:
+            if not check_path(testapp, path):
+                failed += 1
+        if failed:
+            logger.info('Paths: %d of %d failed to render.',
+                failed, len(args.path))
+        else:
+            logger.info('Paths: all %d rendered ok', len(args.path))
+    else:
+        run(testapp, args.item_type)
 
 
 if __name__ == '__main__':
