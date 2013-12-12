@@ -29,10 +29,15 @@ def run(testapp, collections=None):
         failed = 0
         for count, item in enumerate(collection.itervalues()):
             path = resource_path(item, '')
-            res = testapp.get(path, status='*')
-            if res.status_int != 200:
+            try:
+                res = testapp.get(path, status='*')
+            except Exception:
                 failed += 1
-                logger.error('Render failed (%s): %s', res.status, path)
+                logger.exception('Render failed: %s', path)
+            else:
+                if res.status_int != 200:
+                    failed += 1
+                    logger.error('Render failed (%s): %s', res.status, path)
         if failed:
             logger.info('Collection %s: %d of %d failed to render.',
                 collection_path, failed, count)
