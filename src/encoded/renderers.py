@@ -133,6 +133,13 @@ class PageWorker(threading.local):
             start = int(time.time() * 1e6)
             process.stdin.write(data)
             header = process.stdout.readline()
+            if ' ' not in header:
+                returncode = self.process.poll()
+                if returncode is None:
+                    msg = 'Malformed render header: %r' % header
+                else:
+                    msg = 'Rendering process quit unexpectedly: %d' % returncode
+                raise RenderingError(msg)
             result_type, content_length = header.split(' ', 1)
             content_length = int(content_length)
             output = []
