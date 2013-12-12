@@ -39,7 +39,6 @@ users:
 runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
-- echo %(AWS_KEY)s
 - set -e
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
