@@ -225,28 +225,28 @@ var Dbxref = dbxref.Dbxref;
                                     <div>
                                         <ul className="nav nav-tabs nav-stacked">
                                             {search_id.indexOf("type=antibody_approval") > 0 ?
-                                                <li><a href={search_id.replace("type=antibody_approval", "")}>Antibodies<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                                <li><a href={search_id.replace("type=antibody_approval", "")}>Antibodies<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
                                             : (count['antibodies'] ? 
                                                     <li><a href={search_id+'&type=antibody_approval'}>Antibodies<span className="pull-right">{count['antibodies']}</span></a></li> 
                                                 : null)
                                             }
                                             
                                             {search_id.indexOf("type=biosample") > 0 ?
-                                                <li><a href={search_id.replace("type=biosample", "")}>Biosamples<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                                <li><a href={search_id.replace("type=biosample", "")}>Biosamples<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
                                             : (count['biosamples'] ?
                                                     <li><a href={search_id+'&type=biosample'}>Biosamples<span className="pull-right">{count['biosamples']}</span></a></li>
                                                 : null)
                                             }
                                             
                                             {search_id.indexOf("type=experiment") > 0 ?
-                                                <li><a href={search_id.replace("type=experiment", "")}>Experiments<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                                <li><a href={search_id.replace("type=experiment", "")}>Experiments<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
                                             : (count['experiments'] ?
                                                     <li><a href={search_id+'&type=experiment'}>Experiments<span className="pull-right">{count['experiments']}</span></a></li>
                                                 : null)
                                             }
                                             
                                             {search_id.indexOf("type=target") > 0 ?
-                                                <li><a href={search_id.replace("type=target", "")}>Targets<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                                <li><a href={search_id.replace("type=target", "")}>Targets<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
                                             : (count['targets'] ?
                                                     <li><a href={search_id+'&type=target'}>Targets<span className="pull-right">{count['targets']}</span></a></li>
                                                 : null)
