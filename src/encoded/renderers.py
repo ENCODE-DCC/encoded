@@ -139,7 +139,7 @@ class PageWorker(threading.local):
                     msg = 'Malformed render header: %r' % header
                 else:
                     msg = 'Rendering process quit unexpectedly: %d' % returncode
-                raise RenderingError(msg)
+                raise Exception(msg)
             result_type, content_length = header.split(' ', 1)
             content_length = int(content_length)
             output = []
