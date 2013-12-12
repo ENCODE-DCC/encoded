@@ -62,7 +62,7 @@ def search(context, request):
     root = request.root
     result.update({
         '@id': '/search/',
-        '@type': ['search', request.environ.get('PATH_INFO') + '?' + request.environ.get('QUERY_STRING')],
+        '@type': ['search'],
         'title': 'Search',
         'facets': [],
         '@graph': [],
@@ -71,6 +71,10 @@ def search(context, request):
         'filters': [],
         'notification': ''
     })
+
+    qs = request.environ.get('QUERY_STRING')
+    if qs:
+        result['@id'] = '/search/?%s' % qs
 
     es = request.registry[ELASTIC_SEARCH]
     if 'limit' in params:
