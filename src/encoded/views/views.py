@@ -284,7 +284,32 @@ class Biosample(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set(['donor.organism', 'submitted_by', 'lab', 'award', 'source', 'treatments.protocols.submitted_by', 'treatments.protocols.lab', 'treatments.protocols.award', 'constructs.documents.submitted_by', 'constructs.documents.award', 'constructs.documents.lab', 'constructs.target', 'protocol_documents.lab', 'protocol_documents.award', 'protocol_documents.submitted_by', 'derived_from', 'pooled_from', 'characterizations', 'rnais.target.organism', 'rnais.source', 'rnais.documents.submitted_by', 'rnais.documents.award', 'rnais.documents.lab', 'organism'])
+        embedded = set([
+            'donor.organism',
+            'submitted_by',
+            'lab',
+            'award',
+            'source',
+            'treatments.protocols.submitted_by',
+            'treatments.protocols.lab',
+            'treatments.protocols.award',
+            'constructs.documents.submitted_by',
+            'constructs.documents.award',
+            'constructs.documents.lab',
+            'constructs.target',
+            'protocol_documents.lab',
+            'protocol_documents.award',
+            'protocol_documents.submitted_by',
+            'derived_from',
+            'pooled_from',
+            'characterizations',
+            'rnais.target.organism',
+            'rnais.source',
+            'rnais.documents.submitted_by',
+            'rnais.documents.award',
+            'rnais.documents.lab',
+            'organism',
+        ])
         name_key = 'accession'
 
         keys = ACCESSION_KEYS + ALIAS_KEYS
