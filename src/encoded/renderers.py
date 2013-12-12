@@ -17,6 +17,7 @@ from pyramid.threadlocal import (
 )
 import atexit
 import json
+import logging
 import os
 import pyramid.renderers
 import subprocess
@@ -24,6 +25,9 @@ import threading
 import time
 import uuid
 import weakref
+
+
+log = logging.getLogger(__name__)
 
 
 def includeme(config):
@@ -128,26 +132,46 @@ class PageWorker(threading.local):
         request.response.content_type = 'text/html'
         data = '{"href":%s,"context":%s}\0' % (json.dumps(request.url), value)
 
-        process = self.process
-        try:
-            start = int(time.time() * 1e6)
-            process.stdin.write(data)
-            header = process.stdout.readline()
-            result_type, content_length = header.split(' ', 1)
-            content_length = int(content_length)
-            output = []
-            pos = 0
+        for attempt in range(2):
+            process = self.process
+            try:
+                start = int(time.time() * 1e6)
+                process.stdin.write(data)
+                header = process.stdout.readline()
+                if not header:
+                    log.error(
+                        'Renderer closed pipe (phase: header, attempt: %d)',
+                        attempt,
+                    )
+                    continue
+                try:
+                    result_type, content_length = header.split(' ', 1)
+                except ValueError:
+                    raise Exception('Renderer header malformed: %r' % header)
+                content_length = int(content_length)
+                output = []
+                pos = 0
 
-            while pos < content_length:
-                out = process.stdout.read(content_length - pos)
-                pos += len(out)
-                output.append(out)
+                while pos < content_length:
+                    out = process.stdout.read(content_length - pos)
+                    if not out:
+                        log.error(
+                            'Renderer closed pipe (phase: out, attempt: %d)',
+                            attempt,
+                        )
+                        continue
+                    pos += len(out)
+                    output.append(out)
 
-            end = int(time.time() * 1e6)
-        except:
-            del self.process
-            cleanup([process])
-            raise
+                end = int(time.time() * 1e6)
+            except:
+                del self.process
+                cleanup([process])
+                raise
+            else:
+                break
+        else:
+            raise Exception('Renderer closed pipe unexpectedly')
 
         stats = request._stats
         stats['render_count'] = stats.get('render_count', 0) + 1

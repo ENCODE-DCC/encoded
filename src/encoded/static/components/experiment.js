@@ -139,7 +139,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
     if (!replicates.length) return (<div hidden={true}></div>);
     var biosamples = {};
     replicates.forEach(function(replicate) {
-        var biosample = replicate.library.biosample;
+        var biosample = replicate.library && replicate.library.biosample;
         if (biosample) {
             biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
         };
@@ -206,10 +206,12 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         library_size_selection_method: 'Size selection method',
     };
     var children = [];
-    for (var name in titles) {
-        if (library[name]) {
-            children.push(<dt key={'dt-' + name}>{titles[name]}</dt>);
-            children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
+    if (library) {
+        for (var name in titles) {
+            if (library[name]) {
+                children.push(<dt key={'dt-' + name}>{titles[name]}</dt>);
+                children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
+            }
         }
     }
     if (typeof(platform) != 'undefined' && platform.title) {
@@ -230,7 +232,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
 var Replicate = module.exports.Replicate = function (props) {
     var replicate = props.replicate;
     var library = replicate.library;
-    var biosample = library.biosample;
+    var biosample = library && library.biosample;
     return (
         <div key={props.key}>
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
@@ -238,8 +240,8 @@ var Replicate = module.exports.Replicate = function (props) {
                 <dt>Technical replicate</dt>
                 <dd>{replicate.technical_replicate_number}</dd>
 
-                <dt>Library</dt>
-                <dd>{library.accession}</dd>
+                {library ? <dt>Library</dt> : null}
+                {library ? <dd>{library.accession}</dd> : null}
 
                 {biosample ? <dt>Biosample</dt> : null}
                 {biosample ? <dd>
