@@ -74,6 +74,11 @@ class RenderingError(HTTPServerError):
     explanation = 'The server erred while rendering the page.'
 
 
+class RetryRender(Exception):
+    def __init__(self, phase):
+        self.phase = phase
+
+
 def cleanup(plist):
     for process in plist:
         if process.stdin is not None:
@@ -139,11 +144,7 @@ class PageWorker(threading.local):
                 process.stdin.write(data)
                 header = process.stdout.readline()
                 if not header:
-                    log.error(
-                        'Renderer closed pipe (phase: header, attempt: %d)',
-                        attempt,
-                    )
-                    continue
+                    raise RetryRender('header')
                 try:
                     result_type, content_length = header.split(' ', 1)
                 except ValueError:
@@ -155,19 +156,21 @@ class PageWorker(threading.local):
                 while pos < content_length:
                     out = process.stdout.read(content_length - pos)
                     if not out:
-                        log.error(
-                            'Renderer closed pipe (phase: out, attempt: %d)',
-                            attempt,
-                        )
-                        continue
+                        raise RetryRender('body')
                     pos += len(out)
                     output.append(out)
 
                 end = int(time.time() * 1e6)
-            except:
+
+            except Exception as e:
                 del self.process
                 cleanup([process])
-                raise
+                if not isinstance(e, RetryRender):
+                    raise
+                log.error(
+                    'Renderer closed pipe (phase: %s, attempt: %d)',
+                    e.phase, attempt,
+                )
             else:
                 break
         else:
