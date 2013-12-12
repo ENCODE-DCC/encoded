@@ -240,8 +240,8 @@ var Replicate = module.exports.Replicate = function (props) {
                 <dt>Technical replicate</dt>
                 <dd>{replicate.technical_replicate_number}</dd>
 
-                <dt>Library</dt>
-                <dd>{library.accession}</dd>
+                {library ? <dt>Library</dt> : null}
+                {library ? <dd>{library.accession}</dd> : null}
 
                 {biosample ? <dt>Biosample</dt> : null}
                 {biosample ? <dd>
