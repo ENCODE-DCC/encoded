@@ -567,6 +567,7 @@ class Experiments(Collection):
          	'replicates.library.biosample.submitted_by', 
          	'replicates.library.biosample.organism', 
          	'replicates.library.biosample.donor.organism',
+         	'replicates.library.biosample.source',
          	'replicates.platform', 
          	'submitted_by', 
          	'lab', 
