@@ -5,7 +5,7 @@ from ..contentbase import (
 )
 from ..indexing import ELASTIC_SEARCH
 
-sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:]')
+sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\]')
 
 
 def get_filtered_query(term, fields):
