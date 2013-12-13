@@ -89,6 +89,10 @@ def search(context, request):
         if not search_term:
             result['notification'] = 'Please enter search term'
             return result
+        else:
+            if len(search_term) < 3:
+                result['notification'] = 'Search term should be atleast 3 characters long'
+                return result
     except:
         if 'type' in params:
             if params['type'] == '*':
