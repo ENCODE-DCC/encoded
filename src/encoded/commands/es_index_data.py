@@ -56,7 +56,7 @@ def main():
         description="Index data in Elastic Search", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--item-type', help="encode item type to be indexed")
+    parser.add_argument('--item-type', action='append', help="Item type")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()
