@@ -560,13 +560,14 @@ class Experiments(Collection):
         }
         embedded = set([
         	'files', 
-        	'replicates.antibody', 
+        	'replicates.antibody',
         	'replicates.library.documents.lab',
          	'replicates.library.documents.submitted_by', 
          	'replicates.library.documents.award', 
          	'replicates.library.biosample.submitted_by', 
          	'replicates.library.biosample.organism', 
-         	'replicates.library.biosample.donor.organism', 
+         	'replicates.library.biosample.donor.organism',
+         	'replicates.platform', 
          	'submitted_by', 
          	'lab', 
          	'award', 
