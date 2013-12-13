@@ -559,25 +559,27 @@ class Experiments(Collection):
             ],
         }
         embedded = set([
-        	'files', 
-        	'replicates.antibody',
-        	'replicates.library.documents.lab',
-         	'replicates.library.documents.submitted_by', 
-         	'replicates.library.documents.award', 
-         	'replicates.library.biosample.submitted_by', 
-         	'replicates.library.biosample.organism', 
-         	'replicates.library.biosample.donor.organism',
-         	'replicates.library.biosample.source',
-         	'replicates.platform', 
-         	'submitted_by', 
-         	'lab', 
-         	'award', 
-         	'possible_controls', 
-         	'target.organism', 
-         	'documents.lab', 
-         	'documents.award', 
-         	'documents.submitted_by'
-         ])
+            'files',
+            'replicates.antibody',
+            'files.replicate',
+            'files.submitted_by',
+            'replicates.library.documents.lab',
+            'replicates.library.documents.submitted_by',
+            'replicates.library.documents.award',
+            'replicates.library.biosample.submitted_by',
+            'replicates.library.biosample.source',
+            'replicates.library.biosample.organism',
+            'replicates.library.biosample.donor.organism',
+            'replicates.platform',
+            'submitted_by',
+            'lab',
+            'award',
+            'possible_controls',
+            'target.organism',
+            'documents.lab',
+            'documents.award',
+            'documents.submitted_by'
+        ])
         rev = {
             'replicates': ('replicate', 'experiment'),
         }
