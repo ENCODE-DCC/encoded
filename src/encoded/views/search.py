@@ -89,6 +89,10 @@ def search(context, request):
         if not search_term:
             result['notification'] = 'Please enter search term'
             return result
+        # Should be handled more gracefully
+        if search_term.find('*') == 0 or search_term.find('?') == 0:
+            result['notification'] = '\'*\' or \'?\' not allowed as first character in search term'
+            return result
     except:
         if 'type' in params:
             if params['type'] == '*':
@@ -102,6 +106,11 @@ def search(context, request):
 
     try:
         search_type = params['type']
+        collections = root.by_item_type.keys()
+        # handling invalid item types
+        if search_type not in collections:
+            result['notification'] = '\'' + search_type + '\' is not a valid \'item type\''
+            return result
     except:
         if not search_term:
             result['notification'] = 'Please enter search term'
