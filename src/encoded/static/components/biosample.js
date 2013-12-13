@@ -103,7 +103,7 @@ var Biosample = module.exports.Biosample = React.createClass({
 						<dd hidden={!context.date_obtained}>{context.date_obtained}</dd>
 						
 						<dt hidden={!context.starting_amount}>Starting amount</dt>
-						<dd hidden={!context.starting_amount}>{context.starting_amount} {context.starting_amount_units}</dd>
+						<dd hidden={!context.starting_amount}>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd>
                         
                         <dt hidden={!context.culture_start_date}>Culture start date</dt>
 						<dd hidden={!context.culture_start_date}>{context.culture_start_date}</dd>

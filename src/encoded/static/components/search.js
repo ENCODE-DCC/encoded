@@ -202,7 +202,7 @@ var Dbxref = dbxref.Dbxref;
             var count = context['count'];
             var columns = context['columns'];
             var filters = context['filters'];
-            var search_id = context['@type'][1]
+            var search_id = context['@id']
 
             var unfacetButtons = function(filter) {
                 for (var key in filter) {
@@ -225,28 +225,28 @@ var Dbxref = dbxref.Dbxref;
                                     <div>
                                         <ul className="nav nav-tabs nav-stacked">
                                             {search_id.indexOf("type=antibody_approval") > 0 ?
-                                                <li><a href={search_id.replace("type=antibody_approval", "")}>Antibodies<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                                <li><a href={search_id.replace("type=antibody_approval", "")}>Antibodies<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
                                             : (count['antibodies'] ? 
                                                     <li><a href={search_id+'&type=antibody_approval'}>Antibodies<span className="pull-right">{count['antibodies']}</span></a></li> 
                                                 : null)
                                             }
                                             
                                             {search_id.indexOf("type=biosample") > 0 ?
-                                                <li><a href={search_id.replace("type=biosample", "")}>Biosamples<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                                <li><a href={search_id.replace("type=biosample", "")}>Biosamples<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
                                             : (count['biosamples'] ?
                                                     <li><a href={search_id+'&type=biosample'}>Biosamples<span className="pull-right">{count['biosamples']}</span></a></li>
                                                 : null)
                                             }
                                             
                                             {search_id.indexOf("type=experiment") > 0 ?
-                                                <li><a href={search_id.replace("type=experiment", "")}>Experiments<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                                <li><a href={search_id.replace("type=experiment", "")}>Experiments<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
                                             : (count['experiments'] ?
                                                     <li><a href={search_id+'&type=experiment'}>Experiments<span className="pull-right">{count['experiments']}</span></a></li>
                                                 : null)
                                             }
                                             
                                             {search_id.indexOf("type=target") > 0 ?
-                                                <li><a href={search_id.replace("type=target", "")}>Targets<span className="pull-right"><i className="icon-remove-circle"></i></span></a></li>
+                                                <li><a href={search_id.replace("type=target", "")}>Targets<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
                                             : (count['targets'] ?
                                                     <li><a href={search_id+'&type=target'}>Targets<span className="pull-right">{count['targets']}</span></a></li>
                                                 : null)
@@ -304,20 +304,18 @@ var Dbxref = dbxref.Dbxref;
             this.refs.searchTerm.getDOMNode().value = '';
             this.submitTimer = setTimeout(this.submit);
         }, 
-        getInitialState: function() {
-            return {items: [], text: ''};
-        },
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
             var notification = context['notification']
-            var searchTerm = '';
+            var id = url.parse(this.props.href, true);
+            var searchTerm = id.query['searchTerm'] || '';
             return (
                 <div>
                     <div className="three-d-box">
                         <form className="input-prepend">
                             <input id='inputValidate' className="input-lg" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" 
-                                ref="searchTerm" name="searchTerm" defaultValue={this.state.text} />
+                                ref="searchTerm" name="searchTerm" defaultValue={searchTerm} />
                         </form>
                     </div>
                     {notification === 'Success' ?
