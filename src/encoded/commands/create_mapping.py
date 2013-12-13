@@ -89,7 +89,7 @@ def index_settings(index):
                     'substring': {
                         'type': 'nGram',
                         'min_gram': 3,
-                        'max_gram': 25
+                        'max_gram': 50
                     }
                 },
                 'analyzer': {
