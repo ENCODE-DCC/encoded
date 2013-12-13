@@ -139,12 +139,16 @@ def convert_edw(app, file_dict):
 
     if ds_acc:
         ds = get_encode3_experiment(app, ds_acc)
-        file_dict['dataset'] = ds['@id']
-        if ds['dataset_type'] == 'experiment':
-            file_dict['replicate'] = find_replicate(ds, file_dict['biological_replicate'], file_dict['technical_replicate'])
-        if file_dict['replicate']:
-            del file_dict['biological_replicate']
-            del file_dict['technical_replicate']
+        if not ds:
+            logging.error('EDW file %s has a dataset that cannot be found: %s' % (file_dict['accession'], ds_acc))
+        else:
+            file_dict['dataset'] = ds['@id']
+            if ds['dataset_type'] == 'experiment':
+                file_dict['replicate'] = find_replicate(ds, file_dict['biological_replicate'], file_dict['technical_replicate'])
+
+    if file_dict.has_key('replicate') and file_dict['replicate']:
+        del file_dict['biological_replicate']
+        del file_dict['technical_replicate']
             # otherwise we will try tor create the specified one.
 
     return { i : unicode(j) for i,j in file_dict.items() }
@@ -330,9 +334,16 @@ def get_encode2_to_encode3(app):
 def exp_or_dataset(app, accession):
 
     url = '/' + accession + '/'
-    resp = app.get(url, headers={'Accept': 'application/json'}).maybe_follow()
-    assert(resp.status_code == 200)
-    return resp.json
+    try:
+        resp = app.get(url, headers={'Accept': 'application/json'}).maybe_follow()
+    except AppError:
+        logging.error("Dataset/Experiment %s could not be found." % accession)
+        return None
+
+    if resp.status_code == 200:
+        return resp.json
+    else:
+        return None
 
 def get_encode3_experiment(app, accession):
     # Map ENCODE2 experiment accession to ENCODE3
@@ -349,8 +360,8 @@ def get_encode3_experiment(app, accession):
         url = SEARCH_EC2 + accession + '&type=dataset'
         results = resp.json['@graph']
 
-    assert(len(results==1))
-    return app.get(results[0]['@id'],headers={'Accept': 'application/json'})
+    assert(len(results)==1)
+    return app.get(results[0]['@id'],headers={'Accept': 'application/json'}).json
 
 
 ################
@@ -472,12 +483,12 @@ def get_app_fileinfo(app, full=True, limit=0, exclude=None,
         if full:
             url = row['@id']
             resp = app.get(url).maybe_follow()
-            fileinfo = format_app_fileinfo(app, resp.json, exclude=exclude)
+            #fileinfo = format_app_fileinfo(app, resp.json, exclude=exclude)
             if phase != edw_file.ENCODE_PHASE_ALL:
                 if not (transitional and phase == edw_file.ENCODE_PHASE_3):
                     if get_phase(app, fileinfo) != phase:
                         continue
-            app_files.append(fileinfo)
+            app_files.append(resp.json)
         else:
             acc = row['@id'].split('/')[2]
             app_files.append(acc)
@@ -580,9 +591,13 @@ def post_fileinfo(app, fileinfo):
             logging.error("Refusing to POST file with missing replicate ids: %s  %s" %
                (fileinfo['biological_replicate'], fileinfo['technical_replicate']))
             return None
+        except AppError, e:
+            logging.error("Can not POST this replicate because reasons: %s" % e.message)
+            return None
         except Exception, e:
             logging.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
             sys.exit(1)
+
     url = collection_url(FILES)
     resp = app.post_json(url, fileinfo, expect_errors=True)
     if verbose:
@@ -633,12 +648,12 @@ def patch_fileinfo(app, props, propinfo):
     global verbose
     accession = propinfo['accession']
 
-    if verbose:
-        logging.info('....PATCH file: %s\n' % (accession))
+    logging.info('....PATCH file: %s\n' % (accession))
     for prop in props:
         if prop in NO_UPDATE:
             logging.error('Refusing to PATCH %s (%s): for %s\n' % (prop, propinfo[prop], accession))
             return None
+    '''
     try:
         exp_fileinfo = set_fileinfo_experiment(app, propinfo)
         patch_fileinfo = set_fileinfo_replicate(app, exp_fileinfo)
@@ -647,8 +662,9 @@ def patch_fileinfo(app, props, propinfo):
     except AppError as e:
         logging.error('Failed PATCH File %s:  error\n%s', accession, e)
         return None
+    '''
     url = collection_url(FILES) + accession
-    resp = app.patch_json(url, patch_fileinfo)
+    resp = app.patch_json(url, propinfo)
     if verbose:
         logging.info(str(resp) + "\n")
     if resp.status_int < 200 or resp.status_int >= 400:
@@ -823,17 +839,17 @@ def inventory_files(app, edw_dict, app_dict):
 
     for accession in sorted(edw_dict.keys()):
         edw_fileinfo = edw_dict[accession]
-        edw_exp_fileinfo = set_fileinfo_experiment(app, edw_fileinfo)
-        edw_dict[accession] =  edw_exp_fileinfo  # replaced Encode2 exps with Encode3
+        #edw_exp_fileinfo = set_fileinfo_experiment(app, edw_fileinfo)
+        #edw_dict[accession] =  edw_exp_fileinfo  # replaced Encode2 exps with Encode3
         if accession not in app_dict:
-            edw_only.append(edw_exp_fileinfo)
+            edw_only.append(edw_fileinfo)
         else:
-            diff = compare_files(edw_exp_fileinfo, app_dict[accession])
+            diff = compare_files(edw_fileinfo, app_dict[accession])
             if diff:
                 diff_accessions.append(accession)
                 logging.info("File: %s has %s diffs\n" % (accession, diff))
             else:
-                same.append(edw_exp_fileinfo)
+                same.append(edw_fileinfo)
 
     # APP-only files
     for accession in sorted(app_dict.keys()):
