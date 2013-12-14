@@ -5,7 +5,7 @@ from ..contentbase import (
 )
 from ..indexing import ELASTIC_SEARCH
 
-sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\]')
+sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 
 def get_filtered_query(term, fields):
@@ -88,10 +88,6 @@ def search(context, request):
         # Handling whitespaces in the search term
         if not search_term:
             result['notification'] = 'Please enter search term'
-            return result
-        # Should be handled more gracefully
-        if search_term.find('*') == 0 or search_term.find('?') == 0:
-            result['notification'] = '\'*\' or \'?\' not allowed as first character in search term'
             return result
     except:
         if 'type' in params:
