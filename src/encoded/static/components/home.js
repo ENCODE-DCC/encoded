@@ -26,7 +26,7 @@ var Home = module.exports.Home = React.createClass({
             <div>
                 <div className="three-d-box" hidden={!hidden}>
                     <form className="input-prepend" action="/search/" method="GET">
-                        <input id='inputValidate' className="input-lg" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, ski*, chip-seq etc" 
+                        <input id='inputValidate' className="input-lg" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, chip-seq etc" 
                             ref="searchTerm" name="searchTerm" />
                     </form>
                 </div>
