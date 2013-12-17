@@ -17,33 +17,68 @@ TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
-    from . import test_indexing
-    return test_indexing.app_settings(server_host_port, elasticsearch_server, postgresql_server)
-
+    from .conftest import _app_settings
+    settings = _app_settings.copy()
+    settings['persona.audiences'] = 'http://%s:%s' % server_host_port
+    settings['elasticsearch.server'] = elasticsearch_server
+    settings['sqlalchemy.url'] = postgresql_server
+    settings['collection_source'] = 'elasticsearch'
+    return settings
 
 @pytest.fixture(scope='session')
 def app(request, app_settings):
-    from . import test_indexing
-    return test_indexing.app(request, app_settings)
+    '''WSGI application level functional testing.
+    '''
+    from encoded.storage import DBSession
+
+    DBSession.remove()
+    DBSession.configure(bind=None)
+
+    from encoded import main
+    app = main({}, **app_settings)
+
+    from encoded.commands import create_mapping
+    create_mapping.run(app)
+    res = app.post_json('/index', {})
+
+    @request.addfinalizer
+    def teardown_app():
+        # Dispose connections so postgres can tear down
+        DBSession.bind.pool.dispose()
+        DBSession.remove()
+        DBSession.configure(bind=None)
+
+    return app
 
 
-# Though this is expensive, set up first within browser tests to avoid remote
-# browser timeout
-# XXX Ideally this wouldn't be autouse...
-@pytest.mark.fixture_cost(-1)
-@pytest.yield_fixture(scope='session', autouse=True)
+@pytest.fixture
+def testapp(app):
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    return TestApp(app, environ)
+
+
+@pytest.yield_fixture(scope="session")
 def workbook(connection, app, app_settings):
     from . import conftest
-    from encoded.commands import es_index_data
+    from encoded.commands import es_index_data, create_mapping
+    tx = connection.begin_nested()
     for fixture in conftest.workbook(connection, app, app_settings):
+        print "SYNC: creating ES and indexing"
+        create_mapping.run(app)
         es_index_data.run(app)
         yield fixture
-
+    print 'SYNC: Rollback from sync workbook...'
+    tx.rollback()
 
 @pytest.yield_fixture()
-def reset(app):
+def reset(connection, app):
     yield
     from encoded.commands import es_index_data, create_mapping
+    print "SYNC: Resetting ES index"
     create_mapping.run(app)
     es_index_data.run(app)
 
@@ -65,9 +100,10 @@ def test_format_app_fileinfo_expanded(workbook, testapp):
 
     new_edw = encoded.commands.read_edw_fileinfo.convert_edw(testapp, test_edwf)
     assert( not encoded.commands.read_edw_fileinfo.compare_files(file_dict, test_edwf) )
+    res = testapp.post_json('/index', {})
 
 
-def test_post_duplicate(workbook, testapp):
+def xtest_post_duplicate(workbook, testapp):
     url = '/files/' + TEST_ACCESSION
     resp = testapp.get(url).maybe_follow()
     current = resp.json
@@ -78,7 +114,7 @@ def test_post_duplicate(workbook, testapp):
         assert(True)
 
 
-def test_list_new(workbook, testapp):
+def xtest_list_new(workbook, testapp):
     # Test obtaining list of 'new' accessions (at EDW, not at app)
     # Unexpanded JSON (requires GETs on embedded URLs)
 
@@ -117,7 +153,7 @@ def xtest_import_file(workbook, testapp, reset):
             assert(not fileinfo['biological_replicate'] or not fileinfo['technical_replicate'])
 
 
-def test_encode2_experiments(workbook, testapp):
+def xtest_encode2_experiments(workbook, testapp):
     # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
     # accessions are ENCODE2 experiments
 
@@ -144,7 +180,7 @@ def test_file_sync(workbook, testapp, reset):
         del fileinfo['test']  # this is in the file for notation purposes only
         edw_mock[fileinfo['accession']] = fileinfo
 
-    assert len(edw_mock) == 23
+    assert len(edw_mock) == 25
 
     app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
     app_dict = { d['accession']:d for d in app_files }
@@ -153,10 +189,12 @@ def test_file_sync(workbook, testapp, reset):
     assert(len(app_files) == len(app_dict.keys())) # this should never duplicate
 
     edw_only, app_only, same, patch = encoded.commands.read_edw_fileinfo.inventory_files(testapp, edw_mock, app_dict)
-    assert len(edw_only) == 10
+    assert len(edw_only) == 12
     assert len(app_only) == 11
     assert len(same) == 6
     assert len(patch) == 7
+
+    before_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
 
     for add in edw_only:
         acc = add['accession']
@@ -193,6 +231,9 @@ def test_file_sync(workbook, testapp, reset):
         else:
             assert patched
 
+    # index new replicates
+    res = testapp.post_json('/index', {})
+
     post_app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
     post_app_dict = { d['accession']:d for d in post_app_files }
     assert(len(post_app_files) == len(post_app_dict.keys()))
@@ -200,12 +241,32 @@ def test_file_sync(workbook, testapp, reset):
     encoded.commands.read_edw_fileinfo.collections = []
     # reset global var!
     post_edw, post_app, post_same, post_patch= encoded.commands.read_edw_fileinfo.inventory_files(testapp, edw_mock, post_app_dict)
-    assert len(post_edw) == 2
+    assert len(post_edw) == 2 # new files cannot add
     assert len(post_app) == 11 # unchanged
-    assert len(post_patch) == 4
-    assert len(post_same) == len(same) + len(patch) + len(post_patch)
+    assert len(post_patch) == 4 # exsting files cannot be patched
+    assert ((len(post_same)-len(same)) == (len(patch) -len(post_patch) + (len(edw_only) - len(post_edw))))
     assert len(post_app_files) == (len(app_files) + len(edw_only) - 2 )
-    # original + edw_only
+
+    after_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
+    same_reps = {}
+    updated_reps = {}
+    new_reps = {}
+    for uuid in after_reps.keys():
+        if before_reps.has_key(uuid):
+            bef = set([ x for x in before_reps[uuid].items() if type(x[1]) != list ])
+            aft = set([ x for x in after_reps[uuid].items() if type(x[1]) != list ])
+            rep_diff = aft - bef
+            if(rep_diff):
+                updated_reps[uuid] = rep_diff
+            else:
+                same_reps[uuid] = True
+        else:
+            new_reps['uuid'] = after_reps[uuid]
+
+    assert(len(same_reps.keys()) == 17)
+    assert(not updated_reps)
+    assert(len(new_reps) == 1)
+
 
 
 

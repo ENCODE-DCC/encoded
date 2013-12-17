@@ -43,7 +43,7 @@ def app_settings(request, server_host_port, connection):
 def pytest_configure():
     import logging
     logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.ERROR)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
     logging.getLogger('selenium').setLevel(logging.DEBUG)
 
     class Shorten(logging.Filter):
@@ -225,8 +225,10 @@ def connection(request):
         Base.metadata.create_all(bind=connection)
         session = DBSession(scope=None, bind=connection)
         DBSession.registry.set(session)
+        print 'SETUP DBSession'
         yield connection
     finally:
+        print 'TEARDOWN DBSession'
         tx.rollback()
         connection.close()
         engine.dispose()

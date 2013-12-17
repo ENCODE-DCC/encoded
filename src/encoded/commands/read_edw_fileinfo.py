@@ -353,7 +353,8 @@ def get_encode3_experiment(app, accession):
         return exp_or_dataset(app, accession)
 
     url = SEARCH_EC2 + accession + '&type=experiment'
-    resp = app.get(url, headers={'Accept': 'application/json'}).maybe_follow()
+    #, headers={'Accept': 'application/json'}
+    resp = app.get(url).maybe_follow()
     results = resp.json['@graph']
     if not results:
         return None #  are datasets implemented in search yet?
@@ -543,7 +544,9 @@ def get_missing_fileinfo(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
 ########
 # POST and PUT
 def create_replicate(app, exp, bio_rep_num, tech_rep_num):
+
     # create a replicate
+    logging.warning("Creating replicate %s %s for %s" % (bio_rep_num, tech_rep_num, exp))
     rep = {
         'experiment': exp,
         'biological_replicate_number': bio_rep_num,
