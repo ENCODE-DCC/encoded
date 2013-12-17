@@ -39,7 +39,12 @@ def app(request, app_settings):
 
     from encoded.commands import create_mapping
     create_mapping.run(app)
-    res = app.post_json('/index', {})
+
+    connection = DBSession().connection()
+    query = connection.execute("""
+        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;
+        SELECT txid_snapshot_xmin(txid_current_snapshot());
+    """)
 
     @request.addfinalizer
     def teardown_app():
@@ -61,9 +66,11 @@ def testapp(app):
     return TestApp(app, environ)
 
 
-@pytest.yield_fixture(scope="session")
-def workbook(connection, app, app_settings):
-    from . import conftest
+@pytest.fixture()
+#def workbook(connection, app, app_settings):
+def workbook(testapp):
+
+    '''    from . import conftest
     from encoded.commands import es_index_data, create_mapping
     tx = connection.begin_nested()
     for fixture in conftest.workbook(connection, app, app_settings):
@@ -73,6 +80,13 @@ def workbook(connection, app, app_settings):
         yield fixture
     print 'SYNC: Rollback from sync workbook...'
     tx.rollback()
+    '''
+    from ..loadxl import load_all
+    from pkg_resources import resource_filename
+    inserts = resource_filename('encoded', 'tests/data/inserts/')
+    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+    load_all(testapp, inserts, docsdir)
+
 
 @pytest.yield_fixture()
 def reset(connection, app):
@@ -83,11 +97,12 @@ def reset(connection, app):
     es_index_data.run(app)
 
 
-def test_format_app_fileinfo_expanded(workbook, testapp):
+def xtest_format_app_fileinfo_expanded(workbook, testapp):
     # Test extracting EDW-relevant fields from encoded file.json
     # Expanded JSON
 
     # load input
+    res = testapp.post_json('/index', {})
     url = '/files/' + TEST_ACCESSION
 
     resp = testapp.get(url).maybe_follow()
@@ -170,6 +185,7 @@ def xtest_encode2_experiments(workbook, testapp):
 
 def test_file_sync(workbook, testapp, reset):
 
+    res = testapp.post_json('/index', {})
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file)
     reader = DictReader(f, delimiter='\t')
