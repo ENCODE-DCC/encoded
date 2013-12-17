@@ -5,7 +5,7 @@ from ..contentbase import (
 )
 from ..indexing import ELASTIC_SEARCH
 
-sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:]')
+sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 
 def get_filtered_query(term, fields):
@@ -102,6 +102,11 @@ def search(context, request):
 
     try:
         search_type = params['type']
+        collections = root.by_item_type.keys()
+        # handling invalid item types
+        if search_type not in collections:
+            result['notification'] = '\'' + search_type + '\' is not a valid \'item type\''
+            return result
     except:
         if not search_term:
             result['notification'] = 'Please enter search term'
