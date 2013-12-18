@@ -16,20 +16,20 @@ EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
 TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 
 @pytest.fixture(scope='session')
-def app_settings(server_host_port, elasticsearch_server, postgresql_server):
+def app_settings(server_host_port, elasticsearch_server, connection):
     from .conftest import _app_settings
     settings = _app_settings.copy()
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
     settings['elasticsearch.server'] = elasticsearch_server
-    settings['sqlalchemy.url'] = postgresql_server
+ #   settings['sqlalchemy.url'] = postgresql_server
     settings['collection_source'] = 'elasticsearch'
     return settings
 
-@pytest.fixture(scope='session')
-def app(request, app_settings):
+#@pytest.fixture(scope='session')
+#def app(request, app_settings):
     '''WSGI application level functional testing.
     '''
-    from encoded.storage import DBSession
+'''    from encoded.storage import DBSession
 
     DBSession.remove()
     DBSession.configure(bind=None)
@@ -39,12 +39,7 @@ def app(request, app_settings):
 
     from encoded.commands import create_mapping
     create_mapping.run(app)
-
-    connection = DBSession().connection()
-    query = connection.execute("""
-        SET TRANSACTION ISOLATION LEVEL SERIALIZABLE, READ ONLY, DEFERRABLE;
-        SELECT txid_snapshot_xmin(txid_current_snapshot());
-    """)
+    res = app.post_json('/index', {})
 
     @request.addfinalizer
     def teardown_app():
@@ -54,7 +49,7 @@ def app(request, app_settings):
         DBSession.configure(bind=None)
 
     return app
-
+'''
 
 @pytest.fixture
 def testapp(app):
@@ -66,11 +61,9 @@ def testapp(app):
     return TestApp(app, environ)
 
 
-@pytest.fixture()
-#def workbook(connection, app, app_settings):
-def workbook(testapp):
-
-    '''    from . import conftest
+@pytest.yield_fixture(scope='session')
+def workbook(connection, app, app_settings):
+    from . import conftest
     from encoded.commands import es_index_data, create_mapping
     tx = connection.begin_nested()
     for fixture in conftest.workbook(connection, app, app_settings):
@@ -80,13 +73,6 @@ def workbook(testapp):
         yield fixture
     print 'SYNC: Rollback from sync workbook...'
     tx.rollback()
-    '''
-    from ..loadxl import load_all
-    from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir)
-
 
 @pytest.yield_fixture()
 def reset(connection, app):
@@ -102,7 +88,6 @@ def xtest_format_app_fileinfo_expanded(workbook, testapp):
     # Expanded JSON
 
     # load input
-    res = testapp.post_json('/index', {})
     url = '/files/' + TEST_ACCESSION
 
     resp = testapp.get(url).maybe_follow()
@@ -115,7 +100,6 @@ def xtest_format_app_fileinfo_expanded(workbook, testapp):
 
     new_edw = encoded.commands.read_edw_fileinfo.convert_edw(testapp, test_edwf)
     assert( not encoded.commands.read_edw_fileinfo.compare_files(file_dict, test_edwf) )
-    res = testapp.post_json('/index', {})
 
 
 def xtest_post_duplicate(workbook, testapp):
@@ -140,7 +124,7 @@ def xtest_list_new(workbook, testapp):
     assert new_accs == sorted(edw_test_data.new_out)
 
 
-def xtest_import_file(workbook, testapp, reset):
+def xtest_import_file(workbook, testapp):
     # Test import of new file to encoded
     # this tests adds replicates, but never checks their validity
     # ignoring this because I don't want to deal with tearing down ES  posts
@@ -183,9 +167,8 @@ def xtest_encode2_experiments(workbook, testapp):
     # Test identifying an ENCODE 2 experiment
     assert encoded.commands.read_edw_fileinfo.is_encode2_experiment(testapp, encode2_hash.values()[0])
 
-def test_file_sync(workbook, testapp, reset):
+def test_file_sync(workbook, testapp):
 
-    res = testapp.post_json('/index', {})
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file)
     reader = DictReader(f, delimiter='\t')
@@ -248,7 +231,8 @@ def test_file_sync(workbook, testapp, reset):
             assert patched
 
     # index new replicates
-    res = testapp.post_json('/index', {})
+    from encoded.commands import es_index_data
+    es_index_data.run(testapp.app, ['replicate', 'experiment', 'dataset'])
 
     post_app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
     post_app_dict = { d['accession']:d for d in post_app_files }

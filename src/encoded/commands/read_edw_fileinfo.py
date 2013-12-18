@@ -40,7 +40,7 @@ DATASETS = 'datasets'
 USERS = 'users'
 
 SEARCH_URL = '/search/?searchTerm='
-SEARCH_EC2 = '/search/?searchTerm=*&encode2_dbxrefs='
+SEARCH_EC2 = '/search/?encode2_dbxrefs='
 FILE_PROFILE_URL = '/profiles/file.json'
 
 app_host_name = 'localhost'
