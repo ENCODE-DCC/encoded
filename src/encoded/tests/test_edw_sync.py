@@ -61,7 +61,8 @@ def testapp(app):
     return TestApp(app, environ)
 
 
-@pytest.yield_fixture(scope='session')
+#@pytest.yield_fixture(scope='session')
+@pytest.yield_fixture()
 def workbook(connection, app, app_settings):
     from . import conftest
     from encoded.commands import es_index_data, create_mapping
@@ -83,7 +84,7 @@ def reset(connection, app):
     es_index_data.run(app)
 
 
-def xtest_format_app_fileinfo_expanded(workbook, testapp):
+def test_format_app_fileinfo_expanded(workbook, testapp):
     # Test extracting EDW-relevant fields from encoded file.json
     # Expanded JSON
 
@@ -102,7 +103,7 @@ def xtest_format_app_fileinfo_expanded(workbook, testapp):
     assert( not encoded.commands.read_edw_fileinfo.compare_files(file_dict, test_edwf) )
 
 
-def xtest_post_duplicate(workbook, testapp):
+def test_post_duplicate(workbook, testapp):
     url = '/files/' + TEST_ACCESSION
     resp = testapp.get(url).maybe_follow()
     current = resp.json
@@ -113,7 +114,7 @@ def xtest_post_duplicate(workbook, testapp):
         assert(True)
 
 
-def xtest_list_new(workbook, testapp):
+def test_list_new(workbook, testapp):
     # Test obtaining list of 'new' accessions (at EDW, not at app)
     # Unexpanded JSON (requires GETs on embedded URLs)
 
@@ -124,7 +125,7 @@ def xtest_list_new(workbook, testapp):
     assert new_accs == sorted(edw_test_data.new_out)
 
 
-def xtest_import_file(workbook, testapp):
+def test_import_file(workbook, testapp, reset):
     # Test import of new file to encoded
     # this tests adds replicates, but never checks their validity
     # ignoring this because I don't want to deal with tearing down ES  posts
@@ -152,7 +153,7 @@ def xtest_import_file(workbook, testapp):
             assert(not fileinfo['biological_replicate'] or not fileinfo['technical_replicate'])
 
 
-def xtest_encode2_experiments(workbook, testapp):
+def test_encode2_experiments(workbook, testapp):
     # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
     # accessions are ENCODE2 experiments
 
@@ -167,7 +168,7 @@ def xtest_encode2_experiments(workbook, testapp):
     # Test identifying an ENCODE 2 experiment
     assert encoded.commands.read_edw_fileinfo.is_encode2_experiment(testapp, encode2_hash.values()[0])
 
-def test_file_sync(workbook, testapp):
+def test_file_sync(workbook, testapp, reset):
 
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file)
