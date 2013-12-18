@@ -26,7 +26,7 @@ before_install:
     java -jar Sauce-Connect.jar --readyfile $READY_FILE
     --logfile $CONNECT_LOG
     --tunnel-identifier $TRAVIS_JOB_NUMBER
-    $SAUCE_USERNAME $SAUCE_ACCESS_KEY &
+    $SAUCE_USERNAME $SAUCE_ACCESS_KEY > sauce-connect.log &
   - pip install -U setuptools
   - virtualenv clean-python
   - source clean-python/bin/activate
@@ -35,6 +35,8 @@ before_install:
   - sudo -u postgres createdb --owner=$USER encoded
   - postgres --version
   - initdb --version
+  - sudo service elasticsearch stop
+  - elasticsearch -v
 install:
   - python bootstrap.py
   - bin/buildout

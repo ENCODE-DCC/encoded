@@ -865,7 +865,7 @@ class Collection(Mapping):
         items = []
         from .indexing import ELASTIC_SEARCH
         es = request.registry[ELASTIC_SEARCH]
-        results = es.search(query, index=self.item_type, size=10000)
+        results = es.search(query, index=self.item_type, size=99999)
         for model in results['hits']['hits']:
             # Dealing with columns which have length attribute to the array
             for c in lengthColumns:
@@ -981,8 +981,7 @@ def etag_conditional(view_callable):
     return wrapped
 
 
-@view_config(context=Collection, permission='list', request_method='GET',
-             decorator=etag_conditional)
+@view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
     return item_view(context, request)
 

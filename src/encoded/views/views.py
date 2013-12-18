@@ -267,7 +267,8 @@ class Biosample(Collection):
         ('organism.name', 'Species'),
         ('source.title', 'Source'),
         ('lab.title', 'Submitter'),
-        ('treatments.length', 'Treatments'),
+        ('life_stage', 'Life stage'),
+        ('treatments.length', 'Treatments length'),
         ('constructs.length', 'Constructs')
     ])
 
@@ -283,7 +284,34 @@ class Biosample(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set(['donor.organism', 'submitted_by', 'lab', 'award', 'source', 'treatments.protocols.submitted_by', 'treatments.protocols.lab', 'treatments.protocols.award', 'constructs.documents.submitted_by', 'constructs.documents.award', 'constructs.documents.lab', 'constructs.target', 'protocol_documents.lab', 'protocol_documents.award', 'protocol_documents.submitted_by', 'derived_from', 'pooled_from', 'characterizations', 'rnais.target.organism', 'rnais.source', 'organism'])
+        embedded = set([
+            'donor.organism',
+            'submitted_by',
+            'lab',
+            'award',
+            'source',
+            'treatments.protocols.submitted_by',
+            'treatments.protocols.lab',
+            'treatments.protocols.award',
+            'constructs.documents.submitted_by',
+            'constructs.documents.award',
+            'constructs.documents.lab',
+            'constructs.target',
+            'protocol_documents.lab',
+            'protocol_documents.award',
+            'protocol_documents.submitted_by',
+            'derived_from',
+            'pooled_from',
+            'characterizations.submitted_by',
+            'characterizations.award',
+            'characterizations.lab',
+            'rnais.target.organism',
+            'rnais.source',
+            'rnais.documents.submitted_by',
+            'rnais.documents.award',
+            'rnais.documents.lab',
+            'organism',
+        ])
         name_key = 'accession'
 
         keys = ACCESSION_KEYS + ALIAS_KEYS
@@ -378,7 +406,7 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    item_embedded = set(['antibody.source', 'antibody.host_organism', 'target.organism', 'characterizations.target.organism', 'characterizations.award', 'characterizations.submitted_by', 'characterizations.lab', 'lab'])
+    item_embedded = set(['antibody.source', 'antibody.host_organism', 'target.organism', 'characterizations.target.organism', 'characterizations.award', 'characterizations.submitted_by', 'characterizations.lab'])
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
     ]
@@ -530,7 +558,28 @@ class Experiments(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set(['files', 'replicates.antibody', 'replicates.library.documents.lab', 'replicates.library.documents.submitted_by', 'replicates.library.documents.award', 'replicates.library.biosample.submitted_by', 'replicates.library.biosample.donor.organism', 'submitted_by', 'lab', 'award', 'possible_controls', 'target.organism', 'documents.lab', 'documents.award', 'documents.submitted_by'])
+        embedded = set([
+            'files',
+            'replicates.antibody',
+            'files.replicate',
+            'files.submitted_by',
+            'replicates.library.documents.lab',
+            'replicates.library.documents.submitted_by',
+            'replicates.library.documents.award',
+            'replicates.library.biosample.submitted_by',
+            'replicates.library.biosample.source',
+            'replicates.library.biosample.organism',
+            'replicates.library.biosample.donor.organism',
+            'replicates.platform',
+            'submitted_by',
+            'lab',
+            'award',
+            'possible_controls',
+            'target.organism',
+            'documents.lab',
+            'documents.award',
+            'documents.submitted_by'
+        ])
         rev = {
             'replicates': ('replicate', 'experiment'),
         }

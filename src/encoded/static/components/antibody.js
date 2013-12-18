@@ -53,8 +53,9 @@ var Approval = module.exports.Approval = React.createClass({
                         <dt>Target</dt>
                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
 
-                        <dt>Host</dt>
-                        <dd>{context.antibody.host_organism.name}</dd>
+                        {context.antibody.host_organism ? <dt>Host</dt> : null}
+                        {context.antibody.host_organism ? <dd>{context.antibody.host_organism.name}</dd> : null}
+        
 
                         <dt hidden={!context.antibody.clonality}>Clonality</dt>
                         <dd hidden={!context.antibody.clonality}>{context.antibody.clonality}</dd>
@@ -73,6 +74,9 @@ var Approval = module.exports.Approval = React.createClass({
 
                         <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
                         <dd className="no-cap" hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
+                        
+                        <dt hidden={!context.antibody.encode2_dbxrefs.length}>Other identifiers</dt>
+                        <dd className="no-cap" hidden={!context.antibody.encode2_dbxrefs.length}>{context.antibody.encode2_dbxrefs.join(", ")}</dd>
                     </dl>
                 </div>
 
