@@ -225,10 +225,8 @@ def connection(request):
         Base.metadata.create_all(bind=connection)
         session = DBSession(scope=None, bind=connection)
         DBSession.registry.set(session)
-        print 'SETUP DBSession'
         yield connection
     finally:
-        print 'TEARDOWN DBSession'
         tx.rollback()
         connection.close()
         engine.dispose()
