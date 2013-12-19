@@ -7,20 +7,17 @@ import edw_test_data
 
 pytestmark = [pytest.mark.edw_file]
 
-## edw_file
-# def format_edw_fileinfo(file_dict, exclude=None):
-# def make_edw(data_host=None):
-# def dump_filelist(fileaccs, header=True, typeField=None):
-# def dump_fileinfo(fileinfos, header=True, typeField=None, exclude=None):
-# def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
-# def get_edw_max_id(edw):
-# def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
+## TODO: This should be converted to a smoke-type test after build/install is complete
 
+@pytest.mark.xfail
+# travis cannot connect to EDW
 def test_make_edw():
 
     edw = encoded.edw_file.make_edw()
     assert(type(edw)==Engine)
 
+@pytest.mark.xfail
+# travis cannot connect to EDW
 def test_get_edw_files():
 
     ''' test connectivity schema integrity basic query not all options '''
