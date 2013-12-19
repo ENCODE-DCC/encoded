@@ -255,7 +255,7 @@
             "title": "Donor age",
             "description": " The age or age range of the donor organism when biological material was sampled.",
             "type": "string",
-            "pattern": "^\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?$"
+            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
         },
         "age_units": {
             "title": "Donor age units",
