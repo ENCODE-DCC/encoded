@@ -35,7 +35,7 @@ class LayerManager(object):
 
     def relevant_argnames(self, fi):
         for name in fi.names_closure:
-            fd = fi.name2fixturedefs[name]
+            fd = fi.name2fixturedefs.get(name)
             if fd is None:
                 continue
             if fd[-1].scopenum < scopenum_function:
@@ -97,7 +97,7 @@ class LayerManager(object):
             next = set()
             fi = item._fixtureinfo
             for name in self.relevant_argnames(fi):
-                fd = fi.name2fixturedefs[name]
+                fd = fi.name2fixturedefs.get(name)
                 if fd is None:
                     continue
                 next.add(fd)
@@ -117,20 +117,24 @@ class LayerManager(object):
         '''
         fixturenames = getattr(item, "fixturenames", item._request.fixturenames)
         keylist = []
+        scopenum = scopes.index(item._request.scope  or "function")
         for argname in fixturenames:
             fixturedef = item._fixtureinfo.name2fixturedefs.get(argname)
             if fixturedef is None:
                 continue
-            if fixturedef[-1].scopenum < scopenum_function:
-                layer = self.layers.get(layer_key([fixturedef]), None)
-                weight = 1 if layer is None else layer.weight
-                key = (fixturedef[-1].scopenum, weight, argname)
-                keylist.append(key)
+            if hasattr(fixturedef[-1], 'cached_result'):
+                continue
+            if fixturedef[-1].scopenum >= scopenum:
+                continue
+            layer = self.layers.get(layer_key([fixturedef]), None)
+            weight = 1 if layer is None else layer.weight
+            key = (fixturedef[-1].scopenum, weight, argname, fixturedef)
+            keylist.append(key)
 
         keylist.sort()
-        for scopenum, weight, argname in keylist:
-            if argname not in item.funcargs and argname not in item._request._fixturemanager._arg2finish:
-                #print 'SETUP %s' % argname
+        for scopenum, weight, argname, fd in keylist:
+            if argname not in item.funcargs:
+                #print "SETUP: %s (%s)" % (fd[-1].argname, fd[-1].scope)
                 item.funcargs[argname] = item._request.getfuncargvalue(argname)
 
     @pytest.mark.trylast
@@ -142,23 +146,23 @@ class LayerManager(object):
 
         keylist = []
         nextitem_name2fixturedefs = nextitem._fixtureinfo.name2fixturedefs
-        for name, fixturedef in item._fixtureinfo.name2fixturedefs.items():
-            nextitem_fixturedef = nextitem_name2fixturedefs.get(name, None)
+        for argname, fixturedef in item._fixtureinfo.name2fixturedefs.items():
+            if not hasattr(fixturedef[-1], 'cached_result'):
+                continue
+            nextitem_fixturedef = nextitem_name2fixturedefs.get(argname, None)
             if nextitem_fixturedef == fixturedef:
                 continue
-            key = (-fixturedef[-1].scopenum, name)
+            layer = self.layers.get(layer_key([fixturedef]), None)
+            weight = 1 if layer is None else layer.weight
+            key = (fixturedef[-1].scopenum, weight, argname, fixturedef)
             keylist.append(key)
 
-        keylist.sort()
         fixturemanager = item.session.config.pluginmanager.getplugin("funcmanage")
 
-        for scopenum, name in keylist:
-            item.session._setupstate._callfinalizers(name)
-            l = fixturemanager._arg2finish.pop(name, None)
-            #print 'TEARDOWN %s: %r' % (name, l)
-            if l is not None:
-                for fin in reversed(l):
-                    fin()
+        keylist.sort(reverse=True)
+        for scopenum, weight, argname, fd in keylist:
+            #print "TEARDOWN: %s (%s)" % (fd[-1].argname, fd[-1].scope)
+            fd[-1].finish()
 
 
 class Layer(object):
@@ -183,7 +187,6 @@ class Layer(object):
         self = super(Layer, cls).__new__(cls, layers, fi, argnames)
         layers[key] = self
 
-        from _pytest.python import scopenum_function
         self.fixtureinfo = fi
         self.key = key
         self.fixturedefs_closure = set(key)
@@ -195,7 +198,9 @@ class Layer(object):
             fd, = key
             self.argname = fd[-1].argname
             self.baseid = fd[-1].baseid
-            base_fixturedefs = sorted((fi.name2fixturedefs[name], name) for name in fd[-1].argnames)
+            base_fixturedefs = sorted(
+                (fi.name2fixturedefs[name], name)
+                    for name in fd[-1].argnames if name in fi.name2fixturedefs)
             fixture_cost = getattr(fd[-1].func, 'fixture_cost', None)
             if fixture_cost is not None:
                 self.weight += fixture_cost.args[0]
@@ -204,7 +209,9 @@ class Layer(object):
         else:
             self.argname = ','.join(fd[-1].argname for fd in key)
             self.baseid = '<virtual>'
-            base_fixturedefs = sorted((fi.name2fixturedefs[name], name) for name in argnames)
+            base_fixturedefs = sorted(
+                (fi.name2fixturedefs[name], name)
+                    for name in argnames if name in fi.name2fixturedefs)
         self.bases = tuple(
             cls(layer_manager, item, name)
             for fd, name in base_fixturedefs

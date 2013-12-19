@@ -1,3 +1,4 @@
-test	uuid	treatment_type	protocols:array	treatment_term_name	treatment_term_id	concentration:number	concentration_units	duration:number	duration_units	reference	submitted_by	lab	award	encode2_dbxrefs:array
-test	3280b708-0f05-40fa-bff2-54e2b6505c13	chemical	ENCODE:diffProtB_6hr_protocol	doxycycline hyclate	CHEBI:34730	97.2	nM	6	hour		blandit.orci@conubia.magna	john-stamatoyannopoulos	U54HG004592	diffProtB_6hr
-test	2e33a097-412c-4646-87f9-858dfaaa7c06	chemical	ENCODE:MCF-7_Farnham_treatment_protocol	afimoxifene	CHEBI:44616	600	nM	30	minute		metus.donec@nisl.montes	gregory-crawford	U54HG004563	4OHTAM_100nM_30m
+test	uuid	treatment_type	protocols:array	treatment_term_name	treatment_term_id	concentration:number	concentration_units	duration:number	duration_units	reference	submitted_by	lab	award	encode2_dbxrefs:array	aliases:array
+test	3280b708-0f05-40fa-bff2-54e2b6505c13	chemical	ENCODE:diffProtB_6hr_protocol	doxycycline hyclate	CHEBI:34730	97.2	nM	6	hour		blandit.orci@conubia.magna	john-stamatoyannopoulos	U54HG004592	diffProtB_6hr	
+test	2e33a097-412c-4646-87f9-858dfaaa7c06	chemical	ENCODE:MCF-7_Farnham_treatment_protocol	afimoxifene	CHEBI:44616	600	nM	30	minute		metus.donec@nisl.montes	gregory-crawford	U54HG004563	4OHTAM_100nM_30m	
+test	8661b120-5c82-11e3-949a-0800200c9a66	protein		Antarctic Phosphatase				30	minute		metus.donec@nisl.montes	thomas-gingeras	U54HG007004	CIP-TAP	thomas-gingeras:CIP_Protocol
