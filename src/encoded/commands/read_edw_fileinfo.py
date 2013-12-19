@@ -563,48 +563,53 @@ def create_replicate(app, exp, bio_rep_num, tech_rep_num):
 def post_fileinfo(app, fileinfo):
     # POST file info dictionary to open app
 
-    global verbose
     accession = fileinfo['accession']
 
     logging.info('....POST file: %s\n' % (accession))
 
     ds = fileinfo.get('dataset', None)
     dataset = None
-    if not ds:
-        ds_resp = app.get(ds).maybe_follow()
-        if ds_resp.status_code != 200:
-            logging.error("Refusing to POST file with invalid dataset: %s" % ds)
+    if ds:
+        try:
+            ds_resp = app.get('/'+ds).maybe_follow()
+        except AppError, e:
+            logging.error("Refusing to POST file with invalid dataset: %s (%s)" % (ds, e))
             return None
         else:
-            dataset = ds_response.json
+            dataset = ds_resp.json
     rep = fileinfo.get('replicate', None)
-    if ds and ( not rep or app.get(rep).maybe_follow().status_code != 200 ):
-        # try to create one
-        try:
-            br = int(fileinfo['biological_replicate'])
-            tr = int(fileinfo['technical_replicate'])
-            fileinfo['replicate'] = create_replicate(app, ds, br, tr)
+    if ds:
+        if dataset and dataset.get('@type', [])[0] == 'dataset':
+            # dataset primary files have irrelvant replicate info
             del fileinfo['biological_replicate']
             del fileinfo['technical_replicate']
-        except ValueError:
-            logging.error("Refusing to POST file with confusing replicate ids: %s %s" %
-               (fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-            return None
-        except KeyError:
-            logging.error("Refusing to POST file with missing replicate ids: %s  %s" %
-               (fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-            return None
-        except AppError, e:
-            logging.error("Can not POST this replicate because reasons: %s" % e.message)
-            return None
-        except Exception, e:
-            logging.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
-            sys.exit(1)
+        elif ( not rep or app.get(rep).maybe_follow().status_code != 200 ):
+            # try to create one
+            try:
+                br = int(fileinfo['biological_replicate'])
+                tr = int(fileinfo['technical_replicate'])
+                fileinfo['replicate'] = create_replicate(app, ds, br, tr)
+                del fileinfo['biological_replicate']
+                del fileinfo['technical_replicate']
+            except ValueError:
+                logging.error("Refusing to POST file with confusing replicate ids: %s %s" %
+                   (fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+                return None
+            except KeyError:
+                logging.error("Refusing to POST file with missing replicate ids: %s  %s" %
+                   (fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+                return None
+            except AppError, e:
+                logging.error("Can not POST this replicate because reasons: %s" % e.message)
+                return None
+            except Exception, e:
+                logging.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
+                sys.exit(1)
+
 
     url = collection_url(FILES)
     resp = app.post_json(url, fileinfo, expect_errors=True)
-    if verbose:
-        logging.info(str(resp) + "\n")
+    logging.info(str(resp) + "\n")
     if resp.status_int == 409:
         logging.warning('Failed POST File %s: File already exists', accession)
     elif resp.status_int < 200 or resp.status_int >= 400:

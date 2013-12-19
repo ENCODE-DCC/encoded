@@ -84,7 +84,7 @@ def reset(connection, app):
     es_index_data.run(app)
 
 
-def test_format_app_fileinfo_expanded(workbook, testapp):
+def xtest_format_app_fileinfo_expanded(workbook, testapp):
     # Test extracting EDW-relevant fields from encoded file.json
     # Expanded JSON
 
@@ -103,7 +103,7 @@ def test_format_app_fileinfo_expanded(workbook, testapp):
     assert( not encoded.commands.read_edw_fileinfo.compare_files(file_dict, test_edwf) )
 
 
-def test_post_duplicate(workbook, testapp):
+def xtest_post_duplicate(workbook, testapp):
     url = '/files/' + TEST_ACCESSION
     resp = testapp.get(url).maybe_follow()
     current = resp.json
@@ -114,7 +114,7 @@ def test_post_duplicate(workbook, testapp):
         assert(True)
 
 
-def test_list_new(workbook, testapp):
+def xtest_list_new(workbook, testapp):
     # Test obtaining list of 'new' accessions (at EDW, not at app)
     # Unexpanded JSON (requires GETs on embedded URLs)
 
@@ -125,7 +125,7 @@ def test_list_new(workbook, testapp):
     assert new_accs == sorted(edw_test_data.new_out)
 
 
-def test_import_file(workbook, testapp, reset):
+def xtest_import_file(workbook, testapp, reset):
     # Test import of new file to encoded
     # this tests adds replicates, but never checks their validity
     # ignoring this because I don't want to deal with tearing down ES  posts
@@ -153,7 +153,7 @@ def test_import_file(workbook, testapp, reset):
             assert(not fileinfo['biological_replicate'] or not fileinfo['technical_replicate'])
 
 
-def test_encode2_experiments(workbook, testapp):
+def xtest_encode2_experiments(workbook, testapp):
     # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
     # accessions are ENCODE2 experiments
 
@@ -180,7 +180,7 @@ def test_file_sync(workbook, testapp, reset):
         del fileinfo['test']  # this is in the file for notation purposes only
         edw_mock[fileinfo['accession']] = fileinfo
 
-    assert len(edw_mock) == 25
+    assert len(edw_mock) == 26
 
     app_files = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp)
     app_dict = { d['accession']:d for d in app_files }
@@ -189,7 +189,7 @@ def test_file_sync(workbook, testapp, reset):
     assert(len(app_files) == len(app_dict.keys())) # this should never duplicate
 
     edw_only, app_only, same, patch = encoded.commands.read_edw_fileinfo.inventory_files(testapp, edw_mock, app_dict)
-    assert len(edw_only) == 12
+    assert len(edw_only) == 13
     assert len(app_only) == 11
     assert len(same) == 6
     assert len(patch) == 7
@@ -248,6 +248,7 @@ def test_file_sync(workbook, testapp, reset):
     assert ((len(post_same)-len(same)) == (len(patch) -len(post_patch) + (len(edw_only) - len(post_edw))))
     assert len(post_app_files) == (len(app_files) + len(edw_only) - 2 )
 
+
     after_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
     same_reps = {}
     updated_reps = {}
@@ -268,8 +269,7 @@ def test_file_sync(workbook, testapp, reset):
     assert(not updated_reps)
     assert(len(new_reps) == 1)
 
-
-
+    # could maybe add a test to make sure that a file belonging to a dataset ends up with the right dataset
 
 
 
