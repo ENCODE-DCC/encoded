@@ -9,14 +9,14 @@ pytestmark = [pytest.mark.edw_file]
 
 ## TODO: This should be converted to a smoke-type test after build/install is complete
 
-@pytest.mark.xfail
+#@pytest.mark.xfail
 # travis cannot connect to EDW
 def test_make_edw():
 
     edw = encoded.edw_file.make_edw()
     assert(type(edw)==Engine)
 
-@pytest.mark.xfail
+#@pytest.mark.xfail
 # travis cannot connect to EDW
 def test_get_edw_files():
 

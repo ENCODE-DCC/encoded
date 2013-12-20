@@ -19,7 +19,7 @@ from operator import itemgetter
 from pyramid.paster import get_app
 from webtest import TestApp, AppError
 
-from .. import edw_file
+from encoded import edw_file
 
 ################
 # Globals
@@ -41,7 +41,6 @@ REPLICATES = 'replicates'
 DATASETS = 'datasets'
 USERS = 'users'
 
-SEARCH_URL = '/search/?searchTerm='
 SEARCH_EC2 = '/search/?encode2_dbxrefs='
 FILE_PROFILE_URL = '/profiles/file.json'
 
@@ -50,6 +49,7 @@ app_host_name = 'localhost'
 EPILOG = __doc__
 
 NO_UPDATE = ['md5sum', 'replicate', 'dataset']
+IMPORT_USER = 'IMPORT'
 
 def convert_edw(app, file_dict):
     ''' converts EDW file structure to encoded object'''
@@ -300,7 +300,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
 
     url = collection_url(FILES)
     if not dry_run:
-        resp = app.post_json(url, fileinfo, expect_errors=True, dry_run)
+        resp = app.post_json(url, fileinfo, expect_errors=True)
         logging.info(str(resp) + "\n")
         if resp.status_int == 409:
             logging.warning('Failed POST File %s: File already exists', accession)
@@ -314,7 +314,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
         return {status_int: 201}
 
 
-def get_dicts(edw, app, phase):
+def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
 
     edw_files = edw_file.get_edw_fileinfo(edw, phase=phase)
     # Other parameters are default
@@ -351,7 +351,7 @@ def patch_fileinfo(app, props, propinfo, dry_run):
         return {status_int: 201}
 
 
-#def collection_url(collection):
+def collection_url(collection):
     # Form URL from collection name
     return '/' + collection + '/'
 
@@ -378,7 +378,7 @@ def compare_files(aa, bb):
 
 
 def internal_app(configfile, username=''):
-    app = paster.get_app(configfile)
+    app = get_app(configfile)
     if not username:
         username = IMPORT_USER
     environ = {
@@ -428,10 +428,8 @@ def main():
         description="Synchronize EDW and encoded files/replicates", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--item-type', action='append', help="Item type")
-    parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument(
-        '--dry-run', action='store_true', help="Don't post or patch, just report)
+        '--dry-run', action='store_true', help="Don't post or patch, just report")
     parser.add_argument('-d', '--data_host', default=None,
                         help='data warehouse host (default from my.cnf)')
     parser.add_argument('-a', '--config_uri', default=DEFAULT_INI,
@@ -448,22 +446,23 @@ def main():
                                      edw_file.ENCODE_PHASE_3,
                                      edw_file.ENCODE_PHASE_ALL],
                             default=edw_file.ENCODE_PHASE_ALL,
-                    help='restrict EDW files by ENCODE phase accs '
-                         '(default %s)' % edw_file.ENCODE_PHASE_ALL))
+                    help='restrict EDW files by ENCODE phase accs (default %s)' % edw_file.ENCODE_PHASE_ALL)
 
     args = parser.parse_args()
 
     logging.basicConfig()
+
+    edw = edw_file.make_edw(args.data_host)
     app = make_app(args.config_uri, args.username, args.password)
 
-    app_files, edw_files = get_dicts(app, edw, phase)
+    app_files, edw_files = get_dicts(app, edw, phase=args.phase)
 
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)
     if args.verbose:
         logging.getLogger('encoded').setLevel(logging.INFO)
 
-    return run(app, app_files, edw_files, phase=args.phase, dryrun=args.dry_run)
+    return run(app, app_files, edw_files, phase=args.phase, dry_run=args.dry_run)
 
 
 if __name__ == '__main__':
