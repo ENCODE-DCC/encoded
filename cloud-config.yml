@@ -1,5 +1,6 @@
 #cloud-config
 #
+# Use ubuntu/images/ebs/ubuntu-saucy-13.10-amd64-server-20131204 (ami-b698a9f3) 
 # Use ubuntu-raring-13.04-amd64-server-20130928 (ami-5e03e429) not the default
 # Ubuntu 13.04 image to ensure cloud-init runs the runcmd steps.
 
@@ -11,26 +12,31 @@ packages:
 - build-essential
 - apache2-mpm-event
 - elasticsearch
-- envdir
 - git
 - libapache2-mod-wsgi
 - libevent-dev
 - libfreetype6-dev
 - libjpeg-dev
 - libmagic-dev
+- libmysqlclient-dev
 - libpq-dev
 - libssl-dev
 - libxml2-dev
 - libxslt1-dev
 - lzop
-- mysql-devel
-- npm
+- mysql-client 
 - postgresql-9.3
 - pv
 - python2.7-dev
+- python-software-properties
+- nodejs
 - python-virtualenv
 - ruby-dev
 - zlib1g-dev
+
+groups:
+- postgres: [root,postgres]
+- postdrop: [postgres]
 
 users:
 - default
@@ -42,10 +48,27 @@ users:
   # https://github.com/rubygems/rubygems/issues/689
   homedir: /srv/encoded
 
+write_files:
+-   path: /etc/postgresql/9.3/main/recovery.conf
+    permissions: '0644'
+    content: restore_command = '/usr/local/bin/envdir /etc/wal-e.d/env /usr/bin/wal-e wal-fetch "%%f" "%%p"' 
+-   path: /etc/wal-e.d/env/AWS_ACCESS_KEY_ID
+    permissions: '0755'
+    content: %(AWS_ID)s
+-   path: /etc/wal-e.d/env/AWS_SECRET_ACCESS_KEY
+    permissions: '0755'
+    content: %(AWS_KEY)s
+-   path: /etc/wal-e.d/env/WALE_S3_PREFIX
+    permissions: '0755'
+    content: %(AWS_SERVER)s
+
 runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - set -e
+- sudo pip install envdir
+- chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
+- chown -R root:postgres /etc/wal-e.d/env
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
 - mkdir /srv/encoded
@@ -54,10 +77,10 @@ runcmd:
 - sudo -u encoded git clone https://github.com/ENCODE-DCC/encoded.git .
 - sudo -u encoded python2.7 bootstrap.py
 - sudo -u encoded bin/buildout
-- ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded
-- a2ensite encoded
-- a2dissite default
-- service apache2 reload
+- sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
+- sudo a2ensite encoded.conf
+- sudo a2dissite 000-default
+- sudo service apache2 reload
 
 ## Import ssh keys from launchpad:
 # ssh_import_id:
@@ -128,4 +151,19 @@ apt_sources:
     +Waw0z/ZIU99Lfh2Qm77OT6vr//Zulw5ovjZVO2boRIcve7S97gQ4KC+G/+QaRS+
     VPZ67j5UMxqtT/Y4+NHcQGgwF/1i
     =Iugu
+    -----END PGP PUBLIC KEY BLOCK-----
+- source: "deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu raring main"
+  key: |
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+    Version: SKS 1.1.4
+    Comment: Hostname: keyserver.ubuntu.com
+
+    mI0ES/EY5AEEAOZl+6Cv7b0fOnXLj8lt1cZiNQHIuOkGRJaMUdvXdrSbtQ4v9GiMWFoFj+9g
+    dFN9EjD9JKoXjJb/e/Q9P21uOi0/YmlOfkqWvqm1qsyBXTXTrGx1mghtALPSw0bvYoWZ3aZJ
+    3c9VPT5sCdv9IYw6X/+4Z0HoQGvxymbfvRKH3J/xABEBAAG0EkxhdW5jaHBhZCBjaHJpc2xl
+    YYi2BBMBAgAgBQJL8RjkAhsDBgsJCAcDAgQVAggDBBYCAwECHgECF4AACgkQuTFqe8eRexLB
+    rAQAk9ux3R+k38+dY0f8p3B+0UESy/jNFL/S+t6Fdpw/2qMV1EZohAgJXUw/axmTdr1gKUoy
+    GDtE13gebKGy+zqtzsIVo44V0ztC3Z7Kbd9bbiW+wMo7RT4yyi6kURMyE68RrqGbkenZveU6
+    o2Urq4LW6bfn5fDLVeYQ5GNsrNdSS1k=
+    =9f3N
     -----END PGP PUBLIC KEY BLOCK-----
