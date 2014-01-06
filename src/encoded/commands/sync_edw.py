@@ -204,6 +204,7 @@ def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL):
     for row in sorted(rows, key=itemgetter('accession')):
         url = row['@id']
         resp = app.get(url).maybe_follow()
+        fileinfo = resp.json
         # below seems clunky, could search+filter
         if phase != edw_file.ENCODE_PHASE_2:
             if get_phase(app, fileinfo) != phase:
@@ -219,6 +220,23 @@ def is_encode2_experiment(app, accession):
     if get_encode2_accessions(app, accession) is not None:
         return True
     return False
+
+encode3_to_encode2 = {}    # Cache experiment ENCODE 2 ref lists
+
+
+def get_encode2_accessions(app, encode3_acc):
+    # Get list of ENCODE 2 accessions for this ENCODE 3 experiment(or None)
+    global encode3_to_encode2
+    if encode3_acc not in encode3_to_encode2:
+        logging.info('Get experiment (get e2): %s\n' % (encode3_acc))
+        resp = app.get(encode3_acc).maybe_follow()
+        encode3_to_encode2[encode3_acc] = resp.json[ENCODE2_PROP]
+    encode2_accs = encode3_to_encode2[encode3_acc]
+    if len(encode2_accs) > 0:
+        return encode2_accs
+    return None
+
+
 
 
 def get_phase(app, fileinfo):
@@ -310,7 +328,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
             logging.info('Successful POST File: %s' % (accession))
         return resp
     else:
-        logging.info('Sucessful dry-run POST File %s' % (accession))
+        logging.debug('Sucessful dry-run POST File %s' % (accession))
         return {status_int: 201}
 
 
@@ -347,7 +365,7 @@ def patch_fileinfo(app, props, propinfo, dry_run):
             logging.info('Successful PATCH File: %s' % (accession))
             return resp
     else:
-        logging.info('Sucessful dry-run PATCH File %s' % (accession))
+        logging.debug('Sucessful dry-run PATCH File %s' % (accession))
         return {status_int: 201}
 
 
@@ -405,6 +423,34 @@ def make_app(application, username, password):
     return app
 
 
+def inventory_files(app, edw_dict, app_dict):
+    # Inventory files
+    edw_only = []
+    app_only = []
+    same = []
+    diff_accessions = []
+
+    for accession in sorted(edw_dict.keys()):
+        edw_fileinfo = edw_dict[accession]
+        #edw_exp_fileinfo = set_fileinfo_experiment(app, edw_fileinfo)
+        #edw_dict[accession] =  edw_exp_fileinfo  # replaced Encode2 exps with Encode3
+        if accession not in app_dict:
+            edw_only.append(edw_fileinfo)
+        else:
+            diff = compare_files(edw_fileinfo, app_dict[accession])
+            if diff:
+                diff_accessions.append(accession)
+                logging.info("File: %s has %s diffs\n" % (accession, diff))
+            else:
+                same.append(edw_fileinfo)
+
+    # APP-only files
+    for accession in sorted(app_dict.keys()):
+        if accession not in edw_dict:
+            app_only.append(app_dict[accession])
+
+    return edw_only, app_only, same, diff_accessions
+
 
 def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=False):
 
@@ -458,7 +504,7 @@ def main():
     app_files, edw_files = get_dicts(app, edw, phase=args.phase)
 
     # Loading app will have configured from config file. Reconfigure here:
-    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    logging.getLogger('encoded').setLevel(logging.INFO)
     if args.verbose:
         logging.getLogger('encoded').setLevel(logging.INFO)
 
