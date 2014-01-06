@@ -5,6 +5,8 @@ from csv import DictReader
 import encoded.commands.read_edw_fileinfo
 import edw_test_data
 
+pytestmark = [pytest.mark.edw_file]
+
 # globals
 EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
 
@@ -13,7 +15,7 @@ TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 # test_format_app
 
 #@pytest.mark.parametrize('test_num', [1, 2])
-# resisting parameterization, as test 1 will go much quicker 
+# resisting parameterization, as test 1 will go much quicker
 # w/o loading workbook which isn't needed
 
 def test_format_app_fileinfo_expanded(workbook, testapp):
@@ -37,9 +39,9 @@ def test_format_app_fileinfo_expanded(workbook, testapp):
 def test_list_new(workbook, testapp):
     # Test obtaining list of 'new' accessions (at EDW, not at app)
     # Unexpanded JSON (requires GETs on embedded URLs)
-    
+
     edw_accs = edw_test_data.new_in
-    app_accs = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp, 
+    app_accs = encoded.commands.read_edw_fileinfo.get_app_fileinfo(testapp,
                                                                   full=False)
     new_accs = sorted(encoded.commands.read_edw_fileinfo.get_missing_filelist_from_lists(app_accs, edw_accs))
     assert new_accs == sorted(edw_test_data.new_out)

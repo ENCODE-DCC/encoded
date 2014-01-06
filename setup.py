@@ -53,8 +53,12 @@ setup(
     entry_points='''
         [console_scripts]
 
+        check-rendering = encoded.commands.check_rendering:main
         extract_test_data = encoded.commands.extract_test_data:main
         es-index-data = encoded.commands.es_index_data:main
+        es-index-listener = encoded.commands.es_index_listener:main
+        create-mapping = encoded.commands.create_mapping:main
+        generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
         read-edw-fileinfo = encoded.commands.read_edw_fileinfo:main
         update-keys-links = encoded.commands.update_keys_links:main
@@ -62,5 +66,8 @@ setup(
 
         [paste.app_factory]
         main = encoded:main
+
+        [paste.composite_factory]
+        indexer = encoded.commands.es_index_listener:composite
         ''',
 )

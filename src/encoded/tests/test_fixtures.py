@@ -1,9 +1,9 @@
 import pytest
 
 
-@pytest.datafixture
-def minitestdata(app, data_fixture_manager):
-    assert data_fixture_manager._current_connection == 'minitestdata'
+@pytest.yield_fixture(scope='session')
+def minitestdata(app, connection):
+    tx = connection.begin_nested()
 
     from webtest import TestApp
     environ = {
@@ -18,10 +18,13 @@ def minitestdata(app, data_fixture_manager):
         for item in collection[:1]:
             testapp.post_json(url, item, status=201)
 
+    yield
+    tx.rollback()
 
-@pytest.datafixture
-def minitestdata2(app, data_fixture_manager):
-    assert data_fixture_manager._current_connection == 'minitestdata2'
+
+@pytest.yield_fixture(scope='session')
+def minitestdata2(app, connection):
+    tx = connection.begin_nested()
 
     from webtest import TestApp
     environ = {
@@ -35,6 +38,9 @@ def minitestdata2(app, data_fixture_manager):
         collection = URL_COLLECTION[url]
         for item in collection:
             testapp.post_json(url, item, status=201)
+
+    yield
+    tx.rollback()
 
 
 @pytest.mark.usefixtures('minitestdata')

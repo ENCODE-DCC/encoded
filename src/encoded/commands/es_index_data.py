@@ -1,83 +1,35 @@
-from pyramid import paster
-from pyelasticsearch import ElasticSearch, IndexAlreadyExistsError
-from collections import OrderedDict
+from pyramid.paster import get_app
+from ..indexing import ELASTIC_SEARCH
+import logging
+from webtest import TestApp
 
-ES_URL = 'http://localhost:9200'
 DOCTYPE = 'basic'
-es = ElasticSearch(ES_URL)
 
-# Mapping will be moved to schemas eventually
-basic_mapping = {'basic': {}}
-libraries_mapping = {'basic': {'properties': {'size_range': {'type': 'string'}}}}
-replicates_mapping = {'basic': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}
-donors_mapping = {'basic': {'properties': {'age': {'type': 'string'}}}}
+EPILOG = __doc__
 
-targets_mapping = {'basic': {'properties': {'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'organism': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}}}}
-biosamples_mapping = {'basic': {'properties': {'source': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'system_slims': {'type': 'string', 'index': 'not_analyzed'}, 'organ_slims': {'type': 'string', 'index': 'not_analyzed'}, 'biosample_type': {'type': 'string', 'index': 'not_analyzed'}, 'treatments': {'type': 'nested'}, 'constructs': {'type': 'nested'}}}}
-experiments_mapping = {'basic': {'properties': {'assay_term_name': {'type': 'string', 'index': 'not_analyzed'}, 'target': {'properties': {'organism': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}}}, 'files': {'type': 'nested', 'properties': {'replicate': {'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}}}}}, 'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}, 'replicates': {'type': 'nested', 'properties': {'library': {'properties': {'size_range': {'type': 'string'}}}, 'library id (sanity)': {'type': 'string'}}}}}}
-antibodies_mapping = {'basic': {'properties': {'target': {'properties': {'lab': {'properties': {'title': {'type': 'string', 'index': 'not_analyzed'}}}}}, 'antibody': {'properties': {'host_organism': {'properties': {'name': {'type': 'string', 'index': 'not_analyzed'}}}}}}}}
-
-# Part of this will be moved to schemas and other part should be in a proper dict
-COLLECTION_URL = OrderedDict([
-    ('/users/', ['user', basic_mapping]),
-    ('/access-keys/', ['access_key', basic_mapping]),
-    ('/awards/', ['award', basic_mapping]),
-    ('/labs/', ['lab', basic_mapping]),
-    ('/organisms/', ['organism', basic_mapping]),
-    ('/sources/', ['source', basic_mapping]),
-    ('/targets/', ['target', targets_mapping]),
-    ('/antibody-lots/', ['antibody_lot', basic_mapping]),
-    ('/antibody-characterizations/', ['antibody_characterization', basic_mapping]),
-    ('/antibodies/', ['antibody_approval', antibodies_mapping]),
-    ('/mouse-donors/', ['mouse_donor', donors_mapping]),
-    ('/human-donors/', ['human_donor', donors_mapping]),
-    ('/documents/', ['document', basic_mapping]),
-    ('/treatments/', ['treatment', basic_mapping]),
-    ('/constructs/', ['construct', basic_mapping]),
-    ('/construct-characterizations/', ['construct_characterization', basic_mapping]),
-    ('/rnais/', ['rnai', basic_mapping]),
-    ('/rnai-characterizations/', ['rnai_characterization', basic_mapping]),
-    ('/biosamples/', ['biosample', biosamples_mapping]),
-    ('/biosample-characterizations/', ['biosample_characterization', basic_mapping]),
-    ('/platforms/', ['platform', basic_mapping]),
-    ('/libraries/', ['library', basic_mapping]),
-    ('/experiments/', ['experiment', experiments_mapping]),
-    ('/replicates/', ['replicate', replicates_mapping]),
-    ('/files/', ['file', basic_mapping]),
-])
+log = logging.getLogger(__name__)
 
 
-def main():
-    ''' Indexes app data loaded to th elasticsearch '''
-
-    app = paster.get_app('production.ini')
-    from webtest import TestApp
+def run(app, collections=None):
+    root = app.root_factory(app)
+    es = app.registry[ELASTIC_SEARCH]
     environ = {
         'HTTP_ACCEPT': 'application/json',
         'REMOTE_USER': 'IMPORT',
     }
     testapp = TestApp(app, environ)
 
-    print
-    print "*******************************************************************"
-    print
-    print "Indexing ENCODE Data in Elastic Search"
-    print
+    if not collections:
+        collections = root.by_item_type.keys()
 
-    for url in COLLECTION_URL:
-        print "Indexing " + COLLECTION_URL.get(url)[0] + " ...."
-        res = testapp.get(url + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
+    for collection_name in collections:
+        collection = root.by_item_type[collection_name]
+        if collection.schema is None:
+            continue
+        res = testapp.get('/' + root.by_item_type[collection_name].__name__ + '/' + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
         items = res.json['@graph']
 
-        # try creating index, if it exists already delete it and create it again and generate mapping
-        index = COLLECTION_URL.get(url)[0]
-        try:
-            es.create_index(index)
-        except IndexAlreadyExistsError:
-            pass
-        else:
-            es.put_mapping(index, DOCTYPE, COLLECTION_URL.get(url)[1])
-
+        # try creating index, if it exists already delete it and create it
         counter = 0
         for item in items:
             try:
@@ -87,29 +39,35 @@ def main():
             else:
                 document_id = str(item_json.json['uuid'])
                 document = item_json.json
-                
-                # For biosamples getting organ_slim and system_slim from ontology index
-                if COLLECTION_URL.get(url)[0] == 'biosample':
-                    if document['biosample_term_id']:
-                        try:
-                            document['organ_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['organs']
-                            document['system_slims'] = (es.get('ontology', 'basic', document['biosample_term_id']))['_source']['systems']
-                        except:
-                            document['organ_slims'] = []
-                            document['system_slims'] = []
-                            print "ID not found - " + document['biosample_term_id']
-                    else:
-                        document['organ_slims'] = []
-                        document['system_slims'] = []
-                es.index(index, DOCTYPE, document, document_id)
+                es.index(collection_name, DOCTYPE, document, document_id)
                 counter = counter + 1
                 if counter % 50 == 0:
-                    es.flush(index)
+                    es.flush(collection_name)
+                    log.info('Indexing %s %d', collection_name, counter)
 
-        es.refresh(index)
-        count = es.count('*:*', index=index)
-        print "Finished indexing " + str(count['count']) + " " + COLLECTION_URL.get(url)[0]
-        print ""
+        es.refresh(collection_name)
+
+
+def main():
+    ''' Indexes app data loaded to elasticsearch '''
+
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Index data in Elastic Search", epilog=EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument('--item-type', action='append', help="Item type")
+    parser.add_argument('--app-name', help="Pyramid app name in configfile")
+    parser.add_argument('config_uri', help="path to configfile")
+    args = parser.parse_args()
+
+    logging.basicConfig()
+    app = get_app(args.config_uri, args.app_name)
+
+    # Loading app will have configured from config file. Reconfigure here:
+    logging.getLogger('encoded').setLevel(logging.DEBUG)
+    return run(app, args.item_type)
+
 
 if __name__ == '__main__':
     main()

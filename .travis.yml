@@ -15,22 +15,28 @@ env:
   - CONNECT_DOWNLOAD=Sauce_Connect.zip
   - CONNECT_LOG=sauce_connect.log
   - READY_FILE=connect.ready
+  - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 services:
   - elasticsearch
 before_install:
+  - whereis elasticsearch
   - curl $CONNECT_URL > $CONNECT_DOWNLOAD
   - unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
   - >
     java -jar Sauce-Connect.jar --readyfile $READY_FILE
     --logfile $CONNECT_LOG
     --tunnel-identifier $TRAVIS_JOB_NUMBER
-    $SAUCE_USERNAME $SAUCE_ACCESS_KEY &
+    $SAUCE_USERNAME $SAUCE_ACCESS_KEY > sauce-connect.log &
   - pip install -U setuptools
   - virtualenv clean-python
   - source clean-python/bin/activate
   - sudo service postgresql stop
   - sudo service postgresql start 9.3
   - sudo -u postgres createdb --owner=$USER encoded
+  - postgres --version
+  - initdb --version
+  - sudo service elasticsearch stop
+  - elasticsearch -v
 install:
   - python bootstrap.py
   - bin/buildout

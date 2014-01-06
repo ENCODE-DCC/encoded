@@ -27,3 +27,5 @@ src/encoded/tests/data/*.db
 ~$*
 ENCODE_DCC_TestMetadata.xlsx
 .~*#
+
+ontology.json

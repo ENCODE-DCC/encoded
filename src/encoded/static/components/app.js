@@ -10,10 +10,10 @@ var Footer = require('./footer');
 var portal = {
     portal_title: 'ENCODE',
     global_sections: [
-        {id: 'antibodies', title: 'Antibodies', url: '/antibodies/'},
-        {id: 'biosamples', title: 'Biosamples', url: '/biosamples/'},
-        {id: 'experiments', title: 'Experiments', url: '/experiments/'},
-        {id: 'targets', title: 'Targets', url: '/targets/'}
+        {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
+        {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
+        {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
+        {id: 'targets', title: 'Targets', url: '/search/?type=target'}
     ]
 };
 

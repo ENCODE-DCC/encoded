@@ -4,6 +4,7 @@ import transaction
 import venusian
 from abc import ABCMeta
 from collections import Mapping
+from copy import deepcopy
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -52,7 +53,6 @@ from uuid import (
 from .objtemplate import ObjectTemplate
 from .schema_formats import is_accession
 from .schema_utils import validate_request
-from .stats import requests_timing_hook
 from .storage import (
     DBSession,
     CurrentPropertySheet,
@@ -63,21 +63,15 @@ from .storage import (
 )
 from collections import OrderedDict
 from .validation import ValidationFailure
-from pyelasticsearch import ElasticSearch
+
 
 LOCATION_ROOT = __name__ + ':location_root'
-ELASTIC_SEARCH = __name__ + ':elasticsearch'
 _marker = object()
 
 
 def includeme(config):
     config.scan(__name__)
     config.set_root_factory(root_factory)
-
-    if 'elasticsearch.server' in config.registry.settings:
-        es = ElasticSearch(config.registry.settings['elasticsearch.server'])
-        es.session.hooks['response'].append(requests_timing_hook('es'))
-        config.registry[ELASTIC_SEARCH] = es
 
 
 def root_factory(request):
@@ -115,11 +109,11 @@ def embed(request, path, result=None):
     if manager.stack:
         embedded = manager.stack[0].setdefault('encoded_embedded', {})
     if result is not None:
-        embedded[path] = result
+        embedded[path] = deepcopy(result)
         return result
     result = embedded.get(path, None)
     if result is not None:
-        return result
+        return deepcopy(result)
     subreq = make_subrequest(request, path)
     subreq.override_renderer = 'null_renderer'
     try:
@@ -127,7 +121,7 @@ def embed(request, path, result=None):
     except HTTPNotFound:
         raise KeyError(path)
     if embedded is not None:
-        embedded[path] = result
+        embedded[path] = deepcopy(result)
     return result
 
 
@@ -304,7 +298,7 @@ class Root(object):
         if ':' in name:
             resource = self.get_by_unique_key('alias', name)
             if resource is not None:
-                return resource            
+                return resource
         return default
 
     def __setitem__(self, name, value):
@@ -391,7 +385,7 @@ class Item(object):
     keys = []
     name_key = None
     rev = None
-    embedded = {}
+    embedded = ()
     template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
         # 'collection': '{collection_uri}',
@@ -497,17 +491,11 @@ class Item(object):
         return compiled(ns)
 
     def expand_embedded(self, request, properties):
-        embedded = self.embedded
         if self.schema is None:
             return
-        for name in embedded:
-            value = properties.get(name)
-            if value is None:
-                continue
-            if isinstance(value, list):
-                properties[name] = [embed(request, member) for member in value]
-            else:
-                properties[name] = embed(request, value)
+        paths = [p.split('.') for p in self.embedded]
+        for path in paths:
+            expand_path(request, properties, path)
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -541,7 +529,6 @@ class Item(object):
         assert conflicts
         msg = 'Keys conflict: %r' % conflicts
         raise HTTPConflict(msg)
-
 
     @classmethod
     def update_properties(cls, model, properties, sheets=None):
@@ -674,7 +661,7 @@ class CustomItemMeta(MergedTemplateMeta, ABCMeta):
         item_attrs = {'__module__': self.__module__}
         for name in NAMES_TO_TRANSFER:
             if 'item_' + name in attrs:
-                item_attrs[name] = attrs['item_' + name ]
+                item_attrs[name] = attrs['item_' + name]
         self.Item = type('Item', item_bases, item_attrs)
 
 
@@ -869,7 +856,6 @@ class Collection(Mapping):
                 lengthColumns.append(column.split('.')[0])
             else:
                 columns.append(column)
-        
         # Hack to check if the views have columns for the collection.
         if len(columns) > 2:
             query = {'query': {'match_all': {}}, 'fields': columns}
@@ -877,8 +863,9 @@ class Collection(Mapping):
             query = {'query': {'match_all': {}}}
 
         items = []
+        from .indexing import ELASTIC_SEARCH
         es = request.registry[ELASTIC_SEARCH]
-        results = es.search(query, index=self.item_type, size=10000)
+        results = es.search(query, index=self.item_type, size=99999)
         for model in results['hits']['hits']:
             # Dealing with columns which have length attribute to the array
             for c in lengthColumns:
@@ -900,7 +887,6 @@ class Collection(Mapping):
         compiled = ObjectTemplate(self.merged_template)
         links = compiled(ns)
         properties.update(links)
-        
         properties['columns'] = self.columns
         collection_source = request.params.get('collection_source', None)
         if collection_source is None:
@@ -995,8 +981,7 @@ def etag_conditional(view_callable):
     return wrapped
 
 
-@view_config(context=Collection, permission='list', request_method='GET',
-             decorator=etag_conditional)
+@view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
     return item_view(context, request)
 
@@ -1006,6 +991,7 @@ def collection_list(context, request):
 def collection_add(context, request):
     properties = request.validated
     item = context.add(properties)
+    request.registry.notify(Created(item, request))
     item_uri = request.resource_path(item)
     rendered = embed(request, item_uri + '?embed=false')
     request.response.status = 201
@@ -1055,7 +1041,9 @@ def item_edit(context, request, render=True):
     """
     properties = request.validated
     # This *sets* the property sheet
+    request.registry.notify(BeforeModified(context, request))
     context.update(properties)
+    request.registry.notify(AfterModified(context, request))
     item_uri = request.resource_path(context)
     if render:
         rendered = embed(request, item_uri + '?embed=false')
@@ -1068,3 +1056,21 @@ def item_edit(context, request, render=True):
         '@graph': [rendered],
     }
     return result
+
+
+class Created(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
+
+
+class BeforeModified(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
+
+
+class AfterModified(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
