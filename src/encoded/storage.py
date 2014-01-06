@@ -14,16 +14,14 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
-from zope.sqlalchemy import ZopeTransactionExtension
 from .renderers import json_renderer
 import json
 import transaction
 import uuid
+import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker(
-    extension=ZopeTransactionExtension(),
-    weak_identity_map=False,
-))
+DBSession = orm.scoped_session(orm.sessionmaker(weak_identity_map=False))
+zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 
 
