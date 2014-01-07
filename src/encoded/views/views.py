@@ -570,6 +570,8 @@ class Experiments(Collection):
             'replicates.library.biosample.source',
             'replicates.library.biosample.organism',
             'replicates.library.biosample.donor.organism',
+            'replicates.library.depleted_in_term_name',
+            'replicates.library.treatments',
             'replicates.platform',
             'submitted_by',
             'lab',
