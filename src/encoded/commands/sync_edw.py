@@ -208,7 +208,7 @@ def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL):
         resp = app.get(url).maybe_follow()
         fileinfo = resp.json
         # below seems clunky, could search+filter
-        if phase != edw_file.ENCODE_PHASE_2:
+        if phase != edw_file.ENCODE_PHASE_ALL:
             if get_phase(app, fileinfo) != phase:
                     continue
         app_files.append(resp.json)
@@ -248,7 +248,7 @@ def get_phase(app, fileinfo):
     return edw_file.ENCODE_PHASE_3
 
 
-def create_replicate(app, exp, bio_rep_num, tech_rep_num):
+def create_replicate(app, exp, bio_rep_num, tech_rep_num, dry_run=False):
 
     # create a replicate
     logger.warning("Creating replicate %s %s for %s" % (bio_rep_num, tech_rep_num, exp))
@@ -345,7 +345,7 @@ def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
     return edw_dict, app_dict
 
 
-def patch_fileinfo(app, props, propinfo, dry_run):
+def patch_fileinfo(app, props, propinfo, dry_run=False):
     # PATCH properties to file in app
 
     accession = propinfo['accession']
@@ -514,9 +514,10 @@ def main():
     app = make_app(args.config_uri, args.username, args.password)
     edw = edw_file.make_edw(args.data_host)
 
-    app_files, edw_files = get_dicts(app, edw, phase=args.phase)
+    edw_files, app_files = get_dicts(app, edw, phase=args.phase)
 
     logger.info("Found %s files at encoded; %s files at EDW" % (len(app_files), len(edw_files)))
+
     return run(app, app_files, edw_files, phase=args.phase, dry_run=args.dry_run)
 
 
