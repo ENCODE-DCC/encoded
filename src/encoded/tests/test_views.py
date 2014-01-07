@@ -54,9 +54,6 @@ def test_html_pages(workbook, testapp, htmltestapp, item_type):
 def test_html_server_pages(workbook, item_type, server):
     from webtest import TestApp
     testapp = TestApp(server)
-    # XXX https://github.com/gawel/WSGIProxy2/pull/5
-    for name in ['uri', 'scheme', 'net_loc']:
-        setattr(testapp.app, name, str(getattr(testapp.app, name)))
     res = testapp.get('/%s?limit=all' % item_type,
         headers={'Accept': 'application/json'},
     ).follow(
