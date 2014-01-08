@@ -198,6 +198,23 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     var replicate = replicates[0];
     var library = replicate.library;
     var platform = replicate.platform;
+    var depletedIn;
+    var treatments;
+    
+    if (replicate.library.depleted_in_term_name.length) {
+    	depletedIn = replicate.library.depleted_in_term_name.join(", ");
+    }
+    
+    if (replicate.library.treatments.length) {
+    	var i = replicate.library.treatments.length;
+    	var t;
+    	var treatmentList = [];
+    	while (i--) {
+    		t = replicate.library.treatments[i];
+    		treatmentList.push(t.treatment_term_name);
+    	}
+    	treatments = treatmentList.join(", ");
+    }
     
     return (
         <div>
@@ -208,6 +225,9 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                 
                 <dt hidden={!replicate.library.nucleic_acid_starting_quantity}>NA starting quantity</dt>
                 <dd hidden={!replicate.library.nucleic_acid_starting_quantity}>{replicate.library.nucleic_acid_starting_quantity}</dd>
+                
+                <dt hidden={!depletedIn}>Depleted in</dt>
+                <dd hidden={!depletedIn}>{depletedIn}</dd>
                 
                 <dt hidden={!replicate.library.lysis_method}>Lysis method</dt>
                 <dd hidden={!replicate.library.lysis_method}>{replicate.library.lysis_method}</dd>
@@ -223,6 +243,9 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                 
                 <dt hidden={!replicate.library.library_size_selection_method}>Size selection method</dt>
                 <dd hidden={!replicate.library.library_size_selection_method}>{replicate.library.library_size_selection_method}</dd>
+                
+                <dt hidden={!treatments}>Treatments</dt>
+                <dd hidden={!treatments}>{treatments}</dd>
                 
                 <dt hidden={!platform}>Platform</dt>
                 <dd hidden={!platform}><a href={platform['@id']}>{platform.title}</a></dd>
