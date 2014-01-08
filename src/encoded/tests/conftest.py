@@ -204,6 +204,7 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
+@pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.yield_fixture(scope='session')
 def connection(request):
     from encoded import configure_engine
@@ -401,11 +402,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
     @request.addfinalizer
     def remove():
-        # http://www.sqlalchemy.org/trac/ticket/2686
-        # event.remove(connection, 'after_cursor_execute', after_cursor_execute)
-        connection.dispatch.after_cursor_execute.remove(after_cursor_execute, connection)
-
-    connection._has_events = True
+        event.remove(connection, 'after_cursor_execute', after_cursor_execute)
 
     return counter
 

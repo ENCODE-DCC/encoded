@@ -9,6 +9,7 @@ import pytest
 pytestmark = [pytest.mark.indexing]
 
 
+@pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     from .conftest import _app_settings

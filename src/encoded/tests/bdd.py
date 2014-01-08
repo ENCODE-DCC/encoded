@@ -12,7 +12,6 @@ from _pytest.python import (
     ScopeMismatchError,
     SubRequest,
     scopemismatch,
-    scopenum_subfunction,
     scopeproperty,
     scopes,
 )
@@ -55,6 +54,7 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "bdd: denotes a BDD test.")
     bdd = BDDPlugin(config)
     config.pluginmanager.register(bdd, 'bdd')
+    scopes.append('subfunction')  # XXX rethink step -> subfunction mapping
 
 
 class BehaveConfig(object):
@@ -210,31 +210,28 @@ class BDDFixtureRequest(FixtureRequest):
             return self._pyfuncitem.getparent(Feature)
         raise ValueError("unknown finalization scope %r" % (scope,))
 
-
     def _getfuncargvalue(self, fixturedef):
-        try:
-            return fixturedef.cached_result # set by fixturedef.execute()
-        except AttributeError:
-            pass
         # prepare a subrequest object before calling fixture function
         # (latter managed by fixturedef)
         argname = fixturedef.argname
-        node = self._pyfuncitem
+        funcitem = self._pyfuncitem
         scope = fixturedef.scope
         try:
-            param = node.callspec.getparam(argname)
+            param = funcitem.callspec.getparam(argname)
         except (AttributeError, ValueError):
             param = NOTSET
+            param_index = 0
         else:
+            # indices might not be set if old-style metafunc.addcall() was used
+            param_index = funcitem.callspec.indices.get(argname, 0)
             # if a parametrize invocation set a scope it will override
             # the static scope defined with the fixture function
-            paramscopenum = node.callspec._arg2scopenum.get(argname)
-            if paramscopenum is not None and \
-               paramscopenum != scopenum_subfunction:
+            paramscopenum = funcitem.callspec._arg2scopenum.get(argname)
+            if paramscopenum is not None:
                 scope = scopes[paramscopenum]
-    
-        subrequest = BDDSubRequest(self, scope, param, fixturedef)
-    
+
+        subrequest = BDDSubRequest(self, scope, param, param_index, fixturedef)
+
         # check if a higher-level scoped fixture accesses a lower level one
         if scope is not None:
             __tracebackhide__ = True
@@ -246,18 +243,14 @@ class BDDFixtureRequest(FixtureRequest):
                     "involved factories\n%s" %(
                     (scope, argname, self.scope, "\n".join(lines))))
             __tracebackhide__ = False
-    
+
         try:
-            # perform the fixture call
+            # call the fixture function
             val = fixturedef.execute(request=subrequest)
         finally:
-            # if the fixture function failed it might still have
-            # registered finalizers so we can register
-            # prepare finalization according to scope
-            # (XXX analyse exact finalizing mechanics / cleanup)
+            # if fixture function failed it might have registered finalizers
             self.session._setupstate.addfinalizer(fixturedef.finish,
                                                   subrequest.node)
-
         return val
 
 
