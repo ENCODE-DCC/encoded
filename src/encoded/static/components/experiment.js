@@ -201,16 +201,16 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     var depletedIn;
     var treatments;
     
-    if (library && replicate.library.depleted_in_term_name.length) {
-    	depletedIn = replicate.library.depleted_in_term_name.join(", ");
+    if (library && library.depleted_in_term_name && library.depleted_in_term_name.length) {
+    	depletedIn = library.depleted_in_term_name.join(", ");
     }
     
-    if (library && replicate.library.treatments.length) {
-    	var i = replicate.library.treatments.length;
+    if (library && library.treatments && library.treatments.length) {
+    	var i = library.treatments.length;
     	var t;
     	var treatmentList = [];
     	while (i--) {
-    		t = replicate.library.treatments[i];
+    		t = library.treatments[i];
     		treatmentList.push(t.treatment_term_name);
     	}
     	treatments = treatmentList.join(", ");
