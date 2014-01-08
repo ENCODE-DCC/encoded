@@ -247,8 +247,8 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                 <dt hidden={!treatments}>Treatments</dt>
                 <dd hidden={!treatments}>{treatments}</dd>
                 
-                <dt hidden={!platform}>Platform</dt>
-                <dd hidden={!platform}><a href={platform['@id']}>{platform.title}</a></dd>
+                {platform ? <dt>Platform</dt> : null}
+				{platform ? <dd><a href={platform['@id']}>{platform.title}</a></dd> : null}
             </dl>
         </div>
     );
