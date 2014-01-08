@@ -48,7 +48,7 @@
             "items": {
                 "title": "GEO ID",
                 "type":  "string",
-                "pattern": "^[GSE|GSM]\\d+$"
+                "pattern": "^(GSE|GSM)\\d+$"
             }
         },
         "documents": {
