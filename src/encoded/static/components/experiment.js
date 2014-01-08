@@ -192,37 +192,40 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         }
         return a.biological_replicate_number - b.biological_replicate_number;
     });
+    
     if (!replicates.length) return (<div hidden={true}></div>);
+    
     var replicate = replicates[0];
     var library = replicate.library;
     var platform = replicate.platform;
-    var titles = {
-        nucleic_acid_term_name: 'Nucleic acid type',
-        nucleic_acid_starting_quantity: 'NA starting quantity',
-        lysis_method: 'Lysis method',
-        extraction_method: 'Extraction method',
-        fragmentation_method: 'Fragmentation method',
-        size_range: 'Size range',
-        library_size_selection_method: 'Size selection method',
-    };
-    var children = [];
-    if (library) {
-        for (var name in titles) {
-            if (library[name]) {
-                children.push(<dt key={'dt-' + name}>{titles[name]}</dt>);
-                children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
-            }
-        }
-    }
-    if (typeof(platform) != 'undefined' && platform.title) {
-        children.push(<dt key="dt-platform">Platform</dt>);
-        children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.title}</a></dd>);
-    }
+    
     return (
         <div>
             <h3>Assay details</h3>
             <dl className="panel key-value">
-                {children}
+                <dt hidden={!replicate.library.nucleic_acid_term_name}>Nucleic acid type</dt>
+                <dd hidden={!replicate.library.nucleic_acid_term_name}>{replicate.library.nucleic_acid_term_name}</dd>
+                
+                <dt hidden={!replicate.library.nucleic_acid_starting_quantity}>NA starting quantity</dt>
+                <dd hidden={!replicate.library.nucleic_acid_starting_quantity}>{replicate.library.nucleic_acid_starting_quantity}</dd>
+                
+                <dt hidden={!replicate.library.lysis_method}>Lysis method</dt>
+                <dd hidden={!replicate.library.lysis_method}>{replicate.library.lysis_method}</dd>
+                
+                <dt hidden={!replicate.library.extraction_method}>Extraction method</dt>
+                <dd hidden={!replicate.library.extraction_method}>{replicate.library.extraction_method}</dd>
+                
+                <dt hidden={!replicate.library.fragmentation_method}>Fragmentation method</dt>
+                <dd hidden={!replicate.library.fragmentation_method}>{replicate.library.fragmentation_method}</dd>
+                
+                <dt hidden={!replicate.library.size_range}>Size range</dt>
+                <dd hidden={!replicate.library.size_range}>{replicate.library.size_range}</dd>
+                
+                <dt hidden={!replicate.library.library_size_selection_method}>Size selection method</dt>
+                <dd hidden={!replicate.library.library_size_selection_method}>{replicate.library.library_size_selection_method}</dd>
+                
+                <dt hidden={!platform}>Platform</dt>
+                <dd hidden={!platform}><a href={platform['@id']}>{platform.title}</a></dd>
             </dl>
         </div>
     );
