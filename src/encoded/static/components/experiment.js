@@ -201,11 +201,11 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     var depletedIn;
     var treatments;
     
-    if (replicate.library.depleted_in_term_name.length) {
+    if (library && replicate.library.depleted_in_term_name.length) {
     	depletedIn = replicate.library.depleted_in_term_name.join(", ");
     }
     
-    if (replicate.library.treatments.length) {
+    if (library && replicate.library.treatments.length) {
     	var i = replicate.library.treatments.length;
     	var t;
     	var treatmentList = [];
@@ -220,32 +220,32 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         <div>
             <h3>Assay details</h3>
             <dl className="panel key-value">
-                <dt hidden={!replicate.library.nucleic_acid_term_name}>Nucleic acid type</dt>
-                <dd hidden={!replicate.library.nucleic_acid_term_name}>{replicate.library.nucleic_acid_term_name}</dd>
+                {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
+				{library && library.nucleic_acid_term_name ? <dd>{library.nucleic_acid_term_name}</dd> : null}
+    
+                {library && library.nucleic_acid_starting_quantity ? <dt>NA starting quantity</dt> : null}
+				{library && library.nucleic_acid_starting_quantity ? <dd>{library.nucleic_acid_starting_quantity}</dd> : null}
+				
+                {depletedIn ? <dt>Depleted in</dt> : null}
+				{depletedIn ? <dd>{depletedIn}</dd> : null}
+
+                {library && library.lysis_method ? <dt>Lysis method</dt> : null}
+				{library && library.lysis_method ? <dd>{library.lysis_method}</dd> : null}
+    
+                {library && library.extraction_method ? <dt>Extraction method</dt> : null}
+				{library && library.extraction_method ? <dd>{library.extraction_method}</dd> : null}
                 
-                <dt hidden={!replicate.library.nucleic_acid_starting_quantity}>NA starting quantity</dt>
-                <dd hidden={!replicate.library.nucleic_acid_starting_quantity}>{replicate.library.nucleic_acid_starting_quantity}</dd>
+                {library && library.fragmentation_method ? <dt>Fragmentation method</dt> : null}
+				{library && library.fragmentation_method ? <dd>{library.fragmentation_method}</dd> : null}
                 
-                <dt hidden={!depletedIn}>Depleted in</dt>
-                <dd hidden={!depletedIn}>{depletedIn}</dd>
+                {library && library.size_range ? <dt>Size range</dt> : null}
+				{library && library.size_range ? <dd>{library.size_range}</dd> : null}
                 
-                <dt hidden={!replicate.library.lysis_method}>Lysis method</dt>
-                <dd hidden={!replicate.library.lysis_method}>{replicate.library.lysis_method}</dd>
+                {library && library.library_size_selection_method ? <dt>Size selection method</dt> : null}
+				{library && library.library_size_selection_method ? <dd>{library.library_size_selection_method}</dd> : null}
                 
-                <dt hidden={!replicate.library.extraction_method}>Extraction method</dt>
-                <dd hidden={!replicate.library.extraction_method}>{replicate.library.extraction_method}</dd>
-                
-                <dt hidden={!replicate.library.fragmentation_method}>Fragmentation method</dt>
-                <dd hidden={!replicate.library.fragmentation_method}>{replicate.library.fragmentation_method}</dd>
-                
-                <dt hidden={!replicate.library.size_range}>Size range</dt>
-                <dd hidden={!replicate.library.size_range}>{replicate.library.size_range}</dd>
-                
-                <dt hidden={!replicate.library.library_size_selection_method}>Size selection method</dt>
-                <dd hidden={!replicate.library.library_size_selection_method}>{replicate.library.library_size_selection_method}</dd>
-                
-                <dt hidden={!treatments}>Treatments</dt>
-                <dd hidden={!treatments}>{treatments}</dd>
+                {treatments ? <dt>Treatments</dt> : null}
+				{treatments ? <dd>{treatments}</dd> : null}
                 
                 {platform ? <dt>Platform</dt> : null}
 				{platform ? <dd><a href={platform['@id']}>{platform.title}</a></dd> : null}
