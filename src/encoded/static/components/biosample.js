@@ -115,7 +115,7 @@ var Biosample = module.exports.Biosample = React.createClass({
 						<dd hidden={!context.passage_number}>{context.passage_number}</dd>
                     </dl>
 
-                    {(context.donor && (context.biosample_type != "immortalized cell line")) ?
+                    {(context.donor) ?
                         <section>
                             <hr />
                             <h4>Donor information</h4>
