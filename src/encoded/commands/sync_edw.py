@@ -53,6 +53,9 @@ IMPORT_USER = 'IMPORT'
 
 logger = logging.getLogger(__name__)
 
+encode2_to_encode3 = None  # Dict of ENCODE3 accs, keyed by ENCODE 2 acc
+encode3_to_encode2 = {}    # Cache experiment ENCODE 2 ref lists
+
 def convert_edw(app, file_dict):
     ''' converts EDW file structure to encoded object'''
 
@@ -60,10 +63,10 @@ def convert_edw(app, file_dict):
 
     # convert time stamp
     valid_time = file_dict['date_created']
-    if (type(valid_time) == float):
+    if (type(valid_time) == float or type(valid_time) == long):
         file_dict['date_created'] = datetime.datetime.fromtimestamp(
            valid_time).strftime('%Y-%m-%d')
-    elif not re.match('\d+-\d+\d+', valid_time):
+    elif not ( ( type(valid_time) == str or type(valid_time) == unicode ) and re.match('\d+-\d+\d+', valid_time) ):
         logger.error("Invalid time string: %s" % valid_time)
         sys.exit(1)
 
@@ -98,7 +101,7 @@ def convert_edw(app, file_dict):
         else:
             file_dict['dataset'] = ds['@id']
             if ds['dataset_type'] == 'experiment':
-                file_dict['replicate'] = find_replicate(ds, file_dict['biological_replicate'], file_dict['technical_replicate'])
+                file_dict['replicate'] = find_replicate(ds, file_dict)
 
     if file_dict.has_key('replicate') and file_dict['replicate']:
         del file_dict['biological_replicate']
@@ -108,18 +111,33 @@ def convert_edw(app, file_dict):
     return { i : unicode(j) for i,j in file_dict.items() }
 
 
-def find_replicate(experiment, bio_rep, tech_rep):
+def find_replicate(experiment, file_dict):
 
-    if (not bio_rep or not tech_rep):
-        logger.warn("No replicate specified for experiment")
+    ''' special cases if no technical replicate:
+    '''
+
+    bio_rep = file_dict['biological_replicate']
+    tech_rep = file_dict['technical_replicate']
+
+    if not bio_rep:
+        # expected in some cases
         return None
-    matches = [ rep for rep in experiment['replicates']
-      if rep['biological_replicate_number'] == int(bio_rep) and
-         rep['technical_replicate_number'] == int(tech_rep)]
-    assert(len(matches)<=1)
-    if matches:
+
+    matches = []
+    if tech_rep:
+        matches = [ rep for rep in experiment['replicates']
+          if rep['biological_replicate_number'] == int(bio_rep) and
+             rep['technical_replicate_number'] == int(tech_rep)]
+    else:
+        logger.warn("No tech replicate specified for %s; experiment: %s (%s, %s) %s - trying for 1" %
+          (file_dict['accession'], experiment['accession'], bio_rep, tech_rep, file_dict['output_type']))
+
+        matches = [ rep for rep in experiment['replicates']  if rep['biological_replicate_number'] == int(bio_rep) ]
+
+    if len(matches) == 1:
         return matches[0]['@id']
     else:
+        logger.warn("Experiment %s (%s %s) matches %s replicates (skipping)" % (experiment['accession'], len(matches), bio_rep, tech_rep))
         return None
 
 
@@ -127,7 +145,6 @@ def get_encode2_to_encode3(app):
     # Create and cache list of ENCODE 3 experiments with ENCODE2 accessions
     # Used to map EDW ENCODE 2 accessions to ENCODE3 accession
     global encode2_to_encode3
-    global verbose
 
     if encode2_to_encode3 is not None:
         return encode2_to_encode3
@@ -138,8 +155,7 @@ def get_encode2_to_encode3(app):
         resp = app.get(url).maybe_follow()
         exp = resp.json
         encode3_acc = exp['@id']
-        if verbose:
-            logger.info('Get experiment (e2-e3): %s' % (encode3_acc))
+        logger.info('Get experiment (e2-e3): %s' % (encode3_acc))
         encode2_accs = get_encode2_accessions(app, encode3_acc)
         if encode2_accs is not None and len(encode2_accs) > 0:
             for encode2_acc in encode2_accs:
@@ -169,7 +185,9 @@ def get_encode3_experiment(app, accession):
         url = SEARCH_EC2 + accession + '&type=dataset'
         results = resp.json['@graph']
 
-    assert(len(results)==1)
+    if (len(results) !=1):
+        logger.warning("Dataset %s search had multiple results: %s" % (accession, results))
+        return {}
     return app.get(results[0]['@id'],headers={'Accept': 'application/json'}).json
 
 
@@ -222,8 +240,6 @@ def is_encode2_experiment(app, accession):
     if get_encode2_accessions(app, accession) is not None:
         return True
     return False
-
-encode3_to_encode2 = {}    # Cache experiment ENCODE 2 ref lists
 
 
 def get_encode2_accessions(app, encode3_acc):
@@ -294,7 +310,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
             # dataset primary files have irrelvant replicate info
             del fileinfo['biological_replicate']
             del fileinfo['technical_replicate']
-        elif ( not rep or app.get(rep).maybe_follow().status_code != 200 ):
+        elif ( not rep or app.get('/'+rep).maybe_follow().status_code != 200 ):
             # try to create one
             try:
                 br = int(fileinfo['biological_replicate'])
@@ -338,7 +354,7 @@ def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
 
     edw_files = edw_file.get_edw_fileinfo(edw)
     # Other parameters are default
-    edw_dict = { d['accession']:d for d in edw_files }
+    edw_dict = { d['accession']:convert_edw(app,d) for d in edw_files }
     app_files = get_app_fileinfo(app, phase=phase)
     app_dict = { d['accession']:d for d in app_files }
 
@@ -434,8 +450,6 @@ def inventory_files(app, edw_dict, app_dict):
 
     for accession in sorted(edw_dict.keys()):
         edw_fileinfo = edw_dict[accession]
-        #edw_exp_fileinfo = set_fileinfo_experiment(app, edw_fileinfo)
-        #edw_dict[accession] =  edw_exp_fileinfo  # replaced Encode2 exps with Encode3
         if accession not in app_dict:
             edw_only.append(edw_fileinfo)
         else:
@@ -458,12 +472,12 @@ def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=Fals
 
 
     edw_only, app_only, same, patch = inventory_files(app, edw_files, app_files)
-    logger.info("Comparision")
-    logger.info("=================")
-    logger.info("%s files in EDW only" % len(edw_only))
-    logger.info("%s files in encoded only" % len(app_only))
-    logger.info("%s files are identical" % len(same))
-    logger.info("%s files need to be patched" % len(patch))
+    logger.warn("Comparison")
+    logger.warn("=================")
+    logger.warn("%s files in EDW only" % len(edw_only))
+    logger.warn("%s files in encoded only" % len(app_only))
+    logger.warn("%s files are identical" % len(same))
+    logger.warn("%s files need to be patched" % len(patch))
 
     for add in edw_only:
         acc = add['accession']
@@ -504,7 +518,8 @@ def main():
 
     args = parser.parse_args()
 
-    logging.basicConfig()
+    FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
+    logging.basicConfig(format=FORMAT)
     logger.setLevel(logging.WARNING)
 
     if args.verbose:
@@ -516,7 +531,7 @@ def main():
 
     edw_files, app_files = get_dicts(app, edw, phase=args.phase)
 
-    logger.info("Found %s files at encoded; %s files at EDW" % (len(app_files), len(edw_files)))
+    logger.warning("Found %s files at encoded; %s files at EDW" % (len(app_files), len(edw_files)))
 
     return run(app, app_files, edw_files, phase=args.phase, dry_run=args.dry_run)
 
