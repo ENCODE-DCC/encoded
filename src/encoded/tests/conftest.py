@@ -401,11 +401,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
     @request.addfinalizer
     def remove():
-        # http://www.sqlalchemy.org/trac/ticket/2686
-        # event.remove(connection, 'after_cursor_execute', after_cursor_execute)
-        connection.dispatch.after_cursor_execute.remove(after_cursor_execute, connection)
-
-    connection._has_events = True
+        event.remove(connection, 'after_cursor_execute', after_cursor_execute)
 
     return counter
 
