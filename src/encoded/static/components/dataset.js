@@ -6,6 +6,7 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 
 var DbxrefList = dbxref.DbxrefList;
+var Dbxref = dbxref.Dbxref;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -41,6 +42,16 @@ var Dataset = module.exports.Dataset = React.createClass({
                         
                         {context.lab ? <dt>Lab</dt> : null}
                         {context.lab ? <dd>{context.lab}</dd> : null}
+                        
+                        {context.aliases.length ? <dt>Aliases</dt> : null}
+                        {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+                        
+                        <dt>External resources</dt>
+						<dd>
+							{context.geo_dbxrefs.length ?
+								<DbxrefList values={context.geo_dbxrefs} />
+							: <em>None submitted</em> }
+						</dd>
                     </dl>
                 </div>
 
