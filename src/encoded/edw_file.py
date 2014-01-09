@@ -283,6 +283,7 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
             query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
         elif phase  == '3':
             query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
+        query.append_whereclause('edwValidFile.licensePlate like "ENCFF%"')  ## skip TST
 
         query = query.order_by(f.c.endUploadTime.desc())
         if limit:

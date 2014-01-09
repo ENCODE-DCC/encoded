@@ -119,7 +119,7 @@ def find_replicate(experiment, file_dict):
     bio_rep = file_dict['biological_replicate']
     tech_rep = file_dict['technical_replicate']
 
-    if not bio_rep:
+    if not bio_rep or bio_rep == 'pooled' or bio_rep == 'n/a':
         # expected in some cases
         return None
 
@@ -310,7 +310,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
             # dataset primary files have irrelvant replicate info
             del fileinfo['biological_replicate']
             del fileinfo['technical_replicate']
-        elif ( not rep or app.get('/'+rep).maybe_follow().status_code != 200 ):
+        elif not rep:
             # try to create one
             try:
                 br = int(fileinfo['biological_replicate'])
@@ -347,12 +347,12 @@ def post_fileinfo(app, fileinfo, dry_run=False):
         return resp
     else:
         logger.debug('Sucessful dry-run POST File %s' % (accession))
-        return {status_int: 201}
+        return {'status_int': 201}
 
 
 def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
 
-    edw_files = edw_file.get_edw_fileinfo(edw)
+    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase)
     # Other parameters are default
     edw_dict = { d['accession']:convert_edw(app,d) for d in edw_files }
     app_files = get_app_fileinfo(app, phase=phase)
@@ -384,7 +384,7 @@ def patch_fileinfo(app, props, propinfo, dry_run=False):
             return resp
     else:
         logger.debug('Sucessful dry-run PATCH File %s' % (accession))
-        return {status_int: 201}
+        return {'status_int': 201}
 
 
 def collection_url(collection):
@@ -456,7 +456,7 @@ def inventory_files(app, edw_dict, app_dict):
             diff = compare_files(edw_fileinfo, app_dict[accession])
             if diff:
                 diff_accessions.append(accession)
-                logger.info("File: %s has %s diffs" % (accession, diff))
+                logger.warning("File: %s has %s DIFFS (edw, encoded):" % (accession, diff))
             else:
                 same.append(edw_fileinfo)
 
