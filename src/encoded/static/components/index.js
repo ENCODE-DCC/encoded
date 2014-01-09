@@ -3,6 +3,7 @@ require('./antibody');
 require('./app');
 require('./biosample');
 require('./collection');
+require('./dataset');
 require('./dbxref');
 require('./errors');
 require('./experiment');

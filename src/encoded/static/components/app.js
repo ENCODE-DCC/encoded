@@ -12,6 +12,7 @@ var portal = {
     global_sections: [
         {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
         {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
+        {id: 'datasets', title: 'Datasets', url: '/datasets/'},
         {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
         {id: 'targets', title: 'Targets', url: '/search/?type=target'}
     ]
