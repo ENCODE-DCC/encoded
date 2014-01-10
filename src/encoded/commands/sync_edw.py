@@ -56,7 +56,7 @@ logger = logging.getLogger(__name__)
 encode2_to_encode3 = None  # Dict of ENCODE3 accs, keyed by ENCODE 2 acc
 encode3_to_encode2 = {}    # Cache experiment ENCODE 2 ref lists
 
-def convert_edw(app, file_dict):
+def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
     ''' converts EDW file structure to encoded object'''
 
     logger.info('Found EDW file: %s' % (file_dict['accession']))
@@ -95,9 +95,10 @@ def convert_edw(app, file_dict):
         ds_acc = None
 
     if ds_acc:
-        ds = get_encode3_experiment(app, ds_acc)
+        ds = get_dataset_or_experiment(app, ds_acc, phase)
         if not ds:
             logger.error('EDW file %s has a dataset that cannot be found: %s' % (file_dict['accession'], ds_acc))
+            file_dict = { 'accession': ""}
         else:
             file_dict['dataset'] = ds['@id']
             if ds['dataset_type'] == 'experiment':
@@ -108,7 +109,8 @@ def convert_edw(app, file_dict):
         del file_dict['technical_replicate']
             # otherwise we will try tor create the specified one.
 
-    return { i : unicode(j) for i,j in file_dict.items() }
+    return file_dict  ## really don't convert None to unicode...
+    #return { i : unicode(j) for i,j in file_dict.items() }
 
 
 def find_replicate(experiment, file_dict):
@@ -137,7 +139,7 @@ def find_replicate(experiment, file_dict):
     if len(matches) == 1:
         return matches[0]['@id']
     else:
-        logger.warn("Experiment %s (%s %s) matches %s replicates (skipping)" % (experiment['accession'], len(matches), bio_rep, tech_rep))
+        logger.warn("Experiment %s (%s %s) matches %s replicates" % (experiment['accession'], bio_rep, tech_rep, len(matches)))
         return None
 
 
@@ -169,33 +171,44 @@ def get_encode2_to_encode3(app):
     return encode2_to_encode3
 
 
-def get_encode3_experiment(app, accession):
+def get_dataset_or_experiment(app, accession, phase=edw_file.ENCODE_PHASE_ALL):
     # Map ENCODE2 experiment accession to ENCODE3
     # This will fail if EDW references a dataset instead of expt.
     global datasets
     if accession.startswith(ENCODE3_EXP_ACC):
-        return exp_or_dataset(app, accession)
+        ds = exp_or_dataset(app, accession)
 
-    url = SEARCH_EC2 + accession + '&type=experiment'
-    #, headers={'Accept': 'application/json'}
-    resp = app.get(url).maybe_follow()
-    results = resp.json['@graph']
-    if not results:
-        return None #  are datasets implemented in search yet?
-        url = SEARCH_EC2 + accession + '&type=dataset'
+    else:
+        url = SEARCH_EC2 + accession + '&type=experiment'
+        #, headers={'Accept': 'application/json'}
+        resp = app.get(url).maybe_follow()
         results = resp.json['@graph']
+        if not results:
+            return None #  are datasets implemented in search yet?
+            url = SEARCH_EC2 + accession + '&type=dataset'
+            results = resp.json['@graph']
 
-    if (len(results) !=1):
-        logger.warning("Dataset %s search had multiple results: %s" % (accession, results))
-        return {}
-    return app.get(results[0]['@id'],headers={'Accept': 'application/json'}).json
+        if (len(results) !=1):
+            logger.warning("Dataset %s search had multiple results: %s" % (accession, results))
+            return {}
+        ds = app.get(results[0]['@id']).json
+
+    if phase == edw_file.ENCODE_PHASE_2 and get_encode2_accessions(app, ds):
+        return ds
+    elif phase == edw_file.ENCODE_PHASE_3 and not get_encode2_accessions(app, ds):
+        return ds
+    elif phase == edw_file.ENCODE_PHASE_ALL:
+        return ds
+
+    logger.info("Dataset %s is not from phase %s" % (accession, phase))
+    return None
 
 
 def exp_or_dataset(app, accession):
 
     url = '/' + accession + '/'
     try:
-        resp = app.get(url, headers={'Accept': 'application/json'}).maybe_follow()
+        resp = app.get(url).maybe_follow()
     except AppError:
         logger.error("Dataset/Experiment %s could not be found." % accession)
         return None
@@ -242,13 +255,23 @@ def is_encode2_experiment(app, accession):
     return False
 
 
-def get_encode2_accessions(app, encode3_acc):
+def get_encode2_accessions(app, dataset):
     # Get list of ENCODE 2 accessions for this ENCODE 3 experiment(or None)
     global encode3_to_encode2
+    get = False
+    if type(dataset) == dict:
+        encode3_acc = dataset['accession']
+        get= True
+    elif not dataset:
+        return None
+    else:
+        encode3_acc = dataset
+
     if encode3_acc not in encode3_to_encode2:
-        logger.info('Get experiment (get e2): %s' % (encode3_acc))
-        resp = app.get(encode3_acc).maybe_follow()
-        encode3_to_encode2[encode3_acc] = resp.json[ENCODE2_PROP]
+        if not get:
+            logger.info('Get experiment (get e2): %s' % (encode3_acc))
+            dataset = app.get(encode3_acc).maybe_follow().json
+        encode3_to_encode2[encode3_acc] = dataset.get(ENCODE2_PROP, [])
     encode2_accs = encode3_to_encode2[encode3_acc]
     if len(encode2_accs) > 0:
         return encode2_accs
@@ -305,6 +328,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
         else:
             dataset = ds_resp.json
     rep = fileinfo.get('replicate', None)
+
     if ds:
         if dataset and dataset.get('@type', [])[0] == 'dataset':
             # dataset primary files have irrelvant replicate info
@@ -450,6 +474,9 @@ def inventory_files(app, edw_dict, app_dict):
 
     for accession in sorted(edw_dict.keys()):
         edw_fileinfo = edw_dict[accession]
+        if not edw_fileinfo['accession']:
+            continue
+            # most likely dropped out due to wrong phase
         if accession not in app_dict:
             edw_only.append(edw_fileinfo)
         else:

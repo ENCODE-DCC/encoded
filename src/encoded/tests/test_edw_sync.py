@@ -139,21 +139,21 @@ def test_import_file(insert_workbook, testapp, reset):
     reader = DictReader(f, delimiter='\t')
     for fileinfo in reader:
 
-        sync_edw.convert_edw(testapp, fileinfo)
+        converted_file = sync_edw.convert_edw(testapp, fileinfo)
         #set_in = set(fileinfo.items())
-        resp = sync_edw.post_fileinfo(testapp, fileinfo)
+        resp = sync_edw.post_fileinfo(testapp, converted_file)
         # exercises: set_fileinfo_experiment, set_fileinfo_replicate, POST
         if resp:
-            acc = fileinfo['accession']
+            acc = converted_file['accession']
             url = sync_edw.collection_url(sync_edw.FILES) + acc
             get_resp = testapp.get(url).maybe_follow()
             file_dict = get_resp.json
-            assert( not sync_edw.compare_files(file_dict, fileinfo) )
+            assert( not sync_edw.compare_files(file_dict, converted_file) )
         else:
             ## one of the files in import_in.1.tsv is not postable
             ## should maybe switch it from an experiment to a regular dataset
-            assert(re.search('experiments', fileinfo['dataset']))
-            assert(not fileinfo['biological_replicate'] or not fileinfo['technical_replicate'])
+            assert(re.search('experiments', converted_file['dataset']))
+            assert(not fileinfo['biological_replicate'] or not converted_file['technical_replicate'])
 
 @pytest.mark.slow
 def test_encode2_experiments(workbook, testapp):
@@ -171,8 +171,38 @@ def test_encode2_experiments(workbook, testapp):
     # Test identifying an ENCODE 2 experiment
     assert sync_edw.is_encode2_experiment(testapp, encode2_hash.values()[0])
 
+
 @pytest.mark.slow
-def test_file_sync(insert_workbook, testapp):
+def test_encode3_experiments(workbook, testapp):
+    # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
+    # accessions are ENCODE2 experiments
+
+    # Test identifying an ENCODE 3 experiment
+    #res = testapp.post_json('/index', {})
+    mock_edw_file = 'edw_file_mock.tsv'
+    f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file)
+    reader = DictReader(f, delimiter='\t')
+
+    edw_mock_p3 = {}
+    for fileinfo in reader:
+        converted_file = sync_edw.convert_edw(testapp, fileinfo, phase='3')
+        if converted_file['accession']:
+            converted_file.pop('test', None) # this is in the file for notation purposes only
+            edw_mock_p3[fileinfo['accession']] = converted_file
+
+    assert len(edw_mock_p3) == 6
+
+    '''
+    # Create hash of all ENCODE 2 experiments, map to ENCODE 3 accession
+    encode2_hash = sync_edw.get_encode2_to_encode3(testapp)
+    assert sorted(encode2_hash.keys()) == sorted(edw_test_data.encode2)
+
+    # Test identifying an ENCODE 2 experiment
+    assert sync_edw.is_encode2_experiment(testapp, encode2_hash.values()[0])
+    '''
+
+@pytest.mark.slow
+def test_file_sync(insert_workbook, testapp, reset):
 
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file)
@@ -180,9 +210,9 @@ def test_file_sync(insert_workbook, testapp):
 
     edw_mock = {}
     for fileinfo in reader:
-        sync_edw.convert_edw(testapp, fileinfo)
-        del fileinfo['test']  # this is in the file for notation purposes only
-        edw_mock[fileinfo['accession']] = fileinfo
+        converted_file = sync_edw.convert_edw(testapp, fileinfo)
+        converted_file.pop('test', None) # this is in the file for notation purposes only
+        edw_mock[fileinfo['accession']] = converted_file
 
     assert len(edw_mock) == 26
 
@@ -193,10 +223,10 @@ def test_file_sync(insert_workbook, testapp):
     assert(len(app_files) == len(app_dict.keys())) # this should never duplicate
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    assert len(edw_only) == 13
+    assert len(edw_only) == 11
     assert len(app_only) == 11
     assert len(same) == 6
-    assert len(patch) == 7
+    assert len(patch) == 5
 
     before_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
 
@@ -246,11 +276,11 @@ def test_file_sync(insert_workbook, testapp):
     sync_edw.collections = []
     # reset global var!
     post_edw, post_app, post_same, post_patch= sync_edw.inventory_files(testapp, edw_mock, post_app_dict)
-    assert len(post_edw) == 2 # new files cannot add
+    assert len(post_edw) == 0
     assert len(post_app) == 11 # unchanged
-    assert len(post_patch) == 4 # exsting files cannot be patched
+    assert len(post_patch) == 2 # exsting files cannot be patched
     assert ((len(post_same)-len(same)) == (len(patch) -len(post_patch) + (len(edw_only) - len(post_edw))))
-    assert len(post_app_files) == (len(app_files) + len(edw_only) - 2 )
+    assert len(post_app_files) == (len(app_files) + len(edw_only))
 
 
     after_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
