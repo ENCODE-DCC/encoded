@@ -1,27 +1,26 @@
 from ..migrator import (
-    step_config,
-    finalizer_config,
+    upgrade_step,
+    upgrade_finalizer,
 )
 
 def includeme(config):
     config.scan(__name__)
-    migrator = config.registry['migrator']
-    migrator.add_schema('testing_migrator', '3')
+    config.add_upgrade('testing_migrator', '3')
 
 
-@step_config('testing_migrator', '', '2')
+@upgrade_step('testing_migrator', '', '2')
 def step1(value, system):
     value['step1'] = True
     return value
 
 
-@step_config('testing_migrator', '2', '3')
+@upgrade_step('testing_migrator', '2', '3')
 def step2(value, system):
     value['step2'] = True
     return value
 
 
-@finalizer_config('testing_migrator')
+@upgrade_finalizer('testing_migrator')
 def finalizer(value, system, version):
     value['schema_version'] = version
     return value

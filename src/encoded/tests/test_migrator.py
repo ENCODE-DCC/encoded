@@ -19,8 +19,8 @@ def finalizer(value, system, version):
 def schema_migrator():
     from ..migrator import SchemaMigrator
     schema_migrator = SchemaMigrator('test', '3')
-    schema_migrator.add_step(step1, dest='2')
-    schema_migrator.add_step(step2, source='2', dest='3')
+    schema_migrator.add_upgrade_step(step1, dest='2')
+    schema_migrator.add_upgrade_step(step2, source='2', dest='3')
     return schema_migrator
 
 

@@ -1,10 +1,17 @@
 from pkg_resources import parse_version
-from pyramid.interfaces import PHASE1_CONFIG
+from pyramid.interfaces import (
+    PHASE1_CONFIG,
+    PHASE2_CONFIG,
+)
 import venusian
 
 
 def includeme(config):
-    config.registry['migrator'] = Migrator(config)
+    config.registry['migrator'] = Migrator()
+    config.add_directive('add_upgrade', add_upgrade)
+    config.add_directive('add_upgrade_step', add_upgrade_step)
+    config.add_directive('set_upgrade_finalizer', set_upgrade_finalizer)
+    config.add_directive('set_default_upgrade_finalizer', set_default_upgrade_finalizer)
 
 
 class ConfigurationError(Exception):
@@ -15,7 +22,7 @@ class UpgradeError(Exception):
     pass
 
 
-class NoUpgradePath(UpgradeError):
+class UpgradePathNotFound(UpgradeError):
     def __str__(self):
         return "%r from %r to %r (at %r)" % self.args
 
@@ -24,79 +31,73 @@ class VersionTooHigh(UpgradeError):
     pass
 
 
-class Migrator(dict):
+class Migrator(object):
     """ Migration manager
     """
-    def __init__(self, config):
-        # Pyramid config used for the phased configuration
-        self.config = config
+    def __init__(self):
+        self.schema_migrators = {}
+        self.default_finalizer = None
 
-    def add_schema(self, schema_name, version='', finalizer=None):
-        if finalizer is not None:
-            self.set_finalizer(schema_name, finalizer)
+    def add_upgrade(self, schema_name, version, finalizer=None):
+        if schema_name in self.schema_migrators:
+            raise ConfigurationError('duplicate schema_name', schema_name)
+        if finalizer is None:
+            finalizer = self.default_finalizer
+        schema_migrator = SchemaMigrator(schema_name, version, finalizer)
+        self.schema_migrators[schema_name] = schema_migrator
 
-        def callback():
-            self[schema_name] = SchemaMigrator(schema_name, version)
+    def upgrade(self, schema_name, value, current_version='', target_version=None, **kw):
+        schema_migrator = self.schema_migrators[schema_name]
+        return schema_migrator.upgrade(value, current_version, target_version, **kw)
 
-        self.config.action(
-            ('migrator:add_schema', schema_name),
-            callback, order=PHASE1_CONFIG)
+    def __getitem__(self, schema_name):
+        return self.schema_migrators[schema_name]
 
-    def add_step(self, schema_name, step, source='', dest=''):
-
-        def callback():
-            self[schema_name].add_step(step, source, dest)
-
-        self.config.action(
-            ('migrator:add_step', schema_name, parse_version(source)),
-            callback)
-
-    def set_finalizer(self, schema_name, finalizer):
-
-        def callback():
-            self[schema_name].finalizer = finalizer
-
-        self.config.action(
-            ('migrator:set_finalizer', schema_name),
-            callback)
-
-    def upgrade(self, schema_name, value, current_version='', target_version=None):
-        return self[schema_name].upgrade(value, current_version, target_version)
-
-    def __repr__(self):
-        return object.__repr__(self)
+    def __contains__(self, schema_name):
+        return schema_name in self.schema_migrators
 
 
 class SchemaMigrator(object):
     """ Manages upgrade steps
     """
-    def __init__(self, name, version='', finalizer=None):
+    def __init__(self, name, version, finalizer=None):
         self.__name__ = name
         self.version = version
         self.upgrade_steps = {}
         self.finalizer = finalizer
 
-    def add_step(self, step, source='', dest=''):
+    def add_upgrade_step(self, step, source='', dest=None):
+        if dest is None:
+            dest = self.version
         if parse_version(dest) <= parse_version(source):
             raise ValueError("dest is less than source", dest, source)
         if parse_version(source) in self.upgrade_steps:
             raise ConfigurationError('duplicate step for source', source)
         self.upgrade_steps[parse_version(source)] = UpgradeStep(step, source, dest)
 
-    def upgrade(self, value, current_version='', target_version=None):
+    def upgrade(self, value, current_version='', target_version=None, **kw):
         if target_version is None:
             target_version = self.version
 
         if parse_version(current_version) > parse_version(target_version):
             raise VersionTooHigh(self.__name__, current_version, target_version)
 
-        # If no entry exists for the current_version, fallback to ''
-        version = current_version
-        if parse_version(version) not in self.upgrade_steps:
-            version = ''
 
         # Try to find a path from current to target versions
         steps = []
+        version = current_version
+
+        # If no entry exists for the current_version, fallback to ''
+        if parse_version(version) not in self.upgrade_steps:
+            try:
+                step = self.upgrade_steps[parse_version('')]
+            except KeyError:
+                pass
+            else:
+                if parse_version(step.dest) >= parse_version(version):
+                    steps.append(step)
+                    version = step.dest
+
         while parse_version(version) < parse_version(target_version):
             try:
                 step = self.upgrade_steps[parse_version(version)]
@@ -106,15 +107,22 @@ class SchemaMigrator(object):
             version = step.dest
 
         if version != target_version:
-            raise NoUpgradePath(self.__name__, current_version, target_version, version)
+            raise UpgradePathNotFound(self.__name__, current_version, target_version, version)
+
+        # Apply the steps
 
         system = {}
+        system.update(kw)
 
         for step in steps:
-            value = step(value, system)
+            next_value = step(value, system)
+            if next_value is not None:
+                value = next_value
 
         if self.finalizer is not None:
-            value = self.finalizer(value, system, version)
+            next_value = self.finalizer(value, system, version)
+            if next_value is not None:
+                value = next_value
 
         return value
 
@@ -129,14 +137,63 @@ class UpgradeStep(object):
         return self.step(value, system)
 
 
-def step_config(schema_name, source='', dest=''):
+# Imperative configuration
+
+def add_upgrade(config, schema_name, version, finalizer=None):
+    if finalizer is not None:
+        config.set_upgrade_finalizer(schema_name, finalizer)
+
+    def callback():
+        migrator = config.registry['migrator']
+        migrator.add_upgrade(schema_name, version)
+
+    config.action(
+        ('add_upgrade', schema_name),
+        callback, order=PHASE2_CONFIG)
+
+
+def add_upgrade_step(config, schema_name, step, source='', dest=None):
+
+    def callback():
+        migrator = config.registry['migrator']
+        migrator[schema_name].add_upgrade_step(step, source, dest)
+
+    config.action(
+        ('add_upgrade_step', schema_name, parse_version(source)),
+        callback)
+
+
+def set_upgrade_finalizer(config, schema_name, finalizer):
+
+    def callback():
+        migrator = config.registry['migrator']
+        migrator[schema_name].finalizer = finalizer
+
+    config.action(
+        ('set_upgrade_finalizer', schema_name),
+        callback)
+
+
+def set_default_upgrade_finalizer(config, finalizer):
+
+    def callback():
+        migrator = config.registry['migrator']
+        migrator.default_finalizer = finalizer
+
+    config.action(
+        'set_default_upgrade_finalizer',
+        callback, order=PHASE1_CONFIG)
+
+
+# Declarative configuration
+
+def upgrade_step(schema_name, source='', dest=None):
     """ Register an upgrade step
     """
 
     def decorate(step):
         def callback(scanner, factory_name, factory):
-            migrator = scanner.config.registry['migrator']
-            migrator.add_step(schema_name, step, source, dest)
+            scanner.config.add_upgrade_step(schema_name, step, source, dest)
 
         venusian.attach(step, callback, category='migrator')
         return step
@@ -144,16 +201,23 @@ def step_config(schema_name, source='', dest=''):
     return decorate
 
 
-def finalizer_config(schema_name):
+def upgrade_finalizer(schema_name):
     """ Register a finalizer
     """
 
     def decorate(finalizer):
         def callback(scanner, factory_name, factory):
-            migrator = scanner.config.registry['migrator']
-            migrator.set_finalizer(schema_name, finalizer)
+            scanner.config.set_upgrade_finalizer(schema_name, finalizer)
 
         venusian.attach(finalizer, callback, category='migrator')
         return finalizer
 
     return decorate
+
+
+def default_upgrade_finalizer(finalizer):
+    def callback(scanner, factory_name, factory):
+        scanner.config.set_default_upgrade_finalizer(finalizer)
+
+    venusian.attach(finalizer, callback, category='migrator')
+    return finalizer
