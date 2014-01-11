@@ -240,7 +240,9 @@ def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL):
         fileinfo = resp.json
         # below seems clunky, could search+filter
         if phase != edw_file.ENCODE_PHASE_ALL:
-            if get_phase(app, fileinfo) != phase:
+            file_phase = get_phase(app, fileinfo)
+            if file_phase != phase:
+                    logging.info("File %s is wrong phase (%s)" % (fileinfo['accession'], file_phase))
                     continue
         app_files.append(resp.json)
     return app_files
@@ -250,7 +252,7 @@ def is_encode2_experiment(app, accession):
     # Does this experiment have ENCODE2 accession
     if accession.startswith(ENCODE2_ACC):
         return True
-    if get_encode2_accessions(app, accession) is not None:
+    if len(get_encode2_accessions(app, accession)) > 0:
         return True
     return False
 
@@ -275,7 +277,7 @@ def get_encode2_accessions(app, dataset):
     encode2_accs = encode3_to_encode2[encode3_acc]
     if len(encode2_accs) > 0:
         return encode2_accs
-    return None
+    return []
 
 
 
@@ -316,6 +318,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
     accession = fileinfo['accession']
 
     logger.info('....POST file: %s' % (accession))
+    logger.info("%s" % fileinfo)
 
     ds = fileinfo.get('dataset', None)
     dataset = None
@@ -378,7 +381,7 @@ def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
 
     edw_files = edw_file.get_edw_fileinfo(edw, phase=phase)
     # Other parameters are default
-    edw_dict = { d['accession']:convert_edw(app,d) for d in edw_files }
+    edw_dict = { d['accession']:convert_edw(app, d, phase) for d in edw_files }
     app_files = get_app_fileinfo(app, phase=phase)
     app_dict = { d['accession']:d for d in app_files }
 
@@ -559,6 +562,8 @@ def main():
     edw_files, app_files = get_dicts(app, edw, phase=args.phase)
 
     logger.warning("Found %s files at encoded; %s files at EDW" % (len(app_files), len(edw_files)))
+    if args.phase != edw_file.ENCODE_PHASE_ALL:
+        logger.warning("Synching files from Phase %s only" % args.phase)
 
     return run(app, app_files, edw_files, phase=args.phase, dry_run=args.dry_run)
 

@@ -155,7 +155,7 @@ def test_import_file(insert_workbook, testapp, reset):
             assert(re.search('experiments', converted_file['dataset']))
             assert(not fileinfo['biological_replicate'] or not converted_file['technical_replicate'])
 
-@pytest.mark.slow
+
 def test_encode2_experiments(workbook, testapp):
     # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
     # accessions are ENCODE2 experiments
@@ -172,8 +172,7 @@ def test_encode2_experiments(workbook, testapp):
     assert sync_edw.is_encode2_experiment(testapp, encode2_hash.values()[0])
 
 
-@pytest.mark.slow
-def test_encode3_experiments(workbook, testapp):
+def test_encode3_experiments(insert_workbook, testapp, reset):
     # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
     # accessions are ENCODE2 experiments
 
@@ -192,6 +191,9 @@ def test_encode3_experiments(workbook, testapp):
 
     assert len(edw_mock_p3) == 6
 
+    app_files_p3 = sync_edw.get_app_fileinfo(testapp, phase='3')
+
+    assert len(app_files_p3) == 14
     '''
     # Create hash of all ENCODE 2 experiments, map to ENCODE 3 accession
     encode2_hash = sync_edw.get_encode2_to_encode3(testapp)
