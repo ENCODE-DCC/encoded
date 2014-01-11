@@ -137,7 +137,10 @@ def search(context, request):
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
-            result['notification'] = 'No results found'
+            if len(search_term) < 3:
+                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
+            else:
+                result['notification'] = 'No results found'
         return result
     else:
         search_type = params['type']
@@ -219,5 +222,8 @@ def search(context, request):
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
-            result['notification'] = 'No results found'
+            if len(search_term) < 3:
+                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
+            else:
+                result['notification'] = 'No results found'
         return result
