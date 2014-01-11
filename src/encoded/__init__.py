@@ -159,6 +159,8 @@ def main(global_config, **settings):
     config.include('.views')
     config.include('.persona')
     config.include('pyramid_multiauth')
+    config.include('.migrator')
+    config.include('.upgrade')
 
     from .local_roles import LocalRolesAuthorizationPolicy
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
