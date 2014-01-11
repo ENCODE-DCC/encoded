@@ -64,6 +64,8 @@ from .storage import (
 from collections import OrderedDict
 from .validation import ValidationFailure
 
+PHASE1_5_CONFIG = -15
+
 
 LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
@@ -230,7 +232,7 @@ def location_root(factory):
     def callback(scanner, factory_name, factory):
         scanner.config.action(('location_root',), set_root,
                               args=(scanner.config, factory),
-                              order=PHASE1_CONFIG)
+                              order=PHASE1_5_CONFIG)
     venusian.attach(factory, callback, category='pyramid')
 
     return factory
@@ -669,6 +671,7 @@ class Collection(Mapping):
     __metaclass__ = CustomItemMeta
     Item = Item
     schema = None
+    schema_version = None
     properties = OrderedDict()
     item_type = None
     unique_key = None
@@ -706,10 +709,12 @@ class Collection(Mapping):
                 self.embedded_paths.add(path)
 
         if self.schema is not None:
+            properties = self.schema['properties']
             self.schema_links = [
-                name for name, prop in self.schema['properties'].iteritems()
+                name for name, prop in properties.iteritems()
                 if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
             ]
+            self.schema_version = properties.get('schema_version', {}).get('default')
 
     def __getitem__(self, name):
         try:
