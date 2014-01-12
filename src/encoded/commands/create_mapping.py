@@ -109,6 +109,40 @@ def index_settings(index):
     }
 
 
+def new_mapping(mapping):
+    return {
+        'properties': {
+            'embedded': mapping,
+            'unembedded': {
+                'type': 'object',
+                'include_in_all': False,
+                'properties': {}
+            },
+            'principals_allowed_view': {
+                'type': 'string',
+                'include_in_all': False
+            },
+            'embedded_uuid_closure': {
+                'type': 'string',
+                'include_in_all': False
+            },
+            'link_uuid_closure': {
+                'type': 'string',
+                'include_in_all': False
+            },
+            'keys': {
+                'type': 'string',
+                'include_in_all': False
+            },
+            'links': {
+                'type': 'object',
+                'include_in_all': False,
+                'properties': {}
+            }
+        }
+    }
+
+
 def collection_mapping(collection, embed=True):
     schema = collection.schema
     if schema is None:
@@ -172,7 +206,7 @@ def collection_mapping(collection, embed=True):
                 new_mapping = mapping['properties']
             else:
                 new_mapping = new_mapping[prop]['properties']
-    mapping['_all'] = {'analyzer': 'encoded_index_analyzer', 'auto_boost': False}
+    mapping['_all'] = {'analyzer': 'encoded_index_analyzer'}
     return mapping
 
 
@@ -206,6 +240,8 @@ def run(app, collections=None, dry_run=False):
             es.delete_index(collection_name)
             es.create_index(collection_name, index_settings(collection_name))
 
+        if collection_name is not 'meta':
+            mapping = new_mapping(mapping)
         es.put_mapping(collection_name, doc_type, {doc_type: mapping})
         es.refresh(collection_name)
 

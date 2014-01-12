@@ -1,4 +1,5 @@
 from pyramid.paster import get_app
+from pyramid.security import principals_allowed_by_permission
 from ..indexing import ELASTIC_SEARCH
 import logging
 from webtest import TestApp
@@ -26,24 +27,58 @@ def run(app, collections=None):
         collection = root.by_item_type[collection_name]
         if collection.schema is None:
             continue
-        res = testapp.get('/' + root.by_item_type[collection_name].__name__ + '/' + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
-        items = res.json['@graph']
 
         # try creating index, if it exists already delete it and create it
         counter = 0
-        for item in items:
+        for count, item in enumerate(collection.itervalues()):
+            links = {}
+            
+            # links for the item
+            for link in item.links:
+                links[link] = []
+                if type(item.links[link]) is list:
+                    for l in item.links[link]:
+                        links[link].append(str(l.uuid))
+                else:
+                    links[link].append(str(item.links[link].uuid))
+
+            # Get keys for the item
+            keys = []
+            for key in item.model.unique_keys:
+                keys.append(key.value)
+
+            # Principals for the item
+            principals = {}
+            _principals = principals_allowed_by_permission(item, 'edit')
+
+            if item.name_key is None:
+                item_path = '/' + root.by_item_type[collection_name].__name__ \
+                    + '/' + str(item.uuid) + '/'
+            else:
+                item_path = '/' + root.by_item_type[collection_name].__name__ \
+                    + '/' + str(item.properties[item.name_key]) + '/'
             try:
-                item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
+                item_json = testapp.get(item_path, headers={'Accept': 'application/json'}, status=200)
             except Exception as e:
                 print e
             else:
                 document_id = str(item_json.json['uuid'])
-                document = item_json.json
-                es.index(collection_name, DOCTYPE, document, document_id)
-                counter = counter + 1
-                if counter % 50 == 0:
-                    es.flush(collection_name)
-                    log.info('Indexing %s %d', collection_name, counter)
+                try:
+                    unembedded_item_json = testapp.get(item_path + '?embed=false', headers={'Accept': 'application/json'}, status=200)
+                except Exception as e:
+                    print e
+                else:
+                    document = {
+                        'embedded': item_json.json,
+                        'unembedded': unembedded_item_json.json,
+                        'links': links,
+                        'keys': keys
+                    }
+                    es.index(collection_name, DOCTYPE, document, document_id)
+                    counter = counter + 1
+                    if counter % 50 == 0:
+                        es.flush(collection_name)
+                        log.info('Indexing %s %d', collection_name, counter)
 
         es.refresh(collection_name)
 
