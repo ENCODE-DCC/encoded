@@ -219,6 +219,7 @@ class Construct(Collection):
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
+    item_embedded = set(['target'])
 
 
 class Characterization(Collection):
