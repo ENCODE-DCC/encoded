@@ -97,7 +97,7 @@ def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
     if ds_acc:
         ds = get_dataset_or_experiment(app, ds_acc, phase)
         if not ds:
-            logger.error('EDW file %s has a dataset that cannot be found: %s' % (file_dict['accession'], ds_acc))
+            logger.warning('EDW file %s has a dataset that cannot be found: %s' % (file_dict['accession'], ds_acc))
             file_dict = { 'accession': ""}
         else:
             file_dict['dataset'] = ds['@id']
@@ -108,6 +108,9 @@ def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
         del file_dict['biological_replicate']
         del file_dict['technical_replicate']
             # otherwise we will try tor create the specified one.
+
+    if file_dict.has_key('assembly'):
+         file_dict['assembly'] = re.sub(r'(male\.|female\.)', '', file_dict['assembly'])
 
     return file_dict  ## really don't convert None to unicode...
     #return { i : unicode(j) for i,j in file_dict.items() }
@@ -401,9 +404,9 @@ def patch_fileinfo(app, props, propinfo, dry_run=False):
 
     url = collection_url(FILES) + accession
     if not dry_run:
-        resp = app.patch_json(url, propinfo)
+        resp = app.patch_json(url, propinfo, status=[200, 201, 409])
         logger.info(str(resp))
-        if resp.status_int < 200 or resp.status_int >= 400:
+        if resp.status_int < 200 or resp.status_int == 409:
             logger.error('Failed PATCH File %s%s', accession, resp)
             return None
         else:
