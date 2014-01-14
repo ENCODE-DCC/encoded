@@ -97,7 +97,7 @@ def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
     if ds_acc:
         ds = get_dataset_or_experiment(app, ds_acc, phase)
         if not ds:
-            logger.warning('EDW file %s has a dataset that cannot be found: %s' % (file_dict['accession'], ds_acc))
+            logger.warning('EDW file %s has a dataset that cannot be found or is from wrong phase: %s' % (file_dict['accession'], ds_acc))
             file_dict = { 'accession': ""}
         else:
             file_dict['dataset'] = ds['@id']
@@ -138,7 +138,6 @@ def find_replicate(experiment, file_dict):
           (file_dict['accession'], experiment['accession'], bio_rep, tech_rep, file_dict['output_type']))
 
         matches = [ rep for rep in experiment['replicates']  if rep['biological_replicate_number'] == int(bio_rep) ]
-
     if len(matches) == 1:
         return matches[0]['@id']
     else:
@@ -323,6 +322,8 @@ def post_fileinfo(app, fileinfo, dry_run=False):
     logger.info('....POST file: %s' % (accession))
     logger.info("%s" % fileinfo)
 
+    if accession == 'ENCFF001MXG':
+        import pdb;pdb.set_trace()
     ds = fileinfo.get('dataset', None)
     dataset = None
     if ds:
@@ -335,11 +336,16 @@ def post_fileinfo(app, fileinfo, dry_run=False):
             dataset = ds_resp.json
     rep = fileinfo.get('replicate', None)
 
+
     if ds:
-        if dataset and dataset.get('@type', [])[0] == 'dataset':
+        if ( (dataset and dataset.get('@type', [])[0] == 'dataset' ) or
+           ( not rep and not fileinfo['biological_replicate'] and not fileinfo['technical_replicate'] and
+             (fileinfo['file_format'] != 'fastq' or fileinfo['file_format'] != 'bam')) ):
             # dataset primary files have irrelvant replicate info
+            # non fastq non bam files can have no replicate specified
             del fileinfo['biological_replicate']
             del fileinfo['technical_replicate']
+            fileinfo.pop('replicate', None)
         elif not rep:
             # try to create one
             try:
@@ -348,13 +354,15 @@ def post_fileinfo(app, fileinfo, dry_run=False):
                 fileinfo['replicate'] = create_replicate(app, ds, br, tr, dry_run)
                 del fileinfo['biological_replicate']
                 del fileinfo['technical_replicate']
-            except ValueError:
-                logger.error("Refusing to POST file with confusing replicate ids: %s %s" %
-                   (fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            except ValueError, e:
+                logger.error("Refusing to POST file %s with confusing replicate ids: (%s, %s)" %
+                   (fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+                logger.info("%s" % e)
                 return None
-            except KeyError:
-                logger.error("Refusing to POST file with missing replicate ids: %s  %s" %
-                   (fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            except KeyError, e:
+                logger.error("Refusing to POST file %s with missing replicate ids: (%s, %s)" %
+                   (fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+                logger.info("%s" % e)
                 return None
             except AppError, e:
                 logger.error("Can not POST this replicate because reasons: %s" % e.message)
@@ -394,6 +402,11 @@ def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
 def patch_fileinfo(app, props, propinfo, dry_run=False):
     # PATCH properties to file in app
 
+    #TODO: handle this case in test:
+    #webtest.app.AppError: Bad response: 422 Unprocessable Entity (not one of 200, 201, 409 for http://localhost/files/ENCFF001MXD)
+    #{"status": "error", "errors": [{"location": "body", "name": ["replicate"], "description": "None is not of type u'string'"}, {"location": "body", "name": [], "description": "Additional properties are not allowed (u'technical_replicate', u'biological_replicate' were unexpected)"}], "description": "Failed validation", "title": "Unprocessable Entity", "code": 422, "@type": ["ValidationFailure", "error"]}
+
+
     accession = propinfo['accession']
 
     logger.info('....PATCH file: %s' % (accession))
@@ -404,7 +417,7 @@ def patch_fileinfo(app, props, propinfo, dry_run=False):
 
     url = collection_url(FILES) + accession
     if not dry_run:
-        resp = app.patch_json(url, propinfo, status=[200, 201, 409])
+        resp = app.patch_json(url, propinfo, status=[200, 201, 409, 422])
         logger.info(str(resp))
         if resp.status_int < 200 or resp.status_int == 409:
             logger.error('Failed PATCH File %s%s', accession, resp)

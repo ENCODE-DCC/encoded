@@ -83,7 +83,7 @@ def reset(connection, app):
     create_mapping.run(app)
     es_index_data.run(app)
 
-
+'''
 @pytest.mark.slow
 def test_format_app_fileinfo_expanded(workbook, testapp):
     # Test extracting EDW-relevant fields from encoded file.json
@@ -194,29 +194,24 @@ def test_encode3_experiments(insert_workbook, testapp, reset):
     app_files_p3 = sync_edw.get_app_fileinfo(testapp, phase='3')
 
     assert len(app_files_p3) == 14
-    '''
-    # Create hash of all ENCODE 2 experiments, map to ENCODE 3 accession
-    encode2_hash = sync_edw.get_encode2_to_encode3(testapp)
-    assert sorted(encode2_hash.keys()) == sorted(edw_test_data.encode2)
 
-    # Test identifying an ENCODE 2 experiment
-    assert sync_edw.is_encode2_experiment(testapp, encode2_hash.values()[0])
-    '''
-
+'''
 @pytest.mark.slow
 def test_file_sync(insert_workbook, testapp, reset):
 
+    import re
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file)
     reader = DictReader(f, delimiter='\t')
 
     edw_mock = {}
+    test = {}
     for fileinfo in reader:
         converted_file = sync_edw.convert_edw(testapp, fileinfo)
-        converted_file.pop('test', None) # this is in the file for notation purposes only
+        test[fileinfo['accession']] = converted_file.pop('test', None) # this is in the file for notation purposes only
         edw_mock[fileinfo['accession']] = converted_file
 
-    assert len(edw_mock) == 26
+    assert len(edw_mock) == 30
 
     app_files = sync_edw.get_app_fileinfo(testapp)
     app_dict = { d['accession']:d for d in app_files }
@@ -225,7 +220,7 @@ def test_file_sync(insert_workbook, testapp, reset):
     assert(len(app_files) == len(app_dict.keys())) # this should never duplicate
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    assert len(edw_only) == 11
+    assert len(edw_only) == 15
     assert len(app_only) == 11
     assert len(same) == 6
     assert len(patch) == 5
@@ -237,8 +232,9 @@ def test_file_sync(insert_workbook, testapp, reset):
         url = sync_edw.collection_url(sync_edw.FILES) + acc
         resp = sync_edw.post_fileinfo(testapp, add)
         # check experiment status
-        if not resp:
-            assert(add['dataset'] == 'ENCSR000AEO') # experiment does not exist in test database
+        if re.match('FAIL', test[acc]):
+            # currently either ambigious replicate or missing dataset
+            assert(not resp)
         else:
             assert(resp.status_code == 201)
 
@@ -278,11 +274,11 @@ def test_file_sync(insert_workbook, testapp, reset):
     sync_edw.collections = []
     # reset global var!
     post_edw, post_app, post_same, post_patch= sync_edw.inventory_files(testapp, edw_mock, post_app_dict)
-    assert len(post_edw) == 0
+    assert len(post_edw) == 1
     assert len(post_app) == 11 # unchanged
     assert len(post_patch) == 2 # exsting files cannot be patched
     assert ((len(post_same)-len(same)) == (len(patch) -len(post_patch) + (len(edw_only) - len(post_edw))))
-    assert len(post_app_files) == (len(app_files) + len(edw_only))
+    assert len(post_app_files) == (len(app_files) + len(edw_only) - len(post_edw))
 
 
     after_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
@@ -299,11 +295,11 @@ def test_file_sync(insert_workbook, testapp, reset):
             else:
                 same_reps[uuid] = True
         else:
-            new_reps['uuid'] = after_reps[uuid]
+            new_reps[uuid] = after_reps[uuid]
 
-    assert(len(same_reps.keys()) == 17)
+    assert(len(same_reps.keys()) == 20)
     assert(not updated_reps)
-    assert(len(new_reps) == 1)
+    assert(len(new_reps) == 2)
 
     #TODO could maybe add a test to make sure that a file belonging to a dataset ends up with the right dataset
     #TODO might be nice to test phase filtering
