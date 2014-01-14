@@ -436,9 +436,24 @@ def labs(testapp):
 
 
 @pytest.fixture
+def lab(labs):
+    return [l for l in labs if l['name'] == 'myers'][0]
+
+
+@pytest.fixture
 def users(testapp, labs):
     from . import sample_data
     return sample_data.load(testapp, 'user')
+
+
+@pytest.fixture
+def wrangler(users):
+    return [u for u in users if 'wrangler' in u.get('groups', ())][0]
+
+
+@pytest.fixture
+def submitter(users, lab):
+    return [u for u in users if lab['@id'] in u['submits_for']][0]
 
 
 @pytest.fixture
@@ -448,9 +463,30 @@ def awards(testapp):
 
 
 @pytest.fixture
+def award(awards):
+    return [a for a in awards if a['name'] == 'Myers'][0]
+
+
+@pytest.fixture
 def sources(testapp):
     from . import sample_data
     return sample_data.load(testapp, 'source')
+
+
+@pytest.fixture
+def source(sources):
+    return [s for s in sources if s['name'] == 'sigma'][0]
+
+
+@pytest.fixture
+def organisms(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'organism')
+
+
+@pytest.fixture
+def organism(organisms):
+    return [o for o in organisms if o['name'] == 'human'][0]
 
 
 @pytest.mark.fixture_cost(10)

@@ -1,24 +1,5 @@
 import pytest
 
-@pytest.fixture
-def lab(labs):
-    return [l for l in labs if l['name'] == 'myers'][0]
-
-
-@pytest.fixture
-def award(awards):
-    return [a for a in awards if a['name'] == 'Myers'][0]
-
-
-@pytest.fixture
-def wrangler(users):
-    return [u for u in users if 'wrangler' in u.get('groups', ())][0]
-
-
-@pytest.fixture
-def submitter(users, lab):
-    return [u for u in users if lab['@id'] in u['submits_for']][0]
-
 
 def remote_user_testapp(app, remote_user):
     from webtest import TestApp
