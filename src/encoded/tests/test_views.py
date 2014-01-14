@@ -167,8 +167,6 @@ def test_collection_put(testapp, item_type, execute_counter):
         assert res[key] == update[key]
 
 
-# Error due to test savepoint setup
-@pytest.mark.xfail
 def test_post_duplicate_uuid(testapp):
     from .sample_data import BAD_LABS
     testapp.post_json('/labs/', BAD_LABS[0], status=201)
