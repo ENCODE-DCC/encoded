@@ -1,6 +1,5 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 
-import transaction
 import venusian
 from abc import ABCMeta
 from collections import Mapping
@@ -503,7 +502,7 @@ class Item(object):
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
         session = DBSession()
-        sp = transaction.savepoint()
+        sp = session.begin_nested()
         resource = Resource(item_type, rid=uuid)
         cls.update_properties(resource, properties, sheets)
         session.add(resource)
@@ -511,13 +510,13 @@ class Item(object):
         keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
-            session.flush()
+            sp.commit()
         except (IntegrityError, FlushError):
-            pass
+            sp.rollback()
         else:
             return self
+
         # Try again more carefully
-        sp.rollback()
         cls.update_properties(resource, properties, sheets)
         session.add(resource)
         self = cls(parent, resource)
@@ -545,18 +544,18 @@ class Item(object):
 
     def update(self, properties, sheets=None):
         session = DBSession()
-        sp = transaction.savepoint()
+        sp = session.begin_nested()
         self.update_properties(self.model, properties, sheets)
         keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
-            session.flush()
+            sp.commit()
         except (IntegrityError, FlushError):
-            pass
+            sp.rollback()
         else:
             return
+
         # Try again more carefully
-        sp.rollback()
         self.update_properties(self.model, properties, sheets)
         try:
             session.flush()
