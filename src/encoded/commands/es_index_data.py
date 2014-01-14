@@ -43,13 +43,18 @@ def run(app, collections=None):
                     links[link].append(str(item.links[link].uuid))
 
             # Get keys for the item
-            keys = []
+            keys = {}
             for key in item.model.unique_keys:
-                keys.append(key.value)
+                keys[key.name] = key.value
 
             # Principals for the item
-            principals = {}
+            principals = []
             _principals = principals_allowed_by_permission(item, 'edit')
+            if type(_principals) is list:
+                for principal in _principals:
+                    principals.append(principal)
+            else:
+                principals.append(_principals)
 
             if item.name_key is None:
                 item_path = '/' + root.by_item_type[collection_name].__name__ \
@@ -69,10 +74,11 @@ def run(app, collections=None):
                     print e
                 else:
                     document = {
-                        'embedded': item_json.json,
-                        'unembedded': unembedded_item_json.json,
+                        'object': item_json.json,
+                        'unembedded_object': unembedded_item_json.json,
                         'links': links,
-                        'keys': keys
+                        'keys': keys,
+                        'principals_allowed_view': principals
                     }
                     es.index(collection_name, DOCTYPE, document, document_id)
                     counter = counter + 1

@@ -112,8 +112,8 @@ def index_settings(index):
 def new_mapping(mapping):
     return {
         'properties': {
-            'embedded': mapping,
-            'unembedded': {
+            'object': mapping,
+            'unembedded_object': {
                 'type': 'object',
                 'include_in_all': False,
                 'properties': {}
@@ -131,8 +131,9 @@ def new_mapping(mapping):
                 'include_in_all': False
             },
             'keys': {
-                'type': 'string',
-                'include_in_all': False
+                'type': 'object',
+                'include_in_all': False,
+                'properties': {}
             },
             'links': {
                 'type': 'object',
