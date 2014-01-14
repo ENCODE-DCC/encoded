@@ -16,17 +16,15 @@ def access_keys(app, connection):
     }
     testapp = TestApp(app, environ)
     from .sample_data import URL_COLLECTION
-    url = '/labs/'
     lab_name = {}
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
+    for item in URL_COLLECTION['lab']:
+        res = testapp.post_json('/lab', item, status=201)
         lab_name[item['name']] = item['uuid']
         lab_name[item['uuid']] = item['uuid']
 
-    url = '/users/'
     users = []
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
+    for item in URL_COLLECTION['user']:
+        res = testapp.post_json('/user', item, status=201)
         principals = [
             'system.Authenticated',
             'system.Everyone',
@@ -46,9 +44,8 @@ def access_keys(app, connection):
     access_keys = []
     for user in users:
         description = 'My programmatic key'
-        url = '/access-keys/'
         item = {'user': user['uuid'], 'description': description}
-        res = testapp.post_json(url, item, status=201)
+        res = testapp.post_json('/access_key', item, status=201)
         access_keys.append({
             'location': res.location,
             'access_key_id': res.json['access_key_id'],

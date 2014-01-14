@@ -430,18 +430,27 @@ def no_deps(request, connection):
 
 
 @pytest.fixture
-def users(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/labs/'
-    for item in URL_COLLECTION[url]:
-        testapp.post_json(url, item, status=201)
-    users = []
-    url = '/users/'
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-        res = testapp.get(res.location)
-        users.append(res.json)
-    return users
+def labs(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'lab')
+
+
+@pytest.fixture
+def users(testapp, labs):
+    from . import sample_data
+    return sample_data.load(testapp, 'user')
+
+
+@pytest.fixture
+def awards(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'award')
+
+
+@pytest.fixture
+def sources(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'source')
 
 
 @pytest.mark.fixture_cost(10)

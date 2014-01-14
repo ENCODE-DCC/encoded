@@ -1,80 +1,63 @@
 import pytest
 
 @pytest.fixture
-def users(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/labs/'
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-
-    url = '/awards/'
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-
-    url = '/users/'
-    users = []
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-        users.append(res.json['@graph'][0])
-    return users
+def lab(labs):
+    return [l for l in labs if l['name'] == 'myers'][0]
 
 
 @pytest.fixture
-def wrangler(users, app, external_tx, zsa_savepoints):
-    user = [u for u in users if 'wrangler' in u['groups']][0]
+def award(awards):
+    return [a for a in awards if a['name'] == 'Myers'][0]
+
+
+@pytest.fixture
+def wrangler(users):
+    return [u for u in users if 'wrangler' in u.get('groups', ())][0]
+
+
+@pytest.fixture
+def submitter(users, lab):
+    return [u for u in users if lab['@id'] in u['submits_for']][0]
+
+
+def remote_user_testapp(app, remote_user):
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': str(user['uuid']),
+        'REMOTE_USER': str(remote_user),
     }
     return TestApp(app, environ)
 
 
 @pytest.fixture
-def submitter(users, app, external_tx, zsa_savepoints):
-    user = [u for u in users if not u['groups']][0]
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': str(user['uuid']),
-    }
-    return TestApp(app, environ)
+def wrangler_testapp(wrangler, app, external_tx, zsa_savepoints):
+    return remote_user_testapp(app, wrangler['uuid'])
 
 
 @pytest.fixture
-def lab():
-    return 'b635b4ed-dba3-4672-ace9-11d76a8d03af'
+def submitter_testapp(submitter, app, external_tx, zsa_savepoints):
+    return remote_user_testapp(app, submitter['uuid'])
 
 
-@pytest.fixture
-def award():
-    return 'Myers'
+@pytest.mark.parametrize('item_type', ['organism', 'source'])
+def test_wrangler_post_non_lab_collection(wrangler_testapp, item_type):
+    from . import sample_data
+    sample_data.load(wrangler_testapp, item_type)
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_wrangler_post_non_lab_collection(wrangler, url):
+@pytest.mark.parametrize('item_type', ['organism', 'source'])
+def test_submitter_post_non_lab_collection(submitter_testapp, item_type):
     from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[url]
-    for item in collection:
-        res = wrangler.post_json(url, item, status=201)
-        assert item['name'] in res.location
+    item = URL_COLLECTION[item_type][0].copy()
+    del item['uuid']
+    submitter_testapp.post_json('/' + item_type, item, status=403)
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_submitter_post_non_lab_collection(submitter, url):
-    from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[url]
-    for item in collection:
-        item = item.copy()
-        del item['uuid']
-        submitter.post_json(url, item, status=403)
-
-
-def test_submitter_post_update_experiment(submitter, lab, award):
-    experiment = {'lab': lab, 'award': award}
-    res = submitter.post_json('/experiment/', experiment, status=201)
+def test_submitter_post_update_experiment(submitter_testapp, lab, award):
+    experiment = {'lab': lab['@id'], 'award': award['@id']}
+    res = submitter_testapp.post_json('/experiment', experiment, status=201)
     location = res.location
-    res = submitter.get(location + '@@testing-allowed?permission=edit', status=200)
+    res = submitter_testapp.get(location + '@@testing-allowed?permission=edit', status=200)
     assert res.json['has_permission'] is True
-    assert 'submits_for.%s' % lab in res.json['principals_allowed_by_permission']
-    submitter.patch_json(location, {'description': 'My experiment'}, status=200)
+    assert 'submits_for.%s' % lab['uuid'] in res.json['principals_allowed_by_permission']
+    submitter_testapp.patch_json(location, {'description': 'My experiment'}, status=200)
