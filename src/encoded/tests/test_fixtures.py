@@ -12,9 +12,10 @@ def minitestdata(app, connection):
     }
     testapp = TestApp(app, environ)
 
-    from . import sample_data
+    from .sample_data import URL_COLLECTION
     for item_type in ['organism']:  # , 'source', 'user']:
-        sample_data.load(testapp, item_type)
+        item = URL_COLLECTION[item_type][0]
+        testapp.post_json('/' + item_type, item, status=201)
 
     yield
     tx.rollback()
