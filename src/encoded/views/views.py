@@ -382,7 +382,7 @@ class Target(Collection):
 
         @property
         def __name__(self):
-            ns = self.template_namespace()
+            ns = self.template_namespace(self.properties.copy())
             return u'{label}-{organism_name}'.format(**ns)
 
 
