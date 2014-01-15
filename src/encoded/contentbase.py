@@ -134,6 +134,34 @@ def maybe_include_embedded(request, result):
         result['_embedded'] = {'resources': embedded}
 
 
+# No-validation validators
+
+def no_validate_item_content_post(context, request):
+    data = request.json
+    request.validated.update(data)
+
+
+def no_validate_item_content_put(context, request):
+    data = request.json
+    if 'uuid' in data:
+        if UUID(data['uuid']) != context.uuid:
+            msg = 'uuid may not be changed'
+            raise ValidationFailure('body', ['uuid'], msg)
+    request.validated.update(data)
+
+
+def no_validate_item_content_patch(context, request):
+    data = context.properties.copy()
+    data.update(request.json)
+    if 'uuid' in data:
+        if UUID(data['uuid']) != context.uuid:
+            msg = 'uuid may not be changed'
+            raise ValidationFailure('body', ['uuid'], msg)
+    request.validated.update(data)
+
+
+# Schema checking validators
+
 def validate_item_content_post(context, request):
     data = request.json
     schema = context.schema
@@ -992,12 +1020,23 @@ def collection_list(context, request):
 
 @view_config(context=Collection, permission='add', request_method='POST',
              validators=[validate_item_content_post])
-def collection_add(context, request):
+@view_config(context=Collection, permission='add_unvalidated', request_method='POST',
+             validators=[no_validate_item_content_post],
+             request_param=['validate=false'])
+def collection_add(context, request, render=None):
+    if render is None:
+        render = request.params.get('render', True)
     properties = request.validated
     item = context.add(properties)
     request.registry.notify(Created(item, request))
-    item_uri = request.resource_path(item)
-    rendered = embed(request, item_uri + '?embed=false')
+    if render == 'uuid':
+        item_uri = '/%s' % item.uuid
+    else:
+        item_uri = request.resource_path(item)
+    if asbool(render) is True:
+        rendered = embed(request, item_uri + '?embed=false')
+    else:
+        rendered = item_uri
     request.response.status = 201
     request.response.location = item_uri
     result = {
@@ -1037,19 +1076,30 @@ def item_view(context, request):
              validators=[validate_item_content_put])
 @view_config(context=Item, permission='edit', request_method='PATCH',
              validators=[validate_item_content_patch])
-def item_edit(context, request, render=True):
+@view_config(context=Item, permission='edit_unvalidated', request_method='PUT',
+             validators=[no_validate_item_content_put],
+             request_param=['validate=false'])
+@view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
+             validators=[no_validate_item_content_patch],
+             request_param=['validate=false'])
+def item_edit(context, request, render=None):
     """ This handles both PUT and PATCH, difference is the validator
 
     PUT - replaces the current properties with the new body
     PATCH - updates the current properties with those supplied.
     """
+    if render is None:
+        render = request.params.get('render', True)
     properties = request.validated
     # This *sets* the property sheet
     request.registry.notify(BeforeModified(context, request))
     context.update(properties)
     request.registry.notify(AfterModified(context, request))
-    item_uri = request.resource_path(context)
-    if render:
+    if render == 'uuid':
+        item_uri = '/%s' % context.uuid
+    else:
+        item_uri = request.resource_path(context)
+    if asbool(render) is True:
         rendered = embed(request, item_uri + '?embed=false')
     else:
         rendered = item_uri
