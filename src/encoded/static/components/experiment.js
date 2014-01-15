@@ -107,7 +107,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                         <dt>Project</dt>
-                        <dd>{context.award.rfa}</dd>
+                        <dd>{context.award.project}</dd>
 
                     </dl>
                 </div>

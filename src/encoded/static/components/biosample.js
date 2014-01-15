@@ -82,7 +82,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dd hidden={!context.lot_id}>{context.lot_id}</dd>
 
                         <dt>Project</dt>
-                        <dd>{context.award.rfa}</dd>
+                        <dd>{context.award.project}</dd>
 
                         <dt>Submitted by</dt>
                         <dd>{context.submitted_by.title}</dd>
