@@ -129,6 +129,7 @@ def test_patch_new_schema_version(content, testapp, monkeypatch):
     assert res.json['schema_version'] == '1'
 
     monkeypatch.setitem(properties['schema_version'], 'default', '2')
+    monkeypatch.setattr(TestingPostPutPatch, 'schema_version', '2')
     monkeypatch.setitem(properties, 'new_property', {'default': 'new'})
     res = testapp.patch_json(url, {}, status=200)
     assert res.json['@graph'][0]['schema_version'] == '2'
