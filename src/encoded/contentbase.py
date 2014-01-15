@@ -1087,6 +1087,14 @@ def item_view(context, request):
     return properties
 
 
+@view_config(context=Item, permission='view', request_method='GET',
+             request_param=['raw'], additional_permission='view_raw')
+def item_view_raw(context, request):
+    if asbool(request.params.get('upgrade', True)):
+        return context.upgrade_properties(request)
+    return context.properties
+
+
 @view_config(context=Item, permission='edit', request_method='PUT',
              validators=[validate_item_content_put])
 @view_config(context=Item, permission='edit', request_method='PATCH',

@@ -31,5 +31,12 @@ def test_biosample_upgrade(app, biosample_1):
 def test_biosample_upgrade_inline(testapp, biosample_1):
     res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
     location = res.location
+
+    # The properties are stored un-upgraded.
+    res = testapp.get(location+'?raw=true&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == '1'
+
+    # When the item is fetched, it is upgraded automatically.
     res = testapp.get(location).maybe_follow()
     assert res.json['schema_version'] == '2'
+

@@ -56,6 +56,7 @@ class Collection(BaseCollection):
         STATUS_ACL = {
             'CURRENT': [
                 (Allow, 'role.lab_submitter', 'edit'),
+                (Allow, 'role.lab_submitter', 'view_raw'),
             ],
             'DELETED': [],
         }
