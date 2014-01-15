@@ -40,3 +40,8 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
     res = testapp.get(location).maybe_follow()
     assert res.json['schema_version'] == '2'
 
+    res = testapp.patch_json(location, {})
+
+    # The stored properties are now upgraded.
+    res = testapp.get(location+'?raw=true&upgrade=false').maybe_follow()
+    assert res.json['schema_version'] == '2'

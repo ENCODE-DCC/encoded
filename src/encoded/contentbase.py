@@ -187,7 +187,7 @@ def validate_item_content_put(context, request):
 
 
 def validate_item_content_patch(context, request):
-    data = context.properties.copy()
+    data = context.upgrade_properties(request)
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
