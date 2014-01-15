@@ -121,15 +121,17 @@ def test_patch(content, testapp):
 
 
 def test_patch_new_schema_version(content, testapp, monkeypatch):
-    from .testing_views import TestingPostPutPatch
-    properties = TestingPostPutPatch.schema['properties']
+    from ..contentbase import LOCATION_ROOT
+    root = testapp.app.registry[LOCATION_ROOT]
+    collection = root['testing_post_put_patch']
+    properties = collection.schema['properties']
 
     url = content['@id']
     res = testapp.get(url)
     assert res.json['schema_version'] == '1'
 
     monkeypatch.setitem(properties['schema_version'], 'default', '2')
-    monkeypatch.setattr(TestingPostPutPatch, 'schema_version', '2')
+    monkeypatch.setattr(collection, 'schema_version', '2')
     monkeypatch.setitem(properties, 'new_property', {'default': 'new'})
     res = testapp.patch_json(url, {}, status=200)
     assert res.json['@graph'][0]['schema_version'] == '2'

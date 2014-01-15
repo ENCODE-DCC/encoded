@@ -160,7 +160,6 @@ def main(global_config, **settings):
     config.include('.persona')
     config.include('pyramid_multiauth')
     config.include('.migrator')
-    config.include('.upgrade')
 
     from .local_roles import LocalRolesAuthorizationPolicy
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
@@ -171,6 +170,10 @@ def main(global_config, **settings):
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')
         config.include(tests_js)
+
+    # Load upgrades last so that all views (including testing views) are
+    # registered.
+    config.include('.upgrade')
 
     app = config.make_wsgi_app()
 
