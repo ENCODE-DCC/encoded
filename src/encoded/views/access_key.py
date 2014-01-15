@@ -180,6 +180,7 @@ def edw_key_create(context, request):
         raise ValidationFailure()
 
     request.validated.clear()
+    request.validated['schema_version'] = '1'
     request.validated['access_key_id'] = username
     request.validated['secret_access_key_hash'] = pwhash
     request.validated['user'] = str(user.uuid)
