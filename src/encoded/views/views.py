@@ -320,8 +320,8 @@ class Biosample(Collection):
             'characterizations': ('biosample_characterization', 'characterizes'),
         }
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']
@@ -372,8 +372,8 @@ class Target(Collection):
             {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
         ]
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             root = find_root(self)
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
@@ -588,8 +588,8 @@ class Experiments(Collection):
         name_key = 'accession'
         keys = ACCESSION_KEYS + ALIAS_KEYS
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']

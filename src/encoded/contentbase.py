@@ -444,6 +444,10 @@ class Item(object):
         return self.__parent__.schema
 
     @property
+    def schema_version(self):
+        return self.__parent__.schema_version
+
+    @property
     def properties(self):
         return self.model['']
 
@@ -489,9 +493,19 @@ class Item(object):
                     value.append(item)
         return links
 
-    def __json__(self, request):
+    def upgrade_properties(self, request):
         properties = self.properties.copy()
-        templated = self.expand_template(request)
+        current_version = properties.get('schema_version', '')
+        target_version = self.schema_version
+        if target_version is not None and current_version != target_version:
+            properties = request.upgrade(
+                self.item_type, properties, current_version, target_version,
+                context=self)
+        return properties
+
+    def __json__(self, request):
+        properties = self.upgrade_properties(request)
+        templated = self.expand_template(properties, request)
         properties.update(templated)
         for name, value in self.links.iteritems():
             # XXXX Should this be {'@id': url, '@type': [...]} instead?
@@ -503,19 +517,20 @@ class Item(object):
             properties[name] = [request.resource_path(item) for item in value]
         return properties
 
-    def template_namespace(self, request=None):
-        ns = self.properties.copy()
+    def template_namespace(self, properties, request=None):
+        ns = properties.copy()
         ns['item_type'] = self.item_type
         ns['base_types'] = self.base_types
         ns['uuid'] = self.uuid
+        # When called by update_keys() there is no request.
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)
             ns['item_uri'] = request.resource_path(self)
             ns['permission'] = permission_checker(self, request)
         return ns
 
-    def expand_template(self, request):
-        ns = self.template_namespace(request)
+    def expand_template(self, properties, request):
+        ns = self.template_namespace(properties, request)
         compiled = ObjectTemplate(self.merged_template)
         return compiled(ns)
 
@@ -598,7 +613,7 @@ class Item(object):
 
     def update_keys(self):
         session = DBSession()
-        ns = self.template_namespace()
+        ns = self.template_namespace(self.properties)
         compiled = ObjectTemplate(self.merged_keys)
         _keys = [(key['name'], key['value']) for key in compiled(ns)]
         keys = set(_keys)

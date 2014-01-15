@@ -11,7 +11,9 @@ def includeme(config):
     config.add_directive('add_upgrade', add_upgrade)
     config.add_directive('add_upgrade_step', add_upgrade_step)
     config.add_directive('set_upgrade_finalizer', set_upgrade_finalizer)
-    config.add_directive('set_default_upgrade_finalizer', set_default_upgrade_finalizer)
+    config.add_directive(
+        'set_default_upgrade_finalizer', set_default_upgrade_finalizer)
+    config.add_request_method(upgrade, 'upgrade')
 
 
 class ConfigurationError(Exception):
@@ -46,9 +48,11 @@ class Migrator(object):
         schema_migrator = SchemaMigrator(schema_name, version, finalizer)
         self.schema_migrators[schema_name] = schema_migrator
 
-    def upgrade(self, schema_name, value, current_version='', target_version=None, **kw):
+    def upgrade(self, schema_name, value,
+                current_version='', target_version=None, **kw):
         schema_migrator = self.schema_migrators[schema_name]
-        return schema_migrator.upgrade(value, current_version, target_version, **kw)
+        return schema_migrator.upgrade(
+            value, current_version, target_version, **kw)
 
     def __getitem__(self, schema_name):
         return self.schema_migrators[schema_name]
@@ -107,7 +111,8 @@ class SchemaMigrator(object):
             version = step.dest
 
         if version != target_version:
-            raise UpgradePathNotFound(self.__name__, current_version, target_version, version)
+            raise UpgradePathNotFound(
+                self.__name__, current_version, target_version, version)
 
         # Apply the steps
 
@@ -221,3 +226,12 @@ def default_upgrade_finalizer(finalizer):
 
     venusian.attach(finalizer, callback, category='migrator')
     return finalizer
+
+
+# Upgrade
+def upgrade(request, schema_name, value,
+            current_version='', target_version=None, **kw):
+    migrator = request.registry['migrator']
+    return migrator.upgrade(
+        schema_name, value, current_version='', target_version=None,
+        request=request, **kw)

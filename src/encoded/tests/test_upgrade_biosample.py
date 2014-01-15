@@ -26,3 +26,10 @@ def test_biosample_upgrade(app, biosample_1):
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
     assert value['starting_amount'] == 1000
     assert value['schema_version'] == '2'
+
+
+def test_biosample_upgrade_inline(testapp, biosample_1):
+    res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
+    location = res.location
+    res = testapp.get(location).maybe_follow()
+    assert res.json['schema_version'] == '2'
