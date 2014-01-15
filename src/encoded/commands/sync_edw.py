@@ -374,7 +374,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
 
     url = collection_url(FILES)
     if not dry_run:
-        resp = app.post_json(url, fileinfo, expect_errors=True)
+        resp = app.post_json(url, fileinfo, expect_errors=True)  #?collection_sourcd=db
         logger.info(str(resp) + "")
         if resp.status_int == 409:
             logger.warning('Failed POST File %s: File already exists', accession)
@@ -440,7 +440,7 @@ def get_collection(app, collection):
     # NOTE: perhaps limit=all should be default for JSON output
     # and app should hide @graph (provide an iterator)
     url = collection_url(collection)
-    url += "?limit=all"
+    url += "?limit=all&collection_source=db"
     resp = app.get(url)
     return resp.json['@graph']
 
