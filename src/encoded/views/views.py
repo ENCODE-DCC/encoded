@@ -544,7 +544,7 @@ class Experiments(Collection):
         ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
-        ('award.rfa', 'Project'),
+        ('award.project', 'Project'),
     ])
     
     class Item(Collection.Item):
