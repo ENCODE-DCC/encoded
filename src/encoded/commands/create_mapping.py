@@ -109,8 +109,11 @@ def index_settings(index):
     }
 
 
-def new_mapping(mapping):
+def es_mapping(mapping):
     return {
+        '_all': {
+            'analyzer': 'encoded_index_analyzer'
+        },
         'properties': {
             'object': mapping,
             'unembedded_object': {
@@ -207,7 +210,6 @@ def collection_mapping(collection, embed=True):
                 new_mapping = mapping['properties']
             else:
                 new_mapping = new_mapping[prop]['properties']
-    mapping['_all'] = {'analyzer': 'encoded_index_analyzer'}
     return mapping
 
 
@@ -242,7 +244,7 @@ def run(app, collections=None, dry_run=False):
             es.create_index(collection_name, index_settings(collection_name))
 
         if collection_name is not 'meta':
-            mapping = new_mapping(mapping)
+            mapping = es_mapping(mapping)
         es.put_mapping(collection_name, doc_type, {doc_type: mapping})
         es.refresh(collection_name)
 
