@@ -21,6 +21,7 @@ from ..contentbase import (
     collection_add,
     item_edit,
     item_view,
+    item_view_raw,
     location,
     validate_item_content_post,
     validate_item_content_put,
@@ -126,6 +127,17 @@ def access_key_edit(context, request):
 @view_config(context=AccessKey.Item, permission='view', request_method='GET')
 def access_key_view(context, request):
     properties = item_view(context, request)
+    try:
+        del properties['secret_access_key_hash']
+    except KeyError:
+        pass
+    return properties
+
+
+@view_config(context=AccessKey.Item, permission='view', request_method='GET',
+             request_param=['raw'], additional_permission='view_raw')
+def access_key_view_raw(context, request):
+    properties = item_view_raw(context, request)
     try:
         del properties['secret_access_key_hash']
     except KeyError:
