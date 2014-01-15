@@ -38,8 +38,14 @@ def includeme(config):
 @default_upgrade_finalizer
 def finalizer(value, system, version):
     # Update the default properties
-    context = system['context']
+    context = system.get('context')
+    if context is None:
+        value['schema_version'] = version
+        return
+
+    value['uuid'] = str(context.uuid)
     validated, errors = validate(context.schema, value, value)
+    del value['uuid']
     if errors:
         raise Exception(errors)
 
