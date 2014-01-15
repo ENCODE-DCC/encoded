@@ -27,6 +27,7 @@ ACCESSION_KEYS = [
         'value': '{accession}',
         '$repeat': 'accession alternate_accessions',
         '$templated': True,
+        '$condition': 'alternate_accessions',
     },
 ]
 
