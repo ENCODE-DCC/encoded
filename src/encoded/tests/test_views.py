@@ -96,14 +96,10 @@ def _test_antibody_approval_creation(testapp):
     assert len(res.json['@graph']) == 1
 
 
-@pytest.mark.xfail
 def test_load_sample_data(testapp):
-    from .sample_data import URL_COLLECTION
-    for url, collection in URL_COLLECTION.iteritems():
-        for item in collection:
-            testapp.post_json(url, item, status=201)
-        res = testapp.get(url + '?limit=all')
-        assert len(res.json['@graph']) == len(collection)
+    from . import sample_data
+    for item_type in sample_data.URL_COLLECTION:
+        sample_data.load(testapp, item_type)
 
 
 @pytest.mark.slow
@@ -121,30 +117,22 @@ def test_collection_limit(workbook, testapp):
     assert len(res.json['@graph']) == 2
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_post(testapp, url):
-    from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[url]
-    for item in collection:
-        res = testapp.post_json(url, item, status=201)
-        assert item['name'] in res.location
+@pytest.mark.parametrize('item_type', ['organism', 'source'])
+def test_collection_post(testapp, item_type):
+    from . import sample_data
+    sample_data.load(testapp, item_type)
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_post_bad_json(testapp, url):
+@pytest.mark.parametrize('item_type', ['organism', 'source'])
+def test_collection_post_bad_json(testapp, item_type):
     collection = [{'foo': 'bar'}]
     for item in collection:
-        res = testapp.post_json(url, item, status=422)
+        res = testapp.post_json('/' + item_type, item, status=422)
         assert res.json['errors']
 
 
-def test_actions_filtered_by_permission(testapp, anontestapp):
-    from .sample_data import URL_COLLECTION
-    url = '/sources/'
-    collection = URL_COLLECTION[url]
-    item = collection[0]
-    res = testapp.post_json(url, item, status=201)
-    location = res.location
+def test_actions_filtered_by_permission(testapp, anontestapp, sources):
+    location = sources[0]['@id']
 
     res = testapp.get(location)
     assert any(action for action in res.json['actions'] if action['name'] == 'edit')
@@ -153,19 +141,18 @@ def test_actions_filtered_by_permission(testapp, anontestapp):
     assert not any(action for action in res.json['actions'] if action['name'] == 'edit')
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_put(testapp, url, execute_counter):
+@pytest.mark.parametrize('item_type', ['organism', 'source'])
+def test_collection_put(testapp, item_type, execute_counter):
     from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[url]
-    initial = collection[0]
-    res = testapp.post_json(url, initial, status=201)
+    collection = URL_COLLECTION[item_type]
+    initial = collection[0].copy()
+    res = testapp.post_json('/' + item_type, initial, status=201)
     item_url = res.json['@graph'][0]['@id']
     uuid = initial['uuid']
 
     with execute_counter.expect(2):
         res = testapp.get(item_url).json
 
-    del initial['uuid']
     for key in initial:
         assert res[key] == initial[key]
 
@@ -180,8 +167,6 @@ def test_collection_put(testapp, url, execute_counter):
         assert res[key] == update[key]
 
 
-# Error due to test savepoint setup
-@pytest.mark.xfail
 def test_post_duplicate_uuid(testapp):
     from .sample_data import BAD_LABS
     testapp.post_json('/labs/', BAD_LABS[0], status=201)
@@ -221,16 +206,16 @@ def test_users_list_denied_anon(anontestapp):
 
 
 def test_etags(testapp):
-    collection_url = '/organisms/'
+    item_type = 'organism'
     from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[collection_url]
+    collection = URL_COLLECTION[item_type]
     item = collection[0]
-    res = testapp.post_json(collection_url, item, status=201)
+    res = testapp.post_json('/' + item_type, item, status=201)
     url = res.location
     res = testapp.get(url, status=200)
     etag = res.etag
     res = testapp.get(url, headers={'If-None-Match': etag}, status=304)
     item = collection[1]
-    res = testapp.post_json(collection_url, item, status=201)
+    res = testapp.post_json('/' + item_type, item, status=201)
     res = testapp.get(url, headers={'If-None-Match': etag}, status=200)
     assert res.etag != etag
