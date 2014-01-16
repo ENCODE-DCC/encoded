@@ -1,5 +1,6 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 
+import logging
 import venusian
 from abc import ABCMeta
 from collections import Mapping
@@ -68,6 +69,8 @@ PHASE1_5_CONFIG = -15
 
 LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
+
+logger = logging.getLogger(__name__)
 
 
 def includeme(config):
