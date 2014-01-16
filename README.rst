@@ -22,7 +22,7 @@ First run buildout::
     $ bin/buildout
 
 Create ElasticSearch mapping for ENCODE data::
-    
+
     $ bin/create-mapping production.ini
 
 Index ENCODE data in ElasticSearch::
@@ -79,17 +79,22 @@ To start productiondata server (Postgres, AuthZ, all data) use:
     $bin/pserve --help for more pyramid options
     --log-file [filename] is a useful argument
 
-
 Database setup on VMs::
 
-    # service postgresql-9.2 initdb
-    # service postgresql-9.2 start
+    # service postgresql-9.4 initdb
+    # service postgresql-9.3 start
     # sudo -u postgres createuser --createdb encoded
 
 Then as the encoded user::
 
     $ createdb encoded
 
+To dump a postgres database:
+    pg_dump -Fc encoded > FILE_NAME  (as user encoded on demo vm)
+    (FILE_NAME for production is ~/encoded/archive/encoded-YYYYMMDD.dump)
+
+To restore a postgres database:
+    pg_restore -d encoded FILE_NAME (as user encoded on demo vm)
 
 Notes on SASS/Compass
 =====================
