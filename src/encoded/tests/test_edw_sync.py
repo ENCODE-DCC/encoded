@@ -83,7 +83,6 @@ def reset(connection, app):
     create_mapping.run(app)
     es_index_data.run(app)
 
-'''
 @pytest.mark.slow
 def test_format_app_fileinfo_expanded(workbook, testapp):
     # Test extracting EDW-relevant fields from encoded file.json
@@ -127,7 +126,6 @@ def test_list_new(workbook, testapp):
     assert new_accs == sorted(edw_test_data.new_out)
 
 @pytest.mark.slow
-@pytest.mark.xfail
 def test_import_file(insert_workbook, testapp, reset):
     # Test import of new file to encoded
     # this tests adds replicates, but never checks their validity
@@ -189,13 +187,12 @@ def test_encode3_experiments(insert_workbook, testapp, reset):
             converted_file.pop('test', None) # this is in the file for notation purposes only
             edw_mock_p3[fileinfo['accession']] = converted_file
 
-    assert len(edw_mock_p3) == 6
+    assert len(edw_mock_p3) == 10
 
     app_files_p3 = sync_edw.get_app_fileinfo(testapp, phase='3')
 
     assert len(app_files_p3) == 14
 
-'''
 @pytest.mark.slow
 def test_file_sync(insert_workbook, testapp, reset):
 

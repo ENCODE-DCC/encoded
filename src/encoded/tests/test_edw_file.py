@@ -7,14 +7,14 @@ pytestmark = [pytest.mark.edw_file]
 
 ## TODO: This should be converted to a smoke-type test after build/install is complete
 
-#@pytest.mark.xfail
+@pytest.mark.skipif(True, reason='Travis-CI cannot use external DB test')
 # travis cannot connect to EDW
 def test_make_edw():
 
     edw = edw_file.make_edw()
     assert(type(edw)==Engine)
 
-#@pytest.mark.xfail
+@pytest.mark.skipif(True, reason='Travis-CI cannot use external DB test')
 # travis cannot connect to EDW
 def test_get_edw_files():
 
@@ -30,7 +30,7 @@ def test_get_edw_files():
         assert(f['md5sum'])
         assert(f['dataset'])
 
-#@pytest.mark.xfail
+@pytest.mark.skipif(True, reason='Travis-CI cannot use external DB test')
 # travis cannot connect to EDW
 def test_get_encode2_encode3():
     edw = edw_file.make_edw()
