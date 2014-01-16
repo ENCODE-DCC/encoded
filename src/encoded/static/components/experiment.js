@@ -107,7 +107,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                         <dt>Project</dt>
-                        <dd>{context.award.rfa}</dd>
+                        <dd>{context.award.project}</dd>
 
                     </dl>
                 </div>
@@ -296,6 +296,7 @@ var FilesLinked = module.exports.FilesLinked = function (props) {
                     <tr>
                         <th>Accession</th>
                         <th>File type</th>
+                        <th>Output type</th>
                         <th>Associated replicates</th>
                         <th>Added by</th>
                         <th>Date added</th>
@@ -309,6 +310,7 @@ var FilesLinked = module.exports.FilesLinked = function (props) {
                         <tr key={index}>
                             <td>{file.accession}</td>
                             <td>{file.file_format}</td>
+                            <td>{file.output_type}</td>
                             <td>{file.replicate ?
                                 '(' + file.replicate.biological_replicate_number + ', ' + file.replicate.technical_replicate_number + ')'
                                 : null}

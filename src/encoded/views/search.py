@@ -123,7 +123,7 @@ def search(context, request):
 
         s = es.search(query, index=indices, size=99999)
         result['count']['targets'] = result['count']['antibodies'] = result['count']['experiments'] = result['count']['biosamples'] = 0
-        for hit in s['hits']['hits']:
+        for count, hit in enumerate(s['hits']['hits']):
             result_hit = hit['fields']
             if result_hit['@type'][0] == 'antibody_approval':
                 result['count']['antibodies'] += 1
@@ -133,11 +133,17 @@ def search(context, request):
                 result['count']['experiments'] += 1
             elif result_hit['@type'][0] == 'target':
                 result['count']['targets'] += 1
-            result['@graph'].append(result_hit)
+            if 'limit' in params:
+                result['@graph'].append(result_hit)
+            elif count < 100:
+                result['@graph'].append(result_hit)
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
-            result['notification'] = 'No results found'
+            if len(search_term) < 3:
+                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
+            else:
+                result['notification'] = 'No results found'
         return result
     else:
         search_type = params['type']
@@ -219,5 +225,8 @@ def search(context, request):
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
-            result['notification'] = 'No results found'
+            if len(search_term) < 3:
+                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
+            else:
+                result['notification'] = 'No results found'
         return result

@@ -21,6 +21,7 @@ from ..contentbase import (
     collection_add,
     item_edit,
     item_view,
+    item_view_raw,
     location,
     validate_item_content_post,
     validate_item_content_put,
@@ -133,6 +134,17 @@ def access_key_view(context, request):
     return properties
 
 
+@view_config(context=AccessKey.Item, permission='view', request_method='GET',
+             request_param=['raw'], additional_permission='view_raw')
+def access_key_view_raw(context, request):
+    properties = item_view_raw(context, request)
+    try:
+        del properties['secret_access_key_hash']
+    except KeyError:
+        pass
+    return properties
+
+
 # Consider if
 
 
@@ -168,6 +180,7 @@ def edw_key_create(context, request):
         raise ValidationFailure()
 
     request.validated.clear()
+    request.validated['schema_version'] = '1'
     request.validated['access_key_id'] = username
     request.validated['secret_access_key_hash'] = pwhash
     request.validated['user'] = str(user.uuid)

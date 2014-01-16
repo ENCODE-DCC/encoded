@@ -13,10 +13,9 @@ def minitestdata(app, connection):
     testapp = TestApp(app, environ)
 
     from .sample_data import URL_COLLECTION
-    for url in ['/organisms/']:  # , '/sources/', '/users/']:
-        collection = URL_COLLECTION[url]
-        for item in collection[:1]:
-            testapp.post_json(url, item, status=201)
+    for item_type in ['organism']:  # , 'source', 'user']:
+        item = URL_COLLECTION[item_type][0]
+        testapp.post_json('/' + item_type, item, status=201)
 
     yield
     tx.rollback()
@@ -33,11 +32,9 @@ def minitestdata2(app, connection):
     }
     testapp = TestApp(app, environ)
 
-    from .sample_data import URL_COLLECTION
-    for url in ['/organisms/']:  # , '/sources/', '/users/']:
-        collection = URL_COLLECTION[url]
-        for item in collection:
-            testapp.post_json(url, item, status=201)
+    from . import sample_data
+    for item_type in ['organism']:  # , 'source', 'user']:
+        sample_data.load(testapp, item_type)
 
     yield
     tx.rollback()
@@ -49,36 +46,36 @@ def test_fixtures1(testapp):
 
     Still need to inspect the sql log to verify fixture correctness.
     """
-    url = '/organisms/'
-    res = testapp.get(url)
+    item_type = 'organism'
+    res = testapp.get('/' + item_type).maybe_follow()
     items = res.json['@graph']
     count1 = len(items)
     assert len(items)
 
     # Trigger an error
     item = {'foo': 'bar'}
-    res = testapp.post_json(url, item, status=422)
+    res = testapp.post_json('/' + item_type, item, status=422)
     assert res.json['errors']
 
-    res = testapp.get(url)
+    res = testapp.get('/' + item_type).maybe_follow()
     items = res.json['@graph']
     assert len(items)
 
     from .sample_data import URL_COLLECTION
-    item = URL_COLLECTION[url][1]
-    testapp.post_json(url, item, status=201)
+    item = URL_COLLECTION[item_type][1]
+    testapp.post_json('/' + item_type, item, status=201)
 
-    res = testapp.get(url)
+    res = testapp.get('/' + item_type).maybe_follow()
     items = res.json['@graph']
     count2 = len(items)
     assert count2 == count1 + 1
 
     # Trigger an error
     item = {'foo': 'bar'}
-    res = testapp.post_json(url, item, status=422)
+    res = testapp.post_json('/' + item_type, item, status=422)
     assert res.json['errors']
 
-    res = testapp.get(url)
+    res = testapp.get('/' + item_type).maybe_follow()
     items = res.json['@graph']
     assert len(items) == count2
 

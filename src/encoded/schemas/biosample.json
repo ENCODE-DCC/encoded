@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "accession": {
             "accessionType": "BS"
@@ -223,7 +223,7 @@
         "starting_amount": {
             "title": "Starting amount",
             "description": "The initial quantity of cells or tissue obtained.",
-            "type": "string"
+            "type": "number"
         },
         "starting_amount_units": {
             "title": "Starting amount units",
@@ -274,6 +274,7 @@
     },
     "boost_values": {
         "accession": 1.0,
+        "alternate_accessions": 1.0,
         "biosample_term_id": 1.0,
         "biosample_term_name": 1.5,
         "organ_slims": 1.2,
