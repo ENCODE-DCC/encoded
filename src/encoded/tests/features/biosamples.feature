@@ -4,7 +4,7 @@ Feature: Biosamples
     Scenario: Detail page
         When I visit "/biosamples/ENCBS000AAA/"
         Then I should see "Richard Myers, HAIB"
-        And I should see "ENCODE2"
+        And I should see "ENCODE"
 
     Scenario: Table
         When I visit "/biosamples/"

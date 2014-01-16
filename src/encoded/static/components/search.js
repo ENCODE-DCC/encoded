@@ -80,7 +80,7 @@ var Dbxref = dbxref.Dbxref;
                             {result['target.label'] ? result['target.label'] : null}
                             {result['target.label'] ? <br /> : null}
                             <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.rfa']}</strong>: {result['award.rfa']}
+                            <strong>{columns['award.project']}</strong>: {result['award.project']}
                         </div>
                 </li>
             );
