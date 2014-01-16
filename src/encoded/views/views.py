@@ -219,6 +219,7 @@ class Construct(Collection):
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
+    item_embedded = set(['target'])
 
 
 class Characterization(Collection):
@@ -570,6 +571,7 @@ class Experiments(Collection):
             'replicates.library.biosample.source',
             'replicates.library.biosample.organism',
             'replicates.library.biosample.donor.organism',
+            'replicates.library.treatments',
             'replicates.platform',
             'submitted_by',
             'lab',

@@ -3,6 +3,7 @@ import pytest
 pytest_plugins = 'encoded.tests.bdd'
 
 
+@pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     from .. import test_indexing
@@ -20,17 +21,25 @@ def app(request, app_settings):
 # XXX Ideally this wouldn't be autouse...
 @pytest.mark.fixture_cost(-1)
 @pytest.yield_fixture(scope='session', autouse=True)
-def workbook(connection, app, app_settings):
-    from .. import conftest
+def workbook(app):
     from encoded.commands import es_index_data
-    for fixture in conftest.workbook(connection, app, app_settings):
-        es_index_data.run(app)
-        yield fixture
 
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    testapp = TestApp(app, environ)
 
-@pytest.fixture(autouse=True)
-def scenario_tx(external_tx):
-    pass
+    from ...loadxl import load_all
+    from pkg_resources import resource_filename
+    inserts = resource_filename('encoded', 'tests/data/inserts/')
+    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+    load_all(testapp, inserts, docsdir)
+
+    es_index_data.run(app)
+    yield
+    # XXX cleanup
 
 
 @pytest.fixture(scope='session', autouse=True)

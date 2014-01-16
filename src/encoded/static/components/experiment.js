@@ -192,37 +192,63 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         }
         return a.biological_replicate_number - b.biological_replicate_number;
     });
+    
     if (!replicates.length) return (<div hidden={true}></div>);
+    
     var replicate = replicates[0];
     var library = replicate.library;
     var platform = replicate.platform;
-    var titles = {
-        nucleic_acid_term_name: 'Nucleic acid type',
-        nucleic_acid_starting_quantity: 'NA starting quantity',
-        lysis_method: 'Lysis method',
-        extraction_method: 'Extraction method',
-        fragmentation_method: 'Fragmentation method',
-        size_range: 'Size range',
-        library_size_selection_method: 'Size selection method',
-    };
-    var children = [];
-    if (library) {
-        for (var name in titles) {
-            if (library[name]) {
-                children.push(<dt key={'dt-' + name}>{titles[name]}</dt>);
-                children.push(<dd key={'dd-' + name}>{library[name]}</dd>);
-            }
-        }
+    var depletedIn;
+    var treatments;
+    
+    if (library && library.depleted_in_term_name && library.depleted_in_term_name.length) {
+    	depletedIn = library.depleted_in_term_name.join(", ");
     }
-    if (typeof(platform) != 'undefined' && platform.title) {
-        children.push(<dt key="dt-platform">Platform</dt>);
-        children.push(<dd key="dd-platform"><a href={platform['@id']}>{platform.title}</a></dd>);
+    
+    if (library && library.treatments && library.treatments.length) {
+    	var i = library.treatments.length;
+    	var t;
+    	var treatmentList = [];
+    	while (i--) {
+    		t = library.treatments[i];
+    		treatmentList.push(t.treatment_term_name);
+    	}
+    	treatments = treatmentList.join(", ");
     }
+    
     return (
         <div>
             <h3>Assay details</h3>
             <dl className="panel key-value">
-                {children}
+                {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
+				{library && library.nucleic_acid_term_name ? <dd>{library.nucleic_acid_term_name}</dd> : null}
+    
+                {library && library.nucleic_acid_starting_quantity ? <dt>NA starting quantity</dt> : null}
+				{library && library.nucleic_acid_starting_quantity ? <dd>{library.nucleic_acid_starting_quantity}</dd> : null}
+				
+                {depletedIn ? <dt>Depleted in</dt> : null}
+				{depletedIn ? <dd>{depletedIn}</dd> : null}
+
+                {library && library.lysis_method ? <dt>Lysis method</dt> : null}
+				{library && library.lysis_method ? <dd>{library.lysis_method}</dd> : null}
+    
+                {library && library.extraction_method ? <dt>Extraction method</dt> : null}
+				{library && library.extraction_method ? <dd>{library.extraction_method}</dd> : null}
+                
+                {library && library.fragmentation_method ? <dt>Fragmentation method</dt> : null}
+				{library && library.fragmentation_method ? <dd>{library.fragmentation_method}</dd> : null}
+                
+                {library && library.size_range ? <dt>Size range</dt> : null}
+				{library && library.size_range ? <dd>{library.size_range}</dd> : null}
+                
+                {library && library.library_size_selection_method ? <dt>Size selection method</dt> : null}
+				{library && library.library_size_selection_method ? <dd>{library.library_size_selection_method}</dd> : null}
+                
+                {treatments ? <dt>Treatments</dt> : null}
+				{treatments ? <dd>{treatments}</dd> : null}
+                
+                {platform ? <dt>Platform</dt> : null}
+				{platform ? <dd><a href={platform['@id']}>{platform.title}</a></dd> : null}
             </dl>
         </div>
     );
@@ -270,6 +296,7 @@ var FilesLinked = module.exports.FilesLinked = function (props) {
                     <tr>
                         <th>Accession</th>
                         <th>File type</th>
+                        <th>Output type</th>
                         <th>Associated replicates</th>
                         <th>Added by</th>
                         <th>Date added</th>
@@ -283,6 +310,7 @@ var FilesLinked = module.exports.FilesLinked = function (props) {
                         <tr key={index}>
                             <td>{file.accession}</td>
                             <td>{file.file_format}</td>
+                            <td>{file.output_type}</td>
                             <td>{file.replicate ?
                                 '(' + file.replicate.biological_replicate_number + ', ' + file.replicate.technical_replicate_number + ')'
                                 : null}
