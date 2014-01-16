@@ -507,7 +507,7 @@ class Item(object):
                     context=self)
             except Exception:
                 logger.exception('Unable to upgrade %s%s from %r to %r',
-                    resource_path(self.__parent__), self.uuid,
+                    request.resource_path(self.__parent__), self.uuid,
                     current_version, target_version)
         return properties
 
