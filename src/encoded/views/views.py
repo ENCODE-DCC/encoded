@@ -221,6 +221,7 @@ class Construct(Collection):
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
+    item_embedded = set(['target'])
 
 
 class Characterization(Collection):
@@ -545,7 +546,7 @@ class Experiments(Collection):
         ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
-        ('award.rfa', 'Project'),
+        ('award.project', 'Project'),
     ])
     
     class Item(Collection.Item):

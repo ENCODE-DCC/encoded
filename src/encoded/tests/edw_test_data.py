@@ -10,15 +10,15 @@
 #>>> print x
 
 format_app_file_out = {
-u'status': u'CURRENT', u'submitted_by': u'risus.fermentum@vel.at', u'file_format': u'fastq', u'md5sum': u'f73b8010630a28fe9ac1f93155a46e8b', u'accession': u'ENCFF001RET', u'dataset': u'ENCSR000AER', u'download_path': u'2013/6/14/ENCFF001RET.txt.gz', u'replicate': 1, u'output_type': u'reads1', u'date_created': u'2013-06-14', u'submitted_file_name': u'SID38815_AC1UHYACXX_7_1.txt.gz'
+u'assembly': 'hg19', u'lab_error_message': '', u'edw_error_message': '', u'submitted_by': u'risus.fermentum@vel.at', u'file_format': u'fastq', u'md5sum': u'f73b8010630a28fe9ac1f93155a46e8b', u'accession': u'ENCFF001RET', u'dataset': u'ENCSR000AER', u'download_path': u'2013/6/14/ENCFF001RET.txt.gz', u'biological_replicate': '1', u'technical_replicate': '1', u'output_type': u'reads1', u'date_created': u'2013-06-14', u'submitted_file_name': u'SID38815_AC1UHYACXX_7_1.txt.gz'
 }
 
 
-# test_list_new 
+# test_list_new
 # input is list of some accessions in test data set, and some not (the ZZZ's)
 # output should be just those not (the new ones)
 
-new_in = ['ENCFF000LSP', 'ENCFF999ZZZ', 'ENCFF998ZZZ', 'ENCFF001MXE', 
+new_in = ['ENCFF000LSP', 'ENCFF999ZZZ', 'ENCFF998ZZZ', 'ENCFF001MXE',
           'ENCFF001MXG', 'ENCFF001MYM', 'ENCFF997ZZZ', 'ENCFF996ZZZ']
 
 # ENCFF9??ZZZ not in app test database (may be reserved at EDW for testing)
@@ -33,4 +33,4 @@ encode2 = {
 }
 
 # An ENCODE 3 experiment in test set
-encode3 = 'ENCSR000AES'
+encode3 = '/experiments/ENCSR000AES/'
