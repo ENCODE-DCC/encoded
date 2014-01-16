@@ -62,6 +62,7 @@ setup(
         import-data = encoded.commands.import_data:main
         sync_edw = encoded.commands.sync_edw:main
         update-keys-links = encoded.commands.update_keys_links:main
+        upgrade = encoded.commands.upgrade:main
 
 
 
