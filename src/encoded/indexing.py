@@ -109,6 +109,13 @@ def add_dependent_objects(request, new, existing):
             dependents.update({
                 model.source_rid for model in item.model.revs
             })
+            
+            item_rels = item.model.rels
+            for rel in item_rels:
+                rev_item = root.get_by_uuid(rel.target_rid)
+                rev = rev_item.rev
+                if rel.rel == rev[rev.keys()[0]][1]:
+                    dependents.update(rel.target_rid)
 
         existing.update(objects)
         objects = dependents.difference(existing)
