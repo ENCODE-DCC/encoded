@@ -81,7 +81,7 @@ def schema_mapping(name, schema):
         return {'type': type_}
 
 
-def index_settings(index):
+def index_settings():
     return {
         'settings': {
             'analysis': {
@@ -218,6 +218,15 @@ def run(app, collections=None, dry_run=False):
     if not dry_run:
         es = app.registry[ELASTIC_SEARCH]
 
+    index = 'encoded'
+
+    try:
+        es.create_index(index, index_settings())
+    except IndexAlreadyExistsError:
+        if collections is None:
+            es.delete_index(index)
+            es.create_index(index, index_settings())
+    
     if not collections:
         collections = ['meta'] + root.by_item_type.keys()
 
@@ -226,7 +235,7 @@ def run(app, collections=None, dry_run=False):
             doc_type = 'meta'
             mapping = META_MAPPING
         else:
-            doc_type = 'basic'
+            doc_type = collection_name
             collection = root.by_item_type[collection_name]
             mapping = collection_mapping(collection)
 
@@ -234,19 +243,13 @@ def run(app, collections=None, dry_run=False):
             continue  # Testing collections
         if dry_run:
             print json.dumps(
-                sorted_dict({collection_name: {doc_type: mapping}}), indent=4)
+                sorted_dict({index: {doc_type: mapping}}), indent=4)
             continue
-
-        try:
-            es.create_index(collection_name, index_settings(collection_name))
-        except IndexAlreadyExistsError:
-            es.delete_index(collection_name)
-            es.create_index(collection_name, index_settings(collection_name))
 
         if collection_name is not 'meta':
             mapping = es_mapping(mapping)
-        es.put_mapping(collection_name, doc_type, {doc_type: mapping})
-        es.refresh(collection_name)
+        es.put_mapping(index, doc_type, {doc_type: mapping})
+        es.refresh(index)
 
 
 def main():
