@@ -123,7 +123,7 @@ def search(context, request):
 
         s = es.search(query, index=indices, size=99999)
         result['count']['targets'] = result['count']['antibodies'] = result['count']['experiments'] = result['count']['biosamples'] = 0
-        for hit in s['hits']['hits']:
+        for count, hit in enumerate(s['hits']['hits']):
             result_hit = hit['fields']
             if result_hit['object.@type'][0] == 'antibody_approval':
                 result['count']['antibodies'] += 1
@@ -136,7 +136,10 @@ def search(context, request):
             result_hit_new = {}
             for c in result_hit:
                 result_hit_new[c[7:]] = result_hit[c]
-            result['@graph'].append(result_hit_new)
+            if 'limit' in params:
+                result['@graph'].append(result_hit_new)
+            elif count < 100:
+                result['@graph'].append(result_hit_new)
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:

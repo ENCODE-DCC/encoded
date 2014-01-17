@@ -108,10 +108,10 @@ var Characterization = module.exports.Characterization = React.createClass({
                 width = context.attachment.width;
                 alt = "Characterization Image"
             } else if (context.attachment.type == "application/pdf"){
-                src = "/static/img/file-pdf.svg";
+                src = "/static/img/file-pdf.png";
                 alt = "Characterization PDF Icon";
             } else {
-                src = "/static/img/file.svg";
+                src = "/static/img/file.png";
                 alt = "Characterization Icon";
             }
             figure = (

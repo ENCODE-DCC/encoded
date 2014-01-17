@@ -27,6 +27,7 @@ ACCESSION_KEYS = [
         'value': '{accession}',
         '$repeat': 'accession alternate_accessions',
         '$templated': True,
+        '$condition': 'alternate_accessions',
     },
 ]
 
@@ -55,6 +56,7 @@ class Collection(BaseCollection):
         STATUS_ACL = {
             'CURRENT': [
                 (Allow, 'role.lab_submitter', 'edit'),
+                (Allow, 'role.lab_submitter', 'view_raw'),
             ],
             'DELETED': [],
         }
@@ -320,8 +322,8 @@ class Biosample(Collection):
             'characterizations': ('biosample_characterization', 'characterizes'),
         }
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']
@@ -372,8 +374,8 @@ class Target(Collection):
             {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
         ]
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             root = find_root(self)
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
@@ -381,7 +383,7 @@ class Target(Collection):
 
         @property
         def __name__(self):
-            ns = self.template_namespace()
+            ns = self.template_namespace(self.properties.copy())
             return u'{label}-{organism_name}'.format(**ns)
 
 
@@ -544,7 +546,7 @@ class Experiments(Collection):
         ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
-        ('award.rfa', 'Project'),
+        ('award.project', 'Project'),
     ])
     
     class Item(Collection.Item):
@@ -588,8 +590,8 @@ class Experiments(Collection):
         name_key = 'accession'
         keys = ACCESSION_KEYS + ALIAS_KEYS
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']

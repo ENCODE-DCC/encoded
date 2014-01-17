@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "accession": {
             "accessionType": "BS"
@@ -223,7 +223,7 @@
         "starting_amount": {
             "title": "Starting amount",
             "description": "The initial quantity of cells or tissue obtained.",
-            "type": "string"
+            "type": "number"
         },
         "starting_amount_units": {
             "title": "Starting amount units",
