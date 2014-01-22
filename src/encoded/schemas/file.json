@@ -4,7 +4,7 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "md5sum", "output_type"],
+    "required": ["accession", "dataset", "file_format", "md5sum", "output_type"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
