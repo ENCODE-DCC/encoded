@@ -29,6 +29,7 @@ def test_get_edw_files():
         assert(f.has_key('technical_replicate'))
         assert(f['md5sum'])
         assert(f['dataset'])
+        assert(f.has_key('paired_end'))
 
 @pytest.mark.skipif(True, reason='Travis-CI cannot use external DB test')
 # travis cannot connect to EDW
