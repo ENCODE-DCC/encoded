@@ -4,7 +4,7 @@ from ..indexing import ELASTIC_SEARCH
 import logging
 from webtest import TestApp
 
-DOCTYPE = 'basic'
+index = 'encoded'
 
 EPILOG = __doc__
 
@@ -28,11 +28,12 @@ def run(app, collections=None):
         if collection.schema is None:
             continue
 
+        DOCTYPE = collection_name
+
         # try creating index, if it exists already delete it and create it
         counter = 0
         for count, item in enumerate(collection.itervalues()):
             links = {}
-            
             # links for the item
             for link in item.links:
                 links[link] = []
@@ -80,13 +81,13 @@ def run(app, collections=None):
                         'keys': keys,
                         'principals_allowed_view': principals
                     }
-                    es.index(collection_name, DOCTYPE, document, document_id)
+                    es.index(index, DOCTYPE, document, document_id)
                     counter = counter + 1
                     if counter % 50 == 0:
-                        es.flush(collection_name)
+                        es.flush(index)
                         log.info('Indexing %s %d', collection_name, counter)
 
-        es.refresh(collection_name)
+        es.refresh(index)
 
 
 def main():

@@ -67,7 +67,7 @@ def search(context, request):
         'facets': [],
         '@graph': [],
         'columns': {},
-        'count': {},
+        'count': 0,
         'filters': [],
         'notification': ''
     })
@@ -78,7 +78,13 @@ def search(context, request):
 
     es = request.registry[ELASTIC_SEARCH]
     if 'limit' in params:
-        size = 999999
+        if params['limit'] == 'all':
+            size = 99999
+        else:
+            if params['limit'].isdigit():
+                size = params['limit']
+            else:
+                size = 100
     else:
         size = 100
 
@@ -101,7 +107,7 @@ def search(context, request):
             return result
 
     try:
-        search_type = params['type']
+        search_type = root.collections[params['type']].item_type
         collections = root.by_item_type.keys()
         # handling invalid item types
         if search_type not in collections:
@@ -111,35 +117,41 @@ def search(context, request):
         if not search_term:
             result['notification'] = 'Please enter search term'
             return result
-        indices = ['antibody_approval', 'biosample', 'experiment', 'target']
+        doc_types = ['antibody_approval', 'biosample', 'experiment', 'target', 'dataset']
         fields = ['object.@id', 'object.@type']
-        for index in indices:
-            collection = root[index]
+        for doc_type in doc_types:
+            collection = root[doc_type]
             result['columns'].update(collection.columns)
             for column in collection.columns:
                 fields.append('object.' + column)
-                
+
         query = get_query(search_term, list(set(fields)))
 
-        s = es.search(query, index=indices, size=99999)
-        result['count']['targets'] = result['count']['antibodies'] = result['count']['experiments'] = result['count']['biosamples'] = 0
-        for count, hit in enumerate(s['hits']['hits']):
-            result_hit = hit['fields']
-            if result_hit['object.@type'][0] == 'antibody_approval':
-                result['count']['antibodies'] += 1
-            elif result_hit['object.@type'][0] == 'biosample':
-                result['count']['biosamples'] += 1
-            elif result_hit['object.@type'][0] == 'experiment':
-                result['count']['experiments'] += 1
-            elif result_hit['object.@type'][0] == 'target':
-                result['count']['targets'] += 1
-            result_hit_new = {}
-            for c in result_hit:
-                result_hit_new[c[7:]] = result_hit[c]
-            if 'limit' in params:
-                result['@graph'].append(result_hit_new)
-            elif count < 100:
-                result['@graph'].append(result_hit_new)
+        common_facets = [{'Data Type': 'object.@type.untouched'}]
+        for facet in common_facets:
+            face = {'terms': {'field': '', 'size': 99999}}
+            face['terms']['field'] = facet[facet.keys()[0]]
+            query['facets'][facet.keys()[0]] = face
+
+        s = es.search(query, index='encoded', doc_type=doc_types, size=size)
+        for hit in s['hits']['hits']:
+            new_hit = {}
+            for field in hit['fields']:
+                new_hit[field[7:]] = hit['fields'][field]
+            result['@graph'].append(new_hit)
+        
+        facet_results = s['facets']
+        for facet in common_facets:
+            if facet.keys()[0] in facet_results:
+                face = {}
+                face['field'] = 'type'
+                face[facet.keys()[0]] = []
+                for term in facet_results[facet.keys()[0]]['terms']:
+                    if term['term'] in doc_types:
+                        face[facet.keys()[0]].append({root.by_item_type[term['term']].__name__: term['count']})
+                result['facets'].append(face)
+
+        result['count'] = s['hits']['total']
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
@@ -149,14 +161,13 @@ def search(context, request):
                 result['notification'] = 'No results found'
         return result
     else:
-        search_type = params['type']
         if search_term == '*' and search_type == '*':
             result['notification'] = 'Please enter search terme'
             return result
 
         # Building query for filters
-        collections = root.by_item_type
         fields = ['object.@id', 'object.@type']
+        collections = root.by_item_type
         for collection_name in collections:
             if search_type == collection_name:
                 collection = root[collection_name]
@@ -181,15 +192,6 @@ def search(context, request):
         if regular_query:
             query = get_query(search_term, fields)
 
-        if search_type == 'biosample' and search_term == '*':
-            query['sort'] = {'object.accession': {'order': 'asc'}}
-        elif search_type == 'target' and search_term == '*':
-            query['sort'] = {'object.gene_name.untouched': {'ignore_unmapped': 'true', 'order': 'asc'}}
-        elif search_type == 'antibody_approval' and search_term == '*':
-            query['sort'] = {'object.status': {'order': 'asc'}}
-        elif search_type == 'experiment' and search_term == '*':
-            query['sort'] = {'object.accession': {'order': 'asc'}}
-
         if 'facets' in schema:
             for facet in schema['facets']:
                 face = {'terms': {'field': '', 'size': 99999}}
@@ -202,7 +204,7 @@ def search(context, request):
             del(query['facets'])
 
         # Execute the query
-        results = es.search(query, index=index, size=size)
+        results = es.search(query, index='encoded', doc_type=index, size=size)
 
         # Loading facets in to the results
         if 'facets' in results:
@@ -214,8 +216,6 @@ def search(context, request):
                     face[facet.keys()[0]] = []
                     for term in facet_results[facet.keys()[0]]['terms']:
                         face[facet.keys()[0]].append({term['term']: term['count']})
-                    '''if facet_results[facet.keys()[0]]['missing'] != 0:
-                        face[facet.keys()[0]].append({'other': facet_results[facet.keys()[0]]['missing']})'''
                     if len(face[facet.keys()[0]]) > 1:
                         result['facets'].append(face)
 
@@ -226,7 +226,7 @@ def search(context, request):
                 result_hit_new[c[7:]] = result_hit[c]
             result['@graph'].append(result_hit_new)
 
-        result['count'][root.by_item_type[collection_name].__name__] = results['hits']['total']
+        result['count'] = results['hits']['total']
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
