@@ -398,7 +398,7 @@ class AntibodyCharacterization(Characterization):
     }
 
     class Item(Characterization.Item):
-        embedded = ['submitted_by', 'lab', 'award', 'target']
+        embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
 
 
 @location('antibodies')
