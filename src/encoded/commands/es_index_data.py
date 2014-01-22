@@ -57,12 +57,8 @@ def run(app, collections=None):
             else:
                 principals.append(_principals)
 
-            if item.name_key is None:
-                item_path = '/' + root.by_item_type[collection_name].__name__ \
-                    + '/' + str(item.uuid) + '/'
-            else:
-                item_path = '/' + root.by_item_type[collection_name].__name__ \
-                    + '/' + str(item.properties[item.name_key]) + '/'
+            item_path = '/' + root.by_item_type[collection_name].__name__ \
+                + '/' + str(item.__name__) + '/'
             try:
                 item_json = testapp.get(item_path, headers={'Accept': 'application/json'}, status=200)
             except Exception as e:
@@ -86,7 +82,6 @@ def run(app, collections=None):
                     if counter % 50 == 0:
                         es.flush(index)
                         log.info('Indexing %s %d', collection_name, counter)
-
         es.refresh(index)
 
 
