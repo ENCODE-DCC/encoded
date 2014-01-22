@@ -8,9 +8,10 @@
 
 // fix footer width for small screens + content margin fix
 @media (max-width: 767px) {
-	.footer {
+	footer {
 		margin-left: -20px;
     	margin-right: -20px;
+    	padding: 0 5px;
 	}
 	.som-log { margin-right: 10px; }
 }
