@@ -13,9 +13,19 @@
     	margin-right: -20px;
     	padding: 0 5px;
 	}
-	.som-log { margin-right: 10px; }
 }
-
+@media (max-width: 979px) {
+	footer { text-align: center; }
+	#page-footer {
+		height: auto;
+		#footer-logos { 
+			float: none; 
+			display: inline-block;
+			margin-left: 10px;
+		}
+	}
+}
+#phone-copy { padding: 25px 0; }
 
 // make key-value description lists responsive
 @media (max-width: 480px) {
