@@ -253,7 +253,7 @@ class Document(Collection):
     class Item(ItemWithAttachment, Collection.Item):
         embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
-        
+
 
 @location('biosamples')
 class Biosample(Collection):
@@ -546,9 +546,10 @@ class Experiments(Collection):
         ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
+        ('encode2_dbxrefs', 'Dbxrefs'),
         ('award.project', 'Project'),
     ])
-    
+
     class Item(Collection.Item):
         template = {
             'organ_slims': [

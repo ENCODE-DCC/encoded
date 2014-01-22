@@ -65,6 +65,15 @@
                 "signal"
             ]
         },
+        "paired_end": {
+            "title": "Paired End Identifier",
+            "description": "Which pair the file belongs to (if paired end library)",
+            "type": "string",
+            "enum": [
+                "1",
+                "2"
+            ]
+        },
         "dataset": {
             "title": "Dataset",
             "description": "The experiment or dataset the file belongs to.",
