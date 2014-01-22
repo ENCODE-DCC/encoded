@@ -639,4 +639,13 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
+    item_embedded = set(['files', 'lab', 'submitted_by', 'award'])
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
+    columns = OrderedDict([
+        ('accession', 'Accession'),
+        ('description', 'Description'),
+        ('dataset_type', 'Dataset type'),
+        ('lab.title', 'Lab'),
+        ('award.project', 'Project'),
+    ])
+

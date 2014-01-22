@@ -903,14 +903,14 @@ class Collection(Mapping):
         return items
 
     def load_es(self, request):
-        columns = ['@id', '@type']
+        columns = ['object.@id', 'object.@type']
         lengthColumns = []
         for column in self.columns:
             if 'length' in column:
-                columns.append(column.split('.')[0])
+                columns.append('object.' + column.split('.')[0])
                 lengthColumns.append(column.split('.')[0])
             else:
-                columns.append(column)
+                columns.append('object.' + column)
         # Hack to check if the views have columns for the collection.
         if len(columns) > 2:
             query = {'query': {'match_all': {}}, 'fields': columns}
@@ -920,15 +920,18 @@ class Collection(Mapping):
         items = []
         from .indexing import ELASTIC_SEARCH
         es = request.registry[ELASTIC_SEARCH]
-        results = es.search(query, index=self.item_type, size=99999)
+        results = es.search(query, index='encoded', doc_type=self.item_type, size=99999)
         for model in results['hits']['hits']:
             # Dealing with columns which have length attribute to the array
             for c in lengthColumns:
-                model['fields'][c + '.length'] = len(model['fields'][c])
-                del model['fields'][c]
+                model['fields']['object.' + c + '.length'] = len(model['fields']['object.' + c])
+                del model['fields']['object.' + c]
 
             if len(columns) > 2:
-                items.append(model['fields'])
+                hit = {}
+                for field in model['fields']:
+                    hit[field[7:]] = model['fields'][field]
+                items.append(hit)
             else:
                 items.append(model['_source'])
         return items

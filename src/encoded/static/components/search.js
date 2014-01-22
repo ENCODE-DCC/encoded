@@ -88,6 +88,28 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Experiment, 'experiment');
 
+    var Dataset = module.exports.Dataset = React.createClass({
+        render: function() {
+            var result = this.props.context;
+            var columns = this.props.columns;
+            return (<li>
+                        <div>
+                            <span className="pull-right type">Dataset: {' ' + result['accession']}</span>
+                            <div className="accession">
+                                <a href={result['@id']}>{result['description']}</a> 
+                            </div>
+                        </div>
+                        <div className="data-row">
+                            {result['dataset_type'] ? <strong>{columns['dataset_type'] + ': '}</strong>: null}
+                            <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.project']}</strong>: {result['award.project']}
+                        </div>
+                </li>
+            );
+        }
+    });
+    globals.listing_views.register(Dataset, 'dataset');
+
     var Target = module.exports.Target = React.createClass({
         render: function() {
             var result = this.props.context;
