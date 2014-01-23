@@ -69,8 +69,13 @@ def schema_mapping(name, schema):
                     'type': 'string',
                     'index': 'not_analyzed',
                     'include_in_all': False,
-                    'omit_norms': True,
+                    'omit_norms': True
                 },
+                'standard': {
+                    'type': 'string',
+                    'analyzer': 'encoded_search_analyzer',
+                    'include_in_all': False
+                }
             },
         }
 
@@ -88,20 +93,29 @@ def index_settings():
                 'filter': {
                     'substring': {
                         'type': 'nGram',
-                        'min_gram': 3,
+                        'min_gram': 1,
                         'max_gram': 25
                     }
                 },
                 'analyzer': {
                     'encoded_index_analyzer': {
                         'type': 'custom',
-                        'tokenizer': 'keyword',
-                        'filter': ['lowercase', 'substring']
+                        'tokenizer': 'standard',
+                        'filter': [
+                            'standard',
+                            'lowercase',
+                            'asciifolding',
+                            'substring'
+                        ]
                     },
                     'encoded_search_analyzer': {
                         'type': 'custom',
-                        'tokenizer': 'keyword',
-                        'filter': ['lowercase']
+                        'tokenizer': 'standard',
+                        'filter': [
+                            'standard',
+                            'lowercase',
+                            'asciifolding'
+                        ]
                     }
                 }
             }
@@ -226,7 +240,7 @@ def run(app, collections=None, dry_run=False):
         if collections is None:
             es.delete_index(index)
             es.create_index(index, index_settings())
-    
+
     if not collections:
         collections = ['meta'] + root.by_item_type.keys()
 
