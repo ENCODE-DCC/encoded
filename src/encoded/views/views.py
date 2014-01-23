@@ -27,6 +27,7 @@ ACCESSION_KEYS = [
         'value': '{accession}',
         '$repeat': 'accession alternate_accessions',
         '$templated': True,
+        '$condition': 'alternate_accessions',
     },
 ]
 
@@ -55,6 +56,7 @@ class Collection(BaseCollection):
         STATUS_ACL = {
             'CURRENT': [
                 (Allow, 'role.lab_submitter', 'edit'),
+                (Allow, 'role.lab_submitter', 'view_raw'),
             ],
             'DELETED': [],
         }
@@ -219,6 +221,7 @@ class Construct(Collection):
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
+    item_embedded = set(['target'])
 
 
 class Characterization(Collection):
@@ -250,7 +253,7 @@ class Document(Collection):
     class Item(ItemWithAttachment, Collection.Item):
         embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
-        
+
 
 @location('biosamples')
 class Biosample(Collection):
@@ -319,8 +322,8 @@ class Biosample(Collection):
             'characterizations': ('biosample_characterization', 'characterizes'),
         }
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']
@@ -371,8 +374,8 @@ class Target(Collection):
             {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
         ]
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             root = find_root(self)
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
@@ -380,7 +383,7 @@ class Target(Collection):
 
         @property
         def __name__(self):
-            ns = self.template_namespace()
+            ns = self.template_namespace(self.properties.copy())
             return u'{label}-{organism_name}'.format(**ns)
 
 
@@ -543,9 +546,10 @@ class Experiments(Collection):
         ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
-        ('award.rfa', 'Project'),
+        ('encode2_dbxrefs', 'Dbxrefs'),
+        ('award.project', 'Project'),
     ])
-    
+
     class Item(Collection.Item):
         template = {
             'organ_slims': [
@@ -570,6 +574,7 @@ class Experiments(Collection):
             'replicates.library.biosample.source',
             'replicates.library.biosample.organism',
             'replicates.library.biosample.donor.organism',
+            'replicates.library.treatments',
             'replicates.platform',
             'submitted_by',
             'lab',
@@ -586,8 +591,8 @@ class Experiments(Collection):
         name_key = 'accession'
         keys = ACCESSION_KEYS + ALIAS_KEYS
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']

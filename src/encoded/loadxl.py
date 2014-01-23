@@ -31,7 +31,7 @@ ORDER = [
     'replicate',
     # 'software',
     'file',
-    # 'dataset',
+    'dataset',
 ]
 
 

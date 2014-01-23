@@ -63,6 +63,7 @@
     },
     "boost_values": {
         "antibody.accession": 1.0,
+        "antibody.alternate_accessions": 1.0,
         "antibody.lot_id": 1.0,
         "antibody.lot_id_alias": 1.0,
         "antibody.clonality": 1.4,

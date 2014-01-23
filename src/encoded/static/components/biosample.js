@@ -82,7 +82,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dd hidden={!context.lot_id}>{context.lot_id}</dd>
 
                         <dt>Project</dt>
-                        <dd>{context.award.rfa}</dd>
+                        <dd>{context.award.project}</dd>
 
                         <dt>Submitted by</dt>
                         <dd>{context.submitted_by.title}</dd>
@@ -115,7 +115,7 @@ var Biosample = module.exports.Biosample = React.createClass({
 						<dd hidden={!context.passage_number}>{context.passage_number}</dd>
                     </dl>
 
-                    {(context.donor && (context.biosample_type != "immortalized cell line")) ?
+                    {(context.donor) ?
                         <section>
                             <hr />
                             <h4>Donor information</h4>
@@ -420,10 +420,10 @@ var Document = module.exports.Document = React.createClass({
                 width = context.attachment.width;
                 alt = "Characterization Image"
             } else if (context.attachment.type == "application/pdf"){
-                src = "/static/img/file-pdf.svg";
+                src = "/static/img/file-pdf.png";
                 alt = "Characterization PDF Icon";
             } else {
-                src = "/static/img/file.svg";
+                src = "/static/img/file.png";
                 alt = "Characterization Icon";
             }
             figure = (
