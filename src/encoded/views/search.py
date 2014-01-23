@@ -1,9 +1,11 @@
-
+import re
 from pyramid.view import view_config
 from ..contentbase import (
     Root
 )
 from ..indexing import ELASTIC_SEARCH
+
+sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 
 def get_filtered_query(term, fields):
@@ -47,6 +49,10 @@ def get_query(term, fields):
     }
 
 
+def sanitize_search_string(text):
+    return sanitize_search_string_re.sub(r'\\\g<0>', text)
+
+
 @view_config(name='search', context=Root, request_method='GET', permission='view')
 def search(context, request):
     ''' Search view connects to ElasticSearch and returns the results'''
@@ -56,7 +62,7 @@ def search(context, request):
     root = request.root
     result.update({
         '@id': '/search/',
-        '@type': ['search', request.environ.get('PATH_INFO') + '?' + request.environ.get('QUERY_STRING')],
+        '@type': ['search'],
         'title': 'Search',
         'facets': [],
         '@graph': [],
@@ -66,6 +72,10 @@ def search(context, request):
         'notification': ''
     })
 
+    qs = request.environ.get('QUERY_STRING')
+    if qs:
+        result['@id'] = '/search/?%s' % qs
+
     es = request.registry[ELASTIC_SEARCH]
     if 'limit' in params:
         size = 999999
@@ -74,6 +84,7 @@ def search(context, request):
 
     try:
         search_term = params['searchTerm'].strip()
+        search_term = sanitize_search_string(search_term)
         # Handling whitespaces in the search term
         if not search_term:
             result['notification'] = 'Please enter search term'
@@ -91,6 +102,11 @@ def search(context, request):
 
     try:
         search_type = params['type']
+        collections = root.by_item_type.keys()
+        # handling invalid item types
+        if search_type not in collections:
+            result['notification'] = '\'' + search_type + '\' is not a valid \'item type\''
+            return result
     except:
         if not search_term:
             result['notification'] = 'Please enter search term'
@@ -107,7 +123,7 @@ def search(context, request):
 
         s = es.search(query, index=indices, size=99999)
         result['count']['targets'] = result['count']['antibodies'] = result['count']['experiments'] = result['count']['biosamples'] = 0
-        for hit in s['hits']['hits']:
+        for count, hit in enumerate(s['hits']['hits']):
             result_hit = hit['fields']
             if result_hit['@type'][0] == 'antibody_approval':
                 result['count']['antibodies'] += 1
@@ -117,11 +133,17 @@ def search(context, request):
                 result['count']['experiments'] += 1
             elif result_hit['@type'][0] == 'target':
                 result['count']['targets'] += 1
-            result['@graph'].append(result_hit)
+            if 'limit' in params:
+                result['@graph'].append(result_hit)
+            elif count < 100:
+                result['@graph'].append(result_hit)
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
-            result['notification'] = 'No results found'
+            if len(search_term) < 3:
+                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
+            else:
+                result['notification'] = 'No results found'
         return result
     else:
         search_type = params['type']
@@ -203,5 +225,8 @@ def search(context, request):
         if len(result['@graph']):
             result['notification'] = 'Success'
         else:
-            result['notification'] = 'No results found'
+            if len(search_term) < 3:
+                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
+            else:
+                result['notification'] = 'No results found'
         return result

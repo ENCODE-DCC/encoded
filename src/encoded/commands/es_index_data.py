@@ -7,6 +7,8 @@ DOCTYPE = 'basic'
 
 EPILOG = __doc__
 
+log = logging.getLogger(__name__)
+
 
 def run(app, collections=None):
     root = app.root_factory(app)
@@ -41,6 +43,7 @@ def run(app, collections=None):
                 counter = counter + 1
                 if counter % 50 == 0:
                     es.flush(collection_name)
+                    log.info('Indexing %s %d', collection_name, counter)
 
         es.refresh(collection_name)
 
@@ -53,7 +56,7 @@ def main():
         description="Index data in Elastic Search", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--item-type', help="encode item type to be indexed")
+    parser.add_argument('--item-type', action='append', help="Item type")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()

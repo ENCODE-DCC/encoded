@@ -43,7 +43,7 @@ def app_settings(request, server_host_port, connection):
 def pytest_configure():
     import logging
     logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
     logging.getLogger('selenium').setLevel(logging.DEBUG)
 
     class Shorten(logging.Filter):
@@ -204,6 +204,7 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
+@pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.yield_fixture(scope='session')
 def connection(request):
     from encoded import configure_engine
@@ -401,11 +402,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
     @request.addfinalizer
     def remove():
-        # http://www.sqlalchemy.org/trac/ticket/2686
-        # event.remove(connection, 'after_cursor_execute', after_cursor_execute)
-        connection.dispatch.after_cursor_execute.remove(after_cursor_execute, connection)
-
-    connection._has_events = True
+        event.remove(connection, 'after_cursor_execute', after_cursor_execute)
 
     return counter
 
@@ -433,18 +430,63 @@ def no_deps(request, connection):
 
 
 @pytest.fixture
-def users(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/labs/'
-    for item in URL_COLLECTION[url]:
-        testapp.post_json(url, item, status=201)
-    users = []
-    url = '/users/'
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-        res = testapp.get(res.location)
-        users.append(res.json)
-    return users
+def labs(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'lab')
+
+
+@pytest.fixture
+def lab(labs):
+    return [l for l in labs if l['name'] == 'myers'][0]
+
+
+@pytest.fixture
+def users(testapp, labs):
+    from . import sample_data
+    return sample_data.load(testapp, 'user')
+
+
+@pytest.fixture
+def wrangler(users):
+    return [u for u in users if 'wrangler' in u.get('groups', ())][0]
+
+
+@pytest.fixture
+def submitter(users, lab):
+    return [u for u in users if lab['@id'] in u['submits_for']][0]
+
+
+@pytest.fixture
+def awards(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'award')
+
+
+@pytest.fixture
+def award(awards):
+    return [a for a in awards if a['name'] == 'Myers'][0]
+
+
+@pytest.fixture
+def sources(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'source')
+
+
+@pytest.fixture
+def source(sources):
+    return [s for s in sources if s['name'] == 'sigma'][0]
+
+
+@pytest.fixture
+def organisms(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'organism')
+
+
+@pytest.fixture
+def organism(organisms):
+    return [o for o in organisms if o['name'] == 'human'][0]
 
 
 @pytest.mark.fixture_cost(10)

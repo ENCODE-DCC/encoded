@@ -112,9 +112,12 @@
         "fragmentation_date":{
             "title": "Fragmentation date",
             "description": "The date that the nucleic acid was fragmented.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
             "type": "string",
-            "format": "date"
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ]
         },
         "library_size_selection_method": {
             "title": "Size selection method",
@@ -146,7 +149,7 @@
         },
         "size_range": {
             "title": "Size range",
-            "description": "The measured size range of the purified nucleic acid, in kD.",
+            "description": "The measured size range of the purified nucleic acid, in bp.",
             "type": "string",
             "pattern": "(^[0-9]+-[0-9]+$|^[<>][0-9]+$)"
         },

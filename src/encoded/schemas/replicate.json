@@ -103,13 +103,12 @@
         "read_length": {
             "title": "Read length",
             "description": "For high-throughput sequencing, the number of contiguous nucleotides determined by sequencing.",
+            "comment": "When submitting read length, must submit value for read length units.",
             "type": "integer"
         },
         "read_length_units": {
             "title": "Read length units",
-            "comment": "Do not need to submit, value is assigned by server.",
             "type": "string",
-            "default": "nt",
             "enum": [
                 "nt"
             ]

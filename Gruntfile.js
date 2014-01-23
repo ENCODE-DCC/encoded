@@ -13,9 +13,8 @@ module.exports = function(grunt) {
                 root: '.',
                 require: [
                     'domready',
-                    ['react-tools/build/modules/React', {expose: 'react'}],
-                    'react-tools/build/modules/ReactMount',
-                    'react-tools/build/modules/DOMProperty',
+                    'react',
+                    'react/lib/ReactMount',
                     'underscore',
                     'url',
 
@@ -85,7 +84,6 @@ module.exports = function(grunt) {
                 dest: 'src/encoded/static/build/renderer.js',
                 src: ['./src/encoded/static/components/index.js'],
                 require: [
-                    ['react-tools/build/modules/React', {expose: 'react'}],
                     ['./src/encoded/static/libs/server.js', {expose: 'server'}],
                     ['./src/encoded/static/libs/class', {expose: 'class'}],
                     ['./src/encoded/static/libs/jsonScriptEscape', {expose: 'jsonScriptEscape'}],
@@ -172,13 +170,6 @@ module.exports = function(grunt) {
 
         grunt.file.mkdir(path.dirname(dest));
 
-        // See: https://github.com/thlorenz/mold-source-map/pull/1
-        function mapPathRelativeTo (root) {
-            return function (file) {
-                return path.relative(root, file);
-            };
-        }
-
         var mapFilePath = dest + '.map';
 
         function mapFileUrlComment(sourcemap) {
@@ -190,7 +181,7 @@ module.exports = function(grunt) {
             //    bar.js 
 
             sourcemap.sourceRoot('file://'); 
-            sourcemap.mapSources(mapPathRelativeTo(root));
+            sourcemap.mapSources(mold.mapPathRelativeTo(root));
             // write map file and return a sourceMappingUrl that points to it
             fs.writeFileSync(mapFilePath, sourcemap.toJSON(2), 'utf-8');
             console.log('File ' + mapFilePath + ' created.');
@@ -198,7 +189,7 @@ module.exports = function(grunt) {
             // Giving just a filename instead of a path will cause the browser to look for the map file 
             // right next to where it loaded the bundle from.
             // Therefore this way the map is found no matter if the page is served or opened from the filesystem.
-            return '//@ sourceMappingURL=' + path.basename(mapFilePath);
+            return '//# sourceMappingURL=' + path.basename(mapFilePath);
         }
 
         b = b.bundle(bundle);

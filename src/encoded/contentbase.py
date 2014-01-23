@@ -1,6 +1,7 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 
-import transaction
+
+import logging
 import venusian
 from abc import ABCMeta
 from collections import Mapping
@@ -64,9 +65,13 @@ from .storage import (
 from collections import OrderedDict
 from .validation import ValidationFailure
 
+PHASE1_5_CONFIG = -15
+
 
 LOCATION_ROOT = __name__ + ':location_root'
 _marker = object()
+
+logger = logging.getLogger(__name__)
 
 
 def includeme(config):
@@ -133,6 +138,34 @@ def maybe_include_embedded(request, result):
         result['_embedded'] = {'resources': embedded}
 
 
+# No-validation validators
+
+def no_validate_item_content_post(context, request):
+    data = request.json
+    request.validated.update(data)
+
+
+def no_validate_item_content_put(context, request):
+    data = request.json
+    if 'uuid' in data:
+        if UUID(data['uuid']) != context.uuid:
+            msg = 'uuid may not be changed'
+            raise ValidationFailure('body', ['uuid'], msg)
+    request.validated.update(data)
+
+
+def no_validate_item_content_patch(context, request):
+    data = context.properties.copy()
+    data.update(request.json)
+    if 'uuid' in data:
+        if UUID(data['uuid']) != context.uuid:
+            msg = 'uuid may not be changed'
+            raise ValidationFailure('body', ['uuid'], msg)
+    request.validated.update(data)
+
+
+# Schema checking validators
+
 def validate_item_content_post(context, request):
     data = request.json
     schema = context.schema
@@ -158,7 +191,7 @@ def validate_item_content_put(context, request):
 
 
 def validate_item_content_patch(context, request):
-    data = context.properties.copy()
+    data = context.upgrade_properties(request)
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
@@ -230,7 +263,7 @@ def location_root(factory):
     def callback(scanner, factory_name, factory):
         scanner.config.action(('location_root',), set_root,
                               args=(scanner.config, factory),
-                              order=PHASE1_CONFIG)
+                              order=PHASE1_5_CONFIG)
     venusian.attach(factory, callback, category='pyramid')
 
     return factory
@@ -415,6 +448,10 @@ class Item(object):
         return self.__parent__.schema
 
     @property
+    def schema_version(self):
+        return self.__parent__.schema_version
+
+    @property
     def properties(self):
         return self.model['']
 
@@ -460,9 +497,24 @@ class Item(object):
                     value.append(item)
         return links
 
-    def __json__(self, request):
+    def upgrade_properties(self, request):
         properties = self.properties.copy()
-        templated = self.expand_template(request)
+        current_version = properties.get('schema_version', '')
+        target_version = self.schema_version
+        if target_version is not None and current_version != target_version:
+            try:
+                properties = request.upgrade(
+                    self.item_type, properties, current_version, target_version,
+                    context=self)
+            except Exception:
+                logger.exception('Unable to upgrade %s%s from %r to %r',
+                    request.resource_path(self.__parent__), self.uuid,
+                    current_version, target_version)
+        return properties
+
+    def __json__(self, request):
+        properties = self.upgrade_properties(request)
+        templated = self.expand_template(properties, request)
         properties.update(templated)
         for name, value in self.links.iteritems():
             # XXXX Should this be {'@id': url, '@type': [...]} instead?
@@ -474,19 +526,20 @@ class Item(object):
             properties[name] = [request.resource_path(item) for item in value]
         return properties
 
-    def template_namespace(self, request=None):
-        ns = self.properties.copy()
+    def template_namespace(self, properties, request=None):
+        ns = properties.copy()
         ns['item_type'] = self.item_type
         ns['base_types'] = self.base_types
         ns['uuid'] = self.uuid
+        # When called by update_keys() there is no request.
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)
             ns['item_uri'] = request.resource_path(self)
             ns['permission'] = permission_checker(self, request)
         return ns
 
-    def expand_template(self, request):
-        ns = self.template_namespace(request)
+    def expand_template(self, properties, request):
+        ns = self.template_namespace(properties, request)
         compiled = ObjectTemplate(self.merged_template)
         return compiled(ns)
 
@@ -501,7 +554,7 @@ class Item(object):
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
         session = DBSession()
-        sp = transaction.savepoint()
+        sp = session.begin_nested()
         resource = Resource(item_type, rid=uuid)
         cls.update_properties(resource, properties, sheets)
         session.add(resource)
@@ -509,13 +562,13 @@ class Item(object):
         keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
-            session.flush()
+            sp.commit()
         except (IntegrityError, FlushError):
-            pass
+            sp.rollback()
         else:
             return self
+
         # Try again more carefully
-        sp.rollback()
         cls.update_properties(resource, properties, sheets)
         session.add(resource)
         self = cls(parent, resource)
@@ -543,18 +596,18 @@ class Item(object):
 
     def update(self, properties, sheets=None):
         session = DBSession()
-        sp = transaction.savepoint()
+        sp = session.begin_nested()
         self.update_properties(self.model, properties, sheets)
         keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
-            session.flush()
+            sp.commit()
         except (IntegrityError, FlushError):
-            pass
+            sp.rollback()
         else:
             return
+
         # Try again more carefully
-        sp.rollback()
         self.update_properties(self.model, properties, sheets)
         try:
             session.flush()
@@ -569,7 +622,7 @@ class Item(object):
 
     def update_keys(self):
         session = DBSession()
-        ns = self.template_namespace()
+        ns = self.template_namespace(self.properties)
         compiled = ObjectTemplate(self.merged_keys)
         _keys = [(key['name'], key['value']) for key in compiled(ns)]
         keys = set(_keys)
@@ -669,6 +722,7 @@ class Collection(Mapping):
     __metaclass__ = CustomItemMeta
     Item = Item
     schema = None
+    schema_version = None
     properties = OrderedDict()
     item_type = None
     unique_key = None
@@ -706,10 +760,12 @@ class Collection(Mapping):
                 self.embedded_paths.add(path)
 
         if self.schema is not None:
+            properties = self.schema['properties']
             self.schema_links = [
-                name for name, prop in self.schema['properties'].iteritems()
+                name for name, prop in properties.iteritems()
                 if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
             ]
+            self.schema_version = properties.get('schema_version', {}).get('default')
 
     def __getitem__(self, name):
         try:
@@ -865,7 +921,7 @@ class Collection(Mapping):
         items = []
         from .indexing import ELASTIC_SEARCH
         es = request.registry[ELASTIC_SEARCH]
-        results = es.search(query, index=self.item_type, size=10000)
+        results = es.search(query, index=self.item_type, size=99999)
         for model in results['hits']['hits']:
             # Dealing with columns which have length attribute to the array
             for c in lengthColumns:
@@ -988,12 +1044,23 @@ def collection_list(context, request):
 
 @view_config(context=Collection, permission='add', request_method='POST',
              validators=[validate_item_content_post])
-def collection_add(context, request):
+@view_config(context=Collection, permission='add_unvalidated', request_method='POST',
+             validators=[no_validate_item_content_post],
+             request_param=['validate=false'])
+def collection_add(context, request, render=None):
+    if render is None:
+        render = request.params.get('render', True)
     properties = request.validated
     item = context.add(properties)
     request.registry.notify(Created(item, request))
-    item_uri = request.resource_path(item)
-    rendered = embed(request, item_uri + '?embed=false')
+    if render == 'uuid':
+        item_uri = '/%s' % item.uuid
+    else:
+        item_uri = request.resource_path(item)
+    if asbool(render) is True:
+        rendered = embed(request, item_uri + '?embed=false')
+    else:
+        rendered = item_uri
     request.response.status = 201
     request.response.location = item_uri
     result = {
@@ -1029,23 +1096,42 @@ def item_view(context, request):
     return properties
 
 
+@view_config(context=Item, permission='view', request_method='GET',
+             request_param=['raw'], additional_permission='view_raw')
+def item_view_raw(context, request):
+    if asbool(request.params.get('upgrade', True)):
+        return context.upgrade_properties(request)
+    return context.properties
+
+
 @view_config(context=Item, permission='edit', request_method='PUT',
              validators=[validate_item_content_put])
 @view_config(context=Item, permission='edit', request_method='PATCH',
              validators=[validate_item_content_patch])
-def item_edit(context, request, render=True):
+@view_config(context=Item, permission='edit_unvalidated', request_method='PUT',
+             validators=[no_validate_item_content_put],
+             request_param=['validate=false'])
+@view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
+             validators=[no_validate_item_content_patch],
+             request_param=['validate=false'])
+def item_edit(context, request, render=None):
     """ This handles both PUT and PATCH, difference is the validator
 
     PUT - replaces the current properties with the new body
     PATCH - updates the current properties with those supplied.
     """
+    if render is None:
+        render = request.params.get('render', True)
     properties = request.validated
     # This *sets* the property sheet
     request.registry.notify(BeforeModified(context, request))
     context.update(properties)
     request.registry.notify(AfterModified(context, request))
-    item_uri = request.resource_path(context)
-    if render:
+    if render == 'uuid':
+        item_uri = '/%s' % context.uuid
+    else:
+        item_uri = request.resource_path(context)
+    if asbool(render) is True:
         rendered = embed(request, item_uri + '?embed=false')
     else:
         rendered = item_uri
