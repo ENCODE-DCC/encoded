@@ -155,7 +155,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                                 <dt className="h4">Target species</dt>
                                 <dd className="h4">{context.target.organism.name}</dd>
 
-                                <dt hidden="hidden">Caption</dt>
+                                <dt>Caption</dt>
                                 <dd>{context.caption}</dd>
 
                                 <dt>Submitted by</dt>
