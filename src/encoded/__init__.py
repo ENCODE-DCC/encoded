@@ -160,6 +160,7 @@ def main(global_config, **settings):
     config.include('.views')
     config.include('.migrator')
 
+    settings = config.registry.settings
     hostname_command = settings.get('hostname_command', '').strip()
     if hostname_command:
         hostname = subprocess.check_output(hostname_command, shell=True).strip()
