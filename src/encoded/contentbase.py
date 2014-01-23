@@ -1162,3 +1162,40 @@ class AfterModified(object):
     def __init__(self, object, request):
         self.object = object
         self.request = request
+
+
+@view_config(context=Item, name='index-data', permission='view_indexing', request_method='GET')
+def item_index_data(context, request):
+    from pyramid.security import (
+        Everyone,
+        principals_allowed_by_permission,
+    )
+    links = {}
+    # links for the item
+    for link in context.links:
+        links[link] = []
+        if type(context.links[link]) is list:
+            for l in context.links[link]:
+                links[link].append(str(l.uuid))
+        else:
+            links[link].append(str(context.links[link].uuid))
+
+    # Get keys for the item
+    keys = {}
+    for key in context.model.unique_keys:
+        keys[key.name] = key.value
+
+    # Principals for the item
+    principals = principals_allowed_by_permission(context, 'view')
+    if principals is Everyone:
+        principals = [Everyone]
+
+    document = {
+        'object': embed(request, request.resource_path(context)),
+        'unembedded_object': embed(request, request.resource_path(context) + '?embed=false'),
+        'links': links,
+        'keys': keys,
+        'principals_allowed_view': sorted(principals),
+    }
+
+    return document

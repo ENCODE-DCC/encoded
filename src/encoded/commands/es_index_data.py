@@ -1,5 +1,4 @@
 from pyramid.paster import get_app
-from pyramid.security import principals_allowed_by_permission
 from ..indexing import ELASTIC_SEARCH
 import logging
 from webtest import TestApp
@@ -32,56 +31,14 @@ def run(app, collections=None):
 
         # try creating index, if it exists already delete it and create it
         counter = 0
-        for count, item in enumerate(collection.itervalues()):
-            links = {}
-            # links for the item
-            for link in item.links:
-                links[link] = []
-                if type(item.links[link]) is list:
-                    for l in item.links[link]:
-                        links[link].append(str(l.uuid))
-                else:
-                    links[link].append(str(item.links[link].uuid))
-
-            # Get keys for the item
-            keys = {}
-            for key in item.model.unique_keys:
-                keys[key.name] = key.value
-
-            # Principals for the item
-            principals = []
-            _principals = principals_allowed_by_permission(item, 'edit')
-            if type(_principals) is list:
-                for principal in _principals:
-                    principals.append(principal)
-            else:
-                principals.append(_principals)
-
-            item_path = '/' + root.by_item_type[collection_name].__name__ \
-                + '/' + str(item.__name__) + '/'
-            try:
-                item_json = testapp.get(item_path, headers={'Accept': 'application/json'}, status=200)
-            except Exception as e:
-                print e
-            else:
-                document_id = str(item_json.json['uuid'])
-                try:
-                    unembedded_item_json = testapp.get(item_path + '?embed=false', headers={'Accept': 'application/json'}, status=200)
-                except Exception as e:
-                    print e
-                else:
-                    document = {
-                        'object': item_json.json,
-                        'unembedded_object': unembedded_item_json.json,
-                        'links': links,
-                        'keys': keys,
-                        'principals_allowed_view': principals
-                    }
-                    es.index(index, DOCTYPE, document, document_id)
-                    counter = counter + 1
-                    if counter % 50 == 0:
-                        es.flush(index)
-                        log.info('Indexing %s %d', collection_name, counter)
+        for count, uuid in enumerate(collection):
+            res = testapp.get('/%s/@@index-data' % uuid).maybe_follow()
+            document = res.json
+            es.index(index, DOCTYPE, document, str(uuid))
+            counter = counter + 1
+            if counter % 50 == 0:
+                es.flush(index)
+                log.info('Indexing %s %d', collection_name, counter)
         es.refresh(index)
 
 
