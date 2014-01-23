@@ -52,7 +52,7 @@ class ItemWithAttachment(Item):
     @classmethod
     def _process_downloads(cls, properties, sheets):
         prop_name = cls.download_property
-        attachment = properties[prop_name]
+        attachment = properties.get(prop_name, {})
         href = attachment.get('href', None)
         if href is not None:
             if not href.startswith('data:'):
@@ -94,7 +94,7 @@ class ItemWithAttachment(Item):
 
     def update(self, properties, sheets=None):
         prop_name = self.download_property
-        attachment = properties[prop_name]
+        attachment = properties.get(prop_name, {})
         href = attachment.get('href', None)
         if href is not None:
             if href.startswith('@@download/'):

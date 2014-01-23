@@ -12,14 +12,10 @@ def test_load_schema(schema):
     assert load_schema(schema)
 
 
-def test_linkTo_saves_uuid(testapp):
+def test_linkTo_saves_uuid(testapp, users):
     from .sample_data import URL_COLLECTION
-    url = '/labs/'
-    lab = URL_COLLECTION[url][0]
-    testapp.post_json(url, lab, status=201)
-    url = '/users/'
-    user = URL_COLLECTION[url][0]
-    testapp.post_json(url, user, status=201)
+    lab = URL_COLLECTION['lab'][0]
+    user = URL_COLLECTION['user'][0]
     assert user['submits_for'] == ['cherry']
 
     from ..contentbase import LOCATION_ROOT
