@@ -1,9 +1,11 @@
+import base64
 import json
 import subprocess
 from pyramid.config import Configurator
-from pyramid.session import UnencryptedCookieSessionFactoryConfig
+from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
 from sqlalchemy import engine_from_config
+from webob.cookies import JSONSerializer
 from .storage import (
     Base,
     DBSession,
@@ -127,24 +129,40 @@ def load_ontology(config):
     config.registry['ontology'] = json.load(open(path))
 
 
+def session(config):
+    """ To create a session secret on the server:
+
+    $ cat /dev/urandom | head -c 256 | base64 > session-secret.b64
+    """
+    settings = config.registry.settings
+    if 'session.secret' in settings:
+        secret = settings['session.secret'].strip()
+        if secret.startswith('/'):
+            secret = open(secret).read()
+            secret = base64.b64decode(secret)
+    else:
+        secret = open('/dev/urandom').read(256)
+    # auth_tkt has no timeout set
+    # cookie will still expire at browser close
+    if 'session.timeout' in settings:
+        timeout = int(settings['session.timeout'])
+    else:
+        timeout = 60 * 60 * 24
+    session_factory = SignedCookieSessionFactory(
+        secret=secret,
+        timeout=timeout,
+        reissue_time=2**32,  # None does not work
+        serializer=JSONSerializer(),
+    )
+    config.set_session_factory(session_factory)
+
+
 def main(global_config, **settings):
     """ This function returns a Pyramid WSGI application.
     """
+    config = Configurator(settings=settings)
 
-    secret = settings['multiauth.policy.authtkt.secret']
-    # auth_tkt has no timeout set
-    # cookie will still expire at browser close
-    timeout = 60 * 60 * 24
-    session_factory = UnencryptedCookieSessionFactoryConfig(
-        secret=secret,
-        timeout=timeout,
-    )
-
-    config = Configurator(
-        settings=settings,
-        session_factory=session_factory,
-    )
-
+    config.include(session)
     config.include('.stats')
     config.include('pyramid_tm')
     configure_engine(settings)
