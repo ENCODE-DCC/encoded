@@ -68,8 +68,7 @@ def schema_mapping(name, schema):
                 'untouched': {
                     'type': 'string',
                     'index': 'not_analyzed',
-                    'include_in_all': False,
-                    'omit_norms': True
+                    'include_in_all': False
                 },
                 'standard': {
                     'type': 'string',

@@ -8,7 +8,7 @@ from ..indexing import ELASTIC_SEARCH
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 
-def get_filtered_query(term, fields):
+def get_filtered_query(term, fields, search_fields):
     return {
         'explain': True,
         'query': {
@@ -18,7 +18,8 @@ def get_filtered_query(term, fields):
                         'query': term,
                         'analyze_wildcard': True,
                         'analyzer': 'encoded_search_analyzer',
-                        'default_operator': 'AND'
+                        'default_operator': 'AND',
+                        'fields': search_fields
                     }
                 },
                 'filter': {
@@ -28,12 +29,17 @@ def get_filtered_query(term, fields):
                 }
             }
         },
+        'highlight': {
+            'fields': {
+                '_all': {}
+            }
+        },
         'facets': {},
         'fields': fields
     }
 
 
-def get_query(term, fields):
+def get_query(term, fields, search_fields):
     return {
         'explain': True,
         'query': {
@@ -41,7 +47,13 @@ def get_query(term, fields):
                 'query': term,
                 'analyze_wildcard': True,
                 'analyzer': 'encoded_search_analyzer',
-                'default_operator': 'AND'
+                'default_operator': 'AND',
+                'fields': search_fields
+            }
+        },
+        'highlight': {
+            'fields': {
+                '_all': {}
             }
         },
         'facets': {},
@@ -117,15 +129,22 @@ def search(context, request):
         if not search_term:
             result['notification'] = 'Please enter search term'
             return result
+        
         doc_types = ['antibody_approval', 'biosample', 'experiment', 'target', 'dataset']
         fields = ['object.@id', 'object.@type']
+        search_fields = []
+
         for doc_type in doc_types:
             collection = root[doc_type]
             result['columns'].update(collection.columns)
             for column in collection.columns:
                 fields.append('object.' + column)
-
-        query = get_query(search_term, list(set(fields)))
+            for value in collection.schema.get('boost_values', ()):
+                search_fields.append('object.' + value)
+                search_fields.append('object.' + value + '.standard^2')
+                search_fields.append('object.' + value + '.untouched^3')
+        
+        query = get_query(search_term, list(set(fields)), search_fields)
 
         common_facets = [{'Data Type': 'object.@type.untouched'}]
         for facet in common_facets:
@@ -167,10 +186,15 @@ def search(context, request):
 
         # Building query for filters
         fields = ['object.@id', 'object.@type']
+        search_fields = []
         collections = root.by_item_type
         for collection_name in collections:
             if search_type == collection_name:
                 collection = root[collection_name]
+                for value in collection.schema.get('boost_values', ()):
+                    search_fields.append('object.' + value)
+                    search_fields.append('object.' + value + '.standard^2')
+                    search_fields.append('object.' + value + '.untouched^3')
                 index = collection_name
                 schema = collection.schema
                 columns = result['columns'] = collection.columns
@@ -179,7 +203,7 @@ def search(context, request):
             fields.append('object.' + column)
 
         # Builds filtered query which supports multiple facet selection
-        query = get_filtered_query(search_term, fields)
+        query = get_filtered_query(search_term, fields, search_fields)
         regular_query = 1
         for key, value in params.iteritems():
             if key not in ['type', 'searchTerm', 'limit', 'format']:
@@ -190,7 +214,7 @@ def search(context, request):
                     query['query']['filtered']['filter']['and']['filters'].append({'bool': {'must': {'term': {'object.' + key + '.untouched': value}}}})
                 result['filters'].append({key: value})
         if regular_query:
-            query = get_query(search_term, fields)
+            query = get_query(search_term, fields, search_fields)
 
         if 'facets' in schema:
             for facet in schema['facets']:
