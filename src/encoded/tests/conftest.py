@@ -513,7 +513,7 @@ def libraries(testapp, labs, awards, biosamples):
 
 @pytest.fixture
 def library(libraries):
-    return [l for l in libraries if['accession'] == 'ENCLB000TST'][0]
+    return [l for l in libraries if l['accession'] == 'ENCLB000TST'][0]
 
 
 @pytest.fixture
@@ -528,7 +528,7 @@ def experiment(experiments):
 
 
 @pytest.fixture
-def replicates(testapp, labs, awards, experiments, libraries):
+def replicates(testapp, experiments, libraries):
     from . import sample_data
     return sample_data.load(testapp, 'replicate')
 
