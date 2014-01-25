@@ -23,6 +23,10 @@ First run buildout::
     $ python2.7 bootstrap.py
     $ bin/buildout
 
+Set a session key::
+
+    $ cat /dev/urandom | head -c 256 | base64 > session-secret.b64
+
 Create ElasticSearch mapping for ENCODE data::
 
     $ bin/create-mapping production.ini
