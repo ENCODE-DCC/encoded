@@ -12,6 +12,7 @@ def run(branch):
     import time
     import sys
     import os
+    instance_name = 'encoded/%s' % branch
 
     conn = boto.ec2.connect_to_region("us-west-1")
     bdm = boto.ec2.blockdevicemapping.BlockDeviceMapping()
@@ -37,6 +38,7 @@ def run(branch):
     )
 
     instance = reservation.instances[0] # Instance:i-34edd56f
+    instance.add_tag('Name', instance_name) 
     print instance
     print instance.state,
 
