@@ -1,5 +1,6 @@
 import base64
 import json
+import subprocess
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool
@@ -175,10 +176,17 @@ def main(global_config, **settings):
     config.include('.indexing')
     config.include('.server_defaults')
     config.include('.views')
-    config.include('.persona')
-    config.include('pyramid_multiauth')
     config.include('.migrator')
 
+    settings = config.registry.settings
+    hostname_command = settings.get('hostname_command', '').strip()
+    if hostname_command:
+        hostname = subprocess.check_output(hostname_command, shell=True).strip()
+        settings.setdefault('persona.audiences', '')
+        settings['persona.audiences'] += '\nhttp://%s' % hostname
+
+    config.include('.persona')
+    config.include('pyramid_multiauth')
     from .local_roles import LocalRolesAuthorizationPolicy
     config.set_authorization_policy(LocalRolesAuthorizationPolicy())
 
