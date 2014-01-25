@@ -7,12 +7,14 @@
 
 #log = logging.getLogger(__name__)
 
-def run(branch):
+def run(branch, instance_name=None):
     import boto.ec2
     import time
     import sys
     import os
-    instance_name = 'encoded/%s' % branch
+    if instance_name is None:
+        # Ideally we'd use the commit sha here, but only the instance knows that...
+        instance_name = 'encoded/%s' % branch
 
     conn = boto.ec2.connect_to_region("us-west-1")
     bdm = boto.ec2.blockdevicemapping.BlockDeviceMapping()
@@ -39,6 +41,7 @@ def run(branch):
 
     instance = reservation.instances[0] # Instance:i-34edd56f
     instance.add_tag('Name', instance_name) 
+    instance.add_tag('branch', branch) 
     print instance
     print instance.state,
 
@@ -60,9 +63,10 @@ def main():
         description="Deploy ENCODE on AWS", 
     )
     parser.add_argument('-b', '--branch', default='master', help="Git branch or tag")
+    parser.add_argument('-n', '--name', help="Instance name")
     args = parser.parse_args()
 
-    return run(args.branch)
+    return run(args.branch, args.name)
 
 
 if __name__ == '__main__':
