@@ -4,11 +4,12 @@ from ..contentbase import (
     Root
 )
 from ..indexing import ELASTIC_SEARCH
+from pyramid.security import effective_principals
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 
-def get_filtered_query(term, fields, search_fields):
+def get_filtered_query(term, fields, search_fields, principals):
     return {
         'explain': True,
         'query': {
@@ -24,7 +25,17 @@ def get_filtered_query(term, fields, search_fields):
                 },
                 'filter': {
                     'and': {
-                        'filters': []
+                        'filters': [
+                            {
+                                'bool': {
+                                    'must': {
+                                        'terms': {
+                                            'principals_allowed_view': principals
+                                        }
+                                    }
+                                }
+                            }
+                        ]
                     }
                 }
             }
@@ -63,6 +74,8 @@ def search(context, request):
     })
 
     qs = request.environ.get('QUERY_STRING')
+    principals = effective_principals(request)
+
     if qs:
         result['@id'] = '/search/?%s' % qs
 
@@ -133,7 +146,7 @@ def search(context, request):
             search_fields = search_fields + ['object.' + value, 'object.' + value + '.standard^2', 'object.' + value + '.untouched^3']
 
     # Builds filtered query which supports multiple facet selection
-    query = get_filtered_query(search_term, list(set(fields)), search_fields)
+    query = get_filtered_query(search_term, list(set(fields)), search_fields, principals)
 
     # Setting filters
     for key, value in params.iteritems():
@@ -164,6 +177,7 @@ def search(context, request):
                 if facet[facet.keys()[0]] == f.keys()[0]:
                     del(query['facets'][facet.keys()[0]])
 
+    import pdb; pdb.set_trace();
     # Execute the query
     results = es.search(query, index='encoded', doc_type=doc_types, size=size)
 
