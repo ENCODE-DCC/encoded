@@ -81,6 +81,11 @@ def app(zsa_savepoints, check_constraints, app_settings):
     return main({}, **app_settings)
 
 
+@fixture
+def root(app):
+    return app.root_factory(app)
+
+
 @pytest.mark.fixture_cost(500)
 @pytest.yield_fixture(scope='session')
 def workbook(connection, app, app_settings):
@@ -487,6 +492,50 @@ def organisms(testapp):
 @pytest.fixture
 def organism(organisms):
     return [o for o in organisms if o['name'] == 'human'][0]
+
+
+@pytest.fixture
+def biosamples(testapp, labs, awards, sources, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'biosample')
+
+
+@pytest.fixture
+def biosample(biosamples):
+    return [b for b in biosamples if b['accession'] == 'ENCBS000TST'][0]
+
+
+@pytest.fixture
+def libraries(testapp, labs, awards, biosamples):
+    from . import sample_data
+    return sample_data.load(testapp, 'library')
+
+
+@pytest.fixture
+def library(libraries):
+    return [l for l in libraries if l['accession'] == 'ENCLB000TST'][0]
+
+
+@pytest.fixture
+def experiments(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'experiment')
+
+
+@pytest.fixture
+def experiment(experiments):
+    return [e for e in experiments if e['accession'] == 'ENCSR000TST'][0]
+
+
+@pytest.fixture
+def replicates(testapp, experiments, libraries):
+    from . import sample_data
+    return sample_data.load(testapp, 'replicate')
+
+
+@pytest.fixture
+def replicate(replicates):
+    return replicates[0]
 
 
 @pytest.mark.fixture_cost(10)
