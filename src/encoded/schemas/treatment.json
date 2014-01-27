@@ -27,7 +27,9 @@
             "enum": [
                 "protein",
                 "chemical",
-                "infection"
+                "infection",
+                "heat shock",
+                "cold shock"
             ]
         },
         "protocols": {
@@ -95,6 +97,19 @@
                 "minute",
                 "hour",
                 "day"
+            ],
+        },
+        "temperature": {
+            "title": "Temperature",
+            "type": "number",
+        },
+        "temperature_units": {
+            "title": "Temperature units",
+            "type": "string",
+            "enum": [
+               "Celsius",
+               "Fahrenheit",
+               "Kelvin"
             ]
         }
     }
