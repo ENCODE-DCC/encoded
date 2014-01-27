@@ -261,10 +261,13 @@
             "title": "Donor age units",
             "type": "string",
             "enum": [
+                "minute",
+                "hour",
                 "day",
                 "week",
                 "month",
-                "year"
+                "year",
+                "stage"
             ]
         },
         "health_status": {
