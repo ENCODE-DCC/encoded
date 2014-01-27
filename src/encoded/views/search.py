@@ -39,28 +39,6 @@ def get_filtered_query(term, fields, search_fields):
     }
 
 
-def get_query(term, fields, search_fields):
-    return {
-        'explain': True,
-        'query': {
-            'query_string': {
-                'query': term,
-                'analyze_wildcard': True,
-                'analyzer': 'encoded_search_analyzer',
-                'default_operator': 'AND',
-                'fields': search_fields
-            }
-        },
-        'highlight': {
-            'fields': {
-                '_all': {}
-            }
-        },
-        'facets': {},
-        'fields': fields,
-    }
-
-
 def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
@@ -126,114 +104,84 @@ def search(context, request):
             result['notification'] = '\'' + search_type + '\' is not a valid \'item type\''
             return result
     except:
+        # Handling search type
+        search_type = '*'
         if not search_term:
             result['notification'] = 'Please enter search term'
             return result
-        
+    if search_term == '*' and search_type == '*':
+        result['notification'] = 'Please enter search term'
+        return result
+
+    # Building query for filters
+    fields = ['object.@id', 'object.@type']
+    search_fields = []
+    if search_type == '*':
         doc_types = ['antibody_approval', 'biosample', 'experiment', 'target', 'dataset']
-        fields = ['object.@id', 'object.@type']
-        search_fields = []
+    else:
+        doc_types = [search_type]
 
-        for doc_type in doc_types:
-            collection = root[doc_type]
-            result['columns'].update(collection.columns)
-            for column in collection.columns:
-                fields.append('object.' + column)
-            for value in collection.schema.get('boost_values', ()):
-                search_fields.append('object.' + value)
-                search_fields.append('object.' + value + '.standard^2')
-                search_fields.append('object.' + value + '.untouched^3')
-        
-        query = get_query(search_term, list(set(fields)), search_fields)
+    collections = root.by_item_type
+    for doc_type in doc_types:
+        collection = root[doc_type]
+        schema = collection.schema
+        for column in collection.columns:
+            fields.append('object.' + column)
+            result['columns'].update({column: collection.columns[column]})
+        # Adding search fields and boost values
+        for value in schema.get('boost_values', ()):
+            search_fields = search_fields + ['object.' + value, 'object.' + value + '.standard^2', 'object.' + value + '.untouched^3']
 
-        common_facets = [{'Data Type': 'object.@type.untouched'}]
-        for facet in common_facets:
+    # Builds filtered query which supports multiple facet selection
+    query = get_filtered_query(search_term, list(set(fields)), search_fields)
+
+    # Setting filters
+    for key, value in params.iteritems():
+        if key not in ['type', 'searchTerm', 'limit', 'format']:
+            if value == 'other':
+                query['query']['filtered']['filter']['and']['filters'] \
+                    .append({'missing': {'field': 'object.' + key}})
+            else:
+                query['query']['filtered']['filter']['and']['filters'] \
+                    .append({'bool': {'must': {'term': {'object.' + key + '.untouched': value}}}})
+            result['filters'].append({key: value})
+
+    # Adding facets to the query
+    facets = []
+    if len(doc_types) > 1:
+        facets = [{'Data Type': 'object.@type.untouched'}]
+        for facet in facets:
             face = {'terms': {'field': '', 'size': 99999}}
             face['terms']['field'] = facet[facet.keys()[0]]
             query['facets'][facet.keys()[0]] = face
-
-        s = es.search(query, index='encoded', doc_type=doc_types, size=size)
-        for hit in s['hits']['hits']:
-            new_hit = {}
-            for field in hit['fields']:
-                new_hit[field[7:]] = hit['fields'][field]
-            result['@graph'].append(new_hit)
-        
-        facet_results = s['facets']
-        for facet in common_facets:
-            if facet.keys()[0] in facet_results:
-                face = {}
-                face['field'] = 'type'
-                face[facet.keys()[0]] = []
-                for term in facet_results[facet.keys()[0]]['terms']:
-                    if term['term'] in doc_types:
-                        face[facet.keys()[0]].append({root.by_item_type[term['term']].__name__: term['count']})
-                result['facets'].append(face)
-
-        result['count'] = s['hits']['total']
-        if len(result['@graph']):
-            result['notification'] = 'Success'
-        else:
-            if len(search_term) < 3:
-                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
-            else:
-                result['notification'] = 'No results found'
-        return result
     else:
-        if search_term == '*' and search_type == '*':
-            result['notification'] = 'Please enter search terme'
-            return result
+        facets = root[doc_types[0]].schema['facets']
+        for facet in facets:
+            face = {'terms': {'field': '', 'size': 99999}}
+            face['terms']['field'] = 'object.' + facet[facet.keys()[0]] + '.untouched'
+            query['facets'][facet.keys()[0]] = face
+            for f in result['filters']:
+                if facet[facet.keys()[0]] == f.keys()[0]:
+                    del(query['facets'][facet.keys()[0]])
 
-        # Building query for filters
-        fields = ['object.@id', 'object.@type']
-        search_fields = []
-        collections = root.by_item_type
-        for collection_name in collections:
-            if search_type == collection_name:
-                collection = root[collection_name]
-                for value in collection.schema.get('boost_values', ()):
-                    search_fields.append('object.' + value)
-                    search_fields.append('object.' + value + '.standard^2')
-                    search_fields.append('object.' + value + '.untouched^3')
-                index = collection_name
-                schema = collection.schema
-                columns = result['columns'] = collection.columns
-                break
-        for column in columns:
-            fields.append('object.' + column)
+    # Execute the query
+    results = es.search(query, index='encoded', doc_type=doc_types, size=size)
 
-        # Builds filtered query which supports multiple facet selection
-        query = get_filtered_query(search_term, fields, search_fields)
-        regular_query = 1
-        for key, value in params.iteritems():
-            if key not in ['type', 'searchTerm', 'limit', 'format']:
-                regular_query = 0
-                if value == 'other':
-                    query['query']['filtered']['filter']['and']['filters'].append({'missing': {'field': 'object.' + key}})
-                else:
-                    query['query']['filtered']['filter']['and']['filters'].append({'bool': {'must': {'term': {'object.' + key + '.untouched': value}}}})
-                result['filters'].append({key: value})
-        if regular_query:
-            query = get_query(search_term, fields, search_fields)
-
-        if 'facets' in schema:
-            for facet in schema['facets']:
-                face = {'terms': {'field': '', 'size': 99999}}
-                face['terms']['field'] = 'object.' + facet[facet.keys()[0]] + '.untouched'
-                query['facets'][facet.keys()[0]] = face
-                for f in result['filters']:
-                    if facet[facet.keys()[0]] == f.keys()[0]:
-                        del(query['facets'][facet.keys()[0]])
+    # Loading facets in to the results
+    if 'facets' in results:
+        facet_results = results['facets']
+        if len(doc_types) > 1:
+            for facet in facets:
+                if facet.keys()[0] in facet_results:
+                    face = {}
+                    face['field'] = 'type'
+                    face[facet.keys()[0]] = []
+                    for term in facet_results[facet.keys()[0]]['terms']:
+                        if term['term'] in doc_types:
+                            face[facet.keys()[0]].append({root.by_item_type[term['term']].__name__: term['count']})
+                    result['facets'].append(face)
         else:
-            del(query['facets'])
-
-        # Execute the query
-        results = es.search(query, index='encoded', doc_type=index, size=size)
-
-        # Loading facets in to the results
-        if 'facets' in results:
-            facet_results = results['facets']
-            for facet in schema['facets']:
+            for facet in facets:
                 if facet.keys()[0] in facet_results:
                     face = {}
                     face['field'] = facet[facet.keys()[0]]
@@ -243,19 +191,21 @@ def search(context, request):
                     if len(face[facet.keys()[0]]) > 1:
                         result['facets'].append(face)
 
-        for hit in results['hits']['hits']:
-            result_hit = hit['fields']
-            result_hit_new = {}
-            for c in result_hit:
-                result_hit_new[c[7:]] = result_hit[c]
-            result['@graph'].append(result_hit_new)
+    # Loading result rows
+    for hit in results['hits']['hits']:
+        result_hit = hit['fields']
+        result_hit_new = {}
+        for c in result_hit:
+            result_hit_new[c[7:]] = result_hit[c]
+        result['@graph'].append(result_hit_new)
 
-        result['count'] = results['hits']['total']
-        if len(result['@graph']):
-            result['notification'] = 'Success'
+    # Adding count
+    result['count'] = results['hits']['total']
+    if len(result['@graph']):
+        result['notification'] = 'Success'
+    else:
+        if len(search_term) < 3:
+            result['notification'] = 'No results found. Search term should be at least 3 characters long.'
         else:
-            if len(search_term) < 3:
-                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
-            else:
-                result['notification'] = 'No results found'
-        return result
+            result['notification'] = 'No results found'
+    return result

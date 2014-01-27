@@ -149,7 +149,7 @@ var Dbxref = dbxref.Dbxref;
                     id = j;
                     count = map[j];
                 }
-                if(counter < 4) {
+                if(counter < 6) {
                     return <li><a href={href_search+'&'+field+'='+id}>{id}<span className="pull-right">{count}</span></a></li>
                 } 
             };
@@ -161,7 +161,7 @@ var Dbxref = dbxref.Dbxref;
                     id = j;
                     count = map[j];
                 }
-                if (counter1 >= 4) {
+                if (counter1 >= 6) {
                     return <li><a href={href_search+'&'+field+'='+id}>{id}<span className="pull-right">{count}</span></a></li>
                 }
             };
@@ -188,14 +188,14 @@ var Dbxref = dbxref.Dbxref;
                                     terms.map(buildTerms)
                                 : null}
                             </div>
-                            {terms.length > 3 ?
+                            {terms.length > 5 ?
                                 <div id={termID} className="collapse">
                                     {terms.length ?
                                         terms.map(buildCollapsingTerms)
                                     : null}
                                 </div>
                             : null}
-                            {terms.length > 3 ?
+                            {terms.length > 5 ?
                                 <label className="pull-right">
                                         <small>
                                             <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
