@@ -11,6 +11,26 @@ def number(value):
     except ValueError:
         return float(value)
 
+def go_mapping(value):
+    if value == 'nucleus':
+        return 'GO:0005634'
+    elif value == 'cytosol':
+        return 'GO:0005829'
+    elif value == 'chromatin':
+        return 'GO:0000785'
+    elif value == 'membrane':
+        return 'GO:0016020'
+    elif value == 'mitochondria':
+        return 'GO:0005739'
+    elif value == 'nuclear matrix':
+        return 'GO:0016363'
+    elif value == 'nucleolus':
+        return 'GO:0005730'
+    elif value == 'nucleoplasm':
+        return 'GO:0005654'
+    elif value == 'polysome':
+        return 'GO:0005844'
+
 
 @upgrade_step('biosample', '', '2')
 def biosample_0_2(value, system):
@@ -21,3 +41,16 @@ def biosample_0_2(value, system):
             del value['starting_amount']
         else:
             value['starting_amount'] = new_value
+
+
+@upgrade_step('biosample', '2', '3')
+def biosample_2_3(value, system):
+    # http://redmine.encodedcc.org/issues/940
+    if 'subcellular_fraction' in value:
+        if value['subcellular_fraction']== "membrane fraction":
+            value['subcellular_fraction'] = 'membrane'
+            value['subcellular_fraction_term_id']  = go_mapping(value['subcellular_fraction'])
+            value ['subcelluar_fraction_term_name'] = value['subcellular_fraction']
+            del value['subcellular_fraction']
+
+
