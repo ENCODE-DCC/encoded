@@ -30,7 +30,8 @@
                 "male",
                 "female",
                 "unknown",
-                "mixed"
+                "mixed",
+                "hermaphrodite"
             ]
         },
         "parents": {
