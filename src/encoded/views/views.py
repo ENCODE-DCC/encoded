@@ -202,7 +202,7 @@ class FlyDonor(Collection):
     item_type = 'fly_donor'
     schema = load_schema('fly_donor.json')
     properties = {
-        'title': "Fly donors',
+        'title': 'Fly donors',
         'description': 'Listing Biosample Donors',
     }
 
@@ -211,9 +211,10 @@ class WormDonor(Collection):
     item_type = 'worm_donor'
     schema = load_schema('worm_donor.json')
     properties = {
-        'title': "Worm donors',
+        'title': 'Worm donors',
         'description': 'Listing Biosample Donors',
     }
+
 
     class Item(DonorItem):
         pass
