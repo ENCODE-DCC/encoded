@@ -384,20 +384,22 @@ class Root(object):
         return self.properties.copy()
 
 
-class MergedTemplateMeta(type):
-    """ Merge the template from the subclass with its bases
+class MergedDictsMeta(type):
+    """ Merge dicts on the subclass with its bases
     """
     def __init__(self, name, bases, attrs):
-        super(MergedTemplateMeta, self).__init__(name, bases, attrs)
+        super(MergedDictsMeta, self).__init__(name, bases, attrs)
+        for attr in self.__merged_dicts__:
+            merged = {}
+            setattr(self, 'merged_%s' % attr, merged)
 
-        self.merged_template = {}
-        for cls in reversed(self.mro()):
-            template = vars(cls).get('template', None)
-            if template is not None:
-                self.merged_template.update(template)
+            for cls in reversed(self.mro()):
+                value = vars(cls).get(attr, None)
+                if value is not None:
+                    merged.update(value)
 
 
-class MergedKeysMeta(MergedTemplateMeta):
+class MergedKeysMeta(MergedDictsMeta):
     """ Merge the keys from the subclass with its bases
     """
     def __init__(self, name, bases, attrs):
@@ -414,6 +416,11 @@ class MergedKeysMeta(MergedTemplateMeta):
 
 class Item(object):
     __metaclass__ = MergedKeysMeta
+    __merged_dicts__ = [
+        'template',
+        'template_type',
+        'rev',
+    ]
     base_types = ['item']
     keys = []
     name_key = None
@@ -428,6 +435,7 @@ class Item(object):
         ],
         'uuid': {'$value': '{uuid}', '$templated': True},
     }
+    template_type = None
 
     def __init__(self, collection, model):
         self.__parent__ = collection
@@ -481,11 +489,9 @@ class Item(object):
         return links
 
     def rev_links(self):
-        if self.rev is None:
-            return {}
         root = find_root(self)
         links = {}
-        for name, spec in self.rev.iteritems():
+        for name, spec in self.merged_rev.iteritems():
             links[name] = value = []
             for link in self.model.revs:
                 if (link.source.item_type, link.rel) == spec:
@@ -703,7 +709,7 @@ class Item(object):
         return to_add, to_remove
 
 
-class CustomItemMeta(MergedTemplateMeta, ABCMeta):
+class CustomItemMeta(MergedDictsMeta, ABCMeta):
     """ Give each collection its own Item class to enable
         specific view registration.
     """
@@ -714,7 +720,14 @@ class CustomItemMeta(MergedTemplateMeta, ABCMeta):
         if self.item_type is None and 'item_type' not in attrs:
             self.item_type = uncamel(self.__name__)
 
-        NAMES_TO_TRANSFER = ['template', 'embedded', 'keys', 'rev', 'name_key']
+        NAMES_TO_TRANSFER = [
+            'template',
+            'template_type',
+            'embedded',
+            'keys',
+            'rev',
+            'name_key',
+        ]
 
         if 'Item' in attrs:
             for name in NAMES_TO_TRANSFER:
@@ -731,6 +744,9 @@ class CustomItemMeta(MergedTemplateMeta, ABCMeta):
 
 class Collection(Mapping):
     __metaclass__ = CustomItemMeta
+    __merged_dicts__ = [
+        'template',
+    ]
     Item = Item
     schema = None
     schema_version = None
