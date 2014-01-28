@@ -463,13 +463,13 @@ class Item(object):
     def schema_links(self):
         return self.__parent__.schema_links
 
-    @property
-    def links(self):
+    def links(self, properties):
+        # This works from the schema rather than the links table
+        # so that upgrade on GET can work.
         if self.schema is None:
             return {}
         root = find_root(self)
         links = {}
-        properties = self.properties
         for name in self.schema_links:
             value = properties.get(name, None)
             if value is None:
@@ -480,19 +480,15 @@ class Item(object):
                 links[name] = root.get_by_uuid(value)
         return links
 
-    @property
     def rev_links(self):
         if self.rev is None:
             return {}
         root = find_root(self)
         links = {}
         for name, spec in self.rev.iteritems():
-            item_types, rel = spec
-            if isinstance(item_types, basestring):
-                item_types = [item_types]
             links[name] = value = []
             for link in self.model.revs:
-                if rel == link.rel and link.source.item_type in item_types:
+                if (link.source.item_type, link.rel) == spec:
                     item = root.get_by_uuid(link.source_rid)
                     value.append(item)
         return links
@@ -513,17 +509,32 @@ class Item(object):
         return properties
 
     def __json__(self, request):
+        """ Render json structure
+
+        1. Fetch stored properties, possibly upgrading.
+        2. Link canonicalization (overwriting uuids).
+        3. Fill reverse links (Item.rev)
+        4. Templated properties
+
+        Embedding is the responsibility of the view.
+        """
         properties = self.upgrade_properties(request)
-        templated = self.expand_template(properties, request)
-        properties.update(templated)
-        for name, value in self.links.iteritems():
+
+        for name, value in self.links(properties).iteritems():
             # XXXX Should this be {'@id': url, '@type': [...]} instead?
             if isinstance(value, list):
                 properties[name] = [request.resource_path(item) for item in value]
             else:
                 properties[name] = request.resource_path(value)
-        for name, value in self.rev_links.iteritems():
+
+        # XXX Should reverse links move to embedding?
+        # - would necessitate a second templating stage.
+        for name, value in self.rev_links().iteritems():
             properties[name] = [request.resource_path(item) for item in value]
+
+        templated = self.expand_template(properties, request)
+        properties.update(templated)
+
         return properties
 
     def template_namespace(self, properties, request=None):
