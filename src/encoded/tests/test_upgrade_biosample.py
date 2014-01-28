@@ -36,6 +36,14 @@ def test_biosample_upgrade_unknown(app, biosample_1):
     assert 'starting_amount' not in value
 
 
+def test_biosample_upgrade_empty_string(app, biosample_1):
+    biosample_1['starting_amount'] = ''
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_1, target_version='2')
+    assert value['schema_version'] == '2'
+    assert 'starting_amount' not in value
+
+
 def test_biosample_upgrade_exponent(app, biosample_1):
     biosample_1['starting_amount'] = '1 X 10^5'
     migrator = app.registry['migrator']
