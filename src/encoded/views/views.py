@@ -551,6 +551,7 @@ class Experiments(Collection):
     ])
 
     class Item(Collection.Item):
+        base_types = ['dataset'] + Collection.Item.base_types
         template = {
             'organ_slims': [
                 {'$value': '{slim}', '$repeat': 'slim organ_slims', '$templated': True}

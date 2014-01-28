@@ -51,6 +51,16 @@
                 "pattern": "^(GSE|GSM)\\d+$"
             }
         },
+        "encode2_dbxrefs": {
+            "title": "Previous ENCODE IDs",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Previous ENCODE ID",
+                "type":  "string",
+                "pattern": "^wgEncodeE(H|M)\\d+$"
+            }
+        },
         "documents": {
             "title": "Documents",
             "description": "Documents that provide additional information about the dataset (not data files).",
