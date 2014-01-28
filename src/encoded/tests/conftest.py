@@ -67,10 +67,18 @@ def config(request):
     return setUp()
 
 
+@pytest.yield_fixture
+def threadlocals(request, dummy_request, registry):
+    from pyramid.threadlocal import manager
+    manager.push({'request': dummy_request, 'registry': registry})
+    yield dummy_request
+    manager.pop()
+
+
 @fixture
-def dummy_request():
+def dummy_request(root, registry):
     from pyramid.testing import DummyRequest
-    return DummyRequest()
+    return DummyRequest(root=root, registry=registry)
 
 
 @fixture(scope='session')
@@ -79,6 +87,11 @@ def app(zsa_savepoints, check_constraints, app_settings):
     '''
     from encoded import main
     return main({}, **app_settings)
+
+
+@fixture
+def registry(app):
+    return app.registry
 
 
 @fixture
@@ -536,6 +549,17 @@ def replicates(testapp, experiments, libraries):
 @pytest.fixture
 def replicate(replicates):
     return replicates[0]
+
+
+@pytest.fixture
+def files(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'file')
+
+
+@pytest.fixture
+def file(file):
+    return [f for f in files if ['accession'] == 'ENCFF000TST'][0]
 
 
 @pytest.mark.fixture_cost(10)
