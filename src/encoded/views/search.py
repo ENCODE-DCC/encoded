@@ -27,12 +27,8 @@ def get_filtered_query(term, fields, search_fields, principals):
                     'and': {
                         'filters': [
                             {
-                                'bool': {
-                                    'must': {
-                                        'terms': {
-                                            'principals_allowed_view': principals
-                                        }
-                                    }
+                                'terms': {
+                                    'principals_allowed_view': principals
                                 }
                             }
                         ]
@@ -156,7 +152,7 @@ def search(context, request):
                     .append({'missing': {'field': 'object.' + key}})
             else:
                 query['query']['filtered']['filter']['and']['filters'] \
-                    .append({'bool': {'must': {'term': {'object.' + key + '.untouched': value}}}})
+                    .append({'term': {'object.' + key + '.untouched': value}})
             result['filters'].append({key: value})
 
     # Adding facets to the query
@@ -176,8 +172,6 @@ def search(context, request):
             for f in result['filters']:
                 if facet[facet.keys()[0]] == f.keys()[0]:
                     del(query['facets'][facet.keys()[0]])
-
-    import pdb; pdb.set_trace();
     # Execute the query
     results = es.search(query, index='encoded', doc_type=doc_types, size=size)
 
