@@ -19,7 +19,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "accession": {
             "accessionType": "SR"
@@ -74,8 +74,8 @@
                 "linkTo": "document"
             }
         },
-        "files": {
-            "title": "Data files",
+        "additional_files": {
+            "title": "Additional data files",
             "description": "List of data files to be associated with the dataset.",
             "type": "array",
             "default": [],
