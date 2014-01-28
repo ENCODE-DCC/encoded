@@ -101,7 +101,7 @@
         },
         "temperature": {
             "title": "Temperature",
-            "type": "number",
+            "type": "number"
         },
         "temperature_units": {
             "title": "Temperature units",
