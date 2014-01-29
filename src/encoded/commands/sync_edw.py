@@ -663,8 +663,9 @@ def main():
     if zargs.time_since:
         from datetime import datetime;
         from datetime import timedelta
-        since_dt = datetime.today() - timedelta(hours=zargs.time_since)
-        since = since_dt.strftime()
+        today = datetime.today()
+        since_dt = today - timedelta(hours=zargs.time_since)
+        since = int(since_dt.strftime("%s"))
         logger.info("Today is %s" % today)
         logger.warning("Getting files uploaded since %s (%s)" % (since_dt, since))
         sys.exit(0)
