@@ -616,7 +616,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        '--dry-run', action='store_true', help="Don't post or patch, just report")
+        '--dry-run', action='store_false', help="Don't post or patch, just report")
     parser.add_argument('-d', '--data_host', default=None,
                         help='data warehouse host (default from my.cnf)')
     parser.add_argument('-a', '--config_uri', default=DEFAULT_INI,
@@ -635,39 +635,65 @@ def main():
                             default=edw_file.ENCODE_PHASE_ALL,
                     help='restrict EDW files by ENCODE phase accs (default %s)' % edw_file.ENCODE_PHASE_ALL)
 
-    args = parser.parse_args()
+    parser.add_argument('--patch-replicates', action='store_false',
+               help='NEVER USE THIS.  But if you do, you must use with single dataset option -E')
+
+    parser.add_argument('-E', '--experiment', default='',
+               help="Only sync files from a single ENCSR dataset/experiment.")
+
+    parser.add_argument('-S', '--time-since', type=int, default=0,
+               help="Only sync files from EDW in the last <int> hours")
+
+    parser.add_argument('-n', '--no-patch', action='store_false',
+               help="Only POST new files do not patch")
+
+    parser.add_argument('-T', '--use-test', action='store_false',
+               help="Do not filter files in EDW that begin with TST instead of ENCFF")
+
+    zargs = parser.parse_args()
 
     FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
     logging.basicConfig(format=FORMAT)
     logger.setLevel(logging.WARNING)
 
-    if args.verbose:
+    if zargs.verbose:
         logger.setLevel(logging.INFO)
 
+    since = 0
+    if zargs.time_since:
+        from datetime import datetime;
+        from datetime import timedelta
+        since_dt = datetime.today() - timedelta(hours=zargs.time_since)
+        since = since_dt.strftime()
+        logger.info("Today is %s" % today)
+        logger.warning("Getting files uploaded since %s (%s)" % (since_dt, since))
+        sys.exit(0)
 
-    app = make_app(args.config_uri, args.username, args.password)
-    edw = edw_file.make_edw(args.data_host)
+
+
+    app = make_app(zargs.config_uri, zargs.username, zargs.password)
+    edw = edw_file.make_edw(zargs.data_host, dataset=zargs.experiment, since=since, test=use_test)
 
     try:
         edw.connect()
     except Exception, e:
-        logger.error("Could not connect to: %s; aborting" % args.data_host)
+        logger.error("Could not connect to: %s; aborting" % zargs.data_host)
         logger.error("%s", e)
         sys.exit(1)
 
-    get_all_datasets(app)
+    get_all_datasets(app, dataset=zargs.experiment)
     summary.total_encoded_exps = len(experiments.keys())
     summary.total_encoded_ds = len(datasets.keys())
 
-    edw_files, app_files = get_dicts(app, edw, phase=args.phase)
+    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase)
 
     summary.total_encoded_files = len(app_files)
     summary.total_edw_files = len(edw_files)
     logger.warn("SUMMARY: Found %s files at encoded; %s files at EDW" % (summary.total_encoded_files, summary.total_edw_files))
-    if args.phase != edw_file.ENCODE_PHASE_ALL:
-        logger.warn("SUMMARY: Synching files from Phase %s only" % args.phase)
+    if zargs.phase != edw_file.ENCODE_PHASE_ALL:
+        logger.warn("SUMMARY: Synching files from Phase %s only" % zargs.phase)
 
-    return run(app, app_files, edw_files, phase=args.phase, dry_run=args.dry_run)
+    return run(app, app_files, edw_files, phase=zargs.phase, dry_run=zargs.dry_run)
 
 
 if __name__ == '__main__':

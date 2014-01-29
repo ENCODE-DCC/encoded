@@ -229,7 +229,7 @@ def get_edw_max_id(edw):
 
 
 def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
-                     phase=ENCODE_PHASE_ALL):
+                     phase=ENCODE_PHASE_ALL, dataset='', since=0, test=False):
     # Read info from file tables at EDW
     # Optional param max_id limits to just files having EDW id greater
     # than the named value (typically, this was from previous sync)
@@ -276,15 +276,22 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
               (u.c.id == s.c.userId) &
               (s.c.id == f.c.submitId) &
               (u.c.id == s.c.userId))
+        ## TODO shouldn't all the below be done with filters or something?
         if start_id > 0:
-            query.append_whereclause('edwValidFile.id > ' + str(start_id))
+            query.append_whereclause('edwValidFile.id > %s' % start_id)
         if experiment:
             query.append_whereclause('(edwValidFile.experiment like "wgEncodeE%" or edwValidFile.experiment like "ENCSR%")')
         if phase == '2':
             query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
         elif phase  == '3':
             query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
-        query.append_whereclause('edwValidFile.licensePlate like "ENCFF%"')  ## skip TST
+        elif dataset:
+            query.append_whereclause('edwValidFile.experiment == "%s"' % experiment)
+        if not test:
+            query.append_whereclause('edwValidFile.licensePlate like "ENCFF%"')  ## skip TST
+        if since > 0:
+            # since is a timestamp
+            query.append_whereclause('edwFile.endUploadTime >= %s' % since)
 
         query = query.order_by(f.c.endUploadTime.desc())
         if limit:
