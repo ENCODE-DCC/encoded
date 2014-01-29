@@ -79,14 +79,14 @@
         },
         "references": {
             "title": "References",
-            "description": "The Pubmed identifiers used as references for the software.",
+            "description": "The identifiers used as references for the software.",
             "type": "array",
             "default": [],
             "items": {
                 "title": "Reference",
-                "description": "A Pubmed identifier used as a reference for the software.",
+                "description": "An identifier used as a reference for the software.",
                 "type": "string",
-                "pattern": "^PMID:[0-9]+$"
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
             }
         },
         "bug_tracker_url": {
