@@ -507,9 +507,9 @@ class Item(object):
                     self.item_type, properties, current_version, target_version,
                     context=self)
             except Exception:
-                logger.exception('Unable to upgrade %s%s from %r to %r',
+                logger.warning('Unable to upgrade %s%s from %r to %r',
                     request.resource_path(self.__parent__), self.uuid,
-                    current_version, target_version)
+                    current_version, target_version, exc_info=True)
         return properties
 
     def __json__(self, request):

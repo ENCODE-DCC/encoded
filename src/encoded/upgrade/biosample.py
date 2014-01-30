@@ -4,7 +4,7 @@ from ..migrator import upgrade_step
 def number(value):
     value = value.lower().replace(' ', '')
     value = value.replace('x10^', 'e')
-    if value == 'unknown':
+    if value in ('', 'unknown'):
         return None
     try:
         return int(value)
