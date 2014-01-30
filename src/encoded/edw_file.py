@@ -124,8 +124,8 @@ def make_edw(data_host=None):
 
     # Create db engine
     sys.stderr.write('Connecting to %s://%s/%s...' % (engine, host, db))
-    edw_db = create_engine('%s://%s:%s@%s/%s' %
-                          (engine, user, password, host, db))
+    cnx_str = '%s://%s:%s@%s/%s' % (engine, user, password, host, db)
+    edw_db = create_engine(cnx_str)
 
     # TODO: A nice-to-have suggested by Laurence -- have MySQL directly read conf file.
     # Something like the commented-out code below should do the trick.
@@ -267,6 +267,7 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
                     v.c.ucscDb.label('assembly'),
                     f.c.md5.label('md5sum'),
                     u.c.email.label('submitted_by'),
+                    v.c.pairedEnd.label('paired_end'),
                     # either of these two error fields will cause status to be OBSOLETE
                     f.c.deprecated.label('lab_error_message'),
                     f.c.errorMessage.label('edw_error_message')])
