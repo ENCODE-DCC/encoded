@@ -72,7 +72,10 @@ class TestingLinkSource(Collection):
             'target': {
                 'type': 'string',
                 'linkTo': 'testing_link_target',
-            }
+            },
+            'status': {
+                'type': 'string',
+            },
         }
     }
     properties = {
@@ -87,6 +90,9 @@ class TestingLinkTarget(Collection):
     properties = {
         'title': 'Test link targets',
         'description': 'Testing. Testing. 1, 2, 3.',
+    }
+    item_rev = {
+        'reverse': ('testing_link_source', 'target'),
     }
 
 
