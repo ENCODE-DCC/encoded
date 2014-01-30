@@ -386,9 +386,9 @@ def post_fileinfo(app, fileinfo, dry_run=False):
         return {'status_int': 201}
 
 
-def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, dataset='', since=0, test=False):
 
-    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase)
+    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase, dataset=dataset, since=since, test=use_test)
     # Other parameters are default
     edw_dict = { d['accession']:convert_edw(app, d, phase) for d in edw_files }
     app_files = get_app_fileinfo(app, phase=phase)
@@ -397,7 +397,7 @@ def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
     return edw_dict, app_dict
 
 
-def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
+def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
 
     global experiments
     global datasets
@@ -616,7 +616,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
-        '--dry-run', action='store_false', help="Don't post or patch, just report")
+        '--dry-run', action='store_true', help="Don't post or patch, just report")
     parser.add_argument('-d', '--data_host', default=None,
                         help='data warehouse host (default from my.cnf)')
     parser.add_argument('-a', '--config_uri', default=DEFAULT_INI,
@@ -635,7 +635,7 @@ def main():
                             default=edw_file.ENCODE_PHASE_ALL,
                     help='restrict EDW files by ENCODE phase accs (default %s)' % edw_file.ENCODE_PHASE_ALL)
 
-    parser.add_argument('--patch-replicates', action='store_false',
+    parser.add_argument('--patch-replicates', action='store_true',
                help='NEVER USE THIS.  But if you do, you must use with single dataset option -E')
 
     parser.add_argument('-E', '--experiment', default='',
@@ -644,10 +644,10 @@ def main():
     parser.add_argument('-S', '--time-since', type=int, default=0,
                help="Only sync files from EDW in the last <int> hours")
 
-    parser.add_argument('-n', '--no-patch', action='store_false',
+    parser.add_argument('-n', '--no-patch', action='store_true',
                help="Only POST new files do not patch")
 
-    parser.add_argument('-T', '--use-test', action='store_false',
+    parser.add_argument('-T', '--use-test', action='store_true',
                help="Do not filter files in EDW that begin with TST instead of ENCFF")
 
     zargs = parser.parse_args()
@@ -669,9 +669,28 @@ def main():
         logger.info("Today is %s" % today)
         logger.warning("Getting files uploaded to EDW since %s (%s)" % (since_dt, since))
 
+    if zargs.dry_run:
+        logger.warning("DRY-RUN: will not POST or PATCH database")
+
+    if zargs.patch_replicates:
+        logger.warning("WILL attempt to PATCH replicates!  Careful!")
+
+    if zargs.experiment:
+        logger.warning("Only fetching from Dataset: %s" % zargs.experiment)
+
+    if zargs.use_test:
+        logger.warning("Will fetch TST accessions from EDW")
+
+    if zargs.no_patch:
+        logger.warning("Will not PATCH files, only POST")
+
+
+    if (zargs.patch_replicates and not zargs.experiment):
+        logger.error("Not allowed to patch replicates for all; please use -E (--experiment) to select a dataset.")
+        sys.exit(1)
 
     app = make_app(zargs.config_uri, zargs.username, zargs.password)
-    edw = edw_file.make_edw(zargs.data_host, dataset=zargs.experiment, since=since, test=use_test)
+    edw = edw_file.make_edw(zargs.data_host)
 
     try:
         edw.connect()
@@ -684,7 +703,7 @@ def main():
     summary.total_encoded_exps = len(experiments.keys())
     summary.total_encoded_ds = len(datasets.keys())
 
-    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase)
+    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase, dataset=zargs.experiment, since=since, test=zargs.use_test)
 
     summary.total_encoded_files = len(app_files)
     summary.total_edw_files = len(edw_files)
