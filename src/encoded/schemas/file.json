@@ -4,7 +4,7 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "md5sum", "output_type"],
+    "required": ["accession", "dataset", "file_format", "md5sum", "output_type"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -65,6 +65,15 @@
                 "signal"
             ]
         },
+        "paired_end": {
+            "title": "Paired End Identifier",
+            "description": "Which pair the file belongs to (if paired end library)",
+            "type": "string",
+            "enum": [
+                "1",
+                "2"
+            ]
+        },
         "dataset": {
             "title": "Dataset",
             "description": "The experiment or dataset the file belongs to.",
@@ -91,7 +100,7 @@
             "description": "UCSC genome assembly that files were mapped to.",
             "comment": "Applies for mapped files (e.g. BAM, BED and BigWig).",
             "type": "string",
-            "enum": ["mm9", "hg19", "n/a"]
+            "enum": ["mm9", "hg19"]
         },
         "submitted_file_name": {
             "title": "Original file name",

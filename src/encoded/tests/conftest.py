@@ -43,7 +43,7 @@ def app_settings(request, server_host_port, connection):
 def pytest_configure():
     import logging
     logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
     logging.getLogger('selenium').setLevel(logging.DEBUG)
 
     class Shorten(logging.Filter):
@@ -79,6 +79,11 @@ def app(zsa_savepoints, check_constraints, app_settings):
     '''
     from encoded import main
     return main({}, **app_settings)
+
+
+@fixture
+def root(app):
+    return app.root_factory(app)
 
 
 @pytest.mark.fixture_cost(500)
@@ -430,18 +435,107 @@ def no_deps(request, connection):
 
 
 @pytest.fixture
-def users(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/labs/'
-    for item in URL_COLLECTION[url]:
-        testapp.post_json(url, item, status=201)
-    users = []
-    url = '/users/'
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-        res = testapp.get(res.location)
-        users.append(res.json)
-    return users
+def labs(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'lab')
+
+
+@pytest.fixture
+def lab(labs):
+    return [l for l in labs if l['name'] == 'myers'][0]
+
+
+@pytest.fixture
+def users(testapp, labs):
+    from . import sample_data
+    return sample_data.load(testapp, 'user')
+
+
+@pytest.fixture
+def wrangler(users):
+    return [u for u in users if 'wrangler' in u.get('groups', ())][0]
+
+
+@pytest.fixture
+def submitter(users, lab):
+    return [u for u in users if lab['@id'] in u['submits_for']][0]
+
+
+@pytest.fixture
+def awards(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'award')
+
+
+@pytest.fixture
+def award(awards):
+    return [a for a in awards if a['name'] == 'Myers'][0]
+
+
+@pytest.fixture
+def sources(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'source')
+
+
+@pytest.fixture
+def source(sources):
+    return [s for s in sources if s['name'] == 'sigma'][0]
+
+
+@pytest.fixture
+def organisms(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'organism')
+
+
+@pytest.fixture
+def organism(organisms):
+    return [o for o in organisms if o['name'] == 'human'][0]
+
+
+@pytest.fixture
+def biosamples(testapp, labs, awards, sources, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'biosample')
+
+
+@pytest.fixture
+def biosample(biosamples):
+    return [b for b in biosamples if b['accession'] == 'ENCBS000TST'][0]
+
+
+@pytest.fixture
+def libraries(testapp, labs, awards, biosamples):
+    from . import sample_data
+    return sample_data.load(testapp, 'library')
+
+
+@pytest.fixture
+def library(libraries):
+    return [l for l in libraries if l['accession'] == 'ENCLB000TST'][0]
+
+
+@pytest.fixture
+def experiments(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'experiment')
+
+
+@pytest.fixture
+def experiment(experiments):
+    return [e for e in experiments if e['accession'] == 'ENCSR000TST'][0]
+
+
+@pytest.fixture
+def replicates(testapp, experiments, libraries):
+    from . import sample_data
+    return sample_data.load(testapp, 'replicate')
+
+
+@pytest.fixture
+def replicate(replicates):
+    return replicates[0]
 
 
 @pytest.mark.fixture_cost(10)

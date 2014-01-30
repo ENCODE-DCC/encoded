@@ -22,8 +22,6 @@ TARGETS = [
         'label': 'ATF4',
         'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
         'gene_name': 'ATF4',
-        'lab': 'c0a3540e-8ef0-4d4d-a449-ae47c2475838',
-        'award': '7fd6664b-17f5-4bfe-9fdf-ed7481cf4d24',
         # 'aliases': [
         #     {'alias': 'CREB2', 'source': 'HGNC'},
         #     {'alias': 'TXREB', 'source': 'HGNC'},
@@ -37,8 +35,6 @@ TARGETS = [
     },
     {
         'uuid': 'BAF56297-9628-418F-B78E-95EDD524E4F6',
-        'lab': 'c0a3540e-8ef0-4d4d-a449-ae47c2475838',
-        'award': '7fd6664b-17f5-4bfe-9fdf-ed7481cf4d24',
         'label': 'H3K4me3',
         'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
         'gene_name': 'H3F3A',
@@ -62,7 +58,7 @@ SOURCES = [
     'url': 'http://www.sigmaaldrich.com',
     },
     {
-    'uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
+    'uuid': '1d5be796-8f80-4fd4-b6c7-6674318657eb',
     'name': 'gingeras',
     'title': 'Gingeras Lab',
     'url': 'http://www.gingeraslab.edu',
@@ -72,77 +68,67 @@ SOURCES = [
 ANTIBODY_LOTS = [
     {
     'uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
-    'antibody_term_id': 'tbd-taxonomic-id',
-    'antibody_name': 's123',
-    'clonality': 'Monoclonal',
-    'host_orgnanism': 'Mouse',
-    'name': 'Sigma-Aldrich',  # PK
-    'source': '3aa827c3-92f8-41fa-9608-201558f7a1c4',
+    'clonality': 'monoclonal',
+    'host_organism': 'mouse',
+    'source': 'sigma',  # PK
     'product_id': 'WH0000468M1',  # PK
     'lot_id': 'CB191-2B3',  # PK
     'url': 'http://www.sigmaaldrich.com/catalog/product/sigma/wh0000468m1?lang=en&region=US',
     'isotype': u'IgG1κ',
-    'purification': None,
-    'antibody_description': None,
     'antigen_description': 'ATF4 (NP_001666, a.a. 171-271) partial recombinant protein with GST tag.',
-    'antigen_sequence': None,
-
-    'is_obsolete': False,  # Antibody should no longer be used
-    'submitted_by': 'Myers-Pauli-Behn',
-    'date_created': '2009-01-16',
-    'created_by': 'Cherry-Sloan',
+    'lab': 'myers',
+    'award': 'Myers',
     },
 ]
 
-VALIDATIONS = [
+ANTIBODY_CHARACTERIZATIONS = [
     {
     'uuid': 'c4da2e0c-149f-4aee-ac21-8690dfdadb1f',
-    'antibody': 'bc293400-eab3-41fb-a41e-35552686b67d',
+    'characterizes': 'bc293400-eab3-41fb-a41e-35552686b67d',
     'target': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
-    'method': '',
-    'doc': '',
-    'caption': '',
-    'submitter': '',
-    'review_state': '',
+    'lab': 'myers',
+    'award': 'Myers',
     },
 ]
 
 ANTIBODY_APPROVALS = [
     {
     'uuid': 'a8f94078-2d3b-4647-91a2-8ec91b096708',
-    'antibody_lot': 'bc293400-eab3-41fb-a41e-35552686b67d',
+    'antibody': 'bc293400-eab3-41fb-a41e-35552686b67d',
     'target': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
-    'validations': [
+    'characterizations': [
         'c4da2e0c-149f-4aee-ac21-8690dfdadb1f',
         ],
+    'lab': 'myers',
+    'award': 'Myers',
+    'status': 'SUBMITTED',
     },
 ]
 
 BIOSAMPLES = [
     {
     'uuid': '7c245cea-7d59-45fb-9ebe-f0454c5fe950',
-    'biosample_ontology': 'UBERON',
-    'biosample_term_id': 'U:349829',
-    'biosample_term': 'Liver',
-    'biosample_type': 'Tissue',
-    'antibody_accession': 'ENCBS001ZZZ',
-    'name': 'Gingeras',
-    'source': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
-    'product_id': 'fridge1a',
-    'lot_id': '1',
-    'treatment': None,
-    'donors': ['a59b301a-782f-449e-bce4-9f0a6141b97b'],
-    'is_pooled': False,
-    'relateds': [],
-    'protocols': [
-        'b55b330f-a34a-4bda-b87c-11c863a5ad1e',
-        '68b7342a-2d31-4ad7-bbeb-0196993f1752',
-        'dfa2a44e-7583-41f2-bc40-fe7c073af2a9',
-    ],
-    'submitted_by': 'Gingeras-Hapless-Postdoc',
-    'date_created': '2009-2-08',
-    'created_by': 'Cherry-Chan',
-    }
+    'accession': 'ENCBS000TST',
+    'biosample_term_id': 'UBERON:349829',
+    'biosample_term_name': 'Liver',
+    'biosample_type': 'tissue',
+    'source': 'gingeras',
+    'lab': 'myers',
+    'award': 'Myers',
+    'organism': 'human',
+    },
+]
+
+LIBRARIES = [
+    {
+    'uuid': 'a95b00ea-fc13-42ee-a322-e36793f1325d',
+    'accession': 'ENCLB000TST',
+    'nucleic_acid_term_id': 'SO:0000352',
+    'nucleic_acid_term_name': 'DNA',
+    'biosample': 'ENCBS000TST',
+    'lab': 'myers',
+    'award': 'Myers',
+    },
 ]
 
 AWARDS = [
@@ -166,6 +152,7 @@ BAD_AWARDS = [  # UUID same as one of labs
     'name': 'Myers',
     },
 ]
+
 LABS = [
     {
     'uuid': 'cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
@@ -231,15 +218,53 @@ USERS = [
     },
 ]
 
+EXPERIMENTS = [
+    {
+    'uuid': 'fa3e286d-a44c-41e0-bcce-3c24fe9aa02d',
+    'accession': 'ENCSR000TST',
+    'lab': 'myers',
+    'award': 'Myers',
+    },
+]
+
+REPLICATES = [
+    {
+    'uuid': '13468ab5-2369-4857-a303-7c5f28918190',
+    'experiment': 'ENCSR000TST',
+    'library': 'ENCLB000TST',
+    'biological_replicate_number': 1,
+    'technical_replicate_number': 1,
+    },
+    {
+    'uuid': 'df38fd69-8c4b-4870-86a4-55f4b355324e',
+    'experiment': 'ENCSR000TST',
+    'library': 'ENCLB000TST',
+    'biological_replicate_number': 1,
+    'technical_replicate_number': 2,
+    },
+]
+
+
 URL_COLLECTION = OrderedDict([
-    ('/organisms/', ORGANISMS),
-    ('/targets/', TARGETS),
-    ('/sources/', SOURCES),
-    ('/antibody-lots/', ANTIBODY_LOTS),
-    ('/validations/', VALIDATIONS),
-    ('/antibodies/', ANTIBODY_APPROVALS),
-    ('/biosamples/', BIOSAMPLES),
-    ('/users/', USERS),
-    ('/labs/', LABS),
-    ('/awards/', AWARDS),
+    ('lab', LABS),
+    ('user', USERS),
+    ('award', AWARDS),
+    ('organism', ORGANISMS),
+    ('target', TARGETS),
+    ('source', SOURCES),
+    ('antibody_lot', ANTIBODY_LOTS),
+    ('antibody_characterization', ANTIBODY_CHARACTERIZATIONS),
+    ('antibody_approval', ANTIBODY_APPROVALS),
+    ('biosample', BIOSAMPLES),
+    ('library', LIBRARIES),
+    ('experiment', EXPERIMENTS),
+    ('replicate', REPLICATES),
 ])
+
+
+def load(testapp, item_type):
+    items = []
+    for item in URL_COLLECTION[item_type]:
+        res = testapp.post_json('/' + item_type, item, status=201)
+        items.append(res.json['@graph'][0])
+    return items

@@ -22,6 +22,19 @@ var user_actions = [
     {id: 'signout', title: 'Sign out', trigger: 'logout'}
 ];
 
+var ie8compat = [
+    "article",
+    "aside",
+    "footer",
+    "header",
+    "hgroup",
+    "nav",
+    "section",
+    "figure",
+    "figcaption",
+].map(function (tag) {
+    return 'document.createElement("' + tag + '");';
+}).join('\n');
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -84,6 +97,7 @@ var App = React.createClass({
                     <link rel="stylesheet" href="/static/css/style.css" />
                     <link rel="stylesheet" href="/static/css/responsive.css" />
                     <script src="/static/build/bundle.js" async={true} defer={true}></script>
+                    <script dangerouslySetInnerHTML={{__html: ie8compat}}></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
