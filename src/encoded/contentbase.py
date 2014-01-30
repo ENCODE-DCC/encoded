@@ -536,7 +536,12 @@ class Item(object):
         # XXX Should reverse links move to embedding?
         # - would necessitate a second templating stage.
         for name, value in self.rev_links().iteritems():
-            properties[name] = [request.resource_path(item) for item in value]
+            properties[name] = [
+                request.resource_path(item)
+                    for item in value
+                        if item.upgrade_properties(request).get('status')
+                            not in ('DELETED', 'OBSOLETE')
+            ]
 
         templated = self.expand_template(properties, request)
         properties.update(templated)
