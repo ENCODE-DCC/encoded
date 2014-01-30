@@ -6,7 +6,7 @@
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
     "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
-    "facets": [{"Biosample Type": "biosample_type"},  {"Organ": "organ_slims"}, {"Organism": "organism.name"}, {"Gender": "donor.sex"}, {"Life Stage": "life_stage"}, {"Subcellular Fraction": "subcellular_fraction"}, {"Phase": "phase"}, {"Treatment": "treatments.treatment_term_name"}, {"Source": "source.title"}, {"Lab": "lab.title"}, {"Developmental Slim": "developmental_slims"}],
+    "facets": [{"Biosample Type": "biosample_type"},  {"Organ": "organ_slims"}, {"Organism": "organism.name"}, {"Gender": "donor.sex"}, {"Life Stage": "life_stage"}, {"Subcellular Fraction": "subcellular_fraction_term_name"}, {"Phase": "phase"}, {"Treatment": "treatments.treatment_term_name"}, {"Source": "source.title"}, {"Lab": "lab.title"}, {"Developmental Slim": "developmental_slims"}],
     "identifyingProperties": ["uuid","accesion","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -173,8 +173,9 @@
             "title": "Subcellular fraction ID",
             "description":  "The GO (Gene Ontology) identifier for cellular component that constitutes the biosample.",
             "comment": "Based on the choice in subcellular_fraction_term_name use the following guide: nucleus - GO:0005634, cytosol - GO:0005829, chromatin - GO:0000785, membrane - GO:0016020, mitochondria - GO:0005739, nuclear matrix - GO:0016363, nucleolus - GO:0005730, nucleoplasm - GO:0005654, polysome - GO:0005844.",
+           "type": "string",
             "enum": [
-                "GO:0005634 :",
+                "GO:0005634",
                 "GO:0005829",
                 "GO:0000785",
                 "GO:0016020",
@@ -297,7 +298,7 @@
         "organ_slims": 1.2,
         "developmental_slims": 1.2,
         "encode2_dbxrefs": 1.0,
-        "subcellular_fraction": 1.0,
+        "subcellular_fraction_term_name": 1.0,
         "phase": 1.0,
         "life_stage": 1.0,
         "health_status": 1.0,
