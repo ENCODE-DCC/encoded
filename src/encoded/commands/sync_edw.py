@@ -667,9 +667,7 @@ def main():
         since_dt = today - timedelta(hours=zargs.time_since)
         since = int(since_dt.strftime("%s"))
         logger.info("Today is %s" % today)
-        logger.warning("Getting files uploaded since %s (%s)" % (since_dt, since))
-        sys.exit(0)
-
+        logger.warning("Getting files uploaded to EDW since %s (%s)" % (since_dt, since))
 
 
     app = make_app(zargs.config_uri, zargs.username, zargs.password)

@@ -215,17 +215,18 @@ def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
     return edw_accs
 
 
-def get_edw_max_id(edw):
-    # Get current largest id from edwValidFile table at EDW
+def get_edw_max_date(edw):
+    # Get date current largest id from edwValidFile table at EDW
+    # this is so hacky I want to cry.
     conn = edw.connect()
-    query = 'select max(id) from edwValidFile'
+    query = 'select max(f.endUploadTime) from edwValidFile v, edwFile f where v.id=f.id'
     results = conn.execute(query)
     row = results.fetchone()
-    max_id = int(row[0])
+    max_ts= row[0]
     results.close()
     if verbose:
-        sys.stderr.write('EDW max id: %d\n' % (int(max_id)))
-    return max_id
+        sys.stderr.write('EDW max date: (%s)\n' % (max_ts))
+    return max_ts
 
 
 def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
