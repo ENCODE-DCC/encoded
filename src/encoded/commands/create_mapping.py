@@ -155,6 +155,11 @@ def es_mapping(mapping):
                 'type': 'object',
                 'include_in_all': False,
                 'properties': {}
+            },
+            'url': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
             }
         }
     }

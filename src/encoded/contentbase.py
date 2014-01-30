@@ -1094,17 +1094,8 @@ def traversal_security(event):
              decorator=etag_conditional)
 def item_view(context, request):
     properties = context.__json__(request)
-    if 'item_source' in request.params:
-        from .indexing import ELASTIC_SEARCH
-        es = request.registry[ELASTIC_SEARCH]
-        es_item = es.get('encoded', properties['@type'][0], properties['uuid'])
-        if asbool(request.params.get('embed', True)):
-            properties = es_item['_source']['object']
-        else:
-            properties = es_item['_source']['unembedded_object']
-    else:
-        if asbool(request.params.get('embed', True)):
-            context.expand_embedded(request, properties)
+    if asbool(request.params.get('embed', True)):
+        context.expand_embedded(request, properties)
     return properties
 
 
@@ -1206,6 +1197,7 @@ def item_index_data(context, request):
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),
+        'url': '/' + context.__parent__.__name__ + '/' + str(context.__name__) + '/',
     }
 
     return document
