@@ -164,7 +164,7 @@ def test_file_sync(workbook, testapp):
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
     assert len(edw_only) == 15
-    assert len(app_only) == 11
+    assert len(app_only) == 12
     assert len(same) == 6
     assert len(patch) == 6
 
@@ -214,7 +214,7 @@ def test_file_sync(workbook, testapp):
     # reset global var!
     post_edw, post_app, post_same, post_patch= sync_edw.inventory_files(testapp, edw_mock, post_app_dict)
     assert len(post_edw) == 1
-    assert len(post_app) == 11 # unchanged
+    assert len(post_app) == 12 # unchanged
     assert len(post_patch) == 3 # exsting files cannot be patched
     assert ((len(post_same)-len(same)) == (len(patch) -len(post_patch) + (len(edw_only) - len(post_edw))))
     assert len(post_app_files) == (len(app_files) + len(edw_only) - len(post_edw))
