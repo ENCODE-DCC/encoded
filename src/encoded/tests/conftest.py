@@ -20,9 +20,9 @@ _app_settings = {
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
     'persona.siteName': 'ENCODE DCC Submission',
-    'allow.view': 'Everyone',
-    'allow.list': 'Everyone',
-    'allow.traverse': 'Everyone',
+    'allow.view': 'Authenticated',
+    'allow.list': 'Authenticated',
+    'allow.traverse': 'Authenticated',
     'allow.ALL_PERMISSIONS': 'group.admin',
     'allow.edw_key_create': 'accesskey.edw',
     'allow.edw_key_update': 'accesskey.edw',
@@ -188,7 +188,7 @@ def authenticated_testapp(app, external_tx):
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST_USER',
+        'REMOTE_USER': 'TEST_AUTHENTICATED',
     }
     return TestApp(app, environ)
 
@@ -211,14 +211,22 @@ def server_host_port():
     return get_free_port()
 
 
+@fixture(scope='session')
+def authenticated_app(app):
+    def wsgi_filter(environ, start_response):
+        environ['REMOTE_USER'] = 'TEST_AUTHENTICATED'
+        return app(environ, start_response)
+    return wsgi_filter
+
+
 @pytest.mark.fixture_cost(100)
 @fixture(scope='session')
-def _server(request, app, server_host_port):
+def _server(request, authenticated_app, server_host_port):
     from webtest.http import StopableWSGIServer
     host, port = server_host_port
 
     server = StopableWSGIServer.create(
-        app,
+        authenticated_app,
         host=host,
         port=port,
         threads=1,
