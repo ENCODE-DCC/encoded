@@ -6,11 +6,11 @@ import pytest
 from pytest import fixture
 
 _app_settings = {
-    'multiauth.policies': 'authtkt remoteuser accesskey',
+    'multiauth.policies': 'session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
-    'multiauth.policy.authtkt.use': 'pyramid.authentication.AuthTktAuthenticationPolicy',
-    'multiauth.policy.authtkt.hashalg': 'sha512',
-    'multiauth.policy.authtkt.secret': 'GLIDING LIKE A WHALE',
+    'multiauth.policy.session.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
+    'multiauth.policy.session.namespace': 'mailto',
     'multiauth.policy.remoteuser.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.remoteuser.namespace': 'remoteuser',
     'multiauth.policy.remoteuser.base': 'pyramid.authentication.RemoteUserAuthenticationPolicy',
