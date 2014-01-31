@@ -78,7 +78,7 @@ def threadlocals(request, dummy_request, registry):
 @fixture
 def dummy_request(root, registry):
     from pyramid.testing import DummyRequest
-    return DummyRequest(root=root, registry=registry)
+    return DummyRequest(root=root, registry=registry, _stats={})
 
 
 @fixture(scope='session')
