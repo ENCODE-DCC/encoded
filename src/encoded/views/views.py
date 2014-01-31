@@ -42,15 +42,22 @@ ALIAS_KEYS = [
 ]
 
 
+ALLOW_EVERYONE_VIEW = [
+    (Allow, Everyone, ['view', 'list', 'traverse']),
+]
+
+ALLOW_SUBMITTER_ADD = [
+    (Allow, 'group.submitter', 'add')
+]
+
+
 class Collection(BaseCollection):
     def __init__(self, parent, name):
         super(Collection, self).__init__(parent, name)
         if hasattr(self, '__acl__'):
             return
         if 'lab' in self.schema['properties']:
-            self.__acl__ = [
-                (Allow, 'group.submitter', 'add')
-            ]
+            self.__acl__ = ALLOW_SUBMITTER_ADD
 
     class Item(BaseCollection.Item):
         STATUS_ACL = {
@@ -77,6 +84,7 @@ class Collection(BaseCollection):
 class Lab(Collection):
     item_type = 'lab'
     schema = load_schema('lab.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
@@ -93,6 +101,7 @@ class Lab(Collection):
 class Award(Collection):
     item_type = 'award'
     schema = load_schema('award.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
@@ -137,6 +146,7 @@ class AntibodyLot(Collection):
 class Organism(Collection):
     item_type = 'organism'
     schema = load_schema('organism.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
@@ -151,6 +161,7 @@ class Organism(Collection):
 class Source(Collection):
     item_type = 'source'
     schema = load_schema('source.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
@@ -202,6 +213,7 @@ class HumanDonor(Collection):
 class Treatment(Collection):
     item_type = 'treatment'
     schema = load_schema('treatment.json')
+    __acl__ = ALLOW_EVERYONE_VIEW + ALLOW_SUBMITTER_ADD
     properties = {
         'title': 'Treatments',
         'description': 'Listing Biosample Treatments',
@@ -353,6 +365,7 @@ class BiosampleCharacterization(Characterization):
 class Target(Collection):
     item_type = 'target'
     schema = load_schema('target.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
@@ -429,6 +442,7 @@ class AntibodyApproval(Collection):
 class Platform(Collection):
     item_type = 'platform'
     schema = load_schema('platform.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Platforms',
         'description': 'Listing of Platforms',
