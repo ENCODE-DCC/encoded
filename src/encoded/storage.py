@@ -287,7 +287,6 @@ def record_transaction_data(session):
         return
 
     record = data['_encoded_transaction_record']
-    del data['_encoded_transaction_record']
 
     # txn.note(text)
     if txn.description:
@@ -299,7 +298,7 @@ def record_transaction_data(session):
         user_path, userid = txn.user.split(' ', 1)
         data['userid'] = userid
 
-    record.data = data.copy()
+    record.data = {k: v for k, v in data.iteritems() if not k.startswith('_')}
     session.add(record)
 
 
