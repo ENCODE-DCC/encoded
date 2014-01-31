@@ -165,6 +165,31 @@ var Dbxref = dbxref.Dbxref;
                     return <li><a href={href_search+'&'+field+'='+id}>{id}<span className="pull-right">{count}</span></a></li>
                 }
             };
+            var buildTypeFacet = function(map) {
+                var id;
+                var count;
+                for (var j in map) {
+                    id = j;
+                    count = map[j];
+                }
+                switch (id) {
+                    case "experiment":
+                        return <li><a href={href_search+'&'+field+'='+id}>Experiments<span className="pull-right">{count}</span></a></li>
+                        break;
+                    case "biosample":
+                        return <li><a href={href_search+'&'+field+'='+id}>Biosamples<span className="pull-right">{count}</span></a></li>
+                        break;
+                    case "antibody_approval":
+                        return <li><a href={href_search+'&'+field+'='+id}>Antibodies<span className="pull-right">{count}</span></a></li>
+                        break;
+                    case "target":
+                        return <li><a href={href_search+'&'+field+'='+id}>Targets<span className="pull-right">{count}</span></a></li>
+                        break;
+                    case "dataset":
+                        return <li><a href={href_search+'&'+field+'='+id}>Datasets<span className="pull-right">{count}</span></a></li>
+                        break;
+                }
+            };
             var buildSection = function(facet) {
                 counter = 0;
                 counter1 = 0;
@@ -180,30 +205,43 @@ var Dbxref = dbxref.Dbxref;
                         field = facet[f];
                     }
                 }
-                return <div className="facet">
-                        <h5>{term}</h5>
-                        <ul className="facet-list nav">
-                            <div>
+                if(termID == 'DataType') {
+                    debugger;
+                    return <div className="facet">
+                            <h5>{term}</h5>
+                            <ul className="facet-list nav">
                                 {terms.length ?
-                                    terms.map(buildTerms)
+                                    terms.map(buildTypeFacet)
                                 : null}
-                            </div>
-                            {terms.length > 5 ?
-                                <div id={termID} className="collapse">
+                            </ul>
+                        </div>
+                }else {
+                    return <div className="facet">
+                            <h5>{term}</h5>
+                            <ul className="facet-list nav">
+                                <div>
                                     {terms.length ?
-                                        terms.map(buildCollapsingTerms)
+                                        terms.map(buildTerms)
                                     : null}
                                 </div>
-                            : null}
-                            {terms.length > 5 ?
-                                <label className="pull-right">
-                                        <small>
-                                            <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
-                                        </small>
-                                </label>
-                            : null}
-                        </ul>
-                    </div>
+                                {terms.length > 5 ?
+                                    <div id={termID} className="collapse">
+                                        {terms.length ?
+                                            terms.map(buildCollapsingTerms)
+                                        : null}
+                                    </div>
+                                : null}
+                                {terms.length > 5 ?
+                                    <label className="pull-right">
+                                            <small>
+                                                <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
+                                            </small>
+                                    </label>
+                                : null}
+                                
+                            </ul>
+                        </div>
+                }
             };
             return (
                 <div className="box facets">

@@ -106,10 +106,9 @@ def search(context, request):
             return result
 
     try:
-        search_type = root.collections[params['type']].item_type
-        collections = root.by_item_type.keys()
+        search_type = params['type']
         # handling invalid item types
-        if search_type not in collections:
+        if search_type not in root.by_item_type.keys():
             result['notification'] = '\'' + search_type + '\' is not a valid \'item type\''
             return result
     except:
@@ -129,8 +128,9 @@ def search(context, request):
         doc_types = ['antibody_approval', 'biosample', 'experiment', 'target', 'dataset']
     else:
         doc_types = [search_type]
+        if search_term != '*':
+            result['filters'].append({'type': root.by_item_type[search_type].__name__})
 
-    collections = root.by_item_type
     for doc_type in doc_types:
         collection = root[doc_type]
         schema = collection.schema
@@ -143,6 +143,10 @@ def search(context, request):
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, list(set(fields)), search_fields, principals)
+
+    # Sorting the files when search term is not specified
+    if search_term == '*':
+        query['sort'] = {'date_created': {'order': 'desc'}}
 
     # Setting filters
     for key, value in params.iteritems():
@@ -158,10 +162,10 @@ def search(context, request):
     # Adding facets to the query
     facets = []
     if len(doc_types) > 1:
-        facets = [{'Data Type': 'object.@type.untouched'}]
+        facets = [{'Data Type': 'type'}]
         for facet in facets:
             face = {'terms': {'field': '', 'size': 99999}}
-            face['terms']['field'] = facet[facet.keys()[0]]
+            face['terms']['field'] = 'object.@' + facet[facet.keys()[0]] + '.untouched'
             query['facets'][facet.keys()[0]] = face
     else:
         facets = root[doc_types[0]].schema['facets']
@@ -178,26 +182,16 @@ def search(context, request):
     # Loading facets in to the results
     if 'facets' in results:
         facet_results = results['facets']
-        if len(doc_types) > 1:
-            for facet in facets:
-                if facet.keys()[0] in facet_results:
-                    face = {}
-                    face['field'] = 'type'
-                    face[facet.keys()[0]] = []
-                    for term in facet_results[facet.keys()[0]]['terms']:
-                        if term['term'] in doc_types:
-                            face[facet.keys()[0]].append({root.by_item_type[term['term']].__name__: term['count']})
-                    result['facets'].append(face)
-        else:
-            for facet in facets:
-                if facet.keys()[0] in facet_results:
-                    face = {}
-                    face['field'] = facet[facet.keys()[0]]
-                    face[facet.keys()[0]] = []
-                    for term in facet_results[facet.keys()[0]]['terms']:
+        for facet in facets:
+            if facet.keys()[0] in facet_results:
+                face = {}
+                face['field'] = facet[facet.keys()[0]]
+                face[facet.keys()[0]] = []
+                for term in facet_results[facet.keys()[0]]['terms']:
+                    if term['term'] != 'item':
                         face[facet.keys()[0]].append({term['term']: term['count']})
-                    if len(face[facet.keys()[0]]) > 1:
-                        result['facets'].append(face)
+                if len(face[facet.keys()[0]]) > 1:
+                    result['facets'].append(face)
 
     # Loading result rows
     for hit in results['hits']['hits']:
@@ -212,8 +206,5 @@ def search(context, request):
     if len(result['@graph']):
         result['notification'] = 'Success'
     else:
-        if len(search_term) < 3:
-            result['notification'] = 'No results found. Search term should be at least 3 characters long.'
-        else:
-            result['notification'] = 'No results found'
+        result['notification'] = 'No results found'
     return result
