@@ -265,7 +265,11 @@ def add_transaction_record(session, flush_context, instances):
     txn = transaction.get()
     # Set data with txn.setExtendedInfo(name, value)
     data = txn._extension
-    if 'tid' in data:
+    record = data.get('_encoded_transaction_record')
+    if record is not None:
+        if orm.object_session(record) is None:
+            # Savepoint rolled back
+            session.add(record)
         # Transaction has already been recorded
         return
 
