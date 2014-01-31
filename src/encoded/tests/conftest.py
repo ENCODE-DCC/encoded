@@ -33,6 +33,28 @@ _app_settings = {
 }
 
 
+@pytest.mark.fixture_cost(10)
+@pytest.yield_fixture(scope='session')
+def engine_url(request):
+    engine_url = request.session.config.option.engine_url
+    if engine_url is not None:
+        yield engine_url
+        return
+
+    # Ideally this would use a different database on the same postgres server
+    from urllib import quote
+    from .postgresql_fixture import server_process
+    tmpdir = request.config._tmpdirhandler.mktemp('postgresql-engine', numbered=True)
+    tmpdir = str(tmpdir)
+    process = server_process(tmpdir)
+
+    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
+
+    if process.poll() is None:
+        process.terminate()
+        process.wait()
+
+
 @fixture(scope='session')
 def app_settings(request, server_host_port, connection):
     settings = _app_settings.copy()
@@ -224,7 +246,7 @@ def server(_server, external_tx):
 
 @pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.yield_fixture(scope='session')
-def connection(request):
+def connection(request, engine_url):
     from encoded import configure_engine
     from encoded.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
@@ -234,7 +256,7 @@ def connection(request):
         DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
 
     engine_settings = {
-        'sqlalchemy.url': request.session.config.option.engine_url,
+        'sqlalchemy.url': engine_url,
     }
 
     engine = configure_engine(engine_settings, test_setup=True)
