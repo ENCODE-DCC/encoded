@@ -178,7 +178,7 @@ def find_replicate(experiment, file_dict):
     if len(matches) == 1:
         return matches[0]['@id']
     elif len(matches) > 1:
-        msg = "SKIPPPING: Matches >1 Replicate"
+        msg = "SKIPPING: Matches >1 Replicate"
         summary.error_count[msg] = summary.error_count.get(msg,0) + 1
         logger.error("%s: %s-%s" % (msg, file_dict['accession'], experiment['accession']))
         summary.files_punted = summary.files_punted + 1
@@ -273,12 +273,13 @@ def get_phase(app, ds_url):
             return edw_file.ENCODE_PHASE_2
         return edw_file.ENCODE_PHASE_3
     except:
-        import pdb;pdb.set_trace()
+        pass
 
 
-def create_replicate(app, exp, bio_rep_num, tech_rep_num, dry_run=False):
+def create_replicate(app, dataset, bio_rep_num, tech_rep_num, dry_run=False):
 
     # create a replicate
+    exp = dataset['@id']
     logger.warn("Creating replicate %s %s for %s" % (bio_rep_num, tech_rep_num, exp))
     rep = {
         'experiment': exp,
@@ -290,11 +291,24 @@ def create_replicate(app, exp, bio_rep_num, tech_rep_num, dry_run=False):
     url = collection_url(REPLICATES)
     if not dry_run:
 
-        resp = app.post_json(url, rep)
-        logger.info(str(resp))
-        rep_id = str(resp.json[unicode('@graph')][0]['@id'])
-        summary.replicates_posted = summary.replicates_posted + 1
-        return rep_id
+        resp = app.post_json(url, rep, status=[201,409])
+        if resp.status_code == 409:
+            # this means that the replicate was created during this run and is probalby NOW valid
+            matches = [ rep for rep in dataset['replicates']
+            if rep['biological_replicate_number'] == int(bio_rep_num) and
+               rep['technical_replicate_number'] == int(tech_rep_num)]
+            if len(matches) == 1:
+                logger.info("Replicate posting conflicted but found (probably created earlier)")
+                return matches[0]['@id']
+            else:
+                msg = "Replicate posting conflicted, but valid replicate could not be found"
+                logger.error("%s: %s (%s, %s)" % (msg, exp, bio_rep_num, tech_rep_num))
+                return None
+        else:
+            logger.info(str(resp))
+            rep_id = str(resp.json[unicode('@graph')][0]['@id'])
+            summary.replicates_posted = summary.replicates_posted + 1
+            return rep_id
 
     else:
         return "/replicate/new"
@@ -339,7 +353,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
             try:
                 br = int(fileinfo['biological_replicate'])
                 tr = int(fileinfo['technical_replicate'])
-                fileinfo['replicate'] = create_replicate(app, ds, br, tr, dry_run)
+                fileinfo['replicate'] = create_replicate(app, dataset, br, tr, dry_run)
                 del fileinfo['biological_replicate']
                 del fileinfo['technical_replicate']
             except ValueError, e:
@@ -674,6 +688,7 @@ def main():
 
     if zargs.patch_replicates:
         logger.warning("WILL attempt to PATCH replicates!  Careful!")
+        NO_UPDATE = [ x for x in NO_UPDATE if x != 'replicate' ]
 
     if zargs.experiment:
         logger.warning("Only fetching from Dataset: %s" % zargs.experiment)
