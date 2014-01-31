@@ -83,9 +83,9 @@ def search(context, request):
             if params['limit'].isdigit():
                 size = params['limit']
             else:
-                size = 100
+                size = 25
     else:
-        size = 100
+        size = 25
 
     try:
         search_term = params['searchTerm'].strip()
@@ -122,7 +122,6 @@ def search(context, request):
         return result
 
     # Building query for filters
-    fields = ['object.@id', 'object.@type']
     search_fields = []
     if search_type == '*':
         doc_types = ['antibody_approval', 'biosample', 'experiment', 'target', 'dataset']
@@ -131,12 +130,22 @@ def search(context, request):
         if search_term != '*':
             result['filters'].append({'type': root.by_item_type[search_type].__name__})
 
+    fields = ['object.@id', 'object.@type']
     for doc_type in doc_types:
         collection = root[doc_type]
         schema = collection.schema
-        for column in collection.columns:
-            fields.append('object.' + column)
-            result['columns'].update({column: collection.columns[column]})
+        try:
+            frame = params['frame']
+        except:
+            frame = ''
+        if frame == 'object':
+            fields.append('object')
+        elif frame == 'unembedded_object':
+            fields.append('unembedded_object')
+        else:
+            for column in collection.columns:
+                fields.append('object.' + column)
+                result['columns'].update({column: collection.columns[column]})
         # Adding search fields and boost values
         for value in schema.get('boost_values', ()):
             search_fields = search_fields + ['object.' + value, 'object.' + value + '.standard^2', 'object.' + value + '.untouched^3']
@@ -146,11 +155,11 @@ def search(context, request):
 
     # Sorting the files when search term is not specified
     if search_term == '*':
-        query['sort'] = {'date_created': {'order': 'desc'}}
+        query['sort'] = {'date_created': {'order': 'desc', 'ignore_unmapped': True}, 'label': {'order': 'asc', 'missing': '_last'}}
 
     # Setting filters
     for key, value in params.iteritems():
-        if key not in ['type', 'searchTerm', 'limit', 'format']:
+        if key not in ['type', 'searchTerm', 'limit', 'format', 'frame']:
             if value == 'other':
                 query['query']['filtered']['filter']['and']['filters'] \
                     .append({'missing': {'field': 'object.' + key}})
@@ -196,10 +205,13 @@ def search(context, request):
     # Loading result rows
     for hit in results['hits']['hits']:
         result_hit = hit['fields']
-        result_hit_new = {}
-        for c in result_hit:
-            result_hit_new[c[7:]] = result_hit[c]
-        result['@graph'].append(result_hit_new)
+        if frame in ['object', 'unembedded_object']:
+            result['@graph'].append(result_hit[frame])
+        else:
+            result_hit_new = {}
+            for c in result_hit:
+                result_hit_new[c[7:]] = result_hit[c]
+            result['@graph'].append(result_hit_new)
 
     # Adding count
     result['count'] = results['hits']['total']

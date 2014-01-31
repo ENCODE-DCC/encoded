@@ -291,7 +291,15 @@ def es_tween_factory(handler, registry):
             }
             data = es.search(query, index='encoded')
             if len(data['hits']['hits']) > 0:
-                value = data['hits']['hits'][0]['_source']['object']
+                try:
+                    frame = request.params['frame']
+                    if frame == 'unembedded_object':
+                        value = data['hits']['hits'][0]['_source']['unembedded_object']
+                    else:
+                        value = data['hits']['hits'][0]['_source']['object']
+                except:
+                    value = data['hits']['hits'][0]['_source']['object']
+
                 from pyramid.renderers import render_to_response
                 return render_to_response('json', value, request)
         return handler(request)
