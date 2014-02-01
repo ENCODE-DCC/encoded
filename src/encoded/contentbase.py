@@ -911,29 +911,53 @@ class Collection(Mapping):
                 Resource.data,
                 CurrentPropertySheet.propsheet,
             ),
-        )
-        items = []
-        for model in query.limit(limit).all():
-            item_uri = request.resource_path(self, model.rid)
-            rendered = embed(request, item_uri + '?embed=false')
+        ).order_by(Resource.rid)
+        
+        if limit is None:
+            models = query
+        else:
+            models = self._batched_models(query, limit)
 
-            for path in self.embedded_paths:
-                expand_path(request, rendered, path)
+        items = self._filter_allowed_view(request, query, limit)
+        return [self._render_item(request, item) for item in items]
 
-            if not self.columns:
-                items.append(rendered)
-                continue
+    def _batched_models(self, query, size):
+        for model in query.limit(size):
+            yield model
 
-            subset = {
-                '@id': rendered['@id'],
-                '@type': rendered['@type'],
-            }
-            for column in self.columns:
-                subset[column] = column_value(rendered, column)
+        while model is not None:
+            for model in query.filter(Resource.rid > model.rid).limit(size):
+                yield model
 
-            items.append(subset)
+    def _filter_allowed_view(self, request, models, max=None):
+        count = 0
+        for model in models:
+            last_rid = model.rid
+            item = self.Item(self, model)
+            if request.has_permission('view', item):
+                yield item                
+                count += 1
+                if max is not None and count >= max:
+                    break
 
-        return items
+    def _render_item(self, request, item):
+        item_uri = request.resource_path(item)
+        rendered = embed(request, item_uri + '?embed=false')
+
+        if not self.columns:
+            return rendered
+
+        for path in self.embedded_paths:
+            expand_path(request, rendered, path)
+
+        subset = {
+            '@id': rendered['@id'],
+            '@type': rendered['@type'],
+        }
+        for column in self.columns:
+            subset[column] = column_value(rendered, column)
+
+        return subset
 
     def load_es(self, request):
         columns = ['@id', '@type']
