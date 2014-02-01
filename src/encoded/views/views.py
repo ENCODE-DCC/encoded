@@ -89,7 +89,7 @@ class Collection(BaseCollection):
         }
 
         def __acl__(self):
-            properties = self.properties
+            properties = self.properties.copy()
             ns = self.template_namespace(properties)
             properties.update(ns)
             status = ns.get('status')
@@ -97,7 +97,7 @@ class Collection(BaseCollection):
 
         def __ac_local_roles__(self):
             roles = {}
-            properties = self.properties
+            properties = self.properties.copy()
             ns = self.template_namespace(properties)
             properties.update(ns)
             if 'lab' in properties:
