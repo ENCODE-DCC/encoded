@@ -420,12 +420,14 @@ class Item(object):
         'template',
         'template_type',
         'rev',
+        'namespace_from_path',
     ]
     base_types = ['item']
     keys = []
     name_key = None
     rev = None
     embedded = ()
+    namespace_from_path = {}
     template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
         # 'collection': '{collection_uri}',
@@ -558,6 +560,21 @@ class Item(object):
             ns['collection_uri'] = request.resource_path(self.__parent__)
             ns['item_uri'] = request.resource_path(self)
             ns['permission'] = permission_checker(self, request)
+
+        if self.merged_namespace_from_path:
+            root = find_root(self)
+            for name, path in self.merged_namespace_from_path.items():
+                path = path.split('.')
+                last = path[-1]
+                obj = self
+                for n in path[:-1]:
+                    obj_props = obj.properties
+                    if n not in obj_props:
+                        break
+                    obj = root.get_by_uuid(obj_props[n])
+                else:
+                    ns[name] = obj.properties[last]
+
         return ns
 
     def expand_template(self, properties, request):
@@ -732,6 +749,7 @@ class CustomItemMeta(MergedDictsMeta, ABCMeta):
             'keys',
             'rev',
             'name_key',
+            'namespace_from_path',
         ]
 
         if 'Item' in attrs:
