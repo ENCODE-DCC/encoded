@@ -182,15 +182,18 @@ def collection_mapping(collection, embed=True):
         return mapping
 
     root = find_root(collection)
-    rev_links = collection.Item.rev or {}
+    merged_rev = collection.Item.merged_rev
+    merged_template_type = collection.Item.merged_template_type
 
     for prop in collection.Item.embedded:
         new_mapping = mapping
         new_schema = schema
 
         for i, p in enumerate(prop.split('.')):
-            if i == 0 and p in rev_links:
-                name = rev_links[p][0]
+            if i == 0 and p in merged_rev:
+                name = merged_rev[p][0]
+            elif i == 0 and p in merged_template_type:
+                name = merged_template_type[p]
             else:
                 try:
                     name = new_schema['properties'][p]['linkTo']

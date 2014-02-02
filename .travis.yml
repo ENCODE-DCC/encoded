@@ -31,8 +31,6 @@ before_install:
   - virtualenv clean-python
   - source clean-python/bin/activate
   - sudo service postgresql stop
-  - sudo service postgresql start 9.3
-  - sudo -u postgres createdb --owner=$USER encoded
   - postgres --version
   - initdb --version
   - sudo service elasticsearch stop
@@ -44,7 +42,6 @@ before_script:
   - while [ ! -f $READY_FILE ]; do sleep .5; done
 script: >
   bin/test -v -v --timeout=200 --remote-webdriver
-  --engine-url postgresql:///encoded
   --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub"
   --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER"
   --browser-arg-int build  "$TRAVIS_BUILD_NUMBER"

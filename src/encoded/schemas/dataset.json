@@ -20,7 +20,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "accession": {
             "accessionType": "SR"
@@ -52,6 +52,16 @@
                 "pattern": "^(GSE|GSM)\\d+$"
             }
         },
+        "encode2_dbxrefs": {
+            "title": "Previous ENCODE IDs",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Previous ENCODE ID",
+                "type":  "string",
+                "pattern": "^wgEncodeE(H|M)\\d+$"
+            }
+        },
         "documents": {
             "title": "Documents",
             "description": "Documents that provide additional information about the dataset (not data files).",
@@ -65,8 +75,8 @@
                 "linkTo": "document"
             }
         },
-        "files": {
-            "title": "Data files",
+        "additional_files": {
+            "title": "Additional data files",
             "description": "List of data files to be associated with the dataset.",
             "type": "array",
             "default": [],

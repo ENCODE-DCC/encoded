@@ -423,7 +423,7 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         remove_keys('schema_version'),
         warn_keys_with_unknown_value_except_for(
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
-            'strain_background',  # 'flowcell_details.machine',
+            'strain_background', 'age',  # 'flowcell_details.machine',
         ),
         remove_keys('test'),
         remove_keys('uuid') if method in ('PUT', 'PATCH') else noop,
@@ -452,8 +452,11 @@ PHASE1_PIPELINES = {
     'biosample': [
         remove_keys('derived_from', 'pooled_from'),
     ],
+    'dataset': [
+        remove_keys('additional_files'),
+    ],
     'experiment': [
-        remove_keys('files', 'possible_controls'),
+        remove_keys('additional_files', 'possible_controls'),
     ],
 }
 

@@ -265,7 +265,11 @@ def add_transaction_record(session, flush_context, instances):
     txn = transaction.get()
     # Set data with txn.setExtendedInfo(name, value)
     data = txn._extension
-    if 'tid' in data:
+    record = data.get('_encoded_transaction_record')
+    if record is not None:
+        if orm.object_session(record) is None:
+            # Savepoint rolled back
+            session.add(record)
         # Transaction has already been recorded
         return
 
@@ -283,7 +287,6 @@ def record_transaction_data(session):
         return
 
     record = data['_encoded_transaction_record']
-    del data['_encoded_transaction_record']
 
     # txn.note(text)
     if txn.description:
@@ -295,7 +298,7 @@ def record_transaction_data(session):
         user_path, userid = txn.user.split(' ', 1)
         data['userid'] = userid
 
-    record.data = data.copy()
+    record.data = {k: v for k, v in data.iteritems() if not k.startswith('_')}
     session.add(record)
 
 
