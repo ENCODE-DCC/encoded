@@ -14,6 +14,7 @@ parts/
 *.DS_Store
 *.egg-info
 *.pyc
+session-secret.b64
 src/encoded/static/css/bootstrap.css
 src/encoded/static/css/responsive.css
 src/encoded/static/css/style.css
@@ -27,3 +28,5 @@ src/encoded/tests/data/*.db
 ~$*
 ENCODE_DCC_TestMetadata.xlsx
 .~*#
+
+ontology.json

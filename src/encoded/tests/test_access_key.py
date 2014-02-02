@@ -6,8 +6,9 @@ def basic_auth(username, password):
     return 'Basic ' + b64encode('%s:%s' % (username, password))
 
 
-@pytest.datafixture
-def access_keys(app):
+@pytest.yield_fixture(scope='session')
+def access_keys(app, connection):
+    tx = connection.begin_nested()
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
@@ -15,17 +16,15 @@ def access_keys(app):
     }
     testapp = TestApp(app, environ)
     from .sample_data import URL_COLLECTION
-    url = '/labs/'
     lab_name = {}
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
+    for item in URL_COLLECTION['lab']:
+        res = testapp.post_json('/lab', item, status=201)
         lab_name[item['name']] = item['uuid']
         lab_name[item['uuid']] = item['uuid']
 
-    url = '/users/'
     users = []
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
+    for item in URL_COLLECTION['user']:
+        res = testapp.post_json('/user', item, status=201)
         principals = [
             'system.Authenticated',
             'system.Everyone',
@@ -45,19 +44,18 @@ def access_keys(app):
     access_keys = []
     for user in users:
         description = 'My programmatic key'
-        url = '/access-keys/'
         item = {'user': user['uuid'], 'description': description}
-        res = testapp.post_json(url, item, status=201)
+        res = testapp.post_json('/access_key', item, status=201)
         access_keys.append({
             'location': res.location,
             'access_key_id': res.json['access_key_id'],
             'secret_access_key': res.json['secret_access_key'],
             'auth_header': basic_auth(res.json['access_key_id'], res.json['secret_access_key']),
-            'user': user['uuid'],
             'description': description,
             'user': user,
         })
-    return access_keys
+    yield access_keys
+    tx.rollback()
 
 
 @pytest.fixture
@@ -89,7 +87,8 @@ def test_access_key_principals(anontestapp, execute_counter, access_key):
 
 def test_access_key_reset(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.post_json(access_key['location'] + '@@reset-secret', {}, headers=headers)
+    extra_environ = {'REMOTE_USER': str(access_key['user']['email'])}
+    res = anontestapp.post_json(access_key['location'] + '@@reset-secret', {}, extra_environ=extra_environ)
     new_headers = {'Authorization': basic_auth(access_key['access_key_id'], res.json['secret_access_key'])}
 
     res = anontestapp.get('/@@testing-user', headers=headers)
@@ -101,7 +100,8 @@ def test_access_key_reset(anontestapp, access_key):
 
 def test_access_key_disable(anontestapp, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.post_json(access_key['location'] + '@@disable-secret', {}, headers=headers)
+    extra_environ = {'REMOTE_USER': str(access_key['user']['email'])}
+    res = anontestapp.post_json(access_key['location'] + '@@disable-secret', {}, extra_environ=extra_environ)
 
     res = anontestapp.get('/@@testing-user', headers=headers)
     assert res.json['authenticated_userid'] is None

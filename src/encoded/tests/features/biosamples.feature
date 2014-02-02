@@ -1,14 +1,10 @@
 @biosamples @usefixtures(workbook)
 Feature: Biosamples
 
-    Scenario: Active section
-        When I visit "/biosamples/"
-        Then the "/biosamples/" section should be active
-
     Scenario: Detail page
         When I visit "/biosamples/ENCBS000AAA/"
         Then I should see "Richard Myers, HAIB"
-        And I should see "ENCODE2"
+        And I should see "ENCODE"
 
     Scenario: Table
         When I visit "/biosamples/"

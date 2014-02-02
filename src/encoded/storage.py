@@ -1,9 +1,11 @@
 from UserDict import DictMixin
 from sqlalchemy import (
     Column,
+    DDL,
     ForeignKey,
     event,
     func,
+    null,
     orm,
     schema,
     types,
@@ -12,16 +14,14 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
-from zope.sqlalchemy import ZopeTransactionExtension
 from .renderers import json_renderer
 import json
 import transaction
 import uuid
+import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker(
-    extension=ZopeTransactionExtension(),
-    weak_identity_map=False,
-))
+DBSession = orm.scoped_session(orm.sessionmaker(weak_identity_map=False))
+zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 
 
@@ -227,6 +227,28 @@ class TransactionRecord(Base):
     data = Column(JSON)
     timestamp = Column(
         types.DateTime, nullable=False, server_default=func.now())
+    # A server_default is necessary for the notify_ddl overwrite to work
+    xid = Column(types.BigInteger, nullable=True, server_default=null())
+
+
+notify_ddl = DDL("""
+    ALTER TABLE %(table)s ALTER COLUMN "xid" SET DEFAULT txid_current();
+    CREATE OR REPLACE FUNCTION encoded_transaction_notify() RETURNS trigger AS $$
+    DECLARE
+    BEGIN
+        PERFORM pg_notify('encoded.transaction', NEW.xid::TEXT);
+        RETURN NEW;
+    END;
+    $$ LANGUAGE plpgsql;
+
+    CREATE TRIGGER encoded_transactions_insert AFTER INSERT ON %(table)s
+    FOR EACH ROW EXECUTE PROCEDURE encoded_transaction_notify();
+""")
+
+event.listen(
+    TransactionRecord.__table__, 'after_create',
+    notify_ddl.execute_if(dialect='postgresql'),
+)
 
 
 @event.listens_for(PropertySheet, 'before_insert')
@@ -243,17 +265,51 @@ def add_transaction_record(session, flush_context, instances):
     txn = transaction.get()
     # Set data with txn.setExtendedInfo(name, value)
     data = txn._extension
-    if 'tid' in data:
+    record = data.get('_encoded_transaction_record')
+    if record is not None:
+        if orm.object_session(record) is None:
+            # Savepoint rolled back
+            session.add(record)
         # Transaction has already been recorded
         return
+
+    tid = data['tid'] = uuid.uuid4()
+    record = TransactionRecord(tid=tid)
+    data['_encoded_transaction_record'] = record
+    session.add(record)
+
+
+@event.listens_for(DBSession, 'before_commit')
+def record_transaction_data(session):
+    txn = transaction.get()
+    data = txn._extension
+    if '_encoded_transaction_record' not in data:
+        return
+
+    record = data['_encoded_transaction_record']
+
     # txn.note(text)
     if txn.description:
         data['description'] = txn.description
+
     # txn.setUser(user_name, path='/') -> '/ user_name'
     # Set by pyramid_tm as (userid, '')
     if txn.user:
         user_path, userid = txn.user.split(' ', 1)
         data['userid'] = userid
-    tid = data['tid'] = uuid.uuid4()
-    record = TransactionRecord(tid=tid, data=data)
+
+    record.data = {k: v for k, v in data.iteritems() if not k.startswith('_')}
     session.add(record)
+
+
+@event.listens_for(DBSession, 'after_begin')
+def read_only_doomed_transaction(session, sqla_txn, connection):
+    ''' Doomed transactions can be read-only.
+
+    ``transaction.doom()`` must be called before the connection is used.
+    '''
+    if not transaction.isDoomed():
+        return
+    if connection.engine.url.drivername != 'postgresql':
+        return
+    connection.execute("SET TRANSACTION READ ONLY;")

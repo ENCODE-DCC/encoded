@@ -1,17 +1,27 @@
+// Require all components to ensure javascript load ordering
+require('./antibody');
+require('./app');
+require('./biosample');
+require('./collection');
+require('./dbxref');
+require('./errors');
+require('./experiment');
+require('./footer');
+require('./globals');
+require('./home');
+require('./item');
+require('./mixins');
+require('./navbar');
+require('./platform');
+require('./search');
+require('./target');
+require('./testing');
+
 var React = require('react');
 var App = require('./app');
 module.exports = App;
 
-// XXX https://github.com/facebook/react/pull/472
-var DOMProperty = require('react-tools/build/modules/DOMProperty');
-DOMProperty.injection.injectDOMPropertyConfig({
-    Properties: {
-        async: DOMProperty.injection.HAS_BOOLEAN_VALUE,
-        defer: DOMProperty.injection.HAS_BOOLEAN_VALUE
-    }
-});
-
-var ReactMount = require('react-tools/build/modules/ReactMount');
+var ReactMount = require('react/lib/ReactMount');
 ReactMount.allowFullPageRender = true;
 
 

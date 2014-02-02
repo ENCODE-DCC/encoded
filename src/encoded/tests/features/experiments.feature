@@ -1,10 +1,6 @@
 @experiments @usefixtures(workbook)
 Feature: Experiments
 
-    Scenario: Active section
-        When I visit "/experiments/"
-        Then the "/experiments/" section should be active
-
     Scenario: Table
         When I visit "/experiments/"
         And I should see an element with the css selector "table.sticky-area > tbody > tr"
@@ -18,26 +14,26 @@ Feature: Experiments
         When I click the link to "/experiments/ENCSR000ACY/"
         Then I should see an element with the css selector "div.data-display"
         And I should see "primary cell line"
-        And I should see "ENCODE2"
+        And I should see "ENCODE"
 
         When I go back
         And I wait for the table to fully load
         When I click the link to "/experiments/ENCSR000AEN/"
         Then I should see an element with the css selector "div.data-display"
-        And I should see "ENCODE3"
+        And I should see "ENCODE"
 
     Scenario: Detail page
         When I visit "/experiments/ENCSR000AER/"
         Then I should see an element with the css selector "div.data-display"
         And I should see "Thomas Gingeras, CSHL"
-        And I should see "ENCODE3"
+        And I should see "ENCODE"
 
     Scenario: Detail page 2
         When I visit "/experiments/ENCSR000AHF/"
         Then I should see an element with the css selector "div.data-display"
         And I should see "wgEncodeEH003317"
         And I should see "Richard Myers, HAIB"
-        And I should see "ENCODE2"
+        And I should see "ENCODE"
 
     Scenario: Filter
         When I visit "/experiments/"

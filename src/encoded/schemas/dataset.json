@@ -19,7 +19,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "accession": {
             "accessionType": "SR"
@@ -48,7 +48,17 @@
             "items": {
                 "title": "GEO ID",
                 "type":  "string",
-                "pattern": "^[GSE|GSM]\\d+$"
+                "pattern": "^(GSE|GSM)\\d+$"
+            }
+        },
+        "encode2_dbxrefs": {
+            "title": "Previous ENCODE IDs",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Previous ENCODE ID",
+                "type":  "string",
+                "pattern": "^wgEncodeE(H|M)\\d+$"
             }
         },
         "documents": {
@@ -64,8 +74,8 @@
                 "linkTo": "document"
             }
         },
-        "files": {
-            "title": "Data files",
+        "additional_files": {
+            "title": "Additional data files",
             "description": "List of data files to be associated with the dataset.",
             "type": "array",
             "default": [],
@@ -81,7 +91,7 @@
             "description": "The Pubmed identifiers that reference data found in the experiment.",
             "type": "array",
             "default": [],
-            "reference": {
+            "items": {
                 "title": "Reference",
                 "description": "A Pubmed identifier that references data found in the experiment.",
                 "type": "string",

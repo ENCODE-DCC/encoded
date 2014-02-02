@@ -33,8 +33,30 @@ _app_settings = {
 }
 
 
+@pytest.mark.fixture_cost(10)
+@pytest.yield_fixture(scope='session')
+def engine_url(request):
+    engine_url = request.session.config.option.engine_url
+    if engine_url is not None:
+        yield engine_url
+        return
+
+    # Ideally this would use a different database on the same postgres server
+    from urllib import quote
+    from .postgresql_fixture import server_process
+    tmpdir = request.config._tmpdirhandler.mktemp('postgresql-engine', numbered=True)
+    tmpdir = str(tmpdir)
+    process = server_process(tmpdir)
+
+    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
+
+    if process.poll() is None:
+        process.terminate()
+        process.wait()
+
+
 @fixture(scope='session')
-def app_settings(server_host_port):
+def app_settings(request, server_host_port, connection):
     settings = _app_settings.copy()
     settings['persona.audiences'] = 'http://%s:%s' % server_host_port
     return settings
@@ -43,7 +65,7 @@ def app_settings(server_host_port):
 def pytest_configure():
     import logging
     logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
     logging.getLogger('selenium').setLevel(logging.DEBUG)
 
     class Shorten(logging.Filter):
@@ -67,44 +89,77 @@ def config(request):
     return setUp()
 
 
+@pytest.yield_fixture
+def threadlocals(request, dummy_request, registry):
+    from pyramid.threadlocal import manager
+    manager.push({'request': dummy_request, 'registry': registry})
+    yield dummy_request
+    manager.pop()
+
+
 @fixture
-def dummy_request():
+def dummy_request(root, registry):
     from pyramid.testing import DummyRequest
-    return DummyRequest()
+    return DummyRequest(root=root, registry=registry, _stats={})
 
 
 @fixture(scope='session')
-def app(request, check_constraints, zsa_savepoints, app_settings):
+def app(zsa_savepoints, check_constraints, app_settings):
     '''WSGI application level functional testing.
     '''
     from encoded import main
     return main({}, **app_settings)
 
 
-@pytest.datafixture
-def workbook(app, app_settings):
-    from webtest import TestApp
-    environ = {
-        'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST',
-    }
-    testapp = TestApp(app, environ)
-
-    from ..loadxl import load_all
-    from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
-    load_all(testapp, inserts, docsdir)
+@fixture
+def registry(app):
+    return app.registry
 
 
 @fixture
-def htmltestapp(request, app, external_tx, zsa_savepoints):
+def root(app):
+    return app.root_factory(app)
+
+
+@pytest.mark.fixture_cost(500)
+@pytest.yield_fixture(scope='session')
+def workbook(connection, app, app_settings):
+    tx = connection.begin_nested()
+    try:
+        from webtest import TestApp
+        environ = {
+            'HTTP_ACCEPT': 'application/json',
+            'REMOTE_USER': 'TEST',
+        }
+        testapp = TestApp(app, environ)
+
+        from ..loadxl import load_all
+        from pkg_resources import resource_filename
+        inserts = resource_filename('encoded', 'tests/data/inserts/')
+        docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+        load_all(testapp, inserts, docsdir)
+
+        yield
+    finally:
+        tx.rollback()
+
+@fixture
+def anonhtmltestapp(app, external_tx):
     from webtest import TestApp
     return TestApp(app)
 
 
 @fixture
-def testapp(request, app, external_tx, zsa_savepoints):
+def htmltestapp(app, external_tx):
+    from webtest import TestApp
+    environ = {
+        'REMOTE_USER': 'TEST',
+    }
+    return TestApp(app, environ)
+
+
+@fixture
+def testapp(app, external_tx):
     '''TestApp with JSON accept header.
     '''
     from webtest import TestApp
@@ -116,7 +171,7 @@ def testapp(request, app, external_tx, zsa_savepoints):
 
 
 @fixture
-def anontestapp(request, app, external_tx, zsa_savepoints):
+def anontestapp(app, external_tx):
     '''TestApp with JSON accept header.
     '''
     from webtest import TestApp
@@ -127,7 +182,7 @@ def anontestapp(request, app, external_tx, zsa_savepoints):
 
 
 @fixture
-def authenticated_testapp(request, app, external_tx, zsa_savepoints):
+def authenticated_testapp(app, external_tx):
     '''TestApp with JSON accept header for non-admin user.
     '''
     from webtest import TestApp
@@ -139,7 +194,7 @@ def authenticated_testapp(request, app, external_tx, zsa_savepoints):
 
 
 @fixture
-def submitter_testapp(request, app, external_tx, zsa_savepoints):
+def submitter_testapp(app, external_tx):
     '''TestApp with JSON accept header for non-admin user.
     '''
     from webtest import TestApp
@@ -156,31 +211,13 @@ def server_host_port():
     return get_free_port()
 
 
+@pytest.mark.fixture_cost(100)
 @fixture(scope='session')
-def _server(request, app, zsa_savepoints, server_host_port):
+def _server(request, app, server_host_port):
     from webtest.http import StopableWSGIServer
-    import threading
-    from webtest.http import get_free_port
-
-    def create(cls, application, **kwargs):
-        """Start a server to serve ``application``. Return a server
-        instance."""
-        host, port = get_free_port()
-        kwargs['port'] = port
-        if 'host' not in kwargs:
-            kwargs['host'] = host
-        if 'expose_tracebacks' not in kwargs:
-            kwargs['expose_tracebacks'] = True
-        server = cls(application, **kwargs)
-        server.runner = threading.Thread(target=server.run)
-        server.runner.daemon = True
-        server.runner.start()
-        return server
-
     host, port = server_host_port
 
-    server = create(
-        StopableWSGIServer,
+    server = StopableWSGIServer.create(
         app,
         host=host,
         port=port,
@@ -195,7 +232,7 @@ def _server(request, app, zsa_savepoints, server_host_port):
     def shutdown():
         server.shutdown()
 
-    return server
+    return 'http://%s:%s' % server_host_port
 
 
 @fixture
@@ -207,33 +244,25 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
-@pytest.datafixture_connection_factory
-def connection_factory(config, name):
+@pytest.mark.fixture_lock('encoded.storage.DBSession')
+@pytest.yield_fixture(scope='session')
+def connection(request, engine_url):
     from encoded import configure_engine
     from encoded.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
 
-    scopefunc = config.pluginmanager.getplugin('data').scopefunc
-
+    # ``server`` thread must be in same scope
     if type(DBSession.registry) is not ScopedRegistry:
-        DBSession.registry = ScopedRegistry(DBSession.session_factory, scopefunc)
+        DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
 
     engine_settings = {
-        'sqlalchemy.url': config.option.engine_url,
+        'sqlalchemy.url': engine_url,
     }
 
     engine = configure_engine(engine_settings, test_setup=True)
     connection = engine.connect()
     tx = connection.begin()
     try:
-        if engine.url.drivername == 'postgresql':
-            # Create the different test sets in different schemas
-            if name is None:
-                schema_name = 'tests'
-            else:
-                schema_name = 'tests_%s' % name
-            connection.execute('CREATE SCHEMA %s' % schema_name)
-            connection.execute('SET search_path TO %s,public' % schema_name)
         Base.metadata.create_all(bind=connection)
         session = DBSession(scope=None, bind=connection)
         DBSession.registry.set(session)
@@ -246,6 +275,7 @@ def connection_factory(config, name):
 
 @fixture
 def external_tx(request, connection):
+    print 'BEGIN external_tx'
     tx = connection.begin_nested()
     request.addfinalizer(tx.rollback)
     ## The database should be empty unless a data fixture was loaded
@@ -264,7 +294,7 @@ def transaction(request, external_tx, zsa_savepoints, check_constraints):
 
 
 @fixture(scope='session')
-def zsa_savepoints(request, connection_proxy):
+def zsa_savepoints(request, connection):
     """ Place a savepoint at the start of the zope transaction
 
     This means failed requests rollback to the db state when they began rather
@@ -297,7 +327,7 @@ def zsa_savepoints(request, connection_proxy):
             self.sp = self.connection.begin_nested()
             self.state = 'begun'
 
-    zsa_savepoints = Savepoints(connection_proxy)
+    zsa_savepoints = Savepoints(connection)
 
     import transaction
     transaction.manager.registerSynch(zsa_savepoints)
@@ -320,7 +350,7 @@ def session(transaction):
 
 
 @fixture(scope='session')
-def check_constraints(request, connection_proxy):
+def check_constraints(request, connection):
     '''Check deffered constraints on zope transaction commit.
 
     Deferred foreign key constraints are only checked at the outer transaction
@@ -367,7 +397,7 @@ def check_constraints(request, connection_proxy):
                     sp.commit()
                     self.state = None
 
-    check_constraints = CheckConstraints(connection_proxy)
+    check_constraints = CheckConstraints(connection)
 
     import transaction
     transaction.manager.registerSynch(check_constraints)
@@ -412,11 +442,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
     @request.addfinalizer
     def remove():
-        # http://www.sqlalchemy.org/trac/ticket/2686
-        # event.remove(connection, 'after_cursor_execute', after_cursor_execute)
-        connection.dispatch.after_cursor_execute.remove(after_cursor_execute, connection)
-
-    connection._has_events = True
+        event.remove(connection, 'after_cursor_execute', after_cursor_execute)
 
     return counter
 
@@ -444,15 +470,153 @@ def no_deps(request, connection):
 
 
 @pytest.fixture
-def users(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/labs/'
-    for item in URL_COLLECTION[url]:
-        testapp.post_json(url, item, status=201)
-    users = []
-    url = '/users/'
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-        res = testapp.get(res.location)
-        users.append(res.json)
-    return users
+def labs(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'lab')
+
+
+@pytest.fixture
+def lab(labs):
+    return [l for l in labs if l['name'] == 'myers'][0]
+
+
+@pytest.fixture
+def users(testapp, labs):
+    from . import sample_data
+    return sample_data.load(testapp, 'user')
+
+
+@pytest.fixture
+def wrangler(users):
+    return [u for u in users if 'wrangler' in u.get('groups', ())][0]
+
+
+@pytest.fixture
+def submitter(users, lab):
+    return [u for u in users if lab['@id'] in u['submits_for']][0]
+
+
+@pytest.fixture
+def awards(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'award')
+
+
+@pytest.fixture
+def award(awards):
+    return [a for a in awards if a['name'] == 'Myers'][0]
+
+
+@pytest.fixture
+def sources(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'source')
+
+
+@pytest.fixture
+def source(sources):
+    return [s for s in sources if s['name'] == 'sigma'][0]
+
+
+@pytest.fixture
+def organisms(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'organism')
+
+
+@pytest.fixture
+def organism(organisms):
+    return [o for o in organisms if o['name'] == 'human'][0]
+
+
+@pytest.fixture
+def biosamples(testapp, labs, awards, sources, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'biosample')
+
+
+@pytest.fixture
+def biosample(biosamples):
+    return [b for b in biosamples if b['accession'] == 'ENCBS000TST'][0]
+
+
+@pytest.fixture
+def libraries(testapp, labs, awards, biosamples):
+    from . import sample_data
+    return sample_data.load(testapp, 'library')
+
+
+@pytest.fixture
+def library(libraries):
+    return [l for l in libraries if l['accession'] == 'ENCLB000TST'][0]
+
+
+@pytest.fixture
+def experiments(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'experiment')
+
+
+@pytest.fixture
+def experiment(experiments):
+    return [e for e in experiments if e['accession'] == 'ENCSR000TST'][0]
+
+
+@pytest.fixture
+def replicates(testapp, experiments, libraries):
+    from . import sample_data
+    return sample_data.load(testapp, 'replicate')
+
+
+@pytest.fixture
+def replicate(replicates):
+    return replicates[0]
+
+
+@pytest.fixture
+def files(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'file')
+
+
+@pytest.fixture
+def file(file):
+    return [f for f in files if ['accession'] == 'ENCFF000TST'][0]
+
+
+@pytest.mark.fixture_cost(10)
+@pytest.yield_fixture(scope='session')
+def postgresql_server(request):
+    from urllib import quote
+    from .postgresql_fixture import server_process
+    tmpdir = request.config._tmpdirhandler.mktemp('postgresql', numbered=True)
+    tmpdir = str(tmpdir)
+    process = server_process(tmpdir)
+
+    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
+
+    if process.poll() is None:
+        process.terminate()
+        process.wait()
+
+
+@pytest.fixture(scope='session')
+def elasticsearch_host_port():
+    from webtest.http import get_free_port
+    return get_free_port()
+
+
+@pytest.mark.fixture_cost(10)
+@pytest.yield_fixture(scope='session')
+def elasticsearch_server(request, elasticsearch_host_port):
+    from .elasticsearch_fixture import server_process
+    host, port = elasticsearch_host_port
+    tmpdir = request.config._tmpdirhandler.mktemp('elasticsearch', numbered=True)
+    tmpdir = str(tmpdir)
+    process = server_process(str(tmpdir), host=host, port=port)
+
+    yield 'http://%s:%d' % (host, port)
+
+    if process.poll() is None:
+        process.terminate()
+        process.wait()

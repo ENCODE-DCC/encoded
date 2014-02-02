@@ -55,16 +55,19 @@
         "date": {
             "title": "Date",
             "description": "The date that the characterization was run on.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
             "type": "string",
-            "format": "date"
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ]
         },
         "references": {
             "title": "References",
             "description": "The Pubmed identifiers used as references for the characterization, if previously published.",
             "type": "array",
             "default": [],
-            "reference": {
+            "items": {
                 "title": "Reference",
                 "description": "The Pubmed identifier used as a reference for the characterization, if previously published",
                 "type": "string",

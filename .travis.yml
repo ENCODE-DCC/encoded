@@ -15,36 +15,33 @@ env:
   - CONNECT_DOWNLOAD=Sauce_Connect.zip
   - CONNECT_LOG=sauce_connect.log
   - READY_FILE=connect.ready
+  - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
 services:
   - elasticsearch
 before_install:
+  - whereis elasticsearch
   - curl $CONNECT_URL > $CONNECT_DOWNLOAD
   - unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
   - >
     java -jar Sauce-Connect.jar --readyfile $READY_FILE
     --logfile $CONNECT_LOG
     --tunnel-identifier $TRAVIS_JOB_NUMBER
-    $SAUCE_USERNAME $SAUCE_ACCESS_KEY &
+    $SAUCE_USERNAME $SAUCE_ACCESS_KEY > sauce-connect.log &
   - pip install -U setuptools
   - virtualenv clean-python
   - source clean-python/bin/activate
-  - sudo apt-get -qq --purge remove postgresql postgresql-9.1
-  - source /etc/lsb-release
-  - echo "deb http://apt.postgresql.org/pub/repos/apt/ $DISTRIB_CODENAME-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-  - curl http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
-  - sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/pgdg.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
-  - sudo apt-get -qq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install postgresql-9.2 libpq-dev
-  - sudo /etc/init.d/postgresql start
+  - sudo service postgresql stop
+  - postgres --version
+  - initdb --version
+  - sudo service elasticsearch stop
+  - elasticsearch -v
 install:
   - python bootstrap.py
   - bin/buildout
 before_script:
-  - sudo -u postgres createuser $USER
-  - sudo -u postgres createdb --owner=$USER encoded
   - while [ ! -f $READY_FILE ]; do sleep .5; done
 script: >
   bin/test -v -v --timeout=200 --remote-webdriver
-  --engine-url postgresql:///encoded
   --browser-arg url "http://$SAUCE_USERNAME:$SAUCE_ACCESS_KEY@localhost:4445/wd/hub"
   --browser-arg tunnel-identifier "$TRAVIS_JOB_NUMBER"
   --browser-arg-int build  "$TRAVIS_BUILD_NUMBER"

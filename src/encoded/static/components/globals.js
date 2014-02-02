@@ -1,38 +1,42 @@
-define(['exports', 'registry'],
-function (exports, Registry) {
-    /*jshint devel: true*/
-    'use strict';
+/** @jsx React.DOM */
+'use strict';
+var Registry = require('registry');
 
-    // Item pages
-    exports.content_views = Registry();
+// Item pages
+module.exports.content_views = Registry();
 
-    // Panel detail views
-    exports.panel_views = Registry();
+// Panel detail views
+module.exports.panel_views = Registry();
 
-    // Cell name listing titles
-    exports.listing_titles = Registry();
+// Listing detail views
+module.exports.listing_views = Registry();
+
+// Cell name listing titles
+module.exports.listing_titles = Registry();
 
 
-    exports.itemClass = function (context, htmlClass) {
-        htmlClass = htmlClass || '';
-        (context['@type'] || []).forEach(function (type) {
-            htmlClass += ' type-' + type;
-        });
-        if (typeof context.status == 'string') {
-            htmlClass += ' status-' + context.status.toLowerCase();
-        }
-        return htmlClass;
-    };
+var itemClass = module.exports.itemClass = function (context, htmlClass) {
+    htmlClass = htmlClass || '';
+    (context['@type'] || []).forEach(function (type) {
+        htmlClass += ' type-' + type;
+    });
+    return statusClass(context.status, htmlClass);
+};
 
-    exports.dbxref_prefix_map = {
-        "UniProtKB": "http://www.uniprot.org/uniprot/",
-        "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",
-        // ENSEMBL link only works for human
-        "ENSEMBL": "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=",
-        "GeneID": "http://www.ncbi.nlm.nih.gov/gene/",
-        "GEO": "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
-        "Caltech": "http://jumpgate.caltech.edu/library/"
-    };
+var statusClass = module.exports.statusClass = function (status, htmlClass) {
+    htmlClass = htmlClass || '';
+    if (typeof status == 'string') {
+        htmlClass += ' status-' + status.toLowerCase().replace(' ', '-');
+    }
+    return htmlClass;
+};
 
-    return exports;
-});
+module.exports.dbxref_prefix_map = {
+    "UniProtKB": "http://www.uniprot.org/uniprot/",
+    "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",
+    // ENSEMBL link only works for human
+    "ENSEMBL": "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=",
+    "GeneID": "http://www.ncbi.nlm.nih.gov/gene/",
+    "GEO": "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
+    "Caltech": "http://jumpgate.caltech.edu/library/"
+};

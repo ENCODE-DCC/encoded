@@ -18,8 +18,8 @@ def _type_length():
 TYPE_LENGTH = _type_length()
 
 
-def test_home(htmltestapp):
-    res = htmltestapp.get('/', status=200)
+def test_home(anonhtmltestapp):
+    res = anonhtmltestapp.get('/', status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
 
@@ -29,9 +29,41 @@ def test_home_json(testapp):
 
 
 @pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
-def test_html(htmltestapp, item_type):
+def test_html_collections_anon(anonhtmltestapp, item_type):
+    res = anonhtmltestapp.get('/' + item_type).follow(status=200)
+    assert res.body.startswith('<!DOCTYPE html>')
+
+
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_html_collections(workbook, htmltestapp, item_type):
     res = htmltestapp.get('/' + item_type).follow(status=200)
     assert res.body.startswith('<!DOCTYPE html>')
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize('item_type', TYPE_LENGTH)
+def test_html_pages(workbook, testapp, htmltestapp, item_type):
+    res = testapp.get('/%s?limit=all' % item_type).follow(status=200)
+    for item in res.json['@graph']:
+        res = htmltestapp.get(item['@id'])
+        assert res.body.startswith('<!DOCTYPE html>')
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
+def test_html_server_pages(workbook, item_type, server):
+    from webtest import TestApp
+    testapp = TestApp(server)
+    res = testapp.get('/%s?limit=all' % item_type,
+        headers={'Accept': 'application/json'},
+    ).follow(
+        status=200,
+        headers={'Accept': 'application/json'},
+    )
+    for item in res.json['@graph']:
+        res = testapp.get(item['@id'], status=200)
+        assert res.body.startswith('<!DOCTYPE html>')
+        assert 'Internal Server Error' not in res.body
 
 
 @pytest.mark.parametrize('item_type', TYPE_LENGTH)
@@ -40,11 +72,11 @@ def test_json(testapp, item_type):
     assert res.json['@type']
 
 
-def test_json_basic_auth(htmltestapp):
+def test_json_basic_auth(anonhtmltestapp):
     import base64
     url = '/'
     value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
-    res = htmltestapp.get(url, headers={'Authorization': value}, status=200)
+    res = anonhtmltestapp.get(url, headers={'Authorization': value}, status=200)
     assert res.json['@id']
 
 
@@ -64,14 +96,10 @@ def _test_antibody_approval_creation(testapp):
     assert len(res.json['@graph']) == 1
 
 
-@pytest.mark.xfail
 def test_load_sample_data(testapp):
-    from .sample_data import URL_COLLECTION
-    for url, collection in URL_COLLECTION.iteritems():
-        for item in collection:
-            testapp.post_json(url, item, status=201)
-        res = testapp.get(url + '?limit=all')
-        assert len(res.json['@graph']) == len(collection)
+    from . import sample_data
+    for item_type in sample_data.URL_COLLECTION:
+        sample_data.load(testapp, item_type)
 
 
 @pytest.mark.slow
@@ -89,30 +117,22 @@ def test_collection_limit(workbook, testapp):
     assert len(res.json['@graph']) == 2
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_post(testapp, url):
-    from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[url]
-    for item in collection:
-        res = testapp.post_json(url, item, status=201)
-        assert item['name'] in res.location
+@pytest.mark.parametrize('item_type', ['organism', 'source'])
+def test_collection_post(testapp, item_type):
+    from . import sample_data
+    sample_data.load(testapp, item_type)
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_post_bad_json(testapp, url):
+@pytest.mark.parametrize('item_type', ['organism', 'source'])
+def test_collection_post_bad_json(testapp, item_type):
     collection = [{'foo': 'bar'}]
     for item in collection:
-        res = testapp.post_json(url, item, status=422)
+        res = testapp.post_json('/' + item_type, item, status=422)
         assert res.json['errors']
 
 
-def test_actions_filtered_by_permission(testapp, anontestapp):
-    from .sample_data import URL_COLLECTION
-    url = '/sources/'
-    collection = URL_COLLECTION[url]
-    item = collection[0]
-    res = testapp.post_json(url, item, status=201)
-    location = res.location
+def test_actions_filtered_by_permission(testapp, anontestapp, sources):
+    location = sources[0]['@id']
 
     res = testapp.get(location)
     assert any(action for action in res.json['actions'] if action['name'] == 'edit')
@@ -121,19 +141,18 @@ def test_actions_filtered_by_permission(testapp, anontestapp):
     assert not any(action for action in res.json['actions'] if action['name'] == 'edit')
 
 
-@pytest.mark.parametrize('url', ['/organisms/', '/sources/'])
-def test_collection_put(testapp, url, execute_counter):
+@pytest.mark.parametrize('item_type', ['organism', 'source'])
+def test_collection_put(testapp, item_type, execute_counter):
     from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[url]
-    initial = collection[0]
-    res = testapp.post_json(url, initial, status=201)
+    collection = URL_COLLECTION[item_type]
+    initial = collection[0].copy()
+    res = testapp.post_json('/' + item_type, initial, status=201)
     item_url = res.json['@graph'][0]['@id']
     uuid = initial['uuid']
 
     with execute_counter.expect(2):
         res = testapp.get(item_url).json
 
-    del initial['uuid']
     for key in initial:
         assert res[key] == initial[key]
 
@@ -148,8 +167,6 @@ def test_collection_put(testapp, url, execute_counter):
         assert res[key] == update[key]
 
 
-# Error due to test savepoint setup
-@pytest.mark.xfail
 def test_post_duplicate_uuid(testapp):
     from .sample_data import BAD_LABS
     testapp.post_json('/labs/', BAD_LABS[0], status=201)
@@ -189,15 +206,16 @@ def test_users_list_denied_anon(anontestapp):
 
 
 def test_etags(testapp):
-    url = '/organisms/'
+    item_type = 'organism'
     from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[url]
+    collection = URL_COLLECTION[item_type]
     item = collection[0]
-    res = testapp.post_json(url, item, status=201)
+    res = testapp.post_json('/' + item_type, item, status=201)
+    url = res.location
     res = testapp.get(url, status=200)
     etag = res.etag
     res = testapp.get(url, headers={'If-None-Match': etag}, status=304)
     item = collection[1]
-    res = testapp.post_json(url, item, status=201)
+    res = testapp.post_json('/' + item_type, item, status=201)
     res = testapp.get(url, headers={'If-None-Match': etag}, status=200)
     assert res.etag != etag

@@ -4,9 +4,10 @@ from pyramid.events import (
     NewRequest,
     subscriber,
 )
+from pyramid.decorator import reify
 from pyramid.httpexceptions import (
     HTTPBadRequest,
-    HTTPInternalServerError,
+    HTTPServerError,
     HTTPMovedPermanently,
 )
 from pyramid.security import authenticated_userid
@@ -14,13 +15,25 @@ from pyramid.threadlocal import (
     get_current_request,
     manager,
 )
+import atexit
 import json
+import logging
 import os
 import pyramid.renderers
 import subprocess
 import threading
 import time
 import uuid
+import weakref
+
+
+log = logging.getLogger(__name__)
+
+
+def includeme(config):
+    config.add_renderer(None, PageOrJSON)
+    config.add_renderer('null_renderer', NullRenderer)
+    config.scan(__name__)
 
 
 class JSON(pyramid.renderers.JSON):
@@ -56,42 +69,112 @@ class NullRenderer:
         return None
 
 
-class PageRenderer:
+class RenderingError(HTTPServerError):
+    title = 'Server Rendering Error'
+    explanation = 'The server erred while rendering the page.'
+
+
+class RetryRender(Exception):
+    def __init__(self, phase):
+        self.phase = phase
+
+
+def cleanup(plist):
+    for process in plist:
+        if process.stdin is not None:
+            process.stdin.close()
+        if process.stdout is not None:
+            process.stdout.close()
+        if process.stderr is not None:
+            process.stderr.close()
+        if process.poll() is None:
+            process.terminate()
+
+    # sum((0.01 * (2 ** n - 1)) for n in range(6)) -> 0.57
+    for n in xrange(6):
+        time.sleep(0.01 * (2 ** n - 1))
+        if all(process.poll() is not None for process in plist):
+            break
+
+    for process in plist:
+        if process.poll() is None:
+            process.kill()
+
+
+# Hold a weakreference to each subprocess for cleanup during shutdown
+renderer_processes = weakref.WeakSet()
+
+
+@atexit.register
+def cleanup_processes():
+    cleanup(list(renderer_processes))
+
+
+class PageWorker(threading.local):
+    """ We only want one of these per thread
+    """
     process_args = [
         'node',
         resource_filename(__name__, 'static/build/renderer.js'),
     ]
 
-    def __init__(self, info):
+    @reify
+    def process(self):
+        """ defer creation as __init__ also called in management thread
+        """
         node_env = os.environ.copy()
         node_env['NODE_PATH']= ''
-        self.process = subprocess.Popen(
+        process = subprocess.Popen(
             self.process_args, close_fds=True,
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
             env=node_env,
         )
-        self.lock = threading.Lock()
+        renderer_processes.add(process)
+        return process
 
-    def __call__(self, value, system):
+    def render(self, value, system):
         request = system['request']
         request.response.content_type = 'text/html'
         data = '{"href":%s,"context":%s}\0' % (json.dumps(request.url), value)
 
-        with self.lock:
-            start = int(time.time() * 1e6)
-            self.process.stdin.write(data)
-            header = self.process.stdout.readline()
-            result_type, content_length = header.split(' ', 1)
-            content_length = int(content_length)
-            output = []
-            pos = 0
+        for attempt in range(2):
+            process = self.process
+            try:
+                start = int(time.time() * 1e6)
+                process.stdin.write(data)
+                header = process.stdout.readline()
+                if not header:
+                    raise RetryRender('header')
+                try:
+                    result_type, content_length = header.split(' ', 1)
+                except ValueError:
+                    raise Exception('Renderer header malformed: %r' % header)
+                content_length = int(content_length)
+                output = []
+                pos = 0
 
-            while pos < content_length:
-                out = self.process.stdout.read(content_length - pos)
-                pos += len(out)
-                output.append(out)
+                while pos < content_length:
+                    out = process.stdout.read(content_length - pos)
+                    if not out:
+                        raise RetryRender('body')
+                    pos += len(out)
+                    output.append(out)
 
-            end = int(time.time() * 1e6)
+                end = int(time.time() * 1e6)
+
+            except Exception as e:
+                del self.process
+                cleanup([process])
+                if not isinstance(e, RetryRender):
+                    raise
+                log.error(
+                    'Renderer closed pipe (phase: %s, attempt: %d)',
+                    e.phase, attempt,
+                )
+            else:
+                break
+        else:
+            raise Exception('Renderer closed pipe unexpectedly')
 
         stats = request._stats
         stats['render_count'] = stats.get('render_count', 0) + 1
@@ -102,7 +185,15 @@ class PageRenderer:
         if result_type == 'RESULT':
             return result
         else:
-            raise HTTPInternalServerError(result)
+            raise RenderingError(result)
+
+    def __call__(self, info):
+        """ Called per view
+        """
+        return self.render
+
+
+page_renderer = PageWorker()
 
 
 class CSRFTokenError(HTTPBadRequest):
@@ -154,7 +245,7 @@ class PageOrJSON:
     '''
     def __init__(self, info):
         self.json_renderer = json_renderer(info)
-        self.page_renderer = PageRenderer(info)
+        self.page_renderer = page_renderer(info)
 
     def __call__(self, value, system):
         request = system.get('request')

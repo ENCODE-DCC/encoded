@@ -1,9 +1,11 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
 
-import transaction
+
+import logging
 import venusian
 from abc import ABCMeta
 from collections import Mapping
+from copy import deepcopy
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -52,7 +54,6 @@ from uuid import (
 from .objtemplate import ObjectTemplate
 from .schema_formats import is_accession
 from .schema_utils import validate_request
-from .stats import requests_timing_hook
 from .storage import (
     DBSession,
     CurrentPropertySheet,
@@ -63,21 +64,19 @@ from .storage import (
 )
 from collections import OrderedDict
 from .validation import ValidationFailure
-from pyelasticsearch import ElasticSearch
+
+PHASE1_5_CONFIG = -15
+
 
 LOCATION_ROOT = __name__ + ':location_root'
-ELASTIC_SEARCH = __name__ + ':elasticsearch'
 _marker = object()
+
+logger = logging.getLogger(__name__)
 
 
 def includeme(config):
     config.scan(__name__)
     config.set_root_factory(root_factory)
-
-    if 'elasticsearch.server' in config.registry.settings:
-        es = ElasticSearch(config.registry.settings['elasticsearch.server'])
-        es.session.hooks['response'].append(requests_timing_hook('es'))
-        config.registry[ELASTIC_SEARCH] = es
 
 
 def root_factory(request):
@@ -115,11 +114,11 @@ def embed(request, path, result=None):
     if manager.stack:
         embedded = manager.stack[0].setdefault('encoded_embedded', {})
     if result is not None:
-        embedded[path] = result
+        embedded[path] = deepcopy(result)
         return result
     result = embedded.get(path, None)
     if result is not None:
-        return result
+        return deepcopy(result)
     subreq = make_subrequest(request, path)
     subreq.override_renderer = 'null_renderer'
     try:
@@ -127,7 +126,7 @@ def embed(request, path, result=None):
     except HTTPNotFound:
         raise KeyError(path)
     if embedded is not None:
-        embedded[path] = result
+        embedded[path] = deepcopy(result)
     return result
 
 
@@ -138,6 +137,34 @@ def maybe_include_embedded(request, result):
     if embedded:
         result['_embedded'] = {'resources': embedded}
 
+
+# No-validation validators
+
+def no_validate_item_content_post(context, request):
+    data = request.json
+    request.validated.update(data)
+
+
+def no_validate_item_content_put(context, request):
+    data = request.json
+    if 'uuid' in data:
+        if UUID(data['uuid']) != context.uuid:
+            msg = 'uuid may not be changed'
+            raise ValidationFailure('body', ['uuid'], msg)
+    request.validated.update(data)
+
+
+def no_validate_item_content_patch(context, request):
+    data = context.properties.copy()
+    data.update(request.json)
+    if 'uuid' in data:
+        if UUID(data['uuid']) != context.uuid:
+            msg = 'uuid may not be changed'
+            raise ValidationFailure('body', ['uuid'], msg)
+    request.validated.update(data)
+
+
+# Schema checking validators
 
 def validate_item_content_post(context, request):
     data = request.json
@@ -164,7 +191,7 @@ def validate_item_content_put(context, request):
 
 
 def validate_item_content_patch(context, request):
-    data = context.properties.copy()
+    data = context.upgrade_properties(request)
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
@@ -236,7 +263,7 @@ def location_root(factory):
     def callback(scanner, factory_name, factory):
         scanner.config.action(('location_root',), set_root,
                               args=(scanner.config, factory),
-                              order=PHASE1_CONFIG)
+                              order=PHASE1_5_CONFIG)
     venusian.attach(factory, callback, category='pyramid')
 
     return factory
@@ -304,7 +331,7 @@ class Root(object):
         if ':' in name:
             resource = self.get_by_unique_key('alias', name)
             if resource is not None:
-                return resource            
+                return resource
         return default
 
     def __setitem__(self, name, value):
@@ -357,20 +384,22 @@ class Root(object):
         return self.properties.copy()
 
 
-class MergedTemplateMeta(type):
-    """ Merge the template from the subclass with its bases
+class MergedDictsMeta(type):
+    """ Merge dicts on the subclass with its bases
     """
     def __init__(self, name, bases, attrs):
-        super(MergedTemplateMeta, self).__init__(name, bases, attrs)
+        super(MergedDictsMeta, self).__init__(name, bases, attrs)
+        for attr in self.__merged_dicts__:
+            merged = {}
+            setattr(self, 'merged_%s' % attr, merged)
 
-        self.merged_template = {}
-        for cls in reversed(self.mro()):
-            template = vars(cls).get('template', None)
-            if template is not None:
-                self.merged_template.update(template)
+            for cls in reversed(self.mro()):
+                value = vars(cls).get(attr, None)
+                if value is not None:
+                    merged.update(value)
 
 
-class MergedKeysMeta(MergedTemplateMeta):
+class MergedKeysMeta(MergedDictsMeta):
     """ Merge the keys from the subclass with its bases
     """
     def __init__(self, name, bases, attrs):
@@ -387,11 +416,16 @@ class MergedKeysMeta(MergedTemplateMeta):
 
 class Item(object):
     __metaclass__ = MergedKeysMeta
+    __merged_dicts__ = [
+        'template',
+        'template_type',
+        'rev',
+    ]
     base_types = ['item']
     keys = []
     name_key = None
     rev = None
-    embedded = {}
+    embedded = ()
     template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
         # 'collection': '{collection_uri}',
@@ -401,6 +435,7 @@ class Item(object):
         ],
         'uuid': {'$value': '{uuid}', '$templated': True},
     }
+    template_type = None
 
     def __init__(self, collection, model):
         self.__parent__ = collection
@@ -421,6 +456,10 @@ class Item(object):
         return self.__parent__.schema
 
     @property
+    def schema_version(self):
+        return self.__parent__.schema_version
+
+    @property
     def properties(self):
         return self.model['']
 
@@ -432,13 +471,13 @@ class Item(object):
     def schema_links(self):
         return self.__parent__.schema_links
 
-    @property
-    def links(self):
+    def links(self, properties):
+        # This works from the schema rather than the links table
+        # so that upgrade on GET can work.
         if self.schema is None:
             return {}
         root = find_root(self)
         links = {}
-        properties = self.properties
         for name in self.schema_links:
             value = properties.get(name, None)
             if value is None:
@@ -449,71 +488,95 @@ class Item(object):
                 links[name] = root.get_by_uuid(value)
         return links
 
-    @property
     def rev_links(self):
-        if self.rev is None:
-            return {}
         root = find_root(self)
         links = {}
-        for name, spec in self.rev.iteritems():
-            item_types, rel = spec
-            if isinstance(item_types, basestring):
-                item_types = [item_types]
+        for name, spec in self.merged_rev.iteritems():
             links[name] = value = []
             for link in self.model.revs:
-                if rel == link.rel and link.source.item_type in item_types:
+                if (link.source.item_type, link.rel) == spec:
                     item = root.get_by_uuid(link.source_rid)
                     value.append(item)
         return links
 
-    def __json__(self, request):
+    def upgrade_properties(self, request):
         properties = self.properties.copy()
-        templated = self.expand_template(request)
-        properties.update(templated)
-        for name, value in self.links.iteritems():
+        current_version = properties.get('schema_version', '')
+        target_version = self.schema_version
+        if target_version is not None and current_version != target_version:
+            try:
+                properties = request.upgrade(
+                    self.item_type, properties, current_version, target_version,
+                    context=self)
+            except Exception:
+                logger.warning('Unable to upgrade %s%s from %r to %r',
+                    request.resource_path(self.__parent__), self.uuid,
+                    current_version, target_version, exc_info=True)
+        return properties
+
+    def __json__(self, request):
+        """ Render json structure
+
+        1. Fetch stored properties, possibly upgrading.
+        2. Link canonicalization (overwriting uuids).
+        3. Fill reverse links (Item.rev)
+        4. Templated properties
+
+        Embedding is the responsibility of the view.
+        """
+        properties = self.upgrade_properties(request)
+
+        for name, value in self.links(properties).iteritems():
             # XXXX Should this be {'@id': url, '@type': [...]} instead?
             if isinstance(value, list):
                 properties[name] = [request.resource_path(item) for item in value]
             else:
                 properties[name] = request.resource_path(value)
-        for name, value in self.rev_links.iteritems():
-            properties[name] = [request.resource_path(item) for item in value]
+
+        # XXX Should reverse links move to embedding?
+        # - would necessitate a second templating stage.
+        for name, value in self.rev_links().iteritems():
+            properties[name] = [
+                request.resource_path(item)
+                    for item in value
+                        if item.upgrade_properties(request).get('status')
+                            not in ('DELETED', 'OBSOLETE')
+            ]
+
+        templated = self.expand_template(properties, request)
+        properties.update(templated)
+
         return properties
 
-    def template_namespace(self, request=None):
-        ns = self.properties.copy()
+    def template_namespace(self, properties, request=None):
+        ns = properties.copy()
         ns['item_type'] = self.item_type
         ns['base_types'] = self.base_types
         ns['uuid'] = self.uuid
+        # When called by update_keys() there is no request.
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)
             ns['item_uri'] = request.resource_path(self)
             ns['permission'] = permission_checker(self, request)
         return ns
 
-    def expand_template(self, request):
-        ns = self.template_namespace(request)
+    def expand_template(self, properties, request):
+        ns = self.template_namespace(properties, request)
         compiled = ObjectTemplate(self.merged_template)
         return compiled(ns)
 
     def expand_embedded(self, request, properties):
-        embedded = self.embedded
         if self.schema is None:
             return
-        for name in embedded:
-            value = properties.get(name)
-            if value is None:
-                continue
-            if isinstance(value, list):
-                properties[name] = [embed(request, member) for member in value]
-            else:
-                properties[name] = embed(request, value)
+        paths = [p.split('.') for p in self.embedded]
+        for path in paths:
+            expand_path(request, properties, path)
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
         item_type = parent.item_type
         session = DBSession()
-        sp = transaction.savepoint()
+        sp = session.begin_nested()
         resource = Resource(item_type, rid=uuid)
         cls.update_properties(resource, properties, sheets)
         session.add(resource)
@@ -521,13 +584,13 @@ class Item(object):
         keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
-            session.flush()
+            sp.commit()
         except (IntegrityError, FlushError):
-            pass
+            sp.rollback()
         else:
             return self
+
         # Try again more carefully
-        sp.rollback()
         cls.update_properties(resource, properties, sheets)
         session.add(resource)
         self = cls(parent, resource)
@@ -542,7 +605,6 @@ class Item(object):
         msg = 'Keys conflict: %r' % conflicts
         raise HTTPConflict(msg)
 
-
     @classmethod
     def update_properties(cls, model, properties, sheets=None):
         if properties is not None:
@@ -556,18 +618,18 @@ class Item(object):
 
     def update(self, properties, sheets=None):
         session = DBSession()
-        sp = transaction.savepoint()
+        sp = session.begin_nested()
         self.update_properties(self.model, properties, sheets)
         keys_add, keys_remove = self.update_keys()
         self.update_rels()
         try:
-            session.flush()
+            sp.commit()
         except (IntegrityError, FlushError):
-            pass
+            sp.rollback()
         else:
             return
+
         # Try again more carefully
-        sp.rollback()
         self.update_properties(self.model, properties, sheets)
         try:
             session.flush()
@@ -582,7 +644,7 @@ class Item(object):
 
     def update_keys(self):
         session = DBSession()
-        ns = self.template_namespace()
+        ns = self.template_namespace(self.properties)
         compiled = ObjectTemplate(self.merged_keys)
         _keys = [(key['name'], key['value']) for key in compiled(ns)]
         keys = set(_keys)
@@ -652,7 +714,7 @@ class Item(object):
         return to_add, to_remove
 
 
-class CustomItemMeta(MergedTemplateMeta, ABCMeta):
+class CustomItemMeta(MergedDictsMeta, ABCMeta):
     """ Give each collection its own Item class to enable
         specific view registration.
     """
@@ -663,7 +725,14 @@ class CustomItemMeta(MergedTemplateMeta, ABCMeta):
         if self.item_type is None and 'item_type' not in attrs:
             self.item_type = uncamel(self.__name__)
 
-        NAMES_TO_TRANSFER = ['template', 'embedded', 'keys', 'rev', 'name_key']
+        NAMES_TO_TRANSFER = [
+            'template',
+            'template_type',
+            'embedded',
+            'keys',
+            'rev',
+            'name_key',
+        ]
 
         if 'Item' in attrs:
             for name in NAMES_TO_TRANSFER:
@@ -674,14 +743,18 @@ class CustomItemMeta(MergedTemplateMeta, ABCMeta):
         item_attrs = {'__module__': self.__module__}
         for name in NAMES_TO_TRANSFER:
             if 'item_' + name in attrs:
-                item_attrs[name] = attrs['item_' + name ]
+                item_attrs[name] = attrs['item_' + name]
         self.Item = type('Item', item_bases, item_attrs)
 
 
 class Collection(Mapping):
     __metaclass__ = CustomItemMeta
+    __merged_dicts__ = [
+        'template',
+    ]
     Item = Item
     schema = None
+    schema_version = None
     properties = OrderedDict()
     item_type = None
     unique_key = None
@@ -719,10 +792,12 @@ class Collection(Mapping):
                 self.embedded_paths.add(path)
 
         if self.schema is not None:
+            properties = self.schema['properties']
             self.schema_links = [
-                name for name, prop in self.schema['properties'].iteritems()
+                name for name, prop in properties.iteritems()
                 if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
             ]
+            self.schema_version = properties.get('schema_version', {}).get('default')
 
     def __getitem__(self, name):
         try:
@@ -869,7 +944,6 @@ class Collection(Mapping):
                 lengthColumns.append(column.split('.')[0])
             else:
                 columns.append(column)
-        
         # Hack to check if the views have columns for the collection.
         if len(columns) > 2:
             query = {'query': {'match_all': {}}, 'fields': columns}
@@ -877,8 +951,9 @@ class Collection(Mapping):
             query = {'query': {'match_all': {}}}
 
         items = []
+        from .indexing import ELASTIC_SEARCH
         es = request.registry[ELASTIC_SEARCH]
-        results = es.search(query, index=self.item_type, size=10000)
+        results = es.search(query, index=self.item_type, size=99999)
         for model in results['hits']['hits']:
             # Dealing with columns which have length attribute to the array
             for c in lengthColumns:
@@ -900,7 +975,6 @@ class Collection(Mapping):
         compiled = ObjectTemplate(self.merged_template)
         links = compiled(ns)
         properties.update(links)
-        
         properties['columns'] = self.columns
         collection_source = request.params.get('collection_source', None)
         if collection_source is None:
@@ -995,19 +1069,30 @@ def etag_conditional(view_callable):
     return wrapped
 
 
-@view_config(context=Collection, permission='list', request_method='GET',
-             decorator=etag_conditional)
+@view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
     return item_view(context, request)
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
              validators=[validate_item_content_post])
-def collection_add(context, request):
+@view_config(context=Collection, permission='add_unvalidated', request_method='POST',
+             validators=[no_validate_item_content_post],
+             request_param=['validate=false'])
+def collection_add(context, request, render=None):
+    if render is None:
+        render = request.params.get('render', True)
     properties = request.validated
     item = context.add(properties)
-    item_uri = request.resource_path(item)
-    rendered = embed(request, item_uri + '?embed=false')
+    request.registry.notify(Created(item, request))
+    if render == 'uuid':
+        item_uri = '/%s' % item.uuid
+    else:
+        item_uri = request.resource_path(item)
+    if asbool(render) is True:
+        rendered = embed(request, item_uri + '?embed=false')
+    else:
+        rendered = item_uri
     request.response.status = 201
     request.response.location = item_uri
     result = {
@@ -1043,21 +1128,42 @@ def item_view(context, request):
     return properties
 
 
+@view_config(context=Item, permission='view', request_method='GET',
+             request_param=['raw'], additional_permission='view_raw')
+def item_view_raw(context, request):
+    if asbool(request.params.get('upgrade', True)):
+        return context.upgrade_properties(request)
+    return context.properties
+
+
 @view_config(context=Item, permission='edit', request_method='PUT',
              validators=[validate_item_content_put])
 @view_config(context=Item, permission='edit', request_method='PATCH',
              validators=[validate_item_content_patch])
-def item_edit(context, request, render=True):
+@view_config(context=Item, permission='edit_unvalidated', request_method='PUT',
+             validators=[no_validate_item_content_put],
+             request_param=['validate=false'])
+@view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
+             validators=[no_validate_item_content_patch],
+             request_param=['validate=false'])
+def item_edit(context, request, render=None):
     """ This handles both PUT and PATCH, difference is the validator
 
     PUT - replaces the current properties with the new body
     PATCH - updates the current properties with those supplied.
     """
+    if render is None:
+        render = request.params.get('render', True)
     properties = request.validated
     # This *sets* the property sheet
+    request.registry.notify(BeforeModified(context, request))
     context.update(properties)
-    item_uri = request.resource_path(context)
-    if render:
+    request.registry.notify(AfterModified(context, request))
+    if render == 'uuid':
+        item_uri = '/%s' % context.uuid
+    else:
+        item_uri = request.resource_path(context)
+    if asbool(render) is True:
         rendered = embed(request, item_uri + '?embed=false')
     else:
         rendered = item_uri
@@ -1068,3 +1174,21 @@ def item_edit(context, request, render=True):
         '@graph': [rendered],
     }
     return result
+
+
+class Created(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
+
+
+class BeforeModified(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request
+
+
+class AfterModified(object):
+    def __init__(self, object, request):
+        self.object = object
+        self.request = request

@@ -1,2 +1,2 @@
-test	uuid	source	product_id	url	rnai_type	vector_backbone_name	rnai_sequence	rnai_target_sequence	target	documents:array	submitted_by	lab	award
-test	d2dc22ba-5e7c-4626-87ac-257c6fff090c	gregory-crawford			shRNA				CTCF-human		metus.donec@nisl.montes	gregory-crawford	U54HG004563
+test	uuid	source	product_id	url	rnai_type	vector_backbone_name	rnai_sequence	rnai_target_sequence	target	documents:array	submitted_by	lab	award	aliases:array	notes
+test	d2dc22ba-5e7c-4626-87ac-257c6fff090c	gregory-crawford	TRCN0000001062	http://www.broadinstitute.org/rnai/public/clone/details?cloneId=TRCN0000001062 	shRNA	pLKO.1	CCGG-CTCAACGTCAAGTACAACAAT-CTCGAG-ATTGTTGTACTTGACGTT	CTCAACGTCAAGTACAACAATAAA	CTCF-human	gregory-crawford:pLKO1	metus.donec@nisl.montes	gregory-crawford	U54HG004563	gregory-crawford:rnai-test	This is an shRNA

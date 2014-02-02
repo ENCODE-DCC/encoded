@@ -67,11 +67,15 @@ class TestingKey(Collection):
 class TestingLinkSource(Collection):
     item_type = 'testing_link_source'
     schema = {
+        'type': 'object',
         'properties': {
             'target': {
                 'type': 'string',
                 'linkTo': 'testing_link_target',
-            }
+            },
+            'status': {
+                'type': 'string',
+            },
         }
     }
     properties = {
@@ -86,6 +90,9 @@ class TestingLinkTarget(Collection):
     properties = {
         'title': 'Test link targets',
         'description': 'Testing. Testing. 1, 2, 3.',
+    }
+    item_rev = {
+        'reverse': ('testing_link_source', 'target'),
     }
 
 
@@ -153,19 +160,23 @@ class TestingServerDefault(Collection):
         'properties': {
             'uuid': {
                 'serverDefault': 'uuid4',
+                'type': 'string',
             },
             'user': {
                 'serverDefault': 'userid',
                 'linkTo': 'user',
+                'type': 'string',
             },
             'now': {
                 'serverDefault': 'now',
                 'format': 'date-time',
+                'type': 'string',
             },
             'accession': {
                 'serverDefault': 'accession',
                 'accessionType': 'AB',
                 'format': 'accession',
+                'type': 'string',
             },
         }
     }
@@ -196,4 +207,13 @@ class TestingDependencies(Collection):
     properties = {
         'title': 'Test dependencies',
         'description': 'Testing. Testing. 1, 2, 3.',
+    }
+
+
+@view_config(name='testing-render-error', request_method='GET')
+def testing_render_error(request):
+    return {
+        '@type': ['testing_render_error', 'item'],
+        '@id': request.path,
+        'title': 'Item triggering a render error',
     }
