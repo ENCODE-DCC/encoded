@@ -68,6 +68,9 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                         <dt hidden={!context.description}>Description</dt>
                         <dd hidden={!context.description}>{context.description}</dd>
+                        
+                        <dt hidden={!context.subcellular_fraction}>Subcellular fraction</dt>
+                        <dd hidden={!context.subcellular_fraction}>{context.subcellular_fraction}</dd>
 
                         <dt>Source</dt>
                         <dd><a href={context.source.url}>{context.source.title}</a></dd>
@@ -79,7 +82,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dd hidden={!context.lot_id}>{context.lot_id}</dd>
 
                         <dt>Project</dt>
-                        <dd>{context.award.rfa}</dd>
+                        <dd>{context.award.project}</dd>
 
                         <dt>Submitted by</dt>
                         <dd>{context.submitted_by.title}</dd>
@@ -95,10 +98,24 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                         <dt hidden={!context.note}>Note</dt>
                         <dd hidden={!context.note}>{context.note}</dd>
-
+                        
+                        <dt hidden={!context.date_obtained}>Date obtained</dt>
+						<dd hidden={!context.date_obtained}>{context.date_obtained}</dd>
+						
+						<dt hidden={!context.starting_amount}>Starting amount</dt>
+						<dd hidden={!context.starting_amount}>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd>
+                        
+                        <dt hidden={!context.culture_start_date}>Culture start date</dt>
+						<dd hidden={!context.culture_start_date}>{context.culture_start_date}</dd>
+				
+						<dt hidden={!context.culture_harvest_date}>Culture harvest date</dt>
+						<dd hidden={!context.culture_harvest_date}>{context.culture_harvest_date}</dd>
+				
+						<dt hidden={!context.passage_number}>Passage number</dt>
+						<dd hidden={!context.passage_number}>{context.passage_number}</dd>
                     </dl>
 
-                    {(context.donor && (context.biosample_type != "immortalized cell line")) ?
+                    {(context.donor) ?
                         <section>
                             <hr />
                             <h4>Donor information</h4>
@@ -229,14 +246,14 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {biosample && biosample.age ? <dt>Age</dt> : null}
                 {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
-                <dt>Sex</dt>
-                <dd>{context.sex}</dd>
+                {context.sex ? <dt>Sex</dt> : null}
+                {context.sex ? <dd>{context.sex}</dd> : null}
 
                 {biosample && biosample.health_status ? <dt>Health status</dt> : null}
                 {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
 
-                <dt>Ethnicity</dt>
-                <dd>{context.ethnicity}</dd>
+                {context.ethnicity ? <dt>Ethnicity</dt> : null}
+                {context.ethnicity ? <dd>{context.ethnicity}</dd> : null}
             </dl>
         );
     }
@@ -360,24 +377,24 @@ var RNAi = module.exports.RNAi = React.createClass({
     render: function() {
         var context = this.props.context;
         return (
-            <dl className="key-value">
+             <dl className="key-value">
+            	{context.target ? <dt>Target</dt> : null}
+                {context.target ? <dd className="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+                
                 {context.rnai_type ? <dt>RNAi type</dt> : null}
                 {context.rnai_type ? <dd className="no-cap">{context.rnai_type}</dd> : null}
+                
+                {context.source.title ? <dt>Source</dt> : null}
+                {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
 
                 {context.product_id ? <dt>Product ID</dt> : null}
-                {context.product_id ? <dd className="no-cap">{context.product_id}</dd> : null}
-
-                {context.target ? <dt>Target</dt> : null}
-                {context.target ? <dd className="no-cap"><a href={context.target}>{context.target}</a></dd> : null}
+                {context.product_id ? <dd className="no-cap"><a href={context.url}>{context.product_id}</a></dd> : null}
 
                 {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
                 {context.rnai_target_sequence ? <dd className="no-cap">{context.rnai_target_sequence}</dd> : null}
 
                 {context.vector_backbone_name ? <dt>Vector backbone</dt> : null}
-                {context.vector_backbone_name ? <dd className="no-cap">{context.vector_backbone_name}</dd> : null}
-
-                {context.source.title ? <dt>Source</dt> : null}
-                {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
+                {context.vector_backbone_name ? <dd className="no-cap">{context.vector_backbone_name}</dd> : null}                
             </dl>
         );
     }
@@ -403,10 +420,10 @@ var Document = module.exports.Document = React.createClass({
                 width = context.attachment.width;
                 alt = "Characterization Image"
             } else if (context.attachment.type == "application/pdf"){
-                src = "/static/img/file-pdf.svg";
+                src = "/static/img/file-pdf.png";
                 alt = "Characterization PDF Icon";
             } else {
-                src = "/static/img/file.svg";
+                src = "/static/img/file.png";
                 alt = "Characterization Icon";
             }
             figure = (

@@ -1,1 +1,2 @@
-test	uuid	characterizes	characterization_method	attachment	caption	date	references:array	submitted_by	lab	award
+test	uuid	characterizes	characterization_method	attachment	caption	date	references:array	lab	award	notes	aliases:array
+test	8a45e320-62b7-11e3-949a-0800200c9a66	d2dc22ba-5e7c-4626-87ac-257c6fff090c	western blot	frowny_gel.png 	This is an example rnai characterizations	2013-11-13	NULL	gregory-crawford	U54HG004563	This is just an example.	gregory-crawford:rnai_characterizations

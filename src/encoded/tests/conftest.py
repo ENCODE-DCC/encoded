@@ -33,6 +33,28 @@ _app_settings = {
 }
 
 
+@pytest.mark.fixture_cost(10)
+@pytest.yield_fixture(scope='session')
+def engine_url(request):
+    engine_url = request.session.config.option.engine_url
+    if engine_url is not None:
+        yield engine_url
+        return
+
+    # Ideally this would use a different database on the same postgres server
+    from urllib import quote
+    from .postgresql_fixture import server_process
+    tmpdir = request.config._tmpdirhandler.mktemp('postgresql-engine', numbered=True)
+    tmpdir = str(tmpdir)
+    process = server_process(tmpdir)
+
+    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
+
+    if process.poll() is None:
+        process.terminate()
+        process.wait()
+
+
 @fixture(scope='session')
 def app_settings(request, server_host_port, connection):
     settings = _app_settings.copy()
@@ -43,7 +65,7 @@ def app_settings(request, server_host_port, connection):
 def pytest_configure():
     import logging
     logging.basicConfig()
-    logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+    logging.getLogger('sqlalchemy.engine').setLevel(logging.WARNING)
     logging.getLogger('selenium').setLevel(logging.DEBUG)
 
     class Shorten(logging.Filter):
@@ -67,10 +89,18 @@ def config(request):
     return setUp()
 
 
+@pytest.yield_fixture
+def threadlocals(request, dummy_request, registry):
+    from pyramid.threadlocal import manager
+    manager.push({'request': dummy_request, 'registry': registry})
+    yield dummy_request
+    manager.pop()
+
+
 @fixture
-def dummy_request():
+def dummy_request(root, registry):
     from pyramid.testing import DummyRequest
-    return DummyRequest()
+    return DummyRequest(root=root, registry=registry, _stats={})
 
 
 @fixture(scope='session')
@@ -79,6 +109,16 @@ def app(zsa_savepoints, check_constraints, app_settings):
     '''
     from encoded import main
     return main({}, **app_settings)
+
+
+@fixture
+def registry(app):
+    return app.registry
+
+
+@fixture
+def root(app):
+    return app.root_factory(app)
 
 
 @pytest.mark.fixture_cost(500)
@@ -204,8 +244,9 @@ def server(_server, external_tx):
 # By binding the SQLAlchemy Session to an external transaction multiple testapp
 # requests can be rolled back at the end of the test.
 
+@pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.yield_fixture(scope='session')
-def connection(request):
+def connection(request, engine_url):
     from encoded import configure_engine
     from encoded.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
@@ -215,7 +256,7 @@ def connection(request):
         DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
 
     engine_settings = {
-        'sqlalchemy.url': request.session.config.option.engine_url,
+        'sqlalchemy.url': engine_url,
     }
 
     engine = configure_engine(engine_settings, test_setup=True)
@@ -401,11 +442,7 @@ def execute_counter(request, connection, zsa_savepoints, check_constraints):
 
     @request.addfinalizer
     def remove():
-        # http://www.sqlalchemy.org/trac/ticket/2686
-        # event.remove(connection, 'after_cursor_execute', after_cursor_execute)
-        connection.dispatch.after_cursor_execute.remove(after_cursor_execute, connection)
-
-    connection._has_events = True
+        event.remove(connection, 'after_cursor_execute', after_cursor_execute)
 
     return counter
 
@@ -433,15 +470,153 @@ def no_deps(request, connection):
 
 
 @pytest.fixture
-def users(testapp):
-    from .sample_data import URL_COLLECTION
-    url = '/labs/'
-    for item in URL_COLLECTION[url]:
-        testapp.post_json(url, item, status=201)
-    users = []
-    url = '/users/'
-    for item in URL_COLLECTION[url]:
-        res = testapp.post_json(url, item, status=201)
-        res = testapp.get(res.location)
-        users.append(res.json)
-    return users
+def labs(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'lab')
+
+
+@pytest.fixture
+def lab(labs):
+    return [l for l in labs if l['name'] == 'myers'][0]
+
+
+@pytest.fixture
+def users(testapp, labs):
+    from . import sample_data
+    return sample_data.load(testapp, 'user')
+
+
+@pytest.fixture
+def wrangler(users):
+    return [u for u in users if 'wrangler' in u.get('groups', ())][0]
+
+
+@pytest.fixture
+def submitter(users, lab):
+    return [u for u in users if lab['@id'] in u['submits_for']][0]
+
+
+@pytest.fixture
+def awards(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'award')
+
+
+@pytest.fixture
+def award(awards):
+    return [a for a in awards if a['name'] == 'Myers'][0]
+
+
+@pytest.fixture
+def sources(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'source')
+
+
+@pytest.fixture
+def source(sources):
+    return [s for s in sources if s['name'] == 'sigma'][0]
+
+
+@pytest.fixture
+def organisms(testapp):
+    from . import sample_data
+    return sample_data.load(testapp, 'organism')
+
+
+@pytest.fixture
+def organism(organisms):
+    return [o for o in organisms if o['name'] == 'human'][0]
+
+
+@pytest.fixture
+def biosamples(testapp, labs, awards, sources, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'biosample')
+
+
+@pytest.fixture
+def biosample(biosamples):
+    return [b for b in biosamples if b['accession'] == 'ENCBS000TST'][0]
+
+
+@pytest.fixture
+def libraries(testapp, labs, awards, biosamples):
+    from . import sample_data
+    return sample_data.load(testapp, 'library')
+
+
+@pytest.fixture
+def library(libraries):
+    return [l for l in libraries if l['accession'] == 'ENCLB000TST'][0]
+
+
+@pytest.fixture
+def experiments(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'experiment')
+
+
+@pytest.fixture
+def experiment(experiments):
+    return [e for e in experiments if e['accession'] == 'ENCSR000TST'][0]
+
+
+@pytest.fixture
+def replicates(testapp, experiments, libraries):
+    from . import sample_data
+    return sample_data.load(testapp, 'replicate')
+
+
+@pytest.fixture
+def replicate(replicates):
+    return replicates[0]
+
+
+@pytest.fixture
+def files(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'file')
+
+
+@pytest.fixture
+def file(file):
+    return [f for f in files if ['accession'] == 'ENCFF000TST'][0]
+
+
+@pytest.mark.fixture_cost(10)
+@pytest.yield_fixture(scope='session')
+def postgresql_server(request):
+    from urllib import quote
+    from .postgresql_fixture import server_process
+    tmpdir = request.config._tmpdirhandler.mktemp('postgresql', numbered=True)
+    tmpdir = str(tmpdir)
+    process = server_process(tmpdir)
+
+    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
+
+    if process.poll() is None:
+        process.terminate()
+        process.wait()
+
+
+@pytest.fixture(scope='session')
+def elasticsearch_host_port():
+    from webtest.http import get_free_port
+    return get_free_port()
+
+
+@pytest.mark.fixture_cost(10)
+@pytest.yield_fixture(scope='session')
+def elasticsearch_server(request, elasticsearch_host_port):
+    from .elasticsearch_fixture import server_process
+    host, port = elasticsearch_host_port
+    tmpdir = request.config._tmpdirhandler.mktemp('elasticsearch', numbered=True)
+    tmpdir = str(tmpdir)
+    process = server_process(str(tmpdir), host=host, port=port)
+
+    yield 'http://%s:%d' % (host, port)
+
+    if process.poll() is None:
+        process.terminate()
+        process.wait()

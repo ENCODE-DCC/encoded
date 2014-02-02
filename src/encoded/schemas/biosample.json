@@ -6,7 +6,7 @@
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
     "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
-    "facets": {"Biosample Type": "biosample_type", "System": "system_slims", "Organism": "organism.name", "Developmental Slim": "developmental_slims", "Organ": "organ_slims", "Lab": "lab.title", "Source": "source.title", "Gender": "donor.sex", "Life Stage": "life_stage", "Phase": "phase", "Subcellular Fraction": "subcellular_fraction"},
+    "facets": [{"Biosample Type": "biosample_type"},  {"Organ": "organ_slims"}, {"Organism": "organism.name"}, {"Gender": "donor.sex"}, {"Life Stage": "life_stage"}, {"Subcellular Fraction": "subcellular_fraction"}, {"Phase": "phase"}, {"Treatment": "treatments.treatment_term_name"}, {"Source": "source.title"}, {"Lab": "lab.title"}, {"Developmental Slim": "developmental_slims"}],
     "identifyingProperties": ["uuid","accesion","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "accession": {
             "accessionType": "BS"
@@ -157,7 +157,17 @@
             "title": "Subcellular fraction",
             "description": "The cellular component that constitutes the biosample.",
             "type": "string",
-            "enum": ["nucleus", "cytosol"]
+            "enum": [
+                "nucleus", 
+                "cytosol", 
+                "chromatin",
+                "membrane",
+                "mitochondria",
+                "nuclear matrix",
+                "nucleolus",
+                "nucleoplasm",
+                "polysome"
+            ]
         },
         "phase": {
             "title": "Cell-cycle phase",
@@ -183,28 +193,37 @@
         "culture_harvest_date": {
             "title": "Culture harvest date",
             "description": "For cultured samples, the date the biosample was taken.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM.",
             "type": "string",
-            "format": "date"
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ]
         },
         "culture_start_date": {
             "title": "Culture start date",
             "description": "For cultured samples, the date the culture was started. For cell lines, the date this particular growth was started, not the date the line was established.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
-            "type": "string",
-            "format": "date"
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD ((TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
+            "type": "string",            
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ]
         },
         "date_obtained": {
             "title": "Date obtained",
             "description": "For tissue samples, the date the biosample was taken.",
-            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS.",
+            "comment": "Date can be submitted in as YYYY-MM-DD or YYYY-MM-DDTHH:MM:SSTZD (TZD is the time zone designator; use Z to express time in UTC or for time expressed in local time add a time zone offset from UTC +HH:MM or -HH:MM).",
             "type": "string",
-            "format": "date"
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ]
         },
         "starting_amount": {
             "title": "Starting amount",
             "description": "The initial quantity of cells or tissue obtained.",
-            "type": "string"
+            "type": "number"
         },
         "starting_amount_units": {
             "title": "Starting amount units",
@@ -236,7 +255,7 @@
             "title": "Donor age",
             "description": " The age or age range of the donor organism when biological material was sampled.",
             "type": "string",
-            "pattern": "^\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?$"
+            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
         },
         "age_units": {
             "title": "Donor age units",
@@ -252,5 +271,58 @@
             "title": "Donor health status",
             "type": "string"
         }
+    },
+    "boost_values": {
+        "accession": 1.0,
+        "alternate_accessions": 1.0,
+        "biosample_term_id": 1.0,
+        "biosample_term_name": 1.5,
+        "organ_slims": 1.2,
+        "developmental_slims": 1.2,
+        "encode2_dbxrefs": 1.0,
+        "subcellular_fraction": 1.0,
+        "phase": 1.0,
+        "life_stage": 1.0,
+        "health_status": 1.0,
+        "donor.accession": 1.0,
+        "donor.organism.name": 1.2,
+        "donor.organism.scientific_name": 1.2,
+        "donor.organism.taxon_id": 1.2,
+        "award.title": 1.0,
+        "award.project": 1.0,
+        "submitted_by.email": 1.1,
+        "submitted_by.first_name": 1.1,
+        "submitted_by.last_name": 1.1,
+        "lab.institute_name": 1.1,
+        "lab.institute_label": 1.0,
+        "lab.title": 1.0,
+        "source.title": 1.0,
+        "treatments.treatment_type": 1.0,
+        "treatments.treatment_term_id": 1.0,
+        "treatments.treatment_term_name": 1.0,
+        "treatments.encode2_dbxrefs": 1.0,
+        "treatments.aliases": 1.0,
+        "constructs.construct_type": 1.0,
+        "constructs.vector_backbone_name": 1.0,
+        "constructs.target.gene_name": 1.2,
+        "constructs.target.label": 1.2,
+        "constructs.target.dbxref": 1.1,
+        "constructs.target.aliases": 1.0,
+        "derived_from.accession": 1.0,
+        "derived_from.biosample_term_id": 1.0,
+        "derived_from.biosample_term_name": 1.0,
+        "pooled_from.accession": 1.0,
+        "pooled_from.biosample_term_id": 1.0,
+        "pooled_from.biosample_term_name": 1.0,
+        "characterizations.characterization_method": 1.0,
+        "rnais.rnai_type": 1.0,
+        "rnais.vector_backbone_name": 1.0,
+        "rnais.target.organism.name": 1.0,
+        "rnais.target.organism.scientific_name": 1.0,
+        "rnais.target.organism.taxon_id": 1.0,
+        "rnais.source.title": 1.0,
+        "organism.name": 1.0,
+        "organism.scientific_name": 1.0,
+        "organism.taxon_id": 1.0 
     }
 }

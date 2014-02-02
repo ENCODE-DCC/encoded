@@ -27,6 +27,7 @@ ACCESSION_KEYS = [
         'value': '{accession}',
         '$repeat': 'accession alternate_accessions',
         '$templated': True,
+        '$condition': 'alternate_accessions',
     },
 ]
 
@@ -55,6 +56,7 @@ class Collection(BaseCollection):
         STATUS_ACL = {
             'CURRENT': [
                 (Allow, 'role.lab_submitter', 'edit'),
+                (Allow, 'role.lab_submitter', 'view_raw'),
             ],
             'DELETED': [],
         }
@@ -219,6 +221,7 @@ class Construct(Collection):
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
+    item_embedded = set(['target'])
 
 
 class Characterization(Collection):
@@ -250,7 +253,7 @@ class Document(Collection):
     class Item(ItemWithAttachment, Collection.Item):
         embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
-        
+
 
 @location('biosamples')
 class Biosample(Collection):
@@ -267,7 +270,8 @@ class Biosample(Collection):
         ('organism.name', 'Species'),
         ('source.title', 'Source'),
         ('lab.title', 'Submitter'),
-        ('treatments.length', 'Treatments'),
+        ('life_stage', 'Life stage'),
+        ('treatments.length', 'Treatments length'),
         ('constructs.length', 'Constructs')
     ])
 
@@ -283,7 +287,34 @@ class Biosample(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set(['donor.organism', 'submitted_by', 'lab', 'award', 'source', 'treatments.protocols.submitted_by', 'treatments.protocols.lab', 'treatments.protocols.award', 'constructs.documents.submitted_by', 'constructs.documents.award', 'constructs.documents.lab', 'constructs.target', 'protocol_documents.lab', 'protocol_documents.award', 'protocol_documents.submitted_by', 'derived_from', 'pooled_from', 'characterizations', 'rnais.target.organism', 'rnais.source', 'organism'])
+        embedded = set([
+            'donor.organism',
+            'submitted_by',
+            'lab',
+            'award',
+            'source',
+            'treatments.protocols.submitted_by',
+            'treatments.protocols.lab',
+            'treatments.protocols.award',
+            'constructs.documents.submitted_by',
+            'constructs.documents.award',
+            'constructs.documents.lab',
+            'constructs.target',
+            'protocol_documents.lab',
+            'protocol_documents.award',
+            'protocol_documents.submitted_by',
+            'derived_from',
+            'pooled_from',
+            'characterizations.submitted_by',
+            'characterizations.award',
+            'characterizations.lab',
+            'rnais.target.organism',
+            'rnais.source',
+            'rnais.documents.submitted_by',
+            'rnais.documents.award',
+            'rnais.documents.lab',
+            'organism',
+        ])
         name_key = 'accession'
 
         keys = ACCESSION_KEYS + ALIAS_KEYS
@@ -291,8 +322,8 @@ class Biosample(Collection):
             'characterizations': ('biosample_characterization', 'characterizes'),
         }
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']
@@ -343,8 +374,8 @@ class Target(Collection):
             {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
         ]
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
             root = find_root(self)
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
@@ -352,7 +383,7 @@ class Target(Collection):
 
         @property
         def __name__(self):
-            ns = self.template_namespace()
+            ns = self.template_namespace(self.properties.copy())
             return u'{label}-{organism_name}'.format(**ns)
 
 
@@ -367,7 +398,7 @@ class AntibodyCharacterization(Characterization):
     }
 
     class Item(Characterization.Item):
-        embedded = ['submitted_by', 'lab', 'award', 'target']
+        embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
 
 
 @location('antibodies')
@@ -378,7 +409,7 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    item_embedded = set(['antibody.source', 'antibody.host_organism', 'target.organism', 'characterizations.target.organism', 'characterizations.award', 'characterizations.submitted_by', 'characterizations.lab', 'lab'])
+    item_embedded = set(['antibody.source', 'antibody.host_organism', 'target.organism', 'characterizations.target.organism', 'characterizations.award', 'characterizations.submitted_by', 'characterizations.lab'])
     item_keys = [
         {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
     ]
@@ -499,8 +530,44 @@ class Files(Collection):
     ])
 
 
+@location('datasets')
+class Dataset(Collection):
+    item_type = 'dataset'
+    schema = load_schema('dataset.json')
+    properties = {
+        'title': 'Datasets',
+        'description': 'Listing of datasets',
+    }
+    class Item(Collection.Item):
+        template = {
+            'files': [
+                {'$value': '{file}', '$repeat': 'file home_files', '$templated': True},
+                {'$value': '{file}', '$repeat': 'file additional_files', '$templated': True},
+            ],
+        }
+        template_type = {
+            'files': 'file',
+        }
+        embedded = [
+            'files',
+            'files.replicate',
+            'files.submitted_by',
+            'submitted_by',
+            'lab',
+            'award',
+            'documents.lab',
+            'documents.award',
+            'documents.submitted_by'
+        ]
+        name_key = 'accession'
+        keys = ACCESSION_KEYS + ALIAS_KEYS
+        rev = {
+            'home_files': ('file', 'dataset'),
+        }
+
+
 @location('experiments')
-class Experiments(Collection):
+class Experiment(Dataset):
     item_type = 'experiment'
     schema = load_schema('experiment.json')
     properties = {
@@ -515,10 +582,12 @@ class Experiments(Collection):
         ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
         ('lab.title', 'Lab'),
-        ('award.rfa', 'Project'),
+        ('encode2_dbxrefs', 'Dbxrefs'),
+        ('award.project', 'Project'),
     ])
-    
-    class Item(Collection.Item):
+
+    class Item(Dataset.Item):
+        base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {
             'organ_slims': [
                 {'$value': '{slim}', '$repeat': 'slim organ_slims', '$templated': True}
@@ -530,15 +599,26 @@ class Experiments(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set(['files', 'replicates.antibody', 'replicates.library.documents.lab', 'replicates.library.documents.submitted_by', 'replicates.library.documents.award', 'replicates.library.biosample.submitted_by', 'replicates.library.biosample.donor.organism', 'submitted_by', 'lab', 'award', 'possible_controls', 'target.organism', 'documents.lab', 'documents.award', 'documents.submitted_by'])
+        embedded = Dataset.Item.embedded + [
+            'replicates.antibody',
+            'replicates.library.documents.lab',
+            'replicates.library.documents.submitted_by',
+            'replicates.library.documents.award',
+            'replicates.library.biosample.submitted_by',
+            'replicates.library.biosample.source',
+            'replicates.library.biosample.organism',
+            'replicates.library.biosample.donor.organism',
+            'replicates.library.treatments',
+            'replicates.platform',
+            'possible_controls',
+            'target.organism',
+        ]
         rev = {
             'replicates': ('replicate', 'experiment'),
         }
-        name_key = 'accession'
-        keys = ACCESSION_KEYS + ALIAS_KEYS
 
-        def template_namespace(self, request=None):
-            ns = Collection.Item.template_namespace(self, request)
+        def template_namespace(self, properties, request=None):
+            ns = super(Experiment.Item, self).template_namespace(properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']
@@ -576,14 +656,3 @@ class RNAiCharacterization(Characterization):
         'title': 'RNAi characterizations',
         'description': 'Listing of biosample RNAi characterizations',
     }
-
-
-@location('datasets')
-class Dataset(Collection):
-    item_type = 'dataset'
-    schema = load_schema('dataset.json')
-    properties = {
-        'title': 'Datasets',
-        'description': 'Listing of datasets',
-    }
-    item_keys = ACCESSION_KEYS + ALIAS_KEYS

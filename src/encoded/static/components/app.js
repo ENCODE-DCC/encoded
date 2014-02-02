@@ -10,10 +10,10 @@ var Footer = require('./footer');
 var portal = {
     portal_title: 'ENCODE',
     global_sections: [
-        {id: 'antibodies', title: 'Antibodies', url: '/antibodies/'},
-        {id: 'biosamples', title: 'Biosamples', url: '/biosamples/'},
-        {id: 'experiments', title: 'Experiments', url: '/experiments/'},
-        {id: 'targets', title: 'Targets', url: '/targets/'}
+        {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
+        {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
+        {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
+        {id: 'targets', title: 'Targets', url: '/search/?type=target'}
     ]
 };
 
@@ -22,6 +22,19 @@ var user_actions = [
     {id: 'signout', title: 'Sign out', trigger: 'logout'}
 ];
 
+var ie8compat = [
+    "article",
+    "aside",
+    "footer",
+    "header",
+    "hgroup",
+    "nav",
+    "section",
+    "figure",
+    "figcaption",
+].map(function (tag) {
+    return 'document.createElement("' + tag + '");';
+}).join('\n');
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -84,6 +97,7 @@ var App = React.createClass({
                     <link rel="stylesheet" href="/static/css/style.css" />
                     <link rel="stylesheet" href="/static/css/responsive.css" />
                     <script src="/static/build/bundle.js" async={true} defer={true}></script>
+                    <script dangerouslySetInnerHTML={{__html: ie8compat}}></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{

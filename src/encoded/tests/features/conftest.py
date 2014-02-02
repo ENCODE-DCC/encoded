@@ -3,9 +3,43 @@ import pytest
 pytest_plugins = 'encoded.tests.bdd'
 
 
-@pytest.fixture(autouse=True)
-def scenario_tx(external_tx):
-    pass
+@pytest.mark.fixture_lock('encoded.storage.DBSession')
+@pytest.fixture(scope='session')
+def app_settings(server_host_port, elasticsearch_server, postgresql_server):
+    from .. import test_indexing
+    return test_indexing.app_settings(server_host_port, elasticsearch_server, postgresql_server)
+
+
+@pytest.fixture(scope='session')
+def app(request, app_settings):
+    from .. import test_indexing
+    return test_indexing.app(request, app_settings)
+
+
+# Though this is expensive, set up first within browser tests to avoid remote
+# browser timeout
+# XXX Ideally this wouldn't be autouse...
+@pytest.mark.fixture_cost(-1)
+@pytest.yield_fixture(scope='session', autouse=True)
+def workbook(app):
+    from encoded.commands import es_index_data
+
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    testapp = TestApp(app, environ)
+
+    from ...loadxl import load_all
+    from pkg_resources import resource_filename
+    inserts = resource_filename('encoded', 'tests/data/inserts/')
+    docsdir = [resource_filename('encoded', 'tests/data/documents/')]
+    load_all(testapp, inserts, docsdir)
+
+    es_index_data.run(app)
+    yield
+    # XXX cleanup
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -15,6 +49,7 @@ def set_webdriver(request, context):
     context.browser_args = dict(request.config.option.browser_args or ())
 
 
+@pytest.mark.fixture_cost(1000)
 @pytest.fixture(scope='session', autouse=True)
 def browser(context, before_all, set_webdriver):
     from behaving.web.steps.browser import given_a_browser
@@ -24,7 +59,6 @@ def browser(context, before_all, set_webdriver):
 
 
 # These are equivalent to the environment.py hooks
-@pytest.mark.fixture_cost(1000)
 @pytest.fixture(scope='session', autouse=True)
 def before_all(request, _server, context):
     import behaving.web

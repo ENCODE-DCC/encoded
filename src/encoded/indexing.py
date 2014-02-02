@@ -17,6 +17,7 @@ from .storage import (
     DBSession,
     TransactionRecord,
 )
+import functools
 import transaction
 
 ELASTIC_SEARCH = __name__ + ':elasticsearch'
@@ -85,7 +86,7 @@ def index(context, request):
 
     if txn_count:
         new_referencing = set()
-        add_dependent_objects(request, updated, new_referencing)
+        add_dependent_objects(request.root, updated, new_referencing)
         invalidated.update(new_referencing)
         result['invalidated'] = [str(uuid) for uuid in invalidated]
         if not dry_run and es is not None:
@@ -95,19 +96,23 @@ def index(context, request):
     return result
 
 
-def add_dependent_objects(request, new, existing):
+def add_dependent_objects(root, new, existing):
     # Getting the dependent objects for the indexed object
-    root = request.root
     objects = new.difference(existing)
     while objects:
         dependents = set()
         for uuid in objects:
             item = root.get_by_uuid(uuid)
 
-            # XXX needs to consult with item.embedded and item.revs
             dependents.update({
                 model.source_rid for model in item.model.revs
             })
+            
+            item_rels = item.model.rels
+            for rel in item_rels:
+                rev_item = root.get_by_uuid(rel.target_rid)
+                if (rel.source.item_type, rel.rel) in rev_item.merged_rev.values():
+                    dependents.add(rel.target_rid)
 
         existing.update(objects)
         objects = dependents.difference(existing)
@@ -126,6 +131,23 @@ def es_update_object(request, objects, dry_run=False):
         result = request.invoke_subrequest(subreq)
         if es is not None:
             es.index(result['@type'][0], 'basic', result, str(uuid))
+
+
+def run_in_doomed_transaction(fn, committed, *args, **kw):
+    if not committed:
+        return
+    txn = transaction.begin()
+    txn.doom()  # enables SET TRANSACTION READ ONLY;
+    try:
+        fn(*args, **kw)
+    finally:
+        txn.abort()
+
+
+# After commit hook needs own transaction
+es_update_object_in_txn = functools.partial(
+    run_in_doomed_transaction, es_update_object,
+)
 
 
 @subscriber(Created)
@@ -147,7 +169,8 @@ def record_created(event):
     updated.add(uuid)
 
     # Record dependencies here to catch any to be removed links
-    add_dependent_objects(request, {uuid}, referencing)
+    # XXX replace with uuid_closure in elasticsearch document
+    add_dependent_objects(request.root, {uuid}, referencing)
 
 
 @subscriber(BeforeRender)
@@ -164,5 +187,11 @@ def es_update_data(event):
     txn._extension['updated'] = [str(uuid) for uuid in updated]
     txn._extension['invalidated'] = [str(uuid) for uuid in invalidated]
 
-    # XXX Update directly updated objects now. Should move to after transaction commit.
-    es_update_object(request, updated)
+    # XXX How can we ensure consistency here but update written records
+    # immediately? The listener might already be indexing on another
+    # connection. SERIALIZABLE isolation insufficient because ES writes not
+    # serialized. Could either:
+    # - Queue up another reindex on the listener
+    # - Use conditional puts to ES based on serial before commit.
+    # txn = transaction.get()
+    # txn.addAfterCommitHook(es_update_object_in_txn, (request, updated))

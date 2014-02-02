@@ -14,16 +14,14 @@ from sqlalchemy.dialects import postgresql
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import collections
-from zope.sqlalchemy import ZopeTransactionExtension
 from .renderers import json_renderer
 import json
 import transaction
 import uuid
+import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker(
-    extension=ZopeTransactionExtension(),
-    weak_identity_map=False,
-))
+DBSession = orm.scoped_session(orm.sessionmaker(weak_identity_map=False))
+zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 
 
@@ -267,7 +265,11 @@ def add_transaction_record(session, flush_context, instances):
     txn = transaction.get()
     # Set data with txn.setExtendedInfo(name, value)
     data = txn._extension
-    if 'tid' in data:
+    record = data.get('_encoded_transaction_record')
+    if record is not None:
+        if orm.object_session(record) is None:
+            # Savepoint rolled back
+            session.add(record)
         # Transaction has already been recorded
         return
 
@@ -285,7 +287,6 @@ def record_transaction_data(session):
         return
 
     record = data['_encoded_transaction_record']
-    del data['_encoded_transaction_record']
 
     # txn.note(text)
     if txn.description:
@@ -297,5 +298,18 @@ def record_transaction_data(session):
         user_path, userid = txn.user.split(' ', 1)
         data['userid'] = userid
 
-    record.data = data.copy()
+    record.data = {k: v for k, v in data.iteritems() if not k.startswith('_')}
     session.add(record)
+
+
+@event.listens_for(DBSession, 'after_begin')
+def read_only_doomed_transaction(session, sqla_txn, connection):
+    ''' Doomed transactions can be read-only.
+
+    ``transaction.doom()`` must be called before the connection is used.
+    '''
+    if not transaction.isDoomed():
+        return
+    if connection.engine.url.drivername != 'postgresql':
+        return
+    connection.execute("SET TRANSACTION READ ONLY;")

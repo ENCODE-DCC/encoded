@@ -29,7 +29,8 @@
 
 #page-footer {
 	color: rgb(255, 255, 255);
-	background-color: $footerBackground;
+	background-color: #a4afb8; // for IE8
+	background-color: $footerBackground; // overwrite previous line for CSS3 browsers
 	height: $footerHeight;
 	@include text-shadow(0 1px rgba(0, 0, 0, 0.3));
 	line-height: 0;

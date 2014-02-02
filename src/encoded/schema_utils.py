@@ -37,7 +37,6 @@ def mixinProperties(schema, resolver):
             with resolver.resolving(ref) as resolved:
                 mixin = resolved
         bases.append(mixin)
-    bases.append(schema.get('properties', {}))
     for base in bases:
         for name, base_prop in base.iteritems():
             prop = properties.setdefault(name, {})
@@ -48,6 +47,12 @@ def mixinProperties(schema, resolver):
                 if prop[k] == v:
                     continue
                 raise ValueError('Schema mixin conflict for %s/%s' % (name, k))
+    # Allow schema properties to override
+    base = schema.get('properties', {})
+    for name, base_prop in base.iteritems():
+        prop = properties.setdefault(name, {})
+        for k, v in base_prop.iteritems():
+            prop[k] = v
     schema['properties'] = properties
     return schema
 
@@ -171,13 +176,12 @@ def load_schema(filename):
     return schema
 
 
-def validate_request(schema, request, data=None, current=None):
+def validate(schema, data, current=None):
     resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
     sv = SchemaValidator(schema, resolver=resolver, serialize=True, format_checker=format_checker)
-    if data is None:
-        data = request.json
     validated, errors = sv.serialize(data)
 
+    filtered_errors = []
     for error in errors:
         # Possibly ignore validation if it results in no change to data
         if current is not None and isinstance(error, IgnoreUnchanged):
@@ -193,8 +197,20 @@ def validate_request(schema, request, data=None, current=None):
                     validated_value = validated_value[key]
                 if validated_value == current_value:
                     continue
+        filtered_errors.append(error)
+
+    return validated, filtered_errors
+
+
+def validate_request(schema, request, data=None, current=None):
+    if data is None:
+        data = request.json
+
+    validated, errors = validate(schema, data, current)
+    for error in errors:
         request.errors.add('body', list(error.path), error.message)
-    if not request.errors:
+
+    if not errors:
         request.validated.update(validated)
 
 

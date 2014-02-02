@@ -53,17 +53,24 @@ setup(
     entry_points='''
         [console_scripts]
 
+        check-rendering = encoded.commands.check_rendering:main
+        deploy = encoded.commands.deploy:main
         extract_test_data = encoded.commands.extract_test_data:main
         es-index-data = encoded.commands.es_index_data:main
         es-index-listener = encoded.commands.es_index_listener:main
         create-mapping = encoded.commands.create_mapping:main
         generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
-        read-edw-fileinfo = encoded.commands.read_edw_fileinfo:main
+        sync_edw = encoded.commands.sync_edw:main
         update-keys-links = encoded.commands.update_keys_links:main
+        upgrade = encoded.commands.upgrade:main
+
 
 
         [paste.app_factory]
         main = encoded:main
+
+        [paste.composite_factory]
+        indexer = encoded.commands.es_index_listener:composite
         ''',
 )

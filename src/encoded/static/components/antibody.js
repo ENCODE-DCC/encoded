@@ -53,8 +53,9 @@ var Approval = module.exports.Approval = React.createClass({
                         <dt>Target</dt>
                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
 
-                        <dt>Host</dt>
-                        <dd>{context.antibody.host_organism.name}</dd>
+                        {context.antibody.host_organism ? <dt>Host</dt> : null}
+                        {context.antibody.host_organism ? <dd>{context.antibody.host_organism.name}</dd> : null}
+        
 
                         <dt hidden={!context.antibody.clonality}>Clonality</dt>
                         <dd hidden={!context.antibody.clonality}>{context.antibody.clonality}</dd>
@@ -73,6 +74,9 @@ var Approval = module.exports.Approval = React.createClass({
 
                         <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
                         <dd className="no-cap" hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
+                        
+                        <dt hidden={!context.antibody.encode2_dbxrefs.length}>Other identifiers</dt>
+                        <dd className="no-cap" hidden={!context.antibody.encode2_dbxrefs.length}>{context.antibody.encode2_dbxrefs.join(", ")}</dd>
                     </dl>
                 </div>
 
@@ -104,10 +108,10 @@ var Characterization = module.exports.Characterization = React.createClass({
                 width = context.attachment.width;
                 alt = "Characterization Image"
             } else if (context.attachment.type == "application/pdf"){
-                src = "/static/img/file-pdf.svg";
+                src = "/static/img/file-pdf.png";
                 alt = "Characterization PDF Icon";
             } else {
-                src = "/static/img/file.svg";
+                src = "/static/img/file.png";
                 alt = "Characterization Icon";
             }
             figure = (
@@ -151,7 +155,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                                 <dt className="h4">Target species</dt>
                                 <dd className="h4">{context.target.organism.name}</dd>
 
-                                <dt hidden="hidden">Caption</dt>
+                                <dt>Caption</dt>
                                 <dd>{context.caption}</dd>
 
                                 <dt>Submitted by</dt>

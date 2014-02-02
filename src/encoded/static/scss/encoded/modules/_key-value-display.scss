@@ -25,4 +25,8 @@
 	}
 }
 
+.unit:before {
+	content: " ";
+}
+
 // responsive styles in _state.scss

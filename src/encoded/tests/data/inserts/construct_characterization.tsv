@@ -1,1 +1,2 @@
-test	characterizes	characterization_method	attachment	caption	date	references:array	submitted_by	lab	award
+test	uuid	characterizes	characterization_method	attachment	caption	date	references:array	lab	award	notes	aliases:array
+test	fea319e0-6785-11e3-949a-0800200c9a66	893d806f-3a88-43eb-afdf-dcc16c79ee45	western blot	frowny_gel.png 	This is an example construct characterizations	2013-12-17T17:51:01-08:00	NULL	kevin-white	U54HG006996	This is just an example.	kevin-white:construct_characterizations
