@@ -35,7 +35,7 @@ def internal_app(configfile, app_name=None, username=None):
 
 def run(testapp):
     root = testapp.app.root_factory(testapp.app)
-    for collection_name in ['biosample', 'experiment', 'dataset']:
+    for collection_name in ['biosample', 'experiment', 'dataset', 'antibody_characterization', 'biosample_characterization', 'rnai_characterization']
         collection = root[collection_name]
         count = 0
         errors = 0
