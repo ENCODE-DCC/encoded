@@ -246,14 +246,14 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {biosample && biosample.age ? <dt>Age</dt> : null}
                 {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
-                <dt>Sex</dt>
-                <dd>{context.sex}</dd>
+                {context.sex ? <dt>Sex</dt> : null}
+                {context.sex ? <dd>{context.sex}</dd> : null}
 
                 {biosample && biosample.health_status ? <dt>Health status</dt> : null}
                 {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
 
-                <dt>Ethnicity</dt>
-                <dd>{context.ethnicity}</dd>
+                {context.ethnicity ? <dt>Ethnicity</dt> : null}
+                {context.ethnicity ? <dd>{context.ethnicity}</dd> : null}
             </dl>
         );
     }

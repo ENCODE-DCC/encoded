@@ -40,6 +40,30 @@ def test_transaction_record(session):
     assert propsheet.tid == record.tid
 
 
+def test_transaction_record_rollback(session):
+    import transaction
+    import uuid
+    from encoded.storage import (
+        Resource,
+        PropertySheet,
+        TransactionRecord,
+    )
+    rid = uuid.uuid4()
+    resource = Resource('test_item', {'': {}}, rid=rid)
+    session.add(resource)
+    transaction.commit()
+    txn = transaction.begin()
+    sp = session.begin_nested()
+    resource = Resource('test_item', {'': {}}, rid=rid)
+    session.add(resource)
+    with pytest.raises(Exception):
+        sp.commit()
+    sp.rollback()
+    resource = Resource('test_item', {'': {}})
+    session.add(resource)
+    transaction.commit()
+
+
 def test_current_propsheet(session):
     from encoded.storage import (
         CurrentPropertySheet,

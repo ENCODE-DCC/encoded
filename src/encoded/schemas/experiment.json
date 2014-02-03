@@ -15,25 +15,17 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
-        { "$ref": "mixins.json#/biosample_classification" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "dataset.json#/properties" },
+        { "$ref": "mixins.json#/biosample_classification" }
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
-        },
-        "accession": {
-            "accessionType": "SR"
-        },
-        "description": {
-            "title": "Description",
-            "description": "A plain text description of the experiment.",
-            "default": "",
-            "type": "string"
+            "default": "2"
         },
         "target": {
             "title": "Target",
@@ -61,61 +53,9 @@
             "default": "experiment",
             "enum": ["experiment"]
         },
-        "geo_dbxrefs": {
-            "title": "GEO IDs",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "GEO ID",
-                "type":  "string",
-                "pattern": "^(GSM|GSE)\\d+$"
-            }
-        },
-        "encode2_dbxrefs": {
-            "title": "Previous ENCODE IDs",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Previous ENCODE ID",
-                "type":  "string",
-                "pattern": "^wgEncodeE(H|M)\\d+$"
-            }
-        },
         "documents": {
-            "title": "Documents",
-            "description": "Protocols or other documents that describe the assay or the results (not data files).",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Document",
-                "description": "A protocol or other document that describes the assay or the results (not data files).",
-                "comment": "See document.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": "document"
-            }
-        },
-        "files": {
-            "title": "Data files",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Data file",
-                "comment": "See file.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": "file"
-            }
-        },
-        "references": {
-            "title": "References",
-            "description": "The Pubmed identifiers that reference data found in the experiment.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Reference",
-                "description": "A Pubmed identifier that references data found in the experiment.",
-                "type": "string",
-                "pattern": "^PMID:[0-9]+$"
-            }
+            "description": "Protocols or other documents that describe the assay or the results (not data files)."
+
         },
         "possible_controls": {
             "title": "Controls",

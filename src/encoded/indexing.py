@@ -86,7 +86,7 @@ def index(context, request):
 
     if txn_count:
         new_referencing = set()
-        add_dependent_objects(request, updated, new_referencing)
+        add_dependent_objects(request.root, updated, new_referencing)
         invalidated.update(new_referencing)
         result['invalidated'] = [str(uuid) for uuid in invalidated]
         if not dry_run and es is not None:
@@ -96,19 +96,23 @@ def index(context, request):
     return result
 
 
-def add_dependent_objects(request, new, existing):
+def add_dependent_objects(root, new, existing):
     # Getting the dependent objects for the indexed object
-    root = request.root
     objects = new.difference(existing)
     while objects:
         dependents = set()
         for uuid in objects:
             item = root.get_by_uuid(uuid)
 
-            # XXX needs to consult with item.embedded and item.revs
             dependents.update({
                 model.source_rid for model in item.model.revs
             })
+            
+            item_rels = item.model.rels
+            for rel in item_rels:
+                rev_item = root.get_by_uuid(rel.target_rid)
+                if (rel.source.item_type, rel.rel) in rev_item.merged_rev.values():
+                    dependents.add(rel.target_rid)
 
         existing.update(objects)
         objects = dependents.difference(existing)
@@ -166,7 +170,7 @@ def record_created(event):
 
     # Record dependencies here to catch any to be removed links
     # XXX replace with uuid_closure in elasticsearch document
-    add_dependent_objects(request, {uuid}, referencing)
+    add_dependent_objects(request.root, {uuid}, referencing)
 
 
 @subscriber(BeforeRender)

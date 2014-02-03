@@ -10,9 +10,11 @@ ENCODE Metadata Database
 
 First install dependencies::
 
-    $ brew install libxml2 libxslt freetype openssl libjpeg libmagic postgresql
+    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql
+    $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
+    $ brew install mysql  # Required for EDW syncing
 
-Note: The default Mac python doesn't work. You should install Python with Homebrew::
+Note: For Mac < 10.9, the system python doesn't work. You should install Python with Homebrew::
 
     $ brew install python
 
@@ -20,6 +22,10 @@ First run buildout::
 
     $ python2.7 bootstrap.py
     $ bin/buildout
+
+Set a session key::
+
+    $ cat /dev/urandom | head -c 256 | base64 > session-secret.b64
 
 Create ElasticSearch mapping for ENCODE data::
 
@@ -45,7 +51,7 @@ Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
 
 Run the Pyramid tests with::
 
-    $ bin/test -k -bdd
+    $ bin/test -m "not bdd"
 
 Run the Browser tests with::
 
@@ -66,22 +72,22 @@ To run tests with postgresql::
     $ bin/test --engine-url postgresql:///encoded
 
 To start development data server (NO PERMISSIONS) use:
-    $bin/pserve development.ini
+    $ bin/pserve development.ini
 
 To start development data server (AuthZ enabled) use:
     (requires ../master_encode3_interface_submissions.xlsx)
-    $bin/pserve dev-master.ini
+    $ bin/pserve dev-master.ini
 
 To start productiondata server (Postgres, AuthZ, all data) use:
     (requires ../master_encode3_interface_submissions.xlsx and/or existing PG DB)
-    $bin/pserve production.ini
+    $ bin/pserve production.ini
 
-    $bin/pserve --help for more pyramid options
+    $ bin/pserve --help for more pyramid options
     --log-file [filename] is a useful argument
 
 Database setup on VMs::
 
-    # service postgresql-9.4 initdb
+    # service postgresql-9.3 initdb
     # service postgresql-9.3 start
     # sudo -u postgres createuser --createdb encoded
 

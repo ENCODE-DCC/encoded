@@ -58,7 +58,7 @@ SOURCES = [
     'url': 'http://www.sigmaaldrich.com',
     },
     {
-    'uuid': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
+    'uuid': '1d5be796-8f80-4fd4-b6c7-6674318657eb',
     'name': 'gingeras',
     'title': 'Gingeras Lab',
     'url': 'http://www.gingeraslab.edu',
@@ -108,16 +108,27 @@ ANTIBODY_APPROVALS = [
 BIOSAMPLES = [
     {
     'uuid': '7c245cea-7d59-45fb-9ebe-f0454c5fe950',
+    'accession': 'ENCBS000TST',
     'biosample_term_id': 'UBERON:349829',
     'biosample_term_name': 'Liver',
     'biosample_type': 'tissue',
-    'source': '3aa827c3-92f8-41fa-9608-2aac58f7a1c4',
-    'product_id': 'fridge1a',
-    'lot_id': '1',
+    'source': 'gingeras',
     'lab': 'myers',
     'award': 'Myers',
     'organism': 'human',
-    }
+    },
+]
+
+LIBRARIES = [
+    {
+    'uuid': 'a95b00ea-fc13-42ee-a322-e36793f1325d',
+    'accession': 'ENCLB000TST',
+    'nucleic_acid_term_id': 'SO:0000352',
+    'nucleic_acid_term_name': 'DNA',
+    'biosample': 'ENCBS000TST',
+    'lab': 'myers',
+    'award': 'Myers',
+    },
 ]
 
 AWARDS = [
@@ -141,6 +152,7 @@ BAD_AWARDS = [  # UUID same as one of labs
     'name': 'Myers',
     },
 ]
+
 LABS = [
     {
     'uuid': 'cfb789b8-46f3-4d59-a2b3-adc39e7df93a',
@@ -206,6 +218,59 @@ USERS = [
     },
 ]
 
+EXPERIMENTS = [
+    {
+    'uuid': 'fa3e286d-a44c-41e0-bcce-3c24fe9aa02d',
+    'accession': 'ENCSR000TST',
+    'lab': 'myers',
+    'award': 'Myers',
+    },
+    {
+    'uuid': 'f26eeb63-e77c-47e9-b8fd-e21b24065424',
+    'accession': 'ENCSR001TST',
+    'lab': 'myers',
+    'award': 'Myers',
+    },
+]
+
+REPLICATES = [
+    {
+    'uuid': '13468ab5-2369-4857-a303-7c5f28918190',
+    'experiment': 'ENCSR000TST',
+    'library': 'ENCLB000TST',
+    'biological_replicate_number': 1,
+    'technical_replicate_number': 1,
+    },
+    {
+    'uuid': 'df38fd69-8c4b-4870-86a4-55f4b355324e',
+    'experiment': 'ENCSR000TST',
+    'library': 'ENCLB000TST',
+    'biological_replicate_number': 1,
+    'technical_replicate_number': 2,
+    },
+]
+
+
+FILES = [
+    {
+    'uuid': 'c22e0390-af36-483c-950d-5a2e0efe37ec',
+    'accession': 'ENCFF000TST',
+    'dataset': 'ENCSR000TST',
+    'file_format': 'fastq',
+    'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+    'output_type': 'rawData',
+    },
+    {
+    'uuid': '0a38fea0-c067-415a-9710-c887aff95767',
+    'accession': 'ENCFF001TST',
+    'dataset': 'ENCSR001TST',
+    'file_format': 'fastq',
+    'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+    'output_type': 'rawData',
+    },
+]
+
+
 URL_COLLECTION = OrderedDict([
     ('lab', LABS),
     ('user', USERS),
@@ -217,6 +282,10 @@ URL_COLLECTION = OrderedDict([
     ('antibody_characterization', ANTIBODY_CHARACTERIZATIONS),
     ('antibody_approval', ANTIBODY_APPROVALS),
     ('biosample', BIOSAMPLES),
+    ('library', LIBRARIES),
+    ('experiment', EXPERIMENTS),
+    ('replicate', REPLICATES),
+    ('file', FILES),
 ])
 
 
