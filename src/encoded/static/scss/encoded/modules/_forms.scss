@@ -22,6 +22,22 @@ input.search-query {
 	@include border-radius($borderRadiusSmall);
 }
 
+// Navbar search
+#search input {
+	width: 100px;
+	-ms-transition: width 0.5s ease-out;
+	-moz-transition: width 0.5s ease-out;
+	-webkit-transition: width 0.5s ease-out;
+	transition: width 0.5s ease-out;
+}
+#search input:focus {
+	width: 200px;
+	-ms-transition: width 0.5s ease-out;
+	-moz-transition: width 0.5s ease-out;
+	-webkit-transition: width 0.5s ease-out;
+	transition: width 0.5s ease-out;
+}
+
 // large text inputBorder
 .input-lg {
 	font-size: 20px !important;
