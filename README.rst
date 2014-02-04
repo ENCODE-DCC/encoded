@@ -65,10 +65,11 @@ To run tests with postgresql::
     first install postgres (on a mac with homebrew for example)
 
     If you wish a clean db wipe for DEVELOPMENT
+    
     $ dropdb encoded
     ...
     $ createdb encoded
-    $ pg_ctl -D postgres -l pg.log start
+    $ pg_ctl -D /usr/local/var/postgres -l pg.log start
     $ bin/test --engine-url postgresql:///encoded
 
 To start development data server (NO PERMISSIONS) use:
