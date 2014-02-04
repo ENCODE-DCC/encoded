@@ -1205,13 +1205,8 @@ def item_index_data(context, request):
     )
     links = {}
     # links for the item
-    for link in context.links:
-        links[link] = []
-        if type(context.links[link]) is list:
-            for l in context.links[link]:
-                links[link].append(str(l.uuid))
-        else:
-            links[link].append(str(context.links[link].uuid))
+    for link in context.model.rels:
+        links[link.rel] = link.target_rid
 
     # Get keys for the item
     keys = {}
