@@ -44,7 +44,7 @@ def biosample_2_3(value, system):
             value['subcellular_fraction'] = 'membrane'
         
         value['subcellular_fraction_term_id']  = go_mapping[value['subcellular_fraction']]
-        value ['subcelluar_fraction_term_name'] = value['subcellular_fraction']
+        value ['subcellluar_fraction_term_name'] = value['subcellular_fraction']
         del value['subcellular_fraction']
 
 
