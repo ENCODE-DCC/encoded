@@ -32,13 +32,17 @@ def run(app, collections=None):
         # try creating index, if it exists already delete it and create it
         counter = 0
         for count, uuid in enumerate(collection):
-            res = testapp.get('/%s/@@index-data' % uuid).maybe_follow()
-            document = res.json
-            es.index(index, DOCTYPE, document, str(uuid))
-            counter = counter + 1
-            if counter % 50 == 0:
-                es.flush(index)
-                log.info('Indexing %s %d', collection_name, counter)
+            try:
+                res = testapp.get('/%s/@@index-data' % uuid).maybe_follow()
+            except:
+                print "Object is not found - " + str(uuid)
+            else:
+                document = res.json
+                es.index(index, DOCTYPE, document, str(uuid))
+                counter = counter + 1
+                if counter % 50 == 0:
+                    es.flush(index)
+                    log.info('Indexing %s %d', collection_name, counter)
         es.refresh(index)
 
 

@@ -294,7 +294,6 @@ def es_tween_factory(handler, registry):
                         }
                     }
                 }
-                print request.environ.get('PATH_INFO')
                 data = es.search(query, index='encoded')
                 if len(data['hits']['hits']) > 0:
                     try:
