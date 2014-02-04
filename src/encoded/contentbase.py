@@ -979,9 +979,9 @@ class Collection(Mapping):
         links = compiled(ns)
         properties.update(links)
         properties['columns'] = self.columns
-        collection_source = request.params.get('collection_source', None)
+        collection_source = request.params.get('source', None)
         if collection_source is None:
-            collection_source = request.registry.settings.get('collection_source', 'database')
+            collection_source = request.registry.settings.get('source', 'database')
         # Switch to change summary page loading options: load_db, load_es
         if collection_source == 'elasticsearch':
             properties['@graph'] = self.load_es(request)
@@ -996,7 +996,7 @@ class Collection(Mapping):
                     limit = 30
             properties['@graph'] = self.load_db(request, limit)
             if limit is not None:
-                properties['all'] = "{collection_uri}?limit=all&collection_source=database".format(**ns)
+                properties['all'] = "{collection_uri}?limit=all&source=database".format(**ns)
         return properties
 
     def expand_embedded(self, request, properties):

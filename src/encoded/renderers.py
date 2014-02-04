@@ -280,10 +280,10 @@ def es_tween_factory(handler, registry):
 
     def es_tween(request):
         try:
-            source = request.environ.get('source')
+            source = request.params['source'].strip()
         except:
             source = ''
-        if source is not 'db':
+        if source != 'database':
             if request.environ.get('REQUEST_METHOD') == 'GET' and request.environ.get('PATH_INFO') != '/search/':
                 from .indexing import ELASTIC_SEARCH
                 es = request.registry[ELASTIC_SEARCH]

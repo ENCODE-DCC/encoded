@@ -174,8 +174,8 @@ def search(context, request):
         facets = [{'Data Type': 'type'}]
         for facet in facets:
             face = {'terms': {'field': '', 'size': 99999}}
-            face['terms']['field'] = 'object.@' + facet[facet.keys()[0]] + '.untouched'
-            query['facets'][facet.keys()[0]] = face
+            face['terms']['field'] = '_' + facet[facet.keys()[0]]
+            query['facets']['type'] = face
     else:
         facets = root[doc_types[0]].schema['facets']
         for facet in facets:
@@ -197,8 +197,15 @@ def search(context, request):
                 face['field'] = facet[facet.keys()[0]]
                 face[facet.keys()[0]] = []
                 for term in facet_results[facet.keys()[0]]['terms']:
-                    if term['term'] != 'item':
-                        face[facet.keys()[0]].append({term['term']: term['count']})
+                    face[facet.keys()[0]].append({term['term']: term['count']})
+                if len(face[facet.keys()[0]]) > 1:
+                    result['facets'].append(face)
+            elif 'type' in facet_results:
+                face = {}
+                face['field'] = facet[facet.keys()[0]]
+                face[facet.keys()[0]] = []
+                for term in facet_results['type']['terms']:
+                    face[facet.keys()[0]].append({term['term']: term['count']})
                 if len(face[facet.keys()[0]]) > 1:
                     result['facets'].append(face)
 
