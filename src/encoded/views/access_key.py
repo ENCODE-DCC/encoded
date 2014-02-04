@@ -44,7 +44,8 @@ class AccessKey(Collection):
         (Deny, Everyone, 'traverse'),
         (Allow, 'role.owner', ['edit', 'view']),
         (Allow, 'group.admin', 'view'),
-        (Allow, 'group.read-only-admin', 'view'),        
+        (Allow, 'group.read-only-admin', 'view'),
+        (Allow, 'remoteuser.INDEXER', 'view'),
         (Deny, Everyone, 'view'),
     ]
 

@@ -189,7 +189,7 @@ def test_post_duplicate_uuid(testapp):
     testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
-def test_users_post(users, anontestapp):
+def test_user_effective_principals(users, anontestapp):
     email = users[0]['email']
     res = anontestapp.get('/@@testing-user',
                           extra_environ={'REMOTE_USER': str(email)})
@@ -204,21 +204,6 @@ def test_users_post(users, anontestapp):
         'system.Everyone',
         'userid.e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
     ]
-
-
-def test_users_view_details_admin(users, testapp):
-    res = testapp.get(users[0]['@id'])
-    assert 'email' in res.json
-
-
-def test_users_view_basic_authenticated(users, authenticated_testapp):
-    res = authenticated_testapp.get(users[0]['@id'])
-    assert 'title' in res.json
-    assert 'email' not in res.json
-
-
-def test_users_list_denied_authenticated(authenticated_testapp):
-    authenticated_testapp.get('/users/', status=403)
 
 
 def test_etags(testapp):

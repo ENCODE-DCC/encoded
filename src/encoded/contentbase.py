@@ -293,10 +293,14 @@ def location(name, factory=None):
 class Root(object):
     __name__ = ''
     __parent__ = None
+    builtin_acl = [
+        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse')),
+    ]
 
     def __init__(self, acl=None):
-        if acl is not None:
-            self.__acl__ = acl
+        if acl is None:
+            acl = []
+        self.__acl__ = acl + self.builtin_acl
         self.collections = {}
         self.by_item_type = {}
 

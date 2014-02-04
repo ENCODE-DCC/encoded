@@ -10,7 +10,7 @@ def groupfinder(login, request):
     root = request.registry[LOCATION_ROOT]
 
     if namespace == 'remoteuser':
-        if localname in ['TEST', 'IMPORT', 'INDEXER']:
+        if localname in ['TEST', 'IMPORT']:
             return ['group.admin']
         elif localname in ['TEST_SUBMITTER']:
             return ['group.submitter']
