@@ -41,6 +41,7 @@ var NavBarLayout = React.createClass({
                         <div className="nav-collapse collapse">
                             <GlobalSections global_sections={portal.global_sections} section={section} />
                             {this.transferPropsTo(<UserActions />)}
+                            <Search />
                         </div>
                     </div>
                 </div>
@@ -65,6 +66,19 @@ var GlobalSections = React.createClass({
             );
         });
         return <ul id="global-sections" className="nav">{actions}</ul>;
+    }
+});
+
+var Search = React.createClass({
+    render: function() {
+    return (
+    	<form className="navbar-form pull-right">
+			<div className="input-append" id="search">
+				<input className="span2" id="appendedInputButton" type="text" />
+				<button className="btn" type="button"><i className="icon-search"></i></button>
+			</div>
+		</form>
+        );
     }
 });
 
