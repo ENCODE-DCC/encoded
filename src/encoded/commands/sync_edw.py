@@ -452,7 +452,7 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
             if not alias_key.match(al):
                 dbxref = alias_key.sub('', al)
 
-                e2e3 = encode2_to_encode3.get(xref, set())
+                e2e3 = encode2_to_encode3.get(dbxref, set())
                 e2e3.add(acc)
                 encode2_to_encode3[xref] = e2e3
 
