@@ -130,7 +130,7 @@ def test_encode3_experiments(workbook, testapp):
             converted_file.pop('test', None) # this is in the file for notation purposes only
             edw_mock_p3[fileinfo['accession']] = converted_file
 
-    assert len(edw_mock_p3) == 12
+    assert len(edw_mock_p3) == 13
 
     app_files_p3 = sync_edw.get_app_fileinfo(testapp, phase='3')
 
