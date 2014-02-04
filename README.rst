@@ -58,13 +58,14 @@ Run the Browser tests with::
     $ bin/test -k bdd -v -v
 
 
-To run tests with sqllite (default) use:
+To run tests with sqllite (default) use::
+    
     $ bin/test --engine-url sqlite://
 
 To run tests with postgresql::
     first install postgres (on a mac with homebrew for example)
 
-    If you wish a clean db wipe for DEVELOPMENT
+If you wish a clean db wipe for DEVELOPMENT::
     
     $ dropdb encoded
     ...
