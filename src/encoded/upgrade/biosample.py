@@ -29,7 +29,7 @@ def biosample_2_3(value, system):
 
     go_mapping = {
         "nucleus": "GO:0005634",
-        "cytosol": "GO:000582",
+        "cytosol": "GO:0005829",
         "chromatin": "GO:0000785",
         "membrane": "GO:0016020",
         "mitochondria": "GO:0005739",
