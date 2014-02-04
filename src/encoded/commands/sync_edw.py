@@ -441,7 +441,7 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
 
 
     logger.info("Getting all datasets...")
-    alias_key = re.compile('ucsc_encode_db:')
+    alias_key = 'ucsc_encode_db:'
     ds_collection = get_collection(app, DATASETS)
     logger.warn("Found %s datasets" % len(ds_collection))
 
@@ -449,12 +449,12 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
         acc = ds['accession']
         aliases = ds[ENCODE2_DS_PROP]
         for al in aliases:
-            if not alias_key.match(al):
-                dbxref = alias_key.sub('', al)
+            if al.startswith(alias_key):
+                dbxref = al.replace(alias_key, '')
 
                 e2e3 = encode2_to_encode3.get(dbxref, set())
                 e2e3.add(acc)
-                encode2_to_encode3[xref] = e2e3
+                encode2_to_encode3[dbxref] = e2e3
 
                 e3e2 = encode3_to_encode2.get(acc,set())
                 e3e2.add(dbxref)
