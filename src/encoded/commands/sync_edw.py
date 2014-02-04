@@ -674,6 +674,7 @@ def main():
 
     if zargs.patch_replicates:
         logger.warning("WILL attempt to PATCH replicates!  Careful!")
+        NO_UPDATE = [ x for x in NO_UPDATE if x != 'replicate' ]
 
     if zargs.experiment:
         logger.warning("Only fetching from Dataset: %s" % zargs.experiment)

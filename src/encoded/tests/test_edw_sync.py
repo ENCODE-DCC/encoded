@@ -10,7 +10,7 @@ import test_indexing
 
 from test_views import TYPE_LENGTH
 
-pytestmark = [pytest.mark.edw_sync]
+pytestmark = [pytest.mark.sync_edw]
 
 # globals
 EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
@@ -163,7 +163,7 @@ def test_file_sync(workbook, testapp):
     assert(len(app_files) == len(app_dict.keys())) # this should never duplicate
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    assert len(edw_only) == 15
+    assert len(edw_only) == 16
     assert len(app_only) == 12
     assert len(same) == 6
     assert len(patch) == 6
