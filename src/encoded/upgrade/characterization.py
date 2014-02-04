@@ -9,7 +9,7 @@ def characterization_0_3(value, system):
     new_characterization_method = {
         "western blot": "immunoblot",
         "western blot after IP": "immunoprecipitation",
-        "Western blot, Western blot after IP", "immunoprecipitation",
+        "Western blot, Western blot after IP": "immunoprecipitation",
         "immunofluorescence": "FACs analysis",
         "knockdowns": "knockdown or knockout",
         "mass spectrometry after IP": "immunoprecipitation followed by mass spectrometry",
