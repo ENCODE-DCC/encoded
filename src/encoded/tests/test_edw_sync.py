@@ -21,7 +21,7 @@ TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 @pytest.mark.slow
 def test_get_all_datasets(workbook,testapp):
 
-    sync_edw.get_all_datasets(testapp)
+    sync_edw.try_datasets(testapp)
     assert(len(sync_edw.experiments) == TYPE_LENGTH['experiment'])
     assert(len(sync_edw.datasets) == TYPE_LENGTH['dataset'])
 
@@ -78,7 +78,6 @@ def test_list_new(workbook, testapp):
     new_accs = sorted(sync_edw.get_missing_filelist_from_lists(app_accs, edw_accs))
     assert new_accs == sorted(edw_test_data.new_out)
 
-@pytest.mark.skipif(True, reason='Possible conflict with redundant test')
 @pytest.mark.slow
 def test_import_file(workbook, testapp):
     # Test import of new file to encoded
@@ -138,6 +137,10 @@ def test_encode3_experiments(workbook, testapp):
 
     assert len(app_files_p3) == 16
 
+
+
+## see bug 1145 - Critical
+@pytest.mark.xfail
 @pytest.mark.slow
 def test_file_sync(workbook, testapp):
 
@@ -250,7 +253,48 @@ def test_file_sync(workbook, testapp):
     #TODO tests for experiments with multiple mappings.
 
 
+def test_patch_replicate(workbook, testapp):
+
+    import re
+
+    test_acc = 'ENCSR000ADH'
+    test_set = sync_edw.try_datasets(testapp, dataset=test_acc)
+    assert(test_set)
+
+    mock_edw_file = 'edw_file_mock.tsv'
+    f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file, 'rU')
+    reader = DictReader(f, delimiter='\t')
+
+    edw_mock = {}
+    test = {}
+    filecount = 0
+    for fileinfo in reader:
+        converted_file = sync_edw.convert_edw(testapp, fileinfo)
+        if converted_file.get('dataset', None) != test_set:
+            continue
+        filecount = filecount+1
+        test[fileinfo['accession']] = converted_file.pop('test', None) # this is in the file for notation purposes only
+        edw_mock[fileinfo['accession']] = converted_file
+
+    assert len(edw_mock) == filecount
+
+    app_files = sync_edw.get_app_fileinfo(testapp, dataset=test_set)
+    app_dict = { d['accession']:d for d in app_files }
+
+    edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
+    assert len(patch) == 1
+    assert len(same) == 2
 
 
-
+    for update in patch:
+        diff = sync_edw.compare_files(app_dict[update], edw_mock[update])
+        patched = sync_edw.patch_fileinfo(testapp, diff.keys(), edw_mock[update])
+        should_fail = False
+        for patch_prop in diff.keys():
+            if patch_prop in sync_edw.NO_UPDATE:
+                should_fail = True
+        if should_fail:
+            assert not patched
+        else:
+            assert patched
 

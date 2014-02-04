@@ -242,7 +242,7 @@ def get_missing_filelist_from_lists(app_accs, edw_accs):
     return new_accs
 
 
-def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL):
+def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
     # Get file info from encoded web application
     # Return list of fileinfo dictionaries
     rows = get_collection(app, FILES)
@@ -252,7 +252,10 @@ def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL):
         resp = app.get(url).maybe_follow()
         fileinfo = resp.json
         # below seems clunky, could search+filter
-        if phase != edw_file.ENCODE_PHASE_ALL:
+        if dataset and fileinfo['dataset'] != dataset:
+            continue
+
+        elif phase != edw_file.ENCODE_PHASE_ALL:
             file_phase = get_phase(app, fileinfo['dataset'])
             if file_phase != phase:
                     logging.info("File %s is wrong phase (%s)" % (fileinfo['accession'], file_phase))
@@ -290,9 +293,6 @@ def create_replicate(app, dataset, bio_rep_num, tech_rep_num, dry_run=False):
     logger.info('....POST replicate %d - %d for experiment %s' % (bio_rep_num, tech_rep_num, exp))
     url = collection_url(REPLICATES)
     if not dry_run:
-
-        import pdb;pdb.set_trace()
-
         try:
             resp = app.post_json(url, rep, status=[201])
             logger.info(str(resp))
@@ -409,18 +409,36 @@ def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, dataset='', since=0, te
     edw_files = edw_file.get_edw_fileinfo(edw, phase=phase, dataset=dataset, since=since, test=use_test)
     # Other parameters are default
     edw_dict = { d['accession']:convert_edw(app, d, phase) for d in edw_files }
-    app_files = get_app_fileinfo(app, phase=phase)
+    app_files = get_app_fileinfo(app, phase=phase, dataset=dataset)
     app_dict = { d['accession']:d for d in app_files }
 
     return edw_dict, app_dict
 
-
-def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
+def try_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
 
     global experiments
     global datasets
-    global encode2_to_encode3
-    global encode3_to_encode2
+    if dataset:
+        try:
+            eurl = collection_url(EXPERIMENTS) + dataset + '/'
+            exp = app.get(eurl).maybe_follow().json
+            experiments[exp['@id']] = exp
+            return exp['@id']
+        except:
+            durl = collection_url(DATASETS) + dataset + '/'
+            ds = app.get(durl).maybe_follow.json
+            datasets[ds['@id']] = ds
+            return ds['@id']
+
+        logger.error("Dataset %s requested but not found" % dataset)
+        sys.exit(1)
+    else:
+        return get_all_datasets(app, phase=phase)
+
+def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
+
+    global experiments
+    global datasets
 
     logger.info("Getting all experiments...")
     exp_collection = get_collection(app, EXPERIMENTS)
@@ -467,6 +485,7 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
         datasets[acc] = ds
         ## don't need replicates or anything.
     logger.warn("%s Encode2 experiments can be referenced" % len(encode2_to_encode3.keys()))
+    return '';
 
 def patch_fileinfo(app, props, propinfo, dry_run=False):
     # PATCH properties to file in app
@@ -694,6 +713,10 @@ def main():
         logger.warning("WILL attempt to PATCH replicates!  Careful!")
         NO_UPDATE = [ x for x in NO_UPDATE if x != 'replicate' ]
 
+    if zargs.experiment and zargs.phase != edw_file.ENCODE_PHASE_ALL:
+        logger.error("Phase (-P) and single dataset (-E/--experiment) not compatible options")
+        sys.exit(1)
+
     if zargs.experiment:
         logger.warning("Only fetching from Dataset: %s" % zargs.experiment)
 
@@ -718,11 +741,11 @@ def main():
         logger.error("%s", e)
         sys.exit(1)
 
-    get_all_datasets(app, dataset=zargs.experiment)
+    single = try_datasets(app, dataset=zargs.experiment)
     summary.total_encoded_exps = len(experiments.keys())
     summary.total_encoded_ds = len(datasets.keys())
 
-    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase, dataset=zargs.experiment, since=since, test=zargs.use_test)
+    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase, dataset=single, since=since, test=zargs.use_test)
 
     summary.total_encoded_files = len(app_files)
     summary.total_edw_files = len(edw_files)
