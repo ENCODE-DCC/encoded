@@ -541,8 +541,8 @@ class Dataset(Collection):
     class Item(Collection.Item):
         template = {
             'files': [
-                {'$value': '{file}', '$repeat': 'file home_files', '$templated': True},
-                {'$value': '{file}', '$repeat': 'file additional_files', '$templated': True},
+                {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
+                {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
             ],
         }
         template_type = {
@@ -562,7 +562,7 @@ class Dataset(Collection):
         name_key = 'accession'
         keys = ACCESSION_KEYS + ALIAS_KEYS
         rev = {
-            'home_files': ('file', 'dataset'),
+            'original_files': ('file', 'dataset'),
         }
 
 

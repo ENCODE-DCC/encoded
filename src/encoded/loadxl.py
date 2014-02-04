@@ -453,10 +453,10 @@ PHASE1_PIPELINES = {
         remove_keys('derived_from', 'pooled_from'),
     ],
     'dataset': [
-        remove_keys('additional_files'),
+        remove_keys('related_files'),
     ],
     'experiment': [
-        remove_keys('additional_files', 'possible_controls'),
+        remove_keys('related_files', 'possible_controls'),
     ],
 }
 

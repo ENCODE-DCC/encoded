@@ -74,7 +74,7 @@
                 "linkTo": "document"
             }
         },
-        "additional_files": {
+        "related_files": {
             "title": "Additional data files",
             "description": "List of data files to be associated with the dataset.",
             "type": "array",
