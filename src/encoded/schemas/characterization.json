@@ -78,15 +78,16 @@
         "status": {
             "title": "Approval status",
             "description": "The current state of the characterization.",
-            "comment": "Do not submit, value is assigned by the DCC.",
+            "comment": "Submit a status of 'PENDING DCC REVIEW' to indicate that DCC should begin reviewing characterization. Submit a status of 'WITHDRAWN BY LAB'  to indicate that DCC should not review the characterization.'",
             "type": "string",
-            "default": "INCOMPLETE",
+            "default": "IN PROGRESS",
             "enum" : [
-                "APPROVED",
-                "SUBMITTED",
-                "UNSUBMITTED",
-                "FAILED",
-                "INCOMPLETE",
+                "IN PROGRESS",
+                "PENDING DCC REVIEW",
+                "COMPLIANT",
+                "NOT COMPLIANT",
+                "NOT REVIEWED",
+                "NOT SUBMITTED FOR REVIEW BY LAB",
                 "DELETED"
             ]
         },
