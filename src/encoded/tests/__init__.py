@@ -9,7 +9,7 @@ class AppendInt2(argparse._AppendAction):
 
 
 def pytest_addoption(parser):
-    parser.addoption('--engine-url', dest='engine_url', default='sqlite://')
+    parser.addoption('--engine-url', dest='engine_url')
     parser.addoption('--browser', dest='browser', default=None)
     parser.addoption('--browser-arg', nargs=2, dest='browser_args', action='append', type='string')
     parser.addoption('--browser-arg-int', nargs=2, dest='browser_args', action=AppendInt2, type='string')

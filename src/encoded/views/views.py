@@ -530,8 +530,44 @@ class Files(Collection):
     ])
 
 
+@location('datasets')
+class Dataset(Collection):
+    item_type = 'dataset'
+    schema = load_schema('dataset.json')
+    properties = {
+        'title': 'Datasets',
+        'description': 'Listing of datasets',
+    }
+    class Item(Collection.Item):
+        template = {
+            'files': [
+                {'$value': '{file}', '$repeat': 'file home_files', '$templated': True},
+                {'$value': '{file}', '$repeat': 'file additional_files', '$templated': True},
+            ],
+        }
+        template_type = {
+            'files': 'file',
+        }
+        embedded = [
+            'files',
+            'files.replicate',
+            'files.submitted_by',
+            'submitted_by',
+            'lab',
+            'award',
+            'documents.lab',
+            'documents.award',
+            'documents.submitted_by'
+        ]
+        name_key = 'accession'
+        keys = ACCESSION_KEYS + ALIAS_KEYS
+        rev = {
+            'home_files': ('file', 'dataset'),
+        }
+
+
 @location('experiments')
-class Experiments(Collection):
+class Experiment(Dataset):
     item_type = 'experiment'
     schema = load_schema('experiment.json')
     properties = {
@@ -550,7 +586,8 @@ class Experiments(Collection):
         ('award.project', 'Project'),
     ])
 
-    class Item(Collection.Item):
+    class Item(Dataset.Item):
+        base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {
             'organ_slims': [
                 {'$value': '{slim}', '$repeat': 'slim organ_slims', '$templated': True}
@@ -562,11 +599,8 @@ class Experiments(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set([
-            'files',
+        embedded = Dataset.Item.embedded + [
             'replicates.antibody',
-            'files.replicate',
-            'files.submitted_by',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',
@@ -576,23 +610,15 @@ class Experiments(Collection):
             'replicates.library.biosample.donor.organism',
             'replicates.library.treatments',
             'replicates.platform',
-            'submitted_by',
-            'lab',
-            'award',
             'possible_controls',
             'target.organism',
-            'documents.lab',
-            'documents.award',
-            'documents.submitted_by'
-        ])
+        ]
         rev = {
             'replicates': ('replicate', 'experiment'),
         }
-        name_key = 'accession'
-        keys = ACCESSION_KEYS + ALIAS_KEYS
 
         def template_namespace(self, properties, request=None):
-            ns = Collection.Item.template_namespace(self, properties, request)
+            ns = super(Experiment.Item, self).template_namespace(properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']
@@ -630,14 +656,3 @@ class RNAiCharacterization(Characterization):
         'title': 'RNAi characterizations',
         'description': 'Listing of biosample RNAi characterizations',
     }
-
-
-@location('datasets')
-class Dataset(Collection):
-    item_type = 'dataset'
-    schema = load_schema('dataset.json')
-    properties = {
-        'title': 'Datasets',
-        'description': 'Listing of datasets',
-    }
-    item_keys = ACCESSION_KEYS + ALIAS_KEYS

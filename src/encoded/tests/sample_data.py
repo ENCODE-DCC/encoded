@@ -225,6 +225,12 @@ EXPERIMENTS = [
     'lab': 'myers',
     'award': 'Myers',
     },
+    {
+    'uuid': 'f26eeb63-e77c-47e9-b8fd-e21b24065424',
+    'accession': 'ENCSR001TST',
+    'lab': 'myers',
+    'award': 'Myers',
+    },
 ]
 
 REPLICATES = [
@@ -245,6 +251,26 @@ REPLICATES = [
 ]
 
 
+FILES = [
+    {
+    'uuid': 'c22e0390-af36-483c-950d-5a2e0efe37ec',
+    'accession': 'ENCFF000TST',
+    'dataset': 'ENCSR000TST',
+    'file_format': 'fastq',
+    'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+    'output_type': 'rawData',
+    },
+    {
+    'uuid': '0a38fea0-c067-415a-9710-c887aff95767',
+    'accession': 'ENCFF001TST',
+    'dataset': 'ENCSR001TST',
+    'file_format': 'fastq',
+    'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
+    'output_type': 'rawData',
+    },
+]
+
+
 URL_COLLECTION = OrderedDict([
     ('lab', LABS),
     ('user', USERS),
@@ -259,6 +285,7 @@ URL_COLLECTION = OrderedDict([
     ('library', LIBRARIES),
     ('experiment', EXPERIMENTS),
     ('replicate', REPLICATES),
+    ('file', FILES),
 ])
 
 
