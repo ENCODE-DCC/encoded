@@ -279,28 +279,34 @@ class PageOrJSON:
 def es_tween_factory(handler, registry):
 
     def es_tween(request):
-        if request.environ.get('REQUEST_METHOD') == 'GET' and request.environ.get('PATH_INFO') != '/search/':
-            from .indexing import ELASTIC_SEARCH
-            es = request.registry[ELASTIC_SEARCH]
-            query = {
-                'query': {
-                    'term': {
-                        'url': request.environ.get('PATH_INFO')
+        try:
+            source = request.environ.get('source')
+        except:
+            source = ''
+        if source is not 'db':
+            if request.environ.get('REQUEST_METHOD') == 'GET' and request.environ.get('PATH_INFO') != '/search/':
+                from .indexing import ELASTIC_SEARCH
+                es = request.registry[ELASTIC_SEARCH]
+                query = {
+                    'query': {
+                        'term': {
+                            'url': request.environ.get('PATH_INFO')
+                        }
                     }
                 }
-            }
-            data = es.search(query, index='encoded')
-            if len(data['hits']['hits']) > 0:
-                try:
-                    frame = request.params['frame']
-                    if frame == 'unembedded_object':
-                        value = data['hits']['hits'][0]['_source']['unembedded_object']
-                    else:
+                print request.environ.get('PATH_INFO')
+                data = es.search(query, index='encoded')
+                if len(data['hits']['hits']) > 0:
+                    try:
+                        frame = request.params['frame']
+                        if frame == 'unembedded_object':
+                            value = data['hits']['hits'][0]['_source']['unembedded_object']
+                        else:
+                            value = data['hits']['hits'][0]['_source']['object']
+                    except:
                         value = data['hits']['hits'][0]['_source']['object']
-                except:
-                    value = data['hits']['hits'][0]['_source']['object']
 
-                from pyramid.renderers import render_to_response
-                return render_to_response('json', value, request)
+                    from pyramid.renderers import render_to_response
+                    return render_to_response('json', value, request)
         return handler(request)
     return es_tween

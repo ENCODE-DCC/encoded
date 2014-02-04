@@ -335,12 +335,6 @@ var Dbxref = dbxref.Dbxref;
             var searchTerm = id.query['searchTerm'] || '';
             return (
                 <div>
-                    <div className="three-d-box">
-                        <form className="input-prepend">
-                            <input id='inputValidate' className="input-lg" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, chip-seq etc" 
-                                ref="searchTerm" name="searchTerm" defaultValue={searchTerm} />
-                        </form>
-                    </div>
                     {notification === 'Success' ?
                         <div className="panel data-display"> 
                             {this.transferPropsTo(<ResultTable />)}

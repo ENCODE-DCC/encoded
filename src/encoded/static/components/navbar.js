@@ -13,7 +13,8 @@ var NavBar = React.createClass({
             portal: this.props.portal,
             section: section,
             session: this.props.session,
-            user_actions: this.props.user_actions
+            user_actions: this.props.user_actions,
+            href: this.props.href,
         });
     }
 });
@@ -41,7 +42,7 @@ var NavBarLayout = React.createClass({
                         <div className="nav-collapse collapse">
                             <GlobalSections global_sections={portal.global_sections} section={section} />
                             {this.transferPropsTo(<UserActions />)}
-                            <Search />
+                            {this.transferPropsTo(<Search />)}
                         </div>
                     </div>
                 </div>
@@ -71,14 +72,16 @@ var GlobalSections = React.createClass({
 
 var Search = React.createClass({
     render: function() {
-    return (
-    	<form className="navbar-form pull-right">
-			<div className="input-append" id="search">
-				<input className="span2" id="appendedInputButton" type="text" />
-				<button className="btn" type="button"><i className="icon-search"></i></button>
-			</div>
-		</form>
-        );
+        var id = url.parse(this.props.href, true);
+        var searchTerm = id.query['searchTerm'] || '';
+        return (
+        	<form className="navbar-form pull-right" action="/search/">
+    			<div className="input-append" id="search">
+    				<input className="input-medium search-query searchbox-style" type="text" placeholder="Search ENCODE" 
+                        ref="searchTerm" name="searchTerm" defaultValue={searchTerm} />
+    			</div>
+    		</form>
+        );  
     }
 });
 

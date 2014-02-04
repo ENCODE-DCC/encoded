@@ -19,19 +19,23 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 }
 
 input.search-query {
-	@include border-radius($borderRadiusSmall);
+	height: 14px;
+}
+
+form.navbar-form {
+	margin-top: 3px;
 }
 
 // Navbar search
 #search input {
-	width: 100px;
+	width: 150px;
 	-ms-transition: width 0.5s ease-out;
 	-moz-transition: width 0.5s ease-out;
 	-webkit-transition: width 0.5s ease-out;
 	transition: width 0.5s ease-out;
 }
 #search input:focus {
-	width: 200px;
+	width: 300px;
 	-ms-transition: width 0.5s ease-out;
 	-moz-transition: width 0.5s ease-out;
 	-webkit-transition: width 0.5s ease-out;
