@@ -291,24 +291,28 @@ def create_replicate(app, dataset, bio_rep_num, tech_rep_num, dry_run=False):
     url = collection_url(REPLICATES)
     if not dry_run:
 
-        resp = app.post_json(url, rep, status=[201,409])
-        if resp.status_code == 409:
-            # this means that the replicate was created during this run and is probalby NOW valid
-            matches = [ rep for rep in dataset['replicates']
-            if rep['biological_replicate_number'] == int(bio_rep_num) and
-               rep['technical_replicate_number'] == int(tech_rep_num)]
-            if len(matches) == 1:
-                logger.info("Replicate posting conflicted but found (probably created earlier)")
-                return matches[0]['@id']
-            else:
-                msg = "Replicate posting conflicted, but valid replicate could not be found"
-                logger.error("%s: %s (%s, %s)" % (msg, exp, bio_rep_num, tech_rep_num))
-                return None
-        else:
+        import pdb;pdb.set_trace()
+
+        try:
+            resp = app.post_json(url, rep, status=[201])
             logger.info(str(resp))
             rep_id = str(resp.json[unicode('@graph')][0]['@id'])
             summary.replicates_posted = summary.replicates_posted + 1
             return rep_id
+
+        except AppError, e:
+            if True: #resp.status_code == 409:
+                # this means that the replicate was created during this run and is probalby NOW valid
+                matches = [ rep for rep in dataset['replicates'] if rep['biological_replicate_number'] == int(bio_rep_num) and
+                   rep['technical_replicate_number'] == int(tech_rep_num)]
+
+                if len(matches) == 1:
+                    logger.info("Replicate posting conflicted but found (probably created earlier)")
+                    return matches[0]['@id']
+                else:
+                    msg = "Replicate posting conflicted, but valid replicate could not be found"
+                    logger.error("%s: %s (%s, %s)" % (msg, exp, bio_rep_num, tech_rep_num))
+                    return None
 
     else:
         return "/replicate/new"

@@ -78,6 +78,7 @@ def test_list_new(workbook, testapp):
     new_accs = sorted(sync_edw.get_missing_filelist_from_lists(app_accs, edw_accs))
     assert new_accs == sorted(edw_test_data.new_out)
 
+@pytest.mark.skipif(True, reason='Possible conflict with redundant test')
 @pytest.mark.slow
 def test_import_file(workbook, testapp):
     # Test import of new file to encoded
