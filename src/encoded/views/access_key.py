@@ -41,6 +41,7 @@ class AccessKey(Collection):
 
     __acl__ = [
         (Allow, Authenticated, 'traverse'),
+        (Allow, 'remoteuser.INDEXER', 'traverse'),
         (Deny, Everyone, 'traverse'),
         (Allow, 'role.owner', ['edit', 'view']),
         (Allow, 'group.admin', 'view'),
