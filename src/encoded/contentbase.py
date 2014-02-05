@@ -35,7 +35,10 @@ from pyramid.settings import asbool
 from pyramid.threadlocal import (
     manager,
 )
-from pyramid.traversal import find_root
+from pyramid.traversal import (
+    find_root,
+    resource_path,
+)
 from pyramid.view import view_config
 from sqlalchemy import (
     func,
@@ -446,6 +449,9 @@ class Item(object):
     def __init__(self, collection, model):
         self.__parent__ = collection
         self.model = model
+
+    def __repr__(self):
+        return '<%s at %s>' % (type(self).__name__, resource_path(self))
 
     @property
     def __name__(self):
