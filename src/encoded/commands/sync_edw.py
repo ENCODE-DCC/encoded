@@ -507,8 +507,11 @@ def patch_fileinfo(app, props, propinfo, dry_run=False):
             logger.error("%s: (%s) for %s" % (msg, propinfo[prop], accession))
             return None
 
-    dataset = app.get(propinfo['dataset']).maybe_follow().json
-    propinfo = try_replicate(app, propinfo, dataset, dry_run)
+    if not propinfo['replicate']:
+        # only occurs if we are in patch replicate mode
+        dataset = app.get(propinfo['dataset']).maybe_follow().json
+        propinfo = try_replicate(app, propinfo, dataset, dry_run)
+
     url = collection_url(FILES) + accession
     if not dry_run:
         resp = app.patch_json(url, propinfo, status=[200, 201, 409, 422])
