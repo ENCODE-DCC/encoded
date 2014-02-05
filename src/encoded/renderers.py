@@ -1,3 +1,4 @@
+from .json_script_escape import json_script_escape
 from pkg_resources import resource_filename
 from pyramid.events import (
     NewRequest,
@@ -19,7 +20,6 @@ import json
 import logging
 import os
 import pyramid.renderers
-import pyramid.tweens
 import subprocess
 import threading
 import time
@@ -33,8 +33,6 @@ log = logging.getLogger(__name__)
 def includeme(config):
     config.add_renderer(None, PageOrJSON)
     config.add_renderer('null_renderer', NullRenderer)
-    config.add_renderer('json', json_renderer)
-    config.add_tween('.renderers.es_tween_factory', over=pyramid.tweens.MAIN)
     config.scan(__name__)
 
 
@@ -125,7 +123,7 @@ class PageWorker(threading.local):
         """ defer creation as __init__ also called in management thread
         """
         node_env = os.environ.copy()
-        node_env['NODE_PATH'] = ''
+        node_env['NODE_PATH']= ''
         process = subprocess.Popen(
             self.process_args, close_fds=True,
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -274,38 +272,3 @@ class PageOrJSON:
             return value
         else:
             return self.page_renderer(value, system)
-
-
-def es_tween_factory(handler, registry):
-
-    def es_tween(request):
-        try:
-            source = request.params['source'].strip()
-        except:
-            source = ''
-        if source != 'database':
-            if request.environ.get('REQUEST_METHOD') == 'GET' and request.environ.get('PATH_INFO') != '/search/':
-                from .indexing import ELASTIC_SEARCH
-                es = request.registry[ELASTIC_SEARCH]
-                query = {
-                    'query': {
-                        'term': {
-                            'url': request.environ.get('PATH_INFO')
-                        }
-                    }
-                }
-                data = es.search(query, index='encoded')
-                if len(data['hits']['hits']) > 0:
-                    try:
-                        frame = request.params['frame']
-                        if frame == 'unembedded_object':
-                            value = data['hits']['hits'][0]['_source']['unembedded_object']
-                        else:
-                            value = data['hits']['hits'][0]['_source']['object']
-                    except:
-                        value = data['hits']['hits'][0]['_source']['object']
-
-                    from pyramid.renderers import render_to_response
-                    return render_to_response('json', value, request)
-        return handler(request)
-    return es_tween
