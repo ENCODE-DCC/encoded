@@ -111,10 +111,7 @@ def add_dependent_objects(root, new, existing):
             item_rels = item.model.rels
             for rel in item_rels:
                 rev_item = root.get_by_uuid(rel.target_rid)
-                rev = rev_item.rev
-                if rev is None:
-                    continue
-                if (rel.source.item_type, rel.rel) in rev_item.rev.values():
+                if (rel.source.item_type, rel.rel) in rev_item.merged_rev.values():
                     dependents.add(rel.target_rid)
 
         existing.update(objects)

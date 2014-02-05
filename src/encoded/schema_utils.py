@@ -37,7 +37,6 @@ def mixinProperties(schema, resolver):
             with resolver.resolving(ref) as resolved:
                 mixin = resolved
         bases.append(mixin)
-    bases.append(schema.get('properties', {}))
     for base in bases:
         for name, base_prop in base.iteritems():
             prop = properties.setdefault(name, {})
@@ -48,6 +47,12 @@ def mixinProperties(schema, resolver):
                 if prop[k] == v:
                     continue
                 raise ValueError('Schema mixin conflict for %s/%s' % (name, k))
+    # Allow schema properties to override
+    base = schema.get('properties', {})
+    for name, base_prop in base.iteritems():
+        prop = properties.setdefault(name, {})
+        for k, v in base_prop.iteritems():
+            prop[k] = v
     schema['properties'] = properties
     return schema
 
