@@ -110,7 +110,7 @@ def make_subrequest(request, path):
     return subreq
 
 
-def embed(request, path, result=None):
+def embed(request, path, result=None, as_user=False):
     # Should really be more careful about what gets included instead.
     # Cache cut response time from ~800ms to ~420ms.
     embedded = None
@@ -124,6 +124,10 @@ def embed(request, path, result=None):
         return deepcopy(result)
     subreq = make_subrequest(request, path)
     subreq.override_renderer = 'null_renderer'
+    if not as_user:
+        if 'HTTP_COOKIE' in subreq.environ:
+            del subreq.environ['HTTP_COOKIE']
+        subreq.remote_user = 'EMBED'
     try:
         result = request.invoke_subrequest(subreq)
     except HTTPNotFound:
@@ -298,6 +302,7 @@ class Root(object):
     __parent__ = None
     builtin_acl = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse')),
+        (Allow, 'remoteuser.EMBED', ('view', 'traverse')),
     ]
 
     def __init__(self, acl=None):
@@ -1142,7 +1147,7 @@ def collection_add(context, request, render=None):
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '?embed=false')
+        rendered = embed(request, item_uri + '?embed=false', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201
@@ -1216,7 +1221,7 @@ def item_edit(context, request, render=None):
     else:
         item_uri = request.resource_path(context)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '?embed=false')
+        rendered = embed(request, item_uri + '?embed=false', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 200
