@@ -36,7 +36,7 @@ def test_biosample_upgrade(app, biosample_1):
     schema = load_schema('biosample.json')
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
-    assert value['schema_version'] == schema['properties']['schema_version']
+    assert value['schema_version'] == schema['properties']['schema_version']['default']
     assert value['starting_amount'] == 1000
 
 
@@ -46,7 +46,7 @@ def test_biosample_upgrade_unknown(app, biosample_1):
     biosample_1['starting_amount'] = 'Unknown'
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
-    assert value['schema_version'] == schema['properties']['schema_version']
+    assert value['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in value
 
 
@@ -56,7 +56,7 @@ def test_biosample_upgrade_empty_string(app, biosample_1):
     biosample_1['starting_amount'] = ''
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
-    assert value['schema_version'] == schema['properties']['schema_version']
+    assert value['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in value
 
 
@@ -66,7 +66,7 @@ def test_biosample_upgrade_exponent(app, biosample_1):
     biosample_1['starting_amount'] = '1 X 10^5'
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
-    assert value['schema_version'] == schema['properties']['schema_version']
+    assert value['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in value
     assert value['starting_amount'] == 1e5
 
@@ -83,13 +83,13 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
 
     # When the item is fetched, it is upgraded automatically.
     res = testapp.get(location).maybe_follow()
-    assert res.json['schema_version'] == schema['properties']['schema_version']
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
 
     res = testapp.patch_json(location, {})
 
     # The stored properties are now upgraded.
     res = testapp.get(location+'?raw=true&upgrade=false').maybe_follow()
-    assert res.json['schema_version'] == schema['properties']['schema_version']
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
 
 
 def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
@@ -100,7 +100,7 @@ def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     location = res.location
     res = testapp.patch_json(location, {})
     res = testapp.get(location+'?raw=true&upgrade=false').maybe_follow()
-    assert res.json['schema_version'] == schema['properties']['schema_version']
+    assert res.json['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in res.json
 
 def test_biosample_upgrade_subcellular_fraction(app, biosample_2):
@@ -108,7 +108,7 @@ def test_biosample_upgrade_subcellular_fraction(app, biosample_2):
     schema = load_schema('biosample.json')
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_2, target_version='2')
-    assert value['schema_version'] == schema['properties']['schema_version']
+    assert value['schema_version'] == schema['properties']['schema_version']['default']
     assert value['subcellular_fraction_term_name'] == 'nucleus'
     assert value['subcellular_fraction_term_id'] == 'GO:0005634'
     assert 'subcellular_fraction' not in value
@@ -119,7 +119,7 @@ def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
     biosample_2['subcellular_fraction'] = 'membrane'
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_2, target_version='2')
-    assert value['schema_version'] == schema['properties']['schema_version']
+    assert value['schema_version'] == schema['properties']['schema_version']['default']
     assert value['subcellular_fraction_term_name'] == 'membrane fraction'
     assert value['subcellular_fraction_term_id'] == 'GO:0005634'
     assert 'subcellular_fraction' not in value
