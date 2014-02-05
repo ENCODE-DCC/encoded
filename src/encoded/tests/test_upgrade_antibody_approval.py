@@ -4,7 +4,7 @@ SCHEMA_DIR = 'src/encoded/schemas/'
 
 
 @pytest.fixture
-def antibody_approval(submitter, award, lab, antibody, target):
+def antibody_approval(submitter, award, lab, antibody_lot, target):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -23,11 +23,9 @@ def antibody_approval_1(antibody_approval):
 
 
 def test_antibody_approval_upgrade(app, antibody_approval_1):
-    from encoded.schema_utils import load_schema
-    schema = load_schema('antibody_approval.json')
     migrator = app.registry['migrator']
     value = migrator.upgrade('antibody_approval', antibody_approval_1, target_version='2')
-    assert value['schema_version'] == schema['properties']['schema_version']
+    assert value['schema_version'] == 2
     assert value['status'] == 'PENDING DCC REVIEW'
 
 def test_antibody_approval_upgrade_inline(testapp, antibody_approval_1):

@@ -4,7 +4,7 @@ SCHEMA_DIR = 'src/encoded/schemas/'
 
 
 @pytest.fixture
-def antibody_characterization(submitter, award, lab, characterizes, target):
+def antibody_characterization(submitter, award, lab, antibody_lot, target):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -13,7 +13,7 @@ def antibody_characterization(submitter, award, lab, characterizes, target):
     }
 
 @pytest.fixture
-def biosample_characterization(submitter, award, lab, characterizes):
+def biosample_characterization(submitter, award, lab, biosample):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -21,7 +21,7 @@ def biosample_characterization(submitter, award, lab, characterizes):
     }
 
 @pytest.fixture
-def rnai_characterization(submitter, award, lab, characterizes):
+def rnai_characterization(submitter, award, lab, rnai):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],
@@ -29,7 +29,7 @@ def rnai_characterization(submitter, award, lab, characterizes):
     }
 
 @pytest.fixture
-def construct_characterization(submitter, award, lab, characterizes):
+def construct_characterization(submitter, award, lab, construct):
     return {
         'award': award['uuid'],
         'lab': lab['uuid'],

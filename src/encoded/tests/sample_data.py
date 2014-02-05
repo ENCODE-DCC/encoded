@@ -68,6 +68,7 @@ SOURCES = [
 ANTIBODY_LOTS = [
     {
     'uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
+    'accession': 'ENCAB000TST',
     'clonality': 'monoclonal',
     'host_organism': 'mouse',
     'source': 'sigma',  # PK
@@ -250,6 +251,27 @@ REPLICATES = [
     },
 ]
 
+RNAIS = [
+    {
+    'uuid': '8d155bde0-8ebc-11e3-baa8-0800200c9a66',
+    'lab': 'myers',
+    'award': 'myers',
+    'rnai_sequence', 'TATATGGGGAA',
+    'target': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
+    'rnai_type': 'shRNA',
+    },
+]
+
+CONSTRUCTS = [
+    {
+    'uuid': '86b968ae-e5d3-4562-bd8e-e20e7ba40119',
+    'rnai_target_sequence': 'ATCTCTGTAAA',
+    'lab': 'myers',
+    'award': 'myers',
+    'target': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
+    'construct_type': 'fusion protein',
+    },
+]
 
 FILES = [
     {
@@ -285,6 +307,8 @@ URL_COLLECTION = OrderedDict([
     ('library', LIBRARIES),
     ('experiment', EXPERIMENTS),
     ('replicate', REPLICATES),
+    ('rnai', RNAIS),
+    ('construct', CONSTRUCTS),
     ('file', FILES),
 ])
 
