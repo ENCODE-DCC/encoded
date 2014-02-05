@@ -41,7 +41,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                         {context.dataset_type ? <dd>{context.dataset_type}</dd> : null}
                         
                         {context.lab ? <dt>Lab</dt> : null}
-                        {context.lab ? <dd>{context.lab}</dd> : null}
+                        {context.lab ? <dd>{context.lab.title}</dd> : null}
                         
                         {context.aliases.length ? <dt>Aliases</dt> : null}
                         {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
