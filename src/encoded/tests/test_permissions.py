@@ -65,6 +65,12 @@ def test_users_view_basic_authenticated(submitter, authenticated_testapp):
     assert 'email' not in res.json
 
 
+def test_users_view_basic_anon(submitter, anontestapp):
+    res = anontestapp.get(submitter['@id'])
+    assert 'title' in res.json
+    assert 'email' not in res.json
+
+
 def test_users_view_basic_indexer(submitter, indexer_testapp):
     res = indexer_testapp.get(submitter['@id'])
     assert 'title' in res.json

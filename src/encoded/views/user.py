@@ -34,6 +34,7 @@ class User(Collection):
         (Allow, 'group.read-only-admin', ['list', 'view_details']),
         (Allow, 'role.owner', ['edit', 'view_details']),
         (Allow, 'remoteuser.INDEXER', ['list', 'view']),
+        (Allow, Everyone, ['view', 'traverse']),
         (Deny, Everyone, ['list', 'view_details']),
     ]
 
