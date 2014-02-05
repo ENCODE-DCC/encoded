@@ -325,8 +325,6 @@ def post_fileinfo(app, fileinfo, dry_run=False):
     logger.info('....POST file: %s' % (accession))
     logger.info("%s" % fileinfo)
 
-    if accession == 'ENCFF001MXG':
-        import pdb;pdb.set_trace()
     ds = fileinfo.get('dataset', None)
     dataset = None
     if ds:
@@ -574,8 +572,6 @@ def make_app(application, username, password, test=False):
 
     app = internal_app(application, username)
 
-    if test:
-        import pdb;pdb.set_trace()
     # check schema version
     resp = app.get(FILE_PROFILE_URL)
     schema = resp.json['properties']['schema_version']['default']
