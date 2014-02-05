@@ -408,12 +408,12 @@ def try_replicate(app, fileinfo, dataset, dry_run):
         logger.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
         sys.exit(1)
 
-def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, dataset='', since=0, test=False):
+def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, enc_dataset='', edw_dataset='', since=0, test=False):
 
-    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase, dataset=dataset, since=since, test=test)
+    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase, dataset=edw_dataset, since=since, test=test)
     # Other parameters are default
     edw_dict = { d['accession']:convert_edw(app, d, phase) for d in edw_files }
-    app_files = get_app_fileinfo(app, phase=phase, dataset=dataset)
+    app_files = get_app_fileinfo(app, phase=phase, dataset=enc_dataset)
     app_dict = { d['accession']:d for d in app_files }
 
     return edw_dict, app_dict
@@ -567,13 +567,15 @@ def internal_app(configfile, username=''):
     return TestApp(app, environ)
 
 
-def make_app(application, username, password):
+def make_app(application, username, password, test=False):
     # Configure test app
     logger.info('Using encoded app: %s' % application)
 
 
     app = internal_app(application, username)
 
+    if test:
+        import pdb;pdb.set_trace()
     # check schema version
     resp = app.get(FILE_PROFILE_URL)
     schema = resp.json['properties']['schema_version']['default']
@@ -656,6 +658,7 @@ def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=Fals
     logger.warn("SUMMARY: %s total errors, %s total warnings" % (total_errors, total_warnings))
 
 def main():
+    global NO_UPDATE
     import argparse
     parser = argparse.ArgumentParser(
         description="Synchronize EDW and encoded files/replicates", epilog=EPILOG,
@@ -730,23 +733,18 @@ def main():
     if zargs.experiment:
         logger.warning("Only fetching from Dataset: %s" % zargs.experiment)
 
-    if zargs.use_test:
-        logger.warning("Will fetch TST accessions from EDW")
-        app_settings['accession_factory'] = 'encoded.server_defaults.test_accession'
-
     if zargs.no_patch:
         logger.warning("Will not PATCH files, only POST")
 
+    if zargs.use_test:
+        logger.warning("Will fetch TST accessions from EDW")
+        zargs.config_uri = 'test_accession.ini'
 
     if (zargs.patch_replicates and not zargs.experiment):
         logger.error("Not allowed to patch replicates for all; please use -E (--experiment) to select a dataset.")
         sys.exit(1)
 
-    app = make_app(zargs.config_uri, zargs.username, zargs.password)
-    if zargs.use_test:
-        logger.warning("Will fetch TST accessions from EDW")
-        app.settings['accession_factory'] = 'encoded.server_defaults.test_accession'
-
+    app = make_app(zargs.config_uri, zargs.username, zargs.password, test=zargs.use_test)
     edw = edw_file.make_edw(zargs.data_host)
 
     try:
@@ -760,7 +758,7 @@ def main():
     summary.total_encoded_exps = len(experiments.keys())
     summary.total_encoded_ds = len(datasets.keys())
 
-    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase, dataset=single, since=since, test=zargs.use_test)
+    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase, edw_dataset=zargs.experiment, enc_dataset=single, since=since, test=zargs.use_test)
 
     summary.total_encoded_files = len(app_files)
     summary.total_edw_files = len(edw_files)

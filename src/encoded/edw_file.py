@@ -280,14 +280,15 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
         ## TODO shouldn't all the below be done with filters or something?
         if start_id > 0:
             query.append_whereclause('edwValidFile.id > %s' % start_id)
-        if experiment:
-            query.append_whereclause('(edwValidFile.experiment like "wgEncodeE%" or edwValidFile.experiment like "ENCSR%")')
-        if phase == '2':
-            query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
+        if dataset:
+            query.append_whereclause('edwValidFile.experiment = "%s"' % dataset)
+        elif phase == '2':
+                query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
         elif phase  == '3':
-            query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
-        elif dataset:
-            query.append_whereclause('edwValidFile.experiment == "%s"' % experiment)
+                query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
+        elif experiment:
+            query.append_whereclause('(edwValidFile.experiment like "wgEncodeE%" or edwValidFile.experiment like "ENCSR%")')
+
         if not test:
             query.append_whereclause('edwValidFile.licensePlate like "ENCFF%"')  ## skip TST
         if since > 0:
@@ -299,7 +300,7 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
             query = query.limit(limit)
         results = conn.execute(query)
     except (DBAPIError, SQLAlchemyError) as e:
-        sys.stderr.write("ERROR: EDW SQL query failed (suspect schema change)\n")
+        sys.stderr.write("ERROR: EDW SQL query failed (suspect schema change)\n%s" % e)
         exit(-1)
 
     files =  [ dict(row) for row in results ]
