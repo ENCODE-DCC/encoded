@@ -140,7 +140,6 @@ class Organism(Collection):
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
-        'description': 'Listing of sources and vendors for ENCODE material',
     }
     item_name_key = 'name'
     unique_key = 'organism:name'
@@ -236,7 +235,7 @@ class ConstructCharacterization(Characterization):
     item_type = 'construct_characterization'
     schema = load_schema('construct_characterization.json')
     properties = {
-        'title': 'Constructs characterizations',
+        'title': 'Construct characterizations',
         'description': 'Listing of biosample construct characterizations',
     }
 
