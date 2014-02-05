@@ -54,8 +54,40 @@
             "enum": ["experiment"]
         },
         "documents": {
-            "description": "Protocols or other documents that describe the assay or the results (not data files)."
-
+            "title": "Documents",
+            "description": "Protocols or other documents that describe the assay or the results (not data files).",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Document",
+                "description": "A protocol or other document that describes the assay or the results (not data files).",
+                "comment": "See document.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "document"
+            }
+        },
+        "files": {
+            "title": "Data files",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Data file",
+                "comment": "See file.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "file"
+            }
+        },
+        "references": {
+            "title": "References",
+            "description": "The identifiers that reference data found in the experiment.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Reference",
+                "description": "An identifier that references data found in the experiment.",
+                "type": "string",
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
+            }           
         },
         "possible_controls": {
             "title": "Controls",
