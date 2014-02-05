@@ -6,7 +6,6 @@ from sqlalchemy.exc import IntegrityError
 import encoded.commands.sync_edw as sync_edw
 
 import edw_test_data
-import test_indexing
 
 from test_views import TYPE_LENGTH
 
@@ -78,31 +77,49 @@ def test_list_new(workbook, testapp):
     new_accs = sorted(sync_edw.get_missing_filelist_from_lists(app_accs, edw_accs))
     assert new_accs == sorted(edw_test_data.new_out)
 
+
+@pytest.fixture(scope='session')
+def test_accession_app(request, check_constraints, zsa_savepoints, app_settings):
+    from encoded import main
+    app_settings = app_settings.copy()
+    app_settings['accession_factory'] = 'encoded.server_defaults.test_accession'
+    return main({}, **app_settings)
+
+@pytest.fixture
+def test_accession_testapp(request, test_accession_app, external_tx, zsa_savepoints):
+    '''TestApp with JSON accept header.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    return TestApp(test_accession_app, environ)
+
 @pytest.mark.slow
-def test_import_file(workbook, testapp):
-    # Test import of new file to encoded
+def test_import_tst_file(workbook, test_accession_testapp):
+    # Test import of new file TSTXX to encoded
     # this tests adds replicates, but never checks their validity
     # ignoring this because I don't want to deal with tearing down ES  posts
 
     import re
 
-
     input_file = 'import_in.1.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + input_file, 'rU')
     reader = DictReader(f, delimiter='\t')
 
-    sync_edw.get_all_datasets(testapp)
+    sync_edw.get_all_datasets(test_accession_testapp)
 
     for fileinfo in reader:
 
-        converted_file = sync_edw.convert_edw(testapp, fileinfo)
+        converted_file = sync_edw.convert_edw(test_accession_testapp, fileinfo)
         #set_in = set(fileinfo.items())
-        resp = sync_edw.post_fileinfo(testapp, converted_file)
+        resp = sync_edw.post_fileinfo(test_accession_testapp, converted_file)
         # exercises: set_fileinfo_experiment, set_fileinfo_replicate, POST
         if resp:
             acc = converted_file['accession']
             url = sync_edw.collection_url(sync_edw.FILES) + acc
-            get_resp = testapp.get(url).maybe_follow()
+            get_resp = test_accession_testapp.get(url).maybe_follow()
             file_dict = get_resp.json
             assert( not sync_edw.compare_files(file_dict, converted_file) )
         else:
@@ -261,6 +278,9 @@ def test_patch_replicate(workbook, testapp):
     test_set = sync_edw.try_datasets(testapp, dataset=test_acc)
     assert(test_set)
 
+    update = [ x for x in sync_edw.NO_UPDATE if x != 'replicate' ]
+    sync_edw.NO_UPDATE = update
+
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file, 'rU')
     reader = DictReader(f, delimiter='\t')
@@ -282,7 +302,7 @@ def test_patch_replicate(workbook, testapp):
     app_dict = { d['accession']:d for d in app_files }
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    assert len(patch) == 1
+    assert len(patch) == 2
     assert len(same) == 2
 
 
@@ -298,3 +318,8 @@ def test_patch_replicate(workbook, testapp):
         else:
             assert patched
 
+    patched_file = testapp.get('/files/ENCFF001MYM').maybe_follow().json
+    rep = testapp.get(patched_file['replicate']).maybe_follow().json
+    assert(rep['biological_replicate_number'] == 1)
+    assert(rep['technical_replicate_number'] == 2)
+    assert(rep['experiment'] == patched_file['dataset'])

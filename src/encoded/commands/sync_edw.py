@@ -293,26 +293,25 @@ def create_replicate(app, dataset, bio_rep_num, tech_rep_num, dry_run=False):
     logger.info('....POST replicate %d - %d for experiment %s' % (bio_rep_num, tech_rep_num, exp))
     url = collection_url(REPLICATES)
     if not dry_run:
-        try:
-            resp = app.post_json(url, rep, status=[201])
-            logger.info(str(resp))
-            rep_id = str(resp.json[unicode('@graph')][0]['@id'])
-            summary.replicates_posted = summary.replicates_posted + 1
-            return rep_id
+        resp = app.post_json(url, rep, status=[201, 409])
 
-        except AppError, e:
-            if True: #resp.status_code == 409:
-                # this means that the replicate was created during this run and is probalby NOW valid
-                matches = [ rep for rep in dataset['replicates'] if rep['biological_replicate_number'] == int(bio_rep_num) and
-                   rep['technical_replicate_number'] == int(tech_rep_num)]
+        if resp.status_code == 409:
+            # this means that the replicate was created during this run and is probalby NOW valid
+            matches = [ rep for rep in dataset['replicates'] if rep['biological_replicate_number'] == int(bio_rep_num) and
+               rep['technical_replicate_number'] == int(tech_rep_num)]
 
-                if len(matches) == 1:
-                    logger.info("Replicate posting conflicted but found (probably created earlier)")
-                    return matches[0]['@id']
-                else:
-                    msg = "Replicate posting conflicted, but valid replicate could not be found"
-                    logger.error("%s: %s (%s, %s)" % (msg, exp, bio_rep_num, tech_rep_num))
-                    return None
+            if len(matches) == 1:
+                logger.info("Replicate posting conflicted but found (probably created earlier)")
+                return matches[0]['@id']
+            else:
+                msg = "Replicate posting conflicted, but valid replicate could not be found"
+                logger.error("%s: %s (%s, %s)" % (msg, exp, bio_rep_num, tech_rep_num))
+                return None
+
+        logger.info(str(resp))
+        rep_id = str(resp.json[unicode('@graph')][0]['@id'])
+        summary.replicates_posted = summary.replicates_posted + 1
+        return rep_id
 
     else:
         return "/replicate/new"
@@ -354,34 +353,9 @@ def post_fileinfo(app, fileinfo, dry_run=False):
             fileinfo.pop('replicate', None)
         elif not rep:
             # try to create one
-            try:
-                br = int(fileinfo['biological_replicate'])
-                tr = int(fileinfo['technical_replicate'])
-                fileinfo['replicate'] = create_replicate(app, dataset, br, tr, dry_run)
-                del fileinfo['biological_replicate']
-                del fileinfo['technical_replicate']
-            except ValueError, e:
-                msg = "Refusing to POST file with confusing replicate ids"
-                summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-                logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-                logger.info("%s" % e.message)
+            fileinfo = try_replicate(app, fileinfo, dataset, dry_run)
+            if not fileinfo:
                 return None
-            except KeyError, e:
-                msg = "Refusing to POST file with missing replicate ids"
-                summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-                logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-                logger.info("%s" % e.message)
-                return None
-            except AppError, e:
-                msg = "Could not POST replicate"
-                summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-                logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-                logger.info("%s" % e.message)
-                return None
-            except Exception, e:
-                logger.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
-                sys.exit(1)
-
 
     url = collection_url(FILES)
     if not dry_run:
@@ -403,10 +377,40 @@ def post_fileinfo(app, fileinfo, dry_run=False):
         logger.warning('Sucessful dry-run POST File %s' % (accession))
         return {'status_int': 201}
 
+def try_replicate(app, fileinfo, dataset, dry_run):
+
+    try:
+        br = int(fileinfo['biological_replicate'])
+        tr = int(fileinfo['technical_replicate'])
+        fileinfo['replicate'] = create_replicate(app, dataset, br, tr, dry_run)
+        del fileinfo['biological_replicate']
+        del fileinfo['technical_replicate']
+        return fileinfo
+    except ValueError, e:
+        msg = "Refusing to POST file with confusing replicate ids"
+        summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+        logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+        logger.info("%s" % e.message)
+        return None
+    except KeyError, e:
+        msg = "Refusing to POST file with missing replicate ids"
+        summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+        logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+        logger.info("%s" % e.message)
+        return None
+    except AppError, e:
+        msg = "Could not POST replicate"
+        summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+        logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+        logger.info("%s" % e.message)
+        return None
+    except Exception, e:
+        logger.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
+        sys.exit(1)
 
 def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, dataset='', since=0, test=False):
 
-    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase, dataset=dataset, since=since, test=use_test)
+    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase, dataset=dataset, since=since, test=test)
     # Other parameters are default
     edw_dict = { d['accession']:convert_edw(app, d, phase) for d in edw_files }
     app_files = get_app_fileinfo(app, phase=phase, dataset=dataset)
@@ -503,6 +507,8 @@ def patch_fileinfo(app, props, propinfo, dry_run=False):
             logger.error("%s: (%s) for %s" % (msg, propinfo[prop], accession))
             return None
 
+    dataset = app.get(propinfo['dataset']).maybe_follow().json
+    propinfo = try_replicate(app, propinfo, dataset, dry_run)
     url = collection_url(FILES) + accession
     if not dry_run:
         resp = app.patch_json(url, propinfo, status=[200, 201, 409, 422])
@@ -711,7 +717,8 @@ def main():
 
     if zargs.patch_replicates:
         logger.warning("WILL attempt to PATCH replicates!  Careful!")
-        NO_UPDATE = [ x for x in NO_UPDATE if x != 'replicate' ]
+        update = [ x for x in NO_UPDATE if x != 'replicate' ]
+        NO_UPDATE = update
 
     if zargs.experiment and zargs.phase != edw_file.ENCODE_PHASE_ALL:
         logger.error("Phase (-P) and single dataset (-E/--experiment) not compatible options")
@@ -722,6 +729,7 @@ def main():
 
     if zargs.use_test:
         logger.warning("Will fetch TST accessions from EDW")
+        app_settings['accession_factory'] = 'encoded.server_defaults.test_accession'
 
     if zargs.no_patch:
         logger.warning("Will not PATCH files, only POST")
@@ -732,6 +740,10 @@ def main():
         sys.exit(1)
 
     app = make_app(zargs.config_uri, zargs.username, zargs.password)
+    if zargs.use_test:
+        logger.warning("Will fetch TST accessions from EDW")
+        app.settings['accession_factory'] = 'encoded.server_defaults.test_accession'
+
     edw = edw_file.make_edw(zargs.data_host)
 
     try:
