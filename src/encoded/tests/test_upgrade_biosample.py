@@ -59,8 +59,25 @@ def test_biosample_upgrade_exponent(app, biosample_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
     assert value['schema_version'] == '2'
-    assert 'starting_amount' not in value
     assert value['starting_amount'] == 1e5
+
+
+def test_biosample_upgrade_subcellular_fraction(app, biosample_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_2, target_version='3')
+    assert value['schema_version'] == '3'
+    assert value['subcellular_fraction_term_name'] == 'nucleus'
+    assert value['subcellular_fraction_term_id'] == 'GO:0005634'
+    assert 'subcellular_fraction' not in value
+
+def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
+    biosample_2['subcellular_fraction'] = 'membrane'
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_2, target_version='3')
+    assert value['schema_version'] == '3'
+    assert value['subcellular_fraction_term_name'] == 'membrane fraction'
+    assert value['subcellular_fraction_term_id'] == 'GO:0005634'
+    assert 'subcellular_fraction' not in value
 
 
 def test_biosample_upgrade_inline(testapp, biosample_1):
@@ -94,20 +111,3 @@ def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     res = testapp.get(location+'?raw=true&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in res.json
-
-def test_biosample_upgrade_subcellular_fraction(app, biosample_2):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_2, target_version='3')
-    assert value['schema_version'] == '3'
-    assert value['subcellular_fraction_term_name'] == 'nucleus'
-    assert value['subcellular_fraction_term_id'] == 'GO:0005634'
-    assert 'subcellular_fraction' not in value
-
-def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
-    biosample_2['subcellular_fraction'] = 'membrane'
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_2, target_version='3')
-    assert value['schema_version'] == '3'
-    assert value['subcellular_fraction_term_name'] == 'membrane fraction'
-    assert value['subcellular_fraction_term_id'] == 'GO:0005634'
-    assert 'subcellular_fraction' not in value
