@@ -25,7 +25,8 @@ def test_get_all_datasets(workbook,testapp):
     assert(len(sync_edw.experiments) == TYPE_LENGTH['experiment'])
     assert(len(sync_edw.datasets) == TYPE_LENGTH['dataset'])
 
-    assert(len(sync_edw.encode2_to_encode3.keys()) == 4)
+    assert all(len(v) == 1 for v in sync_edw.encode2_to_encode3.values())
+    assert(len(sync_edw.encode2_to_encode3.keys()) == 5)
     assert(len(sync_edw.encode3_to_encode2.keys()) == 13)
 
     assert not sync_edw.encode3_to_encode2.get(edw_test_data.encode3, False)
@@ -142,6 +143,7 @@ def test_file_sync(workbook, testapp):
     import re
 
     sync_edw.get_all_datasets(testapp)
+
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file, 'rU')
     reader = DictReader(f, delimiter='\t')
@@ -166,7 +168,7 @@ def test_file_sync(workbook, testapp):
     assert len(edw_only) == 15
     assert len(app_only) == 12
     assert len(same) == 6
-    assert len(patch) == 6
+    assert len(patch) == 7
 
     before_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
 
