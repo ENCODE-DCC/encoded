@@ -31,7 +31,7 @@ def biosample_2_3(value, system):
         "nucleus": "GO:0005634",
         "cytosol": "GO:0005829",
         "chromatin": "GO:0000785",
-        "membrane": "GO:0016020",
+        "membrane fraction": "GO:0016020",
         "mitochondria": "GO:0005739",
         "nuclear matrix": "GO:0016363",
         "nucleolus": "GO:0005730",
@@ -40,11 +40,12 @@ def biosample_2_3(value, system):
     }
 
     if 'subcellular_fraction' in value:
-        if value['subcellular_fraction']== "membrane fraction":
-            value['subcellular_fraction'] = 'membrane'
-        
         value['subcellular_fraction_term_id']  = go_mapping[value['subcellular_fraction']]
-        value ['subcellular_fraction_term_name'] = value['subcellular_fraction']
+       
+        if value['subcellular_fraction']== "membrane fraction":
+            value['subcellular_fraction'] = "membrane"
+
+        value['subcellular_fraction_term_name'] = value['subcellular_fraction']
         del value['subcellular_fraction']
 
 
