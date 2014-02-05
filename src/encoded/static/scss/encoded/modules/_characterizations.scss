@@ -29,18 +29,18 @@
   	figcaption { color: $successText; }
 }
 
-.type-characterization.view-detail.status-not_submitted_for_review_by_lab {
+.type-characterization.view-detail.status-not-compliant, .type-document.view-detail.status-deleted {
   figure { border-color: $errorBorder; background-color: $errorBackground; }
   	figcaption { color: $errorText; }
 }
 
-.type-characterization.view-detail.status-pending_dcc_review {
+.type-characterization.view-detail.status-pending-dcc-review {
   figure { border-color: $infoBorder; background-color: $infoBackground; }
   	figcaption { color: $infoText; }
 }
 
 
-.type-characterization.view-detail.status-in_progress, .type-document.view-detail.status-none {
+.type-characterization.view-detail.status-in-progress, .type-document.view-detail.status-none {
   figure { border-color: #e1e1e8; background-color: #f7f7f9; }
   	figcaption { color: #333; }
 }
@@ -59,21 +59,27 @@
 	font-size: 1.5em;
 }
 
-.characterization-status .approved {
+.characterization-status .compliant {
 	color: $successText;
 	top: -5px;
 	position: relative;
 }
 
-.characterization-status .pending, .characterization-status .pending  { 
+.characterization-status .pending-dcc-review, .characterization-status .pending  { 
 	/* use with icon-tasks or maybe icon-inbox */
 	color: $infoText;
 	top: -5px;
 	position: relative;
 }
 
-.characterization-status .rejected {  /* use with icon-thumbs-down */
+.characterization-status .not-compliant, .characterization-status .deleted {  /* use with icon-thumbs-down */
 	color: $errorText;
+	top: -5px;
+	position: relative;
+}
+
+.characterization-status .in-progress, {  /* use with icon-thumbs-down */
+	color: #333;
 	top: -5px;
 	position: relative;
 }
@@ -94,17 +100,17 @@ h3 .label {
 
 @each $item in label, badge {
 	// ELIGIBLE FOR NEW DATA (green)
-	.#{$item}.status-eligible_for_new_data        { background-color: $successText; }
-	.#{$item}.status-eligible_for_new_data[href]   { background-color: darken($successText, 10%); }
+	.#{$item}.status-eligible-for-new-data        { background-color: $successText; }
+	.#{$item}.status-eligible-for-new-data[href]   { background-color: darken($successText, 10%); }
 	// PENDING DCC REVIEW (blue)
-	.#{$item}.status-pending_dcc_review		 { background-color: $infoText; }
-	.#{$item}.status-pending_dcc_review[href] { background-color: darken($infoText, 10%); }
+	.#{$item}.status-pending-dcc-review		 { background-color: $infoText; }
+	.#{$item}.status-pending-dcc-review[href] { background-color: darken($infoText, 10%); }
 	// NOT PURSUED (red)
-	.#{$item}.status-not_pursued          { background-color: $errorText; }
-	.#{$item}.status-not_pursued[href]    { background-color: darken($errorText, 10%); }
+	.#{$item}.status-not-pursued          { background-color: $errorText; }
+	.#{$item}.status-not-pursued[href]    { background-color: darken($errorText, 10%); }
 	// AWAITING LAB CHARACTERIZATION (yellow)
-	.#{$item}.status-awaiting_lab_characterization      { background-color: $warningText; }
-	.#{$item}.status-awaiting_lab_characterization[href]{ background-color: darken($warningText, 10%); }
+	.#{$item}.status-awaiting-lab-characterization      { background-color: $warningText; }
+	.#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($warningText, 10%); }
 
 	/* Unsubmitted/pending (gray) is the default if no class given */
 }
