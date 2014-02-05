@@ -33,6 +33,28 @@ _app_settings = {
 }
 
 
+@pytest.mark.fixture_cost(10)
+@pytest.yield_fixture(scope='session')
+def engine_url(request):
+    engine_url = request.session.config.option.engine_url
+    if engine_url is not None:
+        yield engine_url
+        return
+
+    # Ideally this would use a different database on the same postgres server
+    from urllib import quote
+    from .postgresql_fixture import server_process
+    tmpdir = request.config._tmpdirhandler.mktemp('postgresql-engine', numbered=True)
+    tmpdir = str(tmpdir)
+    process = server_process(tmpdir)
+
+    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
+
+    if process.poll() is None:
+        process.terminate()
+        process.wait()
+
+
 @fixture(scope='session')
 def app_settings(request, server_host_port, connection):
     settings = _app_settings.copy()
@@ -67,10 +89,18 @@ def config(request):
     return setUp()
 
 
+@pytest.yield_fixture
+def threadlocals(request, dummy_request, registry):
+    from pyramid.threadlocal import manager
+    manager.push({'request': dummy_request, 'registry': registry})
+    yield dummy_request
+    manager.pop()
+
+
 @fixture
-def dummy_request():
+def dummy_request(root, registry):
     from pyramid.testing import DummyRequest
-    return DummyRequest()
+    return DummyRequest(root=root, registry=registry, _stats={})
 
 
 @fixture(scope='session')
@@ -79,6 +109,11 @@ def app(zsa_savepoints, check_constraints, app_settings):
     '''
     from encoded import main
     return main({}, **app_settings)
+
+
+@fixture
+def registry(app):
+    return app.registry
 
 
 @fixture
@@ -211,7 +246,7 @@ def server(_server, external_tx):
 
 @pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.yield_fixture(scope='session')
-def connection(request):
+def connection(request, engine_url):
     from encoded import configure_engine
     from encoded.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
@@ -221,7 +256,7 @@ def connection(request):
         DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
 
     engine_settings = {
-        'sqlalchemy.url': request.session.config.option.engine_url,
+        'sqlalchemy.url': engine_url,
     }
 
     engine = configure_engine(engine_settings, test_setup=True)
@@ -282,8 +317,12 @@ def zsa_savepoints(request, connection):
             # txn be aborted a second time in manager.begin()
             if self.sp is None:
                 return
-            self.state = 'completion'
-            self.sp.commit()
+            if self.state == 'commit':
+                self.state = 'completion'
+                self.sp.commit()
+            else:
+                self.state = 'abort'
+                self.sp.rollback()
             self.sp = None
             self.state = 'done'
 
@@ -291,6 +330,10 @@ def zsa_savepoints(request, connection):
             self.state = 'new'
             self.sp = self.connection.begin_nested()
             self.state = 'begun'
+            transaction.addBeforeCommitHook(self._registerCommit)
+
+        def _registerCommit(self):
+            self.state = 'commit'
 
     zsa_savepoints = Savepoints(connection)
 
@@ -536,6 +579,17 @@ def replicates(testapp, experiments, libraries):
 @pytest.fixture
 def replicate(replicates):
     return replicates[0]
+
+
+@pytest.fixture
+def files(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'file')
+
+
+@pytest.fixture
+def file(file):
+    return [f for f in files if ['accession'] == 'ENCFF000TST'][0]
 
 
 @pytest.mark.fixture_cost(10)

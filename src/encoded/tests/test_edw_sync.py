@@ -25,7 +25,8 @@ def test_get_all_datasets(workbook,testapp):
     assert(len(sync_edw.experiments) == TYPE_LENGTH['experiment'])
     assert(len(sync_edw.datasets) == TYPE_LENGTH['dataset'])
 
-    assert(len(sync_edw.encode2_to_encode3.keys()) == 4)
+    assert all(len(v) == 1 for v in sync_edw.encode2_to_encode3.values())
+    assert(len(sync_edw.encode2_to_encode3.keys()) == 5)
     assert(len(sync_edw.encode3_to_encode2.keys()) == 13)
 
     assert not sync_edw.encode3_to_encode2.get(edw_test_data.encode3, False)
@@ -142,6 +143,7 @@ def test_file_sync(workbook, testapp):
     import re
 
     sync_edw.get_all_datasets(testapp)
+
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file, 'rU')
     reader = DictReader(f, delimiter='\t')
@@ -164,9 +166,9 @@ def test_file_sync(workbook, testapp):
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
     assert len(edw_only) == 15
-    assert len(app_only) == 11
+    assert len(app_only) == 12
     assert len(same) == 6
-    assert len(patch) == 6
+    assert len(patch) == 7
 
     before_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
 
@@ -214,7 +216,7 @@ def test_file_sync(workbook, testapp):
     # reset global var!
     post_edw, post_app, post_same, post_patch= sync_edw.inventory_files(testapp, edw_mock, post_app_dict)
     assert len(post_edw) == 1
-    assert len(post_app) == 11 # unchanged
+    assert len(post_app) == 12 # unchanged
     assert len(post_patch) == 3 # exsting files cannot be patched
     assert ((len(post_same)-len(same)) == (len(patch) -len(post_patch) + (len(edw_only) - len(post_edw))))
     assert len(post_app_files) == (len(app_files) + len(edw_only) - len(post_edw))
