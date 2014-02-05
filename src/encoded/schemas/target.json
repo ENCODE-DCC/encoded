@@ -54,6 +54,7 @@
         }
     },
     "boost_values": {
+        "uuid": 1.0,
         "gene_name": 1.0, 
         "label": 1.0, 
         "dbxref": 1.0, 

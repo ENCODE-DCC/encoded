@@ -62,6 +62,7 @@
         }
     },
     "boost_values": {
+        "uuid": 1.0,
         "antibody.accession": 1.0,
         "antibody.alternate_accessions": 1.0,
         "antibody.lot_id": 1.0,

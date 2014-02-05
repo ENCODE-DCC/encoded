@@ -16,6 +16,7 @@ import logging
 
 EPILOG = __doc__
 
+log = logging.getLogger(__name__)
 
 # An index to store non-content metadata
 META_MAPPING = {
@@ -269,8 +270,13 @@ def run(app, collections=None, dry_run=False):
 
         if collection_name is not 'meta':
             mapping = es_mapping(mapping)
-        es.put_mapping(index, doc_type, {doc_type: mapping})
-        es.refresh(index)
+        
+        try:
+            es.put_mapping(index, doc_type, {doc_type: mapping})
+        except:
+            log.info("Could not create mapping for the collection %s", doc_type)
+        else:
+            es.refresh(index)
 
 
 def main():

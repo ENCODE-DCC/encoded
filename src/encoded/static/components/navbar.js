@@ -21,7 +21,6 @@ var NavBar = React.createClass({
 
 
 var NavBarLayout = React.createClass({
-    mixins: [mixins.RenderLess],
 
     render: function() {
         console.log('render navbar');
@@ -76,9 +75,9 @@ var Search = React.createClass({
         var searchTerm = id.query['searchTerm'] || '';
         return (
         	<form className="navbar-form pull-right" action="/search/">
-    			<div className="input-append" id="search">
+    			<div className="search-wrapper">
     				<input className="input-medium search-query searchbox-style" type="text" placeholder="Search ENCODE" 
-                        ref="searchTerm" name="searchTerm" defaultValue={searchTerm} />
+                        ref="searchTerm" name="searchTerm" defaultValue={searchTerm} key={searchTerm} />
     			</div>
     		</form>
         );  

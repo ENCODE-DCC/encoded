@@ -27,19 +27,32 @@ form.navbar-form {
 }
 
 // Navbar search
-#search input {
+.search-wrapper input {
 	width: 150px;
 	-ms-transition: width 0.5s ease-out;
 	-moz-transition: width 0.5s ease-out;
 	-webkit-transition: width 0.5s ease-out;
 	transition: width 0.5s ease-out;
 }
-#search input:focus {
+.search-wrapper input:focus {
 	width: 300px;
 	-ms-transition: width 0.5s ease-out;
 	-moz-transition: width 0.5s ease-out;
 	-webkit-transition: width 0.5s ease-out;
 	transition: width 0.5s ease-out;
+}
+
+.search-wrapper {
+	position: 0;
+}
+
+.search-wrapper:after {
+	font-family: "FontAwesome";
+	content: "\f021";
+	position: relative;
+	top: 3px;
+	left: -24px;
+	color: gray;	
 }
 
 // large text inputBorder
