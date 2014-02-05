@@ -538,6 +538,14 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
+    columns = OrderedDict([
+        ('accession', 'Accession'),
+        ('description', 'Description'),
+        ('dataset_type', 'Dataset type'),
+        ('lab.title', 'Lab'),
+        ('award.project', 'Project'),
+    ])
+    
     class Item(Collection.Item):
         template = {
             'files': [

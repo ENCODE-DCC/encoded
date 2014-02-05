@@ -936,14 +936,14 @@ class Collection(Mapping):
         return items
 
     def load_es(self, request):
-        columns = ['@id', '@type']
+        columns = ['object.@id', 'object.@type']
         lengthColumns = []
         for column in self.columns:
             if 'length' in column:
-                columns.append(column.split('.')[0])
+                columns.append('object.' + column.split('.')[0])
                 lengthColumns.append(column.split('.')[0])
             else:
-                columns.append(column)
+                columns.append('object.' + column)
         # Hack to check if the views have columns for the collection.
         if len(columns) > 2:
             query = {'query': {'match_all': {}}, 'fields': columns}
@@ -953,15 +953,18 @@ class Collection(Mapping):
         items = []
         from .indexing import ELASTIC_SEARCH
         es = request.registry[ELASTIC_SEARCH]
-        results = es.search(query, index=self.item_type, size=99999)
+        results = es.search(query, index='encoded', doc_type=self.item_type, size=99999)
         for model in results['hits']['hits']:
             # Dealing with columns which have length attribute to the array
             for c in lengthColumns:
-                model['fields'][c + '.length'] = len(model['fields'][c])
-                del model['fields'][c]
+                model['fields']['object.' + c + '.length'] = len(model['fields']['object.' + c])
+                del model['fields']['object.' + c]
 
             if len(columns) > 2:
-                items.append(model['fields'])
+                hit = {}
+                for field in model['fields']:
+                    hit[field[7:]] = model['fields'][field]
+                items.append(hit)
             else:
                 items.append(model['_source'])
         return items
@@ -976,9 +979,9 @@ class Collection(Mapping):
         links = compiled(ns)
         properties.update(links)
         properties['columns'] = self.columns
-        collection_source = request.params.get('collection_source', None)
+        collection_source = request.params.get('source', None)
         if collection_source is None:
-            collection_source = request.registry.settings.get('collection_source', 'database')
+            collection_source = request.registry.settings.get('source', 'database')
         # Switch to change summary page loading options: load_db, load_es
         if collection_source == 'elasticsearch':
             properties['@graph'] = self.load_es(request)
@@ -993,7 +996,7 @@ class Collection(Mapping):
                     limit = 30
             properties['@graph'] = self.load_db(request, limit)
             if limit is not None:
-                properties['all'] = "{collection_uri}?limit=all&collection_source=database".format(**ns)
+                properties['all'] = "{collection_uri}?limit=all&source=database".format(**ns)
         return properties
 
     def expand_embedded(self, request, properties):
@@ -1192,3 +1195,36 @@ class AfterModified(object):
     def __init__(self, object, request):
         self.object = object
         self.request = request
+
+
+@view_config(context=Item, name='index-data', permission='view_indexing', request_method='GET')
+def item_index_data(context, request):
+    from pyramid.security import (
+        Everyone,
+        principals_allowed_by_permission,
+    )
+    links = {}
+    # links for the item
+    for link in context.model.rels:
+        links[link.rel] = link.target_rid
+
+    # Get keys for the item
+    keys = {}
+    for key in context.model.unique_keys:
+        keys[key.name] = key.value
+
+    # Principals for the item
+    principals = principals_allowed_by_permission(context, 'view')
+    if principals is Everyone:
+        principals = [Everyone]
+
+    document = {
+        'object': embed(request, request.resource_path(context)),
+        'unembedded_object': embed(request, request.resource_path(context) + '?embed=false'),
+        'links': links,
+        'keys': keys,
+        'principals_allowed_view': sorted(principals),
+        'url': '/' + context.__parent__.__name__ + '/' + str(context.__name__) + '/',
+    }
+
+    return document

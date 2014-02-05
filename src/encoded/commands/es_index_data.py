@@ -3,7 +3,7 @@ from ..indexing import ELASTIC_SEARCH
 import logging
 from webtest import TestApp
 
-DOCTYPE = 'basic'
+index = 'encoded'
 
 EPILOG = __doc__
 
@@ -26,26 +26,24 @@ def run(app, collections=None):
         collection = root.by_item_type[collection_name]
         if collection.schema is None:
             continue
-        res = testapp.get('/' + root.by_item_type[collection_name].__name__ + '/' + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
-        items = res.json['@graph']
+
+        DOCTYPE = collection_name
 
         # try creating index, if it exists already delete it and create it
         counter = 0
-        for item in items:
+        for count, uuid in enumerate(collection):
             try:
-                item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
-            except Exception as e:
-                print e
+                res = testapp.get('/%s/@@index-data' % uuid).maybe_follow()
+            except:
+                print "Object is not found - " + str(uuid)
             else:
-                document_id = str(item_json.json['uuid'])
-                document = item_json.json
-                es.index(collection_name, DOCTYPE, document, document_id)
+                document = res.json
+                es.index(index, DOCTYPE, document, str(uuid))
                 counter = counter + 1
                 if counter % 50 == 0:
-                    es.flush(collection_name)
+                    es.flush(index)
                     log.info('Indexing %s %d', collection_name, counter)
-
-        es.refresh(collection_name)
+        es.refresh(index)
 
 
 def main():

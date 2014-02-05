@@ -88,6 +88,28 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Experiment, 'experiment');
 
+    var Dataset = module.exports.Dataset = React.createClass({
+        render: function() {
+            var result = this.props.context;
+            var columns = this.props.columns;
+            return (<li>
+                        <div>
+                            <span className="pull-right type">Dataset: {' ' + result['accession']}</span>
+                            <div className="accession">
+                                <a href={result['@id']}>{result['description']}</a> 
+                            </div>
+                        </div>
+                        <div className="data-row">
+                            {result['dataset_type'] ? <strong>{columns['dataset_type'] + ': '}</strong>: null}
+                            <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.project']}</strong>: {result['award.project']}
+                        </div>
+                </li>
+            );
+        }
+    });
+    globals.listing_views.register(Dataset, 'dataset');
+
     var Target = module.exports.Target = React.createClass({
         render: function() {
             var result = this.props.context;
@@ -127,8 +149,8 @@ var Dbxref = dbxref.Dbxref;
                     id = j;
                     count = map[j];
                 }
-                if(counter < 4) {
-                    return <li><a href={href_search+'&'+field+'='+id}>{id}<span className="pull-right">{count}</span></a></li>
+                if(counter < 6) {
+                    return <li><a href={href_search+'&'+field+'='+id}><span className="facet-item">{id}</span><span className="pull-right">{count}</span></a></li>
                 } 
             };
             var buildCollapsingTerms = function(map) {
@@ -139,8 +161,33 @@ var Dbxref = dbxref.Dbxref;
                     id = j;
                     count = map[j];
                 }
-                if (counter1 >= 4) {
-                    return <li><a href={href_search+'&'+field+'='+id}>{id}<span className="pull-right">{count}</span></a></li>
+                if (counter1 >= 6) {
+                    return <li><a href={href_search+'&'+field+'='+id}><span className="facet-item">{id}></span><span className="pull-right">{count}</span></a></li>
+                }
+            };
+            var buildTypeFacet = function(map) {
+                var id;
+                var count;
+                for (var j in map) {
+                    id = j;
+                    count = map[j];
+                }
+                switch (id) {
+                    case "experiment":
+                        return <li><a href={href_search+'&'+field+'='+id}>Experiments<span className="pull-right">{count}</span></a></li>
+                        break;
+                    case "biosample":
+                        return <li><a href={href_search+'&'+field+'='+id}>Biosamples<span className="pull-right">{count}</span></a></li>
+                        break;
+                    case "antibody_approval":
+                        return <li><a href={href_search+'&'+field+'='+id}>Antibodies<span className="pull-right">{count}</span></a></li>
+                        break;
+                    case "target":
+                        return <li><a href={href_search+'&'+field+'='+id}>Targets<span className="pull-right">{count}</span></a></li>
+                        break;
+                    case "dataset":
+                        return <li><a href={href_search+'&'+field+'='+id}>Datasets<span className="pull-right">{count}</span></a></li>
+                        break;
                 }
             };
             var buildSection = function(facet) {
@@ -158,30 +205,43 @@ var Dbxref = dbxref.Dbxref;
                         field = facet[f];
                     }
                 }
-                return <div className="facet">
-                        <h5>{term}</h5>
-                        <ul className="facet-list nav">
-                            <div>
+                if(termID == 'DataType') {
+                    debugger;
+                    return <div className="facet">
+                            <h5>{term}</h5>
+                            <ul className="facet-list nav">
                                 {terms.length ?
-                                    terms.map(buildTerms)
+                                    terms.map(buildTypeFacet)
                                 : null}
-                            </div>
-                            {terms.length > 3 ?
-                                <div id={termID} className="collapse">
+                            </ul>
+                        </div>
+                }else {
+                    return <div className="facet">
+                            <h5>{term}</h5>
+                            <ul className="facet-list nav">
+                                <div>
                                     {terms.length ?
-                                        terms.map(buildCollapsingTerms)
+                                        terms.map(buildTerms)
                                     : null}
                                 </div>
-                            : null}
-                            {terms.length > 3 ?
-                                <label className="pull-right">
-                                        <small>
-                                            <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
-                                        </small>
-                                </label>
-                            : null}
-                        </ul>
-                    </div>
+                                {terms.length > 5 ?
+                                    <div id={termID} className="collapse">
+                                        {terms.length ?
+                                            terms.map(buildCollapsingTerms)
+                                        : null}
+                                    </div>
+                                : null}
+                                {terms.length > 5 ?
+                                    <label className="pull-right">
+                                            <small>
+                                                <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
+                                            </small>
+                                    </label>
+                                : null}
+                                
+                            </ul>
+                        </div>
+                }
             };
             return (
                 <div className="box facets">
@@ -225,60 +285,21 @@ var Dbxref = dbxref.Dbxref;
                         {results.length ?
                             <div className="row">
                                 <div className="span3">
-                                    <div>
-                                        <ul className="nav nav-tabs nav-stacked">
-                                            {search_id.indexOf("type=antibody_approval") > 0 ?
-                                                <li><a href={url.format(search_url)}>Antibodies<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
-                                            : (count['antibodies'] ? 
-                                                    <li><a href={search_id+'&type=antibody_approval'}>Antibodies<span className="pull-right">{count['antibodies']}</span></a></li> 
-                                                : null)
-                                            }
-                                            
-                                            {search_id.indexOf("type=biosample") > 0 ?
-                                                <li><a href={url.format(search_url)}>Biosamples<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
-                                            : (count['biosamples'] ?
-                                                    <li><a href={search_id+'&type=biosample'}>Biosamples<span className="pull-right">{count['biosamples']}</span></a></li>
-                                                : null)
-                                            }
-                                            
-                                            {search_id.indexOf("type=experiment") > 0 ?
-                                                <li><a href={url.format(search_url)}>Experiments<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
-                                            : (count['experiments'] ?
-                                                    <li><a href={search_id+'&type=experiment'}>Experiments<span className="pull-right">{count['experiments']}</span></a></li>
-                                                : null)
-                                            }
-                                            
-                                            {search_id.indexOf("type=target") > 0 ?
-                                                <li><a href={url.format(search_url)}>Targets<span className="pull-right"><i className="icon-remove-sign"></i></span></a></li>
-                                            : (count['targets'] ?
-                                                    <li><a href={search_id+'&type=target'}>Targets<span className="pull-right">{count['targets']}</span></a></li>
-                                                : null)
-                                            }
-                                        </ul>
-                                    </div>
                                     {facets.length ?
                                         this.transferPropsTo(<FacetBuilder />)
                                     :null}
                                 </div>
 
                                 <div className="span8">
-                                    <h4>Showing {results.length} of {(count['antibodies'] ? parseInt(count['antibodies']) : 0) + 
-                                            (count['biosamples'] ? parseInt(count['biosamples']) : 0) + 
-                                            (count['targets'] ? parseInt(count['targets']) : 0) + 
-                                            (count['experiments'] ? parseInt(count['experiments']) : 0)}
-                                            {((count['antibodies'] ? parseInt(count['antibodies']) : 0) + 
-                                                (count['biosamples'] ? parseInt(count['biosamples']) : 0) + 
-                                                (count['targets'] ? parseInt(count['targets']) : 0) + 
-                                                (count['experiments'] ? parseInt(count['experiments']) : 0)) > 100 ?
+                                    <h4>Showing {results.length} of {count} 
+                                        {count > 100 ?
                                                 <span className="pull-right">
                                                     {search_id.indexOf('&limit=all') !== -1 ? 
-                                                        <a className="btn btn-info btn-small" href={search_id.replace("&limit=all", "")}>View 100</a>
+                                                        <a className="btn btn-info btn-small" href={search_id.replace("&limit=all", "")}>View 25</a>
                                                     : <a className="btn btn-info btn-small" href={search_id+ '&limit=all'}>View All</a>}
                                                 </span>
-                                            : null }
+                                            : null}
                                     </h4>
-                                            
-                                           
                                     {filters.length ?
                                         <div className="btn-group"> 
                                             {filters.map(unfacetButtons)}
@@ -314,12 +335,6 @@ var Dbxref = dbxref.Dbxref;
             var searchTerm = id.query['searchTerm'] || '';
             return (
                 <div>
-                    <div className="three-d-box">
-                        <form className="input-prepend">
-                            <input id='inputValidate' className="input-lg" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, chip-seq etc" 
-                                ref="searchTerm" name="searchTerm" defaultValue={searchTerm} />
-                        </form>
-                    </div>
                     {notification === 'Success' ?
                         <div className="panel data-display"> 
                             {this.transferPropsTo(<ResultTable />)}
