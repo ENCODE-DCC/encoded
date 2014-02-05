@@ -1,5 +1,4 @@
 test	uuid	characterizes	target	attachment	caption	references:array	characterization_method	status	comment	submitted_by	lab	award	notes	date	aliases:array			
-<<<<<<< HEAD
 test	cbf2446e-cd0d-4413-b307-2435e783575c	e61ad044-a869-4bd2-ae04-f4fa83bbca00	CXXC1-human	frowny_gel.png	Failed ChIP	NULL	ChIP-seq comparison	NOT SUBMITTED FOR REVIEW BY LAB		facilisi.tristique@potenti.vivamus	richard-myers	U54HG006998		2011-01-10				
 test	7118e7b4-fab1-4ddb-f038-490c47b73cf2	f24ac237-ba4c-4b3d-af7e-85f0b57c4184	H3K4me3-human	H3K4me3 Millipore 07-473 JBC1888194.png	Performed dot blot analysis using a large set of modified peptides.  The only peptide recognized by the H3K4me3 antibody was the correct one.	NULL	dot blot assay	PENDING DCC REVIEW		sit.nascetur@accumsan.quis	bradley-bernstein	U54HG006991		2012-07-17				
 test	072cbc4e-075e-46b7-df05-58c5092ebd36	3422bec2-cbe5-4bd2-acf8-dbb67388f43b	H3K4me3-human	H3K4me3_Millipore_07-473_lot_DAM1651667_WB.png	Western blot analysis of K562 lysate using rabbit polyclonal to H3K4me3	NULL	immunoblot	PENDING DCC REVIEW		sit.nascetur@accumsan.quis	bradley-bernstein	U54HG006991		2013-11-20				
