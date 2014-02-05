@@ -3,6 +3,7 @@ from ..migrator import upgrade_step
 @upgrade_step('antibody_characterization', '', '3')
 @upgrade_step('biosample_characterization', '', '3')
 @upgrade_step('rnai_characterization', '', '3')
+@upgrade_step('construct_characterization', '', '3')
 def characterization_0_3(value, system):
     # http://redmine.encodedcc.org/issues/428
     new_characterization_method = {
