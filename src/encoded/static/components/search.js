@@ -162,7 +162,7 @@ var Dbxref = dbxref.Dbxref;
                     count = map[j];
                 }
                 if (counter1 >= 6) {
-                    return <li><a href={href_search+'&'+field+'='+id}><span className="facet-item">{id}></span><span className="pull-right">{count}</span></a></li>
+                    return <li><a href={href_search+'&'+field+'='+id}><span className="facet-item">{id}</span><span className="pull-right">{count}</span></a></li>
                 }
             };
             var buildTypeFacet = function(map) {
