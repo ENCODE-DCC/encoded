@@ -137,15 +137,18 @@ def es_mapping(mapping):
             },
             'principals_allowed_view': {
                 'type': 'string',
-                'include_in_all': False
+                'include_in_all': False,
+                'index': 'not_analyzed'
             },
             'embedded_uuid_closure': {
                 'type': 'string',
-                'include_in_all': False
+                'include_in_all': False,
+                'index': 'not_analyzed'
             },
             'link_uuid_closure': {
                 'type': 'string',
-                'include_in_all': False
+                'include_in_all': False,
+                'index': 'not_analyzed'
             },
             'keys': {
                 'type': 'object',
