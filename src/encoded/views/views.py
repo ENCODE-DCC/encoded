@@ -267,6 +267,12 @@ class Construct(Collection):
 
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
+        STATUS_ACL = {
+            'COMPLIANT': ALLOW_CURRENT,
+            'NOT COMPLIANT': ALLOW_CURRENT,
+            'NOT REVIEWED': ALLOW_CURRENT,
+            'NOT SUBMITTED FOR REVIEW BY LAB': ALLOW_CURRENT,
+        }
         base_types = ['characterization'] + Collection.Item.base_types
         embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
