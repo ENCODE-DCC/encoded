@@ -150,7 +150,7 @@ var Dbxref = dbxref.Dbxref;
                     count = map[j];
                 }
                 if(counter < 6) {
-                    return <li><a href={href_search+'&'+field+'='+id}><span className="facet-item">{id}</span><span className="pull-right">{count}</span></a></li>
+                    return <li key={id}><a href={href_search+'&'+field+'='+id}><span className="facet-item">{id}</span><span className="pull-right">{count}</span></a></li>
                 } 
             };
             var buildCollapsingTerms = function(map) {
@@ -162,7 +162,7 @@ var Dbxref = dbxref.Dbxref;
                     count = map[j];
                 }
                 if (counter1 >= 6) {
-                    return <li><a href={href_search+'&'+field+'='+id}><span className="facet-item">{id}</span><span className="pull-right">{count}</span></a></li>
+                    return <li key={id}><a href={href_search+'&'+field+'='+id}><span className="facet-item">{id}</span><span className="pull-right">{count}</span></a></li>
                 }
             };
             var buildTypeFacet = function(map) {
@@ -174,19 +174,19 @@ var Dbxref = dbxref.Dbxref;
                 }
                 switch (id) {
                     case "experiment":
-                        return <li><a href={href_search+'&'+field+'='+id}>Experiments<span className="pull-right">{count}</span></a></li>
+                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Experiments<span className="pull-right">{count}</span></a></li>
                         break;
                     case "biosample":
-                        return <li><a href={href_search+'&'+field+'='+id}>Biosamples<span className="pull-right">{count}</span></a></li>
+                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Biosamples<span className="pull-right">{count}</span></a></li>
                         break;
                     case "antibody_approval":
-                        return <li><a href={href_search+'&'+field+'='+id}>Antibodies<span className="pull-right">{count}</span></a></li>
+                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Antibodies<span className="pull-right">{count}</span></a></li>
                         break;
                     case "target":
-                        return <li><a href={href_search+'&'+field+'='+id}>Targets<span className="pull-right">{count}</span></a></li>
+                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Targets<span className="pull-right">{count}</span></a></li>
                         break;
                     case "dataset":
-                        return <li><a href={href_search+'&'+field+'='+id}>Datasets<span className="pull-right">{count}</span></a></li>
+                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Datasets<span className="pull-right">{count}</span></a></li>
                         break;
                 }
             };
