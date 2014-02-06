@@ -76,7 +76,7 @@ def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
     value = migrator.upgrade('biosample', biosample_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['subcellular_fraction_term_name'] == 'membrane fraction'
-    assert value['subcellular_fraction_term_id'] == 'GO:0005634'
+    assert value['subcellular_fraction_term_id'] == 'GO:0016020'
     assert 'subcellular_fraction' not in value
 
 
