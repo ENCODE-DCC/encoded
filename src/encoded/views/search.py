@@ -48,9 +48,13 @@ def sanitize_search_string(text):
 def search(context, request, search_type=None, permission='search'):
     ''' Search view connects to ElasticSearch and returns the results'''
 
+    uri = request.resource_path(context, request.view_name, '')
+    if request.query_string:
+        uri += '?' + request.query_string
+
     root = request.root
     result = {
-        '@id': request.path_qs,
+        '@id': uri,
         '@type': ['search'],
         'title': 'Search',
         'facets': [],

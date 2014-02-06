@@ -1029,13 +1029,16 @@ class Collection(Mapping):
     def __json__(self, request):
         properties = self.properties.copy()
         ns = properties.copy()
-        ns['collection_uri'] = request.resource_path(self)
+        ns['collection_uri'] = uri = request.resource_path(self)
         ns['item_type'] = self.item_type
         ns['permission'] = permission_checker(self, request)
         compiled = ObjectTemplate(self.merged_template)
         templated = compiled(ns)
         properties.update(templated)
-        properties['@id'] = request.path_qs
+
+        if request.query_string:
+            uri += '?' + request.query_string
+        properties['@id'] = uri
 
         datastore = request.params.get('datastore', None)
         if datastore is None:
