@@ -75,7 +75,7 @@
                 "linkTo": "document"
             }
         },
-        "additional_files": {
+        "related_files": {
             "title": "Additional data files",
             "description": "List of data files to be associated with the dataset.",
             "type": "array",
@@ -89,14 +89,14 @@
         },
         "references": {
             "title": "References",
-            "description": "The Pubmed identifiers that reference data found in the experiment.",
+            "description": "The identifiers that reference data found in the experiment.",
             "type": "array",
             "default": [],
             "items": {
                 "title": "Reference",
-                "description": "A Pubmed identifier that references data found in the experiment.",
+                "description": "An identifier that references data found in the experiment.",
                 "type": "string",
-                "pattern": "^PMID:[0-9]+$"
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
             }
         }
     },

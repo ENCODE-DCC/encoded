@@ -49,14 +49,14 @@
         },
         "references": {
             "title": "References",
-            "description": "The Pubmed identifiers that the document references.",
+            "description": "The identifiers that the document references.",
             "type": "array",
             "default": [],
             "items": {
                 "title": "Reference",
-                "description": "A Pubmed identifier that the document references.",
+                "description": "An identifier that the document references.",
                 "type": "string",
-                "pattern": "^PMID:[0-9]+$"
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
             }
         },
         "urls": {
