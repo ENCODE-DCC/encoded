@@ -292,7 +292,7 @@ var Dbxref = dbxref.Dbxref;
 
                                 <div className="span8">
                                     <h4>Showing {results.length} of {count} 
-                                        {count > 100 ?
+                                        {count > results.length ?
                                                 <span className="pull-right">
                                                     {search_id.indexOf('&limit=all') !== -1 ? 
                                                         <a className="btn btn-info btn-small" href={search_id.replace("&limit=all", "")}>View 25</a>
