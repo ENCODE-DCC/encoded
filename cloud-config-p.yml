@@ -80,10 +80,16 @@ runcmd:
 - sudo -u encoded git clone -b %(BRANCH)s https://github.com/ENCODE-DCC/encoded.git .
 - sudo -u encoded python2.7 bootstrap.py
 - sudo -u encoded bin/buildout
+# First, restore production database to the new production server
 - sudo /etc/init.d/postgresql stop
 - sudo -u postgres envdir /etc/wal-e.d/env /srv/encoded/bin/wal-e backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres cp /var/lib/postgresql/9.3/main/postgresql.conf.orig /var/lib/postgresql/9.3/main/postgresql.conf
 - sudo -u postgres cp /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main
+- sudo /etc/init.d/postgresql start
+- until sudo -u postgres psql postgres -c ""; do sleep 10; done
+# Next, enable archiving to production database from the new production server
+- sudo /etc/init.d/postgresql stop
+- sudo -u postgres cp /var/lib/postgresql/9.3/main/postgresql.conf.prod /var/lib/postgresql/9.3/main/postgresql.conf
 - sudo /etc/init.d/postgresql start
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo service elasticsearch start
