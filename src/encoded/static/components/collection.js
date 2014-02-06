@@ -139,7 +139,7 @@ var globals = require('./globals');
         guessColumns: function (props) {
             var column_list = props.context.columns;
             var columns = []
-            if (Object.keys(column_list).length === 0) {
+            if (column_list && Object.keys(column_list).length === 0) {
                 for (var key in props.context['@graph'][0]) {
                     if (key.slice(0, 1) != '@' && key.search(/(uuid|_no|accession)/) == -1) {
                         columns.push(key);
