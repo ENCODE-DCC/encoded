@@ -259,7 +259,7 @@ var Dbxref = dbxref.Dbxref;
             var results = context['@graph'];
             var href_search = url.parse(this.props.href).search || '';
             var facets = context['facets'];
-            var count = context['count'];
+            var total = context['total'];
             var columns = context['columns'];
             var filters = context['filters'];
             var search_id = context['@id']
@@ -291,8 +291,8 @@ var Dbxref = dbxref.Dbxref;
                                 </div>
 
                                 <div className="span8">
-                                    <h4>Showing {results.length} of {count} 
-                                        {count > results.length ?
+                                    <h4>Showing {results.length} of {total} 
+                                        {total > results.length ?
                                                 <span className="pull-right">
                                                     {search_id.indexOf('&limit=all') !== -1 ? 
                                                         <a className="btn btn-info btn-small" href={search_id.replace("&limit=all", "")}>View 25</a>

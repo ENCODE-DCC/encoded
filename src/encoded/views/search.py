@@ -198,8 +198,8 @@ def search(context, request, search_type=None, permission='search'):
                 {c.split('.', 1)[1]: result_hit[c] for c in result_hit}
             )
 
-    # Adding count
-    result['count'] = results['hits']['total']
+    # Adding total
+    result['total'] = results['hits']['total']
     if len(result['@graph']):
         result['notification'] = 'Success'
     else:
