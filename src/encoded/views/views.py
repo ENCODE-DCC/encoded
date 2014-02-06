@@ -178,7 +178,6 @@ class Organism(Collection):
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
-        'description': 'Listing of sources and vendors for ENCODE material',
     }
     item_name_key = 'name'
     unique_key = 'organism:name'
@@ -276,7 +275,7 @@ class ConstructCharacterization(Characterization):
     item_type = 'construct_characterization'
     schema = load_schema('construct_characterization.json')
     properties = {
-        'title': 'Constructs characterizations',
+        'title': 'Construct characterizations',
         'description': 'Listing of biosample construct characterizations',
     }
 
@@ -585,8 +584,8 @@ class Dataset(Collection):
     class Item(Collection.Item):
         template = {
             'files': [
-                {'$value': '{file}', '$repeat': 'file home_files', '$templated': True},
-                {'$value': '{file}', '$repeat': 'file additional_files', '$templated': True},
+                {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
+                {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
             ],
         }
         template_type = {
@@ -595,18 +594,21 @@ class Dataset(Collection):
         embedded = [
             'files',
             'files.replicate',
+            'files.replicate.experiment',
+            'files.replicate.experiment.lab',
+            'files.replicate.experiment.target',
             'files.submitted_by',
             'submitted_by',
             'lab',
             'award',
             'documents.lab',
             'documents.award',
-            'documents.submitted_by'
+            'documents.submitted_by',
         ]
         name_key = 'accession'
         keys = ACCESSION_KEYS + ALIAS_KEYS
         rev = {
-            'home_files': ('file', 'dataset'),
+            'original_files': ('file', 'dataset'),
         }
 
 
