@@ -50,6 +50,7 @@ from urllib import (
     quote,
     unquote,
 )
+from urllib import urlencode
 from uuid import (
     UUID,
     uuid4,
@@ -931,7 +932,25 @@ class Collection(Mapping):
     def after_add(self, item):
         '''Hook for subclasses'''
 
-    def load_db(self, request, limit=None):
+    def load_db(self, request):
+        result = {}
+
+        frame = request.params.get('frame', 'columns')
+        if frame == 'columns':
+            if self.columns:
+                result['columns'] = self.columns
+            else:
+                frame = 'object'
+
+        limit = request.params.get('limit', 25)
+        if limit in ('', 'all'):
+            limit = None
+        if limit is not None:
+            try:
+                limit = int(limit)
+            except ValueError:
+                limit = 25
+
         session = DBSession()
         query = session.query(Resource).filter(
             Resource.item_type == self.item_type
@@ -952,7 +971,14 @@ class Collection(Mapping):
             models = self._batched_models(query, limit)
 
         items = self._filter_allowed_view(request, query, limit)
-        return [self._render_item(request, item) for item in items]
+        result['@graph'] = [self._render_item(request, item, frame) for item in items]
+
+        if limit is not None and len(result['@graph']) == limit:
+            params = [(k, v) for k, v in request.params.items() if k != 'limit']
+            params.append(('limit', 'all'))
+            result['all'] = '%s?%s' % (request.resource_path(self, ''), urlencode(params))
+
+        return result
 
     def _batched_models(self, query, size):
         for model in query.limit(size):
@@ -973,11 +999,15 @@ class Collection(Mapping):
                 if max is not None and count >= max:
                     break
 
-    def _render_item(self, request, item):
+    def _render_item(self, request, item, frame):
         item_uri = request.resource_path(item)
-        rendered = embed(request, item_uri + '?embed=false')
 
-        if not self.columns:
+        if frame != 'embedded':
+            item_uri += '?frame=object'
+
+        rendered = embed(request, item_uri)
+
+        if frame != 'columns':
             return rendered
 
         for path in self.embedded_paths:
@@ -993,38 +1023,8 @@ class Collection(Mapping):
         return subset
 
     def load_es(self, request):
-        columns = ['embedded.@id', 'embedded.@type']
-        lengthColumns = []
-        for column in self.columns:
-            if column.endswith('.length'):
-                columns.append('embedded.' + column.split('.')[0])
-                lengthColumns.append(column.split('.')[0])
-            else:
-                columns.append('embedded.' + column)
-        # Hack to check if the views have columns for the collection.
-        if len(columns) > 2:
-            query = {'query': {'match_all': {}}, 'fields': columns}
-        else:
-            query = {'query': {'match_all': {}}}
-
-        items = []
-        from .indexing import ELASTIC_SEARCH
-        es = request.registry[ELASTIC_SEARCH]
-        results = es.search(query, index='encoded', doc_type=self.item_type, size=99999)
-        for model in results['hits']['hits']:
-            # Dealing with columns which have length attribute to the array
-            for c in lengthColumns:
-                model['fields']['embedded.' + c + '.length'] = len(model['fields']['embedded.' + c])
-                del model['fields']['embedded.' + c]
-
-            if len(columns) > 2:
-                hit = {}
-                for field in model['fields']:
-                    hit[field[7:]] = model['fields'][field]
-                items.append(hit)
-            else:
-                items.append(model['_source'])
-        return items
+        from .views.search import search
+        return search(self, request, self.item_type)
 
     def __json__(self, request):
         properties = self.properties.copy()
@@ -1033,28 +1033,21 @@ class Collection(Mapping):
         ns['item_type'] = self.item_type
         ns['permission'] = permission_checker(self, request)
         compiled = ObjectTemplate(self.merged_template)
-        links = compiled(ns)
-        properties.update(links)
-        properties['columns'] = self.columns
+        templated = compiled(ns)
+        properties.update(templated)
+        properties['@id'] = request.path_qs
+
         datastore = request.params.get('datastore', None)
         if datastore is None:
-            datastore = request.registry.settings.get('datastore', 'database')
+            datastore = request.registry.settings.get('collection_datastore', 'database')
         # Switch to change summary page loading options: load_db, load_es
         if datastore == 'elasticsearch':
-            properties['@graph'] = self.load_es(request)
+            result = self.load_es(request)
         else:
-            limit = request.params.get('limit', 30)
-            if limit in ('', 'all'):
-                limit = None
-            if limit is not None:
-                try:
-                    limit = int(limit)
-                except ValueError:
-                    limit = 30
-            properties['@graph'] = self.load_db(request, limit)
-            if limit is not None:
-                properties['all'] = "{collection_uri}?limit=all&datastore=database".format(**ns)
-        return properties
+            result = self.load_db(request)
+
+        result.update(properties)
+        return result
 
     def expand_embedded(self, request, properties):
         pass
@@ -1089,11 +1082,11 @@ def expand_path(request, obj, path):
     if isinstance(value, list):
         for index, member in enumerate(value):
             if not isinstance(member, dict):
-                member = value[index] = embed(request, member + '?embed=false')
+                member = value[index] = embed(request, member + '?frame=object')
             expand_path(request, member, remaining)
     else:
         if not isinstance(value, dict):
-            value = obj[name] = embed(request, value + '?embed=false')
+            value = obj[name] = embed(request, value + '?frame=object')
         expand_path(request, value, remaining)
 
 
@@ -1150,7 +1143,7 @@ def collection_add(context, request, render=None):
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '?embed=false', as_user=True)
+        rendered = embed(request, item_uri + '?frame=object', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201
@@ -1183,8 +1176,18 @@ def traversal_security(event):
              decorator=etag_conditional)
 def item_view(context, request):
     properties = context.__json__(request)
-    if asbool(request.params.get('embed', True)):
-        context.expand_embedded(request, properties)
+    frame = request.params.get('frame', None)
+
+    if frame is None:
+        if asbool(request.params.get('embed', True)):
+            frame = 'embedded'
+        else:
+            frame = 'object'
+
+    if frame == 'object':
+        return properties
+
+    context.expand_embedded(request, properties)
     return properties
 
 
@@ -1224,7 +1227,7 @@ def item_edit(context, request, render=None):
     else:
         item_uri = request.resource_path(context)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '?embed=false', as_user=True)
+        rendered = embed(request, item_uri + '?frame=object', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 200
@@ -1277,7 +1280,7 @@ def item_index_data(context, request):
 
     document = {
         'embedded': embed(request, request.resource_path(context)),
-        'object': embed(request, request.resource_path(context) + '?embed=false'),
+        'object': embed(request, request.resource_path(context) + '?frame=object'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),

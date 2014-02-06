@@ -24,14 +24,8 @@ def get_filtered_query(term, fields, search_fields, principals):
                     }
                 },
                 'filter': {
-                    'and': {
-                        'filters': [
-                            {
-                                'terms': {
-                                    'principals_allowed_view': principals
-                                }
-                            }
-                        ]
+                    'terms': {
+                        'principals_allowed_view': principals,
                     }
                 }
             }
@@ -50,14 +44,13 @@ def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
-@view_config(name='search', context=Root, request_method='GET', permission='view')
-def search(context, request):
+@view_config(name='search', context=Root, request_method='GET')
+def search(context, request, search_type=None, permission='search'):
     ''' Search view connects to ElasticSearch and returns the results'''
 
-    result = context.__json__(request)
     root = request.root
-    result.update({
-        '@id': '/search/',
+    result = {
+        '@id': request.path_qs,
         '@type': ['search'],
         'title': 'Search',
         'facets': [],
@@ -66,25 +59,21 @@ def search(context, request):
         'count': 0,
         'filters': [],
         'notification': ''
-    })
+    }
 
-    qs = request.environ.get('QUERY_STRING')
     principals = effective_principals(request)
-
-    if qs:
-        result['@id'] = '/search/?%s' % qs
-
     es = request.registry[ELASTIC_SEARCH]
 
     # handling limit
     size = request.params.get('limit', 25)
-    if size == 'all':
+    if size in ('all', ''):
         size = 99999
-    elif not isinstance(size, int):
-        pass
     else:
-        size = 25
-    
+        try:
+            size = int(size)
+        except ValueError:
+            size = 25
+
     search_term = request.params.get('searchTerm', '*')
     if search_term != '*':
         search_term = sanitize_search_string(search_term.strip())
@@ -93,13 +82,14 @@ def search(context, request):
         result['notification'] = 'Please enter search term'
         return result
 
-    search_type = request.params.get('type', '*')
+    if search_type is None:
+        search_type = request.params.get('type', '*')
     
-    # handling invalid item types
-    if search_type != '*':
-        if search_type not in root.by_item_type.keys():
-            result['notification'] = '\'' + search_type + '\' is not a valid \'item type\''
-            return result
+        # handling invalid item types
+        if search_type != '*':
+            if search_type not in root.by_item_type:
+                result['notification'] = "'" + search_type + "' is not a valid 'item type'"
+                return result
 
     # Handling wildcards
     if search_term == '*' and search_type == '*':
@@ -115,23 +105,24 @@ def search(context, request):
         if search_term != '*':
             result['filters'].append({'type': root.by_item_type[search_type].__name__})
 
-    fields = ['embedded.@id', 'embedded.@type']
+    frame = request.params.get('frame', '')
+    if frame in ['embedded', 'object']:
+        fields = {frame}
+    else:
+        frame = 'columns'
+        fields = {'embedded.@id', 'embedded.@type'}
     for doc_type in doc_types:
         collection = root[doc_type]
         schema = collection.schema
-        frame = request.params.get('frame', '')
-        if frame in ['embedded', 'object']:
-            fields.append(frame)
-        else:
-            for column in collection.columns:
-                fields.append('embedded.' + column)
-                result['columns'].update({column: collection.columns[column]})
+        if frame == 'columns':
+            fields.update('embedded.' + column for column in collection.columns)
+            result['columns'].update(collection.columns)
         # Adding search fields and boost values
         for value in schema.get('boost_values', ()):
             search_fields = search_fields + ['embedded.' + value, 'embedded.' + value + '.standard^2', 'embedded.' + value + '.untouched^3']
 
     # Builds filtered query which supports multiple facet selection
-    query = get_filtered_query(search_term, list(set(fields)), search_fields, principals)
+    query = get_filtered_query(search_term, sorted(fields), search_fields, principals)
 
     # Sorting the files when search term is not specified
     if search_term == '*':
@@ -139,7 +130,7 @@ def search(context, request):
 
     # Setting filters
     for key, value in request.params.iteritems():
-        if key not in ['type', 'searchTerm', 'limit', 'format', 'frame']:
+        if key not in ['type', 'searchTerm', 'limit', 'format', 'frame', 'datastore']:
             if value == 'other':
                 query['query']['filtered']['filter']['and']['filters'] \
                     .append({'missing': {'field': 'embedded.' + key}})
@@ -193,10 +184,9 @@ def search(context, request):
         if frame in ['embedded', 'object']:
             result['@graph'].append(result_hit[frame])
         else:
-            result_hit_new = {}
-            for c in result_hit:
-                result_hit_new[c[7:]] = result_hit[c]
-            result['@graph'].append(result_hit_new)
+            result['@graph'].append(
+                {c.split('.', 1)[1]: result_hit[c] for c in result_hit}
+            )
 
     # Adding count
     result['count'] = results['hits']['total']

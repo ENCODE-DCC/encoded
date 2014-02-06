@@ -23,6 +23,7 @@ _app_settings = {
     'allow.view': 'Authenticated',
     'allow.list': 'Everyone',
     'allow.traverse': 'Everyone',
+    'allow.search': 'Everyone',
     'allow.ALL_PERMISSIONS': 'group.admin',
     'allow.edw_key_create': 'accesskey.edw',
     'allow.edw_key_update': 'accesskey.edw',
