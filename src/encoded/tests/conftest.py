@@ -592,6 +592,50 @@ def file(file):
     return [f for f in files if ['accession'] == 'ENCFF000TST'][0]
 
 
+@pytest.fixture
+def antibody_lots(testapp, labs, awards, sources, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'antibody_lot')
+
+
+@pytest.fixture
+def antibody_lot(antibody_lots):
+    return [al for al in antibody_lots if al['accession'] == 'ENCAB000TST'][0]
+
+
+@pytest.fixture
+def targets(testapp,organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'target')
+
+
+@pytest.fixture
+def target(targets):
+    return [t for t in targets if t['label'] == 'ATF4'][0]
+
+
+@pytest.fixture
+def rnais(testapp,labs, awards, targets):
+    from . import sample_data
+    return sample_data.load(testapp, 'rnai')
+
+
+@pytest.fixture
+def rnai(rnais):
+    return [r for r in rnais if r['rnai_type'] == 'shRNA'][0]
+
+
+@pytest.fixture
+def constructs(testapp,labs, awards, targets):
+    from . import sample_data
+    return sample_data.load(testapp, 'construct')
+
+
+@pytest.fixture
+def construct(constructs):
+    return [c for c in constructs if c['construct_type'] == 'fusion protein'][0]
+
+
 @pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')
 def postgresql_server(request):
