@@ -592,13 +592,13 @@ def antibody_lots(testapp, labs, awards, sources):
 
 @pytest.fixture
 def antibody_lot(antibody_lots):
-    retrun [al for al in antibody_lots if al['accession'] == 'ENCAB000TST'][0]
+    return [al for al in antibody_lots if al['accession'] == 'ENCAB000TST'][0]
 
 
 @pytest.fixture
 def targets(testapp,organisms):
     from . import sample_data
-    retrun sample_data.load(testapp, 'target')
+    return sample_data.load(testapp, 'target')
 
 
 @pytest.fixture
@@ -609,7 +609,7 @@ def target(targets):
 @pytest.fixture
 def rnais(testapp,labs, awards, targets):
     from . import sample_data
-    retrun sample_data.load(testapp, 'rnai')
+    return sample_data.load(testapp, 'rnai')
 
 
 @pytest.fixture
@@ -620,7 +620,7 @@ def rnai(rnais):
 @pytest.fixture
 def constructs(testapp,labs, awards, targets):
     from . import sample_data
-    retrun sample_data.load(testapp, 'construct')
+    return sample_data.load(testapp, 'construct')
 
 
 @pytest.fixture
