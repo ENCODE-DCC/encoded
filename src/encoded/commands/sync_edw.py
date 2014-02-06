@@ -494,7 +494,7 @@ def get_collection(app, collection):
     # NOTE: perhaps limit=all should be default for JSON output
     # and app should hide @graph (provide an iterator)
     url = collection_url(collection)
-    url += "?limit=all&datastore=database"
+    url += "?limit=all&frame=object&datastore=database"
     resp = app.get(url)
     return resp.json['@graph']
 
