@@ -54,7 +54,7 @@ def index(context, request):
         last_xmin = request.json['last_xmin']
     elif es is not None:
         try:
-            status = es.get('meta', 'meta', 'indexing')
+            status = es.get('encoded', 'meta', 'indexing')
         except ElasticHttpNotFoundError:
             pass
         else:
@@ -91,7 +91,7 @@ def index(context, request):
         result['invalidated'] = [str(uuid) for uuid in invalidated]
         if not dry_run and es is not None:
             es_update_object(request, invalidated)
-            es.index('meta', 'meta', result, 'indexing')
+            es.index('encoded', 'meta', result, 'indexing')
 
     return result
 
