@@ -55,7 +55,6 @@ def search(context, request):
     ''' Search view connects to ElasticSearch and returns the results'''
 
     result = context.__json__(request)
-    params = request.params
     root = request.root
     result.update({
         '@id': '/search/',
@@ -76,47 +75,33 @@ def search(context, request):
         result['@id'] = '/search/?%s' % qs
 
     es = request.registry[ELASTIC_SEARCH]
-    if 'limit' in params:
-        if params['limit'] == 'all':
-            size = 99999
-        else:
-            if params['limit'].isdigit():
-                size = params['limit']
-            else:
-                size = 25
+
+    # handling limit
+    size = request.params.get('limit', 25)
+    if size == 'all':
+        size = 99999
+    elif not isinstance(size, int):
+        pass
     else:
         size = 25
+    
+    search_term = request.params.get('searchTerm', '*')
+    if search_term != '*':
+        search_term = sanitize_search_string(search_term.strip())
+    # Handling whitespaces in the search term
+    if not search_term:
+        result['notification'] = 'Please enter search term'
+        return result
 
-    try:
-        search_term = params['searchTerm'].strip()
-        search_term = sanitize_search_string(search_term)
-        # Handling whitespaces in the search term
-        if not search_term:
-            result['notification'] = 'Please enter search term'
-            return result
-    except:
-        if 'type' in params:
-            if params['type'] == '*':
-                result['notification'] = 'Please enter search term'
-                return result
-            else:
-                search_term = "*"
-        else:
-            result['notification'] = 'Please enter search term'
-            return result
-
-    try:
-        search_type = params['type']
-        # handling invalid item types
+    search_type = request.params.get('type', '*')
+    
+    # handling invalid item types
+    if search_type != '*':
         if search_type not in root.by_item_type.keys():
             result['notification'] = '\'' + search_type + '\' is not a valid \'item type\''
             return result
-    except:
-        # Handling search type
-        search_type = '*'
-        if not search_term:
-            result['notification'] = 'Please enter search term'
-            return result
+
+    # Handling wildcards
     if search_term == '*' and search_type == '*':
         result['notification'] = 'Please enter search term'
         return result
@@ -134,10 +119,7 @@ def search(context, request):
     for doc_type in doc_types:
         collection = root[doc_type]
         schema = collection.schema
-        try:
-            frame = params['frame']
-        except:
-            frame = ''
+        frame = request.params.get('frame', '')
         if frame == 'object':
             fields.append('object')
         elif frame == 'unembedded_object':
@@ -158,7 +140,7 @@ def search(context, request):
         query['sort'] = {'date_created': {'order': 'desc', 'ignore_unmapped': True}, 'label': {'order': 'asc', 'missing': '_last'}}
 
     # Setting filters
-    for key, value in params.iteritems():
+    for key, value in request.params.iteritems():
         if key not in ['type', 'searchTerm', 'limit', 'format', 'frame']:
             if value == 'other':
                 query['query']['filtered']['filter']['and']['filters'] \
