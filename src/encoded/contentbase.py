@@ -976,7 +976,7 @@ class Collection(Mapping):
         if limit is not None and len(result['@graph']) == limit:
             params = [(k, v) for k, v in request.params.items() if k != 'limit']
             params.append(('limit', 'all'))
-            result['all'] = '%s?%s' % (request.resource_path(self, ''), urlencode(params))
+            result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
 
         return result
 
@@ -1024,7 +1024,13 @@ class Collection(Mapping):
 
     def load_es(self, request):
         from .views.search import search
-        return search(self, request, self.item_type)
+        result = search(self, request, self.item_type)
+
+        if len(result['@graph']) < result['total']:
+            params = [(k, v) for k, v in request.params.items() if k != 'limit']
+            params.append(('limit', 'all'))
+            result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
+
 
     def __json__(self, request):
         properties = self.properties.copy()
