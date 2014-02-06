@@ -1031,6 +1031,7 @@ class Collection(Mapping):
             params.append(('limit', 'all'))
             result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
 
+        return result
 
     def __json__(self, request):
         properties = self.properties.copy()
