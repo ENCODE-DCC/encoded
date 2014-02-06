@@ -1,6 +1,4 @@
 import pytest
-    
-SCHEMA_DIR = 'src/encoded/schemas/'
 
 
 @pytest.fixture
@@ -12,6 +10,7 @@ def antibody_characterization(submitter, award, lab, antibody_lot, target):
         'characterizes': antibody_lot['uuid'],
     }
 
+
 @pytest.fixture
 def biosample_characterization(submitter, award, lab, biosample):
     return {
@@ -19,6 +18,7 @@ def biosample_characterization(submitter, award, lab, biosample):
         'lab': lab['uuid'],
         'characterizes': biosample['uuid'],
     }
+
 
 @pytest.fixture
 def rnai_characterization(submitter, award, lab, rnai):
@@ -28,6 +28,7 @@ def rnai_characterization(submitter, award, lab, rnai):
         'characterizes': rnai['uuid'],
     }
 
+
 @pytest.fixture
 def construct_characterization(submitter, award, lab, construct):
     return {
@@ -35,6 +36,7 @@ def construct_characterization(submitter, award, lab, construct):
         'lab': lab['uuid'],
         'characterizes': construct['uuid'],
     }
+
 
 @pytest.fixture
 def antibody_characterization_1(antibody_characterization):
@@ -46,6 +48,7 @@ def antibody_characterization_1(antibody_characterization):
     })
     return item
 
+
 @pytest.fixture
 def biosample_characterization_1(biosample_characterization):
     item = biosample_characterization.copy()
@@ -55,6 +58,7 @@ def biosample_characterization_1(biosample_characterization):
         'characterization_method': 'immunofluorescence',
     })
     return item
+
 
 @pytest.fixture
 def rnai_characterization_1(rnai_characterization):
@@ -66,6 +70,7 @@ def rnai_characterization_1(rnai_characterization):
     })
     return item
 
+
 @pytest.fixture
 def construct_characterization_1(construct_characterization):
     item = construct_characterization.copy()
@@ -75,6 +80,7 @@ def construct_characterization_1(construct_characterization):
         'characterization_method': 'western blot',
     })
     return item
+
 
 def test_antibody_characterization_upgrade(app, antibody_characterization_1):
     migrator = app.registry['migrator']
@@ -91,6 +97,7 @@ def test_biosample_characterization_upgrade(app, biosample_characterization_1):
     assert value['status'] == 'NOT REVIEWED'
     assert value['characterization_method'] == 'FACs analysis'
 
+
 def test_construct_characterization_upgrade(app, construct_characterization_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('construct_characterization', construct_characterization_1, target_version='3')
@@ -98,12 +105,14 @@ def test_construct_characterization_upgrade(app, construct_characterization_1):
     assert value['status'] == 'NOT SUBMITTED FOR REVIEW BY LAB'
     assert value['characterization_method'] == 'immunoblot'
 
+
 def test_rnai_characterization_upgrade(app, rnai_characterization_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('rnai_characterization', rnai_characterization_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'IN PROGRESS'
     assert value['characterization_method'] == 'knockdown or knockout'
+
 
 def test_antibody_characterization_upgrade_inline(testapp, root, antibody_characterization_1):
     schema = root.by_item_type['antibody_characterization'].schema
@@ -124,4 +133,3 @@ def test_antibody_characterization_upgrade_inline(testapp, root, antibody_charac
     # The stored properties are now upgraded.
     res = testapp.get(location+'?raw=true&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
-

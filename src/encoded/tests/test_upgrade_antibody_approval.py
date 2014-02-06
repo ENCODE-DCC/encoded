@@ -1,6 +1,4 @@
 import pytest
-    
-SCHEMA_DIR = 'src/encoded/schemas/'
 
 
 @pytest.fixture
@@ -27,6 +25,7 @@ def test_antibody_approval_upgrade(app, antibody_approval_1):
     value = migrator.upgrade('antibody_approval', antibody_approval_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'PENDING DCC REVIEW'
+
 
 def test_antibody_approval_upgrade_inline(testapp, root, antibody_approval_1):
     schema = root.by_item_type['antibody_approval'].schema
