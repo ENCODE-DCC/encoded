@@ -585,7 +585,7 @@ def file(file):
 
 
 @pytest.fixture
-def antibody_lots(testapp, labs, awards, sources):
+def antibody_lots(testapp, labs, awards, sources, organisms):
     from . import sample_data
     return sample_data.load(testapp, 'antibody_lot')
 
