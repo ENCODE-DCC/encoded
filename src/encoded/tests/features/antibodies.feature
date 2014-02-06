@@ -26,7 +26,7 @@ Feature: Antibodies
     Scenario: Detail page
         When I visit "/antibodies/35cf08c4-72cf-4408-8552-231e3e35b279/"
         Then I should see an element with the css selector "div.data-display"
-        And I should see "APPROVED"
+        And I should see "ELIGIBLE FOR NEW DATA"
         And I should see an element with the css selector "div.characterizations"
         And I should see at least 1 elements with the css selector "section"
         And I should see at least 1 elements with the css selector "figure"
