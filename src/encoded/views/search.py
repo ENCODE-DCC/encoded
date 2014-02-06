@@ -24,8 +24,14 @@ def get_filtered_query(term, fields, search_fields, principals):
                     }
                 },
                 'filter': {
-                    'terms': {
-                        'principals_allowed_view': principals,
+                    'and': {
+                        'filters': [
+                            {
+                                'terms': {
+                                    'principals_allowed_view': principals
+                                }
+                            }
+                        ]
                     }
                 }
             }
