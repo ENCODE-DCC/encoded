@@ -62,6 +62,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                     </div>
                 : null}
 
+				<ExperimentsLinked context={context} />
                 <FilesLinked context={context} />
             </div>
         );
@@ -69,6 +70,50 @@ var Dataset = module.exports.Dataset = React.createClass({
 });
 
 globals.content_views.register(Dataset, 'dataset');
+
+
+var ExperimentsLinked = module.exports.ExperimentsLinked = function (props) {
+    var context = props.context;
+    var files = context.files;
+    if (!files.length) return (<div hidden={true}></div>);
+    return (
+        <div>
+            <h3>Related experiments for dataset {context.accession}</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Accession</th>
+                        <th>Assay</th>
+                        <th>Biosample term name</th>
+                        <th>Target</th>
+                        <th>Description</th>
+                        <th>Lab</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {files.map(function (file, index) {
+                	var experiment = file.replicate.experiment;
+                    return (
+                        <tr key={index}>
+                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                            <td>{experiment.assay_term_name}</td>
+                            <td>{experiment.biosample_term_name}</td>
+                            <td>{experiment.target && experiment.target.label ? experiment.target.label : null}</td>
+                            <td>{experiment.description}</td>
+                            <td>{experiment.lab.title}</td>            
+                        </tr>
+                    );
+                })}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan="6"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    );
+};
 
 
 var FilesLinked = module.exports.FilesLinked = function (props) {

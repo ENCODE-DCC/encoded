@@ -551,13 +551,16 @@ class Dataset(Collection):
         embedded = [
             'files',
             'files.replicate',
+            'files.replicate.experiment',
+            'files.replicate.experiment.lab',
+            'files.replicate.experiment.target',
             'files.submitted_by',
             'submitted_by',
             'lab',
             'award',
             'documents.lab',
             'documents.award',
-            'documents.submitted_by'
+            'documents.submitted_by',
         ]
         name_key = 'accession'
         keys = ACCESSION_KEYS + ALIAS_KEYS
