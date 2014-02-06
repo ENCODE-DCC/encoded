@@ -129,8 +129,8 @@ def es_mapping(mapping):
             'analyzer': 'encoded_index_analyzer'
         },
         'properties': {
-            'object': mapping,
-            'unembedded_object': {
+            'embedded': mapping,
+            'object': {
                 'type': 'object',
                 'include_in_all': False,
                 'properties': {}

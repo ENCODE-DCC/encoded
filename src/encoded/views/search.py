@@ -115,22 +115,20 @@ def search(context, request):
         if search_term != '*':
             result['filters'].append({'type': root.by_item_type[search_type].__name__})
 
-    fields = ['object.@id', 'object.@type']
+    fields = ['embedded.@id', 'embedded.@type']
     for doc_type in doc_types:
         collection = root[doc_type]
         schema = collection.schema
         frame = request.params.get('frame', '')
-        if frame == 'object':
-            fields.append('object')
-        elif frame == 'unembedded_object':
-            fields.append('unembedded_object')
+        if frame in ['embedded', 'object']:
+            fields.append(frame)
         else:
             for column in collection.columns:
-                fields.append('object.' + column)
+                fields.append('embedded.' + column)
                 result['columns'].update({column: collection.columns[column]})
         # Adding search fields and boost values
         for value in schema.get('boost_values', ()):
-            search_fields = search_fields + ['object.' + value, 'object.' + value + '.standard^2', 'object.' + value + '.untouched^3']
+            search_fields = search_fields + ['embedded.' + value, 'embedded.' + value + '.standard^2', 'embedded.' + value + '.untouched^3']
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, list(set(fields)), search_fields, principals)
@@ -144,10 +142,10 @@ def search(context, request):
         if key not in ['type', 'searchTerm', 'limit', 'format', 'frame']:
             if value == 'other':
                 query['query']['filtered']['filter']['and']['filters'] \
-                    .append({'missing': {'field': 'object.' + key}})
+                    .append({'missing': {'field': 'embedded.' + key}})
             else:
                 query['query']['filtered']['filter']['and']['filters'] \
-                    .append({'term': {'object.' + key + '.untouched': value}})
+                    .append({'term': {'embedded.' + key + '.untouched': value}})
             result['filters'].append({key: value})
 
     # Adding facets to the query
@@ -159,7 +157,7 @@ def search(context, request):
         facets = root[doc_types[0]].schema['facets']
         for facet in facets:
             face = {'terms': {'field': '', 'size': 99999}}
-            face['terms']['field'] = 'object.' + facet[facet.keys()[0]] + '.untouched'
+            face['terms']['field'] = 'embedded.' + facet[facet.keys()[0]] + '.untouched'
             query['facets'][facet.keys()[0]] = face
             for f in result['filters']:
                 if facet[facet.keys()[0]] == f.keys()[0]:
@@ -192,7 +190,7 @@ def search(context, request):
     # Loading result rows
     for hit in results['hits']['hits']:
         result_hit = hit['fields']
-        if frame in ['object', 'unembedded_object']:
+        if frame in ['embedded', 'object']:
             result['@graph'].append(result_hit[frame])
         else:
             result_hit_new = {}

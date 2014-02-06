@@ -936,14 +936,14 @@ class Collection(Mapping):
         return items
 
     def load_es(self, request):
-        columns = ['object.@id', 'object.@type']
+        columns = ['embedded.@id', 'embedded.@type']
         lengthColumns = []
         for column in self.columns:
-            if 'length' in column:
-                columns.append('object.' + column.split('.')[0])
+            if column.endswith('.length'):
+                columns.append('embedded.' + column.split('.')[0])
                 lengthColumns.append(column.split('.')[0])
             else:
-                columns.append('object.' + column)
+                columns.append('embedded.' + column)
         # Hack to check if the views have columns for the collection.
         if len(columns) > 2:
             query = {'query': {'match_all': {}}, 'fields': columns}
@@ -957,8 +957,8 @@ class Collection(Mapping):
         for model in results['hits']['hits']:
             # Dealing with columns which have length attribute to the array
             for c in lengthColumns:
-                model['fields']['object.' + c + '.length'] = len(model['fields']['object.' + c])
-                del model['fields']['object.' + c]
+                model['fields']['embedded.' + c + '.length'] = len(model['fields']['embedded.' + c])
+                del model['fields']['embedded.' + c]
 
             if len(columns) > 2:
                 hit = {}
@@ -1219,8 +1219,8 @@ def item_index_data(context, request):
         principals = [Everyone]
 
     document = {
-        'object': embed(request, request.resource_path(context)),
-        'unembedded_object': embed(request, request.resource_path(context) + '?embed=false'),
+        'embedded': embed(request, request.resource_path(context)),
+        'object': embed(request, request.resource_path(context) + '?embed=false'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),
