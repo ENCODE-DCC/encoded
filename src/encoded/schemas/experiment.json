@@ -55,7 +55,6 @@
         },
         "documents": {
             "description": "Protocols or other documents that describe the assay or the results (not data files)."
-
         },
         "possible_controls": {
             "title": "Controls",

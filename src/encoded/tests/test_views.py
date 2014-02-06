@@ -17,6 +17,16 @@ def _type_length():
 
 TYPE_LENGTH = _type_length()
 
+PUBLIC_COLLECTIONS = [
+    'source',
+    'platform',
+    'treatment',
+    'lab',
+    'award',
+    'target',
+    'organism',
+]
+
 
 def test_home(anonhtmltestapp):
     res = anonhtmltestapp.get('/', status=200)
@@ -29,7 +39,13 @@ def test_home_json(testapp):
 
 
 @pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
-def test_html_collections_anon(anonhtmltestapp, item_type):
+def test_collections_anon(workbook, anontestapp, item_type):
+    res = anontestapp.get('/' + item_type).follow(status=200)
+    assert '@graph' in res.json
+
+
+@pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
+def test_html_collections_anon(workbook, anonhtmltestapp, item_type):
     res = anonhtmltestapp.get('/' + item_type).follow(status=200)
     assert res.body.startswith('<!DOCTYPE html>')
 
@@ -131,13 +147,13 @@ def test_collection_post_bad_json(testapp, item_type):
         assert res.json['errors']
 
 
-def test_actions_filtered_by_permission(testapp, anontestapp, sources):
+def test_actions_filtered_by_permission(testapp, authenticated_testapp, sources):
     location = sources[0]['@id']
 
     res = testapp.get(location)
     assert any(action for action in res.json['actions'] if action['name'] == 'edit')
 
-    res = anontestapp.get(location)
+    res = authenticated_testapp.get(location)
     assert not any(action for action in res.json['actions'] if action['name'] == 'edit')
 
 
@@ -173,7 +189,7 @@ def test_post_duplicate_uuid(testapp):
     testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
-def test_users_post(users, anontestapp):
+def test_user_effective_principals(users, anontestapp):
     email = users[0]['email']
     res = anontestapp.get('/@@testing-user',
                           extra_environ={'REMOTE_USER': str(email)})
@@ -188,21 +204,6 @@ def test_users_post(users, anontestapp):
         'system.Everyone',
         'userid.e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
     ]
-
-
-def test_users_view_details_admin(users, testapp):
-    res = testapp.get(users[0]['@id'])
-    assert 'email' in res.json
-
-
-def test_users_view_basic_anon(users, anontestapp):
-    res = anontestapp.get(users[0]['@id'])
-    assert 'title' in res.json
-    assert 'email' not in res.json
-
-
-def test_users_list_denied_anon(anontestapp):
-    anontestapp.get('/users/', status=403)
 
 
 def test_etags(testapp):
