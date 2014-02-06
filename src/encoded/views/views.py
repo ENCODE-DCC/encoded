@@ -50,6 +50,12 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', 'add')
 ]
 
+ALLOW_CURRENT = [
+    (Allow, 'role.lab_submitter', 'edit'),
+    (Allow, 'role.lab_submitter', 'view_raw'),
+    (Allow, 'role.viewer', 'view'),
+]
+
 ENCODE2_AWARDS = frozenset([
     '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
     '1f3cffd4-457f-4105-9b3c-3e9119abfcf0',
@@ -80,11 +86,7 @@ class Collection(BaseCollection):
 
     class Item(BaseCollection.Item):
         STATUS_ACL = {
-            'CURRENT': [
-                (Allow, 'role.lab_submitter', 'edit'),
-                (Allow, 'role.lab_submitter', 'view_raw'),
-                (Allow, 'role.viewer', 'view'),
-            ],
+            'CURRENT': ALLOW_CURRENT,
             'DELETED': [],
         }
 
@@ -450,10 +452,6 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    item_embedded = set(['antibody.source', 'antibody.host_organism', 'target.organism', 'characterizations.target.organism', 'characterizations.award', 'characterizations.submitted_by', 'characterizations.lab'])
-    item_keys = [
-        {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
-    ]
     columns = OrderedDict([
         ('antibody.accession', 'Accession'),
         ('target.label', 'Target'),
@@ -464,7 +462,24 @@ class AntibodyApproval(Collection):
         ('characterizations.length', 'Characterizations'),
         ('status', 'Status')
     ])
-
+    class Item(Collection.Item):
+        STATUS_ACL = {
+            'ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
+            'NOT ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
+            'NOT PURSUED': ALLOW_CURRENT,
+        }
+        embedded = [
+            'antibody.host_organism',
+            'antibody.source',
+            'characterizations.award',
+            'characterizations.lab',
+            'characterizations.submitted_by',
+            'characterizations.target.organism',
+            'target.organism',
+        ]
+        keys = [
+            {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
+        ]
 
 @location('platforms')
 class Platform(Collection):
