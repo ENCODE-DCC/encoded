@@ -45,6 +45,11 @@
 	text-decoration: none;
 }
 
+.facet-item {
+	overflow: hidden;
+	max-width: 200px;
+}
+
 .facet-list button {
 	padding: 0;
 }
