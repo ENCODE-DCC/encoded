@@ -41,6 +41,18 @@ def test_keys_update(testapp):
     testapp.post_json(url, item, status=201)
     testapp.put_json(location, item, status=409)
 
+def test_keys_conflict(testapp):
+    url = '/testing-keys/'
+    item = items[1]
+    initial = testapp.get(url).json['@graph']
+    res = testapp.post_json(url, item, status=201)
+    posted = testapp.get(url).json['@graph']
+    assert(len(initial)+1 == len(posted))
+    conflict = testapp.post_json(url, item, status=409)
+    assert(conflict.status_code == 409)
+    conflicted = testapp.get(url).json['@graph']
+    assert(len(posted) == len(conflicted))
+
 
 @pytest.mark.slow
 def test_keys_templated(workbook, session):

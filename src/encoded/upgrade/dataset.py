@@ -10,9 +10,9 @@ def dataset_0_2(value, system):
     context = system['context']
     root = find_root(context)
     if 'files' in value:
-        value['additional_files'] = []
+        value['related_files'] = []
         for file_uuid in value['files']:
             item = root.get_by_uuid(file_uuid)
             if UUID(item.properties['dataset']) != context.uuid:
-                value['additional_files'].append(file_uuid)
+                value['related_files'].append(file_uuid)
         del value['files']

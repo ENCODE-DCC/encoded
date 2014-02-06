@@ -64,14 +64,14 @@
         },
         "references": {
             "title": "References",
-            "description": "The Pubmed identifiers used as references for the characterization, if previously published.",
+            "description": "The identifiers used as references for the characterization, if previously published.",
             "type": "array",
             "default": [],
             "items": {
                 "title": "Reference",
-                "description": "The Pubmed identifier used as a reference for the characterization, if previously published",
+                "description": "An identifier used as a reference for the characterization, if previously published",
                 "type": "string",
-                "pattern": "^PMID:[0-9]+$"
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
             }
         },
         "status": {

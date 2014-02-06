@@ -317,8 +317,12 @@ def zsa_savepoints(request, connection):
             # txn be aborted a second time in manager.begin()
             if self.sp is None:
                 return
-            self.state = 'completion'
-            self.sp.commit()
+            if self.state == 'commit':
+                self.state = 'completion'
+                self.sp.commit()
+            else:
+                self.state = 'abort'
+                self.sp.rollback()
             self.sp = None
             self.state = 'done'
 
@@ -326,6 +330,10 @@ def zsa_savepoints(request, connection):
             self.state = 'new'
             self.sp = self.connection.begin_nested()
             self.state = 'begun'
+            transaction.addBeforeCommitHook(self._registerCommit)
+
+        def _registerCommit(self):
+            self.state = 'commit'
 
     zsa_savepoints = Savepoints(connection)
 
