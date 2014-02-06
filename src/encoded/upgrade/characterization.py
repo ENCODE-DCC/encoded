@@ -28,11 +28,12 @@ def characterization_0_3(value, system):
   
     # http://redmine.encodedcc.org/issues/442
     new_status = {
-    "UNSUBMITTED": "IN PROGRESS",
-    "INCOMPLETE" : "IN PROGRESS",
-    "FAILED": "NOT SUBMITTED FOR REVIEW BY LAB",
-    "APPROVED": "NOT REVIEWED",
-    "SUBMITTED": "PENDING DCC REVIEW"
+        "UNSUBMITTED": "IN PROGRESS",
+        "INCOMPLETE" : "IN PROGRESS",
+        "FAILED": "NOT SUBMITTED FOR REVIEW BY LAB",
+        "APPROVED": "NOT REVIEWED",
+        "SUBMITTED": "PENDING DCC REVIEW",
+        "DELETED": "DELETED"
     }
     
     if 'status' in value:
