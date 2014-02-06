@@ -207,7 +207,7 @@ var Dbxref = dbxref.Dbxref;
                 }
                 if(termID == 'DataType') {
                     debugger;
-                    return <div className="facet">
+                    return <div className="facet" key={termID}>
                             <h5>{term}</h5>
                             <ul className="facet-list nav">
                                 {terms.length ?
@@ -216,7 +216,7 @@ var Dbxref = dbxref.Dbxref;
                             </ul>
                         </div>
                 }else {
-                    return <div className="facet">
+                    return <div className="facet" key={termID}>
                             <h5>{term}</h5>
                             <ul className="facet-list nav">
                                 <div>
