@@ -125,7 +125,7 @@ def es_update_object(request, objects, dry_run=False):
 
     # Indexing the object in ES
     for uuid in objects:
-        subreq = make_subrequest(request, '/%s' % uuid)
+        subreq = make_subrequest(request, '/%s/@@index-data' % uuid)
         subreq.override_renderer = 'null_renderer'
         subreq.remote_user = 'INDEXER'
         result = request.invoke_subrequest(subreq)

@@ -166,7 +166,7 @@ def search(context, request, search_type=None):
             result['filters'].append({key: value})
 
     # Adding facets to the query
-    if len(doc_types) == 1 and 'facets' in root[doc_types[0]]:
+    if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
         facets = root[doc_types[0]].schema['facets']
         for facet in facets:
             face = {'terms': {'field': '', 'size': 99999}}
