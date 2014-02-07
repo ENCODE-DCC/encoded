@@ -50,8 +50,8 @@ def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
-@view_config(name='search', context=Root, request_method='GET')
-def search(context, request, search_type=None, permission='search'):
+@view_config(name='search', context=Root, request_method='GET', permission='search')
+def search(context, request, search_type=None):
     ''' Search view connects to ElasticSearch and returns the results'''
 
     uri = request.resource_path(context, request.view_name, '')
