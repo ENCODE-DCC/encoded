@@ -24,7 +24,7 @@ var Dataset = module.exports.Dataset = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var pubmed_url = "http://www.ncbi.nlm.nih.gov/pubmed/?term=";
         var pubmed_links = context.references.map(function(id) {
-        	return <a href={pubmed_url + id.slice(5)}>{id}</a>;
+        	return <li><a href={pubmed_url + id.slice(5)}>{id}</a></li>;
         });
         return (
             <div className={itemClass}>
@@ -51,7 +51,11 @@ var Dataset = module.exports.Dataset = React.createClass({
                         {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
                         
                         {context.references.length ? <dt>References</dt> : null}
-                        {context.references.length ? <dd>{pubmed_links}</dd> : null}
+                        {context.references.length ? <dd>
+                        	<ul className="horizontal-list">
+                        		{pubmed_links}
+                        	</ul>
+                        </dd> : null}
                         
                         <dt>External resources</dt>
 						<dd>
