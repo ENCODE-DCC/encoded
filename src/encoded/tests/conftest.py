@@ -31,6 +31,7 @@ _app_settings = {
     'load_sample_data': False,
     'testing': True,
     'datastore': 'database',
+    'pyramid.debug_authorization': True,
 }
 
 
