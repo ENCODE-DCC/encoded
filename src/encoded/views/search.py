@@ -136,7 +136,17 @@ def search(context, request, search_type=None, permission='search'):
 
     # Sorting the files when search term is not specified
     if search_term == '*':
-        query['sort'] = {'date_created': {'order': 'desc', 'ignore_unmapped': True}, 'label': {'order': 'asc', 'missing': '_last'}}
+        query['sort'] = {
+            'date_created': {
+                'order': 'desc',
+                'ignore_unmapped': True,
+            },
+            'label': {
+                'order': 'asc',
+                'missing': '_last',
+                'ignore_unmapped': True,
+            },
+        }
 
     # Setting filters
     for key, value in request.params.iteritems():
