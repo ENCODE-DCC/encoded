@@ -224,7 +224,7 @@ def get_dataset_or_experiment(app, accession, phase=edw_file.ENCODE_PHASE_ALL):
             if exp_json['replicates'][0]['@id']:
               return exp_json
         except Exception, e:
-            logger.info("Need to fetch experiment: %s (%s)" % (ec3_acc, exp_json))
+            logger.info("Need to fetch experiment: %s (%s)" % (ec3_acc, exp_json.get('replicates', "No Replicates")))
     else:
         ds_json = datasets.get('/datasets'+url, {})
         if ds_json:
@@ -241,7 +241,7 @@ def get_dataset_or_experiment(app, accession, phase=edw_file.ENCODE_PHASE_ALL):
 
     if resp.status_code == 200:
         logger.info("GET: %s (lookup)" % url)
-        logger.info(str(resp))
+        #logger.info(str(resp))
         if [ t for t in resp.json['@type'] if t == 'experiment' ]:
             experiments[resp.json['@id']] = resp.json
         else:
@@ -271,7 +271,7 @@ def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
         url = row['@id']
         resp = app.get(url).maybe_follow()
         logger.info("GET: %s" % url)
-        logger.info(str(resp))
+        #logger.info(str(resp))
         fileinfo = resp.json
         # below seems clunky, could search+filter
         if dataset and fileinfo['dataset'] != dataset:
