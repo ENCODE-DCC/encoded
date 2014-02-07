@@ -115,8 +115,11 @@ def search(context, request, search_type=None):
         if search_term != '*':
             result['filters'].append({'type': root.by_item_type[search_type].__name__})
 
-    frame = request.params.get('frame', '')
+    frame = request.params.get('frame')
     if frame in ['embedded', 'object']:
+        fields = {frame}
+    elif len(doc_types) == 1 and not root[doc_types[0]].columns:
+        frame = 'object'
         fields = {frame}
     else:
         frame = 'columns'
@@ -130,6 +133,9 @@ def search(context, request, search_type=None):
         # Adding search fields and boost values
         for value in schema.get('boost_values', ()):
             search_fields = search_fields + ['embedded.' + value, 'embedded.' + value + '.standard^2', 'embedded.' + value + '.untouched^3']
+
+    if not result['columns']:
+        del result['columns']
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, sorted(fields), search_fields, principals)
