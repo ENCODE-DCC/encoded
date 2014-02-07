@@ -61,6 +61,13 @@ def test_biosample_upgrade_exponent(app, biosample_1):
     assert value['schema_version'] == '2'
     assert value['starting_amount'] == 1e5
 
+def test_biosample_upgrade_number(app, biosample_1):
+    biosample_1['starting_amount'] = -1
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_1, target_version='2')
+    assert value['schema_version'] == '2'
+    assert value['starting_amount'] == -1
+
 
 def test_biosample_upgrade_subcellular_fraction(app, biosample_2):
     migrator = app.registry['migrator']

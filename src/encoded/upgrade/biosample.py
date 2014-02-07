@@ -2,6 +2,8 @@ from ..migrator import upgrade_step
 
 
 def number(value):
+    if isinstance(value, (int, long, float, complex)):
+        return value
     value = value.lower().replace(' ', '')
     value = value.replace('x10^', 'e')
     if value in ('', 'unknown'):
