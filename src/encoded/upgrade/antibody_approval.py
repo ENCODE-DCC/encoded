@@ -10,8 +10,7 @@ def antibody_approval_0_2(value, system):
         "FAILED": "NOT PURSUED",
         "APPROVED": "NOT ELIGIBLE FOR NEW DATA",
         "SUBMITTED": "PENDING DCC REVIEW",
-        "DELETED": "DELETED"
-
+        "DELETED": "DELETED",
     }
     
     if 'status' in value:
