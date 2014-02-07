@@ -130,7 +130,7 @@ def es_update_object(request, objects, dry_run=False):
         subreq.remote_user = 'INDEXER'
         result = request.invoke_subrequest(subreq)
         if es is not None:
-            es.index(result['@type'][0], 'basic', result, str(uuid))
+            es.index('encoded', result['@type'][0], result, str(uuid))
 
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):
