@@ -350,31 +350,10 @@ def post_fileinfo(app, fileinfo, dry_run=False):
     logger.info('....POST file: %s' % (accession))
     logger.info("%s" % fileinfo)
 
-    ds = fileinfo.get('dataset', None)
-    dataset = None
-    is_experiment = True
-    if ds:
-        dataset = experiments.get(ds, None)
-        if not dataset:
-            dataset = datasets.get(ds, None)
-            is_experiment = False
-    rep = fileinfo.get('replicate', None)
-
-
-    if ds:
-        if ( (dataset and not is_experiment) or
-           ( not rep and not fileinfo['biological_replicate'] and not fileinfo['technical_replicate'] and
-             (fileinfo['file_format'] != 'fastq' or fileinfo['file_format'] != 'bam')) ):
-            # dataset primary files have irrelvant replicate info
-            # non fastq non bam files can have no replicate specified
-            del fileinfo['biological_replicate']
-            del fileinfo['technical_replicate']
-            fileinfo.pop('replicate', None)
-        elif not rep:
-            # try to create one
-            fileinfo = try_replicate(app, fileinfo, dataset, dry_run)
-            if not fileinfo:
-                return None
+    if fileinfo.get('dataset', None):
+        fileinfo = try_replicate(app, fileinfo, dry_run)
+        if not fileinfo:
+            return None
 
     url = collection_url(FILES)
     if not dry_run:
@@ -396,36 +375,59 @@ def post_fileinfo(app, fileinfo, dry_run=False):
         logger.warning('Sucessful dry-run POST File %s' % (accession))
         return {'status_int': 201}
 
-def try_replicate(app, fileinfo, dataset, dry_run):
+def try_replicate(app, fileinfo, dry_run, method='POST'):
 
-    try:
-        br = int(fileinfo['biological_replicate'])
-        tr = int(fileinfo['technical_replicate'])
-        fileinfo['replicate'] = create_replicate(app, dataset, br, tr, dry_run)
+    global experiments
+    global datasets
+
+    ds = fileinfo['dataset']
+    dataset = None
+    is_experiment = True
+    dataset = experiments.get(ds, None)
+    if not dataset:
+        dataset = datasets.get(ds, None)
+        is_experiment = False
+    rep = fileinfo.get('replicate', None)
+
+    if ( (dataset and not is_experiment) or
+       ( not rep and not fileinfo['biological_replicate'] and not fileinfo['technical_replicate'] and
+         (fileinfo['file_format'] != 'fastq' or fileinfo['file_format'] != 'bam')) ):
+        # dataset primary files have irrelvant replicate info
+        # non fastq non bam files can have no replicate specified
         del fileinfo['biological_replicate']
         del fileinfo['technical_replicate']
-        return fileinfo
-    except ValueError, e:
-        msg = "Refusing to POST file with confusing replicate ids"
-        summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-        logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-        logger.info("%s" % e.message)
-        return None
-    except KeyError, e:
-        msg = "Refusing to POST file with missing replicate ids"
-        summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-        logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-        logger.info("%s" % e.message)
-        return None
-    except AppError, e:
-        msg = "Could not POST replicate"
-        summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-        logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-        logger.info("%s" % e.message)
-        return None
-    except Exception, e:
-        logger.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
-        sys.exit(1)
+        fileinfo.pop('replicate', None)
+    elif not rep:
+        try:
+            br = int(fileinfo['biological_replicate'])
+            tr = int(fileinfo['technical_replicate'])
+            fileinfo['replicate'] = create_replicate(app, dataset, br, tr, dry_run)
+            del fileinfo['biological_replicate']
+            del fileinfo['technical_replicate']
+            return fileinfo
+        except ValueError, e:
+            msg = "Refusing to %s file with confusing replicate ids" % method
+            summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+            logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            logger.info("%s" % e.message)
+            return None
+        except KeyError, e:
+            msg = "Refusing to %s file with missing replicate ids" % method
+            summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+            logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            logger.info("%s" % e.message)
+            return None
+        except AppError, e:
+            msg = "Could not %s replicate" % method
+            summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+            logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            logger.info("%s" % e.message)
+            return None
+        except Exception, e:
+            logger.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
+            sys.exit(1)
+
+    return fileinfo
 
 def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, enc_dataset='', edw_dataset='', since=0, test=False):
 
@@ -520,23 +522,24 @@ def patch_fileinfo(app, props, propinfo, dry_run=False):
     accession = propinfo['accession']
 
     logger.info('....PATCH file: %s' % (accession))
+    can_patch_replicates = False
     for prop in props:
         if prop in NO_UPDATE:
             msg = "Refusing to PATCH %s" % prop
             summary.error_count[msg] = summary.error_count.get(msg,0) + 1
             logger.error("%s: (%s) for %s" % (msg, propinfo[prop], accession))
             return None
+        elif prop == 'replicate':
+            can_patch_replicates = True
 
     if not propinfo['replicate']:
-        # only occurs if we are in patch replicate mode
-        dataset = app.get(propinfo['dataset']).maybe_follow().json
-        propinfo = try_replicate(app, propinfo, dataset, dry_run)
+        propinfo = try_replicate(app, propinfo, dry_run, method='PATCH')
 
     url = collection_url(FILES) + accession
     if not dry_run:
         resp = app.patch_json(url, propinfo, status=[200, 201, 409, 422])
         logger.info(str(resp))
-        if resp.status_int < 200 or resp.status_int == 409:
+        if resp.status_int < 200 or resp.status_int == 409 or resp.status_int == 422:
             msg = "PATCH failed for"
             summary.error_count[msg] = summary.error_count.get(msg,0) + 1
             logger.error("%s: %s (%s)" % (msg, accession, resp))
@@ -559,8 +562,9 @@ def get_collection(app, collection):
     # GET JSON objects from app as a list
     # NOTE: perhaps limit=all should be default for JSON output
     # and app should hide @graph (provide an iterator)
+    # frame=object is the default
     url = collection_url(collection)
-    url += "?limit=all&frame=object&datastore=database"
+    url += "?limit=all&datastore=database&frame=object"
     resp = app.get(url)
     return resp.json['@graph']
 

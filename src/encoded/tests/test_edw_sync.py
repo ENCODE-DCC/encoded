@@ -184,9 +184,10 @@ def test_file_sync(workbook, testapp):
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
     assert len(edw_only) == 16
+    # have to troll the TEST column to predict these results
     assert len(app_only) == 13
     assert len(same) == 5
-    assert len(patch) == 8
+    assert len(patch) == 9
 
     before_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
 
@@ -218,7 +219,7 @@ def test_file_sync(workbook, testapp):
         patched = sync_edw.patch_fileinfo(testapp, diff.keys(), edw_mock[update])
         should_fail = False
         for patch_prop in diff.keys():
-            if patch_prop in sync_edw.NO_UPDATE:
+            if patch_prop in sync_edw.NO_UPDATE or re.match('FAIL', test[update]):
                 should_fail = True
         if should_fail:
             assert not patched
