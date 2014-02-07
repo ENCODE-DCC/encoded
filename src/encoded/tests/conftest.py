@@ -6,11 +6,11 @@ import pytest
 from pytest import fixture
 
 _app_settings = {
-    'multiauth.policies': 'authtkt remoteuser accesskey',
+    'multiauth.policies': 'session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
-    'multiauth.policy.authtkt.use': 'pyramid.authentication.AuthTktAuthenticationPolicy',
-    'multiauth.policy.authtkt.hashalg': 'sha512',
-    'multiauth.policy.authtkt.secret': 'GLIDING LIKE A WHALE',
+    'multiauth.policy.session.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
+    'multiauth.policy.session.namespace': 'mailto',
     'multiauth.policy.remoteuser.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.remoteuser.namespace': 'remoteuser',
     'multiauth.policy.remoteuser.base': 'pyramid.authentication.RemoteUserAuthenticationPolicy',
@@ -20,16 +20,17 @@ _app_settings = {
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
     'persona.siteName': 'ENCODE DCC Submission',
-    'allow.view': 'Everyone',
+    'allow.view': 'Authenticated',
     'allow.list': 'Everyone',
     'allow.traverse': 'Everyone',
+    'allow.search': 'Everyone',
     'allow.ALL_PERMISSIONS': 'group.admin',
     'allow.edw_key_create': 'accesskey.edw',
     'allow.edw_key_update': 'accesskey.edw',
     'load_test_only': True,
     'load_sample_data': False,
     'testing': True,
-    'collection_source': 'database',
+    'datastore': 'database',
 }
 
 
@@ -188,7 +189,7 @@ def authenticated_testapp(app, external_tx):
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST_USER',
+        'REMOTE_USER': 'TEST_AUTHENTICATED',
     }
     return TestApp(app, environ)
 
@@ -211,14 +212,22 @@ def server_host_port():
     return get_free_port()
 
 
+@fixture(scope='session')
+def authenticated_app(app):
+    def wsgi_filter(environ, start_response):
+        environ['REMOTE_USER'] = 'TEST_AUTHENTICATED'
+        return app(environ, start_response)
+    return wsgi_filter
+
+
 @pytest.mark.fixture_cost(100)
 @fixture(scope='session')
-def _server(request, app, server_host_port):
+def _server(request, authenticated_app, server_host_port):
     from webtest.http import StopableWSGIServer
     host, port = server_host_port
 
     server = StopableWSGIServer.create(
-        app,
+        authenticated_app,
         host=host,
         port=port,
         threads=1,
@@ -590,6 +599,50 @@ def files(testapp, labs, awards):
 @pytest.fixture
 def file(file):
     return [f for f in files if ['accession'] == 'ENCFF000TST'][0]
+
+
+@pytest.fixture
+def antibody_lots(testapp, labs, awards, sources, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'antibody_lot')
+
+
+@pytest.fixture
+def antibody_lot(antibody_lots):
+    return [al for al in antibody_lots if al['accession'] == 'ENCAB000TST'][0]
+
+
+@pytest.fixture
+def targets(testapp,organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'target')
+
+
+@pytest.fixture
+def target(targets):
+    return [t for t in targets if t['label'] == 'ATF4'][0]
+
+
+@pytest.fixture
+def rnais(testapp,labs, awards, targets):
+    from . import sample_data
+    return sample_data.load(testapp, 'rnai')
+
+
+@pytest.fixture
+def rnai(rnais):
+    return [r for r in rnais if r['rnai_type'] == 'shRNA'][0]
+
+
+@pytest.fixture
+def constructs(testapp,labs, awards, targets):
+    from . import sample_data
+    return sample_data.load(testapp, 'construct')
+
+
+@pytest.fixture
+def construct(constructs):
+    return [c for c in constructs if c['construct_type'] == 'fusion protein'][0]
 
 
 @pytest.mark.fixture_cost(10)

@@ -16,6 +16,7 @@ import logging
 
 EPILOG = __doc__
 
+log = logging.getLogger(__name__)
 
 # An index to store non-content metadata
 META_MAPPING = {
@@ -68,9 +69,13 @@ def schema_mapping(name, schema):
                 'untouched': {
                     'type': 'string',
                     'index': 'not_analyzed',
-                    'include_in_all': False,
-                    'omit_norms': True,
+                    'include_in_all': False
                 },
+                'standard': {
+                    'type': 'string',
+                    'analyzer': 'encoded_search_analyzer',
+                    'include_in_all': False
+                }
             },
         }
 
@@ -81,29 +86,84 @@ def schema_mapping(name, schema):
         return {'type': type_}
 
 
-def index_settings(index):
+def index_settings():
     return {
         'settings': {
             'analysis': {
                 'filter': {
                     'substring': {
                         'type': 'nGram',
-                        'min_gram': 3,
-                        'max_gram': 25
+                        'min_gram': 1,
+                        'max_gram': 33
                     }
                 },
                 'analyzer': {
                     'encoded_index_analyzer': {
                         'type': 'custom',
-                        'tokenizer': 'keyword',
-                        'filter': ['lowercase', 'substring']
+                        'tokenizer': 'standard',
+                        'filter': [
+                            'standard',
+                            'lowercase',
+                            'asciifolding',
+                            'substring'
+                        ]
                     },
                     'encoded_search_analyzer': {
                         'type': 'custom',
-                        'tokenizer': 'keyword',
-                        'filter': ['lowercase']
+                        'tokenizer': 'standard',
+                        'filter': [
+                            'standard',
+                            'lowercase',
+                            'asciifolding'
+                        ]
                     }
                 }
+            }
+        }
+    }
+
+
+def es_mapping(mapping):
+    return {
+        '_all': {
+            'analyzer': 'encoded_index_analyzer'
+        },
+        'properties': {
+            'embedded': mapping,
+            'object': {
+                'type': 'object',
+                'include_in_all': False,
+                'properties': {}
+            },
+            'principals_allowed_view': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'embedded_uuid_closure': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'link_uuid_closure': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'keys': {
+                'type': 'object',
+                'include_in_all': False,
+                'properties': {}
+            },
+            'links': {
+                'type': 'object',
+                'include_in_all': False,
+                'properties': {}
+            },
+            'url': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
             }
         }
     }
@@ -175,7 +235,6 @@ def collection_mapping(collection, embed=True):
                 new_mapping = mapping['properties']
             else:
                 new_mapping = new_mapping[prop]['properties']
-    mapping['_all'] = {'analyzer': 'encoded_index_analyzer', 'auto_boost': False}
     return mapping
 
 
@@ -183,6 +242,15 @@ def run(app, collections=None, dry_run=False):
     root = app.root_factory(app)
     if not dry_run:
         es = app.registry[ELASTIC_SEARCH]
+
+    index = 'encoded'
+
+    try:
+        es.create_index(index, index_settings())
+    except IndexAlreadyExistsError:
+        if collections is None:
+            es.delete_index(index)
+            es.create_index(index, index_settings())
 
     if not collections:
         collections = ['meta'] + root.by_item_type.keys()
@@ -192,7 +260,7 @@ def run(app, collections=None, dry_run=False):
             doc_type = 'meta'
             mapping = META_MAPPING
         else:
-            doc_type = 'basic'
+            doc_type = collection_name
             collection = root.by_item_type[collection_name]
             mapping = collection_mapping(collection)
 
@@ -200,17 +268,18 @@ def run(app, collections=None, dry_run=False):
             continue  # Testing collections
         if dry_run:
             print json.dumps(
-                sorted_dict({collection_name: {doc_type: mapping}}), indent=4)
+                sorted_dict({index: {doc_type: mapping}}), indent=4)
             continue
 
+        if collection_name is not 'meta':
+            mapping = es_mapping(mapping)
+        
         try:
-            es.create_index(collection_name, index_settings(collection_name))
-        except IndexAlreadyExistsError:
-            es.delete_index(collection_name)
-            es.create_index(collection_name, index_settings(collection_name))
-
-        es.put_mapping(collection_name, doc_type, {doc_type: mapping})
-        es.refresh(collection_name)
+            es.put_mapping(index, doc_type, {doc_type: mapping})
+        except:
+            log.info("Could not create mapping for the collection %s", doc_type)
+        else:
+            es.refresh(index)
 
 
 def main():

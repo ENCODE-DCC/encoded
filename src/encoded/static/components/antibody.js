@@ -3,6 +3,9 @@
 var React = require('react');
 var url = require('url');
 var globals = require('./globals');
+var dbxref = require('./dbxref');
+
+var DbxrefList = dbxref.DbxrefList;
 
 
 var StatusLabel = module.exports.StatusLabel = React.createClass({
@@ -23,6 +26,11 @@ var Approval = module.exports.Approval = React.createClass({
         var characterizations = context.characterizations.map(function (item) {
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
+        
+        var dbxrefs = context.antibody.encode2_dbxrefs.map(function (item) {
+        	return "UCSC_encode_db:" + item;
+        });
+
         // Missing enncode
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -76,7 +84,9 @@ var Approval = module.exports.Approval = React.createClass({
                         <dd className="no-cap" hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
                         
                         <dt hidden={!context.antibody.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd className="no-cap" hidden={!context.antibody.encode2_dbxrefs.length}>{context.antibody.encode2_dbxrefs.join(", ")}</dd>
+                        <dd className="no-cap" hidden={!context.antibody.encode2_dbxrefs.length}>
+                        	<DbxrefList values={dbxrefs} />
+                        </dd>
                     </dl>
                 </div>
 

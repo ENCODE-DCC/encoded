@@ -26,7 +26,7 @@ var itemClass = module.exports.itemClass = function (context, htmlClass) {
 var statusClass = module.exports.statusClass = function (status, htmlClass) {
     htmlClass = htmlClass || '';
     if (typeof status == 'string') {
-        htmlClass += ' status-' + status.toLowerCase().replace(' ', '-');
+        htmlClass += ' status-' + status.toLowerCase().replace(/ /g, '-');
     }
     return htmlClass;
 };

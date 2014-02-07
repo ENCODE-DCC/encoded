@@ -54,7 +54,7 @@ def index(context, request):
         last_xmin = request.json['last_xmin']
     elif es is not None:
         try:
-            status = es.get('meta', 'meta', 'indexing')
+            status = es.get('encoded', 'meta', 'indexing')
         except ElasticHttpNotFoundError:
             pass
         else:
@@ -91,7 +91,7 @@ def index(context, request):
         result['invalidated'] = [str(uuid) for uuid in invalidated]
         if not dry_run and es is not None:
             es_update_object(request, invalidated)
-            es.index('meta', 'meta', result, 'indexing')
+            es.index('encoded', 'meta', result, 'indexing')
 
     return result
 
@@ -130,7 +130,7 @@ def es_update_object(request, objects, dry_run=False):
         subreq.remote_user = 'INDEXER'
         result = request.invoke_subrequest(subreq)
         if es is not None:
-            es.index(result['@type'][0], 'basic', result, str(uuid))
+            es.index('encoded', result['@type'][0], result, str(uuid))
 
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):
