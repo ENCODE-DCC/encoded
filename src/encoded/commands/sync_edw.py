@@ -216,7 +216,18 @@ def get_dataset_or_experiment(app, accession, phase=edw_file.ENCODE_PHASE_ALL):
         logger.info("Dataset %s is not from phase %s" % (ec3_acc, phase))
         return None
 
+
     url = '/' + ec3_acc + '/'
+    exp_json = experiments.get('/experiments'+url, {})
+    if exp_json:
+        if exp_json.has_key('replicates') and type(exp_json['replicates']) == list and type(exp_json['replicates'][0]) == dict and exp_json['replicates'][0].has_key('@id'):
+          return exp_json
+    else:
+        ds_json = datasets.get('/datasets'+url, {})
+        if ds_json:
+            return ds_json
+
+    # try to get it even not knowing the type
     try:
         resp = app.get(url).maybe_follow()
     except AppError, e:
@@ -226,6 +237,12 @@ def get_dataset_or_experiment(app, accession, phase=edw_file.ENCODE_PHASE_ALL):
         return None
 
     if resp.status_code == 200:
+        logger.info("GET: %s (lookup)" % url)
+        logger.info(str(resp))
+        if [ t for t in resp.json['@type'] if t == 'experiment' ]:
+            experiments[resp.json['@id']] = resp.json
+        else:
+            datasets[resp.json['@id']] = resp.json
         return resp.json
     else:
         # should never get here!
@@ -250,6 +267,8 @@ def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
     for row in sorted(rows, key=itemgetter('accession')):
         url = row['@id']
         resp = app.get(url).maybe_follow()
+        logger.info("GET: %s" % url)
+        logger.info(str(resp))
         fileinfo = resp.json
         # below seems clunky, could search+filter
         if dataset and fileinfo['dataset'] != dataset:
@@ -308,6 +327,7 @@ def create_replicate(app, dataset, bio_rep_num, tech_rep_num, dry_run=False):
                 logger.error("%s: %s (%s, %s)" % (msg, exp, bio_rep_num, tech_rep_num))
                 return None
 
+        logger.info("GET: %s" % url)
         logger.info(str(resp))
         rep_id = str(resp.json[unicode('@graph')][0]['@id'])
         summary.replicates_posted = summary.replicates_posted + 1
@@ -327,21 +347,17 @@ def post_fileinfo(app, fileinfo, dry_run=False):
 
     ds = fileinfo.get('dataset', None)
     dataset = None
+    is_experiment = True
     if ds:
-        try:
-            ds_resp = app.get('/'+ds).maybe_follow()
-        except AppError, e:
-            msg = "Refusing to POST file with invalid dataset"
-            summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-            logger.error("%s: %s (%s)" % (msg, ds, e))
-            return None
-        else:
-            dataset = ds_resp.json
+        dataset = experiments.get(ds, None)
+        if not dataset:
+            dataset = datasets.get(ds, None)
+            is_experiment = False
     rep = fileinfo.get('replicate', None)
 
 
     if ds:
-        if ( (dataset and dataset.get('@type', [])[0] == 'dataset' ) or
+        if ( (dataset and not is_experiment or
            ( not rep and not fileinfo['biological_replicate'] and not fileinfo['technical_replicate'] and
              (fileinfo['file_format'] != 'fastq' or fileinfo['file_format'] != 'bam')) ):
             # dataset primary files have irrelvant replicate info
@@ -425,11 +441,15 @@ def try_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
             eurl = collection_url(EXPERIMENTS) + dataset + '/'
             exp = app.get(eurl).maybe_follow().json
             experiments[exp['@id']] = exp
+            logger.info("GET: %s" % eurl)
+            logger.info(str(exp))
             return exp['@id']
         except:
             durl = collection_url(DATASETS) + dataset + '/'
             ds = app.get(durl).maybe_follow.json
             datasets[ds['@id']] = ds
+            logger.info("GET: %s" % durl)
+            logger.info(str(ds))
             return ds['@id']
 
         logger.error("Dataset %s requested but not found" % dataset)
@@ -458,10 +478,7 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
         e3e2.update(set(dbxrefs))
         encode3_to_encode2[acc] = e3e2
 
-        #experiments[acc] = app.get(exp['@id']).maybe_follow().json
-        # should lazy load them, we won't always need them all
-        # we do need the replicates however
-        experiments[acc] = []
+        experiments[exp['@id']] = exp
 
 
     logger.info("Getting all datasets...")
@@ -484,7 +501,7 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
                 e3e2.add(dbxref)
                 encode3_to_encode2[acc] = e3e2
 
-        datasets[acc] = ds
+        datasets[ds['@id']] = ds
         ## don't need replicates or anything.
     logger.warn("%s Encode2 experiments can be referenced" % len(encode2_to_encode3.keys()))
     return '';
