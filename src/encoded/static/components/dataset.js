@@ -22,6 +22,10 @@ var Dataset = module.exports.Dataset = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
+        var pubmed_url = "http://www.ncbi.nlm.nih.gov/pubmed/?term=";
+        var pubmed_links = context.references.map(function(id) {
+        	return <a href={pubmed_url + id.slice(5)}>{id}</a>;
+        });
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -45,6 +49,9 @@ var Dataset = module.exports.Dataset = React.createClass({
                         
                         {context.aliases.length ? <dt>Aliases</dt> : null}
                         {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+                        
+                        {context.references.length ? <dt>References</dt> : null}
+                        {context.references.length ? <dd>{pubmed_links}</dd> : null}
                         
                         <dt>External resources</dt>
 						<dd>
