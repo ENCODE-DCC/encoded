@@ -47,11 +47,16 @@ def app(request, app_settings):
 
 
 @pytest.fixture
-def testapp(app):
+def external_tx():
+    pass
+
+
+@pytest.fixture
+def indexer_testapp(app):
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST',
+        'REMOTE_USER': 'INDEXER',
     }
     return TestApp(app, environ)
 
@@ -76,25 +81,29 @@ def listening_conn(dbapi_conn):
 
 
 @pytest.mark.slow
-def test_indexing_workbook(testapp):
+def test_indexing_workbook(testapp, indexer_testapp):
     from ..loadxl import load_all
     from pkg_resources import resource_filename
     inserts = resource_filename('encoded', 'tests/data/inserts/')
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
     load_all(testapp, inserts, docsdir)
-    res = testapp.post_json('/index', {})
+    res = indexer_testapp.post_json('/index', {})
     assert res.json['invalidated']
 
 
-def test_indexing(testapp):
-    res = testapp.post_json('/index', {})
+def test_indexing_simple(testapp, indexer_testapp):
+    res = indexer_testapp.post_json('/index', {})
     assert res.json['txn_count'] == 0
     assert res.json['invalidated'] == []
     res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
     uuid = res.json['@graph'][0]['uuid']
-    res = testapp.post_json('/index', {})
+    res = indexer_testapp.post_json('/index', {})
     assert res.json['txn_count'] == 1
     assert res.json['invalidated'] == [uuid]
+    import time
+    time.sleep(2)  # Give elasticsearch a chance to catch up.
+    res = testapp.get('/search/?type=testing_post_put_patch')
+    assert res.json['total'] == 1
 
 
 def test_listening(testapp, listening_conn):

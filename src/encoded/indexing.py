@@ -12,6 +12,7 @@ from .contentbase import (
     Created,
     make_subrequest,
 )
+from .renderers import json_renderer
 from .stats import requests_timing_hook
 from .storage import (
     DBSession,
@@ -29,12 +30,13 @@ def includeme(config):
 
     if 'elasticsearch.server' in config.registry.settings:
         es = ElasticSearch(config.registry.settings['elasticsearch.server'])
+        es._encode_json = json_renderer.dumps
         es.session.hooks['response'].append(requests_timing_hook('es'))
         config.registry[ELASTIC_SEARCH] = es
 
 
 @view_config(route_name='index', request_method='POST', permission="index")
-def index(context, request):
+def index(request):
     dry_run = request.json.get('dry_run', False)
     es = request.registry.get(ELASTIC_SEARCH, None)
 
@@ -130,7 +132,7 @@ def es_update_object(request, objects, dry_run=False):
         subreq.remote_user = 'INDEXER'
         result = request.invoke_subrequest(subreq)
         if es is not None:
-            es.index('encoded', result['@type'][0], result, str(uuid))
+            es.index('encoded', result['object']['@type'][0], result, str(uuid))
 
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):
