@@ -150,11 +150,7 @@ def search(context, request, search_type=None, permission='search'):
             result['filters'].append({key: value})
 
     # Adding facets to the query
-    facets = []
-    if len(doc_types) > 1:
-        facets = [{'Data Type': 'type'}]
-        query['facets'] = {'type': {'terms': {'field': '_type', 'size': 99999}}}
-    else:
+    if len(doc_types) == 1 and 'facets' in root[doc_types[0]]:
         facets = root[doc_types[0]].schema['facets']
         for facet in facets:
             face = {'terms': {'field': '', 'size': 99999}}
@@ -163,6 +159,9 @@ def search(context, request, search_type=None, permission='search'):
             for f in result['filters']:
                 if facet[facet.keys()[0]] == f.keys()[0]:
                     del(query['facets'][facet.keys()[0]])
+    else:
+        facets = [{'Data Type': 'type'}]
+        query['facets'] = {'type': {'terms': {'field': '_type', 'size': 99999}}}
     
     # Execute the query
     results = es.search(query, index='encoded', doc_type=doc_types, size=size)
