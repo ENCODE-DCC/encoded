@@ -220,8 +220,11 @@ def get_dataset_or_experiment(app, accession, phase=edw_file.ENCODE_PHASE_ALL):
     url = '/' + ec3_acc + '/'
     exp_json = experiments.get('/experiments'+url, {})
     if exp_json:
-        if exp_json.has_key('replicates') and type(exp_json['replicates']) == list and type(exp_json['replicates'][0]) == dict and exp_json['replicates'][0].has_key('@id'):
-          return exp_json
+        try:
+            if exp_json['replicates'][0]['@id']:
+              return exp_json
+        except Exception, e:
+            logger.info("Need to fetch experiment: %s (%s)" % (ec3_acc, exp_json))
     else:
         ds_json = datasets.get('/datasets'+url, {})
         if ds_json:
@@ -302,6 +305,7 @@ def create_replicate(app, dataset, bio_rep_num, tech_rep_num, dry_run=False):
 
     # create a replicate
     exp = dataset['@id']
+    global experiment
     logger.warn("Creating replicate %s %s for %s" % (bio_rep_num, tech_rep_num, exp))
     rep = {
         'experiment': exp,
@@ -316,18 +320,19 @@ def create_replicate(app, dataset, bio_rep_num, tech_rep_num, dry_run=False):
 
         if resp.status_code == 409:
             # this means that the replicate was created during this run and is probalby NOW valid
-            matches = [ rep for rep in dataset['replicates'] if rep['biological_replicate_number'] == int(bio_rep_num) and
+            newds = app.get(exp).maybe_follow().json
+            matches = [ rep for rep in newds['replicates'] if rep['biological_replicate_number'] == int(bio_rep_num) and
                rep['technical_replicate_number'] == int(tech_rep_num)]
 
             if len(matches) == 1:
                 logger.info("Replicate posting conflicted but found (probably created earlier)")
+                experiments[exp] = newds
                 return matches[0]['@id']
             else:
                 msg = "Replicate posting conflicted, but valid replicate could not be found"
                 logger.error("%s: %s (%s, %s)" % (msg, exp, bio_rep_num, tech_rep_num))
                 return None
 
-        logger.info("GET: %s" % url)
         logger.info(str(resp))
         rep_id = str(resp.json[unicode('@graph')][0]['@id'])
         summary.replicates_posted = summary.replicates_posted + 1
@@ -357,7 +362,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
 
 
     if ds:
-        if ( (dataset and not is_experiment or
+        if ( (dataset and not is_experiment) or
            ( not rep and not fileinfo['biological_replicate'] and not fileinfo['technical_replicate'] and
              (fileinfo['file_format'] != 'fastq' or fileinfo['file_format'] != 'bam')) ):
             # dataset primary files have irrelvant replicate info
