@@ -178,7 +178,7 @@ def find_replicate(experiment, file_dict):
     if len(matches) == 1:
         return matches[0]['@id']
     elif len(matches) > 1:
-        msg = "SKIPPPING: Matches >1 Replicate"
+        msg = "SKIPPING: Matches >1 Replicate"
         summary.error_count[msg] = summary.error_count.get(msg,0) + 1
         logger.error("%s: %s-%s" % (msg, file_dict['accession'], experiment['accession']))
         summary.files_punted = summary.files_punted + 1
@@ -216,7 +216,21 @@ def get_dataset_or_experiment(app, accession, phase=edw_file.ENCODE_PHASE_ALL):
         logger.info("Dataset %s is not from phase %s" % (ec3_acc, phase))
         return None
 
+
     url = '/' + ec3_acc + '/'
+    exp_json = experiments.get('/experiments'+url, {})
+    if exp_json:
+        try:
+            if exp_json['replicates'][0]['@id']:
+              return exp_json
+        except Exception, e:
+            logger.info("Need to fetch experiment: %s (%s)" % (ec3_acc, exp_json.get('replicates', "No Replicates")))
+    else:
+        ds_json = datasets.get('/datasets'+url, {})
+        if ds_json:
+            return ds_json
+
+    # try to get it even not knowing the type
     try:
         resp = app.get(url).maybe_follow()
     except AppError, e:
@@ -226,6 +240,12 @@ def get_dataset_or_experiment(app, accession, phase=edw_file.ENCODE_PHASE_ALL):
         return None
 
     if resp.status_code == 200:
+        logger.info("GET: %s (lookup)" % url)
+        #logger.info(str(resp))
+        if [ t for t in resp.json['@type'] if t == 'experiment' ]:
+            experiments[resp.json['@id']] = resp.json
+        else:
+            datasets[resp.json['@id']] = resp.json
         return resp.json
     else:
         # should never get here!
@@ -242,7 +262,7 @@ def get_missing_filelist_from_lists(app_accs, edw_accs):
     return new_accs
 
 
-def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL):
+def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
     # Get file info from encoded web application
     # Return list of fileinfo dictionaries
     rows = get_collection(app, FILES)
@@ -250,9 +270,14 @@ def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL):
     for row in sorted(rows, key=itemgetter('accession')):
         url = row['@id']
         resp = app.get(url).maybe_follow()
+        logger.info("GET: %s" % url)
+        #logger.info(str(resp))
         fileinfo = resp.json
         # below seems clunky, could search+filter
-        if phase != edw_file.ENCODE_PHASE_ALL:
+        if dataset and fileinfo['dataset'] != dataset:
+            continue
+
+        elif phase != edw_file.ENCODE_PHASE_ALL:
             file_phase = get_phase(app, fileinfo['dataset'])
             if file_phase != phase:
                     logging.info("File %s is wrong phase (%s)" % (fileinfo['accession'], file_phase))
@@ -273,12 +298,14 @@ def get_phase(app, ds_url):
             return edw_file.ENCODE_PHASE_2
         return edw_file.ENCODE_PHASE_3
     except:
-        import pdb;pdb.set_trace()
+        pass
 
 
-def create_replicate(app, exp, bio_rep_num, tech_rep_num, dry_run=False):
+def create_replicate(app, dataset, bio_rep_num, tech_rep_num, dry_run=False):
 
     # create a replicate
+    exp = dataset['@id']
+    global experiment
     logger.warn("Creating replicate %s %s for %s" % (bio_rep_num, tech_rep_num, exp))
     rep = {
         'experiment': exp,
@@ -289,8 +316,23 @@ def create_replicate(app, exp, bio_rep_num, tech_rep_num, dry_run=False):
     logger.info('....POST replicate %d - %d for experiment %s' % (bio_rep_num, tech_rep_num, exp))
     url = collection_url(REPLICATES)
     if not dry_run:
+        resp = app.post_json(url, rep, status=[201, 409])
 
-        resp = app.post_json(url, rep)
+        if resp.status_code == 409:
+            # this means that the replicate was created during this run and is probalby NOW valid
+            newds = app.get(exp).maybe_follow().json
+            matches = [ rep for rep in newds['replicates'] if rep['biological_replicate_number'] == int(bio_rep_num) and
+               rep['technical_replicate_number'] == int(tech_rep_num)]
+
+            if len(matches) == 1:
+                logger.info("Replicate posting conflicted but found (probably created earlier)")
+                experiments[exp] = newds
+                return matches[0]['@id']
+            else:
+                msg = "Replicate posting conflicted, but valid replicate could not be found"
+                logger.error("%s: %s (%s, %s)" % (msg, exp, bio_rep_num, tech_rep_num))
+                return None
+
         logger.info(str(resp))
         rep_id = str(resp.json[unicode('@graph')][0]['@id'])
         summary.replicates_posted = summary.replicates_posted + 1
@@ -308,62 +350,10 @@ def post_fileinfo(app, fileinfo, dry_run=False):
     logger.info('....POST file: %s' % (accession))
     logger.info("%s" % fileinfo)
 
-    if accession == 'ENCFF001MXG':
-        import pdb;pdb.set_trace()
-    ds = fileinfo.get('dataset', None)
-    dataset = None
-    if ds:
-        try:
-            ds_resp = app.get('/'+ds).maybe_follow()
-        except AppError, e:
-            msg = "Refusing to POST file with invalid dataset"
-            summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-            logger.error("%s: %s (%s)" % (msg, ds, e))
+    if fileinfo.get('dataset', None):
+        fileinfo = try_replicate(app, fileinfo, dry_run)
+        if not fileinfo:
             return None
-        else:
-            dataset = ds_resp.json
-    rep = fileinfo.get('replicate', None)
-
-
-    if ds:
-        if ( (dataset and dataset.get('@type', [])[0] == 'dataset' ) or
-           ( not rep and not fileinfo['biological_replicate'] and not fileinfo['technical_replicate'] and
-             (fileinfo['file_format'] != 'fastq' or fileinfo['file_format'] != 'bam')) ):
-            # dataset primary files have irrelvant replicate info
-            # non fastq non bam files can have no replicate specified
-            del fileinfo['biological_replicate']
-            del fileinfo['technical_replicate']
-            fileinfo.pop('replicate', None)
-        elif not rep:
-            # try to create one
-            try:
-                br = int(fileinfo['biological_replicate'])
-                tr = int(fileinfo['technical_replicate'])
-                fileinfo['replicate'] = create_replicate(app, ds, br, tr, dry_run)
-                del fileinfo['biological_replicate']
-                del fileinfo['technical_replicate']
-            except ValueError, e:
-                msg = "Refusing to POST file with confusing replicate ids"
-                summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-                logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-                logger.info("%s" % e.message)
-                return None
-            except KeyError, e:
-                msg = "Refusing to POST file with missing replicate ids"
-                summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-                logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-                logger.info("%s" % e.message)
-                return None
-            except AppError, e:
-                msg = "Could not POST replicate"
-                summary.error_count[msg] = summary.error_count.get(msg,0) + 1
-                logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
-                logger.info("%s" % e.message)
-                return None
-            except Exception, e:
-                logger.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
-                sys.exit(1)
-
 
     url = collection_url(FILES)
     if not dry_run:
@@ -385,24 +375,99 @@ def post_fileinfo(app, fileinfo, dry_run=False):
         logger.warning('Sucessful dry-run POST File %s' % (accession))
         return {'status_int': 201}
 
+def try_replicate(app, fileinfo, dry_run, method='POST'):
 
-def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL):
+    global experiments
+    global datasets
 
-    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase)
+    ds = fileinfo['dataset']
+    dataset = None
+    is_experiment = True
+    dataset = experiments.get(ds, None)
+    if not dataset:
+        dataset = datasets.get(ds, None)
+        is_experiment = False
+    rep = fileinfo.get('replicate', None)
+
+    if ( (dataset and not is_experiment) or
+       ( not rep and not fileinfo['biological_replicate'] and not fileinfo['technical_replicate'] and
+         (fileinfo['file_format'] != 'fastq' or fileinfo['file_format'] != 'bam')) ):
+        # dataset primary files have irrelvant replicate info
+        # non fastq non bam files can have no replicate specified
+        del fileinfo['biological_replicate']
+        del fileinfo['technical_replicate']
+        fileinfo.pop('replicate', None)
+    elif not rep:
+        try:
+            br = int(fileinfo['biological_replicate'])
+            tr = int(fileinfo['technical_replicate'])
+            fileinfo['replicate'] = create_replicate(app, dataset, br, tr, dry_run)
+            del fileinfo['biological_replicate']
+            del fileinfo['technical_replicate']
+            return fileinfo
+        except ValueError, e:
+            msg = "Refusing to %s file with confusing replicate ids" % method
+            summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+            logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            logger.info("%s" % e.message)
+            return None
+        except KeyError, e:
+            msg = "Refusing to %s file with missing replicate ids" % method
+            summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+            logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            logger.info("%s" % e.message)
+            return None
+        except AppError, e:
+            msg = "Could not %s replicate" % method
+            summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+            logger.error("%s: %s (%s, %s)" % (msg, fileinfo['accession'], fileinfo['biological_replicate'], fileinfo['technical_replicate']))
+            logger.info("%s" % e.message)
+            return None
+        except Exception, e:
+            logger.error("Something untoward (%s) happened trying to create replicates: for %s" % (e, fileinfo))
+            sys.exit(1)
+
+    return fileinfo
+
+def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, enc_dataset='', edw_dataset='', since=0, test=False):
+
+    edw_files = edw_file.get_edw_fileinfo(edw, phase=phase, dataset=edw_dataset, since=since, test=test)
     # Other parameters are default
     edw_dict = { d['accession']:convert_edw(app, d, phase) for d in edw_files }
-    app_files = get_app_fileinfo(app, phase=phase)
+    app_files = get_app_fileinfo(app, phase=phase, dataset=enc_dataset)
     app_dict = { d['accession']:d for d in app_files }
 
     return edw_dict, app_dict
 
+def try_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
+
+    global experiments
+    global datasets
+    if dataset:
+        try:
+            eurl = collection_url(EXPERIMENTS) + dataset + '/'
+            exp = app.get(eurl).maybe_follow().json
+            experiments[exp['@id']] = exp
+            logger.info("GET: %s" % eurl)
+            logger.info(str(exp))
+            return exp['@id']
+        except:
+            durl = collection_url(DATASETS) + dataset + '/'
+            ds = app.get(durl).maybe_follow.json
+            datasets[ds['@id']] = ds
+            logger.info("GET: %s" % durl)
+            logger.info(str(ds))
+            return ds['@id']
+
+        logger.error("Dataset %s requested but not found" % dataset)
+        sys.exit(1)
+    else:
+        return get_all_datasets(app, phase=phase)
 
 def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
 
     global experiments
     global datasets
-    global encode2_to_encode3
-    global encode3_to_encode2
 
     logger.info("Getting all experiments...")
     exp_collection = get_collection(app, EXPERIMENTS)
@@ -420,10 +485,7 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
         e3e2.update(set(dbxrefs))
         encode3_to_encode2[acc] = e3e2
 
-        #experiments[acc] = app.get(exp['@id']).maybe_follow().json
-        # should lazy load them, we won't always need them all
-        # we do need the replicates however
-        experiments[acc] = []
+        experiments[exp['@id']] = exp
 
 
     logger.info("Getting all datasets...")
@@ -446,9 +508,10 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
                 e3e2.add(dbxref)
                 encode3_to_encode2[acc] = e3e2
 
-        datasets[acc] = ds
+        datasets[ds['@id']] = ds
         ## don't need replicates or anything.
     logger.warn("%s Encode2 experiments can be referenced" % len(encode2_to_encode3.keys()))
+    return '';
 
 def patch_fileinfo(app, props, propinfo, dry_run=False):
     # PATCH properties to file in app
@@ -459,18 +522,24 @@ def patch_fileinfo(app, props, propinfo, dry_run=False):
     accession = propinfo['accession']
 
     logger.info('....PATCH file: %s' % (accession))
+    can_patch_replicates = False
     for prop in props:
         if prop in NO_UPDATE:
             msg = "Refusing to PATCH %s" % prop
             summary.error_count[msg] = summary.error_count.get(msg,0) + 1
             logger.error("%s: (%s) for %s" % (msg, propinfo[prop], accession))
             return None
+        elif prop == 'replicate':
+            can_patch_replicates = True
+
+    if not propinfo['replicate']:
+        propinfo = try_replicate(app, propinfo, dry_run, method='PATCH')
 
     url = collection_url(FILES) + accession
     if not dry_run:
         resp = app.patch_json(url, propinfo, status=[200, 201, 409, 422])
         logger.info(str(resp))
-        if resp.status_int < 200 or resp.status_int == 409:
+        if resp.status_int < 200 or resp.status_int == 409 or resp.status_int == 422:
             msg = "PATCH failed for"
             summary.error_count[msg] = summary.error_count.get(msg,0) + 1
             logger.error("%s: %s (%s)" % (msg, accession, resp))
@@ -493,8 +562,9 @@ def get_collection(app, collection):
     # GET JSON objects from app as a list
     # NOTE: perhaps limit=all should be default for JSON output
     # and app should hide @graph (provide an iterator)
+    # frame=object is the default
     url = collection_url(collection)
-    url += "?limit=all&frame=object&datastore=database"
+    url += "?limit=all&datastore=database&frame=object"
     resp = app.get(url)
     return resp.json['@graph']
 
@@ -521,7 +591,7 @@ def internal_app(configfile, username=''):
     return TestApp(app, environ)
 
 
-def make_app(application, username, password):
+def make_app(application, username, password, test=False):
     # Configure test app
     logger.info('Using encoded app: %s' % application)
 
@@ -610,6 +680,7 @@ def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=Fals
     logger.warn("SUMMARY: %s total errors, %s total warnings" % (total_errors, total_warnings))
 
 def main():
+    global NO_UPDATE
     import argparse
     parser = argparse.ArgumentParser(
         description="Synchronize EDW and encoded files/replicates", epilog=EPILOG,
@@ -635,39 +706,89 @@ def main():
                             default=edw_file.ENCODE_PHASE_ALL,
                     help='restrict EDW files by ENCODE phase accs (default %s)' % edw_file.ENCODE_PHASE_ALL)
 
-    args = parser.parse_args()
+    parser.add_argument('--patch-replicates', action='store_true',
+               help='NEVER USE THIS.  But if you do, you must use with single dataset option -E')
+
+    parser.add_argument('-E', '--experiment', default='',
+               help="Only sync files from a single ENCSR dataset/experiment.")
+
+    parser.add_argument('-S', '--time-since', type=int, default=0,
+               help="Only sync files from EDW in the last <int> hours")
+
+    parser.add_argument('-n', '--no-patch', action='store_true',
+               help="Only POST new files do not patch")
+
+    parser.add_argument('-T', '--use-test', action='store_true',
+               help="Do not filter files in EDW that begin with TST instead of ENCFF")
+
+    zargs = parser.parse_args()
 
     FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
     logging.basicConfig(format=FORMAT)
     logger.setLevel(logging.WARNING)
 
-    if args.verbose:
+    if zargs.verbose:
         logger.setLevel(logging.INFO)
 
+    since = 0
+    if zargs.time_since:
+        from datetime import datetime;
+        from datetime import timedelta
+        today = datetime.today()
+        since_dt = today - timedelta(hours=zargs.time_since)
+        since = int(since_dt.strftime("%s"))
+        logger.info("Today is %s" % today)
+        logger.warning("Getting files uploaded to EDW since %s (%s)" % (since_dt, since))
 
-    app = make_app(args.config_uri, args.username, args.password)
-    edw = edw_file.make_edw(args.data_host)
+    if zargs.dry_run:
+        logger.warning("DRY-RUN: will not POST or PATCH database")
+
+    if zargs.patch_replicates:
+        logger.warning("WILL attempt to PATCH replicates!  Careful!")
+        update = [ x for x in NO_UPDATE if x != 'replicate' ]
+        NO_UPDATE = update
+
+    if zargs.experiment and zargs.phase != edw_file.ENCODE_PHASE_ALL:
+        logger.error("Phase (-P) and single dataset (-E/--experiment) not compatible options")
+        sys.exit(1)
+
+    if zargs.experiment:
+        logger.warning("Only fetching from Dataset: %s" % zargs.experiment)
+
+    if zargs.no_patch:
+        logger.warning("Will not PATCH files, only POST")
+
+    if zargs.use_test:
+        logger.warning("Will fetch TST accessions from EDW")
+        zargs.config_uri = 'test_accession.ini'
+
+    if (zargs.patch_replicates and not zargs.experiment):
+        logger.error("Not allowed to patch replicates for all; please use -E (--experiment) to select a dataset.")
+        sys.exit(1)
+
+    app = make_app(zargs.config_uri, zargs.username, zargs.password, test=zargs.use_test)
+    edw = edw_file.make_edw(zargs.data_host)
 
     try:
         edw.connect()
     except Exception, e:
-        logger.error("Could not connect to: %s; aborting" % args.data_host)
+        logger.error("Could not connect to: %s; aborting" % zargs.data_host)
         logger.error("%s", e)
         sys.exit(1)
 
-    get_all_datasets(app)
+    single = try_datasets(app, dataset=zargs.experiment)
     summary.total_encoded_exps = len(experiments.keys())
     summary.total_encoded_ds = len(datasets.keys())
 
-    edw_files, app_files = get_dicts(app, edw, phase=args.phase)
+    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase, edw_dataset=zargs.experiment, enc_dataset=single, since=since, test=zargs.use_test)
 
     summary.total_encoded_files = len(app_files)
     summary.total_edw_files = len(edw_files)
     logger.warn("SUMMARY: Found %s files at encoded; %s files at EDW" % (summary.total_encoded_files, summary.total_edw_files))
-    if args.phase != edw_file.ENCODE_PHASE_ALL:
-        logger.warn("SUMMARY: Synching files from Phase %s only" % args.phase)
+    if zargs.phase != edw_file.ENCODE_PHASE_ALL:
+        logger.warn("SUMMARY: Synching files from Phase %s only" % zargs.phase)
 
-    return run(app, app_files, edw_files, phase=args.phase, dry_run=args.dry_run)
+    return run(app, app_files, edw_files, phase=zargs.phase, dry_run=zargs.dry_run)
 
 
 if __name__ == '__main__':

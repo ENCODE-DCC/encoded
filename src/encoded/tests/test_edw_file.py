@@ -41,3 +41,22 @@ def test_get_encode2_encode3():
     ec3_set = set([ f['accession'] for f in ec3_files ])
 
     assert(ec2_set != ec3_set)
+
+@pytest.mark.skipif(True, reason='Travis-CI cannot use external DB test')
+def test_get_by_time():
+
+    from datetime import datetime;
+    from datetime import timedelta
+
+    edw = edw_file.make_edw()
+    last_ts= edw_file.get_edw_max_date(edw)
+    last_dt = datetime.fromtimestamp(last_ts)
+    since_dt = last_dt - timedelta(hours=24)
+    since = int(since_dt.strftime("%s"))
+
+    new_files = edw_file.get_edw_fileinfo(edw, since=since, test=True)
+    all_files = edw_file.get_edw_fileinfo(edw, test=True)
+
+    assert(len(new_files))
+    assert(len(new_files) < len(all_files))
+

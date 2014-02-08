@@ -215,21 +215,22 @@ def get_edw_filelist(edw, limit=None, experiment=True, phase=ENCODE_PHASE_ALL):
     return edw_accs
 
 
-def get_edw_max_id(edw):
-    # Get current largest id from edwValidFile table at EDW
+def get_edw_max_date(edw):
+    # Get date current largest id from edwValidFile table at EDW
+    # this is so hacky I want to cry.
     conn = edw.connect()
-    query = 'select max(id) from edwValidFile'
+    query = 'select max(f.endUploadTime) from edwValidFile v, edwFile f where v.id=f.id'
     results = conn.execute(query)
     row = results.fetchone()
-    max_id = int(row[0])
+    max_ts= row[0]
     results.close()
     if verbose:
-        sys.stderr.write('EDW max id: %d\n' % (int(max_id)))
-    return max_id
+        sys.stderr.write('EDW max date: (%s)\n' % (max_ts))
+    return max_ts
 
 
 def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
-                     phase=ENCODE_PHASE_ALL):
+                     phase=ENCODE_PHASE_ALL, dataset='', since=0, test=False):
     # Read info from file tables at EDW
     # Optional param max_id limits to just files having EDW id greater
     # than the named value (typically, this was from previous sync)
@@ -276,22 +277,30 @@ def get_edw_fileinfo(edw, limit=None, experiment=True, start_id=0,
               (u.c.id == s.c.userId) &
               (s.c.id == f.c.submitId) &
               (u.c.id == s.c.userId))
+        ## TODO shouldn't all the below be done with filters or something?
         if start_id > 0:
-            query.append_whereclause('edwValidFile.id > ' + str(start_id))
-        if experiment:
-            query.append_whereclause('(edwValidFile.experiment like "wgEncodeE%" or edwValidFile.experiment like "ENCSR%")')
-        if phase == '2':
-            query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
+            query.append_whereclause('edwValidFile.id > %s' % start_id)
+        if dataset:
+            query.append_whereclause('edwValidFile.experiment = "%s"' % dataset)
+        elif phase == '2':
+                query.append_whereclause('edwValidFile.experiment like "wgEncodeE%"')
         elif phase  == '3':
-            query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
-        query.append_whereclause('edwValidFile.licensePlate like "ENCFF%"')  ## skip TST
+                query.append_whereclause('edwValidFile.experiment like "ENCSR%"')
+        elif experiment:
+            query.append_whereclause('(edwValidFile.experiment like "wgEncodeE%" or edwValidFile.experiment like "ENCSR%")')
+
+        if not test:
+            query.append_whereclause('edwValidFile.licensePlate like "ENCFF%"')  ## skip TST
+        if since > 0:
+            # since is a timestamp
+            query.append_whereclause('edwFile.endUploadTime >= %s' % since)
 
         query = query.order_by(f.c.endUploadTime.desc())
         if limit:
             query = query.limit(limit)
         results = conn.execute(query)
     except (DBAPIError, SQLAlchemyError) as e:
-        sys.stderr.write("ERROR: EDW SQL query failed (suspect schema change)\n")
+        sys.stderr.write("ERROR: EDW SQL query failed (suspect schema change)\n%s" % e)
         exit(-1)
 
     files =  [ dict(row) for row in results ]
