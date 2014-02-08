@@ -12,15 +12,19 @@ from .contentbase import (
     Created,
     make_subrequest,
 )
+from .renderers import json_renderer
 from .stats import requests_timing_hook
 from .storage import (
     DBSession,
     TransactionRecord,
 )
 import functools
+import logging
 import transaction
 
+log = logging.getLogger(__name__)
 ELASTIC_SEARCH = __name__ + ':elasticsearch'
+INDEX = 'encoded'
 
 
 def includeme(config):
@@ -29,12 +33,14 @@ def includeme(config):
 
     if 'elasticsearch.server' in config.registry.settings:
         es = ElasticSearch(config.registry.settings['elasticsearch.server'])
+        es._encode_json = json_renderer.dumps
         es.session.hooks['response'].append(requests_timing_hook('es'))
         config.registry[ELASTIC_SEARCH] = es
 
 
 @view_config(route_name='index', request_method='POST', permission="index")
-def index(context, request):
+def index(request):
+    record = request.json.get('record', False)
     dry_run = request.json.get('dry_run', False)
     es = request.registry.get(ELASTIC_SEARCH, None)
 
@@ -47,53 +53,79 @@ def index(context, request):
     """)
     xmin = query.scalar()  # lowest xid that is still in progress
 
-    txns = session.query(TransactionRecord)
-
     last_xmin = None
     if 'last_xmin' in request.json:
         last_xmin = request.json['last_xmin']
     elif es is not None:
         try:
-            status = es.get('encoded', 'meta', 'indexing')
+            status = es.get(INDEX, 'meta', 'indexing')
         except ElasticHttpNotFoundError:
             pass
         else:
             last_xmin = status['_source']['xmin']
 
-    if last_xmin is not None:
-        txns = txns.filter(TransactionRecord.xid >= last_xmin)
-
-    invalidated = set()
-    updated = set()
-    max_xid = 0
-    txn_count = 0
-    for txn in txns.all():
-        txn_count += 1
-        max_xid = max(max_xid, txn.xid)
-        invalidated.update(UUID(uuid) for uuid in txn.data.get('invalidated', ()))
-        updated.update(UUID(uuid) for uuid in txn.data.get('updated', ()))
-
-    if txn_count == 0:
-        max_xid = None
-
     result = {
         'xmin': xmin,
-        'max_xid': max_xid,
         'last_xmin': last_xmin,
-        'txn_count': txn_count,
-        'invalidated': [],
     }
 
-    if txn_count:
+    if last_xmin is None:
+        result['types'] = types = request.json.get('types', None)
+        invalidated = all_uuids(request.root, types)
+    else:
+        txns = session.query(TransactionRecord).filter(
+            TransactionRecord.xid >= last_xmin,
+        )
+
+        invalidated = set()
+        updated = set()
+        max_xid = 0
+        txn_count = 0
+        for txn in txns.all():
+            txn_count += 1
+            max_xid = max(max_xid, txn.xid)
+            invalidated.update(UUID(uuid) for uuid in txn.data.get('invalidated', ()))
+            updated.update(UUID(uuid) for uuid in txn.data.get('updated', ()))
+
+        if txn_count == 0:
+            max_xid = None
+
         new_referencing = set()
         add_dependent_objects(request.root, updated, new_referencing)
         invalidated.update(new_referencing)
-        result['invalidated'] = [str(uuid) for uuid in invalidated]
-        if not dry_run and es is not None:
-            es_update_object(request, invalidated)
-            es.index('encoded', 'meta', result, 'indexing')
+        result.update(
+            max_xid=max_xid,
+            txn_count=txn_count,
+            invalidated=[str(uuid) for uuid in invalidated],
+        )
+
+    if not dry_run and es is not None:
+        result['count'] = count = es_update_object(request, invalidated)
+        if count and record:
+            es.index(INDEX, 'meta', result, 'indexing')
+
+        es.refresh(INDEX)
 
     return result
+
+
+def all_uuids(root, types=None):
+    # First index user and access_key so people can log in
+    initial = ['user', 'access_key']
+    for collection_name in initial:
+        collection = root.by_item_type[collection_name]
+        if types is not None and collection_name not in types:
+            continue
+        for count, uuid in enumerate(collection):
+            yield uuid
+    for collection_name in sorted(root.by_item_type):
+        if collection_name in initial:
+            continue
+        if types is not None and collection_name not in types:
+            continue
+        collection = root.by_item_type[collection_name]
+        for count, uuid in enumerate(collection):
+            yield uuid
 
 
 def add_dependent_objects(root, new, existing):
@@ -118,19 +150,22 @@ def add_dependent_objects(root, new, existing):
         objects = dependents.difference(existing)
 
 
-def es_update_object(request, objects, dry_run=False):
-    es = request.registry.get(ELASTIC_SEARCH, None)
-    if es is None:
-        return
-
-    # Indexing the object in ES
-    for uuid in objects:
+def es_update_object(request, objects):
+    es = request.registry[ELASTIC_SEARCH]
+    i = -1
+    for i, uuid in enumerate(objects):
         subreq = make_subrequest(request, '/%s/@@index-data' % uuid)
         subreq.override_renderer = 'null_renderer'
         subreq.remote_user = 'INDEXER'
         result = request.invoke_subrequest(subreq)
-        if es is not None:
-            es.index('encoded', result['@type'][0], result, str(uuid))
+        doctype = result['object']['@type'][0]
+        es.index(INDEX, doctype, result, str(uuid))
+        if (i + 1) % 50 == 0:
+            es.flush(INDEX)
+            log.info('Indexing %s %d', result['object']['@id'], i + 1)
+
+    return i + 1
+
 
 
 def run_in_doomed_transaction(fn, committed, *args, **kw):

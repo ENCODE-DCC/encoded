@@ -31,6 +31,7 @@ _app_settings = {
     'load_sample_data': False,
     'testing': True,
     'datastore': 'database',
+    'pyramid.debug_authorization': True,
 }
 
 
@@ -115,6 +116,12 @@ def app(zsa_savepoints, check_constraints, app_settings):
 @fixture
 def registry(app):
     return app.registry
+
+
+@fixture
+def elasticsearch(registry):
+    from ..indexing import ELASTIC_SEARCH
+    return registry[ELASTIC_SEARCH]
 
 
 @fixture

@@ -302,7 +302,7 @@ class Root(object):
     __name__ = ''
     __parent__ = None
     builtin_acl = [
-        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse')),
+        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'traverse')),
     ]
 
@@ -1267,7 +1267,7 @@ class AfterModified(object):
         self.request = request
 
 
-@view_config(context=Item, name='index-data', permission='view_indexing', request_method='GET')
+@view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
     from pyramid.security import (
         Everyone,
@@ -1294,7 +1294,7 @@ def item_index_data(context, request):
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),
-        'url': '/' + context.__parent__.__name__ + '/' + str(context.__name__) + '/',
+        'url': request.resource_path(context),
     }
 
     return document
