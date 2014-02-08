@@ -25,8 +25,14 @@
 	}
 }
 
-.unit:before {
+.unit::before {
 	content: " ";
 }
 
+.horizontal-list {
+	li {
+		float: left;
+		margin-right: 0.5em;
+	}
+}
 // responsive styles in _state.scss
