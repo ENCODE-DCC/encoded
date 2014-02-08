@@ -1,0 +1,26 @@
+.black-overlay {
+	display: none;	
+	background-color: black;
+	left: 0%;
+	opacity: 0.5;
+	position: absolute;
+	height: 100%;
+	top: 0%;
+	width: 100%;
+	z-index: 1001;
+}
+
+.loading-spinner {
+	display: none;
+	border: 4px solid #ddd;
+	left: 25%;
+	overflow: auto;
+	position: absolute;
+	top: 25%;
+	width: 50%;
+	z-index: 1002;
+}
+
+.communicating .black-overlay, .communicating .loading-spinner {
+	display: block;
+}
