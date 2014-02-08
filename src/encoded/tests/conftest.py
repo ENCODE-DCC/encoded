@@ -119,6 +119,12 @@ def registry(app):
 
 
 @fixture
+def elasticsearch(registry):
+    from ..indexing import ELASTIC_SEARCH
+    return registry[ELASTIC_SEARCH]
+
+
+@fixture
 def root(app):
     return app.root_factory(app)
 

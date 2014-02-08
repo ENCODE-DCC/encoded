@@ -44,7 +44,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, status_ho
     status['timeout'] = timeout
     status, status_holder['status'] = status, status.copy()
 
-    post_data = {}
+    post_data = {'record': True}
     if dry_run:
         post_data['dry_run'] = True
 
