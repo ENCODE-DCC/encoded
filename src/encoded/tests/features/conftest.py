@@ -10,10 +10,13 @@ def app_settings(server_host_port, elasticsearch_server, postgresql_server):
     return test_indexing.app_settings(server_host_port, elasticsearch_server, postgresql_server)
 
 
-@pytest.fixture(scope='session')
-def app(request, app_settings):
+@pytest.yield_fixture(scope='session')
+def app(app_settings):
     from .. import test_indexing
-    return test_indexing.app(request, app_settings)
+    from encoded.commands import create_mapping
+    for app in test_indexing.app(app_settings):
+        create_mapping.run(app)
+        yield app
 
 
 # Though this is expensive, set up first within browser tests to avoid remote
@@ -22,8 +25,6 @@ def app(request, app_settings):
 @pytest.mark.fixture_cost(-1)
 @pytest.yield_fixture(scope='session', autouse=True)
 def workbook(app):
-    from encoded.commands import es_index_data
-
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
@@ -37,7 +38,7 @@ def workbook(app):
     docsdir = [resource_filename('encoded', 'tests/data/documents/')]
     load_all(testapp, inserts, docsdir)
 
-    es_index_data.run(app)
+    testapp.post_json('/index', {})
     yield
     # XXX cleanup
 
