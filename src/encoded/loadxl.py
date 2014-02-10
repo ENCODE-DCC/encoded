@@ -476,7 +476,10 @@ PHASE2_PIPELINES = {
         skip_rows_missing_all_keys('derived_from', 'pooled_from'),
     ],
     'experiment': [
-        skip_rows_missing_all_keys('files', 'possible_controls'),
+        skip_rows_missing_all_keys('related_files', 'possible_controls'),
+    ],
+    'dataset': [
+        skip_rows_missing_all_keys('related_files'),
     ],
 }
 
