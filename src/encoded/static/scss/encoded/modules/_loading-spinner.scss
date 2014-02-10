@@ -11,13 +11,14 @@
 }
 
 .loading-spinner {
+	background: url('../img/spinner1.gif') no-repeat;
 	display: none;
-	border: 4px solid #ddd;
-	left: 25%;
+	left: 50%;
 	overflow: auto;
 	position: absolute;
-	top: 25%;
-	width: 50%;
+	top: 9%;
+	width: 30px;
+	height: 30px;
 	z-index: 1002;
 }
 

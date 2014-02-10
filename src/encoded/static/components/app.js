@@ -75,7 +75,7 @@ var App = React.createClass({
         if (this.state.communicating) {
         	setTimeout(function(){ 
         		appClass = 'communicating'; 
-        	},1000);
+        	},750);
         } else {
             appClass = 'done';
         }
@@ -108,12 +108,8 @@ var App = React.createClass({
                     <div id="slot-application">
                         <div id="application" className={appClass}>
                         
-                        <div id="loading-spinner" className="progress progress-striped active loading-spinner">
-									<div style={{width: '100%'}} className="bar"></div>
-								 </div>
-								<div id="fade" className="black-overlay"></div>
-								
-                        
+						<div className="loading-spinner"></div>
+								   
                             <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         user_actions={this.state.user_actions} session={this.state.session}
