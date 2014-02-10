@@ -6,7 +6,6 @@ var origin = require('origin');
 
 var parseError = module.exports.parseError = function (xhr, status) {
     var data;
-    if (status == 'abort') return;
     if (status == 'timeout') {
         data = {
             status: 'timeout',
@@ -368,6 +367,7 @@ module.exports.HistoryAndTriggers = {
     },
 
     receiveContextFailure: function (xhr, status, error) {
+        if (status == 'abort') return;
         var data = parseError(xhr, status);
         this.receiveContextResponse(data, status, xhr);
     },

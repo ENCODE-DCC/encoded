@@ -92,7 +92,6 @@ runcmd:
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 - sudo -u encoded bin/upgrade production.ini
 - sudo -u encoded bin/create-mapping production.ini
-- sudo -u encoded bin/es-index-data production.ini &
 - sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
 - sudo a2ensite encoded.conf
 - sudo a2dissite 000-default

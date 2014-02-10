@@ -7,43 +7,16 @@ index = 'encoded'
 
 EPILOG = __doc__
 
-log = logging.getLogger(__name__)
 
-
-def run(app, collections=None):
+def run(app, collections=None, record=False):
     root = app.root_factory(app)
     es = app.registry[ELASTIC_SEARCH]
     environ = {
         'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'IMPORT',
+        'REMOTE_USER': 'INDEXER',
     }
     testapp = TestApp(app, environ)
-
-    if not collections:
-        collections = root.by_item_type.keys()
-
-    for collection_name in collections:
-        collection = root.by_item_type[collection_name]
-        if collection.schema is None:
-            continue
-
-        DOCTYPE = collection_name
-
-        # try creating index, if it exists already delete it and create it
-        counter = 0
-        for count, uuid in enumerate(collection):
-            try:
-                res = testapp.get('/%s/@@index-data' % uuid).maybe_follow()
-            except:
-                print "Object is not found - " + str(uuid)
-            else:
-                document = res.json
-                es.index(index, DOCTYPE, document, str(uuid))
-                counter = counter + 1
-                if counter % 50 == 0:
-                    es.flush(index)
-                    log.info('Indexing %s %d', collection_name, counter)
-        es.refresh(index)
+    testapp.post_json('/index', {'last_xmin': None, 'types': collections})
 
 
 def main():
@@ -55,6 +28,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--item-type', action='append', help="Item type")
+    parser.add_argument('--record', default=False, action='store_true', help="Record the xmin in ES meta")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()
@@ -64,7 +38,7 @@ def main():
 
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)
-    return run(app, args.item_type)
+    return run(app, args.item_type, args.record)
 
 
 if __name__ == '__main__':

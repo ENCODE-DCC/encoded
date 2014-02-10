@@ -1,6 +1,7 @@
 test	uuid	antibody	library	platform	biological_replicate_number:integer	technical_replicate_number:integer	experiment	flowcell_details:object:array	read_length:integer	read_length_units	paired_ended:boolean	submitted_by	notes
 test	6e85c807-684a-46e3-b4b9-1f7990e85720	NULL	9a230485-0062-4590-be42-6ea7c4258941	bdfd8a33-4f14-4242-b6d5-ad198d4225f8	1	1	ENCSR000ACY				FALSE	facilisi.tristique@potenti.vivamus	
 test	cc236116-825a-465f-ae0c-5ab21f01a6b3	ENCAB000AOF	835e166d-0253-41ce-add2-de67429a3612	9ab7d195-c2d9-45ef-aed5-1d39ba77240b	1	1	ENCSR000ADH				FALSE	amet.fusce@est.fermentum	
+test	d990fa42-09e9-4b24-b5f9-44efbdbf4363	ENCAB000AOF	835e166d-0253-41ce-add2-de67429a3612	9ab7d195-c2d9-45ef-aed5-1d39ba77240b	1	2	ENCSR000ADH				FALSE	amet.fusce@est.fermentum	
 test	2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f	ENCAB000AUU	88760932-54b6-46fe-951d-fc80e89a0d77	9ab7d195-c2d9-45ef-aed5-1d39ba77240b	1	1	ENCSR000ADI				FALSE	amet.fusce@est.fermentum	
 test	358104a1-e809-43ad-b043-7161c08633f5	ENCAB000AUU	6c8689d9-427a-464e-93bd-ad7a72b31ae2	9ab7d195-c2d9-45ef-aed5-1d39ba77240b	2	1	ENCSR000ADI				FALSE	amet.fusce@est.fermentum	
 test	30a3e114-139a-4297-9287-4f23d2754c25	NULL	7013e140-dc14-4893-b0b1-0d7bb293730c	03a96eaf-75da-44e2-b4f6-e349e8c3655e	1	1	ENCSR000AEM				FALSE	dignissim.euismod@amet.habitant	

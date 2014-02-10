@@ -14,7 +14,7 @@ def groupfinder(login, request):
             return ['group.admin']
         elif localname in ['TEST_SUBMITTER']:
             return ['group.submitter']
-        elif localname in ['TEST_AUTHENTICATED']:
+        elif localname in ['TEST_AUTHENTICATED', 'EMBED', 'INDEXER']:
             return []
 
     if namespace in ('mailto', 'remoteuser'):
