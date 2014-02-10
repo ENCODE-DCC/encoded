@@ -18,6 +18,18 @@ var SignIn = module.exports.SignIn = React.createClass({
     }
 });
 
+var Info = module.exports.Info = React.createClass({
+    render: function() {
+        return (
+            <div className="span3">
+            	<div id="info-box" className="text-panel">
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas feugiat posuere lorem, id posuere odio commodo at.</p>
+					<p>Curabitur in eleifend mauris, ut malesuada tellus. Maecenas facilisis venenatis odio, laoreet tincidunt eros bibendum a. Sed pulvinar justo eu scelerisque ullamcorper. Vivamus eget mollis purus. Maecenas condimentum convallis ante, sit amet tincidunt lacus porta vel.</p>
+            	</div>
+            </div>
+        );
+    }
+});
 
 var Home = module.exports.Home = React.createClass({
     render: function() {
@@ -30,7 +42,7 @@ var Home = module.exports.Home = React.createClass({
                             <h1>ENCODE</h1>
                             <h2>The Encyclopedia of DNA Elements</h2>
                         </div>
-                        {this.transferPropsTo(<SignIn />)}
+                        <Info />
                     </div>
                 </div>
             </div>
