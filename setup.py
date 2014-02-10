@@ -55,6 +55,7 @@ setup(
 
         check-rendering = encoded.commands.check_rendering:main
         deploy = encoded.commands.deploy:main
+        dev-servers = encoded.commands.dev_servers:main
         extract_test_data = encoded.commands.extract_test_data:main
         es-index-data = encoded.commands.es_index_data:main
         es-index-listener = encoded.commands.es_index_listener:main
