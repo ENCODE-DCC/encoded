@@ -173,7 +173,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
                             <td><a href={biosample['@id']}>{biosample.accession}</a></td>
                             <td>{biosample.biosample_term_name}</td>
                             <td>{biosample.biosample_type}</td>
-                            <td>{biosample.donor.organism.name}</td>
+                            <td>{biosample.donor && biosample.donor.organism.name}</td>
                             <td>{biosample.source.title}</td>
                             <td>{biosample.submitted_by.title}</td>
                         </tr>
