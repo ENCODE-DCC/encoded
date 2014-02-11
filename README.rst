@@ -27,23 +27,19 @@ Set a session key::
 
     $ cat /dev/urandom | head -c 256 | base64 > session-secret.b64
 
-Create ElasticSearch mapping for ENCODE data::
+To start the application, in one terminal startup the database servers with::
 
-    $ bin/create-mapping production.ini
+    $ bin/dev-servers development.ini --app app --clear --init --load
 
-Index ENCODE data in ElasticSearch::
+This will first clear any existing data in /tmp/encoded.
+Then postgres and elasticsearch servers will be initiated within /tmp/encoded.
+The servers are started, and finally the test set will be loaded.
 
-    $ bin/es-index-data production.ini
-
-To start the application::
+Then run the app with::
 
     $ bin/pserve development.ini
 
-Or with the live data::
-
-    $ say "laurence give me the current data"
-    $ git clone https://github.com/ENCODE-DCC/dccMetadataImport.git ../dccMetadataImport
-    $ bin/pserve dev-masterdata.ini
+Indexing will then proceed in a background thread similar to the production setup.
 
 Browse to the interface at http://localhost:6543/.
 
@@ -55,15 +51,7 @@ Run the Pyramid tests with::
 
 Run the Browser tests with::
 
-    $ bin/test -k bdd -v -v
-
-
-To run tests with sqllite (default) use::
-    
-    $ bin/test --engine-url sqlite://
-
-To run tests with postgresql::
-    first install postgres (on a mac with homebrew for example)
+    $ bin/test -m bdd -v -v
 
 If you wish a clean db wipe for DEVELOPMENT::
     
@@ -71,21 +59,6 @@ If you wish a clean db wipe for DEVELOPMENT::
     ...
     $ createdb encoded
     $ pg_ctl -D /usr/local/var/postgres -l pg.log start
-    $ bin/test --engine-url postgresql:///encoded
-
-To start development data server (NO PERMISSIONS) use:
-    $ bin/pserve development.ini
-
-To start development data server (AuthZ enabled) use:
-    (requires ../master_encode3_interface_submissions.xlsx)
-    $ bin/pserve dev-master.ini
-
-To start productiondata server (Postgres, AuthZ, all data) use:
-    (requires ../master_encode3_interface_submissions.xlsx and/or existing PG DB)
-    $ bin/pserve production.ini
-
-    $ bin/pserve --help for more pyramid options
-    --log-file [filename] is a useful argument
 
 Database setup on VMs::
 
@@ -103,6 +76,10 @@ To dump a postgres database:
 
 To restore a postgres database:
     pg_restore -d encoded FILE_NAME (as user encoded on demo vm)
+
+Create ElasticSearch mapping for ENCODE data::
+
+    $ bin/create-mapping production.ini
 
 Notes on SASS/Compass
 =====================
