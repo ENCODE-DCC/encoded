@@ -21,8 +21,6 @@ var Dbxref = module.exports.Dbxref = function (props) {
             if (prefix == "HGNC") {
                 local = props.target_gene;
             } else if (prefix == "UCSC_encode_db") {
-                console.log("Local = " + local);
-                
                 if (local.indexOf("wgEncodeEM") != -1) {
                     assembly = "&db=mm9&hgt_mdbVal1="; // mm9 - mouse
                 } else {
