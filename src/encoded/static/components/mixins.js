@@ -352,8 +352,8 @@ module.exports.HistoryAndTriggers = {
         }
         if (options.skipRequest) return;
 
-        var now = (new Date()).getTime();
-        this.setState({communicating: now);
+        var now = 1 * new Date();
+        this.setState({communicating: now});
 
         this.contextRequest = $.ajax({
             url: href,

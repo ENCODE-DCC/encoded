@@ -71,7 +71,7 @@ var App = React.createClass({
             return <div className="alert alert-error"></div>;
         });
 
-        var now = (new Date()).getTime();
+        var now = 1 * new Date();
         var appClass = 'done';
         if (this.state.communicating && (now - this.state.communicating) > 750) {
         	appClass = 'communicating'; 
