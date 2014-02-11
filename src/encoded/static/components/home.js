@@ -18,19 +18,6 @@ var SignIn = module.exports.SignIn = React.createClass({
     }
 });
 
-var Info = module.exports.Info = React.createClass({
-    render: function() {
-        return (
-            <div className="span3">
-            	<div id="info-box" className="text-panel">
-					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas feugiat posuere lorem, id posuere odio commodo at.</p>
-					<p>Curabitur in eleifend mauris, ut malesuada tellus. Maecenas facilisis venenatis odio, laoreet tincidunt eros bibendum a. Sed pulvinar justo eu scelerisque ullamcorper. Vivamus eget mollis purus. Maecenas condimentum convallis ante, sit amet tincidunt lacus porta vel.</p>
-            	</div>
-            </div>
-        );
-    }
-});
-
 var Home = module.exports.Home = React.createClass({
     render: function() {
         var hidden = !this.props.session || this.props.session.persona;
@@ -38,11 +25,15 @@ var Home = module.exports.Home = React.createClass({
             <div>
                 <div className="homepage-main-box panel-gray">
                     <div className="row">
-                        <div className="project-info home-panel-left span7">
-                            <h1>ENCODE</h1>
-                            <h2>The Encyclopedia of DNA Elements</h2>
+                        <div className="span12">
+                            <div className="project-info site-title">
+                                <h1>ENCODE: The Encyclopedia of DNA Elements</h1>
+                            </div>
+                            <div id="info-box" className="project-info text-panel">
+                                <p>Preview the new ENCODE Portal.</p>
+                                <p>Enter a search term like "skin", "ChIP-seq", or "CTCF" or select a data type from the toolbar.</p>
+                            </div>
                         </div>
-                        <Info />
                     </div>
                 </div>
             </div>
