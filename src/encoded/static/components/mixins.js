@@ -336,14 +336,20 @@ module.exports.HistoryAndTriggers = {
             window.location.reload();
             return;
         }
+        var xhr = this.props.contextRequest;
         var href = window.location.href;
         if (event.state) {
+            // Abort inflight xhr before setProps
+            if (xhr && xhr.state() == 'pending') {
+                xhr.abort();
+            }
             this.setProps({
                 context: event.state,
                 href: href  // href should be consistent with context
             });
         }
-        // Always async update in case of server side changes
+        // Always async update in case of server side changes.
+        // Triggers standard analytics handling.
         this.navigate(href, {replace: true});
     },
 
@@ -398,7 +404,10 @@ module.exports.HistoryAndTriggers = {
     },
 
     receiveContextFailure: function (xhr, status, error) {
-        if (status == 'abort') return;
+        if (status == 'abort') {
+            clearTimeout(xhr.slowTimer)
+            return;
+        }
         var data = parseError(xhr, status);
         window.ga('send', 'event', {
             'eventCategory': 'error',
