@@ -71,12 +71,11 @@ var App = React.createClass({
             return <div className="alert alert-error"></div>;
         });
 
-        var appClass;
-        if (this.state.communicating) {
-            appClass = 'communicating';
-        } else {
-            appClass = 'done';
-        }
+        var now = (new Date()).getTime();
+        var appClass = 'done';
+        if (this.state.communicating && (now - this.state.communicating) > 750) {
+        	appClass = 'communicating'; 
+        };
 
         var title = globals.listing_titles.lookup(context)({context: context});
         if (title && title != 'Home') {
@@ -105,6 +104,9 @@ var App = React.createClass({
                     }}></script>
                     <div id="slot-application">
                         <div id="application" className={appClass}>
+                        
+						<div className="loading-spinner"></div>
+								   
                             <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         user_actions={this.state.user_actions} session={this.state.session}
