@@ -180,6 +180,7 @@ class PageWorker(threading.local):
         stats['render_count'] = stats.get('render_count', 0) + 1
         duration = end - start
         stats['render_time'] = stats.get('render_time', 0) + duration
+        request._stats_html_attribute = True
 
         if request.registry.settings['pyramid.reload_templates']:
             del self.process

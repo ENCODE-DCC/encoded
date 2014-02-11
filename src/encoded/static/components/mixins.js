@@ -429,38 +429,21 @@ module.exports.HistoryAndTriggers = {
         var xhr = this.props.contextRequest;
         if (!xhr || !xhr.xhr_end || xhr.browser_stats) return;
         var browser_end = 1 * new Date();
-        xhr.browser_stats = {};
-        var stats_header = xhr.getResponseHeader('X-Stats') || '';
-        xhr.server_stats = require('url').parse('?' + stats_header, true).query;
 
         var ga = window.ga;
 
         ga('set', 'location', window.location.href);
         ga('send', 'pageview');
 
-        // At this point all of the _time keys are server generated
-        // microsecond values...
-        Object.keys(xhr.server_stats).forEach(function (name) {
-            if (name.indexOf('_time') === -1) return;
-            ga('send', 'timing', {
-                'timingCategory': 'contextRequest',
-                'timingVar': name,
-                'timingValue': Math.round(xhr.server_stats[name] / 1000)
-            });
-        });
+        var stats_header = xhr.getResponseHeader('X-Stats') || '';
+        xhr.server_stats = require('querystring').parse(stats_header);
+        recordServerStats(xhr.server_stats);
 
+        xhr.browser_stats = {};
         xhr.browser_stats['xhr_time'] = xhr.xhr_end - xhr.xhr_begin;
         xhr.browser_stats['browser_time'] = browser_end - xhr.xhr_end;
         xhr.browser_stats['total_time'] = browser_end - xhr.xhr_begin;
-
-        Object.keys(xhr.browser_stats).forEach(function (name) {
-            if (name.indexOf('_time') === -1) return;
-            ga('send', 'timing', {
-                'timingCategory': 'contextRequest',
-                'timingVar': name,
-                'timingValue': xhr.browser_stats[name]
-            });
-        });
+        recordBrowserStats(xhr.browser_stats);
 
     },
 
@@ -472,4 +455,31 @@ module.exports.HistoryAndTriggers = {
             window.scrollTo(0, 0);
         }
     }
+};
+
+
+var recordServerStats = module.exports.recordServerStats = function (server_stats) {
+    // server_stats *_time are microsecond values...
+    var ga = window.ga;
+    Object.keys(server_stats).forEach(function (name) {
+        if (name.indexOf('_time') === -1) return;
+        ga('send', 'timing', {
+            'timingCategory': 'contextRequest',
+            'timingVar': name,
+            'timingValue': Math.round(server_stats[name] / 1000)
+        });
+    });
+};
+
+
+var recordBrowserStats = module.exports.recordBrowserStats = function (browser_stats) {
+    var ga = window.ga;
+    Object.keys(browser_stats).forEach(function (name) {
+        if (name.indexOf('_time') === -1) return;
+        ga('send', 'timing', {
+            'timingCategory': 'contextRequest',
+            'timingVar': name,
+            'timingValue': browser_stats[name]
+        });
+    });
 };
