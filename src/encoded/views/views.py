@@ -73,6 +73,7 @@ ENCODE2_AWARDS = frozenset([
     'cd51d709-b8d1-4ba6-b756-45adcaa38fb9',
     'dd7fb99a-cb0b-407e-9635-16454f0066c1',
     'df972196-c3c7-4a58-a852-94baa87f9b71',
+    'f06a0db4-b388-48d9-b414-37d83859cad0',  # Unattributed
 ])
 
 
