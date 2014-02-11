@@ -36,6 +36,24 @@ var ie8compat = [
     return 'document.createElement("' + tag + '");';
 }).join('\n');
 
+var analytics = [
+"(function(i, s, r){",
+    "i['GoogleAnalyticsObject'] = r;",
+    "i[r] = i[r] || function() {",
+        "(i[r].q = i[r].q || []).push(arguments)",
+    "},",
+    "i[r].l = 1 * new Date();",
+    "})(window, document, 'ga');",
+// Use a separate tracker for dev / test
+"if (({'submit.encodedcc.org':1,'www.encodedcc.org':1,'encodedcc.org':1})[document.location.hostname]) {",
+    "ga('create', 'UA-47809317-1', {'cookieDomain': 'encodedcc.org', 'siteSpeedSampleRate': 100});",
+"} else {",
+    "ga('create', 'UA-47809317-2', {'cookieDomain': 'none', 'siteSpeedSampleRate': 100});",
+"}",
+"ga('send', 'pageview');"
+].join('\n');
+
+
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -71,9 +89,8 @@ var App = React.createClass({
             return <div className="alert alert-error"></div>;
         });
 
-        var now = 1 * new Date();
         var appClass = 'done';
-        if (this.state.communicating && (now - this.state.communicating) > 750) {
+        if (this.props.slow) {
         	appClass = 'communicating'; 
         };
 
@@ -95,7 +112,9 @@ var App = React.createClass({
                     <link rel="canonical" href={this.props.href} />
                     <link rel="stylesheet" href="/static/css/style.css" />
                     <link rel="stylesheet" href="/static/css/responsive.css" />
-                    <script src="/static/build/bundle.js" async={true} defer={true}></script>
+                    <script dangerouslySetInnerHTML={{__html: analytics}}></script>
+                    <script src="//www.google-analytics.com/analytics.js" async defer></script>
+                    <script src="/static/build/bundle.js" async defer></script>
                     <script dangerouslySetInnerHTML={{__html: ie8compat}}></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
