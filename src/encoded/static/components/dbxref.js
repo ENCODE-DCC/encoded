@@ -15,12 +15,21 @@ var Dbxref = module.exports.Dbxref = function (props) {
         local = value.slice(sep + 1);
     }
     if (prefix) {
+        var assembly;
         var base = globals.dbxref_prefix_map[prefix];
         if (base) {
             if (prefix == "HGNC") {
                 local = props.target_gene;
+            } else if (prefix == "UCSC_encode_db") {
+                console.log("Local = " + local);
+                
+                if (local.indexOf("wgEncodeEM") != -1) {
+                    assembly = "&db=mm9&hgt_mdbVal1="; // mm9 - mouse
+                } else {
+                    assembly = "&db=hg19&hgt_mdbVal1="; // hg19 - human
+                }   
             }
-            return <a href={base + local}>{value}</a>;
+            return <a href={base + assembly + local}>{value}</a>;
         }
     }
     return <span>{value}</span>;

@@ -111,7 +111,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         
                         <dt hidden={!context.encode2_dbxrefs.length}>Other identifiers</dt>
                         <dd hidden={!context.encode2_dbxrefs.length} className="no-cap">
-                            <DbxrefList values={dbxrefs} prefix="ENCODE2" />
+                            <DbxrefList values={dbxrefs} />
                         </dd>
                         
                         {context.geo_dbxrefs.length ? <dt>GEO Accessions</dt> : null}
