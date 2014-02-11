@@ -115,7 +115,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </dd>
                         
                         {context.geo_dbxrefs.length ? <dt>GEO Accessions</dt> : null}
-                        {context.geo_dbxrefs.length ? <dd>{context.geo_dbxrefs.join(', ')}</dd> : null}
+                        {context.geo_dbxrefs.length ? <dd>
+                            <DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
+                        </dd> : null}
 
                     </dl>
                 </div>
