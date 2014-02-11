@@ -656,6 +656,7 @@ class Experiment(Dataset):
         ('biosample_term_name', 'Biosample'),
         ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
+        ('description', 'Description'),
         ('lab.title', 'Lab'),
         ('encode2_dbxrefs', 'Dbxrefs'),
         ('award.project', 'Project'),

@@ -45,9 +45,10 @@ def engine_url(request):
 
     # Ideally this would use a different database on the same postgres server
     from urllib import quote
-    from .postgresql_fixture import server_process
+    from .postgresql_fixture import initdb, server_process
     tmpdir = request.config._tmpdirhandler.mktemp('postgresql-engine', numbered=True)
     tmpdir = str(tmpdir)
+    initdb(tmpdir)
     process = server_process(tmpdir)
 
     yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
@@ -656,9 +657,10 @@ def construct(constructs):
 @pytest.yield_fixture(scope='session')
 def postgresql_server(request):
     from urllib import quote
-    from .postgresql_fixture import server_process
+    from .postgresql_fixture import initdb, server_process
     tmpdir = request.config._tmpdirhandler.mktemp('postgresql', numbered=True)
     tmpdir = str(tmpdir)
+    initdb(tmpdir)
     process = server_process(tmpdir)
 
     yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
