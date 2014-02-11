@@ -206,7 +206,6 @@ var Dbxref = dbxref.Dbxref;
                     }
                 }
                 if(termID == 'DataType') {
-                    debugger;
                     return <div className="facet" key={termID}>
                             <h5>{term}</h5>
                             <ul className="facet-list nav">

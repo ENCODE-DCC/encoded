@@ -85,6 +85,7 @@ module.exports.Persona = {
     },
 
     ajaxPrefilter: function (options, original, xhr) {
+        xhr.xhr_begin = 1 * new Date();
         var http_method = options.type;
         var csrf_token = this.state.session && this.state.session.csrf_token;
         if (http_method === 'GET' || http_method === 'HEAD') return;
@@ -206,8 +207,15 @@ module.exports.Persona = {
 
 
 module.exports.HistoryAndTriggers = {
+    SLOW_REQUEST_TIME: 750,
     // Detect HTML5 history support
     historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
+
+    componentWillMount: function () {
+        if (typeof window !== 'undefined') {
+            window.addEventListener('error', this.handleError, false);            
+        }
+    },
 
     componentDidMount: function () {
         if (this.historyEnabled) {
@@ -219,7 +227,6 @@ module.exports.HistoryAndTriggers = {
                 window.history.replaceState(null, '', window.location.href);
             }
             window.addEventListener('popstate', this.handlePopState, true);
-            window.addEventListener('error', this.handleError, false);
         }
     },
 
@@ -230,9 +237,15 @@ module.exports.HistoryAndTriggers = {
         }
     },
 
-    handleError: function(event) {
+    handleError: function(err, url, line) {
         // When an unhandled exception occurs, reload the page on navigation
         this.historyEnabled = false;
+        window.ga('send', 'event', {
+            'eventCategory': 'error',
+            'eventAction': 'unhandled:' + (err.message) || err,
+            'eventLabel': url + ':' + line,
+            'location': window.location.href,
+        });
     },
 
     handleClick: function(event) {
@@ -338,11 +351,11 @@ module.exports.HistoryAndTriggers = {
         var $ = require('jquery');
         options = options || {};
         href = url.resolve(this.props.href, href);
-        this.setProps({href: href});
+        var xhr = this.props.contextRequest;
         this.havePushedState = true;
 
-        if (this.contextRequest && this.contextRequest.state() == 'pending') {
-            this.contextRequest.abort();
+        if (xhr && xhr.state() == 'pending') {
+            xhr.abort();
         }
 
         if (options.replace) {
@@ -350,12 +363,12 @@ module.exports.HistoryAndTriggers = {
         } else {
             window.history.pushState(window.state, '', href);
         }
-        if (options.skipRequest) return;
+        if (options.skipRequest) {
+            this.setProps({href: href});
+            return;
+        }
 
-        var now = 1 * new Date();
-        this.setState({communicating: now});
-
-        this.contextRequest = $.ajax({
+        xhr = $.ajax({
             url: href,
             type: 'GET',
             dataType: 'json'
@@ -363,20 +376,41 @@ module.exports.HistoryAndTriggers = {
         .done(this.receiveContextResponse);
 
         if (!options.replace) {
-            this.contextRequest.always(this.scrollTo);
+            xhr.always(this.scrollTo);
+        }
+
+        xhr.slowTimer = setTimeout(
+            this.detectSlowRequest.bind(this, xhr),
+            this.SLOW_REQUEST_TIME);
+        xhr.href = href;
+
+        this.setProps({
+            contextRequest: xhr,
+            href: href
+        });
+
+    },
+
+    detectSlowRequest: function (xhr) {
+        if (xhr.state() == 'pending') {
+            this.setProps({'slow': true});
         }
     },
 
     receiveContextFailure: function (xhr, status, error) {
         if (status == 'abort') return;
         var data = parseError(xhr, status);
+        window.ga('send', 'event', {
+            'eventCategory': 'error',
+            'eventAction': 'contextRequest:' + status + ':' + xhr.statusText,
+            'eventLabel': xhr.href
+        });
         this.receiveContextResponse(data, status, xhr);
     },
 
     receiveContextResponse: function (data, status, xhr) {
-        this.setState({communicating: null});
-        this.setProps({context: data});
-
+        xhr.xhr_end = 1 * new Date();
+        clearTimeout(xhr.slowTimer)
         // title currently ignored by browsers
         try {
             window.history.replaceState(data, '', window.location.href);
@@ -384,6 +418,50 @@ module.exports.HistoryAndTriggers = {
             // Might fail due to too large data
             window.history.replaceState(null, '', window.location.href);
         }
+        this.setProps({
+            context: data,
+            slow: false
+        });
+
+    },
+
+    componentDidUpdate: function () {
+        var xhr = this.props.contextRequest;
+        if (!xhr || !xhr.xhr_end || xhr.browser_stats) return;
+        var browser_end = 1 * new Date();
+        xhr.browser_stats = {};
+        var stats_header = xhr.getResponseHeader('X-Stats') || '';
+        xhr.server_stats = require('url').parse('?' + stats_header, true).query;
+
+        var ga = window.ga;
+
+        ga('set', 'location', window.location.href);
+        ga('send', 'pageview');
+
+        // At this point all of the _time keys are server generated
+        // microsecond values...
+        Object.keys(xhr.server_stats).forEach(function (name) {
+            if (name.indexOf('_time') === -1) return;
+            ga('send', 'timing', {
+                'timingCategory': 'contextRequest',
+                'timingVar': name,
+                'timingValue': Math.round(xhr.server_stats[name] / 1000)
+            });
+        });
+
+        xhr.browser_stats['xhr_time'] = xhr.xhr_end - xhr.xhr_begin;
+        xhr.browser_stats['browser_time'] = browser_end - xhr.xhr_end;
+        xhr.browser_stats['total_time'] = browser_end - xhr.xhr_begin;
+
+        Object.keys(xhr.browser_stats).forEach(function (name) {
+            if (name.indexOf('_time') === -1) return;
+            ga('send', 'timing', {
+                'timingCategory': 'contextRequest',
+                'timingVar': name,
+                'timingValue': xhr.browser_stats[name]
+            });
+        });
+
     },
 
     scrollTo: function() {
