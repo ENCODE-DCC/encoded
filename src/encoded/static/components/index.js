@@ -48,7 +48,7 @@ if (typeof window != 'undefined' && !window.TEST_RUNNER) {
 
         var stats_header = document.documentElement.getAttribute('data-stats') || '';
         var server_stats = require('querystring').parse(stats_header);
-        recordServerStats(server_stats);
+        recordServerStats(server_stats, 'html');
 
         var app = App(props);
         React.renderComponent(app, document);

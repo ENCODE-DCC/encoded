@@ -446,13 +446,13 @@ module.exports.HistoryAndTriggers = {
 
         var stats_header = xhr.getResponseHeader('X-Stats') || '';
         xhr.server_stats = require('querystring').parse(stats_header);
-        recordServerStats(xhr.server_stats);
+        recordServerStats(xhr.server_stats, 'contextRequest');
 
         xhr.browser_stats = {};
         xhr.browser_stats['xhr_time'] = xhr.xhr_end - xhr.xhr_begin;
         xhr.browser_stats['browser_time'] = browser_end - xhr.xhr_end;
         xhr.browser_stats['total_time'] = browser_end - xhr.xhr_begin;
-        recordBrowserStats(xhr.browser_stats);
+        recordBrowserStats(xhr.browser_stats, 'contextRequest');
 
     },
 
@@ -467,27 +467,27 @@ module.exports.HistoryAndTriggers = {
 };
 
 
-var recordServerStats = module.exports.recordServerStats = function (server_stats) {
+var recordServerStats = module.exports.recordServerStats = function (server_stats, timingVar) {
     // server_stats *_time are microsecond values...
     var ga = window.ga;
     Object.keys(server_stats).forEach(function (name) {
         if (name.indexOf('_time') === -1) return;
         ga('send', 'timing', {
-            'timingCategory': 'contextRequest',
-            'timingVar': name,
+            'timingCategory': name,
+            'timingVar': timingVar,
             'timingValue': Math.round(server_stats[name] / 1000)
         });
     });
 };
 
 
-var recordBrowserStats = module.exports.recordBrowserStats = function (browser_stats) {
+var recordBrowserStats = module.exports.recordBrowserStats = function (browser_stats, timingVar) {
     var ga = window.ga;
     Object.keys(browser_stats).forEach(function (name) {
         if (name.indexOf('_time') === -1) return;
         ga('send', 'timing', {
-            'timingCategory': 'contextRequest',
-            'timingVar': name,
+            'timingCategory': name,
+            'timingVar': timingVar,
             'timingValue': browser_stats[name]
         });
     });
