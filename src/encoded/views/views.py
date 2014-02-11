@@ -202,7 +202,7 @@ class Source(Collection):
     }
     item_name_key = 'name'
     unique_key = 'source:name'
-    item_keys = ['name']
+    item_keys =  ALIAS_KEYS + ['name']
 
 
 class DonorItem(Collection.Item):
