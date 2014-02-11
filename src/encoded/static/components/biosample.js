@@ -4,6 +4,12 @@ var React = require('react');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
+var dataset = require('./dataset');
+var fetched = require('./fetched');
+
+var ExperimentTable = dataset.ExperimentTable;
+var FetchedItems = fetched.FetchedItems;
+
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -43,6 +49,8 @@ var Biosample = module.exports.Biosample = React.createClass({
                 rnai_documents[doc['@id']] = Panel({context: doc});
             });
         })
+
+        var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
 
         return (
             <div className={itemClass}>
@@ -205,6 +213,11 @@ var Biosample = module.exports.Biosample = React.createClass({
                 <div hidden={!Object.keys(rnai_documents).length}>
                     <h3>RNAi documents</h3>
                     {rnai_documents}
+                </div>
+
+                <div>
+                    <h3>Related experiments for biosample {context.accession}</h3>
+                    <FetchedItems url={experiments_url} Component={ExperimentTable} />
                 </div>
 
             </div>
