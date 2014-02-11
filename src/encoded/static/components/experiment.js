@@ -4,8 +4,10 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
+var dataset = require('./dataset');
 
 var DbxrefList = dbxref.DbxrefList;
+var FileTable = dataset.FileTable;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -132,7 +134,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                     );
                 })}
 
-                <FilesLinked context={context} />
+                {context.files.length ?
+                    <div>
+                        <h3>Files linked to {context.accession}</h3>
+                        <FileTable items={context.files} />
+                    </div>
+                : null }
             </div>
         );
     }
@@ -288,54 +295,3 @@ var Replicate = module.exports.Replicate = function (props) {
 
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
-
-
-var FilesLinked = module.exports.FilesLinked = function (props) {
-    var context = props.context;
-    var files = context.files;
-    if (!files.length) return (<div hidden={true}></div>);
-    return (
-        <div>
-            <h3>Files linked to {context.accession}</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>File type</th>
-                        <th>Output type</th>
-                        <th>Paired end</th>
-                        <th>Associated replicates</th>
-                        <th>Added by</th>
-                        <th>Date added</th>
-                        <th>File download</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {files.map(function (file, index) {
-                    var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.download_path;
-                    return (
-                        <tr key={index}>
-                            <td>{file.accession}</td>
-                            <td>{file.file_format}</td>
-                            <td>{file.output_type}</td>
-                            <td>{file.paired_end}</td>
-                            <td>{file.replicate ?
-                                '(' + file.replicate.biological_replicate_number + ', ' + file.replicate.technical_replicate_number + ')'
-                                : null}
-                            </td>
-                            <td>{file.submitted_by.title}</td>
-                            <td>{file.date_created}</td>
-                            <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="6"></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-    );
-};

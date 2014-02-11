@@ -352,7 +352,8 @@ module.exports.HistoryAndTriggers = {
         }
         if (options.skipRequest) return;
 
-        this.setState({communicating: true});
+        var now = 1 * new Date();
+        this.setState({communicating: now});
 
         this.contextRequest = $.ajax({
             url: href,
@@ -373,7 +374,7 @@ module.exports.HistoryAndTriggers = {
     },
 
     receiveContextResponse: function (data, status, xhr) {
-        this.setState({communicating: false});
+        this.setState({communicating: null});
         this.setProps({context: data});
 
         // title currently ignored by browsers

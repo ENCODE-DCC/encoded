@@ -202,7 +202,7 @@ class Source(Collection):
     }
     item_name_key = 'name'
     unique_key = 'source:name'
-    item_keys = ['name']
+    item_keys =  ALIAS_KEYS + ['name']
 
 
 class DonorItem(Collection.Item):
@@ -656,6 +656,7 @@ class Experiment(Dataset):
         ('biosample_term_name', 'Biosample'),
         ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
+        ('description', 'Description'),
         ('lab.title', 'Lab'),
         ('encode2_dbxrefs', 'Dbxrefs'),
         ('award.project', 'Project'),

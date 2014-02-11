@@ -35,4 +35,14 @@
 		margin-right: 0.5em;
 	}
 }
+
+dd ul, .multi-value {
+	list-style: none;
+	margin: 0;
+	display: inline-block;
+}
+
+
+
+
 // responsive styles in _state.scss
