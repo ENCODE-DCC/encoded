@@ -211,6 +211,12 @@ module.exports.HistoryAndTriggers = {
     // Detect HTML5 history support
     historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
 
+    componentWillMount: function () {
+        if (typeof window !== 'undefined') {
+            window.addEventListener('error', this.handleError, false);            
+        }
+    },
+
     componentDidMount: function () {
         if (this.historyEnabled) {
             var data = this.props.context;
@@ -221,7 +227,6 @@ module.exports.HistoryAndTriggers = {
                 window.history.replaceState(null, '', window.location.href);
             }
             window.addEventListener('popstate', this.handlePopState, true);
-            window.addEventListener('error', this.handleError, false);
         }
     },
 
@@ -232,9 +237,15 @@ module.exports.HistoryAndTriggers = {
         }
     },
 
-    handleError: function(event) {
+    handleError: function(err, url, line) {
         // When an unhandled exception occurs, reload the page on navigation
         this.historyEnabled = false;
+        window.ga('send', 'event', {
+            'eventCategory': 'error',
+            'eventAction': 'unhandled:' + (err.message) || err,
+            'eventLabel': url + ':' + line,
+            'location': window.location.href,
+        });
     },
 
     handleClick: function(event) {
@@ -389,6 +400,11 @@ module.exports.HistoryAndTriggers = {
     receiveContextFailure: function (xhr, status, error) {
         if (status == 'abort') return;
         var data = parseError(xhr, status);
+        window.ga('send', 'event', {
+            'eventCategory': 'error',
+            'eventAction': 'contextRequest:' + status + ':' + xhr.statusText,
+            'eventLabel': xhr.href
+        });
         this.receiveContextResponse(data, status, xhr);
     },
 
