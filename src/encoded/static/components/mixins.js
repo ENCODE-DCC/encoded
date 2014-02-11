@@ -240,11 +240,15 @@ module.exports.HistoryAndTriggers = {
     handleError: function(err, url, line) {
         // When an unhandled exception occurs, reload the page on navigation
         this.historyEnabled = false;
-        window.ga('send', 'event', {
-            'eventCategory': 'error',
-            'eventAction': 'unhandled:' + (err.message) || err,
-            'eventLabel': url + ':' + line,
-            'location': window.location.href,
+        var ga = window.ga;
+        var parsed = require('url').parse(url);
+        if (parsed.hostname === window.location.hostname) {
+            url = parsed.path;
+        }
+        ga('send', 'exception', {
+            'exDescription': 'unhandled:' + (err.message || err) + url + ':' + line,
+            'exFatal': true,
+            'location': window.location.href
         });
     },
 
@@ -408,11 +412,11 @@ module.exports.HistoryAndTriggers = {
             clearTimeout(xhr.slowTimer)
             return;
         }
+        var ga = window.ga;
         var data = parseError(xhr, status);
-        window.ga('send', 'event', {
-            'eventCategory': 'error',
-            'eventAction': 'contextRequest:' + status + ':' + xhr.statusText,
-            'eventLabel': xhr.href
+        ga('send', 'exception', {
+            'exDescription': 'contextRequest:' + status + ':' + xhr.statusText,
+            'location': window.location.href
         });
         this.receiveContextResponse(data, status, xhr);
     },
