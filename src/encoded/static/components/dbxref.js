@@ -15,7 +15,7 @@ var Dbxref = module.exports.Dbxref = function (props) {
         local = value.slice(sep + 1);
     }
     if (prefix) {
-        var assembly;
+        var assembly ="";
         var base = globals.dbxref_prefix_map[prefix];
         if (base) {
             if (prefix == "HGNC") {
