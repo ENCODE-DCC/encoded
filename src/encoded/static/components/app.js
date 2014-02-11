@@ -71,14 +71,11 @@ var App = React.createClass({
             return <div className="alert alert-error"></div>;
         });
 
-        var appClass;
-        if (this.state.communicating) {
-        	setTimeout(function(){ 
-        		appClass = 'communicating'; 
-        	},750);
-        } else {
-            appClass = 'done';
-        }
+        var now = (new Date()).getTime();
+        var appClass = 'done';
+        if (this.state.communicating && (now - this.state.communicating) > 750) {
+        	appClass = 'communicating'; 
+        };
 
         var title = globals.listing_titles.lookup(context)({context: context});
         if (title && title != 'Home') {
