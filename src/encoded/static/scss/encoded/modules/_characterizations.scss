@@ -65,21 +65,21 @@
 	position: relative;
 }
 
-.characterization-status .pending-dcc-review, .characterization-status .pending  { 
+.characterization-status .pending-dcc-review { 
 	/* use with icon-tasks or maybe icon-inbox */
 	color: $infoText;
 	top: -5px;
 	position: relative;
 }
 
-.characterization-status .not-compliant, .characterization-status .deleted {  /* use with icon-thumbs-down */
+.characterization-status .not-compliant, .characterization-status .not-reviewed {  /* use with icon-thumbs-down */
 	color: $errorText;
 	top: -5px;
 	position: relative;
 }
 
 .characterization-status .in-progress, {  /* use with icon-thumbs-down */
-	color: #333;
+	color: #f89406;
 	top: -5px;
 	position: relative;
 }
@@ -105,12 +105,21 @@ h3 .label {
 	// PENDING DCC REVIEW (blue)
 	.#{$item}.status-pending-dcc-review		 { background-color: $infoText; }
 	.#{$item}.status-pending-dcc-review[href] { background-color: darken($infoText, 10%); }
-	// NOT PURSUED (red)
-	.#{$item}.status-not-pursued          { background-color: $errorText; }
-	.#{$item}.status-not-pursued[href]    { background-color: darken($errorText, 10%); }
+	// NOT ELIGIBLE FOR NEW DATA (red)
+	.#{$item}.status-not-eligible-for-new-data          { background-color: $errorText; }
+	.#{$item}.status-not-eligible-for-new-data[href]    { background-color: darken($errorText, 10%); }
 	// AWAITING LAB CHARACTERIZATION (yellow)
 	.#{$item}.status-awaiting-lab-characterization      { background-color: $warningText; }
 	.#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($warningText, 10%); }
+	// COMPLIANT (green)
+	.#{$item}.status-compliant          { background-color: $successText; }
+	.#{$item}.status-compliant[href]    { background-color: darken($successText, 10%); }
+	// NOT COMPLIANT (red)
+	.#{$item}.status-not-compliant          { background-color: $errorText; }
+	.#{$item}.status-not-compliant[href]    { background-color: darken($errorText, 10%); }
+	// NOT REVIEWED (red)
+	.#{$item}.status-not-reviewed         { background-color: $errorText; }
+	.#{$item}.status-not-reviewed[href]    { background-color: darken($errorText, 10%); }
 
-	/* Unsubmitted/pending (gray) is the default if no class given */
+	/* (gray) is the default if no class given */
 }

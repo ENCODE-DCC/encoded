@@ -1,8 +1,8 @@
 import os.path
+from urllib import quote
+import subprocess
 
-def server_process(datadir, prefix='', echo=False):
-    from urllib import quote
-    import subprocess
+def initdb(datadir, prefix='', echo=False):
     init_args = [
         os.path.join(prefix, 'initdb'),
         '-D', datadir,
@@ -17,6 +17,8 @@ def server_process(datadir, prefix='', echo=False):
     if echo:
         print output
 
+
+def server_process(datadir, prefix='', echo=False):
     args = [
         os.path.join(prefix, 'postgres'),
         '-D', datadir,

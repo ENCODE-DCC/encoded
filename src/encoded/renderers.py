@@ -181,6 +181,10 @@ class PageWorker(threading.local):
         duration = end - start
         stats['render_time'] = stats.get('render_time', 0) + duration
 
+        if request.registry.settings['pyramid.reload_templates']:
+            del self.process
+            cleanup([process])
+
         result = ''.join(output)
         if result_type == 'RESULT':
             return result
