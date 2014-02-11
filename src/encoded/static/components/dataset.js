@@ -126,7 +126,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
                             <td>{experiment.biosample_term_name}</td>
                             <td>{experiment.target && experiment.target.label}</td>
                             <td>{experiment.description}</td>
-                            <td>{experiment.lab.title}</td>            
+                            <td>{experiment.lab && experiment.lab.title}</td>            
                         </tr>
                     );
                 })}
@@ -144,6 +144,26 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 
 var FileTable = module.exports.FileTable = React.createClass({
     render: function() {
+        // Creating an object here dedupes when a file is listed under both related_files and original_files
+        var rows = {};
+        this.props.items.forEach(function (file) {
+            var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.download_path;
+            rows[file['@id']] = (
+                <tr>
+                    <td>{file.accession}</td>
+                    <td>{file.file_format}</td>
+                    <td>{file.output_type}</td>
+                    <td>{file.paired_end}</td>
+                    <td>{file.replicate ?
+                        '(' + file.replicate.biological_replicate_number + ', ' + file.replicate.technical_replicate_number + ')'
+                        : null}
+                    </td>
+                    <td>{file.submitted_by.title}</td>
+                    <td>{file.date_created}</td>
+                    <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
+                </tr>
+            );
+        });
         return (
             <table>
                 <thead>
@@ -159,24 +179,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </tr>
                 </thead>
                 <tbody>
-                {this.props.items.map(function (file, index) {
-                    var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.download_path;
-                    return (
-                        <tr key={file['@id']}>
-                            <td>{file.accession}</td>
-                            <td>{file.file_format}</td>
-                            <td>{file.output_type}</td>
-                            <td>{file.paired_end}</td>
-                            <td>{file.replicate ?
-                                '(' + file.replicate.biological_replicate_number + ', ' + file.replicate.technical_replicate_number + ')'
-                                : null}
-                            </td>
-                            <td>{file.submitted_by.title}</td>
-                            <td>{file.date_created}</td>
-                            <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
-                        </tr>
-                    );
-                })}
+                {rows}
                 </tbody>
                 <tfoot>
                     <tr>
