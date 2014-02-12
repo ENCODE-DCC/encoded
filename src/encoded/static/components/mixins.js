@@ -85,6 +85,7 @@ module.exports.Persona = {
     },
 
     ajaxPrefilter: function (options, original, xhr) {
+        xhr.xhr_begin = 1 * new Date();
         var http_method = options.type;
         var csrf_token = this.state.session && this.state.session.csrf_token;
         if (http_method === 'GET' || http_method === 'HEAD') return;
@@ -206,8 +207,15 @@ module.exports.Persona = {
 
 
 module.exports.HistoryAndTriggers = {
+    SLOW_REQUEST_TIME: 750,
     // Detect HTML5 history support
     historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
+
+    componentWillMount: function () {
+        if (typeof window !== 'undefined') {
+            window.addEventListener('error', this.handleError, false);            
+        }
+    },
 
     componentDidMount: function () {
         if (this.historyEnabled) {
@@ -218,8 +226,13 @@ module.exports.HistoryAndTriggers = {
                 // Might fail due to too large data
                 window.history.replaceState(null, '', window.location.href);
             }
-            window.addEventListener('popstate', this.handlePopState, true);
-            window.addEventListener('error', this.handleError, false);
+            // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
+            var register = window.addEventListener.bind(window, 'popstate', this.handlePopState, true);
+            if (window._onload_event_fired) {
+                register();
+            } else {
+                window.addEventListener('load', setTimeout.bind(window, register));
+            }
         }
     },
 
@@ -230,9 +243,19 @@ module.exports.HistoryAndTriggers = {
         }
     },
 
-    handleError: function(event) {
+    handleError: function(err, url, line) {
         // When an unhandled exception occurs, reload the page on navigation
         this.historyEnabled = false;
+        var ga = window.ga;
+        var parsed = require('url').parse(url);
+        if (parsed.hostname === window.location.hostname) {
+            url = parsed.path;
+        }
+        ga('send', 'exception', {
+            'exDescription': 'unhandled:' + (err.message || err) + url + ':' + line,
+            'exFatal': true,
+            'location': window.location.href
+        });
     },
 
     handleClick: function(event) {
@@ -317,20 +340,24 @@ module.exports.HistoryAndTriggers = {
 
     handlePopState: function (event) {
         if (this.DISABLE_POPSTATE) return;
-        // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
-        if (!this.havePushedState) return;
         if (!this.historyEnabled) {
             window.location.reload();
             return;
         }
+        var xhr = this.props.contextRequest;
         var href = window.location.href;
         if (event.state) {
+            // Abort inflight xhr before setProps
+            if (xhr && xhr.state() == 'pending') {
+                xhr.abort();
+            }
             this.setProps({
                 context: event.state,
                 href: href  // href should be consistent with context
             });
         }
-        // Always async update in case of server side changes
+        // Always async update in case of server side changes.
+        // Triggers standard analytics handling.
         this.navigate(href, {replace: true});
     },
 
@@ -338,11 +365,10 @@ module.exports.HistoryAndTriggers = {
         var $ = require('jquery');
         options = options || {};
         href = url.resolve(this.props.href, href);
-        this.setProps({href: href});
-        this.havePushedState = true;
+        var xhr = this.props.contextRequest;
 
-        if (this.contextRequest && this.contextRequest.state() == 'pending') {
-            this.contextRequest.abort();
+        if (xhr && xhr.state() == 'pending') {
+            xhr.abort();
         }
 
         if (options.replace) {
@@ -350,12 +376,12 @@ module.exports.HistoryAndTriggers = {
         } else {
             window.history.pushState(window.state, '', href);
         }
-        if (options.skipRequest) return;
+        if (options.skipRequest) {
+            this.setProps({href: href});
+            return;
+        }
 
-        var now = 1 * new Date();
-        this.setState({communicating: now});
-
-        this.contextRequest = $.ajax({
+        xhr = $.ajax({
             url: href,
             type: 'GET',
             dataType: 'json'
@@ -363,20 +389,44 @@ module.exports.HistoryAndTriggers = {
         .done(this.receiveContextResponse);
 
         if (!options.replace) {
-            this.contextRequest.always(this.scrollTo);
+            xhr.always(this.scrollTo);
+        }
+
+        xhr.slowTimer = setTimeout(
+            this.detectSlowRequest.bind(this, xhr),
+            this.SLOW_REQUEST_TIME);
+        xhr.href = href;
+
+        this.setProps({
+            contextRequest: xhr,
+            href: href
+        });
+
+    },
+
+    detectSlowRequest: function (xhr) {
+        if (xhr.state() == 'pending') {
+            this.setProps({'slow': true});
         }
     },
 
     receiveContextFailure: function (xhr, status, error) {
-        if (status == 'abort') return;
+        if (status == 'abort') {
+            clearTimeout(xhr.slowTimer)
+            return;
+        }
+        var ga = window.ga;
         var data = parseError(xhr, status);
+        ga('send', 'exception', {
+            'exDescription': 'contextRequest:' + status + ':' + xhr.statusText,
+            'location': window.location.href
+        });
         this.receiveContextResponse(data, status, xhr);
     },
 
     receiveContextResponse: function (data, status, xhr) {
-        this.setState({communicating: null});
-        this.setProps({context: data});
-
+        xhr.xhr_end = 1 * new Date();
+        clearTimeout(xhr.slowTimer)
         // title currently ignored by browsers
         try {
             window.history.replaceState(data, '', window.location.href);
@@ -384,6 +434,33 @@ module.exports.HistoryAndTriggers = {
             // Might fail due to too large data
             window.history.replaceState(null, '', window.location.href);
         }
+        this.setProps({
+            context: data,
+            slow: false
+        });
+
+    },
+
+    componentDidUpdate: function () {
+        var xhr = this.props.contextRequest;
+        if (!xhr || !xhr.xhr_end || xhr.browser_stats) return;
+        var browser_end = 1 * new Date();
+
+        var ga = window.ga;
+
+        ga('set', 'location', window.location.href);
+        ga('send', 'pageview');
+
+        var stats_header = xhr.getResponseHeader('X-Stats') || '';
+        xhr.server_stats = require('querystring').parse(stats_header);
+        recordServerStats(xhr.server_stats, 'contextRequest');
+
+        xhr.browser_stats = {};
+        xhr.browser_stats['xhr_time'] = xhr.xhr_end - xhr.xhr_begin;
+        xhr.browser_stats['browser_time'] = browser_end - xhr.xhr_end;
+        xhr.browser_stats['total_time'] = browser_end - xhr.xhr_begin;
+        recordBrowserStats(xhr.browser_stats, 'contextRequest');
+
     },
 
     scrollTo: function() {
@@ -394,4 +471,31 @@ module.exports.HistoryAndTriggers = {
             window.scrollTo(0, 0);
         }
     }
+};
+
+
+var recordServerStats = module.exports.recordServerStats = function (server_stats, timingVar) {
+    // server_stats *_time are microsecond values...
+    var ga = window.ga;
+    Object.keys(server_stats).forEach(function (name) {
+        if (name.indexOf('_time') === -1) return;
+        ga('send', 'timing', {
+            'timingCategory': name,
+            'timingVar': timingVar,
+            'timingValue': Math.round(server_stats[name] / 1000)
+        });
+    });
+};
+
+
+var recordBrowserStats = module.exports.recordBrowserStats = function (browser_stats, timingVar) {
+    var ga = window.ga;
+    Object.keys(browser_stats).forEach(function (name) {
+        if (name.indexOf('_time') === -1) return;
+        ga('send', 'timing', {
+            'timingCategory': name,
+            'timingVar': timingVar,
+            'timingValue': browser_stats[name]
+        });
+    });
 };

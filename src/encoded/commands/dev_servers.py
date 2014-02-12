@@ -26,9 +26,10 @@ def main():
     )
     parser.add_argument('--app', help="Pyramid app name in configfile")
     parser.add_argument('config_uri', help="path to configfile")
+    parser.add_argument('--clear', action="store_true", help="Clear existing data")
     parser.add_argument('--init', action="store_true", help="Init database")
+    parser.add_argument('--load', action="store_true", help="Load test set")
     parser.add_argument('--datadir', default='/tmp/encoded', help="path to datadir")
-    parser.add_argument('--clear', action="store_true", help="clear existing data")
     args = parser.parse_args()
 
     logging.basicConfig()
@@ -68,6 +69,7 @@ def main():
         app = get_app(args.config_uri, args.app)
         create_mapping.run(app)
 
+    if args.load:
         from webtest import TestApp
         environ = {
             'HTTP_ACCEPT': 'application/json',

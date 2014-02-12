@@ -111,11 +111,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                         
                         <dt hidden={!context.encode2_dbxrefs.length}>Other identifiers</dt>
                         <dd hidden={!context.encode2_dbxrefs.length} className="no-cap">
-                            <DbxrefList values={dbxrefs} prefix="ENCODE2" />
+                            <DbxrefList values={dbxrefs} />
                         </dd>
                         
                         {context.geo_dbxrefs.length ? <dt>GEO Accessions</dt> : null}
-                        {context.geo_dbxrefs.length ? <dd>{context.geo_dbxrefs.join(', ')}</dd> : null}
+                        {context.geo_dbxrefs.length ? <dd>
+                            <DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
+                        </dd> : null}
 
                     </dl>
                 </div>
@@ -180,7 +182,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
                             <td><a href={biosample['@id']}>{biosample.accession}</a></td>
                             <td>{biosample.biosample_term_name}</td>
                             <td>{biosample.biosample_type}</td>
-                            <td>{biosample.donor.organism.name}</td>
+                            <td>{biosample.donor && biosample.donor.organism.name}</td>
                             <td>{biosample.source.title}</td>
                             <td>{biosample.submitted_by.title}</td>
                         </tr>

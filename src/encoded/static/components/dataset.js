@@ -119,14 +119,15 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
                 </thead>
                 <tbody>
                 {this.props.items.map(function (experiment) {
+                    // Ensure this can work with search result columns too
                     return (
                         <tr key={experiment['@id']}>
                             <td><a href={experiment['@id']}>{experiment.accession}</a></td>
                             <td>{experiment.assay_term_name}</td>
                             <td>{experiment.biosample_term_name}</td>
-                            <td>{experiment.target && experiment.target.label}</td>
+                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
                             <td>{experiment.description}</td>
-                            <td>{experiment.lab && experiment.lab.title}</td>            
+                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
                         </tr>
                     );
                 })}
