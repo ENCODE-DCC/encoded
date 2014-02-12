@@ -226,7 +226,13 @@ module.exports.HistoryAndTriggers = {
                 // Might fail due to too large data
                 window.history.replaceState(null, '', window.location.href);
             }
-            window.addEventListener('popstate', this.handlePopState, true);
+            // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
+            var register = window.addEventListener.bind(window, 'popstate', this.handlePopState, true);
+            if (window._onload_event_fired) {
+                register();
+            } else {
+                window.addEventListener('load', setTimeout.bind(window, register));
+            }
         }
     },
 
@@ -334,8 +340,6 @@ module.exports.HistoryAndTriggers = {
 
     handlePopState: function (event) {
         if (this.DISABLE_POPSTATE) return;
-        // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
-        if (!this.havePushedState) return;
         if (!this.historyEnabled) {
             window.location.reload();
             return;
@@ -362,7 +366,6 @@ module.exports.HistoryAndTriggers = {
         options = options || {};
         href = url.resolve(this.props.href, href);
         var xhr = this.props.contextRequest;
-        this.havePushedState = true;
 
         if (xhr && xhr.state() == 'pending') {
             xhr.abort();
