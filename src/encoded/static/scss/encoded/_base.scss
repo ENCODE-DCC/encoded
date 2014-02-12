@@ -25,8 +25,8 @@ body { background: $mainThemeColor; }
 
 dd::first-letter { text-transform: capitalize; } 
 dd:first-letter { text-transform: capitalize; } // IE 8 and below support
-.no-cap::first-letter { text-transform: none !important; } 
-.no-cap:first-letter { text-transform: none !important; } // IE 8 and below support
+.no-cap::first-letter, .no-cap::first-letter * { text-transform: none !important; } 
+.no-cap:first-letter, .no-cap:first-letter * { text-transform: none !important; } // IE 8 and below support
 
 
 
