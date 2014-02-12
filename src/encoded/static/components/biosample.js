@@ -215,10 +215,9 @@ var Biosample = module.exports.Biosample = React.createClass({
                     {rnai_documents}
                 </div>
 
-                <div>
-                    <h3>Experiments using biosample {context.accession}</h3>
-                    <FetchedItems url={experiments_url} Component={ExperimentTable} />
-                </div>
+                {this.transferPropsTo(
+                    <FetchedItems url={experiments_url} Component={ExperimentsUsingBiosample} />
+                )}
 
             </div>
         );
@@ -226,6 +225,21 @@ var Biosample = module.exports.Biosample = React.createClass({
 });
 
 globals.content_views.register(Biosample, 'biosample');
+
+
+var ExperimentsUsingBiosample = module.exports.ExperimentsUsingBiosample = React.createClass({
+    render: function () {
+        var context = this.props.context;
+        return (
+            <div>
+                <h3>Experiments using biosample {context.accession}</h3>
+                {this.transferPropsTo(
+                    <ExperimentTable />
+                )}
+            </div>
+        );
+    }
+});
 
 
 var maybe_link = function (props, children) {
