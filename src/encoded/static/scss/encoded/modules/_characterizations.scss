@@ -29,7 +29,8 @@
   	figcaption { color: $successText; }
 }
 
-.type-characterization.view-detail.status-not-compliant, .type-document.view-detail.status-deleted {
+.type-characterization.view-detail.status-not-compliant, .type-document.view-detail.status-deleted,
+    .type-characterization.view-detail.status-not-reviewed {
   figure { border-color: $errorBorder; background-color: $errorBackground; }
   	figcaption { color: $errorText; }
 }
@@ -39,8 +40,8 @@
   	figcaption { color: $infoText; }
 }
 
-
-.type-characterization.view-detail.status-in-progress, .type-document.view-detail.status-none {
+.type-characterization.view-detail.status-in-progress, .type-document.view-detail.status-none,
+    .type-characterization.view-detail.status-not-submitted-for-review-by-lab {
   figure { border-color: #e1e1e8; background-color: #f7f7f9; }
   	figcaption { color: #333; }
 }
