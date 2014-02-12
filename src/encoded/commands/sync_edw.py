@@ -47,7 +47,7 @@ app_host_name = 'localhost'
 
 EPILOG = __doc__
 
-NO_UPDATE = ['md5sum', 'replicate', 'dataset']
+NO_UPDATE = ['md5sum', 'replicate', 'dataset', 'biological_replicate', 'technical_replicate']
 IMPORT_USER = 'IMPORT'
 
 logger = logging.getLogger(__name__)
@@ -570,6 +570,8 @@ def get_collection(app, collection):
 
 
 def compare_files(aa, bb):
+    ##  aa is usually encoded
+    ## bb is usually edw
     a_keys = set(aa.keys())
     b_keys = set(bb.keys())
     intersect_keys = a_keys.intersection(b_keys)
@@ -577,6 +579,12 @@ def compare_files(aa, bb):
     b_only_keys = b_keys - a_keys
 
     modified = { o : (aa[o], bb[o]) for o in intersect_keys if aa[o] != bb[o] }
+    if b_only_keys:
+        logger.info("EDW file has additional fields: %s" % b_only_keys)
+        for new_key in b_only_keys:
+            if new_key not in NO_UPDATE:
+                modified[new_key] = (bb[new_key], None)
+
     return modified
 
 
@@ -623,10 +631,10 @@ def inventory_files(app, edw_dict, app_dict):
         if accession not in app_dict:
             edw_only.append(edw_fileinfo)
         else:
-            diff = compare_files(edw_fileinfo, app_dict[accession])
+            diff = compare_files(app_dict[accession], edw_fileinfo)
             if diff:
                 diff_accessions.append(accession)
-                logger.warn("File: %s has %s DIFFS (EDW, encoded) - PATCH if valid" % (accession, diff))
+                logger.warn("File: %s has %s DIFFS (encoded, EDW) - PATCH if valid" % (accession, diff))
             else:
                 same.append(edw_fileinfo)
 
