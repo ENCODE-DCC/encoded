@@ -226,7 +226,13 @@ module.exports.HistoryAndTriggers = {
                 // Might fail due to too large data
                 window.history.replaceState(null, '', window.location.href);
             }
-            window.addEventListener('popstate', this.handlePopState, true);
+            // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
+            var register = window.addEventListener.bind(window, 'popstate', this.handlePopState, true);
+            if (window._onload_event_fired) {
+                register();
+            } else {
+                window.addEventListener('load', setTimeout.bind(window, register));
+            }
         }
     },
 
@@ -240,11 +246,15 @@ module.exports.HistoryAndTriggers = {
     handleError: function(err, url, line) {
         // When an unhandled exception occurs, reload the page on navigation
         this.historyEnabled = false;
-        window.ga('send', 'event', {
-            'eventCategory': 'error',
-            'eventAction': 'unhandled:' + (err.message) || err,
-            'eventLabel': url + ':' + line,
-            'location': window.location.href,
+        var ga = window.ga;
+        var parsed = require('url').parse(url);
+        if (parsed.hostname === window.location.hostname) {
+            url = parsed.path;
+        }
+        ga('send', 'exception', {
+            'exDescription': 'unhandled:' + (err.message || err) + url + ':' + line,
+            'exFatal': true,
+            'location': window.location.href
         });
     },
 
@@ -330,20 +340,24 @@ module.exports.HistoryAndTriggers = {
 
     handlePopState: function (event) {
         if (this.DISABLE_POPSTATE) return;
-        // Avoid popState on load, see: http://stackoverflow.com/q/6421769/199100
-        if (!this.havePushedState) return;
         if (!this.historyEnabled) {
             window.location.reload();
             return;
         }
+        var xhr = this.props.contextRequest;
         var href = window.location.href;
         if (event.state) {
+            // Abort inflight xhr before setProps
+            if (xhr && xhr.state() == 'pending') {
+                xhr.abort();
+            }
             this.setProps({
                 context: event.state,
                 href: href  // href should be consistent with context
             });
         }
-        // Always async update in case of server side changes
+        // Always async update in case of server side changes.
+        // Triggers standard analytics handling.
         this.navigate(href, {replace: true});
     },
 
@@ -352,7 +366,6 @@ module.exports.HistoryAndTriggers = {
         options = options || {};
         href = url.resolve(this.props.href, href);
         var xhr = this.props.contextRequest;
-        this.havePushedState = true;
 
         if (xhr && xhr.state() == 'pending') {
             xhr.abort();
@@ -398,12 +411,15 @@ module.exports.HistoryAndTriggers = {
     },
 
     receiveContextFailure: function (xhr, status, error) {
-        if (status == 'abort') return;
+        if (status == 'abort') {
+            clearTimeout(xhr.slowTimer)
+            return;
+        }
+        var ga = window.ga;
         var data = parseError(xhr, status);
-        window.ga('send', 'event', {
-            'eventCategory': 'error',
-            'eventAction': 'contextRequest:' + status + ':' + xhr.statusText,
-            'eventLabel': xhr.href
+        ga('send', 'exception', {
+            'exDescription': 'contextRequest:' + status + ':' + xhr.statusText,
+            'location': window.location.href
         });
         this.receiveContextResponse(data, status, xhr);
     },
@@ -429,38 +445,21 @@ module.exports.HistoryAndTriggers = {
         var xhr = this.props.contextRequest;
         if (!xhr || !xhr.xhr_end || xhr.browser_stats) return;
         var browser_end = 1 * new Date();
-        xhr.browser_stats = {};
-        var stats_header = xhr.getResponseHeader('X-Stats') || '';
-        xhr.server_stats = require('url').parse('?' + stats_header, true).query;
 
         var ga = window.ga;
 
         ga('set', 'location', window.location.href);
         ga('send', 'pageview');
 
-        // At this point all of the _time keys are server generated
-        // microsecond values...
-        Object.keys(xhr.server_stats).forEach(function (name) {
-            if (name.indexOf('_time') === -1) return;
-            ga('send', 'timing', {
-                'timingCategory': 'contextRequest',
-                'timingVar': name,
-                'timingValue': Math.round(xhr.server_stats[name] / 1000)
-            });
-        });
+        var stats_header = xhr.getResponseHeader('X-Stats') || '';
+        xhr.server_stats = require('querystring').parse(stats_header);
+        recordServerStats(xhr.server_stats, 'contextRequest');
 
+        xhr.browser_stats = {};
         xhr.browser_stats['xhr_time'] = xhr.xhr_end - xhr.xhr_begin;
         xhr.browser_stats['browser_time'] = browser_end - xhr.xhr_end;
         xhr.browser_stats['total_time'] = browser_end - xhr.xhr_begin;
-
-        Object.keys(xhr.browser_stats).forEach(function (name) {
-            if (name.indexOf('_time') === -1) return;
-            ga('send', 'timing', {
-                'timingCategory': 'contextRequest',
-                'timingVar': name,
-                'timingValue': xhr.browser_stats[name]
-            });
-        });
+        recordBrowserStats(xhr.browser_stats, 'contextRequest');
 
     },
 
@@ -472,4 +471,31 @@ module.exports.HistoryAndTriggers = {
             window.scrollTo(0, 0);
         }
     }
+};
+
+
+var recordServerStats = module.exports.recordServerStats = function (server_stats, timingVar) {
+    // server_stats *_time are microsecond values...
+    var ga = window.ga;
+    Object.keys(server_stats).forEach(function (name) {
+        if (name.indexOf('_time') === -1) return;
+        ga('send', 'timing', {
+            'timingCategory': name,
+            'timingVar': timingVar,
+            'timingValue': Math.round(server_stats[name] / 1000)
+        });
+    });
+};
+
+
+var recordBrowserStats = module.exports.recordBrowserStats = function (browser_stats, timingVar) {
+    var ga = window.ga;
+    Object.keys(browser_stats).forEach(function (name) {
+        if (name.indexOf('_time') === -1) return;
+        ga('send', 'timing', {
+            'timingCategory': name,
+            'timingVar': timingVar,
+            'timingValue': browser_stats[name]
+        });
+    });
 };

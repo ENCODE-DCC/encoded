@@ -54,6 +54,15 @@ var analytics = [
 ].join('\n');
 
 
+// Need to know if onload event has fired for safe history api usage
+var onloadcheck = "window.onload = function () { window._onload_event_fired; }";
+
+var inline = [
+    analytics,
+    ie8compat,
+    onloadcheck
+].join('\n');
+
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -112,10 +121,9 @@ var App = React.createClass({
                     <link rel="canonical" href={this.props.href} />
                     <link rel="stylesheet" href="/static/css/style.css" />
                     <link rel="stylesheet" href="/static/css/responsive.css" />
-                    <script dangerouslySetInnerHTML={{__html: analytics}}></script>
+                    <script dangerouslySetInnerHTML={{__html: inline}}></script>
                     <script src="//www.google-analytics.com/analytics.js" async defer></script>
                     <script src="/static/build/bundle.js" async defer></script>
-                    <script dangerouslySetInnerHTML={{__html: ie8compat}}></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
