@@ -30,8 +30,8 @@ var Home = module.exports.Home = React.createClass({
                                 <h1>ENCODE: The Encyclopedia of DNA Elements</h1>
                             </div>
                             <div id="info-box" className="project-info text-panel">
-                                <p>Preview the new ENCODE Portal.</p>
-                                <p>Enter a search term like "skin", "ChIP-seq", or "CTCF" or select a data type from the toolbar.</p>
+                                <h4>Preview the new ENCODE Portal</h4>
+                                <p>Enter a search term like "skin", "ChIP-seq", or "CTCF" or select a data type in the toolbar above.</p>
                             </div>
                         </div>
                     </div>
