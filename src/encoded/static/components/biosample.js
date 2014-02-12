@@ -216,7 +216,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 </div>
 
                 <div>
-                    <h3>Related experiments for biosample {context.accession}</h3>
+                    <h3>Experiments using biosample {context.accession}</h3>
                     <FetchedItems url={experiments_url} Component={ExperimentTable} />
                 </div>
 
