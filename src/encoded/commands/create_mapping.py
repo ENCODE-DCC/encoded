@@ -176,8 +176,12 @@ def collection_mapping(collection, embed=True):
 
     mapping = schema_mapping(collection.item_type, schema)
 
+    merged_rev = collection.Item.merged_rev
+    merged_template_type = collection.Item.merged_template_type
+
     calculated_props = list(schema.get('calculated_props', ()))
     calculated_props.extend(['@id', '@type'])
+    calculated_props.extend(merged_rev.keys())
 
     for name in calculated_props:
         mapping['properties'][name] = schema_mapping(name, {'type': 'string'})
@@ -186,8 +190,6 @@ def collection_mapping(collection, embed=True):
         return mapping
 
     root = find_root(collection)
-    merged_rev = collection.Item.merged_rev
-    merged_template_type = collection.Item.merged_template_type
 
     for prop in collection.Item.embedded:
         new_mapping = mapping
@@ -239,18 +241,17 @@ def collection_mapping(collection, embed=True):
 
 
 def run(app, collections=None, dry_run=False):
+    index = 'encoded'
     root = app.root_factory(app)
+
     if not dry_run:
         es = app.registry[ELASTIC_SEARCH]
-
-    index = 'encoded'
-
-    try:
-        es.create_index(index, index_settings())
-    except IndexAlreadyExistsError:
-        if collections is None:
-            es.delete_index(index)
+        try:
             es.create_index(index, index_settings())
+        except IndexAlreadyExistsError:
+            if collections is None:
+                es.delete_index(index)
+                es.create_index(index, index_settings())
 
     if not collections:
         collections = ['meta'] + root.by_item_type.keys()
