@@ -56,7 +56,9 @@ var Dataset = module.exports.Dataset = React.createClass({
                         {context.lab ? <dd>{context.lab.title}</dd> : null}
                         
                         {context.aliases.length ? <dt>Aliases</dt> : null}
-                        {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+                        {context.aliases.length ? <dd className="no-cap">
+                            <DbxrefList values={context.aliases} />
+                         </dd> : null}
                         
                         {context.references.length ? <dt>References</dt> : null}
                         {context.references.length ? <dd>
