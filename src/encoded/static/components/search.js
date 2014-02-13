@@ -18,6 +18,27 @@ var Dbxref = dbxref.Dbxref;
         return globals.listing_views.lookup(props.context)(props);
     };
 
+    var Item = module.exports.Item = React.createClass({
+        render: function() {
+            var result = this.props.context;
+            var title = globals.listing_titles.lookup(result)({context: result});
+            var item_type = result['@type'][0];
+            return (<li>
+                        <div>
+                            {result.accession ? <span className="pull-right type cap-me-once">{item_type}: {' ' + result['accession']}</span> : null}
+                            <div className="accession">
+                                <a href={result['@id']}>{title}</a>
+                            </div>
+                        </div>
+                        <div className="data-row">
+                            {result.description}
+                        </div>
+                </li>
+            );
+        }
+    });
+    globals.listing_views.register(Item, 'item');
+
     var Antibody = module.exports.Antibody = React.createClass({
         render: function() {
             var result = this.props.context;
