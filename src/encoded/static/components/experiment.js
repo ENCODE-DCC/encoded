@@ -104,13 +104,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dd>{context.lab.title}</dd>
 
                         <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                        <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
                         <dt hidden={!context.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd hidden={!context.encode2_dbxrefs.length} className="no-cap">
+                        <dd hidden={!context.encode2_dbxrefs.length}>
                             <DbxrefList values={dbxrefs} />
                         </dd>
                         

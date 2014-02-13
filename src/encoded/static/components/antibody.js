@@ -81,10 +81,10 @@ var Approval = module.exports.Approval = React.createClass({
                         <dd hidden={!context.antibody.antigen_sequence}>{context.antibody.antigen_sequence}</dd>
 
                         <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
-                        <dd className="no-cap" hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
+                        <dd hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
                         
                         <dt hidden={!context.antibody.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd className="no-cap" hidden={!context.antibody.encode2_dbxrefs.length}>
+                        <dd hidden={!context.antibody.encode2_dbxrefs.length}>
                         	<DbxrefList values={dbxrefs} />
                         </dd>
                     </dl>
@@ -160,7 +160,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                         <div className="span5">
                             <dl className="characterization-meta-data key-value">
                                 <dt className="h3">Method</dt>
-                                <dd className="h3 no-cap">{context.characterization_method}</dd>
+                                <dd className="h3">{context.characterization_method}</dd>
 
                                 <dt className="h4">Target species</dt>
                                 <dd className="h4">{context.target.organism.name}</dd>

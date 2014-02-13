@@ -24,7 +24,7 @@ var Panel = module.exports.Panel = React.createClass({
         return (
             <dl className={itemClass}>
                 <dt>Target name</dt>
-                <dd className="no-cap">{context.label}</dd>
+                <dd>{context.label}</dd>
 
                 <dt hidden={!context.gene_name}>Target gene</dt>
                 <dd hidden={!context.gene_name}><a href={geneLink}>{context.gene_name}</a></dd>

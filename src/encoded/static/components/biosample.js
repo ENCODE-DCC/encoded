@@ -99,7 +99,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dd>{context.lab.title}</dd>
 
                         <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd className="no-cap" hidden={!context.aliases.length}>{aliasList}</dd>
+                        <dd hidden={!context.aliases.length}>{aliasList}</dd>
 
                         <dt>Grant</dt>
                         <dd>{context.award.name}</dd>
@@ -262,7 +262,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 <dd>{context.accession}</dd>
 
                 <dt hidden={!context.aliases.length}>Aliases</dt>
-                <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                 {context.organism.name ? <dt>Species</dt> : null}
                 {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -299,7 +299,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 <dd>{context.accession}</dd>
 
                 <dt hidden={!context.aliases.length}>Aliases</dt>
-                <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                 {context.organism.name ? <dt>Species</dt> : null}
                 {context.organism.name ? <dd>{context.organism.name}</dd> : null}
@@ -362,7 +362,7 @@ var Construct = module.exports.Construct = React.createClass({
         return (
             <dl className="key-value">
                 {context.target ? <dt>Target</dt> : null}
-                {context.target ? <dd className="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+                {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
 
                 {context.vector_backbone_name ? <dt>Vector</dt> : null}
                 {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}
@@ -374,7 +374,7 @@ var Construct = module.exports.Construct = React.createClass({
                 {context.description ? <dd>{context.description}</dd> : null}
 
                 <dt hidden={!context.tags.length}>Tags</dt>
-                <dd hidden={!context.tags.length} className="no-cap">
+                <dd hidden={!context.tags.length}>
                     <ul>
                         {context.tags.map(function (tag, index) {
                             return (
@@ -406,22 +406,22 @@ var RNAi = module.exports.RNAi = React.createClass({
         return (
              <dl className="key-value">
             	{context.target ? <dt>Target</dt> : null}
-                {context.target ? <dd className="no-cap"><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+                {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
                 
                 {context.rnai_type ? <dt>RNAi type</dt> : null}
-                {context.rnai_type ? <dd className="no-cap">{context.rnai_type}</dd> : null}
+                {context.rnai_type ? <dd>{context.rnai_type}</dd> : null}
                 
                 {context.source.title ? <dt>Source</dt> : null}
                 {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
 
                 {context.product_id ? <dt>Product ID</dt> : null}
-                {context.product_id ? <dd className="no-cap"><a href={context.url}>{context.product_id}</a></dd> : null}
+                {context.product_id ? <dd><a href={context.url}>{context.product_id}</a></dd> : null}
 
                 {context.rnai_target_sequence ? <dt>Target sequence</dt> : null}
-                {context.rnai_target_sequence ? <dd className="no-cap">{context.rnai_target_sequence}</dd> : null}
+                {context.rnai_target_sequence ? <dd>{context.rnai_target_sequence}</dd> : null}
 
                 {context.vector_backbone_name ? <dt>Vector backbone</dt> : null}
-                {context.vector_backbone_name ? <dd className="no-cap">{context.vector_backbone_name}</dd> : null}                
+                {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}                
             </dl>
         );
     }
@@ -485,10 +485,10 @@ var Document = module.exports.Document = React.createClass({
                         </div>
                         <div className="span5">
                             <h3 className="cap-me-once">{context.document_type}</h3>
-                            <p className="no-cap">{context.description}</p>
+                            <p>{context.description}</p>
                             <dl className="key-value">
                                 {context.caption ? <dt>Caption</dt> : null}
-                                {context.caption ? <dd className="no-cap">{context.caption}</dd> : null}
+                                {context.caption ? <dd>{context.caption}</dd> : null}
 
                                 <dt>Submitted by</dt>
                                 <dd>{context.submitted_by.title}</dd>
