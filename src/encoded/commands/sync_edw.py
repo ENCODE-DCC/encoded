@@ -342,7 +342,7 @@ def create_replicate(app, dataset, bio_rep_num, tech_rep_num, dry_run=False):
         return "/replicate/new"
 
 
-def post_fileinfo(app, fileinfo, dry_run=False):
+def post_fileinfo(app, fileinfo, dry_run=False, no_reps=False):
     # POST file info dictionary to open app
 
     accession = fileinfo['accession']
@@ -351,7 +351,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
     logger.info("%s" % fileinfo)
 
     if fileinfo.get('dataset', None):
-        fileinfo = try_replicate(app, fileinfo, dry_run)
+        fileinfo = try_replicate(app, fileinfo, dry_run, no_reps=no_reps)
         if not fileinfo:
             return None
 
@@ -375,7 +375,7 @@ def post_fileinfo(app, fileinfo, dry_run=False):
         logger.warning('Sucessful dry-run POST File %s' % (accession))
         return {'status_int': 201}
 
-def try_replicate(app, fileinfo, dry_run, method='POST'):
+def try_replicate(app, fileinfo, dry_run, method='POST', no_reps=False):
 
     global experiments
     global datasets
@@ -397,7 +397,7 @@ def try_replicate(app, fileinfo, dry_run, method='POST'):
         del fileinfo['biological_replicate']
         del fileinfo['technical_replicate']
         fileinfo.pop('replicate', None)
-    elif not rep:
+    elif not rep and not no_reps:
         try:
             br = int(fileinfo['biological_replicate'])
             tr = int(fileinfo['technical_replicate'])
@@ -513,7 +513,7 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
     logger.warn("%s Encode2 experiments can be referenced" % len(encode2_to_encode3.keys()))
     return '';
 
-def patch_fileinfo(app, props, propinfo, dry_run=False):
+def patch_fileinfo(app, props, propinfo, dry_run=False, no_reps=False):
     # PATCH properties to file in app
 
     #TODO: handle this case in test:
@@ -533,7 +533,7 @@ def patch_fileinfo(app, props, propinfo, dry_run=False):
             can_patch_replicates = True
 
     if not propinfo['replicate']:
-        propinfo = try_replicate(app, propinfo, dry_run, method='PATCH')
+        propinfo = try_replicate(app, propinfo, dry_run, method='PATCH', no_reps=no_reps)
 
     url = collection_url(FILES) + accession
     if not dry_run:
@@ -646,7 +646,7 @@ def inventory_files(app, edw_dict, app_dict):
     return edw_only, app_only, same, diff_accessions
 
 
-def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=False):
+def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=False, no_patch=False, no_reps=False):
 
 
     edw_only, app_only, same, patch = inventory_files(app, edw_files, app_files)
@@ -664,14 +664,16 @@ def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=Fals
     for add in edw_only:
         acc = add['accession']
         url = collection_url(FILES) + acc
-        resp = post_fileinfo(app, add, dry_run)
-
-    for update in patch:
-        diff = compare_files(app_files[update], edw_files[update])
-        patched = patch_fileinfo(app, diff.keys(), edw_files[update], dry_run)
+        resp = post_fileinfo(app, add, dry_run=dry_run, no_reps=no_reps)
 
     logger.warn("SUMMARY: %s files sucessfully posted" % summary.files_posted)
-    logger.warn("SUMMARY: %s files succesfully patched" % summary.files_patched)
+
+    if not no_patch:
+        for update in patch:
+            diff = compare_files(app_files[update], edw_files[update])
+            patched = patch_fileinfo(app, diff.keys(), edw_files[update], dry_run=dry_run, no_reps=no_reps)
+            logger.warn("SUMMARY: %s files succesfully patched" % summary.files_patched)
+
     logger.warn("SUMMARY: %s replicates sucessfully posted" % summary.replicates_posted)
     logger.warn("SUMMARY: %s files were given up on" % summary.files_punted)
 
@@ -729,6 +731,9 @@ def main():
     parser.add_argument('-T', '--use-test', action='store_true',
                help="Do not filter files in EDW that begin with TST instead of ENCFF")
 
+    parser.add_argument('--no-replicates', action='store_true',
+               help="Do not create replicates at all", default=False)
+
     zargs = parser.parse_args()
 
     FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
@@ -774,6 +779,12 @@ def main():
         logger.error("Not allowed to patch replicates for all; please use -E (--experiment) to select a dataset.")
         sys.exit(1)
 
+    if (zargs.no_replicates):
+        logger.warning("Will not POST new replicates by user request")
+
+    if (zargs.no_patch):
+        logger.warning("Will not do any PATCHing by user request")
+
     app = make_app(zargs.config_uri, zargs.username, zargs.password, test=zargs.use_test)
     edw = edw_file.make_edw(zargs.data_host)
 
@@ -796,7 +807,7 @@ def main():
     if zargs.phase != edw_file.ENCODE_PHASE_ALL:
         logger.warn("SUMMARY: Synching files from Phase %s only" % zargs.phase)
 
-    return run(app, app_files, edw_files, phase=zargs.phase, dry_run=zargs.dry_run)
+    return run(app, app_files, edw_files, phase=zargs.phase, dry_run=zargs.dry_run, no_patch=zargs.no_patch, no_reps=zargs.no_replicates)
 
 
 if __name__ == '__main__':
