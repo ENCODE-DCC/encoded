@@ -26,5 +26,5 @@ body { background: $mainThemeColor; }
 
 hr { clear: both; }
 
-.sentence-case::first-letter, .cap-me-once::first-letter { text-transform: uppercase; }
-.sentence-case:first-letter, .cap-me-once:first-letter { text-transform: uppercase; } // older browser support
+.sentence-case::first-letter { text-transform: uppercase; }
+.sentence-case:first-letter { text-transform: uppercase; } // older browser support

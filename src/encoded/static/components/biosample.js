@@ -63,7 +63,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <li className="active">{context.donor.organism.name}</li>
                             : null }
                         </ul>
-                        <h2>{context.accession}{' / '}<span className="cap-me-once">{context.biosample_type}</span></h2>
+                        <h2>{context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span></h2>
                     </div>
                 </header>
                 <div className="panel data-display">
@@ -484,7 +484,7 @@ var Document = module.exports.Document = React.createClass({
                             </figure>
                         </div>
                         <div className="span5">
-                            <h3 className="cap-me-once">{context.document_type}</h3>
+                            <h3 className="sentence-case">{context.document_type}</h3>
                             <p>{context.description}</p>
                             <dl className="key-value">
                                 {context.caption ? <dt>Caption</dt> : null}
