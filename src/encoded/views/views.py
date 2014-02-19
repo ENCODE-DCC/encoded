@@ -73,7 +73,13 @@ ENCODE2_AWARDS = frozenset([
     'cd51d709-b8d1-4ba6-b756-45adcaa38fb9',
     'dd7fb99a-cb0b-407e-9635-16454f0066c1',
     'df972196-c3c7-4a58-a852-94baa87f9b71',
-    'f06a0db4-b388-48d9-b414-37d83859cad0',  # Unattributed
+    # Unattributed
+    'f06a0db4-b388-48d9-b414-37d83859cad0',
+    # ENCODE2-Mouse
+    '95839ec3-9b83-44d9-a98a-026a9fd01bda',
+    '124b9d72-22bd-4fcc-8e2b-052677c4e3f2',
+    '2cda932c-07d5-4740-a024-d585635f5650',
+    '5a009305-4ddc-4dba-bbf3-7327ceda3702',
 ])
 
 
