@@ -1288,13 +1288,15 @@ def item_index_data(context, request):
     if principals is Everyone:
         principals = [Everyone]
 
+    embedded = embed(request, request.resource_path(context))
     document = {
-        'embedded': embed(request, request.resource_path(context)),
+        'embedded': embedded,
         'object': embed(request, request.resource_path(context) + '?frame=object'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),
         'url': request.resource_path(context),
+        'audit': request.audit(embedded, embedded['@type']),
     }
 
     return document

@@ -164,6 +164,11 @@ def es_mapping(mapping):
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
+            },
+            'audit': {
+                'type': 'object',
+                'include_in_all': False,
+                'index': 'not_analyzed'
             }
         }
     }

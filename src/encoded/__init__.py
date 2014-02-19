@@ -180,6 +180,7 @@ def main(global_config, **settings):
     config.include('.server_defaults')
     config.include('.views')
     config.include('.migrator')
+    config.include('.auditor')
 
     settings = config.registry.settings
     hostname_command = settings.get('hostname_command', '').strip()
