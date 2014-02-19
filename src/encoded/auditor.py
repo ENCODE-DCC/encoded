@@ -31,9 +31,9 @@ _levelNames = {
 }
 
 
-class Failure(Exception):
+class AuditFailure(Exception):
     def __init__(self, category, detail=None, level=0):
-        super(Failure, self)
+        super(AuditFailure, self)
         self.category = category
         self.detail = detail
         if not isinstance(level, int):
@@ -79,14 +79,14 @@ class Auditor(object):
         for order, checker, category, detail, level in sorted(checkers):
             try:
                 result = checker(value, system)
-            except Failure as e:
+            except AuditFailure as e:
                 errors.append(e)
                 continue
             if not result:
                 continue
             if isinstance(result, basestring):
                 detail = result
-            errors.append(Failure(category, detail, level))
+            errors.append(AuditFailure(category, detail, level))
         return errors
 
 
@@ -115,4 +115,4 @@ def audit_checker(item_type, category=None, detail=None, level=0):
 
 def audit(request, value, item_type, **kw):
     auditor = request.registry['auditor']
-    return auditor.audit(value, item_type, root=request.root, **kw)
+    return auditor.audit(value, item_type, root=request.root, registry=request.registry, **kw)

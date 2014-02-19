@@ -167,6 +167,8 @@ def search(context, request, search_type=None):
         if field not in ['type', 'searchTerm', 'limit', 'format', 'frame', 'datastore']:
             if term == 'other':
                 query_filters.append({'missing': {'field': 'embedded.' + field}})
+            elif field.startswith('audit.'):
+                query_filters.append({'term': {field: term}})
             else:
                 query_filters.append({'term': {'embedded.{}.untouched'.format(field): term}})
 
@@ -193,6 +195,10 @@ def search(context, request, search_type=None):
     else:
         facets = [('Data Type', 'type')]
         query['facets']['type'] = {'terms': {'field': '_type', 'size': 99999}}
+
+    if request.has_permission('search_audit'):
+        facets.append(('Audit category', 'audit.category'))
+        query['facets']['audit.category'] = {'terms': {'field': 'audit.category', 'size': 99999}}
 
     # Execute the query
     results = es.search(query, index='encoded', doc_type=doc_types, size=size)
