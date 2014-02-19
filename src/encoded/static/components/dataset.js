@@ -50,7 +50,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                         {context.description ? <dd>{context.description}</dd> : null}
 
                         {context.dataset_type ? <dt>Dataset type</dt> : null}
-                        {context.dataset_type ? <dd>{context.dataset_type}</dd> : null}
+                        {context.dataset_type ? <dd className="sentence-case">{context.dataset_type}</dd> : null}
                         
                         {context.lab ? <dt>Lab</dt> : null}
                         {context.lab ? <dd>{context.lab.title}</dd> : null}

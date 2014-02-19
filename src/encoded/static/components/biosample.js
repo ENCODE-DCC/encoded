@@ -69,13 +69,13 @@ var Biosample = module.exports.Biosample = React.createClass({
                 <div className="panel data-display">
                     <dl className="key-value">
                         <dt>Term name</dt>
-                        <dd>{context.biosample_term_name}</dd>
+                        <dd className="sentence-case">{context.biosample_term_name}</dd>
 
                         <dt>Term ID</dt>
                         <dd>{context.biosample_term_id}</dd>
 
                         <dt hidden={!context.description}>Description</dt>
-                        <dd hidden={!context.description}>{context.description}</dd>
+                        <dd hidden={!context.description} className="sentence-case">{context.description}</dd>
                         
                         <dt hidden={!context.subcellular_fraction_term_name}>Subcellular fraction</dt>
                         <dd hidden={!context.subcellular_fraction_term_name}>{context.subcellular_fraction_term_name}</dd>
@@ -265,19 +265,19 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                 {context.organism.name ? <dt>Species</dt> : null}
-                {context.organism.name ? <dd>{context.organism.name}</dd> : null}
+                {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
 
                 {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
+                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
                 {biosample && biosample.age ? <dt>Age</dt> : null}
                 {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                 {context.sex ? <dt>Sex</dt> : null}
-                {context.sex ? <dd>{context.sex}</dd> : null}
+                {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
 
                 {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
+                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
                 {context.ethnicity ? <dt>Ethnicity</dt> : null}
                 {context.ethnicity ? <dd>{context.ethnicity}</dd> : null}
@@ -302,19 +302,19 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                 {context.organism.name ? <dt>Species</dt> : null}
-                {context.organism.name ? <dd>{context.organism.name}</dd> : null}
+                {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
 
                 {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
+                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
                 {biosample && biosample.age ? <dt>Age</dt> : null}
                 {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                 <dt>Sex</dt>
-                <dd>{context.sex}</dd>
+                <dd className="sentence-case">{context.sex}</dd>
 
                 {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd>{biosample.health_status}</dd> : null}
+                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
                 <dt>Strain background</dt>
                 <dd>{context.strain_background}</dd>
