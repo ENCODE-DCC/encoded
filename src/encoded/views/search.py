@@ -5,6 +5,7 @@ from ..contentbase import (
 )
 from ..indexing import ELASTIC_SEARCH
 from pyramid.security import effective_principals
+from urllib import urlencode
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
@@ -66,7 +67,6 @@ def search(context, request, search_type=None):
         'facets': [],
         '@graph': [],
         'columns': {},
-        'count': 0,
         'filters': [],
         'notification': ''
     }
@@ -113,7 +113,14 @@ def search(context, request, search_type=None):
     else:
         doc_types = [search_type]
         if search_term != '*':
-            result['filters'].append({'type': root.by_item_type[search_type].__name__})
+            field = 'type'
+            term = root.by_item_type[search_type].__name__
+            qs = urlencode([(k, v) for k, v in request.params.iteritems() if k != field])
+            result['filters'].append({
+                'field': field,
+                'term': term,
+                'remove': '{}?{}'.format(request.path, qs)
+            })
 
     frame = request.params.get('frame')
     if frame in ['embedded', 'object']:
@@ -155,63 +162,66 @@ def search(context, request, search_type=None):
         }
 
     # Setting filters
-    for key, value in request.params.iteritems():
-        if key not in ['type', 'searchTerm', 'limit', 'format', 'frame', 'datastore']:
-            if value == 'other':
-                query['query']['filtered']['filter']['and']['filters'] \
-                    .append({'missing': {'field': 'embedded.' + key}})
+    query_filters = query['query']['filtered']['filter']['and']['filters']
+    for field, term in request.params.iteritems():
+        if field not in ['type', 'searchTerm', 'limit', 'format', 'frame', 'datastore']:
+            if term == 'other':
+                query_filters.append({'missing': {'field': 'embedded.' + field}})
             else:
-                query['query']['filtered']['filter']['and']['filters'] \
-                    .append({'term': {'embedded.' + key + '.untouched': value}})
-            result['filters'].append({key: value})
+                query_filters.append({'term': {'embedded.{}.untouched'.format(field): term}})
 
+            qs = urlencode([(k, v) for k, v in request.params.iteritems() if k != field])
+            result['filters'].append({
+                'field': field,
+                'term': term,
+                'remove': '{}?{}'.format(request.path, qs)
+            })
+
+    used_facets = {f['field'] for f in result['filters']}
     # Adding facets to the query
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
-        facets = root[doc_types[0]].schema['facets']
-        for facet in facets:
-            face = {'terms': {'field': '', 'size': 99999}}
-            face['terms']['field'] = 'embedded.' + facet[facet.keys()[0]] + '.untouched'
-            query['facets'][facet.keys()[0]] = face
-            for f in result['filters']:
-                if facet[facet.keys()[0]] == f.keys()[0]:
-                    del(query['facets'][facet.keys()[0]])
+        facets = [facet.items()[0] for facet in root[doc_types[0]].schema['facets']]
+        for facet_title, field in facets:
+            if field in used_facets:
+                continue
+            query['facets'][field] = {
+                'terms': {
+                    'field': 'embedded.{}.untouched'.format(field),
+                    'size': 99999,
+                },
+            }
     else:
-        facets = [{'Data Type': 'type'}]
-        query['facets'] = {'type': {'terms': {'field': '_type', 'size': 99999}}}
-    
+        facets = [('Data Type', 'type')]
+        query['facets']['type'] = {'terms': {'field': '_type', 'size': 99999}}
+
     # Execute the query
     results = es.search(query, index='encoded', doc_type=doc_types, size=size)
 
     # Loading facets in to the results
     if 'facets' in results:
         facet_results = results['facets']
-        for facet in facets:
-            if facet.keys()[0] in facet_results:
-                face = {}
-                face['field'] = facet[facet.keys()[0]]
-                face[facet.keys()[0]] = []
-                for term in facet_results[facet.keys()[0]]['terms']:
-                    face[facet.keys()[0]].append({term['term']: term['count']})
-                if len(face[facet.keys()[0]]) > 1:
-                    result['facets'].append(face)
-            elif 'type' in facet_results:
-                face = {}
-                face['field'] = facet[facet.keys()[0]]
-                face[facet.keys()[0]] = []
-                for term in facet_results['type']['terms']:
-                    face[facet.keys()[0]].append({term['term']: term['count']})
-                if len(face[facet.keys()[0]]) > 1:
-                    result['facets'].append(face)
+        for facet_title, field in facets:
+            if field not in facet_results:
+                continue
+            terms = facet_results[field]['terms']
+            if len(terms) < 2:
+                continue
+            result['facets'].append({
+                'field': field,
+                'title': facet_title,
+                'terms': terms,
+            })
 
     # Loading result rows
-    for hit in results['hits']['hits']:
-        result_hit = hit['fields']
-        if frame in ['embedded', 'object']:
-            result['@graph'].append(result_hit[frame])
-        else:
-            result['@graph'].append(
-                {c.split('.', 1)[1]: result_hit[c] for c in result_hit}
-            )
+    hits = results['hits']['hits']
+    if frame in ['embedded', 'object']:
+        result['@graph'] = [hit['fields'][frame] for hit in hits]
+    else:
+        prefix_len = len('embedded.')
+        result['@graph'] = [
+            {field[prefix_len:]: value for field, value in hit['fields'].items()}
+            for hit in hits
+        ]
 
     # Adding total
     result['total'] = results['hits']['total']

@@ -14,7 +14,15 @@ var portal = {
         {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
         {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
         {id: 'targets', title: 'Targets', url: '/search/?type=target'}
-    ]
+    ],
+    // Should readlly be singular...
+    types: {
+        antibody_approval: {title: 'Antibodies'},
+        biosample: {title: 'Biosamples'},
+        experiment: {title: 'Experiments'},
+        target: {title: 'Targets'},
+        dataset: {title: 'Datasets'}
+    }
 };
 
 
@@ -91,7 +99,8 @@ var App = React.createClass({
             content = this.transferPropsTo(ContentView({
                 key: context['@id'],  // Switching between collections may leave component in place
                 personaReady: this.state.personaReady,
-                session: this.state.session
+                session: this.state.session,
+                portal: this.state.portal
             }));
         }
         var errors = this.state.errors.map(function (error) {
