@@ -56,7 +56,10 @@ def configure_engine(settings, test_setup=False):
     if engine.url.drivername == 'sqlite':
         enable_sqlite_savepoints(engine)
     elif engine.url.drivername == 'postgresql':
-        set_postgresql_statement_timeout(engine)
+        timeout = settings.get('postgresql.statement_timeout')
+        if timeout:
+            timeout = int(timeout) * 1000
+            set_postgresql_statement_timeout(engine, timeout)
     if test_setup:
         return engine
     if asbool(settings.get('create_tables', True)):
@@ -80,7 +83,7 @@ def enable_sqlite_savepoints(engine):
     NO_SAVEPOINT_SUPPORT.discard('sqlite')
 
 
-def set_postgresql_statement_timeout(engine, timeout=10 * 1000):
+def set_postgresql_statement_timeout(engine, timeout=20 * 1000):
     """ Prevent Postgres waiting indefinitely for a lock.
     """
     from sqlalchemy import event

@@ -26,7 +26,7 @@ var itemClass = module.exports.itemClass = function (context, htmlClass) {
 var statusClass = module.exports.statusClass = function (status, htmlClass) {
     htmlClass = htmlClass || '';
     if (typeof status == 'string') {
-        htmlClass += ' status-' + status.toLowerCase().replace(' ', '-');
+        htmlClass += ' status-' + status.toLowerCase().replace(/ /g, '-');
     }
     return htmlClass;
 };
@@ -38,5 +38,8 @@ module.exports.dbxref_prefix_map = {
     "ENSEMBL": "http://www.ensembl.org/Homo_sapiens/Gene/Summary?g=",
     "GeneID": "http://www.ncbi.nlm.nih.gov/gene/",
     "GEO": "http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=",
-    "Caltech": "http://jumpgate.caltech.edu/library/"
+    "Caltech": "http://jumpgate.caltech.edu/library/",
+    // UCSC links need assembly (&db=) and accession (&hgt_mdbVal1=) added to url
+    "UCSC_encode_db": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=",
+    "ucsc_encode_db": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr="
 };

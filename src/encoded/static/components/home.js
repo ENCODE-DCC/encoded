@@ -18,25 +18,22 @@ var SignIn = module.exports.SignIn = React.createClass({
     }
 });
 
-
 var Home = module.exports.Home = React.createClass({
     render: function() {
         var hidden = !this.props.session || this.props.session.persona;
         return (
             <div>
-                <div className="three-d-box" hidden={!hidden}>
-                    <form className="input-prepend" action="/search/" method="GET">
-                        <input id='inputValidate' className="input-lg" type="text" placeholder="Search examples: skin, &quot;len pennacchio&quot;, chip-seq etc" 
-                            ref="searchTerm" name="searchTerm" />
-                    </form>
-                </div>
                 <div className="homepage-main-box panel-gray">
                     <div className="row">
-                        <div className="project-info home-panel-left span7">
-                            <h1>ENCODE</h1>
-                            <h2>The Encyclopedia of DNA Elements</h2>
+                        <div className="span12">
+                            <div className="project-info site-title">
+                                <h1>ENCODE: The Encyclopedia of DNA Elements</h1>
+                            </div>
+                            <div id="info-box" className="project-info text-panel">
+                                <h4>Preview the new ENCODE Portal</h4>
+                                <p>Enter a search term like "skin", "ChIP-seq", or "CTCF" or select a data type in the toolbar above.</p>
+                            </div>
                         </div>
-                        {this.transferPropsTo(<SignIn />)}
                     </div>
                 </div>
             </div>

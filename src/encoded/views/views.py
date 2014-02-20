@@ -42,41 +42,80 @@ ALIAS_KEYS = [
 ]
 
 
+ALLOW_EVERYONE_VIEW = [
+    (Allow, Everyone, ['view', 'list', 'traverse']),
+]
+
+ALLOW_SUBMITTER_ADD = [
+    (Allow, 'group.submitter', 'add')
+]
+
+ALLOW_CURRENT = [
+    (Allow, 'role.lab_submitter', 'edit'),
+    (Allow, 'role.lab_submitter', 'view_raw'),
+    (Allow, 'role.viewer', 'view'),
+]
+
+ENCODE2_AWARDS = frozenset([
+    '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
+    '1f3cffd4-457f-4105-9b3c-3e9119abfcf0',
+    '2528d08a-7e67-48f1-b9ad-dc1c29cb926c',
+    '2a27a363-6bb5-43cc-99c4-d58bf06d3d8e',
+    '2eb561ab-96de-4286-8afd-5479e7ba909d',
+    '2f35506f-0b00-4b56-9d65-6c0be5f304b2',
+    '366388ac-685d-415c-b0bb-834ffafdf094',
+    '60a6088f-b3c8-46eb-8e27-51ef9cda31e0',
+    '7fd6664b-17f5-4bfe-9fdf-ed7481cf4d24',
+    '9623f1c0-e619-44bc-b430-8cc7176c766c',
+    'a7ba7c03-d93f-4503-8116-63db88a1390c',
+    'c68bafc1-dda3-41a9-b889-ec756f0368e1',
+    'c7ff037b-05ab-4fe0-bded-dd30999e2b3f',
+    'cd51d709-b8d1-4ba6-b756-45adcaa38fb9',
+    'dd7fb99a-cb0b-407e-9635-16454f0066c1',
+    'df972196-c3c7-4a58-a852-94baa87f9b71',
+    'f06a0db4-b388-48d9-b414-37d83859cad0',  # Unattributed
+])
+
+
 class Collection(BaseCollection):
     def __init__(self, parent, name):
         super(Collection, self).__init__(parent, name)
         if hasattr(self, '__acl__'):
             return
         if 'lab' in self.schema['properties']:
-            self.__acl__ = [
-                (Allow, 'group.submitter', 'add')
-            ]
+            self.__acl__ = ALLOW_SUBMITTER_ADD
 
     class Item(BaseCollection.Item):
         STATUS_ACL = {
-            'CURRENT': [
-                (Allow, 'role.lab_submitter', 'edit'),
-                (Allow, 'role.lab_submitter', 'view_raw'),
-            ],
+            'CURRENT': ALLOW_CURRENT,
             'DELETED': [],
         }
 
         def __acl__(self):
-            status = self.properties.get('status')
+            properties = self.properties.copy()
+            ns = self.template_namespace(properties)
+            properties.update(ns)
+            status = ns.get('status')
             return self.STATUS_ACL.get(status, ())
 
         def __ac_local_roles__(self):
-            lab_uuid = self.properties.get('lab')
-            if lab_uuid is None:
-                return None
-            lab_submitters = 'submits_for.%s' % lab_uuid
-            return {lab_submitters: 'role.lab_submitter'}
+            roles = {}
+            properties = self.properties.copy()
+            ns = self.template_namespace(properties)
+            properties.update(ns)
+            if 'lab' in properties:
+                lab_submitters = 'submits_for.%s' % properties['lab']
+                roles[lab_submitters] = 'role.lab_submitter'
+            if properties.get('award') in ENCODE2_AWARDS:
+                roles[Everyone] = 'role.viewer'
+            return roles
 
 
 @location('labs')
 class Lab(Collection):
     item_type = 'lab'
     schema = load_schema('lab.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
@@ -93,6 +132,7 @@ class Lab(Collection):
 class Award(Collection):
     item_type = 'award'
     schema = load_schema('award.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
@@ -137,10 +177,10 @@ class AntibodyLot(Collection):
 class Organism(Collection):
     item_type = 'organism'
     schema = load_schema('organism.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
-        'description': 'Listing of sources and vendors for ENCODE material',
     }
     item_name_key = 'name'
     unique_key = 'organism:name'
@@ -151,6 +191,7 @@ class Organism(Collection):
 class Source(Collection):
     item_type = 'source'
     schema = load_schema('source.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
@@ -162,7 +203,7 @@ class Source(Collection):
     }
     item_name_key = 'name'
     unique_key = 'source:name'
-    item_keys = ['name']
+    item_keys =  ALIAS_KEYS + ['name']
 
 
 class DonorItem(Collection.Item):
@@ -224,6 +265,7 @@ class WormDonor(Collection):
 class Treatment(Collection):
     item_type = 'treatment'
     schema = load_schema('treatment.json')
+    __acl__ = ALLOW_EVERYONE_VIEW + ALLOW_SUBMITTER_ADD
     properties = {
         'title': 'Treatments',
         'description': 'Listing Biosample Treatments',
@@ -248,6 +290,12 @@ class Construct(Collection):
 
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
+        STATUS_ACL = {
+            'COMPLIANT': ALLOW_CURRENT,
+            'NOT COMPLIANT': ALLOW_CURRENT,
+            'NOT REVIEWED': ALLOW_CURRENT,
+            'NOT SUBMITTED FOR REVIEW BY LAB': ALLOW_CURRENT,
+        }
         base_types = ['characterization'] + Collection.Item.base_types
         embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
@@ -258,7 +306,7 @@ class ConstructCharacterization(Characterization):
     item_type = 'construct_characterization'
     schema = load_schema('construct_characterization.json')
     properties = {
-        'title': 'Constructs characterizations',
+        'title': 'Construct characterizations',
         'description': 'Listing of biosample construct characterizations',
     }
 
@@ -375,6 +423,7 @@ class BiosampleCharacterization(Characterization):
 class Target(Collection):
     item_type = 'target'
     schema = load_schema('target.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
@@ -399,6 +448,7 @@ class Target(Collection):
         def template_namespace(self, properties, request=None):
             ns = Collection.Item.template_namespace(self, properties, request)
             root = find_root(self)
+            # self.properties as we need uuid here
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
             return ns
@@ -431,10 +481,6 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    item_embedded = set(['antibody.source', 'antibody.host_organism', 'target.organism', 'characterizations.target.organism', 'characterizations.award', 'characterizations.submitted_by', 'characterizations.lab'])
-    item_keys = [
-        {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
-    ]
     columns = OrderedDict([
         ('antibody.accession', 'Accession'),
         ('target.label', 'Target'),
@@ -445,12 +491,30 @@ class AntibodyApproval(Collection):
         ('characterizations.length', 'Characterizations'),
         ('status', 'Status')
     ])
-
+    class Item(Collection.Item):
+        STATUS_ACL = {
+            'ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
+            'NOT ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
+            'NOT PURSUED': ALLOW_CURRENT,
+        }
+        embedded = [
+            'antibody.host_organism',
+            'antibody.source',
+            'characterizations.award',
+            'characterizations.lab',
+            'characterizations.submitted_by',
+            'characterizations.target.organism',
+            'target.organism',
+        ]
+        keys = [
+            {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
+        ]
 
 @location('platforms')
 class Platform(Collection):
     item_type = 'platform'
     schema = load_schema('platform.json')
+    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Platforms',
         'description': 'Listing of Platforms',
@@ -504,6 +568,11 @@ class Replicates(Collection):
     ])
 
     class Item(Collection.Item):
+        parent_property = 'experiment'
+        namespace_from_path = {
+            'lab': 'experiment.lab',
+            'award': 'experiment.award',
+        }
         keys = ALIAS_KEYS + [
             {
                 'name': '{item_type}:experiment_biological_technical',
@@ -512,15 +581,6 @@ class Replicates(Collection):
             },
         ]
         embedded = set(['library', 'platform'])
-
-        def __ac_local_roles__(self):
-            root = find_root(self)
-            experiment = root.get_by_uuid(self.properties['experiment'])
-            lab_uuid = experiment.properties.get('lab')
-            if lab_uuid is None:
-                return None
-            lab_submitters = 'submits_for.%s' % lab_uuid
-            return {lab_submitters: 'role.lab_submitter'}
 
 
 @location('software')
@@ -534,15 +594,13 @@ class Software(Collection):
 
 
 @location('files')
-class Files(Collection):
+class File(Collection):
     item_type = 'file'
     schema = load_schema('file.json')
     properties = {
         'title': 'Files',
         'description': 'Listing of Files',
     }
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
     columns = OrderedDict([
         ('accession', 'Accession'),
         ('dataset', 'Dataset'),
@@ -551,9 +609,63 @@ class Files(Collection):
         ('output_type', 'Output Type'),
     ])
 
+    item_name_key = 'accession'
+    item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
+    item_namespace_from_path = {
+        'lab': 'dataset.lab',
+        'award': 'dataset.award',
+    }
+
+
+@location('datasets')
+class Dataset(Collection):
+    item_type = 'dataset'
+    schema = load_schema('dataset.json')
+    properties = {
+        'title': 'Datasets',
+        'description': 'Listing of datasets',
+    }
+    columns = OrderedDict([
+        ('accession', 'Accession'),
+        ('description', 'Description'),
+        ('dataset_type', 'Dataset type'),
+        ('lab.title', 'Lab'),
+        ('award.project', 'Project'),
+    ])
+    
+    class Item(Collection.Item):
+        template = {
+            'files': [
+                {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
+                {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
+            ],
+        }
+        template_type = {
+            'files': 'file',
+        }
+        embedded = [
+            'files',
+            'files.replicate',
+            'files.replicate.experiment',
+            'files.replicate.experiment.lab',
+            'files.replicate.experiment.target',
+            'files.submitted_by',
+            'submitted_by',
+            'lab',
+            'award',
+            'documents.lab',
+            'documents.award',
+            'documents.submitted_by',
+        ]
+        name_key = 'accession'
+        keys = ACCESSION_KEYS + ALIAS_KEYS
+        rev = {
+            'original_files': ('file', 'dataset'),
+        }
+
 
 @location('experiments')
-class Experiments(Collection):
+class Experiment(Dataset):
     item_type = 'experiment'
     schema = load_schema('experiment.json')
     properties = {
@@ -567,12 +679,14 @@ class Experiments(Collection):
         ('biosample_term_name', 'Biosample'),
         ('replicates.length', 'Replicates'),
         ('files.length', 'Files'),
+        ('description', 'Description'),
         ('lab.title', 'Lab'),
         ('encode2_dbxrefs', 'Dbxrefs'),
         ('award.project', 'Project'),
     ])
 
-    class Item(Collection.Item):
+    class Item(Dataset.Item):
+        base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {
             'organ_slims': [
                 {'$value': '{slim}', '$repeat': 'slim organ_slims', '$templated': True}
@@ -584,11 +698,8 @@ class Experiments(Collection):
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
         }
-        embedded = set([
-            'files',
+        embedded = Dataset.Item.embedded + [
             'replicates.antibody',
-            'files.replicate',
-            'files.submitted_by',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',
@@ -598,23 +709,15 @@ class Experiments(Collection):
             'replicates.library.biosample.donor.organism',
             'replicates.library.treatments',
             'replicates.platform',
-            'submitted_by',
-            'lab',
-            'award',
             'possible_controls',
             'target.organism',
-            'documents.lab',
-            'documents.award',
-            'documents.submitted_by'
-        ])
+        ]
         rev = {
             'replicates': ('replicate', 'experiment'),
         }
-        name_key = 'accession'
-        keys = ACCESSION_KEYS + ALIAS_KEYS
 
         def template_namespace(self, properties, request=None):
-            ns = Collection.Item.template_namespace(self, properties, request)
+            ns = super(Experiment.Item, self).template_namespace(properties, request)
             if request is None:
                 return ns
             terms = request.registry['ontology']
@@ -652,14 +755,3 @@ class RNAiCharacterization(Characterization):
         'title': 'RNAi characterizations',
         'description': 'Listing of biosample RNAi characterizations',
     }
-
-
-@location('datasets')
-class Dataset(Collection):
-    item_type = 'dataset'
-    schema = load_schema('dataset.json')
-    properties = {
-        'title': 'Datasets',
-        'description': 'Listing of datasets',
-    }
-    item_keys = ACCESSION_KEYS + ALIAS_KEYS

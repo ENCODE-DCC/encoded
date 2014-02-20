@@ -4,6 +4,12 @@ var React = require('react');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
+var dataset = require('./dataset');
+var fetched = require('./fetched');
+
+var ExperimentTable = dataset.ExperimentTable;
+var FetchedItems = fetched.FetchedItems;
+
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -44,6 +50,8 @@ var Biosample = module.exports.Biosample = React.createClass({
             });
         })
 
+        var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -69,8 +77,8 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dt hidden={!context.description}>Description</dt>
                         <dd hidden={!context.description}>{context.description}</dd>
                         
-                        <dt hidden={!context.subcellular_fraction}>Subcellular fraction</dt>
-                        <dd hidden={!context.subcellular_fraction}>{context.subcellular_fraction}</dd>
+                        <dt hidden={!context.subcellular_fraction_term_name}>Subcellular fraction</dt>
+                        <dd hidden={!context.subcellular_fraction_term_name}>{context.subcellular_fraction_term_name}</dd>
 
                         <dt>Source</dt>
                         <dd><a href={context.source.url}>{context.source.title}</a></dd>
@@ -207,12 +215,31 @@ var Biosample = module.exports.Biosample = React.createClass({
                     {rnai_documents}
                 </div>
 
+                {this.transferPropsTo(
+                    <FetchedItems url={experiments_url} Component={ExperimentsUsingBiosample} />
+                )}
+
             </div>
         );
     }
 });
 
 globals.content_views.register(Biosample, 'biosample');
+
+
+var ExperimentsUsingBiosample = module.exports.ExperimentsUsingBiosample = React.createClass({
+    render: function () {
+        var context = this.props.context;
+        return (
+            <div>
+                <h3>Experiments using biosample {context.accession}</h3>
+                {this.transferPropsTo(
+                    <ExperimentTable />
+                )}
+            </div>
+        );
+    }
+});
 
 
 var maybe_link = function (props, children) {

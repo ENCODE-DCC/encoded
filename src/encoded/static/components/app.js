@@ -36,6 +36,33 @@ var ie8compat = [
     return 'document.createElement("' + tag + '");';
 }).join('\n');
 
+var analytics = [
+"(function(i, s, r){",
+    "i['GoogleAnalyticsObject'] = r;",
+    "i[r] = i[r] || function() {",
+        "(i[r].q = i[r].q || []).push(arguments)",
+    "},",
+    "i[r].l = 1 * new Date();",
+    "})(window, document, 'ga');",
+// Use a separate tracker for dev / test
+"if (({'submit.encodedcc.org':1,'www.encodedcc.org':1,'encodedcc.org':1})[document.location.hostname]) {",
+    "ga('create', 'UA-47809317-1', {'cookieDomain': 'encodedcc.org', 'siteSpeedSampleRate': 100});",
+"} else {",
+    "ga('create', 'UA-47809317-2', {'cookieDomain': 'none', 'siteSpeedSampleRate': 100});",
+"}",
+"ga('send', 'pageview');"
+].join('\n');
+
+
+// Need to know if onload event has fired for safe history api usage
+var onloadcheck = "window.onload = function () { window._onload_event_fired; }";
+
+var inline = [
+    analytics,
+    ie8compat,
+    onloadcheck
+].join('\n');
+
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -71,12 +98,10 @@ var App = React.createClass({
             return <div className="alert alert-error"></div>;
         });
 
-        var appClass;
-        if (this.state.communicating) {
-            appClass = 'communicating';
-        } else {
-            appClass = 'done';
-        }
+        var appClass = 'done';
+        if (this.props.slow) {
+        	appClass = 'communicating'; 
+        };
 
         var title = globals.listing_titles.lookup(context)({context: context});
         if (title && title != 'Home') {
@@ -88,7 +113,7 @@ var App = React.createClass({
         return (
             <html>
                 <head>
-                    <meta charset="utf-8" />
+                    <meta charSet="utf-8" />
                     <meta http-equiv="content-language" content="en" />
                     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -96,8 +121,9 @@ var App = React.createClass({
                     <link rel="canonical" href={this.props.href} />
                     <link rel="stylesheet" href="/static/css/style.css" />
                     <link rel="stylesheet" href="/static/css/responsive.css" />
-                    <script src="/static/build/bundle.js" async={true} defer={true}></script>
-                    <script dangerouslySetInnerHTML={{__html: ie8compat}}></script>
+                    <script dangerouslySetInnerHTML={{__html: inline}}></script>
+                    <script src="//www.google-analytics.com/analytics.js" async defer></script>
+                    <script src="/static/build/bundle.js" async defer></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
                     <script data-prop-name="context" type="application/ld+json" dangerouslySetInnerHTML={{
@@ -105,6 +131,9 @@ var App = React.createClass({
                     }}></script>
                     <div id="slot-application">
                         <div id="application" className={appClass}>
+                        
+						<div className="loading-spinner"></div>
+								   
                             <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         user_actions={this.state.user_actions} session={this.state.session}

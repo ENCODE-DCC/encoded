@@ -4,11 +4,12 @@ from ..contentbase import (
     Root
 )
 from ..indexing import ELASTIC_SEARCH
+from pyramid.security import effective_principals
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 
-def get_filtered_query(term, fields):
+def get_filtered_query(term, fields, search_fields, principals):
     return {
         'explain': True,
         'query': {
@@ -18,14 +19,26 @@ def get_filtered_query(term, fields):
                         'query': term,
                         'analyze_wildcard': True,
                         'analyzer': 'encoded_search_analyzer',
-                        'default_operator': 'AND'
+                        'default_operator': 'AND',
+                        'fields': search_fields
                     }
                 },
                 'filter': {
                     'and': {
-                        'filters': []
+                        'filters': [
+                            {
+                                'terms': {
+                                    'principals_allowed_view': principals
+                                }
+                            }
+                        ]
                     }
                 }
+            }
+        },
+        'highlight': {
+            'fields': {
+                '_all': {}
             }
         },
         'facets': {},
@@ -33,200 +46,177 @@ def get_filtered_query(term, fields):
     }
 
 
-def get_query(term, fields):
-    return {
-        'explain': True,
-        'query': {
-            'query_string': {
-                'query': term,
-                'analyze_wildcard': True,
-                'analyzer': 'encoded_search_analyzer',
-                'default_operator': 'AND'
-            }
-        },
-        'facets': {},
-        'fields': fields,
-    }
-
-
 def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
-@view_config(name='search', context=Root, request_method='GET', permission='view')
-def search(context, request):
+@view_config(name='search', context=Root, request_method='GET', permission='search')
+def search(context, request, search_type=None):
     ''' Search view connects to ElasticSearch and returns the results'''
 
-    result = context.__json__(request)
-    params = request.params
+    uri = request.resource_path(context, request.view_name, '')
+    if request.query_string:
+        uri += '?' + request.query_string
+
     root = request.root
-    result.update({
-        '@id': '/search/',
+    result = {
+        '@id': uri,
         '@type': ['search'],
         'title': 'Search',
         'facets': [],
         '@graph': [],
         'columns': {},
-        'count': {},
+        'count': 0,
         'filters': [],
         'notification': ''
-    })
+    }
 
-    qs = request.environ.get('QUERY_STRING')
-    if qs:
-        result['@id'] = '/search/?%s' % qs
-
+    principals = effective_principals(request)
     es = request.registry[ELASTIC_SEARCH]
-    if 'limit' in params:
-        size = 999999
+
+    # handling limit
+    size = request.params.get('limit', 25)
+    if size in ('all', ''):
+        size = 99999
     else:
-        size = 100
+        try:
+            size = int(size)
+        except ValueError:
+            size = 25
 
-    try:
-        search_term = params['searchTerm'].strip()
-        search_term = sanitize_search_string(search_term)
-        # Handling whitespaces in the search term
-        if not search_term:
-            result['notification'] = 'Please enter search term'
-            return result
-    except:
-        if 'type' in params:
-            if params['type'] == '*':
-                result['notification'] = 'Please enter search term'
-                return result
-            else:
-                search_term = "*"
-        else:
-            result['notification'] = 'Please enter search term'
-            return result
+    search_term = request.params.get('searchTerm', '*')
+    if search_term != '*':
+        search_term = sanitize_search_string(search_term.strip())
+    # Handling whitespaces in the search term
+    if not search_term:
+        result['notification'] = 'Please enter search term'
+        return result
 
-    try:
-        search_type = params['type']
-        collections = root.by_item_type.keys()
+    if search_type is None:
+        search_type = request.params.get('type', '*')
+    
         # handling invalid item types
-        if search_type not in collections:
-            result['notification'] = '\'' + search_type + '\' is not a valid \'item type\''
-            return result
-    except:
-        if not search_term:
-            result['notification'] = 'Please enter search term'
-            return result
-        indices = ['antibody_approval', 'biosample', 'experiment', 'target']
-        fields = ['@id', '@type']
-        for index in indices:
-            collection = root[index]
-            result['columns'].update(collection.columns)
-            for column in collection.columns:
-                fields.append(column)
+        if search_type != '*':
+            if search_type not in root.by_item_type:
+                result['notification'] = "'" + search_type + "' is not a valid 'item type'"
+                return result
 
-        query = get_query(search_term, list(set(fields)))
-
-        s = es.search(query, index=indices, size=99999)
-        result['count']['targets'] = result['count']['antibodies'] = result['count']['experiments'] = result['count']['biosamples'] = 0
-        for count, hit in enumerate(s['hits']['hits']):
-            result_hit = hit['fields']
-            if result_hit['@type'][0] == 'antibody_approval':
-                result['count']['antibodies'] += 1
-            elif result_hit['@type'][0] == 'biosample':
-                result['count']['biosamples'] += 1
-            elif result_hit['@type'][0] == 'experiment':
-                result['count']['experiments'] += 1
-            elif result_hit['@type'][0] == 'target':
-                result['count']['targets'] += 1
-            if 'limit' in params:
-                result['@graph'].append(result_hit)
-            elif count < 100:
-                result['@graph'].append(result_hit)
-        if len(result['@graph']):
-            result['notification'] = 'Success'
-        else:
-            if len(search_term) < 3:
-                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
-            else:
-                result['notification'] = 'No results found'
+    # Handling wildcards
+    if search_term == '*' and search_type == '*':
+        result['notification'] = 'Please enter search term'
         return result
+
+    # Building query for filters
+    search_fields = []
+    if search_type == '*':
+        doc_types = ['antibody_approval', 'biosample', 'experiment', 'target', 'dataset']
     else:
-        search_type = params['type']
-        if search_term == '*' and search_type == '*':
-            result['notification'] = 'Please enter search terme'
-            return result
+        doc_types = [search_type]
+        if search_term != '*':
+            result['filters'].append({'type': root.by_item_type[search_type].__name__})
 
-        # Building query for filters
-        collections = root.by_item_type
-        fields = ['@id', '@type']
-        for collection_name in collections:
-            if search_type == collection_name:
-                collection = root[collection_name]
-                index = collection_name
-                schema = collection.schema
-                result['columns'] = columns = collection.columns
-                break
-        for column in columns:
-            fields.append(column)
+    frame = request.params.get('frame')
+    if frame in ['embedded', 'object']:
+        fields = {frame}
+    elif len(doc_types) == 1 and not root[doc_types[0]].columns:
+        frame = 'object'
+        fields = {frame}
+    else:
+        frame = 'columns'
+        fields = {'embedded.@id', 'embedded.@type'}
+    for doc_type in doc_types:
+        collection = root[doc_type]
+        schema = collection.schema
+        if frame == 'columns':
+            fields.update('embedded.' + column for column in collection.columns)
+            result['columns'].update(collection.columns)
+        # Adding search fields and boost values
+        for value in schema.get('boost_values', ()):
+            search_fields = search_fields + ['embedded.' + value, 'embedded.' + value + '.standard^2', 'embedded.' + value + '.untouched^3']
 
-        # Builds filtered query which supports multiple facet selection
-        query = get_filtered_query(search_term, fields)
-        regular_query = 1
-        for key, value in params.iteritems():
-            if key not in ['type', 'searchTerm', 'limit', 'format']:
-                regular_query = 0
-                if value == 'other':
-                    query['query']['filtered']['filter']['and']['filters'].append({'missing': {'field': key}})
-                else:
-                    query['query']['filtered']['filter']['and']['filters'].append({'bool': {'must': {'term': {key + '.untouched': value}}}})
-                result['filters'].append({key: value})
+    if not result['columns']:
+        del result['columns']
 
-        if regular_query:
-            query = get_query(search_term, fields)
+    # Builds filtered query which supports multiple facet selection
+    query = get_filtered_query(search_term, sorted(fields), search_fields, principals)
 
-        if search_type == 'biosample' and search_term == '*':
-            query['sort'] = {'accession': {'order': 'asc'}}
-        elif search_type == 'target' and search_term == '*':
-            query['sort'] = {'gene_name.untouched': {'ignore_unmapped': 'true', 'order': 'asc'}}
-        elif search_type == 'antibody_approval' and search_term == '*':
-            query['sort'] = {'status': {'order': 'asc'}}
-        elif search_type == 'experiment' and search_term == '*':
-            query['sort'] = {'accession': {'order': 'asc'}}
+    # Sorting the files when search term is not specified
+    if search_term == '*':
+        query['sort'] = {
+            'date_created': {
+                'order': 'desc',
+                'ignore_unmapped': True,
+            },
+            'label': {
+                'order': 'asc',
+                'missing': '_last',
+                'ignore_unmapped': True,
+            },
+        }
 
-        if 'facets' in schema:
-            for facet in schema['facets']:
-                face = {'terms': {'field': '', 'size': 99999}}
-                face['terms']['field'] = facet[facet.keys()[0]] + '.untouched'
-                query['facets'][facet.keys()[0]] = face
-                for f in result['filters']:
-                    if facet[facet.keys()[0]] == f.keys()[0]:
-                        del(query['facets'][facet.keys()[0]])
-        else:
-            del(query['facets'])
-
-        # Execute the query
-        results = es.search(query, index=index, size=size)
-
-        # Loading facets in to the results
-        if 'facets' in results:
-            facet_results = results['facets']
-            for facet in schema['facets']:
-                if facet.keys()[0] in facet_results:
-                    face = {}
-                    face['field'] = facet[facet.keys()[0]]
-                    face[facet.keys()[0]] = []
-                    for term in facet_results[facet.keys()[0]]['terms']:
-                        face[facet.keys()[0]].append({term['term']: term['count']})
-                    '''if facet_results[facet.keys()[0]]['missing'] != 0:
-                        face[facet.keys()[0]].append({'other': facet_results[facet.keys()[0]]['missing']})'''
-                    if len(face[facet.keys()[0]]) > 1:
-                        result['facets'].append(face)
-
-        for hit in results['hits']['hits']:
-            result_hit = hit['fields']
-            result['@graph'].append(result_hit)
-
-        result['count'][root.by_item_type[collection_name].__name__] = results['hits']['total']
-        if len(result['@graph']):
-            result['notification'] = 'Success'
-        else:
-            if len(search_term) < 3:
-                result['notification'] = 'No results found. Search term should be at least 3 characters long.'
+    # Setting filters
+    for key, value in request.params.iteritems():
+        if key not in ['type', 'searchTerm', 'limit', 'format', 'frame', 'datastore']:
+            if value == 'other':
+                query['query']['filtered']['filter']['and']['filters'] \
+                    .append({'missing': {'field': 'embedded.' + key}})
             else:
-                result['notification'] = 'No results found'
-        return result
+                query['query']['filtered']['filter']['and']['filters'] \
+                    .append({'term': {'embedded.' + key + '.untouched': value}})
+            result['filters'].append({key: value})
+
+    # Adding facets to the query
+    if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
+        facets = root[doc_types[0]].schema['facets']
+        for facet in facets:
+            face = {'terms': {'field': '', 'size': 99999}}
+            face['terms']['field'] = 'embedded.' + facet[facet.keys()[0]] + '.untouched'
+            query['facets'][facet.keys()[0]] = face
+            for f in result['filters']:
+                if facet[facet.keys()[0]] == f.keys()[0]:
+                    del(query['facets'][facet.keys()[0]])
+    else:
+        facets = [{'Data Type': 'type'}]
+        query['facets'] = {'type': {'terms': {'field': '_type', 'size': 99999}}}
+    
+    # Execute the query
+    results = es.search(query, index='encoded', doc_type=doc_types, size=size)
+
+    # Loading facets in to the results
+    if 'facets' in results:
+        facet_results = results['facets']
+        for facet in facets:
+            if facet.keys()[0] in facet_results:
+                face = {}
+                face['field'] = facet[facet.keys()[0]]
+                face[facet.keys()[0]] = []
+                for term in facet_results[facet.keys()[0]]['terms']:
+                    face[facet.keys()[0]].append({term['term']: term['count']})
+                if len(face[facet.keys()[0]]) > 1:
+                    result['facets'].append(face)
+            elif 'type' in facet_results:
+                face = {}
+                face['field'] = facet[facet.keys()[0]]
+                face[facet.keys()[0]] = []
+                for term in facet_results['type']['terms']:
+                    face[facet.keys()[0]].append({term['term']: term['count']})
+                if len(face[facet.keys()[0]]) > 1:
+                    result['facets'].append(face)
+
+    # Loading result rows
+    for hit in results['hits']['hits']:
+        result_hit = hit['fields']
+        if frame in ['embedded', 'object']:
+            result['@graph'].append(result_hit[frame])
+        else:
+            result['@graph'].append(
+                {c.split('.', 1)[1]: result_hit[c] for c in result_hit}
+            )
+
+    # Adding total
+    result['total'] = results['hits']['total']
+    if len(result['@graph']):
+        result['notification'] = 'Success'
+    else:
+        result['notification'] = 'No results found'
+    return result

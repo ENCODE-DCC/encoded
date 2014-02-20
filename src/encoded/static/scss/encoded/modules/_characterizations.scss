@@ -24,27 +24,24 @@
 }
 
 /* should make the below a mixin */
-.type-characterization.view-detail.status-approved {
+.type-characterization.view-detail.status-compliant {
   figure { border-color: $successBorder; background-color: $successBackground; }
   	figcaption { color: $successText; }
 }
 
-.type-characterization.view-detail.status-failed {
+.type-characterization.view-detail.status-not-compliant, .type-document.view-detail.status-deleted,
+    .type-characterization.view-detail.status-not-reviewed {
   figure { border-color: $errorBorder; background-color: $errorBackground; }
   	figcaption { color: $errorText; }
 }
 
-.type-characterization.view-detail.status-submitted {
+.type-characterization.view-detail.status-pending-dcc-review {
   figure { border-color: $infoBorder; background-color: $infoBackground; }
   	figcaption { color: $infoText; }
 }
 
-.type-characterization.view-detail.status-incomplete {
-  figure { border-color: $warningBorder; background-color: $warningBackground; }
-  	figcaption { color: $warningText; }
-}
-
-.type-characterization.view-detail.status-unsubmitted, .type-document.view-detail.status-none {
+.type-characterization.view-detail.status-in-progress, .type-document.view-detail.status-none,
+    .type-characterization.view-detail.status-not-submitted-for-review-by-lab {
   figure { border-color: #e1e1e8; background-color: #f7f7f9; }
   	figcaption { color: #333; }
 }
@@ -63,21 +60,27 @@
 	font-size: 1.5em;
 }
 
-.characterization-status .approved {
+.characterization-status .compliant {
 	color: $successText;
 	top: -5px;
 	position: relative;
 }
 
-.characterization-status .pending, .characterization-status .pending  { 
+.characterization-status .pending-dcc-review { 
 	/* use with icon-tasks or maybe icon-inbox */
 	color: $infoText;
 	top: -5px;
 	position: relative;
 }
 
-.characterization-status .rejected {  /* use with icon-thumbs-down */
+.characterization-status .not-compliant, .characterization-status .not-reviewed {  /* use with icon-thumbs-down */
 	color: $errorText;
+	top: -5px;
+	position: relative;
+}
+
+.characterization-status .in-progress, {  /* use with icon-thumbs-down */
+	color: #f89406;
 	top: -5px;
 	position: relative;
 }
@@ -97,18 +100,27 @@ h3 .label {
 }
 
 @each $item in label, badge {
-	// Approved (green)
-	.#{$item}.status-approved        { background-color: $successText; }
-	.#{$item}.status-aproved[href]   { background-color: darken($successText, 10%); }
-	// Submitted (blue)
-	.#{$item}.status-submitted		 { background-color: $infoText; }
-	.#{$item}.status-submitted[href] { background-color: darken($infoText, 10%); }
-	// Failed (red)
-	.#{$item}.status-failed          { background-color: $errorText; }
-	.#{$item}.status-failed[href]    { background-color: darken($errorText, 10%); }
-	// Incomplete (yellow)
-	.#{$item}.status-incomplete      { background-color: $warningText; }
-	.#{$item}.status-incomplete[href]{ background-color: darken($warningText, 10%); }
+	// ELIGIBLE FOR NEW DATA (green)
+	.#{$item}.status-eligible-for-new-data        { background-color: $successText; }
+	.#{$item}.status-eligible-for-new-data[href]   { background-color: darken($successText, 10%); }
+	// PENDING DCC REVIEW (blue)
+	.#{$item}.status-pending-dcc-review		 { background-color: $infoText; }
+	.#{$item}.status-pending-dcc-review[href] { background-color: darken($infoText, 10%); }
+	// NOT ELIGIBLE FOR NEW DATA (red)
+	.#{$item}.status-not-eligible-for-new-data          { background-color: $errorText; }
+	.#{$item}.status-not-eligible-for-new-data[href]    { background-color: darken($errorText, 10%); }
+	// AWAITING LAB CHARACTERIZATION (yellow)
+	.#{$item}.status-awaiting-lab-characterization      { background-color: $warningText; }
+	.#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($warningText, 10%); }
+	// COMPLIANT (green)
+	.#{$item}.status-compliant          { background-color: $successText; }
+	.#{$item}.status-compliant[href]    { background-color: darken($successText, 10%); }
+	// NOT COMPLIANT (red)
+	.#{$item}.status-not-compliant          { background-color: $errorText; }
+	.#{$item}.status-not-compliant[href]    { background-color: darken($errorText, 10%); }
+	// NOT REVIEWED (red)
+	.#{$item}.status-not-reviewed         { background-color: $errorText; }
+	.#{$item}.status-not-reviewed[href]    { background-color: darken($errorText, 10%); }
 
-	/* Unsubmitted/pending (gray) is the default if no class given */
+	/* (gray) is the default if no class given */
 }

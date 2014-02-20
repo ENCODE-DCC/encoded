@@ -44,7 +44,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, status_ho
     status['timeout'] = timeout
     status, status_holder['status'] = status, status.copy()
 
-    post_data = {}
+    post_data = {'record': True}
     if dry_run:
         post_data['dry_run'] = True
 
@@ -87,7 +87,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, status_ho
                         k: int(v) for k, v in urlparse.parse_qsl(
                             res.headers.get('X-Stats', ''))
                     }
-                    if res.json['max_xid'] is not None:
+                    if res.json.get('count', 0):
                         status['last_indexing_result'] = status['last_result']
                         status['last_indexing_stats'] = status['last_stats']
                         status['last_indexing_timestamp'] = timestamp

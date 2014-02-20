@@ -6,11 +6,11 @@ import pytest
 from pytest import fixture
 
 _app_settings = {
-    'multiauth.policies': 'authtkt remoteuser accesskey',
+    'multiauth.policies': 'session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
-    'multiauth.policy.authtkt.use': 'pyramid.authentication.AuthTktAuthenticationPolicy',
-    'multiauth.policy.authtkt.hashalg': 'sha512',
-    'multiauth.policy.authtkt.secret': 'GLIDING LIKE A WHALE',
+    'multiauth.policy.session.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
+    'multiauth.policy.session.namespace': 'mailto',
     'multiauth.policy.remoteuser.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.remoteuser.namespace': 'remoteuser',
     'multiauth.policy.remoteuser.base': 'pyramid.authentication.RemoteUserAuthenticationPolicy',
@@ -20,17 +20,43 @@ _app_settings = {
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
     'persona.siteName': 'ENCODE DCC Submission',
-    'allow.view': 'Everyone',
+    'allow.view': 'Authenticated',
     'allow.list': 'Everyone',
     'allow.traverse': 'Everyone',
+    'allow.search': 'Everyone',
     'allow.ALL_PERMISSIONS': 'group.admin',
     'allow.edw_key_create': 'accesskey.edw',
     'allow.edw_key_update': 'accesskey.edw',
     'load_test_only': True,
     'load_sample_data': False,
     'testing': True,
-    'collection_source': 'database',
+    'datastore': 'database',
+    'pyramid.debug_authorization': True,
+    'postgresql.statement_timeout': 20,
 }
+
+
+@pytest.mark.fixture_cost(10)
+@pytest.yield_fixture(scope='session')
+def engine_url(request):
+    engine_url = request.session.config.option.engine_url
+    if engine_url is not None:
+        yield engine_url
+        return
+
+    # Ideally this would use a different database on the same postgres server
+    from urllib import quote
+    from .postgresql_fixture import initdb, server_process
+    tmpdir = request.config._tmpdirhandler.mktemp('postgresql-engine', numbered=True)
+    tmpdir = str(tmpdir)
+    initdb(tmpdir)
+    process = server_process(tmpdir)
+
+    yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)
+
+    if process.poll() is None:
+        process.terminate()
+        process.wait()
 
 
 @fixture(scope='session')
@@ -67,10 +93,18 @@ def config(request):
     return setUp()
 
 
+@pytest.yield_fixture
+def threadlocals(request, dummy_request, registry):
+    from pyramid.threadlocal import manager
+    manager.push({'request': dummy_request, 'registry': registry})
+    yield dummy_request
+    manager.pop()
+
+
 @fixture
-def dummy_request():
+def dummy_request(root, registry):
     from pyramid.testing import DummyRequest
-    return DummyRequest()
+    return DummyRequest(root=root, registry=registry, _stats={})
 
 
 @fixture(scope='session')
@@ -79,6 +113,17 @@ def app(zsa_savepoints, check_constraints, app_settings):
     '''
     from encoded import main
     return main({}, **app_settings)
+
+
+@fixture
+def registry(app):
+    return app.registry
+
+
+@fixture
+def elasticsearch(registry):
+    from ..indexing import ELASTIC_SEARCH
+    return registry[ELASTIC_SEARCH]
 
 
 @fixture
@@ -153,7 +198,7 @@ def authenticated_testapp(app, external_tx):
     from webtest import TestApp
     environ = {
         'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'TEST_USER',
+        'REMOTE_USER': 'TEST_AUTHENTICATED',
     }
     return TestApp(app, environ)
 
@@ -176,14 +221,22 @@ def server_host_port():
     return get_free_port()
 
 
+@fixture(scope='session')
+def authenticated_app(app):
+    def wsgi_filter(environ, start_response):
+        environ['REMOTE_USER'] = 'TEST_AUTHENTICATED'
+        return app(environ, start_response)
+    return wsgi_filter
+
+
 @pytest.mark.fixture_cost(100)
 @fixture(scope='session')
-def _server(request, app, server_host_port):
+def _server(request, authenticated_app, server_host_port):
     from webtest.http import StopableWSGIServer
     host, port = server_host_port
 
     server = StopableWSGIServer.create(
-        app,
+        authenticated_app,
         host=host,
         port=port,
         threads=1,
@@ -211,7 +264,7 @@ def server(_server, external_tx):
 
 @pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.yield_fixture(scope='session')
-def connection(request):
+def connection(request, engine_url):
     from encoded import configure_engine
     from encoded.storage import Base, DBSession
     from sqlalchemy.orm.scoping import ScopedRegistry
@@ -221,7 +274,7 @@ def connection(request):
         DBSession.registry = ScopedRegistry(DBSession.session_factory, lambda: 0)
 
     engine_settings = {
-        'sqlalchemy.url': request.session.config.option.engine_url,
+        'sqlalchemy.url': engine_url,
     }
 
     engine = configure_engine(engine_settings, test_setup=True)
@@ -282,8 +335,12 @@ def zsa_savepoints(request, connection):
             # txn be aborted a second time in manager.begin()
             if self.sp is None:
                 return
-            self.state = 'completion'
-            self.sp.commit()
+            if self.state == 'commit':
+                self.state = 'completion'
+                self.sp.commit()
+            else:
+                self.state = 'abort'
+                self.sp.rollback()
             self.sp = None
             self.state = 'done'
 
@@ -291,6 +348,10 @@ def zsa_savepoints(request, connection):
             self.state = 'new'
             self.sp = self.connection.begin_nested()
             self.state = 'begun'
+            transaction.addBeforeCommitHook(self._registerCommit)
+
+        def _registerCommit(self):
+            self.state = 'commit'
 
     zsa_savepoints = Savepoints(connection)
 
@@ -538,13 +599,69 @@ def replicate(replicates):
     return replicates[0]
 
 
+@pytest.fixture
+def files(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'file')
+
+
+@pytest.fixture
+def file(file):
+    return [f for f in files if ['accession'] == 'ENCFF000TST'][0]
+
+
+@pytest.fixture
+def antibody_lots(testapp, labs, awards, sources, organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'antibody_lot')
+
+
+@pytest.fixture
+def antibody_lot(antibody_lots):
+    return [al for al in antibody_lots if al['accession'] == 'ENCAB000TST'][0]
+
+
+@pytest.fixture
+def targets(testapp,organisms):
+    from . import sample_data
+    return sample_data.load(testapp, 'target')
+
+
+@pytest.fixture
+def target(targets):
+    return [t for t in targets if t['label'] == 'ATF4'][0]
+
+
+@pytest.fixture
+def rnais(testapp,labs, awards, targets):
+    from . import sample_data
+    return sample_data.load(testapp, 'rnai')
+
+
+@pytest.fixture
+def rnai(rnais):
+    return [r for r in rnais if r['rnai_type'] == 'shRNA'][0]
+
+
+@pytest.fixture
+def constructs(testapp,labs, awards, targets):
+    from . import sample_data
+    return sample_data.load(testapp, 'construct')
+
+
+@pytest.fixture
+def construct(constructs):
+    return [c for c in constructs if c['construct_type'] == 'fusion protein'][0]
+
+
 @pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')
 def postgresql_server(request):
     from urllib import quote
-    from .postgresql_fixture import server_process
+    from .postgresql_fixture import initdb, server_process
     tmpdir = request.config._tmpdirhandler.mktemp('postgresql', numbered=True)
     tmpdir = str(tmpdir)
+    initdb(tmpdir)
     process = server_process(tmpdir)
 
     yield 'postgresql://postgres@:5432/postgres?host=%s' % quote(tmpdir)

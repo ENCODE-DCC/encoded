@@ -3,49 +3,20 @@ from ..indexing import ELASTIC_SEARCH
 import logging
 from webtest import TestApp
 
-DOCTYPE = 'basic'
+index = 'encoded'
 
 EPILOG = __doc__
 
-log = logging.getLogger(__name__)
 
-
-def run(app, collections=None):
+def run(app, collections=None, record=False):
     root = app.root_factory(app)
     es = app.registry[ELASTIC_SEARCH]
     environ = {
         'HTTP_ACCEPT': 'application/json',
-        'REMOTE_USER': 'IMPORT',
+        'REMOTE_USER': 'INDEXER',
     }
     testapp = TestApp(app, environ)
-
-    if not collections:
-        collections = root.by_item_type.keys()
-
-    for collection_name in collections:
-        collection = root.by_item_type[collection_name]
-        if collection.schema is None:
-            continue
-        res = testapp.get('/' + root.by_item_type[collection_name].__name__ + '/' + '?limit=all&collection_source=database', headers={'Accept': 'application/json'}, status=200)
-        items = res.json['@graph']
-
-        # try creating index, if it exists already delete it and create it
-        counter = 0
-        for item in items:
-            try:
-                item_json = testapp.get(str(item['@id']), headers={'Accept': 'application/json'}, status=200)
-            except Exception as e:
-                print e
-            else:
-                document_id = str(item_json.json['uuid'])
-                document = item_json.json
-                es.index(collection_name, DOCTYPE, document, document_id)
-                counter = counter + 1
-                if counter % 50 == 0:
-                    es.flush(collection_name)
-                    log.info('Indexing %s %d', collection_name, counter)
-
-        es.refresh(collection_name)
+    testapp.post_json('/index', {'last_xmin': None, 'types': collections})
 
 
 def main():
@@ -57,6 +28,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--item-type', action='append', help="Item type")
+    parser.add_argument('--record', default=False, action='store_true', help="Record the xmin in ES meta")
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()
@@ -66,7 +38,7 @@ def main():
 
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)
-    return run(app, args.item_type)
+    return run(app, args.item_type, args.record)
 
 
 if __name__ == '__main__':

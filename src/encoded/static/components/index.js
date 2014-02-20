@@ -1,8 +1,11 @@
+/** @jsx React.DOM */
+'use strict';
 // Require all components to ensure javascript load ordering
 require('./antibody');
 require('./app');
 require('./biosample');
 require('./collection');
+require('./dataset');
 require('./dbxref');
 require('./errors');
 require('./experiment');
@@ -24,6 +27,8 @@ module.exports = App;
 var ReactMount = require('react/lib/ReactMount');
 ReactMount.allowFullPageRender = true;
 
+var recordServerStats = require('./mixins').recordServerStats;
+
 
 // Treat domready function as the entry point to the application.
 // Inside this function, kick-off all initialization, everything up to this
@@ -31,7 +36,6 @@ ReactMount.allowFullPageRender = true;
 if (typeof window != 'undefined' && !window.TEST_RUNNER) {
     var domready = require('domready');
     domready(function ready() {
-        "use strict";
         console.log('ready');
         var props = {};
         // Ensure the initial render is exactly the same
@@ -42,7 +46,11 @@ if (typeof window != 'undefined' && !window.TEST_RUNNER) {
             props[elem.getAttribute('data-prop-name')] = JSON.parse(elem.text);
         }
 
-        var app= App(props);
+        var stats_header = document.documentElement.getAttribute('data-stats') || '';
+        var server_stats = require('querystring').parse(stats_header);
+        recordServerStats(server_stats, 'html');
+
+        var app = App(props);
         React.renderComponent(app, document);
 
         // Simplify debugging

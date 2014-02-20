@@ -35,7 +35,10 @@ from pyramid.settings import asbool
 from pyramid.threadlocal import (
     manager,
 )
-from pyramid.traversal import find_root
+from pyramid.traversal import (
+    find_root,
+    resource_path,
+)
 from pyramid.view import view_config
 from sqlalchemy import (
     func,
@@ -47,6 +50,7 @@ from urllib import (
     quote,
     unquote,
 )
+from urllib import urlencode
 from uuid import (
     UUID,
     uuid4,
@@ -107,7 +111,7 @@ def make_subrequest(request, path):
     return subreq
 
 
-def embed(request, path, result=None):
+def embed(request, path, result=None, as_user=False):
     # Should really be more careful about what gets included instead.
     # Cache cut response time from ~800ms to ~420ms.
     embedded = None
@@ -121,6 +125,10 @@ def embed(request, path, result=None):
         return deepcopy(result)
     subreq = make_subrequest(request, path)
     subreq.override_renderer = 'null_renderer'
+    if not as_user:
+        if 'HTTP_COOKIE' in subreq.environ:
+            del subreq.environ['HTTP_COOKIE']
+        subreq.remote_user = 'EMBED'
     try:
         result = request.invoke_subrequest(subreq)
     except HTTPNotFound:
@@ -293,10 +301,15 @@ def location(name, factory=None):
 class Root(object):
     __name__ = ''
     __parent__ = None
+    builtin_acl = [
+        (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse', 'index')),
+        (Allow, 'remoteuser.EMBED', ('view', 'traverse')),
+    ]
 
     def __init__(self, acl=None):
-        if acl is not None:
-            self.__acl__ = acl
+        if acl is None:
+            acl = []
+        self.__acl__ = acl + self.builtin_acl
         self.collections = {}
         self.by_item_type = {}
 
@@ -384,20 +397,22 @@ class Root(object):
         return self.properties.copy()
 
 
-class MergedTemplateMeta(type):
-    """ Merge the template from the subclass with its bases
+class MergedDictsMeta(type):
+    """ Merge dicts on the subclass with its bases
     """
     def __init__(self, name, bases, attrs):
-        super(MergedTemplateMeta, self).__init__(name, bases, attrs)
+        super(MergedDictsMeta, self).__init__(name, bases, attrs)
+        for attr in self.__merged_dicts__:
+            merged = {}
+            setattr(self, 'merged_%s' % attr, merged)
 
-        self.merged_template = {}
-        for cls in reversed(self.mro()):
-            template = vars(cls).get('template', None)
-            if template is not None:
-                self.merged_template.update(template)
+            for cls in reversed(self.mro()):
+                value = vars(cls).get(attr, None)
+                if value is not None:
+                    merged.update(value)
 
 
-class MergedKeysMeta(MergedTemplateMeta):
+class MergedKeysMeta(MergedDictsMeta):
     """ Merge the keys from the subclass with its bases
     """
     def __init__(self, name, bases, attrs):
@@ -414,11 +429,18 @@ class MergedKeysMeta(MergedTemplateMeta):
 
 class Item(object):
     __metaclass__ = MergedKeysMeta
+    __merged_dicts__ = [
+        'template',
+        'template_type',
+        'rev',
+        'namespace_from_path',
+    ]
     base_types = ['item']
     keys = []
     name_key = None
     rev = None
     embedded = ()
+    namespace_from_path = {}
     template = {
         '@id': {'$value': '{item_uri}', '$templated': True},
         # 'collection': '{collection_uri}',
@@ -428,10 +450,14 @@ class Item(object):
         ],
         'uuid': {'$value': '{uuid}', '$templated': True},
     }
+    template_type = None
 
     def __init__(self, collection, model):
         self.__parent__ = collection
         self.model = model
+
+    def __repr__(self):
+        return '<%s at %s>' % (type(self).__name__, resource_path(self))
 
     @property
     def __name__(self):
@@ -463,13 +489,13 @@ class Item(object):
     def schema_links(self):
         return self.__parent__.schema_links
 
-    @property
-    def links(self):
+    def links(self, properties):
+        # This works from the schema rather than the links table
+        # so that upgrade on GET can work.
         if self.schema is None:
             return {}
         root = find_root(self)
         links = {}
-        properties = self.properties
         for name in self.schema_links:
             value = properties.get(name, None)
             if value is None:
@@ -480,19 +506,13 @@ class Item(object):
                 links[name] = root.get_by_uuid(value)
         return links
 
-    @property
     def rev_links(self):
-        if self.rev is None:
-            return {}
         root = find_root(self)
         links = {}
-        for name, spec in self.rev.iteritems():
-            item_types, rel = spec
-            if isinstance(item_types, basestring):
-                item_types = [item_types]
+        for name, spec in self.merged_rev.iteritems():
             links[name] = value = []
             for link in self.model.revs:
-                if rel == link.rel and link.source.item_type in item_types:
+                if (link.source.item_type, link.rel) == spec:
                     item = root.get_by_uuid(link.source_rid)
                     value.append(item)
         return links
@@ -513,17 +533,37 @@ class Item(object):
         return properties
 
     def __json__(self, request):
+        """ Render json structure
+
+        1. Fetch stored properties, possibly upgrading.
+        2. Link canonicalization (overwriting uuids).
+        3. Fill reverse links (Item.rev)
+        4. Templated properties
+
+        Embedding is the responsibility of the view.
+        """
         properties = self.upgrade_properties(request)
-        templated = self.expand_template(properties, request)
-        properties.update(templated)
-        for name, value in self.links.iteritems():
+
+        for name, value in self.links(properties).iteritems():
             # XXXX Should this be {'@id': url, '@type': [...]} instead?
             if isinstance(value, list):
                 properties[name] = [request.resource_path(item) for item in value]
             else:
                 properties[name] = request.resource_path(value)
-        for name, value in self.rev_links.iteritems():
-            properties[name] = [request.resource_path(item) for item in value]
+
+        # XXX Should reverse links move to embedding?
+        # - would necessitate a second templating stage.
+        for name, value in self.rev_links().iteritems():
+            properties[name] = [
+                request.resource_path(item)
+                    for item in value
+                        if item.upgrade_properties(request).get('status')
+                            not in ('DELETED', 'OBSOLETE')
+            ]
+
+        templated = self.expand_template(properties, request)
+        properties.update(templated)
+
         return properties
 
     def template_namespace(self, properties, request=None):
@@ -536,6 +576,21 @@ class Item(object):
             ns['collection_uri'] = request.resource_path(self.__parent__)
             ns['item_uri'] = request.resource_path(self)
             ns['permission'] = permission_checker(self, request)
+
+        if self.merged_namespace_from_path:
+            root = find_root(self)
+            for name, path in self.merged_namespace_from_path.items():
+                path = path.split('.')
+                last = path[-1]
+                obj = self
+                for n in path[:-1]:
+                    obj_props = obj.properties
+                    if n not in obj_props:
+                        break
+                    obj = root.get_by_uuid(obj_props[n])
+                else:
+                    ns[name] = obj.properties[last]
+
         return ns
 
     def expand_template(self, properties, request):
@@ -692,7 +747,7 @@ class Item(object):
         return to_add, to_remove
 
 
-class CustomItemMeta(MergedTemplateMeta, ABCMeta):
+class CustomItemMeta(MergedDictsMeta, ABCMeta):
     """ Give each collection its own Item class to enable
         specific view registration.
     """
@@ -703,7 +758,15 @@ class CustomItemMeta(MergedTemplateMeta, ABCMeta):
         if self.item_type is None and 'item_type' not in attrs:
             self.item_type = uncamel(self.__name__)
 
-        NAMES_TO_TRANSFER = ['template', 'embedded', 'keys', 'rev', 'name_key']
+        NAMES_TO_TRANSFER = [
+            'template',
+            'template_type',
+            'embedded',
+            'keys',
+            'rev',
+            'name_key',
+            'namespace_from_path',
+        ]
 
         if 'Item' in attrs:
             for name in NAMES_TO_TRANSFER:
@@ -720,6 +783,9 @@ class CustomItemMeta(MergedTemplateMeta, ABCMeta):
 
 class Collection(Mapping):
     __metaclass__ = CustomItemMeta
+    __merged_dicts__ = [
+        'template',
+    ]
     Item = Item
     schema = None
     schema_version = None
@@ -866,7 +932,25 @@ class Collection(Mapping):
     def after_add(self, item):
         '''Hook for subclasses'''
 
-    def load_db(self, request, limit=None):
+    def load_db(self, request):
+        result = {}
+
+        frame = request.params.get('frame', 'columns')
+        if frame == 'columns':
+            if self.columns:
+                result['columns'] = self.columns
+            else:
+                frame = 'object'
+
+        limit = request.params.get('limit', 25)
+        if limit in ('', 'all'):
+            limit = None
+        if limit is not None:
+            try:
+                limit = int(limit)
+            except ValueError:
+                limit = 25
+
         session = DBSession()
         query = session.query(Resource).filter(
             Resource.item_type == self.item_type
@@ -879,90 +963,101 @@ class Collection(Mapping):
                 Resource.data,
                 CurrentPropertySheet.propsheet,
             ),
-        )
-        items = []
-        for model in query.limit(limit).all():
-            item_uri = request.resource_path(self, model.rid)
-            rendered = embed(request, item_uri + '?embed=false')
+        ).order_by(Resource.rid)
+        
+        if limit is None:
+            models = query
+        else:
+            models = self._batched_models(query, limit)
 
-            for path in self.embedded_paths:
-                expand_path(request, rendered, path)
+        items = self._filter_allowed_view(request, query, limit)
+        result['@graph'] = [self._render_item(request, item, frame) for item in items]
 
-            if not self.columns:
-                items.append(rendered)
-                continue
+        if limit is not None and len(result['@graph']) == limit:
+            params = [(k, v) for k, v in request.params.items() if k != 'limit']
+            params.append(('limit', 'all'))
+            result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
 
-            subset = {
-                '@id': rendered['@id'],
-                '@type': rendered['@type'],
-            }
-            for column in self.columns:
-                subset[column] = column_value(rendered, column)
+        return result
 
-            items.append(subset)
+    def _batched_models(self, query, size):
+        for model in query.limit(size):
+            yield model
 
-        return items
+        while model is not None:
+            for model in query.filter(Resource.rid > model.rid).limit(size):
+                yield model
+
+    def _filter_allowed_view(self, request, models, max=None):
+        count = 0
+        for model in models:
+            last_rid = model.rid
+            item = self.Item(self, model)
+            if request.has_permission('view', item):
+                yield item                
+                count += 1
+                if max is not None and count >= max:
+                    break
+
+    def _render_item(self, request, item, frame):
+        item_uri = request.resource_path(item)
+
+        if frame != 'embedded':
+            item_uri += '?frame=object'
+
+        rendered = embed(request, item_uri)
+
+        if frame != 'columns':
+            return rendered
+
+        for path in self.embedded_paths:
+            expand_path(request, rendered, path)
+
+        subset = {
+            '@id': rendered['@id'],
+            '@type': rendered['@type'],
+        }
+        for column in self.columns:
+            subset[column] = column_value(rendered, column)
+
+        return subset
 
     def load_es(self, request):
-        columns = ['@id', '@type']
-        lengthColumns = []
-        for column in self.columns:
-            if 'length' in column:
-                columns.append(column.split('.')[0])
-                lengthColumns.append(column.split('.')[0])
-            else:
-                columns.append(column)
-        # Hack to check if the views have columns for the collection.
-        if len(columns) > 2:
-            query = {'query': {'match_all': {}}, 'fields': columns}
-        else:
-            query = {'query': {'match_all': {}}}
+        from .views.search import search
+        result = search(self, request, self.item_type)
 
-        items = []
-        from .indexing import ELASTIC_SEARCH
-        es = request.registry[ELASTIC_SEARCH]
-        results = es.search(query, index=self.item_type, size=99999)
-        for model in results['hits']['hits']:
-            # Dealing with columns which have length attribute to the array
-            for c in lengthColumns:
-                model['fields'][c + '.length'] = len(model['fields'][c])
-                del model['fields'][c]
+        if len(result['@graph']) < result['total']:
+            params = [(k, v) for k, v in request.params.items() if k != 'limit']
+            params.append(('limit', 'all'))
+            result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
 
-            if len(columns) > 2:
-                items.append(model['fields'])
-            else:
-                items.append(model['_source'])
-        return items
+        return result
 
     def __json__(self, request):
         properties = self.properties.copy()
         ns = properties.copy()
-        ns['collection_uri'] = request.resource_path(self)
+        ns['collection_uri'] = uri = request.resource_path(self)
         ns['item_type'] = self.item_type
         ns['permission'] = permission_checker(self, request)
         compiled = ObjectTemplate(self.merged_template)
-        links = compiled(ns)
-        properties.update(links)
-        properties['columns'] = self.columns
-        collection_source = request.params.get('collection_source', None)
-        if collection_source is None:
-            collection_source = request.registry.settings.get('collection_source', 'database')
+        templated = compiled(ns)
+        properties.update(templated)
+
+        if request.query_string:
+            uri += '?' + request.query_string
+        properties['@id'] = uri
+
+        datastore = request.params.get('datastore', None)
+        if datastore is None:
+            datastore = request.registry.settings.get('collection_datastore', 'database')
         # Switch to change summary page loading options: load_db, load_es
-        if collection_source == 'elasticsearch':
-            properties['@graph'] = self.load_es(request)
+        if datastore == 'elasticsearch':
+            result = self.load_es(request)
         else:
-            limit = request.params.get('limit', 30)
-            if limit in ('', 'all'):
-                limit = None
-            if limit is not None:
-                try:
-                    limit = int(limit)
-                except ValueError:
-                    limit = 30
-            properties['@graph'] = self.load_db(request, limit)
-            if limit is not None:
-                properties['all'] = "{collection_uri}?limit=all&collection_source=database".format(**ns)
-        return properties
+            result = self.load_db(request)
+
+        result.update(properties)
+        return result
 
     def expand_embedded(self, request, properties):
         pass
@@ -997,11 +1092,11 @@ def expand_path(request, obj, path):
     if isinstance(value, list):
         for index, member in enumerate(value):
             if not isinstance(member, dict):
-                member = value[index] = embed(request, member + '?embed=false')
+                member = value[index] = embed(request, member + '?frame=object')
             expand_path(request, member, remaining)
     else:
         if not isinstance(value, dict):
-            value = obj[name] = embed(request, value + '?embed=false')
+            value = obj[name] = embed(request, value + '?frame=object')
         expand_path(request, value, remaining)
 
 
@@ -1058,7 +1153,7 @@ def collection_add(context, request, render=None):
     else:
         item_uri = request.resource_path(item)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '?embed=false')
+        rendered = embed(request, item_uri + '?frame=object', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 201
@@ -1091,8 +1186,18 @@ def traversal_security(event):
              decorator=etag_conditional)
 def item_view(context, request):
     properties = context.__json__(request)
-    if asbool(request.params.get('embed', True)):
-        context.expand_embedded(request, properties)
+    frame = request.params.get('frame', None)
+
+    if frame is None:
+        if asbool(request.params.get('embed', True)):
+            frame = 'embedded'
+        else:
+            frame = 'object'
+
+    if frame == 'object':
+        return properties
+
+    context.expand_embedded(request, properties)
     return properties
 
 
@@ -1132,7 +1237,7 @@ def item_edit(context, request, render=None):
     else:
         item_uri = request.resource_path(context)
     if asbool(render) is True:
-        rendered = embed(request, item_uri + '?embed=false')
+        rendered = embed(request, item_uri + '?frame=object', as_user=True)
     else:
         rendered = item_uri
     request.response.status = 200
@@ -1160,3 +1265,36 @@ class AfterModified(object):
     def __init__(self, object, request):
         self.object = object
         self.request = request
+
+
+@view_config(context=Item, name='index-data', permission='index', request_method='GET')
+def item_index_data(context, request):
+    from pyramid.security import (
+        Everyone,
+        principals_allowed_by_permission,
+    )
+    links = {}
+    # links for the item
+    for link in context.model.rels:
+        links[link.rel] = link.target_rid
+
+    # Get keys for the item
+    keys = {}
+    for key in context.model.unique_keys:
+        keys[key.name] = key.value
+
+    # Principals for the item
+    principals = principals_allowed_by_permission(context, 'view')
+    if principals is Everyone:
+        principals = [Everyone]
+
+    document = {
+        'embedded': embed(request, request.resource_path(context)),
+        'object': embed(request, request.resource_path(context) + '?frame=object'),
+        'links': links,
+        'keys': keys,
+        'principals_allowed_view': sorted(principals),
+        'url': request.resource_path(context),
+    }
+
+    return document

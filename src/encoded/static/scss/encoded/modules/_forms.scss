@@ -19,7 +19,40 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 }
 
 input.search-query {
-	@include border-radius($borderRadiusSmall);
+	height: 14px;
+}
+
+form.navbar-form {
+	margin-top: 3px;
+}
+
+// Navbar search
+.search-wrapper input {
+	width: 130px;
+	-ms-transition: width 0.3s ease-out;
+	-moz-transition: width 0.3s ease-out;
+	-webkit-transition: width 0.3s ease-out;
+	transition: width 0.3s ease-out;
+}
+.search-wrapper input:focus {
+	width: 250px;
+	-ms-transition: width 0.3s ease-out;
+	-moz-transition: width 0.3s ease-out;
+	-webkit-transition: width 0.3s ease-out;
+	transition: width 0.3s ease-out;
+}
+
+.search-wrapper {
+	position: 0;
+}
+
+.search-wrapper:after {
+	font-family: "FontAwesome";
+	content: "\f021";
+	position: relative;
+	top: 3px;
+	left: -24px;
+	color: gray;	
 }
 
 // large text inputBorder

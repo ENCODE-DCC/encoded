@@ -6,11 +6,10 @@ from sqlalchemy.exc import IntegrityError
 import encoded.commands.sync_edw as sync_edw
 
 import edw_test_data
-import test_indexing
 
 from test_views import TYPE_LENGTH
 
-pytestmark = [pytest.mark.edw_sync]
+pytestmark = [pytest.mark.sync_edw]
 
 # globals
 EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
@@ -21,11 +20,12 @@ TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 @pytest.mark.slow
 def test_get_all_datasets(workbook,testapp):
 
-    sync_edw.get_all_datasets(testapp)
+    sync_edw.try_datasets(testapp)
     assert(len(sync_edw.experiments) == TYPE_LENGTH['experiment'])
     assert(len(sync_edw.datasets) == TYPE_LENGTH['dataset'])
 
-    assert(len(sync_edw.encode2_to_encode3.keys()) == 4)
+    assert all(len(v) == 1 for v in sync_edw.encode2_to_encode3.values())
+    assert(len(sync_edw.encode2_to_encode3.keys()) == 5)
     assert(len(sync_edw.encode3_to_encode2.keys()) == 13)
 
     assert not sync_edw.encode3_to_encode2.get(edw_test_data.encode3, False)
@@ -77,31 +77,49 @@ def test_list_new(workbook, testapp):
     new_accs = sorted(sync_edw.get_missing_filelist_from_lists(app_accs, edw_accs))
     assert new_accs == sorted(edw_test_data.new_out)
 
+
+@pytest.fixture(scope='session')
+def test_accession_app(request, check_constraints, zsa_savepoints, app_settings):
+    from encoded import main
+    app_settings = app_settings.copy()
+    app_settings['accession_factory'] = 'encoded.server_defaults.test_accession'
+    return main({}, **app_settings)
+
+@pytest.fixture
+def test_accession_testapp(request, test_accession_app, external_tx, zsa_savepoints):
+    '''TestApp with JSON accept header.
+    '''
+    from webtest import TestApp
+    environ = {
+        'HTTP_ACCEPT': 'application/json',
+        'REMOTE_USER': 'TEST',
+    }
+    return TestApp(test_accession_app, environ)
+
 @pytest.mark.slow
-def test_import_file(workbook, testapp):
-    # Test import of new file to encoded
+def test_import_tst_file(workbook, test_accession_testapp):
+    # Test import of new file TSTXX to encoded
     # this tests adds replicates, but never checks their validity
     # ignoring this because I don't want to deal with tearing down ES  posts
 
     import re
 
-
     input_file = 'import_in.1.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + input_file, 'rU')
     reader = DictReader(f, delimiter='\t')
 
-    sync_edw.get_all_datasets(testapp)
+    sync_edw.get_all_datasets(test_accession_testapp)
 
     for fileinfo in reader:
 
-        converted_file = sync_edw.convert_edw(testapp, fileinfo)
+        converted_file = sync_edw.convert_edw(test_accession_testapp, fileinfo)
         #set_in = set(fileinfo.items())
-        resp = sync_edw.post_fileinfo(testapp, converted_file)
+        resp = sync_edw.post_fileinfo(test_accession_testapp, converted_file)
         # exercises: set_fileinfo_experiment, set_fileinfo_replicate, POST
         if resp:
             acc = converted_file['accession']
             url = sync_edw.collection_url(sync_edw.FILES) + acc
-            get_resp = testapp.get(url).maybe_follow()
+            get_resp = test_accession_testapp.get(url).maybe_follow()
             file_dict = get_resp.json
             assert( not sync_edw.compare_files(file_dict, converted_file) )
         else:
@@ -130,11 +148,12 @@ def test_encode3_experiments(workbook, testapp):
             converted_file.pop('test', None) # this is in the file for notation purposes only
             edw_mock_p3[fileinfo['accession']] = converted_file
 
-    assert len(edw_mock_p3) == 12
+    assert len(edw_mock_p3) == 13
 
     app_files_p3 = sync_edw.get_app_fileinfo(testapp, phase='3')
 
     assert len(app_files_p3) == 16
+
 
 @pytest.mark.slow
 def test_file_sync(workbook, testapp):
@@ -142,6 +161,7 @@ def test_file_sync(workbook, testapp):
     import re
 
     sync_edw.get_all_datasets(testapp)
+
     mock_edw_file = 'edw_file_mock.tsv'
     f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file, 'rU')
     reader = DictReader(f, delimiter='\t')
@@ -163,10 +183,11 @@ def test_file_sync(workbook, testapp):
     assert(len(app_files) == len(app_dict.keys())) # this should never duplicate
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    assert len(edw_only) == 15
-    assert len(app_only) == 11
-    assert len(same) == 6
-    assert len(patch) == 6
+    assert len(edw_only) == 16
+    # have to troll the TEST column to predict these results
+    assert len(app_only) == 13
+    assert len(same) == 5
+    assert len(patch) == 9
 
     before_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
 
@@ -198,7 +219,7 @@ def test_file_sync(workbook, testapp):
         patched = sync_edw.patch_fileinfo(testapp, diff.keys(), edw_mock[update])
         should_fail = False
         for patch_prop in diff.keys():
-            if patch_prop in sync_edw.NO_UPDATE:
+            if patch_prop in sync_edw.NO_UPDATE or re.match('FAIL', test[update]):
                 should_fail = True
         if should_fail:
             assert not patched
@@ -214,8 +235,8 @@ def test_file_sync(workbook, testapp):
     # reset global var!
     post_edw, post_app, post_same, post_patch= sync_edw.inventory_files(testapp, edw_mock, post_app_dict)
     assert len(post_edw) == 1
-    assert len(post_app) == 11 # unchanged
-    assert len(post_patch) == 3 # exsting files cannot be patched
+    assert len(post_app) == 13 # unchanged
+    assert len(post_patch) == 4 # exsting files cannot be patched
     assert ((len(post_same)-len(same)) == (len(patch) -len(post_patch) + (len(edw_only) - len(post_edw))))
     assert len(post_app_files) == (len(app_files) + len(edw_only) - len(post_edw))
 
@@ -239,7 +260,7 @@ def test_file_sync(workbook, testapp):
         else:
             new_reps[uuid] = after_reps[uuid]
 
-    assert(len(same_reps.keys()) == 21)
+    assert(len(same_reps.keys()) == 22)
     assert(not updated_reps)
     assert(len(new_reps) == 2)
 
@@ -247,7 +268,56 @@ def test_file_sync(workbook, testapp):
     #TODO tests for experiments with multiple mappings.
 
 
+def test_patch_replicate(workbook, testapp):
+
+    import re
+
+    test_acc = 'ENCSR000ADH'
+    test_set = sync_edw.try_datasets(testapp, dataset=test_acc)
+    assert(test_set)
+
+    update = [ x for x in sync_edw.NO_UPDATE if x != 'replicate' ]
+    sync_edw.NO_UPDATE = update
+
+    mock_edw_file = 'edw_file_mock.tsv'
+    f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file, 'rU')
+    reader = DictReader(f, delimiter='\t')
+
+    edw_mock = {}
+    test = {}
+    filecount = 0
+    for fileinfo in reader:
+        converted_file = sync_edw.convert_edw(testapp, fileinfo)
+        if converted_file.get('dataset', None) != test_set:
+            continue
+        filecount = filecount+1
+        test[fileinfo['accession']] = converted_file.pop('test', None) # this is in the file for notation purposes only
+        edw_mock[fileinfo['accession']] = converted_file
+
+    assert len(edw_mock) == filecount
+
+    app_files = sync_edw.get_app_fileinfo(testapp, dataset=test_set)
+    app_dict = { d['accession']:d for d in app_files }
+
+    edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
+    assert len(patch) == 2
+    assert len(same) == 2
 
 
+    for update in patch:
+        diff = sync_edw.compare_files(app_dict[update], edw_mock[update])
+        patched = sync_edw.patch_fileinfo(testapp, diff.keys(), edw_mock[update])
+        should_fail = False
+        for patch_prop in diff.keys():
+            if patch_prop in sync_edw.NO_UPDATE:
+                should_fail = True
+        if should_fail:
+            assert not patched
+        else:
+            assert patched
 
-
+    patched_file = testapp.get('/files/ENCFF001MYM').maybe_follow().json
+    rep = testapp.get(patched_file['replicate']).maybe_follow().json
+    assert(rep['biological_replicate_number'] == 1)
+    assert(rep['technical_replicate_number'] == 2)
+    assert(rep['experiment'] == patched_file['dataset'])

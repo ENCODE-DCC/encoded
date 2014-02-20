@@ -25,8 +25,8 @@ body { background: $mainThemeColor; }
 
 dd::first-letter { text-transform: capitalize; } 
 dd:first-letter { text-transform: capitalize; } // IE 8 and below support
-.no-cap::first-letter { text-transform: none !important; } 
-.no-cap:first-letter { text-transform: none !important; } // IE 8 and below support
+.no-cap::first-letter, .no-cap::first-letter * { text-transform: none !important; } 
+.no-cap:first-letter, .no-cap:first-letter * { text-transform: none !important; } // IE 8 and below support
 
 
 
@@ -35,10 +35,5 @@ dd:first-letter { text-transform: capitalize; } // IE 8 and below support
 .cap-me-once { display: block; }
 .cap-me-once:first-letter { text-transform: uppercase; }
 .cap-me-once::first-letter { text-transform: uppercase; } // older browser support
-
-dd ul, .multi-value {
-	list-style: none;
-	margin: 0;
-}
 
 hr { clear: both; }

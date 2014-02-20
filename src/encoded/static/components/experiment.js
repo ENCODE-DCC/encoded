@@ -4,8 +4,10 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
+var dataset = require('./dataset');
 
 var DbxrefList = dbxref.DbxrefList;
+var FileTable = dataset.FileTable;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -25,6 +27,9 @@ var Experiment = module.exports.Experiment = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var replicates = _.sortBy(context.replicates, function(item) {
             return item.biological_replicate_number;
+        });
+        var dbxrefs = context.encode2_dbxrefs.map(function (item) {
+        	return "UCSC_encode_db:" + item;
         });
         var documents = {};
         replicates.forEach(function (replicate) {
@@ -95,11 +100,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 </ul>
                         </dd>
 
-                        <dt hidden={!context.encode2_dbxrefs.length}>ENCODE2 ID</dt>
-                        <dd hidden={!context.encode2_dbxrefs.length} className="no-cap">
-                            <DbxrefList values={context.encode2_dbxrefs} prefix="ENCODE2" />
-                        </dd>
-
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
 
@@ -109,8 +109,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
+                        <dt hidden={!context.encode2_dbxrefs.length}>Other identifiers</dt>
+                        <dd hidden={!context.encode2_dbxrefs.length} className="no-cap">
+                            <DbxrefList values={dbxrefs} />
+                        </dd>
+                        
                         {context.geo_dbxrefs.length ? <dt>GEO Accessions</dt> : null}
-                        {context.geo_dbxrefs.length ? <dd>{context.geo_dbxrefs.join(', ')}</dd> : null}
+                        {context.geo_dbxrefs.length ? <dd>
+                            <DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
+                        </dd> : null}
 
                     </dl>
                 </div>
@@ -129,7 +136,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                     );
                 })}
 
-                <FilesLinked context={context} />
+                {context.files.length ?
+                    <div>
+                        <h3>Files linked to {context.accession}</h3>
+                        <FileTable items={context.files} />
+                    </div>
+                : null }
             </div>
         );
     }
@@ -170,7 +182,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
                             <td><a href={biosample['@id']}>{biosample.accession}</a></td>
                             <td>{biosample.biosample_term_name}</td>
                             <td>{biosample.biosample_type}</td>
-                            <td>{biosample.donor.organism.name}</td>
+                            <td>{biosample.donor && biosample.donor.organism.name}</td>
                             <td>{biosample.source.title}</td>
                             <td>{biosample.submitted_by.title}</td>
                         </tr>
@@ -285,52 +297,3 @@ var Replicate = module.exports.Replicate = function (props) {
 
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
-
-
-var FilesLinked = module.exports.FilesLinked = function (props) {
-    var context = props.context;
-    var files = context.files;
-    if (!files.length) return (<div hidden={true}></div>);
-    return (
-        <div>
-            <h3>Files linked to {context.accession}</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>File type</th>
-                        <th>Output type</th>
-                        <th>Associated replicates</th>
-                        <th>Added by</th>
-                        <th>Date added</th>
-                        <th>File download</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {files.map(function (file, index) {
-                    var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.download_path;
-                    return (
-                        <tr key={index}>
-                            <td>{file.accession}</td>
-                            <td>{file.file_format}</td>
-                            <td>{file.output_type}</td>
-                            <td>{file.replicate ?
-                                '(' + file.replicate.biological_replicate_number + ', ' + file.replicate.technical_replicate_number + ')'
-                                : null}
-                            </td>
-                            <td>{file.submitted_by.title}</td>
-                            <td>{file.date_created}</td>
-                            <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
-                        </tr>
-                    );
-                })}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="6"></td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-    );
-};

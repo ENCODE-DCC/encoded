@@ -10,6 +10,7 @@ For the development.ini you must supply the paster app name:
     %(prog)s development.ini --app app
 
 """
+import json
 import logging
 from pyramid.traversal import resource_path
 
@@ -25,6 +26,13 @@ def check_path(testapp, path):
         return False
     if res.status_int != 200:
         logger.error('Render failed (%s): %s', res.status, path)
+        script = res.html.find('script', **{'data-prop-name': 'context'})
+        if script is not None:
+            context = json.loads(script.text)
+            if 'detail' in context:
+                logger.debug(context['detail'])
+            else:
+                logger.debug(json.dumps(context, indent=4))
         return False
     return True
 
