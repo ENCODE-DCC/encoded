@@ -6,6 +6,7 @@ var globals = require('./globals');
 var mixins = require('./mixins');
 var NavBar = require('./navbar');
 var Footer = require('./footer');
+var url = require('url');
 
 var portal = {
     portal_title: 'ENCODE',
@@ -94,8 +95,14 @@ var App = React.createClass({
         console.log('render app');
         var content;
         var context = this.props.context;
+        var hash = url.parse(this.props.href).hash || '';
+        var name;
+        var key;
+        if (hash.slice(0, 2) === '#!') {
+            name = hash.slice(2);
+        }
         if (context) {
-            var ContentView = globals.content_views.lookup(context);
+            var ContentView = globals.content_views.lookup(context, name);
             content = this.transferPropsTo(ContentView({
                 personaReady: this.state.personaReady,
                 session: this.state.session,
