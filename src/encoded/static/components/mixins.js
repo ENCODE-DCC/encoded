@@ -233,7 +233,15 @@ module.exports.HistoryAndTriggers = {
             } else {
                 window.addEventListener('load', setTimeout.bind(window, register));
             }
+        } else {
+            window.onhashchange = this.onHashChange;
         }
+        this.setProps({href: window.location.href});
+    },
+
+    onHashChange: function (event) {
+        // IE8/9
+        this.setProps({href: window.location.href});
     },
 
     trigger: function (name) {
