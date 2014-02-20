@@ -97,12 +97,13 @@ var App = React.createClass({
         if (context) {
             var ContentView = globals.content_views.lookup(context);
             content = this.transferPropsTo(ContentView({
-                key: context['@id'],  // Switching between collections may leave component in place
                 personaReady: this.state.personaReady,
                 session: this.state.session,
                 portal: this.state.portal
             }));
         }
+        // Switching between collections may leave component in place
+        var key = context && context['@id'];
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
         });
@@ -147,7 +148,7 @@ var App = React.createClass({
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         user_actions={this.state.user_actions} session={this.state.session}
                                         personaReady={this.state.personaReady} />
-                                <div id="content" className="container">
+                                <div id="content" className="container" key={key}>
                                     {content}
                                 </div>
                                 {errors}
