@@ -672,7 +672,7 @@ def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=Fals
         for update in patch:
             diff = compare_files(app_files[update], edw_files[update])
             patched = patch_fileinfo(app, diff.keys(), edw_files[update], dry_run=dry_run, no_reps=no_reps)
-            logger.warn("SUMMARY: %s files succesfully patched" % summary.files_patched)
+        logger.warn("SUMMARY: %s files succesfully patched" % summary.files_patched)
 
     logger.warn("SUMMARY: %s replicates sucessfully posted" % summary.replicates_posted)
     logger.warn("SUMMARY: %s files were given up on" % summary.files_punted)
