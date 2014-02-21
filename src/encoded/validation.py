@@ -2,15 +2,21 @@ from pyramid.config.views import DefaultViewMapper
 from pyramid.events import NewRequest
 from pyramid.httpexceptions import (
     HTTPError,
+    HTTPBadRequest,
     HTTPUnprocessableEntity,
 )
 from pyramid.util import LAST
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 
 def includeme(config):
     config.add_subscriber(wrap_request, NewRequest)
     config.add_view(view=failed_validation, context=ValidationFailure)
     config.add_view(view=http_error, context=HTTPError)
+    config.add_view(view=jsondecode_error, context=json.JSONDecodeError)
     config.add_view_predicate('validators', ValidatorsPredicate, weighs_more_than=LAST)
 
 
@@ -99,6 +105,15 @@ def http_error(exc, request):
     if exc.comment is not None:
         result['comment'] = exc.comment
     return result
+
+
+def jsondecode_error(exc, request):
+    try:
+        request.json
+    except ValueError as e:
+        return http_error(HTTPBadRequest(str(e)), request)
+    else:
+        raise exc
 
 
 def prepare_validators(validators):
