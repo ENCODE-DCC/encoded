@@ -1209,6 +1209,18 @@ def item_view_raw(context, request):
     return context.properties
 
 
+@view_config(context=Item, permission='view_raw', request_method='GET',
+             request_param=['frame=edit'])
+def item_view_edit(context, request):
+    properties = context.upgrade_properties(request)
+    for name, value in context.links(properties).iteritems():
+        if isinstance(value, list):
+            properties[name] = [request.resource_path(item) for item in value]
+        else:
+            properties[name] = request.resource_path(value)
+    return properties
+
+
 @view_config(context=Item, permission='edit', request_method='PUT',
              validators=[validate_item_content_put])
 @view_config(context=Item, permission='edit', request_method='PATCH',
