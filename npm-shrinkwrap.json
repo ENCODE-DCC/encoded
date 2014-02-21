@@ -67,6 +67,16 @@
         }
       }
     },
+    "brace": {
+      "version": "0.2.0",
+      "from": "brace@",
+      "dependencies": {
+        "w3c-blob": {
+          "version": "0.0.1",
+          "from": "w3c-blob@0.0.1"
+        }
+      }
+    },
     "browserify-shim": {
       "version": "2.0.10",
       "from": "browserify-shim@~2.0.10",

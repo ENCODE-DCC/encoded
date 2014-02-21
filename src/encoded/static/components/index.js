@@ -19,6 +19,7 @@ require('./platform');
 require('./search');
 require('./target');
 require('./testing');
+require('./edit');
 
 var React = require('react');
 var App = require('./app');

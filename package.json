@@ -26,6 +26,7 @@
     "jquery-browser": "~1.10.2-1",
     "d3-browser": "~3.2.1-1",
     "source-map-support": "~0.2.4",
-    "envify": "~0.2.0"
+    "envify": "~0.2.0",
+    "brace": "~0.2.0"
   }
 }
