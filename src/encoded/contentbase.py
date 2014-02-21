@@ -1202,7 +1202,7 @@ def item_view(context, request):
 
 
 @view_config(context=Item, permission='view_raw', request_method='GET',
-             request_param=['raw'])
+             request_param=['frame=raw'])
 def item_view_raw(context, request):
     if asbool(request.params.get('upgrade', True)):
         return context.upgrade_properties(request)

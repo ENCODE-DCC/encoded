@@ -124,9 +124,10 @@ def test_access_key_edit(anontestapp, access_key):
     assert res.json['description'] == NEW_DESCRIPTION
 
 
-def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key):
+@pytest.mark.parametrize('query', ['', '?frame=raw'])
+def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key, query):
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.get(access_key['location'], headers=headers)
+    res = anontestapp.get(access_key['location'] + query, headers=headers)
     assert 'secret_access_key_hash' not in res.json
 
 

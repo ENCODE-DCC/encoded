@@ -11,7 +11,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var title = globals.listing_titles.lookup(context)({context: context});
-        var url = this.props.context['@id'] + '?raw=true'
+        var url = this.props.context['@id'] + '?frame=raw'
         return (
             <div className={itemClass}>
                 <header className="row">
