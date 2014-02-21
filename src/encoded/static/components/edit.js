@@ -42,7 +42,7 @@ var EditForm = module.exports.EditForm = React.createClass({
                 <div style={{"float": "right", "margin": "10px"}}>
                     <a href="" className="btn">Cancel</a>
                     {' '}
-                    <button onClick={this.save} className="btn btn-success" disabled={this.communicating}>Save</button>
+                    <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
                 </div>
                 <ul style={{clear: 'both'}}>
                     {error && error.code === 422 ? error.errors.map(function (error) {
@@ -53,13 +53,16 @@ var EditForm = module.exports.EditForm = React.createClass({
         );
     },
 
+
+
     componentDidMount: function () {
         var ace = require('brace');
         require('brace/mode/json');
         require('brace/theme/solarized_light');
         var value = JSON.stringify(this.props.data, null, 4)
         var editor = ace.edit(this.refs.editor.getDOMNode());
-        editor.getSession().setMode('ace/mode/json');
+        var session = editor.getSession()
+        session.setMode('ace/mode/json');
         editor.setValue(value);
         // These options will take effect with the next brace release
         editor.setOptions({
@@ -68,6 +71,15 @@ var EditForm = module.exports.EditForm = React.createClass({
         })
         editor.clearSelection();
         this.setState({editor: editor});
+        session.on("changeAnnotation", this.hasErrors);
+    },
+
+    hasErrors: function () {
+        var annotations = this.state.editor.getSession().getAnnotations();
+        var has_error = annotations.reduce(function (value, anno) {
+            return value || (anno.type === "error");
+        }, false);
+        this.setState({editor_error: has_error});
     },
 
     getInitialState: function () {
@@ -81,14 +93,7 @@ var EditForm = module.exports.EditForm = React.createClass({
 
     save: function (event) {
         var value = this.state.editor.getValue();
-        try {
-            var parsed = JSON.parse(value);
-        } catch (e) {
-            this.setState({error: 'Invalid JSON'});
-            return;
-        }
         var url = this.props.context['@id'];
-
         var xhr = $.ajax({
             url: url,
             type: 'PUT',
@@ -103,7 +108,6 @@ var EditForm = module.exports.EditForm = React.createClass({
             putRequest: xhr
         });
         xhr.done(this.finish);
-
     },
 
     finish: function () {
