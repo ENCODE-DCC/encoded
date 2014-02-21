@@ -9,6 +9,8 @@ from pyramid.httpexceptions import (
     HTTPBadRequest,
     HTTPServerError,
     HTTPMovedPermanently,
+    HTTPUnauthorized,
+    HTTPUnsupportedMediaType,
 )
 from pyramid.security import authenticated_userid
 from pyramid.threadlocal import (
@@ -215,6 +217,9 @@ def choose_format(event):
     request = event.request
     if request.method not in ('GET', 'HEAD'):
         request.environ['encoded.format'] = 'json'
+        if request.content_type != 'application/json':
+            detail = "%s is not 'application/json'" % request.content_type 
+            raise HTTPUnsupportedMediaType(detail)
         token = request.headers.get('X-CSRF-Token')
         if token is not None:
             # Avoid dirtying the session and adding a Set-Cookie header
@@ -227,6 +232,8 @@ def choose_format(event):
             namespace, userid = login.split('.', 1)
             if namespace != 'mailto':
                 return
+        if request.authorization is not None:
+            raise HTTPUnauthorized()
         raise CSRFTokenError('Missing CSRF token')
 
     format = request.params.get('format')

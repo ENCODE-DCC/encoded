@@ -147,6 +147,24 @@ def test_collection_post_bad_json(testapp, item_type):
         assert res.json['errors']
 
 
+def test_collection_post_malformed_json(testapp):
+    item = '{'
+    headers = {'Content-Type': 'application/json'}
+    res = testapp.post('/organism', item, status=400, headers=headers)
+    assert res.json['detail'].startswith('Expecting')
+
+
+def test_collection_post_missing_content_type(testapp):
+    item = '{}'
+    testapp.post('/organism', item, status=415)
+
+
+def test_collection_post_bad_(anontestapp):
+    import base64
+    value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
+    anontestapp.post_json('/organism', {}, headers={'Authorization': value}, status=401)
+
+
 def test_actions_filtered_by_permission(testapp, authenticated_testapp, sources):
     location = sources[0]['@id']
 
