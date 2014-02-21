@@ -124,7 +124,7 @@ def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
     if ds_acc:
         ds = get_dataset_or_experiment(app, ds_acc, phase)
         if not ds:
-            msg = "SKIPPING file with dataaset that cannot be found (or wrong phase)"
+            msg = "SKIPPING file with dataset that cannot be found (or wrong phase)"
             summary.warning_count[msg] = summary.warning_count.get(msg,0) + 1
             logger.error("%s: %s (%s)" % (msg, file_dict['accession'], ds_acc))
             summary.files_punted = summary.files_punted + 1
