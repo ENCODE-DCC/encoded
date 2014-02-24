@@ -50,9 +50,12 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', 'add')
 ]
 
-ALLOW_CURRENT = [
+ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, 'role.lab_submitter', 'edit'),
     (Allow, 'role.lab_submitter', 'view_raw'),
+]
+
+ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
     (Allow, 'role.viewer', 'view'),
 ]
 
@@ -269,8 +272,8 @@ class Construct(Collection):
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
         STATUS_ACL = {
-            'IN PROGRESS': ALLOW_CURRENT,
-            'PENDING DCC REVIEW': ALLOW_CURRENT,
+            'IN PROGRESS': ALLOW_LAB_SUBMITTER_EDIT,
+            'PENDING DCC REVIEW': ALLOW_LAB_SUBMITTER_EDIT,
             'COMPLIANT': ALLOW_CURRENT,
             'NOT COMPLIANT': ALLOW_CURRENT,
             'NOT REVIEWED': ALLOW_CURRENT,
