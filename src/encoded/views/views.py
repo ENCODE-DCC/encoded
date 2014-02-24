@@ -269,6 +269,8 @@ class Construct(Collection):
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
         STATUS_ACL = {
+            'IN PROGRESS': ALLOW_CURRENT,
+            'PENDING DCC REVIEW': ALLOW_CURRENT,
             'COMPLIANT': ALLOW_CURRENT,
             'NOT COMPLIANT': ALLOW_CURRENT,
             'NOT REVIEWED': ALLOW_CURRENT,
