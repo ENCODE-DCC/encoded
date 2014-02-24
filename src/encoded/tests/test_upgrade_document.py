@@ -10,6 +10,6 @@ def document_0():
 
 def test_document_0_upgrade(registry, document_0):
     migrator = registry['migrator']
-    value = migrator.upgrade('document', document_0, target_version='1')
-    assert value['schema_version'] == '1'
+    value = migrator.upgrade('document', document_0, target_version='2')
+    assert value['schema_version'] == '2'
     assert value['references'] == ['PMID:19620212', 'PMID:19122651']
