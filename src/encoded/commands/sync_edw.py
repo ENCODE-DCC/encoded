@@ -134,14 +134,23 @@ def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
             if ds['dataset_type'] == 'experiment':
                 file_dict['replicate'] = find_replicate(ds, file_dict)
 
-    if file_dict.has_key('replicate') and file_dict['replicate']:
+
+    try:
+        if file_dict.get('biological_replicate', None):
+            int(file_dict['biological_replicate'])
+    except ValueError:
+        msg = "Non-numerical biological replicate:"
+        logger.warning("%s: %s; treating as NULL" % (msg, file_dict['biological_replicate']))
+        file_dict['biological_replicate'] = None
+
+    if (file_dict.has_key('replicate') and file_dict['replicate']):
         del file_dict['biological_replicate']
         del file_dict['technical_replicate']
             # otherwise we will try tor create the specified one.
 
     if file_dict.has_key('assembly'):
         ## HACK - these should not be allowed in EDW
-        file_dict['assembly'] = re.sub(r'(male\.|female\.)', '', file_dict['assembly'])
+        file_dict['assembly'] = re.sub(r'(male\.|female\.|centro\.)', '', file_dict['assembly'])
 
     if file_dict.has_key('paired_end') and not file_dict['paired_end']:
         del file_dict['paired_end']
@@ -240,7 +249,7 @@ def get_dataset_or_experiment(app, accession, phase=edw_file.ENCODE_PHASE_ALL):
         return None
 
     if resp.status_code == 200:
-        logger.info("GET: %s (lookup)" % url)
+        #logger.info("GET: %s (lookup)" % url)
         #logger.info(str(resp))
         if [ t for t in resp.json['@type'] if t == 'experiment' ]:
             experiments[resp.json['@id']] = resp.json
@@ -270,7 +279,7 @@ def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
     for row in sorted(rows, key=itemgetter('accession')):
         url = row['@id']
         resp = app.get(url).maybe_follow()
-        logger.info("GET: %s" % url)
+        #logger.info("GET: %s" % url)
         #logger.info(str(resp))
         fileinfo = resp.json
         # below seems clunky, could search+filter
@@ -448,14 +457,14 @@ def try_datasets(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
             eurl = collection_url(EXPERIMENTS) + dataset + '/'
             exp = app.get(eurl).maybe_follow().json
             experiments[exp['@id']] = exp
-            logger.info("GET: %s" % eurl)
+            #logger.info("GET: %s" % eurl)
             logger.info(str(exp))
             return exp['@id']
         except:
             durl = collection_url(DATASETS) + dataset + '/'
             ds = app.get(durl).maybe_follow.json
             datasets[ds['@id']] = ds
-            logger.info("GET: %s" % durl)
+            #logger.info("GET: %s" % durl)
             logger.info(str(ds))
             return ds['@id']
 

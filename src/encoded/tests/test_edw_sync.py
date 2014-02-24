@@ -183,11 +183,11 @@ def test_file_sync(workbook, testapp):
     assert(len(app_files) == len(app_dict.keys())) # this should never duplicate
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    assert len(edw_only) == 16
+    assert len(edw_only) == 17
     # have to troll the TEST column to predict these results
     assert len(app_only) == 13
     assert len(same) == 5
-    assert len(patch) == 9
+    assert len(patch) == 10
 
     before_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
 
