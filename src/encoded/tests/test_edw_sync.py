@@ -73,7 +73,7 @@ def test_list_new(workbook, testapp):
     # TODO should be modified to look up by date
 
     edw_accs = edw_test_data.new_in
-    app_accs = sync_edw.get_app_fileinfo(testapp)
+    app_accs = sync_edw.get_app_fileinfo(testapp).keys()
     new_accs = sorted(sync_edw.get_missing_filelist_from_lists(app_accs, edw_accs))
     assert new_accs == sorted(edw_test_data.new_out)
 
@@ -152,7 +152,7 @@ def test_encode3_experiments(workbook, testapp):
 
     app_files_p3 = sync_edw.get_app_fileinfo(testapp, phase='3')
 
-    assert len(app_files_p3) == 16
+    assert len(app_files_p3.keys()) == 16
 
 
 @pytest.mark.slow
@@ -177,10 +177,9 @@ def test_file_sync(workbook, testapp):
 
     assert len(edw_mock) == filecount
 
-    app_files = sync_edw.get_app_fileinfo(testapp)
-    app_dict = { d['accession']:d for d in app_files }
-    assert len(app_files) == TYPE_LENGTH['file']
-    assert(len(app_files) == len(app_dict.keys())) # this should never duplicate
+    app_dict = sync_edw.get_app_fileinfo(testapp)
+    #app_dict = { d['accession']:d for d in app_files }
+    assert len(app_dict.keys()) == TYPE_LENGTH['file']
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
     assert len(edw_only) == 17
@@ -227,9 +226,7 @@ def test_file_sync(workbook, testapp):
             assert patched
 
 
-    post_app_files = sync_edw.get_app_fileinfo(testapp)
-    post_app_dict = { d['accession']:d for d in post_app_files }
-    assert(len(post_app_files) == len(post_app_dict.keys()))
+    post_app_dict = sync_edw.get_app_fileinfo(testapp)
 
     sync_edw.collections = []
     # reset global var!
@@ -238,7 +235,7 @@ def test_file_sync(workbook, testapp):
     assert len(post_app) == 13 # unchanged
     assert len(post_patch) == 4 # exsting files cannot be patched
     assert ((len(post_same)-len(same)) == (len(patch) -len(post_patch) + (len(edw_only) - len(post_edw))))
-    assert len(post_app_files) == (len(app_files) + len(edw_only) - len(post_edw))
+    assert len(post_app_dict.keys()) == (len(app_dict.keys()) + len(edw_only) - len(post_edw))
 
     user_patched = testapp.get('/files/ENCFF001RIC').maybe_follow().json
     assert(user_patched['submitted_by'] == u'/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/')
@@ -296,8 +293,8 @@ def test_patch_replicate(workbook, testapp):
 
     assert len(edw_mock) == filecount
 
-    app_files = sync_edw.get_app_fileinfo(testapp, dataset=test_set)
-    app_dict = { d['accession']:d for d in app_files }
+    app_dict = sync_edw.get_app_fileinfo(testapp, dataset=test_set)
+    #app_dict = { d['accession']:d for d in app_files }
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
     assert len(patch) == 2
