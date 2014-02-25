@@ -25,7 +25,7 @@ var Dbxref = dbxref.Dbxref;
             var item_type = result['@type'][0];
             return (<li>
                         <div>
-                            {result.accession ? <span className="pull-right type cap-me-once">{item_type}: {' ' + result['accession']}</span> : null}
+                            {result.accession ? <span className="pull-right type sentence-case">{item_type}: {' ' + result['accession']}</span> : null}
                             <div className="accession">
                                 <a href={result['@id']}>{title}</a>
                             </div>
