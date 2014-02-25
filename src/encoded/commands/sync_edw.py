@@ -458,7 +458,7 @@ def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, enc_dataset='', edw_dat
     msg = ''
     if not quick:
         msg = " using lazy-loading"
-    logger.info("Got all files from App" % msg)
+    logger.info("Got all files from App%s" % msg)
 
     return edw_dict, app_dict
 
@@ -756,7 +756,7 @@ def main():
     parser.add_argument('--no-replicates', action='store_true',
                help="Do not create replicates at all", default=False)
 
-    parser.add_argument('q', '--no-lazy-load', action='store_true',
+    parser.add_argument('-q', '--no-lazy-load', action='store_true',
                help="Do not Lazy Load edwfiles (faster, more RAM)", default=False)
 
     zargs = parser.parse_args()
