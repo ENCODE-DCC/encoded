@@ -20,6 +20,7 @@ from pyramid.paster import get_app
 from webtest import TestApp, AppError
 
 from encoded import edw_file
+from encoded.storage import DBSession, Key, Resource
 
 ################
 # Globals
@@ -271,28 +272,37 @@ def get_missing_filelist_from_lists(app_accs, edw_accs):
     return new_accs
 
 
-def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, dataset=''):
+def get_app_fileinfo(app, phase=edw_file.ENCODE_PHASE_ALL, dataset='', quick=False):
     # Get file info from encoded web application
     # Return list of fileinfo dictionaries
-    rows = get_collection(app, FILES)
-    app_files = []
-    for row in sorted(rows, key=itemgetter('accession')):
-        url = row['@id']
-        resp = app.get(url).maybe_follow()
-        #logger.info("GET: %s" % url)
-        #logger.info(str(resp))
-        fileinfo = resp.json
-        # below seems clunky, could search+filter
-        if dataset and fileinfo['dataset'] != dataset:
-            continue
+    ## TODO - replace get_collection with get list of IDs
+    ## TODO - convert app_files into iterator and lazy load
 
-        elif phase != edw_file.ENCODE_PHASE_ALL:
-            file_phase = get_phase(app, fileinfo['dataset'])
-            if file_phase != phase:
-                    logging.info("File %s is wrong phase (%s)" % (fileinfo['accession'], file_phase))
-                    continue
-        app_files.append(resp.json)
-    return app_files
+    app_files = []
+    if quick:
+        rows = get_collection(app, FILES)
+    else:
+        # get accesssions directly from DB
+        fquery = DBSession.query(Key.value).join(Key.resource).filter(Resource.item_type=='file').filter(Key.name=='accession')
+        rows = { f:{} for f, in fquery }
+        for acc,row in rows.items():
+            url = row.get('@id', "/files/%s/" % acc)
+            resp = app.get(url).maybe_follow()
+            #logger.info("GET: %s" % url)
+            #logger.info(str(resp))
+            fileinfo = resp.json
+            # below seems clunky, could search+filter
+            if dataset and fileinfo['dataset'] != dataset:
+                continue
+
+            elif phase != edw_file.ENCODE_PHASE_ALL:
+                file_phase = get_phase(app, fileinfo['dataset'])
+                if file_phase != phase:
+                        logging.info("File %s is wrong phase (%s)" % (fileinfo['accession'], file_phase))
+                        continue
+            app_files.append(resp.json)
+        app_dict = { d['accession']:d for d in app_files }
+    return app_dict
 
 
 def get_phase(app, ds_url):
@@ -438,13 +448,17 @@ def try_replicate(app, fileinfo, dry_run, method='POST', no_reps=False):
 
     return fileinfo
 
-def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, enc_dataset='', edw_dataset='', since=0, test=False):
+def get_dicts(app, edw, phase=edw_file.ENCODE_PHASE_ALL, enc_dataset='', edw_dataset='', since=0, test=False, quick=False):
 
     edw_files = edw_file.get_edw_fileinfo(edw, phase=phase, dataset=edw_dataset, since=since, test=test)
     # Other parameters are default
     edw_dict = { d['accession']:convert_edw(app, d, phase) for d in edw_files }
-    app_files = get_app_fileinfo(app, phase=phase, dataset=enc_dataset)
-    app_dict = { d['accession']:d for d in app_files }
+    logger.info("Got all files from EDW")
+    app_dict = get_app_fileinfo(app, phase=phase, dataset=enc_dataset, quick=False)
+    msg = ''
+    if not quick:
+        msg = " using lazy-loading"
+    logger.info("Got all files from App" % msg)
 
     return edw_dict, app_dict
 
@@ -477,6 +491,9 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
 
     global experiments
     global datasets
+
+    # TODO: These one day might be big enough to require lazy loading
+    # TODO: And iteration
 
     logger.info("Getting all experiments...")
     exp_collection = get_collection(app, EXPERIMENTS)
@@ -525,9 +542,6 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
 def patch_fileinfo(app, props, propinfo, dry_run=False, no_reps=False):
     # PATCH properties to file in app
 
-    #TODO: handle this case in test:
-    #webtest.app.AppError: Bad response: 422 Unprocessable Entity (not one of 200, 201, 409 for http://localhost/files/ENCFF001MXD)
-    #{"status": "error", "errors": [{"location": "body", "name": ["replicate"], "description": "None is not of type u'string'"}, {"location": "body", "name": [], "description": "Additional properties are not allowed (u'technical_replicate', u'biological_replicate' were unexpected)"}], "description": "Failed validation", "title": "Unprocessable Entity", "code": 422, "@type": ["ValidationFailure", "error"]}
     accession = propinfo['accession']
 
     logger.info('....PATCH file: %s' % (accession))
@@ -636,7 +650,6 @@ def inventory_files(app, edw_dict, app_dict):
         edw_fileinfo = edw_dict[accession]
         if not edw_fileinfo['accession']:
             continue
-            # most likely dropped out due to wrong phase
         if accession not in app_dict:
             edw_only.append(edw_fileinfo)
         else:
@@ -655,7 +668,7 @@ def inventory_files(app, edw_dict, app_dict):
     return edw_only, app_only, same, diff_accessions
 
 
-def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=False, no_patch=False, no_reps=False):
+def run(app, app_files, edw_files, phase=edw_file.ENCODE_PHASE_ALL, dry_run=False, no_patch=False, no_reps=False, quick=False):
 
 
     edw_only, app_only, same, patch = inventory_files(app, edw_files, app_files)
@@ -743,6 +756,9 @@ def main():
     parser.add_argument('--no-replicates', action='store_true',
                help="Do not create replicates at all", default=False)
 
+    parser.add_argument('q', '--no-lazy-load', action='store_true',
+               help="Do not Lazy Load edwfiles (faster, more RAM)", default=False)
+
     zargs = parser.parse_args()
 
     FORMAT = "%(asctime)s - %(levelname)s - %(message)s"
@@ -808,7 +824,7 @@ def main():
     summary.total_encoded_exps = len(experiments.keys())
     summary.total_encoded_ds = len(datasets.keys())
 
-    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase, edw_dataset=zargs.experiment, enc_dataset=single, since=since, test=zargs.use_test)
+    edw_files, app_files = get_dicts(app, edw, phase=zargs.phase, edw_dataset=zargs.experiment, enc_dataset=single, since=since, test=zargs.use_test, quick=zargs.no_lazy_load)
 
     summary.total_encoded_files = len(app_files)
     summary.total_edw_files = len(edw_files)
@@ -816,7 +832,7 @@ def main():
     if zargs.phase != edw_file.ENCODE_PHASE_ALL:
         logger.warn("SUMMARY: Synching files from Phase %s only" % zargs.phase)
 
-    return run(app, app_files, edw_files, phase=zargs.phase, dry_run=zargs.dry_run, no_patch=zargs.no_patch, no_reps=zargs.no_replicates)
+    return run(app, app_files, edw_files, phase=zargs.phase, dry_run=zargs.dry_run, no_patch=zargs.no_patch, no_reps=zargs.no_replicates, quick=zargs.no_lazy_load)
 
 
 if __name__ == '__main__':
