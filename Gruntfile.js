@@ -12,9 +12,9 @@ module.exports = function(grunt) {
                 ],
                 root: '.',
                 require: [
-                    'domready',
+                    'd3',
+                    'jquery',
                     'react',
-                    'react/lib/ReactMount',
                     'underscore',
                     'url',
 
@@ -25,14 +25,6 @@ module.exports = function(grunt) {
                     ['./src/encoded/static/components', {expose: 'main'}],
                 ],
                 shim: {
-                    d3: {
-                        path: require.resolve('d3-browser/lib/d3'),
-                        exports: 'd3',
-                    },
-                    jquery: {
-                        path: require.resolve('jquery-browser/lib/jquery'),
-                        exports: '$',
-                    },
                     'bootstrap-affix': {path: require.resolve('twitter-bootstrap/js/bootstrap-affix'), exports: null, depends: {jquery: 'jQuery'}},
                     'bootstrap-alert': {path: require.resolve('twitter-bootstrap/js/bootstrap-alert'), exports: null, depends: {jquery: 'jQuery'}},
                     'bootstrap-button': {path: require.resolve('twitter-bootstrap/js/bootstrap-button'), exports: null, depends: {jquery: 'jQuery'}},
