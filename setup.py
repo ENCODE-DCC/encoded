@@ -17,6 +17,7 @@ requires = [
     'pyramid_multiauth',
     'pyramid_tm',
     'python-magic',
+    'pytz',
     'rfc3987',
     'setuptools',
     'strict_rfc3339',
@@ -53,6 +54,7 @@ setup(
     entry_points='''
         [console_scripts]
 
+        add-date-created = encoded.commands.add_date_created:main
         check-rendering = encoded.commands.check_rendering:main
         deploy = encoded.commands.deploy:main
         dev-servers = encoded.commands.dev_servers:main

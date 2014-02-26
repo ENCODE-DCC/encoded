@@ -13,11 +13,23 @@ For the development.ini you must supply the paster app name:
 
 """
 import logging
-import transaction
 
 EPILOG = __doc__
 
 logger = logging.getLogger(__name__)
+
+
+DEFAULT_COLLECTIONS = [
+    'biosample',
+    'experiment',
+    'dataset',
+    'antibody_approval',
+    'antibody_characterization',
+    'biosample_characterization',
+    'rnai_characterization',
+    'construct_characterization',
+    'document',
+]
 
 
 def internal_app(configfile, app_name=None, username=None):
@@ -33,9 +45,11 @@ def internal_app(configfile, app_name=None, username=None):
     return TestApp(app, environ)
 
 
-def run(testapp):
+def run(testapp, collections):
+    if not collections:
+        collections = DEFAULT_COLLECTIONS
     root = testapp.app.root_factory(testapp.app)
-    for collection_name in ['biosample', 'experiment', 'dataset', 'antibody_approval', 'antibody_characterization', 'biosample_characterization', 'rnai_characterization' , 'construct_characterization']:
+    for collection_name in collections:
         collection = root[collection_name]
         count = 0
         errors = 0
@@ -57,7 +71,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--app-name', help="Pyramid app name in configfile")
-    parser.add_argument('--abort', action='store_true', help="Rollback transaction")
+    parser.add_argument('--item-type', action='append', help="Item type")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()
 
@@ -67,7 +81,7 @@ def main():
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)
 
-    run(testapp)
+    run(testapp, args.item_type)
 
 
 if __name__ == '__main__':
