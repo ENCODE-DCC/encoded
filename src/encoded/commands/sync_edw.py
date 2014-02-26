@@ -406,7 +406,6 @@ def try_replicate(app, fileinfo, dry_run, method='POST', no_reps=False):
     if not dataset:
         dataset = datasets.get(ds, None)
         is_experiment = False
-        import pdb;pdb.set_trace()
     rep = fileinfo.get('replicate', None)
 
     if ( (dataset and not is_experiment) or
