@@ -74,10 +74,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dd hidden={!context.description}>{context.description}</dd>
 
                         <dt hidden={!context.biosample_term_name}>Biosample</dt>
-                        <dd hidden={!context.biosample_term_name}>{context.biosample_term_name}</dd>
+                        <dd hidden={!context.biosample_term_name} className="sentence-case">{context.biosample_term_name}</dd>
 
                         <dt hidden={!context.biosample_type}>Biosample type</dt>
-                        <dd hidden={!context.biosample_type}>{context.biosample_type}</dd>
+                        <dd hidden={!context.biosample_type} className="sentence-case">{context.biosample_type}</dd>
 
                         {context.target ? <dt>Target</dt> : null}
                         {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
@@ -104,13 +104,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dd>{context.lab.title}</dd>
 
                         <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                        <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
                         <dt hidden={!context.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd hidden={!context.encode2_dbxrefs.length} className="no-cap">
+                        <dd hidden={!context.encode2_dbxrefs.length}>
                             <DbxrefList values={dbxrefs} />
                         </dd>
                         

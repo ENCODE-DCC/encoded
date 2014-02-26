@@ -62,17 +62,17 @@ var Approval = module.exports.Approval = React.createClass({
                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
 
                         {context.antibody.host_organism ? <dt>Host</dt> : null}
-                        {context.antibody.host_organism ? <dd>{context.antibody.host_organism.name}</dd> : null}
+                        {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.name}</dd> : null}
         
 
                         <dt hidden={!context.antibody.clonality}>Clonality</dt>
-                        <dd hidden={!context.antibody.clonality}>{context.antibody.clonality}</dd>
+                        <dd hidden={!context.antibody.clonality} className="sentence-case">{context.antibody.clonality}</dd>
 
                         <dt hidden={!context.antibody.purifications.length}>Purification</dt>
-                        <dd hidden={!context.antibody.purifications.length}>{context.antibody.purifications.join(', ')}</dd>
+                        <dd hidden={!context.antibody.purifications.length} className="sentence-case">{context.antibody.purifications.join(', ')}</dd>
 
                         <dt hidden={!context.antibody.isotype}>Isotype</dt>
-                        <dd hidden={!context.antibody.isotype}>{context.antibody.isotype}</dd>
+                        <dd hidden={!context.antibody.isotype} className="sentence-case">{context.antibody.isotype}</dd>
 
                         <dt hidden={!context.antibody.antigen_description}>Antigen description</dt>
                         <dd hidden={!context.antibody.antigen_description}>{context.antibody.antigen_description}</dd>
@@ -81,10 +81,10 @@ var Approval = module.exports.Approval = React.createClass({
                         <dd hidden={!context.antibody.antigen_sequence}>{context.antibody.antigen_sequence}</dd>
 
                         <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
-                        <dd className="no-cap" hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
+                        <dd hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
                         
                         <dt hidden={!context.antibody.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd className="no-cap" hidden={!context.antibody.encode2_dbxrefs.length}>
+                        <dd hidden={!context.antibody.encode2_dbxrefs.length}>
                         	<DbxrefList values={dbxrefs} />
                         </dd>
                     </dl>
@@ -160,13 +160,13 @@ var Characterization = module.exports.Characterization = React.createClass({
                         <div className="span5">
                             <dl className="characterization-meta-data key-value">
                                 <dt className="h3">Method</dt>
-                                <dd className="h3 no-cap">{context.characterization_method}</dd>
+                                <dd className="h3 sentence-case">{context.characterization_method}</dd>
 
                                 <dt className="h4">Target species</dt>
-                                <dd className="h4">{context.target.organism.name}</dd>
+                                <dd className="h4 sentence-case">{context.target.organism.name}</dd>
 
                                 {context.caption ? <dt>Caption</dt> : null}
-                                {context.caption ? <dd>{context.caption}</dd> : null}
+                                {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
 
                                 <dt>Submitted by</dt>
                                 <dd>{context.submitted_by.title}</dd>

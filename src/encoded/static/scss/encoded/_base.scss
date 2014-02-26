@@ -11,8 +11,9 @@ $footerBackgroundHighlight: #294b6a !default;
 
 $tableHeadFootBackgroundColor: #f5f5f5;
 
-
 /* BASE STYLES */
+/* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */
+
 body { background: $mainThemeColor; }
 
 .float-wrap { overflow: hidden; }
@@ -23,17 +24,7 @@ body { background: $mainThemeColor; }
 	height: 100%;
 }
 
-dd::first-letter { text-transform: capitalize; } 
-dd:first-letter { text-transform: capitalize; } // IE 8 and below support
-.no-cap::first-letter, .no-cap::first-letter * { text-transform: none !important; } 
-.no-cap:first-letter, .no-cap:first-letter * { text-transform: none !important; } // IE 8 and below support
-
-
-
-/* Note: most base styles handled by Bootstrap, with variable settings in bootstrap/_variables.scss */
-
-.cap-me-once { display: block; }
-.cap-me-once:first-letter { text-transform: uppercase; }
-.cap-me-once::first-letter { text-transform: uppercase; } // older browser support
-
 hr { clear: both; }
+
+.sentence-case::first-letter { text-transform: uppercase; }
+.sentence-case:first-letter { text-transform: uppercase; } // older browser support
