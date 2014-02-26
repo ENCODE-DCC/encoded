@@ -406,6 +406,7 @@ def try_replicate(app, fileinfo, dry_run, method='POST', no_reps=False):
     if not dataset:
         dataset = datasets.get(ds, None)
         is_experiment = False
+        import pdb;pdb.set_trace()
     rep = fileinfo.get('replicate', None)
 
     if ( (dataset and not is_experiment) or
@@ -555,7 +556,7 @@ def patch_fileinfo(app, props, propinfo, dry_run=False, no_reps=False):
         elif prop == 'replicate':
             can_patch_replicates = True
 
-    if not propinfo['replicate']:
+    if not propinfo.get('replicate', None):
         propinfo = try_replicate(app, propinfo, dry_run, method='PATCH', no_reps=no_reps)
 
     url = collection_url(FILES) + accession
