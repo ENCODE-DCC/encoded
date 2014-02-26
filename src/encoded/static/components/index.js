@@ -1,5 +1,15 @@
 /** @jsx React.DOM */
 'use strict';
+
+// https://github.com/facebook/react/pull/1183
+var DefaultDOMPropertyConfig = require('react/lib/DefaultDOMPropertyConfig');
+DefaultDOMPropertyConfig.DOMAttributeNames.httpEquiv = 'http-equiv';
+
+// https://github.com/facebook/react/pull/1181
+var ReactDOM = require('react/lib/ReactDOM');
+ReactDOM.link.type.prototype._tagClose = '';
+
+
 // Require all components to ensure javascript load ordering
 require('./antibody');
 require('./app');
