@@ -213,7 +213,8 @@ module.exports.HistoryAndTriggers = {
 
     componentWillMount: function () {
         if (typeof window !== 'undefined') {
-            window.addEventListener('error', this.handleError, false);            
+            // IE8 compatible event registration
+            window.onerror = this.handleError;
         }
     },
 
@@ -251,16 +252,16 @@ module.exports.HistoryAndTriggers = {
         }
     },
 
-    handleError: function(err, url, line) {
+    handleError: function(msg, url, line, column) {
         // When an unhandled exception occurs, reload the page on navigation
         this.historyEnabled = false;
         var ga = window.ga;
-        var parsed = require('url').parse(url);
-        if (parsed.hostname === window.location.hostname) {
+        var parsed = url && require('url').parse(url);
+        if (url && parsed.hostname === window.location.hostname) {
             url = parsed.path;
         }
         ga('send', 'exception', {
-            'exDescription': 'unhandled:' + (err.message || err) + url + ':' + line,
+            'exDescription': url + '@' + line + ',' + column + ': ' + msg,
             'exFatal': true,
             'location': window.location.href
         });
