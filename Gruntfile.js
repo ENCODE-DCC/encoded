@@ -12,6 +12,7 @@ module.exports = function(grunt) {
                 ],
                 root: '.',
                 require: [
+                    'domready',
                     'jquery',
                     'react',
                     'underscore',

@@ -45,8 +45,8 @@ var recordServerStats = require('./mixins').recordServerStats;
 // Inside this function, kick-off all initialization, everything up to this
 // point should be definitions.
 if (typeof window != 'undefined' && !window.TEST_RUNNER) {
-    var $ = require('jquery');
-    $(document).ready(function ready() {
+    var domready = require('domready');
+    domready(function ready() {
         console.log('ready');
         var props = {};
         // Ensure the initial render is exactly the same

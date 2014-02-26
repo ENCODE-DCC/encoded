@@ -7,8 +7,9 @@
       "from": "underscore@~1.6.0"
     },
     "domready": {
-      "version": "1.0.4",
-      "from": "domready@~1.0.4"
+      "version": "0.3.0",
+      "from": "domready@0.3.0",
+      "resolved": "https://registry.npmjs.org/domready/-/domready-0.3.0.tgz"
     },
     "es5-shim": {
       "version": "2.3.0",
