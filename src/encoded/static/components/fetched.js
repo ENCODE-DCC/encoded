@@ -99,10 +99,11 @@ var FetchedData = module.exports.FetchedData = React.createClass({
                 </div>
             );
         }
+        var etag = this.state.fetchedRequest.getResponseHeader('ETag')
         return (
             <div key={key} className="done">
                 {this.transferPropsTo(
-                    <Component Component={undefined} url={undefined} data={data} />
+                    <Component Component={undefined} url={undefined} data={data} etag={etag} />
                 )}
             </div>
         );

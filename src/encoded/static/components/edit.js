@@ -99,7 +99,8 @@ var EditForm = module.exports.EditForm = React.createClass({
             type: 'PUT',
             contentType: "application/json",
             data: value,
-            dataType: 'json'
+            dataType: 'json',
+            headers: {'If-Match': this.props.etag}
         }).fail(this.fail)
         .done(this.receive);
         xhr.href = url;
@@ -111,7 +112,7 @@ var EditForm = module.exports.EditForm = React.createClass({
     },
 
     finish: function () {
-        window.location.assign('');
+        this.props.navigate('');
     },
 
     fail: function (xhr, status, error) {

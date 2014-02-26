@@ -14,6 +14,7 @@ from pyramid.httpexceptions import (
     HTTPConflict,
     HTTPForbidden,
     HTTPInternalServerError,
+    HTTPPreconditionFailed,
     HTTPNotFound,
     HTTPNotModified,
 )
@@ -1132,6 +1133,20 @@ def etag_conditional(view_callable):
     return wrapped
 
 
+def if_match_tid(view_callable):
+    """ ETag conditional PUT/PATCH support
+
+    Returns 412 Precondition Failed when etag does not match.
+    """
+    def wrapped(context, request):
+        etag = 'tid:%s' % context.model.data[''].propsheet.tid
+        if etag not in request.if_match:
+            raise HTTPPreconditionFailed("The resource has changed.")
+        return view_callable(context, request)
+
+    return wrapped
+
+
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
     return item_view(context, request)
@@ -1218,19 +1233,25 @@ def item_view_edit(context, request):
             properties[name] = [request.resource_path(item) for item in value]
         else:
             properties[name] = request.resource_path(value)
+    etag = 'tid:%s' % context.model.data[''].propsheet.tid
+    request.response.etag = etag
+    cache_control = request.response.cache_control
+    cache_control.private = True
+    cache_control.max_age = 0
+    cache_control.must_revalidate = True
     return properties
 
 
 @view_config(context=Item, permission='edit', request_method='PUT',
-             validators=[validate_item_content_put])
+             validators=[validate_item_content_put], decorator=if_match_tid)
 @view_config(context=Item, permission='edit', request_method='PATCH',
-             validators=[validate_item_content_patch])
+             validators=[validate_item_content_patch], decorator=if_match_tid)
 @view_config(context=Item, permission='edit_unvalidated', request_method='PUT',
              validators=[no_validate_item_content_put],
-             request_param=['validate=false'])
+             request_param=['validate=false'], decorator=if_match_tid)
 @view_config(context=Item, permission='edit_unvalidated', request_method='PATCH',
              validators=[no_validate_item_content_patch],
-             request_param=['validate=false'])
+             request_param=['validate=false'], decorator=if_match_tid)
 def item_edit(context, request, render=None):
     """ This handles both PUT and PATCH, difference is the validator
 
