@@ -106,7 +106,8 @@ var App = React.createClass({
             content = this.transferPropsTo(ContentView({
                 personaReady: this.state.personaReady,
                 session: this.state.session,
-                portal: this.state.portal
+                portal: this.state.portal,
+                navigate: this.navigate
             }));
         }
         // Switching between collections may leave component in place
