@@ -40,7 +40,7 @@ var ie8compat = [
     "nav",
     "section",
     "figure",
-    "figcaption",
+    "figcaption"
 ].map(function (tag) {
     return 'document.createElement("' + tag + '");';
 }).join('\n');
