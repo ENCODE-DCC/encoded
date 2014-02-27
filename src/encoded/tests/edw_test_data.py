@@ -26,6 +26,8 @@ new_out = ['ENCFF999ZZZ', 'ENCFF998ZZZ', 'ENCFF997ZZZ', 'ENCFF996ZZZ']
 
 # All ENCODE 2 experiments in test set
 encode2 = {
+    'wgEncodeEH002546',
+    'hg19-wgEncodeUmassDekker5C',
     'hg19-wgEncodeUwAffyExonArray',
     'wgEncodeEM002001',
     'wgEncodeEM002004',
