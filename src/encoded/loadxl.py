@@ -1,4 +1,5 @@
 from typedsheets import cast_row_values
+import json
 import logging
 import os.path
 
@@ -169,6 +170,9 @@ def read_single_sheet(path, name=None):
         if ext == '.csv':
             return read_csv(stream)
 
+        if ext == '.json':
+            return json.load(stream)
+
         raise ValueError('Unknown file extension for %r' % path)
 
     if path.endswith('.xlsx'):
@@ -190,6 +194,10 @@ def read_single_sheet(path, name=None):
             stream = zf.open(name + '.csv', 'rU')
             return read_csv(stream)
 
+        if (name + '.json') in names:
+            stream = zf.open(name + '.json', 'r')
+            return json.load(stream)
+
     if os.path.isdir(path):
         root = os.path.join(path, name)
 
@@ -205,17 +213,21 @@ def read_single_sheet(path, name=None):
             stream = open(root + '.csv', 'rbU')
             return read_csv(stream)
 
+        if os.path.exists(root + '.json'):
+            stream = open(root + '.json', 'rb')
+            return json.load(stream)
+
     return []
 
 
 def read_xl(stream):
     import xlreader
-    return xlreader.DictReader(stream)
+    return cast_row_values(xlreader.DictReader(stream))
 
 
 def read_csv(stream, **kw):
     import csv
-    return csv.DictReader(stream, **kw)
+    return cast_row_values(csv.DictReader(stream, **kw))
 
 
 ##############################################################################
@@ -415,7 +427,6 @@ def process(rows):
 
 def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None):
     pipeline = [
-        cast_row_values,
         skip_rows_with_all_key_value(test='skip'),
         skip_rows_with_all_falsey_value('test') if test_only else noop,
         remove_keys_with_empty_value,
@@ -502,3 +513,14 @@ def load_all(testapp, filename, docsdir, test=False):
             continue
         pipeline = get_pipeline(testapp, docsdir, test, item_type, phase=2)
         process(combine(source, pipeline))
+
+
+def convert_all(filename, outputdir):
+    for item_type in ORDER:
+        try:
+            source = read_single_sheet(filename, item_type)
+        except ValueError:
+            continue
+        data = list(remove_keys_with_empty_value(source))
+        out = open(os.path.join(outputdir, item_type + '.json'), 'w')
+        json.dump(data, out, sort_keys=True, indent=4)

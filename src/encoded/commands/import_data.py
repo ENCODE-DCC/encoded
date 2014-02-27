@@ -86,6 +86,8 @@ def main():
         help="HTTP password (secret_access_key)")
     parser.add_argument('--attach', '-a', action='append', default=[],
         help="Directory to search for attachments")
+    parser.add_argument('--outputdir',
+        help="Directory to write converted output")
     parser.add_argument('inpath',
         help="input zip file/directory of excel/csv/tsv sheets.")
     parser.add_argument('url',
@@ -93,6 +95,10 @@ def main():
     args = parser.parse_args()
 
     logging.basicConfig()
+
+    if args.outputdir:
+        loadxl.convert_all(args.inpath, args.outputdir)
+        return
 
     url = urlparse(args.url)
     if urlparse(args.url).scheme in ('http', 'https'):
