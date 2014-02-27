@@ -28,9 +28,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var replicates = _.sortBy(context.replicates, function(item) {
             return item.biological_replicate_number;
         });
-        var dbxrefs = context.encode2_dbxrefs.map(function (item) {
-        	return "UCSC_encode_db:" + item;
-        });
+
         var documents = {};
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;
@@ -109,15 +107,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
-                        <dt hidden={!context.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd hidden={!context.encode2_dbxrefs.length}>
-                            <DbxrefList values={dbxrefs} />
+                        <dt hidden={!context.dbxrefs.length}>Other identifiers</dt>
+                        <dd hidden={!context.dbxrefs.length}>
+                            <DbxrefList values={context.dbxrefs} />
                         </dd>
-                        
-                        {context.geo_dbxrefs.length ? <dt>GEO Accessions</dt> : null}
-                        {context.geo_dbxrefs.length ? <dd>
-                            <DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
-                        </dd> : null}
 
                     </dl>
                 </div>

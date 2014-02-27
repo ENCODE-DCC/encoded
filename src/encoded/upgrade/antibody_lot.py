@@ -1,8 +1,8 @@
 from ..migrator import upgrade_step
 
 
-@upgrade_step('treatment', '', '2')
-def treatment_0_2(value, system):
+@upgrade_step('antibody_lot', '', '2')
+def antibody_lot_0_2(value, system):
     # http://redmine.encodedcc.org/issues/817
     value['dbxref'] = []
    
@@ -11,3 +11,4 @@ def treatment_0_2(value, system):
             new_dbxref = 'ucsc_encode_db:' + encode2_dbxref
             value['dbxref'].append(new_dbxref)
         del value['encode2_dbxrefs']
+        
