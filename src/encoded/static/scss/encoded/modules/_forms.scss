@@ -19,7 +19,12 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 }
 
 input.search-query {
-	height: 14px;
+	font-size: 15px;
+    height: 22px;
+    line-height: 16px;
+    padding-bottom: 0;
+    padding-top: 0;
+    padding-right: 26px;
 }
 
 form.navbar-form {
