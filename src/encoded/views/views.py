@@ -52,7 +52,7 @@ ALLOW_SUBMITTER_ADD = [
 
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, 'role.lab_submitter', 'edit'),
-    (Allow, 'role.lab_submitter', 'view_raw'),
+    # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
 ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [

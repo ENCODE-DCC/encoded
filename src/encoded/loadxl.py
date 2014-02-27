@@ -31,8 +31,8 @@ ORDER = [
     'experiment',
     'replicate',
     # 'software',
-    'file',
     'dataset',
+    'file',
 ]
 
 

@@ -14,7 +14,7 @@ var Footer = React.createClass({
                 <div className="container">
                     <div id="footer-links">
                         <ul>
-                            <li><a href="/"><img src="/static/img/encode-logo-small.png" alt="ENCODE" id="encode-logo" /></a></li>
+                            <li><a href="/"><img src="/static/img/encode-logo-small-2x.png" alt="ENCODE" id="encode-logo" height="45px" width="78px" /></a></li>
                             <li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
                             <li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
                             <li className="hidden-phone">&copy;{new Date().getFullYear()}. Stanford University.</li>
@@ -22,9 +22,9 @@ var Footer = React.createClass({
                     </div>
                     <div id="footer-logos">
                         <ul>
-                            <li><a href="http://www.ucsc.edu"><img src="/static/img/ucsc-logo-white-alt.png" alt="UC Santa Cruz" id="ucsc-logo" /></a>
+                            <li><a href="http://www.ucsc.edu"><img src="/static/img/ucsc-logo-white-alt-2x.png" alt="UC Santa Cruz" id="ucsc-logo" width="107px" height="42px" /></a>
                             </li>
-                            <li><a href="http://www.stanford.edu"><img src="/static/img/su-logo-white.png" alt="Stanford University" id="su-logo" /></a></li>
+                            <li><a href="http://www.stanford.edu"><img src="/static/img/su-logo-white-2x.png" alt="Stanford University" id="su-logo" width="105px" height="49px" /></a></li>
                         </ul>
                     </div>
                     
