@@ -52,6 +52,7 @@
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
                 "pattern": "^ucsc_encode_db:\\S+)"
+            }
         },
         "treatment_term_id": {
             "title": "Term ID",
