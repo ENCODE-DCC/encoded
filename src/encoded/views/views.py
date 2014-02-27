@@ -506,7 +506,7 @@ class Platform(Collection):
         'title': '{term_name}',
         '$templated': True,
     }
-    item_keys = ALIAS_KEYS
+    item_keys = ALIAS_KEYS + ['term_name']
 
 
 @location('libraries')
