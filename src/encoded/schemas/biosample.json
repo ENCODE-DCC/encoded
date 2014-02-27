@@ -7,7 +7,7 @@
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
     "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
     "facets": [{"Biosample Type": "biosample_type"},  {"Organ": "organ_slims"}, {"Organism": "organism.name"}, {"Gender": "donor.sex"}, {"Life Stage": "life_stage"}, {"Subcellular Fraction": "subcellular_fraction_term_name"}, {"Phase": "phase"}, {"Treatment": "treatments.treatment_term_name"}, {"Source": "source.title"}, {"Lab": "lab.title"}, {"Developmental Slim": "developmental_slims"}],
-    "identifyingProperties": ["uuid","accesion","aliases"],
+    "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
