@@ -83,6 +83,7 @@
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
                 "pattern": "^ucsc_encode_db:\\S+)"
+            }
         },
         "protocol_documents": {
             "title": "Protocol documents",

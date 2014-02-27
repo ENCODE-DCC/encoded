@@ -43,6 +43,7 @@
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
                 "pattern": "^(geo:GPL\\d+|ucsc_encode_db:\\S+)"
+            }
         },
         "url": {
             "title": "URL",
