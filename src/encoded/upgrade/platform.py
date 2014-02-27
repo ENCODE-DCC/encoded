@@ -1,7 +1,7 @@
 from ..migrator import upgrade_step
 
 
-@upgrade_step('platfrom', '', '2')
+@upgrade_step('platform', '', '2')
 def dataset_0_2(value, system):
     # http://redmine.encodedcc.org/issues/817
     value['dbxref'] = []
