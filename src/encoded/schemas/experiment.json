@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "target": {
             "title": "Target",
@@ -76,8 +76,7 @@
         "alternate_accessions": 1.0,
         "assay_term_name": 1.0,
         "assay_term_id": 1.0,
-        "geo_dbxrefs": 1.0,
-        "encode2_dbxrefs": 1.0,
+        "dbxrefs": 1.0,
         "aliases": 1.0,
         "biosample_term_id": 1.0,
         "biosample_term_name": 1.0,
@@ -100,7 +99,7 @@
         "replicates.antibody.purifications": 1.0,
         "replicates.antibody.product_id": 1.0,
         "replicates.antibody.aliases": 1.0,
-        "replicates.antibody.encode2_dbxrefs": 1.0,
+        "replicates.antibody.dbxrefs": 1.0,
         "replicates.library.biosample.donor.organism.name": 1.0,
         "replicates.library.biosample.donor.organism.scientific_name": 1.0,
         "replicates.library.biosample.donor.organism.taxon_id": 1.0,

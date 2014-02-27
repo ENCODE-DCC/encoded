@@ -31,6 +31,14 @@ def biosample_2(biosample):
     })
     return item
 
+@pytest.fixture
+def biosample_3(biosample):
+    item = biosample.copy()
+    item.update({
+        'encode2_dbxref': 'Liver',
+    })
+    return item
+
 def test_biosample_upgrade(app, biosample_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
@@ -118,3 +126,12 @@ def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     res = testapp.get(location+'?raw=true&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in res.json
+
+
+def test_biosample_upgrade_encode2_dbxref(app, biosample_3):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['dbxrefs'] == ['ucsc_encode_db:Liver']
+    assert 'encode2_dbxrefs' not in value
+

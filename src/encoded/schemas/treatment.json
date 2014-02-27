@@ -17,7 +17,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "treatment_type": {
             "title": "Type",
@@ -43,14 +43,16 @@
                 "linkTo": "document"
             }
         },
-        "encode2_dbxrefs": {
-            "title": "Previous ENCODE IDs",
+        "dbxref": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Previous ENCODE ID",
-                "type":  "string"
-            }
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^ucsc_encode_db:\\S+)"
         },
         "treatment_term_id": {
             "title": "Term ID",
