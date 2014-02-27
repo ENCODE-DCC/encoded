@@ -66,7 +66,6 @@ def test_post_duplicate(workbook, testapp):
         assert(True)
 
 @pytest.mark.slow
-@pytest.mark.xfail
 def test_list_new(workbook, testapp):
     # Test obtaining list of 'new' accessions (at EDW, not at app)
     # Unexpanded JSON (requires GETs on embedded URLs)

@@ -126,7 +126,7 @@ def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
         ds = get_dataset_or_experiment(app, ds_acc, phase)
         if not ds:
             msg = "SKIPPING file with dataset that cannot be found (or wrong phase)"
-            summary.warning_count[msg] = summary.warning_count.get(msg,0) + 1
+            summary.error_count[msg] = summary.error_count.get(msg,0) + 1
             logger.error("%s: %s (%s)" % (msg, file_dict['accession'], ds_acc))
             summary.files_punted = summary.files_punted + 1
             file_dict = { 'accession': ""}
@@ -139,9 +139,29 @@ def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
     try:
         if file_dict.get('biological_replicate', None):
             int(file_dict['biological_replicate'])
+
+            if file_dict['biological_replicate'] == '0':
+                msg = "SKIPPING 'Zero' used as bio replicate number"
+                summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+                logger.error("%s: %s (%s)" %
+                   (msg, file_dict['accession'], file_dict['biological_replicate']))
+                summary.files_punted = summary.files_punted + 1
+                file_dict = { 'accession': ""}
+
+        if file_dict.get('technical_replicate', None):
+
+            if file_dict['technical_replicate'] == '0':
+                msg = "SKIPPING 'Zero' used as tech replicate number"
+                summary.error_count[msg] = summary.error_count.get(msg,0) + 1
+                logger.error("%s: %s (%s)" %
+                   (msg, file_dict['accession'], file_dict['technical_replicate']))
+                summary.files_punted = summary.files_punted + 1
+                file_dict = { 'accession': ""}
+
+
     except ValueError:
         msg = "Non-numerical biological replicate:"
-        logger.warning("%s: %s; treating as NULL" % (msg, file_dict['biological_replicate']))
+        logger.warning("%s: %s (%s); treating as NULL" % (msg, file_dict['accession'], file_dict['biological_replicate']))
         file_dict['biological_replicate'] = None
 
     if (file_dict.has_key('replicate') and file_dict['replicate']):
