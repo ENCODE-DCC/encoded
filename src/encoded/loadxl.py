@@ -513,14 +513,3 @@ def load_all(testapp, filename, docsdir, test=False):
             continue
         pipeline = get_pipeline(testapp, docsdir, test, item_type, phase=2)
         process(combine(source, pipeline))
-
-
-def convert_all(filename, outputdir):
-    for item_type in ORDER:
-        try:
-            source = read_single_sheet(filename, item_type)
-        except ValueError:
-            continue
-        data = list(remove_keys_with_empty_value(source))
-        out = open(os.path.join(outputdir, item_type + '.json'), 'w')
-        json.dump(data, out, sort_keys=True, indent=4)
