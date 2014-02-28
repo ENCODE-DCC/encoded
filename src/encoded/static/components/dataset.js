@@ -69,8 +69,8 @@ var Dataset = module.exports.Dataset = React.createClass({
                         
                         <dt>External resources</dt>
 						<dd>
-							{context.geo_dbxrefs.length ?
-								<DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
+							{context.dbxrefs.length ?
+								<DbxrefList values={context.dbxrefs}/>
 							: <em>None submitted</em> }
 						</dd>
                     </dl>
