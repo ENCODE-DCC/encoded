@@ -948,21 +948,9 @@ class Collection(Mapping):
         session = DBSession()
         query = session.query(Resource).filter(
             Resource.item_type == self.item_type
-        )
-
-        query = query.options(
-            orm.joinedload_all(
-                Resource.rels,
-                Link.target,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
-            ),
         ).order_by(Resource.rid)
-        
-        if limit is None:
-            models = query
-        else:
-            models = self._batched_models(query, limit)
+
+        models = self._batched_models(query, min(limit or 1000, 1000))
 
         items = self._filter_allowed_view(request, query, limit)
         result['@graph'] = [self._render_item(request, item, frame) for item in items]
@@ -982,7 +970,7 @@ class Collection(Mapping):
             for model in query.filter(Resource.rid > model.rid).limit(size):
                 yield model
 
-    def _filter_allowed_view(self, request, models, max=None):
+    def _filter_allowed_view(self, request, models, limit=None):
         count = 0
         for model in models:
             last_rid = model.rid
@@ -990,7 +978,7 @@ class Collection(Mapping):
             if request.has_permission('view', item):
                 yield item                
                 count += 1
-                if max is not None and count >= max:
+                if limit is not None and count >= limit:
                     break
 
     def _render_item(self, request, item, frame):
