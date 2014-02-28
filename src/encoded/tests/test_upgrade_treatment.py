@@ -21,5 +21,6 @@ def treatment_1(treatment):
  def test_treatment_upgrade(app, treatment_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('treatment', treatment_1, target_version='2')
+    assert value['schema_version'] == '2'
     assert 'encode2_dbxrefs' not in value
     assert value['dbxrefs'] == ['ucsc_encode_db:Estradiol_1nM']
