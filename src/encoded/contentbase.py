@@ -118,9 +118,18 @@ embed_cache = ManagerLRUCache('embed_cache')
 def embed(request, path, as_user=False):
     # Should really be more careful about what gets included instead.
     # Cache cut response time from ~800ms to ~420ms.
+    if as_user:
+        return _embed(request, path, as_user)
     result = embed_cache.get(path, None)
     if result is not None:
         return deepcopy(result)
+    result = _embed(request, path, as_user)
+    if not as_user:
+        embed_cache[path] = deepcopy(result)
+    return result
+
+
+def _embed(request, path, as_user=False):
     subreq = make_subrequest(request, path)
     subreq.override_renderer = 'null_renderer'
     if not as_user:
@@ -128,11 +137,9 @@ def embed(request, path, as_user=False):
             del subreq.environ['HTTP_COOKIE']
         subreq.remote_user = 'EMBED'
     try:
-        result = request.invoke_subrequest(subreq)
+        return request.invoke_subrequest(subreq)
     except HTTPNotFound:
         raise KeyError(path)
-    embed_cache[path] = deepcopy(result)
-    return result
 
 
 def maybe_include_embedded(request, result):
