@@ -670,7 +670,7 @@ class Experiment(Dataset):
         ('files.length', 'Files'),
         ('description', 'Description'),
         ('lab.title', 'Lab'),
-        ('encode2_dbxrefs', 'Dbxrefs'),
+        ('dbxrefs', 'Dbxrefs'),
         ('award.project', 'Project'),
     ])
 
