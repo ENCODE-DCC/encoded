@@ -428,7 +428,9 @@ def process(rows):
 def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None):
     pipeline = [
         skip_rows_with_all_key_value(test='skip'),
+        skip_rows_with_all_key_value(_test='skip'),
         skip_rows_with_all_falsey_value('test') if test_only else noop,
+        skip_rows_with_all_falsey_value('_test') if test_only else noop,
         remove_keys_with_empty_value,
         skip_rows_missing_all_keys('uuid', 'accession', '@id'),
         remove_keys('schema_version'),
@@ -436,7 +438,6 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
             'strain_background', 'age',  # 'flowcell_details.machine',
         ),
-        remove_keys('test'),
         remove_keys('uuid') if method in ('PUT', 'PATCH') else noop,
         add_attachment(docsdir),
     ]
