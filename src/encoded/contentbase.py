@@ -56,6 +56,7 @@ from uuid import (
     UUID,
     uuid4,
 )
+from .cache import ManagerLRUCache
 from .objtemplate import ObjectTemplate
 from .schema_formats import is_accession
 from .schema_utils import validate_request
@@ -313,6 +314,8 @@ class Root(object):
         self.__acl__ = acl + self.builtin_acl
         self.collections = {}
         self.by_item_type = {}
+        self.item_cache = ManagerLRUCache('encoded_item_cache')
+        self.unique_key_cache = ManagerLRUCache('encoded_key_cache')
 
     def __getitem__(self, name):
         try:
@@ -358,15 +361,27 @@ class Root(object):
                 uuid = UUID(uuid)
             except ValueError:
                 return default
+
+        cached = self.item_cache.get(uuid)
+        if cached is not None:
+            return cached
+
         session = DBSession()
         model = session.query(Resource).get(uuid)
         if model is None:
             return default
         collection = self.by_item_type[model.item_type]
-        return collection.Item(collection, model)
+        item = collection.Item(collection, model)
+        self.item_cache[uuid] = item
+        return item
 
     def get_by_unique_key(self, unique_key, name, default=None):
         pkey = (unique_key, name)
+
+        cached = self.unique_key_cache.get(pkey)
+        if cached is not None:
+            return self.get_by_uuid(cached)
+
         session = DBSession()
         # Eager load related resources here.
         key = session.query(Key).options(
@@ -387,8 +402,17 @@ class Root(object):
         if key is None:
             return default
         model = key.resource
+
+        uuid = model.rid
+        self.unique_key_cache[pkey] = uuid
+        cached = self.item_cache.get(uuid)
+        if cached is not None:
+            return cached
+
         collection = self.by_item_type[model.item_type]
-        return collection.Item(collection, model)
+        item = collection.Item(collection, model)
+        self.item_cache[uuid] = item
+        return item
 
     def attach(self, name, factory):
         value = factory(self, name)
@@ -861,64 +885,31 @@ class Collection(Mapping):
         return query.count()
 
     def get(self, name, default=None):
-        resource = self.get_by_uuid(name, None)
+        root = find_root(self)
+        resource = root.get_by_uuid(name, None)
         if resource is not None:
+            if resource.__parent__ is not self:
+                return default
             return resource
         if is_accession(name):
-            resource = self.get_by_unique_key('accession', name)
+            resource = root.get_by_unique_key('accession', name)
             if resource is not None:
+                if resource.__parent__ is not self:
+                    return default
                 return resource
         if ':' in name:
-            resource = self.get_by_unique_key('alias', name)
+            resource = root.get_by_unique_key('alias', name)
             if resource is not None:
+                if resource.__parent__ is not self:
+                    return default
                 return resource
         if self.unique_key is not None:
-            resource = self.get_by_unique_key(self.unique_key, name)
+            resource = root.get_by_unique_key(self.unique_key, name)
             if resource is not None:
+                if resource.__parent__ is not self:
+                    return default
                 return resource
         return default
-
-    def get_by_uuid(self, uuid, default=None):
-        if isinstance(uuid, basestring):
-            try:
-                uuid = UUID(uuid)
-            except ValueError:
-                return default
-        session = DBSession()
-        #if (Resource, (uuid,)) not in session.identity_map:
-        #    print 'Uncached %s/%s' % (self.item_type, uuid)
-        model = session.query(Resource).get(uuid)
-        if model is None:
-            return default
-        if model.item_type != self.item_type:
-            return default
-        return self.Item(self, model)
-
-    def get_by_unique_key(self, unique_key, name, default=None):
-        pkey = (unique_key, name)
-        session = DBSession()
-        # Eager load related resources here.
-        key = session.query(Key).options(
-            orm.joinedload_all(
-                Key.resource,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
-                innerjoin=True,
-            ),
-            orm.joinedload_all(
-                Key.resource,
-                Resource.rels,
-                Link.target,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
-            ),
-        ).get(pkey)
-        if key is None:
-            return default
-        model = key.resource
-        if model.item_type != self.item_type:
-            return default
-        return self.Item(self, model)
 
     def add(self, properties):
         uuid = properties.get('uuid', _marker)
