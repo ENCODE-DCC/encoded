@@ -73,7 +73,7 @@
                 "linkTo": "treatment"
             }
         },
-        "dbxref": {
+        "dbxrefs": {
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",
