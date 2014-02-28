@@ -113,16 +113,12 @@ def make_subrequest(request, path):
     return subreq
 
 
-def embed(request, path, result=None, as_user=False):
+embed_cache = ManagerLRUCache('embed_cache')
+
+def embed(request, path, as_user=False):
     # Should really be more careful about what gets included instead.
     # Cache cut response time from ~800ms to ~420ms.
-    embedded = None
-    if manager.stack:
-        embedded = manager.stack[0].setdefault('encoded_embedded', {})
-    if result is not None:
-        embedded[path] = deepcopy(result)
-        return result
-    result = embedded.get(path, None)
+    result = embed_cache.get(path, None)
     if result is not None:
         return deepcopy(result)
     subreq = make_subrequest(request, path)
@@ -135,8 +131,7 @@ def embed(request, path, result=None, as_user=False):
         result = request.invoke_subrequest(subreq)
     except HTTPNotFound:
         raise KeyError(path)
-    if embedded is not None:
-        embedded[path] = deepcopy(result)
+    embed_cache[path] = deepcopy(result)
     return result
 
 
