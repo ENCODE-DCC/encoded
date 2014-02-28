@@ -316,8 +316,8 @@ class Root(object):
         self.__acl__ = acl + self.builtin_acl
         self.collections = {}
         self.by_item_type = {}
-        self.item_cache = ManagerLRUCache('encoded_item_cache')
-        self.unique_key_cache = ManagerLRUCache('encoded_key_cache')
+        self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
+        self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
 
     def __getitem__(self, name):
         try:

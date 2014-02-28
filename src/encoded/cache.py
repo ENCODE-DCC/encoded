@@ -3,8 +3,10 @@ from sqlalchemy.util import LRUCache
 
 
 class ManagerLRUCache(object):
-    def __init__(self, name):
+    def __init__(self, name, capacity=100, threshold=.5):
         self.name = name
+        self.capacity = capacity
+        self.threshold = threshold
 
     @property
     def cache(self):
@@ -12,7 +14,7 @@ class ManagerLRUCache(object):
             return None
         threadlocals = manager.stack[0]
         if self.name not in threadlocals:
-            threadlocals[self.name] = LRUCache()
+            threadlocals[self.name] = LRUCache(self.capacity, self.threshold)
         return threadlocals[self.name]
 
     def get(self, key, default=None):
