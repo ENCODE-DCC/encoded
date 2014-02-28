@@ -1,11 +1,9 @@
 [
     {
-        "encode2_dbxrefs": [
-            "454_GS_FLX"
-        ],
-        "geo_dbxrefs": [
-            "GPL14603",
-            "GPL16815"
+        "dbxrefs": [
+            "ucsc_encode_db:454_GS_FLX",
+            "geo_db:GPL14603",
+            "geo_db:GPL16815"
         ],
         "term_id": "OBI:0000702",
         "term_name": "Roche 454 Genome Sequencer FLX",
@@ -13,11 +11,9 @@
         "uuid": "616db2ff-a1c3-4c4f-b0de-9ea11c825b82"
     },
     {
-        "encode2_dbxrefs": [
-            "AB_SOLiD_3.5"
-        ],
-        "geo_dbxrefs": [
-            "GPL9442"
+        "dbxrefs": [
+            "ucsc_encode_db:AB_SOLiD_3.5",
+            "geo_db:GPL9442"
         ],
         "term_id": "OBI:0000696",
         "term_name": "Applied Biosystems SOLiD System 3 Plus",
@@ -25,8 +21,8 @@
         "uuid": "da150a82-63cd-4471-ba3e-ffe7ca96bcda"
     },
     {
-        "geo_dbxrefs": [
-            "GPL13190"
+        "dbxrefs": [
+            "geo_db:GPL13190"
         ],
         "notes": "registering with OBI",
         "term_id": "NTR:0000001",
@@ -35,8 +31,8 @@
         "uuid": "700d6a4b-12da-401b-8cd3-d6675c1f22e4"
     },
     {
-        "geo_dbxrefs": [
-            "GPL14965"
+        "dbxrefs": [
+            "geo_db:GPL14965"
         ],
         "term_id": "NTR:0000002",
         "term_name": "NimbleGen Human 3x720k Whole Genome CGH Tiling Array",
@@ -44,8 +40,8 @@
         "uuid": "e6230c01-4e11-4e0c-b821-d05b0d33dd92"
     },
     {
-        "geo_dbxrefs": [
-            "GPL10989"
+        "dbxrefs": [
+            "geo_db:GPL10989"
         ],
         "term_id": "NTR:0000003",
         "term_name": "NimbleGen Mouse 3x720k Whole Genome CGH Tiling Array",
@@ -53,8 +49,8 @@
         "uuid": "43efa2fa-f23f-4692-b76a-f3b02ff42d74"
     },
     {
-        "geo_dbxrefs": [
-            "GPL9156"
+        "dbxrefs": [
+            "geo_db:GPL9156"
         ],
         "term_id": "NTR:0000004",
         "term_name": "NimbleGen Mouse 385K Whole Genome Tiling Array",
@@ -62,11 +58,9 @@
         "uuid": "6633c117-6bc1-4c0e-be26-a3aa4d500a7d"
     },
     {
-        "encode2_dbxrefs": [
-            "Illumina_GA2"
-        ],
-        "geo_dbxrefs": [
-            "GPL9115"
+        "dbxrefs": [
+            "ucsc_encode_db:Illumina_GA2",
+            "geo_db:GPL9115"
         ],
         "term_id": "OBI:0000703",
         "term_name": "Illumina Genome Analyzer II",
@@ -74,11 +68,9 @@
         "uuid": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b"
     },
     {
-        "encode2_dbxrefs": [
-            "Illumina_GA2e"
-        ],
-        "geo_dbxrefs": [
-            "GPL9115"
+        "dbxrefs": [
+            "ucsc_encode_db:Illumina_GA2e",
+            "geo_db:GPL9115"
         ],
         "term_id": "NTR:0000005",
         "term_name": "Illumina Genome Analyzer IIe",
@@ -86,12 +78,10 @@
         "uuid": "025b43fc-ff16-4dfb-8ec8-b7b9c79380a2"
     },
     {
-        "encode2_dbxrefs": [
-            "Illumina_GA2x"
-        ],
-        "geo_dbxrefs": [
-            "GPL10999",
-            "GPL9250"
+        "dbxrefs": [
+            "ucsc_encode_db:Illumina_GA2x",
+            "geo_db:GPL10999",
+            "geo_db:GPL9250"
         ],
         "term_id": "NTR:0000006",
         "term_name": "Illumina Genome Analyzer IIx",
@@ -99,12 +89,10 @@
         "uuid": "7efe9ddc-bbe6-457d-bc98-f8bac2478bda"
     },
     {
-        "encode2_dbxrefs": [
-            "Illumina_HiSeq_2000"
-        ],
-        "geo_dbxrefs": [
-            "GPL11154",
-            "GPL13112"
+        "dbxrefs": [
+            "ucsc_encode_db:Illumina_HiSeq_2000",
+            "geo_db:GPL11154",
+            "geo_db:GPL13112"
         ],
         "term_id": "NTR:0000007",
         "term_name": "Illumina HiSeq 2000",
@@ -112,11 +100,9 @@
         "uuid": "03a96eaf-75da-44e2-b4f6-e349e8c3655e"
     },
     {
-        "encode2_dbxrefs": [
-            "Methyl450"
-        ],
-        "geo_dbxrefs": [
-            "GPL13534"
+        "dbxrefs": [
+            "ucsc_encode_db:Methyl450",
+            "geo_db:GPL13534"
         ],
         "term_id": "NTR:0000008",
         "term_name": "Illumina Infinium Human Methylation 450 Bead Array",
