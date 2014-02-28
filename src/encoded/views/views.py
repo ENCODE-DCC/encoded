@@ -608,6 +608,18 @@ class Experiment(Dataset):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
+    columns = OrderedDict([
+        ('accession', 'Accession'),
+        ('assay_term_name', 'Assay type'),
+        ('target.label', 'Target'),
+        ('biosample_term_name', 'Biosample'),
+        ('replicates.length', 'Replicates'),
+        ('files.length', 'Files'),
+        ('description', 'Description'),
+        ('lab.title', 'Lab'),
+        ('dbxrefs', 'Dbxrefs'),
+        ('award.project', 'Project'),
+    ])
 
     class Item(Dataset.Item):
         base_types = [Dataset.item_type] + Dataset.Item.base_types
