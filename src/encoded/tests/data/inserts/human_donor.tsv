@@ -1,7 +1,0 @@
-test	uuid	accession	alternate_accessions:array	aliases:array	sex	ethnicity	organism	lab	award
-test	807d50f9-3554-426c-a851-b952099e91f0	ENCDO017AAA	ENCDO117AAA	promocell:8121902	male	Caucasian	human	j-michael-cherry	U41HG006992
-test	13e91df8-6ba4-460f-baf3-c313d884bf4b	ENCDO058AAA		michael-snyder:STL003	male	Caucasian	human	j-michael-cherry	U41HG006992
-test	d90607d9-a5fa-4988-8cbf-c7fe8fcd0998	ENCDO000HUM			unknown	unknown	human	j-michael-cherry	U41HG006992
-test	7c4cb5ff-4b21-4f9c-a31f-4a9d00cafb5a	ENCDO106AAA			unknown	unknown	human	j-michael-cherry	U41HG006992
-test	2b9fa2c8-5db9-49c9-9c06-000a16e39d11	ENCDO275AAA			unknown	unknown	human	j-michael-cherry	U41HG006992
-test	61ef59a0-222e-4008-9f84-c9200358ebe3	ENCDO276AAA			unknown	unknown	human	j-michael-cherry	U41HG006992
