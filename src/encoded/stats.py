@@ -1,10 +1,10 @@
 import pyramid.tweens
 import time
-from pyramid.settings import asbool
 from pyramid.threadlocal import manager as threadlocal_manager
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from urllib import urlencode
+from xml.sax.saxutils import quoteattr
 
 
 def includeme(config):
@@ -76,7 +76,7 @@ def stats_tween_factory(handler, registry):
 
         xs = response.headers['X-Stats'] = urlencode(sorted(stats.items()))
         if getattr(request, '_stats_html_attribute', False):
-            response.body = response.body.replace('<html', '<html data-stats="%s"' % xs, 1)
+            response.body = response.body.replace('<html', '<html data-stats=%s' % quoteattr(xs), 1)
         return response
 
     return stats_tween

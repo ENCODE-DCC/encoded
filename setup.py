@@ -64,6 +64,7 @@ setup(
         create-mapping = encoded.commands.create_mapping:main
         generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
+        spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         sync_edw = encoded.commands.sync_edw:main
         update-keys-links = encoded.commands.update_keys_links:main
         upgrade = encoded.commands.upgrade:main

@@ -1,0 +1,335 @@
+[
+    {
+        "aliases": [
+            "ENCODE:HAoSMC_PC_8121902.2P_certificate_of_analysis"
+        ],
+        "attachment": "8121902.2P.pdf",
+        "award": "U54HG004557",
+        "description": "PromoCell Normal Human Aortic Smooth Muscle Cells certificate of analysis",
+        "document_type": "certificate of analysis",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "11e2d7d3-d43a-4b5a-bf3e-136948efc023"
+    },
+    {
+        "aliases": [
+            "kevin-white:K562_BAC_transfection_White_protocol"
+        ],
+        "attachment": "BACTransfectionProtocolK562Cells.pdf",
+        "award": "U54HG006996",
+        "description": "UChicago IGSB ENCODE K562 Transfection Protocol March 5, 2013",
+        "document_type": "transfection protocol",
+        "lab": "kevin-white",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "048d1185-2502-4f0e-a043-bbc75b9dd915"
+    },
+    {
+        "aliases": [
+            "ENCODE:C2C12_Wold_differentiation_protocol"
+        ],
+        "attachment": "C2C12_Wold_protocol.pdf",
+        "award": "RC2HG005573",
+        "document_type": "differentiation protocol",
+        "lab": "barbara-wold",
+        "submitted_by": "vitae.quis@mauris.aptent",
+        "uuid": "a5f5c35a-cdda-4a45-9742-22e69ff50c9c"
+    },
+    {
+        "aliases": [
+            "ENCODE:C2C12_Wold_growth_protocol"
+        ],
+        "attachment": "C2C12_Wold_protocol.pdf",
+        "award": "RC2HG005573",
+        "document_type": "growth protocol",
+        "lab": "barbara-wold",
+        "submitted_by": "vitae.quis@mauris.aptent",
+        "uuid": "b42974fd-1490-4d51-bdcf-7db97a3e8fe0"
+    },
+    {
+        "aliases": [
+            "kevin-white:pBACGK1.1_BAC_vector"
+        ],
+        "attachment": "CH17_pBACGK1.1n.png",
+        "award": "U54HG006996",
+        "description": "Vector pBACGK1.1 information and map retrieved from http://bacpac.chori.org/pbacgk11.htm on May 23, 2013.",
+        "document_type": "construct image",
+        "lab": "kevin-white",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "urls": [
+            "http://bacpac.chori.org/library.php?id=231",
+            "http://bacpac.chori.org/pbacgk11.htm"
+        ],
+        "uuid": "dcf15d5e-40aa-43bc-b81c-32c70c9afb01"
+    },
+    {
+        "aliases": [
+            "ENCODE:diffProtB_6hr_protocol"
+        ],
+        "attachment": "diffProtB_6hr_protocol.txt",
+        "award": "ENCODE2",
+        "document_type": "treatment protocol",
+        "lab": "encode2-project",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "e95b8f25-7b5b-4ce3-a351-b09d0c1eda8d"
+    },
+    {
+        "aliases": [
+            "ENCODE:EPC_Stam_protocol"
+        ],
+        "attachment": "EPC_Stam_protocol.pdf",
+        "award": "RC2HG005654",
+        "description": "Isolation of mouse fetal liver cell subsets",
+        "document_type": "cell isolation protocol",
+        "lab": "john-stamatoyannopoulos",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "cd9aab06-e0cb-42fb-b47d-2a7dd8116e99"
+    },
+    {
+        "aliases": [
+            "ENCODE:Heart_STL003_excision_protocol"
+        ],
+        "attachment": "Heart_STL003_excision_protocol.txt",
+        "award": "U54HG004557",
+        "description": "Heart_STL003 excision protocol",
+        "document_type": "excision protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "0b7105ae-a3f8-476c-a163-3821eb3da3da"
+    },
+    {
+        "aliases": [
+            "ENCODE:Myers_Methyl450_protocol"
+        ],
+        "attachment": "human.wgEncodeHaibMethyl450.txt",
+        "award": "U54HG004576",
+        "description": "Generalized methods for the HAIB Methyl450 experiments from ENCODE2",
+        "document_type": "general protocol",
+        "lab": "richard-myers",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "71da87e2-92d0-418b-960b-0a30800172a0"
+    },
+    {
+        "aliases": [
+            "ENCODE:K562_protocol"
+        ],
+        "attachment": "K562_protocol.pdf",
+        "award": "ENCODE2",
+        "document_type": "growth protocol",
+        "lab": "encode2-project",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "uuid": "40792158-1613-47f4-ae3f-dc3400c097d3"
+    },
+    {
+        "aliases": [
+            "ENCODE:Heart_STL003_general_protocol"
+        ],
+        "attachment": "LID48879.pdf",
+        "award": "U54HG004557",
+        "description": "Heart_STL003 general protocol",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "bc505a2d-4afb-48f0-b8dd-77af9006c675"
+    },
+    {
+        "aliases": [
+            "ENCODE:MCF-7_Crawford_growth_protocol"
+        ],
+        "attachment": "MCF-7_Crawford_protocol.pdf",
+        "award": "U54HG004563",
+        "description": "MCF-7 Cell Culture and +/- estrogen treatment",
+        "document_type": "growth protocol",
+        "lab": "gregory-crawford",
+        "submitted_by": "metus.donec@nisl.montes",
+        "uuid": "8f1a6855-0312-4027-8869-330e42a0b04a"
+    },
+    {
+        "aliases": [
+            "ENCODE:MCF-7_Farnham_growth_protocol"
+        ],
+        "attachment": "MCF-7_Farnham_protocol.pdf",
+        "award": "U54HG004558",
+        "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
+        "document_type": "growth protocol",
+        "lab": "peggy-farnham",
+        "submitted_by": "taciti.vehicula@vitae.vivamus",
+        "uuid": "984071d4-9149-476a-b353-93592c6f48f3"
+    },
+    {
+        "aliases": [
+            "ENCODE:MCF-7_Farnham_treatment_protocol"
+        ],
+        "attachment": "MCF-7_Farnham_protocol.pdf",
+        "award": "U54HG004558",
+        "description": "MCF-7 Cell Culture and 4-hydroxytamoxifen treatment",
+        "document_type": "treatment protocol",
+        "lab": "peggy-farnham",
+        "submitted_by": "taciti.vehicula@vitae.vivamus",
+        "uuid": "2897e1e0-a322-4579-86dd-d5e8cf4e6c24"
+    },
+    {
+        "aliases": [
+            "ENCODE:Snyder_Histone_Mouse_protocol"
+        ],
+        "attachment": "mouse.wgEncodeSydhHist.txt",
+        "award": "RC2HG005602",
+        "description": "Generalized Methods for the SYDH Histone experiments in mouse.",
+        "document_type": "general protocol",
+        "lab": "michael-snyder",
+        "references": [
+            "PMID:19706456",
+            "PMID:17568005",
+            "PMID:14527995",
+            "PMID:17558387",
+            "PMID:19122651"
+        ],
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "302689be-b110-40b6-8912-cc9d934b002e"
+    },
+    {
+        "aliases": [
+            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
+        ],
+        "attachment": "Myers_Lab_ChIP-seq_Protocol_v042211.pdf",
+        "award": "U54HG004576",
+        "document_type": "general protocol",
+        "lab": "richard-myers",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "df9dd0ec-c1cf-4391-a745-a933ab1af7a7"
+    },
+    {
+        "aliases": [
+            "ENCODE:PanIsletD_Crawford_protocol"
+        ],
+        "attachment": "PanIsletD_Crawford_protocol.pdf",
+        "award": "U54HG004563",
+        "document_type": "other",
+        "lab": "gregory-crawford",
+        "submitted_by": "metus.donec@nisl.montes",
+        "uuid": "87a97c62-08b7-43a8-a277-7aa51eb33bce"
+    },
+    {
+        "aliases": [
+            "ENCODE:SAEC_Stam_protocol"
+        ],
+        "attachment": "SAEC_Stam_protocol.pdf",
+        "award": "U54HG004592",
+        "document_type": "growth protocol",
+        "lab": "john-stamatoyannopoulos",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "19d5277e-b6b0-49dd-9349-146783bd0082"
+    },
+    {
+        "aliases": [
+            "ENCODE:HAoSMC_PC_8121902.2P_general_protocol"
+        ],
+        "attachment": "SID38242.pdf",
+        "award": "U54HG004557",
+        "description": "PromoCell Normal Human Aortic Smooth Muscle Cells general protocol",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "7aa32299-cc11-4f07-bdaa-a55de6f51a99"
+    },
+    {
+        "aliases": [
+            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
+        ],
+        "attachment": "SID38806.pdf",
+        "award": "U54HG007004",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "e23a0ea7-a490-4d00-9e4f-876bea90b1f7"
+    },
+    {
+        "aliases": [
+            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
+        ],
+        "attachment": "SID38807.pdf",
+        "award": "U54HG007004",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "197f27b2-76b8-4bc2-928f-0b33c3dfb7c7"
+    },
+    {
+        "aliases": [
+            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
+        ],
+        "attachment": "SID38822.pdf",
+        "award": "U54HG007004",
+        "description": "Specific library protocol from CSHL for RNA-seq on less than 200 base pairs, total RNA from K562 biosample ENCBS087RNA",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "4fdeaa98-a4c7-4f44-9414-c55977f8369b"
+    },
+    {
+        "aliases": [
+            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
+        ],
+        "attachment": "SID38823.pdf",
+        "award": "U54HG007004",
+        "description": "Specific library protocol from CSHL for RNA-seq on less than 200 base pairs, total RNA from K562 biosample ENCBS088RNA",
+        "document_type": "general protocol",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "f39f4b6e-cc13-45cf-993b-8d74781ba6d0"
+    },
+    {
+        "aliases": [
+            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
+        ],
+        "attachment": "Spikes.fixed.fasta.txt",
+        "award": "U54HG007004",
+        "document_type": "other",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "f4974402-65a6-47fd-862e-9b226659d041"
+    },
+    {
+        "aliases": [
+            "ENCODE:Stam_15_protocols"
+        ],
+        "attachment": "Stam_15_protocols.pdf",
+        "award": "U54HG004592",
+        "document_type": "growth protocol",
+        "lab": "john-stamatoyannopoulos",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "f704939d-1784-4856-9abd-434ca9336feb"
+    },
+    {
+        "aliases": [
+            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations"
+        ],
+        "attachment": "wgEncodeCshlSpikeinsConcentrations.txt",
+        "award": "U54HG004557",
+        "document_type": "other",
+        "lab": "thomas-gingeras",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "34e684ee-8e9a-4b4e-9708-4a0bc5ae9811"
+    },
+    {
+        "aliases": [
+            "ENCODE:ZhBTc4_Stam_protocol"
+        ],
+        "attachment": "ZhBTc4_Stam_protocol.pdf",
+        "award": "RC2HG005654",
+        "document_type": "growth protocol",
+        "lab": "john-stamatoyannopoulos",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "113719b2-929f-4fb9-b073-e6483b2edd40"
+    },
+    {
+        "aliases": [
+            "gregory-crawford:pLKO1"
+        ],
+        "attachment": "pLKO1_vector.png",
+        "award": "U54HG004563",
+        "document_type": "construct image",
+        "lab": "gregory-crawford",
+        "submitted_by": "metus.donec@nisl.montes",
+        "uuid": "33d51ad0-62ba-11e3-949a-0800200c9a66"
+    }
+]

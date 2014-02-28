@@ -1,0 +1,280 @@
+[
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000ACY",
+        "library": "9a230485-0062-4590-be42-6ea7c4258941",
+        "paired_ended": false,
+        "platform": "bdfd8a33-4f14-4242-b6d5-ad198d4225f8",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 1,
+        "uuid": "6e85c807-684a-46e3-b4b9-1f7990e85720"
+    },
+    {
+        "antibody": "ENCAB000AOF",
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000ADH",
+        "library": "835e166d-0253-41ce-add2-de67429a3612",
+        "paired_ended": false,
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "technical_replicate_number": 1,
+        "uuid": "cc236116-825a-465f-ae0c-5ab21f01a6b3"
+    },
+    {
+        "antibody": "ENCAB000AOF",
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000ADH",
+        "library": "835e166d-0253-41ce-add2-de67429a3612",
+        "paired_ended": false,
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "technical_replicate_number": 2,
+        "uuid": "d990fa42-09e9-4b24-b5f9-44efbdbf4363"
+    },
+    {
+        "antibody": "ENCAB000AUU",
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000ADI",
+        "library": "88760932-54b6-46fe-951d-fc80e89a0d77",
+        "paired_ended": false,
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "technical_replicate_number": 1,
+        "uuid": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f"
+    },
+    {
+        "antibody": "ENCAB000AUU",
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000ADI",
+        "library": "6c8689d9-427a-464e-93bd-ad7a72b31ae2",
+        "paired_ended": false,
+        "platform": "9ab7d195-c2d9-45ef-aed5-1d39ba77240b",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "technical_replicate_number": 1,
+        "uuid": "358104a1-e809-43ad-b043-7161c08633f5"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000AEM",
+        "library": "7013e140-dc14-4893-b0b1-0d7bb293730c",
+        "paired_ended": false,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "30a3e114-139a-4297-9287-4f23d2754c25"
+    },
+    {
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000AEM",
+        "library": "f0a7aa18-6bb9-441a-b1aa-d6a385608407",
+        "paired_ended": false,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "401d9e79-8a0a-42ed-ad1b-1d274fd0b8cb"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000AEN",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "6",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "library": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
+        "notes": "Has read length",
+        "paired_ended": false,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "read_length": 100,
+        "read_length_units": "nt",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "technical_replicate_number": 1,
+        "uuid": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14"
+    },
+    {
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000AEN",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "6",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
+        "notes": "Has read length",
+        "paired_ended": false,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "read_length": 100,
+        "read_length_units": "nt",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "technical_replicate_number": 1,
+        "uuid": "e3abd889-053d-44a9-a1f7-90b06bb6d73f"
+    },
+    {
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000AER",
+        "library": "e4824882-0ad8-4009-a169-44d5955800af",
+        "paired_ended": true,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "4d66b3a4-d09e-4e2c-8708-10b572bfeb6b"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000AER",
+        "library": "181a11eb-68b9-43b3-9430-a5253a75e8f5",
+        "paired_ended": true,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "c8af0291-f21a-40d6-91fb-eaf62d22e4da"
+    },
+    {
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000AES",
+        "library": "ee512537-05f0-4ac4-a9e6-718aea48f565",
+        "paired_ended": false,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "66db2e64-f956-4f54-ad87-74f6311bfb85"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000AES",
+        "library": "2f631ab4-83ac-4bc6-9acb-81654eaba017",
+        "paired_ended": false,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "technical_replicate_number": 1,
+        "uuid": "ec1ed4db-de5f-481b-a686-261bda0319cb"
+    },
+    {
+        "antibody": "ENCAB000ALM",
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000AHF",
+        "library": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
+        "paired_ended": false,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 1,
+        "uuid": "5f9376f9-2ee5-4455-caf2-194ca40441ae"
+    },
+    {
+        "antibody": "ENCAB000ALM",
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000AHF",
+        "library": "8492c1ec-5870-4f85-9693-8a7cabe320a9",
+        "paired_ended": false,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 1,
+        "uuid": "f0837446-2d57-4096-bb2a-de6645177396"
+    },
+    {
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000AJK",
+        "library": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
+        "paired_ended": false,
+        "submitted_by": "netus.lorem@risus.lobortis",
+        "technical_replicate_number": 2,
+        "uuid": "380dc621-8574-498e-a133-9fc162464007"
+    },
+    {
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR000AJK",
+        "library": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290",
+        "paired_ended": false,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "submitted_by": "netus.lorem@risus.lobortis",
+        "technical_replicate_number": 1,
+        "uuid": "f07d37ee-316e-4a5d-a282-91cd2304fe19"
+    },
+    {
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000AJK",
+        "library": "88760932-54b6-46fe-951d-fc80e89a0d77",
+        "paired_ended": false,
+        "submitted_by": "netus.lorem@risus.lobortis",
+        "technical_replicate_number": 1,
+        "uuid": "369cb03a-a428-47e7-ba56-88945afda41c"
+    },
+    {
+        "_test": "test - no files",
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR999NOF",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "1",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "library": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d",
+        "notes": "Has read length",
+        "paired_ended": true,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "read_length": 100,
+        "read_length_units": "nt",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "technical_replicate_number": 1,
+        "uuid": "5a168a4c-51de-4b37-88c8-72bed2fb789d"
+    },
+    {
+        "_test": "test - no files",
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR999NOF",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "2",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
+        "notes": "Has read length",
+        "paired_ended": true,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "read_length": 100,
+        "read_length_units": "nt",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "technical_replicate_number": 1,
+        "uuid": "2d467098-8e47-4fd4-953d-b7cf5f57740b"
+    },
+    {
+        "_test": "test - no files",
+        "biological_replicate_number": 2,
+        "experiment": "ENCSR999NOF",
+        "flowcell_details": [
+            {
+                "flowcell": "C1WA6ACXX",
+                "lane": "3",
+                "machine": "HWI-ST382"
+            }
+        ],
+        "library": "9679f34a-ed04-45f2-8129-5ffbcc565bde",
+        "notes": "Has read length",
+        "paired_ended": true,
+        "platform": "03a96eaf-75da-44e2-b4f6-e349e8c3655e",
+        "read_length": 100,
+        "read_length_units": "nt",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "technical_replicate_number": 2,
+        "uuid": "468a1824-a452-4a94-82cb-04f2ee99e59b"
+    },
+    {
+        "_test": "test - user patch file",
+        "biological_replicate_number": 1,
+        "experiment": "ENCSR000ACT",
+        "library": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79",
+        "paired_ended": false,
+        "platform": "bdfd8a33-4f14-4242-b6d5-ad198d4225f8",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 1,
+        "uuid": "6049cceb-3703-47d8-be52-0747fb6680aa"
+    }
+]

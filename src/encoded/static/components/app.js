@@ -6,6 +6,7 @@ var globals = require('./globals');
 var mixins = require('./mixins');
 var NavBar = require('./navbar');
 var Footer = require('./footer');
+var url = require('url');
 
 var portal = {
     portal_title: 'ENCODE',
@@ -39,7 +40,7 @@ var ie8compat = [
     "nav",
     "section",
     "figure",
-    "figcaption",
+    "figcaption"
 ].map(function (tag) {
     return 'document.createElement("' + tag + '");';
 }).join('\n');
@@ -94,15 +95,23 @@ var App = React.createClass({
         console.log('render app');
         var content;
         var context = this.props.context;
+        var hash = url.parse(this.props.href).hash || '';
+        var name;
+        var key;
+        if (hash.slice(0, 2) === '#!') {
+            name = hash.slice(2);
+        }
         if (context) {
-            var ContentView = globals.content_views.lookup(context);
+            var ContentView = globals.content_views.lookup(context, name);
             content = this.transferPropsTo(ContentView({
-                key: context['@id'],  // Switching between collections may leave component in place
                 personaReady: this.state.personaReady,
                 session: this.state.session,
-                portal: this.state.portal
+                portal: this.state.portal,
+                navigate: this.navigate
             }));
         }
+        // Switching between collections may leave component in place
+        var key = context && context['@id'];
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
         });
@@ -120,11 +129,10 @@ var App = React.createClass({
         }
 
         return (
-            <html>
+            <html lang="en">
                 <head>
                     <meta charSet="utf-8" />
-                    <meta http-equiv="content-language" content="en" />
-                    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+                    <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                     <title>{title}</title>
                     <link rel="canonical" href={this.props.href} />
@@ -147,7 +155,7 @@ var App = React.createClass({
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         user_actions={this.state.user_actions} session={this.state.session}
                                         personaReady={this.state.personaReady} />
-                                <div id="content" className="container">
+                                <div id="content" className="container" key={key}>
                                     {content}
                                 </div>
                                 {errors}
