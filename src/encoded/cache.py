@@ -8,9 +8,10 @@ class ManagerLRUCache(object):
 
     @property
     def cache(self):
-        if not manager.stack:
+        # manager.stack[0] is shared between requests
+        if len(manager.stack) < 2:
             return None
-        threadlocals = manager.stack[0]
+        threadlocals = manager.stack[1]
         if self.name not in threadlocals:
             threadlocals[self.name] = LRUCache()
         return threadlocals[self.name]
