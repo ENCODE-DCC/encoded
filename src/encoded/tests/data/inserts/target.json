@@ -1,0 +1,211 @@
+[
+    {
+        "dbxref": [
+            "ENSEMBL:ENSG00000101126",
+            "GeneID:23394",
+            "HGNC:ADNP1",
+            "UniProtKB:Q9H2P0"
+        ],
+        "gene_name": "ADNP",
+        "label": "ADNP",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "e310f899-8622-4aa7-8c48-8c2199dc8d15"
+    },
+    {
+        "label": "Control",
+        "organism": "mouse",
+        "status": "CURRENT",
+        "uuid": "87c25410-2ece-4335-b45b-eff245bb30bf"
+    },
+    {
+        "label": "Control",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "89839f28-ad35-4bb4-a214-ee65d0a97d8d"
+    },
+    {
+        "dbxref": [
+            "ENSEMBL:ENSG00000102974",
+            "GeneID:10664",
+            "UniProtKB:P49711"
+        ],
+        "gene_name": "CTCF",
+        "label": "CTCF",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "80f4c52e-c7bc-4afc-b159-89cb10367780"
+    },
+    {
+        "dbxref": [
+            "ENSEMBL:ENSG00000154832",
+            "GeneID:30827",
+            "HGNC:CFP1",
+            "HGNC:CGBP",
+            "HGNC:SPP1",
+            "HGNC:PCCX1",
+            "HGNC:PHF18",
+            "HGNC:hCGBP",
+            "HGNC:ZCGPC1",
+            "HGNC:HsT2645",
+            "HGNC:2410002I16Rik",
+            "HGNC:5830420C16Rik",
+            "UniProtKB:Q9P0U4"
+        ],
+        "gene_name": "CXXC1",
+        "label": "CXXC1",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "aacec93d-d9dc-4f73-8edd-8ecce2debb43"
+    },
+    {
+        "dbxref": [
+            "ENSEMBL:ENSG00000101412",
+            "GeneID:1869",
+            "HGNC:RBBP3",
+            "HGNC:RBP3",
+            "UniProtKB:Q01094"
+        ],
+        "gene_name": "E2F1",
+        "label": "E2F1",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "b39e16c2-b1d7-4690-b92c-e7006e5a8332"
+    },
+    {
+        "dbxref": [
+            "ENSEMBL:ENSG00000101412",
+            "GeneID:1869",
+            "HGNC:RBBP3",
+            "HGNC:RBP3",
+            "UniProtKB:Q01094"
+        ],
+        "gene_name": "E2F1",
+        "label": "eGFP-E2F1",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "19afbc42-c08b-4b5b-a2b3-7f5c84db7d5d"
+    },
+    {
+        "dbxref": [
+            "UniProtKB:Q71DI3"
+        ],
+        "gene_name": "HIST2H3C",
+        "label": "H3K4me3",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
+    },
+    {
+        "dbxref": [
+            "UniProtKB:P84228"
+        ],
+        "gene_name": "Hist2h3c1",
+        "label": "H3K4me3",
+        "organism": "mouse",
+        "status": "CURRENT",
+        "uuid": "eb576cba-6071-4c28-bba6-3c16fdbce0c7"
+    },
+    {
+        "dbxref": [
+            "UniProtKB:Q71DI3"
+        ],
+        "gene_name": "HIST2H3C",
+        "label": "H3K9ac",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "851ee528-4763-4dba-9191-7db1ef7566f7"
+    },
+    {
+        "dbxref": [
+            "ENSEMBL:ENSG00000101412",
+            "GeneID:1869",
+            "HGNC:RBBP3",
+            "HGNC:RBP3",
+            "UniProtKB:Q01094"
+        ],
+        "gene_name": "E2F1",
+        "label": "HA-E2F1",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "8a1239ab-6171-4f59-a8b7-3527eec96fad"
+    },
+    {
+        "dbxref": [
+            "ENSEMBL:ENSG00000135486",
+            "GeneID:3178",
+            "HGNC:HNRPA1",
+            "HGNC:hnRNPA1",
+            "HGNC:hnRNP-A1",
+            "UniProtKB:P09651"
+        ],
+        "gene_name": "HNRNPA1",
+        "label": "HNRNPA1",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "6cd2beb9-e859-41c4-a019-98bf02e96b19"
+    },
+    {
+        "dbxref": [
+            "ENSEMBL:ENSG00000147133",
+            "GeneID:6872",
+            "HGNC:TAF2A",
+            "HGNC:BA2R",
+            "HGNC:CCG1",
+            "HGNC:CCGS",
+            "HGNC:DYT3",
+            "HGNC:NSCL2",
+            "HGNC:TAFII250",
+            "HGNC:KAT4",
+            "HGNC:DYT3/TAF1",
+            "UniProtKB:P21675"
+        ],
+        "gene_name": "TAF1",
+        "label": "TAF1",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "993bd05d-a6bd-4718-b51b-abe99f14f8c3"
+    },
+    {
+        "dbxref": [
+            "ENSEMBL:ENSG00000196628",
+            "GeneID:6925",
+            "HGNC:E2-2",
+            "HGNC:ITF2",
+            "HGNC:PTHS",
+            "HGNC:SEF2",
+            "HGNC:ITF-2",
+            "HGNC:SEF-2",
+            "HGNC:TCF-4",
+            "HGNC:SEF2-1",
+            "HGNC:SEF2-1A",
+            "HGNC:SEF2-1B",
+            "HGNC:bHLHb19",
+            "UniProtKB:P15884"
+        ],
+        "gene_name": "TCF4",
+        "label": "TCF4",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "f26cc43c-884a-4aea-9b26-b3517ef6748d"
+    },
+    {
+        "_test": "non-ascii",
+        "dbxref": [
+            "GeneID:7025",
+            "HGNC:EAR3",
+            "HGNC:EAR-3",
+            "HGNC:NR2F2",
+            "HGNC:SVP44",
+            "HGNC:ERBAL3",
+            "HGNC:TFCOUP1",
+            "HGNC:COUP-TFI",
+            "HGNC:TCFCOUP1"
+        ],
+        "gene_name": "NR2F1\u00c2",
+        "label": "NR2F1\u00c2",
+        "organism": "human",
+        "status": "CURRENT",
+        "uuid": "618b2122-2a97-44a8-bd6a-f473c1363dd2"
+    }
+]
