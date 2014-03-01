@@ -18,7 +18,7 @@ def treatment_1(treatment):
     return item
 
 
- def test_treatment_upgrade(app, treatment_1):
+def test_treatment_upgrade(app, treatment_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
