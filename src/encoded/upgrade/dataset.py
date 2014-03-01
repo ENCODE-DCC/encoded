@@ -21,7 +21,7 @@ def dataset_0_2(value, system):
 @upgrade_step('dataset', '2', '3')
 def dataset_2_3(value, system):
     # http://redmine.encodedcc.org/issues/817
-    value['dbxref'] = []
+    value['dbxrefs'] = []
    
     if 'encode2_dbxrefs' in value:
         for encode2_dbxref in value['encode2_dbxrefs']:
