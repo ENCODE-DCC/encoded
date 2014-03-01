@@ -36,7 +36,7 @@ def biosample_3(biosample):
     item = biosample.copy()
     item.update({
         'schema_version': '3',
-        'encode2_dbxref': 'Liver',
+        'encode2_dbxrefs': ['Liver'],
     })
     return item
 
