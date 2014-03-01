@@ -34,7 +34,7 @@ def test_experiment_upgrade(root, registry, experiment, experiment_1, files, thr
     assert 'files' not in value
     assert value['related_files'] == [files[1]['uuid']]
 
-def test_experiment_upgrade_dbxrefs(root, registry, experiment, experiment_2, files, threadlocals, dummy_reques):
+def test_experiment_upgrade_dbxrefs(root, registry, experiment, experiment_2, files, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
