@@ -54,7 +54,7 @@ def biosample_2_3(value, system):
 @upgrade_step('biosample', '3', '4')
 def dataset_3_4(value, system):
     # http://redmine.encodedcc.org/issues/817
-    value['dbxref'] = []
+    value['dbxrefs'] = []
    
     if 'encode2_dbxrefs' in value:
         for encode2_dbxref in value['encode2_dbxrefs']:

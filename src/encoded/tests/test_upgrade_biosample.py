@@ -95,6 +95,12 @@ def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
     assert value['subcellular_fraction_term_id'] == 'GO:0016020'
     assert 'subcellular_fraction' not in value
 
+def test_biosample_upgrade_encode2_dbxref(app, biosample_3):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['dbxrefs'] == ['ucsc_encode_db:Liver']
+    assert 'encode2_dbxrefs' not in value
 
 def test_biosample_upgrade_inline(testapp, biosample_1):
     from encoded.schema_utils import load_schema
@@ -127,12 +133,3 @@ def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     res = testapp.get(location+'?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in res.json
-
-
-def test_biosample_upgrade_encode2_dbxref(app, biosample_3):
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('biosample', biosample_3, target_version='4')
-    assert value['schema_version'] == '4'
-    assert value['dbxrefs'] == ['ucsc_encode_db:Liver']
-    assert 'encode2_dbxrefs' not in value
-
