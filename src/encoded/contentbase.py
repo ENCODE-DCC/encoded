@@ -386,20 +386,12 @@ class Root(object):
             return self.get_by_uuid(cached)
 
         session = DBSession()
-        # Eager load related resources here.
         key = session.query(Key).options(
             orm.joinedload_all(
                 Key.resource,
                 Resource.data,
                 CurrentPropertySheet.propsheet,
                 innerjoin=True,
-            ),
-            orm.joinedload_all(
-                Key.resource,
-                Resource.rels,
-                Link.target,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
             ),
         ).get(pkey)
         if key is None:
