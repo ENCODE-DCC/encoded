@@ -6,6 +6,7 @@ import venusian
 from abc import ABCMeta
 from collections import Mapping
 from copy import deepcopy
+from itertools import islice
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -385,20 +386,12 @@ class Root(object):
             return self.get_by_uuid(cached)
 
         session = DBSession()
-        # Eager load related resources here.
         key = session.query(Key).options(
             orm.joinedload_all(
                 Key.resource,
                 Resource.data,
                 CurrentPropertySheet.propsheet,
                 innerjoin=True,
-            ),
-            orm.joinedload_all(
-                Key.resource,
-                Resource.rels,
-                Link.target,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
             ),
         ).get(pkey)
         if key is None:
@@ -871,12 +864,13 @@ class Collection(Mapping):
             raise KeyError(name)
         return item
 
-    def __iter__(self, limit=None):
+    def __iter__(self, batchsize=1000):
         session = DBSession()
         query = session.query(Resource.rid).filter(
             Resource.item_type == self.item_type
-        )
-        for rid, in query.limit(limit):
+        ).order_by(Resource.rid)
+
+        for rid, in query.yield_per(batchsize):
             yield rid
 
     def __len__(self):
@@ -945,26 +939,14 @@ class Collection(Mapping):
             except ValueError:
                 limit = 25
 
-        session = DBSession()
-        query = session.query(Resource).filter(
-            Resource.item_type == self.item_type
+        items = (
+            item for item in self.itervalues()
+            if request.has_permission('view', item)
         )
 
-        query = query.options(
-            orm.joinedload_all(
-                Resource.rels,
-                Link.target,
-                Resource.data,
-                CurrentPropertySheet.propsheet,
-            ),
-        ).order_by(Resource.rid)
-        
-        if limit is None:
-            models = query
-        else:
-            models = self._batched_models(query, limit)
+        if limit is not None:
+            items = islice(items, limit)
 
-        items = self._filter_allowed_view(request, query, limit)
         result['@graph'] = [self._render_item(request, item, frame) for item in items]
 
         if limit is not None and len(result['@graph']) == limit:
@@ -973,25 +955,6 @@ class Collection(Mapping):
             result['all'] = '%s?%s' % (request.resource_path(self), urlencode(params))
 
         return result
-
-    def _batched_models(self, query, size):
-        for model in query.limit(size):
-            yield model
-
-        while model is not None:
-            for model in query.filter(Resource.rid > model.rid).limit(size):
-                yield model
-
-    def _filter_allowed_view(self, request, models, max=None):
-        count = 0
-        for model in models:
-            last_rid = model.rid
-            item = self.Item(self, model)
-            if request.has_permission('view', item):
-                yield item                
-                count += 1
-                if max is not None and count >= max:
-                    break
 
     def _render_item(self, request, item, frame):
         item_uri = request.resource_path(item)
