@@ -16,13 +16,13 @@ def antibody_lot(lab, award, source):
 def antibody_lot_1(antibody_lot):
     item = antibody_lot.copy()
     item.update({
-        'schema_version': '1'
+        'schema_version': '1',
         'encode2_dbxrefs': ['CEBPZ'],
     })
     return item
 
 
- def test_antibody_lot_upgrade(app, antibody_lot_1):
+def test_antibody_lot_upgrade(app, antibody_lot_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('antibody_lot', antibody_lot_1, target_version='2')
     assert value['schema_version'] == '2'
