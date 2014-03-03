@@ -9,7 +9,7 @@ var NavBar = React.createClass({
     render: function() {
         var section = url.parse(this.props.href).pathname.split('/', 2)[1] || '';
         return NavBarLayout({
-            personaReady: this.props.personaReady,
+            loadingComplete: this.props.loadingComplete,
             portal: this.props.portal,
             section: section,
             session: this.props.session,
@@ -88,10 +88,10 @@ var Search = React.createClass({
 var UserActions = React.createClass({
     render: function() {
         var session = this.props.session;
-        var disabled = !this.props.personaReady;
-        if (!(session && session.persona)) {
+        var disabled = !this.props.loadingComplete;
+        if (!(session && session['auth.userid'])) {
             return (
-                <ul id="user-actions" className="nav pull-right" hidden={!session}>
+                <ul id="user-actions" className="nav pull-right">
                     <li><a href="" disabled={disabled} data-trigger="login" data-id="signin">Sign in</a></li>
                 </ul>
             );

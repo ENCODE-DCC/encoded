@@ -23,6 +23,28 @@ var Error = module.exports.Error = React.createClass({
 globals.content_views.register(Error, 'error');
 
 
+var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
+    render: function() {
+        if (!this.props.loadingComplete) return (
+            <div className="communicating">
+                <div className="loading-spinner"></div>
+            </div>
+        );
+        return this.transferPropsTo(<Error />);
+    }
+});
+
+globals.content_views.register(HTTPForbidden, 'HTTPForbidden');
+
+
+var BlankWhileLoading = module.exports.BlankWhileLoading = function (props) {
+    if (!props.loadingComplete) return "";
+    return props.context.title;
+}
+
+globals.listing_titles.register(BlankWhileLoading, 'HTTPForbidden');
+
+
 var LoginDenied = module.exports.LoginDenied = React.createClass({
     render: function() {
         var context = this.props.context;

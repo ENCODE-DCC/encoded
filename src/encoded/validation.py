@@ -3,6 +3,7 @@ from pyramid.events import NewRequest
 from pyramid.httpexceptions import (
     HTTPError,
     HTTPBadRequest,
+    HTTPForbidden,
     HTTPUnprocessableEntity,
 )
 from pyramid.util import LAST
@@ -16,6 +17,8 @@ def includeme(config):
     config.add_subscriber(wrap_request, NewRequest)
     config.add_view(view=failed_validation, context=ValidationFailure)
     config.add_view(view=http_error, context=HTTPError)
+    config.add_view(view=refresh_session, context=CSRFTokenError)
+    config.add_view(view=refresh_session, context=HTTPForbidden)
     config.add_view(view=jsondecode_error, context=json.JSONDecodeError)
     config.add_view_predicate('validators', ValidatorsPredicate, weighs_more_than=LAST)
 
@@ -114,6 +117,16 @@ def jsondecode_error(exc, request):
         return http_error(HTTPBadRequest(str(e)), request)
     else:
         raise exc
+
+
+class CSRFTokenError(HTTPBadRequest):
+    pass
+
+
+def refresh_session(exc, request):
+    request.session.get_csrf_token()
+    request.session.changed()
+    return http_error(exc, request)
 
 
 def prepare_validators(validators):
