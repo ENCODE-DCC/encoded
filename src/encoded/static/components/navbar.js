@@ -105,7 +105,7 @@ var UserActions = React.createClass({
                 </li>
             );
         });
-        var fullname = session.user_properties.title;
+        var fullname = (session.user_properties && session.user_properties.title) || 'unknown';
         return (
             <ul id="user-actions" className="nav pull-right">
                 <li className="dropdown">
