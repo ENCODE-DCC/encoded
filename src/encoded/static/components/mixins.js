@@ -81,47 +81,71 @@ module.exports.Persona = {
             // Ensure DOM is clean for React when mounting
             this.personaLoaded = $.getScript("https://login.persona.org/include.js");
         }
-        $.when(this.refreshSession(), this.personaLoaded).done(this.configurePersona);
+        this.configurePersona(this.parseSessionCookie());
     },
 
     ajaxPrefilter: function (options, original, xhr) {
         xhr.xhr_begin = 1 * new Date();
         var http_method = options.type;
-        var csrf_token = this.state.session && this.state.session.csrf_token;
         if (http_method === 'GET' || http_method === 'HEAD') return;
-        if (!csrf_token) return;
-        xhr.setRequestHeader('X-CSRF-Token', csrf_token);
+        var userid = this.state.session && this.state.session['auth.userid']
+        if (userid) {
+            // XXX Server should use this to check user is logged in
+            xhr.setRequestHeader('X-Session-Userid', userid);
+        }
+        if (this.csrf_token) {
+            xhr.setRequestHeader('X-CSRF-Token', this.csrf_token);
+        }
     },
 
-    refreshSession: function () {
+    parseSessionCookie: function () {
+        var Buffer = require('buffer').Buffer;
+        var cookie = require('cookie-cutter');
+        var session_cookie = cookie(document).get('session');
+        if (!session_cookie) return null;
+        // URL-safe base64
+        session_cookie = session_cookie.replace(/\-/g, '+').replace(/\_/g, '/');
+        try {
+            // First 64 chars is the sha-512 server signature
+            // Payload is [accessed, created, data]
+            var session = JSON.parse(Buffer(session_cookie, 'base64').slice(64).toString())[2]
+        } catch (e) {
+            return null;
+        }
+        this.csrf_token = session._csrft_;
+        this.setState({session: session});
+        return session;
+    },
+
+    reloadSession: function () {
         var $ = require('jquery');
-        var self = this;
         if (this.sessionRequest && this.sessionRequest.state() == 'pending') {
             this.sessionRequest.abort();
         }
         this.sessionRequest = $.ajax({
-            url: '/session',
+            url: '/session?reload=true',
             type: 'GET',
             dataType: 'json'
-        }).done(function (data) {
-            self.setState({session: data});
-        });
+        }).done(function (session) {
+            this.parseSessionCookie();
+        }.bind(this));
         return this.sessionRequest;
     },
 
-    configurePersona: function (refresh, loaded) {
-        var session = refresh[0];
-        navigator.id.watch({
-            loggedInUser: session.persona,
-            onlogin: this.handlePersonaLogin,
-            onlogout: this.handlePersonaLogout,
-            onready: this.handlePersonaReady
-        });
+    configurePersona: function (session) {
+        this.personaLoaded.done(function () {
+            navigator.id.watch({
+                loggedInUser: session && session['auth.userid'] || null,
+                onlogin: this.handlePersonaLogin,
+                onlogout: this.handlePersonaLogout,
+                onmatch: this.handlePersonaMatch,
+                onready: this.handlePersonaReady
+            });
+        }.bind(this));
     },
 
     handlePersonaLogin: function (assertion, retrying) {
         var $ = require('jquery');
-        var self = this;
         if (!assertion) return;
         $.ajax({
             url: '/login',
@@ -129,14 +153,16 @@ module.exports.Persona = {
             dataType: 'json',
             data: JSON.stringify({assertion: assertion}),
             contentType: 'application/json'
-        }).done(function (data) {
-            self.refreshSession();
+        }).done(function (session) {
+            this.parseSessionCookie();
             var next_url = window.location.href;
             if (window.location.hash == '#logged-out') {
                 next_url = window.location.pathname + window.location.search;
             }
             if (this.historyEnabled) {
-                self.navigate(next_url, {replace: true});
+                this.navigate(next_url, {replace: true}).done(function () {
+                    this.setState({loadingComplete: true})
+                }.bind(this));
             } else {
                 var old_path = window.location.pathname + window.location.search;
                 window.location.assign(next_url);
@@ -144,43 +170,48 @@ module.exports.Persona = {
                     window.location.reload();
                 }
             }
-        }).fail(function (xhr, status, err) {
-            // If there is an error, show the error messages
-            navigator.id.logout();
+        }.bind(this)).fail(function (xhr, status, err) {
             var data = parseError(xhr, status);
+            this.parseSessionCookie();
             if (xhr.status === 400 && data.detail.indexOf('CSRF') !== -1) {
                 if (!retrying) {
-                    self.refreshSession().done(function () {
-                        self.handlePersonaLogin(assertion, true);
-                    });
-                return;
+                    return this.handlePersonaLogin(assertion, true);
                 }
             }
-            self.setProps({context: data});
-        });
+            // If there is an error, show the error messages
+            navigator.id.logout();
+            this.setProps({context: data});
+            this.setState({loadingComplete: true});
+        }.bind(this));
     },
 
     handlePersonaLogout: function () {
         var $ = require('jquery');
         console.log("Persona thinks we need to log out");
-        if (this.state.session.persona === null) return;
-        var self = this;
+        var session = this.state.session;
+        if (!(session && session['auth.userid'])) return;
         $.ajax({
             url: '/logout?redirect=false',
             type: 'GET',
             dataType: 'json'
         }).done(function (data) {
-            self.DISABLE_POPSTATE = true;
+            this.DISABLE_POPSTATE = true;
             var old_path = window.location.pathname + window.location.search;
             window.location.assign('/#logged-out');
             if (old_path == '/') {
                 window.location.reload();
             }
-        }).fail(function (xhr, status, err) {
+        }.bind(this)).fail(function (xhr, status, err) {
             data = parseError(xhr, status);
             data.title = 'Logout failure: ' + data.title;
-            self.setProps({context: data});
-        });
+            this.setProps({context: data});
+        }.bind(this));
+    },
+
+    handlePersonaMatch: function () {
+        this.personaDeferred.resolve();
+        console.log('persona ready');
+        this.setState({loadingComplete: true});
     },
 
     handlePersonaReady: function () {
@@ -410,7 +441,7 @@ module.exports.HistoryAndTriggers = {
             contextRequest: xhr,
             href: href
         });
-
+        return xhr;
     },
 
     detectSlowRequest: function (xhr) {
@@ -430,6 +461,15 @@ module.exports.HistoryAndTriggers = {
             'exDescription': 'contextRequest:' + status + ':' + xhr.statusText,
             'location': window.location.href
         });
+        if (this.state.session && this.state.session['auth.userid']) {
+            var session = this.parseSessionCookie();
+            if (!session['auth.userid']) {
+                this.setState({personaReady: false, loadingComplete: false});
+                this.personaDeferred = require('jquery').Deferred();
+                this.configurePersona(session);
+            }
+        }
+
         this.receiveContextResponse(data, status, xhr);
     },
 

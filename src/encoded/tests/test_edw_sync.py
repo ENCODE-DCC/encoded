@@ -12,9 +12,22 @@ from test_views import TYPE_LENGTH
 pytestmark = [pytest.mark.sync_edw]
 
 # globals
-EDW_FILE_TEST_DATA_DIR = 'src/encoded/tests/data/edw_file'
-
 TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
+
+
+@pytest.fixture
+def edw_file_mock():
+    return json_data_file('data/edw_file/edw_file_mock.json')
+
+
+@pytest.fixture
+def import_in_1():
+    return json_data_file('data/edw_file/import_in.1.json')
+
+
+def json_data_file(filename):
+    from pkg_resources import resource_stream
+    return json.load(resource_stream(__name__, filename))
 
 
 @pytest.mark.slow
@@ -96,20 +109,16 @@ def test_accession_testapp(request, test_accession_app, external_tx, zsa_savepoi
     return TestApp(test_accession_app, environ)
 
 @pytest.mark.slow
-def test_import_tst_file(workbook, test_accession_testapp):
+def test_import_tst_file(workbook, test_accession_testapp, import_in_1):
     # Test import of new file TSTXX to encoded
     # this tests adds replicates, but never checks their validity
     # ignoring this because I don't want to deal with tearing down ES  posts
 
     import re
 
-    input_file = 'import_in.1.tsv'
-    f = open(EDW_FILE_TEST_DATA_DIR + '/' + input_file, 'rU')
-    reader = DictReader(f, delimiter='\t')
-
     sync_edw.get_all_datasets(test_accession_testapp)
 
-    for fileinfo in reader:
+    for fileinfo in import_in_1:
 
         converted_file = sync_edw.convert_edw(test_accession_testapp, fileinfo)
         #set_in = set(fileinfo.items())
@@ -122,29 +131,26 @@ def test_import_tst_file(workbook, test_accession_testapp):
             file_dict = get_resp.json
             assert( not sync_edw.compare_files(file_dict, converted_file) )
         else:
-            ## one of the files in import_in.1.tsv is not postable
+            ## one of the files in import_in_1 is not postable
             ## should maybe switch it from an experiment to a regular dataset
             assert(re.search('experiments', converted_file['dataset']))
             assert(not fileinfo['biological_replicate'] or not converted_file['technical_replicate'])
 
 
-def test_encode3_experiments(workbook, testapp):
+def test_encode3_experiments(workbook, testapp, edw_file_mock):
     # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
     # accessions are ENCODE2 experiments
 
     # Test identifying an ENCODE 3 experiment
     #res = testapp.post_json('/index', {})
-    mock_edw_file = 'edw_file_mock.tsv'
-    f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file, 'rU')
-    reader = DictReader(f, delimiter='\t')
 
     sync_edw.get_all_datasets(testapp)
 
     edw_mock_p3 = {}
-    for fileinfo in reader:
+    for fileinfo in edw_file_mock:
         converted_file = sync_edw.convert_edw(testapp, fileinfo, phase='3')
         if converted_file['accession']:
-            converted_file.pop('test', None) # this is in the file for notation purposes only
+            converted_file.pop('_test', None) # this is in the file for notation purposes only
             edw_mock_p3[fileinfo['accession']] = converted_file
 
     assert len(edw_mock_p3) == 13
@@ -155,23 +161,19 @@ def test_encode3_experiments(workbook, testapp):
 
 
 @pytest.mark.slow
-def test_file_sync(workbook, testapp):
+def test_file_sync(workbook, testapp, edw_file_mock):
 
     import re
 
     sync_edw.get_all_datasets(testapp)
 
-    mock_edw_file = 'edw_file_mock.tsv'
-    f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file, 'rU')
-    reader = DictReader(f, delimiter='\t')
-
     edw_mock = {}
     test = {}
     filecount = 0
-    for fileinfo in reader:
+    for fileinfo in edw_file_mock:
         filecount = filecount+1
         converted_file = sync_edw.convert_edw(testapp, fileinfo)
-        test[fileinfo['accession']] = converted_file.pop('test', None) # this is in the file for notation purposes only
+        test[fileinfo['accession']] = converted_file.pop('_test', None) # this is in the file for notation purposes only
         edw_mock[fileinfo['accession']] = converted_file
 
     assert len(edw_mock) == filecount
@@ -264,7 +266,7 @@ def test_file_sync(workbook, testapp):
     #TODO tests for experiments with multiple mappings.
 
 
-def test_patch_replicate(workbook, testapp):
+def test_patch_replicate(workbook, testapp, edw_file_mock):
 
     import re
 
@@ -275,19 +277,15 @@ def test_patch_replicate(workbook, testapp):
     update = [ x for x in sync_edw.NO_UPDATE if x != 'replicate' ]
     sync_edw.NO_UPDATE = update
 
-    mock_edw_file = 'edw_file_mock.tsv'
-    f = open(EDW_FILE_TEST_DATA_DIR + '/' + mock_edw_file, 'rU')
-    reader = DictReader(f, delimiter='\t')
-
     edw_mock = {}
     test = {}
     filecount = 0
-    for fileinfo in reader:
+    for fileinfo in edw_file_mock:
         converted_file = sync_edw.convert_edw(testapp, fileinfo)
         if converted_file.get('dataset', None) != test_set:
             continue
         filecount = filecount+1
-        test[fileinfo['accession']] = converted_file.pop('test', None) # this is in the file for notation purposes only
+        test[fileinfo['accession']] = converted_file.pop('_test', None) # this is in the file for notation purposes only
         edw_mock[fileinfo['accession']] = converted_file
 
     assert len(edw_mock) == filecount

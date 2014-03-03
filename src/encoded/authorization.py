@@ -17,7 +17,7 @@ def groupfinder(login, request):
         elif localname in ['TEST_AUTHENTICATED', 'EMBED', 'INDEXER']:
             return []
 
-    if namespace in ('mailto', 'remoteuser'):
+    if namespace in ('mailto', 'remoteuser', 'persona'):
         users = root.by_item_type['user']
         try:
             user = users[localname]

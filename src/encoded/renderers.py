@@ -17,6 +17,7 @@ from pyramid.threadlocal import (
     get_current_request,
     manager,
 )
+from .validation import CSRFTokenError
 import atexit
 import json
 import logging
@@ -204,10 +205,6 @@ class PageWorker(threading.local):
 
 
 page_renderer = PageWorker()
-
-
-class CSRFTokenError(HTTPBadRequest):
-    pass
 
 
 @subscriber(NewRequest)

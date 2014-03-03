@@ -1,0 +1,50 @@
+[
+    {
+        "accession": "TSTFF999001",
+        "assembly": "hg19",
+        "biological_replicate": "1",
+        "dataset": "ENCSR000AER",
+        "date_created": "2013-10-08",
+        "download_path": "2013/5/9/ENCFF999ZZZ.bam",
+        "edw_error_message": "",
+        "file_format": "bigBed",
+        "lab_error_message": "",
+        "md5sum": "e86328ea363afe5b339c3d2a1f634521",
+        "output_type": "Sites",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "../../../../pre-DCC/wgEncodeCshlLongRnaSeq/20130218_promocell_batches1-2_minus_batch1sFASTQ/SID38224_BC1HH9ACXX_5_1.txt.gz",
+        "technical_replicate": "1"
+    },
+    {
+        "accession": "TSTFF998ZZZ",
+        "assembly": "hg19",
+        "biological_replicate": "3",
+        "dataset": "ENCSR000AER",
+        "date_created": "2013-10-08",
+        "download_path": "2013/5/9/ENCFF998ZZZ.txt.gz",
+        "edw_error_message": "",
+        "file_format": "bigBed",
+        "lab_error_message": "lab goofed up",
+        "md5sum": "e86328ea363afe5b339c3d2a1f634521",
+        "output_type": "Sites",
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "../../../../pre-DCC/wgEncodeCshlLongRnaSeq/20130218_promocell_batches1-2_minus_batch1sFASTQ/SID38224_BC1HH9ACXX_5_1.txt.gz",
+        "technical_replicate": "2"
+    },
+    {
+        "accession": "ENCFF997ZZZ",
+        "assembly": "hg19",
+        "biological_replicate": "",
+        "dataset": "ENCSR000AER",
+        "date_created": "2013-10-08",
+        "download_path": "2013/5/9/ENCFF997ZZZ.txt.gz",
+        "edw_error_message": "edw outa whack",
+        "file_format": "bigBed",
+        "lab_error_message": "",
+        "md5sum": "e86328ea363afe5b339c3d2a1f634521",
+        "output_type": "Sites",
+        "submitted_by": "sit.duis@blandit.hendrerit",
+        "submitted_file_name": "../../../../pre-DCC/wgEncodeCshlLongRnaSeq/20130218_promocell_batches1-2_minus_batch1sFASTQ/SID38224_BC1HH9ACXX_5_1.txt.gz",
+        "technical_replicate": ""
+    }
+]
