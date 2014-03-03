@@ -33,6 +33,7 @@ DEFAULT_COLLECTIONS = [
     'platform',
     'treatment'
 ]
+DEFAULT_COLLECTIONS = []
 
 
 def internal_app(configfile, app_name=None, username=None):

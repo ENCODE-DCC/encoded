@@ -20,7 +20,7 @@ import transaction
 import uuid
 import zope.sqlalchemy
 
-DBSession = orm.scoped_session(orm.sessionmaker(weak_identity_map=False))
+DBSession = orm.scoped_session(orm.sessionmaker())
 zope.sqlalchemy.register(DBSession)
 Base = declarative_base()
 

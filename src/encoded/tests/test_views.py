@@ -204,10 +204,11 @@ def test_post_duplicate_uuid(testapp):
     testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
-def test_user_effective_principals(users, anontestapp):
+def test_user_effective_principals(users, anontestapp, execute_counter):
     email = users[0]['email']
-    res = anontestapp.get('/@@testing-user',
-                          extra_environ={'REMOTE_USER': str(email)})
+    with execute_counter.expect(1):
+        res = anontestapp.get('/@@testing-user',
+                              extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
         'group.admin',
         'group.programmer',
