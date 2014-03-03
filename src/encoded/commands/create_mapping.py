@@ -66,7 +66,8 @@ def schema_mapping(name, schema):
                     'type': 'float',
                     'copy_to': '',
                     'ignore_malformed': True,
-                    'include_in_all': False
+                    'include_in_all': False,
+                    'copy_to': []
                 }
             }
         }
@@ -82,14 +83,14 @@ def schema_mapping(name, schema):
     if type_ == 'number':
         return {
             'type': 'float',
-            'copy_to': '',
+            'copy_to': [],
             'include_in_all': False
         }
 
     if type_ in ('boolean', 'integer'):
         return {
             'type': type_,
-            'copy_to': '',
+            'copy_to': [],
             'include_in_all': False
         }
 
