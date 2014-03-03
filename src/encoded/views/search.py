@@ -10,7 +10,7 @@ from urllib import urlencode
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
 
-def get_filtered_query(term, fields, search_fields, principals):
+def get_filtered_query(term, fields, principals):
     return {
         'explain': True,
         'query': {
@@ -21,7 +21,11 @@ def get_filtered_query(term, fields, search_fields, principals):
                         'analyze_wildcard': True,
                         'analyzer': 'encoded_search_analyzer',
                         'default_operator': 'AND',
-                        'fields': search_fields
+                        'fields': [
+                            'encoded_all_ngram',
+                            'encoded_all_standard',
+                            'encoded_all_untouched'
+                        ]
                     }
                 },
                 'filter': {
@@ -94,7 +98,7 @@ def search(context, request, search_type=None):
 
     if search_type is None:
         search_type = request.params.get('type', '*')
-    
+
         # handling invalid item types
         if search_type != '*':
             if search_type not in root.by_item_type:
@@ -107,7 +111,6 @@ def search(context, request, search_type=None):
         return result
 
     # Building query for filters
-    search_fields = []
     if search_type == '*':
         doc_types = ['antibody_approval', 'biosample', 'experiment', 'target', 'dataset']
     else:
@@ -133,19 +136,15 @@ def search(context, request, search_type=None):
         fields = {'embedded.@id', 'embedded.@type'}
     for doc_type in doc_types:
         collection = root[doc_type]
-        schema = collection.schema
         if frame == 'columns':
             fields.update('embedded.' + column for column in collection.columns)
             result['columns'].update(collection.columns)
-        # Adding search fields and boost values
-        for value in schema.get('boost_values', ()):
-            search_fields = search_fields + ['embedded.' + value, 'embedded.' + value + '.standard^2', 'embedded.' + value + '.untouched^3']
 
     if not result['columns']:
         del result['columns']
 
     # Builds filtered query which supports multiple facet selection
-    query = get_filtered_query(search_term, sorted(fields), search_fields, principals)
+    query = get_filtered_query(search_term, sorted(fields), principals)
 
     # Sorting the files when search term is not specified
     if search_term == '*':
@@ -168,7 +167,7 @@ def search(context, request, search_type=None):
             if term == 'other':
                 query_filters.append({'missing': {'field': 'embedded.' + field}})
             else:
-                query_filters.append({'term': {'embedded.{}.untouched'.format(field): term}})
+                query_filters.append({'term': {'embedded.{}'.format(field): term}})
 
             qs = urlencode([(k, v) for k, v in request.params.iteritems() if k != field])
             result['filters'].append({
@@ -186,7 +185,7 @@ def search(context, request, search_type=None):
                 continue
             query['facets'][field] = {
                 'terms': {
-                    'field': 'embedded.{}.untouched'.format(field),
+                    'field': 'embedded.{}'.format(field),
                     'size': 99999,
                 },
             }
