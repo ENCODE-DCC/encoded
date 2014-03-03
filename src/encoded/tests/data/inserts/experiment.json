@@ -142,8 +142,8 @@
         ],
         "dbxrefs": [
             "ucsc_encode_db:wgEncodeEH002229"
-            "GSM999346",
-            "GSE40699"
+            "geo_db:GSM999346",
+            "geo_db:GSE40699"
         ],
         "lab": "richard-myers",
         "related_files": [
