@@ -23,7 +23,10 @@ import json
 import logging
 import os
 import pyramid.renderers
-import subprocess
+try:
+    import subprocess32 as subprocess
+except ImportError:
+    import subprocess
 import threading
 import time
 import uuid
