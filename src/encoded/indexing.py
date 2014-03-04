@@ -140,10 +140,14 @@ def add_dependent_objects(root, new, existing):
                 model.source_rid for model in item.model.revs
             })
             
+            item_type = item.item_type
             item_rels = item.model.rels
             for rel in item_rels:
+                key = (item_type, rel.rel)
+                if key not in root.all_merged_rev:
+                    continue
                 rev_item = root.get_by_uuid(rel.target_rid)
-                if (rel.source.item_type, rel.rel) in rev_item.merged_rev.values():
+                if key in rev_item.merged_rev.values():
                     dependents.add(rel.target_rid)
 
         existing.update(objects)
