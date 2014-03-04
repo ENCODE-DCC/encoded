@@ -95,7 +95,7 @@ def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
     assert value['subcellular_fraction_term_id'] == 'GO:0016020'
     assert 'subcellular_fraction' not in value
 
-def test_biosample_upgrade_array_to_string(testapp, biosample_3):
+def test_biosample_upgrade_array_to_string(app, biosample_3):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_3, target_version='4')
     assert value['schema_version'] == '4'
