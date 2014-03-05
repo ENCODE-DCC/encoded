@@ -275,7 +275,6 @@ var Replicate = module.exports.Replicate = function (props) {
     var library = replicate.library;
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended.toString();
-    console.log(paired_end);
     return (
         <div key={props.key}>
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
