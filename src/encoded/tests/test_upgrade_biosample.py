@@ -32,12 +32,12 @@ def biosample_2(biosample):
     return item
 
 @pytest.fixture
-def biosample_3(biosample):
+def biosample_3(biosample, biosamples):
     item = biosample.copy()
     item.update({
         'schema_version': '3',
-        'derived_from': [biosample['uuid']],
-        'part_of': [biosample['uuid']]
+        'derived_from': [biosamples[0]['uuid']],
+        'part_of': [biosamples[0]['uuid']],
     })
     return item
 
@@ -96,12 +96,12 @@ def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
     assert value['subcellular_fraction_term_id'] == 'GO:0016020'
     assert 'subcellular_fraction' not in value
 
-def test_biosample_upgrade_array_to_string(app, biosample_3):
+def test_biosample_upgrade_array_to_string(app, biosample_3, biosample, biosamples):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_3, target_version='4')
     assert value['schema_version'] == '4'
-    assert value['part_of'] == biosample['uuid']
-    assert value['derived_from'] == biosample['uuid']
+    assert value['part_of'] == biosamples[0]['uuid']
+    assert value['derived_from'] == biosamples[0]['uuid']
 
 def test_biosample_upgrade_inline(testapp, biosample_1):
     from encoded.schema_utils import load_schema
