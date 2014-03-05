@@ -31,6 +31,7 @@ def biosample_2(biosample):
     })
     return item
 
+@pytest.fixture
 def biosample_3(biosample):
     item = biosample.copy()
     item.update({
