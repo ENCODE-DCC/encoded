@@ -10,7 +10,7 @@ if (typeof console === 'undefined') {
 
 // These are only required for the case when React wants to reset the HTML element,
 // which fails because it cannot set node.innerHTML on IE8
-var ElementPrototype = window.Element.prototype
+var ElementPrototype = window.Element.prototype;
 if (!ElementPrototype.getAttributeNS) {
     ElementPrototype.getAttributeNS = function getAttributeNS (namespace, name) {
         if (namespace) throw new Error("Unsupported getAttributeNS with namespace");
