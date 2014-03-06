@@ -27,7 +27,7 @@
     "d3": "^3.4.2",
     "source-map-support": "^0.2.5",
     "envify": "^1.2.1",
-    "brace": "^0.2.0",
+    "brace": "^0.2.1",
     "cookie-cutter": "^0.1.1"
   }
 }

@@ -319,6 +319,7 @@ class Root(object):
         self.by_item_type = {}
         self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
         self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
+        self.all_merged_rev = set()
 
     def __getitem__(self, name):
         try:
@@ -412,6 +413,7 @@ class Root(object):
     def attach(self, name, factory):
         value = factory(self, name)
         self[name] = value
+        self.all_merged_rev.update(value.Item.merged_rev.values())
 
     def __json__(self, request=None):
         return self.properties.copy()
