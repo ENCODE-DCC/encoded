@@ -28,6 +28,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         var replicates = _.sortBy(context.replicates, function(item) {
             return item.biological_replicate_number;
         });
+        var aliasList = context.aliases.join(", ");
         var dbxrefs = context.encode2_dbxrefs.map(function (item) {
         	return "UCSC_encode_db:" + item;
         });
@@ -109,7 +110,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
-                        <dt hidden={!context.encode2_dbxrefs.length}>Other identifiers</dt>
+                        <dt hidden={!context.aliases.length}>Aliases</dt>
+                        <dd hidden={!context.aliases.length}>{aliasList}</dd>
+
+                        <dt hidden={!context.encode2_dbxrefs.length}>External resources</dt>
                         <dd hidden={!context.encode2_dbxrefs.length}>
                             <DbxrefList values={dbxrefs} />
                         </dd>

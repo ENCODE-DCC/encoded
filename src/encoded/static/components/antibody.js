@@ -83,7 +83,7 @@ var Approval = module.exports.Approval = React.createClass({
                         <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
                         <dd hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
                         
-                        <dt hidden={!context.antibody.encode2_dbxrefs.length}>Other identifiers</dt>
+                        <dt hidden={!context.antibody.encode2_dbxrefs.length}>External resources</dt>
                         <dd hidden={!context.antibody.encode2_dbxrefs.length}>
                         	<DbxrefList values={dbxrefs} />
                         </dd>
