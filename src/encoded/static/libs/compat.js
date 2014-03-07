@@ -5,7 +5,7 @@ require('es5-shim/es5-sham');
 
 if (typeof console === 'undefined') {
     window.console = {};
-    window.console.log = function () {};
+    window.console.log = window.console.warn = window.console.table = function () {};
 }
 
 })();
