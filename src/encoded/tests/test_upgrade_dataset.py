@@ -42,4 +42,4 @@ def test_experiment_upgrade_dbxrefs(root, registry, experiment, experiment_2, th
     assert value['schema_version'] == '3'
     assert 'encode2_dbxrefs' not in value
     assert 'geo_dbxrefs' not in value
-    assert value['dbxrefs'] == ['ucsc_encode_db:wgEncodeEH002945', 'geo_db:GSM99494']
+    assert value['dbxrefs'] == ['ucsc_encode_db:wgEncodeEH002945', 'GEO:GSM99494']

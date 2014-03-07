@@ -25,4 +25,4 @@ def test_platform_upgrade(app, platform_1):
     assert value['schema_version'] == '2'
     assert 'encode2_dbxrefs' not in value
     assert 'geo_dbxrefs' not in value
-    assert value['dbxrefs'] == ['ucsc_encode_db:AB_SOLiD_3.5', 'geo_db:GPL9442']
+    assert value['dbxrefs'] == ['ucsc_encode_db:AB_SOLiD_3.5', 'GEO:GPL9442']

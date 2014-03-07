@@ -63,9 +63,9 @@
         ],
         "dbxrefs": [
             "ucsc_encode_db:wgEncodeEM002001",
-            "geo_db:GSM798326",
-            "geo_db:GSM798326",
-            "geo_db:GSE32218"
+            "GEO:GSM798326",
+            "GEO:GSM798326",
+            "GEO:GSE32218"
         ],
         "lab": "sherman-weissman",
         "status": "CURRENT",
@@ -89,9 +89,9 @@
         ],
         "dbxrefs": [
             "ucsc_encode_db:wgEncodeEM002004",
-            "geo_db:GSM798327",
-            "geo_db:GSM798327",
-            "geo_db:GSE32218"
+            "GEO:GSM798327",
+            "GEO:GSM798327",
+            "GEO:GSE32218"
         ],
         "lab": "sherman-weissman",
         "possible_controls": [
@@ -118,7 +118,7 @@
         ],
         "dbxrefs": [
             "ucsc_encode_db:wgEncodeEH003317",
-            "geo_db:GSM1010811"
+            "GEO:GSM1010811"
         ],
         "lab": "richard-myers",
         "status": "CURRENT",
@@ -142,8 +142,8 @@
         ],
         "dbxrefs": [
             "ucsc_encode_db:wgEncodeEH002229"
-            "geo_db:GSM999346",
-            "geo_db:GSE40699"
+            "GEO:GSM999346",
+            "GEO:GSE40699"
         ],
         "lab": "richard-myers",
         "related_files": [
