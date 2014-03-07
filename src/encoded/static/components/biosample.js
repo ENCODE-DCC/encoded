@@ -6,9 +6,11 @@ var url = require('url');
 var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
+var dbxref = require('./dbxref');
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
+var DbxrefList = dbxref.DbxrefList;
 
 
 var Panel = function (props) {
@@ -27,6 +29,9 @@ var Biosample = module.exports.Biosample = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var aliasList = context.aliases.join(", ");
+        var dbxrefs = context.encode2_dbxrefs.map(function (item) {
+            return "UCSC_encode_db:" + item;
+        });
 
         // set up construct documents panels
         var constructs = _.sortBy(context.constructs, function(item) {
@@ -98,11 +103,16 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
 
+                        <dt>Grant</dt>
+                        <dd>{context.award.name}</dd>
+
                         <dt hidden={!context.aliases.length}>Aliases</dt>
                         <dd hidden={!context.aliases.length}>{aliasList}</dd>
 
-                        <dt>Grant</dt>
-                        <dd>{context.award.name}</dd>
+                        <dt hidden={!context.encode2_dbxrefs.length}>External resources</dt>
+                        <dd hidden={!context.encode2_dbxrefs.length}>
+                            <DbxrefList values={dbxrefs} />
+                        </dd>
 
                         <dt hidden={!context.note}>Note</dt>
                         <dd hidden={!context.note}>{context.note}</dd>

@@ -60,19 +60,19 @@ var Dataset = module.exports.Dataset = React.createClass({
                             <DbxrefList values={context.aliases} />
                          </dd> : null}
                         
+                        <dt>External resources</dt>
+                        <dd>
+                            {context.geo_dbxrefs.length ?
+                                <DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
+                            : <em>None submitted</em> }
+                        </dd>
+
                         {context.references.length ? <dt>References</dt> : null}
                         {context.references.length ? <dd>
                         	<ul className="horizontal-list">
                         		{pubmed_links}
                         	</ul>
                         </dd> : null}
-                        
-                        <dt>External resources</dt>
-						<dd>
-							{context.dbxrefs.length ?
-								<DbxrefList values={context.dbxrefs}/>
-							: <em>None submitted</em> }
-						</dd>
                     </dl>
                 </div>
 
