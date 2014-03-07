@@ -2,8 +2,8 @@
     {
         "dbxrefs": [
             "ucsc_encode_db:454_GS_FLX",
-            "geo_db:GPL14603",
-            "geo_db:GPL16815"
+            "GEO:GPL14603",
+            "GEO:GPL16815"
         ],
         "term_id": "OBI:0000702",
         "term_name": "Roche 454 Genome Sequencer FLX",
@@ -13,7 +13,7 @@
     {
         "dbxrefs": [
             "ucsc_encode_db:AB_SOLiD_3.5",
-            "geo_db:GPL9442"
+            "GEO:GPL9442"
         ],
         "term_id": "OBI:0000696",
         "term_name": "Applied Biosystems SOLiD System 3 Plus",
@@ -22,7 +22,7 @@
     },
     {
         "dbxrefs": [
-            "geo_db:GPL13190"
+            "GEO:GPL13190"
         ],
         "notes": "registering with OBI",
         "term_id": "NTR:0000001",
@@ -32,7 +32,7 @@
     },
     {
         "dbxrefs": [
-            "geo_db:GPL14965"
+            "GEO:GPL14965"
         ],
         "term_id": "NTR:0000002",
         "term_name": "NimbleGen Human 3x720k Whole Genome CGH Tiling Array",
@@ -41,7 +41,7 @@
     },
     {
         "dbxrefs": [
-            "geo_db:GPL10989"
+            "GEO:GPL10989"
         ],
         "term_id": "NTR:0000003",
         "term_name": "NimbleGen Mouse 3x720k Whole Genome CGH Tiling Array",
@@ -50,7 +50,7 @@
     },
     {
         "dbxrefs": [
-            "geo_db:GPL9156"
+            "GEO:GPL9156"
         ],
         "term_id": "NTR:0000004",
         "term_name": "NimbleGen Mouse 385K Whole Genome Tiling Array",
@@ -60,7 +60,7 @@
     {
         "dbxrefs": [
             "ucsc_encode_db:Illumina_GA2",
-            "geo_db:GPL9115"
+            "GEO:GPL9115"
         ],
         "term_id": "OBI:0000703",
         "term_name": "Illumina Genome Analyzer II",
@@ -70,7 +70,7 @@
     {
         "dbxrefs": [
             "ucsc_encode_db:Illumina_GA2e",
-            "geo_db:GPL9115"
+            "GEO:GPL9115"
         ],
         "term_id": "NTR:0000005",
         "term_name": "Illumina Genome Analyzer IIe",
@@ -80,8 +80,8 @@
     {
         "dbxrefs": [
             "ucsc_encode_db:Illumina_GA2x",
-            "geo_db:GPL10999",
-            "geo_db:GPL9250"
+            "GEO:GPL10999",
+            "GEO:GPL9250"
         ],
         "term_id": "NTR:0000006",
         "term_name": "Illumina Genome Analyzer IIx",
@@ -91,8 +91,8 @@
     {
         "dbxrefs": [
             "ucsc_encode_db:Illumina_HiSeq_2000",
-            "geo_db:GPL11154",
-            "geo_db:GPL13112"
+            "GEO:GPL11154",
+            "GEO:GPL13112"
         ],
         "term_id": "NTR:0000007",
         "term_name": "Illumina HiSeq 2000",
@@ -102,7 +102,7 @@
     {
         "dbxrefs": [
             "ucsc_encode_db:Methyl450",
-            "geo_db:GPL13534"
+            "GEO:GPL13534"
         ],
         "term_id": "NTR:0000008",
         "term_name": "Illumina Infinium Human Methylation 450 Bead Array",

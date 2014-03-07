@@ -14,6 +14,6 @@ def dataset_0_2(value, system):
     
     if 'geo_dbxrefs' in value:
         for geo_dbxref in value['geo_dbxrefs']:
-            new_dbxref = 'geo_db:' + geo_dbxref
+            new_dbxref = 'GEO:' + geo_dbxref
             value['dbxrefs'].append(new_dbxref)
         del value['geo_dbxrefs']
