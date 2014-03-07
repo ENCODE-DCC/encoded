@@ -69,7 +69,7 @@ def user_view_raw(context, request):
 @view_config(context=User.Item, permission='view_raw', request_method='GET',
              additional_permission='view_details',
              request_param=['frame=edit'])
-def item_view_edit(context, request):
+def user_view_edit(context, request):
     return item_view_edit(context, request)
 
 
