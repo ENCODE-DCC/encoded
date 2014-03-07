@@ -90,6 +90,7 @@ var EditForm = module.exports.EditForm = React.createClass({
     },
 
     save: function (event) {
+        var $ = require('jquery');
         var value = this.state.editor.getValue();
         var url = this.props.context['@id'];
         var xhr = $.ajax({
