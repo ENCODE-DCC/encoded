@@ -118,7 +118,10 @@ def search(context, request, search_type=None):
         if search_term != '*':
             field = 'type'
             term = root.by_item_type[search_type].__name__
-            qs = urlencode([(k, v) for k, v in request.params.iteritems() if k != field])
+            qs = urlencode([
+                (k.encode('utf-8'), v.encode('utf-8'))
+                for k, v in request.params.iteritems() if k != field
+            ])
             result['filters'].append({
                 'field': field,
                 'term': term,
@@ -169,7 +172,10 @@ def search(context, request, search_type=None):
             else:
                 query_filters.append({'term': {'embedded.{}'.format(field): term}})
 
-            qs = urlencode([(k, v) for k, v in request.params.iteritems() if k != field])
+            qs = urlencode([
+                (k.encode('utf-8'), v.encode('utf-8'))
+                for k, v in request.params.iteritems() if k != field
+            ])
             result['filters'].append({
                 'field': field,
                 'term': term,

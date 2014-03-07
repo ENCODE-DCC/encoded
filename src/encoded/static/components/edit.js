@@ -32,13 +32,12 @@ var EditForm = module.exports.EditForm = React.createClass({
         var error = this.state.error;
         return (
             <div>
-                <pre ref="editor" style={{
+                <div ref="editor" style={{
                     position: "relative !important",
                     border: "1px solid lightgray",
                     margin: "auto",
-                    "min-height": "800px",
                     width: "100%"
-                }}></pre>
+                }}></div>
                 <div style={{"float": "right", "margin": "10px"}}>
                     <a href="" className="btn">Cancel</a>
                     {' '}
@@ -64,7 +63,6 @@ var EditForm = module.exports.EditForm = React.createClass({
         var session = editor.getSession()
         session.setMode('ace/mode/json');
         editor.setValue(value);
-        // These options will take effect with the next brace release
         editor.setOptions({
             maxLines: 1000,
             minLines: 24
@@ -92,6 +90,7 @@ var EditForm = module.exports.EditForm = React.createClass({
     },
 
     save: function (event) {
+        var $ = require('jquery');
         var value = this.state.editor.getValue();
         var url = this.props.context['@id'];
         var xhr = $.ajax({

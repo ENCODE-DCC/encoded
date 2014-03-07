@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "dependencies": {
     "brace": {
-      "version": "0.2.0",
-      "from": "brace@^0.2.0",
+      "version": "0.2.1",
+      "from": "brace@^0.2.1",
       "dependencies": {
         "w3c-blob": {
           "version": "0.0.1",
