@@ -14,6 +14,8 @@ from ..contentbase import (
     Collection,
     Root,
     item_view,
+    item_view_edit,
+    item_view_raw,
     location,
     make_subrequest,
 )
@@ -55,6 +57,20 @@ class User(Collection):
              additional_permission='view_details')
 def user_details_view(context, request):
     return item_view(context, request)
+
+
+@view_config(context=Item, permission='view_raw', request_method='GET',
+             additional_permission='view_details',
+             request_param=['frame=raw'])
+def user_view_raw(context, request):
+    return item_view_raw(context, request)
+
+
+@view_config(context=Item, permission='view_raw', request_method='GET',
+             additional_permission='view_details',
+             request_param=['frame=edit'])
+def item_view_edit(context, request):
+    return item_view_edit(context, request)
 
 
 @view_config(context=User.Item, permission='view', request_method='GET')
