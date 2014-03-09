@@ -242,7 +242,8 @@ def search(context, request, search_type=None):
     else:
         prefix_len = len('embedded.')
         result['@graph'] = [
-            {field[prefix_len:]: value for field, value in hit['fields'].items()}
+            {field[prefix_len:]:
+                value for field, value in hit['fields'].items()}
             for hit in hits
         ]
 
