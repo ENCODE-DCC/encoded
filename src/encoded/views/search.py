@@ -86,6 +86,7 @@ def search(context, request, search_type=None):
     search_term = request.params.get('searchTerm', '*')
     if search_term != '*':
         search_term = sanitize_search_string(search_term.strip())
+
     # Handling whitespaces in the search term
     if not search_term:
         result['notification'] = 'Please enter search term'
@@ -97,7 +98,8 @@ def search(context, request, search_type=None):
         # handling invalid item types
         if search_type != '*':
             if search_type not in root.by_item_type:
-                result['notification'] = "'" + search_type + "' is not a valid 'item type'"
+                result['notification'] = "'" + search_type + \
+                    "' is not a valid 'item type'"
                 return result
 
     # Handling wildcards
@@ -107,7 +109,8 @@ def search(context, request, search_type=None):
 
     # Building query for filters
     if search_type == '*':
-        doc_types = ['antibody_approval', 'biosample', 'experiment', 'target', 'dataset']
+        doc_types = ['antibody_approval', 'biosample',
+                     'experiment', 'target', 'dataset']
     else:
         doc_types = [search_type]
         if search_term != '*':
@@ -135,7 +138,8 @@ def search(context, request, search_type=None):
     for doc_type in doc_types:
         collection = root[doc_type]
         if frame == 'columns':
-            fields.update('embedded.' + column for column in collection.columns)
+            fields.update('embedded.' +
+                          column for column in collection.columns)
             result['columns'].update(collection.columns)
 
     if not result['columns']:
@@ -163,13 +167,10 @@ def search(context, request, search_type=None):
 
     # Setting filters
     query_filters = query['filter']['and']['filters']
+    used_filters = []
     for field, term in request.params.iteritems():
-        if field not in ['type',
-                         'searchTerm',
-                         'limit',
-                         'format',
-                         'frame',
-                         'datastore']:
+        if field not in ['type', 'searchTerm', 'limit',
+                         'format', 'frame', 'datastore']:
             if term == 'other':
                 query_filters.append({
                     'missing': {
@@ -177,11 +178,18 @@ def search(context, request, search_type=None):
                         }
                     })
             else:
-                query_filters.append({
-                    'term': {
-                        'embedded.{}'.format(field): term
-                    }
-                })
+                if field in used_filters:
+                    for f in query_filters:
+                        if 'embedded.{}'.format(field) in f['terms'].keys():
+                            f['terms']['embedded.{}'
+                                       .format(field)].append(term)
+                else:
+                    query_filters.append({
+                        'terms': {
+                            'embedded.{}'.format(field): [term]
+                        }
+                    })
+                    used_filters.append(field)
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
                 for k, v in request.params.iteritems() if k != field
@@ -192,24 +200,29 @@ def search(context, request, search_type=None):
                 'remove': '{}?{}'.format(request.path, qs)
             })
 
-    used_facets = {f['field'] for f in result['filters']}
     # Adding facets to the query
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
-        facets = [facet.items()[0] for facet in root[doc_types[0]].schema['facets']]
+        facets = [facet.items()[0]
+                  for facet in root[doc_types[0]].schema['facets']]
         for facet_title, field in facets:
             query['facets'][field] = {
                 'terms': {
                     'field': 'embedded.{}'.format(field),
                 }
             }
-            for count, used_facet in enumerate(used_facets):
-                if field != used_facet:
-                    query['facets'][field]['facet_filter'] = {
-                        'terms': {
-                            'embedded.' + used_facet:
-                            [result['filters'][count]['term']]
+            for count, used_facet in enumerate(result['filters']):
+                if field != used_facet['field']:
+                    try:
+                        query['facets'][field]['facet_filter']['terms'][
+                            'embedded.' + used_facet['field']]\
+                            .append(used_facet['term'])
+                    except:
+                        query['facets'][field]['facet_filter'] = {
+                            'terms': {
+                                'embedded.' + used_facet['field']:
+                                [used_facet['term']]
+                            }
                         }
-                    }
     else:
         facets = [('Data Type', 'type')]
         query['facets']['type'] = {'terms': {
