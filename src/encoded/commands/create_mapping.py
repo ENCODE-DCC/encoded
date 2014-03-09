@@ -62,7 +62,7 @@ def schema_mapping(name, schema):
             'copy_to': [],
             'index': 'not_analyzed',
             'fields': {
-                'number': {
+                'value': {
                     'type': 'float',
                     'copy_to': '',
                     'ignore_malformed': True,
