@@ -12,33 +12,27 @@ sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?
 
 def get_filtered_query(term, fields, principals):
     return {
-        'explain': True,
         'query': {
-            'filtered': {
-                'query': {
-                    'queryString': {
-                        'query': term,
-                        'analyze_wildcard': True,
-                        'analyzer': 'encoded_search_analyzer',
-                        'default_operator': 'AND',
-                        'fields': [
-                            'encoded_all_ngram',
-                            'encoded_all_standard',
-                            'encoded_all_untouched'
-                        ]
+            'query_string': {
+                'query': term,
+                'default_operator': 'AND',
+                'fields': [
+                    'encoded_all_ngram',
+                    'encoded_all_standard',
+                    'encoded_all_untouched'
+                    ],
+                'analyzer': 'encoded_search_analyzer'
+            }
+        },
+        'filter': {
+            'and': {
+                'filters': [
+                    {
+                        'terms': {
+                            'principals_allowed_view': principals
+                        }
                     }
-                },
-                'filter': {
-                    'and': {
-                        'filters': [
-                            {
-                                'terms': {
-                                    'principals_allowed_view': principals
-                                }
-                            }
-                        ]
-                    }
-                }
+                ]
             }
         },
         'highlight': {
@@ -55,7 +49,8 @@ def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
 
 
-@view_config(name='search', context=Root, request_method='GET', permission='search')
+@view_config(name='search', context=Root, request_method='GET',
+             permission='search')
 def search(context, request, search_type=None):
     ''' Search view connects to ElasticSearch and returns the results'''
 
@@ -162,16 +157,31 @@ def search(context, request, search_type=None):
                 'ignore_unmapped': True,
             },
         }
+        # Adding match_all for wildcard search for performance
+        query['query']['match_all'] = {}
+        del(query['query']['query_string'])
 
     # Setting filters
-    query_filters = query['query']['filtered']['filter']['and']['filters']
+    query_filters = query['filter']['and']['filters']
     for field, term in request.params.iteritems():
-        if field not in ['type', 'searchTerm', 'limit', 'format', 'frame', 'datastore']:
+        if field not in ['type',
+                         'searchTerm',
+                         'limit',
+                         'format',
+                         'frame',
+                         'datastore']:
             if term == 'other':
-                query_filters.append({'missing': {'field': 'embedded.' + field}})
+                query_filters.append({
+                    'missing': {
+                        'field': 'embedded.' + field
+                        }
+                    })
             else:
-                query_filters.append({'term': {'embedded.{}'.format(field): term}})
-
+                query_filters.append({
+                    'term': {
+                        'embedded.{}'.format(field): term
+                    }
+                })
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
                 for k, v in request.params.iteritems() if k != field
@@ -187,17 +197,25 @@ def search(context, request, search_type=None):
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
         facets = [facet.items()[0] for facet in root[doc_types[0]].schema['facets']]
         for facet_title, field in facets:
-            if field in used_facets:
-                continue
             query['facets'][field] = {
                 'terms': {
                     'field': 'embedded.{}'.format(field),
-                    'size': 99999,
-                },
+                }
             }
+            for count, used_facet in enumerate(used_facets):
+                if field != used_facet:
+                    query['facets'][field]['facet_filter'] = {
+                        'terms': {
+                            'embedded.' + used_facet:
+                            [result['filters'][count]['term']]
+                        }
+                    }
     else:
         facets = [('Data Type', 'type')]
-        query['facets']['type'] = {'terms': {'field': '_type', 'size': 99999}}
+        query['facets']['type'] = {'terms': {
+            'field': '_type',
+            }
+        }
 
     # Execute the query
     results = es.search(query, index='encoded', doc_type=doc_types, size=size)
