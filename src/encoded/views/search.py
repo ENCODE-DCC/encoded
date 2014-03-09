@@ -192,7 +192,7 @@ def search(context, request, search_type=None):
                     used_filters.append(field)
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.iteritems() if k != field
+                for k, v in request.params.iteritems() if v != term
             ])
             result['filters'].append({
                 'field': field,
@@ -225,8 +225,9 @@ def search(context, request, search_type=None):
                         }
     else:
         facets = [('Data Type', 'type')]
-        query['facets']['type'] = {'terms': {
-            'field': '_type',
+        query['facets']['type'] = {
+            'terms': {
+                'field': '_type',
             }
         }
 

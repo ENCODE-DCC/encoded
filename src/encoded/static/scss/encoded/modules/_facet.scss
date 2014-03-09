@@ -26,11 +26,19 @@
 
 .facet-list li {
 	padding: 3px 10px;
-	margin: 0;
-	border-radius: 10px;
+	margin-bottom: 1px;
+	border-radius: 5px;
 	position: relative;
 	font-size: 0.9em;
 	line-height: 14px;
+}
+
+.facet-list li#selected {
+	background: #4183c4;
+}
+
+.facet-list a#selected {
+	color: #fff;
 }
 
 .facet-list li a {

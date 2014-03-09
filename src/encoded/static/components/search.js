@@ -156,27 +156,48 @@ var Dbxref = dbxref.Dbxref;
 
     var Term = search.Term = React.createClass({
         render: function () {
+            var filters = this.props.filters;
             var term = this.props.term['term'];
             var count = this.props.term['count'];
             var title = this.props.title || term;
             var search_base = this.props.search_base;
             var field = this.props.facet['field'];
-            return (
-                <li key={term}>
-                    <a href={search_base+field+'='+term}>
-                        <span className="pull-right">{count}</span>
-                        <span className="facet-item">{title}</span>
-                    </a>
-                </li>
-            );
+            var selected = 0;
+            var link = '';
+            for (var filter in filters) {
+                if (filters[filter]['term'] == term && filters[filter]['field'] == field) {
+                    selected = 1;
+                    link = filters[filter]['remove'];
+                }
+            }
+            if(selected) {
+                return (
+                    <li id="selected" key={term}>
+                        <a id="selected" href={link}>
+                            <span className="pull-right"><i className="icon-remove-sign"></i></span>
+                            <span className="facet-item">{title}</span>
+                        </a>
+                    </li>
+                );
+            }else {
+                return (
+                    <li key={term}>
+                        <a href={search_base+field+'='+term}>
+                            <span className="pull-right">{count}</span>
+                            <span className="facet-item">{title}</span>
+                        </a>
+                    </li>
+                );
+            }
         }
     });
 
     var TypeTerm = search.TypeTerm = React.createClass({
         render: function () {
             var term = this.props.term['term'];
+            var filters = this.props.filters;
             var title = this.props.portal.types[term];
-            return this.transferPropsTo(<Term title={title} />);
+            return this.transferPropsTo(<Term title={title} filters={filters} />);
         }
     });
 
@@ -184,6 +205,7 @@ var Dbxref = dbxref.Dbxref;
     var Facet = search.Facet = React.createClass({
         render: function() {
             var facet = this.props.facet;
+            var filters = this.props.filters;
             var terms = facet['terms'];
             var title = facet['title'];
             var field = facet['field'];
@@ -195,13 +217,13 @@ var Dbxref = dbxref.Dbxref;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent term={term} />);
+                                return this.transferPropsTo(<TermComponent term={term} filters={filters} />);
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className="collapse">
                                 {terms.slice(5).map(function (term) {
-                                    return this.transferPropsTo(<TermComponent term={term} />);
+                                    return this.transferPropsTo(<TermComponent term={term} filters={filters} />);
                                 }.bind(this))}
                             </div>
                         : null}
@@ -221,39 +243,14 @@ var Dbxref = dbxref.Dbxref;
     var FacetList = search.FacetList = React.createClass({
         render: function() {
             var facets = this.props.facets;
+            var filters = this.props.filters;
             if (!facets.length) return <div />;
             var search_base = url.parse(this.props.href).search || '';
             search_base += search_base ? '&' : '?';
             return (
                 <div className="box facets">
                     {facets.map(function (facet) {
-                        return this.transferPropsTo(<Facet facet={facet} search_base={search_base} />);
-                    }.bind(this))}
-                </div>
-            );
-        }
-    });
-
-    var Unfilter = search.Unfilter = React.createClass({
-        render: function () {
-            var filter = this.props.filter;
-            return (
-                <a key={filter.field} className="btn btn-small btn-info" href={filter.remove}>
-                    {filter.term + ' '}
-                    <i className="icon-remove-sign"></i>
-                </a>
-            );
-        }
-    });
-
-    var UnfilterList = search.UnfilterList = React.createClass({
-        render: function () {
-            var filters = this.props.filters;
-            if (!filters.length) return <div />;
-            return (
-                <div className="btn-group"> 
-                    {filters.map(function (filter) {
-                        return this.transferPropsTo(<Unfilter filter={filter} />);
+                        return this.transferPropsTo(<Facet facet={facet} filters={filters} search_base={search_base} />);
                     }.bind(this))}
                 </div>
             );
@@ -276,7 +273,7 @@ var Dbxref = dbxref.Dbxref;
                             <div className="row">
                                 <div className="span3">
                                     {this.transferPropsTo(
-                                        <FacetList facets={facets} />
+                                        <FacetList facets={facets} filters={filters} />
                                     )}
                                 </div>
 
@@ -290,9 +287,6 @@ var Dbxref = dbxref.Dbxref;
                                                 </span>
                                             : null}
                                     </h4>
-                                    {this.transferPropsTo(
-                                        <UnfilterList filters={filters} />
-                                    )}
                                     <hr />
                                     <ul className="nav result-table">
                                         {results.length ?
