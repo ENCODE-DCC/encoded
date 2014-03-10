@@ -24,4 +24,3 @@ def test_treatment_upgrade(registry, treatment_1):
     assert value['schema_version'] == '2'
     assert 'award' not in value    
 
-    
