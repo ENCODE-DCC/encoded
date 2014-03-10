@@ -5,7 +5,23 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["organism", "label"],
-    "facets": [{"Organism": "organism.name"}],
+    "facets": {
+        "Organism": "organism.name"
+    },
+    "columns": {
+        "label": {
+            "title": "Target",
+            "type": "string"
+        },
+        "organism.name": {
+            "title": "Species",
+            "type": "string"
+        },
+        "dbxref": {
+            "title": "External resources",
+            "type": "array"
+        }
+    },
     "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [

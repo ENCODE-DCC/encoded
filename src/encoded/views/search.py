@@ -130,24 +130,29 @@ def search(context, request, search_type=None):
 
     frame = request.params.get('frame')
     if frame in ['embedded', 'object']:
-        fields = {frame}
-    elif len(doc_types) == 1 and not root[doc_types[0]].columns:
+        fields = []
+    elif len(doc_types) == 1 and not root[doc_types[0]].schema['columns']:
         frame = 'object'
-        fields = {frame}
+        fields = []
     else:
         frame = 'columns'
         fields = {'embedded.@id', 'embedded.@type'}
     for doc_type in doc_types:
         collection = root[doc_type]
         if frame == 'columns':
-            fields.update('embedded.' + column for column in collection.columns)
-            result['columns'].update(collection.columns)
-
-    if not result['columns']:
-        del result['columns']
+            fields.update('embedded.' + column for column in collection.schema['columns'])
+            result['columns'].update(collection.schema['columns'])
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, sorted(fields), principals)
+    
+    # Handling object fields return for ES 1.0.+
+    if not len(fields):
+        del(query['fields'])
+        query['_source'] = [frame]
+
+    if not result['columns']:
+        del result['columns']
 
     # Sorting the files when search term is not specified
     if search_term == '*':
@@ -185,8 +190,9 @@ def search(context, request, search_type=None):
     used_facets = {f['field'] for f in result['filters']}
     # Adding facets to the query
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
-        facets = [facet.items()[0] for facet in root[doc_types[0]].schema['facets']]
-        for facet_title, field in facets:
+        facets = root[doc_types[0]].schema['facets']
+        for facet_title in facets:
+            field = facets[facet_title]
             if field in used_facets:
                 continue
             query['facets'][field] = {
@@ -196,7 +202,7 @@ def search(context, request, search_type=None):
                 },
             }
     else:
-        facets = [('Data Type', 'type')]
+        facets = {'Data Type': 'type'}
         query['facets']['type'] = {'terms': {'field': '_type', 'size': 99999}}
 
     # Execute the query
@@ -205,7 +211,8 @@ def search(context, request, search_type=None):
     # Loading facets in to the results
     if 'facets' in results:
         facet_results = results['facets']
-        for facet_title, field in facets:
+        for facet_title in facets:
+            field = facets[facet_title]
             if field not in facet_results:
                 continue
             terms = facet_results[field]['terms']
@@ -220,13 +227,21 @@ def search(context, request, search_type=None):
     # Loading result rows
     hits = results['hits']['hits']
     if frame in ['embedded', 'object']:
-        result['@graph'] = [hit['fields'][frame] for hit in hits]
+        result['@graph'] = [hit['_source'][frame] for hit in hits]
     else:
         prefix_len = len('embedded.')
-        result['@graph'] = [
-            {field[prefix_len:]: value for field, value in hit['fields'].items()}
-            for hit in hits
-        ]
+        for hit in hits:
+            item = {}
+            for field, value in hit['fields'].items():
+                if field[prefix_len:] == '@id':
+                    item[field[prefix_len:]] = value[0]
+                elif field[prefix_len:] == '@type':
+                    item[field[prefix_len:]] = value
+                elif result['columns'][field[prefix_len:]]['type'] != 'array':
+                    item[field[prefix_len:]] = value[0]
+                else:
+                    item[field[prefix_len:]] = value
+            result['@graph'].append(item)
 
     # Adding total
     result['total'] = results['hits']['total']

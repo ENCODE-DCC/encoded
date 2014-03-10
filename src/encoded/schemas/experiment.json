@@ -7,7 +7,55 @@
     "type": "object",
     "required": ["award", "lab"],
     "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
-    "facets": [{"Assay": "assay_term_name"}, {"Organism": "replicates.library.biosample.organism.name"}, {"Organ": "organ_slims"}, {"Lab": "lab.title"}, {"Developmental Slim": "developmental_slims"}],
+    "facets": {
+        "Assay": "assay_term_name",
+        "Organism": "replicates.library.biosample.organism.name",
+        "Organ": "organ_slims",
+        "Lab": "lab.title",
+        "Developmental Slim": "developmental_slims"
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "assay_term_name": {
+            "title": "Assay Type",
+            "type": "string"
+        },
+        "target.label": {
+            "title": "Target",
+            "type": "string"
+        },
+        "biosample_term_name": {
+            "title": "Biosample",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
+            "type": "string"
+        },
+        "replicates.length": {
+            "title": "Replicates",
+            "type": "array"
+        },
+        "files.length": {
+            "title": "Files",
+            "title": "array"
+        },
+        "encode2_dbxrefs": {
+            "title": "Dbxrefs",
+            "type": "array"
+        }
+    },
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
