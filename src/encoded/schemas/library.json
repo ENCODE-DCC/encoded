@@ -7,32 +7,6 @@
     "XXXcomment": "is source required?",
     "required": [ "award", "lab", "nucleic_acid_term_id"],
     "identifyingProperties": ["uuid","accession", "aliases"],
-    "columns": {
-        "accession": {
-            "title": "Accession",
-            "type": "string"
-        },
-        "award": {
-            "title": "Award",
-            "type": "string"
-        },
-        "lab": {
-            "title": "Lab",
-            "type": "string"
-        },
-        "biosample.biosample_term_name": {
-            "title": "Biosample",
-            "type": "string"
-        },
-        "biosample.organism.name": {
-            "title": "Species",
-            "type": "string"
-        },
-        "nucleic_acid_term_name": {
-            "title": "Nucleic Acid Term Name",
-            "type": "string"
-        }
-    },
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -231,6 +205,32 @@
                     "SO:0000862"
                 ]
             }
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "award": {
+            "title": "Award",
+            "type": "string"
+        },
+        "lab": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "biosample.biosample_term_name": {
+            "title": "Biosample",
+            "type": "string"
+        },
+        "biosample.organism.name": {
+            "title": "Species",
+            "type": "string"
+        },
+        "nucleic_acid_term_name": {
+            "title": "Nucleic Acid Term Name",
+            "type": "string"
         }
     }
 }
