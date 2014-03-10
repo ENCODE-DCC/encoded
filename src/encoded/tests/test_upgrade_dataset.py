@@ -1,6 +1,5 @@
 import pytest
 
-
 @pytest.fixture
 def experiment_1(root, experiment, files):
     item = root.get_by_uuid(experiment['uuid'])
@@ -25,6 +24,18 @@ def experiment_2(root, experiment):
     })
     return properties
 
+@pytest.fixture
+def dataset_2(root, dataset):
+    item = root.get_by_uuid(dataset['uuid'])
+    properties = item.properties.copy()
+    return {
+        'schema_version': '2',
+        'aliases': [ 'ucsc_encode_db:mm9-wgEncodeCaltechTfbs', 'barbara-wold:mouse-TFBS'],
+        'geo_dbxrefs': ['GSE36024'],
+    }
+    return properties
+
+
 def test_experiment_upgrade(root, registry, experiment, experiment_1, files, threadlocals, dummy_request):
     migrator = registry['migrator']
     context = root.get_by_uuid(experiment['uuid'])
@@ -43,3 +54,13 @@ def test_experiment_upgrade_dbxrefs(root, registry, experiment, experiment_2, th
     assert 'encode2_dbxrefs' not in value
     assert 'geo_dbxrefs' not in value
     assert value['dbxrefs'] == ['ucsc_encode_db:wgEncodeEH002945', 'GEO:GSM99494']
+
+def test_dataset_upgrade_dbxrefs(root, registry, experiment, dataset_2, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(experiment['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('dataset', dataset_2, target_version='3', context=context)
+    assert value['schema_version'] == '3'
+    assert value['dbxrefs'] == ['GEO:GSE36024', 'ucsc_encode_db:mm9-wgEncodeCaltechTfbs']
+    assert value['aliases'] == [ 'barbara-wold:mouse-TFBS']
+    assert 'geo_dbxrefs' not in value

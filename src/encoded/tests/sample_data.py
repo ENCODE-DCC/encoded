@@ -234,6 +234,16 @@ EXPERIMENTS = [
     },
 ]
 
+DATASETS = [
+    {
+    'uuid': 'd2470afe-ac68-4489-8f51-90ddfbc8e00b',
+    'accession': 'ENCSR002TST',
+    'award': 'myers',
+    'dataset_type': 'composite',
+    'lab': 'Myers',
+    },
+]
+
 REPLICATES = [
     {
     'uuid': '13468ab5-2369-4857-a303-7c5f28918190',
@@ -306,6 +316,7 @@ URL_COLLECTION = OrderedDict([
     ('biosample', BIOSAMPLES),
     ('library', LIBRARIES),
     ('experiment', EXPERIMENTS),
+    ('dataset', DATASETS),
     ('replicate', REPLICATES),
     ('rnai', RNAIS),
     ('construct', CONSTRUCTS),
