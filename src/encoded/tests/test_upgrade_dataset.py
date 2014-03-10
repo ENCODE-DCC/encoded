@@ -28,11 +28,11 @@ def experiment_2(root, experiment):
 def dataset_2(root, dataset):
     item = root.get_by_uuid(dataset['uuid'])
     properties = item.properties.copy()
-    return {
+    properties.update({
         'schema_version': '2',
         'aliases': [ 'ucsc_encode_db:mm9-wgEncodeCaltechTfbs', 'barbara-wold:mouse-TFBS'],
         'geo_dbxrefs': ['GSE36024'],
-    }
+    })
     return properties
 
 
@@ -55,9 +55,9 @@ def test_experiment_upgrade_dbxrefs(root, registry, experiment, experiment_2, th
     assert 'geo_dbxrefs' not in value
     assert value['dbxrefs'] == ['ucsc_encode_db:wgEncodeEH002945', 'GEO:GSM99494']
 
-def test_dataset_upgrade_dbxrefs(root, registry, experiment, dataset_2, threadlocals, dummy_request):
+def test_dataset_upgrade_dbxrefs(root, registry, dataset, dataset_2, threadlocals, dummy_request):
     migrator = registry['migrator']
-    context = root.get_by_uuid(experiment['uuid'])
+    context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
     value = migrator.upgrade('dataset', dataset_2, target_version='3', context=context)
     assert value['schema_version'] == '3'

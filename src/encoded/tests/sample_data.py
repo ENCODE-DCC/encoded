@@ -238,9 +238,9 @@ DATASETS = [
     {
     'uuid': 'd2470afe-ac68-4489-8f51-90ddfbc8e00b',
     'accession': 'ENCSR002TST',
-    'award': 'myers',
+    'lab': 'myers',
+    'award': 'Myers',
     'dataset_type': 'composite',
-    'lab': 'Myers',
     },
 ]
 
