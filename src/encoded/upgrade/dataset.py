@@ -1,6 +1,7 @@
 from pyramid.traversal import find_root
 from uuid import UUID
 from ..migrator import upgrade_step
+import re
 
 
 @upgrade_step('experiment', '', '2')
@@ -34,3 +35,10 @@ def dataset_2_3(value, system):
             new_dbxref = 'GEO:' + geo_dbxref
             value['dbxrefs'].append(new_dbxref)
         del value['geo_dbxrefs']
+
+    if 'aliases' in value:
+        for alias in value['aliases']:
+            if re.match('^ucsc_encode_db:.*', alias):
+                value['aliases'].remove(alias)
+                value['dbxrefs'].append(alias)
+

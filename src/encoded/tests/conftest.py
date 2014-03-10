@@ -654,6 +654,15 @@ def construct(constructs):
     return [c for c in constructs if c['construct_type'] == 'fusion protein'][0]
 
 
+@pytest.fixture
+def datasets(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'dataset')
+
+@pytest.fixture
+def dataset(datasets):
+    return [d for d in datasets if d['accession'] == 'ENCSR002TST'][0]
+
 @pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')
 def postgresql_server(request):

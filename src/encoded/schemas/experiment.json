@@ -53,6 +53,18 @@
             "default": "experiment",
             "enum": ["experiment"]
         },
+        "dbxrefs": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^(ucsc_encode_db:wgEncodeE(E|H)\\d+|GEO:(GSM|GSE)\\d+)$"
+            }
+        },
         "documents": {
             "description": "Protocols or other documents that describe the assay or the results (not data files)."
         },
