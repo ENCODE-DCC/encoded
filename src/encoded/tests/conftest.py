@@ -663,6 +663,7 @@ def datasets(testapp, labs, awards):
     from . import sample_data
     return sample_data.load(testapp, 'dataset')
 
+
 @pytest.fixture
 def dataset(datasets):
     return [d for d in datasets if d['accession'] == 'ENCSR002TST'][0]
