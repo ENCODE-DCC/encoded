@@ -213,6 +213,7 @@ def search(context, request, search_type=None):
             query['facets'][field] = {
                 'terms': {
                     'field': 'embedded.{}'.format(field),
+                    'all_terms': True
                 }
             }
             for count, used_facet in enumerate(result['filters']):
@@ -222,17 +223,28 @@ def search(context, request, search_type=None):
                             'embedded.' + used_facet['field']]\
                             .append(used_facet['term'])
                     except:
-                        query['facets'][field]['facet_filter'] = {
-                            'terms': {
-                                'embedded.' + used_facet['field']:
-                                [used_facet['term']]
+                        if 'facet_filter' not in query['facets'][field].keys():
+                            query['facets'][field]['facet_filter'] = {
+                                'terms': {
+                                    'embedded.' + used_facet['field']:
+                                    [used_facet['term']]
+                                }
                             }
-                        }
+                        else:
+                            old_terms = query['facets'][field]['facet_filter']
+                            new_terms = {'terms': {'embedded.' + used_facet['field']:
+                                                   [used_facet['term']]}}
+                            query['facets'][field]['facet_filter'] = {
+                                'bool': {
+                                    'must': [old_terms, new_terms]
+                                }
+                            }
     else:
         facets = {'Data Type': 'type'}
         query['facets']['type'] = {
             'terms': {
                 'field': '_type',
+                'all_terms': True
             }
         }
 

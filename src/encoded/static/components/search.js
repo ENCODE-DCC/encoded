@@ -206,13 +206,15 @@ var Dbxref = dbxref.Dbxref;
         render: function() {
             var facet = this.props.facet;
             var filters = this.props.filters;
-            var terms = facet['terms'];
+            var terms = facet['terms'].filter(function (term) {
+                return term.count > 0;
+            });
             var title = facet['title'];
             var field = facet['field'];
             var termID = title.replace(/\s+/g, '');
             var TermComponent = field === 'type' ? TypeTerm : Term;
             return (
-                <div className="facet" key={field}>
+                <div className="facet" key={field} hidden={terms.length === 0}>
                     <h5>{title}</h5>
                     <ul className="facet-list nav">
                         <div>
