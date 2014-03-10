@@ -103,6 +103,15 @@ def test_biosample_upgrade_array_to_string(app, biosample_3, biosample, biosampl
     assert value['part_of'] == biosamples[0]['uuid']
     assert value['derived_from'] == biosamples[0]['uuid']
 
+def test_biosample_upgrade_empty_array(app, biosample_3, biosample, biosamples):
+    biosample_3['derived_from'] = []
+    biosample_3['part_of'] = []
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    assert value['schema_version'] == '4'
+    assert 'part_of' not in value
+    assert 'derived_from' not in value
+
 def test_biosample_upgrade_inline(testapp, biosample_1):
     from encoded.schema_utils import load_schema
     schema = load_schema('biosample.json')
