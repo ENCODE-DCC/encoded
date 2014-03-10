@@ -23,3 +23,5 @@ def test_treatment_upgrade(registry, treatment_1):
     value = migrator.upgrade('treatment', treatment_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'award' not in value    
+
+    
