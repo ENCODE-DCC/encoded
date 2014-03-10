@@ -49,7 +49,7 @@
         },
         "files.length": {
             "title": "Files",
-            "title": "array"
+            "type": "array"
         },
         "encode2_dbxrefs": {
             "title": "Dbxrefs",
