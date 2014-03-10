@@ -7,6 +7,28 @@
     "required": ["accession", "dataset", "file_format", "md5sum", "output_type"],
     "identifyingProperties": ["uuid","accession"],
     "additionalProperties": false,
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "dataset": {
+            "title": "Dataset",
+            "type": "string"
+        },
+        "file_format": {
+            "title": "File Format",
+            "type": "string"
+        },
+        "md5sum": {
+            "title": "MD5 Sum",
+            "type": "string"
+        },
+        "output_type": {
+            "title": "Output Type",
+            "type": "string"
+        }
+    },
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },

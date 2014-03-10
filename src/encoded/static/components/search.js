@@ -51,9 +51,9 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row"> 
-                            <strong>{columns['antibody.source.title']}</strong>: {result['antibody.source.title']}<br />
-                            <strong>{columns['antibody.product_id']}/{columns['antibody.lot_id']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
-                            <strong>{columns['status']}</strong>: {result['status']}
+                            <strong>{columns['antibody.source.title']['title']}</strong>: {result['antibody.source.title']}<br />
+                            <strong>{columns['antibody.product_id']['title']}/{columns['antibody.lot_id']['title']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
+                            <strong>{columns['status']['title']}</strong>: {result['status']}
                         </div>
                 </li>
             );
@@ -73,10 +73,10 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['biosample_type']}</strong>: {result['biosample_type']}<br />
-                            <strong>{columns['source.title']}</strong>: {result['source.title']}
+                            <strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}<br />
+                            <strong>{columns['source.title']['title']}</strong>: {result['source.title']}
                             {result['life_stage'] ? <br /> : null}
-                            {result['life_stage'] ? <strong>{columns['life_stage'] + ': '}</strong> :null}
+                            {result['life_stage'] ? <strong>{columns['life_stage']['title'] + ': '}</strong> :null}
                             {result['life_stage'] ? result['life_stage'] : null}
                         </div>
                 </li>   
@@ -97,11 +97,11 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['target.label'] ? <strong>{columns['target.label'] + ': '}</strong>: null}
+                            {result['target.label'] ? <strong>{columns['target.label']['title'] + ': '}</strong>: null}
                             {result['target.label'] ? result['target.label'] : null}
                             {result['target.label'] ? <br /> : null}
-                            <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']}</strong>: {result['award.project']}
+                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
                 </li>
             );
@@ -121,9 +121,9 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['dataset_type'] ? <strong>{columns['dataset_type'] + ': '}</strong>: null}
-                            <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']}</strong>: {result['award.project']}
+                            {result['dataset_type'] ? <strong>{columns['dataset_type']['title'] + ': '}</strong>: null}
+                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
                 </li>
             );
@@ -143,7 +143,7 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['dbxref']}</strong>: 
+                            <strong>{columns['dbxref']['title']}</strong>: 
                             {result.dbxref.length ?
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
                                 : <em>None submitted</em> }

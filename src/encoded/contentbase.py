@@ -839,13 +839,14 @@ class Collection(Mapping):
         self.__parent__ = parent
 
         self.embedded_paths = set()
-        for column in self.columns:
-            path = tuple(
-                name for name in column.split('.')[:-1]
-                if name not in ('length', '0')
-            )
-            if path:
-                self.embedded_paths.add(path)
+        if 'columns' in self.schema.keys():
+            for column in self.schema['columns']:
+                path = tuple(
+                    name for name in column.split('.')[:-1]
+                    if name not in ('length', '0')
+                )
+                if path:
+                    self.embedded_paths.add(path)
 
         if self.schema is not None:
             properties = self.schema['properties']
