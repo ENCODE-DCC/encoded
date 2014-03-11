@@ -7,7 +7,7 @@
 }
 
 .navbar-inverse .navbar-inner#homepage_navbar {
-	border-bottom: 2px solid lighten($navbarInverseLinkBackgroundActive, 20%);
+	border-bottom: 2px solid lighten($navbar-inverse-link-active-bg, 20%);
 }
 
 .navbar-inverse .brand, .navbar-inverse .nav > li > a {
@@ -32,11 +32,11 @@
 
 /* Disabled sign in link */
 .navbar .nav > li > a[disabled] {
-    color: $grayLight;
+    color: $gray-light;
 }
 .navbar .nav > li > a[disabled]:focus,
 .navbar .nav > li > a[disabled]:hover {
   background-color: transparent;
-  color: $grayLight;
+  color: $gray-light;
   cursor: default;
 }

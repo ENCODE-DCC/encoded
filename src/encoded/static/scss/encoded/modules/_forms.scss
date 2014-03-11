@@ -72,7 +72,7 @@ form.navbar-form {
 #submit-controls { /* is this used anywhere other than a mockup? */
 	padding: 5px;
 	background-color: #f7fbfe;
-	@include border-radius($baseBorderRadius);
+	@include border-radius($border-radius-base);
 }
 
 // Clear Table Filter button/icon

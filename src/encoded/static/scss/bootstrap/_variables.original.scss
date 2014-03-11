@@ -99,9 +99,9 @@ $padding-xs-horizontal:     5px !default;
 $line-height-large:         1.33 !default;
 $line-height-small:         1.5 !default;
 
-$border-radius-base:        3px !default;
-$border-radius-large:       4px !default;
-$border-radius-small:       2px !default;
+$border-radius-base:        4px !default;
+$border-radius-large:       6px !default;
+$border-radius-small:       3px !default;
 
 //** Global color for active items (e.g., navs or dropdowns).
 $component-active-color:    #fff !default;
@@ -372,7 +372,7 @@ $navbar-inverse-link-color:                 $gray-light !default;
 $navbar-inverse-link-hover-color:           #fff !default;
 $navbar-inverse-link-hover-bg:              transparent !default;
 $navbar-inverse-link-active-color:          $navbar-inverse-link-hover-color !default;
-$navbar-inverse-link-active-bg:             #4E7294 !default;//darken($navbar-inverse-bg, 10%) !default;
+$navbar-inverse-link-active-bg:             darken($navbar-inverse-bg, 10%) !default;
 $navbar-inverse-link-disabled-color:        #444 !default;
 $navbar-inverse-link-disabled-bg:           transparent !default;
 
