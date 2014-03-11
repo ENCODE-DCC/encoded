@@ -50,7 +50,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(ucsc_encode_db:\\S+|GEO:GSE\\d+)$"
+                "pattern": "^(ucsc_encode_db:\\S+|GEO:(GSM|GSE)\\d+)$"
             }
         },
         "documents": {
