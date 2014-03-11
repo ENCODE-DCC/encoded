@@ -41,7 +41,7 @@ def get_filtered_query(term, fields, principals):
             }
         },
         'facets': {},
-        'fields': fields
+        'fields': ['embedded.' + field for field in fields],
     }
 
 
@@ -129,18 +129,19 @@ def search(context, request, search_type=None):
     frame = request.params.get('frame')
     if frame in ['embedded', 'object']:
         fields = []
-    elif len(doc_types) == 1 and not root[doc_types[0]].schema['columns']:
+    elif len(doc_types) == 1 and 'columns' not in (root[doc_types[0]].schema or ()):
         frame = 'object'
         fields = []
     else:
         frame = 'columns'
-        fields = {'embedded.@id', 'embedded.@type'}
-    for doc_type in doc_types:
-        collection = root[doc_type]
-        if frame == 'columns':
-            fields.update('embedded.' +
-                          column for column in collection.schema['columns'])
-            result['columns'].update(collection.schema['columns'])
+        fields = {'@id', '@type'}
+        for doc_type in doc_types:
+            collection = root[doc_type]
+            if frame == 'columns':
+                if collection.schema is None:
+                    continue
+                fields.update(collection.schema.get('columns', ()))
+                result['columns'].update(collection.schema['columns'])
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, sorted(fields), principals)
