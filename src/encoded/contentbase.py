@@ -928,8 +928,8 @@ class Collection(Mapping):
 
         frame = request.params.get('frame', 'columns')
         if frame == 'columns':
-            if self.columns:
-                result['columns'] = self.columns
+            if self.schema['columns']:
+                result['columns'] = self.schema['columns']
             else:
                 frame = 'object'
 
@@ -977,7 +977,7 @@ class Collection(Mapping):
             '@id': rendered['@id'],
             '@type': rendered['@type'],
         }
-        for column in self.columns:
+        for column in self.schema['columns']:
             subset[column] = column_value(rendered, column)
 
         return subset
