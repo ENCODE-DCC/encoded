@@ -235,7 +235,7 @@ var globals = require('./globals');
                 }
                 return (
                     <th onClick={self.handleClickHeader} key={index}>
-                        {titles[column]['title'] || column}
+                        {titles[column] && titles[column]['title'] || column}
                         <i className={className}></i>
                     </th>
                 );
