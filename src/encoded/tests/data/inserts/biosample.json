@@ -1,0 +1,569 @@
+[
+    {
+        "_test": "pooled biosample",
+        "accession": "ENCBS356AAA",
+        "award": "U54HG004563",
+        "biosample_term_id": "UBERON:0000006",
+        "biosample_term_name": "islet of Langerhans",
+        "biosample_type": "tissue",
+        "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
+        "encode2_dbxrefs": [
+            "PanIsletD"
+        ],
+        "lab": "gregory-crawford",
+        "organism": "human",
+        "pooled_from": [
+            "ENCBS492ENC",
+            "ENCBS493ENC"
+        ],
+        "protocol_documents": [
+            "ENCODE:PanIsletD_Crawford_protocol"
+        ],
+        "source": "ndri",
+        "submitted_by": "metus.donec@nisl.montes",
+        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
+        "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
+    },
+    {
+        "accession": "ENCBS000AAA",
+        "aliases": [
+            "richard-myers:MCF-7 rep 3"
+        ],
+        "award": "U54HG004576",
+        "biosample_term_id": "BTO:0000093",
+        "biosample_term_name": "MCF-7 cell",
+        "biosample_type": "immortalized cell line",
+        "culture_harvest_date": "2012-04-10",
+        "culture_start_date": "2012-03-16",
+        "description": "mammary gland, adenocarcinoma",
+        "donor": "ENCDO000HUM",
+        "encode2_dbxrefs": [
+            "MCF-7"
+        ],
+        "health_status": "unknown",
+        "lab": "richard-myers",
+        "life_stage": "unknown",
+        "note": "(PMID: 4357757)",
+        "organism": "human",
+        "passage_number": 5,
+        "product_id": "HTB-22",
+        "protocol_documents": [
+            "ENCODE:MCF-7_Farnham_growth_protocol"
+        ],
+        "source": "atcc",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
+        "uuid": "56e94f2b-25ac-4c58-9828-f63b66220999"
+    },
+    {
+        "accession": "ENCBS001AAA",
+        "aliases": [
+            "richard-myers:MCF-7 rep 4"
+        ],
+        "award": "U54HG004576",
+        "biosample_term_id": "BTO:0000093",
+        "biosample_term_name": "MCF-7 cell",
+        "biosample_type": "immortalized cell line",
+        "culture_harvest_date": "2012-04-10",
+        "culture_start_date": "2012-03-16",
+        "description": "mammary gland, adenocarcinoma",
+        "donor": "ENCDO000HUM",
+        "encode2_dbxrefs": [
+            "MCF-7"
+        ],
+        "health_status": "unknown",
+        "lab": "richard-myers",
+        "life_stage": "unknown",
+        "note": "(PMID: 4357757)",
+        "organism": "human",
+        "passage_number": 5,
+        "product_id": "HTB-22",
+        "protocol_documents": [
+            "ENCODE:MCF-7_Farnham_growth_protocol"
+        ],
+        "source": "atcc",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
+        "uuid": "2ec6f642-95fc-4f3a-a7b7-a2d3c5abe426"
+    },
+    {
+        "_test": "mouse with different start amounts",
+        "accession": "ENCBS024AAA",
+        "age": "14.5",
+        "age_units": "day",
+        "award": "U54HG006997",
+        "biosample_term_id": "UBERON:0012314",
+        "biosample_term_name": "embryonic facial prominence",
+        "biosample_type": "tissue",
+        "date_obtained": "2013-01-31",
+        "description": "Craniofacial E14.5 one tube",
+        "donor": "ENCDO075AAA",
+        "health_status": "Healthy",
+        "lab": "len-pennacchio",
+        "life_stage": "embryonic",
+        "note": "C57BL/6 mice from Taconic Farms, Inc and Charles River Lab interbred.  Tissue extracted from 34 embryos. 1 vial collected.",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "starting_amount": 0.6365,
+        "starting_amount_units": "g",
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "670715c5-9247-42ed-a94e-5b7198be75e0"
+    },
+    {
+        "_test": "ENCODE2 dbxref with special characters",
+        "accession": "ENCBS026ENC",
+        "age": "14.5",
+        "age_units": "day",
+        "award": "RC2HG005654",
+        "biosample_term_id": "NTR:0000031",
+        "biosample_term_name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
+        "biosample_type": "primary cell line",
+        "description": "liver fraction CD117+,CD71+,TER119-",
+        "donor": "ENCDO012AAA",
+        "encode2_dbxrefs": [
+            "EPC_(CD117+_CD71+_TER119-)",
+            "EPCPPM",
+            "EPC (CD117+ CD71+ TER119-)"
+        ],
+        "health_status": "unknown",
+        "lab": "john-stamatoyannopoulos",
+        "life_stage": "embryonic",
+        "organism": "mouse",
+        "protocol_documents": [
+            "ENCODE:EPC_Stam_protocol"
+        ],
+        "source": "michael-bender",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "uuid": "9d192023-d78e-4f24-8e58-33b5f379faba"
+    },
+    {
+        "accession": "ENCBS039ENC",
+        "award": "ENCODE2",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC",
+        "donor": "ENCDO000HUM",
+        "encode2_dbxrefs": [
+            "K562"
+        ],
+        "health_status": "unknown",
+        "lab": "encode2-project",
+        "life_stage": "unknown",
+        "organism": "human",
+        "product_id": "CCL-243",
+        "protocol_documents": [
+            "ENCODE:K562_protocol"
+        ],
+        "source": "atcc",
+        "submitted_by": "elementum.mus@dictumst.nostra",
+        "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
+        "uuid": "60dff9b7-875a-47e3-8283-a855ebe1775a"
+    },
+    {
+        "accession": "ENCBS044ENC",
+        "age": "unknown",
+        "award": "RC2HG005602",
+        "biosample_term_id": "BTO:0002493",
+        "biosample_term_name": "CH12.LX cell",
+        "biosample_type": "immortalized cell line",
+        "description": "B-cell lymphoma (GM12878 analog)",
+        "donor": "ENCDO000MUS",
+        "encode2_dbxrefs": [
+            "CH12"
+        ],
+        "health_status": "unknown",
+        "lab": "sherman-weissman",
+        "life_stage": "unknown",
+        "organism": "mouse",
+        "source": "sherman-weissman",
+        "submitted_by": "semper.habitant@ut.venenatis",
+        "uuid": "41fe3518-3d27-4b71-bee5-0bf85e0d584f"
+    },
+    {
+        "_test": "derived from and has dates",
+        "accession": "ENCBS057AAA",
+        "award": "U54HG006996",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "constructs": [
+            "893d806f-3a88-43eb-afdf-dcc16c79ee45"
+        ],
+        "culture_harvest_date": "2012-12-19",
+        "derived_from": [
+            "ENCBS039ENC"
+        ],
+        "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC.",
+        "donor": "ENCDO000HUM",
+        "encode2_dbxrefs": [
+            "K562"
+        ],
+        "health_status": "unknown",
+        "lab": "kevin-white",
+        "life_stage": "unknown",
+        "organism": "human",
+        "source": "kevin-white",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "transfection_type": "stable",
+        "uuid": "bfb3dbb0-57e0-4190-90a6-b9150204f893"
+    },
+    {
+        "_test": "lab aliases and shared by multiple experiments",
+        "accession": "ENCBS087RNA",
+        "aliases": [
+            "thomas-gingeras:K562-1"
+        ],
+        "award": "U54HG007005",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "culture_harvest_date": "2013-03-06",
+        "culture_start_date": "2013-02-28",
+        "description": "The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. ENCODE3 RNA-seq evaluation replicate 1.",
+        "donor": "ENCDO000HUM",
+        "health_status": "unknown",
+        "lab": "brenton-graveley",
+        "life_stage": "unknown",
+        "lot_id": "59300853",
+        "note": "K562 cell line replicate 1 used inENCODE3 RNA-seq evaluation",
+        "organism": "human",
+        "passage_number": 5,
+        "product_id": "CCL-243",
+        "source": "atcc",
+        "starting_amount": 100000.0,
+        "starting_amount_units": "cells/ml",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
+        "uuid": "2ee883ef-b0dd-4305-a69b-d881de132795"
+    },
+    {
+        "accession": "ENCBS088RNA",
+        "aliases": [
+            "thomas-gingeras:K562-2"
+        ],
+        "award": "U54HG007005",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "culture_harvest_date": "2013-03-06",
+        "culture_start_date": "2013-02-28",
+        "description": "The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. ENCODE3 RNA-seq evaluation replicate 2.",
+        "donor": "ENCDO000HUM",
+        "health_status": "unknown",
+        "lab": "brenton-graveley",
+        "life_stage": "unknown",
+        "lot_id": "59300853",
+        "note": "K562 cell line replicate 2 used inENCODE3 RNA-seq evaluation",
+        "organism": "human",
+        "passage_number": 5,
+        "product_id": "CCL-243",
+        "source": "atcc",
+        "starting_amount": 100000.0,
+        "starting_amount_units": "cells/ml",
+        "submitted_by": "mus.mi@porttitor.molestie",
+        "url": "http://www.atcc.org/Products/All/CCL-243.aspx",
+        "uuid": "87b7bb1b-8924-4320-9f48-67bda4d03b82"
+    },
+    {
+        "_test": "alternate accession and RNAi",
+        "accession": "ENCBS094ENC",
+        "alternate_accessions": [
+            "ENCBS238AAA"
+        ],
+        "award": "U54HG004563",
+        "biosample_term_id": "EFO:0001203",
+        "biosample_term_name": "MCF-7",
+        "biosample_type": "immortalized cell line",
+        "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
+        "donor": "ENCDO000HUM",
+        "encode2_dbxrefs": [
+            "MCF-7"
+        ],
+        "health_status": "unknown",
+        "lab": "gregory-crawford",
+        "life_stage": "unknown",
+        "organism": "human",
+        "product_id": "86012803",
+        "protocol_documents": [
+            "ENCODE:MCF-7_Crawford_growth_protocol"
+        ],
+        "rnais": [
+            "d2dc22ba-5e7c-4626-87ac-257c6fff090c"
+        ],
+        "source": "ecacc",
+        "submitted_by": "metus.donec@nisl.montes",
+        "transfection_type": "stable",
+        "url": "http://www.hpacultures.org.uk/products/celllines/generalcell/detail.jsp?refId=86012803&collection=ecacc_gc",
+        "uuid": "ddefc862-0107-4478-9398-acbe76b90f36"
+    },
+    {
+        "_test": "treatment construct and refers to same document with multiple types",
+        "accession": "ENCBS107ENC",
+        "award": "U54HG004558",
+        "biosample_term_id": "EFO:0001203",
+        "biosample_term_name": "MCF-7",
+        "biosample_type": "immortalized cell line",
+        "constructs": [
+            "b31106bc-8535-4448-903e-854af460b21d"
+        ],
+        "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
+        "donor": "ENCDO000HUM",
+        "encode2_dbxrefs": [
+            "MCF-7"
+        ],
+        "health_status": "unknown",
+        "lab": "peggy-farnham",
+        "life_stage": "unknown",
+        "organism": "human",
+        "product_id": "HTB-22",
+        "protocol_documents": [
+            "ENCODE:MCF-7_Farnham_growth_protocol"
+        ],
+        "source": "atcc",
+        "submitted_by": "taciti.vehicula@vitae.vivamus",
+        "transfection_type": "stable",
+        "treatments": [
+            "2e33a097-412c-4646-87f9-858dfaaa7c06"
+        ],
+        "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
+        "uuid": "57437af2-9aef-4b38-a238-4afa3361df6b"
+    },
+    {
+        "accession": "ENCBS124ENC",
+        "award": "RC2HG005573",
+        "biosample_term_id": "EFO:0001098",
+        "biosample_term_name": "C2C12",
+        "biosample_type": "immortalized cell line",
+        "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury",
+        "donor": "ENCDO000MUS",
+        "health_status": "unknown",
+        "lab": "barbara-wold",
+        "life_stage": "unknown",
+        "organism": "mouse",
+        "protocol_documents": [
+            "ENCODE:C2C12_Wold_growth_protocol"
+        ],
+        "source": "barbara-wold",
+        "submitted_by": "vitae.quis@mauris.aptent",
+        "uuid": "5ef752ad-bc6e-4a08-abca-f6b76b188e95"
+    },
+    {
+        "_test": "mouse derived from",
+        "accession": "ENCBS128ENC",
+        "award": "RC2HG005573",
+        "biosample_term_id": "NTR:0000022",
+        "biosample_term_name": "myocyte",
+        "biosample_type": "in vitro differentiated cells",
+        "derived_from": [
+            "ENCBS124ENC"
+        ],
+        "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury; differentiated from C2C12 cells for 7 days",
+        "donor": "ENCDO000MUS",
+        "health_status": "unknown",
+        "lab": "barbara-wold",
+        "life_stage": "unknown",
+        "organism": "mouse",
+        "protocol_documents": [
+            "ENCODE:C2C12_Wold_differentiation_protocol"
+        ],
+        "source": "barbara-wold",
+        "submitted_by": "vitae.quis@mauris.aptent",
+        "uuid": "02377f5f-30a1-4577-bb21-4e6add9d3d6e"
+    },
+    {
+        "accession": "ENCBS175ENC",
+        "award": "RC2HG005654",
+        "biosample_term_id": "CL:0002322",
+        "biosample_term_name": "embryonic stem cell",
+        "biosample_type": "primary cell line",
+        "description": "Undifferentiated mouse embryonic stem cells",
+        "donor": "ENCDO015AAA",
+        "health_status": "unknown",
+        "lab": "john-stamatoyannopoulos",
+        "life_stage": "embryonic",
+        "organism": "mouse",
+        "protocol_documents": [
+            "ENCODE:ZhBTc4_Stam_protocol"
+        ],
+        "source": "dana-levasseur",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "treatments": [
+            "3280b708-0f05-40fa-bff2-54e2b6505c13"
+        ],
+        "uuid": "26df3a6b-ad35-4ea9-954f-08ecf41bb3ad"
+    },
+    {
+        "_test": "has phase",
+        "accession": "ENCBS181AAA",
+        "award": "U54HG004592",
+        "biosample_term_id": "EFO:0002783",
+        "biosample_term_name": "GM06990",
+        "biosample_type": "immortalized cell line",
+        "description": "B-lymphocyte, lymphoblastoid, International HapMap Project, CEPH/Utah, treatment: Epstein-Barr Virus transformed",
+        "donor": "ENCDO000HUM",
+        "encode2_dbxrefs": [
+            "GM06990"
+        ],
+        "health_status": "unknown",
+        "lab": "john-stamatoyannopoulos",
+        "life_stage": "unknown",
+        "organism": "human",
+        "phase": "S4",
+        "product_id": "GM06990",
+        "protocol_documents": [
+            "ENCODE:Stam_15_protocols"
+        ],
+        "source": "coriell",
+        "submitted_by": "blandit.orci@conubia.magna",
+        "url": "http://ccr.coriell.org/Sections/Search/Sample_Detail.aspx?Ref=GM06990&PgId=166",
+        "uuid": "9c246ad4-713a-48dc-ad65-d0400c26a140"
+    },
+    {
+        "accession": "ENCBS417ENC",
+        "award": "U54HG004592",
+        "biosample_term_id": "CL:1000350",
+        "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
+        "biosample_type": "primary cell line",
+        "description": "small airway epithelial cells",
+        "donor": "ENCDO106AAA",
+        "encode2_dbxrefs": [
+            "SAEC"
+        ],
+        "health_status": "unknown",
+        "lab": "john-stamatoyannopoulos",
+        "life_stage": "unknown",
+        "organism": "human",
+        "product_id": "CC-2547",
+        "protocol_documents": [
+            "ENCODE:SAEC_Stam_protocol"
+        ],
+        "source": "lonza",
+        "submitted_by": "facilisis.venenatis@mauris.mauris",
+        "url": "http://www.lonza.com/",
+        "uuid": "d0e58076-e61d-49dc-a0e1-3422645e50f8"
+    },
+    {
+        "_test": "has subcellular location",
+        "accession": "ENCBS450ENC",
+        "aliases": [
+            "thomas-gingeras:088N"
+        ],
+        "award": "U54HG004557",
+        "biosample_term_id": "NTR:0000002",
+        "biosample_term_name": "A549",
+        "biosample_type": "immortalized cell line",
+        "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
+        "donor": "ENCDO000HUM",
+        "encode2_dbxrefs": [
+            "A549"
+        ],
+        "health_status": "unknown",
+        "lab": "thomas-gingeras",
+        "life_stage": "unknown",
+        "lot_id": "58483235",
+        "organism": "human",
+        "source": "encode",
+        "subcellular_fraction_term_id": "GO:0005634",
+        "subcellular_fraction_term_name": "nucleus",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "12d82da3-6ee1-4919-9026-4ebdd8079ba1"
+    },
+    {
+        "accession": "ENCBS492ENC",
+        "award": "U54HG004563",
+        "biosample_term_id": "UBERON:0000006",
+        "biosample_term_name": "islet of Langerhans",
+        "biosample_type": "tissue",
+        "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
+        "donor": "ENCDO275AAA",
+        "health_status": "unknown",
+        "lab": "gregory-crawford",
+        "life_stage": "unknown",
+        "organism": "human",
+        "source": "ndri",
+        "submitted_by": "metus.donec@nisl.montes",
+        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
+        "uuid": "e62102b0-7452-4fb7-9932-d799366e1f5a"
+    },
+    {
+        "accession": "ENCBS493ENC",
+        "award": "U54HG004563",
+        "biosample_term_id": "UBERON:0000006",
+        "biosample_term_name": "islet of Langerhans",
+        "biosample_type": "tissue",
+        "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
+        "donor": "ENCDO276AAA",
+        "health_status": "unknown",
+        "lab": "gregory-crawford",
+        "life_stage": "unknown",
+        "organism": "human",
+        "source": "ndri",
+        "submitted_by": "metus.donec@nisl.montes",
+        "url": "http://www.ndriresource.org/NDRI_Initiatives/Pancreatic_Islets/31/",
+        "uuid": "718d142d-7677-4c09-bfb5-39214a9f85a9"
+    },
+    {
+        "_test": "donor has alternate_accesion",
+        "accession": "ENCBS000RNA",
+        "age": "21",
+        "age_units": "year",
+        "aliases": [
+            "thomas-gingeras:140WC"
+        ],
+        "award": "U54HG004557",
+        "biosample_term_id": "CL:0002539",
+        "biosample_term_name": "aortic smooth muscle cell",
+        "biosample_type": "primary cell line",
+        "description": "Normal Human Aortic Smooth Muscle Cells (HAoSMC)",
+        "donor": "ENCDO017AAA",
+        "health_status": "Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV",
+        "lab": "thomas-gingeras",
+        "life_stage": "adult",
+        "lot_id": "8121902.2P",
+        "note": "Purchased as total RNA",
+        "organism": "human",
+        "passage_number": 2,
+        "product_id": "C-14053",
+        "protocol_documents": [
+            "ENCODE:HAoSMC_PC_8121902.2P_certificate_of_analysis",
+            "ENCODE:HAoSMC_PC_8121902.2P_general_protocol"
+        ],
+        "source": "promocell",
+        "starting_amount": 600000.0,
+        "starting_amount_units": "cells",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "url": "http://www.promocell.com/nc/products/human-primary-cells/smooth-muscle-cells/human-aortic-smooth-muscle-cells-haosmc",
+        "uuid": "c305924f-1058-47bb-af42-259bad767853"
+    },
+    {
+        "_test": "has multiple documents and ENCODE2 dbxref",
+        "accession": "ENCBS044RNA",
+        "age": "34",
+        "age_units": "year",
+        "aliases": [
+            "thomas-gingeras:097WC"
+        ],
+        "award": "U54HG004557",
+        "biosample_term_id": "UBERON:0000948",
+        "biosample_term_name": "heart",
+        "biosample_type": "tissue",
+        "date_obtained": "2012-12-01",
+        "description": "Human heart Tissue obtained from a healthy, 34 year old Caucasian male donor",
+        "donor": "ENCDO058AAA",
+        "encode2_dbxrefs": [
+            "Heart_STL003"
+        ],
+        "health_status": "Healthy",
+        "lab": "thomas-gingeras",
+        "life_stage": "adult",
+        "organism": "human",
+        "protocol_documents": [
+            "ENCODE:Heart_STL003_excision_protocol",
+            "ENCODE:Heart_STL003_general_protocol"
+        ],
+        "source": "michael-snyder",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "51ddff9b-a477-43bb-91ad-7f6b87380cbe"
+    }
+]

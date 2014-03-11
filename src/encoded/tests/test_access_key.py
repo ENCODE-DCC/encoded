@@ -76,7 +76,7 @@ def test_access_key_current_user(anontestapp, access_key):
 
 def test_access_key_principals(anontestapp, execute_counter, access_key):
     headers = {'Authorization': access_key['auth_header']}
-    with execute_counter.expect(1):
+    with execute_counter.expect(2):
         res = anontestapp.get('/@@testing-user', headers=headers)
 
     assert res.json['authenticated_userid'] == 'accesskey.' + access_key['access_key_id']
@@ -124,9 +124,11 @@ def test_access_key_edit(anontestapp, access_key):
     assert res.json['description'] == NEW_DESCRIPTION
 
 
-def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key):
+@pytest.mark.parametrize('frame', ['', 'raw', 'edit', 'object', 'embedded'])
+def test_access_key_view_hides_secret_access_key_hash(anontestapp, access_key, frame):
+    query = '?frame=' + frame if frame else ''
     headers = {'Authorization': access_key['auth_header']}
-    res = anontestapp.get(access_key['location'], headers=headers)
+    res = anontestapp.get(access_key['location'] + query, headers=headers)
     assert 'secret_access_key_hash' not in res.json
 
 

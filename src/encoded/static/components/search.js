@@ -286,7 +286,7 @@ var Dbxref = dbxref.Dbxref;
                                                 <span className="pull-right">
                                                     {search_id.indexOf('&limit=all') !== -1 ? 
                                                         <a className="btn btn-info btn-small" href={search_id.replace("&limit=all", "")}>View 25</a>
-                                                    : <a className="btn btn-info btn-small" href={search_id+ '&limit=all'}>View All</a>}
+                                                    : <a rel="nofollow" className="btn btn-info btn-small" href={search_id+ '&limit=all'}>View All</a>}
                                                 </span>
                                             : null}
                                     </h4>

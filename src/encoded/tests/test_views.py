@@ -3,16 +3,13 @@ import pytest
 
 def _type_length():
     # Not a fixture as we need to parameterize tests on this
-    import os.path
     from ..loadxl import ORDER
-    from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    lengths = {}
-    for name in ORDER:
-        with open(os.path.join(inserts, name + '.tsv'), 'U') as f:
-            lengths[name] = len([l for l in f.readlines() if l.strip()]) - 1
-
-    return lengths
+    from pkg_resources import resource_stream
+    import json
+    return {
+        name: len(json.load(resource_stream('encoded', 'tests/data/inserts/%s.json' % name)))
+        for name in ORDER
+    }
 
 
 TYPE_LENGTH = _type_length()
@@ -207,10 +204,11 @@ def test_post_duplicate_uuid(testapp):
     testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
-def test_user_effective_principals(users, anontestapp):
+def test_user_effective_principals(users, anontestapp, execute_counter):
     email = users[0]['email']
-    res = anontestapp.get('/@@testing-user',
-                          extra_environ={'REMOTE_USER': str(email)})
+    with execute_counter.expect(1):
+        res = anontestapp.get('/@@testing-user',
+                              extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
         'group.admin',
         'group.programmer',

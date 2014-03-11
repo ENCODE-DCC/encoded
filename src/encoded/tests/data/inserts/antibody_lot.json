@@ -1,0 +1,272 @@
+[
+    {
+        "_test": "untagged target and unknown lot",
+        "accession": "ENCAB000AFU",
+        "antigen_description": "E2F1(KH20 and KH95) Epitope for KH20 has been mapped to amino acids 1-89; KH95 to amino acids 342-386.",
+        "award": "U54HG004558",
+        "clonality": "monoclonal",
+        "encode2_dbxrefs": [
+            "E2F1"
+        ],
+        "host_organism": "mouse",
+        "lab": "michael-snyder",
+        "lot_id": "unknown",
+        "product_id": "05-379",
+        "source": "millipore",
+        "submitted_by": "taciti.vehicula@vitae.vivamus",
+        "url": "http://www.millipore.com/catalogue/item/05-379#",
+        "uuid": "cd8b0112-e01b-4eb6-94ae-5e9257885eba"
+    },
+    {
+        "_test": "has alternate_accesion",
+        "accession": "ENCAB000AUU",
+        "alternate_accessions": [
+            "ENCAB000ATG"
+        ],
+        "award": "U54HG004558",
+        "clonality": "polyclonal",
+        "encode2_dbxrefs": [
+            "H3K4me3"
+        ],
+        "host_organism": "rabbit",
+        "lab": "michael-snyder",
+        "lot_id": "JBC1888194",
+        "product_id": "07-473",
+        "source": "millipore",
+        "submitted_by": "fames.at@per.varius",
+        "url": "http://www.millipore.com/catalogue/item/07-473",
+        "uuid": "f24ac237-ba4c-4b3d-af7e-85f0b57c4184"
+    },
+    {
+        "_test": "several variations of different lots, aliases, alternate accessions",
+        "accession": "ENCAB000ASG",
+        "antigen_description": "Synthetic peptide corresponding to residues surrounding and including trimethlyated Lys 4 of Histone H3.",
+        "award": "ROADMAP",
+        "clonality": "polyclonal",
+        "host_organism": "rabbit",
+        "lab": "roadmap-epigenomics",
+        "lot_id": "R0903B0054",
+        "product_id": "07-473",
+        "purifications": [
+            "affinity"
+        ],
+        "source": "millipore",
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "url": "http://www.millipore.com/catalogue/item/07-473",
+        "uuid": "eb4230d7-48d0-4dcc-ab99-da1a5316a0f9"
+    },
+    {
+        "_test": "multiple lot aliases and accessions",
+        "accession": "ENCAB000ANU",
+        "alternate_accessions": [
+            "ENCAB000ASE",
+            "ENCAB000ASF",
+            "ENCAB000AUQ"
+        ],
+        "award": "U54HG006991",
+        "clonality": "polyclonal",
+        "encode2_dbxrefs": [
+            "H3K4me3"
+        ],
+        "host_organism": "rabbit",
+        "lab": "bradley-bernstein",
+        "lot_id": "DAM1623866",
+        "lot_id_alias": [
+            "DAM1644057",
+            "DAM1817678",
+            "DAM1619901",
+            "DAM1731494"
+        ],
+        "product_id": "07-473",
+        "source": "millipore",
+        "submitted_by": "sit.nascetur@accumsan.quis",
+        "url": "http://www.millipore.com/catalogue/item/07-473",
+        "uuid": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b"
+    },
+    {
+        "_test": "multiple alternate accesions and lot alias",
+        "accession": "ENCAB000ANK",
+        "alternate_accessions": [
+            "ENCAB000AOW",
+            "ENCAB000AOV"
+        ],
+        "antigen_description": "Synthetic peptide: ARTKQTARAcKSTG-C conjugated to KLH, corresponding to amino acids 1-12 of Human Histone H3.",
+        "award": "U54HG004570",
+        "clonality": "polyclonal",
+        "encode2_dbxrefs": [
+            "H3K9ac"
+        ],
+        "host_organism": "rabbit",
+        "isotype": "IgG",
+        "lab": "bradley-bernstein",
+        "lot_id": "455103",
+        "lot_id_alias": [
+            "550799"
+        ],
+        "product_id": "ab4441",
+        "purifications": [
+            "affinity"
+        ],
+        "source": "abcam",
+        "submitted_by": "hymenaeos.blandit@sit.dictum",
+        "url": "http://www.abcam.com/index.html?datasheet=4441",
+        "uuid": "f211c027-6613-4998-8cf0-90e9041ad254"
+    },
+    {
+        "_test": "refer to same target",
+        "accession": "ENCAB000AUZ",
+        "antigen_sequence": "MSKSESPKEPEQLRKLFIGGLSFETTDESLRSHFEQWGTLTDCVVMRDPN",
+        "award": "U54HG007005",
+        "clonality": "polyclonal",
+        "host_organism": "rabbit",
+        "isotype": "IgG",
+        "lab": "xiang-dong-fu",
+        "lot_id": "QC9473-091124",
+        "product_id": "ARP40383_T100",
+        "source": "aviva",
+        "submitted_by": "parturient.ut@et.ve",
+        "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-n-terminal-region-arp40383-t100.html",
+        "uuid": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea"
+    },
+    {
+        "_test": "refer to same target and lab self-fail",
+        "accession": "ENCAB000AVA",
+        "antigen_sequence": "NQSSNFGPMKGGNFGGRSSGPYGGGGQYFAKPRNQGGYGGSSSSSSYGSG",
+        "award": "U54HG007005",
+        "clonality": "polyclonal",
+        "host_organism": "rabbit",
+        "isotype": "IgG",
+        "lab": "xiang-dong-fu",
+        "lot_id": "QC9474",
+        "notes": "This was a self fail.",
+        "product_id": "ARP40384_T100",
+        "source": "aviva",
+        "submitted_by": "parturient.ut@et.ve",
+        "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-c-terminal-region-arp40384-t100.html",
+        "uuid": "81d1f148-323c-4420-a05e-62427394fd6b"
+    },
+    {
+        "_test": "control",
+        "accession": "ENCAB000AOF",
+        "aliases": [
+            "j-michael-cherry:Control"
+        ],
+        "antigen_description": "Anti-mouse",
+        "award": "U54HG004558",
+        "encode2_dbxrefs": [
+            "IgG-Yale"
+        ],
+        "host_organism": "mouse",
+        "lab": "michael-snyder",
+        "lot_id": "unknown",
+        "product_id": "IgG-Yale",
+        "source": "santa-cruz-biotech",
+        "submitted_by": "fames.at@per.varius",
+        "uuid": "9a69a3d2-655f-49ca-a3b3-48d70ad4a9e1"
+    },
+    {
+        "_test": "tagged target",
+        "accession": "ENCAB000ASV",
+        "antigen_description": "Clone 16B12 was raised against the twelve amino acid peptide CYPYDVPDYASL. This second-generation HA antibody is an excellent substitute for the 12CA5 monoclonal antibody. The HA.11 antibody recognizes the influenza hemagglutinin epitope (YPYDVPDYA) which has been used extensively as a general epitope tag in expression vectors. The extreme specificity of the antibody allows unambiguous identification and quantitative analysis of the tagged protein. The HA.11 antibody recognizes HA epitopes located in the middle of protein sequences as well as at the N- or C-terminus.",
+        "antigen_sequence": "CYPYDVPDYASL",
+        "award": "U54HG004558",
+        "clonality": "monoclonal",
+        "encode2_dbxrefs": [
+            "HA-E2F1"
+        ],
+        "host_organism": "mouse",
+        "lab": "michael-snyder",
+        "lot_id": "unknown",
+        "product_id": "MMS-101P",
+        "source": "covance",
+        "submitted_by": "taciti.vehicula@vitae.vivamus",
+        "url": "https://store.crpinc.com/datasheet.aspx?catalogno=MMS-101P",
+        "uuid": "981a4b17-65b6-4535-9515-786ecbfeaed8"
+    },
+    {
+        "_test": "frowny gel",
+        "accession": "ENCAB000ADQ",
+        "antigen_description": "Peptide region of the protein sequence according to NP_055408",
+        "award": "U54HG006998",
+        "clonality": "polyclonal",
+        "host_organism": "rabbit",
+        "lab": "richard-myers",
+        "lot_id": "QC12000",
+        "product_id": "SAB2103447",
+        "source": "sigma",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "url": "http://www.sigmaaldrich.com/catalog/product/sigma/sab2103447?lang=en&region=US",
+        "uuid": "e61ad044-a869-4bd2-ae04-f4fa83bbca00"
+    },
+    {
+        "_test": "refer to same target",
+        "accession": "ENCAB000AXP",
+        "award": "U54HG007005",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG2a",
+        "lab": "xiang-dong-fu",
+        "lot_id": "E1011",
+        "product_id": "SC-32301",
+        "source": "santa-cruz-biotech",
+        "submitted_by": "parturient.ut@et.ve",
+        "url": "http://www.scbt.jp/datasheet-32301-hnrnp-a1-4b10-antibody.html",
+        "uuid": "c8001233-050d-4dab-bf73-f47133b2e2a3"
+    },
+    {
+        "_test": "ENCODE2 dbxref with special characters",
+        "accession": "ENCAB000AFR",
+        "antigen_description": "Epitope mapping at the N-terminus of CTCF of human origin.",
+        "award": "U54HG004576",
+        "clonality": "polyclonal",
+        "encode2_dbxrefs": [
+            "CTCF_(SC-5916)"
+        ],
+        "host_organism": "goat",
+        "isotype": "IgG",
+        "lab": "richard-myers",
+        "lot_id": "K0902",
+        "product_id": "sc-5916",
+        "source": "santa-cruz-biotech",
+        "submitted_by": "maecenas.curabitur@nibh.phasellus",
+        "url": "http://www.scbt.com/datasheet-5916-ctcf-n-17-antibody.html",
+        "uuid": "d563e33c-fea8-4453-909b-ccfdbfd9f8b3"
+    },
+    {
+        "_test": "has lot alises",
+        "accession": "ENCAB000ALM",
+        "award": "U54HG004576",
+        "clonality": "monoclonal",
+        "encode2_dbxrefs": [
+            "TAF1"
+        ],
+        "host_organism": "mouse",
+        "lab": "richard-myers",
+        "lot_id": "K0905",
+        "lot_id_alias": [
+            "F2706",
+            "G2909"
+        ],
+        "product_id": "sc-735",
+        "source": "santa-cruz-biotech",
+        "submitted_by": "maecenas.curabitur@nibh.phasellus",
+        "url": "http://www.scbt.com/product.php?datasheet=735",
+        "uuid": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773"
+    },
+    {
+        "_test": "has tsv validation",
+        "accession": "ENCAB000ACQ",
+        "antigen_description": "TCF4 (NP_005019, a.a. 1-366) full length recombinant protein with GST tag.",
+        "award": "U54HG006998",
+        "clonality": "monoclonal",
+        "host_organism": "mouse",
+        "isotype": "IgG1\u03ba",
+        "lab": "richard-myers",
+        "lot_id": "12262-1F6",
+        "product_id": "WH0006925M2",
+        "source": "sigma",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "url": "http://www.sigmaaldrich.com/catalog/product/sigma/wh0006925m2?lang=en&region=US",
+        "uuid": "907ced83-e4bb-4d77-8d97-e969db915533"
+    }
+]
