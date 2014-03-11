@@ -16,9 +16,11 @@ env:
   - CONNECT_LOG=sauce_connect.log
   - READY_FILE=connect.ready
   - PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH"
-services:
-  - elasticsearch
 before_install:
+  - curl http://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
+  - sudo add-apt-repository "deb http://packages.elasticsearch.org/elasticsearch/1.0/debian stable main"
+  - sudo apt-get update
+  - sudo apt-get install elasticsearch
   - whereis elasticsearch
   - curl $CONNECT_URL > $CONNECT_DOWNLOAD
   - unzip $CONNECT_DOWNLOAD Sauce-Connect.jar
