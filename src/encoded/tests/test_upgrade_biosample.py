@@ -102,6 +102,14 @@ def test_biosample_upgrade_encode2_dbxref(app, biosample_3):
     assert value['dbxrefs'] == ['ucsc_encode_db:Liver']
     assert 'encode2_dbxrefs' not in value
 
+def test_biosample_upgrade_encode2_complex_dbxref(app, biosample_3):
+    biosample_3['encode2_dbxrefs'] = ['B-cells CD20+ (RO01778)']
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['dbxrefs'] == ['ucsc_encode_db:B-cells CD20+ (RO01778)']
+    assert 'encode2_dbxrefs' not in value
+
 def test_biosample_upgrade_inline(testapp, biosample_1):
     from encoded.schema_utils import load_schema
     schema = load_schema('biosample.json')
