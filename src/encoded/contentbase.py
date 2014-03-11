@@ -928,7 +928,7 @@ class Collection(Mapping):
 
         frame = request.params.get('frame', 'columns')
         if frame == 'columns':
-            if self.schema['columns']:
+            if 'columns' in self.schema:
                 result['columns'] = self.schema['columns']
             else:
                 frame = 'object'
