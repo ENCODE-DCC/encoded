@@ -162,6 +162,9 @@ var Dbxref = dbxref.Dbxref;
             var title = this.props.title || term;
             var search_base = this.props.search_base;
             var field = this.props.facet['field'];
+            var barStyle = {
+                width:  Math.ceil( (count/this.props.total) * 100) + "%"
+            }
             var selected = 0;
             var link = '';
             for (var filter in filters) {
@@ -182,6 +185,7 @@ var Dbxref = dbxref.Dbxref;
             }else {
                 return (
                     <li key={term}>
+                        <span className="bar" style={barStyle}></span>
                         <a href={search_base+field+'='+term}>
                             <span className="pull-right">{count}</span>
                             <span className="facet-item">{title}</span>
@@ -197,7 +201,8 @@ var Dbxref = dbxref.Dbxref;
             var term = this.props.term['term'];
             var filters = this.props.filters;
             var title = this.props.portal.types[term];
-            return this.transferPropsTo(<Term title={title} filters={filters} />);
+            var total = this.props.total;
+            return this.transferPropsTo(<Term title={title} filters={filters} total={total} />);
         }
     });
 
@@ -211,6 +216,7 @@ var Dbxref = dbxref.Dbxref;
             });
             var title = facet['title'];
             var field = facet['field'];
+            var total = facet['total']
             var termID = title.replace(/\s+/g, '');
             var TermComponent = field === 'type' ? TypeTerm : Term;
             return (
@@ -219,13 +225,13 @@ var Dbxref = dbxref.Dbxref;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent term={term} filters={filters} />);
+                                return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className="collapse">
                                 {terms.slice(5).map(function (term) {
-                                    return this.transferPropsTo(<TermComponent term={term} filters={filters} />);
+                                    return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
                                 }.bind(this))}
                             </div>
                         : null}
@@ -316,7 +322,7 @@ var Dbxref = dbxref.Dbxref;
             return (
                 <div>
                     {notification === 'Success' ?
-                        <div className="panel data-display"> 
+                        <div className="panel data-display main-panel"> 
                             {this.transferPropsTo(<ResultTable key={undefined} />)}
                         </div>
                     : <h4>{notification}</h4>}

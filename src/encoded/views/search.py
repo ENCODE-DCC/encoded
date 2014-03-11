@@ -144,7 +144,7 @@ def search(context, request, search_type=None):
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, sorted(fields), principals)
-    
+
     # Handling object fields return for ES 1.0.+
     if not len(fields):
         del(query['fields'])
@@ -265,6 +265,7 @@ def search(context, request, search_type=None):
                 'field': field,
                 'title': facet_title,
                 'terms': terms,
+                'total': facet_results[field]['total']
             })
 
     # Loading result rows
