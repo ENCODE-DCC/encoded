@@ -19,6 +19,7 @@ env:
 before_install:
   - curl http://packages.elasticsearch.org/GPG-KEY-elasticsearch | sudo apt-key add -
   - sudo add-apt-repository "deb http://packages.elasticsearch.org/elasticsearch/1.0/debian stable main"
+  - sudo apt-get update
   - sudo apt-get install elasticsearch
   - whereis elasticsearch
   - curl $CONNECT_URL > $CONNECT_DOWNLOAD
