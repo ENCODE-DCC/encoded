@@ -112,6 +112,23 @@
             "enum": [
                 "nt"
             ]
+        },
+        
+        "RBNS_protein_concentration": {
+            "title": "RBNS protein concentration",
+            "description": "For use only with RNA Bind-n-Seq replicates to indicate the protein concentration.",
+            "comment": "Only for use with RBNS replicates.",
+            "type": "integer"
+        },
+        "RBNS_protein_concentration_units": {
+            "title": "RBNS protein concentration units",
+            "type": "string",
+            "enum": [
+                "nt" #Needs fixing and do we need dependancy
+            ]
         }
+        
+        
+        
     }
 }
