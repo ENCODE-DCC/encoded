@@ -14,12 +14,9 @@
 }
 
 .navbar-inverse .nav > li > a {
-    color: #fff;    
-}
-
-.navbar-inverse .nav > li > a {
+    color: #fff;   
     @include transition-property(background-color);
-    @include transition-duration(0.2s);
+    @include transition-duration(0.15s);
   	@include transition-timing-function(ease-in-out);
 }
 
@@ -27,6 +24,11 @@
     @include transition-property(text-shadow);
     @include transition-duration(0.2s);
   	@include transition-timing-function(ease-in-out);
+}
+
+.navbar-inverse .nav > li > a:focus,
+.navbar-inverse .nav > li > a:hover {
+    background-color: #2f4961;
 }
 
 .navbar-inverse .navbar-brand:hover {
