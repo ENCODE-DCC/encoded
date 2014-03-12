@@ -37,32 +37,36 @@ SOURCE CODE ORGANIZATION
 **BACKEND**
 -----------
 	* Application (responds to web requests) - the main config files are *.ini in the root encoded directory.
-		Guts
-			views
-			-----
-			The guts of the web application are in the views package.  Views.views defines the Item and Collection classes that the web app will respond to via URLs like /{things}/ (returns a Collection of Things) and /{things}/{id} (retuns a Thing).
 
-			Other modules in the views package correspond to non-core views that the app will respond to.
-				user.py - special user objects are special
-				access_key.py - generation/modification of access keys for programatic access
-				search.py - constructs ES query and passes though to :9200
-			contentbase.py
-			-----------
-			contentbase.py defines the core Collection and Item classes which are the python representation of linked JSON objects and groups (collections) of linked JSON objects.   It contains the business logic for updating JSON objects via PATCH and the recursive GETs necessary for embedded objects.
-		AuthZ
-			- *authentication.py*
-			- *authorization.py*
-			- *persona.py*
+Guts
+----
+views
+-----
+	The guts of the web application are in the views package.  Views.views defines the Item and Collection classes that the web app will respond to via URLs like /{things}/ (returns a Collection of Things) and /{things}/{id} (retuns a Thing).
+
+	Other modules in the views package correspond to non-core views that the app will respond to.
+		user.py - special user objects are special
+		access_key.py - generation/modification of access keys for programatic access
+		search.py - constructs ES query and passes though to :9200
+
+contentbase.py
+--------------
+	contentbase.py defines the core Collection and Item classes which are the python representation of linked JSON objects and groups (collections) of linked JSON objects.   It contains the business logic for updating JSON objects via PATCH and the recursive GETs necessary for embedded objects.
+
+AuthZ
+-----
+	- *authentication.py*
+	- *authorization.py*
+	- *persona.py*
 
 	* JSON data schema
 		definition
-			Each object type has a .json schema file in /schemas.  The objects are linked and embedded within each other by reference, forming a graph structure.   "Mixins" are sub-schemas included in more than one object type definition.
-			Each schema file is *versioned* and mapping an object from an older schema to a new one is called *upgrading*
-		* validation
+			Each object type has a .json schema file in /schemas.  The objects are linked and embedded within each other by reference, forming a graph structure.   "Mixins" are sub-schemas included in more than one object type definition.  Each schema file is *versioned* and mapping an object from an older schema to a new one is called *upgrading*
+		validation
 			Objects are validated as they are POSTed or PATCHed to the application (via HTTP).  Not sure when/how the validation is hooked in
-		* upgrading
+		upgrading
 			No idea
-		* linked and embedded objects
+		linked and embedded objects
 			Sorcery
 	* Postgres Storage
 		* Loading
@@ -75,19 +79,19 @@ SOURCE CODE ORGANIZATION
 
 	* renderers.py - code that determines whether to return HTML or JSON based on request, as well as code for starting the node subprocess renderer.js which converts the ReactJS pages into XHTML.
 
-	Use of NodeJS
-	-------------
+Use of NodeJS
+-------------
 
-	About ReactJS
-	-------------
+About ReactJS
+-------------
 
-	Component Pages
-	---------------
+Component Pages
+---------------
 	HTML pages are written in Javascript using JSX_ and ReactJS_.  These files are in src/static/components.
 	Each object type has a component which describes how both the individual item and the collection pages are rendered.  Other pages include home and search.  JSX_ allows the JS file itself to serve like an HTML template, similar to other web frameworks.
 
-	Boilerplate and Parent Classes
-	------------------------------
+Boilerplate and Parent Classes
+------------------------------
 		* app.js
 		* globals.js
 		* mixins.js
@@ -99,8 +103,8 @@ SOURCE CODE ORGANIZATION
 		* edit.js
 		* testing.js
 
-	User Pages (Templates)
-	----------------------
+User Pages (Templates)
+----------------------
 		* index.js
 		* antibody.js
 		* biosample.js
@@ -110,8 +114,8 @@ SOURCE CODE ORGANIZATION
 		* search.js
 		* target.js
 
-	Views and Sections (Templates)
-	------------------------------
+Views and Sections (Templates)
+------------------------------
 		* dbxref.js
 		* navbar.js
 		* footer.js
@@ -119,8 +123,8 @@ SOURCE CODE ORGANIZATION
 
 **API**
 
-	Parameters (to be supplied in POST object or via GET url parameters):
-	--------------------------------------------------------------------
+Parameters (to be supplied in POST object or via GET url parameters):
+---------------------------------------------------------------------
 	* datastore=(database|elasticsearch) default: elasticsearch
 	* format=json  Return JSON objects instead of XHTML from browser.
 	* limit=((int)|all) return only some or all objects in a collection
