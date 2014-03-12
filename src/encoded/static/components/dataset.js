@@ -108,38 +108,40 @@ globals.content_views.register(Dataset, 'dataset');
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     render: function() {
         return (
-            <table className="table panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Assay</th>
-                        <th>Biosample term name</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {this.props.items.map(function (experiment) {
-                    // Ensure this can work with search result columns too
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{experiment.biosample_term_name}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+            <div className="table-responsive">
+                <table className="table panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Accession</th>
+                            <th>Assay</th>
+                            <th>Biosample term name</th>
+                            <th>Target</th>
+                            <th>Description</th>
+                            <th>Lab</th>
                         </tr>
-                    );
-                })}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="6"></td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </thead>
+                    <tbody>
+                    {this.props.items.map(function (experiment) {
+                        // Ensure this can work with search result columns too
+                        return (
+                            <tr key={experiment['@id']}>
+                                <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                                <td>{experiment.assay_term_name}</td>
+                                <td>{experiment.biosample_term_name}</td>
+                                <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
+                                <td>{experiment.description}</td>
+                                <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="6"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         );
     }
 });
@@ -168,28 +170,30 @@ var FileTable = module.exports.FileTable = React.createClass({
             );
         });
         return (
-            <table className="table panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>File type</th>
-                        <th>Output type</th>
-                        <th>Paired end</th>
-                        <th>Associated replicates</th>
-                        <th>Added by</th>
-                        <th>Date added</th>
-                        <th>File download</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {rows}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="8"></td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div className="table-responsive">
+                <table className="table panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Accession</th>
+                            <th>File type</th>
+                            <th>Output type</th>
+                            <th>Paired end</th>
+                            <th>Associated replicates</th>
+                            <th>Added by</th>
+                            <th>Date added</th>
+                            <th>File download</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {rows}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="8"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         );
     }
 });

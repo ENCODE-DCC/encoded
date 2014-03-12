@@ -281,31 +281,33 @@ var globals = require('./globals');
                 );
             }
             return (
-                <table className={table_class + " table table-striped table-hover panel"}>
-                    <thead className="sticky-header">
-                        <tr className="nosort table-controls">
-                            <th colSpan={columns.length}>
-                                {loading_or_total}
-                                <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
-                                	data-skiprequest="true" data-removeempty="true">
-                                    <input ref="q" disabled={this.state.communicating || undefined} 
-                                    	name="q" type="search" defaultValue={searchTerm} 
-                                    	placeholder="Filter table by..." className="filter form-control" 
-                                    	id="table-filter" /> 
-                                    <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
-                                    <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
-                                    <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
-                                </form>
-                            </th>
-                        </tr>
-                        <tr className="col-headers">
-                            {headers}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                </table>
+                <div className="table-responsive">            
+                    <table className={table_class + " table table-striped table-hover panel"}>
+                        <thead className="sticky-header">
+                            <tr className="nosort table-controls">
+                                <th colSpan={columns.length}>
+                                    {loading_or_total}
+                                    <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
+                                        data-skiprequest="true" data-removeempty="true">
+                                        <input ref="q" disabled={this.state.communicating || undefined} 
+                                            name="q" type="search" defaultValue={searchTerm} 
+                                            placeholder="Filter table by..." className="filter form-control" 
+                                            id="table-filter" /> 
+                                        <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
+                                        <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
+                                        <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
+                                    </form>
+                                </th>
+                            </tr>
+                            <tr className="col-headers">
+                                {headers}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                    </table>
+                </div>
             );
         },
 

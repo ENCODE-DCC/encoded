@@ -162,39 +162,41 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
     return (
         <div>
             <h3>Biosamples used</h3>
-            <table className="table panel table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Biosample</th>
-                        <th>Type</th>
-                        <th>Species</th>
-                        <th>Source</th>
-                        <th>Submitter</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                { Object.keys(biosamples).map(function (key, index) {
-                    var biosample = biosamples[key].biosample;
-                    return (
-                        <tr key={index}>
-                            <td><a href={biosample['@id']}>{biosample.accession}</a></td>
-                            <td>{biosample.biosample_term_name}</td>
-                            <td>{biosample.biosample_type}</td>
-                            <td>{biosample.donor && biosample.donor.organism.name}</td>
-                            <td>{biosample.source.title}</td>
-                            <td>{biosample.submitted_by.title}</td>
+            <div className="table-responsive"> 
+                <table className="table panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Accession</th>
+                            <th>Biosample</th>
+                            <th>Type</th>
+                            <th>Species</th>
+                            <th>Source</th>
+                            <th>Submitter</th>
                         </tr>
-                    );
-                })}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="7"></td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </thead>
+                    <tbody>
+
+                    { Object.keys(biosamples).map(function (key, index) {
+                        var biosample = biosamples[key].biosample;
+                        return (
+                            <tr key={index}>
+                                <td><a href={biosample['@id']}>{biosample.accession}</a></td>
+                                <td>{biosample.biosample_term_name}</td>
+                                <td>{biosample.biosample_type}</td>
+                                <td>{biosample.donor && biosample.donor.organism.name}</td>
+                                <td>{biosample.source.title}</td>
+                                <td>{biosample.submitted_by.title}</td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="7"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     );
 };
