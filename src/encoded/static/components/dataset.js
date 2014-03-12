@@ -108,7 +108,7 @@ globals.content_views.register(Dataset, 'dataset');
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     render: function() {
         return (
-            <table>
+            <table className="table panel table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Accession</th>
@@ -168,7 +168,7 @@ var FileTable = module.exports.FileTable = React.createClass({
             );
         });
         return (
-            <table>
+            <table className="table panel table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Accession</th>

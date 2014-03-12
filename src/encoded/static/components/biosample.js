@@ -57,8 +57,8 @@ var Biosample = module.exports.Biosample = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <ul className="breadcrumb">
-                            <li>Biosamples <span className="divider">/</span></li>
-                            <li>{context.biosample_type}{' '}<span className="divider">/</span></li>{' '}
+                            <li>Biosamples</li>
+                            <li>{context.biosample_type}</li>
                             {context.donor ?
                                 <li className="active">{context.donor.organism.name}</li>
                             : null }

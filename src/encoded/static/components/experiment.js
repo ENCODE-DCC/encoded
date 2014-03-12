@@ -59,7 +59,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <ul className="breadcrumb">
-                            <li>Experiment <span className="divider">/</span></li>
+                            <li>Experiment</li>
                             <li className="active">{context.assay_term_name}</li>
                         </ul>
                         <h2>Experiment summary for {context.accession}</h2>
@@ -162,7 +162,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
     return (
         <div>
             <h3>Biosamples used</h3>
-            <table>
+            <table className="table panel table-striped table-hover">
                 <thead>
                     <tr>
                         <th>Accession</th>
