@@ -30,22 +30,20 @@ var NavBarLayout = React.createClass({
         var user_actions = this.props.user_actions;
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
-                <div className="navbar-inner">
-                    <div className="container">
-                        <div className="navbar-header">                        
-                            <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#encode-navbar">
-                                <span className="sr-only">Toggle navigation</span>
-                                <span className="icon-bar"></span>
-                                <span className="icon-bar"></span>
-                                <span className="icon-bar"></span>
-                            </button>
-                            <a className="navbar-brand" href="/">{portal.portal_title}</a>
-                        </div>
-                        <div className="navbar-collapse collapse" id="encode-navbar">
-                            <GlobalSections global_sections={portal.global_sections} section={section} />
-                            {this.transferPropsTo(<UserActions />)}
-                            {this.transferPropsTo(<Search />)}
-                        </div>
+                <div className="container">
+                    <div className="navbar-header">                        
+                        <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#encode-navbar">
+                            <span className="sr-only">Toggle navigation</span>
+                            <span className="icon-bar"></span>
+                            <span className="icon-bar"></span>
+                            <span className="icon-bar"></span>
+                        </button>
+                        <a className="navbar-brand" href="/">{portal.portal_title}</a>
+                    </div>
+                    <div className="navbar-collapse collapse" id="encode-navbar">
+                        <GlobalSections global_sections={portal.global_sections} section={section} />
+                        {this.transferPropsTo(<UserActions />)}
+                        {this.transferPropsTo(<Search />)}
                     </div>
                 </div>
             </div>
