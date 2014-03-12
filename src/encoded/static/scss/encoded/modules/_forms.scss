@@ -18,20 +18,14 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 		&[disabled] { background-color: #ddd; }
 }
 
-input.search-query {
-/*
-	font-size: 15px;
-    height: 22px;
-    line-height: 16px;
-    padding-bottom: 0;
-    padding-top: 0;
-    padding-right: 26px;
-    */
-}
-
 // Navbar search
 #navbar-search {
 	width: 150px;
+	border-radius: 14px;
+	height: 27px;
+	padding-top: 3px;
+	padding-bottom: 4px;
+	margin-top: 3px;
 	-ms-transition: width 0.3s ease-out;
 	-moz-transition: width 0.3s ease-out;
 	-webkit-transition: width 0.3s ease-out;
