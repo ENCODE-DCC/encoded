@@ -1,5 +1,4 @@
 from typedsheets import cast_row_values
-import json
 import logging
 import os.path
 
@@ -171,7 +170,7 @@ def read_single_sheet(path, name=None):
             return read_csv(stream)
 
         if ext == '.json':
-            return json.load(stream)
+            return read_json(stream)
 
         raise ValueError('Unknown file extension for %r' % path)
 
@@ -196,7 +195,7 @@ def read_single_sheet(path, name=None):
 
         if (name + '.json') in names:
             stream = zf.open(name + '.json', 'r')
-            return json.load(stream)
+            return read_json(stream)
 
     if os.path.isdir(path):
         root = os.path.join(path, name)
@@ -215,7 +214,7 @@ def read_single_sheet(path, name=None):
 
         if os.path.exists(root + '.json'):
             stream = open(root + '.json', 'rb')
-            return json.load(stream)
+            return read_json(stream)
 
     return []
 
@@ -228,6 +227,14 @@ def read_xl(stream):
 def read_csv(stream, **kw):
     import csv
     return cast_row_values(csv.DictReader(stream, **kw))
+
+
+def read_json(stream):
+    import json
+    obj = json.load(stream)
+    if isinstance(obj, dict):
+        return [obj]
+    return obj
 
 
 ##############################################################################
