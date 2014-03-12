@@ -160,7 +160,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                         <div className="col-sm-5">
                             <dl className="characterization-meta-data key-value">
                                 <dt className="h3">Method</dt>
-                                <dd>{context.characterization_method}</dd>
+                                <dd className="h3">{context.characterization_method}</dd>
 
                                 <dt className="h4">Target species</dt>
                                 <dd className="h4 sentence-case">{context.target.organism.name}</dd>
