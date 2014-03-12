@@ -32,13 +32,16 @@ var NavBarLayout = React.createClass({
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="navbar-inner">
                     <div className="container">
-                        <a className="btn btn-navbar" href="" data-toggle="collapse" data-target=".nav-collapse">
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                        </a>
-                        <a className="brand" href="/">{portal.portal_title}</a>
-                        <div className="nav-collapse collapse">
+                        <div className="navbar-header">                        
+                            <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#encode-navbar">
+                                <span className="sr-only">Toggle navigation</span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                                <span className="icon-bar"></span>
+                            </button>
+                            <a className="navbar-brand" href="/">{portal.portal_title}</a>
+                        </div>
+                        <div className="navbar-collapse collapse" id="encode-navbar">
                             <GlobalSections global_sections={portal.global_sections} section={section} />
                             {this.transferPropsTo(<UserActions />)}
                             {this.transferPropsTo(<Search />)}
@@ -65,7 +68,7 @@ var GlobalSections = React.createClass({
                 </li>
             );
         });
-        return <ul id="global-sections" className="nav">{actions}</ul>;
+        return <ul id="global-sections" className="nav navbar-nav">{actions}</ul>;
     }
 });
 
@@ -76,7 +79,7 @@ var Search = React.createClass({
         return (
         	<form className="navbar-form pull-right" action="/search/">
     			<div className="search-wrapper">
-    				<input className="input-medium search-query searchbox-style" type="text" placeholder="Search ENCODE" 
+    				<input className="form-control search-query" id="navbar-search" type="text" placeholder="Search ENCODE" 
                         ref="searchTerm" name="searchTerm" defaultValue={searchTerm} key={searchTerm} />
     			</div>
     		</form>
@@ -92,7 +95,7 @@ var UserActions = React.createClass({
         if (!(session && session['auth.userid'])) {
             return (
                 <ul id="user-actions" className="nav pull-right">
-                    <li><a href="" disabled={disabled} data-trigger="login" data-id="signin">Sign in</a></li>
+                    <li><a disabled={disabled} data-trigger="login" data-id="signin">Sign in</a></li>
                 </ul>
             );
         }
@@ -107,13 +110,13 @@ var UserActions = React.createClass({
         });
         var fullname = (session.user_properties && session.user_properties.title) || 'unknown';
         return (
-            <ul id="user-actions" className="nav pull-right">
+            <ul id="user-actions" className="nav navbar-nav navbar-right">
                 <li className="dropdown">
                     <a href="" className="dropdown-toggle" data-toggle="dropdown">{fullname}
                     <b className="caret"></b></a>
-                    <ul className="dropdown-menu">
-                        {actions}
-                    </ul>
+                        <ul className="dropdown-menu">
+                            {actions}
+                        </ul>
                 </li>
             </ul>
         );

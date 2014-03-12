@@ -19,28 +19,26 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 }
 
 input.search-query {
+/*
 	font-size: 15px;
     height: 22px;
     line-height: 16px;
     padding-bottom: 0;
     padding-top: 0;
     padding-right: 26px;
-}
-
-form.navbar-form {
-	margin-top: 3px;
+    */
 }
 
 // Navbar search
-.search-wrapper input {
-	width: 130px;
+#navbar-search {
+	width: 150px;
 	-ms-transition: width 0.3s ease-out;
 	-moz-transition: width 0.3s ease-out;
 	-webkit-transition: width 0.3s ease-out;
 	transition: width 0.3s ease-out;
 }
-.search-wrapper input:focus {
-	width: 250px;
+#navbar-search:focus {
+	width: 230px;
 	-ms-transition: width 0.3s ease-out;
 	-moz-transition: width 0.3s ease-out;
 	-webkit-transition: width 0.3s ease-out;
@@ -55,7 +53,7 @@ form.navbar-form {
 	font-family: "FontAwesome";
 	content: "\f021";
 	position: relative;
-	top: 3px;
+	top: 2px;
 	left: -24px;
 	color: gray;	
 }
@@ -67,12 +65,6 @@ form.navbar-form {
     height: 36px !important;
     line-height: 30px !important;
     padding: 4px 6px !important;
-}
-
-#submit-controls { /* is this used anywhere other than a mockup? */
-	padding: 5px;
-	background-color: #f7fbfe;
-	@include border-radius($border-radius-base);
 }
 
 // Clear Table Filter button/icon
