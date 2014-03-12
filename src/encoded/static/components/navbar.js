@@ -29,7 +29,7 @@ var NavBarLayout = React.createClass({
         var session = this.props.session;
         var user_actions = this.props.user_actions;
         return (
-            <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
+            <div id="navbar" className="navbar navbar-fixed-top navbar-inverse" role="navigation">
                 <div className="container">
                     <div className="navbar-header">                        
                         <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#encode-navbar">
@@ -99,8 +99,8 @@ var UserActions = React.createClass({
         }
         var actions = this.props.user_actions.map(function (action) {
             return (
-                <li className={action['class']} key={action.id}>
-                    <a href={action.url || ''} data-bypass={action.bypass} data-trigger={action.trigger}>
+                <li className={action['class']} key={action.id} role="presentation">
+                    <a  role="menuitem" tabindex="-1" href={action.url || ''} data-bypass={action.bypass} data-trigger={action.trigger}>
                         {action.title}
                     </a>
                 </li>
@@ -112,7 +112,7 @@ var UserActions = React.createClass({
                 <li className="dropdown">
                     <a href="" className="dropdown-toggle" data-toggle="dropdown">{fullname}
                     <b className="caret"></b></a>
-                        <ul className="dropdown-menu">
+                        <ul className="dropdown-menu" role="menu">
                             {actions}
                         </ul>
                 </li>
