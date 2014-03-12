@@ -55,7 +55,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <ul className="breadcrumb">
                             <li>Biosamples <span className="divider">/</span></li>
                             <li>{context.biosample_type}{' '}<span className="divider">/</span></li>{' '}
@@ -478,12 +478,12 @@ var Document = module.exports.Document = React.createClass({
             <section className="type-document view-detail panel status-none">
                 <div className="container">
                     <div className="row">
-                        <div className="span6">
+                        <div className="col-sm-6">
                             <figure>
                                 {figure}
                             </figure>
                         </div>
-                        <div className="span5">
+                        <div className="col-sm-5">
                             <h3 className="sentence-case">{context.document_type}</h3>
                             <p>{context.description}</p>
                             <dl className="key-value">

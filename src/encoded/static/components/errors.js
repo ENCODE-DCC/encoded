@@ -52,7 +52,7 @@ var LoginDenied = module.exports.LoginDenied = React.createClass({
         return (
             <div className={itemClass}>
                 <div className="row">
-                    <div className="span7">
+                    <div className="col-sm-7">
                         <h1>Login failure</h1>
                         <p>Access is restricted to ENCODE consortium members.
                             <a href='mailto:encode-help@lists.stanford.edu'>Request an account</a>

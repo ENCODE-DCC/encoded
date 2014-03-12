@@ -37,7 +37,7 @@ var Dataset = module.exports.Dataset = React.createClass({
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <h2>Dataset {context.accession}</h2>
                     </div>
                 </header>

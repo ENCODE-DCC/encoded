@@ -35,7 +35,7 @@ var Approval = module.exports.Approval = React.createClass({
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <h2>Approval for {context.antibody.accession}</h2>
                         <h3>Antibody against {context.target.organism.name}
                             {' '}{context.target.label}
@@ -149,7 +149,7 @@ var Characterization = module.exports.Characterization = React.createClass({
             <section className={globals.itemClass(context, 'view-detail panel')}>
                 <div className="container">
                     <div className="row">
-                        <div className="span6">
+                        <div className="col-sm-6">
                             <figure>
                                 {figure}
                                 <figcaption>
@@ -157,7 +157,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                                 </figcaption>
                             </figure>
                         </div>
-                        <div className="span5">
+                        <div className="col-sm-5">
                             <dl className="characterization-meta-data key-value">
                                 <dt className="h3">Method</dt>
                                 <dd>{context.characterization_method}</dd>

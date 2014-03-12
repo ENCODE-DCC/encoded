@@ -33,7 +33,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <h2>Edit {title}</h2>
                     </div>
                 </header>
