@@ -6,7 +6,6 @@
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
     "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
-    "facets": [{"Biosample Type": "biosample_type"},  {"Organ": "organ_slims"}, {"Organism": "organism.name"}, {"Gender": "donor.sex"}, {"Life Stage": "life_stage"}, {"Subcellular Fraction": "subcellular_fraction_term_name"}, {"Phase": "phase"}, {"Treatment": "treatments.treatment_term_name"}, {"Source": "source.title"}, {"Lab": "lab.title"}, {"Developmental Slim": "developmental_slims"}],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -25,7 +24,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "accession": {
             "accessionType": "BS"
@@ -73,13 +72,16 @@
                 "linkTo": "treatment"
             }
         },
-        "encode2_dbxrefs": {
-            "title": "Previous ENCODE IDs",
+        "dbxrefs": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Previous ENCODE ID",
-                "type":  "string"
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^(ucsc_encode_db:[[\\S\\s\\d\\-\\(\\)\\+]+)$"
             }
         },
         "protocol_documents": {
@@ -290,6 +292,57 @@
             "type": "string"
         }
     },
+    "facets": {
+        "Biosample Type": "biosample_type",
+        "Organ": "organ_slims",
+        "Organism": "organism.name",
+        "Gender": "donor.sex",
+        "Life Stage": "life_stage",
+        "Subcellular Fraction": "subcellular_fraction_term_name",
+        "Phase": "phase",
+        "Treatment": "treatments.treatment_term_name",
+        "Source": "source.title",
+        "Lab": "lab.title",
+        "Developmental Slim": "developmental_slims"
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "biosample_term_name": {
+            "title": "Term",
+            "type": "string"
+        },
+        "biosample_type": {
+            "title": "Type",
+            "type": "string"
+        },
+        "organism.name": {
+            "title": "Species",
+            "type": "string"
+        },
+        "source.title": {
+            "title": "Source",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Submitter",
+            "type": "string"
+        },
+        "life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "treatments.length": {
+            "title": "Treatments length",
+            "type": "array"
+        },
+        "constructs.length": {
+            "title": "Constructs",
+            "type": "array"
+        }
+    },
     "boost_values": {
         "uuid": 1.0,
         "accession": 1.0,
@@ -298,7 +351,7 @@
         "biosample_term_name": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
-        "encode2_dbxrefs": 1.0,
+        "dbxrefs": 1.0,
         "subcellular_fraction_term_name": 1.0,
         "phase": 1.0,
         "life_stage": 1.0,
@@ -319,7 +372,7 @@
         "treatments.treatment_type": 1.0,
         "treatments.treatment_term_id": 1.0,
         "treatments.treatment_term_name": 1.0,
-        "treatments.encode2_dbxrefs": 1.0,
+        "treatments.dbxrefs": 1.0,
         "treatments.aliases": 1.0,
         "constructs.construct_type": 1.0,
         "constructs.vector_backbone_name": 1.0,

@@ -68,13 +68,16 @@
                 "linkTo": "document"
             }
         },
-        "encode2_dbxrefs": {
-            "title": "Previous ENCODE IDs",
+        "dbxref": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Previous ENCODE ID",
-                "type":  "string"
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^(ucsc_encode_db:\\S+)$"
             }
         },
         "references": {

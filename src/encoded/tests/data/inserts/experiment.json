@@ -61,13 +61,11 @@
         "documents": [
             "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
-        "encode2_dbxrefs": [
-            "wgEncodeEM002001"
-        ],
-        "geo_dbxrefs": [
-            "GSM798326",
-            "GSM798326",
-            "GSE32218"
+        "dbxrefs": [
+            "ucsc_encode_db:wgEncodeEM002001",
+            "GEO:GSM798326",
+            "GEO:GSM798326",
+            "GEO:GSE32218"
         ],
         "lab": "sherman-weissman",
         "status": "CURRENT",
@@ -89,13 +87,11 @@
         "documents": [
             "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
-        "encode2_dbxrefs": [
-            "wgEncodeEM002004"
-        ],
-        "geo_dbxrefs": [
-            "GSM798327",
-            "GSM798327",
-            "GSE32218"
+        "dbxrefs": [
+            "ucsc_encode_db:wgEncodeEM002004",
+            "GEO:GSM798327",
+            "GEO:GSM798327",
+            "GEO:GSE32218"
         ],
         "lab": "sherman-weissman",
         "possible_controls": [
@@ -120,11 +116,9 @@
         "documents": [
             "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-        "encode2_dbxrefs": [
-            "wgEncodeEH003317"
-        ],
-        "geo_dbxrefs": [
-            "GSM1010811"
+        "dbxrefs": [
+            "ucsc_encode_db:wgEncodeEH003317",
+            "GEO:GSM1010811"
         ],
         "lab": "richard-myers",
         "status": "CURRENT",
@@ -146,12 +140,10 @@
         "documents": [
             "ENCODE:Myers_Methyl450_protocol"
         ],
-        "encode2_dbxrefs": [
-            "wgEncodeEH002229"
-        ],
-        "geo_dbxrefs": [
-            "GSM999346",
-            "GSE40699"
+        "dbxrefs": [
+            "ucsc_encode_db:wgEncodeEH002229"
+            "GEO:GSM999346",
+            "GEO:GSE40699"
         ],
         "lab": "richard-myers",
         "related_files": [

@@ -18,7 +18,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "term_id": {
             "title": "Platform ID",
@@ -33,23 +33,16 @@
             "type":  "string",
             "default": ""
         },
-        "geo_dbxrefs": {
-            "title": "GEO IDs",
+        "dbxrefs": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "GEO ID",
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(GPL)\\d+$"
-            }
-        },
-        "encode2_dbxrefs": {
-            "title": "Previous ENCODE IDs",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Previous ENCODE ID",
-                "type":  "string"
+                "pattern": "^(GEO:GPL\\d+|ucsc_encode_db:\\S+)$"
             }
         },
         "url": {
