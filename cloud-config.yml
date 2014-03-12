@@ -16,10 +16,13 @@ packages:
 - libevent-dev
 - libfreetype6-dev
 - libjpeg-dev
+- liblcms2-dev
 - libmagic-dev
 - libmysqlclient-dev
 - libpq-dev
 - libssl-dev
+- libtiff5-dev
+- libwebp-dev
 - libxml2-dev
 - libxslt1-dev
 - lzop
