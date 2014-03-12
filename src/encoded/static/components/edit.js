@@ -57,7 +57,7 @@ var EditForm = module.exports.EditForm = React.createClass({
                     width: "100%"
                 }}></div>
                 <div style={{"float": "right", "margin": "10px"}}>
-                    <a href="" className="btn">Cancel</a>
+                    <a href="" className="btn btn-default">Cancel</a>
                     {' '}
                     <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
                 </div>

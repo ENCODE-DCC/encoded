@@ -238,7 +238,7 @@ var Dbxref = dbxref.Dbxref;
         render: function () {
             var filter = this.props.filter;
             return (
-                <a key={filter.field} className="btn btn-small btn-info" href={filter.remove}>
+                <a key={filter.field} className="btn btn-sm btn-info" href={filter.remove}>
                     {filter.term + ' '}
                     <i className="icon-remove-sign"></i>
                 </a>
@@ -285,8 +285,8 @@ var Dbxref = dbxref.Dbxref;
                                         {total > results.length ?
                                                 <span className="pull-right">
                                                     {search_id.indexOf('&limit=all') !== -1 ? 
-                                                        <a className="btn btn-info btn-small" href={search_id.replace("&limit=all", "")}>View 25</a>
-                                                    : <a rel="nofollow" className="btn btn-info btn-small" href={search_id+ '&limit=all'}>View All</a>}
+                                                        <a className="btn btn-info btn-sm" href={search_id.replace("&limit=all", "")}>View 25</a>
+                                                    : <a rel="nofollow" className="btn btn-info btn-sm" href={search_id+ '&limit=all'}>View All</a>}
                                                 </span>
                                             : null}
                                     </h4>
