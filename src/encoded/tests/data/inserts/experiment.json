@@ -141,7 +141,7 @@
             "ENCODE:Myers_Methyl450_protocol"
         ],
         "dbxrefs": [
-            "ucsc_encode_db:wgEncodeEH002229"
+            "ucsc_encode_db:wgEncodeEH002229",
             "GEO:GSM999346",
             "GEO:GSE40699"
         ],
