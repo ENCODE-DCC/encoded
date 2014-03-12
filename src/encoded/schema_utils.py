@@ -3,6 +3,7 @@ from pyramid.security import has_permission
 from pyramid.threadlocal import get_current_request
 from pyramid.traversal import find_resource
 import json
+import collections
 from jsonschema import (
     Draft4Validator,
     FormatChecker,
@@ -21,7 +22,8 @@ def local_handler(uri):
     base, filename = posixpath.split(uri)
     if base != '/profiles':
         raise KeyError(uri)
-    schema = json.load(resource_stream(__name__, 'schemas/' + filename))
+    schema = json.load(resource_stream(__name__, 'schemas/' + filename),
+                       object_pairs_hook=collections.OrderedDict)
     return schema
 
 
@@ -167,7 +169,8 @@ class SchemaValidator(Draft4Validator):
 format_checker = FormatChecker()
 
 def load_schema(filename):
-    schema = json.load(resource_stream(__name__, 'schemas/' + filename))
+    schema = json.load(resource_stream(__name__, 'schemas/' + filename),
+                       object_pairs_hook=collections.OrderedDict)
     resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
     schema = mixinProperties(schema, resolver)
 
