@@ -13,4 +13,4 @@ def treatment_0_2(value, system):
         	else:
         		new_dbxref = 'ucsc_encode_db:' + encode2_dbxref
         	value['dbxrefs'].append(new_dbxref)
-        	del value['encode2_dbxrefs']
+        del value['encode2_dbxrefs']
