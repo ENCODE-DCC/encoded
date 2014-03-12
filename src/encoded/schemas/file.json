@@ -121,5 +121,27 @@
                 "OBSOLETE"
             ]
         }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "dataset": {
+            "title": "Dataset",
+            "type": "string"
+        },
+        "file_format": {
+            "title": "File Format",
+            "type": "string"
+        },
+        "md5sum": {
+            "title": "MD5 Sum",
+            "type": "string"
+        },
+        "output_type": {
+            "title": "Output Type",
+            "type": "string"
+        }
     }
 }

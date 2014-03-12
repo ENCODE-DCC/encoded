@@ -5,7 +5,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "antibody", "status", "target" ],
-    "facets":[{"Approval Status": "status"}, {"Target Organism": "target.organism.name"}, {"Source": "antibody.source.title"}, {"Clonality": "antibody.clonality"}, {"Isotype": "antibody.isotype"}, {"Host Organism": "antibody.host_organism.name"}, {"Lab": "characterizations.lab.title"}],
     "identifyingProperties": ["uuid"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -59,6 +58,49 @@
                 "NOT PURSUED",
                 "DELETED"
             ]
+        }
+    },
+    "facets": {
+        "Approval Status": "status", 
+        "Target Organism": "target.organism.name", 
+        "Source": "antibody.source.title",
+        "Clonality": "antibody.clonality",
+        "Isotype": "antibody.isotype",
+        "Host Organism": "antibody.host_organism.name",
+        "Lab": "characterizations.lab.title"
+    },
+    "columns": {
+        "antibody.accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "target.label": {
+            "title": "Target",
+            "type": "string"
+        },
+        "target.organism.name": {
+            "title": "Species",
+            "type": "string"
+        },
+        "antibody.source.title": {
+            "title": "Source",
+            "type": "string"
+        },
+        "antibody.product_id": {
+            "title": "Product ID",
+            "type": "string"
+        },
+        "antibody.lot_id": {
+            "title": "Lot ID",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
+        "characterizations.length": {
+            "title": "Characterizations",
+            "type": "array"
         }
     },
     "boost_values": {

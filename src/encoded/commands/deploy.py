@@ -7,7 +7,7 @@
 
 #log = logging.getLogger(__name__)
 
-def run(branch, instance_name=None):
+def run(branch, instance_name=None, persistent=False):
     import boto.ec2
     import time
     import sys
@@ -18,8 +18,12 @@ def run(branch, instance_name=None):
 
     conn = boto.ec2.connect_to_region("us-west-1")
     bdm = boto.ec2.blockdevicemapping.BlockDeviceMapping()
-    bdm['/dev/sdf'] = boto.ec2.blockdevicemapping.BlockDeviceType(snapshot_id='snap-9bdfcd91', delete_on_termination=True)
-    bdm['/dev/sdg'] = boto.ec2.blockdevicemapping.BlockDeviceType(snapshot_id='snap-9bdfcd91', delete_on_termination=True)
+    if persistent:
+        bdm['/dev/xvdf'] = boto.ec2.blockdevicemapping.BlockDeviceType(snapshot_id='snap-9bdfcd91', delete_on_termination=True)
+        bdm['/dev/xvdg'] = boto.ec2.blockdevicemapping.BlockDeviceType(snapshot_id='snap-9bdfcd91', delete_on_termination=True)
+    else:
+        bdm['/dev/xvdf'] = boto.ec2.blockdevicemapping.BlockDeviceType(ephemeral_name='ephemeral0')
+        bdm['/dev/xvdg'] = boto.ec2.blockdevicemapping.BlockDeviceType(ephemeral_name='ephemeral1')
 
     user_data = open('cloud-config.yml').read()
     user_data=user_data % {
@@ -29,9 +33,8 @@ def run(branch, instance_name=None):
         'BRANCH': branch,
     }
 
-    # Use 'ami-b698a9f3' - ubuntu/images/ebs/ubuntu-saucy-13.10-amd64-server-20131204
     reservation = conn.run_instances(
-        'ami-b698a9f3',
+        'ami-2cae9269',  # ubuntu/images/hvm/ubuntu-saucy-13.10-amd64-server-20140226
         instance_type='m3.xlarge',
         security_group_ids=['sg-df30f19b'],
         user_data=user_data,
@@ -64,9 +67,10 @@ def main():
     )
     parser.add_argument('-b', '--branch', default='master', help="Git branch or tag")
     parser.add_argument('-n', '--name', help="Instance name")
+    parser.add_argument('--persistent', action='store_true', help="User persistent (ebs) volumes")
     args = parser.parse_args()
 
-    return run(args.branch, args.name)
+    return run(args.branch, args.name, args.persistent)
 
 
 if __name__ == '__main__':
