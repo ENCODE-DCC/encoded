@@ -28,19 +28,27 @@ form.table-filter {
 	margin: 0;
 }
 
-.table-filter input {
-	margin-bottom: 0 !important;
+#table-filter {
+    display: inline-block;
+    width: 300px;
 }
 
 .table-count {
-	padding: 0.6em 2em;
+    font-size: 1em;
+    display: inline-block;
+    height: $input-height-base;
+	padding: 0.7em 2em;
 	margin-right: 1em;
 }
 
 .spinner-warning {
-	padding: 0.6em 2em 0.6em 30px !important;
 	background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
-	background-position: 7px 6px;
+	background-position: 7px 9px;
+}
+
+.table-meta-data {
+    height: $input-height-base;
+    display: inline-block;
 }
 
 /* initial state is hidden (see template; class=hide) */

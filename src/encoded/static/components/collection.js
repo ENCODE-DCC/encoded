@@ -274,14 +274,14 @@ var globals = require('./globals');
                 );
             } else {
                 loading_or_total = (
-                    <span>
-                        <span className="table-count label label-invert">{matching.length}</span>
+                    <span className="table-meta-data">
+                        <span className="table-count label label-default">{matching.length}</span>
                         <span id="total-records">of {total} records</span>
                     </span>
                 );
             }
             return (
-                <table className={table_class}>
+                <table className={table_class + " table table-striped table-hover panel"}>
                     <thead className="sticky-header">
                         <tr className="nosort table-controls">
                             <th colSpan={columns.length}>
@@ -290,7 +290,7 @@ var globals = require('./globals');
                                 	data-skiprequest="true" data-removeempty="true">
                                     <input ref="q" disabled={this.state.communicating || undefined} 
                                     	name="q" type="search" defaultValue={searchTerm} 
-                                    	placeholder="Filter table by..." className="filter" 
+                                    	placeholder="Filter table by..." className="filter form-control" 
                                     	id="table-filter" /> 
                                     <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
                                     <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
