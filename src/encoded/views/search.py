@@ -19,8 +19,7 @@ def get_filtered_query(term, fields, principals):
                 'fields': [
                     'encoded_all_ngram',
                     'encoded_all_standard',
-                    'encoded_all_untouched'
-                    ],
+                    'encoded_all_untouched'],
                 'analyzer': 'encoded_search_analyzer'
             }
         },
@@ -215,37 +214,50 @@ def search(context, request, search_type=None):
                 'terms': {
                     'field': 'embedded.{}'.format(field),
                     'all_terms': True
+                },
+                'facet_filter': {
+                    'terms': {
+                        'principals_allowed_view': principals
+                    }
                 }
             }
             for count, used_facet in enumerate(result['filters']):
                 if field != used_facet['field'] and used_facet['field'] != 'type':
-                    try:
-                        query['facets'][field]['facet_filter']['terms'][
-                            'embedded.' + used_facet['field']]\
-                            .append(used_facet['term'])
-                    except:
-                        if 'facet_filter' not in query['facets'][field].keys():
-                            query['facets'][field]['facet_filter'] = {
+                    if 'terms' in query['facets'][field]['facet_filter']:
+                        old_terms = query['facets'][field]['facet_filter']
+                        new_terms = {'terms': {'embedded.' + used_facet['field']:
+                                               [used_facet['term']]}}
+                        query['facets'][field]['facet_filter'] = {
+                            'bool': {
+                                'must': [old_terms, new_terms]
+                            }
+                        }
+                    else:
+                        terms = query['facets'][field]['facet_filter']['bool']['must']
+                        flag = 0
+                        for count, term in enumerate(terms):
+                            if 'embedded.' + used_facet['field'] in term['terms'].keys():
+                                terms[count]['terms']['embedded.' + used_facet
+                                                      ['field']].append(used_facet['term'])
+                                flag = 1
+                        if not flag:
+                            terms.append({
                                 'terms': {
                                     'embedded.' + used_facet['field']:
                                     [used_facet['term']]
                                 }
-                            }
-                        else:
-                            old_terms = query['facets'][field]['facet_filter']
-                            new_terms = {'terms': {'embedded.' + used_facet['field']:
-                                                   [used_facet['term']]}}
-                            query['facets'][field]['facet_filter'] = {
-                                'bool': {
-                                    'must': [old_terms, new_terms]
-                                }
-                            }
+                            })
     else:
         facets = {'Data Type': 'type'}
         query['facets']['type'] = {
             'terms': {
                 'field': '_type',
                 'all_terms': True
+            },
+            'facet_filter': {
+                'terms': {
+                    'principals_allowed_view': principals
+                }
             }
         }
 
