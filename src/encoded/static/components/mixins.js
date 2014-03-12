@@ -79,6 +79,7 @@ module.exports.Persona = {
         this.personaDeferred = $.Deferred();
         if (!navigator.id) {
             // Ensure DOM is clean for React when mounting
+            // Unminified: https://login.persona.org/include.orig.js
             this.personaLoaded = $.getScript("https://login.persona.org/include.js");
         }
         this.configurePersona(this.parseSessionCookie());
@@ -145,6 +146,7 @@ module.exports.Persona = {
     },
 
     handlePersonaLogin: function (assertion, retrying) {
+        this._persona_watched = true;
         var $ = require('jquery');
         if (!assertion) return;
         $.ajax({
@@ -186,6 +188,7 @@ module.exports.Persona = {
     },
 
     handlePersonaLogout: function () {
+        this._persona_watched = true;
         var $ = require('jquery');
         console.log("Persona thinks we need to log out");
         var session = this.state.session;
@@ -209,8 +212,7 @@ module.exports.Persona = {
     },
 
     handlePersonaMatch: function () {
-        this.personaDeferred.resolve();
-        console.log('persona ready');
+        this._persona_watched = true;
         this.setState({loadingComplete: true});
     },
 
@@ -218,6 +220,10 @@ module.exports.Persona = {
         this.personaDeferred.resolve();
         console.log('persona ready');
         this.setState({personaReady: true});
+        // Handle Safari https://github.com/mozilla/persona/issues/3905
+        if (!this._persona_watched) {
+            this.setState({loadingComplete: true});
+        }
     },
 
     triggerLogin: function (event) {

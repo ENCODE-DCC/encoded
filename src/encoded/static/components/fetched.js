@@ -16,12 +16,13 @@ var Fetched = module.exports.Fetched = {
     },
 
     componentDidMount: function () {
-        if (!this.props.session) return;
+        if (!this.props.loadingComplete) return;
         this.fetch(this.props.url);
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (!nextProps.session || (
+        if (!nextProps.loadingComplete || (
+            this.props.fetchedRequest &&
             nextProps.url === this.props.url &&
             nextProps.session === this.props.session)) return;
         this.fetch(nextProps.url);
@@ -87,7 +88,9 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             <div key={key} className="empty done" style={{display: 'none'}}></div>
         );
         if (this.state.communicating) return (
-            <div key={key} className="communicating"></div>
+            <div key={key} className="communicating">
+                <div className="loading-spinner"></div>
+            </div>
         );
         if (this.state.erred) {
             Component = globals.content_views.lookup(data);
@@ -122,7 +125,9 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
             <div key={key} className="empty done" style={{display: 'none'}}></div>
         );
         if (this.state.communicating) return (
-            <div key={key} className="communicating"></div>
+            <div key={key} className="communicating">
+                <div className="loading-spinner"></div>
+            </div>
         );
         if (this.state.erred) {
             Component = globals.content_views.lookup(data);

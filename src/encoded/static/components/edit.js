@@ -6,6 +6,24 @@ var parseError = require('./mixins').parseError;
 var FetchedData = require('./fetched').FetchedData;
 var _ = require('underscore');
 
+
+var sorted_json = module.exports.sorted_json = function (obj) {
+    if (obj instanceof Array) {
+        return obj.map(function (value) {
+            return sorted_json(value);
+        });
+    } else if (obj instanceof Object) {
+        var sorted = {};
+        Object.keys(obj).sort().forEach(function (key) {
+            sorted[key] = obj[key];
+        });
+        return sorted;
+    } else {
+        return obj;
+    }
+};
+
+
 var ItemEdit = module.exports.ItemEdit = React.createClass({
     render: function() {
         var context = this.props.context;
@@ -32,13 +50,12 @@ var EditForm = module.exports.EditForm = React.createClass({
         var error = this.state.error;
         return (
             <div>
-                <pre ref="editor" style={{
+                <div ref="editor" style={{
                     position: "relative !important",
                     border: "1px solid lightgray",
                     margin: "auto",
-                    "min-height": "800px",
                     width: "100%"
-                }}></pre>
+                }}></div>
                 <div style={{"float": "right", "margin": "10px"}}>
                     <a href="" className="btn">Cancel</a>
                     {' '}
@@ -59,12 +76,11 @@ var EditForm = module.exports.EditForm = React.createClass({
         var ace = require('brace');
         require('brace/mode/json');
         require('brace/theme/solarized_light');
-        var value = JSON.stringify(this.props.data, null, 4)
+        var value = JSON.stringify(sorted_json(this.props.data), null, 4)
         var editor = ace.edit(this.refs.editor.getDOMNode());
         var session = editor.getSession()
         session.setMode('ace/mode/json');
         editor.setValue(value);
-        // These options will take effect with the next brace release
         editor.setOptions({
             maxLines: 1000,
             minLines: 24
@@ -92,6 +108,7 @@ var EditForm = module.exports.EditForm = React.createClass({
     },
 
     save: function (event) {
+        var $ = require('jquery');
         var value = this.state.editor.getValue();
         var url = this.props.context['@id'];
         var xhr = $.ajax({
