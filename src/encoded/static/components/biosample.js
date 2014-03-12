@@ -6,6 +6,9 @@ var url = require('url');
 var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
+var dbxref = require('./dbxref');
+
+var DbxrefList = dbxref.DbxrefList;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
