@@ -92,7 +92,7 @@ var UserActions = React.createClass({
         var disabled = !this.props.loadingComplete;
         if (!(session && session['auth.userid'])) {
             return (
-                <ul id="user-actions" className="nav pull-right">
+                <ul id="user-actions" className="nav navbar-nav navbar-right">
                     <li><a disabled={disabled} data-trigger="login" data-id="signin">Sign in</a></li>
                 </ul>
             );
