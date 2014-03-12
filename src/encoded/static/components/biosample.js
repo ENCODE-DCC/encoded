@@ -101,11 +101,11 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
 
-                        <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd hidden={!context.aliases.length}>{aliasList}</dd>
-
                         <dt>Grant</dt>
                         <dd>{context.award.name}</dd>
+
+                        <dt hidden={!context.aliases.length}>Aliases</dt>
+                        <dd hidden={!context.aliases.length}>{aliasList}</dd>
 
                         <dt hidden={!context.dbxrefs.length}>External resources</dt>
                         <dd hidden={!context.dbxrefs.length}>
