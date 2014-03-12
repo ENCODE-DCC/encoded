@@ -1,6 +1,9 @@
 import base64
 import json
-import subprocess
+try:
+    import subprocess32 as subprocess  # Closes pipes on failure
+except ImportError:
+    import subprocess
 from pyramid.config import Configurator
 from pyramid.session import SignedCookieSessionFactory
 from pyramid.settings import asbool

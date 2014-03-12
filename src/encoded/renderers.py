@@ -1,4 +1,3 @@
-from .json_script_escape import json_script_escape
 from pkg_resources import resource_filename
 from pyramid.events import (
     NewRequest,
@@ -6,9 +5,9 @@ from pyramid.events import (
 )
 from pyramid.decorator import reify
 from pyramid.httpexceptions import (
-    HTTPBadRequest,
-    HTTPServerError,
     HTTPMovedPermanently,
+    HTTPPreconditionFailed,
+    HTTPServerError,
     HTTPUnauthorized,
     HTTPUnsupportedMediaType,
 )
@@ -17,12 +16,16 @@ from pyramid.threadlocal import (
     get_current_request,
     manager,
 )
+from .validation import CSRFTokenError
 import atexit
 import json
 import logging
 import os
 import pyramid.renderers
-import subprocess
+try:
+    import subprocess32 as subprocess
+except ImportError:
+    import subprocess
 import threading
 import time
 import uuid
@@ -206,10 +209,6 @@ class PageWorker(threading.local):
 page_renderer = PageWorker()
 
 
-class CSRFTokenError(HTTPBadRequest):
-    pass
-
-
 @subscriber(NewRequest)
 def choose_format(event):
     # Ignore subrequests
@@ -218,6 +217,15 @@ def choose_format(event):
 
     # Discriminate based on Accept header or format parameter
     request = event.request
+
+    login = None
+    expected_user = request.headers.get('X-If-Match-User')
+    if expected_user is not None:
+        login = authenticated_userid(request)
+        if login != 'mailto.' + expected_user:
+            detail = 'X-If-Match-User does not match'
+            raise HTTPPreconditionFailed(detail)
+
     if request.method not in ('GET', 'HEAD'):
         request.environ['encoded.format'] = 'json'
         if request.content_type != 'application/json':
@@ -230,7 +238,9 @@ def choose_format(event):
             if token == dict.get(request.session, '_csrft_', None):
                 return
             raise CSRFTokenError('Incorrect CSRF token')
-        login = authenticated_userid(request)
+
+        if login is None:
+            login = authenticated_userid(request)
         if login is not None:
             namespace, userid = login.split('.', 1)
             if namespace != 'mailto':

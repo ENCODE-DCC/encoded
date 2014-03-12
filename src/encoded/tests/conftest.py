@@ -6,8 +6,11 @@ import pytest
 from pytest import fixture
 
 _app_settings = {
-    'multiauth.policies': 'session remoteuser accesskey',
+    'multiauth.policies': 'persona session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
+    'multiauth.policy.persona.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.persona.base': 'encoded.persona.PersonaAuthenticationPolicy',
+    'multiauth.policy.persona.namespace': 'persona',
     'multiauth.policy.session.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
     'multiauth.policy.session.namespace': 'mailto',
@@ -19,6 +22,7 @@ _app_settings = {
     'multiauth.policy.accesskey.base': 'encoded.authentication.BasicAuthAuthenticationPolicy',
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
+    'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',
     'allow.view': 'Authenticated',
     'allow.list': 'Everyone',

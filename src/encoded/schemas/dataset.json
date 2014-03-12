@@ -5,7 +5,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab"],
-    "facets": [{"Dataset Type": "dataset_type"}, {"Lab": "lab.title"}],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -91,7 +90,33 @@
                 "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
             }
         }
-   },
+    },
+    "facets": {
+        "Dataset Type": "dataset_type",
+        "Lab": "lab.title"
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "type": "string"
+        },
+        "dataset_type": {
+            "title": "Dataset type",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Submitter",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
+            "type": "string"
+        }
+    },
     "boost_values": {
         "uuid": 1.0,
         "accession": 1.0,

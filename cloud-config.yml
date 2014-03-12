@@ -16,10 +16,13 @@ packages:
 - libevent-dev
 - libfreetype6-dev
 - libjpeg-dev
+- liblcms2-dev
 - libmagic-dev
 - libmysqlclient-dev
 - libpq-dev
 - libssl-dev
+- libtiff5-dev
+- libwebp-dev
 - libxml2-dev
 - libxslt1-dev
 - lzop
@@ -72,6 +75,7 @@ runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - set -e
+- sudo service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
 - chown -R root:postgres /etc/wal-e.d/env
 - sudo -u postgres createuser encoded
@@ -88,11 +92,11 @@ runcmd:
 - sudo -u postgres cp /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main
 - sudo /etc/init.d/postgresql start
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
-- sudo service elasticsearch start
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 - sudo -u encoded bin/upgrade production.ini
 - sudo -u encoded bin/create-mapping production.ini
 - sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
+- sudo a2enmod rewrite
 - sudo a2ensite encoded.conf
 - sudo a2dissite 000-default
 - sudo service apache2 reload
@@ -110,7 +114,7 @@ ssh_authorized_keys:
 apt_sources:
 # This is not quite the latest version
 # https://github.com/elasticsearch/elasticsearch/issues/3286
-- source: "deb http://packages.elasticsearch.org/elasticsearch/0.90/debian stable main"
+- source: "deb http://packages.elasticsearch.org/elasticsearch/1.0/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)

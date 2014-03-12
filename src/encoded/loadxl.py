@@ -235,39 +235,50 @@ def read_csv(stream, **kw):
 #
 # This would a one liner except for logging
 
+def request_url(item_type, method):
+    def component(rows):
+        for row in rows:
+            if method == 'POST':
+                url = row['_url'] = '/' + item_type
+                yield row
+                continue
+
+            if '@id' in row:
+                url = row['@id']
+                if not url.startswith('/'):
+                    url = '/' + url
+                row['_url'] = url
+                yield row
+                continue
+
+            # XXX support for aliases
+            for key in ['uuid', 'accession']:
+                if key in row:
+                    url = row['_url'] = '/' + row[key]
+                    break
+            else:
+                row['_errors'] = ValueError('No key found. Need uuid or accession.')
+
+            yield row
+
+    return component
 
 def make_request(testapp, item_type, method):
     json_method = getattr(testapp, method.lower() + '_json')
 
     def component(rows):
         for row in rows:
-            if not row.get('_skip') and not row.get('_errors'):
-                # Keys with leading underscores are for communicating between
-                # sections
-                value = row['_value'] = {
-                    k: v for k, v in row.iteritems() if not k.startswith('_') and not k.startswith('@')
-                }
-                try:
-                    if method == 'POST':
-                        url = row['_url'] = '/' + item_type
-                    else:
-                        if '@id' in row:
-                            url = row['@id']
-                            if not url.startswith('/'):
-                                url = '/' + url
-                            row['_url'] = url
-                        else:
-                            # XXX support for aliases
-                            for key in ['uuid', 'accession']:
-                                if key in row:
-                                    url = row['_url'] = '/' + row[key]
-                                    break
-                            else:
-                                raise ValueError('No key found. Need uuid or accession.')
-                except ValueError, e:
-                    row['_errors'] = repr(e)
-                else:
-                    row['_response'] = json_method(url, value, status='*')
+            if row.get('_skip') or row.get('_errors') or not row.get('_url'):
+                continue
+
+            # Keys with leading underscores are for communicating between
+            # sections
+            value = row['_value'] = {
+                k: v for k, v in row.iteritems() if not k.startswith('_') and not k.startswith('@')
+            }
+
+            url = row['_url']
+            row['_response'] = json_method(url, value, status='*')
 
             yield row
 
@@ -438,7 +449,6 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
             'strain_background', 'age',  # 'flowcell_details.machine',
         ),
-        remove_keys('uuid') if method in ('PUT', 'PATCH') else noop,
         add_attachment(docsdir),
     ]
     if phase == 1:
@@ -449,6 +459,8 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         pipeline.extend(PHASE2_PIPELINES.get(item_type, []))
 
     pipeline.extend([
+        request_url(item_type, method),
+        remove_keys('uuid') if method in ('PUT', 'PATCH') else noop,
         make_request(testapp, item_type, method),
         pipeline_logger(item_type, phase),
     ])

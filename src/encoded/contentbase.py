@@ -319,6 +319,7 @@ class Root(object):
         self.by_item_type = {}
         self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
         self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
+        self.all_merged_rev = set()
 
     def __getitem__(self, name):
         try:
@@ -412,6 +413,7 @@ class Root(object):
     def attach(self, name, factory):
         value = factory(self, name)
         self[name] = value
+        self.all_merged_rev.update(value.Item.merged_rev.values())
 
     def __json__(self, request=None):
         return self.properties.copy()
@@ -837,13 +839,14 @@ class Collection(Mapping):
         self.__parent__ = parent
 
         self.embedded_paths = set()
-        for column in self.columns:
-            path = tuple(
-                name for name in column.split('.')[:-1]
-                if name not in ('length', '0')
-            )
-            if path:
-                self.embedded_paths.add(path)
+        if self.schema is not None and 'columns' in self.schema:
+            for column in self.schema['columns']:
+                path = tuple(
+                    name for name in column.split('.')[:-1]
+                    if name not in ('length', '0')
+                )
+                if path:
+                    self.embedded_paths.add(path)
 
         if self.schema is not None:
             properties = self.schema['properties']
@@ -925,8 +928,8 @@ class Collection(Mapping):
 
         frame = request.params.get('frame', 'columns')
         if frame == 'columns':
-            if self.columns:
-                result['columns'] = self.columns
+            if self.schema is not None and 'columns' in self.schema:
+                result['columns'] = self.schema['columns']
             else:
                 frame = 'object'
 
@@ -974,7 +977,7 @@ class Collection(Mapping):
             '@id': rendered['@id'],
             '@type': rendered['@type'],
         }
-        for column in self.columns:
+        for column in self.schema['columns']:
             subset[column] = column_value(rendered, column)
 
         return subset

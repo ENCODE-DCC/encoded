@@ -10,23 +10,24 @@
   "files": [],
   "repository": "ENCODE-DCC/encoded",
   "devDependencies": {
-    "grunt": "~0.4.2",
-    "browserify": "~3.30.2",
-    "reactify": "~0.8.1",
-    "grunt-cli": "~0.1.13",
-    "mold-source-map": "~0.3.0",
-    "browserify-shim": "~2.0.10"
+    "grunt": "^0.4.2",
+    "browserify": "^3.30.2",
+    "reactify": "^0.9.1",
+    "grunt-cli": "^0.1.13",
+    "mold-source-map": "^0.3.0",
+    "browserify-shim": "^2.0.10"
   },
   "dependencies": {
-    "underscore": "~1.6.0",
-    "domready": "~0.3.0",
-    "es5-shim": "~2.3.0",
-    "react": "~0.9.0",
-    "twitter-bootstrap": "~2.1.1",
-    "jquery": "~1.11.0",
-    "d3": "~3.4.2",
-    "source-map-support": "~0.2.5",
-    "envify": "~1.2.1",
-    "brace": "~0.2.0"
+    "underscore": "^1.6.0",
+    "domready": "^0.3.0",
+    "es5-shim": "^2.3.0",
+    "react": "^0.9.0",
+    "twitter-bootstrap": "^2.1.1",
+    "jquery": "^1.11.0",
+    "d3": "^3.4.2",
+    "source-map-support": "^0.2.5",
+    "envify": "^1.2.1",
+    "brace": "^0.2.1",
+    "cookie-cutter": "^0.1.1"
   }
 }
