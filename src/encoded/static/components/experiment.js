@@ -163,7 +163,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
         <div>
             <h3>Biosamples used</h3>
             <div className="table-responsive"> 
-                <table className="table panel table-striped table-hover">
+                <table className="table table-panel table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Accession</th>

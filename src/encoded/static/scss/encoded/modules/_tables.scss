@@ -1,5 +1,9 @@
 /*  TABLES    */
 
+thead, tfoot {
+    //background: none repeat scroll 0 0 #efefef;
+}
+
 table thead tr th {
 	 padding-right: 30px;
 }
@@ -16,6 +20,19 @@ border-radius: 0 0 0 3px;
 	float: right;
     margin-top: 2px;
 }
+
+.table-panel {
+	background-color: #fff;
+	border: 1px solid #ced5dc;
+    @include border-radius($border-radius-base);
+    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+    th {
+        background-color: #fff;
+    }
+}
+
+// stripe even rows too
+
 
 /* Table Controls */
 table thead tr th button {

@@ -282,7 +282,7 @@ var globals = require('./globals');
             }
             return (
                 <div className="table-responsive">            
-                    <table className={table_class + " table table-striped table-hover panel"}>
+                    <table className={table_class + " table table-striped table-hover table-panel"}>
                         <thead className="sticky-header">
                             <tr className="nosort table-controls">
                                 <th colSpan={columns.length}>

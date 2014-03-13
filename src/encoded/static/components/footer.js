@@ -17,7 +17,7 @@ var Footer = React.createClass({
                             <li><a href="/"><img src="/static/img/encode-logo-small-2x.png" alt="ENCODE" id="encode-logo" height="45px" width="78px" /></a></li>
                             <li><a href="mailto:encode-help@lists.stanford.edu">Contact</a></li>
                             <li><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
-                            <li className="hidden-phone">&copy;{new Date().getFullYear()}. Stanford University.</li>
+                            <li className="hidden-sm">&copy;{new Date().getFullYear()}. Stanford University.</li>
                         </ul>
                     </div>
                     <div id="footer-logos">
@@ -28,7 +28,7 @@ var Footer = React.createClass({
                         </ul>
                     </div>
                     
-                    <p className="visible-phone" id="phone-copy">&copy;{new Date().getFullYear()}. Stanford University.</p>
+                    <p className="visible-sm" id="phone-copy">&copy;{new Date().getFullYear()}. Stanford University.</p>
                     	
                 </div>
             </footer>

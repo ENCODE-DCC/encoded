@@ -109,7 +109,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     render: function() {
         return (
             <div className="table-responsive">
-                <table className="table panel table-striped table-hover">
+                <table className="table table-panel table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Accession</th>
@@ -171,7 +171,7 @@ var FileTable = module.exports.FileTable = React.createClass({
         });
         return (
             <div className="table-responsive">
-                <table className="table panel table-striped table-hover">
+                <table className="table table-panel table-striped table-hover">
                     <thead>
                         <tr>
                             <th>Accession</th>
