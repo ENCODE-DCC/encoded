@@ -23,6 +23,32 @@ var Error = module.exports.Error = React.createClass({
 globals.content_views.register(Error, 'error');
 
 
+var HTTPNotFound = module.exports.HTTPNotFound = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var itemClass = globals.itemClass(context, 'panel-gray');
+        console.log('here');
+        if (!this.props.loadingComplete) return (
+            <div className="communicating">
+                <div className="loading-spinner"></div>
+            </div>
+        );
+        return (
+            <div className={itemClass}>
+                <div className="row">
+                    <div className="span7">
+                        <h1>Not found</h1>
+                        <p>The page could not be found. Please check the URL or enter a search term like "skin", "ChIP-seq", or "CTCF" in the toolbar above.</p>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+});
+
+globals.content_views.register(HTTPNotFound, 'HTTPNotFound');
+
+
 var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
     render: function() {
         if (!this.props.loadingComplete) return (
