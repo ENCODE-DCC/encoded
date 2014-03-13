@@ -27,7 +27,6 @@ var HTTPNotFound = module.exports.HTTPNotFound = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'panel-gray');
-        console.log('here');
         if (!this.props.loadingComplete) return (
             <div className="communicating">
                 <div className="loading-spinner"></div>
