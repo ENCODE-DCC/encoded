@@ -41,17 +41,20 @@
 	color: #fff;
 }
 
+.facet-list a#selected:hover{
+	text-decoration: none;
+	font-size: 1em;
+	font-weight: normal;
+}
+
 .facet-list li a {
 	display: block;
 	color: #000;
 }
 
-.facet-list li:hover {
-	background-color: #E4E4E4;
-}
-
 .facet-list li a:hover {
 	text-decoration: none;
+	color: #3e82d7;
 }
 
 .facet-item {

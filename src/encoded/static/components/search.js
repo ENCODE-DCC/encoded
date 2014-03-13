@@ -177,7 +177,7 @@ var Dbxref = dbxref.Dbxref;
                 return (
                     <li id="selected" key={term}>
                         <a id="selected" href={link}>
-                            <span className="pull-right"><i className="icon-remove-sign"></i></span>
+                            <span className="pull-right">{count}<i className="icon-remove-sign"></i></span>
                             <span className="facet-item">{title}</span>
                         </a>
                     </li>
@@ -212,6 +212,11 @@ var Dbxref = dbxref.Dbxref;
             var facet = this.props.facet;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
+                for(var filter in filters) {
+                    if(filters[filter].term === term.term) {
+                        return true;
+                    }
+                }
                 return term.count > 0;
             });
             var title = facet['title'];
