@@ -51,12 +51,24 @@ globals.content_views.register(HTTPNotFound, 'HTTPNotFound');
 
 var HTTPForbidden = module.exports.HTTPForbidden = React.createClass({
     render: function() {
+        var context = this.props.context;
+        var itemClass = globals.itemClass(context, 'panel-gray');
         if (!this.props.loadingComplete) return (
             <div className="communicating">
                 <div className="loading-spinner"></div>
             </div>
         );
-        return this.transferPropsTo(<Error />);
+        return (
+            <div className={itemClass}>
+                <div className="row">
+                    <div className="span7">
+                        <h1>Not available</h1>
+                        <p>Please sign in to view this page. <a href='mailto:encode-help@lists.stanford.edu'>Request an account.</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 });
 
