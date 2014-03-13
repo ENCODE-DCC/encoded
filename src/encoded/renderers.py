@@ -17,6 +17,7 @@ from pyramid.threadlocal import (
     manager,
 )
 from .validation import CSRFTokenError
+from urllib import unquote
 import atexit
 import json
 import logging
@@ -286,7 +287,8 @@ class PageOrJSON:
             url = value.get('@id', None)
             if url is not None:
                 path = url.split('?', 1)[0]
-                if path != request.path:
+                # resource_path will quote ':' but wsgi path_info is unquoted
+                if unquote(str(path)).decode('utf-8') != request.script_name + request.path_info:
                     qs = request.query_string
                     location = path + ('?' if qs else '') + qs
                     raise HTTPMovedPermanently(location=location)

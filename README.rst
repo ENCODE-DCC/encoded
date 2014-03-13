@@ -29,7 +29,7 @@ Set a session key::
 
 To start the application, in one terminal startup the database servers with::
 
-    $ bin/dev-servers development.ini --app app --clear --init --load
+    $ bin/dev-servers development.ini --app-name app --clear --init --load
 
 This will first clear any existing data in /tmp/encoded.
 Then postgres and elasticsearch servers will be initiated within /tmp/encoded.
