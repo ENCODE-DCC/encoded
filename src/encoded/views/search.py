@@ -213,7 +213,8 @@ def search(context, request, search_type=None):
             query['facets'][field] = {
                 'terms': {
                     'field': 'embedded.{}'.format(field),
-                    'all_terms': True
+                    'all_terms': True,
+                    'size': 100
                 },
                 'facet_filter': {
                     'terms': {
