@@ -27,7 +27,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(ucsc_encode_db:\\S+)$"
+                "pattern": "^(UCSC-ENCODE-cv:\\S+)$"
             }
         },
         "derived_from": {

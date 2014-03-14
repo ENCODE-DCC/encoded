@@ -42,7 +42,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(GEO:GPL\\d+|ucsc_encode_db:\\S+)$"
+                "pattern": "^(GEO:GPL\\d+|UCSC-ENCODE-cv:\\S+)$"
             }
         },
         "url": {

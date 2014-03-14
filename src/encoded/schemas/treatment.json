@@ -52,7 +52,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(ucsc_encode_db:[[\\S\\s\\d\\-\\(\\)\\+]+)$"
+                "pattern": "^(UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)$"
             }
         },
         "treatment_term_id": {
