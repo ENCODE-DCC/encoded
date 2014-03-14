@@ -1,7 +1,6 @@
 {
     "title": "Experiment",
-    "description": "Sc
-    hema for submitting metadata for an assay with 1 or more replicates.",
+    "description": "Schema for submitting metadata for an assay with 1 or more replicates.",
     "comment": "An experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
