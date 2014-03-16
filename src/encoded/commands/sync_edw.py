@@ -33,7 +33,7 @@ DEFAULT_INI = 'production.ini'  # Default application initialization file
 ENCODE2_ACC = 'wgEncodeE'  # WARNING: Also in experiment.json and edw_file.py
 ENCODE3_ACC = 'ENC'
 ENCODE3_EXP_ACC = ENCODE3_ACC + 'SR'  # WARNING: Also in experiment.json
-ENCODE2_EXP_PROP = 'ucsc_encode_db' # WARNING: Also in experiment.json
+ENCODE2_EXP_PROP = 'UCSC-ENCODE-' # WARNING: Also in experiment.json
 ENCODE2_DS_PROP = 'aliases' ## ucsc_encode_db:wgEncodeXXX
 # Schema object names
 FILES = 'files'
