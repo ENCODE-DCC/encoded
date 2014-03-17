@@ -8,7 +8,7 @@
         "biosample_type": "tissue",
         "description": "dedifferentiated human pancreatic islets from the National Disease Research Interchange (NDRI), same source as PanIslets",
         "dbxrefs": [
-            "ucsc_encode_db:PanIsletD"
+            "UCSC-ENCODE-cv:PanIsletD"
         ],
         "lab": "gregory-crawford",
         "organism": "human",
@@ -38,7 +38,7 @@
         "description": "mammary gland, adenocarcinoma",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
-            "ucsc_encode_db:MCF-7"
+            "UCSC-ENCODE-cv:MCF-7"
         ],
         "health_status": "unknown",
         "lab": "richard-myers",
@@ -69,7 +69,7 @@
         "description": "mammary gland, adenocarcinoma",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
-            "ucsc_encode_db:MCF-7"
+            "UCSC-ENCODE-cv:MCF-7"
         ],
         "health_status": "unknown",
         "lab": "richard-myers",
@@ -121,9 +121,9 @@
         "description": "liver fraction CD117+,CD71+,TER119-",
         "donor": "ENCDO012AAA",
         "dbxrefs": [
-            "ucsc_encode_db:EPC_(CD117+_CD71+_TER119-)",
-            "ucsc_encode_db:EPCPPM",
-            "ucsc_encode_db:EPC (CD117+ CD71+ TER119-)"
+            "UCSC-ENCODE-cv:EPC_(CD117+_CD71+_TER119-)",
+            "UCSC-ENCODE-cv:EPCPPM",
+            "UCSC-ENCODE-cv:EPC (CD117+ CD71+ TER119-)"
         ],
         "health_status": "unknown",
         "lab": "john-stamatoyannopoulos",
@@ -145,7 +145,7 @@
         "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
-            "ucsc_encode_db:K562"
+            "UCSC-ENCODE-cv:K562"
         ],
         "health_status": "unknown",
         "lab": "encode2-project",
@@ -170,7 +170,7 @@
         "description": "B-cell lymphoma (GM12878 analog)",
         "donor": "ENCDO000MUS",
         "dbxrefs": [
-            "ucsc_encode_db:CH12"
+            "UCSC-ENCODE-cv:CH12"
         ],
         "health_status": "unknown",
         "lab": "sherman-weissman",
@@ -197,7 +197,7 @@
         "description": "leukemia, The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. - ATCC.",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
-            "ucsc_encode_db:K562"
+            "UCSC-ENCODE-cv:K562"
         ],
         "health_status": "unknown",
         "lab": "kevin-white",
@@ -278,7 +278,7 @@
         "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
-            "ucsc_encode_db:MCF-7"
+            "UCSC-ENCODE-cv:MCF-7"
         ],
         "health_status": "unknown",
         "lab": "gregory-crawford",
@@ -310,7 +310,7 @@
         "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
-            "ucsc_encode_db:MCF-7"
+            "UCSC-ENCODE-cv:MCF-7"
         ],
         "health_status": "unknown",
         "lab": "peggy-farnham",
@@ -403,7 +403,7 @@
         "description": "B-lymphocyte, lymphoblastoid, International HapMap Project, CEPH/Utah, treatment: Epstein-Barr Virus transformed",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
-            "ucsc_encode_db:GM06990"
+            "UCSC-ENCODE-cv:GM06990"
         ],
         "health_status": "unknown",
         "lab": "john-stamatoyannopoulos",
@@ -428,7 +428,7 @@
         "description": "small airway epithelial cells",
         "donor": "ENCDO106AAA",
         "dbxrefs": [
-            "ucsc_encode_db:SAEC"
+            "UCSC-ENCODE-cv:SAEC"
         ],
         "health_status": "unknown",
         "lab": "john-stamatoyannopoulos",
@@ -456,7 +456,7 @@
         "description": "epithelial cell line derived from a lung carcinoma tissue. (PMID: 175022), This line was initiated in 1972 by D.J. Giard, et al. through explant culture of lung carcinomatous tissue from a 58-year-old caucasian male. - ATCC, newly promoted to tier 2: not in 2011 analysis",
         "donor": "ENCDO000HUM",
         "dbxrefs": [
-            "ucsc_encode_db:A549"
+            "UCSC-ENCODE-cv:A549"
         ],
         "health_status": "unknown",
         "lab": "thomas-gingeras",
@@ -552,7 +552,7 @@
         "description": "Human heart Tissue obtained from a healthy, 34 year old Caucasian male donor",
         "donor": "ENCDO058AAA",
         "dbxrefs": [
-            "ucsc_encode_db:Heart_STL003"
+            "UCSC-ENCODE-cv:Heart_STL003"
         ],
         "health_status": "Healthy",
         "lab": "thomas-gingeras",

@@ -10,6 +10,7 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
@@ -51,7 +52,7 @@
                 "title": "External identifier",
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
-                "pattern": "^(ucsc_encode_db:[[\\S\\s\\d\\-\\(\\)\\+]+)$"
+                "pattern": "^(UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)$"
             }
         },
         "treatment_term_id": {
@@ -98,13 +99,6 @@
                 "hour",
                 "day"
             ]
-        },
-        "lab": {
-            "title": "Lab",
-             "description": "Lab associated with the submission.",
-            "comment": "See lab.json for list of available identifiers.",
-            "type": "string",
-            "linkTo": "lab"
         }
     }
 }

@@ -27,4 +27,4 @@ def test_antibody_lot_upgrade(app, antibody_lot_1):
     value = migrator.upgrade('antibody_lot', antibody_lot_1, target_version='2')
     assert value['schema_version'] == '2'
     assert 'encode2_dbxrefs' not in value
-    assert value['dbxrefs'] == ['ucsc_encode_db:CEBPZ']
+    assert value['dbxrefs'] == ['UCSC-ENCODE-cv:CEBPZ']

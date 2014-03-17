@@ -143,10 +143,10 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['dbxref'] ? <strong>{columns['dbxref']['title'] + ': '}</strong>: null}
-                            {result['dbxref'] ?
+                            <strong>{columns['dbxref']['title']}</strong>: 
+                            {result.dbxref.length ?
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
-                            : <em>None submitted</em> }
+                                : <em>None submitted</em> }
                         </div>
                 </li>
             );

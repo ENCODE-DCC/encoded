@@ -57,15 +57,15 @@
         "biosample_term_name": "CH12.LX cell",
         "biosample_type": "immortalized cell line",
         "dataset_type": "experiment",
-        "description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
-        "documents": [
-            "ENCODE:Snyder_Histone_Mouse_protocol"
-        ],
         "dbxrefs": [
-            "ucsc_encode_db:wgEncodeEM002001",
+            "UCSC-ENCODE-mm9:wgEncodeEM002001",
             "GEO:GSM798326",
             "GEO:GSM798326",
             "GEO:GSE32218"
+        ],
+        "description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
+        "documents": [
+            "ENCODE:Snyder_Histone_Mouse_protocol"
         ],
         "lab": "sherman-weissman",
         "status": "CURRENT",
@@ -83,17 +83,17 @@
         "biosample_term_name": "CH12.LX cell",
         "biosample_type": "immortalized cell line",
         "dataset_type": "experiment",
-        "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
-        "documents": [
-            "ENCODE:Snyder_Histone_Mouse_protocol"
-        ],
         "dbxrefs": [
-            "ucsc_encode_db:wgEncodeEM002004",
+            "UCSC-ENCODE-mm9:wgEncodeEM002004",
             "GEO:GSM798327",
             "GEO:GSM798327",
             "GEO:GSE32218"
         ],
-        "lab": "sherman-weissman",
+        "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
+        "documents": [
+            "ENCODE:Snyder_Histone_Mouse_protocol"
+        ],
+       "lab": "sherman-weissman",
         "possible_controls": [
             "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
         ],
@@ -112,15 +112,15 @@
         "biosample_term_name": "MCF-7 cell",
         "biosample_type": "immortalized cell line",
         "dataset_type": "experiment",
+        "dbxrefs": [
+            "UCSC-ENCODE-hg19:wgEncodeEH003317",
+            "GEO:GSM1010811"
+        ],
         "description": "HAIB ChIP TAF1 in MCF-7",
         "documents": [
             "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
         ],
-        "dbxrefs": [
-            "ucsc_encode_db:wgEncodeEH003317",
-            "GEO:GSM1010811"
-        ],
-        "lab": "richard-myers",
+       "lab": "richard-myers",
         "status": "CURRENT",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TAF1-human",
@@ -136,16 +136,16 @@
         "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
         "biosample_type": "primary cell line",
         "dataset_type": "experiment",
+        "dbxrefs": [
+            "UCSC-ENCODE-hg19:wgEncodeEH002229",
+            "GEO:GSM999346",
+            "GEO:GSE40699"
+        ],
         "description": "UW  SAEC",
         "documents": [
             "ENCODE:Myers_Methyl450_protocol"
         ],
-        "dbxrefs": [
-            "ucsc_encode_db:wgEncodeEH002229"
-            "GEO:GSM999346",
-            "GEO:GSE40699"
-        ],
-        "lab": "richard-myers",
+       "lab": "richard-myers",
         "related_files": [
             "ENCFF000LSP"
         ],

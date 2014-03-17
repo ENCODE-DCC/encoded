@@ -1,7 +1,7 @@
 [
     {
         "dbxrefs": [
-            "ucsc_encode_db:454_GS_FLX",
+            "UCSC-ENCODE-cv:454_GS_FLX",
             "GEO:GPL14603",
             "GEO:GPL16815"
         ],
@@ -12,7 +12,7 @@
     },
     {
         "dbxrefs": [
-            "ucsc_encode_db:AB_SOLiD_3.5",
+            "UCSC-ENCODE-cv:AB_SOLiD_3.5",
             "GEO:GPL9442"
         ],
         "term_id": "OBI:0000696",
@@ -59,7 +59,7 @@
     },
     {
         "dbxrefs": [
-            "ucsc_encode_db:Illumina_GA2",
+            "UCSC-ENCODE-cv:Illumina_GA2",
             "GEO:GPL9115"
         ],
         "term_id": "OBI:0000703",
@@ -69,7 +69,7 @@
     },
     {
         "dbxrefs": [
-            "ucsc_encode_db:Illumina_GA2e",
+            "UCSC-ENCODE-cv:Illumina_GA2e",
             "GEO:GPL9115"
         ],
         "term_id": "NTR:0000005",
@@ -79,7 +79,7 @@
     },
     {
         "dbxrefs": [
-            "ucsc_encode_db:Illumina_GA2x",
+            "UCSC-ENCODE-cv:Illumina_GA2x",
             "GEO:GPL10999",
             "GEO:GPL9250"
         ],
@@ -90,7 +90,7 @@
     },
     {
         "dbxrefs": [
-            "ucsc_encode_db:Illumina_HiSeq_2000",
+            "UCSC-ENCODE-cv:Illumina_HiSeq_2000",
             "GEO:GPL11154",
             "GEO:GPL13112"
         ],
@@ -101,7 +101,7 @@
     },
     {
         "dbxrefs": [
-            "ucsc_encode_db:Methyl450",
+            "UCSC-ENCODE-cv:Methyl450",
             "GEO:GPL13534"
         ],
         "term_id": "NTR:0000008",

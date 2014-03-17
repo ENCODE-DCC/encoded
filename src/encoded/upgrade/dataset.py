@@ -26,7 +26,10 @@ def dataset_2_3(value, system):
    
     if 'encode2_dbxrefs' in value:
         for encode2_dbxref in value['encode2_dbxrefs']:
-            new_dbxref = 'ucsc_encode_db:' + encode2_dbxref
+            if re.match('.*wgEncodeEH.*', encode2_dbxref):
+                new_dbxref = 'UCSC-ENCODE-hg19:' + encode2_dbxref
+            elif re.match('.*wgEncodeEM.*', encode2_dbxref):
+                new_dbxref = 'UCSC-ENCODE-mm9:' + encode2_dbxref
             value['dbxrefs'].append(new_dbxref)
         del value['encode2_dbxrefs']
     
@@ -38,7 +41,11 @@ def dataset_2_3(value, system):
 
     if 'aliases' in value:
         for alias in value['aliases']:
-            if re.match('^ucsc_encode_db:.*', alias):
-                value['aliases'].remove(alias)
-                value['dbxrefs'].append(alias)
-
+            if re.match('ucsc_encode_db:hg19-', alias):
+                new_dbxref = alias.replace('ucsc_encode_db:hg19-', 'UCSC-GB-hg19:')
+            elif re.match('ucsc_encode_db:mm9-', alias):
+                new_dbxref = alias.replace('ucsc_encode_db:mm9-', 'UCSC-GB-mm9:')
+            else:
+                continue
+            value['dbxrefs'].append(new_dbxref)
+            value['aliases'].remove(alias)

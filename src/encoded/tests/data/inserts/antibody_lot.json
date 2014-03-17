@@ -6,7 +6,7 @@
         "award": "U54HG004558",
         "clonality": "monoclonal",
         "dbxrefs": [
-            "ucsc_encode_db:E2F1"
+            "UCSC-ENCODE-cv:E2F1"
         ],
         "host_organism": "mouse",
         "lab": "michael-snyder",
@@ -26,7 +26,7 @@
         "award": "U54HG004558",
         "clonality": "polyclonal",
         "dbxrefs": [
-            "ucsc_encode_db:H3K4me3"
+            "UCSC-ENCODE-cv:H3K4me3"
         ],
         "host_organism": "rabbit",
         "lab": "michael-snyder",
@@ -66,7 +66,7 @@
         "award": "U54HG006991",
         "clonality": "polyclonal",
         "dbxrefs": [
-            "ucsc_encode_db:H3K4me3"
+            "UCSC-ENCODE-cv:H3K4me3"
         ],
         "host_organism": "rabbit",
         "lab": "bradley-bernstein",
@@ -94,7 +94,7 @@
         "award": "U54HG004570",
         "clonality": "polyclonal",
         "dbxrefs": [
-            "ucsc_encode_db:H3K9ac"
+            "UCSC-ENCODE-cv:H3K9ac"
         ],
         "host_organism": "rabbit",
         "isotype": "IgG",
@@ -154,7 +154,7 @@
         "antigen_description": "Anti-mouse",
         "award": "U54HG004558",
         "dbxrefs": [
-            "ucsc_encode_db:IgG-Yale"
+            "UCSC-ENCODE-cv:IgG-Yale"
         ],
         "host_organism": "mouse",
         "lab": "michael-snyder",
@@ -172,7 +172,7 @@
         "award": "U54HG004558",
         "clonality": "monoclonal",
         "dbxrefs": [
-            "ucsc_encode_db:HA-E2F1"
+            "UCSC-ENCODE-cv:HA-E2F1"
         ],
         "host_organism": "mouse",
         "lab": "michael-snyder",
@@ -220,7 +220,7 @@
         "award": "U54HG004576",
         "clonality": "polyclonal",
         "dbxrefs": [
-            "ucsc_encode_db:CTCF_(SC-5916)"
+            "UCSC-ENCODE-cv:CTCF_(SC-5916)"
         ],
         "host_organism": "goat",
         "isotype": "IgG",
@@ -238,7 +238,7 @@
         "award": "U54HG004576",
         "clonality": "monoclonal",
         "dbxrefs": [
-            "ucsc_encode_db:TAF1"
+            "UCSC-ENCODE-cv:TAF1"
         ],
         "host_organism": "mouse",
         "lab": "richard-myers",
