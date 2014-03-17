@@ -135,6 +135,8 @@ var Dbxref = dbxref.Dbxref;
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
+            console.log('HERE');
+            console.dir(result);
             return (<li>
                         <div>
                             <span className="pull-right type">Target</span>
@@ -144,9 +146,9 @@ var Dbxref = dbxref.Dbxref;
                         </div>
                         <div className="data-row">
                             <strong>{columns['dbxref']['title']}</strong>: 
-                            {result.dbxref.length ?
+                            {result.dbxref && result.dbxref.length ?
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
-                                : <em>None submitted</em> }
+                                : <em> None submitted</em> }
                         </div>
                 </li>
             );

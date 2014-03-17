@@ -29,9 +29,6 @@ var Experiment = module.exports.Experiment = React.createClass({
             return item.biological_replicate_number;
         });
         var aliasList = context.aliases.join(", ");
-        var dbxrefs = context.encode2_dbxrefs.map(function (item) {
-        	return "UCSC_encode_db:" + item;
-        });
         var documents = {};
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;
@@ -113,9 +110,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt hidden={!context.aliases.length}>Aliases</dt>
                         <dd hidden={!context.aliases.length}>{aliasList}</dd>
 
-                        <dt hidden={!context.encode2_dbxrefs.length}>External resources</dt>
-                        <dd hidden={!context.encode2_dbxrefs.length}>
-                            <DbxrefList values={dbxrefs} />
+                        <dt hidden={!context.dbxrefs.length}>External resources</dt>
+                        <dd hidden={!context.dbxrefs.length}>
+                            <DbxrefList values={context.dbxrefs} />
                         </dd>
 
                     </dl>
