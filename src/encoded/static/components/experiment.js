@@ -29,6 +29,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             return item.biological_replicate_number;
         });
         var aliasList = context.aliases.join(", ");
+
         var documents = {};
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;

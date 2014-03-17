@@ -14,6 +14,11 @@ var Dbxref = module.exports.Dbxref = function (props) {
         prefix = value.slice(0, sep);
         local = value.slice(sep + 1);
     }
+    // DEV
+    prefix = "UCSC-ENCODE-cv";
+    // /DEV
+    console.log('PREFIX: ' + prefix);
+    console.log('LOCAL: ' + local);
     var base = prefix && globals.dbxref_prefix_map[prefix];
     if (!base) {
         return <span>{value}</span>;

@@ -135,8 +135,6 @@ var Dbxref = dbxref.Dbxref;
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            console.log('HERE');
-            console.dir(result);
             return (<li>
                         <div>
                             <span className="pull-right type">Target</span>
