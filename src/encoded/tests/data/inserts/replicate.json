@@ -276,5 +276,25 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "technical_replicate_number": 1,
         "uuid": "6049cceb-3703-47d8-be52-0747fb6680aa"
+    },
+    {
+        "_test": "RBNS protein concentrations part 1",
+        "biological_replicate_number": 1,
+        "experiment": "",
+        "paired_ended": false,
+        "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 1,
+        "uuid": "fb67aa50-6e7a-4cac-a8e6-09e73b4d3432"
+    }
+        {
+        "_test": "RBNS protein concentrations part 2",
+        "biological_replicate_number": 1,
+        "experiment": "",
+        "paired_ended": false,
+        "platform": "171f8a03-650b-4f7f-9c2f-0970348ee95f",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "technical_replicate_number": 2,
+        "uuid": "2743cbc5-dc25-4fe4-8808-47df3e632339"
     }
 ]
