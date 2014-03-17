@@ -241,5 +241,21 @@
         "status": "CURRENT",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf"
+    },
+    {
+        "_test": "Bind and Seq",
+        "accession": "TSTSR666594",
+        "assay_term_id": "NTR:0001132",
+        "assay_term_name": "RNA Bind-n-Seq",
+        "award": "U54HG007005",
+        "biosample_term_id": "CL:1000350",
+        "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
+        "biosample_type": "primary cell line",
+        "dataset_type": "experiment",
+        "description": "Sample “RNA Bind-n-Seq” (RBNS) experiment against PTBP1",
+        "lab": "chris-burge",
+        "status": "CURRENT",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474"
     }
 ]
