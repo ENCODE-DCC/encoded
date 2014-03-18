@@ -244,7 +244,7 @@
     },
     {
         "_test": "Bind and Seq",
-        "accession": "TSTSR666594",
+        "accession": "ENCSR666EMD",
         "assay_term_id": "NTR:0001132",
         "assay_term_name": "RNA Bind-n-Seq",
         "award": "U54HG007005",
