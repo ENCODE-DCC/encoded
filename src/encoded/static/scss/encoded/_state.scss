@@ -9,23 +9,52 @@
 // fix footer width for small screens + content margin fix
 @media (max-width: 767px) {
 	footer {
-		margin-left: -20px;
-    	margin-right: -20px;
-    	padding: 0 5px;
+		//margin-left: -20px;
+    	//margin-right: -20px;
+    	//padding: 0 5px;
 	}
 }
-@media (max-width: 979px) {
-	footer { text-align: center; }
-	#page-footer {
-		height: auto;
-		#footer-logos { 
-			float: none; 
-			display: inline-block;
-			margin-left: 10px;
-		}
-	}
+// make footer look good on larger screens
+// and activate sticky footer
+@media (min-width: $screen-sm) {
+    .footer-row { margin-left: 0; margin-right: 0; }
+    #page-footer, .page-footer {
+        height: $footerHeight;
+    }
+    @include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
+    .footer-links {
+        list-style: none outside none;
+        margin-left: -5px;
+        padding-left: 0;
+        li { 
+            display: inline-block;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+        a {
+            display: inline;
+            margin: 0;
+            padding: 0;
+            background-color: transparent;   
+        }
+        a:hover { 
+            text-decoration: underline;
+            background-color: transparent; 
+        }
+        a:active { background-color: transparent; }
+    }
+    
+    .footer-logos {
+        margin-top: 16px;
+        li { 
+            display: inline-block;
+            padding-left: 10px;
+            padding-right: 10px;
+        }
+    }
 }
-#phone-copy { padding: 25px 0; }
+
+
 
 // make key-value description lists responsive
 @media (max-width: 480px) {
