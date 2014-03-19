@@ -121,7 +121,7 @@
         },
         "RBNS_protein_concentration_units": {
             "title": "RBNS protein concentration units",
-            "comment": "The unit for the dependant RBNS_protein_concentration."
+            "comment": "The unit for the dependant RBNS_protein_concentration.",
             "type": "string",
             "enum": [
                 "nM" 
