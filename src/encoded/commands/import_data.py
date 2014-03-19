@@ -24,6 +24,7 @@ from webtest import TestApp
 from urlparse import urlparse
 from .. import loadxl
 import logging
+import os.path
 
 EPILOG = __doc__
 
@@ -40,9 +41,9 @@ def remote_app(base, username='', password=''):
     return TestApp(base, environ)
 
 
-def internal_app(configfile, username=''):
+def internal_app(configfile, app_name=None, username=''):
     from pyramid import paster
-    app = paster.get_app(configfile)
+    app = paster.get_app(configfile, app_name)
     if not username:
         username = 'IMPORT'
     environ = {
@@ -53,10 +54,11 @@ def internal_app(configfile, username=''):
 
 
 def run(testapp, filename, docsdir, method, item_type, test=False):
-    if filename.endswith('.tsv') or filename.endswith('.csv'):
-        source = loadxl.read_single_sheet(filename)
-    else:
+    name, ext = os.path.splitext(filename)
+    if ext in ['', '.xlsx']:
         source = loadxl.read_single_sheet(filename, item_type)
+    else:
+        source = loadxl.read_single_sheet(filename)
     pipeline = loadxl.get_pipeline(testapp, docsdir, test, item_type, method=method)
     loadxl.process(loadxl.combine(source, pipeline))
 
@@ -86,6 +88,7 @@ def main():
         help="HTTP password (secret_access_key)")
     parser.add_argument('--attach', '-a', action='append', default=[],
         help="Directory to search for attachments")
+    parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('inpath',
         help="input zip file/directory of excel/csv/tsv sheets.")
     parser.add_argument('url',
@@ -108,7 +111,7 @@ def main():
                 password = url.password
         testapp = remote_app(base, username, password)
     else:
-        testapp = internal_app(args.url, args.username)
+        testapp = internal_app(args.url, args.app_name, args.username)
 
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.INFO)
