@@ -51,4 +51,23 @@ def biosample_2_3(value, system):
         value['subcellular_fraction_term_name'] = value['subcellular_fraction']
         del value['subcellular_fraction']
 
+@upgrade_step('biosample', '3', '4')
+def biosample_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/575
+
+    if 'derived_from' in value:
+        if value['derived_from']:
+            new_value = value['derived_from'][0]
+            value['derived_from'] = new_value
+        else:
+            del value['derived_from']
+
+    if 'part_of' in value:
+        if value['part_of']:
+            new_value = value['part_of'][0]
+            value['part_of'] = new_value
+        else:
+            del value['part_of']
+
+        
 
