@@ -1,0 +1,38 @@
+[
+    {
+        "accession": "ENCDO012AAA",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "mouse",
+        "sex": "male",
+        "strain_background": "CD-1",
+        "uuid": "a67605ad-45d9-4ec3-8470-18be07a676f0"
+    },
+    {
+        "accession": "ENCDO075AAA",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "mouse",
+        "sex": "mixed",
+        "strain_background": "B6NTac;B6NCrl/Lap",
+        "uuid": "3cfe2618-368f-45a0-9aa9-a5277f1a56a9"
+    },
+    {
+        "accession": "ENCDO015AAA",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "mouse",
+        "sex": "male",
+        "strain_background": "129/Ola",
+        "uuid": "1a8dd515-63da-40d8-a166-351858c77fd7"
+    },
+    {
+        "accession": "ENCDO000MUS",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "mouse",
+        "sex": "unknown",
+        "strain_background": "unknown",
+        "uuid": "b432527c-0f19-4bc3-a810-e1bf583cfb38"
+    }
+]

@@ -12,7 +12,6 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
-from collections import OrderedDict
 from pyramid.traversal import find_root
 
 ACCESSION_KEYS = [
@@ -50,9 +49,12 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', 'add')
 ]
 
-ALLOW_CURRENT = [
+ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, 'role.lab_submitter', 'edit'),
-    (Allow, 'role.lab_submitter', 'view_raw'),
+    # (Allow, 'role.lab_submitter', 'view_raw'),
+]
+
+ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
     (Allow, 'role.viewer', 'view'),
 ]
 
@@ -73,7 +75,13 @@ ENCODE2_AWARDS = frozenset([
     'cd51d709-b8d1-4ba6-b756-45adcaa38fb9',
     'dd7fb99a-cb0b-407e-9635-16454f0066c1',
     'df972196-c3c7-4a58-a852-94baa87f9b71',
-    'f06a0db4-b388-48d9-b414-37d83859cad0',  # Unattributed
+    # Unattributed
+    'f06a0db4-b388-48d9-b414-37d83859cad0',
+    # ENCODE2-Mouse
+    '95839ec3-9b83-44d9-a98a-026a9fd01bda',
+    '124b9d72-22bd-4fcc-8e2b-052677c4e3f2',
+    '2cda932c-07d5-4740-a024-d585635f5650',
+    '5a009305-4ddc-4dba-bbf3-7327ceda3702',
 ])
 
 
@@ -291,6 +299,8 @@ class Construct(Collection):
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
         STATUS_ACL = {
+            'IN PROGRESS': ALLOW_LAB_SUBMITTER_EDIT,
+            'PENDING DCC REVIEW': ALLOW_LAB_SUBMITTER_EDIT,
             'COMPLIANT': ALLOW_CURRENT,
             'NOT COMPLIANT': ALLOW_CURRENT,
             'NOT REVIEWED': ALLOW_CURRENT,
@@ -333,17 +343,6 @@ class Biosample(Collection):
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     }
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('biosample_term_name', 'Term'),
-        ('biosample_type', 'Type'),
-        ('organism.name', 'Species'),
-        ('source.title', 'Source'),
-        ('lab.title', 'Submitter'),
-        ('life_stage', 'Life stage'),
-        ('treatments.length', 'Treatments length'),
-        ('constructs.length', 'Constructs')
-    ])
 
     class Item(Collection.Item):
         template = {
@@ -429,11 +428,6 @@ class Target(Collection):
         'description': 'Listing of ENCODE3 targets',
     }
     unique_key = 'target:name'
-    columns = OrderedDict([
-        ('label', 'Target'),
-        ('organism.name', 'Species'),
-        ('dbxref', 'External resources'),
-    ])
 
     class Item(Collection.Item):
         template = {
@@ -481,16 +475,7 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    columns = OrderedDict([
-        ('antibody.accession', 'Accession'),
-        ('target.label', 'Target'),
-        ('target.organism.name', 'Species'),
-        ('antibody.source.title', 'Source'),
-        ('antibody.product_id', 'Product ID'),
-        ('antibody.lot_id', 'Lot ID'),
-        ('characterizations.length', 'Characterizations'),
-        ('status', 'Status')
-    ])
+
     class Item(Collection.Item):
         STATUS_ACL = {
             'ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
@@ -510,6 +495,7 @@ class AntibodyApproval(Collection):
             {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
         ]
 
+
 @location('platforms')
 class Platform(Collection):
     item_type = 'platform'
@@ -523,7 +509,9 @@ class Platform(Collection):
         'title': '{term_name}',
         '$templated': True,
     }
-    item_keys = ALIAS_KEYS
+    unique_key = 'platform:term_id'
+    item_name_key = 'term_id'
+    item_keys = ALIAS_KEYS + ['term_name', 'term_id']
 
 
 @location('libraries')
@@ -537,14 +525,6 @@ class Library(Collection):
     item_embedded = set(['biosample'])
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('award', 'Award'),
-        ('lab', 'Lab'),
-        ('biosample.biosample_term_name', 'Biosample'),
-        ('biosample.organism.name', 'Species'),
-        ('nucleic_acid_term_name', 'Nucleic Acid Term Name'),
-    ])
 
 
 @location('replicates')
@@ -558,14 +538,6 @@ class Replicates(Collection):
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
-    columns = OrderedDict([
-        ('uuid', 'UUID'),
-        ('library.accession', 'Library Accession'),
-        ('platform.title', 'Platform'),
-        ('experiment', 'Experiment'),
-        ('technical_replicate_number', 'Technical Replicate Number'),
-        ('biological_replicate_number', 'Biological Replicate Number'),
-    ])
 
     class Item(Collection.Item):
         parent_property = 'experiment'
@@ -601,13 +573,6 @@ class File(Collection):
         'title': 'Files',
         'description': 'Listing of Files',
     }
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('dataset', 'Dataset'),
-        ('file_format', 'File Format'),
-        ('md5sum', 'MD5 Sum'),
-        ('output_type', 'Output Type'),
-    ])
 
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
@@ -625,13 +590,6 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('description', 'Description'),
-        ('dataset_type', 'Dataset type'),
-        ('lab.title', 'Lab'),
-        ('award.project', 'Project'),
-    ])
     
     class Item(Collection.Item):
         template = {
@@ -672,18 +630,6 @@ class Experiment(Dataset):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('assay_term_name', 'Assay type'),
-        ('target.label', 'Target'),
-        ('biosample_term_name', 'Biosample'),
-        ('replicates.length', 'Replicates'),
-        ('files.length', 'Files'),
-        ('description', 'Description'),
-        ('lab.title', 'Lab'),
-        ('encode2_dbxrefs', 'Dbxrefs'),
-        ('award.project', 'Project'),
-    ])
 
     class Item(Dataset.Item):
         base_types = [Dataset.item_type] + Dataset.Item.base_types

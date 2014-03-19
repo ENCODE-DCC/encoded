@@ -15,9 +15,7 @@ module.exports.run = function run(Component, options) {
         //var component = module(props);
         var component = Component(props);
         var markup;
-        React.renderComponentToString(component, function(m) {
-            markup = m;
-        });
+        markup = React.renderComponentToString(component);
         return doctype + markup;
     };
 

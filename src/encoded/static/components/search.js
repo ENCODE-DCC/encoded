@@ -25,7 +25,7 @@ var Dbxref = dbxref.Dbxref;
             var item_type = result['@type'][0];
             return (<li>
                         <div>
-                            {result.accession ? <span className="pull-right type cap-me-once">{item_type}: {' ' + result['accession']}</span> : null}
+                            {result.accession ? <span className="pull-right type sentence-case">{item_type}: {' ' + result['accession']}</span> : null}
                             <div className="accession">
                                 <a href={result['@id']}>{title}</a>
                             </div>
@@ -51,9 +51,9 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row"> 
-                            <strong>{columns['antibody.source.title']}</strong>: {result['antibody.source.title']}<br />
-                            <strong>{columns['antibody.product_id']}/{columns['antibody.lot_id']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
-                            <strong>{columns['status']}</strong>: {result['status']}
+                            <strong>{columns['antibody.source.title']['title']}</strong>: {result['antibody.source.title']}<br />
+                            <strong>{columns['antibody.product_id']['title']}/{columns['antibody.lot_id']['title']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
+                            <strong>{columns['status']['title']}</strong>: {result['status']}
                         </div>
                 </li>
             );
@@ -73,10 +73,10 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['biosample_type']}</strong>: {result['biosample_type']}<br />
-                            <strong>{columns['source.title']}</strong>: {result['source.title']}
+                            <strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}<br />
+                            <strong>{columns['source.title']['title']}</strong>: {result['source.title']}
                             {result['life_stage'] ? <br /> : null}
-                            {result['life_stage'] ? <strong>{columns['life_stage'] + ': '}</strong> :null}
+                            {result['life_stage'] ? <strong>{columns['life_stage']['title'] + ': '}</strong> :null}
                             {result['life_stage'] ? result['life_stage'] : null}
                         </div>
                 </li>   
@@ -97,11 +97,11 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['target.label'] ? <strong>{columns['target.label'] + ': '}</strong>: null}
+                            {result['target.label'] ? <strong>{columns['target.label']['title'] + ': '}</strong>: null}
                             {result['target.label'] ? result['target.label'] : null}
                             {result['target.label'] ? <br /> : null}
-                            <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']}</strong>: {result['award.project']}
+                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
                 </li>
             );
@@ -121,9 +121,9 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['dataset_type'] ? <strong>{columns['dataset_type'] + ': '}</strong>: null}
-                            <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']}</strong>: {result['award.project']}
+                            {result['dataset_type'] ? <strong>{columns['dataset_type']['title'] + ': '}</strong>: null}
+                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
                 </li>
             );
@@ -143,10 +143,10 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['dbxref']}</strong>: 
-                            {result.dbxref.length ?
+                            {result['dbxref'] ? <strong>{columns['dbxref']['title'] + ': '}</strong>: null}
+                            {result['dbxref'] ?
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
-                                : <em>None submitted</em> }
+                            : <em>None submitted</em> }
                         </div>
                 </li>
             );
@@ -154,160 +154,130 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Target, 'target');
 
-    var FacetBuilder = search.FacetBuilder = React.createClass({
-        render: function() {
-            var context = this.props.context;
-            var result_count = context['@graph'].length;
-            var facets = context['facets'];
-            var href_search = url.parse(this.props.href).search || '';
-            var counter, counter1 = 0;
-            var field = '';
-            var buildTerms = function(map) {
-                var id;
-                var count;
-                counter = counter + 1;
-                for (var j in map) {
-                    id = j;
-                    count = map[j];
-                }
-                if(counter < 6) {
-                    return <li key={id}><a href={href_search+'&'+field+'='+id}><span className="pull-right">{count}</span><span className="facet-item">{id}</span></a></li>
-                } 
-            };
-            var buildCollapsingTerms = function(map) {
-                var id;
-                var count;
-                counter1 = counter1 + 1;
-                for (var j in map) {
-                    id = j;
-                    count = map[j];
-                }
-                if (counter1 >= 6) {
-                    return <li key={id}><a href={href_search+'&'+field+'='+id}><span className="pull-right">{count}</span><span className="facet-item">{id}</span></a></li>
-                }
-            };
-            var buildTypeFacet = function(map) {
-                var id;
-                var count;
-                for (var j in map) {
-                    id = j;
-                    count = map[j];
-                }
-                switch (id) {
-                    case "experiment":
-                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Experiments<span className="pull-right">{count}</span></a></li>
-                        break;
-                    case "biosample":
-                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Biosamples<span className="pull-right">{count}</span></a></li>
-                        break;
-                    case "antibody_approval":
-                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Antibodies<span className="pull-right">{count}</span></a></li>
-                        break;
-                    case "target":
-                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Targets<span className="pull-right">{count}</span></a></li>
-                        break;
-                    case "dataset":
-                        return <li key={id}><a href={href_search+'&'+field+'='+id}>Datasets<span className="pull-right">{count}</span></a></li>
-                        break;
-                }
-            };
-            var buildSection = function(facet) {
-                counter = 0;
-                counter1 = 0;
-                var termID = '';
-                var terms = [];
-                var term = '';
-                for (var f in facet) {
-                    if(f  != 'field') {
-                        term = f;
-                        termID = f.replace(/\s+/g, '');
-                        terms = facet[f];
-                    } else {
-                        field = facet[f];
-                    }
-                }
-                if(termID == 'DataType') {
-                    return <div className="facet" key={termID}>
-                            <h5>{term}</h5>
-                            <ul className="facet-list nav">
-                                {terms.length ?
-                                    terms.map(buildTypeFacet)
-                                : null}
-                            </ul>
-                        </div>
-                }else {
-                    return <div className="facet" key={termID}>
-                            <h5>{term}</h5>
-                            <ul className="facet-list nav">
-                                <div>
-                                    {terms.length ?
-                                        terms.map(buildTerms)
-                                    : null}
-                                </div>
-                                {terms.length > 5 ?
-                                    <div id={termID} className="collapse">
-                                        {terms.length ?
-                                            terms.map(buildCollapsingTerms)
-                                        : null}
-                                    </div>
-                                : null}
-                                {terms.length > 5 ?
-                                    <label className="pull-right">
-                                            <small>
-                                                <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
-                                            </small>
-                                    </label>
-                                : null}
-                                
-                            </ul>
-                        </div>
-                }
-            };
+    var Term = search.Term = React.createClass({
+        render: function () {
+            var term = this.props.term['term'];
+            var count = this.props.term['count'];
+            var title = this.props.title || term;
+            var search_base = this.props.search_base;
+            var field = this.props.facet['field'];
             return (
-                <div className="box facets">
-                    {facets.length ?
-                        facets.map(buildSection)
-                    : null}
+                <li key={term}>
+                    <a href={search_base+field+'='+term}>
+                        <span className="pull-right">{count}</span>
+                        <span className="facet-item">{title}</span>
+                    </a>
+                </li>
+            );
+        }
+    });
+
+    var TypeTerm = search.TypeTerm = React.createClass({
+        render: function () {
+            var term = this.props.term['term'];
+            var title = this.props.portal.types[term];
+            return this.transferPropsTo(<Term title={title} />);
+        }
+    });
+
+
+    var Facet = search.Facet = React.createClass({
+        render: function() {
+            var facet = this.props.facet;
+            var terms = facet['terms'];
+            var title = facet['title'];
+            var field = facet['field'];
+            var termID = title.replace(/\s+/g, '');
+            var TermComponent = field === 'type' ? TypeTerm : Term;
+            return (
+                <div className="facet" key={field}>
+                    <h5>{title}</h5>
+                    <ul className="facet-list nav">
+                        <div>
+                            {terms.slice(0, 5).map(function (term) {
+                                return this.transferPropsTo(<TermComponent term={term} />);
+                            }.bind(this))}
+                        </div>
+                        {terms.length > 5 ?
+                            <div id={termID} className="collapse">
+                                {terms.slice(5).map(function (term) {
+                                    return this.transferPropsTo(<TermComponent term={term} />);
+                                }.bind(this))}
+                            </div>
+                        : null}
+                        {terms.length > 5 ?
+                            <label className="pull-right">
+                                    <small>
+                                        <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
+                                    </small>
+                            </label>
+                        : null}
+                    </ul>
                 </div>
             );
         }
     });
-    
+
+    var FacetList = search.FacetList = React.createClass({
+        render: function() {
+            var facets = this.props.facets;
+            if (!facets.length) return <div />;
+            var search_base = url.parse(this.props.href).search || '';
+            search_base += search_base ? '&' : '?';
+            return (
+                <div className="box facets">
+                    {facets.map(function (facet) {
+                        return this.transferPropsTo(<Facet facet={facet} search_base={search_base} />);
+                    }.bind(this))}
+                </div>
+            );
+        }
+    });
+
+    var Unfilter = search.Unfilter = React.createClass({
+        render: function () {
+            var filter = this.props.filter;
+            return (
+                <a key={filter.field} className="btn btn-small btn-info" href={filter.remove}>
+                    {filter.term + ' '}
+                    <i className="icon-remove-sign"></i>
+                </a>
+            );
+        }
+    });
+
+    var UnfilterList = search.UnfilterList = React.createClass({
+        render: function () {
+            var filters = this.props.filters;
+            if (!filters.length) return <div />;
+            return (
+                <div className="btn-group"> 
+                    {filters.map(function (filter) {
+                        return this.transferPropsTo(<Unfilter filter={filter} />);
+                    }.bind(this))}
+                </div>
+            );
+        }
+    });
+
     var ResultTable = search.ResultTable = React.createClass({
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var href_search = url.parse(this.props.href).search || '';
             var facets = context['facets'];
             var total = context['total'];
             var columns = context['columns'];
             var filters = context['filters'];
             var search_id = context['@id']
-            var search_url = url.parse(context['@id'], true);
-            delete search_url['search'];
-            delete search_url['query']['type'];
             
-            var unfacetButtons = function(filter) {
-                for (var key in filter) {
-                    var unfacet_url = '';
-                    var args = href_search.split('&');
-                    for(var prop in args) {
-                        if(args[prop].indexOf(key) !== -1) {
-                            unfacet_url = '&' + unfacet_url + args[prop]
-                        }
-                    }
-                    var url_unfacet = href_search.replace(unfacet_url, "");
-                    return <a key={key} className="btn btn-small btn-info" href={url_unfacet}>{filter[key] + ' '}<i className="icon-remove-sign"></i></a>
-                }
-            };
             return (
                     <div>
                         {results.length ?
                             <div className="row">
                                 <div className="span3">
-                                    {facets.length ?
-                                        this.transferPropsTo(<FacetBuilder />)
-                                    :null}
+                                    {this.transferPropsTo(
+                                        <FacetList facets={facets} />
+                                    )}
                                 </div>
 
                                 <div className="span8">
@@ -316,15 +286,13 @@ var Dbxref = dbxref.Dbxref;
                                                 <span className="pull-right">
                                                     {search_id.indexOf('&limit=all') !== -1 ? 
                                                         <a className="btn btn-info btn-small" href={search_id.replace("&limit=all", "")}>View 25</a>
-                                                    : <a className="btn btn-info btn-small" href={search_id+ '&limit=all'}>View All</a>}
+                                                    : <a rel="nofollow" className="btn btn-info btn-small" href={search_id+ '&limit=all'}>View All</a>}
                                                 </span>
                                             : null}
                                     </h4>
-                                    {filters.length ?
-                                        <div className="btn-group"> 
-                                            {filters.map(unfacetButtons)}
-                                        </div>
-                                    : null}
+                                    {this.transferPropsTo(
+                                        <UnfilterList filters={filters} />
+                                    )}
                                     <hr />
                                     <ul className="nav result-table">
                                         {results.length ?
@@ -343,10 +311,6 @@ var Dbxref = dbxref.Dbxref;
     );
 
     var Search = search.Search = React.createClass({
-        clearFilter: function (event) {
-            this.refs.searchTerm.getDOMNode().value = '';
-            this.submitTimer = setTimeout(this.submit);
-        }, 
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
@@ -357,7 +321,7 @@ var Dbxref = dbxref.Dbxref;
                 <div>
                     {notification === 'Success' ?
                         <div className="panel data-display"> 
-                            {this.transferPropsTo(<ResultTable />)}
+                            {this.transferPropsTo(<ResultTable key={undefined} />)}
                         </div>
                     : <h4>{notification}</h4>}
                 </div>

@@ -5,28 +5,32 @@ var parseError = require('./mixins').parseError;
 var globals = require('./globals');
 
 
-var FetchedItems = module.exports.FetchedItems = React.createClass({
+var Fetched = module.exports.Fetched = {
     getInitialState: function () {
         return {
             communicating: !!this.props.url,
             data: undefined,
-            fetchedItemsRequest: undefined,
+            fetchedRequest: undefined,
             erred: false
         };
     },
 
     componentDidMount: function () {
+        if (!this.props.loadingComplete) return;
         this.fetch(this.props.url);
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (nextProps.url === this.props.url) return;
+        if (!nextProps.loadingComplete || (
+            this.props.fetchedRequest &&
+            nextProps.url === this.props.url &&
+            nextProps.session === this.props.session)) return;
         this.fetch(nextProps.url);
     },
 
     fetch: function (url) {
         var communicating;
-        var xhr = this.state.fetchedItemsRequest;
+        var xhr = this.state.fetchedRequest;
         if (xhr && xhr.state() == 'pending') {
             xhr.abort();
         }
@@ -34,7 +38,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
             this.setState({
                 communicating: false,
                 data: undefined,
-                fetchedItemsRequest: undefined,
+                fetchedRequest: undefined,
                 erred: false
             });
         }
@@ -43,11 +47,12 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
             url: url,
             type: 'GET',
             dataType: 'json'
-        }).done(this.receive);
+        }).fail(this.fail)
+        .done(this.receive);
         xhr.href = url;
         this.setState({
             communicating: true,
-            fetchedItemsRequest: xhr
+            fetchedRequest: xhr
         });
     },
 
@@ -59,7 +64,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
             'exDescription': 'fetchedRequest:' + status + ':' + xhr.statusText,
             'location': window.location.href
         });
-        this.receiveContextResponse(data, status, xhr, true);
+        this.receive(data, status, xhr, true);
     },
 
     receive: function (data, status, xhr, erred) {
@@ -68,18 +73,61 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
             communicating: false,
             erred: erred
         });
-    },
+    }
+};
 
-    render: function() {
+
+var FetchedData = module.exports.FetchedData = React.createClass({
+    mixins: [Fetched],
+    render: function () {
         var url = this.props.url;
         var data = this.state.data;
-        var key = this.props.key || url || undefined;
+        var key = url;
         var Component = this.props.Component;
         if (!url) return (
             <div key={key} className="empty done" style={{display: 'none'}}></div>
         );
         if (this.state.communicating) return (
-            <div key={key} className="communicating"></div>
+            <div key={key} className="communicating">
+                <div className="loading-spinner"></div>
+            </div>
+        );
+        if (this.state.erred) {
+            Component = globals.content_views.lookup(data);
+            return (
+                <div key={key} className="error done">
+                    {this.transferPropsTo(
+                        <Component Component={undefined} url={undefined} context={data} />
+                    )}
+                </div>
+            );
+        }
+        var etag = this.state.fetchedRequest.getResponseHeader('ETag')
+        return (
+            <div key={key} className="done">
+                {this.transferPropsTo(
+                    <Component Component={undefined} url={undefined} data={data} etag={etag} />
+                )}
+            </div>
+        );
+    }
+});
+
+
+var FetchedItems = module.exports.FetchedItems = React.createClass({
+    mixins: [Fetched],
+    render: function () {
+        var url = this.props.url;
+        var data = this.state.data;
+        var key = url;
+        var Component = this.props.Component;
+        if (!url) return (
+            <div key={key} className="empty done" style={{display: 'none'}}></div>
+        );
+        if (this.state.communicating) return (
+            <div key={key} className="communicating">
+                <div className="loading-spinner"></div>
+            </div>
         );
         if (this.state.erred) {
             Component = globals.content_views.lookup(data);

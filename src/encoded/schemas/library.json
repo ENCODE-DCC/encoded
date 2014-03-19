@@ -206,5 +206,31 @@
                 ]
             }
         }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "award": {
+            "title": "Award",
+            "type": "string"
+        },
+        "lab": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "biosample.biosample_term_name": {
+            "title": "Biosample",
+            "type": "string"
+        },
+        "biosample.organism.name": {
+            "title": "Species",
+            "type": "string"
+        },
+        "nucleic_acid_term_name": {
+            "title": "Nucleic Acid Term Name",
+            "type": "string"
+        }
     }
 }

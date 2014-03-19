@@ -21,6 +21,7 @@ from ..contentbase import (
     collection_add,
     item_edit,
     item_view,
+    item_view_edit,
     item_view_raw,
     location,
     validate_item_content_post,
@@ -128,28 +129,29 @@ def access_key_edit(context, request):
     return item_edit(context, request)
 
 
+def remove_secret_access_key_hash(properties):
+    try:
+        del properties['secret_access_key_hash']
+    except KeyError:
+        pass
+    return properties
+
+
 @view_config(context=AccessKey.Item, permission='view', request_method='GET')
 def access_key_view(context, request):
-    properties = item_view(context, request)
-    try:
-        del properties['secret_access_key_hash']
-    except KeyError:
-        pass
-    return properties
+    return remove_secret_access_key_hash(item_view(context, request))
 
 
-@view_config(context=AccessKey.Item, permission='view', request_method='GET',
-             request_param=['raw'], additional_permission='view_raw')
+@view_config(context=AccessKey.Item, permission='view_raw', request_method='GET',
+             request_param=['frame=raw'])
 def access_key_view_raw(context, request):
-    properties = item_view_raw(context, request)
-    try:
-        del properties['secret_access_key_hash']
-    except KeyError:
-        pass
-    return properties
+    return remove_secret_access_key_hash(item_view_raw(context, request))
 
 
-# Consider if
+@view_config(context=AccessKey.Item, permission='view_raw', request_method='GET',
+             request_param=['frame=edit'])
+def access_key_view_raw(context, request):
+    return remove_secret_access_key_hash(item_view_edit(context, request))
 
 
 @view_config(name='edw_key_create', context=Root, subpath_segments=0,

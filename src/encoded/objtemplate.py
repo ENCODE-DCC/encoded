@@ -45,20 +45,7 @@ def dict_template(template, namespace):
             if arg is not None:
                 condition = condition(arg)
             else:
-                argspec = inspect.getargspec(condition)
-                if argspec.keywords:
-                    args = namespace
-                else:
-                    args = {}
-                    defaults = dict(zip(reversed(argspec.args), reversed(argspec.defaults)))
-                    for name in argspec.args:
-                        try:
-                            args[name] = namespace[name]
-                        except KeyError:
-                            if name not in defaults:
-                                raise
-                            args[name] = defaults[name]
-                condition = condition(**args)
+                condition = exec_with_namespace(condition, namespace)
         if not condition:
             return
     value = template.get('$value', _marker)
@@ -117,5 +104,25 @@ def object_template(template, namespace, _template_top_string=False):
             yield result
     elif isinstance(template, list):
         yield list_template(template, namespace)
+    elif callable(template):
+        yield exec_with_namespace(template, namespace)
     else:
         raise TypeError('Unsupported type for: %r' % template)
+
+
+def exec_with_namespace(template, namespace):
+    argspec = inspect.getargspec(template)
+    if argspec.keywords:
+        return template(**namespace)
+
+    args = {}
+    defaults = dict(zip(reversed(argspec.args), reversed(argspec.defaults or ())))
+    for name in argspec.args:
+        try:
+            args[name] = namespace[name]
+        except KeyError:
+            if name not in defaults:
+                raise
+            args[name] = defaults[name]
+
+    return template(**args)

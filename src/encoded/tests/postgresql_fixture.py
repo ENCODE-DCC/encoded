@@ -1,6 +1,10 @@
-import os.path
 from urllib import quote
-import subprocess
+import os.path
+try:
+    import subprocess32 as subprocess
+except ImportError:
+    import subprocess
+
 
 def initdb(datadir, prefix='', echo=False):
     init_args = [

@@ -30,8 +30,8 @@ ORDER = [
     'experiment',
     'replicate',
     # 'software',
-    'file',
     'dataset',
+    'file',
 ]
 
 
@@ -169,10 +169,13 @@ def read_single_sheet(path, name=None):
         if ext == '.csv':
             return read_csv(stream)
 
+        if ext == '.json':
+            return read_json(stream)
+
         raise ValueError('Unknown file extension for %r' % path)
 
     if path.endswith('.xlsx'):
-        return xlreader.DictReader(open(path, 'rb'), sheetname=name)
+        return cast_row_values(xlreader.DictReader(open(path, 'rb'), sheetname=name))
 
     if path.endswith('.zip'):
         zf = ZipFile(path)
@@ -190,6 +193,10 @@ def read_single_sheet(path, name=None):
             stream = zf.open(name + '.csv', 'rU')
             return read_csv(stream)
 
+        if (name + '.json') in names:
+            stream = zf.open(name + '.json', 'r')
+            return read_json(stream)
+
     if os.path.isdir(path):
         root = os.path.join(path, name)
 
@@ -205,17 +212,29 @@ def read_single_sheet(path, name=None):
             stream = open(root + '.csv', 'rbU')
             return read_csv(stream)
 
+        if os.path.exists(root + '.json'):
+            stream = open(root + '.json', 'rb')
+            return read_json(stream)
+
     return []
 
 
 def read_xl(stream):
     import xlreader
-    return xlreader.DictReader(stream)
+    return cast_row_values(xlreader.DictReader(stream))
 
 
 def read_csv(stream, **kw):
     import csv
-    return csv.DictReader(stream, **kw)
+    return cast_row_values(csv.DictReader(stream, **kw))
+
+
+def read_json(stream):
+    import json
+    obj = json.load(stream)
+    if isinstance(obj, dict):
+        return [obj]
+    return obj
 
 
 ##############################################################################
@@ -223,39 +242,50 @@ def read_csv(stream, **kw):
 #
 # This would a one liner except for logging
 
+def request_url(item_type, method):
+    def component(rows):
+        for row in rows:
+            if method == 'POST':
+                url = row['_url'] = '/' + item_type
+                yield row
+                continue
+
+            if '@id' in row:
+                url = row['@id']
+                if not url.startswith('/'):
+                    url = '/' + url
+                row['_url'] = url
+                yield row
+                continue
+
+            # XXX support for aliases
+            for key in ['uuid', 'accession']:
+                if key in row:
+                    url = row['_url'] = '/' + row[key]
+                    break
+            else:
+                row['_errors'] = ValueError('No key found. Need uuid or accession.')
+
+            yield row
+
+    return component
 
 def make_request(testapp, item_type, method):
     json_method = getattr(testapp, method.lower() + '_json')
 
     def component(rows):
         for row in rows:
-            if not row.get('_skip') and not row.get('_errors'):
-                # Keys with leading underscores are for communicating between
-                # sections
-                value = row['_value'] = {
-                    k: v for k, v in row.iteritems() if not k.startswith('_') and not k.startswith('@')
-                }
-                try:
-                    if method == 'POST':
-                        url = row['_url'] = '/' + item_type
-                    else:
-                        if '@id' in row:
-                            url = row['@id']
-                            if not url.startswith('/'):
-                                url = '/' + url
-                            row['_url'] = url
-                        else:
-                            # XXX support for aliases
-                            for key in ['uuid', 'accession']:
-                                if key in row:
-                                    url = row['_url'] = '/' + row[key]
-                                    break
-                            else:
-                                raise ValueError('No key found. Need uuid or accession.')
-                except ValueError, e:
-                    row['_errors'] = repr(e)
-                else:
-                    row['_response'] = json_method(url, value, status='*')
+            if row.get('_skip') or row.get('_errors') or not row.get('_url'):
+                continue
+
+            # Keys with leading underscores are for communicating between
+            # sections
+            value = row['_value'] = {
+                k: v for k, v in row.iteritems() if not k.startswith('_') and not k.startswith('@')
+            }
+
+            url = row['_url']
+            row['_response'] = json_method(url, value, status='*')
 
             yield row
 
@@ -415,9 +445,10 @@ def process(rows):
 
 def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None):
     pipeline = [
-        cast_row_values,
         skip_rows_with_all_key_value(test='skip'),
+        skip_rows_with_all_key_value(_test='skip'),
         skip_rows_with_all_falsey_value('test') if test_only else noop,
+        skip_rows_with_all_falsey_value('_test') if test_only else noop,
         remove_keys_with_empty_value,
         skip_rows_missing_all_keys('uuid', 'accession', '@id'),
         remove_keys('schema_version'),
@@ -425,8 +456,6 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
             'lot_id', 'sex', 'life_stage', 'health_status', 'ethnicity',
             'strain_background', 'age',  # 'flowcell_details.machine',
         ),
-        remove_keys('test'),
-        remove_keys('uuid') if method in ('PUT', 'PATCH') else noop,
         add_attachment(docsdir),
     ]
     if phase == 1:
@@ -437,6 +466,8 @@ def get_pipeline(testapp, docsdir, test_only, item_type, phase=None, method=None
         pipeline.extend(PHASE2_PIPELINES.get(item_type, []))
 
     pipeline.extend([
+        request_url(item_type, method),
+        remove_keys('uuid') if method in ('PUT', 'PATCH') else noop,
         make_request(testapp, item_type, method),
         pipeline_logger(item_type, phase),
     ])

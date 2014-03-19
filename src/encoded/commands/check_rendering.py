@@ -7,7 +7,7 @@ To check all pages on the production server:
 
 For the development.ini you must supply the paster app name:
 
-    %(prog)s development.ini --app app
+    %(prog)s development.ini --app-name app
 
 """
 import json
@@ -78,7 +78,7 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument('--item-type', action='append', help="Item type")
-    parser.add_argument('--app', help="Pyramid app name in configfile")
+    parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('--username', '-u', default='TEST',
         help="User uuid/email")
     parser.add_argument('config_uri', help="path to configfile")
@@ -86,7 +86,7 @@ def main():
     args = parser.parse_args()
 
     logging.basicConfig()
-    testapp = internal_app(args.config_uri, args.app, args.username)
+    testapp = internal_app(args.config_uri, args.app_name, args.username)
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)
 

@@ -7,7 +7,7 @@
 	dt {
 		display: inline-block;
 		float: left;
-    	width: $horizontalComponentOffset - 20;
+    	width: $horizontalComponentOffset - 10;
    		padding-top: 5px;
     	text-align: right;
 	}
@@ -18,7 +18,7 @@
 	dd {
 		display: block;
 		padding-top: 5px;
-		margin-left: $horizontalComponentOffset;
+		margin-left: $horizontalComponentOffset + 10;
 		//margin-bottom: 5px;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
@@ -41,8 +41,5 @@ dd ul, .multi-value {
 	margin: 0;
 	display: inline-block;
 }
-
-
-
 
 // responsive styles in _state.scss

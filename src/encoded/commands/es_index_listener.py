@@ -224,7 +224,7 @@ def main():
         epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--app', help="Pyramid app name in configfile")
+    parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument(
         '--username', '-u', default='INDEXER', help="Import username")
     parser.add_argument(
@@ -238,7 +238,7 @@ def main():
     args = parser.parse_args()
 
     logging.basicConfig()
-    testapp = internal_app(args.config_uri, args.app, args.username)
+    testapp = internal_app(args.config_uri, args.app_name, args.username)
 
     # Loading app will have configured from config file. Reconfigure here:
     if args.verbose or args.dry_run:

@@ -74,10 +74,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dd hidden={!context.description}>{context.description}</dd>
 
                         <dt hidden={!context.biosample_term_name}>Biosample</dt>
-                        <dd hidden={!context.biosample_term_name}>{context.biosample_term_name}</dd>
+                        <dd hidden={!context.biosample_term_name} className="sentence-case">{context.biosample_term_name}</dd>
 
                         <dt hidden={!context.biosample_type}>Biosample type</dt>
-                        <dd hidden={!context.biosample_type}>{context.biosample_type}</dd>
+                        <dd hidden={!context.biosample_type} className="sentence-case">{context.biosample_type}</dd>
 
                         {context.target ? <dt>Target</dt> : null}
                         {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
@@ -104,13 +104,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dd>{context.lab.title}</dd>
 
                         <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd className="no-cap" hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                        <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
 
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
                         <dt hidden={!context.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd hidden={!context.encode2_dbxrefs.length} className="no-cap">
+                        <dd hidden={!context.encode2_dbxrefs.length}>
                             <DbxrefList values={dbxrefs} />
                         </dd>
                         
@@ -274,6 +274,7 @@ var Replicate = module.exports.Replicate = function (props) {
     var replicate = props.replicate;
     var library = replicate.library;
     var biosample = library && library.biosample;
+    var paired_end = replicate.paired_ended.toString();
     return (
         <div key={props.key}>
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
@@ -290,6 +291,12 @@ var Replicate = module.exports.Replicate = function (props) {
                         {biosample.accession}
                     </a>{' '}-{' '}{biosample.biosample_term_name}
                 </dd> : null}
+                
+                {paired_end ? <dt>Paired end</dt> : null}
+                {paired_end ? <dd>{paired_end}</dd> : null}
+            
+                {replicate.read_length ? <dt>Read length</dt> : null}
+                {replicate.read_length ? <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd> : null}
             </dl>
         </div>
     );

@@ -1,0 +1,245 @@
+[
+    {
+        "_test": "shared biosample",
+        "accession": "ENCSR000AER",
+        "assay_term_id": "OBI:0001864",
+        "assay_term_name": "RAMPAGE",
+        "award": "U54HG007004",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
+        "lab": "thomas-gingeras",
+        "status": "CURRENT",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
+    },
+    {
+        "_test": "shared biosample",
+        "accession": "ENCSR000AEM",
+        "assay_term_id": "OBI:0001271",
+        "assay_term_name": "RNA-seq",
+        "award": "U54HG007004",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "RNA Evaluation K562 Long Poly-A+  RNA-seq from Gingeras",
+        "lab": "thomas-gingeras",
+        "status": "CURRENT",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181"
+    },
+    {
+        "_test": "shared biosample",
+        "accession": "ENCSR000AES",
+        "assay_term_id": "OBI:0001271",
+        "assay_term_name": "RNA-seq",
+        "award": "U54HG007004",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
+        "lab": "thomas-gingeras",
+        "status": "CURRENT",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"
+    },
+    {
+        "_test": "control chip-seq with files",
+        "accession": "ENCSR000ADH",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq",
+        "award": "RC2HG005602",
+        "biosample_term_id": "BTO:0002493",
+        "biosample_term_name": "CH12.LX cell",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "CH12 Control Histone Mods by ChIP-seq performed by Yale",
+        "documents": [
+            "ENCODE:Snyder_Histone_Mouse_protocol"
+        ],
+        "encode2_dbxrefs": [
+            "wgEncodeEM002001"
+        ],
+        "geo_dbxrefs": [
+            "GSM798326",
+            "GSM798326",
+            "GSE32218"
+        ],
+        "lab": "sherman-weissman",
+        "status": "CURRENT",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "target": "Control-mouse",
+        "uuid": "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
+    },
+    {
+        "_test": "refers to the control dataset",
+        "accession": "ENCSR000ADI",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq",
+        "award": "RC2HG005602",
+        "biosample_term_id": "BTO:0002493",
+        "biosample_term_name": "CH12.LX cell",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "CH12 H3K4me3 Histone Mods by ChIP-seq performed by Yale",
+        "documents": [
+            "ENCODE:Snyder_Histone_Mouse_protocol"
+        ],
+        "encode2_dbxrefs": [
+            "wgEncodeEM002004"
+        ],
+        "geo_dbxrefs": [
+            "GSM798327",
+            "GSM798327",
+            "GSE32218"
+        ],
+        "lab": "sherman-weissman",
+        "possible_controls": [
+            "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
+        ],
+        "status": "CURRENT",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "target": "H3K4me3-mouse",
+        "uuid": "c05a9d79-713e-4d54-8d8e-6daae94368b3"
+    },
+    {
+        "_test": "human chip-seq",
+        "accession": "ENCSR000AHF",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq",
+        "award": "U54HG004576",
+        "biosample_term_id": "BTO:0000093",
+        "biosample_term_name": "MCF-7 cell",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "HAIB ChIP TAF1 in MCF-7",
+        "documents": [
+            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
+        ],
+        "encode2_dbxrefs": [
+            "wgEncodeEH003317"
+        ],
+        "geo_dbxrefs": [
+            "GSM1010811"
+        ],
+        "lab": "richard-myers",
+        "status": "CURRENT",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "target": "TAF1-human",
+        "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1"
+    },
+    {
+        "_test": "methy array",
+        "accession": "ENCSR000ACY",
+        "assay_term_id": "OBI:0001332",
+        "assay_term_name": "MethylArray",
+        "award": "U54HG004576",
+        "biosample_term_id": "CL:1000350",
+        "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
+        "biosample_type": "primary cell line",
+        "dataset_type": "experiment",
+        "description": "UW  SAEC",
+        "documents": [
+            "ENCODE:Myers_Methyl450_protocol"
+        ],
+        "encode2_dbxrefs": [
+            "wgEncodeEH002229"
+        ],
+        "geo_dbxrefs": [
+            "GSM999346",
+            "GSE40699"
+        ],
+        "lab": "richard-myers",
+        "related_files": [
+            "ENCFF000LSP"
+        ],
+        "status": "CURRENT",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8"
+    },
+    {
+        "_test": "NTR for assay and no replicates",
+        "accession": "ENCSR000AJK",
+        "assay_term_id": "NTR:0000020",
+        "assay_term_name": "Nanostring",
+        "award": "U54HG006998",
+        "dataset_type": "experiment",
+        "description": "Irvine Nanostring GM12878",
+        "lab": "ali-mortazavi",
+        "status": "CURRENT",
+        "submitted_by": "netus.lorem@risus.lobortis",
+        "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
+    },
+    {
+        "_test": "shared biosample",
+        "accession": "ENCSR000AEN",
+        "assay_term_id": "OBI:0001271",
+        "assay_term_name": "RNA-seq",
+        "award": "U54HG007005",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "RNA Evaluation K562 Long Total from Graveley",
+        "lab": "brenton-graveley",
+        "status": "CURRENT",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "0cb85395-da45-47e5-84c7-888f90c983fc"
+    },
+    {
+        "_test": "no replicates",
+        "accession": "ENCSR000AAL",
+        "assay_term_id": "OBI:0001271",
+        "assay_term_name": "RNA-seq",
+        "award": "U54HG007004",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
+        "lab": "thomas-gingeras",
+        "related_files": [
+            "ENCFF001REL",
+            "ENCFF001REQ"
+        ],
+        "status": "CURRENT",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "ddd11381-7958-4d58-af02-fc56255c838b"
+    },
+    {
+        "_test": "replicates no files",
+        "accession": "ENCSR999NOF",
+        "assay_term_id": "OBI:0001271",
+        "assay_term_name": "RNA-seq",
+        "award": "U54HG007004",
+        "biosample_term_id": "EFO:0002067",
+        "biosample_term_name": "K562",
+        "biosample_type": "immortalized cell line",
+        "dataset_type": "experiment",
+        "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
+        "lab": "thomas-gingeras",
+        "status": "CURRENT",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "223af596-e5ca-4048-9ea8-9a41c240181d"
+    },
+    {
+        "_test": "patch users",
+        "accession": "ENCSR000ACT",
+        "assay_term_id": "OBI:0001332",
+        "assay_term_name": "MethylArray",
+        "award": "U54HG004576",
+        "biosample_term_id": "CL:1000350",
+        "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
+        "biosample_type": "primary cell line",
+        "dataset_type": "experiment",
+        "description": "UW  SAEC",
+        "lab": "richard-myers",
+        "status": "CURRENT",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf"
+    }
+]
