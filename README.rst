@@ -122,16 +122,18 @@ And of course::
 SublimeLinter
 =============
 
-To setup SublimeLinter with ST3, you need to install the dependencies::
+To setup SublimeLinter with Sublime Text 3, first install the linters::
 
-    $ bin/easy_install flake8
+    $ easy_install-2.7 flake8
     $ npm install -g jshint
     $ npm install -g STRML/JSXHint
 
-Then with package control install:
+After first setting up `Package Control`_ (follow install and usage instructions on site), use it to install the following packages in Sublime Text 3:
 
     * sublimelinter
     * sublimelinter-flake8
     * sublimelinter-jsxhint
     * jsx
     * sublimelinter-jshint
+
+.. _`Package Control`: https://sublime.wbond.net/
