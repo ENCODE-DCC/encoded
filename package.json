@@ -1,7 +1,7 @@
 {
   "name": "encoded",
   "version": "0.0.0",
-  "description": "",
+  "description": "jquery, browserify-shim, domready held back.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +12,7 @@
   "devDependencies": {
     "grunt": "^0.4.2",
     "browserify": "^3.30.2",
-    "reactify": "^0.9.1",
+    "reactify": "^0.10.0",
     "grunt-cli": "^0.1.13",
     "mold-source-map": "^0.3.0",
     "browserify-shim": "^2.0.10"
