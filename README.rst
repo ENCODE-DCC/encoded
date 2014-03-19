@@ -117,3 +117,21 @@ Also see the `Compass Command Line Documentation <http://compass-style.org/help/
 And of course::
 
     $ compass help
+
+
+SublimeLinter
+=============
+
+To setup SublimeLinter with ST3, you need to install the dependencies::
+
+    $ bin/easy_install flake8
+    $ npm install -g jshint
+    $ npm install -g STRML/JSXHint
+
+Then with package control install:
+
+    * sublimelinter
+    * sublimelinter-flake8
+    * sublimelinter-jsxhint
+    * jsx
+    * sublimelinter-jshint
