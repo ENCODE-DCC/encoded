@@ -37,7 +37,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             construct.documents.forEach(function (doc) {
                 construct_documents[doc['@id']] = Panel({context: doc});
             });
-        })
+        });
 
         // set up RNAi documents panels
         var rnais = _.sortBy(context.rnais, function(item) {
@@ -48,7 +48,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             rnai.documents.forEach(function (doc) {
                 rnai_documents[doc['@id']] = Panel({context: doc});
             });
-        })
+        });
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
 
@@ -135,7 +135,15 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <section>
                             <hr />
                             <h4>Derived from biosample</h4>
-                            <a href={context.derived_from.accession}> {context.derived_from.accession} </a>
+                            <a className="non-dl-item" href={context.derived_from.accession}> {context.derived_from.accession} </a>
+                        </section>
+                    : null}
+
+                     {context.part_of ?
+                        <section>
+                            <hr />
+                            <h4>Separated from biosample</h4>
+                            <a className="non-dl-item" href={context.part_of.accession}> {context.part_of.accession} </a>
                         </section>
                     : null}
 
@@ -396,7 +404,7 @@ var RNAi = module.exports.RNAi = React.createClass({
         var context = this.props.context;
         return (
              <dl className="key-value">
-            	{context.target ? <dt>Target</dt> : null}
+                {context.target ? <dt>Target</dt> : null}
                 {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
                 
                 {context.rnai_type ? <dt>RNAi type</dt> : null}
@@ -425,7 +433,7 @@ var Document = module.exports.Document = React.createClass({
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
-        var figure, download, src, imgClass, alt;
+        var figure, download, src, alt;
         var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
@@ -436,7 +444,7 @@ var Document = module.exports.Document = React.createClass({
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
-                alt = "Characterization Image"
+                alt = "Characterization Image";
             } else if (context.attachment.type == "application/pdf"){
                 src = "/static/img/file-pdf.png";
                 alt = "Characterization PDF Icon";
