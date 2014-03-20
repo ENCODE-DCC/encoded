@@ -36,10 +36,10 @@ var Experiment = module.exports.Experiment = React.createClass({
             replicate.library.documents.forEach(function (doc) {
                 documents[doc['@id']] = Panel({context: doc});
             });
-        })
+        });
         // Adding experiment specific documents
         context.documents.forEach(function (document) {
-            documents[document['@id']] = Panel({context: document})
+            documents[document['@id']] = Panel({context: document});
         });
         var antibodies = {};
         replicates.forEach(function (replicate) {
@@ -47,7 +47,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 antibodies[replicate.antibody['@id']] = replicate.antibody;
             }
         });
-        var antibody_accessions = []
+        var antibody_accessions = [];
         for (var key in antibodies) {
             antibody_accessions.push(antibodies[key].accession);
         }
@@ -154,7 +154,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
         var biosample = replicate.library && replicate.library.biosample;
         if (biosample) {
             biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
-        };
+        }
     });
     return (
         <div>
@@ -214,18 +214,18 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     var treatments;
     
     if (library && library.depleted_in_term_name && library.depleted_in_term_name.length) {
-    	depletedIn = library.depleted_in_term_name.join(", ");
+        depletedIn = library.depleted_in_term_name.join(", ");
     }
     
     if (library && library.treatments && library.treatments.length) {
-    	var i = library.treatments.length;
-    	var t;
-    	var treatmentList = [];
-    	while (i--) {
-    		t = library.treatments[i];
-    		treatmentList.push(t.treatment_term_name);
-    	}
-    	treatments = treatmentList.join(", ");
+        var i = library.treatments.length;
+        var t;
+        var treatmentList = [];
+        while (i--) {
+            t = library.treatments[i];
+            treatmentList.push(t.treatment_term_name);
+        }
+        treatments = treatmentList.join(", ");
     }
     
     return (

@@ -24,7 +24,7 @@ var Dataset = module.exports.Dataset = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var pubmed_url = "http://www.ncbi.nlm.nih.gov/pubmed/?term=";
         var pubmed_links = context.references.map(function(id) {
-        	return <li><a href={pubmed_url + id.slice(5)}>{id}</a></li>;
+            return <li><a href={pubmed_url + id.slice(5)}>{id}</a></li>;
         });
         var experiments = {};
         context.files.forEach(function (file) {
@@ -69,9 +69,9 @@ var Dataset = module.exports.Dataset = React.createClass({
 
                         {context.references.length ? <dt>References</dt> : null}
                         {context.references.length ? <dd>
-                        	<ul className="horizontal-list">
-                        		{pubmed_links}
-                        	</ul>
+                            <ul className="horizontal-list">
+                                {pubmed_links}
+                            </ul>
                         </dd> : null}
                     </dl>
                 </div>
@@ -86,7 +86,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                 {experiments.length ?
                     <div>
                         <h3>Related experiments for dataset {context.accession}</h3>
-    				    <ExperimentTable items={experiments} />
+                        <ExperimentTable items={experiments} />
                     </div>
                 : null }
 
