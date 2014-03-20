@@ -3,16 +3,13 @@ import pytest
 
 def _type_length():
     # Not a fixture as we need to parameterize tests on this
-    import os.path
     from ..loadxl import ORDER
-    from pkg_resources import resource_filename
-    inserts = resource_filename('encoded', 'tests/data/inserts/')
-    lengths = {}
-    for name in ORDER:
-        with open(os.path.join(inserts, name + '.tsv'), 'U') as f:
-            lengths[name] = len([l for l in f.readlines() if l.strip()]) - 1
-
-    return lengths
+    from pkg_resources import resource_stream
+    import json
+    return {
+        name: len(json.load(resource_stream('encoded', 'tests/data/inserts/%s.json' % name)))
+        for name in ORDER
+    }
 
 
 TYPE_LENGTH = _type_length()
@@ -147,6 +144,24 @@ def test_collection_post_bad_json(testapp, item_type):
         assert res.json['errors']
 
 
+def test_collection_post_malformed_json(testapp):
+    item = '{'
+    headers = {'Content-Type': 'application/json'}
+    res = testapp.post('/organism', item, status=400, headers=headers)
+    assert res.json['detail'].startswith('Expecting')
+
+
+def test_collection_post_missing_content_type(testapp):
+    item = '{}'
+    testapp.post('/organism', item, status=415)
+
+
+def test_collection_post_bad_(anontestapp):
+    import base64
+    value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
+    anontestapp.post_json('/organism', {}, headers={'Authorization': value}, status=401)
+
+
 def test_actions_filtered_by_permission(testapp, authenticated_testapp, sources):
     location = sources[0]['@id']
 
@@ -189,10 +204,11 @@ def test_post_duplicate_uuid(testapp):
     testapp.post_json('/labs/', BAD_LABS[1], status=409)
 
 
-def test_user_effective_principals(users, anontestapp):
+def test_user_effective_principals(users, anontestapp, execute_counter):
     email = users[0]['email']
-    res = anontestapp.get('/@@testing-user',
-                          extra_environ={'REMOTE_USER': str(email)})
+    with execute_counter.expect(1):
+        res = anontestapp.get('/@@testing-user',
+                              extra_environ={'REMOTE_USER': str(email)})
     assert sorted(res.json['effective_principals']) == [
         'group.admin',
         'group.programmer',

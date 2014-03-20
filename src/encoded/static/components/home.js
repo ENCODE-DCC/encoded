@@ -5,8 +5,8 @@ var globals = require('./globals');
 
 var SignIn = module.exports.SignIn = React.createClass({
     render: function() {
-        var hidden = !this.props.session || this.props.session.persona;
-        var disabled = !this.props.personaReady;
+        var hidden = !this.props.session || this.props.session['auth.userid'];
+        var disabled = !this.props.loadingComplete;
         return (
             <div id="signin-box" className="span3" hidden={hidden}>
                 <h4>Data Providers</h4>
@@ -20,7 +20,7 @@ var SignIn = module.exports.SignIn = React.createClass({
 
 var Home = module.exports.Home = React.createClass({
     render: function() {
-        var hidden = !this.props.session || this.props.session.persona;
+        var hidden = !this.props.session || this.props.session['auth.userid'];
         return (
             <div>
                 <div className="homepage-main-box panel-gray">

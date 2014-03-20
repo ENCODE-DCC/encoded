@@ -1,0 +1,303 @@
+[
+    {
+        "accession": "ENCLB309ZZZ",
+        "aliases": [
+            "richard-myers:SL14572"
+        ],
+        "award": "U54HG004576",
+        "biosample": "ENCBS000AAA",
+        "documents": [
+            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
+        ],
+        "extraction_method": "see document",
+        "fragmentation_method": "bioruptor twin",
+        "lab": "richard-myers",
+        "library_size_selection_method": "SPRI beads AMPURE",
+        "lysis_method": "see document",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "100-300",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290"
+    },
+    {
+        "accession": "ENCLB310ZZZ",
+        "aliases": [
+            "richard-myers:SL16339"
+        ],
+        "award": "U54HG004576",
+        "biosample": "ENCBS001AAA",
+        "documents": [
+            "ENCODE:Myers_Lab_ChIP-seq_Protocol_v042211"
+        ],
+        "extraction_method": "see document",
+        "fragmentation_method": "bioruptor twin",
+        "lab": "richard-myers",
+        "library_size_selection_method": "SPRI beads AMPURE",
+        "lysis_method": "see document",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "100-300",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "8492c1ec-5870-4f85-9693-8a7cabe320a9"
+    },
+    {
+        "accession": "ENCLB055ZZZ",
+        "aliases": [
+            "thomas-gingeras:SID38806"
+        ],
+        "award": "U54HG007004",
+        "biosample": "ENCBS087RNA",
+        "documents": [
+            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
+            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38806"
+        ],
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
+        "fragmentation_method": "covaris sheering",
+        "lab": "thomas-gingeras",
+        "library_size_selection_method": "gel",
+        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
+        "nucleic_acid_term_id": "SO:0000871",
+        "nucleic_acid_term_name": "polyadenylated mRNA",
+        "size_range": ">200",
+        "strand_specificity": true,
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "7013e140-dc14-4893-b0b1-0d7bb293730c"
+    },
+    {
+        "accession": "ENCLB056ZZZ",
+        "aliases": [
+            "thomas-gingeras:SID38807"
+        ],
+        "award": "U54HG007004",
+        "biosample": "ENCBS088RNA",
+        "documents": [
+            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "thomas-gingeras:Ambion-NIST_Spikes_Corrected",
+            "thomas-gingeras:Gingeras_K562_long_polyA_RNA_evaluation_protocol_SID38807"
+        ],
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
+        "fragmentation_method": "covaris sheering",
+        "lab": "thomas-gingeras",
+        "library_size_selection_method": "gel",
+        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
+        "nucleic_acid_term_id": "SO:0000871",
+        "nucleic_acid_term_name": "polyadenylated mRNA",
+        "size_range": ">200",
+        "strand_specificity": true,
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "f0a7aa18-6bb9-441a-b1aa-d6a385608407"
+    },
+    {
+        "accession": "ENCLB065ZZZ",
+        "aliases": [
+            "thomas-gingeras:SID38815"
+        ],
+        "award": "U54HG007004",
+        "biosample": "ENCBS087RNA",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
+        "lab": "thomas-gingeras",
+        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
+        "nucleic_acid_term_id": "SO:0000356",
+        "nucleic_acid_term_name": "RNA",
+        "size_range": ">200",
+        "strand_specificity": true,
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "181a11eb-68b9-43b3-9430-a5253a75e8f5"
+    },
+    {
+        "accession": "ENCLB066ZZZ",
+        "aliases": [
+            "thomas-gingeras:SID38816"
+        ],
+        "award": "U54HG007004",
+        "biosample": "ENCBS088RNA",
+        "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
+        "lab": "thomas-gingeras",
+        "lysis_method": "miRNeasy Mini kit (QIAGEN cat#:217004)",
+        "nucleic_acid_term_id": "SO:0000356",
+        "nucleic_acid_term_name": "RNA",
+        "size_range": ">200",
+        "strand_specificity": true,
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "e4824882-0ad8-4009-a169-44d5955800af"
+    },
+    {
+        "accession": "ENCLB067ZZZ",
+        "aliases": [
+            "thomas-gingeras:SID38822"
+        ],
+        "award": "U54HG007004",
+        "biosample": "ENCBS087RNA",
+        "depleted_in_term_id": [
+            "SO:0000871"
+        ],
+        "depleted_in_term_name": [
+            "polyadenylated mRNA"
+        ],
+        "documents": [
+            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38822"
+        ],
+        "extraction_method": "Qiagen #74204",
+        "lab": "thomas-gingeras",
+        "lysis_method": "Qiagen #74204",
+        "nucleic_acid_term_id": "SO:0000356",
+        "nucleic_acid_term_name": "RNA",
+        "size_range": "<200",
+        "strand_specificity": true,
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "treatments": [
+            "8661b120-5c82-11e3-949a-0800200c9a66"
+        ],
+        "uuid": "2f631ab4-83ac-4bc6-9acb-81654eaba017"
+    },
+    {
+        "accession": "ENCLB068ZZZ",
+        "aliases": [
+            "thomas-gingeras:SID38823"
+        ],
+        "award": "U54HG007004",
+        "biosample": "ENCBS088RNA",
+        "depleted_in_term_id": [
+            "SO:0000871"
+        ],
+        "depleted_in_term_name": [
+            "polyadenylated mRNA"
+        ],
+        "documents": [
+            "thomas-gingeras:Gingeras_K562_small_total_RNA_evaluation_protocol_SID38823"
+        ],
+        "extraction_method": "Qiagen #74204",
+        "lab": "thomas-gingeras",
+        "lysis_method": "Qiagen #74204",
+        "nucleic_acid_term_id": "SO:0000356",
+        "nucleic_acid_term_name": "RNA",
+        "size_range": "<200",
+        "strand_specificity": true,
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "treatments": [
+            "8661b120-5c82-11e3-949a-0800200c9a66"
+        ],
+        "uuid": "ee512537-05f0-4ac4-a9e6-718aea48f565"
+    },
+    {
+        "accession": "ENCLB057ZZZ",
+        "award": "U54HG007005",
+        "biosample": "ENCBS087RNA",
+        "documents": [
+            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
+        ],
+        "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
+        "fragmentation_method": "chemical (part of Illumina TruSeq mRNA Kit)",
+        "lab": "brenton-graveley",
+        "library_size_selection_method": "SPRI beads",
+        "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
+        "nucleic_acid_term_id": "SO:0000356",
+        "nucleic_acid_term_name": "RNA",
+        "size_range": ">200",
+        "strand_specificity": true,
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "5b9eb9a1-6c21-45dd-988b-0e23fddba71d"
+    },
+    {
+        "accession": "ENCLB072ZZZ",
+        "award": "RC2HG005602",
+        "biosample": "ENCBS044ENC",
+        "documents": [
+            "ENCODE:Snyder_Histone_Mouse_protocol"
+        ],
+        "fragmentation_method": "sonication",
+        "lab": "sherman-weissman",
+        "library_size_selection_method": "gel",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "150-350",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "6c8689d9-427a-464e-93bd-ad7a72b31ae2"
+    },
+    {
+        "accession": "ENCLB304ZZZ",
+        "award": "RC2HG005602",
+        "biosample": "ENCBS044ENC",
+        "documents": [
+            "ENCODE:Snyder_Histone_Mouse_protocol"
+        ],
+        "fragmentation_method": "sonication",
+        "lab": "sherman-weissman",
+        "library_size_selection_method": "gel",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "150-350",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "835e166d-0253-41ce-add2-de67429a3612"
+    },
+    {
+        "accession": "ENCLB071ZZZ",
+        "award": "RC2HG005602",
+        "biosample": "ENCBS044ENC",
+        "documents": [
+            "ENCODE:Snyder_Histone_Mouse_protocol"
+        ],
+        "fragmentation_method": "sonication",
+        "lab": "sherman-weissman",
+        "library_size_selection_method": "gel",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "size_range": "150-350",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "uuid": "88760932-54b6-46fe-951d-fc80e89a0d77"
+    },
+    {
+        "accession": "ENCLB058ZZZ",
+        "award": "U54HG007005",
+        "biosample": "ENCBS088RNA",
+        "documents": [
+            "thomas-gingeras:Ambion-NIST_Spikes_Sequences_Concentrations",
+            "thomas-gingeras:Ambion-NIST_Spikes_Corrected"
+        ],
+        "extraction_method": "Trizol (LifeTech cat#: 15596-018)",
+        "fragmentation_method": "chemical (part of Illumina TruSeq mRNA Kit)",
+        "lab": "brenton-graveley",
+        "library_size_selection_method": "SPRI beads",
+        "lysis_method": "Trizol (LifeTech cat#: 15596-018)",
+        "nucleic_acid_term_id": "SO:0000356",
+        "nucleic_acid_term_name": "RNA",
+        "size_range": ">200",
+        "strand_specificity": true,
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "9679f34a-ed04-45f2-8129-5ffbcc565bde"
+    },
+    {
+        "accession": "ENCLB163ZZZ",
+        "award": "U54HG004576",
+        "biosample": "ENCBS417ENC",
+        "documents": [
+            "ENCODE:Myers_Methyl450_protocol"
+        ],
+        "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
+        "lab": "richard-myers",
+        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "9a230485-0062-4590-be42-6ea7c4258941"
+    },
+    {
+        "_test": "test -new",
+        "accession": "ENCLB158ZZZ",
+        "award": "U54HG004576",
+        "biosample": "ENCBS417ENC",
+        "documents": [
+            "ENCODE:Myers_Methyl450_protocol"
+        ],
+        "extraction_method": "QIAGEN DNeasy Blood & Tissue Kit",
+        "lab": "richard-myers",
+        "lysis_method": "QIAGEN DNeasy Blood & Tissue Kit",
+        "nucleic_acid_term_id": "SO:0000352",
+        "nucleic_acid_term_name": "DNA",
+        "submitted_by": "facilisi.tristique@potenti.vivamus",
+        "uuid": "b7a6de88-4d97-44e4-b4b5-3e09ec51de79"
+    }
+]

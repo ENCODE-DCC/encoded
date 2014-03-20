@@ -17,6 +17,7 @@ requires = [
     'pyramid_multiauth',
     'pyramid_tm',
     'python-magic',
+    'pytz',
     'rfc3987',
     'setuptools',
     'strict_rfc3339',
@@ -53,6 +54,7 @@ setup(
     entry_points='''
         [console_scripts]
 
+        add-date-created = encoded.commands.add_date_created:main
         check-rendering = encoded.commands.check_rendering:main
         deploy = encoded.commands.deploy:main
         dev-servers = encoded.commands.dev_servers:main
@@ -62,6 +64,7 @@ setup(
         create-mapping = encoded.commands.create_mapping:main
         generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
+        spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         sync_edw = encoded.commands.sync_edw:main
         update-keys-links = encoded.commands.update_keys_links:main
         upgrade = encoded.commands.upgrade:main

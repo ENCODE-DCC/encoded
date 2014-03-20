@@ -29,7 +29,7 @@ Set a session key::
 
 To start the application, in one terminal startup the database servers with::
 
-    $ bin/dev-servers development.ini --app app --clear --init --load
+    $ bin/dev-servers development.ini --app-name app --clear --init --load
 
 This will first clear any existing data in /tmp/encoded.
 Then postgres and elasticsearch servers will be initiated within /tmp/encoded.
@@ -117,3 +117,23 @@ Also see the `Compass Command Line Documentation <http://compass-style.org/help/
 And of course::
 
     $ compass help
+
+
+SublimeLinter
+=============
+
+To setup SublimeLinter with Sublime Text 3, first install the linters::
+
+    $ easy_install-2.7 flake8
+    $ npm install -g jshint
+    $ npm install -g STRML/JSXHint
+
+After first setting up `Package Control`_ (follow install and usage instructions on site), use it to install the following packages in Sublime Text 3:
+
+    * sublimelinter
+    * sublimelinter-flake8
+    * sublimelinter-jsxhint
+    * jsx
+    * sublimelinter-jshint
+
+.. _`Package Control`: https://sublime.wbond.net/
