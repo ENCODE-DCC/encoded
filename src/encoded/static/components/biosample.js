@@ -135,7 +135,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <section>
                             <hr />
                             <h4>Derived from biosample</h4>
-                            <a className="non-dl-item" href={context.derived_from.accession}> {context.derived_from.accession} </a>
+                            <a className="non-dl-item" href={context.derived_from['@id']}> {context.derived_from.accession} </a>
                         </section>
                     : null}
 
@@ -143,7 +143,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <section>
                             <hr />
                             <h4>Separated from biosample</h4>
-                            <a className="non-dl-item" href={context.part_of.accession}> {context.part_of.accession} </a>
+                            <a className="non-dl-item" href={context.part_of['@id']}> {context.part_of.accession} </a>
                         </section>
                     : null}
 
