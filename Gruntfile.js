@@ -45,7 +45,7 @@ module.exports = function(grunt) {
                     },
                 },
                 transform: [
-                    'reactify',
+                    [{es6: true}, 'reactify'],
                 ],
                 bundle: {
                     debug: true,
@@ -90,7 +90,7 @@ module.exports = function(grunt) {
                     debug: true,
                 },
                 transform: [
-                    'reactify',
+                    [{es6: true}, 'reactify'],
                 ],
                 external: [
                     'assert',
@@ -134,28 +134,27 @@ module.exports = function(grunt) {
         });
 
         for (var i = 0; i < reqs.length; i++) {
-            b = b.require.apply(b, reqs[i]);
+            b.require.apply(b, reqs[i]);
         }
 
         var external = data.external || [];
         for (var i = 0; i < external.length; i++) {
-            b = b.external(external[i]);
+            b.external(external[i]);
         }
 
         bundle.filter = function (id) {
             return external.indexOf(id) < 0;
         };
 
-
         var ignore = data.ignore || [];
         for (var i = 0; i < ignore.length; i++) {
-            b = b.ignore(ignore[i]);
+            b.ignore(ignore[i]);
         }
 
-        var transform = data.transform || [];
-        for (var i = 0; i < transform.length; i++) {
-            b = b.transform(transform[i]);
-        }
+        (data.transform || []).forEach(function (args) {
+            if (typeof args === 'string') args = [args];
+            b.transform.apply(b, args);
+        });
 
         var dest = path.resolve(data.dest);
         var root = data.root ? path.resolve(data.root) : path.resolve(path.dirname(dest));
