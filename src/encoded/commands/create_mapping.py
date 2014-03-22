@@ -195,7 +195,6 @@ def es_mapping(mapping):
             'audit': {
                 'type': 'object',
                 'include_in_all': False,
-                'index': 'not_analyzed',
                 'properties': {
                     'category': {
                         'type': 'string',

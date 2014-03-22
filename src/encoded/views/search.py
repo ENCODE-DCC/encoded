@@ -147,7 +147,7 @@ def search(context, request, search_type=None):
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, sorted(fields), principals)
-    
+
     # Handling object fields return for ES 1.0.+
     if not len(fields):
         del(query['fields'])
@@ -209,9 +209,14 @@ def search(context, request, search_type=None):
         facets = {'Data Type': 'type'}
         query['facets']['type'] = {'terms': {'field': '_type', 'size': 99999}}
 
+    # Adds Audit category facet for admins
     if request.has_permission('search_audit'):
-        facets.append(('Audit category', 'audit.category'))
-        query['facets']['audit.category'] = {'terms': {'field': 'audit.category', 'size': 99999}}
+        facets.update({'Audit category': 'audit.category'})
+        query['facets']['audit.category'] = {'terms': {
+            'field': 'audit.category',
+            'size': 99999
+            }
+        }
 
     # Execute the query
     results = es.search(query, index='encoded', doc_type=doc_types, size=size)

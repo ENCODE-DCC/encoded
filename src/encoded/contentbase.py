@@ -1288,7 +1288,7 @@ def item_index_data(context, request):
         'keys': keys,
         'principals_allowed_view': sorted(principals),
         'url': request.resource_path(context),
-        'audit': request.audit(embedded, embedded['@type']),
+        'audit': [a.__json__() for a in request.audit(embedded, embedded['@type'])],
     }
 
     return document
