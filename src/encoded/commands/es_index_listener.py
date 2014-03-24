@@ -81,7 +81,8 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, status_ho
                     status['last_indexing_error_timestamp'] = timestamp
                 else:
                     timestamp = datetime.datetime.now().isoformat()
-                    log.debug(res.json)
+                    if res.json.get('txn_count', True):
+                        log.debug(res.json)
                     status['last_result'] = res.json
                     status['last_stats'] = {
                         k: int(v) for k, v in urlparse.parse_qsl(
