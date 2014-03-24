@@ -116,15 +116,10 @@
         },
         "derived_from": {
             "title": "Derived from",
-            "description": "The biosamples from which the sample derives from via constructs or treatments.",
-            "type":  "array",
-            "default": [],
-            "items": {
-                "description": "A biosample that the sample derives from via a construct or treatment.",
-                "comment": "See biosample.json for available identifiers.",
-                "type": "string",
-                "linkTo": "biosample"
-            }
+            "description": "A biosample that the sample derives from via a construct or treatment.",
+            "comment": "See biosample.json for available identifiers.",
+            "type": "string",
+            "linkTo": "biosample"
         },
         "pooled_from": {
             "title": "Pooled from",
@@ -140,15 +135,10 @@
         },
         "part_of": {
             "title": "Separated from",
-            "description": "The biosamples from which a discrete component were taken. That component is this biosample.",
-            "type":  "array",
-            "default": [],
-            "items": {
-                "description": "A biosample from which a discrete component was taken. That component is this biosample.",
-                "comment": "See biosamples.json for available identifiers.",
-                "type": "string",
-                "linkTo": "biosample"
-            }
+            "description": "A biosample from which a discrete component was taken. That component is this biosample.",
+            "comment": "See biosamples.json for available identifiers.",
+            "type": "string",
+            "linkTo": "biosample"
         },
         "note": {
             "title": "Note",

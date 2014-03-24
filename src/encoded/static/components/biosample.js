@@ -139,20 +139,19 @@ var Biosample = module.exports.Biosample = React.createClass({
                         </section>
                     : null}
 
-                     {context.derived_from.length ?
+                     {context.derived_from ?
                         <section>
                             <hr />
-                            <h4>Derived from biosamples</h4>
-                            <ul className="non-dl-list">
-                                {context.derived_from.map(function (biosample) {
-                                    return (
-                                        <li key={biosample['@id']}>
-                                            <a href={biosample['@id']}>{biosample.accession}</a>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
+                            <h4>Derived from biosample</h4>
+                            <a className="non-dl-item" href={context.derived_from['@id']}> {context.derived_from.accession} </a>
+                        </section>
+                    : null}
 
+                     {context.part_of ?
+                        <section>
+                            <hr />
+                            <h4>Separated from biosample</h4>
+                            <a className="non-dl-item" href={context.part_of['@id']}> {context.part_of.accession} </a>
                         </section>
                     : null}
 
