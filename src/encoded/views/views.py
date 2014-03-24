@@ -488,9 +488,7 @@ class Platform(Collection):
         'title': '{term_name}',
         '$templated': True,
     }
-    unique_key = 'platform:term_id'
-    item_name_key = 'term_id'
-    item_keys = ALIAS_KEYS + ['term_name', 'term_id']
+    item_keys = ALIAS_KEYS
 
 
 @location('libraries')
@@ -609,7 +607,7 @@ class Experiment(Dataset):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-
+    
     class Item(Dataset.Item):
         base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {

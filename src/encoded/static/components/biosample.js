@@ -6,6 +6,9 @@ var url = require('url');
 var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
+var dbxref = require('./dbxref');
+
+var DbxrefList = dbxref.DbxrefList;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
@@ -98,11 +101,16 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
 
+                        <dt>Grant</dt>
+                        <dd>{context.award.name}</dd>
+
                         <dt hidden={!context.aliases.length}>Aliases</dt>
                         <dd hidden={!context.aliases.length}>{aliasList}</dd>
 
-                        <dt>Grant</dt>
-                        <dd>{context.award.name}</dd>
+                        <dt hidden={!context.dbxrefs.length}>External resources</dt>
+                        <dd hidden={!context.dbxrefs.length}>
+                            <DbxrefList values={context.dbxrefs} />
+                        </dd>
 
                         <dt hidden={!context.note}>Note</dt>
                         <dd hidden={!context.note}>{context.note}</dd>

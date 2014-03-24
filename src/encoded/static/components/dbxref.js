@@ -22,15 +22,10 @@ var Dbxref = module.exports.Dbxref = function (props) {
         local = props.target_gene;
     // deal with UCSC links
     }
-    if (prefix == "UCSC_encode_db" || prefix == "ucsc_encode_db") {
-        if (local.indexOf("wgEncodeEM") === 0) {
-            base += "&db=mm9&hgt_mdbVal1="; // mm9 - db is mouse
-        } else if (local.indexOf("wgEncodeEH") === 0){
-            base += "&db=hg19&hgt_mdbVal1="; // hg19 - db is human
-        } else {
-            return <span>{value}</span>;
-        }
+    if (prefix === "UCSC-ENCODE-cv") {
+        local = '"' + local + '"';
     }
+
     return <a href={base + local}>{value}</a>;
 };
 
