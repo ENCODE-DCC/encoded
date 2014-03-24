@@ -29,7 +29,9 @@ DEFAULT_COLLECTIONS = [
     'rnai_characterization',
     'construct_characterization',
     'document',
-    'treatment',
+    'antibody_lot',
+    'platform',
+    'treatment'
 ]
 DEFAULT_COLLECTIONS = []
 
