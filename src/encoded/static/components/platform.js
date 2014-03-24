@@ -16,21 +16,14 @@ var Panel = module.exports.Panel = React.createClass({
                 <dt>Platform name</dt>
                 <dd><a href={context.url}>{context.title}</a></dd>
 
-                <dt>GEO Platform ID(s)</dt>
-                <dd>
-                    {context.geo_dbxrefs.length ?
-                        <DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
-                    : <em>None submitted</em> }
-                </dd>
-
                 <dt>OBI ID</dt>
                 <dd><Dbxref value={context.term_id} /></dd>
 
-                <dt>ENCODE2 ID</dt>
+                <dt>External resources</dt>
                 <dd>
-                    {context.encode2_dbxrefs.length ?
-                        <DbxrefList values={context.encode2_dbxrefs} prefix="ENCODE2" />
-                    : null}
+                    {context.dbxrefs.length ?
+                        <DbxrefList values={context.dbxrefs} />
+                    : <em>None submitted</em> }
                 </dd>
             </dl>
         );
