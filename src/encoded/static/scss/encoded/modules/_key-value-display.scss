@@ -42,4 +42,134 @@ dd ul, .multi-value {
 	display: inline-block;
 }
 
+
+.document-info {
+	position: relative;
+	margin: 0;
+	height: 32px;
+	padding: 0;
+	background-color: #eff6fc;
+	border-top: 1px solid #fff;
+}
+
+
+.key-value-trigger {
+	margin: 0;
+
+	a {
+		display: block;
+		height: 100%;
+		padding: 0 10px;
+		line-height: 32px;
+		color: #0a253d;
+
+		&:hover {
+			color: #fff;
+			background-color: darken(#eff6fc,50%);
+			text-decoration: none;
+		}
+
+		dt {
+			display: inline-block;
+		}
+
+		dd {
+			margin-left: 5px;
+			display: inline-block;
+		}
+	}
+
+	&.active {
+		a {
+			background-color: darken(#eff6fc,50%);
+
+			dt {
+				color: #fff;
+			}
+
+			dd {
+				color: #fff;
+			}
+		}
+	}
+}
+
+
+.key-value-popover {
+	position: absolute;
+	padding: 10px;
+	bottom: 44px;
+	width: 90%;
+	left: 50%;
+	margin: 0 0 0 -45%;
+	visibility: hidden;
+	border: 1px solid #a0a0a0;
+	@include border-radius(10px);
+	@include box-shadow(0 4px 8px 0 rgba(0,0,0,.4));
+	background-color: #fff;
+	opacity: 0;
+	@include transition(all 500ms);
+
+	&.active {
+		visibility: visible;
+		opacity: 1;
+	}
+
+	&:after,
+	&:before {
+		top: 100%;
+		left: 50%;
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+	}
+
+	&:after {
+		border-color: rgba(255, 255, 255, 0);
+		border-top-color: #fff;
+		border-width: 10px;
+		margin-left: -10px;
+	}
+
+	&:before {
+		border-color: rgba(128, 128, 128, 0);
+		border-top-color: #a0a0a0;
+		border-width: 11px;
+		margin-left: -11px;
+	}
+
+	dt {
+		margin-top: 8px;
+		font-size: 14px;
+		color: #0a253d;
+
+		&:first-child {
+			margin-top: 0;
+		}
+
+		&:after {
+			content: ":";
+		}
+
+		&:first-child {
+			margin-top: 0;
+		}
+	}
+
+	dd {
+		margin-left: 0;
+		font-size: 14px;
+		line-height: 13px;
+		color: #0a253d;
+
+		em {
+			color: #808080;
+		}
+	}
+}
+
+
 // responsive styles in _state.scss

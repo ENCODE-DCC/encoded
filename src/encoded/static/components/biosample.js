@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 'use strict';
-var React = require('react');
+var React = require('react/addons');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
@@ -194,7 +194,9 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {context.protocol_documents.length ?
                     <div>
                         <h3>Protocol documents</h3>
-                        {context.protocol_documents.map(Panel)}
+                        <div className="row">
+                            {context.protocol_documents.map(Panel)}
+                        </div>
                     </div>
                 : null}
 
@@ -405,7 +407,7 @@ var RNAi = module.exports.RNAi = React.createClass({
         var context = this.props.context;
         return (
              <dl className="key-value">
-            	{context.target ? <dt>Target</dt> : null}
+                {context.target ? <dt>Target</dt> : null}
                 {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
                 
                 {context.rnai_type ? <dt>RNAi type</dt> : null}
@@ -430,14 +432,69 @@ var RNAi = module.exports.RNAi = React.createClass({
 globals.panel_views.register(RNAi, 'rnai');
 
 
+var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
+    getInitialState: function() {
+        return {
+            popoverVisible: false
+        };
+    },
+
+    // Clicking the Lab bar inverts visible state of the popover
+    handleClick: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.setState({
+            popoverVisible: !this.state.popoverVisible
+        });
+    },
+
+    render: function() {
+        var context = this.props.context;
+        var cx = React.addons.classSet;
+        var popoverClass = cx({
+            "key-value-popover": true,
+            "active": this.state.popoverVisible
+        });
+        var keyClass = cx({
+            "key-value-trigger": true,
+            "active": this.state.popoverVisible
+        });
+        console.dir(context);
+
+        return (
+            <div className="document-info">
+                <dl className={keyClass}>
+                    <a href="#" onClick={this.handleClick}>
+                        <dt>Lab</dt>
+                        <dd>{context.lab.title}</dd>
+                        <i className="icon icon-chevron-up"></i>
+                    </a>
+                </dl>
+                <dl className={popoverClass}>
+                    <dt>Caption</dt>
+                    {context.caption ? <dd>{context.caption}</dd> : <dd><em>No caption</em></dd>}
+
+                    <dt>Submitted by</dt>
+                    <dd>{context.submitted_by.title}</dd>
+
+                    <dt>Grant</dt>
+                    <dd>{context.award.name}</dd>
+                </dl>
+            </div>
+        );
+    }
+});
+
+
 var Document = module.exports.Document = React.createClass({
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
-        var figure, download, src, imgClass, alt;
+        var figure, download, src, alt;
         var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
+
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             if (context.attachment.type.split('/', 1)[0] == 'image') {
@@ -445,7 +502,7 @@ var Document = module.exports.Document = React.createClass({
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
-                alt = "Characterization Image"
+                alt = "Characterization Image";
             } else if (context.attachment.type == "application/pdf"){
                 src = "/static/img/file-pdf.png";
                 alt = "Characterization PDF Icon";
@@ -459,8 +516,9 @@ var Document = module.exports.Document = React.createClass({
                 </a>
             );
             download = (
-                <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
+                <a data-bypass="true" className="dl-bar" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
+                    <i className="icon icon-download"></i>
                 </a>
             );
         } else {
@@ -475,36 +533,16 @@ var Document = module.exports.Document = React.createClass({
         }
 
         return (
-            <section className="type-document view-detail panel status-none">
-                <div className="container">
-                    <div className="row">
-                        <div className="span6">
-                            <figure>
-                                {figure}
-                            </figure>
-                        </div>
-                        <div className="span5">
-                            <h3 className="sentence-case">{context.document_type}</h3>
-                            <p>{context.description}</p>
-                            <dl className="key-value">
-                                {context.caption ? <dt>Caption</dt> : null}
-                                {context.caption ? <dd>{context.caption}</dd> : null}
-
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
-
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
-
-                                <dt><i className="icon-download-alt"></i> Download</dt>
-                                <dd>{download}</dd>
-                            </dl>
-                        </div>
-                    </div>
+            <section className="span4 type-document view-detail panel status-none">
+                <figure>
+                    {figure}
+                </figure>
+                <div className="document-intro">
+                    <h3 className="sentence-case">{context.document_type}</h3>
+                    <p>{context.description}</p>
                 </div>
+                {download}
+                {this.transferPropsTo(<PopoverTrigger />)}
             </section>
         );
     }

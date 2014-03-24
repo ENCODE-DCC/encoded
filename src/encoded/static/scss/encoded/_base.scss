@@ -28,3 +28,9 @@ hr { clear: both; }
 
 .sentence-case::first-letter { text-transform: uppercase; }
 .sentence-case:first-letter { text-transform: uppercase; } // older browser support
+
+*, *:after, *:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}

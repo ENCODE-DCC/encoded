@@ -43,6 +43,9 @@
 // Large desktops
 @import "bootstrap/responsive-1200px-min";
 
+// Inserted, as Boostrap 2 has no support here
+@import "bootstrap/responsive-980px-1199px";
+
 // Tablets to regular desktops
 @import "bootstrap/responsive-768px-979px";
 

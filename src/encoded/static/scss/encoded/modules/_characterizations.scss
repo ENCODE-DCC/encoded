@@ -9,7 +9,7 @@
 }
 
 
-.type-characterization.view-detail figure, .type-document.view-detail figure {
+.type-characterization.view-detail figure {
 	@include border-radius($baseBorderRadius);
 	margin: 14px;
 	padding: 10px;
@@ -123,4 +123,68 @@ h3 .label {
 	.#{$item}.status-not-reviewed[href]    { background-color: darken($errorText, 10%); }
 
 	/* (gray) is the default if no class given */
+}
+
+
+$dl-bar-bg: #e5ebf0;
+$dl-bar-txt: #0a253d;
+
+.type-document.view-detail {
+	padding: 0;
+
+	figure {
+		float: left;
+		width: 130px;
+		height: 130px;
+		margin: 0 5px 0 0;
+		padding: 0;
+		background-color: #f00;
+	}
+}
+
+.document-intro {
+	height: 130px;
+	padding: 5px;
+
+	h3 {
+		margin: 0;
+		font-size: 16px;
+	}
+
+	p {
+		margin: 2px 0 0 0;
+		font-size: 14px;
+		word-wrap: break-word;
+	}
+}
+
+.dl-bar {
+	display: block;
+	position: relative;
+	height: 32px;
+	padding: 0 10px;
+	line-height: 32px;
+	color: $dl-bar-txt;
+	background-color: $dl-bar-bg;
+	@include text-shadow(0 1px #fff);
+	@include box-shadow(0 0 8px 0 darken($dl-bar-bg,10%) inset);
+	border-top: 1px solid #c0c0c0;
+	border-bottom: 1px solid darken($dl-bar-bg,10%);
+
+	&:hover {
+		color: #fff;
+		background-color: darken($dl-bar-bg,30%);
+		text-decoration: none;
+		@include text-shadow(0 1px #202020);
+		@include box-shadow(none);
+	}
+}
+
+
+.icon {
+	position: absolute;
+	top: 0;
+	right: 5px;
+	line-height: 32px;
+	font-size: 20px;
 }

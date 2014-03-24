@@ -127,7 +127,9 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 <div hidden={!Object.keys(documents).length}>
                     <h3>Protocols</h3>
-                    {documents}
+                    <div className="row">
+                        {documents}
+                    </div>
                 </div>
 
                 {replicates.map(function (replicate, index) {

@@ -560,7 +560,8 @@
         "organism": "human",
         "protocol_documents": [
             "ENCODE:Heart_STL003_excision_protocol",
-            "ENCODE:Heart_STL003_general_protocol"
+            "ENCODE:Heart_STL003_general_protocol",
+            "ENCODE:MCF-7_Crawford_growth_protocol"
         ],
         "source": "michael-snyder",
         "submitted_by": "dignissim.euismod@amet.habitant",
