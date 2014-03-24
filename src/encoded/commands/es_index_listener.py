@@ -5,7 +5,6 @@ Example.
 
 """
 
-from pyramid.settings import asbool
 from webtest import TestApp
 from ..storage import DBSession
 
@@ -32,6 +31,7 @@ DEFAULT_TIMEOUT = 60
 # See slide 9 at http://momjian.us/main/writings/pgsql/mvcc.pdf
 # https://devcenter.heroku.com/articles/postgresql-concurrency
 
+
 def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, status_holder=None):
     # Setting a value in a dictionary is atomic
     if status_holder is None:
@@ -50,7 +50,7 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, status_ho
 
     max_xid = 0
     engine = DBSession.bind  # DBSession.bind is configured by app init
-    # http://docs.sqlalchemy.org/en/latest/faq.html#how-do-i-get-at-the-raw-dbapi-connection-when-using-an-engine
+    # noqa http://docs.sqlalchemy.org/en/latest/faq.html#how-do-i-get-at-the-raw-dbapi-connection-when-using-an-engine
     connection = engine.pool.unique_connection()
     try:
         connection.detach()
@@ -126,14 +126,14 @@ def run(testapp, timeout=DEFAULT_TIMEOUT, dry_run=False, control=None, status_ho
 class ErrorHandlingThread(threading.Thread):
     def run(self):
         timeout = self._Thread__kwargs.get('timeout', DEFAULT_TIMEOUT)
-        status_holder =  self._Thread__kwargs.get('status_holder')
+        status_holder = self._Thread__kwargs.get('status_holder')
         if status_holder is None:
             status_holder = {'status': {}}
         status = status_holder['status'].copy()
         while True:
             try:
                 self._Thread__target(*self._Thread__args, **self._Thread__kwargs)
-            except (psycopg2.OperationalError, sqlalchemy.exc.OperationalError) as e:
+            except (psycopg2.OperationalError, sqlalchemy.exc.OperationalError):
                 # Handle database restart
                 log.exception('Database went away')
                 timestamp = datetime.datetime.now().isoformat()
@@ -145,7 +145,7 @@ class ErrorHandlingThread(threading.Thread):
                 log.debug('sleeping')
                 time.sleep(timeout)
                 continue
-            except Exception as e:
+            except Exception:
                 # Unfortunately mod_wsgi does not restart immediately
                 log.exception('Exception in listener, restarting process at next request.')
                 os.kill(os.getpid(), signal.SIGINT)
@@ -190,14 +190,13 @@ def composite(loader, global_conf, **settings):
     @atexit.register
     def shutdown_listener():
         log.debug('shutting down listening thread')
-        control  # Prevent early gc 
+        control  # Prevent early gc
         controller.shutdown(socket.SHUT_RDWR)
         listener.join()
 
-
     def status_app(environ, start_response):
         status = '200 OK'
-        response_headers = [('Content-type','application/json')]
+        response_headers = [('Content-type', 'application/json')]
         start_response(status, response_headers)
         return [json.dumps(status_holder['status'])]
 
