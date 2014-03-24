@@ -177,11 +177,9 @@ def search(context, request, search_type=None):
         if field not in ['type', 'searchTerm', 'limit',
                          'format', 'frame', 'datastore']:
             if term == 'other':
-                query_filters.append({
-                    'missing': {
-                        'field': 'embedded.' + field
-                        }
-                    })
+                query_filters.append({'missing': {'field': 'embedded.' + field}})
+            elif field.startswith('audit.'):
+                query_filters.append({'term': {field: term}})
             else:
                 if field in used_filters:
                     for f in query_filters:
@@ -259,6 +257,15 @@ def search(context, request, search_type=None):
                 'terms': {
                     'principals_allowed_view': principals
                 }
+            }
+        }
+
+    # Adds Audit category facet for admins
+    if request.has_permission('search_audit'):
+        facets.update({'Audit category': 'audit.category'})
+        query['facets']['audit.category'] = {'terms': {
+            'field': 'audit.category',
+            'size': 99999
             }
         }
 

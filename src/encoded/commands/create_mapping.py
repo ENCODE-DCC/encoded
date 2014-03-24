@@ -191,6 +191,27 @@ def es_mapping(mapping):
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
+            },
+            'audit': {
+                'type': 'object',
+                'include_in_all': False,
+                'properties': {
+                    'category': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                    },
+                    'detail': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                    },
+                    'level_name': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                    },
+                    'level': {
+                        'type': 'integer',
+                    },
+                },
             }
         }
     }
