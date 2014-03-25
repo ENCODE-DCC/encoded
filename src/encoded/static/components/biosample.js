@@ -459,7 +459,6 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
             "key-value-trigger": true,
             "active": this.state.popoverVisible
         });
-        console.dir(context);
 
         return (
             <div className="document-info">
@@ -542,7 +541,7 @@ var Document = module.exports.Document = React.createClass({
                     <p>{context.description}</p>
                 </div>
                 {download}
-                {this.transferPropsTo(<PopoverTrigger />)}
+                <PopoverTrigger context={context} />
             </section>
         );
     }
