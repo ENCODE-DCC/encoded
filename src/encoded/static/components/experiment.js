@@ -271,7 +271,7 @@ var Replicate = module.exports.Replicate = function (props) {
     var replicate = props.replicate;
     var library = replicate.library;
     var biosample = library && library.biosample;
-    var paired_end = replicate.paired_ended.toString();
+    var paired_end = replicate.paired_ended;
     return (
         <div key={props.key}>
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
@@ -289,8 +289,8 @@ var Replicate = module.exports.Replicate = function (props) {
                     </a>{' '}-{' '}{biosample.biosample_term_name}
                 </dd> : null}
                 
-                {paired_end ? <dt>Paired end</dt> : null}
-                {paired_end ? <dd>{paired_end}</dd> : null}
+                <dt>Run type</dt>
+                <dd>{paired_end ? 'paired-end' : 'single-end'}</dd>
             
                 {replicate.read_length ? <dt>Read length</dt> : null}
                 {replicate.read_length ? <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd> : null}
