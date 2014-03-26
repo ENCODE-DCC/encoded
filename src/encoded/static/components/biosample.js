@@ -16,6 +16,7 @@ var FetchedItems = fetched.FetchedItems;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
+    console.dir(props);
     var context;
     if (props['@id']) {
         context = props;
@@ -453,6 +454,9 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
         this.setState({
             popoverVisible: !this.state.popoverVisible
         });
+
+        // Tell parent (Document) about new popover state
+        this.props.onPopoverClick({popoverVisible: !this.state.popoverVisible});
     },
 
     render: function() {
@@ -493,6 +497,9 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
 
 
 var Document = module.exports.Document = React.createClass({
+    handlePopoverClick: function(popoverVisible) {
+    },
+
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
@@ -548,7 +555,7 @@ var Document = module.exports.Document = React.createClass({
                     <p>{context.description}</p>
                 </div>
                 {download}
-                <PopoverTrigger context={context} />
+                <PopoverTrigger context={context} onPopoverClick={this.handlePopoverClick} />
             </section>
         );
     }
