@@ -154,6 +154,33 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Target, 'target');
 
+    // Determine whether the given term is selected, and return the href for the term
+    function termSelected(term, field, filters) {
+        var selected = 0;
+        var link = '';
+        for (var filter in filters) {
+            if (filters[filter]['term'] == term && filters[filter]['field'] == field) {
+                selected = 1;
+                link = filters[filter]['remove'];
+            }
+        }
+        return {selected: selected, link: link};
+    }
+
+    // Determine whether any of the given terms are selected
+    function anyTermSelected(terms, field, filters) {
+        for(var oneTerm in terms) {
+            console.log('term: ' + oneTerm);
+            console.log(terms);
+            console.log('field: ' + field);
+            console.log(filters);
+            if(termSelected(terms[oneTerm].term, field, filters).selected) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     var Term = search.Term = React.createClass({
         render: function () {
             var filters = this.props.filters;
@@ -164,15 +191,10 @@ var Dbxref = dbxref.Dbxref;
             var field = this.props.facet['field'];
             var barStyle = {
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
-            }
-            var selected = 0;
-            var link = '';
-            for (var filter in filters) {
-                if (filters[filter]['term'] == term && filters[filter]['field'] == field) {
-                    selected = 1;
-                    link = filters[filter]['remove'];
-                }
-            }
+            };
+            var termSelectedInfo = termSelected(term, field, filters);
+            var selected = termSelectedInfo.selected;
+            var link = termSelectedInfo.link;
             if(selected) {
                 return (
                     <li id="selected" key={term}>
@@ -219,11 +241,15 @@ var Dbxref = dbxref.Dbxref;
                 }
                 return term.count > 0;
             });
+            var moreTerms = terms.slice(5);
             var title = facet['title'];
             var field = facet['field'];
-            var total = facet['total']
+            var total = facet['total'];
             var termID = title.replace(/\s+/g, '');
             var TermComponent = field === 'type' ? TypeTerm : Term;
+            var moreTermSelected = anyTermSelected(moreTerms, field, filters);
+            var moreSecClass = 'collapse' + (moreTermSelected ? ' in' : '');
+            var seeMoreClass = 'btn btn-link' + (moreTermSelected ? '' : ' collapsed');
             return (
                 <div className="facet" key={field} hidden={terms.length === 0}>
                     <h5>{title}</h5>
@@ -234,8 +260,8 @@ var Dbxref = dbxref.Dbxref;
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
-                            <div id={termID} className="collapse">
-                                {terms.slice(5).map(function (term) {
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(function (term) {
                                     return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
                                 }.bind(this))}
                             </div>
@@ -243,7 +269,7 @@ var Dbxref = dbxref.Dbxref;
                         {terms.length > 5 ?
                             <label className="pull-right">
                                     <small>
-                                        <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
+                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} />
                                     </small>
                             </label>
                         : null}
@@ -278,7 +304,7 @@ var Dbxref = dbxref.Dbxref;
             var total = context['total'];
             var columns = context['columns'];
             var filters = context['filters'];
-            var search_id = context['@id']
+            var search_id = context['@id'];
             
             return (
                     <div>
@@ -321,7 +347,7 @@ var Dbxref = dbxref.Dbxref;
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var notification = context['notification']
+            var notification = context['notification'];
             var id = url.parse(this.props.href, true);
             var searchTerm = id.query['searchTerm'] || '';
             return (
