@@ -289,8 +289,8 @@ var Replicate = module.exports.Replicate = function (props) {
                     </a>{' '}-{' '}{biosample.biosample_term_name}
                 </dd> : null}
                 
-                <dt>Run type</dt>
-                <dd>{paired_end ? 'paired-end' : 'single-end'}</dd>
+                {replicate.read_length ? <dt>Run type</dt> : null}
+                {replicate.read_length ? <dd>{paired_end ? 'paired-end' : 'single-end'}</dd> : null}
             
                 {replicate.read_length ? <dt>Read length</dt> : null}
                 {replicate.read_length ? <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd> : null}
