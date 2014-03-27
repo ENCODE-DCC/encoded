@@ -65,7 +65,7 @@ def test_links_update(content, testapp, session):
 
 def test_links_reverse(content, testapp, session):
     target = targets[0]
-    res = testapp.get('/testing-link-targets/%s/' % target['uuid'])
+    res = testapp.get('/testing-link-targets/%s/?frame=object' % target['uuid'])
     assert res.json['reverse'] == ['/testing-link-sources/%s/' % sources[0]['uuid']]
 
     # DELTED sources are hidden from the list.

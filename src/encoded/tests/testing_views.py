@@ -11,6 +11,7 @@ from ..views.download import ItemWithAttachment
 
 def includeme(config):
     config.scan(__name__)
+    config.include('.testing_auditor')
 
 
 @view_config(name='testing-user', request_method='GET')
@@ -87,6 +88,14 @@ class TestingLinkSource(Collection):
 @location('testing-link-targets')
 class TestingLinkTarget(Collection):
     item_type = 'testing_link_target'
+    schema = {
+        'type': 'object',
+        'properties': {
+            'status': {
+                'type': 'string',
+            },
+        }
+    }
     properties = {
         'title': 'Test link targets',
         'description': 'Testing. Testing. 1, 2, 3.',
@@ -94,6 +103,9 @@ class TestingLinkTarget(Collection):
     item_rev = {
         'reverse': ('testing_link_source', 'target'),
     }
+    item_embedded = [
+        'reverse',
+    ]
 
 
 @location('testing-post-put-patch')
