@@ -170,10 +170,6 @@ var Dbxref = dbxref.Dbxref;
     // Determine whether any of the given terms are selected
     function anyTermSelected(terms, field, filters) {
         for(var oneTerm in terms) {
-            console.log('term: ' + oneTerm);
-            console.log(terms);
-            console.log('field: ' + field);
-            console.log(filters);
             if(termSelected(terms[oneTerm].term, field, filters).selected) {
                 return true;
             }
