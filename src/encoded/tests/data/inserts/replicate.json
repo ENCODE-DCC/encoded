@@ -285,8 +285,8 @@
         "platform": "da150a82-63cd-4471-ba3e-ffe7ca96bcda",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "technical_replicate_number": 1,
-        "RBNS_protein_concentration": 5,
-        "RBNS_protein_concentration_units":"nM",
+        "rbns_protein_concentration": 5,
+        "rbns_protein_concentration_units":"nM",
         "uuid": "fb67aa50-6e7a-4cac-a8e6-09e73b4d3432"
     },
     {
@@ -297,8 +297,8 @@
         "platform": "da150a82-63cd-4471-ba3e-ffe7ca96bcda",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "technical_replicate_number": 2,
-        "RBNS_protein_concentration": 20,
-        "RBNS_protein_concentration_units":"nM",
+        "rbns_protein_concentration": 20,
+        "rbns_protein_concentration_units":"nM",
         "uuid": "2743cbc5-dc25-4fe4-8808-47df3e632339"
     }
 ]

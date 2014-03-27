@@ -14,8 +14,8 @@ def replicate(experiment):
 def replicate_rbns(replicate):
     item = replicate.copy()
     item.update ({
-         'RBNS_protein_concentration': 10,
-         'RBNS_protein_concentration_units': 'nM',
+         'rbns_protein_concentration': 10,
+         'rbns_protein_concentration_units': 'nM',
     })
     return item
 
@@ -24,7 +24,7 @@ def replicate_rbns(replicate):
 def replicate_rbns_no_units(replicate):
     item = replicate.copy()
     item.update ({
-         'RBNS_protein_concentration': 10,
+         'rbns_protein_concentration': 10,
     })
     return item
 
