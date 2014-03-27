@@ -156,15 +156,12 @@ var Dbxref = dbxref.Dbxref;
 
     // Determine whether the given term is selected, and return the href for the term
     function termSelected(term, field, filters) {
-        var selected = 0;
-        var link = '';
         for (var filter in filters) {
-            if (filters[filter]['term'] == term && filters[filter]['field'] == field) {
-                selected = 1;
-                link = filters[filter]['remove'];
+            if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
+                return {selected: 1, link: filters[filter]['remove']};
             }
         }
-        return {selected: selected, link: link};
+        return {selected: 0, link: ''};
     }
 
     // Determine whether any of the given terms are selected
