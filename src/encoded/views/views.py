@@ -668,6 +668,7 @@ class RNAi(Collection):
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
+    item_keys = ALIAS_KEYS
 
 
 @location('rnai-characterizations')
