@@ -102,9 +102,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
 
-                        <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
-
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
