@@ -1,9 +1,10 @@
 import pytest
-import os
-import fnmatch
+from pkg_resources import resource_listdir
 
-SCHEMA_DIR = 'src/encoded/schemas/'
-SCHEMA_FILES = [f for f in os.listdir(SCHEMA_DIR) if fnmatch.fnmatch(f, '*.json')]
+SCHEMA_FILES = [
+    f for f in resource_listdir('encoded', 'schemas')
+    if f.endswith('.json')
+]
 
 
 @pytest.mark.parametrize('schema', SCHEMA_FILES)

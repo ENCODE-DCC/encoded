@@ -86,3 +86,14 @@ def test_dataset_upgrade_dbxrefs_human(root, registry, dataset, dataset_2, threa
     assert value['dbxrefs'] == ['GEO:GSE36024', 'UCSC-GB-hg19:wgEncodeSydhTfbs']
     assert value['aliases'] == []
     assert 'geo_dbxrefs' not in value
+
+def test_dataset_upgrade_dbxrefs_alias(root, registry, dataset, dataset_2, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(dataset['uuid'])
+    dummy_request.context = context
+    dataset_2['aliases'] = [ 'ucsc_encode_db:wgEncodeEH002945']
+    value = migrator.upgrade('dataset', dataset_2, target_version='3', context=context)
+    assert value['schema_version'] == '3'
+    assert value['dbxrefs'] == ['GEO:GSE36024', 'UCSC-ENCODE-hg19:wgEncodeEH002945']
+    assert value['aliases'] == []
+    assert 'geo_dbxrefs' not in value

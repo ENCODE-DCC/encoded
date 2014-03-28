@@ -1,7 +1,5 @@
 import pytest
 
-SCHEMA_DIR = 'src/encoded/schemas/'
-
 
 @pytest.fixture
 def biosample(submitter, lab, award, source, organism):
