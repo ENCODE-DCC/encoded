@@ -23,6 +23,7 @@ DEFAULT_COLLECTIONS = [
     'biosample',
     'experiment',
     'dataset',
+    'replicate',
     'antibody_approval',
     'antibody_characterization',
     'biosample_characterization',
