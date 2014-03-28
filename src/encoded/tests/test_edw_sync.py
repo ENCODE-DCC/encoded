@@ -16,13 +16,36 @@ TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 
 
 @pytest.fixture
-def edw_file_mock():
+def raw_edw_file_mock():
     return json_data_file('data/edw_file/edw_file_mock.json')
 
 
 @pytest.fixture
-def import_in_1():
+def edw_file_mock(raw_edw_file_mock):
+    return list(remove_keys_starting_with_underscore(raw_edw_file_mock))
+
+
+@pytest.fixture
+def raw_import_in_1():
     return json_data_file('data/edw_file/import_in.1.json')
+
+
+@pytest.fixture
+def import_in_1(raw_import_in_1):
+    return list(remove_keys_starting_with_underscore(raw_import_in_1))
+
+
+@pytest.fixture
+def edw_file_mock_fails(raw_edw_file_mock):
+    return {row['accession'] for row in raw_edw_file_mock if row.get('_fail')}
+
+
+def remove_keys_starting_with_underscore(dictrows):
+    for row in dictrows:
+        yield {
+            k: v for k, v in row.iteritems()
+            if not k.startswith('_')
+        }
 
 
 def json_data_file(filename):
@@ -150,7 +173,6 @@ def test_encode3_experiments(workbook, testapp, edw_file_mock):
     for fileinfo in edw_file_mock:
         converted_file = sync_edw.convert_edw(testapp, fileinfo, phase='3')
         if converted_file['accession']:
-            converted_file.pop('_test', None) # this is in the file for notation purposes only
             edw_mock_p3[fileinfo['accession']] = converted_file
 
     assert len(edw_mock_p3) == 13
@@ -161,19 +183,14 @@ def test_encode3_experiments(workbook, testapp, edw_file_mock):
 
 
 @pytest.mark.slow
-def test_file_sync(workbook, testapp, edw_file_mock):
-
-    import re
-
+def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
     sync_edw.get_all_datasets(testapp)
 
     edw_mock = {}
-    test = {}
     filecount = 0
     for fileinfo in edw_file_mock:
         filecount = filecount+1
         converted_file = sync_edw.convert_edw(testapp, fileinfo)
-        test[fileinfo['accession']] = converted_file.pop('_test', None) # this is in the file for notation purposes only
         edw_mock[fileinfo['accession']] = converted_file
 
     assert len(edw_mock) == filecount
@@ -196,7 +213,7 @@ def test_file_sync(workbook, testapp, edw_file_mock):
         url = sync_edw.collection_url(sync_edw.FILES) + acc
         resp = sync_edw.post_fileinfo(testapp, add)
         # check experiment status
-        if re.match('FAIL', test[acc]):
+        if acc in edw_file_mock_fails:
             # currently either ambigious replicate or missing dataset
             assert(not resp)
         else:
@@ -219,7 +236,7 @@ def test_file_sync(workbook, testapp, edw_file_mock):
         patched = sync_edw.patch_fileinfo(testapp, diff.keys(), edw_mock[update])
         should_fail = False
         for patch_prop in diff.keys():
-            if patch_prop in sync_edw.NO_UPDATE or re.match('FAIL', test[update]):
+            if patch_prop in sync_edw.NO_UPDATE or update in edw_file_mock_fails:
                 should_fail = True
         if should_fail:
             assert not patched
@@ -267,9 +284,6 @@ def test_file_sync(workbook, testapp, edw_file_mock):
 
 
 def test_patch_replicate(workbook, testapp, edw_file_mock):
-
-    import re
-
     test_acc = 'ENCSR000ADH'
     test_set = sync_edw.try_datasets(testapp, dataset=test_acc)
     assert(test_set)
@@ -278,14 +292,12 @@ def test_patch_replicate(workbook, testapp, edw_file_mock):
     sync_edw.NO_UPDATE = update
 
     edw_mock = {}
-    test = {}
     filecount = 0
     for fileinfo in edw_file_mock:
         converted_file = sync_edw.convert_edw(testapp, fileinfo)
         if converted_file.get('dataset', None) != test_set:
             continue
         filecount = filecount+1
-        test[fileinfo['accession']] = converted_file.pop('_test', None) # this is in the file for notation purposes only
         edw_mock[fileinfo['accession']] = converted_file
 
     assert len(edw_mock) == filecount
