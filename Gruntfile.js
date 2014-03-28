@@ -29,6 +29,14 @@ module.exports = function(grunt) {
                         exports: null,
                         depends: {jquery: 'jQuery'},
                     },
+                    respond: {
+                        path: './src/encoded/static/libs/respond',
+                        exports: null,
+                    },
+                    bootstrap: {
+                        path: './src/encoded/static/libs/bootstrap.min',
+                        exports: null,
+                    },    
                 },
                 transform: [
                     [{es6: true}, 'reactify'],
