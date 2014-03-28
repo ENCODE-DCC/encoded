@@ -28,19 +28,18 @@ var Experiment = module.exports.Experiment = React.createClass({
         var replicates = _.sortBy(context.replicates, function(item) {
             return item.biological_replicate_number;
         });
-        var dbxrefs = context.encode2_dbxrefs.map(function (item) {
-        	return "UCSC_encode_db:" + item;
-        });
+        var aliasList = context.aliases.join(", ");
+
         var documents = {};
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;
             replicate.library.documents.forEach(function (doc) {
                 documents[doc['@id']] = Panel({context: doc});
             });
-        })
+        });
         // Adding experiment specific documents
         context.documents.forEach(function (document) {
-            documents[document['@id']] = Panel({context: document})
+            documents[document['@id']] = Panel({context: document});
         });
         var antibodies = {};
         replicates.forEach(function (replicate) {
@@ -48,7 +47,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 antibodies[replicate.antibody['@id']] = replicate.antibody;
             }
         });
-        var antibody_accessions = []
+        var antibody_accessions = [];
         for (var key in antibodies) {
             antibody_accessions.push(antibodies[key].accession);
         }
@@ -103,21 +102,16 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
 
-                        <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
-
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
-                        <dt hidden={!context.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd hidden={!context.encode2_dbxrefs.length}>
-                            <DbxrefList values={dbxrefs} />
+                        <dt hidden={!context.aliases.length}>Aliases</dt>
+                        <dd hidden={!context.aliases.length}>{aliasList}</dd>
+
+                        <dt hidden={!context.dbxrefs.length}>External resources</dt>
+                        <dd hidden={!context.dbxrefs.length}>
+                            <DbxrefList values={context.dbxrefs} />
                         </dd>
-                        
-                        {context.geo_dbxrefs.length ? <dt>GEO Accessions</dt> : null}
-                        {context.geo_dbxrefs.length ? <dd>
-                            <DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
-                        </dd> : null}
 
                     </dl>
                 </div>
@@ -157,7 +151,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
         var biosample = replicate.library && replicate.library.biosample;
         if (biosample) {
             biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
-        };
+        }
     });
     return (
         <div>
@@ -217,18 +211,18 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     var treatments;
     
     if (library && library.depleted_in_term_name && library.depleted_in_term_name.length) {
-    	depletedIn = library.depleted_in_term_name.join(", ");
+        depletedIn = library.depleted_in_term_name.join(", ");
     }
     
     if (library && library.treatments && library.treatments.length) {
-    	var i = library.treatments.length;
-    	var t;
-    	var treatmentList = [];
-    	while (i--) {
-    		t = library.treatments[i];
-    		treatmentList.push(t.treatment_term_name);
-    	}
-    	treatments = treatmentList.join(", ");
+        var i = library.treatments.length;
+        var t;
+        var treatmentList = [];
+        while (i--) {
+            t = library.treatments[i];
+            treatmentList.push(t.treatment_term_name);
+        }
+        treatments = treatmentList.join(", ");
     }
     
     return (
@@ -274,7 +268,7 @@ var Replicate = module.exports.Replicate = function (props) {
     var replicate = props.replicate;
     var library = replicate.library;
     var biosample = library && library.biosample;
-    var paired_end = replicate.paired_ended.toString();
+    var paired_end = replicate.paired_ended;
     return (
         <div key={props.key}>
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
@@ -292,8 +286,8 @@ var Replicate = module.exports.Replicate = function (props) {
                     </a>{' '}-{' '}{biosample.biosample_term_name}
                 </dd> : null}
                 
-                {paired_end ? <dt>Paired end</dt> : null}
-                {paired_end ? <dd>{paired_end}</dd> : null}
+                {replicate.read_length ? <dt>Run type</dt> : null}
+                {replicate.read_length ? <dd>{paired_end ? 'paired-end' : 'single-end'}</dd> : null}
             
                 {replicate.read_length ? <dt>Read length</dt> : null}
                 {replicate.read_length ? <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd> : null}

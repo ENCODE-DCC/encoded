@@ -117,3 +117,23 @@ Also see the `Compass Command Line Documentation <http://compass-style.org/help/
 And of course::
 
     $ compass help
+
+
+SublimeLinter
+=============
+
+To setup SublimeLinter with Sublime Text 3, first install the linters::
+
+    $ easy_install-2.7 flake8
+    $ npm install -g jshint
+    $ npm install -g STRML/JSXHint
+
+After first setting up `Package Control`_ (follow install and usage instructions on site), use it to install the following packages in Sublime Text 3:
+
+    * sublimelinter
+    * sublimelinter-flake8
+    * sublimelinter-jsxhint
+    * jsx
+    * sublimelinter-jshint
+
+.. _`Package Control`: https://sublime.wbond.net/
