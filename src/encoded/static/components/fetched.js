@@ -22,7 +22,7 @@ var Fetched = module.exports.Fetched = {
 
     componentWillReceiveProps: function (nextProps) {
         if (!nextProps.loadingComplete || (
-            this.props.fetchedRequest &&
+            this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
             nextProps.session === this.props.session)) return;
         this.fetch(nextProps.url);

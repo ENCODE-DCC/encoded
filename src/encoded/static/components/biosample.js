@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
-var React = require('react/addons');
+var React = require('react');
+var cx = require('react/lib/cx');
 var _ = require('underscore');
 var url = require('url');
 var globals = require('./globals');
@@ -27,18 +28,6 @@ var Panel = function (props) {
 
 
 var Biosample = module.exports.Biosample = React.createClass({
-    getInitialState: function() {
-        return {popoverState: []};
-    },
-
-    handlePopoverChange: function(popoverNewState) {
-        for (var doc in this.state.popoverState) {
-            this.state.popoverState[doc] = false;
-        }
-        this.state.popoverState[popoverNewState.popoverDoc] = popoverNewState.popoverVisible;
-        this.setState({popoverState: this.state.popoverState});
-    },
-
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -51,9 +40,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         var construct_documents = {};
         constructs.forEach(function (construct) {
             construct.documents.forEach(function (doc) {
-                construct_documents[doc['@id']] = Panel({context: doc,
-                    popoverState: this.state.popoverState[doc['@id']],
-                    onPopoverChange: this.handlePopoverChange});
+                construct_documents[doc['@id']] = Panel({context: doc});
            }, this);
         }, this);
 
@@ -64,17 +51,13 @@ var Biosample = module.exports.Biosample = React.createClass({
         var rnai_documents = {};
         rnais.forEach(function (rnai) {
             rnai.documents.forEach(function (doc) {
-                rnai_documents[doc['@id']] = Panel({context: doc,
-                    popoverState: this.state.popoverState[doc['@id']],
-                    onPopoverChange: this.handlePopoverChange});
+                rnai_documents[doc['@id']] = Panel({context: doc});
             }, this);
         }, this);
 
         var protocol_documents = {};
         context.protocol_documents.forEach(function(doc) {
-            protocol_documents[doc['@id']] = Panel({context: doc,
-                    popoverState: this.state.popoverState[doc['@id']],
-                    onPopoverChange: this.handlePopoverChange});
+            protocol_documents[doc['@id']] = Panel({context: doc});
         }, this);
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
@@ -467,23 +450,27 @@ var RNAi = module.exports.RNAi = React.createClass({
 globals.panel_views.register(RNAi, 'rnai');
 
 
+// Component: bar that, when clicked, opens a popover with document data
+// Note: uses React context, ≠ props.context
 var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
+    contextTypes: {
+        popoverState: React.PropTypes.string, // ID of component with visible popup
+        onPopoverChange: React.PropTypes.func // Parent function to process popover
+    },
+
     // Clicking the Lab bar inverts visible state of the popover
     handleClick: function(e) {
         e.preventDefault();
         e.stopPropagation();
 
         // Tell parent (Document) about new popover state
-        this.props.onPopoverChange({
-            popoverVisible: !this.props.popoverVisible,
-            popoverDoc: this.props.context['@id']
-        });
+        // Pass it this component's React unique node ID
+        this.context.onPopoverChange(this._rootNodeID);
     },
 
     render: function() {
-        var popoverVisible = (typeof this.props.popoverVisible === undefined) ? false : this.props.popoverVisible;
+        var popoverVisible = this.context.popoverState === this._rootNodeID;
         var context = this.props.context;
-        var cx = React.addons.classSet;
         var popoverClass = cx({
             "key-value-popover": true,
             "active": popoverVisible
@@ -519,10 +506,6 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
 
 
 var Document = module.exports.Document = React.createClass({
-    handlePopoverChange: function(popoverNewState) {
-        this.props.onPopoverChange(popoverNewState);
-    },
-
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
@@ -577,7 +560,7 @@ var Document = module.exports.Document = React.createClass({
                     <p>{context.description}</p>
                 </div>
                 {download}
-                <PopoverTrigger context={context} popoverVisible={this.props.popoverState} onPopoverChange={this.handlePopoverChange} />
+                <PopoverTrigger context={context} />
             </section>
         );
     }

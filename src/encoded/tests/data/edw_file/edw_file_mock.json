@@ -37,6 +37,7 @@
     },
     {
         "_test": "FAIL (patch) file in, exp in, wrong replicate",
+        "_fail": true,
         "accession": "ENCFF001MYM",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -55,6 +56,7 @@
     },
     {
         "_test": "FAIL (patch) file in, exp in, wrong replicate (exists)",
+        "_fail": true,
         "accession": "ENCFF002MYM",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -91,6 +93,7 @@
     },
     {
         "_test": "FAIL (patch) file in, exp in, bad md5sum",
+        "_fail": true,
         "accession": "ENCFF001MXB",
         "assembly": "mm9",
         "biological_replicate": "",
@@ -109,6 +112,7 @@
     },
     {
         "_test": "FAIL file in, ec2 experiment cannot be found",
+        "_fail": true,
         "accession": "ENCFF001MXD",
         "assembly": "mm9",
         "biological_replicate": "",
@@ -163,6 +167,7 @@
     },
     {
         "_test": "FAIL file in, bad experiment",
+        "_fail": true,
         "accession": "ENCFF001MXF",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -415,6 +420,7 @@
     },
     {
         "_test": "FAIL file out exp out",
+        "_fail": true,
         "accession": "ENCFF001RDD",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -433,6 +439,7 @@
     },
     {
         "_test": "FAIL file out exp out",
+        "_fail": true,
         "accession": "ENCFF001RDE",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -577,6 +584,7 @@
     },
     {
         "_test": "FAIL file out exp in rep cannot be 0",
+        "_fail": true,
         "accession": "ENCFF002QZX",
         "assembly": "hg19",
         "biological_replicate": "0",
@@ -613,6 +621,7 @@
     },
     {
         "_test": "FAIL file out exp in rep in - ambig tr",
+        "_fail": true,
         "accession": "ENCFF001QZZ",
         "assembly": "hg19",
         "biological_replicate": "2",
@@ -649,6 +658,7 @@
     },
     {
         "_test": "FAIL (patch) user doesn't exist",
+        "_fail": true,
         "accession": "ENCFF001RID",
         "assembly": "hg19",
         "biological_replicate": "1",

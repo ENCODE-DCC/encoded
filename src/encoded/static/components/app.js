@@ -87,9 +87,35 @@ var App = React.createClass({
             errors: [],
             portal: portal,
             session: null,
-            user_actions: user_actions
+            user_actions: user_actions,
+            popoverComponent: undefined
         };
     },
+
+
+    // Document popover context using React context mechanism.
+    childContextTypes: {
+        popoverComponent: React.PropTypes.string,
+        onPopoverChange: React.PropTypes.func
+    },
+
+    getChildContext: function() {
+        return {
+            popoverComponent: this.state.popoverComponent, // ID of component with visible popup
+            onPopoverChange: this.handlePopoverChange // Function to process click in popover bar
+        };
+    },
+
+    handlePopoverChange: function(componentID) {
+        // Use React _rootNodeID to uniquely identify a document with popover;
+        // It's passed in as componentID
+        var newPopoverComponent;
+
+        // If clicked component is component with visible popover, set to undefined to close popover
+        newPopoverComponent = (this.state.popoverState === componentID) ? undefined : componentID;
+        this.setState({popoverComponent: newPopoverComponent});
+    },
+
 
     render: function() {
         console.log('render app');
