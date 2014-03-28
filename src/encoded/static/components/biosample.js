@@ -27,6 +27,18 @@ var Panel = function (props) {
 
 
 var Biosample = module.exports.Biosample = React.createClass({
+    getInitialState: function() {
+        return {popoverState: []};
+    },
+
+    handlePopoverChange: function(popoverNewState) {
+        for (var doc in this.state.popoverState) {
+            this.state.popoverState[doc] = false;
+        }
+        this.state.popoverState[popoverNewState.popoverDoc] = popoverNewState.popoverVisible;
+        this.setState({popoverState: this.state.popoverState});
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -39,9 +51,11 @@ var Biosample = module.exports.Biosample = React.createClass({
         var construct_documents = {};
         constructs.forEach(function (construct) {
             construct.documents.forEach(function (doc) {
-                construct_documents[doc['@id']] = Panel({context: doc});
-            });
-        });
+                construct_documents[doc['@id']] = Panel({context: doc,
+                    popoverState: this.state.popoverState[doc['@id']],
+                    onPopoverChange: this.handlePopoverChange});
+           }, this);
+        }, this);
 
         // set up RNAi documents panels
         var rnais = _.sortBy(context.rnais, function(item) {
@@ -50,9 +64,18 @@ var Biosample = module.exports.Biosample = React.createClass({
         var rnai_documents = {};
         rnais.forEach(function (rnai) {
             rnai.documents.forEach(function (doc) {
-                rnai_documents[doc['@id']] = Panel({context: doc});
-            });
-        });
+                rnai_documents[doc['@id']] = Panel({context: doc,
+                    popoverState: this.state.popoverState[doc['@id']],
+                    onPopoverChange: this.handlePopoverChange});
+            }, this);
+        }, this);
+
+        var protocol_documents = {};
+        context.protocol_documents.forEach(function(doc) {
+            protocol_documents[doc['@id']] = Panel({context: doc,
+                    popoverState: this.state.popoverState[doc['@id']],
+                    onPopoverChange: this.handlePopoverChange});
+        }, this);
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
 
@@ -199,11 +222,11 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 </div>
 
-                {context.protocol_documents.length ?
+                {Object.keys(protocol_documents).length ?
                     <div>
                         <h3>Protocol documents</h3>
                         <div className="row">
-                            {context.protocol_documents.map(Panel)}
+                            {protocol_documents}
                         </div>
                     </div>
                 : null}
@@ -220,10 +243,14 @@ var Biosample = module.exports.Biosample = React.createClass({
                     {construct_documents}
                 </div>
 
-                <div hidden={!Object.keys(rnai_documents).length}>
-                    <h3>RNAi documents</h3>
-                    {rnai_documents}
-                </div>
+                {Object.keys(rnai_documents).length ?
+                    <div>
+                        <h3>RNAi documents</h3>
+                        <div className="row">
+                            {rnai_documents}
+                        </div>
+                    </div>
+                : null}
 
                 {this.transferPropsTo(
                     <FetchedItems url={experiments_url} Component={ExperimentsUsingBiosample} />
@@ -441,34 +468,29 @@ globals.panel_views.register(RNAi, 'rnai');
 
 
 var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
-    getInitialState: function() {
-        return {
-            popoverVisible: false
-        };
-    },
-
     // Clicking the Lab bar inverts visible state of the popover
     handleClick: function(e) {
         e.preventDefault();
         e.stopPropagation();
-        this.setState({
-            popoverVisible: !this.state.popoverVisible
-        });
 
         // Tell parent (Document) about new popover state
-        this.props.onPopoverClick({popoverVisible: !this.state.popoverVisible});
+        this.props.onPopoverChange({
+            popoverVisible: !this.props.popoverVisible,
+            popoverDoc: this.props.context['@id']
+        });
     },
 
     render: function() {
+        var popoverVisible = (typeof this.props.popoverVisible === undefined) ? false : this.props.popoverVisible;
         var context = this.props.context;
         var cx = React.addons.classSet;
         var popoverClass = cx({
             "key-value-popover": true,
-            "active": this.state.popoverVisible
+            "active": popoverVisible
         });
         var keyClass = cx({
             "key-value-trigger": true,
-            "active": this.state.popoverVisible
+            "active": popoverVisible
         });
 
         return (
@@ -481,8 +503,8 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
                     </a>
                 </dl>
                 <dl className={popoverClass}>
-                    <dt>Caption</dt>
-                    {context.caption ? <dd>{context.caption}</dd> : <dd><em>No caption</em></dd>}
+                    {context.caption ? <dt>Caption</dt> : null}
+                    {context.caption ? <dd>{context.caption}</dd> : null}
 
                     <dt>Submitted by</dt>
                     <dd>{context.submitted_by.title}</dd>
@@ -497,7 +519,8 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
 
 
 var Document = module.exports.Document = React.createClass({
-    handlePopoverClick: function(popoverVisible) {
+    handlePopoverChange: function(popoverNewState) {
+        this.props.onPopoverChange(popoverNewState);
     },
 
     render: function() {
@@ -544,7 +567,6 @@ var Document = module.exports.Document = React.createClass({
                 <em>Document not available</em>
             );
         }
-
         return (
             <section className="span4 type-document view-detail panel status-none">
                 <figure>
@@ -555,7 +577,7 @@ var Document = module.exports.Document = React.createClass({
                     <p>{context.description}</p>
                 </div>
                 {download}
-                <PopoverTrigger context={context} onPopoverClick={this.handlePopoverClick} />
+                <PopoverTrigger context={context} popoverVisible={this.props.popoverState} onPopoverChange={this.handlePopoverChange} />
             </section>
         );
     }

@@ -133,12 +133,26 @@ $dl-bar-txt: #0a253d;
 	padding: 0;
 
 	figure {
+		position: relative;
+		display: table-cell;
 		float: left;
 		width: 130px;
 		height: 130px;
 		margin: 0 5px 0 0;
 		padding: 0;
 		background-color: #f00;
+
+		a {
+			display: table-cell;
+			height: 100%;
+			width: 100%;
+
+			img {
+				display: block;
+				margin: 0 auto;
+				vertical-align: middle;
+			}
+		}
 	}
 }
 
@@ -167,7 +181,6 @@ $dl-bar-txt: #0a253d;
 	color: $dl-bar-txt;
 	background-color: $dl-bar-bg;
 	@include text-shadow(0 1px #fff);
-	@include box-shadow(0 0 8px 0 darken($dl-bar-bg,10%) inset);
 	border-top: 1px solid #c0c0c0;
 	border-bottom: 1px solid darken($dl-bar-bg,10%);
 

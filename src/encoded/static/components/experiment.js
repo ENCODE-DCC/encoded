@@ -22,6 +22,18 @@ var Panel = function (props) {
 
 
 var Experiment = module.exports.Experiment = React.createClass({
+    getInitialState: function() {
+        return {popoverState: []};
+    },
+
+    handlePopoverChange: function(popoverNewState) {
+        for (var doc in this.state.popoverState) {
+            this.state.popoverState[doc] = false;
+        }
+        this.state.popoverState[popoverNewState.popoverDoc] = popoverNewState.popoverVisible;
+        this.setState({popoverState: this.state.popoverState});
+    },
+
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -34,13 +46,19 @@ var Experiment = module.exports.Experiment = React.createClass({
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;
             replicate.library.documents.forEach(function (doc) {
-                documents[doc['@id']] = Panel({context: doc});
-            });
-        });
+                documents[doc['@id']] = Panel({
+                    context: doc,
+                    popoverState: this.state.popoverState[doc['@id']],
+                    onPopoverChange: this.handlePopoverChange});
+            }, this);
+        }, this);
         // Adding experiment specific documents
         context.documents.forEach(function (document) {
-            documents[document['@id']] = Panel({context: document});
-        });
+            documents[document['@id']] = Panel({
+                context: document,
+                popoverState: this.state.popoverState[document['@id']],
+                onPopoverChange: this.handlePopoverChange});
+        }, this);
         var antibodies = {};
         replicates.forEach(function (replicate) {
             if (replicate.antibody) {

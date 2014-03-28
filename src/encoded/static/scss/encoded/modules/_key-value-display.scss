@@ -103,12 +103,15 @@ dd ul, .multi-value {
 	left: 50%;
 	margin: 0 0 0 -45%;
 	visibility: hidden;
-	border: 1px solid #a0a0a0;
+	background-color: #eff6fc;
+	@include background-image(linear-gradient(top, #e5ebf0 0%,#eff6fc 50%,#e5ebf0 100%));
 	@include border-radius(10px);
+	border-width: 1px;
+	border-style: solid;
+	border-color: #fff darken(#eff6fc,8%) #404040;
 	@include box-shadow(0 4px 8px 0 rgba(0,0,0,.4));
-	background-color: #fff;
 	opacity: 0;
-	@include transition(all 500ms);
+	@include transition(all 200ms);
 
 	&.active {
 		visibility: visible;
@@ -129,14 +132,14 @@ dd ul, .multi-value {
 
 	&:after {
 		border-color: rgba(255, 255, 255, 0);
-		border-top-color: #fff;
+		border-top-color: #e5ebf0;
 		border-width: 10px;
 		margin-left: -10px;
 	}
 
 	&:before {
 		border-color: rgba(128, 128, 128, 0);
-		border-top-color: #a0a0a0;
+		border-top-color: #404040;
 		border-width: 11px;
 		margin-left: -11px;
 	}
