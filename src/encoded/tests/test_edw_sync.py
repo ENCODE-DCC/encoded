@@ -209,9 +209,9 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
         # check experiment status
         if acc in edw_file_mock_fails:
             # currently either ambigious replicate or missing dataset
-            assert(not resp)
+            assert not resp
         else:
-            assert(resp.status_code == 201)
+            assert resp.status_code == 201
 
     ''' This fails due to bug #974 moved to distinct test case
     NOTE: Double posting on sqllite will NOT honor unique constraints!
@@ -246,13 +246,13 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
     assert len(post_edw) == 1
     assert len(post_app) == 13  # unchanged
     assert len(post_patch) == 4  # exsting files cannot be patched
-    assert ((len(post_same)-len(same)) == (
-        len(patch) - len(post_patch) + (len(edw_only) - len(post_edw))))
-    assert len(post_app_dict.keys()) == (len(app_dict.keys()) + len(edw_only) - len(post_edw))
+    assert len(post_same) - len(same) == \
+        len(patch) - len(post_patch) + len(edw_only) - len(post_edw)
+    assert len(post_app_dict.keys()) == len(app_dict.keys()) + len(edw_only) - len(post_edw)
 
     user_patched = testapp.get('/files/ENCFF001RIC').maybe_follow().json
-    assert(user_patched['submitted_by'] == u'/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/')
-    assert(user_patched['status'] == u'OBSOLETE')
+    assert user_patched['submitted_by'] == u'/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/'
+    assert user_patched['status'] == u'OBSOLETE'
 
     after_reps = {d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph']}
     same_reps = {}
@@ -270,9 +270,9 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
         else:
             new_reps[uuid] = after_reps[uuid]
 
-    assert(len(same_reps.keys()) == 23)
-    assert(not updated_reps)
-    assert(len(new_reps) == 2)
+    assert len(same_reps.keys()) == 23
+    assert not updated_reps
+    assert len(new_reps) == 2
 
     #TODO could maybe add a test to make sure that a file belonging to a
     #dataset ends up with the right dataset
@@ -282,7 +282,7 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
 def test_patch_replicate(workbook, testapp, edw_file_mock):
     test_acc = 'ENCSR000ADH'
     test_set = sync_edw.try_datasets(testapp, dataset=test_acc)
-    assert(test_set)
+    assert test_set
 
     update = [x for x in sync_edw.NO_UPDATE if x != 'replicate']
     sync_edw.NO_UPDATE = update
@@ -319,6 +319,6 @@ def test_patch_replicate(workbook, testapp, edw_file_mock):
 
     patched_file = testapp.get('/files/ENCFF001MYM').maybe_follow().json
     rep = testapp.get(patched_file['replicate']).maybe_follow().json
-    assert(rep['biological_replicate_number'] == 1)
-    assert(rep['technical_replicate_number'] == 2)
-    assert(rep['experiment'] == patched_file['dataset'])
+    assert rep['biological_replicate_number'] == 1
+    assert rep['technical_replicate_number'] == 2
+    assert rep['experiment'] == patched_file['dataset']
