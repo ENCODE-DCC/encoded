@@ -39,7 +39,7 @@ def test_get_all_datasets(workbook,testapp):
 
     assert all(len(v) == 1 for v in sync_edw.encode2_to_encode3.values())
     assert(len(sync_edw.encode2_to_encode3.keys()) == 7)
-    assert(len(sync_edw.encode3_to_encode2.keys()) == 14)
+    assert(len(sync_edw.encode3_to_encode2.keys()) == 15)
 
     assert not sync_edw.encode3_to_encode2.get(edw_test_data.encode3, False)
 
@@ -258,7 +258,7 @@ def test_file_sync(workbook, testapp, edw_file_mock):
         else:
             new_reps[uuid] = after_reps[uuid]
 
-    assert(len(same_reps.keys()) == 22)
+    assert(len(same_reps.keys()) == 23)
     assert(not updated_reps)
     assert(len(new_reps) == 2)
 

@@ -26,10 +26,7 @@ var Approval = module.exports.Approval = React.createClass({
         var characterizations = context.characterizations.map(function (item) {
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
-        
-        var dbxrefs = context.antibody.encode2_dbxrefs.map(function (item) {
-        	return "UCSC_encode_db:" + item;
-        });
+    
 
         // Missing enncode
         return (
@@ -83,9 +80,9 @@ var Approval = module.exports.Approval = React.createClass({
                         <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
                         <dd hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
                         
-                        <dt hidden={!context.antibody.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd hidden={!context.antibody.encode2_dbxrefs.length}>
-                        	<DbxrefList values={dbxrefs} />
+                        <dt hidden={!context.antibody.dbxrefs.length}>External resources</dt>
+                        <dd hidden={!context.antibody.dbxrefs.length}>
+                        	<DbxrefList values={context.antibody.dbxrefs} />
                         </dd>
                     </dl>
                 </div>

@@ -6,6 +6,9 @@ var url = require('url');
 var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
+var dbxref = require('./dbxref');
+
+var DbxrefList = dbxref.DbxrefList;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
@@ -37,7 +40,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             construct.documents.forEach(function (doc) {
                 construct_documents[doc['@id']] = Panel({context: doc});
             });
-        })
+        });
 
         // set up RNAi documents panels
         var rnais = _.sortBy(context.rnais, function(item) {
@@ -48,7 +51,7 @@ var Biosample = module.exports.Biosample = React.createClass({
             rnai.documents.forEach(function (doc) {
                 rnai_documents[doc['@id']] = Panel({context: doc});
             });
-        })
+        });
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
 
@@ -98,11 +101,16 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
 
+                        <dt>Grant</dt>
+                        <dd>{context.award.name}</dd>
+
                         <dt hidden={!context.aliases.length}>Aliases</dt>
                         <dd hidden={!context.aliases.length}>{aliasList}</dd>
 
-                        <dt>Grant</dt>
-                        <dd>{context.award.name}</dd>
+                        <dt hidden={!context.dbxrefs.length}>External resources</dt>
+                        <dd hidden={!context.dbxrefs.length}>
+                            <DbxrefList values={context.dbxrefs} />
+                        </dd>
 
                         <dt hidden={!context.note}>Note</dt>
                         <dd hidden={!context.note}>{context.note}</dd>
@@ -131,20 +139,19 @@ var Biosample = module.exports.Biosample = React.createClass({
                         </section>
                     : null}
 
-                     {context.derived_from.length ?
+                     {context.derived_from ?
                         <section>
                             <hr />
-                            <h4>Derived from biosamples</h4>
-                            <ul className="non-dl-list">
-                                {context.derived_from.map(function (biosample) {
-                                    return (
-                                        <li key={biosample['@id']}>
-                                            <a href={biosample['@id']}>{biosample.accession}</a>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
+                            <h4>Derived from biosample</h4>
+                            <a className="non-dl-item" href={context.derived_from['@id']}> {context.derived_from.accession} </a>
+                        </section>
+                    : null}
 
+                     {context.part_of ?
+                        <section>
+                            <hr />
+                            <h4>Separated from biosample</h4>
+                            <a className="non-dl-item" href={context.part_of['@id']}> {context.part_of.accession} </a>
                         </section>
                     : null}
 
@@ -405,7 +412,7 @@ var RNAi = module.exports.RNAi = React.createClass({
         var context = this.props.context;
         return (
              <dl className="key-value">
-            	{context.target ? <dt>Target</dt> : null}
+                {context.target ? <dt>Target</dt> : null}
                 {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
                 
                 {context.rnai_type ? <dt>RNAi type</dt> : null}
@@ -434,7 +441,7 @@ var Document = module.exports.Document = React.createClass({
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
-        var figure, download, src, imgClass, alt;
+        var figure, download, src, alt;
         var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
@@ -445,7 +452,7 @@ var Document = module.exports.Document = React.createClass({
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
-                alt = "Characterization Image"
+                alt = "Characterization Image";
             } else if (context.attachment.type == "application/pdf"){
                 src = "/static/img/file-pdf.png";
                 alt = "Characterization PDF Icon";
