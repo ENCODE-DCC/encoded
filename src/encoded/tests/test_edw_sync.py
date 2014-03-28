@@ -1,13 +1,9 @@
 import pytest
 import json
-from csv import DictReader
-from sqlalchemy.exc import IntegrityError
 
-import encoded.commands.sync_edw as sync_edw
-
-import edw_test_data
-
-from test_views import TYPE_LENGTH
+from encoded.commands import sync_edw
+from . import edw_test_data
+from .test_views import TYPE_LENGTH
 
 pytestmark = [pytest.mark.sync_edw]
 
@@ -54,15 +50,14 @@ def json_data_file(filename):
 
 
 @pytest.mark.slow
-def test_get_all_datasets(workbook,testapp):
-
+def test_get_all_datasets(workbook, testapp):
     sync_edw.try_datasets(testapp)
-    assert(len(sync_edw.experiments) == TYPE_LENGTH['experiment'])
-    assert(len(sync_edw.datasets) == TYPE_LENGTH['dataset'])
+    assert len(sync_edw.experiments) == TYPE_LENGTH['experiment']
+    assert len(sync_edw.datasets) == TYPE_LENGTH['dataset']
 
     assert all(len(v) == 1 for v in sync_edw.encode2_to_encode3.values())
-    assert(len(sync_edw.encode2_to_encode3.keys()) == 7)
-    assert(len(sync_edw.encode3_to_encode2.keys()) == 15)
+    assert len(sync_edw.encode2_to_encode3.keys()) == 7
+    assert len(sync_edw.encode3_to_encode2.keys()) == 15
 
     assert not sync_edw.encode3_to_encode2.get(edw_test_data.encode3, False)
 
@@ -86,20 +81,18 @@ def test_format_app_fileinfo_expanded(workbook, testapp):
     # compare results for identity with expected
     test_edwf = edw_test_data.format_app_file_out
 
-    new_edw = sync_edw.convert_edw(testapp, test_edwf)
-    assert( not sync_edw.compare_files(file_dict, test_edwf) )
+    sync_edw.convert_edw(testapp, test_edwf)
+    assert not sync_edw.compare_files(file_dict, test_edwf)
 
 
 @pytest.mark.slow
 def test_post_duplicate(workbook, testapp):
-    url = '/files/' + TEST_ACCESSION
-    resp = testapp.get(url).maybe_follow()
+    resp = testapp.get('/files/%s/?frame=raw' % TEST_ACCESSION)
     current = resp.json
-    try:
-        illegal_post = testapp.post_json(url, current, expect_errors=True)
-    except IntegrityError:
-        ### This should throw a 409 for both sqllite and postgres
-        assert(True)
+    del current['schema_version']
+    ### This should throw a 409 for both sqllite and postgres
+    testapp.post_json('/files/', current, status=409)
+
 
 @pytest.mark.slow
 def test_list_new(workbook, testapp):
@@ -120,6 +113,7 @@ def test_accession_app(request, check_constraints, zsa_savepoints, app_settings)
     app_settings['accession_factory'] = 'encoded.server_defaults.test_accession'
     return main({}, **app_settings)
 
+
 @pytest.fixture
 def test_accession_testapp(request, test_accession_app, external_tx, zsa_savepoints):
     '''TestApp with JSON accept header.
@@ -130,6 +124,7 @@ def test_accession_testapp(request, test_accession_app, external_tx, zsa_savepoi
         'REMOTE_USER': 'TEST',
     }
     return TestApp(test_accession_app, environ)
+
 
 @pytest.mark.slow
 def test_import_tst_file(workbook, test_accession_testapp, import_in_1):
@@ -152,12 +147,12 @@ def test_import_tst_file(workbook, test_accession_testapp, import_in_1):
             url = sync_edw.collection_url(sync_edw.FILES) + acc
             get_resp = test_accession_testapp.get(url).maybe_follow()
             file_dict = get_resp.json
-            assert( not sync_edw.compare_files(file_dict, converted_file) )
+            assert not sync_edw.compare_files(file_dict, converted_file)
         else:
             ## one of the files in import_in_1 is not postable
             ## should maybe switch it from an experiment to a regular dataset
-            assert(re.search('experiments', converted_file['dataset']))
-            assert(not fileinfo['biological_replicate'] or not converted_file['technical_replicate'])
+            assert re.search('experiments', converted_file['dataset'])
+            assert not fileinfo['biological_replicate'] or not converted_file['technical_replicate']
 
 
 def test_encode3_experiments(workbook, testapp, edw_file_mock):
@@ -206,11 +201,10 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
     assert len(same) == 5
     assert len(patch) == 11
 
-    before_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
+    before_reps = {d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph']}
 
     for add in edw_only:
         acc = add['accession']
-        url = sync_edw.collection_url(sync_edw.FILES) + acc
         resp = sync_edw.post_fileinfo(testapp, add)
         # check experiment status
         if acc in edw_file_mock_fails:
@@ -243,30 +237,31 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
         else:
             assert patched
 
-
     post_app_dict = sync_edw.get_app_fileinfo(testapp)
 
     sync_edw.collections = []
     # reset global var!
-    post_edw, post_app, post_same, post_patch= sync_edw.inventory_files(testapp, edw_mock, post_app_dict)
+    post_edw, post_app, post_same, post_patch = \
+        sync_edw.inventory_files(testapp, edw_mock, post_app_dict)
     assert len(post_edw) == 1
-    assert len(post_app) == 13 # unchanged
-    assert len(post_patch) == 4 # exsting files cannot be patched
-    assert ((len(post_same)-len(same)) == (len(patch) -len(post_patch) + (len(edw_only) - len(post_edw))))
+    assert len(post_app) == 13  # unchanged
+    assert len(post_patch) == 4  # exsting files cannot be patched
+    assert ((len(post_same)-len(same)) == (
+        len(patch) - len(post_patch) + (len(edw_only) - len(post_edw))))
     assert len(post_app_dict.keys()) == (len(app_dict.keys()) + len(edw_only) - len(post_edw))
 
     user_patched = testapp.get('/files/ENCFF001RIC').maybe_follow().json
     assert(user_patched['submitted_by'] == u'/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/')
     assert(user_patched['status'] == u'OBSOLETE')
 
-    after_reps = { d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph'] }
+    after_reps = {d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph']}
     same_reps = {}
     updated_reps = {}
     new_reps = {}
     for uuid in after_reps.keys():
-        if before_reps.has_key(uuid):
-            bef = set([ x for x in before_reps[uuid].items() if type(x[1]) != list ])
-            aft = set([ x for x in after_reps[uuid].items() if type(x[1]) != list ])
+        if uuid in before_reps:
+            bef = set([x for x in before_reps[uuid].items() if type(x[1]) != list])
+            aft = set([x for x in after_reps[uuid].items() if type(x[1]) != list])
             rep_diff = aft - bef
             if(rep_diff):
                 updated_reps[uuid] = rep_diff
@@ -279,7 +274,8 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
     assert(not updated_reps)
     assert(len(new_reps) == 2)
 
-    #TODO could maybe add a test to make sure that a file belonging to a dataset ends up with the right dataset
+    #TODO could maybe add a test to make sure that a file belonging to a
+    #dataset ends up with the right dataset
     #TODO tests for experiments with multiple mappings.
 
 
@@ -288,7 +284,7 @@ def test_patch_replicate(workbook, testapp, edw_file_mock):
     test_set = sync_edw.try_datasets(testapp, dataset=test_acc)
     assert(test_set)
 
-    update = [ x for x in sync_edw.NO_UPDATE if x != 'replicate' ]
+    update = [x for x in sync_edw.NO_UPDATE if x != 'replicate']
     sync_edw.NO_UPDATE = update
 
     edw_mock = {}
@@ -308,7 +304,6 @@ def test_patch_replicate(workbook, testapp, edw_file_mock):
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
     assert len(patch) == 2
     assert len(same) == 2
-
 
     for update in patch:
         diff = sync_edw.compare_files(app_dict[update], edw_mock[update])
