@@ -120,9 +120,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
 
-                        <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
-
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
@@ -291,7 +288,7 @@ var Replicate = module.exports.Replicate = function (props) {
     var replicate = props.replicate;
     var library = replicate.library;
     var biosample = library && library.biosample;
-    var paired_end = replicate.paired_ended.toString();
+    var paired_end = replicate.paired_ended;
     return (
         <div key={props.key}>
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
@@ -309,8 +306,8 @@ var Replicate = module.exports.Replicate = function (props) {
                     </a>{' '}-{' '}{biosample.biosample_term_name}
                 </dd> : null}
                 
-                {paired_end ? <dt>Paired end</dt> : null}
-                {paired_end ? <dd>{paired_end}</dd> : null}
+                {replicate.read_length ? <dt>Run type</dt> : null}
+                {replicate.read_length ? <dd>{paired_end ? 'paired-end' : 'single-end'}</dd> : null}
             
                 {replicate.read_length ? <dt>Read length</dt> : null}
                 {replicate.read_length ? <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd> : null}
