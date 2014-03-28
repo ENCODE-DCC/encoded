@@ -154,20 +154,20 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Target, 'target');
 
-    // Determine whether the given term is selected, and return the href for the term
+    // If the given term is selected, return the href for the term
     function termSelected(term, field, filters) {
         for (var filter in filters) {
             if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
-                return {selected: 1, link: filters[filter]['remove']};
+                return filters[filter]['remove'];
             }
         }
-        return {selected: 0, link: ''};
+        return null;
     }
 
     // Determine whether any of the given terms are selected
     function anyTermSelected(terms, field, filters) {
         for(var oneTerm in terms) {
-            if(termSelected(terms[oneTerm].term, field, filters).selected) {
+            if(termSelected(terms[oneTerm].term, field, filters)) {
                 return true;
             }
         }
@@ -185,10 +185,9 @@ var Dbxref = dbxref.Dbxref;
             var barStyle = {
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
             };
-            var termSelectedInfo = termSelected(term, field, filters);
-            var selected = termSelectedInfo.selected;
-            var link = termSelectedInfo.link;
-            if(selected) {
+            var link = termSelected(term, field, filters);
+console.log(link);
+            if(link) {
                 return (
                     <li id="selected" key={term}>
                         <a id="selected" href={link}>
