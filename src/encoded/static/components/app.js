@@ -116,6 +116,9 @@ var App = React.createClass({
         this.setState({popoverComponent: newPopoverComponent});
     },
 
+    handleLayoutClick: function(e) {
+        this.setState({popoverComponent: undefined});
+    },
 
     render: function() {
         console.log('render app');
@@ -179,7 +182,7 @@ var App = React.createClass({
                         <div id="application" className={appClass}>
                         
 						<div className="loading-spinner"></div>
-                            <div id="layout">
+                            <div id="layout" onClick={this.handleLayoutClick}>
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         user_actions={this.state.user_actions} session={this.state.session}
                                         loadingComplete={this.state.loadingComplete} />

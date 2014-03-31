@@ -449,6 +449,35 @@ var RNAi = module.exports.RNAi = React.createClass({
 globals.panel_views.register(RNAi, 'rnai');
 
 
+// Popover bubble
+var Popover = module.exports.Popover = React.createClass({
+    contextTypes: {
+        popoverComponent: React.PropTypes.string, // ID of component with visible popup
+        onPopoverChange: React.PropTypes.func // Parent function to process popover
+    },
+
+    handleClick: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    },
+
+    render: function() {
+        var context = this.props.context;
+        var popoverVisible = this.context.popoverComponent === this.props.popoverComponent;
+        var popoverContent = this.props.popoverContent({context: context});
+        var popoverClass = cx({
+            "key-value-popover": true,
+            "active": popoverVisible
+        });
+        return(
+            <dl className={popoverClass} onClick={this.handleClick}>
+                {popoverContent}
+            </dl>
+        );
+    }
+});
+
+
 // Component: bar that, when clicked, opens a popover with document data
 // Note: uses React context, ≠ props.context
 var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
@@ -468,12 +497,8 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
     },
 
     render: function() {
-        var popoverVisible = this.context.popoverComponent === this._rootNodeID;
         var context = this.props.context;
-        var popoverClass = cx({
-            "key-value-popover": true,
-            "active": popoverVisible
-        });
+        var popoverVisible = this.context.popoverComponent === this._rootNodeID;
         var keyClass = cx({
             "key-value-trigger": true,
             "active": popoverVisible
@@ -489,9 +514,7 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
                         <i className="icon icon-chevron-up"></i>
                     </a>
                 </dl>
-                <dl className={popoverClass}>
-                     {popoverContent}
-                </dl>
+                <Popover context={context} popoverContent={this.props.popoverContent} popoverComponent={this._rootNodeID} />
             </div>
         );
     }
