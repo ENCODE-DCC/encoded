@@ -839,13 +839,14 @@ class Collection(Mapping):
         self.__parent__ = parent
 
         self.embedded_paths = set()
-        for column in self.columns:
-            path = tuple(
-                name for name in column.split('.')[:-1]
-                if name not in ('length', '0')
-            )
-            if path:
-                self.embedded_paths.add(path)
+        if self.schema is not None and 'columns' in self.schema:
+            for column in self.schema['columns']:
+                path = tuple(
+                    name for name in column.split('.')[:-1]
+                    if name not in ('length', '0')
+                )
+                if path:
+                    self.embedded_paths.add(path)
 
         if self.schema is not None:
             properties = self.schema['properties']
@@ -927,8 +928,8 @@ class Collection(Mapping):
 
         frame = request.params.get('frame', 'columns')
         if frame == 'columns':
-            if self.columns:
-                result['columns'] = self.columns
+            if self.schema is not None and 'columns' in self.schema:
+                result['columns'] = self.schema['columns']
             else:
                 frame = 'object'
 
@@ -976,7 +977,7 @@ class Collection(Mapping):
             '@id': rendered['@id'],
             '@type': rendered['@type'],
         }
-        for column in self.columns:
+        for column in self.schema['columns']:
             subset[column] = column_value(rendered, column)
 
         return subset
@@ -1279,13 +1280,15 @@ def item_index_data(context, request):
     if principals is Everyone:
         principals = [Everyone]
 
+    embedded = embed(request, request.resource_path(context))
     document = {
-        'embedded': embed(request, request.resource_path(context)),
+        'embedded': embedded,
         'object': embed(request, request.resource_path(context) + '?frame=object'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),
         'url': request.resource_path(context),
+        'audit': [a.__json__() for a in request.audit(embedded, embedded['@type'])],
     }
 
     return document

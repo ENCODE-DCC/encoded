@@ -29,6 +29,13 @@
                 "infection"
             ]
         },
+        "lab": {
+            "title": "Lab",
+             "description": "Lab associated with the submission.",
+            "comment": "See lab.json for list of available identifiers.",
+            "type": "string",
+            "linkTo": "lab"
+        },
         "protocols": {
             "title": "Protocol documents",
             "description": "Documents that describe the treatment protocol.",
@@ -42,13 +49,16 @@
                 "linkTo": "document"
             }
         },
-        "encode2_dbxrefs": {
-            "title": "Previous ENCODE IDs",
+        "dbxrefs": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Previous ENCODE ID",
-                "type":  "string"
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^(UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)$"
             }
         },
         "treatment_term_id": {
@@ -95,13 +105,6 @@
                 "hour",
                 "day"
             ]
-        },
-        "lab": {
-            "title": "Lab",
-             "description": "Lab associated with the submission.",
-            "comment": "See lab.json for list of available identifiers.",
-            "type": "string",
-            "linkTo": "lab"
         }
     }
 }

@@ -2,6 +2,8 @@
 import pytest
 import pyramid.settings
 
+pytestmark = [pytest.mark.objtemplate]
+
 
 def check_keywords(**ns):
     assert ns == NAMESPACE
@@ -11,6 +13,10 @@ def check_keywords(**ns):
 def check_arg(foo, default=None):
     assert foo == 'foo'
     return True
+
+
+def calculated_value(foo):
+    return 'calculated ' + foo
 
 
 NAMESPACE = {
@@ -64,16 +70,18 @@ TEMPLATE_VALUE = [
     ([{'$condition': 'check_keywords'}], [{}]),
     ([{'$condition': 'foo'}], [{}]),
     ([{'$condition': 'missing'}], []),
+    ([{'$condition': 'missing'}], []),
+
     ({'a': {'b': 1, '$condition': 'foo'}}, {'a': {'b': 1}}),
     ({'a': {'b': 1, '$condition': 'missing'}}, {}),
     ({'unicode': '{unicode}', '$templated': True}, {'unicode': u'1μM'}),
     ({'$value': '$value {foo}', '$templated': True}, '$value foo'),
     ([{'$templated': True, '$repeat': 'bar bar_list', '$value': '$value {bar}'}],
      ['$value bar1', '$value bar2']),
+    ({'$value': calculated_value, '$templated': True}, 'calculated foo'),
 ]
 
 
-@pytest.mark.objtemplate
 @pytest.mark.parametrize('value', NO_CHANGE)
 def test_no_change(value):
     from encoded.objtemplate import ObjectTemplate
@@ -82,7 +90,6 @@ def test_no_change(value):
     assert result == value
 
 
-@pytest.mark.objtemplate
 @pytest.mark.parametrize(('template', 'value'), TEMPLATE_VALUE)
 def test_expected(template, value):
     from encoded.objtemplate import ObjectTemplate

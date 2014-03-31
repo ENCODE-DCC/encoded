@@ -2,7 +2,7 @@
 Examples
 For the development.ini you must supply the paster app name:
 
-    %(prog)s development.ini --app app --init --clear
+    %(prog)s development.ini --app-name app --init --clear
 
 """
 from pyramid.paster import get_app
@@ -24,7 +24,7 @@ def main():
         description="Run development servers", epilog=EPILOG,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    parser.add_argument('--app', help="Pyramid app name in configfile")
+    parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument('config_uri', help="path to configfile")
     parser.add_argument('--clear', action="store_true", help="Clear existing data")
     parser.add_argument('--init', action="store_true", help="Init database")
@@ -66,7 +66,7 @@ def main():
             process.wait()
 
     if args.init:
-        app = get_app(args.config_uri, args.app)
+        app = get_app(args.config_uri, args.app_name)
         create_mapping.run(app)
 
     if args.load:

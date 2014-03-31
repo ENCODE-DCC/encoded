@@ -33,8 +33,8 @@ DEFAULT_INI = 'production.ini'  # Default application initialization file
 ENCODE2_ACC = 'wgEncodeE'  # WARNING: Also in experiment.json and edw_file.py
 ENCODE3_ACC = 'ENC'
 ENCODE3_EXP_ACC = ENCODE3_ACC + 'SR'  # WARNING: Also in experiment.json
-ENCODE2_EXP_PROP = 'encode2_dbxrefs' # WARNING: Also in experiment.json
-ENCODE2_DS_PROP = 'aliases' ## ucsc_encode_db:wgEncodeXXX
+ENCODE2_EXP_PROP = 'UCSC-ENCODE-' # WARNING: Also in experiment.json
+ENCODE2_DS_PROP = 'UCSC-' ## ucsc_encode_db:wgEncodeXXX
 # Schema object names
 FILES = 'files'
 EXPERIMENTS = 'experiments'
@@ -520,9 +520,10 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
     logger.warn("Found %s experiments" % len(exp_collection))
 
     for exp in exp_collection:
-        dbxrefs = exp[ENCODE2_EXP_PROP]
+        dbxrefs = [ dbx for dbx in exp.get('dbxrefs', []) if re.match(ENCODE2_EXP_PROP,dbx) ]
         acc = exp['accession']
-        for xref in dbxrefs:
+        for dbx in dbxrefs:
+            db,xref = dbx.split(':')
             e2e3 = encode2_to_encode3.get(xref, set())
             e2e3.add(acc)
             encode2_to_encode3[xref] = e2e3
@@ -535,24 +536,21 @@ def get_all_datasets(app, phase=edw_file.ENCODE_PHASE_ALL):
 
 
     logger.info("Getting all datasets...")
-    alias_key = 'ucsc_encode_db:'
     ds_collection = get_collection(app, DATASETS)
     logger.warn("Found %s datasets" % len(ds_collection))
 
     for ds in ds_collection:
+        dbxrefs = [ dbx for dbx in ds.get('dbxrefs', []) if re.match(ENCODE2_DS_PROP,dbx) ]
         acc = ds['accession']
-        aliases = ds[ENCODE2_DS_PROP]
-        for al in aliases:
-            if al.startswith(alias_key):
-                dbxref = al.replace(alias_key, '')
-
-                e2e3 = encode2_to_encode3.get(dbxref, set())
-                e2e3.add(acc)
-                encode2_to_encode3[dbxref] = e2e3
-
-                e3e2 = encode3_to_encode2.get(acc,set())
-                e3e2.add(dbxref)
-                encode3_to_encode2[acc] = e3e2
+        for dbx in dbxrefs:
+            db,xref = dbx.split(':')
+            e2e3 = encode2_to_encode3.get(xref, set())
+            e2e3.add(acc)
+            encode2_to_encode3[xref] = e2e3
+            
+            e3e2 = encode3_to_encode2.get(acc,set())
+            e3e2.add(dbx)
+            encode3_to_encode2[acc] = e3e2
 
         datasets[ds['@id']] = ds
         ## don't need replicates or anything.

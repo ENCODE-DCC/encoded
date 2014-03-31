@@ -51,9 +51,9 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row"> 
-                            <strong>{columns['antibody.source.title']}</strong>: {result['antibody.source.title']}<br />
-                            <strong>{columns['antibody.product_id']}/{columns['antibody.lot_id']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
-                            <strong>{columns['status']}</strong>: {result['status']}
+                            <strong>{columns['antibody.source.title']['title']}</strong>: {result['antibody.source.title']}<br />
+                            <strong>{columns['antibody.product_id']['title']}/{columns['antibody.lot_id']['title']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
+                            <strong>{columns['status']['title']}</strong>: {result['status']}
                         </div>
                 </li>
             );
@@ -73,10 +73,10 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['biosample_type']}</strong>: {result['biosample_type']}<br />
-                            <strong>{columns['source.title']}</strong>: {result['source.title']}
+                            <strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}<br />
+                            <strong>{columns['source.title']['title']}</strong>: {result['source.title']}
                             {result['life_stage'] ? <br /> : null}
-                            {result['life_stage'] ? <strong>{columns['life_stage'] + ': '}</strong> :null}
+                            {result['life_stage'] ? <strong>{columns['life_stage']['title'] + ': '}</strong> :null}
                             {result['life_stage'] ? result['life_stage'] : null}
                         </div>
                 </li>   
@@ -97,11 +97,11 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['target.label'] ? <strong>{columns['target.label'] + ': '}</strong>: null}
+                            {result['target.label'] ? <strong>{columns['target.label']['title'] + ': '}</strong>: null}
                             {result['target.label'] ? result['target.label'] : null}
                             {result['target.label'] ? <br /> : null}
-                            <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']}</strong>: {result['award.project']}
+                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
                 </li>
             );
@@ -121,9 +121,9 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['dataset_type'] ? <strong>{columns['dataset_type'] + ': '}</strong>: null}
-                            <strong>{columns['lab.title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']}</strong>: {result['award.project']}
+                            {result['dataset_type'] ? <strong>{columns['dataset_type']['title'] + ': '}</strong>: null}
+                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
                 </li>
             );
@@ -143,10 +143,10 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['dbxref']}</strong>: 
-                            {result.dbxref.length ?
+                            <strong>{columns['dbxref']['title']}</strong>: 
+                            {result.dbxref && result.dbxref.length ?
                                 <DbxrefList values={result.dbxref} target_gene={result.gene_name} />
-                                : <em>None submitted</em> }
+                                : <em> None submitted</em> }
                         </div>
                 </li>
             );
@@ -154,29 +154,68 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Target, 'target');
 
+    // If the given term is selected, return the href for the term
+    function termSelected(term, field, filters) {
+        for (var filter in filters) {
+            if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
+                return filters[filter]['remove'];
+            }
+        }
+        return null;
+    }
+
+    // Determine whether any of the given terms are selected
+    function anyTermSelected(terms, field, filters) {
+        for(var oneTerm in terms) {
+            if(termSelected(terms[oneTerm].term, field, filters)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     var Term = search.Term = React.createClass({
         render: function () {
+            var filters = this.props.filters;
             var term = this.props.term['term'];
             var count = this.props.term['count'];
             var title = this.props.title || term;
             var search_base = this.props.search_base;
             var field = this.props.facet['field'];
-            return (
-                <li key={term}>
-                    <a href={search_base+field+'='+term}>
-                        <span className="pull-right">{count}</span>
-                        <span className="facet-item">{title}</span>
-                    </a>
-                </li>
-            );
+            var barStyle = {
+                width:  Math.ceil( (count/this.props.total) * 100) + "%"
+            };
+            var link = termSelected(term, field, filters);
+            if(link) {
+                return (
+                    <li id="selected" key={term}>
+                        <a id="selected" href={link}>
+                            <span className="pull-right">{count}<i className="icon-remove-sign"></i></span>
+                            <span className="facet-item">{title}</span>
+                        </a>
+                    </li>
+                );
+            }else {
+                return (
+                    <li key={term}>
+                        <span className="bar" style={barStyle}></span>
+                        <a href={search_base+field+'='+term}>
+                            <span className="pull-right">{count}</span>
+                            <span className="facet-item">{title}</span>
+                        </a>
+                    </li>
+                );
+            }
         }
     });
 
     var TypeTerm = search.TypeTerm = React.createClass({
         render: function () {
             var term = this.props.term['term'];
+            var filters = this.props.filters;
             var title = this.props.portal.types[term];
-            return this.transferPropsTo(<Term title={title} />);
+            var total = this.props.total;
+            return this.transferPropsTo(<Term title={title} filters={filters} total={total} />);
         }
     });
 
@@ -184,31 +223,44 @@ var Dbxref = dbxref.Dbxref;
     var Facet = search.Facet = React.createClass({
         render: function() {
             var facet = this.props.facet;
-            var terms = facet['terms'];
+            var filters = this.props.filters;
+            var terms = facet['terms'].filter(function (term) {
+                for(var filter in filters) {
+                    if(filters[filter].term === term.term) {
+                        return true;
+                    }
+                }
+                return term.count > 0;
+            });
+            var moreTerms = terms.slice(5);
             var title = facet['title'];
             var field = facet['field'];
+            var total = facet['total'];
             var termID = title.replace(/\s+/g, '');
             var TermComponent = field === 'type' ? TypeTerm : Term;
+            var moreTermSelected = anyTermSelected(moreTerms, field, filters);
+            var moreSecClass = 'collapse' + (moreTermSelected ? ' in' : '');
+            var seeMoreClass = 'btn btn-link' + (moreTermSelected ? '' : ' collapsed');
             return (
-                <div className="facet" key={field}>
+                <div className="facet" key={field} hidden={terms.length === 0}>
                     <h5>{title}</h5>
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent term={term} />);
+                                return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
-                            <div id={termID} className="collapse">
-                                {terms.slice(5).map(function (term) {
-                                    return this.transferPropsTo(<TermComponent term={term} />);
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(function (term) {
+                                    return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
                                 }.bind(this))}
                             </div>
                         : null}
                         {terms.length > 5 ?
                             <label className="pull-right">
                                     <small>
-                                        <button type="button" className="btn btn-link collapsed" data-toggle="collapse" data-target={'#'+termID} />
+                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} />
                                     </small>
                             </label>
                         : null}
@@ -221,39 +273,14 @@ var Dbxref = dbxref.Dbxref;
     var FacetList = search.FacetList = React.createClass({
         render: function() {
             var facets = this.props.facets;
+            var filters = this.props.filters;
             if (!facets.length) return <div />;
             var search_base = url.parse(this.props.href).search || '';
             search_base += search_base ? '&' : '?';
             return (
                 <div className="box facets">
                     {facets.map(function (facet) {
-                        return this.transferPropsTo(<Facet facet={facet} search_base={search_base} />);
-                    }.bind(this))}
-                </div>
-            );
-        }
-    });
-
-    var Unfilter = search.Unfilter = React.createClass({
-        render: function () {
-            var filter = this.props.filter;
-            return (
-                <a key={filter.field} className="btn btn-small btn-info" href={filter.remove}>
-                    {filter.term + ' '}
-                    <i className="icon-remove-sign"></i>
-                </a>
-            );
-        }
-    });
-
-    var UnfilterList = search.UnfilterList = React.createClass({
-        render: function () {
-            var filters = this.props.filters;
-            if (!filters.length) return <div />;
-            return (
-                <div className="btn-group"> 
-                    {filters.map(function (filter) {
-                        return this.transferPropsTo(<Unfilter filter={filter} />);
+                        return this.transferPropsTo(<Facet facet={facet} filters={filters} search_base={search_base} />);
                     }.bind(this))}
                 </div>
             );
@@ -268,7 +295,7 @@ var Dbxref = dbxref.Dbxref;
             var total = context['total'];
             var columns = context['columns'];
             var filters = context['filters'];
-            var search_id = context['@id']
+            var search_id = context['@id'];
             
             return (
                     <div>
@@ -276,7 +303,7 @@ var Dbxref = dbxref.Dbxref;
                             <div className="row">
                                 <div className="span3">
                                     {this.transferPropsTo(
-                                        <FacetList facets={facets} />
+                                        <FacetList facets={facets} filters={filters} />
                                     )}
                                 </div>
 
@@ -290,9 +317,6 @@ var Dbxref = dbxref.Dbxref;
                                                 </span>
                                             : null}
                                     </h4>
-                                    {this.transferPropsTo(
-                                        <UnfilterList filters={filters} />
-                                    )}
                                     <hr />
                                     <ul className="nav result-table">
                                         {results.length ?
@@ -314,13 +338,13 @@ var Dbxref = dbxref.Dbxref;
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
-            var notification = context['notification']
+            var notification = context['notification'];
             var id = url.parse(this.props.href, true);
             var searchTerm = id.query['searchTerm'] || '';
             return (
                 <div>
                     {notification === 'Success' ?
-                        <div className="panel data-display"> 
+                        <div className="panel data-display main-panel"> 
                             {this.transferPropsTo(<ResultTable key={undefined} />)}
                         </div>
                     : <h4>{notification}</h4>}

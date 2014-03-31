@@ -1,6 +1,5 @@
 import pytest
 
-SCHEMA_DIR = 'src/encoded/schemas/'
 
 @pytest.fixture
 def biosample(submitter, lab, award, source, organism):
@@ -13,6 +12,7 @@ def biosample(submitter, lab, award, source, organism):
         'source': source['uuid'],
     }
 
+
 @pytest.fixture
 def biosample_1(biosample):
     item = biosample.copy()
@@ -22,6 +22,7 @@ def biosample_1(biosample):
     })
     return item
 
+
 @pytest.fixture
 def biosample_2(biosample):
     item = biosample.copy()
@@ -30,6 +31,19 @@ def biosample_2(biosample):
         'subcellular_fraction': 'nucleus',
     })
     return item
+
+
+@pytest.fixture
+def biosample_3(biosample, biosamples):
+    item = biosample.copy()
+    item.update({
+        'schema_version': '3',
+        'derived_from': [biosamples[0]['uuid']],
+        'part_of': [biosamples[0]['uuid']],
+        'encode2_dbxrefs': ['Liver'],
+    })
+    return item
+
 
 def test_biosample_upgrade(app, biosample_1):
     migrator = app.registry['migrator']
@@ -61,6 +75,7 @@ def test_biosample_upgrade_exponent(app, biosample_1):
     assert value['schema_version'] == '2'
     assert value['starting_amount'] == 1e5
 
+
 def test_biosample_upgrade_number(app, biosample_1):
     biosample_1['starting_amount'] = -1
     migrator = app.registry['migrator']
@@ -77,6 +92,7 @@ def test_biosample_upgrade_subcellular_fraction(app, biosample_2):
     assert value['subcellular_fraction_term_id'] == 'GO:0005634'
     assert 'subcellular_fraction' not in value
 
+
 def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
     biosample_2['subcellular_fraction'] = 'membrane fraction'
     migrator = app.registry['migrator']
@@ -85,6 +101,41 @@ def test_biosample_upgrade_subcellular_fraction_membrane(app, biosample_2):
     assert value['subcellular_fraction_term_name'] == 'membrane'
     assert value['subcellular_fraction_term_id'] == 'GO:0016020'
     assert 'subcellular_fraction' not in value
+
+
+def test_biosample_upgrade_array_to_string(app, biosample_3, biosample, biosamples):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['part_of'] == biosamples[0]['uuid']
+    assert value['derived_from'] == biosamples[0]['uuid']
+
+
+def test_biosample_upgrade_empty_array(app, biosample_3, biosample, biosamples):
+    biosample_3['derived_from'] = []
+    biosample_3['part_of'] = []
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    assert value['schema_version'] == '4'
+    assert 'part_of' not in value
+    assert 'derived_from' not in value
+
+
+def test_biosample_upgrade_encode2_dbxref(app, biosample_3):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['dbxrefs'] == ['UCSC-ENCODE-cv:Liver']
+    assert 'encode2_dbxrefs' not in value
+
+
+def test_biosample_upgrade_encode2_complex_dbxref(app, biosample_3):
+    biosample_3['encode2_dbxrefs'] = ['B-cells CD20+ (RO01778)']
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_3, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['dbxrefs'] == ['UCSC-ENCODE-cv:B-cells CD20+ (RO01778)']
+    assert 'encode2_dbxrefs' not in value
 
 
 def test_biosample_upgrade_inline(testapp, biosample_1):
