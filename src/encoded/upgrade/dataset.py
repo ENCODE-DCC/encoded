@@ -49,7 +49,7 @@ def dataset_2_3(value, system):
             elif re.match('.*wgEncodeEH.*', alias):
                 new_dbxref = alias.replace('ucsc_encode_db:', 'UCSC-ENCODE-hg19:')
             elif re.match('.*wgEncodeEM.*', alias):
-                new_dbxref = alias.replace('ucsc_encode_db:', 'UCSC-ENCODE-mm9')
+                new_dbxref = alias.replace('ucsc_encode_db:', 'UCSC-ENCODE-mm9:')
             else:
                 continue
             value['dbxrefs'].append(new_dbxref)
