@@ -22,18 +22,6 @@ var Panel = function (props) {
 
 
 var Experiment = module.exports.Experiment = React.createClass({
-    getInitialState: function() {
-        return {popoverState: []};
-    },
-
-    handlePopoverChange: function(popoverNewState) {
-        for (var doc in this.state.popoverState) {
-            this.state.popoverState[doc] = false;
-        }
-        this.state.popoverState[popoverNewState.popoverDoc] = popoverNewState.popoverVisible;
-        this.setState({popoverState: this.state.popoverState});
-    },
-
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -131,12 +119,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <BiosamplesUsed replicates={replicates} />
                 <AssayDetails replicates={replicates} />
 
-                <div hidden={!Object.keys(documents).length}>
-                    <h3>Protocols</h3>
-                    <div className="row">
-                        {documents}
+                {Object.keys(documents).length ?
+                    <div>
+                        <h3>Protocols</h3>
+                        <div className="row">
+                            {documents}
+                        </div>
                     </div>
-                </div>
+                : null}
 
                 {replicates.map(function (replicate, index) {
                     return (

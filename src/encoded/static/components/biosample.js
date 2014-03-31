@@ -503,7 +503,6 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
             "key-value-trigger": true,
             "active": popoverVisible
         });
-        var popoverContent = this.props.popoverContent({context: context});
 
         return (
             <div className="document-info">

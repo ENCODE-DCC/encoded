@@ -34,6 +34,13 @@ var Dataset = module.exports.Dataset = React.createClass({
             }
         });
         experiments = _.values(experiments);
+
+        // Build up array of documents attached to this dataset
+        var datasetDocuments = {};
+        context.documents.forEach(function (document) {
+            datasetDocuments[document['@id']] = Panel({context: document, popoverContent: ProtocolContent});
+        }, this);
+
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -76,10 +83,12 @@ var Dataset = module.exports.Dataset = React.createClass({
                     </dl>
                 </div>
 
-				{context.documents.length ?
+                {Object.keys(datasetDocuments).length ?
                     <div>
                         <h3>Dataset documents</h3>
-                        {context.documents.map(Panel)}
+                        <div className="row">
+                            {datasetDocuments}
+                        </div>
                     </div>
                 : null}
 
@@ -103,6 +112,25 @@ var Dataset = module.exports.Dataset = React.createClass({
 });
 
 globals.content_views.register(Dataset, 'dataset');
+
+
+var ProtocolContent = module.exports.ProtocolContent = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        return(
+            <div>
+                {context.caption ? <dt>Caption</dt> : null}
+                {context.caption ? <dd>{context.caption}</dd> : null}
+
+                <dt>Submitted by</dt>
+                <dd>{context.submitted_by.title}</dd>
+
+                <dt>Grant</dt>
+                <dd>{context.award.name}</dd>
+            </div>
+        );
+    }
+});
 
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
