@@ -191,6 +191,10 @@ $dl-bar-txt: #0a253d;
 		@include text-shadow(0 1px #202020);
 		@include box-shadow(none);
 	}
+
+	span {
+		display: block;
+	}
 }
 
 

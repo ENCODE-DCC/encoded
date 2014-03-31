@@ -17,7 +17,6 @@ var FetchedItems = fetched.FetchedItems;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
-    console.dir(props);
     var context;
     if (props['@id']) {
         context = props;
@@ -40,7 +39,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         var construct_documents = {};
         constructs.forEach(function (construct) {
             construct.documents.forEach(function (doc) {
-                construct_documents[doc['@id']] = Panel({context: doc});
+                construct_documents[doc['@id']] = Panel({context: doc, popoverContent: ProtocolContent});
            }, this);
         }, this);
 
@@ -51,13 +50,13 @@ var Biosample = module.exports.Biosample = React.createClass({
         var rnai_documents = {};
         rnais.forEach(function (rnai) {
             rnai.documents.forEach(function (doc) {
-                rnai_documents[doc['@id']] = Panel({context: doc});
+                rnai_documents[doc['@id']] = Panel({context: doc, popoverContent: ProtocolContent});
             }, this);
         }, this);
 
         var protocol_documents = {};
         context.protocol_documents.forEach(function(doc) {
-            protocol_documents[doc['@id']] = Panel({context: doc});
+            protocol_documents[doc['@id']] = Panel({context: doc, popoverContent: ProtocolContent});
         }, this);
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
@@ -454,7 +453,7 @@ globals.panel_views.register(RNAi, 'rnai');
 // Note: uses React context, ≠ props.context
 var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
     contextTypes: {
-        popoverState: React.PropTypes.string, // ID of component with visible popup
+        popoverComponent: React.PropTypes.string, // ID of component with visible popup
         onPopoverChange: React.PropTypes.func // Parent function to process popover
     },
 
@@ -463,13 +462,13 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
         e.preventDefault();
         e.stopPropagation();
 
-        // Tell parent (Document) about new popover state
+        // Tell parent (App component) about new popover state
         // Pass it this component's React unique node ID
         this.context.onPopoverChange(this._rootNodeID);
     },
 
     render: function() {
-        var popoverVisible = this.context.popoverState === this._rootNodeID;
+        var popoverVisible = this.context.popoverComponent === this._rootNodeID;
         var context = this.props.context;
         var popoverClass = cx({
             "key-value-popover": true,
@@ -479,6 +478,7 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
             "key-value-trigger": true,
             "active": popoverVisible
         });
+        var popoverContent = this.props.popoverContent({context: context});
 
         return (
             <div className="document-info">
@@ -490,15 +490,27 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
                     </a>
                 </dl>
                 <dl className={popoverClass}>
-                    {context.caption ? <dt>Caption</dt> : null}
-                    {context.caption ? <dd>{context.caption}</dd> : null}
-
-                    <dt>Submitted by</dt>
-                    <dd>{context.submitted_by.title}</dd>
-
-                    <dt>Grant</dt>
-                    <dd>{context.award.name}</dd>
+                     {popoverContent}
                 </dl>
+            </div>
+        );
+    }
+});
+
+
+var ProtocolContent = module.exports.ProtocolContent = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        return(
+            <div>
+                {context.caption ? <dt>Caption</dt> : null}
+                {context.caption ? <dd>{context.caption}</dd> : null}
+
+                <dt>Submitted by</dt>
+                <dd>{context.submitted_by.title}</dd>
+
+                <dt>Grant</dt>
+                <dd>{context.award.name}</dd>
             </div>
         );
     }
@@ -560,7 +572,7 @@ var Document = module.exports.Document = React.createClass({
                     <p>{context.description}</p>
                 </div>
                 {download}
-                <PopoverTrigger context={context} />
+                <PopoverTrigger context={context} popoverContent={this.props.popoverContent} />
             </section>
         );
     }

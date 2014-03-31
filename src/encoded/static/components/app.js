@@ -112,7 +112,7 @@ var App = React.createClass({
         var newPopoverComponent;
 
         // If clicked component is component with visible popover, set to undefined to close popover
-        newPopoverComponent = (this.state.popoverState === componentID) ? undefined : componentID;
+        newPopoverComponent = (this.state.popoverComponent === componentID) ? undefined : componentID;
         this.setState({popoverComponent: newPopoverComponent});
     },
 
@@ -137,15 +137,15 @@ var App = React.createClass({
             }));
         }
         // Switching between collections may leave component in place
-        var key = context && context['@id'];
+        key = context && context['@id'];
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
         });
 
         var appClass = 'done';
         if (this.props.slow) {
-        	appClass = 'communicating'; 
-        };
+            appClass = 'communicating'; 
+        }
 
         var title = globals.listing_titles.lookup(context)({
             context: context,
@@ -179,7 +179,6 @@ var App = React.createClass({
                         <div id="application" className={appClass}>
                         
 						<div className="loading-spinner"></div>
-								   
                             <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         user_actions={this.state.user_actions} session={this.state.session}

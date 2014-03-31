@@ -46,18 +46,12 @@ var Experiment = module.exports.Experiment = React.createClass({
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;
             replicate.library.documents.forEach(function (doc) {
-                documents[doc['@id']] = Panel({
-                    context: doc,
-                    popoverState: this.state.popoverState[doc['@id']],
-                    onPopoverChange: this.handlePopoverChange});
+                documents[doc['@id']] = Panel({context: doc, popoverContent: ProtocolContent});
             }, this);
         }, this);
         // Adding experiment specific documents
         context.documents.forEach(function (document) {
-            documents[document['@id']] = Panel({
-                context: document,
-                popoverState: this.state.popoverState[document['@id']],
-                onPopoverChange: this.handlePopoverChange});
+            documents[document['@id']] = Panel({context: document, popoverContent: ProtocolContent});
         }, this);
         var antibodies = {};
         replicates.forEach(function (replicate) {
@@ -282,6 +276,25 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         </div>
     );
 };
+
+
+var ProtocolContent = module.exports.ProtocolContent = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        return(
+            <div>
+                {context.caption ? <dt>Caption</dt> : null}
+                {context.caption ? <dd>{context.caption}</dd> : null}
+
+                <dt>Submitted by</dt>
+                <dd>{context.submitted_by.title}</dd>
+
+                <dt>Grant</dt>
+                <dd>{context.award.name}</dd>
+            </div>
+        );
+    }
+});
 
 
 var Replicate = module.exports.Replicate = function (props) {
