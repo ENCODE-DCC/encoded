@@ -18,12 +18,13 @@ def dataset_0_2(value, system):
                 value['related_files'].append(file_uuid)
         del value['files']
 
+
 @upgrade_step('experiment', '2', '3')
 @upgrade_step('dataset', '2', '3')
 def dataset_2_3(value, system):
     # http://redmine.encodedcc.org/issues/817
     value['dbxrefs'] = []
-   
+
     if 'encode2_dbxrefs' in value:
         for encode2_dbxref in value['encode2_dbxrefs']:
             if re.match('.*wgEncodeEH.*', encode2_dbxref):
@@ -32,7 +33,7 @@ def dataset_2_3(value, system):
                 new_dbxref = 'UCSC-ENCODE-mm9:' + encode2_dbxref
             value['dbxrefs'].append(new_dbxref)
         del value['encode2_dbxrefs']
-    
+
     if 'geo_dbxrefs' in value:
         for geo_dbxref in value['geo_dbxrefs']:
             new_dbxref = 'GEO:' + geo_dbxref
