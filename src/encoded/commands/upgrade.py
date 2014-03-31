@@ -20,20 +20,13 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
+    'antibody_lot',
     'biosample',
     'experiment',
     'dataset',
-    'antibody_approval',
-    'antibody_characterization',
-    'biosample_characterization',
-    'rnai_characterization',
-    'construct_characterization',
-    'document',
-    'antibody_lot',
     'platform',
-    'treatment'
+    'treatment',
 ]
-DEFAULT_COLLECTIONS = []
 
 
 def internal_app(configfile, app_name=None, username=None):
