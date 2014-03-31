@@ -39,7 +39,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         var construct_documents = {};
         constructs.forEach(function (construct) {
             construct.documents.forEach(function (doc) {
-                construct_documents[doc['@id']] = Panel({context: doc, popoverContent: ProtocolContent});
+                construct_documents[doc['@id']] = Panel({context: doc, popoverContent: StdContent});
            }, this);
         }, this);
 
@@ -50,13 +50,13 @@ var Biosample = module.exports.Biosample = React.createClass({
         var rnai_documents = {};
         rnais.forEach(function (rnai) {
             rnai.documents.forEach(function (doc) {
-                rnai_documents[doc['@id']] = Panel({context: doc, popoverContent: ProtocolContent});
+                rnai_documents[doc['@id']] = Panel({context: doc, popoverContent: StdContent});
             }, this);
         }, this);
 
         var protocol_documents = {};
         context.protocol_documents.forEach(function(doc) {
-            protocol_documents[doc['@id']] = Panel({context: doc, popoverContent: ProtocolContent});
+            protocol_documents[doc['@id']] = Panel({context: doc, popoverContent: StdContent});
         }, this);
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
@@ -520,7 +520,7 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
 });
 
 
-var ProtocolContent = module.exports.ProtocolContent = React.createClass({
+var StdContent = module.exports.StdContent = React.createClass({
     render: function() {
         var context = this.props.context;
         return(

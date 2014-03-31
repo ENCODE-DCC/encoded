@@ -38,7 +38,7 @@ var Dataset = module.exports.Dataset = React.createClass({
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
         context.documents.forEach(function (document) {
-            datasetDocuments[document['@id']] = Panel({context: document, popoverContent: ProtocolContent});
+            datasetDocuments[document['@id']] = Panel({context: document, popoverContent: StdContent});
         }, this);
 
         return (
@@ -114,7 +114,7 @@ var Dataset = module.exports.Dataset = React.createClass({
 globals.content_views.register(Dataset, 'dataset');
 
 
-var ProtocolContent = module.exports.ProtocolContent = React.createClass({
+var StdContent = module.exports.StdContent = React.createClass({
     render: function() {
         var context = this.props.context;
         return(
