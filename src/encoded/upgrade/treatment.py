@@ -7,4 +7,3 @@ def treatment_0_2(value, system):
     
     if 'award' in value:
        del value['award']
-
