@@ -134,7 +134,7 @@ $dl-bar-txt: #0a253d;
 
 	figure {
 		position: relative;
-		display: table-cell;
+		display: table;
 		float: left;
 		width: 130px;
 		height: 130px;
@@ -146,11 +146,11 @@ $dl-bar-txt: #0a253d;
 			display: table-cell;
 			height: 100%;
 			width: 100%;
+			text-align: center;
+			vertical-align: middle;
 
 			img {
-				display: block;
-				margin: 0 auto;
-				vertical-align: middle;
+				display: inline-block;
 			}
 		}
 	}
