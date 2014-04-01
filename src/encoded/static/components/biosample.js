@@ -510,7 +510,7 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
                     <a href="#" onClick={this.handleClick}>
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
-                        <i className="icon icon-chevron-up"></i>
+                        <i className="icon-bar icon-chevron-up"></i>
                     </a>
                 </dl>
                 <Popover context={context} popoverContent={this.props.popoverContent} popoverComponent={this._rootNodeID} />
@@ -541,6 +541,11 @@ var StdContent = module.exports.StdContent = React.createClass({
 
 // Fixed-position lightbox background and image
 var Lightbox = module.exports.Lightbox = React.createClass({
+    ignoreClick: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    },
+
     render: function() {
         var lightboxVisible = this.props.lightboxVisible;
         var lightboxClass = cx({
@@ -550,7 +555,10 @@ var Lightbox = module.exports.Lightbox = React.createClass({
 
         return(
             <div className={lightboxClass} onClick={this.props.clearLightbox}>
-                <img src={this.props.lightboxImg} />
+                <div className="lightbox-img">
+                    <img src={this.props.lightboxImg} onClick={this.ignoreClick} />
+                    <i className="lightbox-close icon-remove-sign"></i>
+                </div>
             </div>
         );
     }
@@ -563,14 +571,33 @@ var Document = module.exports.Document = React.createClass({
     },
 
     // Handle a click on the lightbox trigger (thumbnail)
-    lightboxClick: function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        this.setState({lightboxVisible: true});
+    lightboxClick: function(attachmentType, e) {
+        if(attachmentType === 'image') {
+            e.preventDefault();
+            e.stopPropagation();
+            this.setState({lightboxVisible: true});
+        }
     },
 
     clearLightbox: function() {
         this.setState({lightboxVisible: false});
+    },
+
+    // If lightbox visible, ESC key closes it
+    handleEscKey: function(e) {
+        if(this.state.lightboxVisible && e.keyCode == 27) {
+            this.clearLightbox();
+        }
+    },
+
+    // Register for keyup events for ESC key
+    componentDidMount: function() {
+        window.addEventListener('keyup', this.handleEscKey);
+    },
+
+    // Unregister keyup events when component closes
+    componentWillUnmount: function() {
+        window.removeEventListener('keyup', this.handleEscKey);
     },
 
     render: function() {
@@ -598,7 +625,7 @@ var Document = module.exports.Document = React.createClass({
                 alt = "Characterization Icon";
             }
             figure = (
-                <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick}>
+                <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
                     <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                 </a>
             );

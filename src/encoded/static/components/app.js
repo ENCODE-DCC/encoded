@@ -117,7 +117,9 @@ var App = React.createClass({
     },
 
     handleLayoutClick: function(e) {
-        this.setState({popoverComponent: undefined});
+        if(this.state.popoverComponent !== undefined) {
+            this.setState({popoverComponent: undefined});
+        }
     },
 
     render: function() {

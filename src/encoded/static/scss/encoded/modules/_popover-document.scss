@@ -74,7 +74,7 @@ $figure-height: 130px;
 }
 
 
-.icon {
+.icon-bar {
     position: absolute;
     top: 0;
     right: 5px;
@@ -208,7 +208,7 @@ $figure-height: 130px;
 
 
 .lightbox {
-    display: none;
+    visibility: hidden;
     position: fixed;
     top: 0;
     left: 0;
@@ -218,16 +218,45 @@ $figure-height: 130px;
     background-color: rgba(0,0,0,.8);
     opacity: 0;
     z-index: 1100;
-    @include transition(opacity 500ms);
+    @include transition(all 200ms);
+    text-align: center;
+    cursor: pointer;
 
     &.active {
-        display: block;
+        visibility: visible;
         opacity: 1;
-        @include transition(opacity 500ms);
+        @include transition(all 200ms);
     }
 
     img {
         display: block;
-        margin: 100px auto 0;
     }
+}
+
+
+.lightbox-img {
+    display: inline-block;
+    position: relative;
+    margin: 100px auto 0;
+    cursor: default;
+
+    img {
+        display: block;
+    }
+}
+
+
+.lightbox-close {
+    position: absolute;
+    width: 23px;
+    height: 23px;
+    top: -12px;
+    right: -12px;
+    font-size: 21px;
+    color: #000;
+    background-color: #fff;
+    @include border-radius(12px);
+    vertical-align: top;
+    @include box-shadow(0 1px 2px 0);
+    cursor: pointer;
 }
