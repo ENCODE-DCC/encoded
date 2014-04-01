@@ -205,3 +205,29 @@ $figure-height: 130px;
         }
     }
 }
+
+
+.lightbox {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-color: #000;
+    background-color: rgba(0,0,0,.8);
+    opacity: 0;
+    z-index: 1100;
+    @include transition(opacity 500ms);
+
+    &.active {
+        display: block;
+        opacity: 1;
+        @include transition(opacity 500ms);
+    }
+
+    img {
+        display: block;
+        margin: 100px auto 0;
+    }
+}

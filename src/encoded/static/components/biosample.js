@@ -539,7 +539,40 @@ var StdContent = module.exports.StdContent = React.createClass({
 });
 
 
+// Fixed-position lightbox background and image
+var Lightbox = module.exports.Lightbox = React.createClass({
+    render: function() {
+        var lightboxVisible = this.props.lightboxVisible;
+        var lightboxClass = cx({
+            "lightbox": true,
+            "active": lightboxVisible
+        });
+
+        return(
+            <div className={lightboxClass} onClick={this.props.clearLightbox}>
+                <img src={this.props.lightboxImg} />
+            </div>
+        );
+    }
+});
+
+
 var Document = module.exports.Document = React.createClass({
+    getInitialState: function() {
+        return {lightboxVisible: false};
+    },
+
+    // Handle a click on the lightbox trigger (thumbnail)
+    lightboxClick: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.setState({lightboxVisible: true});
+    },
+
+    clearLightbox: function() {
+        this.setState({lightboxVisible: false});
+    },
+
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
@@ -550,7 +583,8 @@ var Document = module.exports.Document = React.createClass({
 
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
-            if (context.attachment.type.split('/', 1)[0] == 'image') {
+            var attachmentType = context.attachment.type.split('/', 1)[0];
+            if (attachmentType === 'image') {
                 imgClass = 'characterization-img';
                 src = attachmentHref;
                 height = context.attachment.height;
@@ -564,7 +598,7 @@ var Document = module.exports.Document = React.createClass({
                 alt = "Characterization Icon";
             }
             figure = (
-                <a data-bypass="true" href={attachmentHref}>
+                <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick}>
                     <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                 </a>
             );
@@ -595,6 +629,7 @@ var Document = module.exports.Document = React.createClass({
                 </div>
                 {download}
                 <PopoverTrigger context={context} popoverContent={this.props.popoverContent} />
+                <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={src} clearLightbox={this.clearLightbox} />
             </section>
         );
     }
