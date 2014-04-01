@@ -186,7 +186,6 @@ var Dbxref = dbxref.Dbxref;
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
             };
             var link = termSelected(term, field, filters);
-console.log(link);
             if(link) {
                 return (
                     <li id="selected" key={term}>

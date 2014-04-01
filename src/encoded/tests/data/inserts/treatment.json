@@ -1,6 +1,5 @@
 [
     {
-        "award": "U54HG004592",
         "concentration": 97.2,
         "concentration_units": "nM",
         "duration": 6,
@@ -19,7 +18,6 @@
         "uuid": "3280b708-0f05-40fa-bff2-54e2b6505c13"
     },
     {
-        "award": "U54HG004563",
         "concentration": 600,
         "concentration_units": "nM",
         "duration": 30,
@@ -41,7 +39,6 @@
         "aliases": [
             "thomas-gingeras:CIP_Protocol"
         ],
-        "award": "U54HG007004",
         "duration": 30,
         "duration_units": "minute",
         "dbxrefs": [
