@@ -30,6 +30,10 @@ $figure-height: 130px;
             }
         }
     }
+
+    h3 {
+        line-height: normal;
+    }
 }
 
 .document-intro {
@@ -136,11 +140,11 @@ $figure-height: 130px;
     margin: 0 0 0 -45%;
     visibility: hidden;
     background-color: #eff6fc;
-    @include background-image(linear-gradient(top, #e5ebf0 0%,#eff6fc 50%,#e5ebf0 100%));
+    @include background-image(linear-gradient(top, #e8e8e8 0%,#c8c8c8 100%));
     @include border-radius(10px);
     border-width: 1px;
     border-style: solid;
-    border-color: #fff darken(#eff6fc,8%) #404040;
+    border-color: #fff #e0e0e0 #808080;
     @include box-shadow(0 4px 8px 0 rgba(0,0,0,.4));
     opacity: 0;
     @include transition(all 200ms);
@@ -164,7 +168,7 @@ $figure-height: 130px;
 
     &:after {
         border-color: rgba(255, 255, 255, 0);
-        border-top-color: #e5ebf0;
+        border-top-color: #c8c8c8;
         border-width: 10px;
         margin-left: -10px;
     }

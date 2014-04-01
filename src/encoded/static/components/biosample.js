@@ -632,7 +632,7 @@ var Document = module.exports.Document = React.createClass({
             download = (
                 <a data-bypass="true" className="dl-bar" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
-                    <i className="icon icon-download"></i>
+                    <i className="icon-bar icon-download"></i>
                 </a>
             );
         } else {
