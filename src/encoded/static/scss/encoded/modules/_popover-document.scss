@@ -3,36 +3,43 @@ $dl-bar-txt: #0a253d;
 $figure-width: 130px;
 $figure-height: 130px;
 
-.type-document.view-detail {
-    padding: 0;
+.type-document {
+    margin-top: 0;
 
-    figure {
-        position: relative;
-        display: table;
-        float: left;
-        width: $figure-width;
-        height: $figure-height;
-        margin: 0 5px 0 0;
+    &.view-detail {
         padding: 0;
-        background-color: #f00;
 
-        a {
-            display: table-cell;
+        figure {
+            position: relative;
+            display: table;
+            float: left;
             width: $figure-width;
             height: $figure-height;
-            text-align: center;
-            vertical-align: middle;
+            margin: 0 5px 0 0;
+            padding: 0;
+            border-right: 1px solid #ced5dc;
+            background-color: #f0f0f0;
+            @include background-image(linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%));
+            background-image: -ms-linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%);
 
-            img {
-                display: inline-block;
-                max-width: $figure-width;
-                height: auto;
+            a {
+                display: table-cell;
+                width: $figure-width;
+                height: $figure-height;
+                text-align: center;
+                vertical-align: middle;
+
+                img {
+                    display: inline-block;
+                    max-width: $figure-width;
+                    height: auto;
+                }
             }
         }
-    }
 
-    h3 {
-        line-height: normal;
+        h3 {
+            line-height: normal;
+        }
     }
 }
 
@@ -56,7 +63,7 @@ $figure-height: 130px;
     display: block;
     position: relative;
     height: 32px;
-    padding: 0 10px;
+    padding: 0 25px 0 10px;
     line-height: 32px;
     color: $dl-bar-txt;
     background-color: $dl-bar-bg;
@@ -74,6 +81,7 @@ $figure-height: 130px;
 
     span {
         display: block;
+        overflow-x: hidden;
     }
 }
 
@@ -107,11 +115,21 @@ $figure-height: 130px;
 
         dt {
             display: inline-block;
+
+            &:after {
+                content: ": ";
+            }
         }
 
         dd {
             margin-left: 5px;
             display: inline-block;
+        }
+
+        &::-moz-focus-inner,
+        &:focus {
+            border: 0;
+            outline: none;
         }
     }
 
@@ -141,6 +159,7 @@ $figure-height: 130px;
     visibility: hidden;
     background-color: #eff6fc;
     @include background-image(linear-gradient(top, #e8e8e8 0%,#c8c8c8 100%));
+    background-image: -ms-linear-gradient(top, #e8e8e8 0%,#c8c8c8 100%);
     @include border-radius(10px);
     border-width: 1px;
     border-style: solid;
@@ -241,7 +260,7 @@ $figure-height: 130px;
 .lightbox-img {
     display: inline-block;
     position: relative;
-    margin: 100px auto 0;
+    margin: 10px auto 0;
     max-width: 90%;
     cursor: default;
 
@@ -254,11 +273,11 @@ $figure-height: 130px;
 .lightbox-close {
     position: absolute;
     width: 23px;
-    height: 23px;
+    height: 22px;
     top: -12px;
     right: -12px;
     font-size: 21px;
-    line-height: 22px;
+    line-height: 23px;
     color: #000;
     background-color: #fff;
     @include border-radius(12px);

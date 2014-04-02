@@ -507,7 +507,7 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
         return (
             <div className="document-info">
                 <dl className={keyClass}>
-                    <a href="#" onClick={this.handleClick}>
+                    <a href="#" aria-haspopup="true" onClick={this.handleClick}>
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
                         <i className="icon-bar icon-chevron-up"></i>
@@ -629,8 +629,9 @@ var Document = module.exports.Document = React.createClass({
                     <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                 </a>
             );
+            var dlFileTitle = "Download file " + context.attachment.download;
             download = (
-                <a data-bypass="true" className="dl-bar" href={attachmentHref} download={context.attachment.download}>
+                <a data-bypass="true" title={dlFileTitle} className="dl-bar" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
                     <i className="icon-bar icon-download"></i>
                 </a>
