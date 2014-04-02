@@ -242,6 +242,7 @@ $figure-height: 130px;
     display: inline-block;
     position: relative;
     margin: 100px auto 0;
+    max-width: 90%;
     cursor: default;
 
     img {
@@ -257,6 +258,7 @@ $figure-height: 130px;
     top: -12px;
     right: -12px;
     font-size: 21px;
+    line-height: 22px;
     color: #000;
     background-color: #fff;
     @include border-radius(12px);
