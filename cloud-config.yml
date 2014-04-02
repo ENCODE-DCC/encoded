@@ -96,6 +96,7 @@ runcmd:
 - sudo -u encoded bin/upgrade production.ini
 - sudo -u encoded bin/create-mapping production.ini
 - sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
+- sudo a2enmod headers
 - sudo a2enmod proxy_http
 - sudo a2enmod rewrite
 - sudo a2ensite encoded.conf
@@ -115,7 +116,7 @@ ssh_authorized_keys:
 apt_sources:
 # This is not quite the latest version
 # https://github.com/elasticsearch/elasticsearch/issues/3286
-- source: "deb http://packages.elasticsearch.org/elasticsearch/1.0/debian stable main"
+- source: "deb http://packages.elasticsearch.org/elasticsearch/1.1/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
