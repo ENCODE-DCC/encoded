@@ -178,6 +178,7 @@ class AntibodyLot(Collection):
     ]
     item_rev = {
         'characterizations': ('antibody_characterization', 'characterizes'),
+        'approvals': ('antibody_approval', 'antibody'),
     }
 
 
@@ -623,6 +624,7 @@ class Experiment(Dataset):
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody',
+            'replicates.antibody.approvals',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',
