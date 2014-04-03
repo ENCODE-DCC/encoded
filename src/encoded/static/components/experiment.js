@@ -29,6 +29,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             return item.biological_replicate_number;
         });
         var aliasList = context.aliases.join(", ");
+        var biosample = replicates[0].library && replicates[0].library.biosample;
 
         var documents = {};
         replicates.forEach(function (replicate) {
@@ -77,6 +78,12 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                         <dt hidden={!context.biosample_type}>Biosample type</dt>
                         <dd hidden={!context.biosample_type} className="sentence-case">{context.biosample_type}</dd>
+
+                        {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                        {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
+
+                        {biosample && biosample.age ? <dt>Age</dt> : null}
+                        {biosample && biosample.age ? <dd>{biosample.age}<span className="unit">{biosample.age_units ? biosample.age_units : ''}</span></dd> : null}
 
                         {context.target ? <dt>Target</dt> : null}
                         {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
