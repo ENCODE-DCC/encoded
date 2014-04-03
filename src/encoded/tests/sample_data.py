@@ -102,7 +102,7 @@ ANTIBODY_APPROVALS = [
         ],
     'lab': 'myers',
     'award': 'Myers',
-    'status': 'PENDING DCC REVIEW',
+    'status': 'pending dcc review',
     },
 ]
 
