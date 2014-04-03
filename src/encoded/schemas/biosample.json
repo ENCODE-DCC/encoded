@@ -300,6 +300,14 @@
             "title": "Accession",
             "type": "string"
         },
+        "age": {
+            "title": "Age",
+            "type": "string"
+        },
+        "age_units": {
+            "title": "Age Units",
+            "type": "string"
+        },
         "biosample_term_name": {
             "title": "Term",
             "type": "string"
@@ -324,13 +332,17 @@
             "title": "Life stage",
             "type": "string"
         },
-        "treatments.length": {
-            "title": "Treatments length",
-            "type": "array"
+        "rnais.target.organism.name": {
+            "title": "RNAi",
+            "type": "string"
         },
-        "constructs.length": {
-            "title": "Constructs",
-            "type": "array"
+        "treatments.treatment_term_name": {
+            "title": "Treatment",
+            "type": "string"
+        },
+        "constructs.target.label": {
+            "title": "Construct",
+            "type": "string"
         }
     },
     "boost_values": {

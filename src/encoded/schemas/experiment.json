@@ -117,9 +117,21 @@
             "title": "Project",
             "type": "string"
         },
-        "replicates.length": {
-            "title": "Replicates",
-            "type": "array"
+        "replicates.library.biosample.organism.name": {
+            "title": "Species",
+            "type": "string"
+        },
+        "replicates.library.biosample.life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "replicates.library.biosample.age": {
+            "title": "Age",
+            "type": "string"
+        },
+        "replicates.library.biosample.age_units": {
+            "title": "Age Units",
+            "type": "string"
         },
         "files.length": {
             "title": "Files",
