@@ -16,7 +16,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "antibody": {
             "title": "Antibody",
@@ -49,14 +49,14 @@
             "description": "The current state of the antibody characterizations.",
             "comment": "Do not submit, the value is assigned by server. The status is updated by the DCC.",
             "type": "string",
-            "default": "AWAITING LAB CHARACTERIZATION",
+            "default": "awaiting lab characterization",
             "enum" : [
-                "AWAITING LAB CHARACTERIZATION",
-                "PENDING DCC REVIEW",
-                "ELIGIBLE FOR NEW DATA",
-                "NOT ELIGIBLE FOR NEW DATA",
-                "NOT PURSUED",
-                "DELETED"
+                "awaiting lab characterization",
+                "pending dcc review",
+                "eligible for new data",
+                "not eligible for new data",
+                "not pursued",
+                "deleted"
             ]
         }
     },

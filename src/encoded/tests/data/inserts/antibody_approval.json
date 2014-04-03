@@ -7,7 +7,7 @@
             "500969eb-e789-442b-b1b7-dd608b2f7a68"
         ], 
         "lab": "j-michael-cherry", 
-        "status": "PENDING DCC REVIEW", 
+        "status": "pending dcc review", 
         "target": "TCF4-human", 
         "uuid": "ee313b22-a747-4ed1-bd73-9998d3384d93"
     }, 
@@ -18,7 +18,7 @@
             "cbf2446e-cd0d-4413-b307-2435e783575c"
         ], 
         "lab": "j-michael-cherry", 
-        "status": "NOT ELIGIBLE FOR NEW DATA", 
+        "status": "NOT eligible for new data", 
         "target": "CXXC1-human", 
         "uuid": "58b4df5b-ba21-4111-a715-3b5ba863b9b4"
     }, 
@@ -30,7 +30,7 @@
             "4f9900f8-468b-48bc-98da-a1330ac4355f"
         ], 
         "lab": "w-james-kent", 
-        "status": "PENDING DCC REVIEW", 
+        "status": "pending dcc review", 
         "target": "CTCF-human", 
         "uuid": "68374220-d4de-4114-bc78-4b1c21f03711"
     }, 
@@ -38,7 +38,7 @@
         "antibody": "ENCAB000AFU", 
         "award": "U41HG004568", 
         "lab": "w-james-kent", 
-        "status": "ELIGIBLE FOR NEW DATA", 
+        "status": "eligible for new data", 
         "target": "E2F1-human", 
         "uuid": "5369a3c6-4920-43d0-85f6-3c02846bd875"
     }, 
@@ -50,7 +50,7 @@
             "c105221e-2c2f-449d-9942-4f4b5f2f36fe"
         ], 
         "lab": "w-james-kent", 
-        "status": "ELIGIBLE FOR NEW DATA", 
+        "status": "eligible for new data", 
         "target": "TAF1-human", 
         "uuid": "a9285cd0-f120-4154-acd6-a7b842058fcc"
     }, 
@@ -62,7 +62,7 @@
             "05a22a07-ab5c-42ad-bf93-801f03b017f7"
         ], 
         "lab": "w-james-kent", 
-        "status": "ELIGIBLE FOR NEW DATA", 
+        "status": "eligible for new data", 
         "target": "H3K9ac-human", 
         "uuid": "567bb13a-95cd-4d8e-94fd-181f9643f96b"
     }, 
@@ -75,7 +75,7 @@
             "072cbc4e-075e-46b7-df05-58c5092ebd36"
         ], 
         "lab": "j-michael-cherry", 
-        "status": "AWAITING LAB CHARACTERIZATION", 
+        "status": "awaiting lab characterization", 
         "target": "H3K4me3-human", 
         "uuid": "40dc9f9e-c68c-42db-b7a1-ec5659e1d216"
     }, 
@@ -88,7 +88,7 @@
             "adbb7ba3-0bca-4bca-b892-15f997781515"
         ], 
         "lab": "w-james-kent", 
-        "status": "ELIGIBLE FOR NEW DATA", 
+        "status": "eligible for new data", 
         "target": "H3K4me3-mouse", 
         "uuid": "35cf08c4-72cf-4408-8552-231e3e35b279"
     }, 
@@ -96,7 +96,7 @@
         "antibody": "ENCAB000AOF", 
         "award": "U41HG004568", 
         "lab": "w-james-kent", 
-        "status": "ELIGIBLE FOR NEW DATA", 
+        "status": "eligible for new data", 
         "target": "Control-human", 
         "uuid": "c808814f-376f-41ee-b93e-ddd00294ca3d"
     }, 
@@ -104,7 +104,7 @@
         "antibody": "ENCAB000AOF", 
         "award": "U41HG004568", 
         "lab": "w-james-kent", 
-        "status": "ELIGIBLE FOR NEW DATA", 
+        "status": "eligible for new data", 
         "target": "Control-mouse", 
         "uuid": "3e5f21d4-4731-4efb-8dec-4bfe9c92aeae"
     }, 
@@ -112,7 +112,7 @@
         "antibody": "ENCAB000ASG", 
         "award": "U41HG006992", 
         "lab": "j-michael-cherry", 
-        "status": "AWAITING LAB CHARACTERIZATION", 
+        "status": "awaiting lab characterization", 
         "target": "H3K4me3-human", 
         "uuid": "3a1c7fbe-4633-4fa7-bd5d-5eab36c5931a"
     }, 
@@ -124,7 +124,7 @@
             "2f605105-7ec4-46a3-a8e5-1e5a0647aa8a"
         ], 
         "lab": "w-james-kent", 
-        "status": "ELIGIBLE FOR NEW DATA", 
+        "status": "eligible for new data", 
         "target": "HA-E2F1-human", 
         "uuid": "5f2a8a3e-1eb4-45af-a3f6-4b0c484b0a93"
     }, 
@@ -135,7 +135,7 @@
             "7118e7b4-fab1-4ddb-f038-490c47b73cf2"
         ], 
         "lab": "j-michael-cherry", 
-        "status": "AWAITING LAB CHARACTERIZATION", 
+        "status": "awaiting lab characterization", 
         "target": "H3K4me3-human", 
         "uuid": "bd1f0857-921f-4693-8299-e8a123baff93"
     }, 
@@ -143,7 +143,7 @@
         "antibody": "ENCAB000AUU", 
         "award": "U41HG004568", 
         "lab": "w-james-kent", 
-        "status": "AWAITING LAB CHARACTERIZATION", 
+        "status": "awaiting lab characterization", 
         "target": "H3K4me3-mouse", 
         "uuid": "f3ffe579-4d21-415e-8048-4a6d6d63fce3"
     }, 
@@ -154,7 +154,7 @@
             "769cbffe-bb59-4d68-a073-367a6fdd0cef"
         ], 
         "lab": "j-michael-cherry", 
-        "status": "AWAITING LAB CHARACTERIZATION", 
+        "status": "awaiting lab characterization", 
         "target": "HNRNPA1-human", 
         "uuid": "1a7bb66e-a81b-4232-8ca6-5c93b56a47ea"
     }, 
@@ -165,7 +165,7 @@
             "5bd15dc3-7c23-4e25-a20b-5078274f284f"
         ], 
         "lab": "j-michael-cherry", 
-        "status": "NOT ELIGIBLE FOR NEW DATA", 
+        "status": "NOT eligible for new data", 
         "target": "HNRNPA1-human", 
         "uuid": "c6176cd6-2284-4382-8c7a-e92eb242633a"
     }, 
@@ -176,7 +176,7 @@
             "13a76a0c-9571-489a-aa23-1408c0c88414"
         ], 
         "lab": "j-michael-cherry", 
-        "status": "AWAITING LAB CHARACTERIZATION", 
+        "status": "awaiting lab characterization", 
         "target": "HNRNPA1-human", 
         "uuid": "d3598eae-4491-404d-a147-07a2d93d71c5"
     }

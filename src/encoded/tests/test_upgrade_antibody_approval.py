@@ -20,11 +20,28 @@ def antibody_approval_1(antibody_approval):
     return item
 
 
+@pytest.fixture
+def antibody_approval_2(antibody_approval):
+    item = antibody_approval.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'PENDING DCC REVIEW',
+    })
+    return item
+
+
 def test_antibody_approval_upgrade(app, antibody_approval_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('antibody_approval', antibody_approval_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'PENDING DCC REVIEW'
+
+
+def test_antibody_approval_upgade_status(app, antibody_approval_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('antibody_approval', antibody_approval_2, target_version='3')
+    assert value['schema_version'] == '3'
+    assert value['status'] == 'pending dcc review'
 
 
 def test_antibody_approval_upgrade_inline(testapp, root, antibody_approval_1):
