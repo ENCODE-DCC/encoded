@@ -7,7 +7,7 @@
         "characterizes": "e61ad044-a869-4bd2-ae04-f4fa83bbca00",
         "date": "2011-01-10",
         "lab": "richard-myers",
-        "status": "NOT SUBMITTED FOR REVIEW BY LAB",
+        "status": "not submitted for review by lab",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "CXXC1-human",
         "uuid": "cbf2446e-cd0d-4413-b307-2435e783575c"
@@ -20,7 +20,7 @@
         "characterizes": "f24ac237-ba4c-4b3d-af7e-85f0b57c4184",
         "date": "2012-07-17",
         "lab": "bradley-bernstein",
-        "status": "PENDING DCC REVIEW",
+        "status": "pending dcc review",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "7118e7b4-fab1-4ddb-f038-490c47b73cf2"
@@ -33,7 +33,7 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2013-11-20",
         "lab": "bradley-bernstein",
-        "status": "PENDING DCC REVIEW",
+        "status": "pending dcc review",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "072cbc4e-075e-46b7-df05-58c5092ebd36"
@@ -46,7 +46,7 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2011-01-11",
         "lab": "bradley-bernstein",
-        "status": "PENDING DCC REVIEW",
+        "status": "pending dcc review",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "adbb7ba3-0bca-4bca-b892-15f997781515"
@@ -59,7 +59,7 @@
         "characterizes": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea",
         "date": "2012-07-18",
         "lab": "xiang-dong-fu",
-        "status": "PENDING DCC REVIEW",
+        "status": "pending dcc review",
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
         "uuid": "769cbffe-bb59-4d68-a073-367a6fdd0cef"
@@ -73,7 +73,7 @@
         "comment": "The expected bands are not visible.",
         "date": "2013-11-21",
         "lab": "xiang-dong-fu",
-        "status": "NOT SUBMITTED FOR REVIEW BY LAB",
+        "status": "not submitted for review by lab",
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
         "uuid": "5bd15dc3-7c23-4e25-a20b-5078274f284f"
@@ -86,7 +86,7 @@
         "characterizes": "c8001233-050d-4dab-bf73-f47133b2e2a3",
         "date": "2011-01-12",
         "lab": "xiang-dong-fu",
-        "status": "PENDING DCC REVIEW",
+        "status": "pending dcc review",
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
         "uuid": "13a76a0c-9571-489a-aa23-1408c0c88414"
@@ -99,7 +99,7 @@
         "characterizes": "d563e33c-fea8-4453-909b-ccfdbfd9f8b3",
         "date": "2012-07-19",
         "lab": "richard-myers",
-        "status": "PENDING DCC REVIEW",
+        "status": "pending dcc review",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "CTCF-human",
         "uuid": "15579824-74dc-4b5c-88bd-cd7fadee0df7"
@@ -115,7 +115,7 @@
         "references": [
             "PMID:22955991"
         ],
-        "status": "PENDING DCC REVIEW",
+        "status": "pending dcc review",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "CTCF-human",
         "uuid": "4f9900f8-468b-48bc-98da-a1330ac4355f"
@@ -127,7 +127,7 @@
         "characterizes": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
         "date": "2011-01-13",
         "lab": "michael-snyder",
-        "status": "COMPLIANT",
+        "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "E2F1-human",
         "uuid": "7ad24205-c246-4c67-929f-12974de1fee7"
@@ -139,7 +139,7 @@
         "characterizes": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
         "date": "2012-07-20",
         "lab": "michael-snyder",
-        "status": "NOT REVIEWED",
+        "status": "not reviewed",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "E2F1-human",
         "uuid": "7a824fb0-280d-4a4f-8169-20a33bb661e1"
@@ -152,7 +152,7 @@
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2013-11-23",
         "lab": "michael-snyder",
-        "status": "COMPLIANT",
+        "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-E2F1-human",
         "uuid": "e430c823-f95e-4b34-beca-41c07cf10376"
@@ -165,7 +165,7 @@
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2011-01-14",
         "lab": "michael-snyder",
-        "status": "COMPLIANT",
+        "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-E2F1-human",
         "uuid": "2f605105-7ec4-46a3-a8e5-1e5a0647aa8a"
@@ -178,7 +178,7 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2012-07-21",
         "lab": "bradley-bernstein",
-        "status": "COMPLIANT",
+        "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K4me3-human",
         "uuid": "2db3adb8-5d5c-4bb0-8580-9633ec610de6"
@@ -191,7 +191,7 @@
         "characterizes": "f211c027-6613-4998-8cf0-90e9041ad254",
         "date": "2013-11-24",
         "lab": "bradley-bernstein",
-        "status": "COMPLIANT",
+        "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K9ac-human",
         "uuid": "15bd73e2-fa04-4268-95ce-fee4a0cdf7f3"
@@ -204,7 +204,7 @@
         "characterizes": "f211c027-6613-4998-8cf0-90e9041ad254",
         "date": "2011-01-15",
         "lab": "bradley-bernstein",
-        "status": "COMPLIANT",
+        "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K9ac-human",
         "uuid": "05a22a07-ab5c-42ad-bf93-801f03b017f7"
@@ -217,7 +217,7 @@
         "characterizes": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
         "date": "2012-07-22",
         "lab": "richard-myers",
-        "status": "COMPLIANT",
+        "status": "compliant",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
         "uuid": "73ea11a5-b9f7-4c60-b0b7-6319f2dbea65"
@@ -230,7 +230,7 @@
         "characterizes": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
         "date": "2013-11-25",
         "lab": "richard-myers",
-        "status": "COMPLIANT",
+        "status": "compliant",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
         "uuid": "c105221e-2c2f-449d-9942-4f4b5f2f36fe"
@@ -242,7 +242,7 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2011-01-16",
         "lab": "ross-hardison",
-        "status": "COMPLIANT",
+        "status": "compliant",
         "submitted_by": "tempor.convallis@libero.nibh",
         "target": "H3K4me3-mouse",
         "uuid": "77b39794-eca3-4799-bac7-27a71a74313f"
@@ -258,7 +258,7 @@
         "characterizes": "907ced83-e4bb-4d77-8d97-e969db915533",
         "date": "2012-07-23",
         "lab": "richard-myers",
-        "status": "PENDING DCC REVIEW",
+        "status": "pending dcc review",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TCF4-human",
         "uuid": "cc1dc011-9d2b-4b61-95b2-a7d03f317f68"
@@ -275,7 +275,7 @@
         "date": "2013-11-26",
         "lab": "richard-myers",
         "notes": "I don't think this will pass. Will asked another wrangler.",
-        "status": "PENDING DCC REVIEW",
+        "status": "pending dcc review",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TCF4-human",
         "uuid": "500969eb-e789-442b-b1b7-dd608b2f7a68"

@@ -50,6 +50,16 @@ def antibody_characterization_1(antibody_characterization):
 
 
 @pytest.fixture
+def antibody_characterization_2(antibody_characterization):
+    item = antibody_characterization.copy()
+    item.update({
+        'schema_version': '3',
+        'status': 'COMPLIANT'
+    })
+    return item
+
+
+@pytest.fixture
 def biosample_characterization_1(biosample_characterization):
     item = biosample_characterization.copy()
     item.update({
@@ -112,6 +122,13 @@ def test_rnai_characterization_upgrade(app, rnai_characterization_1):
     assert value['schema_version'] == '3'
     assert value['status'] == 'IN PROGRESS'
     assert value['characterization_method'] == 'knockdown or knockout'
+
+
+def test_antibody_characterization_upgrade_status(app, antibody_characterization_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('antibody_characterization', antibody_characterization_2, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['status'] == 'compliant'
 
 
 def test_antibody_characterization_upgrade_inline(testapp, root, antibody_characterization_1):

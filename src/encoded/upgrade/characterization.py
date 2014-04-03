@@ -38,5 +38,16 @@ def characterization_0_3(value, system):
     }
 
     if 'status' in value:
-        new_value = new_status[value['status']]
-        value['status'] = new_value
+         if value['status'] in new_status.keys():
+            new_value = new_status[value['status']]
+            value['status'] = new_value
+
+
+@upgrade_step('antibody_characterization', '3', '4')
+@upgrade_step('biosample_characterization', '3', '4')
+@upgrade_step('rnai_characterization', '3', '4')
+@upgrade_step('construct_characterization', '3', '4')
+def characterization_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/1307
+    if 'status' in value:
+        value['status'] = value['status'].lower()
