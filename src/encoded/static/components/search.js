@@ -73,23 +73,23 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}<br />
-                            <strong>{columns['source.title']['title']}</strong>: {result['source.title']}
-                            {result['treatments.treatment_term_name'] ? <br /> : null}
-                            {result['treatments.treatment_term_name'] ? <strong>{columns['treatments.treatment_term_name']['title'] + ': '}</strong> :null}
-                            {result['treatments.treatment_term_name'] ? result['treatments.treatment_term_name'] : null}
-                            {result['constructs.target.label'] ? <br /> : null}
-                            {result['constructs.target.label'] ? <strong>{columns['constructs.target.label']['title'] + ': '}</strong> :null}
-                            {result['constructs.target.label'] ? result['constructs.target.label'] : null}
-                            {result['rnais.target.organism.name'] ? <br /> : null}
-                            {result['rnais.target.organism.name'] ? <strong>{columns['rnais.target.organism.name']['title'] + ': '}</strong> :null}
-                            {result['rnais.target.organism.name'] ? result['rnais.target.organism.name'] : null}
+                            <strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}
                             {result['life_stage'] ? <br /> : null}
                             {result['life_stage'] ? <strong>{columns['life_stage']['title'] + ': '}</strong> :null}
                             {result['life_stage'] ? result['life_stage'] : null}
                             {result['age'] ? <br /> : null}
                             {result['age'] ? <strong>{columns['age']['title'] + ': '}</strong> : null}
                             {result['age'] ? <span>{result['age']}<span className="unit">{result['age_units']}</span></span> : null}
+                            {result['rnais.target.name'] ? <br /> : null}
+                            {result['rnais.target.name'] ? <strong>{columns['rnais.target.name']['title'] + ': '}</strong> :null}
+                            {result['rnais.target.name'] ? result['rnais.target.name'] : null}
+                            {result['constructs.target.label'] ? <br /> : null}
+                            {result['constructs.target.label'] ? <strong>{columns['constructs.target.label']['title'] + ': '}</strong> :null}
+                            {result['constructs.target.label'] ? result['constructs.target.label'] : null}
+                            {result['treatments.treatment_term_name'] ? <br /> : null}
+                            {result['treatments.treatment_term_name'] ? <strong>{columns['treatments.treatment_term_name']['title'] + ': '}</strong> :null}
+                            {result['treatments.treatment_term_name'] ? result['treatments.treatment_term_name'] : null}
+                            <br /><strong>{columns['source.title']['title']}</strong>: {result['source.title']}
                         </div>
                 </li>   
             );
@@ -105,24 +105,27 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
                             <div className="accession">
-                                <a href={result['@id']}><span>{result['assay_term_name'] + ' of ' + result['biosample_term_name']}</span><span>{result['replicates.library.biosample.organism.name'] ? ' (' + result['replicates.library.biosample.organism.name'] + ')' : ''}</span></a>
+                                <a href={result['@id']}>
+                                    <span>{result['assay_term_name'] + ' of ' + result['biosample_term_name']}</span>
+                                    <span>{result['replicates.library.biosample.organism.name'] ? ' (' + result['replicates.library.biosample.organism.name'] + ')' : ''}</span>
+                                </a>
                             </div>
                         </div>
                         <div className="data-row">
                             {result['target.label'] ? <strong>{columns['target.label']['title'] + ': '}</strong>: null}
                             {result['target.label'] ? result['target.label'] : null}
                             {result['target.label'] ? <br /> : null}
-                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
-                            {result['replicates.library.biosample.treatments.treatment_term_name'] ? <br /> : null}
-                            {result['replicates.library.biosample.treatments.treatment_term_name'] ? <strong>{columns['replicates.library.biosample.treatments.treatment_term_name']['title'] + ': '}</strong> :null}
-                            {result['replicates.library.biosample.treatments.treatment_term_name'] ? result['replicates.library.biosample.treatments.treatment_term_name'] : null}
-                            {result['replicates.library.biosample.life_stage'] ? <br /> : null}
                             {result['replicates.library.biosample.life_stage'] ? <strong>{columns['replicates.library.biosample.life_stage']['title'] + ': '}</strong> :null}
                             {result['replicates.library.biosample.life_stage'] ? result['replicates.library.biosample.life_stage'] : null}
-                            {result['replicates.library.biosample.age'] ? <br /> : null}
+                            {result['replicates.library.biosample.life_stage'] ? <br /> : null}
                             {result['replicates.library.biosample.age'] ? <strong>{columns['replicates.library.biosample.age']['title'] + ': '}</strong> : null}
                             {result['replicates.library.biosample.age'] ? <span>{result['replicates.library.biosample.age']}<span className="unit">{result['replicates.library.biosample.age_units']}</span></span> : null}
+                            {result['replicates.library.biosample.age'] ? <br /> : null}
+                            {result['replicates.library.biosample.treatments.treatment_term_name'] ? <strong>{columns['replicates.library.biosample.treatments.treatment_term_name']['title'] + ': '}</strong> :null}
+                            {result['replicates.library.biosample.treatments.treatment_term_name'] ? result['replicates.library.biosample.treatments.treatment_term_name'] : null}
+                            {result['replicates.library.biosample.treatments.treatment_term_name'] ? <br /> : null}
+                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
+                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
                 </li>
             );
