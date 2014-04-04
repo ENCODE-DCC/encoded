@@ -8,7 +8,12 @@ ENCODE Metadata Database
 .. _Build status: https://travis-ci.org/ENCODE-DCC/encoded
 
 
-First install dependencies::
+Step 1: Verify that homebrew is working properly::
+
+    $ brew doctor
+
+
+Step 2: Install or update dependencies::
 
     $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
@@ -17,6 +22,13 @@ First install dependencies::
 Note: For Mac < 10.9, the system python doesn't work. You should install Python with Homebrew::
 
     $ brew install python
+
+If you need to update dependencies::
+
+    $ brew update
+    $ brew upgrade
+    $ rm -rf encoded/eggs
+
 
 First run buildout::
 
