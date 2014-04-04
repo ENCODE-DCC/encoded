@@ -105,7 +105,7 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['assay_term_name']+ ' of ' + result['biosample_term_name']}</a> 
+                                <a href={result['@id']}><span>{result['assay_term_name'] + ' of ' + result['biosample_term_name']}</span><span>{result['replicates.library.biosample.organism.name'] ? ' (' + result['replicates.library.biosample.organism.name'] + ')' : ''}</span></a>
                             </div>
                         </div>
                         <div className="data-row">
@@ -114,9 +114,6 @@ var Dbxref = dbxref.Dbxref;
                             {result['target.label'] ? <br /> : null}
                             <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
                             <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
-                            {result['replicates.library.biosample.organism.name'] ? <br /> : null}
-                            {result['replicates.library.biosample.organism.name'] ? <strong>{columns['replicates.library.biosample.organism.name']['title'] + ': '}</strong> :null}
-                            {result['replicates.library.biosample.organism.name'] ? result['replicates.library.biosample.organism.name'] : null}
                             {result['replicates.library.biosample.treatments.treatment_term_name'] ? <br /> : null}
                             {result['replicates.library.biosample.treatments.treatment_term_name'] ? <strong>{columns['replicates.library.biosample.treatments.treatment_term_name']['title'] + ': '}</strong> :null}
                             {result['replicates.library.biosample.treatments.treatment_term_name'] ? result['replicates.library.biosample.treatments.treatment_term_name'] : null}
