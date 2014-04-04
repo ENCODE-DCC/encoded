@@ -340,7 +340,7 @@
             "title": "Treatment",
             "type": "string"
         },
-        "constructs.target.label": {
+        "constructs.target.name": {
             "title": "Construct",
             "type": "string"
         }
