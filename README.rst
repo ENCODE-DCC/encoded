@@ -59,7 +59,18 @@ Browse to the interface at http://localhost:6543/.
 
 Step 5: Tests
 
-Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
+To run specific tests locally::
+    
+    $ bin/test -k test_name
+    
+To run with a debugger::
+    
+    $ bin/test --pdb 
+
+Specific tests to run locally for schema changes::
+
+    $ bin/test -k test_load_workbook
+    $ bin/test -k test_edw_sync
 
 Run the Pyramid tests with::
 
@@ -68,6 +79,10 @@ Run the Pyramid tests with::
 Run the Browser tests with::
 
     $ bin/test -m bdd -v -v
+
+Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
+
+Step 6: Database modifications
 
 If you wish a clean db wipe for DEVELOPMENT::
     
