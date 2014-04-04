@@ -52,8 +52,8 @@ var Approval = module.exports.Approval = React.createClass({
                         <dt>Lot ID</dt>
                         <dd>{context.antibody.lot_id}</dd>
 
-                        <dt hidden={!context.antibody.lot_id_alias.length}>Lot ID aliases</dt>
-                        <dd hidden={!context.antibody.lot_id_alias.length}>{context.antibody.lot_id_alias.join(', ')}</dd>
+                        {context.antibody.lot_id_alias.length ? <dt>Lot ID aliases</dt> : null}
+                        {context.antibody.lot_id_alias.length ? <dd>{context.antibody.lot_id_alias.join(', ')}</dd> : null}
 
                         <dt>Target</dt>
                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
@@ -61,29 +61,26 @@ var Approval = module.exports.Approval = React.createClass({
                         {context.antibody.host_organism ? <dt>Host</dt> : null}
                         {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.name}</dd> : null}
         
+                        {context.antibody.clonality ? <dt>Clonality</dt> : null}
+                        {context.antibody.clonality ? <dd className="sentence-case">{context.antibody.clonality}</dd> : null}
 
-                        <dt hidden={!context.antibody.clonality}>Clonality</dt>
-                        <dd hidden={!context.antibody.clonality} className="sentence-case">{context.antibody.clonality}</dd>
+                        {context.antibody.purifications.length ? <dt>Purification</dt> : null}
+                        {context.antibody.purifications.length ? <dd className="sentence-case">{context.antibody.purifications.join(', ')}</dd> : null}
 
-                        <dt hidden={!context.antibody.purifications.length}>Purification</dt>
-                        <dd hidden={!context.antibody.purifications.length} className="sentence-case">{context.antibody.purifications.join(', ')}</dd>
+                        {context.antibody.isotype ? <dt>Isotype</dt> : null}
+                        {context.antibody.isotype ? <dd className="sentence-case">{context.antibody.isotype}</dd> : null}
 
-                        <dt hidden={!context.antibody.isotype}>Isotype</dt>
-                        <dd hidden={!context.antibody.isotype} className="sentence-case">{context.antibody.isotype}</dd>
+                        {context.antibody.antigen_description ? <dt>Antigen description</dt> : null}
+                        {context.antibody.antigen_description ? <dd>{context.antibody.antigen_description}</dd> : null}
 
-                        <dt hidden={!context.antibody.antigen_description}>Antigen description</dt>
-                        <dd hidden={!context.antibody.antigen_description}>{context.antibody.antigen_description}</dd>
+                        {context.antibody.antigen_sequence ? <dt>Antigen sequence</dt> : null}
+                        {context.antibody.antigen_sequence ? <dd>{context.antibody.antigen_sequence}</dd> : null}
 
-                        <dt hidden={!context.antibody.antigen_sequence}>Antigen sequence</dt>
-                        <dd hidden={!context.antibody.antigen_sequence}>{context.antibody.antigen_sequence}</dd>
-
-                        <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
-                        <dd hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
+                        {context.antibody.aliases.length ? <dt>Aliases</dt> : null}
+                        {context.antibody.aliases.length ? <dd>{context.antibody.aliases.join(", ")}</dd> : null}
                         
-                        <dt hidden={!context.antibody.dbxrefs.length}>External resources</dt>
-                        <dd hidden={!context.antibody.dbxrefs.length}>
-                        	<DbxrefList values={context.antibody.dbxrefs} />
-                        </dd>
+                        {context.antibody.dbxrefs.length ? <dt>External resources</dt> : null}
+                        {context.antibody.dbxrefs.length ? <dd><DbxrefList values={context.antibody.dbxrefs} /></dd> : null}
                     </dl>
                 </div>
 

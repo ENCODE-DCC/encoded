@@ -77,17 +77,17 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dt>Term ID</dt>
                         <dd>{context.biosample_term_id}</dd>
 
-                        <dt hidden={!context.description}>Description</dt>
-                        <dd hidden={!context.description} className="sentence-case">{context.description}</dd>
+                        {context.description ? <dt>Description</dt> : null}
+                        {context.description ? <dd className="sentence-case">{context.description}</dd> : null}
                         
-                        <dt hidden={!context.subcellular_fraction_term_name}>Subcellular fraction</dt>
-                        <dd hidden={!context.subcellular_fraction_term_name}>{context.subcellular_fraction_term_name}</dd>
+                        {context.subcellular_fraction_term_name ? <dt>Subcellular fraction</dt> : null}
+                        {context.subcellular_fraction_term_name ? <dd>{context.subcellular_fraction_term_name}</dd> : null}
 
                         <dt>Source</dt>
                         <dd><a href={context.source.url}>{context.source.title}</a></dd>
 
-                        <dt hidden={!context.product_id}>Product ID</dt>
-                        <dd hidden={!context.product_id}><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                        {context.product_id ? <dt>Product ID</dt> : null}
+                        {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
 
                         <dt hidden={!context.lot_id}>Lot ID</dt>
                         <dd hidden={!context.lot_id}>{context.lot_id}</dd>
