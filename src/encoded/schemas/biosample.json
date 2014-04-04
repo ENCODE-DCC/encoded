@@ -332,7 +332,7 @@
             "title": "Life stage",
             "type": "string"
         },
-        "rnais.target.organism.name": {
+        "rnais.target.name": {
             "title": "RNAi",
             "type": "string"
         },

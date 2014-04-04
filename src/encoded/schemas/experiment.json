@@ -133,6 +133,10 @@
             "title": "Age Units",
             "type": "string"
         },
+        "replicates.library.biosample.treatments.treatment_term_name": {
+            "title": "Treatment",
+            "type": "string"
+        },
         "files.length": {
             "title": "Files",
             "type": "array"
