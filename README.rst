@@ -49,7 +49,7 @@ This will first clear any existing data in /tmp/encoded.
 Then postgres and elasticsearch servers will be initiated within /tmp/encoded.
 The servers are started, and finally the test set will be loaded.
 
-In a second terminal, run the app in another terminal with::
+In a second terminal, run the app in with::
 
     $ bin/pserve development.ini
 
