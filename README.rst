@@ -8,7 +8,12 @@ ENCODE Metadata Database
 .. _Build status: https://travis-ci.org/ENCODE-DCC/encoded
 
 
-First install dependencies::
+Step 1: Verify that homebrew is working properly::
+
+    $ brew doctor
+
+
+Step 2: Install or update dependencies::
 
     $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
@@ -18,16 +23,25 @@ Note: For Mac < 10.9, the system python doesn't work. You should install Python 
 
     $ brew install python
 
-First run buildout::
+If you need to update dependencies::
+
+    $ brew update
+    $ brew upgrade
+    $ rm -rf encoded/eggs
+
+
+Step 3: Run buildout::
 
     $ python2.7 bootstrap.py
     $ bin/buildout
 
-Set a session key::
+If it does not exist, set a session key::
 
     $ cat /dev/urandom | head -c 256 | base64 > session-secret.b64
 
-To start the application, in one terminal startup the database servers with::
+Step 4: Start the application locally
+
+In one terminal startup the database servers with::
 
     $ bin/dev-servers development.ini --app-name app --clear --init --load
 
@@ -35,13 +49,15 @@ This will first clear any existing data in /tmp/encoded.
 Then postgres and elasticsearch servers will be initiated within /tmp/encoded.
 The servers are started, and finally the test set will be loaded.
 
-Then run the app with::
+In a second terminal, run the app in another terminal with::
 
     $ bin/pserve development.ini
 
 Indexing will then proceed in a background thread similar to the production setup.
 
 Browse to the interface at http://localhost:6543/.
+
+Step 5: Tests
 
 Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
 

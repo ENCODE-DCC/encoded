@@ -8,11 +8,15 @@ var SignIn = module.exports.SignIn = React.createClass({
         var hidden = !this.props.session || this.props.session['auth.userid'];
         var disabled = !this.props.loadingComplete;
         return (
-            <div id="signin-box" className="span3" hidden={hidden}>
-                <h4>Data Providers</h4>
-                <a href="" disabled={disabled} data-trigger="login" className="signin-button btn btn-large btn-success">Sign In</a>
-                <p>No access? <a href='mailto:encode-help@lists.stanford.edu'>Request an account</a>.</p>
-                <p>Authentication by <a href="http://www.mozilla.org/en-US/persona/" target="_blank">Mozilla Persona</a>.</p>
+            <div>
+                {!hidden ?
+                    <div id="signin-box" className="span3">
+                        <h4>Data Providers</h4>
+                        <a href="" disabled={disabled} data-trigger="login" className="signin-button btn btn-large btn-success">Sign In</a>
+                        <p>No access? <a href='mailto:encode-help@lists.stanford.edu'>Request an account</a>.</p>
+                        <p>Authentication by <a href="http://www.mozilla.org/en-US/persona/" target="_blank">Mozilla Persona</a>.</p>
+                    </div>
+                : null}
             </div>
         );
     }
