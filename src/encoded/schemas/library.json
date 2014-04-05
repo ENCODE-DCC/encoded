@@ -4,7 +4,6 @@
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "XXXcomment": "is source required?",
     "required": [ "award", "lab", "nucleic_acid_term_id"],
     "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
@@ -34,6 +33,15 @@
             "comment": "See biosample.json for available identifiers.",
             "type": "string",
             "linkTo": "biosample"
+        },
+        "product_id": {
+            "description": "The product identifier provided by the vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
+        },
+        "lot_id":{
+            "description": "The lot identifier provided by the vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
+        },
+        "source": {
+            "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
         "nucleic_acid_term_name": {
             "title": "Nucleic acid term",
