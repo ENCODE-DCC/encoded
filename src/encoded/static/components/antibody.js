@@ -99,7 +99,7 @@ var Characterization = module.exports.Characterization = React.createClass({
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
-        var figure, download, src, imgClass, alt;
+        var figure, download, src, alt;
         var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
@@ -110,7 +110,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
-                alt = "Characterization Image"
+                alt = "Characterization Image";
             } else if (context.attachment.type == "application/pdf"){
                 src = "/static/img/file-pdf.png";
                 alt = "Characterization PDF Icon";

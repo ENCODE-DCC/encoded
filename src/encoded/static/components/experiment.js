@@ -147,7 +147,7 @@ globals.content_views.register(Experiment, 'experiment');
 
 var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
     var replicates = props.replicates;
-    if (!replicates.length) return (<div hidden={true}></div>);
+    if (!replicates.length) return (<div></div>);
     var biosamples = {};
     replicates.forEach(function(replicate) {
         var biosample = replicate.library && replicate.library.biosample;
@@ -204,7 +204,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         return a.biological_replicate_number - b.biological_replicate_number;
     });
     
-    if (!replicates.length) return (<div hidden={true}></div>);
+    if (!replicates.length) return (<div></div>);
     
     var replicate = replicates[0];
     var library = replicate.library;

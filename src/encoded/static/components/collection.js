@@ -80,9 +80,13 @@ var globals = require('./globals');
                 <td key={index}>{cell.value}</td>
             );
         });
-        return (
-            <tr key={id} hidden={props.hidden} data-href={id}>{tds}</tr>
-        );
+        if (!props.hidden) {
+            return (
+                <tr key={id} data-href={id}>{tds}</tr>
+            );
+        } else {
+            return (<tr></tr>);
+        }
     };
 
     var Table = module.exports.Table = React.createClass({
@@ -138,7 +142,7 @@ var globals = require('./globals');
 
         guessColumns: function (props) {
             var column_list = props.context.columns;
-            var columns = []
+            var columns = [];
             if (!column_list || Object.keys(column_list).length === 0) {
                 for (var key in props.context['@graph'][0]) {
                     if (key.slice(0, 1) != '@' && key.search(/(uuid|_no|accession)/) == -1) {
@@ -149,7 +153,7 @@ var globals = require('./globals');
                 columns.unshift('@id');
             } else {
                 for(var column in column_list) {
-                    columns.push(column)
+                    columns.push(column);
                 }
             }
             this.setState({columns: columns});
@@ -170,7 +174,7 @@ var globals = require('./globals');
                     if (column == '@id') {
                         factory = globals.listing_titles.lookup(item);
                         value = factory({context: item});
-                    } else if (value == null) {
+                    } else if (value === null) {
                         value = '';
                     } else if (value instanceof Array) {
                         value = value;
@@ -187,7 +191,7 @@ var globals = require('./globals');
                 return Row(item, cells, text);
             });
             var data = Data(rows);
-            this.setState({data: data})
+            this.setState({data: data});
             return data;
         },
 
@@ -221,6 +225,7 @@ var globals = require('./globals');
             var sortOn = this.state.sortOn;
             var reversed = this.state.reversed;
             var searchTerm = this.state.searchTerm;
+            var removalIcon;
             this.state.searchTerm = searchTerm;
             var titles = context.columns || {};
             var data = this.state.data;
@@ -252,6 +257,7 @@ var globals = require('./globals');
                         matching.push(row);
                     }
                 });
+                removalIcon = (<i className="icon-remove-sign clear-input-icon" onClick={this.clearFilter}></i>);
             } else {
                 matching = data.rows;
             }
@@ -287,12 +293,12 @@ var globals = require('./globals');
                             <th colSpan={columns.length}>
                                 {loading_or_total}
                                 <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
-                                	data-skiprequest="true" data-removeempty="true">
+                                    data-skiprequest="true" data-removeempty="true">
                                     <input ref="q" disabled={this.state.communicating || undefined} 
-                                    	name="q" type="search" defaultValue={searchTerm} 
-                                    	placeholder="Filter table by..." className="filter" 
-                                    	id="table-filter" /> 
-                                    <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
+                                        name="q" type="search" defaultValue={searchTerm} 
+                                        placeholder="Filter table by..." className="filter" 
+                                        id="table-filter" /> 
+                                    {removalIcon}
                                     <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                     <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                 </form>
@@ -324,14 +330,14 @@ var globals = require('./globals');
             }
             var cellIndex = target.cellIndex;
             var reversed = '';
-            var sorton = this.refs.sorton.getDOMNode()
+            var sorton = this.refs.sorton.getDOMNode();
             if (this.props.defaultSortOn !== cellIndex) {
                 sorton.value = cellIndex;
             } else {
                 sorton.value = '';
             }
             if (this.state.sortOn == cellIndex) {
-                reversed = !this.state.reversed || ''
+                reversed = !this.state.reversed || '';
             }
             this.refs.reversed.getDOMNode().value = reversed;
             event.preventDefault();
