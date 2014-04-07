@@ -241,36 +241,32 @@ var Dbxref = dbxref.Dbxref;
             var moreTermSelected = anyTermSelected(moreTerms, field, filters);
             var moreSecClass = 'collapse' + (moreTermSelected ? ' in' : '');
             var seeMoreClass = 'btn btn-link' + (moreTermSelected ? '' : ' collapsed');
-            if(terms.length) {
-                return (
-                    <div className="facet" key={field}>
-                        <h5>{title}</h5>
-                        <ul className="facet-list nav">
-                            <div>
-                                {terms.slice(0, 5).map(function (term) {
+            return (
+                <div className="facet" key={field} hidden={terms.length === 0}>
+                    <h5>{title}</h5>
+                    <ul className="facet-list nav">
+                        <div>
+                            {terms.slice(0, 5).map(function (term) {
+                                return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
+                            }.bind(this))}
+                        </div>
+                        {terms.length > 5 ?
+                            <div id={termID} className={moreSecClass}>
+                                {moreTerms.map(function (term) {
                                     return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
                                 }.bind(this))}
                             </div>
-                            {terms.length > 5 ?
-                                <div id={termID} className={moreSecClass}>
-                                    {moreTerms.map(function (term) {
-                                        return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
-                                    }.bind(this))}
-                                </div>
-                            : null}
-                            {terms.length > 5 ?
-                                <label className="pull-right">
-                                        <small>
-                                            <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} />
-                                        </small>
-                                </label>
-                            : null}
-                        </ul>
-                    </div>
-                );
-            } else {
-                return (<div></div>);
-            }
+                        : null}
+                        {terms.length > 5 ?
+                            <label className="pull-right">
+                                    <small>
+                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} />
+                                    </small>
+                            </label>
+                        : null}
+                    </ul>
+                </div>
+            );
         }
     });
 
