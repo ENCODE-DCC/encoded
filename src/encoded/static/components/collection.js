@@ -80,13 +80,9 @@ var globals = require('./globals');
                 <td key={index}>{cell.value}</td>
             );
         });
-        if (!props.hidden) {
-            return (
-                <tr key={id} data-href={id}>{tds}</tr>
-            );
-        } else {
-            return (<tr></tr>);
-        }
+        return (
+            <tr key={id} hidden={props.hidden} data-href={id}>{tds}</tr>
+        );
     };
 
     var Table = module.exports.Table = React.createClass({
@@ -174,7 +170,7 @@ var globals = require('./globals');
                     if (column == '@id') {
                         factory = globals.listing_titles.lookup(item);
                         value = factory({context: item});
-                    } else if (value === null) {
+                    } else if (value == null) {
                         value = '';
                     } else if (value instanceof Array) {
                         value = value;
@@ -225,7 +221,6 @@ var globals = require('./globals');
             var sortOn = this.state.sortOn;
             var reversed = this.state.reversed;
             var searchTerm = this.state.searchTerm;
-            var removalIcon;
             this.state.searchTerm = searchTerm;
             var titles = context.columns || {};
             var data = this.state.data;
@@ -257,7 +252,6 @@ var globals = require('./globals');
                         matching.push(row);
                     }
                 });
-                removalIcon = (<i className="icon-remove-sign clear-input-icon" onClick={this.clearFilter}></i>);
             } else {
                 matching = data.rows;
             }
@@ -298,7 +292,7 @@ var globals = require('./globals');
                                         name="q" type="search" defaultValue={searchTerm} 
                                         placeholder="Filter table by..." className="filter" 
                                         id="table-filter" /> 
-                                    {removalIcon}
+                                    <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
                                     <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                     <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                 </form>
