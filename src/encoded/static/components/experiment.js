@@ -268,6 +268,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
 
 var Replicate = module.exports.Replicate = function (props) {
     var replicate = props.replicate;
+    var concentration = replicate.rbns_protein_concentration;
     var library = replicate.library;
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended;
@@ -278,6 +279,9 @@ var Replicate = module.exports.Replicate = function (props) {
                 <dt>Technical replicate</dt>
                 <dd>{replicate.technical_replicate_number}</dd>
 
+                {concentration ? <dt>Protein concentration</dt> : null}
+                {concentration ? <dd>{concentration}<span className="unit">{replicate.rbns_protein_concentration_units}</span></dd> : null}
+
                 {library ? <dt>Library</dt> : null}
                 {library ? <dd>{library.accession}</dd> : null}
 
@@ -287,10 +291,10 @@ var Replicate = module.exports.Replicate = function (props) {
                         {biosample.accession}
                     </a>{' '}-{' '}{biosample.biosample_term_name}
                 </dd> : null}
-                
+
                 {replicate.read_length ? <dt>Run type</dt> : null}
                 {replicate.read_length ? <dd>{paired_end ? 'paired-end' : 'single-end'}</dd> : null}
-            
+
                 {replicate.read_length ? <dt>Read length</dt> : null}
                 {replicate.read_length ? <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd> : null}
             </dl>
