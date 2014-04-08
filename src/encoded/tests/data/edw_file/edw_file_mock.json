@@ -520,6 +520,7 @@
     {
         "_test": "file out exp in, no replicates",
         "_new": true,
+        "_replicate": true,
         "_project": "encode3",
         "accession": "ENCFF001QZD",
         "assembly": "n/a",
@@ -561,6 +562,7 @@
         "_test": "file out exp in, no replicates",
         "_new": true,
         "_project": "encode3",
+        "_replicate": true,
         "accession": "ENCFF001QZE",
         "assembly": "n/a",
         "biological_replicate": "2",

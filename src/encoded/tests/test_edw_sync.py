@@ -63,8 +63,9 @@ def edw_file_mock_encode2(raw_edw_file_mock):
 def edw_file_mock_encode3(raw_edw_file_mock):
    return {row['accession'] for row in raw_edw_file_mock if row.get('_project') == 'encode3'}
 
-
-#    assert len(app_only) == 13
+@pytest.fixture
+def edw_file_mock_replicates(raw_edw_file_mock):
+   return {row['accession'] for row in raw_edw_file_mock if row.get('_replicate')}
 
 
 def remove_keys_starting_with_underscore(dictrows):
@@ -207,7 +208,7 @@ def test_encode3_experiments(workbook, testapp, edw_file_mock, edw_file_mock_enc
 
 
 @pytest.mark.slow
-def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_file_mock_new, edw_file_mock_patch, edw_file_mock_same):
+def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_file_mock_new, edw_file_mock_patch, edw_file_mock_same, edw_file_mock_replicates):
     sync_edw.get_all_datasets(testapp)
 
     edw_mock = {}
@@ -275,7 +276,6 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_fi
     post_edw, post_app, post_same, post_patch = \
         sync_edw.inventory_files(testapp, edw_mock, post_app_dict)
     assert len(post_edw) == len(edw_file_mock_new & edw_file_mock_fails)
-    assert len(post_app) == 13  # unchanged
     assert len(post_patch) == len(edw_file_mock_patch & edw_file_mock_fails)
     assert len(post_same) - len(same) == \
         len(patch) - len(post_patch) + len(edw_only) - len(post_edw)
@@ -301,16 +301,15 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_fi
         else:
             new_reps[uuid] = after_reps[uuid]
 
-    assert len(same_reps.keys()) == 23
     assert not updated_reps
-    assert len(new_reps) == 2
+    assert len(new_reps) == len(edw_file_mock_replicates)
 
     #TODO could maybe add a test to make sure that a file belonging to a
     #dataset ends up with the right dataset
     #TODO tests for experiments with multiple mappings.
 
 
-def test_patch_replicate(workbook, testapp, edw_file_mock):
+def test_patch_replicate(workbook, testapp, edw_file_mock, edw_file_mock_patch, edw_file_mock_same):
     test_acc = 'ENCSR000ADH'
     test_set = sync_edw.try_datasets(testapp, dataset=test_acc)
     assert test_set
@@ -333,8 +332,9 @@ def test_patch_replicate(workbook, testapp, edw_file_mock):
     #app_dict = { d['accession']:d for d in app_files }
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    assert len(patch) == 2
-    assert len(same) == 2
+    in_exp = set([ x['accession'] for x in app_dict if x['dataset'] == test_acc])
+    assert set(patch) == (in_exp | edw_file_mock_patch)
+    assert set(same) == (in_exp | edw_file_mock_same)
 
     for update in patch:
         diff = sync_edw.compare_files(app_dict[update], edw_mock[update])
