@@ -47,6 +47,14 @@ def edw_file_mock_same(raw_edw_file_mock):
 def edw_file_mock_patch(raw_edw_file_mock):
    return {row['accession'] for row in raw_edw_file_mock if row.get('_patch')}
 
+@pytest.fixture
+def edw_file_mock_encode2(raw_edw_file_mock):
+   return {row['accession'] for row in raw_edw_file_mock if row.get('_project') == 'encode2'}
+
+@pytest.fixture
+def edw_file_mock_encode3(raw_edw_file_mock):
+   return {row['accession'] for row in raw_edw_file_mock if row.get('_project') == 'encode3'}
+
 
 #    assert len(app_only) == 13
 
@@ -71,8 +79,9 @@ def test_get_all_datasets(workbook, testapp):
     assert len(sync_edw.datasets) == TYPE_LENGTH['dataset']
 
     assert all(len(v) == 1 for v in sync_edw.encode2_to_encode3.values())
-    assert len(sync_edw.encode2_to_encode3.keys()) == 7
-    assert len(sync_edw.encode3_to_encode2.keys()) == 15
+    #assert len(sync_edw.encode2_to_encode3.keys()) == 7
+    #assert len(sync_edw.encode3_to_encode2.keys()) == 15
+    # counting seems unnecessary here
 
     assert not sync_edw.encode3_to_encode2.get(edw_test_data.encode3, False)
 
@@ -170,12 +179,9 @@ def test_import_tst_file(workbook, test_accession_testapp, import_in_1):
             assert not fileinfo['biological_replicate'] or not converted_file['technical_replicate']
 
 
-def test_encode3_experiments(workbook, testapp, edw_file_mock):
+def test_encode3_experiments(workbook, testapp, edw_file_mock, edw_file_mock_encode3, edw_file_mock_fails):
     # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
     # accessions are ENCODE2 experiments
-
-    # Test identifying an ENCODE 3 experiment
-    #res = testapp.post_json('/index', {})
 
     sync_edw.get_all_datasets(testapp)
 
@@ -185,7 +191,7 @@ def test_encode3_experiments(workbook, testapp, edw_file_mock):
         if converted_file['accession']:
             edw_mock_p3[fileinfo['accession']] = converted_file
 
-    assert len(edw_mock_p3) == 13
+    assert set(edw_mock_p3.keys()) == edw_file_mock_encode3
 
     app_files_p3 = sync_edw.get_app_fileinfo(testapp, phase='3')
 

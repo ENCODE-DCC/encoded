@@ -29,10 +29,10 @@
         ],
         "award": "U54HG004592",
         "dataset_type": "composite",
-	"dbxrefs": [
-		"UCSC-GB-hg19:wgEncodeUwAffyExonArray"
-	],
-	"description": "Data from UCSC Genome Browser composite hg19-wgEncodeUwAffyExonArray",
+        "dbxrefs": [
+        "UCSC-GB-hg19:wgEncodeUwAffyExonArray"
+        ],
+        "description": "Data from UCSC Genome Browser composite hg19-wgEncodeUwAffyExonArray",
         "documents": [
             "/documents/048d1185-2502-4f0e-a043-bbc75b9dd915/",
             "/documents/8f1a6855-0312-4027-8869-330e42a0b04a/"
@@ -57,11 +57,11 @@
         "accession": "ENCSR825ZJX",
         "award": "U54HG004592",
         "dataset_type": "composite",
-	"dbxrefs": [
-		"UCSC-ENCODE-hg19:wgEncodeEH002546",
-		"UCSC-GB-hg19:wgEncodeUmassDekker5C",
-		"GEO:GSE39510"
-	],
+        "dbxrefs": [
+            "UCSC-ENCODE-hg19:wgEncodeEH002546",
+            "UCSC-GB-hg19:wgEncodeUmassDekker5C",
+            "GEO:GSE39510"
+        ],
         "description": "The overall aim of this proposal is to establish a comprehensive, high-quality catalogue of human DNaseI hypersensitive sites (DHSs) spanning all major tissue lineages. We plan to map DNaseI hypersensitive sites at physiological resolution across the genome with high sensitivity and specificity. The major focus of our production effort will be on data quality, a strategy that served the Human Genome Project well. Accordingly, samples will be rigorously screened in a pipeline fashion, with only a select set advancing to whole-genome data collection (Specific Aim 1). To ensure the broadest possible coverage of both unique and non-unique genomic territories, a synergistic combination of three technologies (DNase-array, digital mapping of DNAasel cleave site sequences, and Quantitative Chromatin Profiling) will be applied (Specific Aim 2). This combination will enable mapping of >95% of the DHSs in the genome of each cell type. Independent validation provides the ultimate quality standard. We therefore plan to validate the DHS catalogue in a statistically rigorous fashion using hypersensitivity Southerns, a well-established, gold standard assay (Specific Aim 3). Since DNAasel hypersensitive sites are generic markers of a broad spectrum of human cis-regulatory sequences, the utility of the catalogue will be greatly enhanced by the classification of DHSs into major functional categories including promoters, distal elements (enhancers, LCRs), and insulators (Specific Aim 4). Validation of DHS functional classes will be accomplished using well-tested cell and transgenic assays of biological function (Specific Aim 5).",
         "lab": "job-dekker",
         "references": [

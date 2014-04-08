@@ -2,6 +2,7 @@
     {
         "_test": "file in, exp in",
         "_same": true,
+        "_project": "encode2",
         "accession": "ENCFF001MXE",
         "assembly": "mm9",
         "biological_replicate": "1",
@@ -21,6 +22,7 @@
     {
         "_test": "file in, exp in",
         "_same": true,
+        "_project": "encode2",
         "accession": "ENCFF001MXG",
         "assembly": "mm9",
         "biological_replicate": "1",
@@ -41,7 +43,7 @@
         "_test": "FAIL (patch) file in, exp in, wrong replicate",
         "_fail": true,
         "_patch": true,
-       "accession": "ENCFF001MYM",
+        "accession": "ENCFF001MYM",
         "assembly": "n/a",
         "biological_replicate": "1",
         "dataset": "ENCSR000ADH",
@@ -80,6 +82,7 @@
     {
         "_test": "file in, exp in",
         "_same": true,
+        "_project": "encode2",
         "accession": "ENCFF001MXA",
         "assembly": "mm10",
         "biological_replicate": "2",
@@ -100,6 +103,7 @@
         "_test": "FAIL (patch) file in, exp in, bad md5sum",
         "_fail": true,
         "_patch": true,
+        "_project": "encode2",
         "accession": "ENCFF001MXB",
         "assembly": "mm9",
         "biological_replicate": "",
@@ -119,6 +123,7 @@
     {
         "_test": "FAIL file in, ec2 experiment cannot be found",
         "_fail": true,
+        "_project": "encode2",
         "accession": "ENCFF001MXD",
         "assembly": "mm9",
         "biological_replicate": "",
@@ -138,6 +143,7 @@
     {
         "_test": "PATCH user with no replicate",
         "_patch": true,
+        "_project": "encode2",
         "accession": "ENCFF002MXD",
         "assembly": "mm9",
         "biological_replicate": "",
@@ -157,6 +163,7 @@
     {
         "_test": "PATCH file name pooled replicate",
         "_patch": true,
+        "_project": "encode2",
         "accession": "ENCFF003MXD",
         "assembly": "mm9",
         "biological_replicate": "pooled",
@@ -195,6 +202,7 @@
     {
         "_test": "PATCH file in, exp in, date update",
         "_patch": true,
+        "_project": "encode2",
         "accession": "ENCFF001MXH",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -214,6 +222,7 @@
     {
         "_test": "file out, exp (EC2 in)",
         "_new": true,
+        "_project": "encode2",
         "accession": "ENCFF000QQZ",
         "assembly": "hg19",
         "biological_replicate": "2",
@@ -233,6 +242,7 @@
     {
         "_test": "file out, exp (EC2 in)",
         "_new": true,
+        "_project": "encode2",
         "accession": "ENCFF000QRA",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -252,6 +262,7 @@
     {
         "_test": "file out, exp (EC2 in)",
         "_new": true,
+        "_project": "encode2",
         "accession": "ENCFF000QRB",
         "assembly": "hg19",
         "biological_replicate": "2",
@@ -271,6 +282,7 @@
     {
         "_test": "file out, exp (EC2 in with SR",
         "_new": true,
+        "_project": "encode2",
         "accession": "ENCFF000QRC",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -290,6 +302,7 @@
     {
         "_test": "file out, exp (EC2 in)",
         "_new": true,
+        "_project": "encode2",
         "accession": "ENCFF000QRD",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -309,6 +322,7 @@
     {
         "_test": "file out, exp (EC2 in) - correct assembly",
         "_new": true,
+        "_project": "encode2",
         "accession": "ENCFF000QRF",
         "assembly": "female.hg19",
         "biological_replicate": "2",
@@ -328,6 +342,7 @@
     {
         "_test": "file out, exp (EC2 in) - weird, n/a replicate assembly",
         "_new": true,
+        "_project": "encode2",
         "accession": "ENCFF001QRF",
         "assembly": "centro.hg19",
         "biological_replicate": "n/a",
@@ -347,6 +362,7 @@
     {
         "_test": "file out, exp (EC2 in)",
         "_new": true,
+        "_project": "encode2",
         "accession": "ENCFF000QRL",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -366,6 +382,7 @@
     {
         "_test": "file out, exp (EC2 in)",
         "_new": true,
+        "_project": "encode2",
         "accession": "ENCFF000QRS",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -385,6 +402,7 @@
     {
         "_test": "PATCH file in, exp (EC2 in), update status",
         "_patch": true,
+        "_project": "encode2",
         "accession": "ENCFF000LSP",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -404,6 +422,7 @@
     {
         "_test": "PATCH file in, exp in, update download path",
         "_patch": true,
+        "_project": "encode3",
         "accession": "ENCFF001RDR",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -423,6 +442,7 @@
     {
         "_test": "file in, exp in - amibog trnum",
         "_same": true,
+        "_project": "encode3",
         "accession": "ENCFF001RDX",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -480,6 +500,7 @@
     {
         "_test": "file in exp in, assume TR=1",
         "_same": true,
+        "_project": "encode3",
         "accession": "ENCFF001REQ",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -499,6 +520,7 @@
     {
         "_test": "file out exp in, no replicates",
         "_new": true,
+        "_project": "encode3",
         "accession": "ENCFF001QZD",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -518,6 +540,7 @@
     {
         "_test": "file out exp in, replicate previously created",
         "_new": true,
+        "_project": "encode3",
         "accession": "ENCFF002QZD",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -537,6 +560,7 @@
     {
         "_test": "file out exp in, no replicates",
         "_new": true,
+        "_project": "encode3",
         "accession": "ENCFF001QZE",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -556,6 +580,7 @@
     {
         "_test": "file out that belongs to dataset",
         "_new": true,
+        "_project": "encode3",
         "accession": "ENCFF777FUN",
         "assembly": "hg19",
         "biological_replicate": "",
@@ -575,6 +600,7 @@
     {
         "_test": "non-fastq file (out) with no replicate assignment",
         "_new": true,
+        "_project": "encode3",
         "accession": "ENCFF001QZI",
         "assembly": "hg19",
         "biological_replicate": "",
@@ -594,6 +620,7 @@
     {
         "_test": "file out exp in rep in - find tr",
         "_new": true,
+        "_project": "encode3",
         "accession": "ENCFF001QZX",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -632,6 +659,7 @@
     {
         "_test": "file out exp in rep in",
         "_new": true,
+        "_project": "encode3",
         "accession": "ENCFF001QZY",
         "assembly": "hg19",
         "biological_replicate": "2",
@@ -652,6 +680,7 @@
         "_test": "FAIL file out exp in rep in - ambig tr",
         "_fail": true,
         "_new": true,
+        "_project": "encode3",
         "accession": "ENCFF001QZZ",
         "assembly": "hg19",
         "biological_replicate": "2",
@@ -672,6 +701,7 @@
         "_test": "PATCH user",
         "_patch": true,
         "accession": "ENCFF001RIC",
+        "_project": "encode3",
         "assembly": "hg19",
         "biological_replicate": "1",
         "dataset": "ENCSR000ACT",
@@ -691,6 +721,7 @@
         "_test": "FAIL (patch) user doesn't exist",
         "_patch": true,
         "_fail": true,
+        "_project": "encode3",
         "accession": "ENCFF001RID",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -710,6 +741,7 @@
     {
         "_test": "PATCH date, assembly no replicate/dataset",
         "_patch": true,
+        "_project": "encode2",
         "accession": "ENCFF000ZWE",
         "assembly": "hg19",
         "biological_replicate": "",
