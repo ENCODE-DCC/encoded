@@ -18,7 +18,9 @@ var globals = require('./globals');
                         </div>
                     </header>
                     <p className="description">{context.description}</p>
-                    {panel}
+                    <div className="row">
+                        {panel}
+                    </div>
                 </div>
             );
         }

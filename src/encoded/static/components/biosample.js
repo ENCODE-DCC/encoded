@@ -462,9 +462,14 @@ var Popover = module.exports.Popover = React.createClass({
     },
 
     render: function() {
+        var popoverContent;
         var context = this.props.context;
         var popoverVisible = this.context.popoverComponent === this.props.popoverComponent;
-        var popoverContent = this.props.popoverContent({context: context});
+        if (this.props.popoverContent) {
+            popoverContent = this.props.popoverContent({context: context});
+        } else {
+            popoverContent = StdContent({context: context});
+        }
         var popoverClass = cx({
             "key-value-popover": true,
             "active": popoverVisible
