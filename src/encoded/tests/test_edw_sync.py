@@ -21,7 +21,7 @@ def raw_app_file():
 
 @pytest.fixture
 def app_file_encode3(raw_app_file):
-    return {row['accession'] for row in raw_app_file if row.get('_phase') == 'encode3'}
+    return {row['accession'] for row in raw_app_file if row.get('_project') == 'encode3'}
 
 
 @pytest.fixture
