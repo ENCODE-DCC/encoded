@@ -15,6 +15,14 @@ TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 def raw_edw_file_mock():
     return json_data_file('data/edw_file/edw_file_mock.json')
 
+@pytest.fixture
+def raw_app_file():
+    return json_data_file('data/inserts/file.json')
+
+@pytest.fixture
+def app_file_encode3(raw_app_file):
+    return {row['accession'] for row in raw_app_file if row.get('_phase') == 'encode3'}
+
 
 @pytest.fixture
 def edw_file_mock(raw_edw_file_mock):
@@ -179,7 +187,7 @@ def test_import_tst_file(workbook, test_accession_testapp, import_in_1):
             assert not fileinfo['biological_replicate'] or not converted_file['technical_replicate']
 
 
-def test_encode3_experiments(workbook, testapp, edw_file_mock, edw_file_mock_encode3, edw_file_mock_fails):
+def test_encode3_experiments(workbook, testapp, edw_file_mock, edw_file_mock_encode3, edw_file_mock_fails, app_file_encode3):
     # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
     # accessions are ENCODE2 experiments
 
@@ -195,7 +203,7 @@ def test_encode3_experiments(workbook, testapp, edw_file_mock, edw_file_mock_enc
 
     app_files_p3 = sync_edw.get_app_fileinfo(testapp, phase='3')
 
-    assert len(app_files_p3.keys()) == 16
+    assert set(app_files_p3.keys()) == app_file_encode3
 
 
 @pytest.mark.slow
