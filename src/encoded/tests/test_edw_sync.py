@@ -211,6 +211,9 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_fi
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
     assert len(edw_only) == len(edw_file_mock_new)
+    only_set = set([x['accession'] for x in app_only])
+    in_edw = edw_file_mock_same | edw_file_mock_patch
+    assert not ( in_edw - (set(app_dict.keys()) - only_set) )
     # have to troll the TEST column to predict these results
     assert len(same) == len(edw_file_mock_same)
     assert len(patch) == len(edw_file_mock_patch)
@@ -257,9 +260,9 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_fi
     # reset global var!
     post_edw, post_app, post_same, post_patch = \
         sync_edw.inventory_files(testapp, edw_mock, post_app_dict)
-    assert len(post_edw) == 1
+    assert len(post_edw) == len(edw_file_mock_new & edw_file_mock_fails)
     assert len(post_app) == 13  # unchanged
-    assert len(post_patch) == 4  # exsting files cannot be patched
+    assert len(post_patch) == len(edw_file_mock_patch & edw_file_mock_fails)
     assert len(post_same) - len(same) == \
         len(patch) - len(post_patch) + len(edw_only) - len(post_edw)
     assert len(post_app_dict.keys()) == len(app_dict.keys()) + len(edw_only) - len(post_edw)
