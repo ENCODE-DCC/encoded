@@ -332,9 +332,9 @@ def test_patch_replicate(workbook, testapp, edw_file_mock, edw_file_mock_patch, 
     #app_dict = { d['accession']:d for d in app_files }
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    in_exp = set([ x['accession'] for x in app_dict if x['dataset'] == test_acc])
-    assert set(patch) == (in_exp | edw_file_mock_patch)
-    assert set(same) == (in_exp | edw_file_mock_same)
+    in_exp = set([ x['accession'] for x in app_dict.values() if x['dataset'] == test_set])
+    assert set(patch) == (in_exp & edw_file_mock_patch)
+    assert(set([ x['accession'] for x in same])) == (in_exp & edw_file_mock_same)
 
     for update in patch:
         diff = sync_edw.compare_files(app_dict[update], edw_mock[update])
