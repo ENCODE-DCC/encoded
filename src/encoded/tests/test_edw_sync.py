@@ -35,6 +35,21 @@ def import_in_1(raw_import_in_1):
 def edw_file_mock_fails(raw_edw_file_mock):
     return {row['accession'] for row in raw_edw_file_mock if row.get('_fail')}
 
+@pytest.fixture
+def edw_file_mock_new(raw_edw_file_mock):
+   return {row['accession'] for row in raw_edw_file_mock if row.get('_new')}
+
+@pytest.fixture
+def edw_file_mock_same(raw_edw_file_mock):
+   return {row['accession'] for row in raw_edw_file_mock if row.get('_same')}
+
+@pytest.fixture
+def edw_file_mock_patch(raw_edw_file_mock):
+   return {row['accession'] for row in raw_edw_file_mock if row.get('_patch')}
+
+
+#    assert len(app_only) == 13
+
 
 def remove_keys_starting_with_underscore(dictrows):
     for row in dictrows:
@@ -178,7 +193,7 @@ def test_encode3_experiments(workbook, testapp, edw_file_mock):
 
 
 @pytest.mark.slow
-def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
+def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_file_mock_new, edw_file_mock_patch, edw_file_mock_same):
     sync_edw.get_all_datasets(testapp)
 
     edw_mock = {}
@@ -195,11 +210,10 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails):
     assert len(app_dict.keys()) == TYPE_LENGTH['file']
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    assert len(edw_only) == 17
+    assert len(edw_only) == len(edw_file_mock_new)
     # have to troll the TEST column to predict these results
-    assert len(app_only) == 13
-    assert len(same) == 5
-    assert len(patch) == 11
+    assert len(same) == len(edw_file_mock_same)
+    assert len(patch) == len(edw_file_mock_patch)
 
     before_reps = {d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph']}
 

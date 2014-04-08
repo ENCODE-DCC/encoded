@@ -1,6 +1,7 @@
 [
     {
-        "_test": "\"file in, exp in\"",
+        "_test": "file in, exp in",
+        "_same": true,
         "accession": "ENCFF001MXE",
         "assembly": "mm9",
         "biological_replicate": "1",
@@ -18,7 +19,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file in, exp in\"",
+        "_test": "file in, exp in",
+        "_same": true,
         "accession": "ENCFF001MXG",
         "assembly": "mm9",
         "biological_replicate": "1",
@@ -38,7 +40,8 @@
     {
         "_test": "FAIL (patch) file in, exp in, wrong replicate",
         "_fail": true,
-        "accession": "ENCFF001MYM",
+        "_patch": true,
+       "accession": "ENCFF001MYM",
         "assembly": "n/a",
         "biological_replicate": "1",
         "dataset": "ENCSR000ADH",
@@ -57,6 +60,7 @@
     {
         "_test": "FAIL (patch) file in, exp in, wrong replicate (exists)",
         "_fail": true,
+        "_patch": true,
         "accession": "ENCFF002MYM",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -74,7 +78,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file in, exp in\"",
+        "_test": "file in, exp in",
+        "_same": true,
         "accession": "ENCFF001MXA",
         "assembly": "mm10",
         "biological_replicate": "2",
@@ -94,6 +99,7 @@
     {
         "_test": "FAIL (patch) file in, exp in, bad md5sum",
         "_fail": true,
+        "_patch": true,
         "accession": "ENCFF001MXB",
         "assembly": "mm9",
         "biological_replicate": "",
@@ -131,6 +137,7 @@
     },
     {
         "_test": "PATCH user with no replicate",
+        "_patch": true,
         "accession": "ENCFF002MXD",
         "assembly": "mm9",
         "biological_replicate": "",
@@ -149,6 +156,7 @@
     },
     {
         "_test": "PATCH file name pooled replicate",
+        "_patch": true,
         "accession": "ENCFF003MXD",
         "assembly": "mm9",
         "biological_replicate": "pooled",
@@ -185,7 +193,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "PATCH file in, exp in, date update\"",
+        "_test": "PATCH file in, exp in, date update",
+        "_patch": true,
         "accession": "ENCFF001MXH",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -203,7 +212,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file out, exp (EC2 in)\"",
+        "_test": "file out, exp (EC2 in)",
+        "_new": true,
         "accession": "ENCFF000QQZ",
         "assembly": "hg19",
         "biological_replicate": "2",
@@ -221,7 +231,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file out, exp (EC2 in)\"",
+        "_test": "file out, exp (EC2 in)",
+        "_new": true,
         "accession": "ENCFF000QRA",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -239,7 +250,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file out, exp (EC2 in)\"",
+        "_test": "file out, exp (EC2 in)",
+        "_new": true,
         "accession": "ENCFF000QRB",
         "assembly": "hg19",
         "biological_replicate": "2",
@@ -257,7 +269,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file out, exp (EC2 in with SR\"",
+        "_test": "file out, exp (EC2 in with SR",
+        "_new": true,
         "accession": "ENCFF000QRC",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -275,7 +288,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file out, exp (EC2 in)\"",
+        "_test": "file out, exp (EC2 in)",
+        "_new": true,
         "accession": "ENCFF000QRD",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -293,7 +307,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file out, exp (EC2 in) - patch assembly\"",
+        "_test": "file out, exp (EC2 in) - correct assembly",
+        "_new": true,
         "accession": "ENCFF000QRF",
         "assembly": "female.hg19",
         "biological_replicate": "2",
@@ -311,7 +326,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file out, exp (EC2 in) - weird, n/a replicate assembly\"",
+        "_test": "file out, exp (EC2 in) - weird, n/a replicate assembly",
+        "_new": true,
         "accession": "ENCFF001QRF",
         "assembly": "centro.hg19",
         "biological_replicate": "n/a",
@@ -329,7 +345,8 @@
         "technical_replicate": ""
     },
     {
-        "_test": "\"file out, exp (EC2 in)\"",
+        "_test": "file out, exp (EC2 in)",
+        "_new": true,
         "accession": "ENCFF000QRL",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -347,7 +364,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file out, exp (EC2 in)\"",
+        "_test": "file out, exp (EC2 in)",
+        "_new": true,
         "accession": "ENCFF000QRS",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -366,6 +384,7 @@
     },
     {
         "_test": "PATCH file in, exp (EC2 in), update status",
+        "_patch": true,
         "accession": "ENCFF000LSP",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -384,6 +403,7 @@
     },
     {
         "_test": "PATCH file in, exp in, update download path",
+        "_patch": true,
         "accession": "ENCFF001RDR",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -401,7 +421,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "\"file in, exp in - amibog trnum\"",
+        "_test": "file in, exp in - amibog trnum",
+        "_same": true,
         "accession": "ENCFF001RDX",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -457,7 +478,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "file out exp in, assume TR=1",
+        "_test": "file in exp in, assume TR=1",
+        "_same": true,
         "accession": "ENCFF001REQ",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -476,6 +498,7 @@
     },
     {
         "_test": "file out exp in, no replicates",
+        "_new": true,
         "accession": "ENCFF001QZD",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -494,6 +517,7 @@
     },
     {
         "_test": "file out exp in, replicate previously created",
+        "_new": true,
         "accession": "ENCFF002QZD",
         "assembly": "n/a",
         "biological_replicate": "1",
@@ -512,6 +536,7 @@
     },
     {
         "_test": "file out exp in, no replicates",
+        "_new": true,
         "accession": "ENCFF001QZE",
         "assembly": "n/a",
         "biological_replicate": "2",
@@ -529,7 +554,8 @@
         "technical_replicate": "1"
     },
     {
-        "_test": "file that belongs to dataset",
+        "_test": "file out that belongs to dataset",
+        "_new": true,
         "accession": "ENCFF777FUN",
         "assembly": "hg19",
         "biological_replicate": "",
@@ -548,6 +574,7 @@
     },
     {
         "_test": "non-fastq file (out) with no replicate assignment",
+        "_new": true,
         "accession": "ENCFF001QZI",
         "assembly": "hg19",
         "biological_replicate": "",
@@ -566,6 +593,7 @@
     },
     {
         "_test": "file out exp in rep in - find tr",
+        "_new": true,
         "accession": "ENCFF001QZX",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -603,6 +631,7 @@
     },
     {
         "_test": "file out exp in rep in",
+        "_new": true,
         "accession": "ENCFF001QZY",
         "assembly": "hg19",
         "biological_replicate": "2",
@@ -622,6 +651,7 @@
     {
         "_test": "FAIL file out exp in rep in - ambig tr",
         "_fail": true,
+        "_new": true,
         "accession": "ENCFF001QZZ",
         "assembly": "hg19",
         "biological_replicate": "2",
@@ -640,6 +670,7 @@
     },
     {
         "_test": "PATCH user",
+        "_patch": true,
         "accession": "ENCFF001RIC",
         "assembly": "hg19",
         "biological_replicate": "1",
@@ -658,6 +689,7 @@
     },
     {
         "_test": "FAIL (patch) user doesn't exist",
+        "_patch": true,
         "_fail": true,
         "accession": "ENCFF001RID",
         "assembly": "hg19",
@@ -677,6 +709,7 @@
     },
     {
         "_test": "PATCH date, assembly no replicate/dataset",
+        "_patch": true,
         "accession": "ENCFF000ZWE",
         "assembly": "hg19",
         "biological_replicate": "",
