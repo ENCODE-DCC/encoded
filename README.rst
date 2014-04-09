@@ -30,16 +30,18 @@ If you need to update dependencies::
     $ rm -rf encoded/eggs
 
 
-First run buildout::
+Step 3: Run buildout::
 
     $ python2.7 bootstrap.py
     $ bin/buildout
 
-Set a session key::
+If it does not exist, set a session key::
 
     $ cat /dev/urandom | head -c 256 | base64 > session-secret.b64
 
-To start the application, in one terminal startup the database servers with::
+Step 4: Start the application locally
+
+In one terminal startup the database servers with::
 
     $ bin/dev-servers development.ini --app-name app --clear --init --load
 
@@ -47,7 +49,7 @@ This will first clear any existing data in /tmp/encoded.
 Then postgres and elasticsearch servers will be initiated within /tmp/encoded.
 The servers are started, and finally the test set will be loaded.
 
-Then run the app with::
+In a second terminal, run the app in with::
 
     $ bin/pserve development.ini
 
@@ -55,7 +57,20 @@ Indexing will then proceed in a background thread similar to the production setu
 
 Browse to the interface at http://localhost:6543/.
 
-Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
+Step 5: Tests
+
+To run specific tests locally::
+    
+    $ bin/test -k test_name
+    
+To run with a debugger::
+    
+    $ bin/test --pdb 
+
+Specific tests to run locally for schema changes::
+
+    $ bin/test -k test_load_workbook
+    $ bin/test -k test_edw_sync
 
 Run the Pyramid tests with::
 
@@ -64,6 +79,10 @@ Run the Pyramid tests with::
 Run the Browser tests with::
 
     $ bin/test -m bdd -v -v
+
+Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
+
+Step 6: Database modifications
 
 If you wish a clean db wipe for DEVELOPMENT::
     
