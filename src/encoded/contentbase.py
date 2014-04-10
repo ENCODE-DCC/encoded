@@ -1035,7 +1035,13 @@ def column_value(obj, column):
                 return ''
             value = value[0]
         else:
-            value = value.get(name, None)
+            if isinstance(value, list):
+                new_values = []
+                for v in value:
+                    new_values.append(v[name])
+                value = new_values
+            else:
+                value = value.get(name, None)
             if value is None:
                 return ''
     return value
