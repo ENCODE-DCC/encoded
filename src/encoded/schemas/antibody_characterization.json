@@ -26,6 +26,22 @@
             "comment": "See antibody_lot.json for available identifiers.",
             "linkTo": "antibody_lot"
         },
+        "status": {
+            "title": "Approval status",
+            "description": "The current state of the characterization.",
+            "comment": "Submit a status of 'PENDING DCC REVIEW' to indicate that DCC should begin reviewing characterization. Submit a status of 'WITHDRAWN BY LAB'  to indicate that DCC should not review the characterization.'",
+            "type": "string",
+            "default": "in progress",
+            "enum" : [
+                "in progress",
+                "pending dcc review",
+                "compliant",
+                "not compliant",
+                "not reviewed",
+                "not submitted for review by lab",
+                "deleted"
+            ]
+        },
         "target": {
             "title": "Target",
             "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
