@@ -6,6 +6,7 @@ from ..contentbase import (
 from ..indexing import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from urllib import urlencode
+from collections import OrderedDict
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
 
@@ -209,7 +210,7 @@ def search(context, request, search_type=None):
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
         facets = root[doc_types[0]].schema['facets']
         if request.has_permission('search_audit'):
-            facets = dict(facets, **{'Audit category': 'audit.category'})
+            facets = OrderedDict(facets, **{'Audit category': 'audit.category'})
         for facet_title in facets:
             field = facets[facet_title]
             if field != 'audit.category':

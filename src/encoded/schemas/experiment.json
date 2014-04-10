@@ -84,9 +84,16 @@
     "facets": {
         "Assay": "assay_term_name",
         "Organism": "replicates.library.biosample.organism.name",
+        "Biosample Type": "replicates.library.biosample.biosample_type",
         "Organ": "organ_slims",
         "Lab": "lab.title",
-        "Developmental Slim": "developmental_slims"
+        "File Format": "files.file_format",
+        "Treatments": "replicates.library.treatments.treatment_term_name",
+        "Paired ended": "replicates.paired_ended",
+        "Read length": "replicates.read_length",
+        "Developmental Slim": "developmental_slims",
+        "Life Stage": "replicates.library.biosample.life_stage",
+        "Library fragmentation size": "replicates.library.size_range"
     },
     "columns": {
         "accession": {
