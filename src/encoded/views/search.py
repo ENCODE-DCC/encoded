@@ -209,7 +209,8 @@ def search(context, request, search_type=None):
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
         facets = root[doc_types[0]].schema['facets']
         if request.has_permission('search_audit'):
-            facets.update({'Audit category': 'audit.category'})
+            facets = facets.copy()
+            facets['Audit category'] = 'audit.category'
         for facet_title in facets:
             field = facets[facet_title]
             if field != 'audit.category':
