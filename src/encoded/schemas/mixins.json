@@ -62,10 +62,11 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "CURRENT",
+            "default": "in progress",
             "enum" : [
-                "CURRENT",
-                "DELETED"
+                "in progress",
+                "deleted",
+                "released"
             ]
         }
     },

@@ -92,6 +92,39 @@ def construct_characterization_1(construct_characterization):
     return item
 
 
+@pytest.fixture
+def biosample_characterization_2(biosample_characterization):
+    item = biosample_characterization.copy()
+    item.update({
+        'schema_version': '3',
+        'status': 'IN PROGRESS',
+        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
+    })
+    return item
+
+
+@pytest.fixture
+def rnai_characterization_2(rnai_characterization):
+    item = rnai_characterization.copy()
+    item.update({
+        'schema_version': '3',
+        'status': 'IN PROGRESS',
+        'award': 'ea1f650d-43d3-41f0-a96a-f8a2463d332f'
+    })
+    return item
+
+
+@pytest.fixture
+def construct_characterization_2(construct_characterization):
+    item = construct_characterization.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'DELETED',
+        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
+    })
+    return item
+
+
 def test_antibody_characterization_upgrade(app, antibody_characterization_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('antibody_characterization', antibody_characterization_1, target_version='3')
@@ -129,6 +162,27 @@ def test_antibody_characterization_upgrade_status(app, antibody_characterization
     value = migrator.upgrade('antibody_characterization', antibody_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
     assert value['status'] == 'compliant'
+
+
+def test_biosample_characterization_upgrade_status_encode2(app, biosample_characterization_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample_characterization', biosample_characterization_2, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['status'] == 'released'
+
+
+def test_rnai_characterization_upgrade_status_encode2(app, rnai_characterization_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('rnai_characterization', rnai_characterization_2, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['status'] == 'in progress'
+
+
+def test_construct_characterization_upgrade_status_deleted(app, construct_characterization_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('construct_characterization', construct_characterization_2, target_version='4')
+    assert value['schema_version'] == '4'
+    assert value['status'] == 'deleted'
 
 
 def test_antibody_characterization_upgrade_inline(testapp, root, antibody_characterization_1):
