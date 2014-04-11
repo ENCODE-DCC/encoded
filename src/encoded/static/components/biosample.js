@@ -83,20 +83,20 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dt>Term ID</dt>
                         <dd>{context.biosample_term_id}</dd>
 
-                        <dt hidden={!context.description}>Description</dt>
-                        <dd hidden={!context.description} className="sentence-case">{context.description}</dd>
+                        {context.description ? <dt>Description</dt> : null}
+                        {context.description ? <dd className="sentence-case">{context.description}</dd> : null}
                         
-                        <dt hidden={!context.subcellular_fraction_term_name}>Subcellular fraction</dt>
-                        <dd hidden={!context.subcellular_fraction_term_name}>{context.subcellular_fraction_term_name}</dd>
+                        {context.subcellular_fraction_term_name ? <dt>Subcellular fraction</dt> : null}
+                        {context.subcellular_fraction_term_name ? <dd>{context.subcellular_fraction_term_name}</dd> : null}
 
                         <dt>Source</dt>
                         <dd><a href={context.source.url}>{context.source.title}</a></dd>
 
-                        <dt hidden={!context.product_id}>Product ID</dt>
-                        <dd hidden={!context.product_id}><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                        {context.product_id ? <dt>Product ID</dt> : null}
+                        {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
 
-                        <dt hidden={!context.lot_id}>Lot ID</dt>
-                        <dd hidden={!context.lot_id}>{context.lot_id}</dd>
+                        {context.lot_id ? <dt>Lot ID</dt> : null}
+                        {context.lot_id ? <dd>{context.lot_id}</dd> : null}
 
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
@@ -110,31 +110,29 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <dt>Grant</dt>
                         <dd>{context.award.name}</dd>
 
-                        <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd hidden={!context.aliases.length}>{aliasList}</dd>
+                        {context.aliases.length ? <dt>Aliases</dt> : null}
+                        {context.aliases.length ? <dd>{aliasList}</dd>: null}
 
-                        <dt hidden={!context.dbxrefs.length}>External resources</dt>
-                        <dd hidden={!context.dbxrefs.length}>
-                            <DbxrefList values={context.dbxrefs} />
-                        </dd>
+                        {context.dbxrefs.length ? <dt>External resources</dt> : null}
+                        {context.dbxrefs.length ? <dd><DbxrefList values={context.dbxrefs} /></dd> : null}
 
-                        <dt hidden={!context.note}>Note</dt>
-                        <dd hidden={!context.note}>{context.note}</dd>
+                        {context.note ? <dt>Note</dt> : null}
+                        {context.note ? <dd>{context.note}</dd> : null}
                         
-                        <dt hidden={!context.date_obtained}>Date obtained</dt>
-						<dd hidden={!context.date_obtained}>{context.date_obtained}</dd>
+                        {context.date_obtained ? <dt>Date obtained</dt> : null}
+						{context.date_obtained ? <dd>{context.date_obtained}</dd> : null}
 						
-						<dt hidden={!context.starting_amount}>Starting amount</dt>
-						<dd hidden={!context.starting_amount}>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd>
+						{context.starting_amount ? <dt>Starting amount</dt> : null}
+						{context.starting_amount ? <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd> : null}
                         
-                        <dt hidden={!context.culture_start_date}>Culture start date</dt>
-						<dd hidden={!context.culture_start_date}>{context.culture_start_date}</dd>
+                        {context.culture_start_date ? <dt>Culture start date</dt> : null}
+						{context.culture_start_date ? <dd>{context.culture_start_date}</dd> : null}
 				
-						<dt hidden={!context.culture_harvest_date}>Culture harvest date</dt>
-						<dd hidden={!context.culture_harvest_date}>{context.culture_harvest_date}</dd>
+						{context.culture_harvest_date ? <dt>Culture harvest date</dt> : null}
+						{context.culture_harvest_date ? <dd>{context.culture_harvest_date}</dd> : null}
 				
-						<dt hidden={!context.passage_number}>Passage number</dt>
-						<dd hidden={!context.passage_number}>{context.passage_number}</dd>
+						{context.passage_number ? <dt>Passage number</dt> : null}
+						{context.passage_number ? <dd>{context.passage_number}</dd> : null}
                     </dl>
 
                     {(context.donor) ?
@@ -220,10 +218,12 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </div>
                 : null}
 
-                <div hidden={!Object.keys(construct_documents).length}>
-                    <h3>Construct documents</h3>
-                    {construct_documents}
-                </div>
+                {Object.keys(construct_documents).length ?
+                    <div>
+                        <h3>Construct documents</h3>
+                        {construct_documents}
+                    </div>
+                : null}
 
                 {Object.keys(rnai_documents).length ?
                     <div>
@@ -280,8 +280,8 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 <dt>Accession</dt>
                 <dd>{context.accession}</dd>
 
-                <dt hidden={!context.aliases.length}>Aliases</dt>
-                <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                {context.aliases.length ? <dt>Aliases</dt> : null}
+                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
                 {context.organism.name ? <dt>Species</dt> : null}
                 {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
@@ -317,8 +317,8 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 <dt>Accession</dt>
                 <dd>{context.accession}</dd>
 
-                <dt hidden={!context.aliases.length}>Aliases</dt>
-                <dd hidden={!context.aliases.length}>{context.aliases.join(", ")}</dd>
+                {context.aliases.length ? <dt>Aliases</dt> : null}
+                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
                 {context.organism.name ? <dt>Species</dt> : null}
                 {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
@@ -392,8 +392,8 @@ var Construct = module.exports.Construct = React.createClass({
                 {context.description ?  <dt>Description</dt> : null}
                 {context.description ? <dd>{context.description}</dd> : null}
 
-                <dt hidden={!context.tags.length}>Tags</dt>
-                <dd hidden={!context.tags.length}>
+                {context.tags.length ? <dt>Tags</dt> : null}
+                {context.tags.length ? <dd>
                     <ul>
                         {context.tags.map(function (tag, index) {
                             return (
@@ -403,7 +403,7 @@ var Construct = module.exports.Construct = React.createClass({
                             );
                         })}
                     </ul>
-                </dd>
+                </dd> : null}
 
 
                 {context.source.title ? <dt>Source</dt> : null}
