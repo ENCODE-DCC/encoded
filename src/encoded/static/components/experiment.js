@@ -70,14 +70,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Accession</dt>
                         <dd>{context.accession}</dd>
 
-                        <dt hidden={!context.description}>Description</dt>
-                        <dd hidden={!context.description}>{context.description}</dd>
+                        {context.description ? <dt>Description</dt> : null}
+                        {context.description ? <dd>{context.description}</dd> : null}
 
-                        <dt hidden={!context.biosample_term_name}>Biosample</dt>
-                        <dd hidden={!context.biosample_term_name} className="sentence-case">{context.biosample_term_name}</dd>
+                        {context.biosample_term_name ? <dt>Biosample</dt> : null}
+                        {context.biosample_term_name ? <dd className="sentence-case">{context.biosample_term_name}</dd> : null}
 
-                        <dt hidden={!context.biosample_type}>Biosample type</dt>
-                        <dd hidden={!context.biosample_type} className="sentence-case">{context.biosample_type}</dd>
+                        {context.biosample_type ? <dt>Biosample type</dt> : null}
+                        {context.biosample_type ? <dd className="sentence-case">{context.biosample_type}</dd> : null}
 
                         {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
                         {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
@@ -91,9 +91,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {antibody_accessions.length ? <dt>Antibody</dt> : null}
                         {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
-                        <dt hidden={!context.possible_controls.length}>Controls</dt>
-                        <dd hidden={!context.possible_controls.length}>
-                            <ul>
+                        {context.possible_controls.length ? <dt>Controls</dt> : null}
+                        {context.possible_controls.length ?
+                            <dd>
+                                <ul>
                                     {context.possible_controls.map(function (control) {
                                         return (
                                             <li key={control['@id']}>
@@ -104,7 +105,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                                         );
                                     })}
                                 </ul>
-                        </dd>
+                            </dd>
+                        : null}
 
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
@@ -112,13 +114,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
                         
-                        <dt hidden={!context.aliases.length}>Aliases</dt>
-                        <dd hidden={!context.aliases.length}>{aliasList}</dd>
+                        {context.aliases.length ? <dt>Aliases</dt> : null}
+                        {context.aliases.length ? <dd>{aliasList}</dd> : null}
 
-                        <dt hidden={!context.dbxrefs.length}>External resources</dt>
-                        <dd hidden={!context.dbxrefs.length}>
-                            <DbxrefList values={context.dbxrefs} />
-                        </dd>
+                        {context.dbxrefs.length ? <dt>External resources</dt> : null}
+                        {context.dbxrefs.length ? <dd><DbxrefList values={context.dbxrefs} /></dd> : null}
 
                     </dl>
                 </div>
@@ -126,10 +126,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                 <BiosamplesUsed replicates={replicates} />
                 <AssayDetails replicates={replicates} />
 
-                <div hidden={!Object.keys(documents).length}>
-                    <h3>Protocols</h3>
-                    {documents}
-                </div>
+                {Object.keys(documents).length ?
+                    <div>
+                        <h3>Protocols</h3>
+                        {documents}
+                    </div>
+                : null}
 
                 {replicates.map(function (replicate, index) {
                     return (
@@ -273,6 +275,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
 
 var Replicate = module.exports.Replicate = function (props) {
     var replicate = props.replicate;
+    var concentration = replicate.rbns_protein_concentration;
     var library = replicate.library;
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended;
@@ -283,6 +286,9 @@ var Replicate = module.exports.Replicate = function (props) {
                 <dt>Technical replicate</dt>
                 <dd>{replicate.technical_replicate_number}</dd>
 
+                {concentration ? <dt>Protein concentration</dt> : null}
+                {concentration ? <dd>{concentration}<span className="unit">{replicate.rbns_protein_concentration_units}</span></dd> : null}
+
                 {library ? <dt>Library</dt> : null}
                 {library ? <dd>{library.accession}</dd> : null}
 
@@ -292,10 +298,10 @@ var Replicate = module.exports.Replicate = function (props) {
                         {biosample.accession}
                     </a>{' '}-{' '}{biosample.biosample_term_name}
                 </dd> : null}
-                
+
                 {replicate.read_length ? <dt>Run type</dt> : null}
                 {replicate.read_length ? <dd>{paired_end ? 'paired-end' : 'single-end'}</dd> : null}
-            
+
                 {replicate.read_length ? <dt>Read length</dt> : null}
                 {replicate.read_length ? <dd>{replicate.read_length}<span className="unit">{replicate.read_length_units}</span></dd> : null}
             </dl>
