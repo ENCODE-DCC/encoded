@@ -171,7 +171,7 @@ def test_biosample_characterization_upgrade_status_encode2(app, biosample_charac
     assert value['status'] == 'released'
 
 
-def test_rnai_characterization_upgrade_status_encode2(app, rnai_characterization_2):
+def test_rnai_characterization_upgrade_status_encode3(app, rnai_characterization_2):
     migrator = app.registry['migrator']
     value = migrator.upgrade('rnai_characterization', rnai_characterization_2, target_version='4')
     assert value['schema_version'] == '4'
