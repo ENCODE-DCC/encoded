@@ -16,7 +16,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "file_format": {
             "title": "File format",
@@ -115,10 +115,11 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "CURRENT",
+            "default": "in progress",
             "enum" : [
-                "CURRENT",
-                "OBSOLETE"
+                "in progress",
+                "obsolete",
+                "released"
             ]
         }
     },
