@@ -1,4 +1,5 @@
 from ..migrator import upgrade_step
+from ..views.views import ENCODE2_AWARDS
 
 
 def number(value):
@@ -78,3 +79,16 @@ def biosample_3_4(value, system):
             new_dbxref = 'UCSC-ENCODE-cv:' + encode2_dbxref
             value['dbxrefs'].append(new_dbxref)
         del value['encode2_dbxrefs']
+
+
+@upgrade_step('biosample', '4', '5')
+def biosample_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/1305
+    if 'status' in value:
+        if value['status'] == 'DELETED':
+            value['status'] = 'deleted'
+        elif value['status'] == 'CURRENT' and value['award'] in ENCODE2_AWARDS:
+            value['status'] = 'released'
+        elif value['status'] == 'CURRENT' and value['award'] not in ENCODE2_AWARDS:
+            value['status'] = 'in progress'
+          
