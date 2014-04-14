@@ -62,3 +62,4 @@ def test_antibody_lot_upgrade_status_deleted(app, antibody_lot_2):
     value = migrator.upgrade('antibody_lot', antibody_lot_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'deleted'
+    
