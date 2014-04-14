@@ -6,7 +6,8 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
     ],
     "type": "object",
     "properties": {
@@ -36,16 +37,6 @@
             "comment": "Only admins are allowed to set this value.",
             "type": "string",
             "permission": "import_items"
-        },
-        "status": {
-            "title": "Status",
-            "type": "string",
-            "default": "current",
-            "enum" : [
-                "current",
-                "deleted",
-                "disabled"
-            ]
         }
     }
 }

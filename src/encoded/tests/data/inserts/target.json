@@ -9,19 +9,19 @@
         "gene_name": "ADNP",
         "label": "ADNP",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "e310f899-8622-4aa7-8c48-8c2199dc8d15"
     },
     {
         "label": "Control",
         "organism": "mouse",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "87c25410-2ece-4335-b45b-eff245bb30bf"
     },
     {
         "label": "Control",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "89839f28-ad35-4bb4-a214-ee65d0a97d8d"
     },
     {
@@ -33,7 +33,7 @@
         "gene_name": "CTCF",
         "label": "CTCF",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "80f4c52e-c7bc-4afc-b159-89cb10367780"
     },
     {
@@ -55,7 +55,7 @@
         "gene_name": "CXXC1",
         "label": "CXXC1",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "aacec93d-d9dc-4f73-8edd-8ecce2debb43"
     },
     {
@@ -69,7 +69,7 @@
         "gene_name": "E2F1",
         "label": "E2F1",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "b39e16c2-b1d7-4690-b92c-e7006e5a8332"
     },
     {
@@ -83,7 +83,7 @@
         "gene_name": "E2F1",
         "label": "eGFP-E2F1",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "19afbc42-c08b-4b5b-a2b3-7f5c84db7d5d"
     },
     {
@@ -93,7 +93,7 @@
         "gene_name": "HIST2H3C",
         "label": "H3K4me3",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "65b74663-aedd-46ae-b2c5-f3e37c834867"
     },
     {
@@ -103,7 +103,7 @@
         "gene_name": "Hist2h3c1",
         "label": "H3K4me3",
         "organism": "mouse",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "eb576cba-6071-4c28-bba6-3c16fdbce0c7"
     },
     {
@@ -113,7 +113,7 @@
         "gene_name": "HIST2H3C",
         "label": "H3K9ac",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "851ee528-4763-4dba-9191-7db1ef7566f7"
     },
     {
@@ -127,7 +127,7 @@
         "gene_name": "E2F1",
         "label": "HA-E2F1",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "8a1239ab-6171-4f59-a8b7-3527eec96fad"
     },
     {
@@ -142,7 +142,7 @@
         "gene_name": "HNRNPA1",
         "label": "HNRNPA1",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "6cd2beb9-e859-41c4-a019-98bf02e96b19"
     },
     {
@@ -163,7 +163,7 @@
         "gene_name": "TAF1",
         "label": "TAF1",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "993bd05d-a6bd-4718-b51b-abe99f14f8c3"
     },
     {
@@ -186,7 +186,7 @@
         "gene_name": "TCF4",
         "label": "TCF4",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "f26cc43c-884a-4aea-9b26-b3517ef6748d"
     },
     {
@@ -205,7 +205,7 @@
         "gene_name": "NR2F1\u00c2",
         "label": "NR2F1\u00c2",
         "organism": "human",
-        "status": "CURRENT",
+        "status": "current",
         "uuid": "618b2122-2a97-44a8-bd6a-f473c1363dd2"
     }
 ]

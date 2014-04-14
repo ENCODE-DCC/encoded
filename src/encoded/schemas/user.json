@@ -8,7 +8,8 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
     ],
     "properties": {
         "schema_version": {
@@ -58,16 +59,6 @@
             "items": {
                 "type": "string"
             }
-        },
-        "status": {
-            "title": "Status",
-            "type": "string",
-            "default": "current",
-            "enum" : [
-                "current",
-                "deleted",
-                "disabled"
-            ]
         },
         "job_title": {
             "title": "Job title",

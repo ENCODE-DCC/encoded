@@ -70,6 +70,18 @@
             ]
         }
     },
+    "shared_status": {
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "current",
+            "enum" : [
+                "current",
+                "deleted",
+                "disabled"
+            ]
+        }
+    },
     "submitted": {
         "date_created": {
             "title": "Date created",
