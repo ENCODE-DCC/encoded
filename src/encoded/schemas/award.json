@@ -70,13 +70,6 @@
             "title": "BioProject",
             "description": "The collection of biological data related to a single initiative, originating from a consortium.",
             "type": "string"
-        },
-        "status": {
-            "default": "released",
-            "enum": [
-                "released",
-                "deleted"
-            ]
         }
     }
  }

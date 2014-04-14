@@ -32,13 +32,6 @@
             "description": "The NCBI taxon ID for the organism (e.g. 10090).",
             "type": "string",
             "format": "^[0-9]+$"
-        },
-        "status": {
-            "default": "released",
-            "enum": [
-                "released",
-                "deleted"
-            ]
         }
     }
 }
