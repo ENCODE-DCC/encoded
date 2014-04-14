@@ -25,9 +25,23 @@ DEFAULT_COLLECTIONS = [
     'user',
     'antibody_approval',
     "antibody_characterization",
+    "antibody_lot",
     "biosample_characterization",
     "construct_characterization",
-    "rnai_characterization"
+    "rnai_characterization",
+    "construct",
+    "document",
+    "human_donor",
+    "mouse_donor",
+    "library",
+    "rnai",
+    "award",
+    "lab",
+    "organsim",
+    "source",
+    "target",
+    "biosample",
+    "file",
 ]
 
 
