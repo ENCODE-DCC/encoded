@@ -147,7 +147,7 @@ globals.content_views.register(Experiment, 'experiment');
 
 var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
     var replicates = props.replicates;
-    if (!replicates.length) return (null);
+    if (!replicates.length) return (<div hidden={true}></div>);
     var biosamples = {};
     replicates.forEach(function(replicate) {
         var biosample = replicate.library && replicate.library.biosample;
@@ -158,7 +158,7 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
 
     // If no libraries in the replicates, then no biosamples; just output nothing.
     if (!Object.keys(biosamples).length) {
-        return (null);
+        return (<div hidden={true}></div>);
     }
 
     return (
