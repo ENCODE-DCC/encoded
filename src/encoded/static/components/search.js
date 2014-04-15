@@ -65,11 +65,16 @@ var Dbxref = dbxref.Dbxref;
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
+            var lifeStage = (result['life_stage'] && result['life_stage'] != 'unknown') ? ' ' + result['life_stage'] : '';
+            var age = (result['age'] && result['age'] != 'unknown') ? ' ' + result['age'] : '';
+            var ageUnits = (result['age_units'] && result['age_units'] != 'unknown') ? ' ' + result['age_units'] : '';
+            var separator = (lifeStage || age) ? ', ' : '';
             return (<li>
                         <div>
                             <span className="pull-right type">Biosample: {' ' + result['accession']}</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['biosample_term_name'] + ' (' + result['organism.name'] + ')'}</a> 
+                                <a href={result['@id']}>{result['biosample_term_name'] + ' (' + result['organism.name'] +
+                                        separator + lifeStage + age + ageUnits + ')'}</a> 
                             </div>
                         </div>
                         <div className="data-row">
@@ -116,13 +121,64 @@ var Dbxref = dbxref.Dbxref;
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
+            var lifeStageLen = result['replicates.library.biosample.life_stage'] ? result['replicates.library.biosample.life_stage'].length : 0; // Assume all arrays have same length
+            var ageLen = result['replicates.library.biosample.age'] ? result['replicates.library.biosample.age'].length : 0; // Assume all arrays have same length
+            var lifeStage = '', lifeStage0;
+            var age = '', age0;
+            var ageUnits = '', ageUnits0;
+            var i;
+
+            // See if all array elements have the same value
+            if (lifeStageLen > 0) {
+                lifeStage0 = result['replicates.library.biosample.life_stage'][0];
+
+                if (lifeStage0 !== 'unknown') {
+                    for (i = 0; i < lifeStageLen; i++) {
+                        if (lifeStage0 !== result['replicates.library.biosample.life_stage'][i]) {
+                            break;
+                        }
+                    }
+
+                    // If loop finished all iterations, we know all relevant replicate info matches
+                    if (i === lifeStageLen) {
+                        lifeStage = lifeStage0;
+                    }
+                }
+            }
+
+            // See if all array elements have the same value
+            if (ageLen > 0) {
+                age0 = result['replicates.library.biosample.age'][0];
+                if (result['replicates.library.biosample.age_units'] && result['replicates.library.biosample.age_units'].length > 0) {
+                    ageUnits0 = result['replicates.library.biosample.age_units'][0];
+                }
+
+                if (age0 !== 'unknown' && ageUnits0 !== 'unknown') {
+                    for (i = 0; i < ageLen; i++) {
+                        if (age0 !== result['replicates.library.biosample.age'][i] ||
+                                ageUnits0 !== result['replicates.library.biosample.age_units'][i]) {
+                            break;
+                        }
+                    }
+
+                    // If loop finished all iterations, we know all relevant replicate info matches
+                    if (i === ageLen) {
+                        age = age0;
+                        ageUnits = ageUnits0;
+                    }
+                }
+            }
+
+            var separator = (lifeStage || age) ? ', ' : '';
+console.log('SEP: ' + result['replicates.library.biosample.organism.name']);
             return (<li>
                         <div>
                             <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
                             <div className="accession">
                                 <a href={result['@id']}>
                                     <span>{result['assay_term_name'] + ' of ' + result['biosample_term_name']}</span>
-                                    <span>{result['replicates.library.biosample.organism.name'] ? ' (' + result['replicates.library.biosample.organism.name'] + ')' : ''}</span>
+                                    <span>{result['replicates.library.biosample.organism.name'] ? (' (' + result['replicates.library.biosample.organism.name'] +
+                                            separator + lifeStage + age + ageUnits + ')') : ''}</span>
                                 </a>
                             </div>
                         </div>

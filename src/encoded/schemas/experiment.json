@@ -123,15 +123,15 @@
         },
         "replicates.library.biosample.life_stage": {
             "title": "Life stage",
-            "type": "string"
+            "type": "array"
         },
         "replicates.library.biosample.age": {
             "title": "Age",
-            "type": "string"
+            "type": "array"
         },
         "replicates.library.biosample.age_units": {
             "title": "Age Units",
-            "type": "string"
+            "type": "array"
         },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Treatment",
