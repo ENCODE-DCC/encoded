@@ -18,7 +18,7 @@
             "cbf2446e-cd0d-4413-b307-2435e783575c"
         ], 
         "lab": "j-michael-cherry", 
-        "status": "NOT eligible for new data", 
+        "status": "not eligible for new data", 
         "target": "CXXC1-human", 
         "uuid": "58b4df5b-ba21-4111-a715-3b5ba863b9b4"
     }, 
@@ -165,7 +165,7 @@
             "5bd15dc3-7c23-4e25-a20b-5078274f284f"
         ], 
         "lab": "j-michael-cherry", 
-        "status": "NOT eligible for new data", 
+        "status": "not eligible for new data", 
         "target": "HNRNPA1-human", 
         "uuid": "c6176cd6-2284-4382-8c7a-e92eb242633a"
     }, 
