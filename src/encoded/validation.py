@@ -8,10 +8,7 @@ from pyramid.httpexceptions import (
     HTTPUnprocessableEntity,
 )
 from pyramid.util import LAST
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import simplejson as json
 
 
 def includeme(config):

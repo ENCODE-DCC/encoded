@@ -272,7 +272,7 @@ def search(context, request, search_type=None):
         }
 
     # Execute the query
-    results = es.search(query, index='encoded', doc_type=doc_types, size=size)
+    results = es.search(body=query, index='encoded', doc_type=doc_types, size=size)
 
     # Loading facets in to the results
     if 'facets' in results:
