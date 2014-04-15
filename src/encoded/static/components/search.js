@@ -67,8 +67,8 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             var lifeStage = (result['life_stage'] && result['life_stage'] != 'unknown') ? ' ' + result['life_stage'] : '';
             var age = (result['age'] && result['age'] != 'unknown') ? ' ' + result['age'] : '';
-            var ageUnits = (result['age_units'] && result['age_units'] != 'unknown') ? ' ' + result['age_units'] : '';
-            var separator = (lifeStage || age) ? ', ' : '';
+            var ageUnits = (result['age_units'] && result['age_units'] != 'unknown' && age) ? ' ' + result['age_units'] : '';
+            var separator = (lifeStage || age) ? ',' : '';
             return (<li>
                         <div>
                             <span className="pull-right type">Biosample: {' ' + result['accession']}</span>
@@ -79,18 +79,6 @@ var Dbxref = dbxref.Dbxref;
                         </div>
                         <div className="data-row">
                             <div><strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}</div>
-                            {result['life_stage'] ?
-                                <div>
-                                    <strong>{columns['life_stage']['title'] + ': '}</strong>
-                                    {result['life_stage']}
-                                </div>
-                            : null}
-                            {result['age'] ?
-                                <div>
-                                    <strong>{columns['age']['title'] + ': '}</strong>
-                                    {result['age']}<span className="unit">{result['age_units']}</span>
-                                </div>
-                            : null}
                             {result['rnais.target.name'] ?
                                 <div>
                                     <strong>{columns['rnais.target.name']['title'] + ': '}</strong>
