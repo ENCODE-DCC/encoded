@@ -42,6 +42,8 @@ DEFAULT_COLLECTIONS = [
     "target",
     "biosample",
     "file",
+    "platform",
+    "treament"
 ]
 
 

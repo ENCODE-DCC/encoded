@@ -19,6 +19,16 @@ def platform_1(platform):
     return item
 
 
+@pytest.fixture
+def platform_2(platform):
+    item = platform.copy()
+    item.update({
+        'schema_version': '2',
+        'status': "CURRENT",
+    })
+    return item
+
+
 def test_platform_upgrade(app, platform_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('platform', platform_1, target_version='2')
@@ -26,3 +36,10 @@ def test_platform_upgrade(app, platform_1):
     assert 'encode2_dbxrefs' not in value
     assert 'geo_dbxrefs' not in value
     assert value['dbxrefs'] == ['UCSC-ENCODE-cv:AB_SOLiD_3.5', 'GEO:GPL9442']
+
+
+def test_platform_upgrade_status(app, platform_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('platform', platform_2, target_version='3')
+    assert value['schema_version'] == '3'
+    assert value['status'] == 'current'
