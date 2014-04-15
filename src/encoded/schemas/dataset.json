@@ -13,13 +13,12 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "accession": {
             "accessionType": "SR"
@@ -89,6 +88,20 @@
                 "type": "string",
                 "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
             }
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "proposed",
+            "enum" : [
+                "started",
+                "verified",
+                "submitted",
+                "proposed",
+                "released",
+                "deleted",
+                "revoked"
+            ]
         }
     },
     "facets": {

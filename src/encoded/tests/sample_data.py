@@ -141,6 +141,10 @@ AWARDS = [
     'uuid': 'fae1bd8b-0d90-4ada-b51f-0ecc413e904d',
     'name': 'Myers',
     },
+    {
+    'uuid': '2a27a363-6bb5-43cc-99c4-d58bf06d3d8e',
+    'name': 'ENCODE2'
+    }
 ]
 
 BAD_AWARDS = [  # UUID same as one of labs

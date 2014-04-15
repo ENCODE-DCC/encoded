@@ -43,7 +43,9 @@ DEFAULT_COLLECTIONS = [
     "biosample",
     "file",
     "platform",
-    "treament"
+    "treament",
+    "dataset",
+    "experiment"
 ]
 
 
