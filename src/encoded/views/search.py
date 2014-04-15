@@ -208,7 +208,9 @@ def search(context, request, search_type=None):
     # Adding facets to the query
     # TODO: Have to simplify this piece of code
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
-        facets = root[doc_types[0]].schema['facets']
+        facets = OrderedDict()
+        for facet in root[doc_types[0]].schema['facets']:
+            facets[root[doc_types[0]].schema['facets'][facet]['title']] = facet
         if request.has_permission('search_audit'):
             facets = OrderedDict(facets, **{'Audit category': 'audit.category'})
         for facet_title in facets:

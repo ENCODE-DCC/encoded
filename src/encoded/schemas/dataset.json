@@ -92,8 +92,14 @@
         }
     },
     "facets": {
-        "Dataset Type": "dataset_type",
-        "Lab": "lab.title"
+        "dataset_type": {
+            "title": "Dataset type",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        }
     },
     "columns": {
         "accession": {

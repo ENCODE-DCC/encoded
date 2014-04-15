@@ -61,12 +61,30 @@
         }
     },
     "facets": {
-        "Approval Status": "status", 
-        "Target Organism": "target.organism.name", 
-        "Source": "antibody.source.title",
-        "Clonality": "antibody.clonality",
-        "Host Organism": "antibody.host_organism.name",
-        "Lab": "characterizations.lab.title"
+        "status": {
+            "title": "Approval Status",
+            "type": "string"
+        },
+        "target.organism.name": {
+            "title": "Target Organism",
+            "type": "string"
+        },
+        "antibody.source.title": {
+            "title": "Source",
+            "type": "string"
+        },
+        "antibody.clonality": {
+            "title": "Clonality",
+            "type": "string"
+        },
+        "anitbody.host_organism.name": {
+            "title": "Host Organism",
+            "type": "string"
+        },
+        "characterizations.lab.title": {
+            "title": "Lab",
+            "type": "string"
+        }
     },
     "columns": {
         "antibody.accession": {
