@@ -117,60 +117,40 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Biosample, 'biosample');
 
+
+    // True if array 'a' with 1st index 'i' contains all same non-'unknown' value in its 2nd index
+    // False if 'a' contains an 'unknown' value, non-'unknown' values differ, or 'a' has no elements
+    function homogenousArray(a, i) {
+        var aLen = a[i] ? a[i].length : 0;
+        var j = 0;
+
+        if (aLen > 0) {
+            var a0 = a[i][0];
+            if (a0 !== 'unknown') {
+                for (j = 1; j < aLen; j++) {
+                    if (a[i][j] === 'unknown' || a[i][j] !== a0) {
+                        break;
+                    }
+                }
+            }
+            return j === aLen;
+        }
+        return false;
+    }
+
     var Experiment = module.exports.Experiment = React.createClass({
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            var lifeStageLen = result['replicates.library.biosample.life_stage'] ? result['replicates.library.biosample.life_stage'].length : 0; // Assume all arrays have same length
-            var ageLen = result['replicates.library.biosample.age'] ? result['replicates.library.biosample.age'].length : 0; // Assume all arrays have same length
-            var lifeStage = '', lifeStage0;
-            var age = '', age0;
-            var ageUnits = '', ageUnits0;
-            var i;
 
-            // See if all array elements have the same value
-            if (lifeStageLen > 0) {
-                lifeStage0 = result['replicates.library.biosample.life_stage'][0];
+            var lifeStage = homogenousArray(result, 'replicates.library.biosample.life_stage') ?
+                    result['replicates.library.biosample.life_stage'][0] : '';
+            var age = homogenousArray(result, 'replicates.library.biosample.age') ?
+                    ' ' + result['replicates.library.biosample.age'][0] : '';
+            var ageUnits = homogenousArray(result, 'replicates.library.biosample.age_units') ?
+                    ' ' + result['replicates.library.biosample.age_units'][0] : '';
 
-                if (lifeStage0 !== 'unknown') {
-                    for (i = 0; i < lifeStageLen; i++) {
-                        if (lifeStage0 !== result['replicates.library.biosample.life_stage'][i]) {
-                            break;
-                        }
-                    }
-
-                    // If loop finished all iterations, we know all relevant replicate info matches
-                    if (i === lifeStageLen) {
-                        lifeStage = lifeStage0;
-                    }
-                }
-            }
-
-            // See if all array elements have the same value
-            if (ageLen > 0) {
-                age0 = result['replicates.library.biosample.age'][0];
-                if (result['replicates.library.biosample.age_units'] && result['replicates.library.biosample.age_units'].length > 0) {
-                    ageUnits0 = result['replicates.library.biosample.age_units'][0];
-                }
-
-                if (age0 !== 'unknown' && ageUnits0 !== 'unknown') {
-                    for (i = 0; i < ageLen; i++) {
-                        if (age0 !== result['replicates.library.biosample.age'][i] ||
-                                ageUnits0 !== result['replicates.library.biosample.age_units'][i]) {
-                            break;
-                        }
-                    }
-
-                    // If loop finished all iterations, we know all relevant replicate info matches
-                    if (i === ageLen) {
-                        age = age0;
-                        ageUnits = ageUnits0;
-                    }
-                }
-            }
-
-            var separator = (lifeStage || age) ? ', ' : '';
-console.log('SEP: ' + result['replicates.library.biosample.organism.name']);
+            var separator = (lifeStage || (age && ageUnits)) ? ', ' : '';
             return (<li>
                         <div>
                             <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
@@ -187,18 +167,6 @@ console.log('SEP: ' + result['replicates.library.biosample.organism.name']);
                                 <div>
                                     <strong>{columns['target.label']['title'] + ': '}</strong>
                                     {result['target.label']}
-                                </div>
-                            : null}
-                            {result['replicates.library.biosample.life_stage'] ?
-                                <div>
-                                    <strong>{columns['replicates.library.biosample.life_stage']['title'] + ': '}</strong>
-                                    {result['replicates.library.biosample.life_stage']}
-                                </div>
-                            : null}
-                            {result['replicates.library.biosample.age'] ?
-                                <div>
-                                    <strong>{columns['replicates.library.biosample.age']['title'] + ': '}</strong>
-                                    {result['replicates.library.biosample.age']}<span className="unit">{result['replicates.library.biosample.age_units']}</span>
                                 </div>
                             : null}
                             {result['replicates.library.biosample.treatments.treatment_term_name'] ?
