@@ -243,7 +243,7 @@
         "dataset_type": "experiment",
         "description": "Sample “RNA Bind-n-Seq” (RBNS) experiment against PTBP1",
         "lab": "chris-burge",
-        ":with": "released",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474"
     }
