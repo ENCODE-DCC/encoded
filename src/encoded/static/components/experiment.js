@@ -80,10 +80,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.biosample_type ? <dd className="sentence-case">{context.biosample_type}</dd> : null}
 
                         {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                        {biosample && biosample.life_stage ? <dd>{biosample.life_stage}</dd> : null}
+                        {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
                         {biosample && biosample.age ? <dt>Age</dt> : null}
-                        {biosample && biosample.age ? <dd>{biosample.age}<span className="unit">{biosample.age_units ? biosample.age_units : ''}</span></dd> : null}
+                        {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}<span className="unit">{biosample.age_units ? biosample.age_units : ''}</span></dd> : null}
 
                         {context.target ? <dt>Target</dt> : null}
                         {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
