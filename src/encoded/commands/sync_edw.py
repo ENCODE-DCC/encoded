@@ -96,9 +96,9 @@ def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
 
 
     if (file_dict['lab_error_message'] or file_dict['edw_error_message'] ):
-        file_dict['status'] = u'OBSOLETE'
+        file_dict['status'] = u'obsolete'
     else:
-        file_dict['status'] = u'CURRENT'
+        file_dict['status'] = u'released'
 
     del file_dict['lab_error_message']
     del file_dict['edw_error_message']
