@@ -176,20 +176,21 @@ def search(context, request, search_type=None):
     for field, term in request.params.iteritems():
         if field not in ['type', 'searchTerm', 'limit',
                          'format', 'frame', 'datastore']:
+            if field.startswith('audit'):
+                field_query = field
+            else:
+                field_query = 'embedded.' + field
             if term == 'other':
                 query_filters.append({'missing': {'field': 'embedded.' + field}})
-            elif field.startswith('audit.'):
-                query_filters.append({'term': {field: term}})
             else:
                 if field in used_filters:
                     for f in query_filters:
-                        if 'embedded.{}'.format(field) in f['terms'].keys():
-                            f['terms']['embedded.{}'
-                                       .format(field)].append(term)
+                        if field_query in f['terms'].keys():
+                            f['terms'][field_query].append(term)
                 else:
                     query_filters.append({
                         'terms': {
-                            'embedded.{}'.format(field): [term]
+                            field_query: [term]
                         }
                     })
                     used_filters.append(field)
@@ -204,13 +205,21 @@ def search(context, request, search_type=None):
             })
 
     # Adding facets to the query
+    # TODO: Have to simplify this piece of code
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
         facets = root[doc_types[0]].schema['facets']
+        if request.has_permission('search_audit'):
+            facets = facets.copy()
+            facets['Audit category'] = 'audit.category'
         for facet_title in facets:
             field = facets[facet_title]
+            if field != 'audit.category':
+                query_field = 'embedded.' + field
+            else:
+                query_field = field
             query['facets'][field] = {
                 'terms': {
-                    'field': 'embedded.{}'.format(field),
+                    'field': query_field,
                     'all_terms': True,
                     'size': 100
                 },
@@ -222,9 +231,13 @@ def search(context, request, search_type=None):
             }
             for count, used_facet in enumerate(result['filters']):
                 if field != used_facet['field'] and used_facet['field'] != 'type':
+                    if used_facet['field'] != 'audit.category':
+                        q_field = 'embedded.' + used_facet['field']
+                    else:
+                        q_field = used_facet['field']
                     if 'terms' in query['facets'][field]['facet_filter']:
                         old_terms = query['facets'][field]['facet_filter']
-                        new_terms = {'terms': {'embedded.' + used_facet['field']:
+                        new_terms = {'terms': {q_field:
                                                [used_facet['term']]}}
                         query['facets'][field]['facet_filter'] = {
                             'bool': {
@@ -235,15 +248,13 @@ def search(context, request, search_type=None):
                         terms = query['facets'][field]['facet_filter']['bool']['must']
                         flag = 0
                         for count, term in enumerate(terms):
-                            if 'embedded.' + used_facet['field'] in term['terms'].keys():
-                                terms[count]['terms']['embedded.' + used_facet
-                                                      ['field']].append(used_facet['term'])
+                            if q_field in term['terms'].keys():
+                                terms[count]['terms'][q_field].append(used_facet['term'])
                                 flag = 1
                         if not flag:
                             terms.append({
                                 'terms': {
-                                    'embedded.' + used_facet['field']:
-                                    [used_facet['term']]
+                                    q_field: [used_facet['term']]
                                 }
                             })
     else:
@@ -257,15 +268,6 @@ def search(context, request, search_type=None):
                 'terms': {
                     'principals_allowed_view': principals
                 }
-            }
-        }
-
-    # Adds Audit category facet for admins
-    if request.has_permission('search_audit'):
-        facets.update({'Audit category': 'audit.category'})
-        query['facets']['audit.category'] = {'terms': {
-            'field': 'audit.category',
-            'size': 99999
             }
         }
 
