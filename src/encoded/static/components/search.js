@@ -106,8 +106,8 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Biosample, 'biosample');
 
 
-    // True if array 'a' with 1st index 'i' contains all same non-'unknown' value in its 2nd index
-    // False if 'a' contains an 'unknown' value, non-'unknown' values differ, or 'a' has no elements
+    // Returns array length if array 'a' with 1st index 'i' contains all same non-'unknown' value in its 2nd index
+    // 0 if 'a' contains an 'unknown' value, non-'unknown' values differ, or 'a' has no elements
     function homogenousArray(a, i) {
         var aLen = a[i] ? a[i].length : 0;
         var j = 0;
@@ -121,27 +121,29 @@ var Dbxref = dbxref.Dbxref;
                     }
                 }
             }
-            return j === aLen;
+            return j === aLen ? aLen : 0;
         }
-        return false;
+        return 0;
     }
 
     var Experiment = module.exports.Experiment = React.createClass({
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
+            var age = '';
+            var ageUnits = '';
 
+            // See if all life stage, age, and age_unit arrays are all homogeneous
             var lifeStage = homogenousArray(result, 'replicates.library.biosample.life_stage') ?
                     result['replicates.library.biosample.life_stage'][0] : '';
-            var age = homogenousArray(result, 'replicates.library.biosample.age') ?
-                    ' ' + result['replicates.library.biosample.age'][0] : '';
-            var ageUnits = homogenousArray(result, 'replicates.library.biosample.age_units') ?
-                    ' ' + result['replicates.library.biosample.age_units'][0] : '';
-            if (!age || !ageUnits) {
-                age = ageUnits = '';
+            var ageLen = homogenousArray(result, 'replicates.library.biosample.age');
+            var ageUnitsLen = homogenousArray(result, 'replicates.library.biosample.age_units');
+            if (ageLen === ageUnitsLen) {
+                age = ageLen ? ' ' + result['replicates.library.biosample.age'][0] : '';
+                ageUnits = ageUnitsLen ? ' ' + result['replicates.library.biosample.age_units'][0] : '';
             }
-
             var separator = (lifeStage || age) ? ', ' : '';
+
             return (<li>
                         <div>
                             <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
