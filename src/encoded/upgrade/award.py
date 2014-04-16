@@ -7,9 +7,7 @@ def award_0_2(value, system):
     # http://redmine.encodedcc.org/issues/1307
 
     rfa_mapping = ['ENCODE2', 'ENCODE2-Mouse']
-
     if value['rfa'] in rfa_mapping:
-    	value['status'] = 'disabled'
+        value['status'] = 'disabled'
     else:
-    	value['status'] = 'current'
-    	
+        value['status'] = 'current'

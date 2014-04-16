@@ -1,6 +1,7 @@
 from ..migrator import upgrade_step
 from ..views.views import ENCODE2_AWARDS
 
+
 @upgrade_step('antibody_lot', '', '2')
 def antibody_lot_0_2(value, system):
     # http://redmine.encodedcc.org/issues/817
@@ -19,9 +20,10 @@ def antibody_lot_2_3(value, system):
     # http://redmine.encodedcc.org/issues/1307
 
     if 'status' in value:
-    	if value['status'] == 'DELETED':
-    		value['status'] = 'deleted'
-    	elif value['status'] == 'CURRENT' and value['award'] in ENCODE2_AWARDS:
-    		value['status'] = 'released'
-    	elif value['status'] == 'CURRENT' and value['award'] not in ENCODE2_AWARDS:
-    		value['status'] = 'in progress'
+        if value['status'] == 'DELETED':
+            value['status'] = 'deleted'
+        elif value['status'] == 'CURRENT':
+            if value['award'] in ENCODE2_AWARDS:
+                value['status'] = 'released'
+            elif value['award'] not in ENCODE2_AWARDS:
+                value['status'] = 'in progress'

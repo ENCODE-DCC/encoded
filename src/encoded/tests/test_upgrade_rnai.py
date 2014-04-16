@@ -43,4 +43,3 @@ def test_rnai_upgrade_status_deleted(app, rnai_1):
     value = migrator.upgrade('rnai', rnai_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'deleted'
-    

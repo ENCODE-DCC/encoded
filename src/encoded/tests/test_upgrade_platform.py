@@ -5,8 +5,9 @@ import pytest
 def platform():
     return{
         'term_name': 'ChIP-seq',
-        'term_id': 'OBI:0000716'	
+        'term_id': 'OBI:0000716'
     }
+
 
 @pytest.fixture
 def platform_1(platform):

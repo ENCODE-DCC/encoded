@@ -7,5 +7,4 @@ def source_0_2(value, system):
     # http://redmine.encodedcc.org/issues/1307
 
     if 'status' in value:
-    	value['status'] = value['status'].lower()
-    	
+        value['status'] = value['status'].lower()

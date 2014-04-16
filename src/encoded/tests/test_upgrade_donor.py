@@ -61,4 +61,3 @@ def test_donor_upgrade_status_deleted(app, human_donor_1):
     value = migrator.upgrade('human_donor', human_donor_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'deleted'
-    

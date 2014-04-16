@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.fixture
 def experiment_1(root, experiment, files):
     item = root.get_by_uuid(experiment['uuid'])
@@ -32,7 +33,7 @@ def dataset_2(root, dataset):
     properties = item.properties.copy()
     properties.update({
         'schema_version': '2',
-        'aliases': [ 'ucsc_encode_db:mm9-wgEncodeCaltechTfbs', 'barbara-wold:mouse-TFBS'],
+        'aliases': ['ucsc_encode_db:mm9-wgEncodeCaltechTfbs', 'barbara-wold:mouse-TFBS'],
         'geo_dbxrefs': ['GSE36024'],
     })
     return properties
@@ -86,7 +87,7 @@ def test_experiment_upgrade_dbxrefs_mouse(root, registry, experiment, experiment
     migrator = registry['migrator']
     context = root.get_by_uuid(experiment['uuid'])
     dummy_request.context = context
-    experiment_2['encode2_dbxrefs'] = ['wgEncodeEM008391'] 
+    experiment_2['encode2_dbxrefs'] = ['wgEncodeEM008391']
     value = migrator.upgrade('experiment', experiment_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert 'encode2_dbxrefs' not in value
@@ -101,7 +102,7 @@ def test_dataset_upgrade_dbxrefs(root, registry, dataset, dataset_2, threadlocal
     value = migrator.upgrade('dataset', dataset_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['dbxrefs'] == ['GEO:GSE36024', 'UCSC-GB-mm9:wgEncodeCaltechTfbs']
-    assert value['aliases'] == [ 'barbara-wold:mouse-TFBS']
+    assert value['aliases'] == ['barbara-wold:mouse-TFBS']
     assert 'geo_dbxrefs' not in value
 
 
@@ -121,7 +122,7 @@ def test_dataset_upgrade_dbxrefs_alias(root, registry, dataset, dataset_2, threa
     migrator = registry['migrator']
     context = root.get_by_uuid(dataset['uuid'])
     dummy_request.context = context
-    dataset_2['aliases'] = [ 'ucsc_encode_db:wgEncodeEH002945']
+    dataset_2['aliases'] = ['ucsc_encode_db:wgEncodeEH002945']
     value = migrator.upgrade('dataset', dataset_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['dbxrefs'] == ['GEO:GSE36024', 'UCSC-ENCODE-hg19:wgEncodeEH002945']
@@ -177,4 +178,3 @@ def test_experiment_upgrade_no_status_encode3(root, registry, experiment, experi
     value = migrator.upgrade('experiment', experiment_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
     assert value['status'] == 'submitted'
-    

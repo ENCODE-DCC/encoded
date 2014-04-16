@@ -192,7 +192,7 @@ def test_antibody_characterization_upgrade_inline(testapp, root, antibody_charac
     location = res.location
 
     # The properties are stored un-upgraded.
-    res = testapp.get(location+'?frame=raw&upgrade=false').maybe_follow()
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == '1'
 
     # When the item is fetched, it is upgraded automatically.
@@ -202,5 +202,5 @@ def test_antibody_characterization_upgrade_inline(testapp, root, antibody_charac
     res = testapp.patch_json(location, {})
 
     # The stored properties are now upgraded.
-    res = testapp.get(location+'?frame=raw&upgrade=false').maybe_follow()
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']

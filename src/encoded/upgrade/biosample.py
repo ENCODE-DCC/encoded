@@ -91,4 +91,3 @@ def biosample_4_5(value, system):
             value['status'] = 'released'
         elif value['status'] == 'CURRENT' and value['award'] not in ENCODE2_AWARDS:
             value['status'] = 'in progress'
-          

@@ -50,7 +50,7 @@ def test_antibody_lot_upgrade_status(app, antibody_lot_2):
 
 def test_antibody_lot_upgrade_status_encode3(app, antibody_lot_2):
     migrator = app.registry['migrator']
-    antibody_lot_2['award'] = 'ea1f650d-43d3-41f0-a96a-f8a2463d332f' 
+    antibody_lot_2['award'] = 'ea1f650d-43d3-41f0-a96a-f8a2463d332f'
     value = migrator.upgrade('antibody_lot', antibody_lot_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'in progress'
@@ -58,8 +58,7 @@ def test_antibody_lot_upgrade_status_encode3(app, antibody_lot_2):
 
 def test_antibody_lot_upgrade_status_deleted(app, antibody_lot_2):
     migrator = app.registry['migrator']
-    antibody_lot_2['status'] ='DELETED' 
+    antibody_lot_2['status'] = 'DELETED'
     value = migrator.upgrade('antibody_lot', antibody_lot_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'deleted'
-    

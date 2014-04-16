@@ -43,4 +43,3 @@ def test_library_upgrade_status_deleted(app, library_1):
     value = migrator.upgrade('library', library_1, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'deleted'
-    

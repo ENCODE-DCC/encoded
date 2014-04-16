@@ -171,7 +171,7 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
     location = res.location
 
     # The properties are stored un-upgraded.
-    res = testapp.get(location+'?frame=raw&upgrade=false').maybe_follow()
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == '1'
 
     # When the item is fetched, it is upgraded automatically.
@@ -181,7 +181,7 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
     res = testapp.patch_json(location, {})
 
     # The stored properties are now upgraded.
-    res = testapp.get(location+'?frame=raw&upgrade=false').maybe_follow()
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
 
 
@@ -192,6 +192,6 @@ def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
     location = res.location
     res = testapp.patch_json(location, {})
-    res = testapp.get(location+'?frame=raw&upgrade=false').maybe_follow()
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in res.json

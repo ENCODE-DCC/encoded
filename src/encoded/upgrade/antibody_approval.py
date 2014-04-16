@@ -18,8 +18,9 @@ def antibody_approval_0_2(value, system):
             new_value = new_status[value['status']]
             value['status'] = new_value
 
+
 @upgrade_step('antibody_approval', '2', '3')
 def antibody_approval_2_3(value, system):
     # http://redmine.encodedcc.org/issues/1307
-     if 'status' in value:
+    if 'status' in value:
         value['status'] = value['status'].lower()

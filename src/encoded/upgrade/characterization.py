@@ -39,7 +39,7 @@ def characterization_0_3(value, system):
     }
 
     if 'status' in value:
-         if value['status'] in new_status.keys():
+        if value['status'] in new_status.keys():
             new_value = new_status[value['status']]
             value['status'] = new_value
 
@@ -57,7 +57,7 @@ def antibody_characterization_3_4(value, system):
 def characterization_3_4(value, system):
     # http://redmine.encodedcc.org/issues/1307
     # http://redmine.encodedcc.org/issues/1295
-    
+
     if 'status' in value:
         if value['status'] == 'DELETED':
             value['status'] = 'deleted'

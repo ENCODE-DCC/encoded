@@ -22,4 +22,3 @@ def test_access_key_upgrade(app, access_key_1):
     value = migrator.upgrade('access_key', access_key_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
-    

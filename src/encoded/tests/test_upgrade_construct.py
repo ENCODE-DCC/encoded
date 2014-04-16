@@ -49,4 +49,3 @@ def test_construct_upgrade_status_deleted(app, construct_1):
     value = migrator.upgrade('construct', construct_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'deleted'
-    

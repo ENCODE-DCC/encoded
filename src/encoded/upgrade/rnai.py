@@ -10,8 +10,8 @@ def rnai_0_2(value, system):
     if 'status' in value:
         if value['status'] == 'DELETED':
             value['status'] = 'deleted'
-        elif value['status'] == 'CURRENT' and value['award'] in ENCODE2_AWARDS:
-            value['status'] = 'released'
-        elif value['status'] == 'CURRENT' and value['award'] not in ENCODE2_AWARDS:
-            value['status'] = 'in progress'
-            
+        elif value['status'] == 'CURRENT':
+            if value['award'] in ENCODE2_AWARDS:
+                value['status'] = 'released'
+            elif value['award'] not in ENCODE2_AWARDS:
+                value['status'] = 'in progress'
