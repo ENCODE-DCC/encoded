@@ -137,8 +137,11 @@ var Dbxref = dbxref.Dbxref;
                     ' ' + result['replicates.library.biosample.age'][0] : '';
             var ageUnits = homogenousArray(result, 'replicates.library.biosample.age_units') ?
                     ' ' + result['replicates.library.biosample.age_units'][0] : '';
+            if (!age || !ageUnits) {
+                age = ageUnits = '';
+            }
 
-            var separator = (lifeStage || (age && ageUnits)) ? ', ' : '';
+            var separator = (lifeStage || age) ? ', ' : '';
             return (<li>
                         <div>
                             <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
