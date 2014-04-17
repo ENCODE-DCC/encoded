@@ -11,6 +11,7 @@ def antibody_approval_0_2(value, system):
         "APPROVED": "NOT ELIGIBLE FOR NEW DATA",
         "SUBMITTED": "PENDING DCC REVIEW",
         "DELETED": "DELETED",
+        "ELIGIBLE FOR NEW DATA": "ELIGIBLE FOR NEW DATA"
     }
 
     if 'status' in value:
