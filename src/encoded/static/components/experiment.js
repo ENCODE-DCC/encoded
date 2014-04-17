@@ -63,16 +63,19 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Build the text of the Treatment string
-        var treatmentText = '';
-        if (biosamples[0].treatments && biosamples[0].treatments[0]) {
-            var treatment = biosamples[0].treatments[0];
-            if (treatment.concentration) {
-                treatmentText = treatment.concentration + ' ' + treatment.concentration_units + ' ';
-            }
-            treatmentText += treatment.treatment_term_name + ' (' + treatment.treatment_term_id + ') ';
-            if (treatment.duration) {
-                treatmentText += 'for ' + treatment.duration + ' ' + treatment.duration_units;
-            }
+        var treatmentText = [];
+        if (biosamples.length && biosamples[0].treatments && biosamples[0].treatments.length > 0) {
+            treatmentText = biosamples[0].treatments.map(function(treatment) {
+                var singleTreatment = '';
+                if (treatment.concentration) {
+                    singleTreatment += treatment.concentration + ' ' + treatment.concentration_units + ' ';
+                }
+                singleTreatment += treatment.treatment_term_name + ' (' + treatment.treatment_term_id + ') ';
+                if (treatment.duration) {
+                    singleTreatment += 'for ' + treatment.duration + ' ' + treatment.duration_units;
+                }
+                return singleTreatment;
+            });
         }
 
         // Adding experiment specific documents
@@ -114,6 +117,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.target ? <dt>Target</dt> : null}
                         {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
 
+                        {antibody_accessions.length ? <dt>Antibody</dt> : null}
+                        {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
+
                         {biosamples.length ? <dt>Biosample Summary</dt> : null}
                         {biosamples.length ?
                             <dd>
@@ -125,20 +131,19 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </dd>
                         : null}
 
-                        {treatmentText ? <dt>Treatment</dt> : null}
-                        {treatmentText ? <dd>{treatmentText}</dd> : null}
+                        {treatmentText.length ? <dt>Treatment</dt> : null}
+                        {treatmentText.length ?
+                            <dd>
+                                <ul>
+                                    {treatmentText.map(function (treatment) {
+                                        return (<li>{treatment}</li>);
+                                    })}
+                                </ul>
+                            </dd>
+                        : null}
 
                         {context.description ? <dt>Description</dt> : null}
                         {context.description ? <dd>{context.description}</dd> : null}
-
-                        <dt>Lab</dt>
-                        <dd>{context.lab.title}</dd>
-
-                        <dt>Project</dt>
-                        <dd>{context.award.project}</dd>
-
-                        {antibody_accessions.length ? <dt>Antibody</dt> : null}
-                        {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
                         {context.possible_controls.length ? <dt>Controls</dt> : null}
                         {context.possible_controls.length ?
@@ -156,6 +161,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 </ul>
                             </dd>
                         : null}
+
+                        <dt>Lab</dt>
+                        <dd>{context.lab.title}</dd>
+
+                        <dt>Project</dt>
+                        <dd>{context.award.project}</dd>
 
                         {context.aliases.length ? <dt>Aliases</dt> : null}
                         {context.aliases.length ? <dd>{aliasList}</dd> : null}
