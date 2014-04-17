@@ -11,3 +11,8 @@ def award_0_2(value, system):
         value['status'] = 'disabled'
     else:
         value['status'] = 'current'
+
+    # http://encode.stanford.edu/issues/1022
+    if 'url' in value:
+        if value['url'] == '':
+            del value['url']
