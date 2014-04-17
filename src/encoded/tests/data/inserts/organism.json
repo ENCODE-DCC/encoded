@@ -51,8 +51,9 @@
         "name": "celegans",
         "scientific_name": "Caenorhabditis elegans",
         "taxon_id": "6239",
-        "uuid": "732dfd9-4fe6-4fd2-9d88-61b7c58cbe20"
+        "uuid": "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20"
     },
+    
     {
         "name": "cbrenneri",
         "scientific_name": "Caenorhabditis brenneri",
