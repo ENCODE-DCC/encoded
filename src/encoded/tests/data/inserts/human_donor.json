@@ -27,11 +27,17 @@
         "uuid": "13e91df8-6ba4-460f-baf3-c313d884bf4b"
     },
     {
+        "_test": "has references",
         "accession": "ENCDO000HUM",
         "award": "U41HG006992",
         "ethnicity": "unknown",
         "lab": "j-michael-cherry",
         "organism": "human",
+        "references": [
+            "PMID:23000965",
+            "PMID: 16395128",
+            "doi:10.10.1038/nphys1170"
+        ],
         "sex": "unknown",
         "uuid": "d90607d9-a5fa-4988-8cbf-c7fe8fcd0998"
     },
