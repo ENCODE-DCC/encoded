@@ -108,8 +108,18 @@
         },
         "passage_number": {
             "title": "Passage number",
-	"description": "In calculating passage number, include passages from the source.",
+            "description": "In calculating passage number, include passages from the source.",
             "type": "integer"
+        },
+        "mating_status": {
+            "title": "Mating status",
+            "description": "For model organism biosamples, the mating status of the animal.",
+            "type": "string",
+            "enum": [
+                "mated",
+                "virgin",
+                "sterile"
+            ]
         },
         "derived_from": {
             "title": "Derived from",
