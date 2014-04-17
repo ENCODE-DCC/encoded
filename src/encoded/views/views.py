@@ -95,8 +95,9 @@ class Collection(BaseCollection):
 
     class Item(BaseCollection.Item):
         STATUS_ACL = {
-            'CURRENT': ALLOW_CURRENT,
-            'DELETED': [],
+            'released': ALLOW_CURRENT,
+            'current': ALLOW_CURRENT,
+            'deleted': [],
         }
 
         def __acl__(self):
@@ -276,14 +277,6 @@ class Construct(Collection):
 
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
-        STATUS_ACL = {
-            'IN PROGRESS': ALLOW_LAB_SUBMITTER_EDIT,
-            'PENDING DCC REVIEW': ALLOW_LAB_SUBMITTER_EDIT,
-            'COMPLIANT': ALLOW_CURRENT,
-            'NOT COMPLIANT': ALLOW_CURRENT,
-            'NOT REVIEWED': ALLOW_CURRENT,
-            'NOT SUBMITTED FOR REVIEW BY LAB': ALLOW_CURRENT,
-        }
         base_types = ['characterization'] + Collection.Item.base_types
         embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
@@ -443,6 +436,14 @@ class AntibodyCharacterization(Characterization):
     }
 
     class Item(Characterization.Item):
+        STATUS_ACL = {
+            'in progress': ALLOW_LAB_SUBMITTER_EDIT,
+            'pending dcc review': ALLOW_LAB_SUBMITTER_EDIT,
+            'compliant': ALLOW_CURRENT,
+            'not compliant': ALLOW_CURRENT,
+            'not reviewed': ALLOW_CURRENT,
+            'not submitted for review by lab': ALLOW_CURRENT,
+        }
         embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
 
 
