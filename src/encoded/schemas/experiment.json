@@ -20,6 +20,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/biosample_classification" }
     ],
     "properties": {
