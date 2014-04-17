@@ -20,6 +20,7 @@
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
