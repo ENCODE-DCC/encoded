@@ -12,6 +12,7 @@ For the development.ini you must supply the paster app name:
     %(prog)s development.ini --app-name app
 
 """
+from contextlib import contextmanager
 import logging
 
 EPILOG = __doc__
@@ -20,20 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
-    'biosample',
-    'experiment',
-    'dataset',
-    'antibody_approval',
-    'antibody_characterization',
-    'biosample_characterization',
-    'rnai_characterization',
-    'construct_characterization',
-    'document',
-    'antibody_lot',
-    'platform',
-    'treatment'
 ]
-DEFAULT_COLLECTIONS = []
 
 
 def internal_app(configfile, app_name=None, username=None):
@@ -50,22 +38,59 @@ def internal_app(configfile, app_name=None, username=None):
 
 
 def run(testapp, collections):
-    if not collections:
-        collections = DEFAULT_COLLECTIONS
-    root = testapp.app.root_factory(testapp.app)
-    for collection_name in collections:
-        collection = root[collection_name]
-        count = 0
-        errors = 0
-        logger.info('Upgrading %s', collection_name)
-        for uuid in collection:
-            count += 1
-            try:
-                testapp.patch_json('/%s' % uuid, {})
-            except Exception:
-                logger.exception('Upgrade failed for: /%s/%s', collection_name, uuid)
-                errors += 1
-        logger.info('Upgraded %s: %d (errors: %d)', collection_name, count, errors)
+    from ..storage import DBSession
+    with AlternateScope(DBSession) as scope:
+        if not collections:
+            collections = DEFAULT_COLLECTIONS
+        root = testapp.app.root_factory(testapp.app)
+        for collection_name in collections:
+            collection = root[collection_name]
+            count = 0
+            errors = 0
+            logger.info('Upgrading %s', collection_name)
+            for uuid in collection:
+                count += 1
+                with scope.change():
+                    try:
+                        testapp.patch_json('/%s' % uuid, {})
+                    except Exception:
+                        logger.exception('Upgrade failed for: /%s/%s', collection_name, uuid)
+                        errors += 1
+            logger.info('Upgraded %s: %d (errors: %d)', collection_name, count, errors)
+
+
+class AlternateScope(object):
+    def __init__(self, DBSession):
+        self.scope = None
+        self._DBSession = DBSession
+
+    def __enter__(self):
+        import transaction
+        from zope.sqlalchemy.datamanager import join_transaction
+        from sqlalchemy.orm.scoping import ScopedRegistry
+        self._original_registry = self._DBSession.registry
+        self._DBSession.registry = ScopedRegistry(
+            self._DBSession.session_factory, self._get_scope)
+        self.scope = self
+        txn = transaction.begin()
+        session = self._DBSession()
+        join_transaction(session)
+        transaction.manager.free(txn)
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._DBSession.registry = self._original_registry
+        self.scope = None
+
+    def _get_scope(self):
+        return self.scope
+
+    @contextmanager
+    def change(self, scope=None):
+        previous = self.scope
+        self.scope = scope
+        yield scope
+        self.scope = previous
 
 
 def main():

@@ -1,5 +1,6 @@
 from ..migrator import upgrade_step
 
+
 @upgrade_step('antibody_characterization', '', '3')
 @upgrade_step('biosample_characterization', '', '3')
 @upgrade_step('rnai_characterization', '', '3')
@@ -25,17 +26,17 @@ def characterization_0_3(value, system):
         if value['characterization_method'] in new_characterization_method.keys():
             new_value = new_characterization_method[value['characterization_method']]
             value['characterization_method'] = new_value
-  
+
     # http://redmine.encodedcc.org/issues/442
     new_status = {
         "UNSUBMITTED": "IN PROGRESS",
-        "INCOMPLETE" : "IN PROGRESS",
+        "INCOMPLETE": "IN PROGRESS",
         "FAILED": "NOT SUBMITTED FOR REVIEW BY LAB",
         "APPROVED": "NOT REVIEWED",
         "SUBMITTED": "PENDING DCC REVIEW",
         "DELETED": "DELETED"
     }
-    
+
     if 'status' in value:
         new_value = new_status[value['status']]
         value['status'] = new_value
