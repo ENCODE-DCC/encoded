@@ -458,9 +458,9 @@ class AntibodyApproval(Collection):
 
     class Item(Collection.Item):
         STATUS_ACL = {
-            'ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
-            'NOT ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
-            'NOT PURSUED': ALLOW_CURRENT,
+            'eligible for new data': ALLOW_CURRENT,
+            'not eligible for new data': ALLOW_CURRENT,
+            'not pursued': ALLOW_CURRENT,
         }
         embedded = [
             'antibody.host_organism',
@@ -579,6 +579,15 @@ class Dataset(Collection):
         template_type = {
             'files': 'file',
         }
+        STATUS_ACL = {
+            'released': ALLOW_CURRENT,
+            'started': ALLOW_LAB_SUBMITTER_EDIT,
+            'verified': ALLOW_LAB_SUBMITTER_EDIT,
+            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
+            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
+            'revoked': ALLOW_CURRENT,
+            'deleted': [],
+        }
         embedded = [
             'files',
             'files.replicate',
@@ -621,6 +630,15 @@ class Experiment(Dataset):
             'developmental_slims': [
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
+        }
+        STATUS_ACL = {
+            'released': ALLOW_CURRENT,
+            'started': ALLOW_LAB_SUBMITTER_EDIT,
+            'verified': ALLOW_LAB_SUBMITTER_EDIT,
+            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
+            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
+            'revoked': ALLOW_CURRENT,
+            'deleted': [],
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody',
