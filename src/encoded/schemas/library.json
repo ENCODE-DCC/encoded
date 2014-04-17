@@ -20,6 +20,10 @@
         { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
+        "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"]
+    },
     "properties": {
         "schema_version": {
             "default": "2"
@@ -84,6 +88,17 @@
             "description": "The starting amount of nucleic acid before selection and purification.",
             "type": "string",
             "pattern": "[0-9]+"
+        },
+        "nucleic_acid_starting_quantity_units": {
+            "title": "Nucleic acid starting quantity units",
+            "description": "The units used for starting amount of nucleic acid before selection and purification.",
+            "type": "string",
+            "enum": [
+                "cells",
+                "cell-equivalent",
+                "ng",
+                "mg"
+            ]
         },
         "extraction_method": {
             "title": "Extraction method",
