@@ -212,7 +212,8 @@ def search(context, request, search_type=None):
         for facet in root[doc_types[0]].schema['facets']:
             facets[root[doc_types[0]].schema['facets'][facet]['title']] = facet
         if request.has_permission('search_audit'):
-            facets = OrderedDict(facets, **{'Audit category': 'audit.category'})
+            facets = facets.copy()
+            facets['Audit category'] = 'audit.category'
         for facet_title in facets:
             field = facets[facet_title]
             if field != 'audit.category':

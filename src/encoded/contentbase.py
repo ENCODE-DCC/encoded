@@ -1030,14 +1030,19 @@ def column_value(obj, column):
         # Hardcoding few lines here should be gone with ES
         if name == 'length':
             return len(value)
-        elif name == '0':
-            if not value:
-                return ''
-            value = value[0]
         else:
-            value = value.get(name, None)
+            if isinstance(value, list):
+                new_values = []
+                for v in value:
+                    if name in v:
+                        new_values.append(v[name])
+                value = new_values
+            else:
+                value = value.get(name, None)
             if value is None:
                 return ''
+    if isinstance(value, list):
+        value = list(set(value))
     return value
 
 
