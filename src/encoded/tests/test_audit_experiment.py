@@ -16,7 +16,7 @@ def chip_experiment(submitter, lab, award):
 
 
 def test_audit_experiment_target(testapp, chip_experiment):
-    res = testapp.post_json('/biosample', chip_experiment)
+    res = testapp.post_json('/experiment', chip_experiment)
     res = testapp.get(res.location + '@@index-data')
     error, = res.json['audit']
     assert error['category'] == 'missing target'
