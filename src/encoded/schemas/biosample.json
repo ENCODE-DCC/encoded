@@ -111,6 +111,43 @@
 	"description": "In calculating passage number, include passages from the source.",
             "type": "integer"
         },
+       "depleted_in_term_name": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Depleted in term",
+                "description": "UBERON (Uber Anatomy Ontology) term best matching the tissue(s)/body part(s) that were removed from the biosample.",
+                "type": "string",
+                "enum": [
+                    "head",
+                    "salivary gland",
+                    "male accessory sex gland",
+                    "testis",
+                    "female gonad",
+                    "digestive system",
+                    "arthropod fat body"
+                ]
+            }
+        },
+        "depleted_in_term_id": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Depleted in ID",
+                "description": "UBERON (Uber Anatomy Ontology) identifier best matching the tissue(s)/body part(s) that were removed from the biosample.",
+                "comment": "Based on the choice in depleted_in_term_name use the following guide: head - UBERON:0000033, salivary gland - UBERON:0001044 , male accessory sex gland - UBERON:0010147, testis - UBERON:0000473, female gonad - UBERON:0000992, digestive system - UBERON:0001007, arthropod fat body - UBERON:0003917",
+                "type": "string",
+                "enum": [
+                    "UBERON:0000033",
+                    "UBERON:0001044",
+                    "UBERON:0010147",
+                    "UBERON:0000473",
+                    "UBERON:0000992",
+                    "UBERON:0001007",
+                    "UBERON:0003917"
+                ]
+            }
+        },
         "derived_from": {
             "title": "Derived from",
             "description": "The biosamples from which the sample derives from via constructs or treatments.",
