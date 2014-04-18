@@ -11,7 +11,7 @@ Feature: Search
         When I click the link to "/search/?type=antibody_approval"
         And I wait for the content to load
         And I should see at least 17 elements with the css selector "ul.nav.result-table > li"
-        And I should see at least 7 elements with the css selector "div.box.facets > div.facet"
+        And I should see at least 6 elements with the css selector "div.box.facets > div.facet"
         
         When I click the link to "?type=antibody_approval&target.organism.name=human"
         And I wait for the content to load
