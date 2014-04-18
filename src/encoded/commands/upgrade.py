@@ -37,13 +37,13 @@ DEFAULT_COLLECTIONS = [
     "rnai",
     "award",
     "lab",
-    "organsim",
+    "organism",
     "source",
     "target",
     "biosample",
     "file",
     "platform",
-    "treament",
+    "treatment",
     "dataset",
     "experiment"
 ]
