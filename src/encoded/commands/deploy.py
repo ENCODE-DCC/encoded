@@ -31,7 +31,7 @@ def run(branch, instance_name=None, persistent=False):
     }
 
     reservation = conn.run_instances(
-        'ami-2cae9269',  # ubuntu/images/hvm/ubuntu-saucy-13.10-amd64-server-20140226
+        'ami-f64f77b3',  # ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-20140416.1
         instance_type='m3.xlarge',
         security_group_ids=['sg-df30f19b'],
         user_data=user_data,
