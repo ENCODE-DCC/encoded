@@ -65,7 +65,7 @@
             "title": "Approval Status",
             "type": "string"
         },
-        "target.organism.name": {
+        "target.organism.scientific_name": {
             "title": "Target Organism",
             "type": "string"
         },

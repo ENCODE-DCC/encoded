@@ -86,7 +86,7 @@
             "title": "Assay",
             "type": "string"
         },
-        "replicates.library.biosample.organism.name": {
+        "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
             "type": "string"
         },

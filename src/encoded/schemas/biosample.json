@@ -291,7 +291,7 @@
             "title": "Organ",
             "type": "array"
         },
-        "organism.name": {
+        "organism.scientific_name": {
             "title": "Organism",
             "type": "string"
         },
