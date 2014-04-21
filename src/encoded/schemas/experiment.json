@@ -83,11 +83,50 @@
         }
     },
     "facets": {
-        "Assay": "assay_term_name",
-        "Organism": "replicates.library.biosample.organism.name",
-        "Organ": "organ_slims",
-        "Lab": "lab.title",
-        "Developmental Slim": "developmental_slims"
+        "assay_term_name": {
+            "title": "Assay",
+            "type": "string"
+        },
+        "replicates.library.biosample.organism.name": {
+            "title": "Organism",
+            "type": "string"
+        },
+        "replicates.library.biosample.biosample_type": {
+            "title": "Biosample type",
+            "type": "string"
+        },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "files.file_format": {
+            "title": "File format",
+            "type": "string"
+        },
+        "replicates.library.treatments.treatment_term_name": {
+            "title": "Treatment",
+            "type": "array"
+        },
+        "replicates.read_length": {
+            "title": "Read length",
+            "type": "string"
+        },
+        "developmental_slims": {
+            "title": "Developmental slim",
+            "type": "array"
+        },
+        "replicates.library.biosample.life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "replicates.library.size_range": {
+            "title": "Library fragmentation size",
+            "type": "string"
+        }
     },
     "columns": {
         "accession": {
