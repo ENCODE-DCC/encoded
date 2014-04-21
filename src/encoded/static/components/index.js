@@ -61,8 +61,7 @@ if (typeof window != 'undefined' && !window.TEST_RUNNER) {
         var server_stats = require('querystring').parse(stats_header);
         recordServerStats(server_stats, 'html');
 
-        var app = App(props);
-        React.renderComponent(app, document);
+        var app = React.renderComponent(App(props), document);
 
         // Simplify debugging
         window.app = app;
