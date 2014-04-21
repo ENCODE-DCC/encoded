@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.fixture
 def ntr_biosample(submitter, lab, award, source, organism):
     return {

@@ -249,10 +249,16 @@ def collection_mapping(collection, embed=True):
             elif i == 0 and p in merged_template_type:
                 name = merged_template_type[p]
             else:
-                try:
-                    name = new_schema['properties'][p]['linkTo']
-                except KeyError:
-                    name = new_schema['properties'][p]['items']['linkTo']
+                if p not in new_schema['properties']:
+                    if p in root[name].Item.merged_rev:
+                        name = root[name].Item.merged_rev[p][0]
+                    else:
+                        name = root[name].Item.merged_template_type[p]
+                else:
+                    try:
+                        name = new_schema['properties'][p]['linkTo']
+                    except KeyError:
+                        name = new_schema['properties'][p]['items']['linkTo']
 
             # XXX Need to union with mouse_donor here
             if name == 'donor':
