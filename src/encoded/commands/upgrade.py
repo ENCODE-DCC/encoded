@@ -40,12 +40,8 @@ DEFAULT_COLLECTIONS = [
     "organism",
     "source",
     "target",
-    "biosample",
-    "file",
     "platform",
     "treatment",
-    "dataset",
-    "experiment"
 ]
 
 
