@@ -52,6 +52,19 @@
                 "none" 
             ]
         },
+        "constructs": {
+            "title": "DNA constructs",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "DNA Constructs",
+                "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
+                "comment": "See contstruct.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "construct"
+            }
+        },
         "organism":{ 
             "linkEnum": [
                 "ab546d43-8e2a-4567-8db7-a217e6d6eea0",

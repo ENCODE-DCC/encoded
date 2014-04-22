@@ -111,7 +111,7 @@
             "description": "In calculating passage number, include passages from the source.",
             "type": "integer"
         },
-       "depleted_in_term_name": {
+        "depleted_in_term_name": {
             "type": "array",
             "default": [],
             "items": {
@@ -293,7 +293,13 @@
             "title": "Starting amount units",
             "type": "string",
             "enum": [
-                "g","mg","cells/ml","cells", "whole embryos", "items", "μg"
+                "g",
+                "mg",
+                "cells/ml",
+                "cells",
+                "whole embryos",
+                "items",
+                "μg"
             ]
         },
         "url": {
