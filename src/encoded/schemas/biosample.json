@@ -146,7 +146,7 @@
                     "UBERON:0001007",
                     "UBERON:0003917"
                 ]
-            }
+        },
         "mating_status": {
             "title": "Mating status",
             "description": "For model organism biosamples, the mating status of the animal.",
