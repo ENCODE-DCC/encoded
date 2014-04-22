@@ -52,6 +52,19 @@
                 "none" 
             ]
         },
+        "constructs": {
+            "title": "DNA constructs",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "DNA Constructs",
+                "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
+                "comment": "See contstruct.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "construct"
+            }
+        },
         "num_times_outcrossed": {
             "title": "Number of times outcrossed",
             "description": "The number of out/backcrossed when constructing the strain",
