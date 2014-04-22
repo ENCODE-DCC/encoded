@@ -22,18 +22,6 @@
         "accession": {
             "accessionType": "DO"
         },
-        "sex": {
-            "title": "Sex",
-            "type": "string",
-            "default": "unknown",
-            "enum": [
-                "male",
-                "female",
-                "unknown",
-                "mixed",
-                "hermaphrodite"
-            ]
-        },
         "parents": {
             "title": "Parents",
             "description": "Donor IDs of biological parents, if known.",

@@ -100,6 +100,18 @@
             "type": "string",
             "linkTo": "donor"
         },
+        "sex": {
+            "title": "Sex",
+            "type": "string",
+            "default": "unknown",
+            "enum": [
+                "male",
+                "female",
+                "unknown",
+                "mixed",
+                "hermaphrodite"
+            ]
+        },
         "organism": {
             "title": "Organism",
             "comment": "See organism.json for available identifiers.",
@@ -349,7 +361,7 @@
         "Biosample Type": "biosample_type",
         "Organ": "organ_slims",
         "Organism": "organism.name",
-        "Gender": "donor.sex",
+        "Gender": "sex",
         "Life Stage": "life_stage",
         "Subcellular Fraction": "subcellular_fraction_term_name",
         "Phase": "phase",
