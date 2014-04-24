@@ -127,6 +127,7 @@ LIBRARIES = [
     'nucleic_acid_term_id': 'SO:0000352',
     'nucleic_acid_term_name': 'DNA',
     'biosample': 'ENCBS000TST',
+    'status': 'released',
     'lab': 'myers',
     'award': 'Myers',
     },
