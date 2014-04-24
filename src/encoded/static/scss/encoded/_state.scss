@@ -1,5 +1,5 @@
 /* top padding for small screens */
-@media (max-width: 979px) {
+@media (max-width: $screen-sm-max) {
 	#content {
 			padding-top: 0;
 	}

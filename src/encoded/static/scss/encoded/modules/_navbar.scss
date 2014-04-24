@@ -4,44 +4,55 @@
     border-bottom: 0px solid #4e7294;
     background: #0a253d;
     @include box-shadow(0px 0px 30px 2px rgba(170, 170, 170, .9));
+
+    .navbar-brand {
+        margin-left: -15px;
+        color: #fff;
+        font-size: 20px;
+        font-weight: 200;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+        @include transition-property(text-shadow);
+        @include transition-duration(0.2s);
+        @include transition-timing-function(ease-in-out);
+
+        &:hover {
+            @include text-shadow(0px 0px 8px rgba(255, 255, 255, 0.8));
+        }
+    }
+
+    .nav > li > a {
+        color: #fff;   
+        @include transition-property(background-color);
+        @include transition-duration(0.15s);
+        @include transition-timing-function(ease-in-out);
+
+        &:focus,
+        &:hover {
+            background-color: #2f4961;
+        }
+
+        /* Disabled sign-in link */
+        &[disabled] {
+            color: $gray-light;
+
+            &:focus,
+            &:hover {
+                background-color: transparent;
+                color: $gray-light;
+                cursor: default;
+            }
+        }
+    }
 }
 
-.navbar-inverse .navbar-brand {
-    color: #fff;
-    font-size: 20px;
-    font-weight: 200;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+
+@media (max-width: $screen-sm-max) {
+    .navbar-fixed-top {
+        position: static;
+    }
 }
 
-.navbar-inverse .nav > li > a {
-    color: #fff;   
-    @include transition-property(background-color);
-    @include transition-duration(0.15s);
-  	@include transition-timing-function(ease-in-out);
-}
 
-.navbar-inverse .navbar-brand {
-    @include transition-property(text-shadow);
-    @include transition-duration(0.2s);
-  	@include transition-timing-function(ease-in-out);
-}
-
-.navbar-inverse .nav > li > a:focus,
-.navbar-inverse .nav > li > a:hover {
-    background-color: #2f4961;
-}
-
-.navbar-inverse .navbar-brand:hover {
-    @include text-shadow(0px 0px 8px rgba(255, 255, 255, 0.8));
-}
-
-/* Disabled sign in link */
-.navbar .nav > li > a[disabled] {
-    color: $gray-light;
-}
-.navbar .nav > li > a[disabled]:focus,
-.navbar .nav > li > a[disabled]:hover {
-  background-color: transparent;
-  color: $gray-light;
-  cursor: default;
+.navbar-toggle {
+    margin-right: 0;
 }

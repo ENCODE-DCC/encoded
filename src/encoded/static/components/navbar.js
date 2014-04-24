@@ -32,8 +32,13 @@ var NavBarLayout = React.createClass({
         var session = this.props.session;
         var user_actions = this.props.user_actions;
         return (
-            <Navbar brand={portal.portal_title} brandlink={this.props.href}>
-            </Navbar>
+            <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
+                <div className="container">
+                    <Navbar brand={portal.portal_title} brandlink={this.props.href} noClasses={true} target="main-nav">
+                        <GlobalSections global_sections={portal.global_sections} section={section} />
+                    </Navbar>
+                </div>
+            </div>
         );
     }
 });
@@ -48,12 +53,12 @@ var GlobalSections = React.createClass({
                 className += ' active';
             }
             return (
-                <li className={className} key={action.id}>
-                    <a href={action.url}>{action.title}</a>
-                </li>
+                <NavItem href={action.url} key={action.id}>
+                    {action.title}
+                </NavItem>
             );
         });
-        return <ul id="global-sections" className="nav navbar-nav">{actions}</ul>;
+        return <Nav navbar={true} bsStyle="navbar-nav" activeKey={1}>{actions}</Nav>;
     }
 });
 
