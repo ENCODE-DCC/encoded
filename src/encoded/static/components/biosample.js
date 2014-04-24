@@ -204,7 +204,7 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 {Object.keys(protocol_documents).length ?
                     <div>
-                        <h3>Protocol documents</h3>
+                        <h3>Documents</h3>
                         <div className="row">
                             {protocol_documents}
                         </div>
@@ -214,14 +214,18 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {context.characterizations.length ?
                     <div>
                         <h3>Characterizations</h3>
-                        {context.characterizations.map(Panel)}
+                        <div className="row">
+                            {context.characterizations.map(Panel)}
+                        </div>
                     </div>
                 : null}
 
                 {Object.keys(construct_documents).length ?
                     <div>
                         <h3>Construct documents</h3>
-                        {construct_documents}
+                        <div className="row">
+                            {construct_documents}
+                        </div>
                     </div>
                 : null}
 
