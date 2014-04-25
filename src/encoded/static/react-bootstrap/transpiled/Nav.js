@@ -1,7 +1,7 @@
 "use strict";
 /** @jsx React.DOM */
 
-var React = require('react');
+var React = require("react");
 var classSet = require("react/lib/cx");
 var BootstrapMixin = require("./BootstrapMixin")["default"];
 var utils = require("./utils")["default"];
@@ -42,12 +42,12 @@ var Nav = React.createClass({displayName: 'Nav',
     if (!this.props.navbar && !this.props.dropdown) {
       return this.transferPropsTo(
         React.DOM.nav(null, 
-          NavItemRender( {classes:classes, children:this.props.children, renderNavItem:this.renderNavItem} )
+          NavItemRender( {classes:classes, children:this.props.children, renderNavItem:this.renderNavItem, id:this.props.id} )
         )
       );
     } else {
       return (
-        NavItemRender( {classes:classes, children:this.props.children, renderNavItem:this.renderNavItem} )
+        NavItemRender( {classes:classes, children:this.props.children, renderNavItem:this.renderNavItem, id:this.props.id}  )
       );
     }
   },
@@ -87,7 +87,7 @@ var Nav = React.createClass({displayName: 'Nav',
 
 var NavItemRender = function (props) {
   return (
-    React.DOM.ul( {className:classSet(props.classes)}, 
+    React.DOM.ul( {className:classSet(props.classes), id:props.id}, 
       utils.modifyChildren(props.children, props.renderNavItem)
     )
   );

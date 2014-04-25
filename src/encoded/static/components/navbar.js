@@ -86,7 +86,7 @@ var UserActions = React.createClass({
         var disabled = !this.props.loadingComplete;
         if (!(session && session['auth.userid'])) {
             return (
-                <Nav bsStyle="navbar-nav" navbar={true} right={true}>
+                <Nav bsStyle="navbar-nav" navbar={true} right={true} id="user-actions">
                     <NavItem data-trigger="login" disabled={disabled}>Sign in</NavItem>
                 </Nav>
             );
@@ -100,7 +100,7 @@ var UserActions = React.createClass({
         });
         var fullname = (session.user_properties && session.user_properties.title) || 'unknown';
         return (
-            <Nav bsStyle="navbar-nav" navbar={true} right={true}>
+            <Nav bsStyle="navbar-nav" navbar={true} right={true} id="user-actions">
                 <NavItem dropdown={true}>
                     {fullname}
                     <Nav navbar={true} dropdown={true}>
