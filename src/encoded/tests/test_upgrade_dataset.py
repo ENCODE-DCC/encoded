@@ -156,7 +156,7 @@ def test_experiment_upgrade_status_encode3(root, registry, experiment, experimen
     experiment_3['status'] = 'CURRENT'
     value = migrator.upgrade('experiment', experiment_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
-    assert value['status'] == 'proposed'
+    assert value['status'] == 'submitted'
 
 
 def test_dataset_upgrade_no_status_encode2(root, registry, dataset, dataset_3, threadlocals, dummy_request):
@@ -177,4 +177,4 @@ def test_experiment_upgrade_no_status_encode3(root, registry, experiment, experi
     del experiment_3['status']
     value = migrator.upgrade('experiment', experiment_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
-    assert value['status'] == 'proposed'
+    assert value['status'] == 'submitted'

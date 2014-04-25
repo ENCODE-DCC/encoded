@@ -69,16 +69,10 @@ def dataset_3_4(value, system):
             if value['award'] in ENCODE2_AWARDS:
                 value['status'] = 'released'
             elif value['award'] not in ENCODE2_AWARDS:
-                if 'original_files' in value:
-                    value['status'] = 'submitted'
-                else:
-                    value['status'] = 'proposed'
+                value['status'] = 'submitted'
 
     else:
         if value['award'] in ENCODE2_AWARDS:
             value['status'] = 'released'
         elif value['award'] not in ENCODE2_AWARDS:
-            if 'original_files' in value:
-                value['status'] = 'submitted'
-            else:
-                value['status'] = 'proposed'
+            value['status'] = 'submitted'
