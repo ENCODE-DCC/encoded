@@ -138,7 +138,7 @@ var globals = require('./globals');
 
         guessColumns: function (props) {
             var column_list = props.context.columns;
-            var columns = []
+            var columns = [];
             if (!column_list || Object.keys(column_list).length === 0) {
                 for (var key in props.context['@graph'][0]) {
                     if (key.slice(0, 1) != '@' && key.search(/(uuid|_no|accession)/) == -1) {
@@ -149,7 +149,7 @@ var globals = require('./globals');
                 columns.unshift('@id');
             } else {
                 for(var column in column_list) {
-                    columns.push(column)
+                    columns.push(column);
                 }
             }
             this.setState({columns: columns});
@@ -187,7 +187,7 @@ var globals = require('./globals');
                 return Row(item, cells, text);
             });
             var data = Data(rows);
-            this.setState({data: data})
+            this.setState({data: data});
             return data;
         },
 
@@ -326,14 +326,14 @@ var globals = require('./globals');
             }
             var cellIndex = target.cellIndex;
             var reversed = '';
-            var sorton = this.refs.sorton.getDOMNode()
+            var sorton = this.refs.sorton.getDOMNode();
             if (this.props.defaultSortOn !== cellIndex) {
                 sorton.value = cellIndex;
             } else {
                 sorton.value = '';
             }
             if (this.state.sortOn == cellIndex) {
-                reversed = !this.state.reversed || ''
+                reversed = !this.state.reversed || '';
             }
             this.refs.reversed.getDOMNode().value = reversed;
             event.preventDefault();

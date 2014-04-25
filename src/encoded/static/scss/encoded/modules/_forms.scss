@@ -7,6 +7,7 @@ $inputFocusBorderColor: darken(#fff, 26%) !default;
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea, select {
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
 	font-family: inherit;
+	font-size: 16px;
 	border: 1px solid $inputBorder;
 	@include box-shadow(inset 0 1px 2px rgba(0,0,0,0.1));
 	@include transition(all 0.15s linear);
@@ -16,11 +17,15 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 			box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 		}
 		&[disabled] { background-color: #ddd; }
+
+	@media (min-width: $screen-sm-min) {
+		font-size: inherit;
+	}
 }
 
 // Navbar search
 #navbar-search {
-	width: 150px;
+	width: 180px;
 	border-radius: 14px;
 	height: 27px;
 	padding-top: 3px;
@@ -30,13 +35,15 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	-moz-transition: width 0.3s ease-out;
 	-webkit-transition: width 0.3s ease-out;
 	transition: width 0.3s ease-out;
-}
-#navbar-search:focus {
-	width: 230px;
-	-ms-transition: width 0.3s ease-out;
-	-moz-transition: width 0.3s ease-out;
-	-webkit-transition: width 0.3s ease-out;
-	transition: width 0.3s ease-out;
+
+	@media (min-width: $screen-sm-min) {
+		width: 150px;
+	}
+
+	&:focus {
+		width: 230px;
+		@include transition(width 0.3s ease-out);
+	}
 }
 
 .form-inline,
@@ -48,15 +55,19 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 
 .search-wrapper {
 	position: 0;
-}
 
-.search-wrapper:after {
-	font-family: "FontAwesome";
-	content: "\f021";
-	position: relative;
-	top: 2px;
-	left: -24px;
-	color: gray;	
+	&:after {
+		font-family: "FontAwesome";
+		content: "\f021";
+		position: relative;
+		top: 0;
+		left: -24px;
+		color: gray;	
+
+		@media(min-width: $screen-sm-min) {
+			top: 2px;
+		}
+	}
 }
 
 // large text inputBorder
@@ -73,10 +84,12 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	padding-right: 30px !important;
 }
 .clear-input-icon {
-	position: relative;
-	left: -20px;
-	top: 1px;
+	position: absolute;
+	right: 10px;
+	top: 11px;
 	z-index: 100;
+	line-height: 100%;
+	height: 100%;
 	color: rgb(223,223,223);
 	font-size: 15px;
 	cursor: pointer;

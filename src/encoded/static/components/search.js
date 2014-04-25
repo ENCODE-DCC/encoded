@@ -93,7 +93,7 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['assay_term_name']+ ' of ' + result['biosample_term_name']}</a> 
+                                <a href={result['@id']}>{result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span></a> 
                             </div>
                         </div>
                         <div className="data-row">
@@ -301,13 +301,13 @@ var Dbxref = dbxref.Dbxref;
                     <div>
                         {results.length ?
                             <div className="row">
-                                <div className="col-sm-3">
+                                <div className="col-sm-5 col-md-4">
                                     {this.transferPropsTo(
                                         <FacetList facets={facets} filters={filters} />
                                     )}
                                 </div>
 
-                                <div className="col-sm-8">
+                                <div className="col-sm-7 col-md-8">
                                     <h4>Showing {results.length} of {total} 
                                         {total > results.length ?
                                                 <span className="pull-right">
