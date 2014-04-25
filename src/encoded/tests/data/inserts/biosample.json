@@ -25,6 +25,7 @@
         "uuid": "467c7505-5039-4935-8da1-6ad22d813310"
     },
     {
+        "_test": "has references",
         "accession": "ENCBS000AAA",
         "aliases": [
             "richard-myers:MCF-7 rep 3"
@@ -45,6 +46,10 @@
         "life_stage": "unknown",
         "note": "(PMID: 4357757)",
         "organism": "human",
+        "references": [
+            "PMID:23000965",
+            "PMID:16395128"
+        ],
         "passage_number": 5,
         "product_id": "HTB-22",
         "protocol_documents": [

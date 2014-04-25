@@ -22,6 +22,10 @@
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "mouse",
+        "references": [
+            "PMID:23000965",
+            "PMID:16395128"
+        ],
         "sex": "male",
         "strain_background": "129/Ola",
         "uuid": "1a8dd515-63da-40d8-a166-351858c77fd7"
