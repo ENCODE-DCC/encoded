@@ -46,9 +46,11 @@
 }
 
 
-@media (max-width: $screen-sm-max) {
-    .navbar-fixed-top {
-        position: static;
+.navbar-fixed-top {
+    position: static;
+
+    @media (min-width: $screen-sm-min) {
+        position: fixed;
     }
 }
 

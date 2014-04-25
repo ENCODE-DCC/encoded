@@ -39,6 +39,13 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	transition: width 0.3s ease-out;
 }
 
+.form-inline,
+.navbar-form {
+	.form-control {
+		display: inline-block;
+	}
+}
+
 .search-wrapper {
 	position: 0;
 }

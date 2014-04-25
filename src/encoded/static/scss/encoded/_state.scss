@@ -1,10 +1,11 @@
 /* top padding for small screens */
-@media (max-width: $screen-sm-max) {
-	#content {
-			padding-top: 0;
-	}
+#content {
+    padding-top: 0;
+    
+    @media (min-width: $screen-sm-min) {
+        padding-top: 75px;
+    }
 }
-
 
 // fix footer width for small screens + content margin fix
 @media (max-width: 767px) {
