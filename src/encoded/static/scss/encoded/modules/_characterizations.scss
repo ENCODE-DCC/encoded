@@ -47,6 +47,7 @@
 }
 
 .characterization-img {
+    @include img-responsive();
 	max-height: 360px;
 }
 
