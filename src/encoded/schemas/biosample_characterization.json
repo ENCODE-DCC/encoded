@@ -15,6 +15,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "characterization.json#/properties" },
         { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/aliases" }
     ],
     "properties": {

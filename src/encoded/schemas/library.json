@@ -79,6 +79,16 @@
                 "linkTo": "document"
             }
         },
+        "library_type": {
+            "title": "Type",
+            "description": "The type of molecule from which the library was constructed.",
+            "type": "string",
+            "default": "nucleic acid",
+            "enum": [
+                "nucleic acid",
+                "protein"
+            ]
+        },
         "nucleic_acid_starting_quantity": {
             "title": "Nucleic acid starting quantity",
             "description": "The starting amount of nucleic acid before selection and purification.",

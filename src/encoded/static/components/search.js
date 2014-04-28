@@ -93,7 +93,7 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['assay_term_name']+ ' of ' + result['biosample_term_name']}</a> 
+                                <a href={result['@id']}>{result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span></a> 
                             </div>
                         </div>
                         <div className="data-row">
