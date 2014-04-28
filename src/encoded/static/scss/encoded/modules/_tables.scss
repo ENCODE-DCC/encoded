@@ -10,7 +10,7 @@ table thead tr th {
 
 // round table corners
 thead:first-child tr:first-child th:first-child, tbody:first-child tr:first-child td:first-child {
-border-radius: 3px 0 0 0;
+border-radius: 3px 3px 0 0;
 }
 thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td:first-child {
 border-radius: 0 0 0 3px;
@@ -22,12 +22,22 @@ border-radius: 0 0 0 3px;
 }
 
 .table-panel {
+    border-collapse: separate;
 	background-color: #fff;
 	border: 1px solid #ced5dc;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     th {
         background-color: #fff;
+        border-bottom: none !important;
+    }
+
+    tr:last-child td:first-child {
+        @include border-bottom-left-radius($border-radius-base);
+    }
+
+    tr:last-child td:last-child {
+        @include border-bottom-right-radius($border-radius-base);
     }
 }
 
