@@ -1,131 +1,151 @@
 /* Validation Details Page */
+
+.type-document.view-detail {
+    figure {
+        @include border-radius($border-radius-base);
+        margin: 14px;
+        padding: 10px;
+        border: 1px solid;
+        text-align: center;
+    }
+
+    figcaption {
+        font-weight: bold;
+        text-align: center;
+        padding: 5px;
+    }
+}
+
+
 .type-characterization.view-detail {
-		header {
-			margin: 0 15px;
-			h3 {
-				margin-bottom: 0;
-			}
-	}
+    @extend .type-document.view-detail;
+
+    header {
+        margin: 0 15px;
+
+        h3 {
+            margin-bottom: 0;
+        }
+    }
 }
 
 
-.type-characterization.view-detail figure, .type-document.view-detail figure {
-	@include border-radius($border-radius-base);
-	margin: 14px;
-	padding: 10px;
-	border: 1px solid;
-	text-align: center;
+@mixin status-colors($border, $bg, $text) {
+    figure {
+        border-color: $border;
+        background-color: $bg;
+    }
+
+    figcaption {
+        color: $text;
+    }
 }
 
-.type-characterization.view-detail figcaption {
-	font-weight: bold;
-	text-align: center;
-	padding: 5px;
-}
 
-/* should make the below a mixin */
 .type-characterization.view-detail.status-compliant {
-  figure { border-color: $state-success-border; background-color: $state-success-bg; }
-  	figcaption { color: $state-success-text; }
+    @include status-colors($state-success-border, $state-success-bg, $state-success-text);
 }
 
-.type-characterization.view-detail.status-not-compliant, .type-document.view-detail.status-deleted,
-    .type-characterization.view-detail.status-not-reviewed {
-  figure { border-color: $state-danger-border; background-color: $state-danger-bg; }
-  	figcaption { color: $state-danger-text; }
+.type-characterization.view-detail.status-not-compliant,
+.type-characterization.view-detail.status-not-reviewed,
+.type-document.view-detail.status-deleted {
+    @include status-colors($state-danger-border, $state-danger-bg, $state-danger-text);
 }
 
 .type-characterization.view-detail.status-pending-dcc-review {
-  figure { border-color: $state-info-border; background-color: $state-info-bg; }
-  	figcaption { color: $state-info-text; }
+    @include status-colors($state-info-border, $state-info-bg, $state-info-text);
 }
 
-.type-characterization.view-detail.status-in-progress, .type-document.view-detail.status-none,
-    .type-characterization.view-detail.status-not-submitted-for-review-by-lab {
-  figure { border-color: #e1e1e8; background-color: #f7f7f9; }
-  	figcaption { color: #333; }
+.type-characterization.view-detail.status-in-progress,
+.type-characterization.view-detail.status-not-submitted-for-review-by-lab,
+.type-document.view-detail.status-none {
+    @include status-colors($border: #e1e1e8, $bg: #f7f7f9, $text: #333);
 }
 
 .characterization-img {
     @include img-responsive();
-	max-height: 360px;
+    max-height: 360px;
 }
 
 .characterization-meta-data {
-	margin: 15px 15px 15px 0;
+    margin: 15px 15px 15px 0;
 }
+
 
 .characterization-status {
-	margin-bottom: 8px;
-	font-weight: bold;
-	font-size: 1.5em;
-}
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 1.5em;
 
-.characterization-status .compliant {
-	color: $state-success-text;
-	top: -5px;
-	position: relative;
-}
+    %status-pos {
+        top: -5px;
+        position: relative;
+    }
 
-.characterization-status .pending-dcc-review { 
-	/* use with icon-tasks or maybe icon-inbox */
-	color: $state-info-text;
-	top: -5px;
-	position: relative;
-}
+    .compliant {
+        @extend %status-pos;
+        color: $state-success-text;
+    }
 
-.characterization-status .not-compliant, .characterization-status .not-reviewed {  /* use with icon-thumbs-down */
-	color: $state-danger-text;
-	top: -5px;
-	position: relative;
-}
+    .pending-dcc-review { 
+        /* use with icon-tasks or maybe icon-inbox */
+        @extend %status-pos;
+        color: $state-info-text;
+    }
 
-.characterization-status .in-progress, {  /* use with icon-thumbs-down */
-	color: #f89406;
-	top: -5px;
-	position: relative;
-}
+    .not-compliant,
+    .not-reviewed {  /* use with icon-thumbs-down */
+        @extend %status-pos;
+        color: $state-danger-text;
+    }
 
-.label {
-	background-color: $gray-light;
-}
-
-h3 .label {
-	font-size: 16px;
-	line-height: 20px;
-	position: relative;
-	top: -3px;
-	left: 15px;
+    .in-progress, {  /* use with icon-thumbs-down */
+        @extend %status-pos;
+        color: #f89406;
+    }
 }
 
 .characterization-status-labels {
-	font-weight: bold;
-	font-size: 1.2em;
-	float: right;
+    font-weight: bold;
+    font-size: 1.2em;
+    float: right;
+}
+
+
+.label {
+    background-color: $gray-light;
+}
+
+h3 .label {
+    font-size: 16px;
+    line-height: 20px;
+    position: relative;
+    top: -3px;
+    left: 15px;
 }
 
 @each $item in label, badge {
-	// ELIGIBLE FOR NEW DATA (green)
-	.#{$item}.status-eligible-for-new-data        { background-color: $state-success-text; }
-	.#{$item}.status-eligible-for-new-data[href]   { background-color: darken($state-success-text, 10%); }
-	// PENDING DCC REVIEW (blue)
-	.#{$item}.status-pending-dcc-review		 { background-color: $state-info-text; }
-	.#{$item}.status-pending-dcc-review[href] { background-color: darken($state-info-text, 10%); }
-	// NOT ELIGIBLE FOR NEW DATA (red)
-	.#{$item}.status-not-eligible-for-new-data          { background-color: $state-danger-text; }
-	.#{$item}.status-not-eligible-for-new-data[href]    { background-color: darken($state-danger-text, 10%); }
-	// AWAITING LAB CHARACTERIZATION (yellow)
-	.#{$item}.status-awaiting-lab-characterization      { background-color: $state-warning-text; }
-	.#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($state-warning-text, 10%); }
-	// COMPLIANT (green)
-	.#{$item}.status-compliant          { background-color: $state-success-text; }
-	.#{$item}.status-compliant[href]    { background-color: darken($state-success-text, 10%); }
-	// NOT COMPLIANT (red)
-	.#{$item}.status-not-compliant          { background-color: $state-danger-text; }
-	.#{$item}.status-not-compliant[href]    { background-color: darken($state-danger-text, 10%); }
-	// NOT REVIEWED (red)
-	.#{$item}.status-not-reviewed         { background-color: $state-danger-text; }
-	.#{$item}.status-not-reviewed[href]    { background-color: darken($state-danger-text, 10%); }
+    // ELIGIBLE FOR NEW DATA (green)
+    .#{$item}.status-eligible-for-new-data        { background-color: $state-success-text; }
+    .#{$item}.status-eligible-for-new-data[href]   { background-color: darken($state-success-text, 10%); }
+    // PENDING DCC REVIEW (blue)
+    .#{$item}.status-pending-dcc-review      { background-color: $state-info-text; }
+    .#{$item}.status-pending-dcc-review[href] { background-color: darken($state-info-text, 10%); }
+    // NOT ELIGIBLE FOR NEW DATA (red)
+    .#{$item}.status-not-eligible-for-new-data          { background-color: $state-danger-text; }
+    .#{$item}.status-not-eligible-for-new-data[href]    { background-color: darken($state-danger-text, 10%); }
+    // AWAITING LAB CHARACTERIZATION (yellow)
+    .#{$item}.status-awaiting-lab-characterization      { background-color: $state-warning-text; }
+    .#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($state-warning-text, 10%); }
+    // COMPLIANT (green)
+    .#{$item}.status-compliant          { background-color: $state-success-text; }
+    .#{$item}.status-compliant[href]    { background-color: darken($state-success-text, 10%); }
+    // NOT COMPLIANT (red)
+    .#{$item}.status-not-compliant          { background-color: $state-danger-text; }
+    .#{$item}.status-not-compliant[href]    { background-color: darken($state-danger-text, 10%); }
+    // NOT REVIEWED (red)
+    .#{$item}.status-not-reviewed         { background-color: $state-danger-text; }
+    .#{$item}.status-not-reviewed[href]    { background-color: darken($state-danger-text, 10%); }
 
-	/* (gray) is the default if no class given */
+    /* (gray) is the default if no class given */
 }
