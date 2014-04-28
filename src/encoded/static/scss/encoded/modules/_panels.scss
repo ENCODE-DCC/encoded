@@ -4,7 +4,8 @@
 	border: 1px solid #ced5dc;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
-    margin: 10px 0 20px;
+    margin-top: 10px;
+    margin-bottom: 20px;
     padding: 15px 30px;
     overflow: hidden;
 }

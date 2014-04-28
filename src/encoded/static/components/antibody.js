@@ -141,48 +141,46 @@ var Characterization = module.exports.Characterization = React.createClass({
 
         return (
             <section className={globals.itemClass(context, 'view-detail panel')}>
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-6">
-                            <figure>
-                                {figure}
-                                <figcaption>
-                                    <span>{context.status}</span>
-                                </figcaption>
-                            </figure>
-                        </div>
-                        <div className="col-sm-5">
-                            <dl className="characterization-meta-data key-value">
-                                <dt className="h3">Method</dt>
-                                <dd className="h3">{context.characterization_method}</dd>
+                <div class="row">
+                    <div className="col-sm-4 col-md-6">
+                        <figure>
+                            {figure}
+                            <figcaption>
+                                <span>{context.status}</span>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div className="col-sm-8 col-md-6">
+                        <dl className="characterization-meta-data key-value">
+                            <dt className="h3">Method</dt>
+                            <dd className="h3">{context.characterization_method}</dd>
 
-                                <dt className="h4">Target species</dt>
-                                <dd className="h4 sentence-case">{context.target.organism.name}</dd>
+                            <dt className="h4">Target species</dt>
+                            <dd className="h4 sentence-case">{context.target.organism.name}</dd>
 
-                                {context.caption ? <dt>Caption</dt> : null}
-                                {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
+                            {context.caption ? <dt>Caption</dt> : null}
+                            {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
 
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
+                            <dt>Submitted by</dt>
+                            <dd>{context.submitted_by.title}</dd>
 
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
 
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
+                            <dt>Grant</dt>
+                            <dd>{context.award.name}</dd>
 
-                                {/*
-                                <dt>Approver</dt>
-                                <dd>{context.validated_by}</dd>
-                                */}
+                            {/*
+                            <dt>Approver</dt>
+                            <dd>{context.validated_by}</dd>
+                            */}
 
-                                <dt>Image</dt>
-                                <dd><StatusLabel status={context.status} /></dd>
+                            <dt>Image</dt>
+                            <dd><StatusLabel status={context.status} /></dd>
 
-                                <dt><i className="icon-download-alt"></i> Download</dt>
-                                <dd>{download}</dd>
-                            </dl>
-                        </div>
+                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dd>{download}</dd>
+                        </dl>
                     </div>
                 </div>
             </section>

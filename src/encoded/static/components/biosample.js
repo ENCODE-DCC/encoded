@@ -485,33 +485,31 @@ var Document = module.exports.Document = React.createClass({
 
         return (
             <section className="type-document view-detail panel status-none">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-sm-6">
-                            <figure>
-                                {figure}
-                            </figure>
-                        </div>
-                        <div className="col-sm-5">
-                            <h3 className="sentence-case">{context.document_type}</h3>
-                            <p>{context.description}</p>
-                            <dl className="key-value">
-                                {context.caption ? <dt>Caption</dt> : null}
-                                {context.caption ? <dd>{context.caption}</dd> : null}
+                <div className="row">
+                    <div className="col-sm-5 col-md-6">
+                        <figure>
+                            {figure}
+                        </figure>
+                    </div>
+                    <div className="col-sm-7 col-md-6">
+                        <h3 className="sentence-case">{context.document_type}</h3>
+                        <p>{context.description}</p>
+                        <dl className="key-value">
+                            {context.caption ? <dt>Caption</dt> : null}
+                            {context.caption ? <dd>{context.caption}</dd> : null}
 
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
+                            <dt>Submitted by</dt>
+                            <dd>{context.submitted_by.title}</dd>
 
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
 
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
+                            <dt>Grant</dt>
+                            <dd>{context.award.name}</dd>
 
-                                <dt><i className="icon-download-alt"></i> Download</dt>
-                                <dd>{download}</dd>
-                            </dl>
-                        </div>
+                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dd>{download}</dd>
+                        </dl>
                     </div>
                 </div>
             </section>
