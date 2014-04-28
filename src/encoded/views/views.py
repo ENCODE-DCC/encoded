@@ -334,6 +334,9 @@ class Biosample(Collection):
             'developmental_slims': [
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
+            'synonyms': [
+                {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
+            ]
         }
         embedded = set([
             'donor.organism',
@@ -381,10 +384,11 @@ class Biosample(Collection):
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
                     ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
                     ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+                    ns['synonyms'] = terms[ns['biosample_term_id']]['synonyms']
                 else:
-                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
-                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             return ns
 
 
@@ -621,6 +625,9 @@ class Experiment(Dataset):
             'developmental_slims': [
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
+            'synonyms': [
+                {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
+            ]
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody.approvals',
@@ -650,10 +657,11 @@ class Experiment(Dataset):
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
                     ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
                     ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+                    ns['synonyms'] = terms[ns['biosample_term_id']]['synonyms']
                 else:
-                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
-                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             return ns
 
 
