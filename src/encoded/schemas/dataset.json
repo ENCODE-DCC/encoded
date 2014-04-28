@@ -79,6 +79,16 @@
                 "type": "string",
                 "linkTo": "file"
             }
+        },
+        "date_released": {
+            "title": "Date released",
+            "comment": "Do not submit, value is assigned whe the object is releaesd.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ],
+            "permission": "import_items"
         }
     },
     "facets": {
