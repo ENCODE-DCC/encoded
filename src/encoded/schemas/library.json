@@ -20,10 +20,6 @@
         { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/notes" }
     ],
-    "dependencies": {
-        "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
-        "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"]
-    },
     "properties": {
         "schema_version": {
             "default": "2"

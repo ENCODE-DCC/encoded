@@ -32,7 +32,3 @@ def library_starting_quantity_no_units(library):
 
 def test_library_starting_quantity_post(testapp, library_starting_quantity):
     testapp.post_json('/library', library_starting_quantity)
-
-
-def test_library_starting_unit_requirement(testapp, library_starting_quantity_no_units):
-   testapp.post_json('/replicate', library_starting_quantity_no_units, status=422)
