@@ -519,7 +519,7 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
                     <a href="#" aria-haspopup="true" onClick={this.handleClick}>
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
-                        <i className="trigger-icon icon-chevron-up"></i>
+                        <i className="trigger-icon icon-info-sign"></i>
                     </a>
                 </dl>
                 <Popover context={context} popoverContent={this.props.popoverContent} popoverComponent={this._rootNodeID} />

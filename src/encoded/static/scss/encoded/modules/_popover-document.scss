@@ -260,12 +260,14 @@ $figure-height: 130px;
 .lightbox-img {
     display: inline-block;
     position: relative;
-    margin: 10px auto 0;
+    margin: 20px auto 0;
     max-width: 90%;
     cursor: default;
 
     img {
         display: block;
+        width: 100%;
+        height: auto;
     }
 }
 
