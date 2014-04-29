@@ -43,6 +43,16 @@
 
 .footer-links {
     margin: 15px 0;
+    text-align: center;
+
+    @media (min-width: $screen-sm-min) {
+        text-align: right;
+
+        li:last-child {
+            padding-right: 0;
+        }
+    }
+
     a {
         display: block;
         margin: 0 0 8px;
@@ -61,7 +71,22 @@
 
 .footer-logos {
     margin: 10px 0;
+    text-align: center;
+
+    @media (min-width: $screen-sm-min) {
+        text-align: left;
+    }
+
     li {
         margin: 0 0 15px;
+    }
+}
+
+
+.copy-notice {
+    text-align: center;
+
+    @media (min-width: $screen-sm-min) {
+        text-align: right;
     }
 }
