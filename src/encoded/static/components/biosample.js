@@ -64,10 +64,10 @@ var Biosample = module.exports.Biosample = React.createClass({
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <ul className="breadcrumb">
-                            <li>Biosamples <span className="divider">/</span></li>
-                            <li>{context.biosample_type}{' '}<span className="divider">/</span></li>{' '}
+                            <li>Biosamples</li>
+                            <li>{context.biosample_type}</li>
                             {context.donor ?
                                 <li className="active">{context.donor.organism.name}</li>
                             : null }
@@ -519,7 +519,7 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
                     <a href="#" aria-haspopup="true" onClick={this.handleClick}>
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
-                        <i className="icon-bar icon-chevron-up"></i>
+                        <i className="trigger-icon icon-chevron-up"></i>
                     </a>
                 </dl>
                 <Popover context={context} popoverContent={this.props.popoverContent} popoverComponent={this._rootNodeID} />
@@ -642,7 +642,7 @@ var Document = module.exports.Document = React.createClass({
             download = (
                 <a data-bypass="true" title={dlFileTitle} className="dl-bar" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
-                    <i className="icon-bar icon-download"></i>
+                    <i className="trigger-icon icon-download"></i>
                 </a>
             );
         } else {
@@ -656,17 +656,19 @@ var Document = module.exports.Document = React.createClass({
             );
         }
         return (
-            <section className="span4 type-document view-detail panel status-none">
-                <figure>
-                    {figure}
-                </figure>
-                <div className="document-intro">
-                    <h3 className="sentence-case">{context.document_type}</h3>
-                    <p>{context.description}</p>
+            <section className="col-sm-6 col-md-4">
+                <div className="type-document type-popover view-detail panel status-none">
+                    <figure>
+                        {figure}
+                    </figure>
+                    <div className="document-intro">
+                        <h3 className="sentence-case">{context.document_type}</h3>
+                        <p>{context.description}</p>
+                    </div>
+                    {download}
+                    <PopoverTrigger context={context} popoverContent={this.props.popoverContent} />
+                    <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={src} clearLightbox={this.clearLightbox} />
                 </div>
-                {download}
-                <PopoverTrigger context={context} popoverContent={this.props.popoverContent} />
-                <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={src} clearLightbox={this.clearLightbox} />
             </section>
         );
     }

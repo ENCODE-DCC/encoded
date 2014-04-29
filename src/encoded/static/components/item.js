@@ -13,7 +13,7 @@ var globals = require('./globals');
             return (
                 <div className={itemClass}>
                     <header className="row">
-                        <div className="span12">
+                        <div className="col-sm-12">
                             <h2>{title}</h2>
                         </div>
                     </header>

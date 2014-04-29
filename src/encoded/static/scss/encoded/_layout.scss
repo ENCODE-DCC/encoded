@@ -4,10 +4,6 @@
     min-height: 100%;
 }
 
-#content {
-	padding-top: 75px;
-}
-
 .homepage-main-box {
 	min-height: 400px;
 	background: url('/static/img/encode-bg-gray.png') no-repeat center;
@@ -24,37 +20,48 @@
 /* *********************************************************
 		FOOTER
 ********************************************************** */
-@include sticky-footer($footerHeight, $footerTopBorderHeight, "#layout", "#layout-footer", "#page-footer");
 
-#page-footer {
+.page-footer {
 	color: rgb(255, 255, 255);
 	background-color: #a4afb8; // for IE8
 	background-color: $footerBackground; // overwrite previous line for CSS3 browsers
-	height: $footerHeight;
+	//height: $footerHeight;
 	@include text-shadow(0 1px rgba(0, 0, 0, 0.3));
-	line-height: 0;
+	//line-height: 0;
+	text-align: center;
 	overflow: hidden;
 	a { 
 		color: rgb(255, 255, 255); 
 		font-weight: bold;
 	}
-	a:hover { text-decoration: underline; }
-	#footer-links, #footer-logos {
-		height: $footerHeight;
-		margin: 0 auto;
-		display: inline-block;
-		ul {
-			margin: 0;
-			list-style: none;
-			li {
-				line-height: $footerHeight;
-				margin-right: 30px;
-				float: left;
-			}
-			li:last-child { margin-right: 0; }
-		}
+	ul {
+	    list-style: none;
+	    list-style-position: outside;
+	    padding: 0;
 	}
 }
-#footer-logos {
-	float: right;
+
+.footer-links {
+    margin: 15px 0;
+    a {
+        display: block;
+        margin: 0 0 8px;
+        padding: 10px 15px;
+        background-color: darken($footerBackground, 0.1%);
+        @include border-radius(3px);
+    }
+    a:hover { 
+        text-decoration: none; 
+        background-color: darken($footerBackground, 6%);   
+    }
+    a:active {
+        background-color: darken($footerBackground, 15%);
+    }
+}
+
+.footer-logos {
+    margin: 10px 0;
+    li {
+        margin: 0 0 15px;
+    }
 }

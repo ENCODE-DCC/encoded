@@ -171,7 +171,6 @@ var App = React.createClass({
                     <title>{title}</title>
                     <link rel="canonical" href={this.props.href} />
                     <link rel="stylesheet" href="/static/css/style.css" />
-                    <link rel="stylesheet" href="/static/css/responsive.css" />
                     <script dangerouslySetInnerHTML={{__html: inline}}></script>
                     <script src="//www.google-analytics.com/analytics.js" async defer></script>
                     <script src="/static/build/bundle.js" async defer></script>

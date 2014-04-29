@@ -3,7 +3,7 @@ $dl-bar-txt: #0a253d;
 $figure-width: 130px;
 $figure-height: 130px;
 
-.type-document {
+.type-document.type-popover {
     margin-top: 0;
 
     &.view-detail {
@@ -86,7 +86,7 @@ $figure-height: 130px;
 }
 
 
-.icon-bar {
+.trigger-icon {
     position: absolute;
     top: 0;
     right: 5px;
