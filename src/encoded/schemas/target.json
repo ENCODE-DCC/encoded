@@ -53,7 +53,10 @@
         }
     },
     "facets": {
-        "Organism": "organism.name"
+        "organism.name": {
+            "title": "Organism",
+            "type": "string"
+        }
     },
     "columns": {
         "label": {

@@ -20,6 +20,10 @@
         "characterizes": "f24ac237-ba4c-4b3d-af7e-85f0b57c4184",
         "date": "2012-07-17",
         "lab": "bradley-bernstein",
+        "references": [
+            "PMID:23000965",
+            "PMID:16395128"
+        ],
         "status": "PENDING DCC REVIEW",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",

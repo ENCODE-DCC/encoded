@@ -386,8 +386,6 @@ def check_constraints(request, connection):
     Deferred foreign key constraints are only checked at the outer transaction
     boundary, not at a savepoint. With the Pyramid transaction bound to a
     subtransaction check them manually.
-
-    Sadly SQLite does not support manual constraint checking.
     '''
     from encoded.storage import DBSession
     from transaction.interfaces import ISynchronizer
@@ -397,7 +395,6 @@ def check_constraints(request, connection):
     class CheckConstraints(object):
         def __init__(self, connection):
             self.connection = connection
-            self.enabled = self.connection.engine.url.drivername != 'sqlite'
             self.state = None
 
         def beforeCompletion(self, transaction):
@@ -407,8 +404,6 @@ def check_constraints(request, connection):
             pass
 
         def newTransaction(self, transaction):
-            if not self.enabled:
-                return
 
             @transaction.addBeforeCommitHook
             def set_constraints():

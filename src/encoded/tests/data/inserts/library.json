@@ -19,6 +19,7 @@
         "nucleic_acid_starting_quantity": 1,
         "nucleic_acid_starting_quantity_units": "cell_equivalent",
         "size_range": "100-300",
+        "library_type":"nucleic acid",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "14fd8295-1ffd-416f-c9c6-6ff18c3b0290"
     },
