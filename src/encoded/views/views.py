@@ -490,6 +490,7 @@ class Platform(Collection):
         '$templated': True,
     }
     unique_key = 'platform:term_id'
+    item_name_key = 'term_id'
     item_keys = ALIAS_KEYS + ['term_name', 'term_id']
 
 
