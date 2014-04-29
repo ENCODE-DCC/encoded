@@ -30,6 +30,18 @@
                 "type":  "string"
             }
         },
+        "target_type": {
+            "title": "Type",
+            "description": "The category that best describes the target.",
+            "type": "string",
+            "enum": [
+                "post translationally modified protein",
+                "protein",
+                "control",
+                "gene",
+                "modified nucleotide"
+           ]
+        },
         "organism": {
             "title": "Organism",
             "description": "Organism bearing the target.",
