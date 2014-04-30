@@ -14,6 +14,10 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "temperature": ["temperature_units"],
+        "temperature_units": ["temperature"]
+    },
     "properties": {
         "schema_version": {
             "default": "2"
@@ -104,6 +108,19 @@
                 "minute",
                 "hour",
                 "day"
+            ]
+        },
+        "temperature": {
+            "title": "Temperature",
+            "type": "number"
+        },
+        "temperature_units": {
+            "title": "Temperature units",
+            "type": "string",
+            "enum": [
+                "Celsius",
+                "Fahrenheit",
+                "Kelvin"
             ]
         }
     }
