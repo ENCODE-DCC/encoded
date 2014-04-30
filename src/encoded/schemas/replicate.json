@@ -128,6 +128,14 @@
             "enum": [
                 "nM" 
             ]
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "released",
+                "proposed"
+            ]
         }
     }
 }
