@@ -194,6 +194,24 @@ def getOrganSlims(goid):
     return slims
 
 
+def getTermStructure():
+    return {
+        'id': '',
+        'name': '',
+        'parents': [],
+        'children': [],
+        'part_of': [],
+        'develops_from': [],
+        'organs': [],
+        'closure': [],
+        'slims': [],
+        'data': [],
+        'closure_with_develops_from': [],
+        'data_with_develops_from': [],
+        'synonyms': []
+    }
+
+
 terms = {}
 
 
@@ -240,7 +258,7 @@ def main():
                                 termParents = [p.split()[0] for p in term['is_a']]
 
                                 if not termID in terms:
-                                    terms[termID] = {'id': '', 'name': '', 'parents': [], 'children': [], 'part_of': [], 'develops_from': [], 'organs': [], 'closure': [], 'slims': [], 'data': [], 'closure_with_develops_from': [], 'data_with_develops_from': []}
+                                    terms[termID] = getTermStructure()
 
                                 #append termID and termName to the dict
                                 terms[termID]['id'] = termID
@@ -252,8 +270,21 @@ def main():
                                         if termParent != 'CL:0000812':
                                             terms[termID]['parents'].append(termParent)
                                             if not termParent in terms:
-                                                terms[termParent] = {'parents': [], 'children': [], 'part_of': [], 'develops_from': [], 'organs': [], 'closure': [], 'slims': [], 'data': [], 'closure_with_develops_from': [], 'data_with_develops_from': []}
+                                                terms[termParent] = {
+                                                    'parents': [],
+                                                    'children': [],
+                                                    'part_of': [],
+                                                    'develops_from': [],
+                                                    'organs': [],
+                                                    'closure': [],
+                                                    'slims': [],
+                                                    'data': [],
+                                                    'closure_with_develops_from': [],
+                                                    'data_with_develops_from': [],
+                                                    'synonyms': []
+                                                }
                                             terms[termParent]['children'].append(termID)
+
                                 if 'relationship' in term:
                                     relations = [p.split()[0] for p in term['relationship']]
                                     relationTerms = [p.split()[1] for p in term['relationship']]
@@ -272,9 +303,14 @@ def main():
                                                     if relationCheck[count] == '!' or 'NCBITaxon:9606' in relationCheck[count] or 'source' in relationCheck[count]:
                                                         terms[termID][relation].append(relationTerms[count])
                                         count = count + 1
+
+                                if 'synonym' in term:
+                                    for synonym in term['synonym']:
+                                        if 'EXACT' in synonym:
+                                            terms[termID]['synonyms'].append(synonym.split('"')[1])
                             else:
                                 if term['id'][0] not in terms:
-                                    terms[termID] = {'id': '', 'name': '', 'parents': [], 'children': [], 'part_of': [], 'develops_from': [], 'organs': [], 'closure': [], 'slims': [], 'data': [], 'closure_with_develops_from': [], 'data_with_develops_from': []}
+                                    terms[termID] = getTermStructure()
                                     #append termID and termName to the dict
                                     terms[termID]['id'] = termID
                                     terms[termID]['name'] = termName
