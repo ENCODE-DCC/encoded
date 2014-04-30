@@ -1,14 +1,20 @@
 /*  List key-value pairs display */
+
+// Override bootstrap3 header classes
+dt.h3, dt.h4, dd.h3, dd.h4 {
+    margin-top: 0;
+}
+
 .key-value {
 	dt, dd {
+	    min-height: 20px; // = line-height ; defined somewhere?
 		margin-bottom: 10px;
-		min-height: 20px; // = line-height ; defined somewhere?
+		padding-top: 5px;
 	}
 	dt {
 		display: inline-block;
 		float: left;
-    	width: $horizontalComponentOffset - 10;
-   		padding-top: 5px;
+    	width: $component-offset-horizontal - 10;
     	text-align: right;
 	}
 	dt::after {
@@ -17,8 +23,7 @@
 
 	dd {
 		display: block;
-		padding-top: 5px;
-		margin-left: $horizontalComponentOffset + 10;
+		margin-left: $component-offset-horizontal + 10;
 		//margin-bottom: 5px;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
@@ -39,6 +44,7 @@
 dd ul, .multi-value {
 	list-style: none;
 	margin: 0;
+	padding: 0;
 	display: inline-block;
 }
 
