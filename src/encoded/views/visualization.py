@@ -5,11 +5,11 @@ from pyramid.httpexceptions import HTTPFound
 from collections import OrderedDict
 
 
-def getTrack(file_json):
+def getTrack(file_json, label):
     data = OrderedDict([
         ('color', '128,0,0'),
         ('visibility', 'full'),
-        ('longLabel', file_json['accession']),
+        ('longLabel', label + ' - ' + file_json['accession']),
         ('shortLabel', file_json['accession']),
         ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + file_json['download_path']),
         ('type', file_json['file_format']),
@@ -47,11 +47,11 @@ def getHubTxt():
     return hub_array
 
 
-def getTrackDbTxt(files_json):
+def getTrackDbTxt(files_json, label):
     tracks = []
     for file_json in files_json:
         if file_json['file_format'] in ['bigWig', 'bigBed']:
-            track = getTrack(file_json)
+            track = getTrack(file_json, label)
             for i in range(len(track)):
                 temp = list(track.popitem())
                 str1 = ' '.join(temp)
@@ -67,7 +67,7 @@ def visualize(context, request):
     if embedded['replicates'][0]['library']['biosample']['organism']['name'] != 'human':
         db = 'db=hg19'
     else:
-        db = 'db = mm9'
+        db = 'db=mm9'
     hub_url = (request.url).replace('@@visualize', '@@hub')
     UCSC_url = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&' + db + \
         '&hubUrl=' + hub_url + '/hub.txt'
@@ -88,4 +88,5 @@ def hub(context, request):
         elif url_ret[1] == '/genomes.txt':
             return Response('\n'.join(getGenomeTxt(embedded)), content_type='text/plain')
         else:
-            return Response('\n'.join(getTrackDbTxt(files_json)), content_type='text/plain')
+            long_label = embedded['assay_term_name'] + ' of ' + embedded['biosample_term_name']
+            return Response('\n'.join(getTrackDbTxt(files_json), long_label), content_type='text/plain')
