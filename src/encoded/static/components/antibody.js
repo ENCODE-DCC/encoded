@@ -141,7 +141,7 @@ var Characterization = module.exports.Characterization = React.createClass({
 
         return (
             <section className={globals.itemClass(context, 'view-detail panel')}>
-                <div class="row">
+                <div className="row">
                     <div className="col-sm-4 col-md-6">
                         <figure>
                             {figure}
