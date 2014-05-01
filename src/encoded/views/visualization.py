@@ -84,7 +84,7 @@ def hub(context, request):
     if files_json is not None:
         url_ret = (request.url).split('@@hub')
         if url_ret[1] == '/hub.txt':
-            return Response('\n'.join(getHubTxt(emebedded['accession'])), content_type='text/plain')
+            return Response('\n'.join(getHubTxt(embedded['accession'])), content_type='text/plain')
         elif url_ret[1] == '/genomes.txt':
             return Response('\n'.join(getGenomeTxt(embedded)), content_type='text/plain')
         else:
