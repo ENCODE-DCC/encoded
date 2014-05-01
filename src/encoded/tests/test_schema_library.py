@@ -2,12 +2,12 @@ import pytest
 
 
 @pytest.fixture
-def library(experiment):
+def library(lab, award):
     return {
-        'lab': experiment['lab']['uuid'],
-        'award': experiment['award']['uuid'],
-        'nucleic_acid_term_name': "DNA",
-        'nucleic_acid_term_id': "SO:0000352"
+        'lab': lab['uuid'],
+        'award': award['uuid'],
+        'nucleic_acid_term_name': 'DNA',
+        'nucleic_acid_term_id': 'SO:0000352'
     }
 
 
@@ -15,8 +15,8 @@ def library(experiment):
 def library_starting_quantity(library):
     item = library.copy()
     item.update({
-        'nucleic_acid_starting_quantity': 10,
-        'nucleic_acid_starting_quantity_units': "ng",
+        'nucleic_acid_starting_quantity': '10',
+        'nucleic_acid_starting_quantity_units': 'ng',
     })
     return item
 
@@ -25,7 +25,7 @@ def library_starting_quantity(library):
 def library_starting_quantity_no_units(library):
     item = library.copy()
     item.update({
-        'nucleic_acid_starting_quantity': 10,
+        'nucleic_acid_starting_quantity': '10',
     })
     return item
 
