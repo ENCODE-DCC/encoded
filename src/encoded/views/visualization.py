@@ -1,7 +1,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 from ..contentbase import Item, embed
-import webbrowser
+from pyramid.httpexceptions import HTTPFound
 
 
 def getTrack(file_json):
@@ -63,7 +63,7 @@ def visualize(context, request):
     hub_url = (request.url).replace('@@visualize', '@@hub')
     UCSC_url = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&db-hg19' + \
         '&hubUrl=' + hub_url + '/hub.txt'
-    webbrowser.open(UCSC_url)
+    return HTTPFound(location=UCSC_url)
 
 
 @view_config(name='hub', context=Item, request_method='GET',
