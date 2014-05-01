@@ -134,7 +134,11 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 {context.files.length ?
                     <div>
-                        <h3>Files linked to {context.accession}</h3>
+                        <h3>Files linked to {context.accession}
+                            <span className="pull-right">
+                                <a data-bypass="true" className="btn btn-info btn-small" href={context['@id'] + '@@visualize'}>Visualize Data</a>
+                            </span>
+                        </h3>
                         <FileTable items={context.files} />
                     </div>
                 : null }
