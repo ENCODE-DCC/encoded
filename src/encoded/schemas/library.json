@@ -79,21 +79,22 @@
                 "linkTo": "document"
             }
         },
-        "library_type": {
-            "title": "Type",
-            "description": "The type of molecule from which the library was constructed.",
-            "type": "string",
-            "default": "nucleic acid",
-            "enum": [
-                "nucleic acid",
-                "protein"
-            ]
-        },
         "nucleic_acid_starting_quantity": {
             "title": "Nucleic acid starting quantity",
             "description": "The starting amount of nucleic acid before selection and purification.",
             "type": "string",
             "pattern": "[0-9]+"
+        },
+        "nucleic_acid_starting_quantity_units": {
+            "title": "Nucleic acid starting quantity units",
+            "description": "The units used for starting amount of nucleic acid.",
+            "type": "string",
+            "enum": [
+                "cells",
+                "cell-equivalent",
+                "ng",
+                "mg"
+            ]
         },
         "extraction_method": {
             "title": "Extraction method",
