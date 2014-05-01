@@ -63,8 +63,13 @@ def getTrackDbTxt(files_json):
 @view_config(name='visualize', context=Item, request_method='GET',
              permission='view')
 def visualize(context, request):
+    embedded = embed(request, request.resource_path(context))
+    if embedded['replicates'][0]['library']['biosample']['organism']['name'] != 'human':
+        db = 'db=hg19'
+    else:
+        db = 'db = mm9'
     hub_url = (request.url).replace('@@visualize', '@@hub')
-    UCSC_url = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&db-hg19' + \
+    UCSC_url = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&' + db + \
         '&hubUrl=' + hub_url + '/hub.txt'
     print UCSC_url
     return HTTPFound(location=UCSC_url)
