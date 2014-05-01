@@ -89,4 +89,4 @@ def hub(context, request):
             return Response('\n'.join(getGenomeTxt(embedded)), content_type='text/plain')
         else:
             long_label = embedded['assay_term_name'] + ' of ' + embedded['biosample_term_name']
-            return Response('\n'.join(getTrackDbTxt(files_json), long_label), content_type='text/plain')
+            return Response('\n'.join(getTrackDbTxt(files_json, long_label)), content_type='text/plain')
