@@ -6,7 +6,6 @@ module.exports = function(grunt) {
                 dest: 'src/encoded/static/build/bundle.js',
                 src: [
                     './src/encoded/static/libs/compat.js', // The shims should execute first
-                    './src/encoded/static/libs/bootstrap.min.js',
                     './src/encoded/static/libs/respond.js',
                     './src/encoded/static/components/index.js',
 
