@@ -7,10 +7,8 @@ from collections import OrderedDict
 
 def getTrack(file_json):
     data = OrderedDict([
-        ('visibility', 'full'),
-        ('color', '128,0,0'),
-        ('long_label', file_json['accession']),
-        ('short_label', file_json['accession']),
+        ('longLabel', file_json['accession']),
+        ('shortLabel', file_json['accession']),
         ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + file_json['download_path']),
         ('type', file_json['file_format']),
         ('track', file_json['accession']),
