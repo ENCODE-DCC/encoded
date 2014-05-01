@@ -35,11 +35,12 @@
             "description": "The category that best describes the target.",
             "type": "string",
             "enum": [
-                "post translationally modified protein",
+                "post-translational modified protein",
                 "protein",
                 "control",
                 "gene",
-                "modified nucleotide"
+                "modified nucleoside",
+                "fusion protein"
            ]
         },
         "organism": {
