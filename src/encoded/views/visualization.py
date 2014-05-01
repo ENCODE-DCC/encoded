@@ -65,9 +65,9 @@ def getTrackDbTxt(files_json, label):
 def visualize(context, request):
     embedded = embed(request, request.resource_path(context))
     if embedded['replicates'][0]['library']['biosample']['organism']['name'] != 'human':
-        db = 'db=hg19'
-    else:
         db = 'db=mm9'
+    else:
+        db = 'db=hg19'
     hub_url = (request.url).replace('@@visualize', '@@hub')
     UCSC_url = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&' + db + \
         '&hubUrl=' + hub_url + '/hub.txt'
