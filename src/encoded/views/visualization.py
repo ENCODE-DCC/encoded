@@ -7,8 +7,10 @@ from collections import OrderedDict
 
 def getTrack(file_json, label):
     data = OrderedDict([
+        ('graphTypeDefault', 'bars'),
+        ('maxHeightPixels', '100:24:8'),
         ('color', '128,0,0'),
-        ('visibility', 'full'),
+        ('visibility', 'pack'),
         ('longLabel', label + ' - ' + file_json['accession']),
         ('shortLabel', file_json['accession']),
         ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + file_json['download_path']),
@@ -36,7 +38,7 @@ def getHubTxt(accession):
         ('email', 'jseth@stanford.edu'),
         ('genomesFile', 'genomes.txt'),
         ('longLabel', 'ENCODE Data Coordination Center Data Hub'),
-        ('shortLabel', 'ENCODE DCC Hub'),
+        ('shortLabel', 'ENCODE DCC Hub (' + accession + ')'),
         ('hub', 'ENCODE_DCC_' + accession)
     ])
     hub_array = []
