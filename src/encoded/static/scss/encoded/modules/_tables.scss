@@ -1,7 +1,7 @@
 /*  TABLES    */
 
 thead, tfoot {
-    //background: none repeat scroll 0 0 #efefef;
+    background: none repeat scroll 0 0 #e0e0e0;
 }
 
 table thead tr th {
@@ -28,7 +28,6 @@ border-radius: 0 0 0 3px;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     th {
-        background-color: #fff;
         border-bottom: none !important;
     }
 
@@ -41,7 +40,20 @@ border-radius: 0 0 0 3px;
     }
 }
 
-// stripe even rows too
+.table-striped {
+    > tbody {
+        > tr:nth-child(odd) {
+            > td {
+                background-color: transparent;
+            }
+        }
+        > tr:nth-child(even) {
+            > td {
+                background-color: #f0f0f0;
+            }
+        }
+    }
+}
 
 
 /* Table Controls */
