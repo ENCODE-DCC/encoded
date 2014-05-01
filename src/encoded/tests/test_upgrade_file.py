@@ -27,12 +27,4 @@ def test_file_upgrade(app, file_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
-    assert value['status'] == 'released'
-
-
-def test_file_upgrade_status_encode3(app, file_1):
-    file_1['award'] = 'ea1f650d-43d3-41f0-a96a-f8a2463d332f'
-    migrator = app.registry['migrator']
-    value = migrator.upgrade('file', file_1, target_version='2')
-    assert value['schema_version'] == '2'
-    assert value['status'] == 'in progress'
+    assert value['status'] == 'current'

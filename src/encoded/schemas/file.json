@@ -115,12 +115,11 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "in progress",
+            "default": "current",
             "enum" : [
-                "in progress",
-                "obsolete",
-                "released"
-            ]
+                "current",
+                "obsolete"
+                ]
         }
     },
     "columns": {
