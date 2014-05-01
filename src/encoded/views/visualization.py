@@ -19,9 +19,10 @@ def getTrack(file_json):
 
 
 def getGenomeTxt(properties):
-    genome = OrderedDict([('trackDb', 'trackDb.txt'), ('genome', 'hg19')])
+    genome = OrderedDict([('trackDb', 'hg19/trackDb.txt'), ('genome', 'hg19')])
     if properties['replicates'][0]['library']['biosample']['organism']['name'] != 'human':
         genome['genome'] = 'mm9'
+        genome['trackDb'] = 'mm9/trackDb.txt'
     genome_array = []
     for i in range(len(genome)):
         temp = list(genome.popitem())
@@ -81,6 +82,5 @@ def hub(context, request):
             return Response('\n'.join(getHubTxt()), content_type='text/plain')
         elif url_ret[1] == '/genomes.txt':
             return Response('\n'.join(getGenomeTxt(embedded)), content_type='text/plain')
-        elif url_ret[1] == '/trackDb.txt':
+        else:
             return Response('\n'.join(getTrackDbTxt(files_json)), content_type='text/plain')
-    return ''
