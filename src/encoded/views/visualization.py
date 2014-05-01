@@ -31,13 +31,13 @@ def getGenomeTxt(properties):
     return genome_array
 
 
-def getHubTxt():
+def getHubTxt(accession):
     hub = OrderedDict([
         ('email', 'jseth@stanford.edu'),
         ('genomesFile', 'genomes.txt'),
         ('longLabel', 'ENCODE Data Coordination Center Data Hub'),
         ('shortLabel', 'ENCODE DCC Hub'),
-        ('hub', 'DCC_Hub')
+        ('hub', 'ENCODE_DCC_' + accession)
     ])
     hub_array = []
     for i in range(len(hub)):
@@ -84,7 +84,7 @@ def hub(context, request):
     if files_json is not None:
         url_ret = (request.url).split('@@hub')
         if url_ret[1] == '/hub.txt':
-            return Response('\n'.join(getHubTxt()), content_type='text/plain')
+            return Response('\n'.join(getHubTxt(emebedded['accession'])), content_type='text/plain')
         elif url_ret[1] == '/genomes.txt':
             return Response('\n'.join(getGenomeTxt(embedded)), content_type='text/plain')
         else:
