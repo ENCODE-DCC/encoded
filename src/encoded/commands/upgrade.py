@@ -21,27 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
-    'access_key',
-    'user',
     'antibody_approval',
     "antibody_characterization",
     "antibody_lot",
-    "biosample_characterization",
-    "construct_characterization",
-    "rnai_characterization",
-    "construct",
-    "document",
-    "human_donor",
-    "mouse_donor",
-    "library",
-    "rnai",
-    "award",
-    "lab",
-    "organism",
-    "source",
-    "target",
-    "platform",
-    "treatment",
 ]
 
 
