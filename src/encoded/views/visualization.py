@@ -38,7 +38,7 @@ def getHubTxt(accession):
         ('email', 'jseth@stanford.edu'),
         ('genomesFile', 'genomes.txt'),
         ('longLabel', 'ENCODE Data Coordination Center Data Hub'),
-        ('shortLabel', 'ENCODE DCC Hub (' + accession + ')'),
+        ('shortLabel', 'Hub (' + accession + ')'),
         ('hub', 'ENCODE_DCC_' + accession)
     ])
     hub_array = []
