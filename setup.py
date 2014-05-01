@@ -26,7 +26,6 @@ requires = [
     'zope.sqlalchemy',
     'PyBrowserID',
     'elasticsearch',
-    'trackhub',
 ]
 
 tests_require = [
