@@ -8,7 +8,7 @@ from collections import OrderedDict
 def getTrack(file_json, label):
     data = OrderedDict([
         ('graphTypeDefault', 'bars'),
-        ('maxHeightPixels', '100:24:8'),
+        ('maxHeightPixels', '100:32:8'),
         ('color', '128,0,0'),
         ('visibility', 'pack'),
         ('longLabel', label + ' - ' + file_json['accession']),
