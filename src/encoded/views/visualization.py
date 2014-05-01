@@ -53,7 +53,7 @@ def getTrackDbTxt(files_json):
                 temp = list(track.popitem())
                 str1 = ' '.join(temp)
                 tracks.append(str1)
-            tracks.append('\n\n')
+            tracks.append('')
     return tracks
 
 
