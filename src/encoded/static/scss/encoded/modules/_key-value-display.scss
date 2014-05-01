@@ -3,6 +3,11 @@
 // Override bootstrap3 header classes
 dt.h3, dt.h4, dd.h3, dd.h4 {
     margin-top: 0;
+    font-size: 14px;
+}
+
+dd.h3, dd.h4 {
+	font-weight: normal;
 }
 
 .key-value {
@@ -10,6 +15,8 @@ dt.h3, dt.h4, dd.h3, dd.h4 {
 	    min-height: 20px; // = line-height ; defined somewhere?
 		margin-bottom: 10px;
 		padding-top: 5px;
+	    line-height: 16px;
+	    font-size: 14px;
 	}
 	dt {
 		display: inline-block;

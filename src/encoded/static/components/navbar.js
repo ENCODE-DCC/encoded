@@ -50,12 +50,9 @@ var GlobalSections = React.createClass({
     render: function() {
         var section = this.props.section;
         var actions = this.props.global_sections.map(function (action) {
-            var className = action['class'] || '';
-            if (section == action.id) {
-                className += ' active';
-            }
+            var active = (section == action.id);
             return (
-                <NavItem href={action.url} key={action.id}>
+                <NavItem active={active} href={action.url} key={action.id}>
                     {action.title}
                 </NavItem>
             );
