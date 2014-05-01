@@ -2,22 +2,24 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from ..contentbase import Item, embed
 from pyramid.httpexceptions import HTTPFound
+from collections import OrderedDict
 
 
 def getTrack(file_json):
-    return {
-        'name': file_json['accession'],
-        'url': 'http://encodedcc.sdsc.edu/warehouse/' + file_json['download_path'],
-        'tracktype': file_json['file_format'],
-        'short_label': file_json['accession'],
-        'long_label': file_json['accession'],
-        'color': '128,0,0',
-        'visibility': 'full'
-    }
+    data = OrderedDict([
+        ('visibility', 'full'),
+        ('color', '128,0,0'),
+        ('long_label', file_json['accession']),
+        ('short_label', file_json['accession']),
+        ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + file_json['download_path']),
+        ('type', file_json['file_format']),
+        ('track', file_json['accession']),
+    ])
+    return data
 
 
 def getGenomeTxt(properties):
-    genome = {'genome': 'hg19', 'trackDb': 'trackDb.txt'}
+    genome = OrderedDict([('trackDb', 'trackDb.txt'), ('genome', 'hg19')])
     if properties['replicates'][0]['library']['biosample']['organism']['name'] != 'human':
         genome['genome'] = 'mm9'
     genome_array = []
@@ -29,13 +31,13 @@ def getGenomeTxt(properties):
 
 
 def getHubTxt():
-    hub = {
-        'hub': 'DCC_Hub',
-        'shortLabel': 'ENCODE DCC Hub',
-        'longLabel': 'ENCODE Data Coordination Center Data Hub',
-        'genomesFile': 'genomes.txt',
-        'email': 'jseth@stanford.edu'
-    }
+    hub = OrderedDict([
+        ('email', 'jseth@stanford.edu'),
+        ('genomesFile', 'genomes.txt'),
+        ('longLabel', 'ENCODE Data Coordination Center Data Hub'),
+        ('shortLabel', 'ENCODE DCC Hub'),
+        ('hub', 'DCC_Hub')
+    ])
     hub_array = []
     for i in range(len(hub)):
         temp = list(hub.popitem())
@@ -63,6 +65,7 @@ def visualize(context, request):
     hub_url = (request.url).replace('@@visualize', '@@hub')
     UCSC_url = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&db-hg19' + \
         '&hubUrl=' + hub_url + '/hub.txt'
+    print UCSC_url
     return HTTPFound(location=UCSC_url)
 
 
