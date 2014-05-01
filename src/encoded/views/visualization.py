@@ -6,18 +6,31 @@ from collections import OrderedDict
 
 
 def getTrack(file_json, label):
-    data = OrderedDict([
-        ('graphTypeDefault', 'bars'),
-        ('maxHeightPixels', '100:32:8'),
-        ('color', '128,0,0'),
-        ('visibility', 'pack'),
-        ('longLabel', label + ' - ' + file_json['accession']),
-        ('shortLabel', file_json['accession']),
-        ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + file_json['download_path']),
-        ('type', file_json['file_format']),
-        ('track', file_json['accession']),
-    ])
-    return data
+    # Should do a better job with this
+    if file_json['file_format'] == 'bigWig':
+        return OrderedDict([
+            ('autoScale', 'on'),
+            ('graphTypeDefault', 'bars'),
+            ('maxHeightPixels', '100:32:8'),
+            ('color', '128,0,0'),
+            ('visibility', 'pack'),
+            ('longLabel', label + ' - ' + file_json['accession']),
+            ('shortLabel', file_json['accession']),
+            ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + file_json['download_path']),
+            ('type', file_json['file_format']),
+            ('track', file_json['accession']),
+        ])
+    else:
+        return OrderedDict([
+            ('maxHeightPixels', '100:32:8'),
+            ('color', '128,0,0'),
+            ('visibility', 'pack'),
+            ('longLabel', label + ' - ' + file_json['accession']),
+            ('shortLabel', file_json['accession']),
+            ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + file_json['download_path']),
+            ('type', file_json['file_format']),
+            ('track', file_json['accession']),
+        ])
 
 
 def getGenomeTxt(properties):
