@@ -8,7 +8,7 @@ To load the initial data:
 """
 from pyramid.paster import get_app
 from pyramid.traversal import find_root
-from pyelasticsearch import IndexAlreadyExistsError
+from elasticsearch import RequestError
 from ..indexing import ELASTIC_SEARCH
 import collections
 import json
@@ -249,10 +249,16 @@ def collection_mapping(collection, embed=True):
             elif i == 0 and p in merged_template_type:
                 name = merged_template_type[p]
             else:
-                try:
-                    name = new_schema['properties'][p]['linkTo']
-                except KeyError:
-                    name = new_schema['properties'][p]['items']['linkTo']
+                if p not in new_schema['properties']:
+                    if p in root[name].Item.merged_rev:
+                        name = root[name].Item.merged_rev[p][0]
+                    else:
+                        name = root[name].Item.merged_template_type[p]
+                else:
+                    try:
+                        name = new_schema['properties'][p]['linkTo']
+                    except KeyError:
+                        name = new_schema['properties'][p]['items']['linkTo']
 
             # XXX Need to union with mouse_donor here
             if name == 'donor':
@@ -292,11 +298,11 @@ def run(app, collections=None, dry_run=False):
     if not dry_run:
         es = app.registry[ELASTIC_SEARCH]
         try:
-            es.create_index(index, index_settings())
-        except IndexAlreadyExistsError:
+            es.indices.create(index=index, body=index_settings())
+        except RequestError:
             if collections is None:
-                es.delete_index(index)
-                es.create_index(index, index_settings())
+                es.indices.delete(index=index)
+                es.indices.create(index=index, body=index_settings())
 
     if not collections:
         collections = ['meta'] + root.by_item_type.keys()
@@ -321,11 +327,11 @@ def run(app, collections=None, dry_run=False):
             mapping = es_mapping(mapping)
 
         try:
-            es.put_mapping(index, doc_type, {doc_type: mapping})
+            es.indices.put_mapping(index=index, doc_type=doc_type, body={doc_type: mapping})
         except:
             log.info("Could not create mapping for the collection %s", doc_type)
         else:
-            es.refresh(index)
+            es.indices.refresh(index=index)
 
 
 def main():
