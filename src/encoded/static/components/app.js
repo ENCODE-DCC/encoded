@@ -66,18 +66,10 @@ var analytics = [
 // Need to know if onload event has fired for safe history api usage
 var onloadcheck = "window.onload = function () { window._onload_event_fired; }";
 
-var browsercapsinit = [
-    "var browsercaps={};",
-    "(function() {",
-        "browsercaps.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');",
-    "})();"
-].join('\n');
-
 var inline = [
     analytics,
     ie8compat,
-    onloadcheck,
-    browsercapsinit
+    onloadcheck
 ].join('\n');
 
 // App is the root component, mounted on document.body.
