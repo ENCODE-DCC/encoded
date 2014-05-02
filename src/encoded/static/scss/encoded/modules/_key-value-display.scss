@@ -15,7 +15,7 @@ dd.h3, dd.h4 {
 	    min-height: 20px; // = line-height ; defined somewhere?
 		margin-bottom: 10px;
 		padding-top: 5px;
-	    line-height: 16px;
+	    line-height: 18px;
 	    font-size: 14px;
 	}
 	dt {
@@ -34,6 +34,10 @@ dd.h3, dd.h4 {
 		//margin-bottom: 5px;
 		word-wrap: break-word;
 		overflow-wrap: break-word;
+
+		.label {
+			line-height: 18px;
+		}
 	}
 }
 
