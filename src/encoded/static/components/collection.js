@@ -11,7 +11,7 @@ var globals = require('./globals');
             return (
                 <div>
                     <header className="row">
-                        <div className="span12">
+                        <div className="col-sm-12">
                             <h2>{context.title}</h2>
                         </div>
                     </header>
@@ -274,38 +274,40 @@ var globals = require('./globals');
                 );
             } else {
                 loading_or_total = (
-                    <span>
-                        <span className="table-count label label-invert">{matching.length}</span>
+                    <span className="table-meta-data">
+                        <span className="table-count label label-default">{matching.length}</span>
                         <span id="total-records">of {total} records</span>
                     </span>
                 );
             }
             return (
-                <table className={table_class}>
-                    <thead className="sticky-header">
-                        <tr className="nosort table-controls">
-                            <th colSpan={columns.length}>
-                                {loading_or_total}
-                                <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
-                                    data-skiprequest="true" data-removeempty="true">
-                                    <input ref="q" disabled={this.state.communicating || undefined} 
-                                        name="q" type="search" defaultValue={searchTerm} 
-                                        placeholder="Filter table by..." className="filter" 
-                                        id="table-filter" /> 
-                                    <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
-                                    <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
-                                    <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
-                                </form>
-                            </th>
-                        </tr>
-                        <tr className="col-headers">
-                            {headers}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                </table>
+                <div className="table-responsive">            
+                    <table className={table_class + " table table-striped table-hover table-panel"}>
+                        <thead className="sticky-header">
+                            <tr className="nosort table-controls">
+                                <th colSpan={columns.length}>
+                                    {loading_or_total}
+                                    <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
+                                        data-skiprequest="true" data-removeempty="true">
+                                        <input ref="q" disabled={this.state.communicating || undefined} 
+                                            name="q" type="search" defaultValue={searchTerm} 
+                                            placeholder="Filter table by..." className="filter form-control" 
+                                            id="table-filter" /> 
+                                        <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
+                                        <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
+                                        <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
+                                    </form>
+                                </th>
+                            </tr>
+                            <tr className="col-headers">
+                                {headers}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                    </table>
+                </div>
             );
         },
 
