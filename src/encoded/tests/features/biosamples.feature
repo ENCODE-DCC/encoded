@@ -20,7 +20,7 @@ Feature: Biosamples
         And I should see an element with the css selector "tr[hidden] a[href='/biosamples/ENCBS000AAA/']"
         And I should see exactly one element with the css selector ".table-count" containing the text "5"
 
-        When I fill in "q" with "primary cell"
+        When I fill in "q" with "primary cells"
         Then I should see an element with the css selector "tr:not([hidden]) a[href='/biosamples/ENCBS026ENC/']" within 1 seconds
         And I should see an element with the css selector "tr[hidden] a[href='/biosamples/ENCBS000AAA/']"
         And I should see exactly one element with the css selector ".table-count" containing the text "4"

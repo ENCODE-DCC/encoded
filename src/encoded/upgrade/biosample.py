@@ -78,3 +78,11 @@ def biosample_3_4(value, system):
             new_dbxref = 'UCSC-ENCODE-cv:' + encode2_dbxref
             value['dbxrefs'].append(new_dbxref)
         del value['encode2_dbxrefs']
+
+
+@upgrade_step('biosample', '4', '5')
+def biosample_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/1393
+
+    if 'biosample_type' in value and (value['biosample_type'] == 'primary cell line'):
+        value['derived_from'] = 'primary cells'
