@@ -20,11 +20,12 @@ requires = [
     'pytz',
     'rfc3987',
     'setuptools',
+    'simplejson',
     'strict_rfc3339',
     'xlrd',
     'zope.sqlalchemy',
     'PyBrowserID',
-    'pyelasticsearch',
+    'elasticsearch',
 ]
 
 tests_require = [

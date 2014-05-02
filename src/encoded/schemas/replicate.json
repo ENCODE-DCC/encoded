@@ -99,8 +99,7 @@
         "paired_ended": {
             "title": "Paired-end sequencing",
             "description": "The utilization of sequencing both ends of the DNA fragment in a library.",
-            "type": "boolean",
-            "default": false
+            "type": "boolean"
         },
         "read_length": {
             "title": "Read length",

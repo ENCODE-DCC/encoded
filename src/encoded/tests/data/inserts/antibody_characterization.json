@@ -21,6 +21,10 @@
         "date": "2012-07-17",
         "lab": "bradley-bernstein",
         "status": "pending dcc review",
+        "references": [
+            "PMID:23000965",
+            "PMID:16395128"
+        ],
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "7118e7b4-fab1-4ddb-f038-490c47b73cf2"

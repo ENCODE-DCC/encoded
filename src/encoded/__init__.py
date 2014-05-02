@@ -48,17 +48,8 @@ def configure_engine(settings, test_setup=False):
         # Already setup by test fixture
         return None
     engine_opts = {}
-    # http://docs.sqlalchemy.org/en/rel_0_8/dialects/sqlite.html#using-a-memory-database-in-multiple-threads
-    if engine_url == 'sqlite://':
-        from sqlalchemy.pool import StaticPool
-        engine_opts.update(
-            connect_args={'check_same_thread': False},
-            poolclass=StaticPool,
-        )
     engine = engine_from_config(settings, 'sqlalchemy.', **engine_opts)
-    if engine.url.drivername == 'sqlite':
-        enable_sqlite_savepoints(engine)
-    elif engine.url.drivername == 'postgresql':
+    if engine.url.drivername == 'postgresql':
         timeout = settings.get('postgresql.statement_timeout')
         if timeout:
             timeout = int(timeout) * 1000
@@ -69,21 +60,6 @@ def configure_engine(settings, test_setup=False):
         Base.metadata.create_all(engine)
     DBSession.configure(bind=engine)
     return engine
-
-
-def enable_sqlite_savepoints(engine):
-    """ Savepoint support for sqlite.
-
-    https://code.google.com/p/pysqlite-static-env/
-    """
-    from sqlalchemy import event
-
-    @event.listens_for(engine, 'connect')
-    def connect(dbapi_connection, connection_record):
-        dbapi_connection.operation_needs_transaction_callback = lambda x: True
-
-    from zope.sqlalchemy.datamanager import NO_SAVEPOINT_SUPPORT
-    NO_SAVEPOINT_SUPPORT.discard('sqlite')
 
 
 def set_postgresql_statement_timeout(engine, timeout=20 * 1000):

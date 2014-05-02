@@ -12,8 +12,9 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/standard_status"}
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/references" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema_version": {
@@ -62,18 +63,6 @@
                 {"format": "date-time"},
                 {"format": "date"}
             ]
-        },
-        "references": {
-            "title": "References",
-            "description": "The identifiers used as references for the characterization, if previously published.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Reference",
-                "description": "An identifier used as a reference for the characterization, if previously published",
-                "type": "string",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
-            }
         },
         "status": {
             "description": "The current state of the characterization."

@@ -13,6 +13,7 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
@@ -78,18 +79,6 @@
                 "description": "A unique identifier from external resource.",
                 "type":  "string",
                 "pattern": "^(UCSC-ENCODE-cv:\\S+)$"
-            }
-        },
-        "references": {
-            "title": "References",
-            "description": "The identifiers used as references for the software.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Reference",
-                "description": "An identifier used as a reference for the software.",
-                "type": "string",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
             }
         },
         "bug_tracker_url": {

@@ -30,6 +30,19 @@
                 "type":  "string"
             }
         },
+        "target_type": {
+            "title": "Type",
+            "description": "The category that best describes the target.",
+            "type": "string",
+            "enum": [
+                "post-translational modified protein",
+                "protein",
+                "control",
+                "gene",
+                "modified nucleoside",
+                "fusion protein"
+           ]
+        },
         "organism": {
             "title": "Organism",
             "description": "Organism bearing the target.",
@@ -53,7 +66,10 @@
         }
     },
     "facets": {
-        "Organism": "organism.name"
+        "organism.name": {
+            "title": "Organism",
+            "type": "string"
+        }
     },
     "columns": {
         "label": {

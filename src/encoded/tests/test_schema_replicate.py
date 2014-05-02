@@ -4,18 +4,18 @@ import pytest
 @pytest.fixture
 def replicate(experiment):
     return {
-         'experiment': experiment['uuid'],
-         'biological_replicate_number': 1,
-         'technical_replicate_number': 1,
+        'experiment': experiment['uuid'],
+        'biological_replicate_number': 1,
+        'technical_replicate_number': 1,
     }
 
 
 @pytest.fixture
 def replicate_rbns(replicate):
     item = replicate.copy()
-    item.update ({
-         'rbns_protein_concentration': 10,
-         'rbns_protein_concentration_units': 'nM',
+    item.update({
+        'rbns_protein_concentration': 10,
+        'rbns_protein_concentration_units': 'nM',
     })
     return item
 
@@ -23,15 +23,15 @@ def replicate_rbns(replicate):
 @pytest.fixture
 def replicate_rbns_no_units(replicate):
     item = replicate.copy()
-    item.update ({
-         'rbns_protein_concentration': 10,
+    item.update({
+        'rbns_protein_concentration': 10,
     })
     return item
 
 
 def test_replicate_rbns_post(testapp, replicate_rbns):
-   testapp.post_json('/replicate', replicate_rbns)
+    testapp.post_json('/replicate', replicate_rbns)
 
 
 def test_replicate_rbns_unit_requirement(testapp, replicate_rbns_no_units):
-   testapp.post_json('/replicate', replicate_rbns_no_units, status=422)
+    testapp.post_json('/replicate', replicate_rbns_no_units, status=422)

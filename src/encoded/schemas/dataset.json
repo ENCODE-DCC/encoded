@@ -1,3 +1,4 @@
+
 {
     "title": "Dataset",
     "description": "Schema for submitting metadata for a dataset.",
@@ -14,6 +15,7 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
@@ -77,18 +79,6 @@
                 "linkTo": "file"
             }
         },
-        "references": {
-            "title": "References",
-            "description": "The identifiers that reference data found in the experiment.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Reference",
-                "description": "An identifier that references data found in the experiment.",
-                "type": "string",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
-            }
-        },
         "status": {
             "title": "Status",
             "type": "string",
@@ -105,8 +95,14 @@
         }
     },
     "facets": {
-        "Dataset Type": "dataset_type",
-        "Lab": "lab.title"
+        "dataset_type": {
+            "title": "Dataset type",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        }
     },
     "columns": {
         "accession": {

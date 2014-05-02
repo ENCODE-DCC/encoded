@@ -179,6 +179,10 @@
         "description": "RNA Evaluation K562 Long Total from Graveley",
         "lab": "brenton-graveley",
         "status": "released",
+        "references": [
+            "PMID:23000965",
+            "PMID:16395128"
+        ],
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "0cb85395-da45-47e5-84c7-888f90c983fc"
     },
