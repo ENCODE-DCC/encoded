@@ -1,4 +1,5 @@
 from ..migrator import upgrade_step
+from ..views.views import ENCODE2_AWARDS
 
 
 @upgrade_step('antibody_characterization', '', '3')
@@ -38,5 +39,29 @@ def characterization_0_3(value, system):
     }
 
     if 'status' in value:
-        new_value = new_status[value['status']]
-        value['status'] = new_value
+        if value['status'] in new_status.keys():
+            new_value = new_status[value['status']]
+            value['status'] = new_value
+
+
+@upgrade_step('antibody_characterization', '3', '4')
+def antibody_characterization_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/1307
+    if 'status' in value:
+        value['status'] = value['status'].lower()
+
+
+@upgrade_step('biosample_characterization', '3', '4')
+@upgrade_step('rnai_characterization', '3', '4')
+@upgrade_step('construct_characterization', '3', '4')
+def characterization_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/1307
+    # http://redmine.encodedcc.org/issues/1295
+
+    if 'status' in value:
+        if value['status'] == 'DELETED':
+            value['status'] = 'deleted'
+        elif value['status'] == 'IN PROGRESS' and value['award'] in ENCODE2_AWARDS:
+            value['status'] = 'released'
+        elif value['status'] == 'IN PROGRESS' and value['award'] not in ENCODE2_AWARDS:
+            value['status'] = 'in progress'

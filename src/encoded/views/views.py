@@ -95,8 +95,9 @@ class Collection(BaseCollection):
 
     class Item(BaseCollection.Item):
         STATUS_ACL = {
-            'CURRENT': ALLOW_CURRENT,
-            'DELETED': [],
+            'released': ALLOW_CURRENT,
+            'current': ALLOW_CURRENT,
+            'deleted': [],
         }
 
         def __acl__(self):
@@ -277,14 +278,6 @@ class Construct(Collection):
 
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
-        STATUS_ACL = {
-            'IN PROGRESS': ALLOW_LAB_SUBMITTER_EDIT,
-            'PENDING DCC REVIEW': ALLOW_LAB_SUBMITTER_EDIT,
-            'COMPLIANT': ALLOW_CURRENT,
-            'NOT COMPLIANT': ALLOW_CURRENT,
-            'NOT REVIEWED': ALLOW_CURRENT,
-            'NOT SUBMITTED FOR REVIEW BY LAB': ALLOW_CURRENT,
-        }
         base_types = ['characterization'] + Collection.Item.base_types
         embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
@@ -448,6 +441,14 @@ class AntibodyCharacterization(Characterization):
     }
 
     class Item(Characterization.Item):
+        STATUS_ACL = {
+            'in progress': ALLOW_LAB_SUBMITTER_EDIT,
+            'pending dcc review': ALLOW_LAB_SUBMITTER_EDIT,
+            'compliant': ALLOW_CURRENT,
+            'not compliant': ALLOW_CURRENT,
+            'not reviewed': ALLOW_CURRENT,
+            'not submitted for review by lab': ALLOW_CURRENT,
+        }
         embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
 
 
@@ -462,9 +463,9 @@ class AntibodyApproval(Collection):
 
     class Item(Collection.Item):
         STATUS_ACL = {
-            'ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
-            'NOT ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
-            'NOT PURSUED': ALLOW_CURRENT,
+            'eligible for new data': ALLOW_CURRENT,
+            'not eligible for new data': ALLOW_CURRENT,
+            'not pursued': ALLOW_CURRENT,
         }
         embedded = [
             'antibody.host_organism',
@@ -493,7 +494,9 @@ class Platform(Collection):
         'title': '{term_name}',
         '$templated': True,
     }
-    item_keys = ALIAS_KEYS
+    unique_key = 'platform:term_id'
+    item_name_key = 'term_id'
+    item_keys = ALIAS_KEYS + ['term_name', 'term_id']
 
 
 @location('libraries')
@@ -583,6 +586,15 @@ class Dataset(Collection):
         template_type = {
             'files': 'file',
         }
+        STATUS_ACL = {
+            'released': ALLOW_CURRENT,
+            'started': ALLOW_LAB_SUBMITTER_EDIT,
+            'verified': ALLOW_LAB_SUBMITTER_EDIT,
+            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
+            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
+            'revoked': ALLOW_CURRENT,
+            'deleted': [],
+        }
         embedded = [
             'files',
             'files.replicate',
@@ -628,6 +640,15 @@ class Experiment(Dataset):
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
             ]
+        }
+        STATUS_ACL = {
+            'released': ALLOW_CURRENT,
+            'started': ALLOW_LAB_SUBMITTER_EDIT,
+            'verified': ALLOW_LAB_SUBMITTER_EDIT,
+            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
+            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
+            'revoked': ALLOW_CURRENT,
+            'deleted': [],
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody.approvals',
