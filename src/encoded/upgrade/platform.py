@@ -17,3 +17,12 @@ def platform_0_2(value, system):
             new_dbxref = 'GEO:' + geo_dbxref
             value['dbxrefs'].append(new_dbxref)
         del value['geo_dbxrefs']
+
+
+@upgrade_step('platform', '2', '3')
+def platform_2_3(value, system):
+    # http://redmine.encodedcc.org/issues/1295
+    # http://redmine.encodedcc.org/issues/1307
+
+    if 'status' in value:
+        value['status'] = value['status'].lower()
