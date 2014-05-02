@@ -6,7 +6,7 @@
         "dataset_type": "composite",
         "description": "Testing dataset",
         "lab": "richard-myers",
-        "status": "CURRENT",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "d2470afe-ac68-4489-8f51-90ddfbc8e00b"
     },
@@ -17,7 +17,7 @@
         "dataset_type": "project",
         "description": "RNA Working Group Evaluation Dataset",
         "lab": "john-stamatoyannopoulos",
-        "status": "CURRENT",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "e52a0b01-2fb8-4015-bcad-c902f1d786fb"
     },
@@ -49,7 +49,7 @@
             "ENCFF001MWZ",
             "ENCFF001MXA"
         ],
-        "status": "CURRENT",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "ce459d50-bea1-407e-acfa-95c1b543cd60"
     },
@@ -73,7 +73,7 @@
             "PMID:16954542",
             "PMID:19789528"
         ],
-        "status": "CURRENT",
+        "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "uuid": "51769a96-5aab-4e50-8677-5bafe269276d"
     }
