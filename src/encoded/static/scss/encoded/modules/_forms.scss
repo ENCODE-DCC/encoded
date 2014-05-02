@@ -4,10 +4,15 @@ $inputBorder: darken(#fff, 20%) !default;
 $inputFocusBgColor: darken(#fff, 2%) !default;
 $inputFocusBorderColor: darken(#fff, 26%) !default;
 
+.form-control {
+	padding: 4px 6px;
+}
+
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea, select {
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
 	font-family: inherit;
-	font-size: 16px;
+	font-size: 14px;
+	font-weight: normal;
 	border: 1px solid $inputBorder;
 	@include box-shadow(inset 0 1px 2px rgba(0,0,0,0.1));
 	@include transition(all 0.15s linear);
@@ -28,6 +33,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	width: 180px;
 	border-radius: 14px;
 	height: 27px;
+	padding: 3px 26px 4px 14px;
 	padding-top: 3px;
 	padding-bottom: 4px;
 	margin-top: 3px;
@@ -35,10 +41,6 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	-moz-transition: width 0.3s ease-out;
 	-webkit-transition: width 0.3s ease-out;
 	transition: width 0.3s ease-out;
-
-	@media (min-width: $screen-sm-min) {
-		width: 150px;
-	}
 
 	&:focus {
 		width: 230px;
