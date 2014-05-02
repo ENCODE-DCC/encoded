@@ -84,5 +84,5 @@ def biosample_3_4(value, system):
 def biosample_4_5(value, system):
     # http://redmine.encodedcc.org/issues/1393
 
-    if 'biosample_type' in value and (value['biosample_type'] == 'primary cell line'):
-        value['derived_from'] = 'primary cells'
+    if value.get('biosample_type') == 'primary cell line':
+        value['biosample_type'] = 'primary cells'
