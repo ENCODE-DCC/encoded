@@ -85,6 +85,17 @@
             "type": "string",
             "pattern": "[0-9]+"
         },
+        "nucleic_acid_starting_quantity_units": {
+            "title": "Nucleic acid starting quantity units",
+            "description": "The units used for starting amount of nucleic acid.",
+            "type": "string",
+            "enum": [
+                "cells",
+                "cell-equivalent",
+                "ng",
+                "mg"
+            ]
+        },
         "extraction_method": {
             "title": "Extraction method",
             "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
