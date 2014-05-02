@@ -7,6 +7,7 @@ var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
+var browserCaps = require('./mixins').browserCaps;
 
 var DbxrefList = dbxref.DbxrefList;
 
@@ -440,19 +441,14 @@ globals.panel_views.register(RNAi, 'rnai');
 
 
 var Document = module.exports.Document = React.createClass({
+
     componentDidMount: function() {
-        console.log('DOC: ' + document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1'));
-        if (this.refs.filepdf) {
-            var node = this.refs.filepdf.getDOMNode();
-            if (browsercaps.svg) {
-                node.src = node.dataset.src.substr(0, node.dataset.src.lastIndexOf(".")) + ".svg";
-            } else {
-                node.src = node.dataset.src;
-            }
-        }
-        if (this.refs.file) {
-            var node = this.refs.file.getDOMNode();
-            if (browsercaps.svg) {
+        // If the browser can render SVGs, replace the data-src attribute file extension with '.svg'.
+        var caps = browserCaps();
+        if (this.refs.fileicon) {
+            // Only do filename extension replacement if 'fileicon' ref is set
+            var node = this.refs.fileicon.getDOMNode();
+            if (caps.svg) {
                 node.src = node.dataset.src.substr(0, node.dataset.src.lastIndexOf(".")) + ".svg";
             } else {
                 node.src = node.dataset.src;
@@ -481,12 +477,12 @@ var Document = module.exports.Document = React.createClass({
                 src = "";
                 datasrc = "/static/img/file-pdf.png"
                 alt = "Characterization PDF Icon";
-                ref = "filepdf";
+                ref = "fileicon";
             } else {
                 src = "";
                 datasrc = "/static/img/file.png";
                 alt = "Characterization Icon";
-                ref = "file";
+                ref = "fileicon";
             }
             figure = (
                 <a data-bypass="true" href={attachmentHref}>
@@ -502,8 +498,9 @@ var Document = module.exports.Document = React.createClass({
             src = "";
             datasrc = "/static/img/file-broken.png";
             alt = "Characterization File Broken Icon";
+            ref = "fileicon";
             figure = (
-                <img className={imgClass} src={src} data-src={datasrc} height={height} width={width} alt={alt} />
+                <img className={imgClass} src={src} data-src={datasrc} ref={ref} height={height} width={width} alt={alt} />
             );
             download = (
                 <em>Document not available</em>

@@ -554,3 +554,14 @@ var recordBrowserStats = module.exports.recordBrowserStats = function (browser_s
         });
     });
 };
+
+
+// Return browser capabilities, a la Modernizr. Can *only* be called from
+// mounted components (componentDidMount method would be a good method to
+// call this from), because actual DOM is needed.
+module.exports.browserCaps = function () {
+    var caps = {};
+
+    caps.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
+    return caps;
+};
