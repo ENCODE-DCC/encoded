@@ -59,10 +59,10 @@ var Biosample = module.exports.Biosample = React.createClass({
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <ul className="breadcrumb">
-                            <li>Biosamples <span className="divider">/</span></li>
-                            <li>{context.biosample_type}{' '}<span className="divider">/</span></li>{' '}
+                            <li>Biosamples</li>
+                            <li>{context.biosample_type}</li>
                             {context.donor ?
                                 <li className="active">{context.donor.organism.name}</li>
                             : null }
@@ -515,33 +515,31 @@ var Document = module.exports.Document = React.createClass({
 
         return (
             <section className="type-document view-detail panel status-none">
-                <div className="container">
-                    <div className="row">
-                        <div className="span6">
-                            <figure>
-                                {figure}
-                            </figure>
-                        </div>
-                        <div className="span5">
-                            <h3 className="sentence-case">{context.document_type}</h3>
-                            <p>{context.description}</p>
-                            <dl className="key-value">
-                                {context.caption ? <dt>Caption</dt> : null}
-                                {context.caption ? <dd>{context.caption}</dd> : null}
+                <div className="row">
+                    <div className="col-sm-5 col-md-6">
+                        <figure>
+                            {figure}
+                        </figure>
+                    </div>
+                    <div className="col-sm-7 col-md-6">
+                        <h3 className="sentence-case">{context.document_type}</h3>
+                        <p>{context.description}</p>
+                        <dl className="key-value">
+                            {context.caption ? <dt>Caption</dt> : null}
+                            {context.caption ? <dd>{context.caption}</dd> : null}
 
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
+                            <dt>Submitted by</dt>
+                            <dd>{context.submitted_by.title}</dd>
 
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
 
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
+                            <dt>Grant</dt>
+                            <dd>{context.award.name}</dd>
 
-                                <dt><i className="icon-download-alt"></i> Download</dt>
-                                <dd>{download}</dd>
-                            </dl>
-                        </div>
+                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dd>{download}</dd>
+                        </dl>
                     </div>
                 </div>
             </section>
