@@ -91,3 +91,26 @@ def biosample_4_5(value, system):
             value['status'] = 'released'
         elif value['status'] == 'CURRENT' and value['award'] not in ENCODE2_AWARDS:
             value['status'] = 'in progress'
+
+
+@upgrade_step('biosample', '5', '6')
+def biosample_5_6(value, system):
+    # http://encode.stanford.edu/issues/1131
+
+    update_properties = {
+        "sex": "model_organism_sex",
+        "age": "model_organism_age",
+        "age_units": "model_organism_age_units",
+        "health_status": "model_organism_health_status",
+        "life_stage": "model_organism_life_stage"
+    }
+    
+    if value["organism"] == "human":
+        for key in update_properties:
+            if key in value:
+                del value[key]
+    else:
+        for key, val in update_properties.items():
+            if key in value:
+                value[val] = value[key]
+                del value[key]

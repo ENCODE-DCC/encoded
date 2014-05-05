@@ -16,54 +16,16 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/strains"},
+        { "$ref": "mixins.json#/genomic_alterations"}
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
-        "strain_background": {
-            "title": "Strain background",
-            "description": "The specific parent strain designation of a non-human donor.",
-            "type": "string"
-        },
-        "strain_name": {
-            "title": "Strain name",
-            "description": "The specific strain designation of a non-human donor.",
-            "type": "string"
-        },
         "genotype": {
-            "title": "Strain genotype",
-            "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/static_pages/docs/nomenclature/nomenclature3.html",
-            "type": "string" 
-        },
-        "mutagen": {
-            "title": "Mutagen",
-            "description": "The mutagen used to create the strain, if applicable",
-            "type": "string",
-            "enum": [
-                "bombardment",
-                "gamma radiation",
-                "X-ray radiation",
-                "UV radiation",
-                "PTT",
-                "transposon",
-                "unknown",
-                "none" 
-            ]
-        },
-        "constructs": {
-            "title": "DNA constructs",
-            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "DNA Constructs",
-                "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
-                "comment": "See contstruct.json for available identifiers.",
-                "type":  "string",
-                "linkTo": "construct"
-            }
+            "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/static_pages/docs/nomenclature/nomenclature3.html"
         },
         "organism":{ 
             "linkEnum": [
