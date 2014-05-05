@@ -13,8 +13,11 @@
 	h1,h2,h3,h4 {
 		@include text-shadow(rgba(255,255,255,1) 1px 1px 0);
 	}
-	display: inline-block;
 	font-size: 1.3em;
+}
+
+.text-panel {
+    margin-top: 20px;
 }
 
 /* *********************************************************
