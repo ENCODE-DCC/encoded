@@ -463,7 +463,7 @@ var Document = module.exports.Document = React.createClass({
             if (context.attachment.type.split('/', 1)[0] == 'image') {
                 imgClass = 'characterization-img';
                 src = attachmentHref;
-                sourceset = "";
+                sourceset = {};
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Characterization Image";
@@ -490,12 +490,10 @@ var Document = module.exports.Document = React.createClass({
                 </a>
             );
         } else {
-            src = "";
-            sourceset = {png:"/static/img/file-broken.png",svg:"/static/img/file-broken.svg"};
+            src = "/static/img/file-broken.png";
             alt = "Characterization File Broken Icon";
-            ref = "fileicon";
             figure = (
-                <img className={imgClass} src={src} sourceset={sourceset} ref={ref} height={height} width={width} alt={alt} />
+                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
             );
             download = (
                 <em>Document not available</em>

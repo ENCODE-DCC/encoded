@@ -146,12 +146,10 @@ var Characterization = module.exports.Characterization = React.createClass({
                 </a>
             );
         } else {
-            src = "";
-            sourceset = {png:"/static/img/file-broken.png",svg:"/static/img/file-broken.svg"};
+            src = "/static/img/file-broken.png";
             alt = "Characterization file broken icon";
-            ref = "fileicon";
             figure = (
-                <img className={imgClass} src={src} sourceset={sourceset} ref={ref} height={height} width={width} alt={alt} />
+                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
             );
             download = (
                 <em>Document not available</em>
