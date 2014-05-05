@@ -134,7 +134,7 @@
         "award": "U54HG004576",
         "biosample_term_id": "CL:1000350",
         "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
-        "biosample_type": "primary cells",
+        "biosample_type": "primary cell",
         "dataset_type": "experiment",
         "dbxrefs": [
             "UCSC-ENCODE-hg19:wgEncodeEH002229",
@@ -230,7 +230,7 @@
         "award": "U54HG004576",
         "biosample_term_id": "CL:1000350",
         "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
-        "biosample_type": "primary cells",
+        "biosample_type": "primary cell",
         "dataset_type": "experiment",
         "description": "UW  SAEC",
         "lab": "richard-myers",
