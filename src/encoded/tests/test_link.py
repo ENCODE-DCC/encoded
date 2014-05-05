@@ -10,13 +10,13 @@ sources = [
         'name': 'A',
         'target': '775795d3-4410-4114-836b-8eeecf1d0c2f',
         'uuid': '16157204-8c8f-4672-a1a4-14f4b8021fcd',
-        'status': 'CURRENT',
+        'status': 'current',
     },
     {
         'name': 'B',
         'target': 'd6784f5e-48a1-4b40-9b11-c8aefb6e1377',
         'uuid': '1e152917-c5fd-4aec-b74f-b0533d0cc55c',
-        'status': 'DELETED',
+        'status': 'deleted',
     },
 ]
 
