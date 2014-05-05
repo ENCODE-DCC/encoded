@@ -1,0 +1,84 @@
+{
+    "title": "Worm donor",
+    "description": "Schema for submitting a worm donor.",
+    "id": "/profiles/worm_donor.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "award", "lab", "organism"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "donor.json#/properties" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "strain_background": {
+            "title": "Strain background",
+            "description": "The specific parent strain designation of a non-human donor.",
+            "type": "string"
+        },
+        "strain_name": {
+            "title": "Strain name",
+            "description": "The specific strain designation of a non-human donor.",
+            "type": "string"
+        },
+        "genotype": {
+            "title": "Strain genotype",
+            "description": "The genotype of the strain according to accepted nomenclature conventions: http://www.wormbase.org/about/userguide/nomenclature#k89607hgcf24ea13jbid5--10.",
+            "type": "string" 
+        },
+        "mutagen": {
+            "title": "Mutagen",
+            "description": "The mutagen used to create the strain, if applicable",
+            "type": "string",
+            "enum": [
+                "bombardment",
+                "gamma radiation",
+                "X-ray radiation",
+                "UV radiation",
+                "PTT",
+                "transposon",
+                "unknown",
+                "none" 
+            ]
+        },
+        "constructs": {
+            "title": "DNA constructs",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "DNA Constructs",
+                "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
+                "comment": "See contstruct.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "construct"
+            }
+        },
+        "num_times_outcrossed": {
+            "title": "Number of times outcrossed",
+            "description": "The number of out/backcrossed when constructing the strain",
+            "type": "string",
+            "pattern": "^(\\d+?)x|unknown|new\\s+line$" 
+        },
+        "organism":{ 
+            "linkEnum": [
+                "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 
+                "e3ec4c1b-a203-4fe7-a013-96c2d45ab242", 
+                "69efae2b-4df5-4957-81da-346f1b93cb98", 
+                "a7e711b9-534c-44a3-a782-2a15af620739", 
+                "451f9e49-685d-40d5-ad89-760b2512262a"
+            ]
+        }
+    }
+}
