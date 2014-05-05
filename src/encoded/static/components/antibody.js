@@ -4,6 +4,7 @@ var React = require('react');
 var url = require('url');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
+var mixins = require('./mixins');
 
 var DbxrefList = dbxref.DbxrefList;
 
@@ -96,10 +97,20 @@ globals.content_views.register(Approval, 'antibody_approval');
 
 
 var Characterization = module.exports.Characterization = React.createClass({
+    mixins: [mixins.BrowserCaps],
+
+    componentDidMount: function() {
+        // If the browser can render SVGs, set the src attribute to best file name from sourceset attr.
+        if (this.refs.fileicon && this.refs.fileicon.props.sourceset) {
+            // Only do img filename replacement if 'fileicon' ref is set
+            this.browserImgRender(this.refs.fileicon.getDOMNode(), this.refs.fileicon.props.sourceset);
+        } // otherwise, no image to load at all
+    },
+
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
-        var figure, download, src, alt;
+        var figure, download, src, sourceset, alt, ref;
         var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
@@ -108,19 +119,25 @@ var Characterization = module.exports.Characterization = React.createClass({
             if (context.attachment.type.split('/', 1)[0] == 'image') {
                 imgClass = 'characterization-img';
                 src = attachmentHref;
+                sourceset = "";
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Characterization Image";
+                ref = "";
             } else if (context.attachment.type == "application/pdf"){
-                src = "/static/img/file-pdf.png";
+                src = "";
+                sourceset = {png:"/static/img/file-pdf.png",svg:"/static/img/file-pdf.svg"};
                 alt = "Characterization PDF Icon";
+                ref = "fileicon";
             } else {
-                src = "/static/img/file.png";
+                src = "";
+                sourceset = {png:"/static/img/file.png",svg:"/static/img/file.svg"};
                 alt = "Characterization Icon";
+                ref = "fileicon";
             }
             figure = (
                 <a data-bypass="true" href={attachmentHref}>
-                    <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                    <img className={imgClass} src={src} sourceset={sourceset} ref={ref} height={height} width={width} alt={alt} />
                 </a>
             );
             download = (
@@ -129,10 +146,12 @@ var Characterization = module.exports.Characterization = React.createClass({
                 </a>
             );
         } else {
-            src = "/static/img/file-broken.png";
+            src = "";
+            sourceset = {png:"/static/img/file-broken.png",svg:"/static/img/file-broken.svg"};
             alt = "Characterization file broken icon";
+            ref = "fileicon";
             figure = (
-                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                <img className={imgClass} src={src} sourceset={sourceset} ref={ref} height={height} width={width} alt={alt} />
             );
             download = (
                 <em>Document not available</em>

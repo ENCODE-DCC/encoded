@@ -467,7 +467,7 @@ var Document = module.exports.Document = React.createClass({
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Characterization Image";
-                ref = '';
+                ref = "";
             } else if (context.attachment.type == "application/pdf"){
                 src = "";
                 sourceset = {png:"/static/img/file-pdf.png",svg:"/static/img/file-pdf.svg"};
