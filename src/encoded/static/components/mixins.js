@@ -556,12 +556,33 @@ var recordBrowserStats = module.exports.recordBrowserStats = function (browser_s
 };
 
 
-// Return browser capabilities, a la Modernizr. Can *only* be called from
+// Handle browser capabilities, a la Modernizr. Can *only* be called from
 // mounted components (componentDidMount method would be a good method to
-// call this from), because actual DOM is needed.
-module.exports.browserCaps = function () {
-    var caps = {};
+// use this from), because actual DOM is needed.
+module.exports.BrowserCaps = {
+    caps: {},
 
-    caps.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
-    return caps;
+    // Return object with browser capabilities
+    getBrowserCaps: function () {
+        if (Object.keys(this.caps).length === 0) {
+            this.caps.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
+        }
+        return this.caps;
+    },
+
+    // Render <img>. 'node' is DOM node of img to render. 'sourceset' is object with
+    // jpg, png, and/or svg file names to render. Sets 'src' attr of img to appropriate
+    // version of image.
+    browserImgRender: function(node, sourceset) {
+        this.getBrowserCaps();
+
+        if (this.caps.svg && sourceset.svg) {
+            node.src = sourceset.svg;
+        } else if (sourceset.png) {
+            node.src = sourceset.png;
+        } else if (sourceset.jpg) {
+            node.src = sourceset.jpg;
+        } // otherwise, no image to load at all
+
+    }
 };

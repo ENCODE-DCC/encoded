@@ -7,7 +7,7 @@ var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
-var browserCaps = require('./mixins').browserCaps;
+var mixins = require('./mixins');
 
 var DbxrefList = dbxref.DbxrefList;
 
@@ -441,24 +441,13 @@ globals.panel_views.register(RNAi, 'rnai');
 
 
 var Document = module.exports.Document = React.createClass({
+    mixins: [mixins.BrowserCaps],
 
     componentDidMount: function() {
-        // If the browser can render SVGs, replace the data-src attribute file extension with '.svg'.
+        // If the browser can render SVGs, set the src attribute to best file name from sourceset attr.
         if (this.refs.fileicon && this.refs.fileicon.props.sourceset) {
-            // Only do filename extension replacement if 'fileicon' ref is set
-            var node = this.refs.fileicon.getDOMNode();
-            var caps = browserCaps();
-            var sourceset = this.refs.fileicon.props.sourceset;
-
-            if (sourceset) {
-                if (caps.svg && sourceset.svg) {
-                    node.src = sourceset.svg;
-                } else if (sourceset.png) {
-                    node.src = sourceset.png;
-                } else if (sourceset.jpg) {
-                    node.src = sourceset.jpg;
-                } // otherwise, no image to load at all
-            }
+            // Only do img filename replacement if 'fileicon' ref is set
+            this.browserImgRender(this.refs.fileicon.getDOMNode(), this.refs.fileicon.props.sourceset);
         } // otherwise, no image to load at all
     },
 
@@ -486,7 +475,7 @@ var Document = module.exports.Document = React.createClass({
                 ref = "fileicon";
             } else {
                 src = "";
-                sourceset = {png:"/static/img/file.png",svg:"/static/img/file-pdf.svg"};
+                sourceset = {png:"/static/img/file.png",svg:"/static/img/file.svg"};
                 alt = "Characterization Icon";
                 ref = "fileicon";
             }
