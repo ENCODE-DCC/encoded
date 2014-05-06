@@ -492,7 +492,8 @@ class Platform(Collection):
         'description': 'Listing of Platforms',
     }
     item_template = {
-        'title': '{term_name}',
+        'name': 'term_name',
+        'value': '{term_name}',
         '$templated': True,
     }
     unique_key = 'platform:term_id'
