@@ -105,7 +105,7 @@ def biosample_5_6(value, system):
         "life_stage": "model_organism_life_stage"
     }
     
-    if value["organism"] == "human":
+    if value["organism"] == "7745b647-ff15-4ff3-9ced-b897d4e2983c":
         for key in update_properties:
             if key in value:
                 del value[key]
