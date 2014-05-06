@@ -84,10 +84,12 @@
             "type": "string",
             "default": "proposed",
             "enum" : [
+                "in progress",
                 "started",
                 "verified",
                 "submitted",
                 "proposed",
+                "release ready",
                 "released",
                 "deleted",
                 "revoked"
