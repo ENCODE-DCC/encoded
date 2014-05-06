@@ -432,7 +432,7 @@ class Biosample(Collection):
                 "health_status": "model_organism_health_status",
                 "life_stage": "model_organism_life_stage"
             }
-            if ns['organism'] == 'human':
+            if ns['organism'] == '7745b647-ff15-4ff3-9ced-b897d4e2983c':
                 for value in human_donor_properties:
                     if value in donor.properties:
                         ns[value] = donor.properties[value]

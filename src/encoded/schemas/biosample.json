@@ -371,7 +371,7 @@
             "title": "Organism",
             "type": "string"
         },
-        "donor.sex": {
+        "sex": {
             "title": "Gender",
             "type": "string"
         },
