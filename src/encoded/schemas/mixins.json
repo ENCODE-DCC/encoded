@@ -62,10 +62,23 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "CURRENT",
+            "default": "in progress",
             "enum" : [
-                "CURRENT",
-                "DELETED"
+                "in progress",
+                "deleted",
+                "released"
+            ]
+        }
+    },
+    "shared_status": {
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "current",
+            "enum" : [
+                "current",
+                "deleted",
+                "disabled"
             ]
         }
     },

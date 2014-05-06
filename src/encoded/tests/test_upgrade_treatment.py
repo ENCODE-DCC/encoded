@@ -21,6 +21,16 @@ def treatment_1(treatment, award):
     return item
 
 
+@pytest.fixture
+def treatment_2(treatment):
+    item = treatment.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'CURRENT',
+    })
+    return item
+
+
 def test_treatment_upgrade(app, treatment_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('treatment', treatment_1, target_version='2')
@@ -38,3 +48,10 @@ def test_treatment_upgrade_encode_dbxref(app, treatment_1):
     assert 'encode2_dbxrefs' not in value
     assert value['dbxrefs'] == ['UCSC-ENCODE-cv:hESC to endoderm differentiation treatment']
     assert 'award' not in value
+
+
+def test_treatment_upgrade_status(app, treatment_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('treatment', treatment_2, target_version='3')
+    assert value['schema_version'] == '3'
+    assert value['status'] == 'current'

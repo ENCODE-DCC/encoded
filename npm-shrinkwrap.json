@@ -1278,10 +1278,6 @@
         }
       }
     },
-    "twitter-bootstrap": {
-      "version": "2.1.1",
-      "from": "twitter-bootstrap@^2.1.1"
-    },
     "underscore": {
       "version": "1.6.0",
       "from": "underscore@^1.6.0"

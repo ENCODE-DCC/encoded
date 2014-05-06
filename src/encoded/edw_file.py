@@ -75,9 +75,9 @@ def format_edw_fileinfo(file_dict, exclude=None):
     '''
 
     if file_dict['status'] == '':
-        file_dict['status'] = 'CURRENT'
+        file_dict['status'] = 'in progress'
     else:
-        file_dict['status'] = 'OBSOLETE'
+        file_dict['status'] = 'obsolete'
     for prop in FILE_INFO_FIELDS:
         file_dict[prop] = unicode(file_dict[prop])
         # not type-aware, so we need to force replicate to numeric

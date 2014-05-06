@@ -21,9 +21,11 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
-    'replicate',
-    'biosample',
-    'experiment',
+    'antibody_approval',
+    "antibody_characterization",
+    "antibody_lot",
+    "experiments",
+    "biosamples"
 ]
 
 

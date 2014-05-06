@@ -281,6 +281,14 @@
         "health_status": {
             "title": "Donor health status",
             "type": "string"
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "released",
+                "proposed"
+            ]
         }
     },
     "facets": {
