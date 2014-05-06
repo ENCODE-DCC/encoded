@@ -21,11 +21,15 @@ EPILOG = __doc__
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_COLLECTIONS = [
+    'platform',
+]
+
 
 def run(app, collections=None):
     root = app.root_factory(app)
     if not collections:
-        collections = root.by_item_type.keys()
+        collections = DEFAULT_COLLECTIONS
     for collection_name in collections:
         collection = root[collection_name]
         collection_path = resource_path(collection)

@@ -3,5 +3,9 @@
 	padding: 5px 15px;
     background-color: rgba(10, 37, 61, 0.03);
     text-transform: capitalize;
+    color: #707070;
+    > li {
+        @include text-shadow(0 1px 0 #fff);
+    }
     .active { color: #000; }
 }

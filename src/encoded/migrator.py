@@ -79,13 +79,12 @@ class SchemaMigrator(object):
             raise ConfigurationError('duplicate step for source', source)
         self.upgrade_steps[parse_version(source)] = UpgradeStep(step, source, dest)
 
-    def upgrade(self, value, current_version='', target_version=None, **kw):
+    def upgrade(self, value, current_version='', target_version=None, finalize=True, **kw):
         if target_version is None:
             target_version = self.version
 
         if parse_version(current_version) > parse_version(target_version):
             raise VersionTooHigh(self.__name__, current_version, target_version)
-
 
         # Try to find a path from current to target versions
         steps = []
@@ -124,7 +123,7 @@ class SchemaMigrator(object):
             if next_value is not None:
                 value = next_value
 
-        if self.finalizer is not None:
+        if finalize and self.finalizer is not None:
             next_value = self.finalizer(value, system, version)
             if next_value is not None:
                 value = next_value
