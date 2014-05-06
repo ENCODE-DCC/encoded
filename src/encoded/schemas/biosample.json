@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
+    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -25,7 +25,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "accession": {
             "accessionType": "BS"
@@ -281,6 +281,14 @@
         "health_status": {
             "title": "Donor health status",
             "type": "string"
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "released",
+                "proposed"
+            ]
         }
     },
     "facets": {
@@ -388,6 +396,7 @@
         "biosample_term_name": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
+        "synonyms": 1.0,
         "dbxrefs": 1.0,
         "subcellular_fraction_term_name": 1.0,
         "phase": 1.0,

@@ -3,7 +3,7 @@
         "name": "ENCODE2",
         "project": "ENCODE",
         "rfa": "ENCODE2",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "blank",
         "uuid": "f06a0db4-b388-48d9-b414-37d83859cad0"
     },
@@ -11,7 +11,7 @@
         "name": "ENCODE2-Mouse",
         "project": "ENCODE",
         "rfa": "ENCODE2-Mouse",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "blank",
         "uuid": "21a3b2bc-49b5-4781-bd5f-14b7beee245a"
     },
@@ -23,7 +23,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2003-09-30",
-        "status": "CURRENT",
+        "status": "current",
         "title": "STRUCTURAL ANNOTATION OF THE HUMAN GENOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8323154",
         "uuid": "2a27a363-6bb5-43cc-99c4-d58bf06d3d8e"
@@ -36,7 +36,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2-Mouse",
         "start_date": "2008-09-18",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "GENOME-WIDE MAP OF ACTIVE PROMOTERS IN THE MOUSE CELLS",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8321273",
         "uuid": "5a009305-4ddc-4dba-bbf3-7327ceda3702"
@@ -49,7 +49,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2-Mouse",
         "start_date": "2009-09-26",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "ENHANCE HUMAN ENCODE BY FUNCTION COMPARISONS TO MOUSE",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8321719",
         "uuid": "2cda932c-07d5-4740-a024-d585635f5650"
@@ -62,7 +62,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2-Mouse",
         "start_date": "2009-09-30",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "MAPPING TRANSCRIPTION FACTORS BINDING SITES IN THE MOUSE GENOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8327327",
         "uuid": "95839ec3-9b83-44d9-a98a-026a9fd01bda"
@@ -75,7 +75,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2-Mouse",
         "start_date": "2009-09-29",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "DIGITAL DNASEI MAPPING AND FOOTPRINTING OF THE MOUSE GENOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8330354",
         "uuid": "124b9d72-22bd-4fcc-8e2b-052677c4e3f2"
@@ -85,7 +85,7 @@
         "pi": "felis.senectus@hymenaeos.nibh",
         "project": "ENCODE",
         "rfa": "Roadmap",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "blank",
         "uuid": "b15147e2-eadb-44f3-bb89-597657a01d47"
     },
@@ -97,7 +97,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2009-09-29",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "PRODUCTION SEQUENCING OF REFERENCE HUMAN EPIGENOMES",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=7879018",
         "uuid": "831ca610-0f7d-4688-b54c-1ef382502e12"
@@ -110,7 +110,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2008-09-29",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "NORTHWEST REFERENCE EPIGENOME MAPPING CENTER",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=7692977",
         "uuid": "1c247a26-b384-4cb1-be4f-bd48db6d7da0"
@@ -123,7 +123,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2008-09-29",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "THE SAN DIEGO EPIGENOME CENTER",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=7882889",
         "uuid": "a3cdb215-1c62-4c48-8e75-0dd443299ec3"
@@ -136,7 +136,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2007-09-28",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "THE UCSC ENCODE DATA COORDINATION CENTER",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8332919",
         "uuid": "1a4d6443-8e29-4b4a-99dd-f93e72d42418"
@@ -149,7 +149,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE3",
         "start_date": "2012-09-21",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "A DATA COORDINATING CENTER FOR ENCODE",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402218",
         "uuid": "8bafd685-aa17-43fe-95aa-37bc1c90074a"
@@ -162,7 +162,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2007-09-27",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "COMPREHENSIVE CHARACTERIZATION AND CLASSIFICATION OF THE HUMAN TRANSCRIPTOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8298287",
         "uuid": "c68bafc1-dda3-41a9-b889-ec756f0368e1"
@@ -175,7 +175,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2007-09-28",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "PRODUCTION CENTER FOR GLOBAL MAPPING OF REGULATORY ELEMENTS",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8325805",
         "uuid": "df972196-c3c7-4a58-a852-94baa87f9b71"
@@ -188,7 +188,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2007-09-27",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "COMPREHENSIVE IDENTIFICATION OF ACTIVE FUNCTIONAL ELEMENTS IN HUMAN CHROMATIN",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8320050",
         "uuid": "a7ba7c03-d93f-4503-8116-63db88a1390c"
@@ -201,7 +201,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2007-09-28",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "HIGH-THROUGHPUT SEQUENCING OF CHROMATIN REGULATORY ELEMENTS",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8321257",
         "uuid": "1f3cffd4-457f-4105-9b3c-3e9119abfcf0"
@@ -214,7 +214,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2007-09-27",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "GLOBAL ANNOTATION OF REGULATORY ELEMENTS IN THE HUMAN GENOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8298349",
         "uuid": "7fd6664b-17f5-4bfe-9fdf-ed7481cf4d24"
@@ -227,7 +227,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE2",
         "start_date": "2007-09-27",
-        "status": "DELETED",
+        "status": "deleted",
         "title": "A COMPREHENSIVE CATALOG OF HUMAN DNASEL HYPERSENSITIVE SITES",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8012156&icde=15501919",
         "uuid": "366388ac-685d-415c-b0bb-834ffafdf094"
@@ -240,7 +240,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE3",
         "start_date": "2012-09-21",
-        "status": "CURRENT",
+        "status": "current",
         "title": "EXPANDING THE CATALOG OF CHROMATIN REGULATORY ELEMENTS IN THE HUMAN GENOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402205",
         "uuid": "4621616e-faba-4c60-b7b9-1cd9e5627025"
@@ -253,7 +253,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE3",
         "start_date": "2012-09-21",
-        "status": "CURRENT",
+        "status": "current",
         "title": "PRODUCTION CENTER FOR MAPPING REGULATORY REGIONS OF THE HUMAN GENOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402423",
         "uuid": "4d462953-2da5-4fcf-a695-7206f2d5cf45"
@@ -266,7 +266,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE3",
         "start_date": "2012-09-21",
-        "status": "CURRENT",
+        "status": "current",
         "title": "CENTER FOR MAMMALIAN REGULATORY GENOMICS",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402422",
         "uuid": "6db179c2-f68f-403a-8f8e-6eb9cd78cc5b"
@@ -279,7 +279,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE3",
         "start_date": "2012-09-21",
-        "status": "CURRENT",
+        "status": "current",
         "title": "TOWARD A COMPREHENSIVE FUNCTIONAL ANNOTATION OF THE HUMAN GENOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402461",
         "uuid": "6272092d-f953-4b86-b04b-cad31d64352f"
@@ -292,7 +292,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE3",
         "start_date": "2012-09-21",
-        "status": "CURRENT",
+        "status": "current",
         "title": "LANDSCAPE OF TRANSCRIPTION IN HUMAN AND MOUSE",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402436",
         "uuid": "90be62e4-0757-4097-b5cf-2e6a20240a6f"
@@ -305,7 +305,7 @@
         "project": "ENCODE",
         "rfa": "ENCODE3",
         "start_date": "2012-09-21",
-        "status": "CURRENT",
+        "status": "current",
         "title": "COMPRHENSIVE ANALYSIS OF FUNCTIONAL RNA ELEMENTS ENCODED IN THE HUMAN GENOME",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402439",
         "uuid": "d85c9929-1169-472e-b377-3f7dbbe61e09"
@@ -318,7 +318,7 @@
         "project": "Roadmap",
         "rfa": "ENCODE3",
         "start_date": "2012-09-21",
-        "status": "CURRENT",
+        "status": "current",
         "title": "A COMPREHENSIVE CATALOG OF DNASEL HYPERSENSITIVE SITES",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402670",
         "uuid": "ea1f650d-43d3-41f0-a96a-f8a2463d332f"

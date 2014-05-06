@@ -283,7 +283,7 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_fi
 
     user_patched = testapp.get('/files/ENCFF001RIC').maybe_follow().json
     assert user_patched['submitted_by'] == u'/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/'
-    assert user_patched['status'] == u'OBSOLETE'
+    assert user_patched['status'] == u'obsolete'
 
     after_reps = {d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph']}
     same_reps = {}

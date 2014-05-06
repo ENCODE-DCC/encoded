@@ -6,7 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
+    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
@@ -16,7 +16,6 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
@@ -25,7 +24,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "target": {
             "title": "Target",
@@ -199,6 +198,7 @@
         "biosample_type": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
+        "synonyms": 1.0,
         "files.accession": 1.0,
         "files.file_format": 1.0,
         "files.output_type": 1.0,

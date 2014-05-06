@@ -12,6 +12,7 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/submitted" }
     ],
@@ -64,20 +65,7 @@
             ]
         },
         "status": {
-            "title": "Approval status",
-            "description": "The current state of the characterization.",
-            "comment": "Submit a status of 'PENDING DCC REVIEW' to indicate that DCC should begin reviewing characterization. Submit a status of 'WITHDRAWN BY LAB'  to indicate that DCC should not review the characterization.'",
-            "type": "string",
-            "default": "IN PROGRESS",
-            "enum" : [
-                "IN PROGRESS",
-                "PENDING DCC REVIEW",
-                "COMPLIANT",
-                "NOT COMPLIANT",
-                "NOT REVIEWED",
-                "NOT SUBMITTED FOR REVIEW BY LAB",
-                "DELETED"
-            ]
+            "description": "The current state of the characterization."
         },
         "comment": {
             "title": "Comment",
