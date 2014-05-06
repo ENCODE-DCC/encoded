@@ -492,7 +492,7 @@ class Platform(Collection):
         'description': 'Listing of Platforms',
     }
     item_template = {
-        'name': 'term_name',
+        'title': '{term_name}',
         'value': '{term_name}',
         '$templated': True,
     }
