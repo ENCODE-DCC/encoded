@@ -12,6 +12,8 @@
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attachment" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status"},
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
@@ -62,33 +64,8 @@
                 {"format": "date"}
             ]
         },
-        "references": {
-            "title": "References",
-            "description": "The identifiers used as references for the characterization, if previously published.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Reference",
-                "description": "An identifier used as a reference for the characterization, if previously published",
-                "type": "string",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
-            }
-        },
         "status": {
-            "title": "Approval status",
-            "description": "The current state of the characterization.",
-            "comment": "Submit a status of 'PENDING DCC REVIEW' to indicate that DCC should begin reviewing characterization. Submit a status of 'WITHDRAWN BY LAB'  to indicate that DCC should not review the characterization.'",
-            "type": "string",
-            "default": "IN PROGRESS",
-            "enum" : [
-                "IN PROGRESS",
-                "PENDING DCC REVIEW",
-                "COMPLIANT",
-                "NOT COMPLIANT",
-                "NOT REVIEWED",
-                "NOT SUBMITTED FOR REVIEW BY LAB",
-                "DELETED"
-            ]
+            "description": "The current state of the characterization."
         },
         "comment": {
             "title": "Comment",

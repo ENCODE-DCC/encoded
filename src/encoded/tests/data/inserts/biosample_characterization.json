@@ -5,6 +5,10 @@
         "characterization_method": "immunoblot",
         "characterizes": "ENCBS057AAA",
         "lab": "kevin-white",
+        "references": [
+            "PMID:23000965",
+            "PMID:16395128"
+        ],
         "submitted_by": "eni.lectus@nullam.sed",
         "uuid": "297fab1b-3afd-4a5b-a222-ecd4c7ad1fc8"
     }

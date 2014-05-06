@@ -36,6 +36,33 @@ def requests_timing_hook(prefix='requests'):
     return response_hook
 
 
+
+class ElasticsearchConnectionMixin(object):
+    stats_count_key = 'es_count'
+    stats_time_key = 'es_time'
+
+    def stats_record(self, duration):
+        request = get_root_request()
+        if request is None:
+            return
+
+        duration = int(duration * 1e6)
+        stats = request._stats
+        stats[self.stats_count_key] = stats.get(self.stats_count_key, 0) + 1
+        stats[self.stats_time_key] = stats.get(self.stats_time_key, 0) + duration
+
+
+    def log_request_success(self, method, full_url, path, body, status_code, response, duration):
+        self.stats_record(duration)
+        return super(ElasticsearchConnectionMixin, self).log_request_success(
+            method, full_url, path, body, status_code, response, duration)
+
+    def log_request_fail(self, method, full_url, body, duration, status_code=None, exception=None):
+        self.stats_record(duration)
+        return super(ElasticsearchConnectionMixin, self).log_request_fail(
+            method, full_url, body, duration, status_code, exception)
+
+
 # See http://www.sqlalchemy.org/trac/wiki/UsageRecipes/Profiling
 @event.listens_for(Engine, 'before_cursor_execute')
 def before_cursor_execute(

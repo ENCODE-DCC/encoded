@@ -102,7 +102,7 @@ ANTIBODY_APPROVALS = [
         ],
     'lab': 'myers',
     'award': 'Myers',
-    'status': 'PENDING DCC REVIEW',
+    'status': 'pending dcc review',
     },
 ]
 
@@ -127,6 +127,7 @@ LIBRARIES = [
     'nucleic_acid_term_id': 'SO:0000352',
     'nucleic_acid_term_name': 'DNA',
     'biosample': 'ENCBS000TST',
+    'status': 'released',
     'lab': 'myers',
     'award': 'Myers',
     },
@@ -141,6 +142,10 @@ AWARDS = [
     'uuid': 'fae1bd8b-0d90-4ada-b51f-0ecc413e904d',
     'name': 'Myers',
     },
+    {
+    'uuid': '2a27a363-6bb5-43cc-99c4-d58bf06d3d8e',
+    'name': 'ENCODE2'
+    }
 ]
 
 BAD_AWARDS = [  # UUID same as one of labs
@@ -215,7 +220,7 @@ USERS = [
     'last_name': 'Login',
     'email': 'nologin@example.org',
     'submits_for': ['b635b4ed-dba3-4672-ace9-11d76a8d03af'],
-    'status': 'DISABLED',
+    'status': 'disabled',
     },
 ]
 

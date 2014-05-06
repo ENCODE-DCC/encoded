@@ -62,10 +62,23 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "CURRENT",
+            "default": "in progress",
             "enum" : [
-                "CURRENT",
-                "DELETED"
+                "in progress",
+                "deleted",
+                "released"
+            ]
+        }
+    },
+    "shared_status": {
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "current",
+            "enum" : [
+                "current",
+                "deleted",
+                "disabled"
             ]
         }
     },
@@ -88,6 +101,20 @@
             "linkTo": "user",
             "serverDefault": "userid",
             "permission": "import_items"
+        }
+    },
+    "references": {
+        "references": {
+            "title": "References",
+            "description": "The identifiers that reference data found in the object.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Reference",
+                "description": "An identifier that references data found in the object.",
+                "type": "string",
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
+            }
         }
     },
     "attribution": {

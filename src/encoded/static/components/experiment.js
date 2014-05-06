@@ -98,9 +98,9 @@ var Experiment = module.exports.Experiment = React.createClass({
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <ul className="breadcrumb">
-                            <li>Experiment <span className="divider">/</span></li>
+                            <li>Experiment</li>
                             <li className="active">{context.assay_term_name}</li>
                         </ul>
                         <h2>Experiment summary for {context.accession}</h2>

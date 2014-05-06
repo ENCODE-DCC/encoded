@@ -6,7 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
+    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
@@ -16,15 +16,15 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/biosample_classification" }
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "target": {
             "title": "Target",
@@ -82,11 +82,50 @@
         }
     },
     "facets": {
-        "Assay": "assay_term_name",
-        "Organism": "replicates.library.biosample.organism.name",
-        "Organ": "organ_slims",
-        "Lab": "lab.title",
-        "Developmental Slim": "developmental_slims"
+        "assay_term_name": {
+            "title": "Assay",
+            "type": "string"
+        },
+        "replicates.library.biosample.organism.name": {
+            "title": "Organism",
+            "type": "string"
+        },
+        "replicates.library.biosample.biosample_type": {
+            "title": "Biosample type",
+            "type": "string"
+        },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "files.file_format": {
+            "title": "File format",
+            "type": "string"
+        },
+        "replicates.library.treatments.treatment_term_name": {
+            "title": "Treatment",
+            "type": "array"
+        },
+        "replicates.read_length": {
+            "title": "Read length",
+            "type": "string"
+        },
+        "developmental_slims": {
+            "title": "Developmental slim",
+            "type": "array"
+        },
+        "replicates.library.biosample.life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "replicates.library.size_range": {
+            "title": "Library fragmentation size",
+            "type": "string"
+        }
     },
     "columns": {
         "accession": {
@@ -143,12 +182,15 @@
         "biosample_type": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
+        "synonyms": 1.0,
         "files.accession": 1.0,
         "files.file_format": 1.0,
         "files.output_type": 1.0,
         "files.md5sum": 1.0,
         "replicates.library.accession": 1.0,
+        "replicates.library.aliases": 1.0,
         "replicates.library.biosample.accession": 1.0,
+        "replicates.library.biosample.aliases": 1.0,
         "replicates.library.biosample.subcellular_fraction_term_name" : 1.0,
         "replicates.library.biosample.donor.accession": 1.0,
         "replicates.antibody.accession": 1.0,
@@ -172,6 +214,7 @@
         "lab.institute_label": 1.0,
         "lab.title": 1.0,
         "possible_controls.accession": 1.0,
+        "target.aliases": 1.0,
         "target.gene_name": 1.0,
         "target.label": 1.0,
         "target.dbxref": 1.0,
