@@ -101,7 +101,8 @@ class Collection(BaseCollection):
         }
 
         def __acl__(self):
-            properties = self.properties.copy()
+            # Don't finalize to avoid validation here.
+            properties = self.upgrade_properties(finalize=False).copy()
             ns = self.template_namespace(properties)
             properties.update(ns)
             status = ns.get('status')
@@ -109,7 +110,7 @@ class Collection(BaseCollection):
 
         def __ac_local_roles__(self):
             roles = {}
-            properties = self.properties.copy()
+            properties = self.upgrade_properties(finalize=False).copy()
             ns = self.template_namespace(properties)
             properties.update(ns)
             if 'lab' in properties:
