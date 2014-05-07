@@ -493,12 +493,19 @@ class Platform(Collection):
     }
     item_template = {
         'title': '{term_name}',
+        'name': '{item_type}:term_name',
         'value': '{term_name}',
-        '$templated': True,
+        '$templated': True
     }
     unique_key = 'platform:term_id'
     item_name_key = 'term_id'
-    item_keys = ALIAS_KEYS + ['term_name', 'term_id']
+    item_keys = ALIAS_KEYS + ['term_id', 
+        {
+            'name': '{item_type}:term_name',
+            'value': '{term_name}',
+            '$templated': True
+        }
+    ]
 
 
 @location('libraries')
