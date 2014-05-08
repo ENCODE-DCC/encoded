@@ -160,15 +160,15 @@
             "title": "Species",
             "type": "string"
         },
-        "replicates.library.biosample.life_stage": {
+        "replicates.library.biosample.model_organism_life_stage": {
             "title": "Life stage",
             "type": "array"
         },
-        "replicates.library.biosample.age": {
+        "replicates.library.biosample.model_organism_age": {
             "title": "Age",
             "type": "array"
         },
-        "replicates.library.biosample.age_units": {
+        "replicates.library.biosample.model_organism_age_units": {
             "title": "Age Units",
             "type": "array"
         },

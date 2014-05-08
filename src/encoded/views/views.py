@@ -237,6 +237,32 @@ class MouseDonor(Collection):
         pass
 
 
+@location('fly-donors')
+class FlyDonor(Collection):
+    item_type = 'fly_donor'
+    schema = load_schema('fly_donor.json')
+    properties = {
+        'title': 'Fly donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
+
+
+@location('worm-donors')
+class WormDonor(Collection):
+    item_type = 'worm_donor'
+    schema = load_schema('worm_donor.json')
+    properties = {
+        'title': 'Worm donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
+
+
 @location('human-donors')
 class HumanDonor(Collection):
     item_type = 'human_donor'
@@ -330,9 +356,15 @@ class Biosample(Collection):
             ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
-            ]
+            ],
+            'sex': {'$value': '{sex}', '$templated': True},
+            'age': {'$value': '{age}', '$templated': True},
+            'age_units': {'$value': '{age_units}', '$templated': True},
+            'health_status': {'$value': '{health_status}', '$templated': True},
+            'life_stage': {'$value': '{life_stage}', '$templated': True}
         }
         embedded = set([
+            'donor',
             'donor.organism',
             'submitted_by',
             'lab',
@@ -383,6 +415,35 @@ class Biosample(Collection):
                     ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
+            
+            root = find_root(self)
+            donor = root.get_by_uuid(self.properties['organism'])
+            human_donor_properties = [
+                "sex",
+                "age",
+                "age_units",
+                "health_status",
+                "life_stage"
+            ]
+            model_biosample_properties = {
+                "sex": "model_organism_sex",
+                "age": "model_organism_age",
+                "age_units": "model_organism_age_units",
+                "health_status": "model_organism_health_status",
+                "life_stage": "model_organism_life_stage"
+            }
+            if ns['organism'] == '7745b647-ff15-4ff3-9ced-b897d4e2983c':
+                for value in human_donor_properties:
+                    if value in donor.properties:
+                        ns[value] = donor.properties[value]
+                    else:
+                        ns[value] = ''
+            else:
+                for key, value in model_biosample_properties.items():
+                    if value in ns:
+                        ns[key] = ns[value]
+                    else:
+                        ns[key] = ''
             return ns
 
 

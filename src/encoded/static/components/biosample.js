@@ -319,8 +319,8 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {biosample && biosample.age ? <dt>Age</dt> : null}
                 {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
-                <dt>Sex</dt>
-                <dd className="sentence-case">{context.sex}</dd>
+                {context.sex ? <dt>Sex</dt> : null}
+                {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
 
                 {biosample && biosample.health_status ? <dt>Health status</dt> : null}
                 {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
