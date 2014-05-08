@@ -280,7 +280,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
                 {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                 {context.sex ? <dt>Sex</dt> : null}
                 {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
@@ -289,7 +289,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
                 {context.ethnicity ? <dt>Ethnicity</dt> : null}
-                {context.ethnicity ? <dd>{context.ethnicity}</dd> : null}
+                {context.ethnicity ? <dd className="sentence-case">{context.ethnicity}</dd> : null}
             </dl>
         );
     }
@@ -317,7 +317,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
                 {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                 {context.sex ? <dt>Sex</dt> : null}
                 {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
@@ -326,7 +326,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
                 <dt>Strain background</dt>
-                <dd>{context.strain_background}</dd>
+                <dd className="sentence-case">{context.strain_background}</dd>
 
                 {context.strain_name ? <dt>Strain name</dt> : null}
                 {context.strain_name ? <dd>{context.strain_name}</dd> : null}

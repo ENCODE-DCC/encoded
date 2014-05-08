@@ -37,6 +37,47 @@ var Experiment = module.exports.Experiment = React.createClass({
                 documents[doc['@id']] = Panel({context: doc});
             });
         });
+
+        // Process biosamples for summary display
+        var biosamples = [], lifeAge = [];
+        replicates.forEach(function (replicate) {
+            var biosample = replicate.library && replicate.library.biosample;
+            if (biosample) {
+                biosamples.push(biosample);
+
+                // Build a string with non-'unknown' life_stage, age, and age_units concatenated
+                var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
+                if (biosample.age && biosample.age != 'unknown') {
+                    lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
+                    lifeAgeString += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
+                }
+                if (lifeAgeString) {
+                    lifeAge.push(lifeAgeString);
+                }
+            }
+        });
+
+        // Eliminate duplicates in lifeAge array so each displayed only once
+        if (lifeAge.length) {
+            lifeAge = _.uniq(lifeAge);
+        }
+
+        // Build the text of the Treatment string
+        var treatmentText = [];
+        if (biosamples.length && biosamples[0].treatments && biosamples[0].treatments.length > 0) {
+            treatmentText = biosamples[0].treatments.map(function(treatment) {
+                var singleTreatment = '';
+                if (treatment.concentration) {
+                    singleTreatment += treatment.concentration + ' ' + treatment.concentration_units + ' ';
+                }
+                singleTreatment += treatment.treatment_term_name + ' (' + treatment.treatment_term_id + ') ';
+                if (treatment.duration) {
+                    singleTreatment += 'for ' + treatment.duration + ' ' + treatment.duration_units;
+                }
+                return singleTreatment;
+            });
+        }
+
         // Adding experiment specific documents
         context.documents.forEach(function (document) {
             documents[document['@id']] = Panel({context: document});
@@ -51,6 +92,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         for (var key in antibodies) {
             antibody_accessions.push(antibodies[key].accession);
         }
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -66,23 +108,42 @@ var Experiment = module.exports.Experiment = React.createClass({
                 </header>
                 <div className="panel data-display">
                     <dl className="key-value">
+                        <dt>Assay</dt>
+                        <dd>{context.assay_term_name}</dd>
+
                         <dt>Accession</dt>
                         <dd>{context.accession}</dd>
-
-                        {context.description ? <dt>Description</dt> : null}
-                        {context.description ? <dd>{context.description}</dd> : null}
-
-                        {context.biosample_term_name ? <dt>Biosample</dt> : null}
-                        {context.biosample_term_name ? <dd className="sentence-case">{context.biosample_term_name}</dd> : null}
-
-                        {context.biosample_type ? <dt>Biosample type</dt> : null}
-                        {context.biosample_type ? <dd className="sentence-case">{context.biosample_type}</dd> : null}
 
                         {context.target ? <dt>Target</dt> : null}
                         {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
 
                         {antibody_accessions.length ? <dt>Antibody</dt> : null}
                         {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
+
+                        {biosamples.length ? <dt>Biosample Summary</dt> : null}
+                        {biosamples.length ?
+                            <dd>
+                                <em>{biosamples[0].organism.scientific_name}</em>
+                                {context.biosample_type ? <span>{' ' + context.biosample_type}</span> : null}
+                                <span>: </span>
+                                {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
+                                {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
+                            </dd>
+                        : null}
+
+                        {treatmentText.length ? <dt>Treatment</dt> : null}
+                        {treatmentText.length ?
+                            <dd>
+                                <ul>
+                                    {treatmentText.map(function (treatment) {
+                                        return (<li>{treatment}</li>);
+                                    })}
+                                </ul>
+                            </dd>
+                        : null}
+
+                        {context.description ? <dt>Description</dt> : null}
+                        {context.description ? <dd>{context.description}</dd> : null}
 
                         {context.possible_controls.length ? <dt>Controls</dt> : null}
                         {context.possible_controls.length ?
@@ -106,7 +167,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
-                        
+
                         {context.aliases.length ? <dt>Aliases</dt> : null}
                         {context.aliases.length ? <dd>{aliasList}</dd> : null}
 
@@ -116,7 +177,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                     </dl>
                 </div>
 
-                <BiosamplesUsed replicates={replicates} />
                 <AssayDetails replicates={replicates} />
 
                 {Object.keys(documents).length ?
@@ -144,64 +204,6 @@ var Experiment = module.exports.Experiment = React.createClass({
 });
 
 globals.content_views.register(Experiment, 'experiment');
-
-var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
-    var replicates = props.replicates;
-    if (!replicates.length) return (<div hidden={true}></div>);
-    var biosamples = {};
-    replicates.forEach(function(replicate) {
-        var biosample = replicate.library && replicate.library.biosample;
-        if (biosample) {
-            biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
-        }
-    });
-
-    // If no libraries in the replicates, then no biosamples; just output nothing.
-    if (!Object.keys(biosamples).length) {
-        return (<div hidden={true}></div>);
-    }
-
-    return (
-        <div>
-            <h3>Biosamples used</h3>
-            <div className="table-responsive"> 
-                <table className="table table-panel table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Accession</th>
-                            <th>Biosample</th>
-                            <th>Type</th>
-                            <th>Species</th>
-                            <th>Source</th>
-                            <th>Submitter</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    { Object.keys(biosamples).map(function (key, index) {
-                        var biosample = biosamples[key].biosample;
-                        return (
-                            <tr key={index}>
-                                <td><a href={biosample['@id']}>{biosample.accession}</a></td>
-                                <td>{biosample.biosample_term_name}</td>
-                                <td>{biosample.biosample_type}</td>
-                                <td>{biosample.donor && biosample.donor.organism.name}</td>
-                                <td>{biosample.source.title}</td>
-                                <td>{biosample.submitted_by.title}</td>
-                            </tr>
-                        );
-                    })}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="7"></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-    );
-};
 
 
 var AssayDetails = module.exports.AssayDetails = function (props) {
