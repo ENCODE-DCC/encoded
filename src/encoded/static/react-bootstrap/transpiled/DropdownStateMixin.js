@@ -1,5 +1,5 @@
 "use strict";
-var React = require('react');
+var React = require("react");
 
 var DropdownStateMixin = {
   getInitialState: function () {
@@ -20,6 +20,22 @@ var DropdownStateMixin = {
     }, onStateChangeComplete);
   },
 
+  bindEvent: function (el, eventName, eventHandler) {
+    if (el.addEventListener){
+      el.addEventListener(eventName, eventHandler, false); 
+    } else if (el.attachEvent){
+      el.attachEvent('on' + eventName, eventHandler);
+    }
+  },
+
+  unbindEvent: function (el, eventName, eventHandler) {
+    if (el.removeEventListener){
+      el.removeEventListener(eventName, eventHandler, false); 
+    } else if (el.detachEvent){
+      el.detachEvent('on' + eventName, eventHandler);
+    }
+  },
+
   handleKeyUp: function (e) {
     if (e.keyCode === 27) {
       this.setDropdownState(false);
@@ -31,13 +47,13 @@ var DropdownStateMixin = {
   },
 
   bindRootCloseHandlers: function () {
-    document.addEventListener('click', this.handleClickOutside);
-    document.addEventListener('keyup', this.handleKeyUp);
+    this.bindEvent(document, 'click', this.handleClickOutside);
+    this.bindEvent(document, 'keyup', this.handleKeyUp);
   },
 
   unbindRootCloseHandlers: function () {
-    document.removeEventListener('click', this.handleClickOutside);
-    document.removeEventListener('keyup', this.handleKeyUp);
+    this.unbindEvent(document, 'click', this.handleClickOutside);
+    this.unbindEvent(document, 'keyup', this.handleKeyUp);
   },
 
   componentWillUnmount: function () {
