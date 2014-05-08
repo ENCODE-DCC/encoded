@@ -158,7 +158,7 @@
         },
         "replicates.library.biosample.organism.name": {
             "title": "Species",
-            "type": "string"
+            "type": "array"
         },
         "replicates.library.biosample.model_organism_life_stage": {
             "title": "Life stage",

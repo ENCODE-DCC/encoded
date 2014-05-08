@@ -39,11 +39,14 @@ var Experiment = module.exports.Experiment = React.createClass({
         });
 
         // Process biosamples for summary display
-        var biosamples = [], lifeAge = [];
+        var biosamples = [], lifeAge = [], organismName = [];
         replicates.forEach(function (replicate) {
             var biosample = replicate.library && replicate.library.biosample;
             if (biosample) {
                 biosamples.push(biosample);
+
+                // Add to array of scientific names for rare experiements with cross-species biosamples
+                organismName.push(biosample.organism.scientific_name);
 
                 // Build a string with non-'unknown' life_stage, age, and age_units concatenated
                 var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
@@ -57,9 +60,12 @@ var Experiment = module.exports.Experiment = React.createClass({
             }
         });
 
-        // Eliminate duplicates in lifeAge array so each displayed only once
+        // Eliminate duplicates in lifeAge and organismName arrays so each displayed only once
         if (lifeAge.length) {
             lifeAge = _.uniq(lifeAge);
+        }
+        if (organismName.length) {
+            organismName = _.uniq(organismName);
         }
 
         // Build the text of the Treatment string
@@ -123,9 +129,15 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {biosamples.length ? <dt>Biosample Summary</dt> : null}
                         {biosamples.length ?
                             <dd>
-                                <em>{biosamples[0].organism.scientific_name}</em>
+                                {organismName.map(function(name, i) {
+                                    if (i === 0) {
+                                        return (<em>{name}</em>);
+                                    } else {
+                                        return (<span>{ ' and ' }<em>{name}</em></span>);
+                                    }
+                                })}
                                 {context.biosample_type ? <span>{' ' + context.biosample_type}</span> : null}
-                                <span>: </span>
+                                {context.biosample_term_name || lifeAge.length ? <span>: </span> : null}
                                 {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
                                 {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
                             </dd>

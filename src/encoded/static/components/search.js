@@ -134,6 +134,8 @@ var Dbxref = dbxref.Dbxref;
             var ageUnits = '';
 
             // See if all life stage, age, and age_unit arrays are all homogeneous
+            var name = homogenousArray(result, 'replicates.library.biosample.organism.name') ?
+                    result['replicates.library.biosample.organism.name'][0] : '';
             var lifeStage = homogenousArray(result, 'replicates.library.biosample.model_organism_life_stage') ?
                     result['replicates.library.biosample.model_organism_life_stage'][0] : '';
             var ageLen = homogenousArray(result, 'replicates.library.biosample.model_organism_age');
@@ -149,9 +151,8 @@ var Dbxref = dbxref.Dbxref;
                             <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
                             <div className="accession">
                                 <a href={result['@id']}>
-                                    <span>{result['assay_term_name'] + ' of ' + result['biosample_term_name']}</span>
-                                    <span>{result['replicates.library.biosample.organism.name'] ? (' (' + result['replicates.library.biosample.organism.name'] +
-                                            separator + lifeStage + age + ageUnits + ')') : ''}</span>
+                                    {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
+                                    <span>{name ? (' (' + name + separator + lifeStage + age + ageUnits + ')') : ''}</span>
                                 </a>
                             </div>
                         </div>
