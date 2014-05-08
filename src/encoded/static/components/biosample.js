@@ -276,17 +276,17 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {context.organism.name ? <dt>Species</dt> : null}
                 {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
 
-                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+                {biosample && biosample.model_organism_life_stage ? <dt>Life stage</dt> : null}
+                {biosample && biosample.model_organism_life_stage ? <dd className="sentence-case">{biosample.model_organism_life_stage}</dd> : null}
 
-                {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                {biosample && biosample.model_organism_age ? <dt>Age</dt> : null}
+                {biosample && biosample.model_organism_age ? <dd className="sentence-case">{biosample.model_organism_age}{' '}{biosample.model_organism_age_units}</dd> : null}
 
-                {context.sex ? <dt>Sex</dt> : null}
-                {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
+                {context.model_organism_sex ? <dt>Sex</dt> : null}
+                {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
 
-                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
+                {biosample && biosample.model_organism_health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.model_organism_health_status ? <dd className="sentence-case">{biosample.model_organism_health_status}</dd> : null}
 
                 {context.ethnicity ? <dt>Ethnicity</dt> : null}
                 {context.ethnicity ? <dd className="sentence-case">{context.ethnicity}</dd> : null}
@@ -313,17 +313,17 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {context.organism.name ? <dt>Species</dt> : null}
                 {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
 
-                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+                {biosample && biosample.model_organism_life_stage ? <dt>Life stage</dt> : null}
+                {biosample && biosample.model_organism_life_stage ? <dd className="sentence-case">{biosample.model_organism_life_stage}</dd> : null}
 
-                {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                {biosample && biosample.model_organism_age ? <dt>Age</dt> : null}
+                {biosample && biosample.model_organism_age ? <dd className="sentence-case">{biosample.model_organism_age}{' '}{biosample.model_organism_age_units}</dd> : null}
 
-                {context.sex ? <dt>Sex</dt> : null}
-                {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
+                {context.model_organism_sex ? <dt>Sex</dt> : null}
+                {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
 
-                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
+                {biosample && biosample.model_organism_health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.model_organism_health_status ? <dd className="sentence-case">{biosample.model_organism_health_status}</dd> : null}
 
                 <dt>Strain background</dt>
                 <dd className="sentence-case">{context.strain_background}</dd>
