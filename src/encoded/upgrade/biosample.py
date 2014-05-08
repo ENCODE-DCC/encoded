@@ -1,4 +1,5 @@
 from ..migrator import upgrade_step
+from ..views.views import ENCODE2_AWARDS
 
 
 def number(value):
@@ -57,14 +58,14 @@ def biosample_3_4(value, system):
     # http://redmine.encodedcc.org/issues/575
 
     if 'derived_from' in value:
-        if value['derived_from']:
+        if type(value['derived_from']) is list and value['derived_from']:
             new_value = value['derived_from'][0]
             value['derived_from'] = new_value
         else:
             del value['derived_from']
 
     if 'part_of' in value:
-        if value['part_of']:
+        if type(value['part_of']) is list and value['part_of']:
             new_value = value['part_of'][0]
             value['part_of'] = new_value
         else:
@@ -78,3 +79,15 @@ def biosample_3_4(value, system):
             new_dbxref = 'UCSC-ENCODE-cv:' + encode2_dbxref
             value['dbxrefs'].append(new_dbxref)
         del value['encode2_dbxrefs']
+
+
+@upgrade_step('biosample', '4', '5')
+def biosample_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/1305
+    if 'status' in value:
+        if value['status'] == 'DELETED':
+            value['status'] = 'deleted'
+        elif value['status'] == 'CURRENT' and value['award'] in ENCODE2_AWARDS:
+            value['status'] = 'released'
+        elif value['status'] == 'CURRENT' and value['award'] not in ENCODE2_AWARDS:
+            value['status'] = 'in progress'

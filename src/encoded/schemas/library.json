@@ -22,7 +22,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "accession": {
             "accessionType": "LB"
@@ -79,27 +79,27 @@
                 "linkTo": "document"
             }
         },
-        "library_type": {
-            "title": "Type",
-            "description": "The type of molecule from which the library was constructed.",
-            "type": "string",
-            "default": "nucleic acid",
-            "enum": [
-                "nucleic acid",
-                "protein"
-            ]
-        },
         "nucleic_acid_starting_quantity": {
             "title": "Nucleic acid starting quantity",
             "description": "The starting amount of nucleic acid before selection and purification.",
             "type": "string",
             "pattern": "[0-9]+"
         },
+        "nucleic_acid_starting_quantity_units": {
+            "title": "Nucleic acid starting quantity units",
+            "description": "The units used for starting amount of nucleic acid.",
+            "type": "string",
+            "enum": [
+                "cells",
+                "cell-equivalent",
+                "ng",
+                "mg"
+            ]
+        },
         "extraction_method": {
             "title": "Extraction method",
             "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "miRNeasy Mini kit (QIAGEN cat#:217004)",
                 "Trizol (LifeTech cat#: 15596-018)",
@@ -115,7 +115,6 @@
             "title": "Fragmentation method",
             "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation, if applicable.",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "sonication",
                 "see document",
@@ -141,7 +140,6 @@
             "title": "Size selection method",
             "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "gel",
                 "see document",
@@ -153,7 +151,6 @@
             "title": "Lysis method",
             "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "miRNeasy Mini kit (QIAGEN cat#:217004)",
                 "Trizol (LifeTech cat#: 15596-018)",

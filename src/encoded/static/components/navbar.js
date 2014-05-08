@@ -3,6 +3,9 @@
 var React = require('react');
 var url = require('url');
 var mixins = require('./mixins');
+var Navbar = require('../react-bootstrap/Navbar');
+var Nav = require('../react-bootstrap/Nav');
+var NavItem = require('../react-bootstrap/NavItem');
 
 // Hide data from NavBarLayout
 var NavBar = React.createClass({
@@ -30,20 +33,12 @@ var NavBarLayout = React.createClass({
         var user_actions = this.props.user_actions;
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
-                <div className="navbar-inner">
-                    <div className="container">
-                        <a className="btn btn-navbar" href="" data-toggle="collapse" data-target=".nav-collapse">
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                            <span className="icon-bar"></span>
-                        </a>
-                        <a className="brand" href="/">{portal.portal_title}</a>
-                        <div className="nav-collapse collapse">
-                            <GlobalSections global_sections={portal.global_sections} section={section} />
-                            {this.transferPropsTo(<UserActions />)}
-                            {this.transferPropsTo(<Search />)}
-                        </div>
-                    </div>
+                <div className="container">
+                    <Navbar brand={portal.portal_title} brandlink="/" noClasses={true} data-target="main-nav">
+                        <GlobalSections global_sections={portal.global_sections} section={section} />
+                        {this.transferPropsTo(<UserActions />)}
+                        {this.transferPropsTo(<Search />)}
+                    </Navbar>
                 </div>
             </div>
         );
@@ -55,17 +50,14 @@ var GlobalSections = React.createClass({
     render: function() {
         var section = this.props.section;
         var actions = this.props.global_sections.map(function (action) {
-            var className = action['class'] || '';
-            if (section == action.id) {
-                className += ' active';
-            }
+            var active = (section == action.id);
             return (
-                <li className={className} key={action.id}>
-                    <a href={action.url}>{action.title}</a>
-                </li>
+                <NavItem active={active} href={action.url} key={action.id}>
+                    {action.title}
+                </NavItem>
             );
         });
-        return <ul id="global-sections" className="nav">{actions}</ul>;
+        return <Nav navbar={true} bsStyle="navbar-nav" activeKey={1}>{actions}</Nav>;
     }
 });
 
@@ -74,12 +66,12 @@ var Search = React.createClass({
         var id = url.parse(this.props.href, true);
         var searchTerm = id.query['searchTerm'] || '';
         return (
-        	<form className="navbar-form pull-right" action="/search/">
-    			<div className="search-wrapper">
-    				<input className="input-medium search-query searchbox-style" type="text" placeholder="Search ENCODE" 
+            <form className="navbar-form navbar-right" action="/search/">
+                <div className="search-wrapper">
+                    <input className="form-control search-query" id="navbar-search" type="text" placeholder="Search ENCODE" 
                         ref="searchTerm" name="searchTerm" defaultValue={searchTerm} key={searchTerm} />
-    			</div>
-    		</form>
+                </div>
+            </form>
         );  
     }
 });
@@ -91,31 +83,28 @@ var UserActions = React.createClass({
         var disabled = !this.props.loadingComplete;
         if (!(session && session['auth.userid'])) {
             return (
-                <ul id="user-actions" className="nav pull-right">
-                    <li><a href="" disabled={disabled} data-trigger="login" data-id="signin">Sign in</a></li>
-                </ul>
+                <Nav bsStyle="navbar-nav" navbar={true} right={true} id="user-actions">
+                    <NavItem data-trigger="login" disabled={disabled}>Sign in</NavItem>
+                </Nav>
             );
         }
         var actions = this.props.user_actions.map(function (action) {
             return (
-                <li className={action['class']} key={action.id}>
-                    <a href={action.url || ''} data-bypass={action.bypass} data-trigger={action.trigger}>
-                        {action.title}
-                    </a>
-                </li>
+                <NavItem href={action.url || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
+                    {action.title}
+                </NavItem>
             );
         });
         var fullname = (session.user_properties && session.user_properties.title) || 'unknown';
         return (
-            <ul id="user-actions" className="nav pull-right">
-                <li className="dropdown">
-                    <a href="" className="dropdown-toggle" data-toggle="dropdown">{fullname}
-                    <b className="caret"></b></a>
-                    <ul className="dropdown-menu">
+            <Nav bsStyle="navbar-nav" navbar={true} right={true} id="user-actions">
+                <NavItem dropdown={true}>
+                    {fullname}
+                    <Nav navbar={true} dropdown={true}>
                         {actions}
-                    </ul>
-                </li>
-            </ul>
+                    </Nav>
+                </NavItem>
+            </Nav>
         );
     }
 });

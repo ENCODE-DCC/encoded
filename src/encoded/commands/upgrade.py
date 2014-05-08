@@ -21,7 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
-    'replicate',
+    'antibody_approval',
+    "antibody_characterization",
+    "antibody_lot",
 ]
 
 

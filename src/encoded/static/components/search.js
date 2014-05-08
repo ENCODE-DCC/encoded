@@ -221,6 +221,16 @@ var Dbxref = dbxref.Dbxref;
 
 
     var Facet = search.Facet = React.createClass({
+        getInitialState: function () {
+            return {
+                facetOpen: false
+            }
+        },
+
+        handleClick: function () {
+            this.setState({facetOpen: !this.state.facetOpen});
+        },
+
         render: function() {
             var facet = this.props.facet;
             var filters = this.props.filters;
@@ -239,8 +249,8 @@ var Dbxref = dbxref.Dbxref;
             var termID = title.replace(/\s+/g, '');
             var TermComponent = field === 'type' ? TypeTerm : Term;
             var moreTermSelected = anyTermSelected(moreTerms, field, filters);
-            var moreSecClass = 'collapse' + (moreTermSelected ? ' in' : '');
-            var seeMoreClass = 'btn btn-link' + (moreTermSelected ? '' : ' collapsed');
+            var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
+            var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
             return (
                 <div className="facet" key={field} hidden={terms.length === 0}>
                     <h5>{title}</h5>
@@ -257,10 +267,10 @@ var Dbxref = dbxref.Dbxref;
                                 }.bind(this))}
                             </div>
                         : null}
-                        {terms.length > 5 ?
+                        {(terms.length > 5 && !moreTermSelected) ?
                             <label className="pull-right">
                                     <small>
-                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} />
+                                        <button type="button" className={seeMoreClass} data-toggle="collapse" data-target={'#'+termID} onClick={this.handleClick} />
                                     </small>
                             </label>
                         : null}
@@ -301,19 +311,19 @@ var Dbxref = dbxref.Dbxref;
                     <div>
                         {results.length ?
                             <div className="row">
-                                <div className="span3">
+                                <div className="col-sm-5 col-md-4 col-lg-3">
                                     {this.transferPropsTo(
                                         <FacetList facets={facets} filters={filters} />
                                     )}
                                 </div>
 
-                                <div className="span8">
+                                <div className="col-sm-7 col-md-8 col-lg-9">
                                     <h4>Showing {results.length} of {total} 
                                         {total > results.length ?
                                                 <span className="pull-right">
                                                     {search_id.indexOf('&limit=all') !== -1 ? 
-                                                        <a className="btn btn-info btn-small" href={search_id.replace("&limit=all", "")}>View 25</a>
-                                                    : <a rel="nofollow" className="btn btn-info btn-small" href={search_id+ '&limit=all'}>View All</a>}
+                                                        <a className="btn btn-info btn-sm" href={search_id.replace("&limit=all", "")}>View 25</a>
+                                                    : <a rel="nofollow" className="btn btn-info btn-sm" href={search_id+ '&limit=all'}>View All</a>}
                                                 </span>
                                             : null}
                                     </h4>
