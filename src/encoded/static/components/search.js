@@ -379,13 +379,13 @@ var Dbxref = dbxref.Dbxref;
                     <div>
                         {results.length ?
                             <div className="row">
-                                <div className="col-sm-5 col-md-4">
+                                <div className="col-sm-5 col-md-4 col-lg-3">
                                     {this.transferPropsTo(
                                         <FacetList facets={facets} filters={filters} />
                                     )}
                                 </div>
 
-                                <div className="col-sm-7 col-md-8">
+                                <div className="col-sm-7 col-md-8 col-lg-9">
                                     <h4>Showing {results.length} of {total} 
                                         {total > results.length ?
                                                 <span className="pull-right">
