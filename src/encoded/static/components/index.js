@@ -31,9 +31,6 @@ module.exports = App;
 var ReactMount = require('react/lib/ReactMount');
 ReactMount.allowFullPageRender = true;
 
-var recordServerStats = require('./mixins').recordServerStats;
-
-
 // Treat domready function as the entry point to the application.
 // Inside this function, kick-off all initialization, everything up to this
 // point should be definitions.
@@ -52,7 +49,7 @@ if (typeof window != 'undefined' && !window.TEST_RUNNER) {
 
         var stats_header = document.documentElement.getAttribute('data-stats') || '';
         var server_stats = require('querystring').parse(stats_header);
-        recordServerStats(server_stats, 'html');
+        App.recordServerStats(server_stats, 'html');
 
         var app = React.renderComponent(App(props), document);
 
