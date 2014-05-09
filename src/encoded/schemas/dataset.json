@@ -89,7 +89,7 @@
             ],
             "permission": "import_items"
         },
-	"status": {
+        "status": {
             "title": "Status",
             "type": "string",
             "default": "proposed",
