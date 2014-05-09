@@ -28,6 +28,7 @@ var render = function (Component, body, res) {
         };
         // To debug in browser, pause on caught exceptions:
         //   app.setProps({context: app.props.context.context})
+        res.statusCode = 500;
         component = Component(props);
         markup = React.renderComponentToString(component);
     }
