@@ -63,7 +63,7 @@
             "title": "Target",
             "type": "string"
         },
-        "organism.name": {
+        "organism.scientific_name": {
             "title": "Species",
             "type": "string"
         },

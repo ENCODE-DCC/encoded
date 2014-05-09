@@ -63,7 +63,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <li>Biosamples</li>
                             <li>{context.biosample_type}</li>
                             {context.donor ?
-                                <li className="active">{context.donor.organism.name}</li>
+                                <li className="active">{context.donor.organism.scientific_name}</li>
                             : null }
                         </ul>
                         <h2>{context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span></h2>
@@ -273,8 +273,8 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {context.aliases.length ? <dt>Aliases</dt> : null}
                 {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
-                {context.organism.name ? <dt>Species</dt> : null}
-                {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
+                {context.organism.scientific_name ? <dt>Species</dt> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
 
                 {biosample && biosample.model_organism_life_stage ? <dt>Life stage</dt> : null}
                 {biosample && biosample.model_organism_life_stage ? <dd className="sentence-case">{biosample.model_organism_life_stage}</dd> : null}
@@ -310,8 +310,8 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {context.aliases.length ? <dt>Aliases</dt> : null}
                 {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
-                {context.organism.name ? <dt>Species</dt> : null}
-                {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
+                {context.organism.scientific_name ? <dt>Species</dt> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
 
                 {biosample && biosample.model_organism_life_stage ? <dt>Life stage</dt> : null}
                 {biosample && biosample.model_organism_life_stage ? <dd className="sentence-case">{biosample.model_organism_life_stage}</dd> : null}

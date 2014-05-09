@@ -36,7 +36,7 @@ Feature: Search
         And I wait for the content to load
         Then I should see at least 1 elements with the css selector "ul.nav.result-table > li"
         
-        When I click the link to "?type=biosample&donor.model_organism_sex=unknown&organism.scientific_name=Homo sapiens"
+        When I click the link to "?type=biosample&model_organism_sex=unknown&organism.scientific_name=Homo sapiens"
         And I wait for the content to load
         Then I should see at least 13 elements with the css selector "ul.nav.result-table > li"
         

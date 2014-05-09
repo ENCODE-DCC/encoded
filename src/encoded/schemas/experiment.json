@@ -156,7 +156,7 @@
             "title": "Project",
             "type": "string"
         },
-        "replicates.library.biosample.organism.name": {
+        "replicates.library.biosample.organism.scientific_name": {
             "title": "Species",
             "type": "array"
         },

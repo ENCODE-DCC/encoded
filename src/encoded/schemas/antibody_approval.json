@@ -95,7 +95,7 @@
             "title": "Target",
             "type": "string"
         },
-        "target.organism.name": {
+        "target.organism.scientific_name": {
             "title": "Species",
             "type": "string"
         },

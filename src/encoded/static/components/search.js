@@ -47,7 +47,7 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Antibody: {' ' + result['antibody.accession']}</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['target.label'] + ' (' + result['target.organism.name'] + ')'}</a> 
+                                <a href={result['@id']}>{result['target.label'] + ' (' + result['target.organism.scientific_name'] + ')'}</a> 
                             </div>
                         </div>
                         <div className="data-row"> 
@@ -73,7 +73,7 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Biosample: {' ' + result['accession']}</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['biosample_term_name'] + ' (' + result['organism.name'] +
+                                <a href={result['@id']}>{result['biosample_term_name'] + ' (' + result['organism.scientific_name'] +
                                         separator + lifeStage + age + ageUnits + ')'}</a> 
                             </div>
                         </div>
@@ -134,8 +134,8 @@ var Dbxref = dbxref.Dbxref;
             var ageUnits = '';
 
             // See if all life stage, age, and age_unit arrays are all homogeneous
-            var name = homogenousArray(result, 'replicates.library.biosample.organism.name') ?
-                    result['replicates.library.biosample.organism.name'][0] : '';
+            var name = homogenousArray(result, 'replicates.library.biosample.organism.scientific_name') ?
+                    result['replicates.library.biosample.organism.scientific_name'][0] : '';
             var lifeStage = homogenousArray(result, 'replicates.library.biosample.model_organism_life_stage') ?
                     result['replicates.library.biosample.model_organism_life_stage'][0] : '';
             var ageLen = homogenousArray(result, 'replicates.library.biosample.model_organism_age');
@@ -208,7 +208,7 @@ var Dbxref = dbxref.Dbxref;
                         <div>
                             <span className="pull-right type">Target</span>
                             <div className="accession">
-                                <a href={result['@id']}>{result['label'] + ' (' + result['organism.name'] + ')'}</a> 
+                                <a href={result['@id']}>{result['label'] + ' (' + result['organism.scientific_name'] + ')'}</a> 
                             </div>
                         </div>
                         <div className="data-row">
