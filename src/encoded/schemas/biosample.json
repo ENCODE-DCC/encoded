@@ -234,7 +234,8 @@
         "starting_amount": {
             "title": "Starting amount",
             "description": "The initial quantity of cells or tissue obtained.",
-            "type": "number"
+            "type": "number",
+            "minimum":0
         },
         "starting_amount_units": {
             "title": "Starting amount units",

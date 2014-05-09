@@ -77,7 +77,7 @@
             "title": "Clonality",
             "type": "string"
         },
-        "anitbody.host_organism.name": {
+        "antibody.host_organism.name": {
             "title": "Host Organism",
             "type": "string"
         },
