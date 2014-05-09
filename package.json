@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "jquery, browserify-shim, domready held back.",
   "scripts": {
+    "preinstall": "npm install ./develop/subprocess-middleware-node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -27,6 +28,7 @@
     "source-map-support": "^0.2.5",
     "envify": "^1.2.1",
     "brace": "^0.2.1",
-    "cookie-cutter": "^0.1.1"
+    "cookie-cutter": "^0.1.1",
+    "subprocess-middleware": "*"
   }
 }
