@@ -118,7 +118,7 @@
             "title": "Developmental slim",
             "type": "array"
         },
-        "replicates.library.biosample.life_stage": {
+        "replicates.library.biosample.model_organism_life_stage": {
             "title": "Life stage",
             "type": "string"
         },
