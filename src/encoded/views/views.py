@@ -493,7 +493,7 @@ class Platform(Collection):
     }
     item_template = {
         'title': '{term_name}',
-        '$templated': True
+        '$templated': True,
     }
     unique_key = 'platform:term_id'
     item_name_key = 'term_id'
