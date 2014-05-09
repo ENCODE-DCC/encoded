@@ -8,7 +8,7 @@ module.exports = function(grunt) {
                 src: [
                     './src/encoded/static/libs/compat.js', // The shims should execute first
                     './src/encoded/static/libs/respond.js',
-                    './src/encoded/static/components/index.js',
+                    './src/encoded/static/browser.js',
                 ],
                 root: '.',
                 require: [
