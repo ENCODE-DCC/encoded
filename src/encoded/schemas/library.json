@@ -22,7 +22,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "accession": {
             "accessionType": "LB"
@@ -172,8 +172,7 @@
             "title": "Paired ended",
             "description": "Whether or not the library was prepared with paired ends",
             "XXXnote": "Is this redundant to the field found in replicate.json",
-            "type": "boolean",
-            "default": false
+            "type": "boolean"
         },
         "strand_specificity": {
             "title": "Strand specificity",
