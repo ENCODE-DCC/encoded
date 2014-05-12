@@ -4,7 +4,10 @@ Schema validation allows for checking values within a single object.
 We also need to perform higher order checking between linked objects.
 """
 
+import logging
 import venusian
+
+logger = logging.getLogger(__name__)
 
 
 def includeme(config):
@@ -68,7 +71,7 @@ class Auditor(object):
         self._order += 1  # consistent execution ordering
         checkers.append((self._order, checker, category, detail, level))
 
-    def audit(self, value, item_type, **kw):
+    def audit(self, value, item_type, path=None, **kw):
         if isinstance(item_type, basestring):
             item_type = [item_type]
         checkers = set()
@@ -78,15 +81,21 @@ class Auditor(object):
         system.update(kw)
         for order, checker, category, detail, level in sorted(checkers):
             try:
-                result = checker(value, system)
-            except AuditFailure as e:
-                errors.append(e)
+                try:
+                    result = checker(value, system)
+                except AuditFailure as e:
+                    errors.append(e)
+                    continue
+                if not result:
+                    continue
+                if isinstance(result, basestring):
+                    detail = result
+                errors.append(AuditFailure(category, detail, level))
+            except Exception as e:
+                detail = '%s: %r' % (checker.__name__, e)
+                errors.append(AuditFailure('audit script error', detail, 'ERROR'))
+                logger.warning('audit script error auditing %s', path, exc_info=True)
                 continue
-            if not result:
-                continue
-            if isinstance(result, basestring):
-                detail = result
-            errors.append(AuditFailure(category, detail, level))
         return errors
 
 
@@ -113,6 +122,10 @@ def audit_checker(item_type, category=None, detail=None, level=0):
     return decorate
 
 
-def audit(request, value, item_type, **kw):
+def audit(request, value, item_type, path=None, **kw):
     auditor = request.registry['auditor']
-    return auditor.audit(value, item_type, root=request.root, registry=request.registry, **kw)
+    if path is None:
+        path = request.path
+    return auditor.audit(
+        value, item_type, path=path, root=request.root,
+        registry=request.registry, **kw)
