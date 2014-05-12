@@ -21,6 +21,19 @@ var Panel = function (props) {
 
 
 
+var ValidationStatusLabel = React.createClass({
+    render: function() {
+        var status = this.props.status;
+        return (
+            <span className={globals.validationStatusClass(status, 'label')}>
+                Validation: {status}
+            </span>
+        );
+    }
+});
+
+
+
 var Experiment = module.exports.Experiment = React.createClass({
     render: function() {
         var context = this.props.context;
@@ -61,7 +74,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <li>Experiment</li>
                             <li className="active">{context.assay_term_name}</li>
                         </ul>
-                        <h2>Experiment summary for {context.accession}</h2>
+                        <h2>
+                            Experiment summary for {context.accession}
+                            <ValidationStatusLabel status={context.validation_status} />
+                        </h2>
                     </div>
                 </header>
                 <div className="panel data-display">

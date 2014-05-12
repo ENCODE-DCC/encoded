@@ -147,6 +147,17 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 });
 
 
+var ValidationStatusLabel = React.createClass({
+    render: function() {
+        var status = this.props.status;
+        return (
+            <span className={globals.validationStatusClass(status, 'label')}>
+                {status}
+            </span>
+        );
+    }
+});
+
 var FileTable = module.exports.FileTable = React.createClass({
     render: function() {
         // Creating an object here dedupes when a file is listed under both related_files and original_files
@@ -166,6 +177,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <td>{file.submitted_by.title}</td>
                     <td>{file.date_created}</td>
                     <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
+                    <td><ValidationStatusLabel status={file.validation_status} /></td>
                 </tr>
             );
         });
@@ -182,6 +194,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <th>Added by</th>
                             <th>Date added</th>
                             <th>File download</th>
+                            <th>Validation status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -189,7 +202,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan="8"></td>
+                            <td colSpan="9"></td>
                         </tr>
                     </tfoot>
                 </table>
