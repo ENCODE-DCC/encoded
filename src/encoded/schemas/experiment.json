@@ -156,6 +156,10 @@
             "title": "Project",
             "type": "string"
         },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
         "replicates.length": {
             "title": "Replicates",
             "type": "array"

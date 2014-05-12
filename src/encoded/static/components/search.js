@@ -67,7 +67,10 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Biosample: {' ' + result['accession']}</span>
+                            <div className="pull-right search-meta">
+                                <p className="type">Biosample: {' ' + result['accession']}</p>
+                                <p className="type">Status: <span className="meta-status">{' ' + result['status']}</span></p>
+                            </div>
                             <div className="accession">
                                 <a href={result['@id']}>{result['biosample_term_name'] + ' (' + result['organism.name'] + ')'}</a> 
                             </div>
@@ -91,7 +94,10 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
+                            <div className="pull-right search-meta">
+                                <p className="type">Experiment: {' ' + result['accession']}</p>
+                                <p className="type">Status: <span className="meta-status">{' ' + result['status']}</span></p>
+                            </div>
                             <div className="accession">
                                 <a href={result['@id']}>{result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span></a> 
                             </div>
@@ -328,7 +334,7 @@ var Dbxref = dbxref.Dbxref;
                                             : null}
                                     </h4>
                                     <hr />
-                                    <ul className="nav result-table">
+                                    <ul className="result-table">
                                         {results.length ?
                                             results.map(function (result) {
                                                 return Listing({context:result, columns: columns, key: result['@id']});
