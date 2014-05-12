@@ -120,13 +120,21 @@
     padding: 2px 5px;
 
     p {
+        color: #909090;
         margin: 0;
+        line-height: 1.2;
         text-align: right;
     }
 }
 
+.meta-title {
+    margin-bottom: 7px !important;
+    font-size: 1.2em;
+    color: #606060 !important;
+}
+
 .meta-status {
-    text-transform: uppercase;
+    font-weight: bold;
 }
 
 .data-row {
