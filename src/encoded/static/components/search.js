@@ -334,7 +334,7 @@ var Dbxref = dbxref.Dbxref;
                                             : null}
                                     </h4>
                                     <hr />
-                                    <ul className="result-table">
+                                    <ul className="nav result-table">
                                         {results.length ?
                                             results.map(function (result) {
                                                 return Listing({context:result, columns: columns, key: result['@id']});

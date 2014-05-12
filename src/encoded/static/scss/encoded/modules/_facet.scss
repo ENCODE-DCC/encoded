@@ -156,33 +156,35 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
+
+    li {
+        margin-top: 10px;
+        border-bottom: 1px solid #E8E8E8;
+        margin-bottom: 10px;
+        font-size: 0.9em;
+
+        &:first {
+            margin-top: 0px;
+            border-bottom: 1px solid #ccc;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        a {
+            text-decoration: none;
+            display: block;
+
+            @include transition(font-size 0.3s ease, background-color 0.3s ease);
+        }
+    }
+
+    &:before {
+        content: none;
+        display: block;
+    }
 }
 
-.result-table li {
-    margin-top: 10px;
-    border-bottom: 1px solid #E8E8E8;
-    margin-bottom: 10px;
-    font-size: 0.9em;
-}
-
-.result-table li:first {
-    margin-top: 0px;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px;
-    font-size: 0.9em;
-}
  
-.result-table li a {
-    text-decoration: none;
-    display: block;
-
-    -webkit-transition: font-size 0.3s ease, background-color 0.3s ease;
-    -moz-transition: font-size 0.3s ease, background-color 0.3s ease;
-    -o-transition: font-size 0.3s ease, background-color 0.3s ease;
-    -ms-transition: font-size 0.3s ease, background-color 0.3s ease;
-    transition: font-size 0.3s ease, background-color 0.3s ease;
-}
-
 .main-panel {
     position: relative;
     z-index: 0;
