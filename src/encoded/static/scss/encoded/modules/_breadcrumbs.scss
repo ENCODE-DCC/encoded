@@ -5,6 +5,7 @@
     text-transform: capitalize;
     color: #707070;
     > li {
+        display: inline;
         @include text-shadow(0 1px 0 #fff);
     }
     .active { color: #000; }
