@@ -4,7 +4,11 @@ Schema validation allows for checking values within a single object.
 We also need to perform higher order checking between linked objects.
 """
 
+from pyramid.traversal import resource_path
+import logging
 import venusian
+
+logger = logging.getLogger(__name__)
 
 
 def includeme(config):
@@ -78,15 +82,24 @@ class Auditor(object):
         system.update(kw)
         for order, checker, category, detail, level in sorted(checkers):
             try:
-                result = checker(value, system)
-            except AuditFailure as e:
-                errors.append(e)
+                try:
+                    result = checker(value, system)
+                except AuditFailure as e:
+                    errors.append(e)
+                    continue
+                if not result:
+                    continue
+                if isinstance(result, basestring):
+                    detail = result
+                errors.append(AuditFailure(category, detail, level))
+            except Exception as e:
+                detail = '%s: %r' % (checker.__name__, e)
+                errors.append(AuditFailure('audit script error', detail, 'ERROR'))
+                logger.warning(
+                    'audit script error auditing %s',
+                    resource_path(system['context']),
+                    exc_info=True)
                 continue
-            if not result:
-                continue
-            if isinstance(result, basestring):
-                detail = result
-            errors.append(AuditFailure(category, detail, level))
         return errors
 
 
