@@ -198,13 +198,13 @@ def validate_item_content_put(context, request):
                 raise ValidationFailure('body', ['uuid'], msg)
         request.validated.update(data)
         return
-    current = context.properties.copy()
+    current = context.upgrade_properties(finalize=False).copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
 
 def validate_item_content_patch(context, request):
-    data = context.upgrade_properties(request)
+    data = context.upgrade_properties(finalize=False).copy()
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
@@ -216,7 +216,7 @@ def validate_item_content_patch(context, request):
                 raise ValidationFailure('body', ['uuid'], msg)
         request.validated.update(data)
         return
-    current = context.properties.copy()
+    current = context.upgrade_properties(finalize=False).copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
@@ -270,7 +270,7 @@ def location_root(factory):
 
     def set_root(config, factory):
         acl = acl_from_settings(config.registry.settings)
-        root = factory(acl)
+        root = factory(config.registry, acl)
         config.registry[LOCATION_ROOT] = root
 
     def callback(scanner, factory_name, factory):
@@ -311,7 +311,8 @@ class Root(object):
         (Allow, 'remoteuser.EMBED', ('view', 'traverse')),
     ]
 
-    def __init__(self, acl=None):
+    def __init__(self, registry, acl=None):
+        self.registry = registry
         if acl is None:
             acl = []
         self.__acl__ = acl + self.builtin_acl
@@ -319,6 +320,7 @@ class Root(object):
         self.by_item_type = {}
         self.item_cache = ManagerLRUCache('encoded_item_cache', 1000)
         self.unique_key_cache = ManagerLRUCache('encoded_key_cache', 1000)
+        self.all_merged_rev = set()
 
     def __getitem__(self, name):
         try:
@@ -412,6 +414,7 @@ class Root(object):
     def attach(self, name, factory):
         value = factory(self, name)
         self[name] = value
+        self.all_merged_rev.update(value.Item.merged_rev.values())
 
     def __json__(self, request=None):
         return self.properties.copy()
@@ -537,18 +540,23 @@ class Item(object):
                     value.append(item)
         return links
 
-    def upgrade_properties(self, request):
+    def upgrade_properties(self, finalize=True):
         properties = self.properties.copy()
         current_version = properties.get('schema_version', '')
         target_version = self.schema_version
         if target_version is not None and current_version != target_version:
+            root = find_root(self)
+            migrator = root.registry['migrator']
             try:
-                properties = request.upgrade(
+                properties = migrator.upgrade(
                     self.item_type, properties, current_version, target_version,
-                    context=self)
+                    finalize=finalize, context=self, registry=root.registry)
+            except RuntimeError:
+                raise
             except Exception:
-                logger.warning('Unable to upgrade %s%s from %r to %r',
-                    request.resource_path(self.__parent__), self.uuid,
+                logger.warning(
+                    'Unable to upgrade %s from %r to %r',
+                    resource_path(self.__parent__, self.uuid),
                     current_version, target_version, exc_info=True)
         return properties
 
@@ -562,7 +570,7 @@ class Item(object):
 
         Embedding is the responsibility of the view.
         """
-        properties = self.upgrade_properties(request)
+        properties = self.upgrade_properties()
 
         for name, value in self.links(properties).iteritems():
             # XXXX Should this be {'@id': url, '@type': [...]} instead?
@@ -577,8 +585,8 @@ class Item(object):
             properties[name] = [
                 request.resource_path(item)
                     for item in value
-                        if item.upgrade_properties(request).get('status')
-                            not in ('DELETED', 'OBSOLETE')
+                        if item.upgrade_properties().get('status')
+                            not in ('deleted', 'obsolete')
             ]
 
         templated = self.expand_template(properties, request)
@@ -837,13 +845,14 @@ class Collection(Mapping):
         self.__parent__ = parent
 
         self.embedded_paths = set()
-        for column in self.columns:
-            path = tuple(
-                name for name in column.split('.')[:-1]
-                if name not in ('length', '0')
-            )
-            if path:
-                self.embedded_paths.add(path)
+        if self.schema is not None and 'columns' in self.schema:
+            for column in self.schema['columns']:
+                path = tuple(
+                    name for name in column.split('.')[:-1]
+                    if name not in ('length', '0')
+                )
+                if path:
+                    self.embedded_paths.add(path)
 
         if self.schema is not None:
             properties = self.schema['properties']
@@ -925,8 +934,8 @@ class Collection(Mapping):
 
         frame = request.params.get('frame', 'columns')
         if frame == 'columns':
-            if self.columns:
-                result['columns'] = self.columns
+            if self.schema is not None and 'columns' in self.schema:
+                result['columns'] = self.schema['columns']
             else:
                 frame = 'object'
 
@@ -974,7 +983,7 @@ class Collection(Mapping):
             '@id': rendered['@id'],
             '@type': rendered['@type'],
         }
-        for column in self.columns:
+        for column in self.schema['columns']:
             subset[column] = column_value(rendered, column)
 
         return subset
@@ -1027,14 +1036,19 @@ def column_value(obj, column):
         # Hardcoding few lines here should be gone with ES
         if name == 'length':
             return len(value)
-        elif name == '0':
-            if not value:
-                return ''
-            value = value[0]
         else:
-            value = value.get(name, None)
+            if isinstance(value, list):
+                new_values = []
+                for v in value:
+                    if name in v:
+                        new_values.append(v[name])
+                value = new_values
+            else:
+                value = value.get(name, None)
             if value is None:
                 return ''
+    if isinstance(value, list):
+        value = list(set(value))
     return value
 
 
@@ -1176,14 +1190,14 @@ def item_view(context, request):
              request_param=['frame=raw'])
 def item_view_raw(context, request):
     if asbool(request.params.get('upgrade', True)):
-        return context.upgrade_properties(request)
+        return context.upgrade_properties()
     return context.properties
 
 
 @view_config(context=Item, permission='view_raw', request_method='GET',
              request_param=['frame=edit'])
 def item_view_edit(context, request):
-    properties = context.upgrade_properties(request)
+    properties = context.upgrade_properties()
     for name, value in context.links(properties).iteritems():
         if isinstance(value, list):
             properties[name] = [request.resource_path(item) for item in value]
@@ -1277,13 +1291,15 @@ def item_index_data(context, request):
     if principals is Everyone:
         principals = [Everyone]
 
+    embedded = embed(request, request.resource_path(context))
     document = {
-        'embedded': embed(request, request.resource_path(context)),
+        'embedded': embedded,
         'object': embed(request, request.resource_path(context) + '?frame=object'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),
         'url': request.resource_path(context),
+        'audit': [a.__json__() for a in request.audit(embedded, embedded['@type'])],
     }
 
     return document

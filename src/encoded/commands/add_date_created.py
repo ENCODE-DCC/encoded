@@ -9,7 +9,7 @@ To update on the production server:
 
 For the development.ini you must supply the paster app name:
 
-    %(prog)s development.ini --app app
+    %(prog)s development.ini --app-name app
 
 """
 from pyramid.traversal import resource_path
@@ -92,14 +92,14 @@ def main():
     )
     parser.add_argument('--item-type', action='append', help="Item type")
     parser.add_argument('--skip', action='append', help="Skip item type")
-    parser.add_argument('--app', help="Pyramid app name in configfile")
+    parser.add_argument('--app-name', help="Pyramid app name in configfile")
     parser.add_argument(
         '--dry-run', action='store_true', help="Don't post to ES, just print")
     parser.add_argument('config_uri', help="path to configfile")
     args = parser.parse_args()
 
     logging.basicConfig()
-    testapp = internal_app(args.config_uri, args.app)
+    testapp = internal_app(args.config_uri, args.app_name)
 
     # Loading app will have configured from config file. Reconfigure here:
     logging.getLogger('encoded').setLevel(logging.DEBUG)

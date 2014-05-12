@@ -5,8 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
-    "facets": [{"Biosample Type": "biosample_type"},  {"Organ": "organ_slims"}, {"Organism": "organism.name"}, {"Gender": "donor.sex"}, {"Life Stage": "life_stage"}, {"Subcellular Fraction": "subcellular_fraction_term_name"}, {"Phase": "phase"}, {"Treatment": "treatments.treatment_term_name"}, {"Source": "source.title"}, {"Lab": "lab.title"}, {"Developmental Slim": "developmental_slims"}],
+    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -21,11 +20,12 @@
         { "$ref": "mixins.json#/product_id" },
         { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/source" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "5"
         },
         "accession": {
             "accessionType": "BS"
@@ -73,13 +73,16 @@
                 "linkTo": "treatment"
             }
         },
-        "encode2_dbxrefs": {
-            "title": "Previous ENCODE IDs",
+        "dbxrefs": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Previous ENCODE ID",
-                "type":  "string"
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^(UCSC-ENCODE-cv:[\\S\\s\\d\\-\\(\\)\\+]+)$"
             }
         },
         "protocol_documents": {
@@ -114,15 +117,10 @@
         },
         "derived_from": {
             "title": "Derived from",
-            "description": "The biosamples from which the sample derives from via constructs or treatments.",
-            "type":  "array",
-            "default": [],
-            "items": {
-                "description": "A biosample that the sample derives from via a construct or treatment.",
-                "comment": "See biosample.json for available identifiers.",
-                "type": "string",
-                "linkTo": "biosample"
-            }
+            "description": "A biosample that the sample derives from via a construct or treatment.",
+            "comment": "See biosample.json for available identifiers.",
+            "type": "string",
+            "linkTo": "biosample"
         },
         "pooled_from": {
             "title": "Pooled from",
@@ -138,15 +136,10 @@
         },
         "part_of": {
             "title": "Separated from",
-            "description": "The biosamples from which a discrete component were taken. That component is this biosample.",
-            "type":  "array",
-            "default": [],
-            "items": {
-                "description": "A biosample from which a discrete component was taken. That component is this biosample.",
-                "comment": "See biosamples.json for available identifiers.",
-                "type": "string",
-                "linkTo": "biosample"
-            }
+            "description": "A biosample from which a discrete component was taken. That component is this biosample.",
+            "comment": "See biosamples.json for available identifiers.",
+            "type": "string",
+            "linkTo": "biosample"
         },
         "note": {
             "title": "Note",
@@ -241,7 +234,8 @@
         "starting_amount": {
             "title": "Starting amount",
             "description": "The initial quantity of cells or tissue obtained.",
-            "type": "number"
+            "type": "number",
+            "minimum":0
         },
         "starting_amount_units": {
             "title": "Starting amount units",
@@ -288,17 +282,111 @@
         "health_status": {
             "title": "Donor health status",
             "type": "string"
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "released",
+                "proposed"
+            ]
+        }
+    },
+    "facets": {
+        "biosample_type": {
+            "title": "Biosample type",
+            "type": "string"
+        },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
+        "organism.name": {
+            "title": "Organism",
+            "type": "string"
+        },
+        "donor.sex": {
+            "title": "Gender",
+            "type": "string"
+        },
+        "life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "subcellular_fraction_term_name": {
+            "title": "Subcellular fraction",
+            "type": "string"
+        },
+        "phase": {
+            "title": "Phase",
+            "type": "string"
+        },
+        "treatments.treatment_term_name": {
+            "title": "Treatment",
+            "type": "array"
+        },
+        "source.title": {
+            "title": "Source",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "developmental_slims": {
+            "title": "Developmental slim",
+            "type": "array"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "biosample_term_name": {
+            "title": "Term",
+            "type": "string"
+        },
+        "biosample_type": {
+            "title": "Type",
+            "type": "string"
+        },
+        "organism.name": {
+            "title": "Species",
+            "type": "string"
+        },
+        "source.title": {
+            "title": "Source",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Submitter",
+            "type": "string"
+        },
+        "life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "treatments.length": {
+            "title": "Treatments length",
+            "type": "array"
+        },
+        "constructs.length": {
+            "title": "Constructs",
+            "type": "array"
         }
     },
     "boost_values": {
         "uuid": 1.0,
         "accession": 1.0,
+        "aliases": 1.0,
         "alternate_accessions": 1.0,
         "biosample_term_id": 1.0,
         "biosample_term_name": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
-        "encode2_dbxrefs": 1.0,
+        "synonyms": 1.0,
+        "dbxrefs": 1.0,
         "subcellular_fraction_term_name": 1.0,
         "phase": 1.0,
         "life_stage": 1.0,
@@ -319,7 +407,7 @@
         "treatments.treatment_type": 1.0,
         "treatments.treatment_term_id": 1.0,
         "treatments.treatment_term_name": 1.0,
-        "treatments.encode2_dbxrefs": 1.0,
+        "treatments.dbxrefs": 1.0,
         "treatments.aliases": 1.0,
         "constructs.construct_type": 1.0,
         "constructs.vector_backbone_name": 1.0,

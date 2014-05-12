@@ -12,7 +12,6 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
-from collections import OrderedDict
 from pyramid.traversal import find_root
 
 ACCESSION_KEYS = [
@@ -96,12 +95,14 @@ class Collection(BaseCollection):
 
     class Item(BaseCollection.Item):
         STATUS_ACL = {
-            'CURRENT': ALLOW_CURRENT,
-            'DELETED': [],
+            'released': ALLOW_CURRENT,
+            'current': ALLOW_CURRENT,
+            'deleted': [],
         }
 
         def __acl__(self):
-            properties = self.properties.copy()
+            # Don't finalize to avoid validation here.
+            properties = self.upgrade_properties(finalize=False).copy()
             ns = self.template_namespace(properties)
             properties.update(ns)
             status = ns.get('status')
@@ -109,7 +110,7 @@ class Collection(BaseCollection):
 
         def __ac_local_roles__(self):
             roles = {}
-            properties = self.properties.copy()
+            properties = self.upgrade_properties(finalize=False).copy()
             ns = self.template_namespace(properties)
             properties.update(ns)
             if 'lab' in properties:
@@ -179,6 +180,7 @@ class AntibodyLot(Collection):
     ]
     item_rev = {
         'characterizations': ('antibody_characterization', 'characterizes'),
+        'approvals': ('antibody_approval', 'antibody'),
     }
 
 
@@ -277,14 +279,6 @@ class Construct(Collection):
 
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
-        STATUS_ACL = {
-            'IN PROGRESS': ALLOW_LAB_SUBMITTER_EDIT,
-            'PENDING DCC REVIEW': ALLOW_LAB_SUBMITTER_EDIT,
-            'COMPLIANT': ALLOW_CURRENT,
-            'NOT COMPLIANT': ALLOW_CURRENT,
-            'NOT REVIEWED': ALLOW_CURRENT,
-            'NOT SUBMITTED FOR REVIEW BY LAB': ALLOW_CURRENT,
-        }
         base_types = ['characterization'] + Collection.Item.base_types
         embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
@@ -322,17 +316,6 @@ class Biosample(Collection):
         'title': 'Biosamples',
         'description': 'Biosamples used in the ENCODE project',
     }
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('biosample_term_name', 'Term'),
-        ('biosample_type', 'Type'),
-        ('organism.name', 'Species'),
-        ('source.title', 'Source'),
-        ('lab.title', 'Submitter'),
-        ('life_stage', 'Life stage'),
-        ('treatments.length', 'Treatments length'),
-        ('constructs.length', 'Constructs')
-    ])
 
     class Item(Collection.Item):
         template = {
@@ -345,6 +328,9 @@ class Biosample(Collection):
             'developmental_slims': [
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
+            'synonyms': [
+                {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
+            ]
         }
         embedded = set([
             'donor.organism',
@@ -363,6 +349,7 @@ class Biosample(Collection):
             'protocol_documents.award',
             'protocol_documents.submitted_by',
             'derived_from',
+            'part_of',
             'pooled_from',
             'characterizations.submitted_by',
             'characterizations.award',
@@ -391,10 +378,11 @@ class Biosample(Collection):
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
                     ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
                     ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+                    ns['synonyms'] = terms[ns['biosample_term_id']]['synonyms']
                 else:
-                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
-                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             return ns
 
 
@@ -418,11 +406,6 @@ class Target(Collection):
         'description': 'Listing of ENCODE3 targets',
     }
     unique_key = 'target:name'
-    columns = OrderedDict([
-        ('label', 'Target'),
-        ('organism.name', 'Species'),
-        ('dbxref', 'External resources'),
-    ])
 
     class Item(Collection.Item):
         template = {
@@ -459,6 +442,14 @@ class AntibodyCharacterization(Characterization):
     }
 
     class Item(Characterization.Item):
+        STATUS_ACL = {
+            'in progress': ALLOW_LAB_SUBMITTER_EDIT,
+            'pending dcc review': ALLOW_LAB_SUBMITTER_EDIT,
+            'compliant': ALLOW_CURRENT,
+            'not compliant': ALLOW_CURRENT,
+            'not reviewed': ALLOW_CURRENT,
+            'not submitted for review by lab': ALLOW_CURRENT,
+        }
         embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
 
 
@@ -470,21 +461,12 @@ class AntibodyApproval(Collection):
         'title': 'Antibody Approvals',
         'description': 'Listing of characterization approvals for ENCODE antibodies',
     }
-    columns = OrderedDict([
-        ('antibody.accession', 'Accession'),
-        ('target.label', 'Target'),
-        ('target.organism.name', 'Species'),
-        ('antibody.source.title', 'Source'),
-        ('antibody.product_id', 'Product ID'),
-        ('antibody.lot_id', 'Lot ID'),
-        ('characterizations.length', 'Characterizations'),
-        ('status', 'Status')
-    ])
+
     class Item(Collection.Item):
         STATUS_ACL = {
-            'ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
-            'NOT ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
-            'NOT PURSUED': ALLOW_CURRENT,
+            'eligible for new data': ALLOW_CURRENT,
+            'not eligible for new data': ALLOW_CURRENT,
+            'not pursued': ALLOW_CURRENT,
         }
         embedded = [
             'antibody.host_organism',
@@ -499,6 +481,7 @@ class AntibodyApproval(Collection):
             {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
         ]
 
+
 @location('platforms')
 class Platform(Collection):
     item_type = 'platform'
@@ -512,7 +495,12 @@ class Platform(Collection):
         'title': '{term_name}',
         '$templated': True,
     }
-    item_keys = ALIAS_KEYS
+    unique_key = 'platform:term_id'
+    item_name_key = 'term_id'
+    item_keys = ALIAS_KEYS + [
+        {'name': '{item_type}:term_id', 'value': '{term_id}', '$templated': True},
+        {'name': '{item_type}:term_id', 'value': '{term_name}', '$templated': True},
+    ]
 
 
 @location('libraries')
@@ -526,14 +514,6 @@ class Library(Collection):
     item_embedded = set(['biosample'])
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('award', 'Award'),
-        ('lab', 'Lab'),
-        ('biosample.biosample_term_name', 'Biosample'),
-        ('biosample.organism.name', 'Species'),
-        ('nucleic_acid_term_name', 'Nucleic Acid Term Name'),
-    ])
 
 
 @location('replicates')
@@ -547,14 +527,6 @@ class Replicates(Collection):
         'title': 'Replicates',
         'description': 'Listing of Replicates',
     }
-    columns = OrderedDict([
-        ('uuid', 'UUID'),
-        ('library.accession', 'Library Accession'),
-        ('platform.title', 'Platform'),
-        ('experiment', 'Experiment'),
-        ('technical_replicate_number', 'Technical Replicate Number'),
-        ('biological_replicate_number', 'Biological Replicate Number'),
-    ])
 
     class Item(Collection.Item):
         parent_property = 'experiment'
@@ -590,13 +562,6 @@ class File(Collection):
         'title': 'Files',
         'description': 'Listing of Files',
     }
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('dataset', 'Dataset'),
-        ('file_format', 'File Format'),
-        ('md5sum', 'MD5 Sum'),
-        ('output_type', 'Output Type'),
-    ])
 
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
@@ -614,13 +579,6 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('description', 'Description'),
-        ('dataset_type', 'Dataset type'),
-        ('lab.title', 'Lab'),
-        ('award.project', 'Project'),
-    ])
     
     class Item(Collection.Item):
         template = {
@@ -631,6 +589,15 @@ class Dataset(Collection):
         }
         template_type = {
             'files': 'file',
+        }
+        STATUS_ACL = {
+            'released': ALLOW_CURRENT,
+            'started': ALLOW_LAB_SUBMITTER_EDIT,
+            'verified': ALLOW_LAB_SUBMITTER_EDIT,
+            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
+            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
+            'revoked': ALLOW_CURRENT,
+            'deleted': [],
         }
         embedded = [
             'files',
@@ -661,19 +628,7 @@ class Experiment(Dataset):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    columns = OrderedDict([
-        ('accession', 'Accession'),
-        ('assay_term_name', 'Assay type'),
-        ('target.label', 'Target'),
-        ('biosample_term_name', 'Biosample'),
-        ('replicates.length', 'Replicates'),
-        ('files.length', 'Files'),
-        ('description', 'Description'),
-        ('lab.title', 'Lab'),
-        ('encode2_dbxrefs', 'Dbxrefs'),
-        ('award.project', 'Project'),
-    ])
-
+    
     class Item(Dataset.Item):
         base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {
@@ -686,9 +641,21 @@ class Experiment(Dataset):
             'developmental_slims': [
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
+            'synonyms': [
+                {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
+            ]
+        }
+        STATUS_ACL = {
+            'released': ALLOW_CURRENT,
+            'started': ALLOW_LAB_SUBMITTER_EDIT,
+            'verified': ALLOW_LAB_SUBMITTER_EDIT,
+            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
+            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
+            'revoked': ALLOW_CURRENT,
+            'deleted': [],
         }
         embedded = Dataset.Item.embedded + [
-            'replicates.antibody',
+            'replicates.antibody.approvals',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',
@@ -715,10 +682,11 @@ class Experiment(Dataset):
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
                     ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
                     ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+                    ns['synonyms'] = terms[ns['biosample_term_id']]['synonyms']
                 else:
-                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
-                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = []
+                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             return ns
 
 
@@ -734,6 +702,7 @@ class RNAi(Collection):
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
+    item_keys = ALIAS_KEYS
 
 
 @location('rnai-characterizations')

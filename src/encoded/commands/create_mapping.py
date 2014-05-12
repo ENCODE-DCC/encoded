@@ -8,7 +8,7 @@ To load the initial data:
 """
 from pyramid.paster import get_app
 from pyramid.traversal import find_root
-from pyelasticsearch import IndexAlreadyExistsError
+from elasticsearch import RequestError
 from ..indexing import ELASTIC_SEARCH
 import collections
 import json
@@ -55,40 +55,49 @@ def schema_mapping(name, schema):
         }
         return {'properties': properties}
 
+    if type_ == ["number", "string"]:
+        return {
+            'type': 'string',
+            'include_in_all': False,
+            'copy_to': [],
+            'index': 'not_analyzed',
+            'fields': {
+                'value': {
+                    'type': 'float',
+                    'copy_to': '',
+                    'ignore_malformed': True,
+                    'include_in_all': False,
+                    'copy_to': []
+                }
+            }
+        }
+
     if type_ == 'string':
         return {
-            'type': 'multi_field',
-            'fields': {
-                # by default ES uses the same named field of a multi_field
-                name: {
-                    'type': 'string',
-                    'search_analyzer': 'encoded_search_analyzer',
-                    'index_analyzer': 'encoded_index_analyzer',
-                    'include_in_all': False
-                },
-                'untouched': {
-                    'type': 'string',
-                    'index': 'not_analyzed',
-                    'include_in_all': False
-                },
-                'standard': {
-                    'type': 'string',
-                    'analyzer': 'encoded_search_analyzer',
-                    'include_in_all': False
-                }
-            },
+            'type': 'string',
+            'include_in_all': False,
+            'copy_to': [],
+            'index': 'not_analyzed',
         }
 
     if type_ == 'number':
-        return {'type': 'float'}
+        return {
+            'type': 'float',
+            'copy_to': [],
+            'include_in_all': False
+        }
 
     if type_ in ('boolean', 'integer'):
-        return {'type': type_}
+        return {
+            'type': type_,
+            'copy_to': [],
+            'include_in_all': False
+        }
 
 
 def index_settings():
     return {
-        'settings': {
+        'index': {
             'analysis': {
                 'filter': {
                     'substring': {
@@ -130,6 +139,24 @@ def es_mapping(mapping):
         },
         'properties': {
             'embedded': mapping,
+            'encoded_all_ngram': {
+                'type': 'string',
+                'include_in_all': False,
+                'boost': 1,
+                'search_analyzer': 'encoded_search_analyzer',
+                'index_analyzer': 'encoded_index_analyzer'
+            },
+            'encoded_all_standard': {
+                'type': 'string',
+                'include_in_all': False,
+                'boost': 2
+            },
+            'encoded_all_untouched': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed',
+                'boost': 3
+            },
             'object': {
                 'type': 'object',
                 'include_in_all': False,
@@ -164,6 +191,27 @@ def es_mapping(mapping):
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
+            },
+            'audit': {
+                'type': 'object',
+                'include_in_all': False,
+                'properties': {
+                    'category': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                    },
+                    'detail': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                    },
+                    'level_name': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                    },
+                    'level': {
+                        'type': 'integer',
+                    },
+                },
             }
         }
     }
@@ -201,10 +249,16 @@ def collection_mapping(collection, embed=True):
             elif i == 0 and p in merged_template_type:
                 name = merged_template_type[p]
             else:
-                try:
-                    name = new_schema['properties'][p]['linkTo']
-                except KeyError:
-                    name = new_schema['properties'][p]['items']['linkTo']
+                if p not in new_schema['properties']:
+                    if p in root[name].Item.merged_rev:
+                        name = root[name].Item.merged_rev[p][0]
+                    else:
+                        name = root[name].Item.merged_template_type[p]
+                else:
+                    try:
+                        name = new_schema['properties'][p]['linkTo']
+                    except KeyError:
+                        name = new_schema['properties'][p]['items']['linkTo']
 
             # XXX Need to union with mouse_donor here
             if name == 'donor':
@@ -229,11 +283,8 @@ def collection_mapping(collection, embed=True):
         new_mapping = mapping['properties']
         for prop in props:
             if len(props) == props.index(prop) + 1:
-                new_mapping[prop]['fields'][prop]['boost'] = boost_values[value]
-                if prop == 'assay_term_name':
-                    new_mapping[prop]['analyzer'] = 'dash_path'
-                del(new_mapping[prop]['fields'][prop]['include_in_all'])
-                del(new_mapping[prop]['fields']['untouched']['include_in_all'])
+                new_mapping[prop]['boost'] = boost_values[value]
+                new_mapping[prop]['copy_to'] = ['encoded_all_ngram', 'encoded_all_standard', 'encoded_all_untouched']
                 new_mapping = mapping['properties']
             else:
                 new_mapping = new_mapping[prop]['properties']
@@ -247,11 +298,11 @@ def run(app, collections=None, dry_run=False):
     if not dry_run:
         es = app.registry[ELASTIC_SEARCH]
         try:
-            es.create_index(index, index_settings())
-        except IndexAlreadyExistsError:
+            es.indices.create(index=index, body=index_settings())
+        except RequestError:
             if collections is None:
-                es.delete_index(index)
-                es.create_index(index, index_settings())
+                es.indices.delete(index=index)
+                es.indices.create(index=index, body=index_settings())
 
     if not collections:
         collections = ['meta'] + root.by_item_type.keys()
@@ -274,13 +325,13 @@ def run(app, collections=None, dry_run=False):
 
         if collection_name is not 'meta':
             mapping = es_mapping(mapping)
-        
+
         try:
-            es.put_mapping(index, doc_type, {doc_type: mapping})
+            es.indices.put_mapping(index=index, doc_type=doc_type, body={doc_type: mapping})
         except:
             log.info("Could not create mapping for the collection %s", doc_type)
         else:
-            es.refresh(index)
+            es.indices.refresh(index=index)
 
 
 def main():

@@ -4,7 +4,6 @@
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "XXXcomment": "is source required?",
     "required": [ "award", "lab", "nucleic_acid_term_id"],
     "identifyingProperties": ["uuid","accession", "aliases"],
     "additionalProperties": false,
@@ -23,7 +22,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "accession": {
             "accessionType": "LB"
@@ -34,6 +33,15 @@
             "comment": "See biosample.json for available identifiers.",
             "type": "string",
             "linkTo": "biosample"
+        },
+        "product_id": {
+            "description": "The product identifier provided by the vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
+        },
+        "lot_id":{
+            "description": "The lot identifier provided by the vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
+        },
+        "source": {
+            "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
         "nucleic_acid_term_name": {
             "title": "Nucleic acid term",
@@ -77,11 +85,21 @@
             "type": "string",
             "pattern": "[0-9]+"
         },
+        "nucleic_acid_starting_quantity_units": {
+            "title": "Nucleic acid starting quantity units",
+            "description": "The units used for starting amount of nucleic acid.",
+            "type": "string",
+            "enum": [
+                "cells",
+                "cell-equivalent",
+                "ng",
+                "mg"
+            ]
+        },
         "extraction_method": {
             "title": "Extraction method",
             "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "miRNeasy Mini kit (QIAGEN cat#:217004)",
                 "Trizol (LifeTech cat#: 15596-018)",
@@ -97,7 +115,6 @@
             "title": "Fragmentation method",
             "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation, if applicable.",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "sonication",
                 "see document",
@@ -123,7 +140,6 @@
             "title": "Size selection method",
             "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "gel",
                 "see document",
@@ -135,7 +151,6 @@
             "title": "Lysis method",
             "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "miRNeasy Mini kit (QIAGEN cat#:217004)",
                 "Trizol (LifeTech cat#: 15596-018)",
@@ -205,6 +220,32 @@
                     "SO:0000862"
                 ]
             }
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "award": {
+            "title": "Award",
+            "type": "string"
+        },
+        "lab": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "biosample.biosample_term_name": {
+            "title": "Biosample",
+            "type": "string"
+        },
+        "biosample.organism.name": {
+            "title": "Species",
+            "type": "string"
+        },
+        "nucleic_acid_term_name": {
+            "title": "Nucleic Acid Term Name",
+            "type": "string"
         }
     }
 }

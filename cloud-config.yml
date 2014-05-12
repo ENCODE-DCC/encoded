@@ -1,6 +1,6 @@
 #cloud-config
 #
-# Use ubuntu/images/ebs/ubuntu-saucy-13.10-amd64-server-20131204 (ami-b698a9f3) 
+# Use ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-20140416.1 (ami-f64f77b3)
 
 # Debug log
 output: {all: '| tee -a /var/log/cloud-init-output.log'}
@@ -16,15 +16,20 @@ packages:
 - libevent-dev
 - libfreetype6-dev
 - libjpeg-dev
+- liblcms2-dev
 - libmagic-dev
 - libmysqlclient-dev
 - libpq-dev
 - libssl-dev
+- libtiff5-dev
+- libwebp-dev
 - libxml2-dev
 - libxslt1-dev
 - lzop
 - mysql-client 
-- nodejs
+- nodejs-dev
+- nodejs-legacy
+- npm
 - openjdk-7-jre-headless
 - postgresql-9.3
 - pv
@@ -72,6 +77,7 @@ runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - set -e
+- sudo service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
 - chown -R root:postgres /etc/wal-e.d/env
 - sudo -u postgres createuser encoded
@@ -88,11 +94,14 @@ runcmd:
 - sudo -u postgres cp /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main
 - sudo /etc/init.d/postgresql start
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
-- sudo service elasticsearch start
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
+- sudo -u encoded bin/update-keys-links production.ini
 - sudo -u encoded bin/upgrade production.ini
 - sudo -u encoded bin/create-mapping production.ini
 - sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
+- sudo a2enmod headers
+- sudo a2enmod proxy_http
+- sudo a2enmod rewrite
 - sudo a2ensite encoded.conf
 - sudo a2dissite 000-default
 - sudo service apache2 reload
@@ -110,7 +119,7 @@ ssh_authorized_keys:
 apt_sources:
 # This is not quite the latest version
 # https://github.com/elasticsearch/elasticsearch/issues/3286
-- source: "deb http://packages.elasticsearch.org/elasticsearch/0.90/debian stable main"
+- source: "deb http://packages.elasticsearch.org/elasticsearch/1.1/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----
     Version: GnuPG v2.0.14 (GNU/Linux)
@@ -142,63 +151,4 @@ apt_sources:
     cursYPyeV0NX/KQeUeNMwGTFB6QHS/anRaGQewijkrYYoTNtfllxIu9XYmiBERQ/
     qPDlGRlOgVTd9xUfHFkzB52c70E=
     =92oX
-    -----END PGP PUBLIC KEY BLOCK-----
-- source: "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main"
-  key: |
-    -----BEGIN PGP PUBLIC KEY BLOCK-----
-    Version: GnuPG v1.4.12 (GNU/Linux)
-
-    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
-    VPZ67j5UMxqtT/Y4+NHcQGgwF/1i
-    =Iugu
-    -----END PGP PUBLIC KEY BLOCK-----
-- source: "deb http://ppa.launchpad.net/chris-lea/node.js/ubuntu saucy main"
-  key: |
-    -----BEGIN PGP PUBLIC KEY BLOCK-----
-    Version: SKS 1.1.4
-    Comment: Hostname: keyserver.ubuntu.com
-
-    mI0ES/EY5AEEAOZl+6Cv7b0fOnXLj8lt1cZiNQHIuOkGRJaMUdvXdrSbtQ4v9GiMWFoFj+9g
-    dFN9EjD9JKoXjJb/e/Q9P21uOi0/YmlOfkqWvqm1qsyBXTXTrGx1mghtALPSw0bvYoWZ3aZJ
-    3c9VPT5sCdv9IYw6X/+4Z0HoQGvxymbfvRKH3J/xABEBAAG0EkxhdW5jaHBhZCBjaHJpc2xl
-    YYi2BBMBAgAgBQJL8RjkAhsDBgsJCAcDAgQVAggDBBYCAwECHgECF4AACgkQuTFqe8eRexLB
-    rAQAk9ux3R+k38+dY0f8p3B+0UESy/jNFL/S+t6Fdpw/2qMV1EZohAgJXUw/axmTdr1gKUoy
-    GDtE13gebKGy+zqtzsIVo44V0ztC3Z7Kbd9bbiW+wMo7RT4yyi6kURMyE68RrqGbkenZveU6
-    o2Urq4LW6bfn5fDLVeYQ5GNsrNdSS1k=
-    =9f3N
     -----END PGP PUBLIC KEY BLOCK-----

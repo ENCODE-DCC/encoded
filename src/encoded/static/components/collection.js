@@ -11,7 +11,7 @@ var globals = require('./globals');
             return (
                 <div>
                     <header className="row">
-                        <div className="span12">
+                        <div className="col-sm-12">
                             <h2>{context.title}</h2>
                         </div>
                     </header>
@@ -138,7 +138,7 @@ var globals = require('./globals');
 
         guessColumns: function (props) {
             var column_list = props.context.columns;
-            var columns = []
+            var columns = [];
             if (!column_list || Object.keys(column_list).length === 0) {
                 for (var key in props.context['@graph'][0]) {
                     if (key.slice(0, 1) != '@' && key.search(/(uuid|_no|accession)/) == -1) {
@@ -149,7 +149,7 @@ var globals = require('./globals');
                 columns.unshift('@id');
             } else {
                 for(var column in column_list) {
-                    columns.push(column)
+                    columns.push(column);
                 }
             }
             this.setState({columns: columns});
@@ -187,7 +187,7 @@ var globals = require('./globals');
                 return Row(item, cells, text);
             });
             var data = Data(rows);
-            this.setState({data: data})
+            this.setState({data: data});
             return data;
         },
 
@@ -235,7 +235,7 @@ var globals = require('./globals');
                 }
                 return (
                     <th onClick={self.handleClickHeader} key={index}>
-                        {titles[column] || column}
+                        {titles[column] && titles[column]['title'] || column}
                         <i className={className}></i>
                     </th>
                 );
@@ -274,38 +274,40 @@ var globals = require('./globals');
                 );
             } else {
                 loading_or_total = (
-                    <span>
-                        <span className="table-count label label-invert">{matching.length}</span>
+                    <span className="table-meta-data">
+                        <span className="table-count label label-default">{matching.length}</span>
                         <span id="total-records">of {total} records</span>
                     </span>
                 );
             }
             return (
-                <table className={table_class}>
-                    <thead className="sticky-header">
-                        <tr className="nosort table-controls">
-                            <th colSpan={columns.length}>
-                                {loading_or_total}
-                                <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
-                                	data-skiprequest="true" data-removeempty="true">
-                                    <input ref="q" disabled={this.state.communicating || undefined} 
-                                    	name="q" type="search" defaultValue={searchTerm} 
-                                    	placeholder="Filter table by..." className="filter" 
-                                    	id="table-filter" /> 
-                                    <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
-                                    <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
-                                    <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
-                                </form>
-                            </th>
-                        </tr>
-                        <tr className="col-headers">
-                            {headers}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows}
-                    </tbody>
-                </table>
+                <div className="table-responsive">            
+                    <table className={table_class + " table table-striped table-hover table-panel"}>
+                        <thead className="sticky-header">
+                            <tr className="nosort table-controls">
+                                <th colSpan={columns.length}>
+                                    {loading_or_total}
+                                    <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
+                                        data-skiprequest="true" data-removeempty="true">
+                                        <input ref="q" disabled={this.state.communicating || undefined} 
+                                            name="q" type="search" defaultValue={searchTerm} 
+                                            placeholder="Filter table by..." className="filter form-control" 
+                                            id="table-filter" /> 
+                                        <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
+                                        <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
+                                        <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
+                                    </form>
+                                </th>
+                            </tr>
+                            <tr className="col-headers">
+                                {headers}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                    </table>
+                </div>
             );
         },
 
@@ -324,14 +326,14 @@ var globals = require('./globals');
             }
             var cellIndex = target.cellIndex;
             var reversed = '';
-            var sorton = this.refs.sorton.getDOMNode()
+            var sorton = this.refs.sorton.getDOMNode();
             if (this.props.defaultSortOn !== cellIndex) {
                 sorton.value = cellIndex;
             } else {
                 sorton.value = '';
             }
             if (this.state.sortOn == cellIndex) {
-                reversed = !this.state.reversed || ''
+                reversed = !this.state.reversed || '';
             }
             this.refs.reversed.getDOMNode().value = reversed;
             event.preventDefault();

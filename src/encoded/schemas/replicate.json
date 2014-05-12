@@ -17,12 +17,14 @@
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
+        "rbns_protein_concentration": ["rbns_protein_concentration_units"],
+        "rbns_protein_concentration_units": ["rbns_protein_concentration"],
         "read_length": ["read_length_units"],
         "read_length_units": ["read_length"]
     },
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "antibody": {
             "title": "Antibody",
@@ -97,8 +99,7 @@
         "paired_ended": {
             "title": "Paired-end sequencing",
             "description": "The utilization of sequencing both ends of the DNA fragment in a library.",
-            "type": "boolean",
-            "default": false
+            "type": "boolean"
         },
         "read_length": {
             "title": "Read length",
@@ -111,6 +112,28 @@
             "type": "string",
             "enum": [
                 "nt"
+            ]
+        },
+        "rbns_protein_concentration": {
+            "title": "RBNS protein concentration",
+            "description": "For use only with RNA Bind-n-Seq replicates to indicate the protein concentration.",
+            "comment": "Only for use with RBNS replicates.",
+            "type": "integer"
+        },
+        "rbns_protein_concentration_units": {
+            "title": "RBNS protein concentration units",
+            "comment": "The unit for the dependant rbns_protein_concentration.",
+            "type": "string",
+            "enum": [
+                "nM" 
+            ]
+        },
+        "status": {
+            "enum" : [
+                "in progress",
+                "deleted",
+                "released",
+                "proposed"
             ]
         }
     }

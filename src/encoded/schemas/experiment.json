@@ -6,8 +6,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims"],
-    "facets": [{"Assay": "assay_term_name"}, {"Organism": "replicates.library.biosample.organism.name"}, {"Organ": "organ_slims"}, {"Lab": "lab.title"}, {"Developmental Slim": "developmental_slims"}],
+    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
@@ -17,15 +16,15 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/biosample_classification" }
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "4"
         },
         "target": {
             "title": "Target",
@@ -53,6 +52,18 @@
             "default": "experiment",
             "enum": ["experiment"]
         },
+        "dbxrefs": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^(UCSC-ENCODE-mm9:wgEncodeEM\\d+|UCSC-ENCODE-hg19:wgEncodeEH\\d+|GEO:(GSM|GSE)\\d+)$"
+            }
+        },
         "documents": {
             "description": "Protocols or other documents that describe the assay or the results (not data files)."
         },
@@ -70,26 +81,116 @@
             }
         }
     },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay",
+            "type": "string"
+        },
+        "replicates.library.biosample.organism.name": {
+            "title": "Organism",
+            "type": "string"
+        },
+        "replicates.library.biosample.biosample_type": {
+            "title": "Biosample type",
+            "type": "string"
+        },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "files.file_format": {
+            "title": "File format",
+            "type": "string"
+        },
+        "replicates.library.treatments.treatment_term_name": {
+            "title": "Treatment",
+            "type": "array"
+        },
+        "replicates.read_length": {
+            "title": "Read length",
+            "type": "string"
+        },
+        "developmental_slims": {
+            "title": "Developmental slim",
+            "type": "array"
+        },
+        "replicates.library.biosample.life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "replicates.library.size_range": {
+            "title": "Library fragmentation size",
+            "type": "string"
+        }
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "assay_term_name": {
+            "title": "Assay Type",
+            "type": "string"
+        },
+        "target.label": {
+            "title": "Target",
+            "type": "string"
+        },
+        "biosample_term_name": {
+            "title": "Biosample",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "award.project": {
+            "title": "Project",
+            "type": "string"
+        },
+        "replicates.length": {
+            "title": "Replicates",
+            "type": "array"
+        },
+        "files.length": {
+            "title": "Files",
+            "type": "array"
+        },
+        "encode2_dbxrefs": {
+            "title": "Dbxrefs",
+            "type": "array"
+        }
+    },
     "boost_values": {
         "uuid": 1.0,
         "accession": 1.0,
         "alternate_accessions": 1.0,
         "assay_term_name": 1.0,
         "assay_term_id": 1.0,
-        "geo_dbxrefs": 1.0,
-        "encode2_dbxrefs": 1.0,
+        "dbxrefs": 1.0,
         "aliases": 1.0,
         "biosample_term_id": 1.0,
         "biosample_term_name": 1.0,
         "biosample_type": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
+        "synonyms": 1.0,
         "files.accession": 1.0,
         "files.file_format": 1.0,
         "files.output_type": 1.0,
         "files.md5sum": 1.0,
         "replicates.library.accession": 1.0,
+        "replicates.library.aliases": 1.0,
         "replicates.library.biosample.accession": 1.0,
+        "replicates.library.biosample.aliases": 1.0,
         "replicates.library.biosample.subcellular_fraction_term_name" : 1.0,
         "replicates.library.biosample.donor.accession": 1.0,
         "replicates.antibody.accession": 1.0,
@@ -100,7 +201,7 @@
         "replicates.antibody.purifications": 1.0,
         "replicates.antibody.product_id": 1.0,
         "replicates.antibody.aliases": 1.0,
-        "replicates.antibody.encode2_dbxrefs": 1.0,
+        "replicates.antibody.dbxrefs": 1.0,
         "replicates.library.biosample.donor.organism.name": 1.0,
         "replicates.library.biosample.donor.organism.scientific_name": 1.0,
         "replicates.library.biosample.donor.organism.taxon_id": 1.0,
@@ -113,6 +214,7 @@
         "lab.institute_label": 1.0,
         "lab.title": 1.0,
         "possible_controls.accession": 1.0,
+        "target.aliases": 1.0,
         "target.gene_name": 1.0,
         "target.label": 1.0,
         "target.dbxref": 1.0,

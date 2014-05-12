@@ -1,9 +1,11 @@
-from pyelasticsearch import ElasticSearch
-from pyelasticsearch.exceptions import ElasticHttpNotFoundError
+from elasticsearch import Elasticsearch
+from elasticsearch.exceptions import NotFoundError
 from pyramid.events import (
     BeforeRender,
     subscriber,
 )
+from elasticsearch.connection import Urllib3HttpConnection
+from elasticsearch.serializer import SerializationError
 from pyramid.view import view_config
 from uuid import UUID
 from .contentbase import (
@@ -13,12 +15,13 @@ from .contentbase import (
     make_subrequest,
 )
 from .renderers import json_renderer
-from .stats import requests_timing_hook
+from .stats import ElasticsearchConnectionMixin
 from .storage import (
     DBSession,
     TransactionRecord,
 )
 import functools
+import json
 import logging
 import transaction
 
@@ -32,10 +35,41 @@ def includeme(config):
     config.scan(__name__)
 
     if 'elasticsearch.server' in config.registry.settings:
-        es = ElasticSearch(config.registry.settings['elasticsearch.server'])
-        es._encode_json = json_renderer.dumps
-        es.session.hooks['response'].append(requests_timing_hook('es'))
+        es = Elasticsearch(
+            [config.registry.settings['elasticsearch.server']],
+            serializer=PyramidJSONSerializer(json_renderer),
+            connection_class=TimedUrllib3HttpConnection,
+        )
+        #es.session.hooks['response'].append(requests_timing_hook('es'))
         config.registry[ELASTIC_SEARCH] = es
+
+
+
+class PyramidJSONSerializer(object):
+    mimetype = 'application/json'
+
+    def __init__(self, renderer):
+        self.renderer = renderer
+
+    def loads(self, s):
+        try:
+            return json.loads(s)
+        except (ValueError, TypeError) as e:
+            raise SerializationError(s, e)
+
+    def dumps(self, data):
+        # don't serialize strings
+        if isinstance(data, (type(''), type(u''))):
+            return data
+
+        try:
+            return self.renderer.dumps(data)
+        except (ValueError, TypeError) as e:
+            raise SerializationError(data, e)
+
+
+class TimedUrllib3HttpConnection(ElasticsearchConnectionMixin, Urllib3HttpConnection):
+    pass
 
 
 @view_config(route_name='index', request_method='POST', permission="index")
@@ -58,8 +92,8 @@ def index(request):
         last_xmin = request.json['last_xmin']
     elif es is not None:
         try:
-            status = es.get(INDEX, 'meta', 'indexing')
-        except ElasticHttpNotFoundError:
+            status = es.get(index=INDEX, doc_type='meta', id='indexing')
+        except NotFoundError:
             pass
         else:
             last_xmin = status['_source']['xmin']
@@ -102,9 +136,9 @@ def index(request):
     if not dry_run and es is not None:
         result['count'] = count = es_update_object(request, invalidated)
         if count and record:
-            es.index(INDEX, 'meta', result, 'indexing')
+            es.index(index=INDEX, doc_type='meta', body=result, id='indexing')
 
-        es.refresh(INDEX)
+        es.indices.refresh(index=INDEX)
 
     return result
 
@@ -140,10 +174,14 @@ def add_dependent_objects(root, new, existing):
                 model.source_rid for model in item.model.revs
             })
             
+            item_type = item.item_type
             item_rels = item.model.rels
             for rel in item_rels:
+                key = (item_type, rel.rel)
+                if key not in root.all_merged_rev:
+                    continue
                 rev_item = root.get_by_uuid(rel.target_rid)
-                if (rel.source.item_type, rel.rel) in rev_item.merged_rev.values():
+                if key in rev_item.merged_rev.values():
                     dependents.add(rel.target_rid)
 
         existing.update(objects)
@@ -159,9 +197,9 @@ def es_update_object(request, objects):
         subreq.remote_user = 'INDEXER'
         result = request.invoke_subrequest(subreq)
         doctype = result['object']['@type'][0]
-        es.index(INDEX, doctype, result, str(uuid))
+        es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid))
         if (i + 1) % 50 == 0:
-            es.flush(INDEX)
+            es.indices.flush(index=INDEX)
             log.info('Indexing %s %d', result['object']['@id'], i + 1)
 
     return i + 1

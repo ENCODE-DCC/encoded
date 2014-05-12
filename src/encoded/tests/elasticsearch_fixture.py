@@ -1,7 +1,11 @@
 import os.path
+try:
+    import subprocess32 as subprocess
+except ImportError:
+    import subprocess
+
 
 def server_process(datadir, host='127.0.0.1', port=9200, prefix='', echo=False):
-    import subprocess
     args = [
         os.path.join(prefix, 'elasticsearch'),
         '-f',  # foreground

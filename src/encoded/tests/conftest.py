@@ -6,8 +6,11 @@ import pytest
 from pytest import fixture
 
 _app_settings = {
-    'multiauth.policies': 'session remoteuser accesskey',
+    'multiauth.policies': 'persona session remoteuser accesskey',
     'multiauth.groupfinder': 'encoded.authorization.groupfinder',
+    'multiauth.policy.persona.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
+    'multiauth.policy.persona.base': 'encoded.persona.PersonaAuthenticationPolicy',
+    'multiauth.policy.persona.namespace': 'persona',
     'multiauth.policy.session.use': 'encoded.authentication.NamespacedAuthenticationPolicy',
     'multiauth.policy.session.base': 'pyramid.authentication.SessionAuthenticationPolicy',
     'multiauth.policy.session.namespace': 'mailto',
@@ -19,6 +22,7 @@ _app_settings = {
     'multiauth.policy.accesskey.base': 'encoded.authentication.BasicAuthAuthenticationPolicy',
     'multiauth.policy.accesskey.check': 'encoded.authentication.basic_auth_check',
     'persona.audiences': 'http://localhost:6543',
+    'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',
     'allow.view': 'Authenticated',
     'allow.list': 'Everyone',
@@ -382,8 +386,6 @@ def check_constraints(request, connection):
     Deferred foreign key constraints are only checked at the outer transaction
     boundary, not at a savepoint. With the Pyramid transaction bound to a
     subtransaction check them manually.
-
-    Sadly SQLite does not support manual constraint checking.
     '''
     from encoded.storage import DBSession
     from transaction.interfaces import ISynchronizer
@@ -393,7 +395,6 @@ def check_constraints(request, connection):
     class CheckConstraints(object):
         def __init__(self, connection):
             self.connection = connection
-            self.enabled = self.connection.engine.url.drivername != 'sqlite'
             self.state = None
 
         def beforeCompletion(self, transaction):
@@ -403,8 +404,6 @@ def check_constraints(request, connection):
             pass
 
         def newTransaction(self, transaction):
-            if not self.enabled:
-                return
 
             @transaction.addBeforeCommitHook
             def set_constraints():
@@ -653,6 +652,16 @@ def constructs(testapp,labs, awards, targets):
 def construct(constructs):
     return [c for c in constructs if c['construct_type'] == 'fusion protein'][0]
 
+
+@pytest.fixture
+def datasets(testapp, labs, awards):
+    from . import sample_data
+    return sample_data.load(testapp, 'dataset')
+
+
+@pytest.fixture
+def dataset(datasets):
+    return [d for d in datasets if d['accession'] == 'ENCSR002TST'][0]
 
 @pytest.mark.fixture_cost(10)
 @pytest.yield_fixture(scope='session')

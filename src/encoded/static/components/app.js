@@ -104,7 +104,7 @@ var App = React.createClass({
         if (context) {
             var ContentView = globals.content_views.lookup(context, name);
             content = this.transferPropsTo(ContentView({
-                personaReady: this.state.personaReady,
+                loadingComplete: this.state.loadingComplete,
                 session: this.state.session,
                 portal: this.state.portal,
                 navigate: this.navigate
@@ -121,7 +121,10 @@ var App = React.createClass({
         	appClass = 'communicating'; 
         };
 
-        var title = globals.listing_titles.lookup(context)({context: context});
+        var title = globals.listing_titles.lookup(context)({
+            context: context,
+            loadingComplete: this.state.loadingComplete
+        });
         if (title && title != 'Home') {
             title = title + ' – ' + portal.portal_title;
         } else {
@@ -137,7 +140,6 @@ var App = React.createClass({
                     <title>{title}</title>
                     <link rel="canonical" href={this.props.href} />
                     <link rel="stylesheet" href="/static/css/style.css" />
-                    <link rel="stylesheet" href="/static/css/responsive.css" />
                     <script dangerouslySetInnerHTML={{__html: inline}}></script>
                     <script src="//www.google-analytics.com/analytics.js" async defer></script>
                     <script src="/static/build/bundle.js" async defer></script>
@@ -154,7 +156,7 @@ var App = React.createClass({
                             <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         user_actions={this.state.user_actions} session={this.state.session}
-                                        personaReady={this.state.personaReady} />
+                                        loadingComplete={this.state.loadingComplete} />
                                 <div id="content" className="container" key={key}>
                                     {content}
                                 </div>

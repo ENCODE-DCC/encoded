@@ -5,24 +5,23 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["organism", "label"],
-    "facets": [{"Organism": "organism.name"}],
     "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
-            "default": "1"
+            "default": "2"
         },
         "dbxref": {
             "title": "External identifiers",
             "description": "Unique identifiers from external resources (e.g. HGNC, GeneID, UniProtKB or ENSEMBL).",
-	"type": "array",
+	        "type": "array",
             "default": [],
             "items": {
                 "title": "External identifier",
@@ -51,6 +50,26 @@
             "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
             "format": "target_label"
+        }
+    },
+    "facets": {
+        "organism.name": {
+            "title": "Organism",
+            "type": "string"
+        }
+    },
+    "columns": {
+        "label": {
+            "title": "Target",
+            "type": "string"
+        },
+        "organism.name": {
+            "title": "Species",
+            "type": "string"
+        },
+        "dbxref": {
+            "title": "External resources",
+            "type": "array"
         }
     },
     "boost_values": {

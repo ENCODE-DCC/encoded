@@ -1,12 +1,11 @@
 [
     {
-        "award": "U54HG004592",
         "concentration": 97.2,
         "concentration_units": "nM",
         "duration": 6,
         "duration_units": "hour",
-        "encode2_dbxrefs": [
-            "diffProtB_6hr"
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:diffProtB_6hr"
         ],
         "lab": "john-stamatoyannopoulos",
         "protocols": [
@@ -19,13 +18,12 @@
         "uuid": "3280b708-0f05-40fa-bff2-54e2b6505c13"
     },
     {
-        "award": "U54HG004563",
         "concentration": 600,
         "concentration_units": "nM",
         "duration": 30,
         "duration_units": "minute",
-        "encode2_dbxrefs": [
-            "4OHTAM_100nM_30m"
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:4OHTAM_100nM_30m"
         ],
         "lab": "gregory-crawford",
         "protocols": [
@@ -41,11 +39,10 @@
         "aliases": [
             "thomas-gingeras:CIP_Protocol"
         ],
-        "award": "U54HG007004",
         "duration": 30,
         "duration_units": "minute",
-        "encode2_dbxrefs": [
-            "CIP-TAP"
+        "dbxrefs": [
+            "UCSC-ENCODE-cv:CIP-TAP"
         ],
         "lab": "thomas-gingeras",
         "submitted_by": "metus.donec@nisl.montes",

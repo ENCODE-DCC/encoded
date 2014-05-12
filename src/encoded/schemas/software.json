@@ -13,6 +13,7 @@
         { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
@@ -68,25 +69,16 @@
                 "linkTo": "document"
             }
         },
-        "encode2_dbxrefs": {
-            "title": "Previous ENCODE IDs",
+        "dbxref": {
+            "title": "External identifiers",
+            "description": "Unique identifiers from external resources.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Previous ENCODE ID",
-                "type":  "string"
-            }
-        },
-        "references": {
-            "title": "References",
-            "description": "The identifiers used as references for the software.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Reference",
-                "description": "An identifier used as a reference for the software.",
-                "type": "string",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+)$"
+                "title": "External identifier",
+                "description": "A unique identifier from external resource.",
+                "type":  "string",
+                "pattern": "^(UCSC-ENCODE-cv:\\S+)$"
             }
         },
         "bug_tracker_url": {

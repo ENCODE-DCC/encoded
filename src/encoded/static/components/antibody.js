@@ -26,16 +26,13 @@ var Approval = module.exports.Approval = React.createClass({
         var characterizations = context.characterizations.map(function (item) {
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
-        
-        var dbxrefs = context.antibody.encode2_dbxrefs.map(function (item) {
-        	return "UCSC_encode_db:" + item;
-        });
+    
 
         // Missing enncode
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <h2>Approval for {context.antibody.accession}</h2>
                         <h3>Antibody against {context.target.organism.name}
                             {' '}{context.target.label}
@@ -55,8 +52,8 @@ var Approval = module.exports.Approval = React.createClass({
                         <dt>Lot ID</dt>
                         <dd>{context.antibody.lot_id}</dd>
 
-                        <dt hidden={!context.antibody.lot_id_alias.length}>Lot ID aliases</dt>
-                        <dd hidden={!context.antibody.lot_id_alias.length}>{context.antibody.lot_id_alias.join(', ')}</dd>
+                        {context.antibody.lot_id_alias.length ? <dt>Lot ID aliases</dt> : null}
+                        {context.antibody.lot_id_alias.length ? <dd>{context.antibody.lot_id_alias.join(', ')}</dd> : null}
 
                         <dt>Target</dt>
                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
@@ -64,29 +61,26 @@ var Approval = module.exports.Approval = React.createClass({
                         {context.antibody.host_organism ? <dt>Host</dt> : null}
                         {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.name}</dd> : null}
         
+                        {context.antibody.clonality ? <dt>Clonality</dt> : null}
+                        {context.antibody.clonality ? <dd className="sentence-case">{context.antibody.clonality}</dd> : null}
 
-                        <dt hidden={!context.antibody.clonality}>Clonality</dt>
-                        <dd hidden={!context.antibody.clonality} className="sentence-case">{context.antibody.clonality}</dd>
+                        {context.antibody.purifications.length ? <dt>Purification</dt> : null}
+                        {context.antibody.purifications.length ? <dd className="sentence-case">{context.antibody.purifications.join(', ')}</dd> : null}
 
-                        <dt hidden={!context.antibody.purifications.length}>Purification</dt>
-                        <dd hidden={!context.antibody.purifications.length} className="sentence-case">{context.antibody.purifications.join(', ')}</dd>
+                        {context.antibody.isotype ? <dt>Isotype</dt> : null}
+                        {context.antibody.isotype ? <dd className="sentence-case">{context.antibody.isotype}</dd> : null}
 
-                        <dt hidden={!context.antibody.isotype}>Isotype</dt>
-                        <dd hidden={!context.antibody.isotype} className="sentence-case">{context.antibody.isotype}</dd>
+                        {context.antibody.antigen_description ? <dt>Antigen description</dt> : null}
+                        {context.antibody.antigen_description ? <dd>{context.antibody.antigen_description}</dd> : null}
 
-                        <dt hidden={!context.antibody.antigen_description}>Antigen description</dt>
-                        <dd hidden={!context.antibody.antigen_description}>{context.antibody.antigen_description}</dd>
+                        {context.antibody.antigen_sequence ? <dt>Antigen sequence</dt> : null}
+                        {context.antibody.antigen_sequence ? <dd>{context.antibody.antigen_sequence}</dd> : null}
 
-                        <dt hidden={!context.antibody.antigen_sequence}>Antigen sequence</dt>
-                        <dd hidden={!context.antibody.antigen_sequence}>{context.antibody.antigen_sequence}</dd>
-
-                        <dt hidden={!context.antibody.aliases.length}>Aliases</dt>
-                        <dd hidden={!context.antibody.aliases.length}>{context.antibody.aliases.join(", ")}</dd>
+                        {context.antibody.aliases.length ? <dt>Aliases</dt> : null}
+                        {context.antibody.aliases.length ? <dd>{context.antibody.aliases.join(", ")}</dd> : null}
                         
-                        <dt hidden={!context.antibody.encode2_dbxrefs.length}>Other identifiers</dt>
-                        <dd hidden={!context.antibody.encode2_dbxrefs.length}>
-                        	<DbxrefList values={dbxrefs} />
-                        </dd>
+                        {context.antibody.dbxrefs.length ? <dt>External resources</dt> : null}
+                        {context.antibody.dbxrefs.length ? <dd><DbxrefList values={context.antibody.dbxrefs} /></dd> : null}
                     </dl>
                 </div>
 
@@ -105,7 +99,7 @@ var Characterization = module.exports.Characterization = React.createClass({
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
-        var figure, download, src, imgClass, alt;
+        var figure, download, src, alt;
         var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
@@ -116,7 +110,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
-                alt = "Characterization Image"
+                alt = "Characterization Image";
             } else if (context.attachment.type == "application/pdf"){
                 src = "/static/img/file-pdf.png";
                 alt = "Characterization PDF Icon";
@@ -147,48 +141,46 @@ var Characterization = module.exports.Characterization = React.createClass({
 
         return (
             <section className={globals.itemClass(context, 'view-detail panel')}>
-                <div className="container">
-                    <div className="row">
-                        <div className="span6">
-                            <figure>
-                                {figure}
-                                <figcaption>
-                                    <span>{context.status}</span>
-                                </figcaption>
-                            </figure>
-                        </div>
-                        <div className="span5">
-                            <dl className="characterization-meta-data key-value">
-                                <dt className="h3">Method</dt>
-                                <dd className="h3 sentence-case">{context.characterization_method}</dd>
+                <div className="row">
+                    <div className="col-sm-4 col-md-6">
+                        <figure>
+                            {figure}
+                            <figcaption>
+                                <span>{context.status}</span>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div className="col-sm-8 col-md-6">
+                        <dl className="characterization-meta-data key-value">
+                            <dt className="h3">Method</dt>
+                            <dd className="h3">{context.characterization_method}</dd>
 
-                                <dt className="h4">Target species</dt>
-                                <dd className="h4 sentence-case">{context.target.organism.name}</dd>
+                            <dt className="h4">Target species</dt>
+                            <dd className="h4 sentence-case">{context.target.organism.name}</dd>
 
-                                {context.caption ? <dt>Caption</dt> : null}
-                                {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
+                            {context.caption ? <dt>Caption</dt> : null}
+                            {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
 
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
+                            <dt>Submitted by</dt>
+                            <dd>{context.submitted_by.title}</dd>
 
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
 
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
+                            <dt>Grant</dt>
+                            <dd>{context.award.name}</dd>
 
-                                {/*
-                                <dt>Approver</dt>
-                                <dd>{context.validated_by}</dd>
-                                */}
+                            {/*
+                            <dt>Approver</dt>
+                            <dd>{context.validated_by}</dd>
+                            */}
 
-                                <dt>Image</dt>
-                                <dd><StatusLabel status={context.status} /></dd>
+                            <dt>Image</dt>
+                            <dd><StatusLabel status={context.status} /></dd>
 
-                                <dt><i className="icon-download-alt"></i> Download</dt>
-                                <dd>{download}</dd>
-                            </dl>
-                        </div>
+                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dd>{download}</dd>
+                        </dl>
                     </div>
                 </div>
             </section>

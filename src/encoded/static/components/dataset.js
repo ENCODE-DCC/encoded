@@ -24,7 +24,7 @@ var Dataset = module.exports.Dataset = React.createClass({
         var itemClass = globals.itemClass(context, 'view-item');
         var pubmed_url = "http://www.ncbi.nlm.nih.gov/pubmed/?term=";
         var pubmed_links = context.references.map(function(id) {
-        	return <li><a href={pubmed_url + id.slice(5)}>{id}</a></li>;
+            return <li><a href={pubmed_url + id.slice(5)}>{id}</a></li>;
         });
         var experiments = {};
         context.files.forEach(function (file) {
@@ -37,7 +37,7 @@ var Dataset = module.exports.Dataset = React.createClass({
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <h2>Dataset {context.accession}</h2>
                     </div>
                 </header>
@@ -60,19 +60,19 @@ var Dataset = module.exports.Dataset = React.createClass({
                             <DbxrefList values={context.aliases} />
                          </dd> : null}
                         
+                        <dt>External resources</dt>
+                        <dd>
+                            {context.dbxrefs.length ?
+                                <DbxrefList values={context.dbxrefs} />
+                            : <em>None submitted</em> }
+                        </dd>
+
                         {context.references.length ? <dt>References</dt> : null}
                         {context.references.length ? <dd>
-                        	<ul className="horizontal-list">
-                        		{pubmed_links}
-                        	</ul>
+                            <ul className="horizontal-list">
+                                {pubmed_links}
+                            </ul>
                         </dd> : null}
-                        
-                        <dt>External resources</dt>
-						<dd>
-							{context.geo_dbxrefs.length ?
-								<DbxrefList values={context.geo_dbxrefs} prefix="GEO" />
-							: <em>None submitted</em> }
-						</dd>
                     </dl>
                 </div>
 
@@ -86,7 +86,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                 {experiments.length ?
                     <div>
                         <h3>Related experiments for dataset {context.accession}</h3>
-    				    <ExperimentTable items={experiments} />
+                        <ExperimentTable items={experiments} />
                     </div>
                 : null }
 
@@ -108,38 +108,40 @@ globals.content_views.register(Dataset, 'dataset');
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     render: function() {
         return (
-            <table>
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Assay</th>
-                        <th>Biosample term name</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {this.props.items.map(function (experiment) {
-                    // Ensure this can work with search result columns too
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{experiment.biosample_term_name}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Accession</th>
+                            <th>Assay</th>
+                            <th>Biosample term name</th>
+                            <th>Target</th>
+                            <th>Description</th>
+                            <th>Lab</th>
                         </tr>
-                    );
-                })}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="6"></td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </thead>
+                    <tbody>
+                    {this.props.items.map(function (experiment) {
+                        // Ensure this can work with search result columns too
+                        return (
+                            <tr key={experiment['@id']}>
+                                <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                                <td>{experiment.assay_term_name}</td>
+                                <td>{experiment.biosample_term_name}</td>
+                                <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
+                                <td>{experiment.description}</td>
+                                <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="6"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         );
     }
 });
@@ -168,28 +170,30 @@ var FileTable = module.exports.FileTable = React.createClass({
             );
         });
         return (
-            <table>
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>File type</th>
-                        <th>Output type</th>
-                        <th>Paired end</th>
-                        <th>Associated replicates</th>
-                        <th>Added by</th>
-                        <th>Date added</th>
-                        <th>File download</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {rows}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="8"></td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Accession</th>
+                            <th>File type</th>
+                            <th>Output type</th>
+                            <th>Paired end</th>
+                            <th>Associated replicates</th>
+                            <th>Added by</th>
+                            <th>Date added</th>
+                            <th>File download</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {rows}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="8"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         );
     }
 });
