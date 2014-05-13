@@ -1292,6 +1292,7 @@ def item_index_data(context, request):
         principals = [Everyone]
 
     embedded = embed(request, request.resource_path(context))
+    audit = request.audit(embedded, embedded['@type'], path=embedded['@id'])
     document = {
         'embedded': embedded,
         'object': embed(request, request.resource_path(context) + '?frame=object'),
@@ -1299,7 +1300,7 @@ def item_index_data(context, request):
         'keys': keys,
         'principals_allowed_view': sorted(principals),
         'url': request.resource_path(context),
-        'audit': [a.__json__() for a in request.audit(embedded, embedded['@type'])],
+        'audit': audit,
     }
 
     return document
