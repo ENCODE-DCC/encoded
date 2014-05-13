@@ -103,7 +103,7 @@ class Auditor(object):
 def add_audit_checker(config, checker, item_type, category=None, detail=None, level=0):
     auditor = config.registry['auditor']
     config.action(None, auditor.add_audit_checker,
-        (checker, item_type, category, detail, level))
+                  (checker, item_type, category, detail, level))
 
 
 # Declarative configuration
