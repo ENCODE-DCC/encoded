@@ -79,16 +79,16 @@ var Dbxref = dbxref.Dbxref;
                         </div>
                         <div className="data-row">
                             <div><strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}</div>
-                            {result['rnais.target.name'] ?
+                            {result['rnais.target.label'] ?
                                 <div>
-                                    <strong>{columns['rnais.target.name']['title'] + ': '}</strong>
-                                    {result['rnais.target.name']}
+                                    <strong>{columns['rnais.target.label']['title'] + ': '}</strong>
+                                    {result['rnais.target.label']}
                                 </div>
                             : null}
-                            {result['constructs.target.name'] ?
+                            {result['constructs.target.label'] ?
                                 <div>
-                                    <strong>{columns['constructs.target.name']['title'] + ': '}</strong>
-                                    {result['constructs.target.name']}
+                                    <strong>{columns['constructs.target.label']['title'] + ': '}</strong>
+                                    {result['constructs.target.label']}
                                 </div>
                             : null}
                             {result['treatments.treatment_term_name'] ?

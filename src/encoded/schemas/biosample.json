@@ -442,7 +442,7 @@
             "title": "Life stage",
             "type": "string"
         },
-        "rnais.target.name": {
+        "rnais.target.label": {
             "title": "RNAi",
             "type": "string"
         },
@@ -450,7 +450,7 @@
             "title": "Treatment",
             "type": "string"
         },
-        "constructs.target.name": {
+        "constructs.target.label": {
             "title": "Construct",
             "type": "string"
         }
