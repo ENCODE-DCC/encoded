@@ -32,6 +32,7 @@ from pyramid.security import (
     Everyone,
     authenticated_userid,
     has_permission,
+    principals_allowed_by_permission,
 )
 from pyramid.settings import asbool
 from pyramid.threadlocal import (
@@ -69,7 +70,10 @@ from .storage import (
     Link,
     TransactionRecord,
 )
-from collections import OrderedDict
+from collections import (
+    OrderedDict,
+    defaultdict,
+)
 from .validation import ValidationFailure
 
 PHASE1_5_CONFIG = -15
@@ -1272,19 +1276,15 @@ class AfterModified(object):
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
-    from pyramid.security import (
-        Everyone,
-        principals_allowed_by_permission,
-    )
-    links = {}
+    links = defaultdict(list)
     # links for the item
     for link in context.model.rels:
-        links[link.rel] = link.target_rid
+        links[link.rel].append(link.target_rid)
 
     # Get keys for the item
-    keys = {}
+    keys = defaultdict(list)
     for key in context.model.unique_keys:
-        keys[key.name] = key.value
+        keys[key.name].append(key.value)
 
     # Principals for the item
     principals = principals_allowed_by_permission(context, 'view')
