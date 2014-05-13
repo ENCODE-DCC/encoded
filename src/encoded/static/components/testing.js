@@ -6,6 +6,8 @@ var globals = require('./globals');
 
 var TestingRenderErrorPanel = module.exports.TestingRenderErrorPanel = React.createClass({
     render: function() {
+        console.log('log');
+        console.warn('warn');
         this.method_does_not_exist();
     }
 });
