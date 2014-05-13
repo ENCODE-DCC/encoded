@@ -86,11 +86,19 @@ class Auditor(object):
                 except AuditFailure as e:
                     errors.append(e)
                     continue
-                if not result:
+                if result is None:
                     continue
                 if isinstance(result, basestring):
-                    detail = result
-                errors.append(AuditFailure(category, detail, level))
+                    result = [result]
+                for item in result:
+                    if isinstance(item, AuditFailure):
+                        errors.append(item)
+                        continue
+                    if isinstance(item, basestring):
+                        detail = item
+                        errors.append(AuditFailure(category, detail, level))
+                        continue
+                    raise ValueError(item)
             except Exception as e:
                 detail = '%s: %r' % (checker.__name__, e)
                 errors.append(AuditFailure('audit script error', detail, 'ERROR'))
