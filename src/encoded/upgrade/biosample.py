@@ -94,7 +94,6 @@ def biosample_4_5(value, system):
             value['status'] = 'in progress'
 
 
-
 @upgrade_step('biosample', '5', '6')
 def biosample_4_5(value, system):
 

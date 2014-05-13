@@ -1,7 +1,4 @@
-from pyramid.traversal import find_root
-from uuid import UUID
 from ..migrator import upgrade_step
-import re
 from ..views.views import ENCODE2_AWARDS
 
 

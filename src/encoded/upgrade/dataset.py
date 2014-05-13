@@ -61,7 +61,6 @@ def dataset_2_3(value, system):
 @upgrade_step('dataset', '3', '4')
 def dataset_3_4(value, system):
     # http://redmine.encodedcc.org/issues/1074
-
     if 'status' in value:
         if value['status'] == 'DELETED':
             value['status'] = 'deleted'
@@ -76,7 +75,3 @@ def dataset_3_4(value, system):
             value['status'] = 'released'
         elif value['award'] not in ENCODE2_AWARDS:
             value['status'] = 'submitted'
-
-    # http://redmine.encodedcc.org/issues/1393
-    if value.get('biosample_type') == 'primary cell line':
-        value['biosample_type'] = 'primary cell'
