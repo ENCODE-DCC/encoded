@@ -698,7 +698,7 @@ class RNAi(Collection):
         'title': 'RNAi',
         'description': 'Listing of RNAi',
     }
-    item_embedded = set(['source', 'documents', 'target'])
+    item_embedded = set(['source', 'documents'])
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
