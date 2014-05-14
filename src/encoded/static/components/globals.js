@@ -39,6 +39,12 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
     return htmlClass;
 };
 
+
+module.exports.encodeVersionMap = {
+    "ENCODE2": "2",
+    "ENCODE3": "3"
+}
+
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",
     "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",

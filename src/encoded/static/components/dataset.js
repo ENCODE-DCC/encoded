@@ -162,6 +162,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     render: function() {
         // Creating an object here dedupes when a file is listed under both related_files and original_files
         var rows = {};
+        var encodevers = this.props.encodevers;
         this.props.items.forEach(function (file) {
             var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.download_path;
             rows[file['@id']] = (
@@ -177,7 +178,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <td>{file.submitted_by.title}</td>
                     <td>{file.date_created}</td>
                     <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
-                    <td><ValidationStatusLabel status={file.validation_status} /></td>
+                    {encodevers == "3" ? <td><ValidationStatusLabel status="pending" /></td> : null}
                 </tr>
             );
         });
@@ -194,7 +195,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <th>Added by</th>
                             <th>Date added</th>
                             <th>File download</th>
-                            <th>Validation status</th>
+                            {encodevers == "3" ? <th>Validation status</th> : null}
                         </tr>
                     </thead>
                     <tbody>
@@ -202,7 +203,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan="9"></td>
+                            <td colSpan={encodevers == "3" ? 9 : 8}></td>
                         </tr>
                     </tfoot>
                 </table>
