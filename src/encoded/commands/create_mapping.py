@@ -193,7 +193,7 @@ def es_mapping(mapping):
                     'index': 'not_analyzed',
                 },
             },
-            'url': {
+            'paths': {
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'

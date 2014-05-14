@@ -1277,29 +1277,44 @@ class AfterModified(object):
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
     links = defaultdict(list)
-    # links for the item
     for link in context.model.rels:
         links[link.rel].append(link.target_rid)
 
-    # Get keys for the item
     keys = defaultdict(list)
     for key in context.model.unique_keys:
         keys[key.name].append(key.value)
 
-    # Principals for the item
     principals = principals_allowed_by_permission(context, 'view')
     if principals is Everyone:
         principals = [Everyone]
 
-    embedded = embed(request, request.resource_path(context))
-    audit = request.audit(embedded, embedded['@type'], path=embedded['@id'])
+    path = resource_path(context, '')
+    paths = {path}
+    parent = context.__parent__
+
+    if parent.unique_key in keys:
+        paths.update(
+            resource_path(parent, key, '')
+            for key in keys[parent.unique_key])
+
+    for base in (parent, request.root):
+        for key_name in ('accession', 'alias'):
+            if key_name not in keys:
+                continue
+            paths.add(resource_path(base, str(context.uuid), ''))
+            paths.update(
+                resource_path(base, key, '')
+                for key in keys[key_name])
+
+    embedded = embed(request, path)
+    audit = request.audit(embedded, embedded['@type'], path=path)
     document = {
         'embedded': embedded,
-        'object': embed(request, request.resource_path(context) + '?frame=object'),
+        'object': embed(request, path + '?frame=object'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),
-        'url': request.resource_path(context),
+        'paths': sorted(paths),
         'audit': audit,
     }
 
