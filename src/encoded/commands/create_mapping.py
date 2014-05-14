@@ -180,12 +180,18 @@ def es_mapping(mapping):
             'keys': {
                 'type': 'object',
                 'include_in_all': False,
-                'properties': {}
+                '_default_': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                },
             },
             'links': {
                 'type': 'object',
                 'include_in_all': False,
-                'properties': {}
+                '_default_': {
+                    'type': 'string',
+                    'index': 'not_analyzed',
+                },
             },
             'url': {
                 'type': 'string',
