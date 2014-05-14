@@ -35,6 +35,14 @@ Step 3: Run buildout::
     $ python2.7 bootstrap.py
     $ bin/buildout
 
+If you see a clang error like this::
+
+    clang: error: unknown argument: '-mno-fused-madd' [-Wunused-command-line-argument-hard-error-in-future]
+
+You can try::
+
+    $ ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bin/buildout
+
 If it does not exist, set a session key::
 
     $ cat /dev/urandom | head -c 256 | base64 > session-secret.b64

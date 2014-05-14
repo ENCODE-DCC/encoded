@@ -22,6 +22,7 @@ requires = [
     'setuptools',
     'simplejson',
     'strict_rfc3339',
+    'subprocess_middleware',
     'xlrd',
     'zope.sqlalchemy',
     'PyBrowserID',
