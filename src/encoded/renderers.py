@@ -5,6 +5,7 @@ from pyramid.events import (
     subscriber,
 )
 from pyramid.httpexceptions import (
+    HTTPForbidden,
     HTTPMovedPermanently,
     HTTPPreconditionFailed,
     HTTPUnauthorized,
@@ -21,6 +22,7 @@ from urllib import unquote
 import logging
 import os
 import pyramid.renderers
+import pyramid.tweens
 import time
 import uuid
 
@@ -32,6 +34,7 @@ def includeme(config):
     config.add_renderer(None, json_renderer)
     config.add_renderer('null_renderer', NullRenderer)
     config.add_tween('.renderers.page_or_json', under='.stats.stats_tween_factory')
+    config.add_tween('.renderers.es_tween_factory', over=pyramid.tweens.MAIN)
     config.scan(__name__)
 
 
@@ -68,15 +71,7 @@ class NullRenderer:
         return None
 
 
-@subscriber(NewRequest)
-def choose_format(event):
-    # Ignore subrequests
-    if len(manager.stack) > 1:
-        return
-
-    # Discriminate based on Accept header or format parameter
-    request = event.request
-
+def choose_format(request):
     login = None
     expected_user = request.headers.get('X-If-Match-User')
     if expected_user is not None:
@@ -182,3 +177,56 @@ page_or_json = SubprocessTween(
     args=['node', resource_filename(__name__, 'static/build/renderer.js')],
     env=node_env,
 )
+
+
+def es_tween_factory(handler, registry):
+    from pyramid.renderers import render_to_response
+    from pyramid.traversal import (
+        split_path_info,
+        _join_path_tuple,
+    )
+    from .indexing import ELASTIC_SEARCH
+    es = registry[ELASTIC_SEARCH]
+
+    ignore = {
+        '/',
+        '/search',
+        '/session',
+        '/login',
+        '/logout',
+    }
+
+    def es_tween(request):
+        choose_format(request)
+        if request.method not in ('GET', 'HEAD'):
+            return handler(request)
+
+        if request.params.get('source', '') == 'database':
+            return handler(request)
+
+        frame = request.params.get('frame', 'embedded')
+        if frame not in ('embedded', 'object',):
+            return handler(request)
+
+        # Normalize path
+        path =  request.path_info or '/'
+        path = _join_path_tuple(('',) + split_path_info(path))
+
+        if path in ignore:
+            return handler(request)
+
+        query = {'query': {'term': {'paths': path}}}
+        data = es.search(index='encoded', body=query)
+        hits = data['hits']['hits']
+        if len(hits) != 1:
+            return handler(request)
+
+        source = hits[0]['_source']
+        allowed = set(source['principals_allowed_view'])
+        if allowed.isdisjoint(request.effective_principals):
+            raise HTTPForbidden()
+
+        value = source[frame]
+        return render_to_response(None, value, request)
+
+    return es_tween
