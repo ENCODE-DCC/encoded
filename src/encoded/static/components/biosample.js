@@ -7,8 +7,10 @@ var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
+var StatusLabel = antibody.StatusLabel;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
@@ -66,7 +68,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <li className="active">{context.donor.organism.name}</li>
                             : null }
                         </ul>
-                        <h2>{context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span></h2>
+                        <h2>
+                            {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
+                            <StatusLabel status={context.status} />
+                        </h2>
                     </div>
                 </header>
                 <div className="panel data-display">

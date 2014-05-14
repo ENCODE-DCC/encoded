@@ -5,9 +5,11 @@ var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
+var StatusLabel = antibody.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -61,7 +63,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <li>Experiment</li>
                             <li className="active">{context.assay_term_name}</li>
                         </ul>
-                        <h2>Experiment summary for {context.accession}</h2>
+                        <h2>
+                            Experiment summary for {context.accession}
+                            <StatusLabel status={context.status} />
+                        </h2>
                     </div>
                 </header>
                 <div className="panel data-display">
