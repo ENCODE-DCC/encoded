@@ -15,7 +15,7 @@ Step 1: Verify that homebrew is working properly::
 
 Step 2: Install or update dependencies::
 
-    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql
+    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql node
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
     $ brew install mysql  # Required for EDW syncing
 
@@ -34,6 +34,14 @@ Step 3: Run buildout::
 
     $ python2.7 bootstrap.py
     $ bin/buildout
+
+If you see a clang error like this::
+
+    clang: error: unknown argument: '-mno-fused-madd' [-Wunused-command-line-argument-hard-error-in-future]
+
+You can try::
+
+    $ ARCHFLAGS=-Wno-error=unused-command-line-argument-hard-error-in-future bin/buildout
 
 If it does not exist, set a session key::
 

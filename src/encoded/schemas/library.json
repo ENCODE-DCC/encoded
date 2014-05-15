@@ -100,7 +100,6 @@
             "title": "Extraction method",
             "description": "A short description or reference of the nucleic acid extraction protocol used in library preparation, if applicable.",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "miRNeasy Mini kit (QIAGEN cat#:217004)",
                 "Trizol (LifeTech cat#: 15596-018)",
@@ -116,7 +115,6 @@
             "title": "Fragmentation method",
             "description": "A short description or reference of the nucleic acid fragmentation protocol used in library preparation, if applicable.",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "sonication",
                 "see document",
@@ -142,7 +140,6 @@
             "title": "Size selection method",
             "description": "A short description or reference of the size selection protocol used in library preparation, if applicable.",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "gel",
                 "see document",
@@ -154,7 +151,6 @@
             "title": "Lysis method",
             "description": "A short description or reference of the cell lysis protocol used in library preparation, if applicable",
             "type": "string",
-            "default": "see document",
             "XXXenum": [
                 "miRNeasy Mini kit (QIAGEN cat#:217004)",
                 "Trizol (LifeTech cat#: 15596-018)",

@@ -21,9 +21,6 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
-    'antibody_approval',
-    "antibody_characterization",
-    "antibody_lot",
 ]
 
 

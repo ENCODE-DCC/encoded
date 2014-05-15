@@ -27,6 +27,7 @@
     "source-map-support": "^0.2.5",
     "envify": "^1.2.1",
     "brace": "^0.2.1",
-    "cookie-cutter": "^0.1.1"
+    "cookie-cutter": "^0.1.1",
+    "subprocess-middleware": "^0.1.0"
   }
 }
