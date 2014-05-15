@@ -86,6 +86,10 @@
             "title": "Assay",
             "type": "string"
         },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
         "replicates.library.biosample.organism.name": {
             "title": "Organism",
             "type": "string"

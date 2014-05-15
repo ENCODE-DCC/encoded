@@ -297,6 +297,10 @@
             "title": "Biosample type",
             "type": "string"
         },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
         "organ_slims": {
             "title": "Organ",
             "type": "array"
