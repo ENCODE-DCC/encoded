@@ -80,9 +80,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </ul>
                         <h2>
                             Experiment summary for {context.accession}
-                            <StatusLabel status={statuses} />
                         </h2>
-                    </div>
+                         <div className="characterization-status-labels">
+                            <StatusLabel status={statuses} />
+                        </div>
+                   </div>
                 </header>
                 <div className="panel data-display">
                     <dl className="key-value">

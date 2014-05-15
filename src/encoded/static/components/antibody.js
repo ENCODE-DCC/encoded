@@ -59,8 +59,10 @@ var Approval = module.exports.Approval = React.createClass({
                         <h2>Approval for {context.antibody.accession}</h2>
                         <h3>Antibody against {context.target.organism.name}
                             {' '}{context.target.label}
-                            <StatusLabel title="Status" status={context.status} />
                         </h3>
+                        <div className="characterization-status-labels">
+                            <StatusLabel title="Status" status={context.status} />
+                        </div>
                     </div>
                 </header>
 

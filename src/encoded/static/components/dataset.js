@@ -4,9 +4,11 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
+var StatusLabel = antibody.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -147,17 +149,6 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
 });
 
 
-var ValidationStatusLabel = React.createClass({
-    render: function() {
-        var status = this.props.status;
-        return (
-            <span className={globals.validationStatusClass(status, 'label')}>
-                {status}
-            </span>
-        );
-    }
-});
-
 var FileTable = module.exports.FileTable = React.createClass({
     render: function() {
         // Creating an object here dedupes when a file is listed under both related_files and original_files
@@ -178,7 +169,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <td>{file.submitted_by.title}</td>
                     <td>{file.date_created}</td>
                     <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
-                    {encodevers == "3" ? <td><ValidationStatusLabel status="pending" /></td> : null}
+                    {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                 </tr>
             );
         });
