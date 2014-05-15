@@ -54,7 +54,7 @@
         "submitted_by": "aldbbel.eldat@echmund.rynpald",
         "uuid": "8d85581d-d006-42ac-a7f6-b7aab2f6ba58",
         "treatment_term_id": "Taxon:273526",
-        "treatment_type": "infection",
+        "treatment_type": "exposure",
         "lab": "valerie-reinke",
         "duration_units": "hour",
         "treatment_term_name": "Serratia marcescens subsp. marcescens Db11",
