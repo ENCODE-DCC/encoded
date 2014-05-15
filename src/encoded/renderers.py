@@ -20,7 +20,6 @@ from pyramid.traversal import (
     split_path_info,
     _join_path_tuple,
 )
-from .indexing import ELASTIC_SEARCH
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
 import logging
@@ -199,8 +198,10 @@ page_or_json = SubprocessTween(
 
 
 def es_tween_factory(handler, registry):
-    default_datastore = registry.settings.get('item_datastore', 'elasticsearch')
+    from .indexing import ELASTIC_SEARCH
     es = registry[ELASTIC_SEARCH]
+
+    default_datastore = registry.settings.get('item_datastore', 'elasticsearch')
 
     ignore = {
         '/',
