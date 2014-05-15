@@ -14,6 +14,7 @@ require('./footer');
 require('./globals');
 require('./home');
 require('./item');
+require('./page');
 require('./mixins');
 require('./navbar');
 require('./platform');
