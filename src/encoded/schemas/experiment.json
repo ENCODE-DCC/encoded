@@ -110,12 +110,12 @@
             "title": "File format",
             "type": "string"
         },
-        "replicates.library.treatments.treatment_term_name": {
+        "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Treatment",
             "type": "array"
         },
         "replicates.read_length": {
-            "title": "Read length",
+            "title": "Read length (nt)",
             "type": "string"
         },
         "developmental_slims": {
