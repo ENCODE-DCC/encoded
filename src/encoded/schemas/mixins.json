@@ -82,6 +82,18 @@
             ]
         }
     },
+    "validation_status": {
+        "validation_status": {
+            "title": "Validation status",
+            "type": "string",
+            "default": "pending",
+            "enum" : [
+                "pending",
+                "fail",
+                "pass"
+            ]
+        }
+    },
     "submitted": {
         "date_created": {
             "title": "Date created",

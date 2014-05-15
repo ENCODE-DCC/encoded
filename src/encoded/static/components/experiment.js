@@ -22,7 +22,6 @@ var Panel = function (props) {
 };
 
 
-
 var Experiment = module.exports.Experiment = React.createClass({
     render: function() {
         var context = this.props.context;
@@ -53,6 +52,22 @@ var Experiment = module.exports.Experiment = React.createClass({
         for (var key in antibodies) {
             antibody_accessions.push(antibodies[key].accession);
         }
+
+        // Determine this experiment's ENCODE version
+        var encodevers = "";
+        if (context.award.rfa) {
+            encodevers = globals.encodeVersionMap[context.award.rfa.substring(0,7)];
+            if (typeof encodevers === "undefined") {
+                encodevers = "";
+            }
+        }
+
+        // Make list of statuses
+        var statuses = [{status: context.status, title: "Status"}];
+        if (encodevers === "3") {
+            statuses.push({status: "pending", title: "Validation"});
+        }
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -65,7 +80,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         </ul>
                         <h2>
                             Experiment summary for {context.accession}
-                            <StatusLabel status={context.status} />
+                            <StatusLabel status={statuses} />
                         </h2>
                     </div>
                 </header>
@@ -140,7 +155,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
-                        <FileTable items={context.files} />
+                        <FileTable items={context.files} encodevers={encodevers} />
                     </div>
                 : null }
             </div>

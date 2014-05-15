@@ -118,17 +118,65 @@
 
 h3 .label,
 h2 .label {
+    display: table-cell;
     font-size: 16px;
-    line-height: 20px;
+    line-height: 14px;
     position: relative;
-    top: -3px;
-    left: 15px;
     text-shadow: 0 -1px 0 rgba(0,0,0,.3);
+    text-align: left;
+    padding: 5px 5px 7px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+        padding: 5px 10px;
+        line-height: 18px;
+    }
 }
 
-h2 .label {
-    display: inline-block;
-    top: -6px;
+.status-list {
+    display: table;
+    width: 100%;
+    margin: 5px 0;
+    padding: 0;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: block;
+        width: auto;
+    }
+
+    li {
+        display: table-cell;
+        padding: 5px 5px 7px;
+        @include border-radius(0);
+        vertical-align: bottom;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: inline-block;
+            padding: 5px 10px;
+        }
+
+        &:first-child {
+            @include border-top-left-radius(4px);
+            @include border-bottom-left-radius(4px);
+        }
+
+        &:last-child {
+            @include border-top-right-radius(4px);
+            @include border-bottom-right-radius(4px);
+        }
+    }
+}
+
+.status-list-title {
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: left;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline;
+        font-size: 16px;
+    }
 }
 
 @each $item in label, badge {
@@ -182,6 +230,17 @@ h2 .label {
     // REVOKED (red)
     .#{$item}.status-revoked        { background-color: $brand-danger; }
     .#{$item}.status-revoked[href]   { background-color: darken($brand-danger, 10%); }
+
+    // Validation Statuses
+    // PENDING (orange)
+    .#{$item}.status-pending        { background-color: $brand-warning; }
+    .#{$item}.status-pending[href]   { background-color: darken($brand-warning, 10%); }
+    // FAILED (red)
+    .#{$item}.status-fail        { background-color: $brand-danger; }
+    .#{$item}.status-fail[href]   { background-color: darken($brand-danger, 10%); }
+    // PASSED (green)
+    .#{$item}.status-pass        { background-color: $brand-success; }
+    .#{$item}.status-pass[href]   { background-color: darken($brand-success, 10%); }
 
     /* (gray) is the default if no class given */
 }

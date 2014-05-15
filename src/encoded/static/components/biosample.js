@@ -70,7 +70,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         </ul>
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
-                            <StatusLabel status={context.status} />
+                            <StatusLabel title="Status" status={context.status} />
                         </h2>
                     </div>
                 </header>
