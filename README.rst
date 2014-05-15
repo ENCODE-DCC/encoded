@@ -15,7 +15,7 @@ Step 1: Verify that homebrew is working properly::
 
 Step 2: Install or update dependencies::
 
-    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql
+    $ brew install libevent libmagic libxml2 libxslt elasticsearch openssl postgresql node
     $ brew install freetype libjpeg libtiff littlecms webp  # Required by Pillow
     $ brew install mysql  # Required for EDW syncing
 
