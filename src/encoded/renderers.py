@@ -133,6 +133,9 @@ def canonical_redirect(event):
         return
     canonical_path = canonical_path.split('?', 1)[0]
 
+    if request.path_info == '/':
+        return
+
     request_path = _join_path_tuple(('',) + split_path_info(request.path_info))
     if request_path + '/' == canonical_path and request.path_info.endswith('/'):
         return
