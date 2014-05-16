@@ -298,17 +298,18 @@
             "type": "string"
         },
         "status": {
-            "title": "Status",
+            "title": "Biosample status",
+            "type": "string"
+        },
+        "organism.name": {
+            "title": "Organism",
             "type": "string"
         },
         "organ_slims": {
             "title": "Organ",
             "type": "array"
         },
-        "organism.name": {
-            "title": "Organism",
-            "type": "string"
-        },
+        
         "donor.sex": {
             "title": "Gender",
             "type": "string"
@@ -322,24 +323,24 @@
             "type": "string"
         },
         "phase": {
-            "title": "Phase",
+            "title": "Cell cycle phase",
             "type": "string"
         },
         "treatments.treatment_term_name": {
-            "title": "Treatment",
+            "title": "Biosample treatment",
             "type": "array"
         },
         "source.title": {
             "title": "Source",
             "type": "string"
         },
-        "lab.title": {
-            "title": "Lab",
-            "type": "string"
-        },
         "developmental_slims": {
             "title": "Developmental slim",
             "type": "array"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
         }
     },
     "columns": {
