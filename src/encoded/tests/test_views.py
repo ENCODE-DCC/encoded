@@ -181,7 +181,7 @@ def test_collection_put(testapp, item_type, execute_counter):
     item_url = res.json['@graph'][0]['@id']
     uuid = initial['uuid']
 
-    with execute_counter.expect(2):
+    with execute_counter.expect(1):
         res = testapp.get(item_url).json
 
     for key in initial:
@@ -191,7 +191,7 @@ def test_collection_put(testapp, item_type, execute_counter):
     del update['uuid']
     testapp.put_json(item_url, update, status=200)
 
-    with execute_counter.expect(4):
+    with execute_counter.expect(2):
         res = testapp.get('/' + uuid).follow().json
 
     for key in update:
