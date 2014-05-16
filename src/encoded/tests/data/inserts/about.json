@@ -1,6 +1,6 @@
 [
     {
-        "slug": "home",
+        "name": "home",
         "title": "Home",
         "uuid": "b7d70724-3fb7-41c6-893c-f90be5c95ae2",
         "layout": {
@@ -41,7 +41,7 @@
         }
     },
     {
-        "slug": "about",
+        "name": "about",
         "title": "About",
         "uuid": "092a47cf-8d7b-4ff0-bf5d-9b16c89a8827",
         "layout": {

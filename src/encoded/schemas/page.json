@@ -4,8 +4,8 @@
     "id": "/profiles/page.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "slug", "title", "layout" ],
-    "identifyingProperties": ["uuid", "slug" ],
+    "required": [ "name", "title", "layout" ],
+    "identifyingProperties": ["uuid", "name" ],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -22,8 +22,8 @@
             "description": "The name shown in the browser's title bar and tabs.",
             "type": "string"
         },
-        "slug": {
-            "title": "URL Slug",
+        "name": {
+            "title": "URL Name",
             "description": "The name shown in this page's URL.",
             "type": "string",
             "pattern": "^[a-z0-9_-]+$"

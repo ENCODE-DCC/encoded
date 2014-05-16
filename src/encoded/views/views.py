@@ -710,8 +710,8 @@ class Page(Collection):
 
     class Item(Collection.Item):
         base_types = ['page'] + Collection.Item.base_types
-        name_key = 'slug'
-        keys = ['slug']
+        name_key = 'name'
+        keys = ['name']
 
         STATUS_ACL = {
             'in progress': ALLOW_CURRENT,
@@ -727,7 +727,7 @@ class AboutPage(Page):
         'title': 'About Pages',
         'description': 'Portal pages, about section',
     }
-    unique_key = 'about_page:slug'
+    unique_key = 'about_page:name'
 
 
 @location('help')
@@ -737,4 +737,4 @@ class HelpPage(Page):
         'title': 'Help Pages',
         'description': 'Portal pages, help section',
     }
-    unique_key = 'help_page:slug'
+    unique_key = 'help_page:name'
