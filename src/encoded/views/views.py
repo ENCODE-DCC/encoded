@@ -1,7 +1,5 @@
 from pyramid.security import (
     Allow,
-    Authenticated,
-    Deny,
     Everyone,
 )
 from .download import ItemWithAttachment
@@ -55,9 +53,10 @@ ALLOW_LAB_SUBMITTER_EDIT = [
 ]
 
 ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
-    (Allow, 'role.viewer', 'view'),
+    (Allow, Everyone, 'view'),
 ]
 
+# Now unused, kept around for upgrade tests.
 ENCODE2_AWARDS = frozenset([
     '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
     '1f3cffd4-457f-4105-9b3c-3e9119abfcf0',
@@ -137,8 +136,6 @@ class Collection(BaseCollection):
             if 'lab' in properties:
                 lab_submitters = 'submits_for.%s' % properties['lab']
                 roles[lab_submitters] = 'role.lab_submitter'
-            if properties.get('award') in ENCODE2_AWARDS:
-                roles[Everyone] = 'role.viewer'
             return roles
 
 
