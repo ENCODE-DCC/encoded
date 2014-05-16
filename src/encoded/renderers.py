@@ -202,9 +202,11 @@ page_or_json = SubprocessTween(
 
 def es_tween_factory(handler, registry):
     from .indexing import ELASTIC_SEARCH
-    es = registry[ELASTIC_SEARCH]
+    es = registry.get(ELASTIC_SEARCH)
+    if es is None:
+        return handler
 
-    default_datastore = registry.settings.get('item_datastore', 'elasticsearch')
+    default_datastore = registry.settings.get('item_datastore', 'database')
 
     ignore = {
         '/',
