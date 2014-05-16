@@ -559,30 +559,35 @@ module.exports.HistoryAndTriggers = {
 // Handle browser capabilities, a la Modernizr. Can *only* be called from
 // mounted components (componentDidMount method would be a good method to
 // use this from), because actual DOM is needed.
-module.exports.BrowserCaps = {
-    caps: {},
+module.exports.BrowserFeat = {
+    feat: {},
 
-    // Return object with browser capabilities
+    // Return object with browser capabilities; return from cache if available
     getBrowserCaps: function () {
-        if (Object.keys(this.caps).length === 0) {
-            this.caps.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
+        if (Object.keys(this.feat).length === 0) {
+            this.feat.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
         }
-        return this.caps;
+        return this.feat;
     },
 
-    // Render <img>. 'node' is DOM node of img to render. 'sourceset' is object with
-    // jpg, png, and/or svg file names to render. Sets 'src' attr of img to appropriate
-    // version of image.
-    browserImgRender: function(node, sourceset) {
+    setHtmlFeatClass: function() {
+        var htmlclass = [];
+
         this.getBrowserCaps();
 
-        if (this.caps.svg && sourceset.svg) {
-            node.src = sourceset.svg;
-        } else if (sourceset.png) {
-            node.src = sourceset.png;
-        } else if (sourceset.jpg) {
-            node.src = sourceset.jpg;
-        } // otherwise, no image to load at all
+        // For each set feature, add to the <html> element's class
+        var keys = Object.keys(this.feat);
+        var i = keys.length;
+        while (i--) {
+            if (this.feat[keys[i]]) {
+                htmlclass.push(keys[i]);
+            } else {
+                htmlclass.push('no-' + keys[i]);
+            }
+        }
 
+        // Now write the classes to the <html> DOM element
+        document.documentElement.className = htmlclass.join(' ');
     }
 };
+

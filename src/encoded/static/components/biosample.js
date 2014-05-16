@@ -7,7 +7,6 @@ var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
-var mixins = require('./mixins');
 
 var DbxrefList = dbxref.DbxrefList;
 
@@ -441,16 +440,6 @@ globals.panel_views.register(RNAi, 'rnai');
 
 
 var Document = module.exports.Document = React.createClass({
-    mixins: [mixins.BrowserCaps],
-
-    componentDidMount: function() {
-        // If the browser can render SVGs, set the src attribute to best file name from sourceset attr.
-        if (this.refs.fileicon && this.refs.fileicon.props.sourceset) {
-            // Only do img filename replacement if 'fileicon' ref is set
-            this.browserImgRender(this.refs.fileicon.getDOMNode(), this.refs.fileicon.props.sourceset);
-        } // otherwise, no image to load at all
-    },
-
     render: function() {
         var context = this.props.context;
         var attachmentHref, attachmentUri;
@@ -461,39 +450,33 @@ var Document = module.exports.Document = React.createClass({
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             if (context.attachment.type.split('/', 1)[0] == 'image') {
-                imgClass = 'characterization-img';
+                var imgClass = 'characterization-img';
                 src = attachmentHref;
-                sourceset = {};
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Characterization Image";
-                ref = "";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref}>
+                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                    </a>
+                );
             } else if (context.attachment.type == "application/pdf"){
-                src = "";
-                sourceset = {png:"/static/img/file-pdf.png",svg:"/static/img/file-pdf.svg"};
-                alt = "Characterization PDF Icon";
-                ref = "fileicon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Characterization PDF Icon</a>
+                );
             } else {
-                src = "";
-                sourceset = {png:"/static/img/file.png",svg:"/static/img/file.svg"};
-                alt = "Characterization Icon";
-                ref = "fileicon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide">Characterization Icon</a>
+                );
             }
-            figure = (
-                <a data-bypass="true" href={attachmentHref}>
-                    <img className={imgClass} src={src} sourceset={sourceset} ref={ref} height={height} width={width} alt={alt} />
-                </a>
-            );
             download = (
                 <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
                 </a>
             );
         } else {
-            src = "/static/img/file-broken.png";
-            alt = "Characterization File Broken Icon";
             figure = (
-                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                <div className="file-missing text-hide">Characterization file broken icon</div>
             );
             download = (
                 <em>Document not available</em>
