@@ -46,13 +46,15 @@ def schema_mapping(name, schema):
     type_ = schema['type']
 
     # Elasticsearch handles multiple values for a field
-    if type_ == 'array':
+    if type_ == 'array' and schema['items']:
         return schema_mapping(name, schema['items'])
 
     if type_ == 'object':
-        properties = {
-            k: schema_mapping(k, v) for k, v in schema['properties'].items()
-        }
+        properties = {}
+        for k, v in schema['properties'].items():
+            mapping = schema_mapping(k, v)
+            if mapping is not None:
+                properties[k] = mapping
         return {'properties': properties}
 
     if type_ == ["number", "string"]:
