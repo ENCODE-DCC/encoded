@@ -19,22 +19,22 @@ var Block = module.exports.Block = React.createClass({
 
 var Row = module.exports.Row = React.createClass({
     render: function() {
-        var col_class = "";
+        var auto_col_class = "";
         switch (this.props.blocks.length) {
-            case 2: col_class = 'col-md-6'; break;
-            case 3: col_class = 'col-md-4'; break;
-            case 4: col_class = 'col-md-3'; break;
-            default: col_class = 'col-md-12'; break;
+            case 2: auto_col_class = 'col-md-6'; break;
+            case 3: auto_col_class = 'col-md-4'; break;
+            case 4: auto_col_class = 'col-md-3'; break;
+            default: auto_col_class = 'col-md-12'; break;
         }
         var blocks = this.props.blocks.map(function(block) {
             return (
-                <div className={col_class}>
+                <div className={block.className || auto_col_class}>
                     <Block block={block} />
                 </div>
             );
         });
         return (
-            <div class="row">
+            <div className="row">
                 {blocks}
             </div>
         );

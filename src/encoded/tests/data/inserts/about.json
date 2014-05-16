@@ -50,6 +50,7 @@
                     "blocks": [
                         {
                             "@type": "richtextblock",
+                            "className": "col-md-4 class_override",
                             "data": {
                                 "body": "<h1>About</h1>"
                             }
