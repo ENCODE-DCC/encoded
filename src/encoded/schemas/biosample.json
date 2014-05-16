@@ -287,6 +287,7 @@
             "enum" : [
                 "in progress",
                 "deleted",
+                "replaced",
                 "released",
                 "proposed"
             ]

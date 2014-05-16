@@ -19,7 +19,7 @@ ACCESSION_KEYS = [
         'name': 'accession',
         'value': '{accession}',
         '$templated': True,
-        '$condition': 'accession',
+        '$condition': lambda accession, status=None: accession and status != 'replaced'
     },
     {
         'name': 'accession',
@@ -98,6 +98,7 @@ class Collection(BaseCollection):
             # standard_status
             'released': ALLOW_CURRENT,
             'deleted': [],
+            'replaced': [],
 
             # shared_status
             'current': ALLOW_CURRENT,
@@ -120,6 +121,15 @@ class Collection(BaseCollection):
             # dataset / experiment
             'revoked': ALLOW_CURRENT,
         }
+
+        @property
+        def __name__(self):
+            if self.name_key is None:
+                return self.uuid
+            properties = self.upgrade_properties(finalize=False)
+            if properties.get('status') == 'replaced':
+                return self.uuid
+            return properties.get(self.name_key, None) or self.uuid
 
         def __acl__(self):
             # Don't finalize to avoid validation here.
