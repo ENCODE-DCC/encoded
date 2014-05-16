@@ -293,7 +293,8 @@
                 "cells", 
                 "whole embryos", 
                 "items", 
-                "μg"
+                "μg",
+                "whole animals"
             ]
         },
         "url": {
@@ -310,20 +311,104 @@
                 "male",
                 "female",
                 "unknown",
-                "mixed"
+                "mixed",
+                "hermaphrodite"
             ]
         },
-        "model_organism_life_stage": {
-            "title": "Model organism life stage",
+        "mouse_life_stage": {
+            "title": "Mouse life stage",
             "type": "string",
             "enum": [
-                "fetal",
-                "newborn",
-                "child",
                 "adult",
                 "unknown",
                 "embryonic",
                 "postnatal"
+            ]
+        },
+        "fly_life_stage_term_id": {
+            "title": "Fly life stage term id",
+            "description":  "The Drosophila developmental ontology term identifier that corresponds to the organism life stage at which the biosample was sampled.",
+            "comment": "Based on the choice in fly_life_stage_term_name use the following guide: embryonic stage - FBdv:00005289, first instar larval stage - FBdv:00005337, second instar larval stage - FBdv:00005338, third instar larval stage - FBdv:00005339, wandering third instar larval stage - FBdv:00005341, prepupal stage - FBdv:00005342, pupal stage - FBdv:00005349, adult_stage - FBdv:00005369",
+            "type": "string",
+            "enum": [
+                "FBdv:00005289",
+                "FBdv:00005337",
+                "FBdv:00005338",
+                "FBdv:00005339",
+                "FBdv:00005341",
+                "FBdv:00005349",
+                "FBdv:00005342",
+                "FBdv:00005349",
+                "FBdv:00005369"
+            ]
+        },
+        "fly_life_stage_term_name": {
+            "title": "Fly life stage",
+            "type": "string",
+            "enum": [
+                "embryonic stage",
+                "first instar larval stage",
+                "second instar larval stage",
+                "third instar larval stage",
+                "wandering third instar larval stage",
+                "prepupal stage",
+                "pupal stage",
+                "adult stage"
+            ]
+        },
+        "fly_synchronization_stage": {
+            "title": "Fly synchronization stage",
+            "comment": "Stage at which flies were synchronized. Use in conjunction with time and time units post-synchronization.",
+            "type": "string",
+            "enum": [
+                "post-fertilization",
+                "white prepupa",
+                "post-eclosion adult"
+            ]  
+        },
+        "post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization.",
+            "type": "string",
+            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+        },
+        "post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "comment": "Use in conjunction with post_synchronization_time to specify time elapsed post-synchronization.",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month",
+                "year",
+                "stage"
+            ]
+        },       
+        "worm_life_stage":{
+            "title": "Worm life stage",
+            "type": "string",
+            "enum": [
+                "early embryonic stage",
+                "late embryonic stage",
+                "mixed embryonic stage",
+                "L1 larval stage",
+                "L2 larval stage",
+                "L3 larval stage",
+                "L4 larval stage",
+                "dauer stage",
+                "young adult stage",
+                "adult stage"
+            ]    
+        },
+        "worm_synchronization_stage": {
+            "title": "Worm synchronization stage",
+            "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.",
+            "type": "string",
+            "enum": [
+                "post-fertilization",
+                "starved L1 larval stage"
             ]
         },
         "model_organism_age": {
