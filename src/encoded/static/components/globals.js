@@ -14,6 +14,10 @@ module.exports.listing_views = Registry();
 // Cell name listing titles
 module.exports.listing_titles = Registry();
 
+// Block views
+module.exports.block_views = Registry();
+module.exports.block_edit_views = Registry();
+
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
     htmlClass = htmlClass || '';
