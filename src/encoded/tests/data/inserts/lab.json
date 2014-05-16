@@ -627,8 +627,8 @@
         "uuid": "f3e28fb2-d892-45a5-b991-9c671890f58a"
     },
     {
-        "address1": "LSRC, Rm C318, Duke Box 3813",
-        "address2": "NULL",
+        "address1": "Department of Pharmacology and Cancer Biology",
+        "address2": "LSRC, Rm C318, Duke Box 3813",
         "awards": [
             "U01HG004279"
         ],
@@ -647,8 +647,8 @@
         "uuid": "29be7002-1065-416d-9e26-c53f919b1635"
     },
     {
-        "address1": "3150A MRB III Cell and Developmental Biology 8240",
-        "address2": "NULL",
+        "address1": "Department of Cell and Developmental Biology",
+        "address2": "8240 465 21st Ave South Rm 3120, MRB III",
         "awards": [
             "U01HG004263"
         ],
@@ -667,7 +667,7 @@
         "uuid": "59955ce2-fec6-4c78-81f7-d15f07784be4"
     },
     {
-        "address1": "Department of Developmental Biology, Memorial Sloan Kettering Cancer Center",
+        "address1": "Department of Developmental Biology",
         "address2": "1275 York Avenue, Box 252",
         "awards": [
             "U01HG004261"
@@ -687,7 +687,7 @@
         "uuid": "dac85d76-a24d-4dc7-ad48-ea350781da29"
     },
     {
-        "address1": "New York University, Department of Biology, Center for Genomics and Systems Biology",
+        "address1": "Department of Biology, Center for Genomics and Systems Biology",
         "address2": "12 Waverly Place, Room 708",
         "awards": [
             "U01HG004276"
@@ -707,7 +707,7 @@
         "uuid": "a6dc92a6-ea22-41d6-8388-0db968420bbc"
     },
     {
-        "address1": "Department of Molecular, Cellular and Developmental Biology, Yale University",
+        "address1": "Department of Molecular, Cellular and Developmental Biology",
         "address2": "PO Box 208103, 266 Whitney Ave",
         "awards": [
             "U01HG004279"
@@ -727,7 +727,7 @@
         "uuid": "8d6b70d1-9646-4ca0-8e16-0107b28ca32a"
     },
     {
-        "address1": "University of California, Berkeley, # 84-171",
+        "address1": "Department of Molecular and Cell Biology",
         "address2": "1 Cyclotron Road",
         "awards": [
             "U01HG004258"
@@ -747,7 +747,7 @@
         "uuid": "f48273e6-f8f0-4116-8526-5a3d6fe9ca56"
     },
     {
-        "address1": "Watson School of Biological Sciences, Cold Spring Harbor Laboratory",
+        "address1": "Watson School of Biological Sciences",
         "address2": "1 Bungtown Road",
         "awards": [
             "U01HG004261"
@@ -787,7 +787,7 @@
         "uuid": "f657ab42-025c-486e-ac10-b30f8a6b5b06"
     },
     {
-        "address1": "Wellcome Trust/Cancer Research UK Gurdon Institute, University of Cambridge",
+        "address1": "Wellcome Trust/Cancer Research UK Gurdon Institute",
         "address2": "Tennis Court Road",
         "awards": [
             "U01HG004270"
@@ -846,8 +846,8 @@
         "uuid": "44c7aee6-5efb-44c7-ab8d-55814e6ec3d1"
     },
     {
-        "address1": "University of Washington, Department of Genome Sciences",
-        "address2": "Foege Building S113, 3720 15th Ave NE",
+        "address1": "Department of Genome Sciences",
+        "address2": "3720 15th Ave NE, Foege S113B, Box 355065",
         "awards": [
             "U01HG004263"
         ],
@@ -905,7 +905,7 @@
         "uuid": "6ffc5d0d-e88d-4fe0-a562-e1b588802639"
             },
     {
-        "address1": "Center for Genomics & Bioinformatics",
+        "address1": "Center for Genomics and Bioinformatics",
         "address2": "1001 E 3rd, JH A316",
         "awards": [
             "U01HG004271"
@@ -925,8 +925,8 @@
         "uuid": "0458b6af-f651-4b70-ac26-73b709ff299f"
     },
     {
-        "address1": "Foege S-320B, Box 355065",
-        "address2": "3720 15th Ave NE",
+        "address1": "Department of Genome Sciences",
+        "address2": "3720 15th Ave NE, Foege S-320B, Box 355065",
         "awards": [
             "U01HG004263"
         ],
@@ -945,11 +945,11 @@
         "uuid": "3f1eda4d-92da-4023-9bee-c40b606bb8b6"
     },
     {
-        "address1": "Foege S-350D, Box 355065",
-        "address2": "3720 15th Ave NE",
+        "address1": "Department of Genome Sciences",
+        "address2": "3720 15th Ave NE, Foege S-350D, Box 355065",
         "awards": [
             "U01HG004263",
-                        "U41HG007355"
+            "U41HG007355"
         ],
         "city": "Seattle",
         "country": "USA",
@@ -1027,7 +1027,7 @@
         "uuid": "9f2e92fb-5875-4848-b7ed-9f043d2f2165"
     },
     {
-        "address1": "Department of of MCD Biology, Sinsheimer Labs, UCSC",
+        "address1": "Department of of MCD Biology, Sinsheimer Labs",
         "address2": "1156 High Street",
         "awards": [
             "U01HG004270"
@@ -1088,7 +1088,7 @@
         "uuid": "0f213d9f-87fb-4d50-9690-849bdd226670"
     },
     {
-        "address1": "Dept. Molecular Biology & Biochemistry",
+        "address1": "Department of Molecular Biology and Biochemistry",
         "address2": "Nelson Biological Labs. Room A121",
         "awards": [
             "U01HG004258"
@@ -1108,8 +1108,8 @@
         "uuid": "8bc2f589-cf10-4023-a030-1de84aba9227"
     },
     {
-        "address1": "NRI-1250 Moursund St. Ste. 1125",
-        "address2": "NULL",
+        "address1": "Duncan Neurological Research Institute",
+        "address2": "1250 Moursund St., Suite 1125",
         "awards": [
             "U01HG004264"
         ],
@@ -1129,7 +1129,6 @@
     },
     {
         "address1": "Pfotenhauerstr. 108",
-        "address2": "NULL",
         "awards": [
             "U01HG004267"
         ],
@@ -1147,7 +1146,7 @@
         "uuid": "f7b73e77-2f30-4238-bdd7-1c07ae8e203a"
     },
     {
-        "address1": "Department of Genetics, University of Cambridge",
+        "address1": "Department of Genetics",
         "address2": "Downing Street",
         "awards": [
             "U01HG004264"
@@ -1166,7 +1165,7 @@
         "uuid": "579def32-81a3-4e12-9722-80d542cf9fce"
     },
     {
-        "address1": "Department of Genetics,Harvard Medical School",
+        "address1": "Department of Genetics",
         "address2": "77 Avenue Louis Pasteur",
         "awards": [
             "U01HG004271"
