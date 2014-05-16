@@ -127,17 +127,17 @@ def canonical_redirect(event):
         return
     if not request.environ.get('encoded.canonical_redirect', True):
         return
+    if request.path_info == '/':
+        return
 
     canonical_path = event.rendering_val.get('@id', None)
     if canonical_path is None:
         return
     canonical_path = canonical_path.split('?', 1)[0]
 
-    if request.path_info == '/':
-        return
-
     request_path = _join_path_tuple(('',) + split_path_info(request.path_info))
-    if request_path + '/' == canonical_path and request.path_info.endswith('/'):
+    if (request_path == canonical_path.rstrip('/') and
+            request.path_info.endswith('/') == canonical_path.endswith('/')):
         return
 
     qs = request.query_string
