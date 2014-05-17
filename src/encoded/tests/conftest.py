@@ -24,7 +24,6 @@ _app_settings = {
     'persona.audiences': 'http://localhost:6543',
     'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',
-    'allow.view': 'Authenticated',
     'allow.list': 'Everyone',
     'allow.traverse': 'Everyone',
     'allow.search': 'Everyone',

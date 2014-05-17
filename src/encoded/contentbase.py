@@ -1135,6 +1135,7 @@ def traversal_security(event):
     for resource in traversed:
         result = has_permission('traverse', resource, request)
         if not result:
+            import pdb; pdb.set_trace()
             msg = 'Unauthorized: traversal failed permission check'
             raise HTTPForbidden(msg, result=result)
 
