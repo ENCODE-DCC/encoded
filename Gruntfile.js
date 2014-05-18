@@ -28,6 +28,7 @@ module.exports = function(grunt) {
                 ],
                 transform: [
                     [{es6: true}, 'reactify'],
+                    'brfs',
                 ],
                 bundle: {
                     debug: true,
@@ -75,6 +76,7 @@ module.exports = function(grunt) {
                 },
                 transform: [
                     [{es6: true}, 'reactify'],
+                    'brfs',
                 ],
                 external: [
                     'assert',
