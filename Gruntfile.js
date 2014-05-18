@@ -3,6 +3,14 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
+            brace: {
+                dest: 'src/encoded/static/build/brace.js',
+                require: [
+                    'brace',
+                    'brace/mode/json',
+                    'brace/theme/solarized_light',
+                ],
+            },
             browser: {
                 dest: 'src/encoded/static/build/bundle.js',
                 src: [
@@ -11,6 +19,11 @@ module.exports = function(grunt) {
                     './src/encoded/static/browser.js',
                 ],
                 root: '.',
+                external: [
+                    'brace',
+                    'brace/mode/json',
+                    'brace/theme/solarized_light',
+                ],
                 require: [
                     'domready',
                     'jquery',
@@ -44,6 +57,9 @@ module.exports = function(grunt) {
                     debug: true,
                 },
                 external: [
+                    'brace',
+                    'brace/mode/json',
+                    'brace/theme/solarized_light',
                     'domready',
                     'jquery',
                     'jasmine',
@@ -80,6 +96,9 @@ module.exports = function(grunt) {
                 ],
                 external: [
                     'assert',
+                    'brace',
+                    'brace/mode/json',
+                    'brace/theme/solarized_light',
                 ],
                 ignore: [
                     'jquery',

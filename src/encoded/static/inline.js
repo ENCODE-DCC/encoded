@@ -28,4 +28,5 @@ ga('send', 'pageview');
 // Need to know if onload event has fired for safe history api usage.
 window.onload = function () { window._onload_event_fired; }
 
+$script.path('/static/build/');
 $script('https://login.persona.org/include.js', 'persona');
