@@ -378,6 +378,7 @@
                 "mixed embryonic stage",
                 "L1 larval stage",
                 "L2 larval stage",
+                "L2d larval stage",
                 "L3 larval stage",
                 "L4 larval stage",
                 "dauer stage",
@@ -391,7 +392,8 @@
             "type": "string",
             "enum": [
                 "post-fertilization embryonic stage",
-                "starved L1 larval stage"
+                "post-starved L1 larval stage",
+                "post-dauer stage"
             ]
         },
         "model_organism_age": {
