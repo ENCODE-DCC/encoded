@@ -23,19 +23,9 @@ module.exports = function(grunt) {
                     ['./src/encoded/static/libs/origin' , {expose: 'origin'}],
                     ['./src/encoded/static/libs/react-patches' , {expose: 'react-patches'}],
                     ['./src/encoded/static/libs/registry' , {expose: 'registry'}],
+                    ['./src/encoded/static/libs/sticky_header' , {expose: 'stickyheader'}],
                     ['./src/encoded/static/components', {expose: 'main'}],
                 ],
-                shim: {
-                    stickyheader: {
-                        path: './src/encoded/static/libs/sticky_header',
-                        exports: null,
-                        depends: {jquery: 'jQuery'},
-                    },
-                    respond: {
-                        path: './src/encoded/static/libs/respond',
-                        exports: null,
-                    }
-                },
                 transform: [
                     [{es6: true}, 'reactify'],
                 ],
@@ -99,7 +89,6 @@ module.exports = function(grunt) {
 
     grunt.registerMultiTask('browserify', function () {
         var browserify = require('browserify');
-        var shim = require('browserify-shim');
         var mold = require('mold-source-map');
         var path = require('path');
         var fs = require('fs');
@@ -109,10 +98,6 @@ module.exports = function(grunt) {
         var bundle = data.bundle || {};
 
         var b = browserify(options);
-
-        if (data.shim) {
-            b = shim(b, data.shim);
-        }
 
         var i;
         var reqs = [];

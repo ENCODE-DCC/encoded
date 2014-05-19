@@ -32,6 +32,7 @@ from pyramid.security import (
     Everyone,
     authenticated_userid,
     has_permission,
+    principals_allowed_by_permission,
 )
 from pyramid.settings import asbool
 from pyramid.threadlocal import (
@@ -69,7 +70,10 @@ from .storage import (
     Link,
     TransactionRecord,
 )
-from collections import OrderedDict
+from collections import (
+    OrderedDict,
+    defaultdict,
+)
 from .validation import ValidationFailure
 
 PHASE1_5_CONFIG = -15
@@ -1071,38 +1075,6 @@ def expand_path(request, obj, path):
         expand_path(request, value, remaining)
 
 
-def etag_conditional(view_callable):
-    """ ETag conditional GET support
-
-    Returns 304 Not Modified when the last transaction id, server process id,
-    format and userid all match.
-
-    This might not be strictly correct due to MVCC visibility on postgres.
-    Perhaps use ``select txid_current_snapshot();`` instead there.
-    """
-    def wrapped(context, request):
-        if len(manager.stack) != 1:
-            return view_callable(context, request)
-        format = request.environ.get('encoded.format', 'html')
-        session = DBSession()
-        last_tid = session.query(func.max(TransactionRecord.order)).scalar()
-        processid = request.registry['encoded.processid']
-        userid = authenticated_userid(request) or ''
-        etag = u'%s;%s;%s;%s' % (last_tid, processid, format, userid)
-        etag = quote(etag.encode('utf-8'), ';:@')
-        if etag in request.if_none_match:
-            raise HTTPNotModified()
-        result = view_callable(context, request)
-        request.response.etag = etag
-        cache_control = request.response.cache_control
-        cache_control.private = True
-        cache_control.max_age = 0
-        cache_control.must_revalidate = True
-        return result
-
-    return wrapped
-
-
 def if_match_tid(view_callable):
     """ ETag conditional PUT/PATCH support
 
@@ -1167,8 +1139,7 @@ def traversal_security(event):
             raise HTTPForbidden(msg, result=result)
 
 
-@view_config(context=Item, permission='view', request_method='GET',
-             decorator=etag_conditional)
+@view_config(context=Item, permission='view', request_method='GET')
 def item_view(context, request):
     properties = context.__json__(request)
     frame = request.params.get('frame', None)
@@ -1272,34 +1243,45 @@ class AfterModified(object):
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
-    from pyramid.security import (
-        Everyone,
-        principals_allowed_by_permission,
-    )
-    links = {}
-    # links for the item
+    links = defaultdict(list)
     for link in context.model.rels:
-        links[link.rel] = link.target_rid
+        links[link.rel].append(link.target_rid)
 
-    # Get keys for the item
-    keys = {}
+    keys = defaultdict(list)
     for key in context.model.unique_keys:
-        keys[key.name] = key.value
+        keys[key.name].append(key.value)
 
-    # Principals for the item
     principals = principals_allowed_by_permission(context, 'view')
     if principals is Everyone:
         principals = [Everyone]
 
-    embedded = embed(request, request.resource_path(context))
-    audit = request.audit(embedded, embedded['@type'], path=embedded['@id'])
+    path = resource_path(context)
+    paths = {path}
+    parent = context.__parent__
+
+    if parent.unique_key in keys:
+        paths.update(
+            resource_path(parent, key)
+            for key in keys[parent.unique_key])
+
+    for base in (parent, request.root):
+        for key_name in ('accession', 'alias'):
+            if key_name not in keys:
+                continue
+            paths.add(resource_path(base, str(context.uuid)))
+            paths.update(
+                resource_path(base, key)
+                for key in keys[key_name])
+
+    embedded = embed(request, path + '/')
+    audit = request.audit(embedded, embedded['@type'], path=path)
     document = {
         'embedded': embedded,
-        'object': embed(request, request.resource_path(context) + '?frame=object'),
+        'object': embed(request, path + '/?frame=object'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),
-        'url': request.resource_path(context),
+        'paths': sorted(paths),
         'audit': audit,
     }
 
