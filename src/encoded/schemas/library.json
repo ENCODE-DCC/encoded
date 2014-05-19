@@ -171,7 +171,6 @@
         "paired_ended": {
             "title": "Paired ended",
             "description": "Whether or not the library was prepared with paired ends",
-            "XXXnote": "Is this redundant to the field found in replicate.json",
             "type": "boolean"
         },
         "strand_specificity": {
