@@ -11,6 +11,15 @@ pytestmark = [pytest.mark.sync_edw]
 TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 
 
+@pytest.yield_fixture(autouse=True)
+def reset_globals():
+    yield
+    sync_edw.encode2_to_encode3.clear()
+    sync_edw.encode3_to_encode2.clear()
+    sync_edw.experiments.clear()
+    sync_edw.datasets.clear()
+
+
 @pytest.fixture
 def raw_edw_file_mock():
     return json_data_file('data/edw_file/edw_file_mock.json')
@@ -322,6 +331,7 @@ def test_file_sync(
 
 
 def test_patch_replicate(workbook, testapp, edw_file_mock, edw_file_mock_patch, edw_file_mock_same):
+    sync_edw.get_all_datasets(testapp)
     test_acc = 'ENCSR000ADH'
     test_set = sync_edw.try_datasets(testapp, dataset=test_acc)
     assert test_set
