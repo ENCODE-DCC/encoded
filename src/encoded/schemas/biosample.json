@@ -152,14 +152,15 @@
                 ]
             }
         },
-        "mating_status": {
+        "model_organism_mating_status": {
             "title": "Mating status",
-            "description": "For model organism biosamples, the mating status of the animal.",
+            "description": "The mating status of the animal.",
             "type": "string",
             "enum": [
                 "mated",
                 "virgin",
-                "sterile"
+                "sterile",
+                "mixed"
             ]
         },
         "derived_from": {
