@@ -15,9 +15,11 @@ TEST_ACCESSION = 'ENCFF001RET'  # NOTE: must be in test set
 def raw_edw_file_mock():
     return json_data_file('data/edw_file/edw_file_mock.json')
 
+
 @pytest.fixture
 def raw_app_file():
     return json_data_file('data/inserts/file.json')
+
 
 @pytest.fixture
 def app_file_encode3(raw_app_file):
@@ -43,29 +45,35 @@ def import_in_1(raw_import_in_1):
 def edw_file_mock_fails(raw_edw_file_mock):
     return {row['accession'] for row in raw_edw_file_mock if row.get('_fail')}
 
+
 @pytest.fixture
 def edw_file_mock_new(raw_edw_file_mock):
-   return {row['accession'] for row in raw_edw_file_mock if row.get('_new')}
+    return {row['accession'] for row in raw_edw_file_mock if row.get('_new')}
+
 
 @pytest.fixture
 def edw_file_mock_same(raw_edw_file_mock):
-   return {row['accession'] for row in raw_edw_file_mock if row.get('_same')}
+    return {row['accession'] for row in raw_edw_file_mock if row.get('_same')}
+
 
 @pytest.fixture
 def edw_file_mock_patch(raw_edw_file_mock):
-   return {row['accession'] for row in raw_edw_file_mock if row.get('_patch')}
+    return {row['accession'] for row in raw_edw_file_mock if row.get('_patch')}
+
 
 @pytest.fixture
 def edw_file_mock_encode2(raw_edw_file_mock):
-   return {row['accession'] for row in raw_edw_file_mock if row.get('_project') == 'encode2'}
+    return {row['accession'] for row in raw_edw_file_mock if row.get('_project') == 'encode2'}
+
 
 @pytest.fixture
 def edw_file_mock_encode3(raw_edw_file_mock):
-   return {row['accession'] for row in raw_edw_file_mock if row.get('_project') == 'encode3'}
+    return {row['accession'] for row in raw_edw_file_mock if row.get('_project') == 'encode3'}
+
 
 @pytest.fixture
 def edw_file_mock_replicates(raw_edw_file_mock):
-   return {row['accession'] for row in raw_edw_file_mock if row.get('_replicate')}
+    return {row['accession'] for row in raw_edw_file_mock if row.get('_replicate')}
 
 
 def remove_keys_starting_with_underscore(dictrows):
@@ -188,7 +196,9 @@ def test_import_tst_file(workbook, test_accession_testapp, import_in_1):
             assert not fileinfo['biological_replicate'] or not converted_file['technical_replicate']
 
 
-def test_encode3_experiments(workbook, testapp, edw_file_mock, edw_file_mock_encode3, edw_file_mock_fails, app_file_encode3):
+def test_encode3_experiments(
+        workbook, testapp, edw_file_mock, edw_file_mock_encode3, edw_file_mock_fails,
+        app_file_encode3):
     # Test obtaining list of ENCODE 2 experiments and identifying which ENCODE3
     # accessions are ENCODE2 experiments
 
@@ -208,7 +218,9 @@ def test_encode3_experiments(workbook, testapp, edw_file_mock, edw_file_mock_enc
 
 
 @pytest.mark.slow
-def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_file_mock_new, edw_file_mock_patch, edw_file_mock_same, edw_file_mock_replicates):
+def test_file_sync(
+        workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_file_mock_new,
+        edw_file_mock_patch, edw_file_mock_same, edw_file_mock_replicates):
     sync_edw.get_all_datasets(testapp)
 
     edw_mock = {}
@@ -228,7 +240,7 @@ def test_file_sync(workbook, testapp, edw_file_mock, edw_file_mock_fails, edw_fi
     assert len(edw_only) == len(edw_file_mock_new)
     only_set = set([x['accession'] for x in app_only])
     in_edw = edw_file_mock_same | edw_file_mock_patch
-    assert not ( in_edw - (set(app_dict.keys()) - only_set) )
+    assert not (in_edw - (set(app_dict.keys()) - only_set))
     # have to troll the TEST column to predict these results
     assert len(same) == len(edw_file_mock_same)
     assert len(patch) == len(edw_file_mock_patch)
@@ -332,9 +344,9 @@ def test_patch_replicate(workbook, testapp, edw_file_mock, edw_file_mock_patch, 
     #app_dict = { d['accession']:d for d in app_files }
 
     edw_only, app_only, same, patch = sync_edw.inventory_files(testapp, edw_mock, app_dict)
-    in_exp = set([ x['accession'] for x in app_dict.values() if x['dataset'] == test_set])
+    in_exp = set([x['accession'] for x in app_dict.values() if x['dataset'] == test_set])
     assert set(patch) == (in_exp & edw_file_mock_patch)
-    assert(set([ x['accession'] for x in same])) == (in_exp & edw_file_mock_same)
+    assert set([x['accession'] for x in same]) == (in_exp & edw_file_mock_same)
 
     for update in patch:
         diff = sync_edw.compare_files(app_dict[update], edw_mock[update])
