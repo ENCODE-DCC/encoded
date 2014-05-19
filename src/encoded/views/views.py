@@ -438,7 +438,7 @@ class Biosample(Collection):
                 "age": "model_organism_age",
                 "age_units": "model_organism_age_units",
                 "health_status": "model_organism_health_status",
-                "life_stage": "fly_organism_life_stage",
+                "life_stage": "fly_life_stage",
                 "synchronization": "fly_synchronization_stage",
             }
             worm_biosample_properties = {
@@ -446,7 +446,7 @@ class Biosample(Collection):
                 "age": "model_organism_age",
                 "age_units": "model_organism_age_units",
                 "health_status": "model_organism_health_status",
-                "life_stage": "worm_organism_life_stage",
+                "life_stage": "worm_life_stage",
                 "synchronization": "worm_synchronization_stage",
             }
             if ns['organism'] == '7745b647-ff15-4ff3-9ced-b897d4e2983c':

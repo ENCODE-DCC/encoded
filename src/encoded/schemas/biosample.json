@@ -325,7 +325,7 @@
                 "postnatal"
             ]
         },
-        "fly_life_stage_term_name": {
+        "fly_life_stage": {
             "title": "Fly life stage",
             "type": "string",
             "enum": [
@@ -344,9 +344,9 @@
             "comment": "Stage at which flies were synchronized. Use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
-                "post-fertilization embryo",
-                "white prepupa",
-                "post-eclosion adult"
+                "post-fertilization embryonic stage",
+                "white prepupal stage",
+                "post-eclosion adult stage"
             ]  
         },
         "post_synchronization_time": {
@@ -390,7 +390,7 @@
             "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
-                "post-fertilization embryo",
+                "post-fertilization embryonic stage",
                 "starved L1 larval stage"
             ]
         },
