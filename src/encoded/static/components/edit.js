@@ -73,6 +73,10 @@ var EditForm = module.exports.EditForm = React.createClass({
 
 
     componentDidMount: function () {
+        $script('brace', this.setupEditor);
+    },
+
+    setupEditor: function () {
         var ace = require('brace');
         require('brace/mode/json');
         require('brace/theme/solarized_light');
