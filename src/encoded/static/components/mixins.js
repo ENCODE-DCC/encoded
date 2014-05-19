@@ -71,17 +71,26 @@ module.exports.RenderLess = {
     },
 };
 
+
+function script_onload(el, callback) {
+    var loaded = false;
+    el.onload = el.onreadystatechange = function () {
+      if ((el.readyState && el.readyState !== "complete" && el.readyState !== "loaded") || loaded) {
+        return false;
+      }
+      el.onload = el.onreadystatechange = null;
+      loaded = true;
+      callback();
+    };
+}
+
+
 module.exports.Persona = {
     componentDidMount: function () {
         var $ = require('jquery');
         // Login / logout actions must be deferred until persona is ready.
         $.ajaxPrefilter(this.ajaxPrefilter);
         this.personaDeferred = $.Deferred();
-        if (!navigator.id) {
-            // Ensure DOM is clean for React when mounting
-            // Unminified: https://login.persona.org/include.orig.js
-            this.personaLoaded = $.getScript("https://login.persona.org/include.js");
-        }
         this.configurePersona(this.parseSessionCookie());
     },
 
@@ -134,7 +143,7 @@ module.exports.Persona = {
     },
 
     configurePersona: function (session) {
-        this.personaLoaded.done(function () {
+        $script.ready('persona', function () {
             navigator.id.watch({
                 loggedInUser: session && session['auth.userid'] || null,
                 onlogin: this.handlePersonaLogin,
