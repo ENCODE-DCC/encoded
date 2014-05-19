@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms", "sex", "age", "age_units", "health_status", "life_stage"],
+    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms", "sex", "age", "age_units", "health_status", "life_stage", "synchronization"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -325,30 +325,13 @@
                 "postnatal"
             ]
         },
-        "fly_life_stage_term_id": {
-            "title": "Fly life stage term id",
-            "description":  "The Drosophila developmental ontology term identifier that corresponds to the organism life stage at which the biosample was sampled.",
-            "comment": "Based on the choice in fly_life_stage_term_name use the following guide: embryonic stage - FBdv:00005289, first instar larval stage - FBdv:00005337, second instar larval stage - FBdv:00005338, third instar larval stage - FBdv:00005339, wandering third instar larval stage - FBdv:00005341, prepupal stage - FBdv:00005342, pupal stage - FBdv:00005349, adult_stage - FBdv:00005369",
-            "type": "string",
-            "enum": [
-                "FBdv:00005289",
-                "FBdv:00005337",
-                "FBdv:00005338",
-                "FBdv:00005339",
-                "FBdv:00005341",
-                "FBdv:00005349",
-                "FBdv:00005342",
-                "FBdv:00005349",
-                "FBdv:00005369"
-            ]
-        },
         "fly_life_stage_term_name": {
             "title": "Fly life stage",
             "type": "string",
             "enum": [
                 "embryonic stage",
                 "first instar larval stage",
-                "second instar larval stage",
+                "second instar larval",
                 "third instar larval stage",
                 "wandering third instar larval stage",
                 "prepupal stage",
@@ -361,7 +344,7 @@
             "comment": "Stage at which flies were synchronized. Use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
-                "post-fertilization",
+                "post-fertilization embryo",
                 "white prepupa",
                 "post-eclosion adult"
             ]  
@@ -407,7 +390,7 @@
             "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
-                "post-fertilization",
+                "post-fertilization embryo",
                 "starved L1 larval stage"
             ]
         },
@@ -487,6 +470,10 @@
         "developmental_slims": {
             "title": "Developmental slim",
             "type": "array"
+        },
+        "synchronization": {
+            "title": "Synchronization stage",
+            "type": "string" 
         }
     },
     "columns": {
@@ -541,6 +528,7 @@
         "subcellular_fraction_term_name": 1.0,
         "phase": 1.0,
         "life_stage": 1.0,
+        "synchronization": 1.0,
         "health_status": 1.0,
         "donor.accession": 1.0,
         "donor.organism.name": 1.0,
