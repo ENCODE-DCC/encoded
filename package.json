@@ -18,17 +18,18 @@
     "brfs": "^1.1.1"
   },
   "dependencies": {
-    "underscore": "^1.6.0",
-    "domready": "^0.3.0",
-    "es5-shim": "^3.3.0",
-    "react": "^0.10.0",
-    "jquery": "^1.11.1",
-    "d3": "^3.4.6",
-    "source-map-support": "^0.2.6",
-    "envify": "^1.2.1",
     "brace": "^0.2.1",
     "cookie-cutter": "^0.1.1",
+    "d3": "^3.4.6",
+    "domready": "^0.3.0",
+    "envify": "^1.2.1",
+    "es5-shim": "^3.3.0",
+    "jquery": "^1.11.1",
+    "react": "^0.10.0",
+    "react-forms": "^0.1.0",
+    "scriptjs": "^2.5.3",
+    "source-map-support": "^0.2.6",
     "subprocess-middleware": "^0.1.0",
-    "scriptjs": "^2.5.3"
+    "underscore": "^1.6.0"
   }
 }
