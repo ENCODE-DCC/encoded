@@ -23,6 +23,15 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "depleted_in_term_name": ["depleted_in_term_id"],
+        "depleted_in_term_id": {
+            "required": ["depleted_in_term_name"],
+            "properties": {
+                "biosample_type": {"enum": ["whole organism"]}
+            }
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "6"
