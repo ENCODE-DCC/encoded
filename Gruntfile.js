@@ -1,3 +1,4 @@
+'use strict';
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -7,8 +8,7 @@ module.exports = function(grunt) {
                 src: [
                     './src/encoded/static/libs/compat.js', // The shims should execute first
                     './src/encoded/static/libs/respond.js',
-                    './src/encoded/static/components/index.js',
-
+                    './src/encoded/static/browser.js',
                 ],
                 root: '.',
                 require: [
@@ -21,20 +21,11 @@ module.exports = function(grunt) {
                     ['./src/encoded/static/libs/class', {expose: 'class'}],
                     ['./src/encoded/static/libs/jsonScriptEscape', {expose: 'jsonScriptEscape'}],
                     ['./src/encoded/static/libs/origin' , {expose: 'origin'}],
+                    ['./src/encoded/static/libs/react-patches' , {expose: 'react-patches'}],
                     ['./src/encoded/static/libs/registry' , {expose: 'registry'}],
+                    ['./src/encoded/static/libs/sticky_header' , {expose: 'stickyheader'}],
                     ['./src/encoded/static/components', {expose: 'main'}],
                 ],
-                shim: {
-                    stickyheader: {
-                        path: './src/encoded/static/libs/sticky_header',
-                        exports: null,
-                        depends: {jquery: 'jQuery'},
-                    },
-                    respond: {
-                        path: './src/encoded/static/libs/respond',
-                        exports: null,
-                    }
-                },
                 transform: [
                     [{es6: true}, 'reactify'],
                 ],
@@ -65,20 +56,22 @@ module.exports = function(grunt) {
             },
             server: {
                 dest: 'src/encoded/static/build/renderer.js',
-                src: ['./src/encoded/static/components/index.js'],
+                src: ['src/encoded/static/server.js'],
                 require: [
-                    ['./src/encoded/static/libs/server.js', {expose: 'server'}],
                     ['./src/encoded/static/libs/class', {expose: 'class'}],
                     ['./src/encoded/static/libs/jsonScriptEscape', {expose: 'jsonScriptEscape'}],
                     ['./src/encoded/static/libs/origin' , {expose: 'origin'}],
+                    ['./src/encoded/static/libs/react-middleware' , {expose: 'react-middleware'}],
+                    ['./src/encoded/static/libs/react-patches' , {expose: 'react-patches'}],
                     ['./src/encoded/static/libs/registry' , {expose: 'registry'}],
                     ['./src/encoded/static/components', {expose: 'main'}],
                 ],
                 options: {
-                    noParse: ['./src/encoded/static/libs/streams.js'],
+                    builtins: false,
                 },
                 bundle: {
                     debug: true,
+                    detectGlobals: false,
                 },
                 transform: [
                     [{es6: true}, 'reactify'],
@@ -90,15 +83,12 @@ module.exports = function(grunt) {
                     'jquery',
                     'd3',
                 ],
-                footer: "require('source-map-support').install();\n" +
-                        "require('server').run(require('main'));\n",
             },
         },
     });
 
     grunt.registerMultiTask('browserify', function () {
         var browserify = require('browserify');
-        var shim = require('browserify-shim');
         var mold = require('mold-source-map');
         var path = require('path');
         var fs = require('fs');
@@ -109,10 +99,7 @@ module.exports = function(grunt) {
 
         var b = browserify(options);
 
-        if (data.shim) {
-            b = shim(b, data.shim);
-        }
-
+        var i;
         var reqs = [];
         (data.src || []).forEach(function (src) {
             reqs.push.apply(reqs, grunt.file.expand({filter: 'isFile'}, src).map(function (f) {
@@ -124,12 +111,12 @@ module.exports = function(grunt) {
             reqs.push(req);
         });
 
-        for (var i = 0; i < reqs.length; i++) {
+        for (i = 0; i < reqs.length; i++) {
             b.require.apply(b, reqs[i]);
         }
 
         var external = data.external || [];
-        for (var i = 0; i < external.length; i++) {
+        for (i = 0; i < external.length; i++) {
             b.external(external[i]);
         }
 
@@ -138,7 +125,7 @@ module.exports = function(grunt) {
         };
 
         var ignore = data.ignore || [];
-        for (var i = 0; i < ignore.length; i++) {
+        for (i = 0; i < ignore.length; i++) {
             b.ignore(ignore[i]);
         }
 

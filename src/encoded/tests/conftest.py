@@ -34,7 +34,6 @@ _app_settings = {
     'load_test_only': True,
     'load_sample_data': False,
     'testing': True,
-    'datastore': 'database',
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
 }
