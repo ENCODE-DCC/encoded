@@ -95,9 +95,30 @@ class Collection(BaseCollection):
 
     class Item(BaseCollection.Item):
         STATUS_ACL = {
+            # standard_status
             'released': ALLOW_CURRENT,
-            'current': ALLOW_CURRENT,
             'deleted': [],
+
+            # shared_status
+            'current': ALLOW_CURRENT,
+            'disabled': [],
+
+            # file
+            'obsolete': [],
+
+            # antibody_characterization
+            'compliant': ALLOW_CURRENT,
+            'not compliant': ALLOW_CURRENT,
+            'not reviewed': ALLOW_CURRENT,
+            'not submitted for review by lab': ALLOW_CURRENT,
+
+            # antibody_approval
+            'eligible for new data': ALLOW_CURRENT,
+            'not eligible for new data': ALLOW_CURRENT,
+            'not pursued': ALLOW_CURRENT,
+
+            # dataset / experiment
+            'revoked': ALLOW_CURRENT,
         }
 
         def __acl__(self):
@@ -106,7 +127,7 @@ class Collection(BaseCollection):
             ns = self.template_namespace(properties)
             properties.update(ns)
             status = ns.get('status')
-            return self.STATUS_ACL.get(status, ())
+            return self.STATUS_ACL.get(status, ALLOW_LAB_SUBMITTER_EDIT)
 
         def __ac_local_roles__(self):
             roles = {}
@@ -442,14 +463,6 @@ class AntibodyCharacterization(Characterization):
     }
 
     class Item(Characterization.Item):
-        STATUS_ACL = {
-            'in progress': ALLOW_LAB_SUBMITTER_EDIT,
-            'pending dcc review': ALLOW_LAB_SUBMITTER_EDIT,
-            'compliant': ALLOW_CURRENT,
-            'not compliant': ALLOW_CURRENT,
-            'not reviewed': ALLOW_CURRENT,
-            'not submitted for review by lab': ALLOW_CURRENT,
-        }
         embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
 
 
@@ -463,11 +476,6 @@ class AntibodyApproval(Collection):
     }
 
     class Item(Collection.Item):
-        STATUS_ACL = {
-            'eligible for new data': ALLOW_CURRENT,
-            'not eligible for new data': ALLOW_CURRENT,
-            'not pursued': ALLOW_CURRENT,
-        }
         embedded = [
             'antibody.host_organism',
             'antibody.source',
@@ -590,15 +598,6 @@ class Dataset(Collection):
         template_type = {
             'files': 'file',
         }
-        STATUS_ACL = {
-            'released': ALLOW_CURRENT,
-            'started': ALLOW_LAB_SUBMITTER_EDIT,
-            'verified': ALLOW_LAB_SUBMITTER_EDIT,
-            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
-            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
-            'revoked': ALLOW_CURRENT,
-            'deleted': [],
-        }
         embedded = [
             'files',
             'files.replicate',
@@ -645,15 +644,6 @@ class Experiment(Dataset):
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
             ]
         }
-        STATUS_ACL = {
-            'released': ALLOW_CURRENT,
-            'started': ALLOW_LAB_SUBMITTER_EDIT,
-            'verified': ALLOW_LAB_SUBMITTER_EDIT,
-            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
-            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
-            'revoked': ALLOW_CURRENT,
-            'deleted': [],
-        }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody.approvals',
             'replicates.library.documents.lab',
@@ -698,7 +688,7 @@ class RNAi(Collection):
         'title': 'RNAi',
         'description': 'Listing of RNAi',
     }
-    item_embedded = set(['source', 'documents'])
+    item_embedded = set(['source', 'documents', 'target'])
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
@@ -713,3 +703,38 @@ class RNAiCharacterization(Characterization):
         'title': 'RNAi characterizations',
         'description': 'Listing of biosample RNAi characterizations',
     }
+
+
+class Page(Collection):
+    schema = load_schema('page.json')
+
+    class Item(Collection.Item):
+        base_types = ['page'] + Collection.Item.base_types
+        name_key = 'name'
+        keys = ['name']
+
+        STATUS_ACL = {
+            'in progress': ALLOW_CURRENT,
+            'released': ALLOW_EVERYONE_VIEW,
+            'deleted': [],
+        }
+
+
+@location('about')
+class AboutPage(Page):
+    item_type = 'about_page'
+    properties = {
+        'title': 'About Pages',
+        'description': 'Portal pages, about section',
+    }
+    unique_key = 'about_page:name'
+
+
+@location('help')
+class HelpPage(Page):
+    item_type = 'help_page'
+    properties = {
+        'title': 'Help Pages',
+        'description': 'Portal pages, help section',
+    }
+    unique_key = 'help_page:name'

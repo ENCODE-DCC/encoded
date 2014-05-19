@@ -1,0 +1,52 @@
+{
+    "title": "Page",
+    "description": "Schema for a portal page.",
+    "id": "/profiles/page.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "name", "title", "layout" ],
+    "identifyingProperties": ["uuid", "name" ],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "title": {
+            "title": "Title",
+            "description": "The name shown in the browser's title bar and tabs.",
+            "type": "string"
+        },
+        "name": {
+            "title": "URL Name",
+            "description": "The name shown in this page's URL.",
+            "type": "string",
+            "pattern": "^[a-z0-9_-]+$"
+        },
+        "layout": {
+            "title": "Page Layout",
+            "description": "Hierarchical description of the page layout, comprising rows of columns and blocks.",
+            "type": "object",
+            "properties": {},
+            "default": {
+                "rows": [
+                    {
+                        "blocks": [
+                            {
+                                "@type": "richtextblock",
+                                "data": {
+                                    "body": "<p>Some rich text.</p>"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}
