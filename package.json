@@ -14,7 +14,8 @@
     "browserify": "^4.1.4",
     "reactify": "^0.13.1",
     "grunt-cli": "^0.1.13",
-    "mold-source-map": "^0.3.0"
+    "exorcist": "^0.1.6",
+    "brfs": "^1.1.1"
   },
   "dependencies": {
     "underscore": "^1.6.0",
@@ -27,6 +28,7 @@
     "envify": "^1.2.1",
     "brace": "^0.2.1",
     "cookie-cutter": "^0.1.1",
-    "subprocess-middleware": "^0.1.0"
+    "subprocess-middleware": "^0.1.0",
+    "scriptjs": "^2.5.3"
   }
 }
