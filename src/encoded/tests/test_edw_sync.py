@@ -254,7 +254,10 @@ def test_file_sync(
     assert len(same) == len(edw_file_mock_same)
     assert len(patch) == len(edw_file_mock_patch)
 
-    before_reps = {d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph']}
+    before_reps = {
+        d['uuid']: d
+        for d in testapp.get('/replicates/?limit=all').maybe_follow().json['@graph']
+    }
 
     for add in edw_only:
         acc = add['accession']
@@ -306,7 +309,11 @@ def test_file_sync(
     assert user_patched['submitted_by'] == u'/users/f5b7857d-208e-4acc-ac4d-4c2520814fe1/'
     assert user_patched['status'] == u'obsolete'
 
-    after_reps = {d['uuid']: d for d in testapp.get('/replicates/').maybe_follow().json['@graph']}
+    after_reps = {
+        d['uuid']: d
+        for d in testapp.get('/replicates/?limit=all').maybe_follow().json['@graph']
+    }
+
     same_reps = {}
     updated_reps = {}
     new_reps = {}
