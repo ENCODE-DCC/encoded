@@ -744,7 +744,7 @@ class Page(Collection):
             'href': '#!add',
             'className': 'btn btn-success',
             '$templated': True,
-            'condition': 'permission:add',
+            '$condition': 'permission:add',
         },
     ]
 
