@@ -123,7 +123,8 @@
              "description": "Lab associated with the submission.",
             "comment": "See lab.json for list of available identifiers.",
             "type": "string",
-            "linkTo": "lab"
+            "linkTo": "lab",
+            "linkSubmitsFor": true
         },
         "award": {
             "title": "Grant",
