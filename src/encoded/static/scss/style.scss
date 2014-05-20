@@ -75,6 +75,9 @@ $brand-info: #4F689E;
 // Font Awesome
 @import "fontawesome/fontawesome";
 
+// react-forms bootstrap theme
+@import "react-forms/index";
+
 // ENCODE Project styles & mixins
 @import "encoded/mixins-custom";
 // SMACSS-based architecture (http://smacss.com/)
