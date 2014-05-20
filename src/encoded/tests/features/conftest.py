@@ -43,6 +43,14 @@ def workbook(app):
     # XXX cleanup
 
 
+@pytest.yield_fixture(scope='session')
+def admin_user(context, browser):
+    context.browser.visit(context.base_url)  # need to be on domain to set cookie
+    context.browser.cookies.add({'REMOTE_USER': 'TEST'})
+    yield
+    context.browser.cookies.delete('REMOTE_USER')
+
+
 @pytest.fixture(scope='session', autouse=True)
 def set_webdriver(request, context):
     context.default_browser = request.config.option.browser
