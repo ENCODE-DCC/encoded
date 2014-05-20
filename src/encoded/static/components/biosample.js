@@ -276,11 +276,11 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
                 {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
 
-                {biosample && biosample.model_organism_life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.model_organism_life_stage ? <dd className="sentence-case">{biosample.model_organism_life_stage}</dd> : null}
+                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
-                {biosample && biosample.model_organism_age ? <dt>Age</dt> : null}
-                {biosample && biosample.model_organism_age ? <dd className="sentence-case">{biosample.model_organism_age}{' '}{biosample.model_organism_age_units}</dd> : null}
+                {biosample && biosample.age ? <dt>Age</dt> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                 {context.model_organism_sex ? <dt>Sex</dt> : null}
                 {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
@@ -313,11 +313,11 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
                 {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
 
-                {biosample && biosample.model_organism_life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.model_organism_life_stage ? <dd className="sentence-case">{biosample.model_organism_life_stage}</dd> : null}
+                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
-                {biosample && biosample.model_organism_age ? <dt>Age</dt> : null}
-                {biosample && biosample.model_organism_age ? <dd className="sentence-case">{biosample.model_organism_age}{' '}{biosample.model_organism_age_units}</dd> : null}
+                {biosample && biosample.age ? <dt>Age</dt> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
                 {context.model_organism_sex ? <dt>Sex</dt> : null}
                 {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
@@ -336,6 +336,86 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
 });
 
 globals.panel_views.register(MouseDonor, 'mouse_donor');
+
+
+var FlyDonor = module.exports.FlyDonor = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var biosample = this.props.biosample;
+        return (
+            <dl className="key-value">
+                <dt>Accession</dt>
+                <dd>{context.accession}</dd>
+
+                {context.aliases.length ? <dt>Aliases</dt> : null}
+                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+
+                {context.organism.scientific_name ? <dt>Species</dt> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
+
+                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+
+                {biosample && biosample.age ? <dt>Age</dt> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+
+                {context.model_organism_sex ? <dt>Sex</dt> : null}
+                {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
+
+                {biosample && biosample.model_organism_health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.model_organism_health_status ? <dd className="sentence-case">{biosample.model_organism_health_status}</dd> : null}
+
+                {context.strain_background ? <dt>Strain background</dt> : null}
+                {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
+
+                {context.strain_name ? <dt>Strain name</dt> : null}
+                {context.strain_name ? <dd>{context.strain_name}</dd> : null}
+            </dl>
+        );
+    }
+});
+
+globals.panel_views.register(FlyDonor, 'fly_donor');
+
+
+var WormDonor = module.exports.WormDonor = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var biosample = this.props.biosample;
+        return (
+            <dl className="key-value">
+                <dt>Accession</dt>
+                <dd>{context.accession}</dd>
+
+                {context.aliases.length ? <dt>Aliases</dt> : null}
+                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+
+                {context.organism.scientific_name ? <dt>Species</dt> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
+
+                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+
+                {biosample && biosample.age ? <dt>Age</dt> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+
+                {context.model_organism_sex ? <dt>Sex</dt> : null}
+                {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
+
+                {biosample && biosample.model_organism_health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.model_organism_health_status ? <dd className="sentence-case">{biosample.model_organism_health_status}</dd> : null}
+
+                {context.strain_background ? <dt>Strain background</dt> : null}
+                {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
+
+                {context.strain_name ? <dt>Strain name</dt> : null}
+                {context.strain_name ? <dd>{context.strain_name}</dd> : null}
+            </dl>
+        );
+    }
+});
+
+globals.panel_views.register(FlyDonor, 'worm_donor');
 
 
 var Treatment = module.exports.Treatment = React.createClass({

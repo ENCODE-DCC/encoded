@@ -49,10 +49,10 @@ var Experiment = module.exports.Experiment = React.createClass({
                 organismName.push(biosample.organism.scientific_name);
 
                 // Build a string with non-'unknown' life_stage, age, and age_units concatenated
-                var lifeAgeString = (biosample.model_organism_life_stage && biosample.model_organism_life_stage != 'unknown') ? biosample.model_organism_life_stage : '';
-                if (biosample.model_organism_age && biosample.model_organism_age != 'unknown') {
-                    lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.model_organism_age;
-                    lifeAgeString += (biosample.model_organism_age_units && biosample.model_organism_age_units != 'unknown') ? ' ' + biosample.model_organism_age_units : '';
+                var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
+                if (biosample.age && biosample.age != 'unknown') {
+                    lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
+                    lifeAgeString += (biosample.age_units && age_units != 'unknown') ? ' ' + biosample.age_units : '';
                 }
                 if (lifeAgeString) {
                     lifeAge.push(lifeAgeString);

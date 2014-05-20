@@ -65,9 +65,9 @@ var Dbxref = dbxref.Dbxref;
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            var lifeStage = (result['model_organism_life_stage'] && result['model_organism_life_stage'] != 'unknown') ? ' ' + result['model_organism_life_stage'] : '';
-            var age = (result['model_organism_age'] && result['model_organism_age'] != 'unknown') ? ' ' + result['model_organism_age'] : '';
-            var ageUnits = (result['model_organism_age_units'] && result['model_organism_age_units'] != 'unknown' && age) ? ' ' + result['model_organism_age_units'] : '';
+            var lifeStage = (result['life_stage'] && result['life_stage'] != 'unknown') ? ' ' + result['life_stage'] : '';
+            var age = (result['age'] && result['age'] != 'unknown') ? ' ' + result['age'] : '';
+            var ageUnits = (result['age_units'] && result['age_units'] != 'unknown' && age) ? ' ' + result['age_units'] : '';
             var separator = (lifeStage || age) ? ',' : '';
             return (<li>
                         <div>
@@ -136,13 +136,13 @@ var Dbxref = dbxref.Dbxref;
             // See if all life stage, age, and age_unit arrays are all homogeneous
             var name = homogenousArray(result, 'replicates.library.biosample.organism.scientific_name') ?
                     result['replicates.library.biosample.organism.scientific_name'][0] : '';
-            var lifeStage = homogenousArray(result, 'replicates.library.biosample.model_organism_life_stage') ?
-                    result['replicates.library.biosample.model_organism_life_stage'][0] : '';
-            var ageLen = homogenousArray(result, 'replicates.library.biosample.model_organism_age');
-            var ageUnitsLen = homogenousArray(result, 'replicates.library.biosample.model_organism_age_units');
+            var lifeStage = homogenousArray(result, 'replicates.library.biosample.life_stage') ?
+                    result['replicates.library.biosample.life_stage'][0] : '';
+            var ageLen = homogenousArray(result, 'replicates.library.biosample.age');
+            var ageUnitsLen = homogenousArray(result, 'replicates.library.biosample.age_units');
             if (ageLen === ageUnitsLen) {
-                age = ageLen ? ' ' + result['replicates.library.biosample.model_organism_age'][0] : '';
-                ageUnits = ageUnitsLen ? ' ' + result['replicates.library.biosample.model_organism_age_units'][0] : '';
+                age = ageLen ? ' ' + result['replicates.library.biosample.age'][0] : '';
+                ageUnits = ageUnitsLen ? ' ' + result['replicates.library.biosample.age_units'][0] : '';
             }
             var separator = (lifeStage || age) ? ', ' : '';
 
