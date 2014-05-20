@@ -168,6 +168,7 @@ class SchemaValidator(Draft4Validator):
 
 format_checker = FormatChecker()
 
+
 def load_schema(filename):
     schema = json.load(resource_stream(__name__, 'schemas/' + filename),
                        object_pairs_hook=collections.OrderedDict)
