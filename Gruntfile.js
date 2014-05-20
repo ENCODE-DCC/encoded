@@ -3,14 +3,29 @@ module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
+            brace: {
+                dest: './src/encoded/static/build/brace.js',
+                require: [
+                    'brace',
+                    'brace/mode/json',
+                    'brace/theme/solarized_light',
+                ],
+                bundle: {
+                    debug: true,
+                },
+            },
             browser: {
-                dest: 'src/encoded/static/build/bundle.js',
+                dest: './src/encoded/static/build/bundle.js',
                 src: [
                     './src/encoded/static/libs/compat.js', // The shims should execute first
                     './src/encoded/static/libs/respond.js',
                     './src/encoded/static/browser.js',
                 ],
-                root: '.',
+                external: [
+                    'brace',
+                    'brace/mode/json',
+                    'brace/theme/solarized_light',
+                ],
                 require: [
                     'domready',
                     'jquery',
@@ -28,21 +43,25 @@ module.exports = function(grunt) {
                 ],
                 transform: [
                     [{es6: true}, 'reactify'],
+                    'brfs',
                 ],
                 bundle: {
                     debug: true,
                 },
             },
             specs: {
-                dest: 'src/encoded/tests/js/build/bundle.js',
+                dest: './src/encoded/tests/js/build/bundle.js',
                 src: [
-                    'src/encoded/tests/js/specs/*.js',
-                    'src/encoded/tests/js/testing.js',
+                    './src/encoded/tests/js/specs/*.js',
+                    './src/encoded/tests/js/testing.js',
                 ],
                 bundle: {
                     debug: true,
                 },
                 external: [
+                    'brace',
+                    'brace/mode/json',
+                    'brace/theme/solarized_light',
                     'domready',
                     'jquery',
                     'jasmine',
@@ -55,8 +74,8 @@ module.exports = function(grunt) {
                 ],
             },
             server: {
-                dest: 'src/encoded/static/build/renderer.js',
-                src: ['src/encoded/static/server.js'],
+                dest: './src/encoded/static/build/renderer.js',
+                src: ['./src/encoded/static/server.js'],
                 require: [
                     ['./src/encoded/static/libs/class', {expose: 'class'}],
                     ['./src/encoded/static/libs/jsonScriptEscape', {expose: 'jsonScriptEscape'}],
@@ -75,9 +94,13 @@ module.exports = function(grunt) {
                 },
                 transform: [
                     [{es6: true}, 'reactify'],
+                    'brfs',
                 ],
                 external: [
                     'assert',
+                    'brace',
+                    'brace/mode/json',
+                    'brace/theme/solarized_light',
                 ],
                 ignore: [
                     'jquery',
@@ -89,7 +112,7 @@ module.exports = function(grunt) {
 
     grunt.registerMultiTask('browserify', function () {
         var browserify = require('browserify');
-        var mold = require('mold-source-map');
+        var exorcist = require('exorcist');
         var path = require('path');
         var fs = require('fs');
         var data = this.data;
@@ -134,36 +157,14 @@ module.exports = function(grunt) {
             b.transform.apply(b, args);
         });
 
-        var dest = path.resolve(data.dest);
-        var root = data.root ? path.resolve(data.root) : path.resolve(path.dirname(dest));
-
+        var dest = data.dest;
         grunt.file.mkdir(path.dirname(dest));
 
         var mapFilePath = dest + '.map';
 
-        function mapFileUrlComment(sourcemap) {
-            // make source files appear under the following paths:
-            // /js
-            //    foo.js
-            //    main.js
-            // /js/wunder
-            //    bar.js 
-
-            sourcemap.sourceRoot('file://'); 
-            sourcemap.mapSources(mold.mapPathRelativeTo(root));
-            // write map file and return a sourceMappingUrl that points to it
-            fs.writeFileSync(mapFilePath, sourcemap.toJSON(2), 'utf-8');
-            console.log('File ' + mapFilePath + ' created.');
-
-            // Giving just a filename instead of a path will cause the browser to look for the map file 
-            // right next to where it loaded the bundle from.
-            // Therefore this way the map is found no matter if the page is served or opened from the filesystem.
-            return '//# sourceMappingURL=' + path.basename(mapFilePath);
-        }
-
         b = b.bundle(bundle);
         if (bundle.debug) {
-            b = b.pipe(mold.transform(mapFileUrlComment));
+            b = b.pipe(exorcist(mapFilePath));
         }
         b.on('error', function (err) { console.error(err); });
         var out = fs.createWriteStream(dest);
