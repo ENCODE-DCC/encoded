@@ -424,14 +424,16 @@ class Biosample(Collection):
                 "age",
                 "age_units",
                 "health_status",
-                "life_stage"
+                "life_stage",
+                'synchronization'
             ]
             mouse_biosample_properties = {
                 "sex": "model_organism_sex",
                 "age": "model_organism_age",
                 "age_units": "model_organism_age_units",
                 "health_status": "model_organism_health_status",
-                "life_stage": "mouse_life_stage"
+                "life_stage": "mouse_life_stage",
+                "synchronization": "synchronization_stage",
             }
             fly_biosample_properties = {
                 "sex": "model_organism_sex",
