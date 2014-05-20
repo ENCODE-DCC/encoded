@@ -214,7 +214,7 @@ class Source(Collection):
     }
     item_name_key = 'name'
     unique_key = 'source:name'
-    item_keys =  ALIAS_KEYS + ['name']
+    item_keys = ALIAS_KEYS + ['name']
 
 
 class DonorItem(Collection.Item):
@@ -222,6 +222,9 @@ class DonorItem(Collection.Item):
     embedded = set(['organism'])
     name_key = 'accession'
     keys = ACCESSION_KEYS + ALIAS_KEYS
+    rev = {
+        'characterizations': ('donor_characterization', 'characterizes'),
+    }
 
 
 @location('mouse-donors')
@@ -317,6 +320,16 @@ class ConstructCharacterization(Characterization):
     properties = {
         'title': 'Construct characterizations',
         'description': 'Listing of biosample construct characterizations',
+    }
+
+
+@location('donor-characterizations')
+class DonorCharacterization(Characterization):
+    item_type = 'donor_characterization'
+    schema = load_schema('donor_characterization.json')
+    properties = {
+        'title': 'Donor characterizations',
+        'description': 'Listing of model organism donor (strain) construct characterizations',
     }
 
 
