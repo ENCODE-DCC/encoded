@@ -19,7 +19,7 @@ ACCESSION_KEYS = [
         'name': 'accession',
         'value': '{accession}',
         '$templated': True,
-        '$condition': lambda accession, status=None: accession and status != 'replaced'
+        '$condition': lambda accession=None, status=None: accession and status != 'replaced'
     },
     {
         'name': 'accession',
