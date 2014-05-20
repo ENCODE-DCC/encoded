@@ -647,13 +647,6 @@ def make_app(application, username, password, test=False):
 
     app = internal_app(application, username)
 
-    # check schema version
-    resp = app.get(FILE_PROFILE_URL)
-    schema = resp.json['properties']['schema_version']['default']
-    if schema != FILE_SCHEMA_VERSION:
-        logger.error('ERROR: File schema has changed: is %s, expecting %s' %
-                        (schema, FILE_SCHEMA_VERSION))
-        sys.exit(1)
     return app
 
 

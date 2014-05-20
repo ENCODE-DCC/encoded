@@ -33,6 +33,19 @@
             "type": "string",
             "pattern": "^(\\d+?)x|unknown|new\\s+line$" 
         },
+        "documents": {
+            "title": "Strain documents",
+            "description": "Documents that describe the strain and its generation.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Strain document",
+                "description": "A document that describes the strain and/or its generation.",
+                "comment": "See document.json for available identifiers.",
+                "type": "string",
+                "linkTo": "document"
+            }
+        },
         "organism":{ 
             "linkEnum": [
                 "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20", 

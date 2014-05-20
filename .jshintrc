@@ -1,13 +1,7 @@
 {
     "esnext": true,
-    "globals": {
-        "console": true,
-        "document": true,
-        "module": true,
-        "navigator": true,
-        "require": true,
-        "window": true
-    },
+    "node": true,
+    "browser": true,
     "globalstrict": true,
     "newcap": false,
     "sub": true
