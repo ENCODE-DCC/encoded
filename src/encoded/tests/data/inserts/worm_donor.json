@@ -13,5 +13,15 @@
         "organism": "celegans",
         "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
         "uuid": "a09ce89d-e73a-4bbb-a3c9-9b46cc3a8e5f"
+    },
+    {
+        "accession": "ENCDO500YYY",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "celegans",
+        "documents": [
+        	"ENCODE:sample_strain_generation_protocol"
+        ],
+        "uuid": "7f4264e4-107a-4c69-acd5-8033434ebb73"
     }
 ]
