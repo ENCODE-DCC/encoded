@@ -5,5 +5,15 @@
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
         "uuid": "ea3bec10-d473-11e3-9c1a-0800200c9a66"
+    },
+    {
+        "accession": "ENCDO550XXX",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "dmelanogaster",
+        "documents": [
+        	"ENCODE:sample_strain_generation_protocol"
+        ],
+        "uuid": "5f6b8f94-86af-447a-8e17-d94865ce1877"
     }
 ]
