@@ -7,8 +7,8 @@
         "uuid": "ea3bec10-d473-11e3-9c1a-0800200c9a66"
     },
     {
-    	"accession": "ENCDO180XXX",
-		"award": "U41HG006992",
+        "accession": "ENCDO180XXX",
+        "award": "U41HG006992",
         "lab": "j-michael-cherry",
         "organism": "dmelanogaster",
         "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],

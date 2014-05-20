@@ -28,7 +28,7 @@
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
             "properties": {
-                "biosample_type": {"enum": ["whole organism"]}
+                "biosample_type": {"enum": ["whole organisms"]}
             }
         }
     },

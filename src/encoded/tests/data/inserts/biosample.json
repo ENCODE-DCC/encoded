@@ -101,7 +101,7 @@
         "model_organism_age": "14.5",
         "model_organism_age_units": "day",
         "model_organism_health_status": "Healthy",
-        "model_organism_life_stage": "embryonic",
+        "mouse_life_stage": "embryonic",
         "model_organism_sex": "mixed",
         "note": "C57BL/6 mice from Taconic Farms, Inc and Charles River Lab interbred.  Tissue extracted from 34 embryos. 1 vial collected.",
         "organism": "mouse",
@@ -129,7 +129,7 @@
         "model_organism_age": "14.5",
         "model_organism_age_units": "day",
         "model_organism_health_status": "unknown",
-        "model_organism_life_stage": "embryonic",
+        "mouse_life_stage": "embryonic",
         "model_organism_sex": "male",
         "organism": "mouse",
         "protocol_documents": [
@@ -175,7 +175,7 @@
         "lab": "sherman-weissman",
         "model_organism_age": "unknown",
         "model_organism_health_status": "unknown",
-        "model_organism_life_stage": "unknown",
+        "mouse_life_stage": "unknown",
         "model_organism_sex": "unknown",
         "organism": "mouse",
         "source": "sherman-weissman",
@@ -328,7 +328,7 @@
         "donor": "ENCDO000MUS",
         "lab": "barbara-wold",
         "model_organism_health_status": "unknown",
-        "model_organism_life_stage": "unknown",
+        "mouse_life_stage": "unknown",
         "model_organism_sex": "unknown",
         "organism": "mouse",
         "protocol_documents": [
@@ -350,7 +350,7 @@
         "donor": "ENCDO000MUS",
         "lab": "barbara-wold",
         "model_organism_health_status": "unknown",
-        "model_organism_life_stage": "unknown",
+        "mouse_life_stage": "unknown",
         "model_organism_sex": "unknown",
         "organism": "mouse",
         "protocol_documents": [
@@ -370,7 +370,7 @@
         "donor": "ENCDO015AAA",
         "lab": "john-stamatoyannopoulos",
         "model_organism_health_status": "unknown",
-        "model_organism_life_stage": "embryonic",
+        "mouse_life_stage": "embryonic",
         "organism": "mouse",
         "protocol_documents": [
             "ENCODE:ZhBTc4_Stam_protocol"
@@ -602,7 +602,7 @@
         "lab": "kevin-white",
         "organism": "celegans",
         "source": "kevin-white",
-        "worm_synchronization_stage": "starved L1 larval stage",
+        "worm_synchronization_stage": "post-starved L1 larval stage",
         "post_synchronization_time": "3",
         "post_synchronization_time_units": "hour",
         "submitted_by": "eni.lectus@nullam.sed",
