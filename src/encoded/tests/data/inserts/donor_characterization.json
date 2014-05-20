@@ -1,0 +1,28 @@
+[
+    {
+        "aliases": [
+            "kevin-white:fly_donor_characterization"
+        ],
+        "attachment": "frowny_gel.png",
+        "award": "U54HG006996",
+        "caption": "This is an example fly donor characterization",
+        "characterization_method": "immunoblot",
+        "characterizes": "ea3bec10-d473-11e3-9c1a-0800200c9a66",
+        "lab": "kevin-white",
+        "notes": "This is just an example.",
+        "uuid": "160e33e6-5981-4447-940a-7006c5a77b8b"
+    }
+    {
+        "aliases": [
+            "kevin-white:worm_donor_characterization"
+        ],
+        "attachment": "frowny_gel.png",
+        "award": "U54HG006996",
+        "caption": "This is an example worm donor characterization",
+        "characterization_method": "immunoblot",
+        "characterizes": "08460bf0-d474-11e3-9c1a-0800200c9a66",
+        "lab": "kevin-white",
+        "notes": "This is just an example.",
+        "uuid": "a8f3a460-3841-48da-a835-e126a9d6ed6b"
+    }
+]
