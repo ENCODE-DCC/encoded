@@ -32,11 +32,11 @@ Feature: Search
         And I should see at least 22 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 7 elements with the css selector "div.box.facets > div.facet"
         
-        When I click the link to "?type=biosample&model_organism_sex=unknown"
+        When I click the link to "?type=biosample&sex=unknown"
         And I wait for the content to load
         Then I should see at least 1 elements with the css selector "ul.nav.result-table > li"
         
-        When I click the link to "?type=biosample&model_organism_sex=unknown&organism.scientific_name=Homo sapiens"
+        When I click the link to "?type=biosample&sex=unknown&organism.scientific_name=Homo sapiens"
         And I wait for the content to load
         Then I should see at least 13 elements with the css selector "ul.nav.result-table > li"
         

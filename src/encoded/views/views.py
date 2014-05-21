@@ -449,7 +449,7 @@ class Biosample(Collection):
                     ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
-            
+
             root = find_root(self)
             donor = root.get_by_uuid(self.properties['organism'])
             human_donor_properties = [
@@ -661,7 +661,7 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
-    
+
     class Item(Collection.Item):
         template = {
             'files': [
@@ -701,7 +701,7 @@ class Experiment(Dataset):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    
+
     class Item(Dataset.Item):
         base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {

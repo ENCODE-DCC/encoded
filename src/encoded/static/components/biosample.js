@@ -282,11 +282,11 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {biosample && biosample.age ? <dt>Age</dt> : null}
                 {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
-                {context.model_organism_sex ? <dt>Sex</dt> : null}
-                {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
+                {biosample && biosample.sex ? <dt>Sex</dt> : null}
+                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
 
-                {biosample && biosample.model_organism_health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.model_organism_health_status ? <dd className="sentence-case">{biosample.model_organism_health_status}</dd> : null}
+                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
                 {context.ethnicity ? <dt>Ethnicity</dt> : null}
                 {context.ethnicity ? <dd className="sentence-case">{context.ethnicity}</dd> : null}
@@ -319,11 +319,11 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {biosample && biosample.age ? <dt>Age</dt> : null}
                 {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
-                {context.model_organism_sex ? <dt>Sex</dt> : null}
-                {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
+                {biosample && biosample.sex ? <dt>Sex</dt> : null}
+                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
 
-                {biosample && biosample.model_organism_health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.model_organism_health_status ? <dd className="sentence-case">{biosample.model_organism_health_status}</dd> : null}
+                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
                 <dt>Strain background</dt>
                 <dd className="sentence-case">{context.strain_background}</dd>
@@ -359,11 +359,11 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                 {biosample && biosample.age ? <dt>Age</dt> : null}
                 {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
-                {context.model_organism_sex ? <dt>Sex</dt> : null}
-                {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
+                {biosample && biosample.sex ? <dt>Sex</dt> : null}
+                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
 
-                {biosample && biosample.model_organism_health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.model_organism_health_status ? <dd className="sentence-case">{biosample.model_organism_health_status}</dd> : null}
+                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
                 {context.strain_background ? <dt>Strain background</dt> : null}
                 {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
@@ -399,11 +399,11 @@ var WormDonor = module.exports.WormDonor = React.createClass({
                 {biosample && biosample.age ? <dt>Age</dt> : null}
                 {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
-                {context.model_organism_sex ? <dt>Sex</dt> : null}
-                {context.model_organism_sex ? <dd className="sentence-case">{context.model_organism_sex}</dd> : null}
+                {biosample && biosample.sex ? <dt>Sex</dt> : null}
+                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
 
-                {biosample && biosample.model_organism_health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.model_organism_health_status ? <dd className="sentence-case">{biosample.model_organism_health_status}</dd> : null}
+                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
                 {context.strain_background ? <dt>Strain background</dt> : null}
                 {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
