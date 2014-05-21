@@ -340,14 +340,14 @@
             "title": "Fly life stage",
             "type": "string",
             "enum": [
-                "embryonic stage",
-                "first instar larval stage",
-                "second instar larval stage",
-                "third instar larval stage",
-                "wandering third instar larval stage",
-                "prepupal stage",
-                "pupal stage",
-                "adult stage"
+                "embryonic",
+                "first instar larva",
+                "second instar larva",
+                "third instar larva",
+                "wandering third instar larva",
+                "prepupa",
+                "pupa",
+                "adult"
             ]
         },
         "fly_synchronization_stage": {
@@ -355,9 +355,9 @@
             "comment": "Stage at which flies were synchronized. Use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
-                "post-fertilization embryonic stage",
-                "white prepupal stage",
-                "post-eclosion adult stage"
+                "fertilization",
+                "white prepupa",
+                "eclosion"
             ]  
         },
         "post_synchronization_time": {
@@ -384,17 +384,17 @@
             "title": "Worm life stage",
             "type": "string",
             "enum": [
-                "early embryonic stage",
-                "late embryonic stage",
-                "mixed embryonic stage",
-                "L1 larval stage",
-                "L2 larval stage",
-                "L2d larval stage",
-                "L3 larval stage",
-                "L4 larval stage",
-                "dauer stage",
-                "young adult stage",
-                "adult stage"
+                "early embryonic",
+                "late embryonic",
+                "embryonic",
+                "L1 larva",
+                "L2 larva",
+                "L2d larva",
+                "L3 larva",
+                "L4 larva",
+                "dauer",
+                "young adult",
+                "adult"
             ]    
         },
         "worm_synchronization_stage": {
@@ -402,9 +402,9 @@
             "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.",
             "type": "string",
             "enum": [
-                "post-fertilization embryonic stage",
-                "post-starved L1 larval stage",
-                "post-dauer stage"
+                "fertilization",
+                "starved L1 larva",
+                "dauer exit"
             ]
         },
         "model_organism_age": {
