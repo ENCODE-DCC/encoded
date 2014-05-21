@@ -66,6 +66,7 @@
             "enum" : [
                 "in progress",
                 "deleted",
+                "replaced",
                 "released"
             ]
         }
@@ -78,6 +79,7 @@
             "enum" : [
                 "current",
                 "deleted",
+                "replaced",
                 "disabled"
             ]
         }
