@@ -75,3 +75,11 @@ def dataset_3_4(value, system):
             value['status'] = 'released'
         elif value['award'] not in ENCODE2_AWARDS:
             value['status'] = 'submitted'
+
+
+@upgrade_step('experiment', '4', '5')
+@upgrade_step('dataset', '4', '5')
+def experiment_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/1393
+    if value.get('biosample_type') == 'primary cell line':
+        value['biosample_type'] = 'primary cell'
