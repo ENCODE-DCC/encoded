@@ -106,7 +106,7 @@ def audit_experiment_biosample_term(value, system):
         raise AuditFailure('term id not in ontology', term_id, level='ERROR')
 
     ontology_term_name = ontology[term_id]['name']
-    if ontology_term_name != term_name:
+    if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
         raise AuditFailure('term name mismatch', detail, level='ERROR')
 
