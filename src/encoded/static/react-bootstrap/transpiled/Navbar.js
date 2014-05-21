@@ -61,7 +61,7 @@ var Navbar = React.createClass({displayName: 'Navbar',
       "in": !this.state.collapsed
     });
 
-    return this.transferPropsTo(
+    return (
       React.DOM.nav( {className:classSet(classes), role:"navigation"}, 
         React.DOM.div( {className:"navbar-header"}, 
           React.DOM.button( {type:"button", className:toggleClass, 'data-toggle':"collapse",
