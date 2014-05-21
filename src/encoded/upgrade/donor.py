@@ -17,6 +17,7 @@ def donor_0_2(value, system):
             elif value['award'] not in ENCODE2_AWARDS:
                 value['status'] = 'in progress'
 
+
 @upgrade_step('mouse_donor', '2', '3')
 def donor_2_3(value, system):
     # http://encode.stanford.edu/issues/1131
