@@ -689,7 +689,7 @@ class RNAi(Collection):
         'title': 'RNAi',
         'description': 'Listing of RNAi',
     }
-    item_embedded = set(['source', 'documents'])
+    item_embedded = set(['source', 'documents', 'target'])
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
@@ -704,3 +704,38 @@ class RNAiCharacterization(Characterization):
         'title': 'RNAi characterizations',
         'description': 'Listing of biosample RNAi characterizations',
     }
+
+
+class Page(Collection):
+    schema = load_schema('page.json')
+
+    class Item(Collection.Item):
+        base_types = ['page'] + Collection.Item.base_types
+        name_key = 'name'
+        keys = ['name']
+
+        STATUS_ACL = {
+            'in progress': ALLOW_CURRENT,
+            'released': ALLOW_EVERYONE_VIEW,
+            'deleted': [],
+        }
+
+
+@location('about')
+class AboutPage(Page):
+    item_type = 'about_page'
+    properties = {
+        'title': 'About Pages',
+        'description': 'Portal pages, about section',
+    }
+    unique_key = 'about_page:name'
+
+
+@location('help')
+class HelpPage(Page):
+    item_type = 'help_page'
+    properties = {
+        'title': 'Help Pages',
+        'description': 'Portal pages, help section',
+    }
+    unique_key = 'help_page:name'
