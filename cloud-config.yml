@@ -9,7 +9,6 @@ package_upgrade: true
 packages:
 - apache2-mpm-event
 - build-essential
-- daemontools
 - elasticsearch
 - git
 - libapache2-mod-wsgi
@@ -60,18 +59,9 @@ users:
   homedir: /srv/encoded
 
 write_files:
--   path: /etc/postgresql/9.3/main/recovery.conf
-    permissions: '0644'
-    content: restore_command = 'envdir /etc/wal-e.d/env /srv/encoded/bin/wal-e wal-fetch "%%f" "%%p"' 
--   path: /etc/wal-e.d/env/AWS_ACCESS_KEY_ID
-    permissions: '0755'
-    content: %(AWS_ID)s
--   path: /etc/wal-e.d/env/AWS_SECRET_ACCESS_KEY
-    permissions: '0755'
-    content: %(AWS_KEY)s
--   path: /etc/wal-e.d/env/WALE_S3_PREFIX
-    permissions: '0755'
-    content: %(AWS_SERVER)s
+- path: /etc/postgresql/9.3/main/recovery.conf
+  permissions: '0644'
+  content: restore_command = '/srv/encoded/bin/wal-e wal-fetch --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" "%%f" "%%p"'
 
 runcmd:
 # Ideally this would build as a different user so encoded only has read
@@ -89,7 +79,7 @@ runcmd:
 - sudo -u encoded python2.7 bootstrap.py
 - sudo -u encoded bin/buildout
 - sudo /etc/init.d/postgresql stop
-- sudo -u postgres envdir /etc/wal-e.d/env /srv/encoded/bin/wal-e backup-fetch /var/lib/postgresql/9.3/main LATEST
+- sudo -u postgres bin/wal-e backup-fetch --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres cp /var/lib/postgresql/9.3/main/postgresql.conf.orig /var/lib/postgresql/9.3/main/postgresql.conf
 - sudo -u postgres cp /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main
 - sudo /etc/init.d/postgresql start

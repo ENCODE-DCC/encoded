@@ -3,12 +3,12 @@ from boto.ec2.blockdevicemapping import (
     BlockDeviceType,
 )
 import boto.ec2
+import getpass
 import time
 import sys
-import os
 
 
-def run(branch, instance_name=None, persistent=False):
+def run(wale_s3_prefix, branch='master', instance_name=None, persistent=False):
     if instance_name is None:
         # Ideally we'd use the commit sha here, but only the instance knows that...
         instance_name = 'encoded/%s' % branch
@@ -24,24 +24,24 @@ def run(branch, instance_name=None, persistent=False):
 
     user_data = open('cloud-config.yml').read()
     user_data = user_data % {
-        'AWS_ID': os.environ["S3_READ_ID"],
-        'AWS_KEY': os.environ["S3_READ_KEY"],
-        'AWS_SERVER': os.environ["S3_SERVER"],
+        'WALE_S3_PREFIX': wale_s3_prefix,
         'BRANCH': branch,
     }
 
     reservation = conn.run_instances(
         'ami-f64f77b3',  # ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-20140416.1
         instance_type='m3.xlarge',
-        security_group_ids=['sg-df30f19b'],
+        security_groups=['ssh-http-https'],
         user_data=user_data,
         block_device_map=bdm,
         instance_initiated_shutdown_behavior='terminate',
+        instance_profile_name='demo-instance',
     )
 
     instance = reservation.instances[0]  # Instance:i-34edd56f
     instance.add_tag('Name', instance_name)
     instance.add_tag('branch', branch)
+    instance.add_tag('started_by', getpass.getuser())
     print instance
     print instance.state,
 
@@ -65,9 +65,10 @@ def main():
     parser.add_argument('-b', '--branch', default='master', help="Git branch or tag")
     parser.add_argument('-n', '--name', help="Instance name")
     parser.add_argument('--persistent', action='store_true', help="User persistent (ebs) volumes")
+    parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups/production')
     args = parser.parse_args()
 
-    return run(args.branch, args.name, args.persistent)
+    return run(args.wale_s3_prefix, args.branch, args.name, args.persistent)
 
 
 if __name__ == '__main__':
