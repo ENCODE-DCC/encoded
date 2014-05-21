@@ -210,6 +210,7 @@ def es_tween_factory(handler, registry):
 
     ignore = {
         '/',
+        '/favicon.ico',
         '/search',
         '/session',
         '/login',
@@ -230,7 +231,7 @@ def es_tween_factory(handler, registry):
         # Normalize path
         path = _join_path_tuple(('',) + split_path_info(request.path_info))
 
-        if path in ignore:
+        if path in ignore or path.startswith('/static/'):
             return handler(request)
 
         query = {'query': {'term': {'paths': path}}}
