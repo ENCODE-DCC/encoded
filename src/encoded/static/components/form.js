@@ -62,7 +62,7 @@ var Form = module.exports.Form = React.createClass({
     },
 
     finish: function (data) {
-        this.props.navigate(data['@graph'][0]['@id']);
+        this.props.navigate(data['@graph'][0]['@id'] + '?datastore=database');
     },
 
     fail: function (xhr, status, error) {

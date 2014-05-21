@@ -1,0 +1,54 @@
+.layout.editable {
+	.row {
+		position: relative;
+		@include clearfix;
+
+		&.drop-top:before {
+			content: " ";
+			display: block;
+			width: 100%;
+			border-top: solid 3px blue;
+			margin-top: -3px;
+		}
+		&.drop-bottom:after {
+			content: " ";
+			display: block;
+			width: 100%;
+			border-bottom: solid 3px blue;
+			margin-bottom: -3px;
+		}
+	}
+
+	.block {
+		position: relative;
+
+		&.dragging {
+			opacity: .5;
+		}
+
+		&.drop-left:after {
+			content: " ";
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			border-left: solid 3px blue;
+		}
+		&.drop-right:after {
+			content: " ";
+			display: block;
+			position: absolute;
+			top: 0;
+			right: 0;
+			height: 100%;
+			border-right: solid 3px blue;
+		}
+
+		&:hover {
+			outline: dashed 1px #ccc;
+			cursor: move;
+		}
+	}
+
+}
