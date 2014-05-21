@@ -245,3 +245,40 @@
 
     /* (gray) is the default if no class given */
 }
+
+
+%file-icon {
+    @include img-responsive();
+    width: 100px;
+    height: 100px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.file-pdf {
+    @extend %file-icon;
+    background-image: url(/static/img/file-pdf.svg);
+
+    .no-svg & {
+        background-image: url(/static/img/file-pdf.png);
+    }
+}
+
+.file-generic {
+    @extend %file-icon;
+    background-image: url(/static/img/file.svg);
+
+    .no-svg & {
+        background-image: url(/static/img/file.png);
+    }
+}
+
+.file-missing {
+    @extend %file-icon;
+    background-image: url(/static/img/file-broken.svg);
+
+    .no-svg & {
+        background-image: url(/static/img/file-broken.png);
+    }
+}

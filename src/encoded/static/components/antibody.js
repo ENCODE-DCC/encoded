@@ -125,39 +125,38 @@ var Characterization = module.exports.Characterization = React.createClass({
         var context = this.props.context;
         var attachmentHref, attachmentUri;
         var figure, download, src, alt;
-        var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             if (context.attachment.type.split('/', 1)[0] == 'image') {
-                imgClass = 'characterization-img';
+                var imgClass = 'characterization-img';
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Characterization Image";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref}>
+                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                    </a>
+                );
             } else if (context.attachment.type == "application/pdf"){
-                src = "/static/img/file-pdf.png";
-                alt = "Characterization PDF Icon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Characterization PDF Icon</a>
+                );
             } else {
-                src = "/static/img/file.png";
-                alt = "Characterization Icon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide">Characterization Icon</a>
+                );
             }
-            figure = (
-                <a data-bypass="true" href={attachmentHref}>
-                    <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                </a>
-            );
             download = (
                 <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
                 </a>
             );
         } else {
-            src = "/static/img/file-broken.png";
-            alt = "Characterization file broken icon";
             figure = (
-                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                <div className="file-missing text-hide">Characterization file broken icon</div>
             );
             download = (
                 <em>Document not available</em>

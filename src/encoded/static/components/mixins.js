@@ -71,17 +71,26 @@ module.exports.RenderLess = {
     },
 };
 
+
+function script_onload(el, callback) {
+    var loaded = false;
+    el.onload = el.onreadystatechange = function () {
+      if ((el.readyState && el.readyState !== "complete" && el.readyState !== "loaded") || loaded) {
+        return false;
+      }
+      el.onload = el.onreadystatechange = null;
+      loaded = true;
+      callback();
+    };
+}
+
+
 module.exports.Persona = {
     componentDidMount: function () {
         var $ = require('jquery');
         // Login / logout actions must be deferred until persona is ready.
         $.ajaxPrefilter(this.ajaxPrefilter);
         this.personaDeferred = $.Deferred();
-        if (!navigator.id) {
-            // Ensure DOM is clean for React when mounting
-            // Unminified: https://login.persona.org/include.orig.js
-            this.personaLoaded = $.getScript("https://login.persona.org/include.js");
-        }
         this.configurePersona(this.parseSessionCookie());
     },
 
@@ -134,7 +143,7 @@ module.exports.Persona = {
     },
 
     configurePersona: function (session) {
-        this.personaLoaded.done(function () {
+        $script.ready('persona', function () {
             navigator.id.watch({
                 loggedInUser: session && session['auth.userid'] || null,
                 onlogin: this.handlePersonaLogin,
@@ -554,3 +563,40 @@ module.exports.HistoryAndTriggers = {
     }
 
 };
+
+
+// Handle browser capabilities, a la Modernizr. Can *only* be called from
+// mounted components (componentDidMount method would be a good method to
+// use this from), because actual DOM is needed.
+module.exports.BrowserFeat = {
+    feat: {},
+
+    // Return object with browser capabilities; return from cache if available
+    getBrowserCaps: function () {
+        if (Object.keys(this.feat).length === 0) {
+            this.feat.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
+        }
+        return this.feat;
+    },
+
+    setHtmlFeatClass: function() {
+        var htmlclass = [];
+
+        this.getBrowserCaps();
+
+        // For each set feature, add to the <html> element's class
+        var keys = Object.keys(this.feat);
+        var i = keys.length;
+        while (i--) {
+            if (this.feat[keys[i]]) {
+                htmlclass.push(keys[i]);
+            } else {
+                htmlclass.push('no-' + keys[i]);
+            }
+        }
+
+        // Now write the classes to the <html> DOM element
+        document.documentElement.className = htmlclass.join(' ');
+    }
+};
+

@@ -95,7 +95,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.description ? <dd>{context.description}</dd> : null}
 
                         {context.biosample_term_name ? <dt>Biosample</dt> : null}
-                        {context.biosample_term_name ? <dd className="sentence-case">{context.biosample_term_name}</dd> : null}
+                        {context.biosample_term_name ? <dd>{context.biosample_term_name}</dd> : null}
 
                         {context.biosample_type ? <dt>Biosample type</dt> : null}
                         {context.biosample_type ? <dd className="sentence-case">{context.biosample_type}</dd> : null}

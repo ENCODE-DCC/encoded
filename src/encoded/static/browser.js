@@ -14,6 +14,9 @@ var domready = require('domready');
 // point should be definitions.
 if (!window.TEST_RUNNER) domready(function ready() {
     console.log('ready');
+    // Set <html> class depending on browser features
+    var BrowserFeat = require('./components/mixins').BrowserFeat;
+    BrowserFeat.setHtmlFeatClass();
     var props = {};
     // Ensure the initial render is exactly the same
     props.href = document.querySelector('link[rel="canonical"]').href;
