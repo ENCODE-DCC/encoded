@@ -25,6 +25,7 @@ ORDER = [
     'rnai_characterization',
     'fly_donor',
     'worm_donor',
+    'donor_characterization',
     'biosample',
     'biosample_characterization',
     'platform',
