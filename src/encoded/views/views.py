@@ -1,7 +1,8 @@
 from pyramid.security import (
+    ALL_PERMISSIONS,
     Allow,
     Authenticated,
-    Deny,
+    DENY_ALL,
     Everyone,
 )
 from .download import ItemWithAttachment
@@ -42,7 +43,7 @@ ALIAS_KEYS = [
 
 
 ALLOW_EVERYONE_VIEW = [
-    (Allow, Everyone, ['view', 'list', 'traverse']),
+    (Allow, Everyone, 'view'),
 ]
 
 ALLOW_SUBMITTER_ADD = [
@@ -50,14 +51,24 @@ ALLOW_SUBMITTER_ADD = [
 ]
 
 ALLOW_LAB_SUBMITTER_EDIT = [
+    (Allow, Authenticated, 'view'),
     (Allow, 'role.lab_submitter', 'edit'),
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
 ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
-    (Allow, 'role.viewer', 'view'),
+    (Allow, Everyone, 'view'),
 ]
 
+ONLY_ADMIN_VIEW = [
+    (Allow, 'group.admin', ALL_PERMISSIONS),
+    (Allow, 'group.read-only-admin', ['traverse', 'view']),
+    (Allow, 'remoteuser.EMBED', ['traverse', 'view']),
+    (Allow, 'remoteuser.INDEXER', ['traverse', 'view', 'index']),
+    DENY_ALL,
+]
+
+# Now unused, kept around for upgrade tests.
 ENCODE2_AWARDS = frozenset([
     '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
     '1f3cffd4-457f-4105-9b3c-3e9119abfcf0',
@@ -95,9 +106,30 @@ class Collection(BaseCollection):
 
     class Item(BaseCollection.Item):
         STATUS_ACL = {
+            # standard_status
             'released': ALLOW_CURRENT,
+            'deleted': ONLY_ADMIN_VIEW,
+
+            # shared_status
             'current': ALLOW_CURRENT,
-            'deleted': [],
+            'disabled': ONLY_ADMIN_VIEW,
+
+            # file
+            'obsolete': ONLY_ADMIN_VIEW,
+
+            # antibody_characterization
+            'compliant': ALLOW_CURRENT,
+            'not compliant': ALLOW_CURRENT,
+            'not reviewed': ALLOW_CURRENT,
+            'not submitted for review by lab': ALLOW_CURRENT,
+
+            # antibody_approval
+            'eligible for new data': ALLOW_CURRENT,
+            'not eligible for new data': ALLOW_CURRENT,
+            'not pursued': ALLOW_CURRENT,
+
+            # dataset / experiment
+            'revoked': ALLOW_CURRENT,
         }
 
         def __acl__(self):
@@ -106,7 +138,7 @@ class Collection(BaseCollection):
             ns = self.template_namespace(properties)
             properties.update(ns)
             status = ns.get('status')
-            return self.STATUS_ACL.get(status, ())
+            return self.STATUS_ACL.get(status, ALLOW_LAB_SUBMITTER_EDIT)
 
         def __ac_local_roles__(self):
             roles = {}
@@ -116,8 +148,6 @@ class Collection(BaseCollection):
             if 'lab' in properties:
                 lab_submitters = 'submits_for.%s' % properties['lab']
                 roles[lab_submitters] = 'role.lab_submitter'
-            if properties.get('award') in ENCODE2_AWARDS:
-                roles[Everyone] = 'role.viewer'
             return roles
 
 
@@ -442,14 +472,6 @@ class AntibodyCharacterization(Characterization):
     }
 
     class Item(Characterization.Item):
-        STATUS_ACL = {
-            'in progress': ALLOW_LAB_SUBMITTER_EDIT,
-            'pending dcc review': ALLOW_LAB_SUBMITTER_EDIT,
-            'compliant': ALLOW_CURRENT,
-            'not compliant': ALLOW_CURRENT,
-            'not reviewed': ALLOW_CURRENT,
-            'not submitted for review by lab': ALLOW_CURRENT,
-        }
         embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
 
 
@@ -463,11 +485,6 @@ class AntibodyApproval(Collection):
     }
 
     class Item(Collection.Item):
-        STATUS_ACL = {
-            'eligible for new data': ALLOW_CURRENT,
-            'not eligible for new data': ALLOW_CURRENT,
-            'not pursued': ALLOW_CURRENT,
-        }
         embedded = [
             'antibody.host_organism',
             'antibody.source',
@@ -497,7 +514,10 @@ class Platform(Collection):
     }
     unique_key = 'platform:term_id'
     item_name_key = 'term_id'
-    item_keys = ALIAS_KEYS + ['term_name', 'term_id']
+    item_keys = ALIAS_KEYS + [
+        {'name': '{item_type}:term_id', 'value': '{term_id}', '$templated': True},
+        {'name': '{item_type}:term_id', 'value': '{term_name}', '$templated': True},
+    ]
 
 
 @location('libraries')
@@ -587,15 +607,6 @@ class Dataset(Collection):
         template_type = {
             'files': 'file',
         }
-        STATUS_ACL = {
-            'released': ALLOW_CURRENT,
-            'started': ALLOW_LAB_SUBMITTER_EDIT,
-            'verified': ALLOW_LAB_SUBMITTER_EDIT,
-            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
-            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
-            'revoked': ALLOW_CURRENT,
-            'deleted': [],
-        }
         embedded = [
             'files',
             'files.replicate',
@@ -642,15 +653,6 @@ class Experiment(Dataset):
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
             ]
         }
-        STATUS_ACL = {
-            'released': ALLOW_CURRENT,
-            'started': ALLOW_LAB_SUBMITTER_EDIT,
-            'verified': ALLOW_LAB_SUBMITTER_EDIT,
-            'submitted': ALLOW_LAB_SUBMITTER_EDIT,
-            'proposed': ALLOW_LAB_SUBMITTER_EDIT,
-            'revoked': ALLOW_CURRENT,
-            'deleted': [],
-        }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody.approvals',
             'replicates.library.documents.lab',
@@ -695,7 +697,7 @@ class RNAi(Collection):
         'title': 'RNAi',
         'description': 'Listing of RNAi',
     }
-    item_embedded = set(['source', 'documents'])
+    item_embedded = set(['source', 'documents', 'target'])
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
@@ -710,3 +712,38 @@ class RNAiCharacterization(Characterization):
         'title': 'RNAi characterizations',
         'description': 'Listing of biosample RNAi characterizations',
     }
+
+
+class Page(Collection):
+    schema = load_schema('page.json')
+
+    class Item(Collection.Item):
+        base_types = ['page'] + Collection.Item.base_types
+        name_key = 'name'
+        keys = ['name']
+
+        STATUS_ACL = {
+            'in progress': [],
+            'released': ALLOW_EVERYONE_VIEW,
+            'deleted': ONLY_ADMIN_VIEW,
+        }
+
+
+@location('about')
+class AboutPage(Page):
+    item_type = 'about_page'
+    properties = {
+        'title': 'About Pages',
+        'description': 'Portal pages, about section',
+    }
+    unique_key = 'about_page:name'
+
+
+@location('help')
+class HelpPage(Page):
+    item_type = 'help_page'
+    properties = {
+        'title': 'Help Pages',
+        'description': 'Portal pages, help section',
+    }
+    unique_key = 'help_page:name'

@@ -24,7 +24,6 @@ _app_settings = {
     'persona.audiences': 'http://localhost:6543',
     'persona.verifier': 'browserid.LocalVerifier',
     'persona.siteName': 'ENCODE DCC Submission',
-    'allow.view': 'Authenticated',
     'allow.list': 'Everyone',
     'allow.traverse': 'Everyone',
     'allow.search': 'Everyone',
@@ -34,7 +33,6 @@ _app_settings = {
     'load_test_only': True,
     'load_sample_data': False,
     'testing': True,
-    'datastore': 'database',
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
 }

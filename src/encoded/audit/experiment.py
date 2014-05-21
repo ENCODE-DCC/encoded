@@ -19,7 +19,7 @@ def audit_experiment_assay(value, system):
         raise AuditFailure('missing assay information', detail, level='ERROR')
 
     ontology = system['registry']['ontology']
-    term_id = value['assay_term_id']
+    term_id = value.get('assay_term_id')
     term_name = value.get('assay_term_name')
 
     if term_id.startswith('NTR:'):
@@ -94,8 +94,8 @@ def audit_experiment_biosample_term(value, system):
         return
 
     ontology = system['registry']['ontology']
-    term_id = value['biosample_term_id']
-    term_type = value['biosample_type']
+    term_id = value.get('biosample_term_id')
+    term_type = value.get('biosample_type')
     term_name = value.get('biosample_term_name')
 
     if term_id.startswith('NTR:'):
@@ -106,7 +106,7 @@ def audit_experiment_biosample_term(value, system):
         raise AuditFailure('term id not in ontology', term_id, level='ERROR')
 
     ontology_term_name = ontology[term_id]['name']
-    if ontology_term_name != term_name:
+    if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
         raise AuditFailure('term name mismatch', detail, level='ERROR')
 
@@ -124,14 +124,14 @@ def audit_experiment_biosample_term(value, system):
         if 'biosample_term_id' not in biosample or 'biosample_term_name' not in biosample or 'biosample_type' not in biosample:
             return
 
-        if biosample['biosample_type'] != term_type:
-            detail = '{} - {} in {}'.format(term_type, biosample['biosample_type'], lib['accession'])
+        if biosample.get('biosample_type') != term_type:
+            detail = '{} - {} in {}'.format(term_type, biosample.get('biosample_type'), lib['accession'])
             raise AuditFailure('biosample mismatch', detail, level='ERROR')
 
-        if biosample['biosample_term_name'] != term_name:
-            detail = '{} - {} in {}'.format(term_name, biosample['biosample_term_name'], lib['accession'])
+        if biosample.get('biosample_term_name') != term_name:
+            detail = '{} - {} in {}'.format(term_name, biosample.get('biosample_term_name'), lib['accession'])
             raise AuditFailure('biosample mismatch', detail, level='ERROR')
 
-        if biosample['biosample_term_id'] != term_id:
-            detail = '{} - {} in {}'.format(term_id, biosample['biosample_term_id'], lib['accession'])
+        if biosample.get('biosample_term_id') != term_id:
+            detail = '{} - {} in {}'.format(term_id, biosample.get('biosample_term_id'), lib['accession'])
             raise AuditFailure('biosample mismatch', detail, level='ERROR')

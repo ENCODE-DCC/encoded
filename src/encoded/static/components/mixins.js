@@ -71,17 +71,26 @@ module.exports.RenderLess = {
     },
 };
 
+
+function script_onload(el, callback) {
+    var loaded = false;
+    el.onload = el.onreadystatechange = function () {
+      if ((el.readyState && el.readyState !== "complete" && el.readyState !== "loaded") || loaded) {
+        return false;
+      }
+      el.onload = el.onreadystatechange = null;
+      loaded = true;
+      callback();
+    };
+}
+
+
 module.exports.Persona = {
     componentDidMount: function () {
         var $ = require('jquery');
         // Login / logout actions must be deferred until persona is ready.
         $.ajaxPrefilter(this.ajaxPrefilter);
         this.personaDeferred = $.Deferred();
-        if (!navigator.id) {
-            // Ensure DOM is clean for React when mounting
-            // Unminified: https://login.persona.org/include.orig.js
-            this.personaLoaded = $.getScript("https://login.persona.org/include.js");
-        }
         this.configurePersona(this.parseSessionCookie());
     },
 
@@ -134,7 +143,7 @@ module.exports.Persona = {
     },
 
     configurePersona: function (session) {
-        this.personaLoaded.done(function () {
+        $script.ready('persona', function () {
             navigator.id.watch({
                 loggedInUser: session && session['auth.userid'] || null,
                 onlogin: this.handlePersonaLogin,
@@ -508,13 +517,13 @@ module.exports.HistoryAndTriggers = {
 
         var stats_header = xhr.getResponseHeader('X-Stats') || '';
         xhr.server_stats = require('querystring').parse(stats_header);
-        recordServerStats(xhr.server_stats, 'contextRequest');
+        this.constructor.recordServerStats(xhr.server_stats, 'contextRequest');
 
         xhr.browser_stats = {};
         xhr.browser_stats['xhr_time'] = xhr.xhr_end - xhr.xhr_begin;
         xhr.browser_stats['browser_time'] = browser_end - xhr.xhr_end;
         xhr.browser_stats['total_time'] = browser_end - xhr.xhr_begin;
-        recordBrowserStats(xhr.browser_stats, 'contextRequest');
+        this.constructor.recordBrowserStats(xhr.browser_stats, 'contextRequest');
 
     },
 
@@ -525,32 +534,69 @@ module.exports.HistoryAndTriggers = {
         } else {
             window.scrollTo(0, 0);
         }
+    },
+
+    statics: {
+        recordServerStats: function (server_stats, timingVar) {
+            // server_stats *_time are microsecond values...
+            var ga = window.ga;
+            Object.keys(server_stats).forEach(function (name) {
+                if (name.indexOf('_time') === -1) return;
+                ga('send', 'timing', {
+                    'timingCategory': name,
+                    'timingVar': timingVar,
+                    'timingValue': Math.round(server_stats[name] / 1000)
+                });
+            });
+        },
+        recordBrowserStats: function (browser_stats, timingVar) {
+            var ga = window.ga;
+            Object.keys(browser_stats).forEach(function (name) {
+                if (name.indexOf('_time') === -1) return;
+                ga('send', 'timing', {
+                    'timingCategory': name,
+                    'timingVar': timingVar,
+                    'timingValue': browser_stats[name]
+                });
+            });
+        }
+    }
+
+};
+
+
+// Handle browser capabilities, a la Modernizr. Can *only* be called from
+// mounted components (componentDidMount method would be a good method to
+// use this from), because actual DOM is needed.
+module.exports.BrowserFeat = {
+    feat: {},
+
+    // Return object with browser capabilities; return from cache if available
+    getBrowserCaps: function () {
+        if (Object.keys(this.feat).length === 0) {
+            this.feat.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
+        }
+        return this.feat;
+    },
+
+    setHtmlFeatClass: function() {
+        var htmlclass = [];
+
+        this.getBrowserCaps();
+
+        // For each set feature, add to the <html> element's class
+        var keys = Object.keys(this.feat);
+        var i = keys.length;
+        while (i--) {
+            if (this.feat[keys[i]]) {
+                htmlclass.push(keys[i]);
+            } else {
+                htmlclass.push('no-' + keys[i]);
+            }
+        }
+
+        // Now write the classes to the <html> DOM element
+        document.documentElement.className = htmlclass.join(' ');
     }
 };
 
-
-var recordServerStats = module.exports.recordServerStats = function (server_stats, timingVar) {
-    // server_stats *_time are microsecond values...
-    var ga = window.ga;
-    Object.keys(server_stats).forEach(function (name) {
-        if (name.indexOf('_time') === -1) return;
-        ga('send', 'timing', {
-            'timingCategory': name,
-            'timingVar': timingVar,
-            'timingValue': Math.round(server_stats[name] / 1000)
-        });
-    });
-};
-
-
-var recordBrowserStats = module.exports.recordBrowserStats = function (browser_stats, timingVar) {
-    var ga = window.ga;
-    Object.keys(browser_stats).forEach(function (name) {
-        if (name.indexOf('_time') === -1) return;
-        ga('send', 'timing', {
-            'timingCategory': name,
-            'timingVar': timingVar,
-            'timingValue': browser_stats[name]
-        });
-    });
-};
