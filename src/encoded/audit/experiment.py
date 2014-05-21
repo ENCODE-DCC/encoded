@@ -147,7 +147,7 @@ def audit_experiment_paired_end(value,system):
 
         if 'paired_ended' not in rep:
             detail = '{} missing paired end information'.format(rep['uuid'])
-            raise AuditFailure('missing replicate paired end', detail, level='ERROR')
+            yield AuditFailure('missing replicate paired end', detail, level='ERROR')
 
         if 'library' not in rep:
             return
@@ -156,8 +156,8 @@ def audit_experiment_paired_end(value,system):
 
         if 'paired_ended' not in lib:
             detail = '{} missing paired end information'.format(lib['accession'])
-            raise AuditFailure('missing library paired end', detail, level='ERROR')
+            yield AuditFailure('missing library paired end', detail, level='ERROR')
 
         elif rep['paired_ended'] != lib['paired_ended'] and lib['paired_ended'] == False:
             detail = 'paired ended mismatch between {} - {}'.format(rep['uuid'], lib['accession'])
-            raise AuditFailure('paired end mismatch', detail, level='ERROR')
+            yield AuditFailure('paired end mismatch', detail, level='ERROR')

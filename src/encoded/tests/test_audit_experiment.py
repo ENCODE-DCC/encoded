@@ -58,7 +58,7 @@ def test_audit_experiment_replicate_paired_end(testapp, base_experiment, base_re
 
 
 def test_audit_experiment_library_paired_end(testapp, base_experiment, base_replicate, base_library):
-    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id'], 'paired_ended': False})
+    testapp.patch_json(base_replicate['@id'], {'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'missing library paired end' for error in errors)
