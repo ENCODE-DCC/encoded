@@ -23,6 +23,15 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "depleted_in_term_name": ["depleted_in_term_id"],
+        "depleted_in_term_id": {
+            "required": ["depleted_in_term_name"],
+            "properties": {
+                "biosample_type": {"enum": ["whole organisms"]}
+            }
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "6"
@@ -152,14 +161,15 @@
                 ]
             }
         },
-        "mating_status": {
+        "model_organism_mating_status": {
             "title": "Mating status",
-            "description": "For model organism biosamples, the mating status of the animal.",
+            "description": "The mating status of the animal.",
             "type": "string",
             "enum": [
                 "mated",
                 "virgin",
-                "sterile"
+                "sterile",
+                "mixed"
             ]
         },
         "derived_from": {
@@ -281,7 +291,8 @@
         "starting_amount": {
             "title": "Starting amount",
             "description": "The initial quantity of cells or tissue obtained.",
-            "type": "number"
+            "type": "number",
+            "minimum":0
         },
         "starting_amount_units": {
             "title": "Starting amount units",

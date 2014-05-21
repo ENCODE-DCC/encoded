@@ -126,6 +126,26 @@
             "comment": "TODO",
             "type": "string",
             "requestMethod": []
-        }
+        },
+        "endogenous_promoter_target": {
+           "title": "Endogenous promoter target",
+           "description": "The name of the gene that is the native endogenous target of the promoter.",
+           "comment": "See target.json for available identifiers.",
+           "type": "string",
+           "linkTo": "target"
+       },
+       "promoter_genome_coordinates": {
+           "title": "Promoter genome coordinates",
+           "description": "Genomic coordinates of the promoter. Use NCBI assembly version:chromosome number:nucleotide range (e.g. WBcel235:III:1433720-1434340).",
+           "comment": "TODO",
+           "type": "string",
+           "requestMethod": []
+       },
+       "promoter_position_relative_to_target": {
+           "title": "Promoter position relative to target",
+           "description": "Relative distance of promoter sequence in the construct upstream of the target gene TSS.",
+           "comment": "Distance in bp upstream of target gene TSS in the construct",
+           "type": "number"
+       }
     }
 }

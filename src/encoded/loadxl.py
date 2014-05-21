@@ -15,16 +15,16 @@ ORDER = [
     'antibody_lot',
     'antibody_characterization',
     'antibody_approval',
-    'mouse_donor',
-    'fly_donor',
-    'worm_donor',
-    'human_donor',
     'document',
     'treatment',
     'construct',
     'construct_characterization',
     'rnai',
     'rnai_characterization',
+    'mouse_donor',
+    'fly_donor',
+    'worm_donor',
+    'human_donor',
     'biosample',
     'biosample_characterization',
     'platform',
@@ -34,6 +34,7 @@ ORDER = [
     # 'software',
     'dataset',
     'file',
+    'about',
 ]
 
 

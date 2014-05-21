@@ -1679,7 +1679,7 @@
         "first_name": "Draormu",
         "google": "google",
         "job_title": "Submitter",
-        "lab": "Kevin White, Uchicago",
+        "lab": "Kevin White, UChicago",
         "last_name": "Tanind",
         "phone1": "000-000-0000",
         "phone2": "000-000-0000",
@@ -1716,7 +1716,7 @@
         "first_name": "Ackep",
         "google": "google",
         "job_title": "Submitter",
-        "lab": "Kevin White, Uchicago",
+        "lab": "Kevin White, UChicago",
         "last_name": "Rhadyn",
         "phone1": "000-000-0000",
         "phone2": "000-000-0000",
@@ -1728,6 +1728,18 @@
             "Susan Celniker, LBNL"
         ],
         "timezone": "US/Central",
-        "uuid": "e7bb4fa6-ef92-41b7-871a-5f64db3848fe"
+        "uuid": "e7bb4fa6-ef92-41b7-871a-5f64db3848fe",
+        "email": "david@glicksoftware.com",
+        "first_name": "David",
+        "groups": [
+            "admin"
+        ],
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Glick",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "04d1cd63-d5d9-4ea4-8d9b-7adad3d5377d"
     }
 ]

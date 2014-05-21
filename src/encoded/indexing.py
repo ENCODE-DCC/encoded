@@ -195,12 +195,17 @@ def es_update_object(request, objects):
         subreq = make_subrequest(request, '/%s/@@index-data' % uuid)
         subreq.override_renderer = 'null_renderer'
         subreq.remote_user = 'INDEXER'
-        result = request.invoke_subrequest(subreq)
-        doctype = result['object']['@type'][0]
-        es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid))
+        try:
+            result = request.invoke_subrequest(subreq)
+        except Exception as e:
+            log.warning('Error indexing %s', uuid, exc_info=True)
+        else:
+            doctype = result['object']['@type'][0]
+            es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid))
+            if (i + 1) % 50 == 0:
+                log.info('Indexing %s %d', result['object']['@id'], i + 1)
         if (i + 1) % 50 == 0:
             es.indices.flush(index=INDEX)
-            log.info('Indexing %s %d', result['object']['@id'], i + 1)
 
     return i + 1
 
