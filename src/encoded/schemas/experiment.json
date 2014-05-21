@@ -86,6 +86,10 @@
             "title": "Assay",
             "type": "string"
         },
+        "status": {
+            "title": "Experiment Status",
+            "type": "string"
+        },
         "replicates.library.biosample.organism.name": {
             "title": "Organism",
             "type": "string"
@@ -98,32 +102,36 @@
             "title": "Organ",
             "type": "array"
         },
-        "lab.title": {
-            "title": "Lab",
-            "type": "string"
-        },
-        "files.file_format": {
-            "title": "File format",
-            "type": "string"
-        },
-        "replicates.library.treatments.treatment_term_name": {
-            "title": "Treatment",
-            "type": "array"
-        },
-        "replicates.read_length": {
-            "title": "Read length",
+        "replicates.library.biosample.life_stage": {
+            "title": "Life stage",
             "type": "string"
         },
         "developmental_slims": {
             "title": "Developmental slim",
             "type": "array"
         },
-        "replicates.library.biosample.life_stage": {
-            "title": "Life stage",
+        "replicates.library.biosample.treatments.treatment_term_name": {
+            "title": "Biosample treatment",
+            "type": "array"
+        },
+        "files.file_format": {
+            "title": "Available files",
+            "type": "string"
+        },
+        "replicates.read_length": {
+            "title": "Read length (nt)",
             "type": "string"
         },
         "replicates.library.size_range": {
-            "title": "Library fragmentation size",
+            "title": "Library insert size",
+            "type": "string"
+        },
+        "replicates.library.treatments.treatment_term_name": {
+            "title": "Library treatment",
+            "type": "array"
+        },
+        "lab.title": {
+            "title": "Lab",
             "type": "string"
         }
     },

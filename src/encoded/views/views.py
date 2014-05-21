@@ -671,6 +671,7 @@ class Experiment(Dataset):
             'replicates.library.biosample.submitted_by',
             'replicates.library.biosample.source',
             'replicates.library.biosample.organism',
+            'replicates.library.biosample.treatments',
             'replicates.library.biosample.donor.organism',
             'replicates.library.treatments',
             'replicates.platform',
