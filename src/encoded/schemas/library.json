@@ -20,6 +20,15 @@
         { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "nucleic_acid_term_id": ["nucleic_acid_term_name"],
+        "nucleic_acid_term_name": ["nucleic_acid_term_id"],
+        "nucleic_acid_starting_quantity_units": ["nucleic_acid_starting_quantity"],
+        "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
+        "depleted_in_term_name": ["depleted_in_term_id"],
+        "depleted_in_term_id": ["depleted_in_term_name"],
+        "product_id": ["source"]
+    },
     "properties": {
         "schema_version": {
             "default": "3"
