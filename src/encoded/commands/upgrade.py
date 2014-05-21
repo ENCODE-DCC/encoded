@@ -25,6 +25,7 @@ DEFAULT_COLLECTIONS = [
     "antibody_characterization",
     "antibody_lot",
     "experiments",
+    "datasets",
     "biosamples"
 ]
 

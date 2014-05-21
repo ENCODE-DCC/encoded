@@ -65,7 +65,7 @@ def search(context, request, search_type=None):
         'title': 'Search',
         'facets': [],
         '@graph': [],
-        'columns': {},
+        'columns': OrderedDict(),
         'filters': [],
         'notification': ''
     }

@@ -1,0 +1,63 @@
+[
+    {
+        "name": "home",
+        "title": "Home",
+        "uuid": "b7d70724-3fb7-41c6-893c-f90be5c95ae2",
+        "layout": {
+            "rows": [
+                {
+                    "blocks": [
+                        {
+                            "@type": "richtextblock",
+                            "data": {
+                                "body": "<div class=\"project-info site-title\">\n    <h1>ENCODE: The Encyclopedia of DNA Elements</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "blocks": [
+                        {
+                            "@type": "richtextblock",
+                            "data": {
+                                "body": "<h2>Transcriptome</h2>\n<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>"
+                            }
+                        },
+                        {
+                            "@type": "richtextblock",
+                            "data": {
+                                "body": "<h2>Regulation</h2>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.</p>"
+                            }
+                        },
+                        {
+                            "@type": "richtextblock",
+                            "data": {
+                                "body": "<h2>Chromatin Structure</h2>\n<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem.</p>"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    {
+        "name": "about",
+        "title": "About",
+        "uuid": "092a47cf-8d7b-4ff0-bf5d-9b16c89a8827",
+        "layout": {
+            "rows": [
+                {
+                    "blocks": [
+                        {
+                            "@type": "richtextblock",
+                            "className": "col-md-4 class_override",
+                            "data": {
+                                "body": "<h1>About</h1>"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+]
