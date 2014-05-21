@@ -79,7 +79,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 <div className="panel data-display">
                     <dl className="key-value">
                         <dt>Term name</dt>
-                        <dd className="sentence-case">{context.biosample_term_name}</dd>
+                        <dd>{context.biosample_term_name}</dd>
 
                         <dt>Term ID</dt>
                         <dd>{context.biosample_term_id}</dd>
