@@ -1,7 +1,8 @@
 from pyramid.security import (
+    ALL_PERMISSIONS,
     Allow,
     Authenticated,
-    Deny,
+    DENY_ALL,
     Everyone,
 )
 from .download import ItemWithAttachment
@@ -42,7 +43,7 @@ ALIAS_KEYS = [
 
 
 ALLOW_EVERYONE_VIEW = [
-    (Allow, Everyone, ['view', 'list', 'traverse']),
+    (Allow, Everyone, 'view'),
 ]
 
 ALLOW_SUBMITTER_ADD = [
@@ -50,14 +51,24 @@ ALLOW_SUBMITTER_ADD = [
 ]
 
 ALLOW_LAB_SUBMITTER_EDIT = [
+    (Allow, Authenticated, 'view'),
     (Allow, 'role.lab_submitter', 'edit'),
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
 ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
-    (Allow, 'role.viewer', 'view'),
+    (Allow, Everyone, 'view'),
 ]
 
+ONLY_ADMIN_VIEW = [
+    (Allow, 'group.admin', ALL_PERMISSIONS),
+    (Allow, 'group.read-only-admin', ['traverse', 'view']),
+    (Allow, 'remoteuser.EMBED', ['traverse', 'view']),
+    (Allow, 'remoteuser.INDEXER', ['traverse', 'view', 'index']),
+    DENY_ALL,
+]
+
+# Now unused, kept around for upgrade tests.
 ENCODE2_AWARDS = frozenset([
     '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
     '1f3cffd4-457f-4105-9b3c-3e9119abfcf0',
@@ -97,15 +108,15 @@ class Collection(BaseCollection):
         STATUS_ACL = {
             # standard_status
             'released': ALLOW_CURRENT,
-            'deleted': [],
-            'replaced': [],
+            'deleted': ONLY_ADMIN_VIEW,
+            'replaced': ONLY_ADMIN_VIEW,
 
             # shared_status
             'current': ALLOW_CURRENT,
-            'disabled': [],
+            'disabled': ONLY_ADMIN_VIEW,
 
             # file
-            'obsolete': [],
+            'obsolete': ONLY_ADMIN_VIEW,
 
             # antibody_characterization
             'compliant': ALLOW_CURRENT,
@@ -147,8 +158,6 @@ class Collection(BaseCollection):
             if 'lab' in properties:
                 lab_submitters = 'submits_for.%s' % properties['lab']
                 roles[lab_submitters] = 'role.lab_submitter'
-            if properties.get('award') in ENCODE2_AWARDS:
-                roles[Everyone] = 'role.viewer'
             return roles
 
 
@@ -724,9 +733,9 @@ class Page(Collection):
         keys = ['name']
 
         STATUS_ACL = {
-            'in progress': ALLOW_CURRENT,
+            'in progress': [],
             'released': ALLOW_EVERYONE_VIEW,
-            'deleted': [],
+            'deleted': ONLY_ADMIN_VIEW,
         }
 
 

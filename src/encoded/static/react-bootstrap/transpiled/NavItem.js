@@ -34,17 +34,14 @@ var NavItem = React.createClass({displayName: 'NavItem',
     };
 
     var anchorClass = this.props.dropdown ? 'dropdown-toggle' : '';
-    var datatoggle = this.props.dropdown ? 'dropdown' : '';
 
-    return this.transferPropsTo(
+    return (
       React.DOM.li( {className:classSet(classes)}, 
         this.transferPropsTo(
         React.DOM.a(
           {className:anchorClass,
-          title:this.props.title,
           onClick:this.handleClick,
-          ref:"anchor",
-          disabled:this.props.disabled}, 
+          ref:"anchor"}, 
           this.props.dropdown ? React.DOM.span(null, this.props.children[0],React.DOM.span( {className:"caret"})) : this.props.children
         )),
         this.props.dropdown ? this.props.children.slice(1) : null

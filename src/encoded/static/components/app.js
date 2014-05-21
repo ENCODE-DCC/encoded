@@ -102,9 +102,9 @@ var App = React.createClass({
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                     <title>{title}</title>
                     <link rel="canonical" href={this.props.href} />
-                    <link rel="stylesheet" href="/static/css/style.css" />
                     <script dangerouslySetInnerHTML={{__html: scriptjs + '\n'}}></script>
                     <script dangerouslySetInnerHTML={{__html: inline}}></script>
+                    <link rel="stylesheet" href="/static/css/style.css" />
                     <script src="/static/build/bundle.js" async defer></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
