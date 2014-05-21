@@ -5,13 +5,23 @@ from boto.ec2.blockdevicemapping import (
 import boto.ec2
 import getpass
 import time
+import subprocess
 import sys
 
 
-def run(wale_s3_prefix, branch='master', instance_name=None, persistent=False):
-    if instance_name is None:
-        # Ideally we'd use the commit sha here, but only the instance knows that...
-        instance_name = 'encoded/%s' % branch
+def run(wale_s3_prefix, branch=None, name=None, persistent=False):
+    if branch is None:
+        branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).strip()
+
+    commit = subprocess.check_output(['git', 'rev-parse', '--short', branch]).strip()
+    if not subprocess.check_output(['git', 'branch', '-r', '--contains', commit]).strip():
+        print("Commit %r not in origin. Did you git push?" % commit)
+        sys.exit(1)
+
+    username = getpass.getuser()
+
+    if name is None:
+        name = 'encoded/%s@%s by %s' % (branch, commit, username)
 
     conn = boto.ec2.connect_to_region("us-west-1")
     bdm = BlockDeviceMapping()
@@ -22,10 +32,10 @@ def run(wale_s3_prefix, branch='master', instance_name=None, persistent=False):
         bdm['/dev/xvdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
         bdm['/dev/xvdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
 
-    user_data = open('cloud-config.yml').read()
+    user_data = subprocess.check_output(['git', 'show', commit + ':cloud-config.yml'])
     user_data = user_data % {
         'WALE_S3_PREFIX': wale_s3_prefix,
-        'BRANCH': branch,
+        'COMMIT': commit,
     }
 
     reservation = conn.run_instances(
@@ -39,9 +49,9 @@ def run(wale_s3_prefix, branch='master', instance_name=None, persistent=False):
     )
 
     instance = reservation.instances[0]  # Instance:i-34edd56f
-    instance.add_tag('Name', instance_name)
-    instance.add_tag('branch', branch)
-    instance.add_tag('started_by', getpass.getuser())
+    instance.add_tag('Name', name)
+    instance.add_tag('commit', commit)
+    instance.add_tag('started_by', username)
     print instance
     print instance.state,
 
@@ -62,13 +72,13 @@ def main():
     parser = argparse.ArgumentParser(
         description="Deploy ENCODE on AWS",
     )
-    parser.add_argument('-b', '--branch', default='master', help="Git branch or tag")
+    parser.add_argument('-b', '--branch', default=None, help="Git branch or tag")
     parser.add_argument('-n', '--name', help="Instance name")
     parser.add_argument('--persistent', action='store_true', help="User persistent (ebs) volumes")
     parser.add_argument('--wale-s3-prefix', default='s3://encoded-backups/production')
     args = parser.parse_args()
 
-    return run(args.wale_s3_prefix, args.branch, args.name, args.persistent)
+    return run(**vars(args))
 
 
 if __name__ == '__main__':
