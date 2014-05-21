@@ -27,6 +27,19 @@
         "genotype": {
             "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/static_pages/docs/nomenclature/nomenclature3.html"
         },
+        "documents": {
+            "title": "Strain documents",
+            "description": "Documents that describe the strain and its generation.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Strain document",
+                "description": "A document that describes the strain and/or its generation.",
+                "comment": "See document.json for available identifiers.",
+                "type": "string",
+                "linkTo": "document"
+            }
+        },
         "organism":{ 
             "linkEnum": [
                 "ab546d43-8e2a-4567-8db7-a217e6d6eea0",

@@ -327,6 +327,7 @@
         "model_organism_life_stage": {
             "title": "Model organism life stage",
             "type": "string",
+            "default": "unknown",
             "enum": [
                 "fetal",
                 "newborn",
@@ -382,11 +383,11 @@
             "title": "Organism",
             "type": "string"
         },
-        "model_organism_sex": {
+        "sex": {
             "title": "Gender",
             "type": "string"
         },
-        "model_organism_life_stage": {
+        "life_stage": {
             "title": "Life stage",
             "type": "string"
         },
@@ -478,8 +479,8 @@
         "dbxrefs": 1.0,
         "subcellular_fraction_term_name": 1.0,
         "phase": 1.0,
-        "model_organism_life_stage": 1.0,
-        "model_organism_health_status": 1.0,
+        "life_stage": 1.0,
+        "health_status": 1.0,
         "donor.accession": 1.0,
         "donor.organism.name": 1.0,
         "donor.organism.scientific_name": 1.0,
