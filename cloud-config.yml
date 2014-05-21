@@ -69,7 +69,6 @@ runcmd:
 - set -e
 - sudo service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
-- chown -R root:postgres /etc/wal-e.d/env
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
 - mkdir /srv/encoded
