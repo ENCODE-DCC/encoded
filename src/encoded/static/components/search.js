@@ -57,7 +57,6 @@ var Dbxref = dbxref.Dbxref;
                         <div className="data-row"> 
                             <strong>{columns['antibody.source.title']['title']}</strong>: {result['antibody.source.title']}<br />
                             <strong>{columns['antibody.product_id']['title']}/{columns['antibody.lot_id']['title']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
-                            <strong>{columns['status']['title']}</strong>: {result['status']}
                         </div>
                 </li>
             );
