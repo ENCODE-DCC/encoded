@@ -403,6 +403,7 @@
             "type": "string",
             "enum": [
                 "fertilization",
+                "egg laying",
                 "starved L1 larva",
                 "dauer exit"
             ]
