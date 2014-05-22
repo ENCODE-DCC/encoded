@@ -20,8 +20,7 @@
         { "$ref": "mixins.json#/notes" },
         { "$ref": "dataset.json#/properties" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/biosample_classification" },
-        { "$ref": "mixins.json#/validation_status" }
+        { "$ref": "mixins.json#/biosample_classification" }
     ],
     "properties": {
         "schema_version": {

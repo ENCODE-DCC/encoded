@@ -12,8 +12,7 @@
         "status": "current",
         "submitted_by": "vestibulum.tortor@vitae.nec",
         "submitted_file_name": "hg19/wgEncodeHaibMethyl450/wgEncodeHaibMethyl450SaecSitesRep1.bigBed",
-        "uuid": "46e82a90-49e5-4c33-afab-9ec90d65faf3",
-        "validation_status": "pass"
+        "uuid": "46e82a90-49e5-4c33-afab-9ec90d65faf3"
     },
     {
         "_test": "test obsolete",
@@ -29,8 +28,7 @@
         "status": "obsolete",
         "submitted_by": "vestibulum.tortor@vitae.nec",
         "submitted_file_name": "obsolete.bigBed",
-        "uuid": "582d6675-0b2e-4886-b43d-f6efa9033b37",
-        "validation_status": "fail"
+        "uuid": "582d6675-0b2e-4886-b43d-f6efa9033b37"
     },
     {
         "accession": "ENCFF001MXE",
@@ -45,8 +43,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12InputIggyaleAlnRep1.bam",
-        "uuid": "9558830f-154f-449f-814b-fd3435417edf",
-        "validation_status": "pass"
+        "uuid": "9558830f-154f-449f-814b-fd3435417edf"
     },
     {
         "accession": "ENCFF001MXG",
@@ -61,8 +58,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12InputIggyaleSig.bigWig",
-        "uuid": "95befcc1-9f85-415a-8eb5-e0f69756f053",
-        "validation_status": "pass"
+        "uuid": "95befcc1-9f85-415a-8eb5-e0f69756f053"
     },
     {
         "accession": "ENCFF001MYM",
@@ -76,8 +72,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12InputIggyaleRawData.fastq.gz",
-        "uuid": "dd11e1af-affd-47fe-9663-db7f2601c8c0",
-        "validation_status": "pass"
+        "uuid": "dd11e1af-affd-47fe-9663-db7f2601c8c0"
     },
     {
         "accession": "ENCFF002MYM",
@@ -91,8 +86,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12InputIggyaleRawData2.fastq.gz",
-        "uuid": "93a923db-eacf-470b-b604-0222a273c288",
-        "validation_status": "pass"
+        "uuid": "93a923db-eacf-470b-b604-0222a273c288"
     },
     {
         "accession": "ENCFF001MWZ",
@@ -107,8 +101,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k04me3IggyaleAlnRep1.bam",
-        "uuid": "16ea501d-7b73-4ce4-9926-de570fe70e92",
-        "validation_status": "pass"
+        "uuid": "16ea501d-7b73-4ce4-9926-de570fe70e92"
     },
     {
         "accession": "ENCFF001MXA",
@@ -123,8 +116,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k04me3IggyaleAlnRep2.bam",
-        "uuid": "c504dbc5-93fd-4b3c-b7b5-e3f4cc85568a",
-        "validation_status": "pass"
+        "uuid": "c504dbc5-93fd-4b3c-b7b5-e3f4cc85568a"
     },
     {
         "_test": "bad md5 sum",
@@ -139,8 +131,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyalePk.narrowPeak.bigBed",
-        "uuid": "e6addc7e-0320-4e11-8351-69e9b9cc08dc",
-        "validation_status": "pass"
+        "uuid": "e6addc7e-0320-4e11-8351-69e9b9cc08dc"
     },
     {
         "accession": "ENCFF001MXD",
@@ -154,8 +145,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleSig.bigWig",
-        "uuid": "1050b698-f505-4ce5-96e5-6909e3a2acc7",
-        "validation_status": "pass"
+        "uuid": "1050b698-f505-4ce5-96e5-6909e3a2acc7"
     },
     {
         "accession": "ENCFF002MXD",
@@ -169,8 +159,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleSigII.bigWig",
-        "uuid": "8c687da2-b7e1-4a06-81c4-c06a144810ac",
-        "validation_status": "pass"
+        "uuid": "8c687da2-b7e1-4a06-81c4-c06a144810ac"
     },
     {
         "accession": "ENCFF003MXD",
@@ -184,8 +173,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleSigIII.bigWig",
-        "uuid": "8af32b39-f97f-4979-9c21-728b0b8a2112",
-        "validation_status": "pass"
+        "uuid": "8af32b39-f97f-4979-9c21-728b0b8a2112"
     },
     {
         "accession": "ENCFF001MXF",
@@ -199,8 +187,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep1.fastq.gz",
-        "uuid": "a3cbec37-f186-4ef7-aa14-6ad0e2022ebc",
-        "validation_status": "pass"
+        "uuid": "a3cbec37-f186-4ef7-aa14-6ad0e2022ebc"
     },
     {
         "accession": "ENCFF001MXH",
@@ -214,8 +201,7 @@
         "status": "current",
         "submitted_by": "sit.duis@blandit.hendrerit",
         "submitted_file_name": "mm9/wgEncodeSydhHist/wgEncodeSydhHistCh12H3k4me3IggyaleRawDataRep2.fastq.gz",
-        "uuid": "d46438ca-7c78-4bea-9bd9-1496a6cc5d97",
-        "validation_status": "pass"
+        "uuid": "d46438ca-7c78-4bea-9bd9-1496a6cc5d97"
     },
     {
         "_project": "encode3",
@@ -230,8 +216,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38806_BC24EYACXX_7_2.txt.gz",
-        "uuid": "1b18dab4-50be-4a1d-9b95-5e9fd840c8fb",
-        "validation_status": "pass"
+        "uuid": "1b18dab4-50be-4a1d-9b95-5e9fd840c8fb"
     },
     {
         "_project": "encode3",
@@ -246,8 +231,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38806_BC24EYACXX_7_1.txt.gz",
-        "uuid": "c8877730-a530-4474-88a8-a5eee259b6c4",
-        "validation_status": "pass"
+        "uuid": "c8877730-a530-4474-88a8-a5eee259b6c4"
     },
     {
         "_project": "encode3",
@@ -262,8 +246,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38807_BC24EYACXX_7_2.txt.gz",
-        "uuid": "f4523cda-acc1-434a-9496-3ff2486a6118",
-        "validation_status": "pass"
+        "uuid": "f4523cda-acc1-434a-9496-3ff2486a6118"
     },
     {
         "_project": "encode3",
@@ -278,8 +261,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38807_BC24EYACXX_7_1.txt.gz",
-        "uuid": "22b6066f-d4d8-47f8-831e-ebe2b5c92721",
-        "validation_status": "pass"
+        "uuid": "22b6066f-d4d8-47f8-831e-ebe2b5c92721"
     },
     {
         "_project": "encode3",
@@ -294,8 +276,7 @@
         "status": "current",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R2_001.fastq.gz",
-        "uuid": "aab79812-71d8-41d1-bd72-1bf5dbcae381",
-        "validation_status": "pass"
+        "uuid": "aab79812-71d8-41d1-bd72-1bf5dbcae381"
     },
     {
         "_project": "encode3",
@@ -310,8 +291,7 @@
         "status": "current",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R2_001.fastq.gz",
-        "uuid": "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf",
-        "validation_status": "pass"
+        "uuid": "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf"
     },
     {
         "_project": "encode3",
@@ -326,8 +306,7 @@
         "status": "current",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R1_001.fastq.gz",
-        "uuid": "34b653f7-6777-49d9-8e06-d76a96a4d10b",
-        "validation_status": "pass"
+        "uuid": "34b653f7-6777-49d9-8e06-d76a96a4d10b"
     },
     {
         "_project": "encode3",
@@ -342,8 +321,7 @@
         "status": "current",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R1_001.fastq.gz",
-        "uuid": "8772d04a-dfa4-4d85-a81d-6bf5fe2abb8f",
-        "validation_status": "pass"
+        "uuid": "8772d04a-dfa4-4d85-a81d-6bf5fe2abb8f"
     },
     {
         "_project": "encode3",
@@ -358,8 +336,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38816_AC1UHYACXX_7_2.txt.gz",
-        "uuid": "8a0c1537-136e-41a3-9369-8595a7d6a726",
-        "validation_status": "pass"
+        "uuid": "8a0c1537-136e-41a3-9369-8595a7d6a726"
     },
     {
         "_project": "encode3",
@@ -375,8 +352,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38816_AC1UHYACXX_7_1.txt.gz",
-        "uuid": "bd67b71d-5a39-4f61-83d6-7390552ac2fd",
-        "validation_status": "pass"
+        "uuid": "bd67b71d-5a39-4f61-83d6-7390552ac2fd"
     },
     {
         "_test": "not in edw test",
@@ -393,8 +369,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38815_AC1UHYACXX_7_2.txt.gz",
-        "uuid": "a187b4d9-9d47-4c11-a8fe-425b0c6c20a8",
-        "validation_status": "pass"
+        "uuid": "a187b4d9-9d47-4c11-a8fe-425b0c6c20a8"
     },
     {
         "_test": "not in edw test",
@@ -411,8 +386,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38815_AC1UHYACXX_7_1.txt.gz",
-        "uuid": "e9590242-7f15-4ccb-a177-e544c4dfa118",
-        "validation_status": "pass"
+        "uuid": "e9590242-7f15-4ccb-a177-e544c4dfa118"
     },
     {
         "_test": "not in edw test",
@@ -428,8 +402,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38823_AC1HYAACXX_5.txt.gz",
-        "uuid": "06205d4f-be79-4780-a604-60d1375f424b",
-        "validation_status": "pass"
+        "uuid": "06205d4f-be79-4780-a604-60d1375f424b"
     },
     {
         "_project": "encode3",
@@ -444,8 +417,7 @@
         "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38822_AC1HYAACXX_5.txt.gz",
-        "uuid": "e984ec73-0db4-4d30-934d-4cfc49096236",
-        "validation_status": "pass"
+        "uuid": "e984ec73-0db4-4d30-934d-4cfc49096236"
     },
     {
         "_project": "encode3",
@@ -462,8 +434,7 @@
         "status": "current",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "submitted_file_name": "hg19/hg19_wgEncodeHaibMethyl450NhaSitesRep1_Red.idat",
-        "uuid": "5f763026-7838-4564-b768-a16dfc006b1a",
-        "validation_status": "pass"
+        "uuid": "5f763026-7838-4564-b768-a16dfc006b1a"
     },
     {
         "_test": "test patch bad user",
@@ -480,8 +451,7 @@
         "status": "current",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "submitted_file_name": "hg19/hg19_wgEncodeHaibMethyl450NhaSitesRep1_Grn.idat",
-        "uuid": "f76ae1b9-6bb4-4cc9-8dcc-2bb5cea877e1",
-        "validation_status": "pass"
+        "uuid": "f76ae1b9-6bb4-4cc9-8dcc-2bb5cea877e1"
     },
     {
         "_test": "test patch no reps",
@@ -496,7 +466,6 @@
         "status": "obsolete",
         "submitted_by": "vestibulum.tortor@vitae.nec",
         "submitted_file_name": "hg19/wgEncodeUmassDekker5C/wgEncodeUmassDekker5CEnmPrimer.doc.tgz",
-        "uuid": "0e2c4df7-e71d-4aca-a278-b994883cc69a",
-        "validation_status": "fail"
+        "uuid": "0e2c4df7-e71d-4aca-a278-b994883cc69a"
     }
 ]
