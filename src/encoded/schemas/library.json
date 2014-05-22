@@ -28,8 +28,7 @@
         "depleted_in_term_name": ["depleted_in_term_id"],
         "depleted_in_term_id": ["depleted_in_term_name"],
         "product_id": ["source"],
-        "lot_id": ["source", "product_id"],
-        
+        "lot_id": ["source", "product_id"]
     },
     "properties": {
         "schema_version": {
