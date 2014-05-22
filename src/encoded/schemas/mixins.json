@@ -88,7 +88,6 @@
         "validation_status": {
             "title": "Validation status",
             "type": "string",
-            "default": "pending",
             "enum" : [
                 "pending",
                 "fail",
