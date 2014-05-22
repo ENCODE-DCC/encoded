@@ -635,7 +635,7 @@
         "award": "U41HG007355",
         "biosample_term_id": "WBbt:0005842",
         "biosample_term_name": "AVA",
-        "biosample_type": "primary cell line",
+        "biosample_type": "in vitro differentiated cells",
         "description": "AVA",
         "donor": "ENCDO183YYY",
         "lab": "kevin-white",
