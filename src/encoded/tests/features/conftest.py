@@ -3,6 +3,16 @@ import pytest
 pytest_plugins = 'encoded.tests.bdd'
 
 
+# patch cookie support back into spliter's remote webdriver
+from splinter.driver.webdriver.remote import WebDriver
+from splinter.driver.webdriver.cookie_manager import CookieManager
+old__init__ = WebDriver.__init__
+def __init__(self, *args, **kw):
+    old__init__(self, *args, **kw)
+    self._cookie_manager = CookieManager(self.driver)
+WebDriver.__init__ = __init__
+
+
 @pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
