@@ -162,6 +162,15 @@
             ],
             "format": "semi-controlled"
         },
+        "crosslinking_method": {
+            "title": "Crosslinking method",
+            "description": "A short description or reference of the crosslinking protocol used in library preparation, if applicable.",
+            "type": "string",
+            "enum": [
+                "formaldehyde",
+                "ultraviolet irradiation"
+            ]
+        },
         "size_range": {
             "title": "Size range",
             "description": "The measured size range of the purified nucleic acid, in bp.",
