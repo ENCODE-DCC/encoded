@@ -3,12 +3,6 @@ import pytest
 pytest_plugins = 'encoded.tests.bdd'
 
 
-# patch bug in splinter remote webdriver
-from splinter.driver.webdriver import remote
-from splinter.driver.webdriver.cookie_manager import CookieManager
-remote.CookieManagerAPI = CookieManager
-
-
 @pytest.mark.fixture_lock('encoded.storage.DBSession')
 @pytest.fixture(scope='session')
 def app_settings(server_host_port, elasticsearch_server, postgresql_server):
