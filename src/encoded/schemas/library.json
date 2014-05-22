@@ -27,7 +27,9 @@
         "nucleic_acid_starting_quantity": ["nucleic_acid_starting_quantity_units"],
         "depleted_in_term_name": ["depleted_in_term_id"],
         "depleted_in_term_id": ["depleted_in_term_name"],
-        "product_id": ["source"]
+        "product_id": ["source"],
+        "lot_id": ["source", "product_id"],
+        
     },
     "properties": {
         "schema_version": {
