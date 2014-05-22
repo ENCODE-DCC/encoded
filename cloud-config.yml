@@ -61,7 +61,7 @@ users:
 write_files:
 - path: /etc/postgresql/9.3/main/recovery.conf
   permissions: '0644'
-  content: restore_command = '/srv/encoded/bin/wal-e wal-fetch --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" "%%f" "%%p"'
+  content: restore_command = '/srv/encoded/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" wal-fetch "%%f" "%%p"'
 
 runcmd:
 # Ideally this would build as a different user so encoded only has read
@@ -79,7 +79,7 @@ runcmd:
 - sudo -u encoded python2.7 bootstrap.py
 - sudo -u encoded bin/buildout
 - sudo /etc/init.d/postgresql stop
-- sudo -u postgres bin/wal-e backup-fetch --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" /var/lib/postgresql/9.3/main LATEST
+- sudo -u postgres bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres cp /var/lib/postgresql/9.3/main/postgresql.conf.orig /var/lib/postgresql/9.3/main/postgresql.conf
 - sudo -u postgres cp /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main
 - sudo /etc/init.d/postgresql start
