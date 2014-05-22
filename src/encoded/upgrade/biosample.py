@@ -91,3 +91,10 @@ def biosample_4_5(value, system):
             value['status'] = 'released'
         elif value['status'] == 'CURRENT' and value['award'] not in ENCODE2_AWARDS:
             value['status'] = 'in progress'
+
+
+@upgrade_step('biosample', '5', '6')
+def biosample_5_6(value, system):
+    # http://redmine.encodedcc.org/issues/1393
+    if value.get('biosample_type') == 'primary cell line':
+        value['biosample_type'] = 'primary cell'
