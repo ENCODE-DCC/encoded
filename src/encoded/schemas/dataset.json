@@ -102,6 +102,7 @@
                 "release ready",
                 "released",
                 "deleted",
+                "replaced",
                 "revoked"
             ]
         }
