@@ -12,8 +12,8 @@
         "description": "RNA Evaluation K562 Long Total RAMPAGE from Gingeras",
         "lab": "thomas-gingeras",
         "status": "released",
-        "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348",
-        "validation_status": "pass"
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "5a6d5a57-e62d-44b9-a1bd-5d1815247348"
     },
     {
         "_test": "shared biosample",
@@ -29,8 +29,7 @@
         "lab": "thomas-gingeras",
         "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181",
-        "validation_status": "pass"
+        "uuid": "a357b33b-cdaa-4312-91c0-086bfec24181"
     },
     {
         "_test": "shared biosample",
@@ -46,8 +45,7 @@
         "lab": "thomas-gingeras",
         "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b",
-        "validation_status": "pass"
+        "uuid": "d8e3c296-ae36-417b-855a-8bfbe3d33e3b"
     },
     {
         "_test": "control chip-seq with files",
@@ -73,8 +71,7 @@
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "Control-mouse",
-        "uuid": "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556",
-        "validation_status": "pass"
+        "uuid": "df02f3f9-a6d4-40e4-a8dc-c1c7387e4556"
     },
     {
         "_test": "refers to the control dataset",
@@ -103,8 +100,7 @@
         "status": "released",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "H3K4me3-mouse",
-        "uuid": "c05a9d79-713e-4d54-8d8e-6daae94368b3",
-        "validation_status": "pass"
+        "uuid": "c05a9d79-713e-4d54-8d8e-6daae94368b3"
     },
     {
         "_test": "human chip-seq",
@@ -128,8 +124,7 @@
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TAF1-human",
-        "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1",
-        "validation_status": "pass"
+        "uuid": "8f8085dd-8e9c-4b75-a187-21dbafe46de1"
     },
     {
         "_test": "methy array",
@@ -156,8 +151,7 @@
         ],
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8",
-        "validation_status": "pass"
+        "uuid": "b29de469-ed4b-4acf-8b4d-f1af02def8e8"
     },
     {
         "_test": "NTR for assay and no replicates",
@@ -170,8 +164,7 @@
         "lab": "ali-mortazavi",
         "status": "released",
         "submitted_by": "netus.lorem@risus.lobortis",
-        "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85",
-        "validation_status": "pass"
+        "uuid": "355ffbf8-0bc9-4545-ad3c-1ae71b4e2d85"
     },
     {
         "_test": "shared biosample",
@@ -191,8 +184,7 @@
             "PMID:16395128"
         ],
         "submitted_by": "platea.a@volutpat.viverra",
-        "uuid": "0cb85395-da45-47e5-84c7-888f90c983fc",
-        "validation_status": "pass"
+        "uuid": "0cb85395-da45-47e5-84c7-888f90c983fc"
     },
     {
         "_test": "no replicates",
@@ -212,8 +204,7 @@
         ],
         "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "ddd11381-7958-4d58-af02-fc56255c838b",
-        "validation_status": "pass"
+        "uuid": "ddd11381-7958-4d58-af02-fc56255c838b"
     },
     {
         "_test": "replicates no files",
@@ -229,8 +220,7 @@
         "lab": "thomas-gingeras",
         "status": "released",
         "submitted_by": "dignissim.euismod@amet.habitant",
-        "uuid": "223af596-e5ca-4048-9ea8-9a41c240181d",
-        "validation_status": "pass"
+        "uuid": "223af596-e5ca-4048-9ea8-9a41c240181d"
     },
     {
         "_test": "patch users",
@@ -246,8 +236,7 @@
         "lab": "richard-myers",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf",
-        "validation_status": "pass"
+        "uuid": "509cf1b1-4113-4a1e-a49f-d62ebf3367cf"
     },
     {
         "_test": "Bind and Seq",
@@ -260,7 +249,6 @@
         "lab": "chris-burge",
         "status": "released",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474",
-        "validation_status": "pass"
+        "uuid": "32bd1f35-d011-4b8e-9601-2929d9688474"
     }
 ]
