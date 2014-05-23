@@ -212,7 +212,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {Object.keys(protocol_documents).length ?
                     <div>
                         <h3>Documents</h3>
-                        <div className="row">
+                        <div className="row multi-columns-row">
                             {protocol_documents}
                         </div>
                     </div>
@@ -663,7 +663,7 @@ var Document = module.exports.Document = React.createClass({
         }
 
         return (
-            <section className="col-sm-6 col-md-4">
+            <section className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
                 <div className="type-document type-popover view-detail panel status-none">
                     <figure>
                         {figure}

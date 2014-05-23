@@ -144,7 +144,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {Object.keys(documents).length ?
                     <div>
                         <h3>Documents</h3>
-                        <div className="row">
+                        <div className="row multi-columns-row">
                             {documents}
                         </div>
                     </div>
