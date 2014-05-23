@@ -35,7 +35,8 @@ log = logging.getLogger(__name__)
 def includeme(config):
     config.add_renderer(None, json_renderer)
     config.add_renderer('null_renderer', NullRenderer)
-    config.add_tween('.renderers.page_or_json', under='.stats.stats_tween_factory')
+    config.add_tween('.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
+    config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
     config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
     config.add_tween('.renderers.es_tween_factory', under='.renderers.security_tween_factory')
     config.scan(__name__)
@@ -111,6 +112,41 @@ def security_tween_factory(handler, registry):
         raise CSRFTokenError('Missing CSRF token')
 
     return security_tween
+
+
+def normalize_cookie_tween_factory(handler, registry):
+    from webob.cookies import Cookie
+
+    ignore = {
+        '/favicon.ico',
+    }
+
+    def normalize_cookie_tween(request):
+        if request.path in ignore or request.path.startswith('/static/'):
+            return handler(request)
+
+        session = request.session
+        if session or session._cookie_name not in request.cookies:
+            return handler(request)
+
+        response = handler(request)
+        existing = response.headers.getall('Set-Cookie')
+        if existing:
+            cookies = Cookie()
+            for header in existing:
+                cookies.load(header)
+            if session._cookie_name in cookies:
+                return response
+
+        response.delete_cookie(
+            session._cookie_name,
+            path=session._cookie_path,
+            domain=session._cookie_domain,
+        )
+
+        return response
+
+    return normalize_cookie_tween
 
 
 @subscriber(BeforeRender)
