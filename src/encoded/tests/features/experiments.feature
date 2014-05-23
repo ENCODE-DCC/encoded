@@ -13,7 +13,7 @@ Feature: Experiments
         And I wait for the table to fully load
         When I click the link to "/experiments/ENCSR000ACY/"
         Then I should see an element with the css selector "div.data-display"
-        And I should see "primary cell line"
+        And I should see "primary cell"
         And I should see "ENCODE"
 
         When I go back

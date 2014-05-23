@@ -72,86 +72,88 @@ module.exports.RenderLess = {
 };
 
 
-function script_onload(el, callback) {
-    var loaded = false;
-    el.onload = el.onreadystatechange = function () {
-      if ((el.readyState && el.readyState !== "complete" && el.readyState !== "loaded") || loaded) {
-        return false;
-      }
-      el.onload = el.onreadystatechange = null;
-      loaded = true;
-      callback();
-    };
-}
-
-
 module.exports.Persona = {
+    getInitialState: function () {
+        return {
+            loadingComplete: false,
+            session: {}
+        };
+    },
+
     componentDidMount: function () {
         var $ = require('jquery');
         // Login / logout actions must be deferred until persona is ready.
         $.ajaxPrefilter(this.ajaxPrefilter);
-        this.personaDeferred = $.Deferred();
-        this.configurePersona(this.parseSessionCookie());
+        $(document).ajaxComplete(this.extractSessionCookie);
+        this.extractSessionCookie();
+        $script.ready('persona', this.configurePersona);
     },
 
     ajaxPrefilter: function (options, original, xhr) {
         xhr.xhr_begin = 1 * new Date();
         var http_method = options.type;
         if (http_method === 'GET' || http_method === 'HEAD') return;
-        var userid = this.state.session && this.state.session['auth.userid']
+        var session = this.state.session;
+        var userid = session['auth.userid'];
         if (userid) {
             // XXX Server should use this to check user is logged in
             xhr.setRequestHeader('X-Session-Userid', userid);
         }
-        if (this.csrf_token) {
-            xhr.setRequestHeader('X-CSRF-Token', this.csrf_token);
+        if (session._csrft_) {
+            xhr.setRequestHeader('X-CSRF-Token', session._csrft_);
         }
     },
 
-    parseSessionCookie: function () {
-        var Buffer = require('buffer').Buffer;
+    extractSessionCookie: function () {
         var cookie = require('cookie-cutter');
         var session_cookie = cookie(document).get('session');
-        if (!session_cookie) return null;
-        // URL-safe base64
-        session_cookie = session_cookie.replace(/\-/g, '+').replace(/\_/g, '/');
-        try {
+        if (this.props.session_cookie !== session_cookie) {
+            this.setProps({session_cookie: session_cookie});
+        }
+    },
+
+    componentWillReceiveProps: function (nextProps) {
+        if (this.props.session_cookie !== nextProps.session_cookie) {
+            this.setState({
+                session: this.parseSessionCookie(nextProps.session_cookie)
+            });
+        }
+    },
+
+    componentDidUpdate: function (prevProps, prevState) {
+        if (prevState.session['auth.userid'] && !this.state.session['auth.userid']) {
+            // Session expired.
+            $script.ready('persona', function () {
+                navigator.id.logout();
+            });
+        }
+    },
+
+    parseSessionCookie: function (session_cookie) {
+        var Buffer = require('buffer').Buffer;
+        var session;
+        if (session_cookie) {
+            // URL-safe base64
+            session_cookie = session_cookie.replace(/\-/g, '+').replace(/\_/g, '/');
             // First 64 chars is the sha-512 server signature
             // Payload is [accessed, created, data]
-            var session = JSON.parse(Buffer(session_cookie, 'base64').slice(64).toString())[2]
-        } catch (e) {
-            return null;
+            try {
+                session = JSON.parse(Buffer(session_cookie, 'base64').slice(64).toString())[2];
+            } catch (e) {
+            }
         }
-        this.csrf_token = session._csrft_;
-        this.setState({session: session});
-        return session;
+        return session || {};
     },
 
-    reloadSession: function () {
-        var $ = require('jquery');
-        if (this.sessionRequest && this.sessionRequest.state() == 'pending') {
-            this.sessionRequest.abort();
-        }
-        this.sessionRequest = $.ajax({
-            url: '/session?reload=true',
-            type: 'GET',
-            dataType: 'json'
-        }).done(function (session) {
-            this.parseSessionCookie();
-        }.bind(this));
-        return this.sessionRequest;
-    },
-
-    configurePersona: function (session) {
-        $script.ready('persona', function () {
-            navigator.id.watch({
-                loggedInUser: session && session['auth.userid'] || null,
-                onlogin: this.handlePersonaLogin,
-                onlogout: this.handlePersonaLogout,
-                onmatch: this.handlePersonaMatch,
-                onready: this.handlePersonaReady
-            });
-        }.bind(this));
+    configurePersona: function () {
+        this._persona_watched = false;
+        navigator.id.watch({
+            loggedInUser: this.state.session['auth.userid'] || null,
+            onlogin: this.handlePersonaLogin,
+            onlogout: this.handlePersonaLogout,
+            onmatch: this.handlePersonaMatch,
+            onready: this.handlePersonaReady
+        });
     },
 
     handlePersonaLogin: function (assertion, retrying) {
@@ -165,14 +167,13 @@ module.exports.Persona = {
             data: JSON.stringify({assertion: assertion}),
             contentType: 'application/json'
         }).done(function (session) {
-            this.parseSessionCookie();
             var next_url = window.location.href;
             if (window.location.hash == '#logged-out') {
                 next_url = window.location.pathname + window.location.search;
             }
             if (this.historyEnabled) {
                 this.navigate(next_url, {replace: true}).done(function () {
-                    this.setState({loadingComplete: true})
+                    this.setState({loadingComplete: true});
                 }.bind(this));
             } else {
                 var old_path = window.location.pathname + window.location.search;
@@ -183,10 +184,9 @@ module.exports.Persona = {
             }
         }.bind(this)).fail(function (xhr, status, err) {
             var data = parseError(xhr, status);
-            this.parseSessionCookie();
             if (xhr.status === 400 && data.detail.indexOf('CSRF') !== -1) {
                 if (!retrying) {
-                    return this.handlePersonaLogin(assertion, true);
+                    return window.setTimeout(this.handlePersonaLogin.bind(this, assertion, true));
                 }
             }
             // If there is an error, show the error messages
@@ -214,7 +214,7 @@ module.exports.Persona = {
                 window.location.reload();
             }
         }.bind(this)).fail(function (xhr, status, err) {
-            data = parseError(xhr, status);
+            var data = parseError(xhr, status);
             data.title = 'Logout failure: ' + data.title;
             this.setProps({context: data});
         }.bind(this));
@@ -226,9 +226,7 @@ module.exports.Persona = {
     },
 
     handlePersonaReady: function () {
-        this.personaDeferred.resolve();
         console.log('persona ready');
-        this.setState({personaReady: true});
         // Handle Safari https://github.com/mozilla/persona/issues/3905
         if (!this._persona_watched) {
             this.setState({loadingComplete: true});
@@ -236,18 +234,14 @@ module.exports.Persona = {
     },
 
     triggerLogin: function (event) {
-        this.personaDeferred.done(function () {
-            var request_params = {}; // could be site name
-            console.log('Logging in (persona) ');
-            navigator.id.request(request_params);
-        });
+        var request_params = {}; // could be site name
+        console.log('Logging in (persona) ');
+        navigator.id.request(request_params);
     },
 
     triggerLogout: function (event) {
-        this.personaDeferred.done(function () {
-            console.log('Logging out (persona)');
-            navigator.id.logout();
-        });
+        console.log('Logging out (persona)');
+        navigator.id.logout();
     }
 };
 
@@ -283,7 +277,9 @@ module.exports.HistoryAndTriggers = {
         } else {
             window.onhashchange = this.onHashChange;
         }
-        this.setProps({href: window.location.href});
+        if (this.props.href !== window.location.href) {
+            this.setProps({href: window.location.href});
+        }
     },
 
     onHashChange: function (event) {
@@ -467,7 +463,7 @@ module.exports.HistoryAndTriggers = {
 
     receiveContextFailure: function (xhr, status, error) {
         if (status == 'abort') {
-            clearTimeout(xhr.slowTimer)
+            clearTimeout(xhr.slowTimer);
             return;
         }
         var ga = window.ga;
@@ -476,21 +472,12 @@ module.exports.HistoryAndTriggers = {
             'exDescription': 'contextRequest:' + status + ':' + xhr.statusText,
             'location': window.location.href
         });
-        if (this.state.session && this.state.session['auth.userid']) {
-            var session = this.parseSessionCookie();
-            if (!session['auth.userid']) {
-                this.setState({personaReady: false, loadingComplete: false});
-                this.personaDeferred = require('jquery').Deferred();
-                this.configurePersona(session);
-            }
-        }
-
         this.receiveContextResponse(data, status, xhr);
     },
 
     receiveContextResponse: function (data, status, xhr) {
         xhr.xhr_end = 1 * new Date();
-        clearTimeout(xhr.slowTimer)
+        clearTimeout(xhr.slowTimer);
         // title currently ignored by browsers
         try {
             window.history.replaceState(data, '', window.location.href);
@@ -563,3 +550,40 @@ module.exports.HistoryAndTriggers = {
     }
 
 };
+
+
+// Handle browser capabilities, a la Modernizr. Can *only* be called from
+// mounted components (componentDidMount method would be a good method to
+// use this from), because actual DOM is needed.
+module.exports.BrowserFeat = {
+    feat: {},
+
+    // Return object with browser capabilities; return from cache if available
+    getBrowserCaps: function () {
+        if (Object.keys(this.feat).length === 0) {
+            this.feat.svg = document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1');
+        }
+        return this.feat;
+    },
+
+    setHtmlFeatClass: function() {
+        var htmlclass = [];
+
+        this.getBrowserCaps();
+
+        // For each set feature, add to the <html> element's class
+        var keys = Object.keys(this.feat);
+        var i = keys.length;
+        while (i--) {
+            if (this.feat[keys[i]]) {
+                htmlclass.push(keys[i]);
+            } else {
+                htmlclass.push('no-' + keys[i]);
+            }
+        }
+
+        // Now write the classes to the <html> DOM element
+        document.documentElement.className = htmlclass.join(' ');
+    }
+};
+

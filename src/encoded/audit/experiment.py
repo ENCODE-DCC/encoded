@@ -106,7 +106,7 @@ def audit_experiment_biosample_term(value, system):
         raise AuditFailure('term id not in ontology', term_id, level='ERROR')
 
     ontology_term_name = ontology[term_id]['name']
-    if ontology_term_name != term_name:
+    if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
         raise AuditFailure('term name mismatch', detail, level='ERROR')
 
@@ -135,3 +135,29 @@ def audit_experiment_biosample_term(value, system):
         if biosample.get('biosample_term_id') != term_id:
             detail = '{} - {} in {}'.format(term_id, biosample.get('biosample_term_id'), lib['accession'])
             raise AuditFailure('biosample mismatch', detail, level='ERROR')
+
+
+@audit_checker('experiment')
+def audit_experiment_paired_end(value,system):
+    '''
+    Check that if the concordance of replicate and library information for paired end sequencing.
+    '''
+    for i in range(0, len(value['replicates'])):
+        rep = value['replicates'][i]
+
+        if 'paired_ended' not in rep:
+            detail = '{} missing paired end information'.format(rep['uuid'])
+            yield AuditFailure('missing replicate paired end', detail, level='ERROR')
+
+        if 'library' not in rep:
+            return
+
+        lib = rep['library']
+
+        if 'paired_ended' not in lib:
+            detail = '{} missing paired end information'.format(lib['accession'])
+            yield AuditFailure('missing library paired end', detail, level='ERROR')
+
+        elif rep['paired_ended'] != lib['paired_ended'] and lib['paired_ended'] == False:
+            detail = 'paired ended mismatch between {} - {}'.format(rep['uuid'], lib['accession'])
+            yield AuditFailure('paired end mismatch', detail, level='ERROR')
