@@ -49,7 +49,6 @@ var App = React.createClass({
         return {
             errors: [],
             portal: portal,
-            session: null,
             user_actions: user_actions
         };
     },
