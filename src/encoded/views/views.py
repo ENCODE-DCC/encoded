@@ -368,6 +368,9 @@ class Biosample(Collection):
             'developmental_slims': [
                 {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
             ],
+            'roadmap_slims': [
+                {'$value': '{slim}', '$repeat': 'slim roadmap_slims', '$templated': True}
+            ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
             ]
@@ -418,11 +421,12 @@ class Biosample(Collection):
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
                     ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
                     ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
+                    ns['roadmap_slims'] = terms[ns['biosample_term_id']]['roadmap']
                     ns['synonyms'] = terms[ns['biosample_term_id']]['synonyms']
                 else:
-                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
+                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] =  ns['roadmap_slims'] = ns['synonyms'] = []
             else:
-                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
+                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] =   ns['roadmap_slims'] = ns['synonyms'] = []
             return ns
 
 

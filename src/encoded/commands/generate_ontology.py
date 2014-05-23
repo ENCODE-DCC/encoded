@@ -193,6 +193,45 @@ def getOrganSlims(goid):
             slims.append(slimTerms[slimTerm])
     return slims
 
+def getRoadmapSlims(goid):
+    ''' Get Roadmap Slims '''
+
+    slims = []
+    slimTerms = {
+        'UBERON:0002369': 'adrenal gland',
+        'UBERON:0000178': 'blood',
+        'UBERON:0002481': 'bone tissue',
+        'UBERON:0000955': 'brain',
+        'UBERON:0000310': 'breast',
+        'UBERON:0000002': 'uterine cervix',
+        'CL:0002322': 'embryonic stem cell',
+        'UBERON:0001013': 'adipose tissue',
+        'UBERON:0001155': 'colon',
+        'UBERON:0002114': 'duodenum',
+        'UBERON:0001043': 'esophagus',
+        'UBERON:0000160': 'intestine',
+        'UBERON:0001052': 'rectum',
+        'UBERON:0000945': 'stomach',
+        'UBERON:0000948': 'heart',
+        'EFO:0004905': 'induced pluripotent stem cell',
+        'UBERON:0002113': 'kidney',
+        'UBERON:0002107': 'liver',
+        'UBERON:0002048': 'lung',
+        'UBERON0002385': 'muscle tissue',
+        'UBERON:0002119': 'female gonad',
+        'UBERON:0001264': 'pancreas',
+        'UBERON:0001987': 'placenta',
+        'UBERON:0002097': 'skin of body',
+        'UBERON:0002106': 'spleen',
+        'UBERON:0003891': 'stromal',
+        'UBERON:0002370': 'thymus',
+        'UBERON0002049': 'vasculature'
+    }
+    for slimTerm in slimTerms:
+        if slimTerm in terms[goid]['closure']:
+            slims.append(slimTerms[slimTerm])
+    return slims
+
 
 def getTermStructure():
     return {
@@ -359,6 +398,7 @@ def main():
         terms[term]['systems'] = getSystemSlims(term)
         terms[term]['organs'] = getOrganSlims(term)
         terms[term]['developmental'] = getDevelopmentSlims(term)
+        terms[term]['roadmap'] = getRoadmapSlims(term)
 
     for term in terms:
         del(terms[term]['parents'])
