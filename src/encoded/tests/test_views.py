@@ -181,7 +181,7 @@ def test_collection_put(testapp, item_type, execute_counter):
     item_url = res.json['@graph'][0]['@id']
     uuid = initial['uuid']
 
-    with execute_counter.expect(2):
+    with execute_counter.expect(1):
         res = testapp.get(item_url).json
 
     for key in initial:
@@ -191,7 +191,7 @@ def test_collection_put(testapp, item_type, execute_counter):
     del update['uuid']
     testapp.put_json(item_url, update, status=200)
 
-    with execute_counter.expect(4):
+    with execute_counter.expect(2):
         res = testapp.get('/' + uuid).follow().json
 
     for key in update:
@@ -220,19 +220,3 @@ def test_user_effective_principals(users, anontestapp, execute_counter):
         'system.Everyone',
         'userid.e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
     ]
-
-
-def test_etags(testapp):
-    item_type = 'organism'
-    from .sample_data import URL_COLLECTION
-    collection = URL_COLLECTION[item_type]
-    item = collection[0]
-    res = testapp.post_json('/' + item_type, item, status=201)
-    url = res.location
-    res = testapp.get(url, status=200)
-    etag = res.etag
-    res = testapp.get(url, headers={'If-None-Match': etag}, status=304)
-    item = collection[1]
-    res = testapp.post_json('/' + item_type, item, status=201)
-    res = testapp.get(url, headers={'If-None-Match': etag}, status=200)
-    assert res.etag != etag

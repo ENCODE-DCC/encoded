@@ -20,7 +20,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "accession": {
             "accessionType": "SR"
@@ -79,17 +79,30 @@
                 "linkTo": "file"
             }
         },
+        "date_released": {
+            "title": "Date released",
+            "comment": "Do not submit, value is assigned whe the object is releaesd.",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ],
+            "permission": "import_items"
+        },
         "status": {
             "title": "Status",
             "type": "string",
             "default": "proposed",
             "enum" : [
+                "in progress",
                 "started",
                 "verified",
                 "submitted",
                 "proposed",
+                "release ready",
                 "released",
                 "deleted",
+                "replaced",
                 "revoked"
             ]
         }

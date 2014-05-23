@@ -8,8 +8,8 @@ from xml.sax.saxutils import quoteattr
 
 
 def includeme(config):
-    config.add_tween('.stats.stats_tween_factory',
-        under=pyramid.tweens.INGRESS)
+    config.add_tween(
+        '.stats.stats_tween_factory', under=pyramid.tweens.INGRESS)
 
 
 def get_root_request():
@@ -36,7 +36,6 @@ def requests_timing_hook(prefix='requests'):
     return response_hook
 
 
-
 class ElasticsearchConnectionMixin(object):
     stats_count_key = 'es_count'
     stats_time_key = 'es_time'
@@ -50,7 +49,6 @@ class ElasticsearchConnectionMixin(object):
         stats = request._stats
         stats[self.stats_count_key] = stats.get(self.stats_count_key, 0) + 1
         stats[self.stats_time_key] = stats.get(self.stats_time_key, 0) + duration
-
 
     def log_request_success(self, method, full_url, path, body, status_code, response, duration):
         self.stats_record(duration)
@@ -94,7 +92,7 @@ def stats_tween_factory(handler, registry):
         response = handler(request)
         end = stats['wsgi_end'] = int(time.time() * 1e6)
         stats['wsgi_time'] = end - begin
-        
+
         environ = request.environ
         if 'mod_wsgi.queue_start' in environ:
             queue_begin = int(environ['mod_wsgi.queue_start'])

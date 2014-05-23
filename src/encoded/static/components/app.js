@@ -6,6 +6,7 @@ var globals = require('./globals');
 var mixins = require('./mixins');
 var NavBar = require('./navbar');
 var Footer = require('./footer');
+var fs = require('fs');
 var url = require('url');
 
 var portal = {
@@ -31,46 +32,8 @@ var user_actions = [
     {id: 'signout', title: 'Sign out', trigger: 'logout'}
 ];
 
-var ie8compat = [
-    "article",
-    "aside",
-    "footer",
-    "header",
-    "hgroup",
-    "nav",
-    "section",
-    "figure",
-    "figcaption"
-].map(function (tag) {
-    return 'document.createElement("' + tag + '");';
-}).join('\n');
-
-var analytics = [
-"(function(i, s, r){",
-    "i['GoogleAnalyticsObject'] = r;",
-    "i[r] = i[r] || function() {",
-        "(i[r].q = i[r].q || []).push(arguments)",
-    "},",
-    "i[r].l = 1 * new Date();",
-    "})(window, document, 'ga');",
-// Use a separate tracker for dev / test
-"if (({'submit.encodedcc.org':1,'www.encodedcc.org':1,'encodedcc.org':1})[document.location.hostname]) {",
-    "ga('create', 'UA-47809317-1', {'cookieDomain': 'encodedcc.org', 'siteSpeedSampleRate': 100});",
-"} else {",
-    "ga('create', 'UA-47809317-2', {'cookieDomain': 'none', 'siteSpeedSampleRate': 100});",
-"}",
-"ga('send', 'pageview');"
-].join('\n');
-
-
-// Need to know if onload event has fired for safe history api usage
-var onloadcheck = "window.onload = function () { window._onload_event_fired; }";
-
-var inline = [
-    analytics,
-    ie8compat,
-    onloadcheck
-].join('\n');
+var scriptjs = fs.readFileSync(__dirname + '/../../../../node_modules/scriptjs/dist/script.min.js', 'utf-8');
+var inline = fs.readFileSync(__dirname + '/../inline.js', 'utf8');
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -86,7 +49,6 @@ var App = React.createClass({
         return {
             errors: [],
             portal: portal,
-            session: null,
             user_actions: user_actions,
             popoverComponent: undefined
         };
@@ -170,9 +132,9 @@ var App = React.createClass({
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                     <title>{title}</title>
                     <link rel="canonical" href={this.props.href} />
-                    <link rel="stylesheet" href="/static/css/style.css" />
+                    <script dangerouslySetInnerHTML={{__html: scriptjs + '\n'}}></script>
                     <script dangerouslySetInnerHTML={{__html: inline}}></script>
-                    <script src="//www.google-analytics.com/analytics.js" async defer></script>
+                    <link rel="stylesheet" href="/static/css/style.css" />
                     <script src="/static/build/bundle.js" async defer></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>

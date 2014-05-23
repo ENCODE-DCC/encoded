@@ -11,11 +11,34 @@ var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = module.exports.StatusLabel = React.createClass({
     render: function() {
         var status = this.props.status;
-        return (
-            <span className={globals.statusClass(status, 'label')}>
-                {status}
-            </span>
-        );
+        var title = this.props.title;
+        if (typeof status === 'string') {
+            // Display simple string and optional title in badge
+            return (
+                <div className="status-list">
+                    <span className={globals.statusClass(status, 'label')}>
+                        {title ? <span className="status-list-title">{title + ': '}</span> : null}
+                        {status}
+                    </span>
+                </div>
+            );
+        } else if (typeof status === 'object') {
+            // Display a list of badges from array of objects with status and optional title
+            return (
+                <ul className="status-list">
+                    {status.map(function (status) {
+                        return(
+                            <li className={globals.statusClass(status.status, 'label')}>
+                                {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
+                                {status.status}
+                            </li>
+                        );
+                    })}
+                </ul>
+            );
+        } else {
+            return null;
+        }
     }
 });
 
@@ -36,8 +59,10 @@ var Approval = module.exports.Approval = React.createClass({
                         <h2>Approval for {context.antibody.accession}</h2>
                         <h3>Antibody against {context.target.organism.name}
                             {' '}{context.target.label}
-                            <StatusLabel status={context.status} />
                         </h3>
+                        <div className="characterization-status-labels">
+                            <StatusLabel title="Status" status={context.status} />
+                        </div>
                     </div>
                 </header>
 
@@ -100,39 +125,38 @@ var Characterization = module.exports.Characterization = React.createClass({
         var context = this.props.context;
         var attachmentHref, attachmentUri;
         var figure, download, src, alt;
-        var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             if (context.attachment.type.split('/', 1)[0] == 'image') {
-                imgClass = 'characterization-img';
+                var imgClass = 'characterization-img';
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Characterization Image";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref}>
+                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                    </a>
+                );
             } else if (context.attachment.type == "application/pdf"){
-                src = "/static/img/file-pdf.png";
-                alt = "Characterization PDF Icon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Characterization PDF Icon</a>
+                );
             } else {
-                src = "/static/img/file.png";
-                alt = "Characterization Icon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide">Characterization Icon</a>
+                );
             }
-            figure = (
-                <a data-bypass="true" href={attachmentHref}>
-                    <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                </a>
-            );
             download = (
                 <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
                 </a>
             );
         } else {
-            src = "/static/img/file-broken.png";
-            alt = "Characterization file broken icon";
             figure = (
-                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                <div className="file-missing text-hide">Characterization file broken icon</div>
             );
             download = (
                 <em>Document not available</em>

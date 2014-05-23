@@ -5,9 +5,11 @@ var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
+var StatusLabel = antibody.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -18,7 +20,6 @@ var Panel = function (props) {
     }
     return globals.panel_views.lookup(props.context)(props);
 };
-
 
 
 var Experiment = module.exports.Experiment = React.createClass({
@@ -51,6 +52,22 @@ var Experiment = module.exports.Experiment = React.createClass({
         for (var key in antibodies) {
             antibody_accessions.push(antibodies[key].accession);
         }
+
+        // Determine this experiment's ENCODE version
+        var encodevers = "";
+        if (context.award.rfa) {
+            encodevers = globals.encodeVersionMap[context.award.rfa.substring(0,7)];
+            if (typeof encodevers === "undefined") {
+                encodevers = "";
+            }
+        }
+
+        // Make list of statuses
+        var statuses = [{status: context.status, title: "Status"}];
+        if (encodevers === "3" && context.status === "released") {
+            statuses.push({status: "pending", title: "Validation"});
+        }
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -61,8 +78,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                             <li>Experiment</li>
                             <li className="active">{context.assay_term_name}</li>
                         </ul>
-                        <h2>Experiment summary for {context.accession}</h2>
-                    </div>
+                        <h2>
+                            Experiment summary for {context.accession}
+                        </h2>
+                        <div className="characterization-status-labels">
+                            <StatusLabel status={statuses} />
+                        </div>
+                   </div>
                 </header>
                 <div className="panel data-display">
                     <dl className="key-value">
@@ -73,7 +95,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.description ? <dd>{context.description}</dd> : null}
 
                         {context.biosample_term_name ? <dt>Biosample</dt> : null}
-                        {context.biosample_term_name ? <dd className="sentence-case">{context.biosample_term_name}</dd> : null}
+                        {context.biosample_term_name ? <dd>{context.biosample_term_name}</dd> : null}
 
                         {context.biosample_type ? <dt>Biosample type</dt> : null}
                         {context.biosample_type ? <dd className="sentence-case">{context.biosample_type}</dd> : null}
@@ -137,7 +159,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
-                        <FileTable items={context.files} />
+                        <FileTable items={context.files} encodevers={encodevers} />
                     </div>
                 : null }
             </div>

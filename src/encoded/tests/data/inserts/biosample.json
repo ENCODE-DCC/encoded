@@ -122,7 +122,7 @@
         "award": "RC2HG005654",
         "biosample_term_id": "NTR:0000031",
         "biosample_term_name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
-        "biosample_type": "primary cell line",
+        "biosample_type": "primary cell",
         "description": "liver fraction CD117+,CD71+,TER119-",
         "donor": "ENCDO012AAA",
         "dbxrefs": [
@@ -377,7 +377,7 @@
         "award": "RC2HG005654",
         "biosample_term_id": "CL:0002322",
         "biosample_term_name": "embryonic stem cell",
-        "biosample_type": "primary cell line",
+        "biosample_type": "stem cell",
         "description": "Undifferentiated mouse embryonic stem cells",
         "donor": "ENCDO015AAA",
         "health_status": "unknown",
@@ -425,7 +425,7 @@
         "award": "U54HG004592",
         "biosample_term_id": "CL:1000350",
         "biosample_term_name": "basal cell of epithelium of terminal bronchiole",
-        "biosample_type": "primary cell line",
+        "biosample_type": "primary cell",
         "description": "small airway epithelial cells",
         "donor": "ENCDO106AAA",
         "dbxrefs": [
@@ -515,7 +515,7 @@
         "award": "U54HG004557",
         "biosample_term_id": "CL:0002539",
         "biosample_term_name": "aortic smooth muscle cell",
-        "biosample_type": "primary cell line",
+        "biosample_type": "primary cell",
         "description": "Normal Human Aortic Smooth Muscle Cells (HAoSMC)",
         "donor": "ENCDO017AAA",
         "health_status": "Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV",
@@ -566,5 +566,26 @@
         "source": "michael-snyder",
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "51ddff9b-a477-43bb-91ad-7f6b87380cbe"
-    }
+    },
+      {
+        "_test": "embryonic stem cell",
+        "accession": "ENCBS987RNP",
+        "aliases": [
+            "ENCODE:H9-cells"
+        ],
+        "award": "U54HG004557",
+        "biosample_term_id": "NTR:0000838",
+        "biosample_term_name": "H9-hESC",
+        "biosample_type": "stem cell",
+        "date_obtained": "2012-12-01",
+        "description": "embryonic stem cell (hESC) H9",
+        "health_status": "Healthy",
+        "lab": "thomas-gingeras",
+        "life_stage": "embryonic",
+        "organism": "human",
+        "protocol_documents": [],
+        "source": "michael-snyder",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "51ddff9b-a477-41bb-91ad-7f6c97380cbe"
+    }  
 ]

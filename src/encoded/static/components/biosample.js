@@ -8,8 +8,10 @@ var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
+var StatusLabel = antibody.StatusLabel;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
@@ -72,13 +74,18 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <li className="active">{context.donor.organism.name}</li>
                             : null }
                         </ul>
-                        <h2>{context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span></h2>
+                        <h2>
+                            {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
+                        </h2>
+                        <div className="characterization-status-labels">
+                            <StatusLabel title="Status" status={context.status} />
+                        </div>
                     </div>
                 </header>
                 <div className="panel data-display">
                     <dl className="key-value">
                         <dt>Term name</dt>
-                        <dd className="sentence-case">{context.biosample_term_name}</dd>
+                        <dd>{context.biosample_term_name}</dd>
 
                         <dt>Term ID</dt>
                         <dd>{context.biosample_term_id}</dd>
@@ -616,28 +623,29 @@ var Document = module.exports.Document = React.createClass({
         var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
-
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             var attachmentType = context.attachment.type.split('/', 1)[0];
-            if (attachmentType === 'image') {
-                imgClass = 'characterization-img';
+            if (attachmentType == 'image') {
+                var imgClass = 'characterization-img';
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Characterization Image";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
+                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                    </a>
+                );
             } else if (context.attachment.type == "application/pdf"){
-                src = "/static/img/file-pdf.png";
-                alt = "Characterization PDF Icon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide" onClick={this.lightboxClick.bind(this, attachmentType)}>Characterization PDF Icon</a>
+                );
             } else {
-                src = "/static/img/file.png";
-                alt = "Characterization Icon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide" onClick={this.lightboxClick.bind(this, attachmentType)}>Characterization Icon</a>
+                );
             }
-            figure = (
-                <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
-                    <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                </a>
-            );
             var dlFileTitle = "Download file " + context.attachment.download;
             download = (
                 <a data-bypass="true" title={dlFileTitle} className="dl-bar" href={attachmentHref} download={context.attachment.download}>
@@ -646,15 +654,14 @@ var Document = module.exports.Document = React.createClass({
                 </a>
             );
         } else {
-            src = "/static/img/file-broken.png";
-            alt = "Characterization File Broken Icon";
             figure = (
-                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                <div className="file-missing text-hide">Characterization file broken icon</div>
             );
             download = (
                 <em>Document not available</em>
             );
         }
+
         return (
             <section className="col-sm-6 col-md-4">
                 <div className="type-document type-popover view-detail panel status-none">

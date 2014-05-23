@@ -1,5 +1,5 @@
-(function($) {
 'use strict';
+var $ = require('jquery');
 
 // http://stackoverflow.com/a/6625189/199100
 // http://css-tricks.com/persistent-headers/
@@ -40,5 +40,3 @@ $(function() {
     $(window).scroll(sticky_header);
     $(window).resize(sticky_header);
 });
-
-})(jQuery);
