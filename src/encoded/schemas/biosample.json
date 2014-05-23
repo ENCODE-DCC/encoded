@@ -373,6 +373,10 @@
             "title": "Life stage",
             "type": "string"
         },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
         "treatments.length": {
             "title": "Treatments length",
             "type": "array"
