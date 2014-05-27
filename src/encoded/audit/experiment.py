@@ -142,6 +142,28 @@ def audit_experiment_paired_end(value,system):
     '''
     Check that if the concordance of replicate and library information for paired end sequencing.
     '''
+    ignore_assays = [
+        "RNA Array",
+        "Methyl Array",
+        "Genotype",
+        "RIP Array",
+        "Proteogenomics",
+        "microRNA Array",
+        "Switchgear",
+        "5C"
+    ]
+
+    paired_end_assays = [
+        "RNA-PET",
+        "ChIA-PET",
+        "DNA-PET"
+    ]
+
+    term_name = value.get('assay_term_name')
+
+    if term_name in ignore_assays:
+        return
+
     for i in range(0, len(value['replicates'])):
         rep = value['replicates'][i]
 
@@ -157,6 +179,10 @@ def audit_experiment_paired_end(value,system):
         if 'paired_ended' not in lib:
             detail = '{} missing paired end information'.format(lib['accession'])
             yield AuditFailure('missing library paired end', detail, level='ERROR')
+
+        elif (rep['paired_ended'] == False or lib['paired_ended'] == False) and term_name in paired_end_assays:
+            detail = 'paired ended required for {} either {} or {} is not pairend'.format(term_name, rep['uuid'], lib['accession'])
+            yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
         elif rep['paired_ended'] != lib['paired_ended'] and lib['paired_ended'] == False:
             detail = 'paired ended mismatch between {} - {}'.format(rep['uuid'], lib['accession'])
