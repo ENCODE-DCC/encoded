@@ -57,11 +57,10 @@ def audit_experiment_target(value, system):
     if target.startswith('Control'):
         return
 
-    for i in range(0, len(value['replicates'])):
-        rep = value['replicates'][i]
+    for rep in value['replicates']:
         if 'antibody' not in rep:
             detail = 'rep {} missing antibody'.format(rep["uuid"])
-            raise AuditFailure('missing antibody', detail, level='ERROR')
+            yield AuditFailure('missing antibody', detail, level='ERROR')
             # What we really want here is a way to the approval, we want to know
             # if there is an approval for this antibody to this target
             # likely we should check if it the right species before thie point, or in library check
@@ -122,31 +121,30 @@ def audit_experiment_biosample_term(value, system):
         detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
         raise AuditFailure('term name mismatch', detail, level='ERROR')
 
-    for i in range(0, len(value['replicates'])):
-        rep = value['replicates'][i]
+    for rep = value['replicates']:
         if 'library' not in rep:
-            return
+            continue
 
         lib = rep['library']
         if 'biosample' not in lib:
             detail = '{} missing biosample, expected {}'.format(lib['accession'], term_name)
-            raise AuditFailure('missing biosample', detail, level='ERROR')
+            yield AuditFailure('missing biosample', detail, level='ERROR')
 
         biosample = lib['biosample']
         if 'biosample_term_id' not in biosample or 'biosample_term_name' not in biosample or 'biosample_type' not in biosample:
-            return
+            continue
 
         if biosample.get('biosample_type') != term_type:
             detail = '{} - {} in {}'.format(term_type, biosample.get('biosample_type'), lib['accession'])
-            raise AuditFailure('biosample mismatch', detail, level='ERROR')
+            yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
         if biosample.get('biosample_term_name') != term_name:
             detail = '{} - {} in {}'.format(term_name, biosample.get('biosample_term_name'), lib['accession'])
-            raise AuditFailure('biosample mismatch', detail, level='ERROR')
+            yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
         if biosample.get('biosample_term_id') != term_id:
             detail = '{} - {} in {}'.format(term_id, biosample.get('biosample_term_id'), lib['accession'])
-            raise AuditFailure('biosample mismatch', detail, level='ERROR')
+            yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
 
 @audit_checker('experiment')
@@ -179,9 +177,7 @@ def audit_experiment_paired_end(value,system):
     if term_name in ignore_assays:
         return
 
-    for i in range(0, len(value['replicates'])):
-        rep = value['replicates'][i]
-
+    for rep in value['replicates']:
         if 'paired_ended' not in rep:
             detail = '{} missing paired end information'.format(rep['uuid'])
             yield AuditFailure('missing replicate paired end', detail, level='ERROR')
