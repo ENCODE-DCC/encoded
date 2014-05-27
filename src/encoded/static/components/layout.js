@@ -25,11 +25,16 @@ var Block = module.exports.Block = React.createClass({
             var buttons = '';
         }
         return this.transferPropsTo(
-            <div data-row={this.props.row} data-col={this.props.col}>
+            <div data-row={this.props.row} data-col={this.props.col}
+                 onDragStart={this.dragStart}>
                 {buttons}
                 <block_view type={block['@type']} data={block.data} />
             </div>
         );
+    },
+
+    dragStart: function(e) {
+        this.props.dragStart(e, this.props.block, this.props.row, this.props.col);
     },
 
     remove: function() {
@@ -66,8 +71,8 @@ var Row = module.exports.Row = React.createClass({
                        row={this.props.i}
                        col={i}
                        draggable="true"
+                       dragStart={this.props.dragStart}
                        onDragEnd={this.props.dragEnd}
-                       onDragStart={this.props.dragStart}
                        remove={this.props.remove} />
             );
         }, this);
@@ -81,6 +86,51 @@ var Row = module.exports.Row = React.createClass({
             </div>
         );
     }
+});
+
+
+// "sticky" toolbar for editing layout
+var LayoutToolbar = React.createClass({
+
+    getInitialState: function() {
+        return {fixed: false}
+    },
+
+    componentDidMount: function() {
+        var $ = require('jquery');
+        this.origTop = $(this.getDOMNode()).offset().top;
+        window.addEventListener('scroll', this.scrollspy);
+    },
+
+    componentWillUnmount: function() {
+        window.removeEventListener('scroll', this.scrollspy);
+    },
+
+    scrollspy: function() {
+        this.setState({'fixed': window.pageYOffset > this.origTop});
+    },
+
+    render: function() {
+        return (
+            <div className={'layout-toolbar navbar navbar-default' + (this.state.fixed ? ' navbar-fixed-top' : '')}>
+              <div className="container">
+                <button className="btn btn-primary navbar-btn btn-xs"
+                        draggable="true" onDragStart={this.dragStart} onDragEnd={this.props.dragEnd}
+                        title="Rich text"><i className="icon-file-alt"></i></button>
+              </div>
+            </div>
+        );
+    },
+
+    dragStart: function(e) {
+        this.props.dragStart(e, {
+            'data': {
+                'body': '<p>This is a new block.</p>'
+            },
+            '@type': ['richtextblock', 'block']
+        });
+    }
+
 });
 
 
@@ -110,33 +160,44 @@ var Layout = module.exports.Layout = React.createClass({
                             droptarget={row.droptarget}
                             i={i}
                             editable={true}
-                            dragEnd={this.dragEnd}
                             dragStart={this.dragStart}
+                            dragEnd={this.dragEnd}
                             remove={this.remove} />;
             } else {
                 return <Row blocks={row.blocks} editable={false} />;
             }
         }, this);
         var className = 'layout' + (this.props.editable ? ' editable' : '');
-        return <div className={className} onDragOver={this.dragOver}>{rows}</div>;
+        return (
+            <div className={className} onDragOver={this.dragOver}>
+                {this.props.editable ? <LayoutToolbar dragStart={this.dragStart} dragEnd={this.dragEnd} /> : ''}
+                {rows}
+            </div>
+        );
     },
 
-    dragStart: function(e) {
-        var $target = this.$(e.currentTarget).closest('.block');
-        var row = this.src_row = Number($target.data('row'));
-        var col = this.src_col = Number($target.data('col'));
-        this.state.value.rows[row].blocks[col].dragging = true;
-        this.setState(this.state);
-
+    dragStart: function(e, block, row, col) {
         e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', '1');
+        e.dataTransfer.setData('text/plain', JSON.stringify(block, null, 4));
+        e.dataTransfer.setData('application/json', JSON.stringify(block));
         e.dataTransfer.setDragImage(document.getElementById('drag-marker'), 15, 15);
+
+        this.dragged_block = block;
+        this.src_row = row;
+        this.src_col = col;
+        block.dragging = true;
+        this.setState(this.state);
     },
 
     dragEnd: function(e) {
         if ((this.src_col != this.dst_col || this.src_row != this.dst_row) || (this.quad == 'top' || this.quad == 'bottom')) {
-            // remove block from current position
-            var block = this.state.value.rows[this.src_row].blocks.splice(this.src_col, 1)[0];
+            if (this.src_row !== undefined) {
+                // remove block from current position
+                var block = this.state.value.rows[this.src_row].blocks.splice(this.src_col, 1)[0];                
+            } else {
+                // new block
+                var block = this.dragged_block;
+            }
             if (this.quad == 'top') {
                 // add to new row above drop target
                 this.state.value.rows.splice(this.dst_row, 0, {blocks: [block]});
@@ -145,12 +206,12 @@ var Layout = module.exports.Layout = React.createClass({
                 this.state.value.rows.splice(this.dst_row + 1, 0, {blocks: [block]});
             } else if (this.quad == 'left') {
                 // compensate for removed block
-                var dst_col = (this.src_row == this.dst_row && this.src_col < this.dst_col) ? (this.dst_col - 1) : this.dst_col;
+                var dst_col = (this.src_row == this.dst_row && this.src_col && this.src_col < this.dst_col) ? (this.dst_col - 1) : this.dst_col;
                 // add before drop target
                 this.state.value.rows[this.dst_row].blocks.splice(dst_col, 0, block);
             } else if (this.quad == 'right') {
                 // compensate for removed block
-                var dst_col = (this.src_row == this.dst_row && this.src_col < this.dst_col) ? this.dst_col : this.dst_col + 1;
+                var dst_col = (this.src_row == this.dst_row && this.src_col && this.src_col < this.dst_col) ? this.dst_col : this.dst_col + 1;
                 // add after drop target
                 this.state.value.rows[this.dst_row].blocks.splice(dst_col, 0, block);
             }
@@ -199,7 +260,7 @@ var Layout = module.exports.Layout = React.createClass({
         var pos = row + ' ' + col + ' ' + quad;
         if (pos != this.oldpos) {
             this.oldpos = pos;
-            console.log(pos);
+            //console.log(pos);
             this.state.value.rows.map(function(obj, i) {
                 if (i == row) {
                     obj.droptarget = quad;
