@@ -10,6 +10,9 @@ def audit_experiment_assay(value, system):
     Experiments should have assays with valid ontologies term ids and names that
     are a valid synonym.
     '''
+    if value['status'] == 'deleted':
+        return
+
     if 'assay_term_id' not in value:
         detail = 'assay_term_id missing'
         raise AuditFailure('missing assay information', detail, level='ERROR')
@@ -40,6 +43,8 @@ def audit_experiment_target(value, system):
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
     antibodies should match.
     '''
+    if value['status'] == 'deleted':
+        return
 
     if ('assay_term_name' not in value) or (value['assay_term_name'] not in ['ChIP-seq', 'RNA Bind-n-Seq']):
         return
@@ -68,6 +73,10 @@ def audit_experiment_control(value, system):
     Certain assay types (ChIP-seq, ...) require possible controls with a matching biosample.
     Of course, controls do not require controls.
     '''
+
+    if value['status'] == 'deleted':
+        return
+
     if ('assay_term_name' not in value) or (value['assay_term_name'] not in ['ChIP-seq']):
         # RBNS, who else
         return
@@ -90,6 +99,9 @@ def audit_experiment_biosample_term(value, system):
     concordent with library biosamples,
     probably there are assays that are the exception
     '''
+    if value['status'] == 'deleted':
+        return
+    
     if 'biosample_term_id' not in value:
         return
 
@@ -159,6 +171,9 @@ def audit_experiment_paired_end(value,system):
         "DNA-PET"
     ]
 
+    if value['status'] == 'deleted':
+        return
+
     term_name = value.get('assay_term_name')
 
     if term_name in ignore_assays:
@@ -181,7 +196,7 @@ def audit_experiment_paired_end(value,system):
             yield AuditFailure('missing library paired end', detail, level='ERROR')
 
         elif (rep['paired_ended'] == False or lib['paired_ended'] == False) and term_name in paired_end_assays:
-            detail = 'paired ended required for {} either {} or {} is not pairend'.format(term_name, rep['uuid'], lib['accession'])
+            detail = 'paired ended required for {} either {} or {} is not paired ended'.format(term_name, rep['uuid'], lib['accession'])
             yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
         elif rep['paired_ended'] != lib['paired_ended'] and lib['paired_ended'] == False:
