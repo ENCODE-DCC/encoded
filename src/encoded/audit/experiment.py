@@ -121,7 +121,7 @@ def audit_experiment_biosample_term(value, system):
         detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
         raise AuditFailure('term name mismatch', detail, level='ERROR')
 
-    for rep = value['replicates']:
+    for rep in value['replicates']:
         if 'library' not in rep:
             continue
 
