@@ -18,7 +18,7 @@ def document_0_2(value, system):
 
 @upgrade_step('document', '2', '3')
 def document_2_3(value, system):
-     # http://redmine.encodedcc.org/issues/1295
+    # http://redmine.encodedcc.org/issues/1295
     # http://redmine.encodedcc.org/issues/1307
 
     if 'status' in value:
