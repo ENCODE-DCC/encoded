@@ -21,7 +21,7 @@ Feature: Portal pages
 	    And I fill in "title" with "Test"
 	    And I press "Save"
 	    And I wait for the content to load
-	    Then the browser's URL should contain '/about/test/'
+	    Then the browser's URL should contain "/about/test/"
 	    And the title should contain the text "Test"
 
 	Scenario: Edit (and rename) a page
@@ -30,4 +30,4 @@ Feature: Portal pages
 		And I fill in "name" with "test2"
 		And I press "Save"
 		And I wait for the content to load
-		Then the browser's URL should contain '/about/test2/'
+		Then the browser's URL should contain "/about/test2/"
