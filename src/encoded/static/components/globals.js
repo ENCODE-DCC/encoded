@@ -35,6 +35,20 @@ var statusClass = module.exports.statusClass = function (status, htmlClass) {
     return htmlClass;
 };
 
+var validationStatusClass = module.exports.validationStatusClass = function (status, htmlClass) {
+    htmlClass = htmlClass || '';
+    if (typeof status == 'string') {
+        htmlClass += ' validation-status-' + status.toLowerCase().replace(/ /g, '-');
+    }
+    return htmlClass;
+};
+
+
+module.exports.encodeVersionMap = {
+    "ENCODE2": "2",
+    "ENCODE3": "3"
+}
+
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",
     "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",

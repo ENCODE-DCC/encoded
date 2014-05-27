@@ -66,6 +66,7 @@
             "enum" : [
                 "in progress",
                 "deleted",
+                "replaced",
                 "released"
             ]
         }
@@ -78,6 +79,7 @@
             "enum" : [
                 "current",
                 "deleted",
+                "replaced",
                 "disabled"
             ]
         }
@@ -198,7 +200,7 @@
             "description": "The categorization of the biosample.",
             "type": "string",
             "enum" : [
-                "primary cell line",
+                "primary cell",
                 "immortalized cell line",
                 "tissue",
                 "in vitro differentiated cells",

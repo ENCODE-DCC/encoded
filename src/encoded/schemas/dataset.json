@@ -20,7 +20,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "accession": {
             "accessionType": "SR"
@@ -102,6 +102,7 @@
                 "release ready",
                 "released",
                 "deleted",
+                "replaced",
                 "revoked"
             ]
         }

@@ -7,8 +7,10 @@ var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
+var StatusLabel = antibody.StatusLabel;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
@@ -66,7 +68,12 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <li className="active">{context.donor.organism.scientific_name}</li>
                             : null }
                         </ul>
-                        <h2>{context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span></h2>
+                        <h2>
+                            {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
+                        </h2>
+                        <div className="characterization-status-labels">
+                            <StatusLabel title="Status" status={context.status} />
+                        </div>
                     </div>
                 </header>
                 <div className="panel data-display">
@@ -393,6 +400,9 @@ var WormDonor = module.exports.WormDonor = React.createClass({
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
                 {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
 
+                {context.genotype ? <dt>Genotype</dt> : null}
+                {context.genotype ? <dd>{context.organism.scientific_name}</dd> : null}
+
                 {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
@@ -415,7 +425,7 @@ var WormDonor = module.exports.WormDonor = React.createClass({
     }
 });
 
-globals.panel_views.register(FlyDonor, 'worm_donor');
+globals.panel_views.register(WormDonor, 'worm_donor');
 
 
 var Treatment = module.exports.Treatment = React.createClass({

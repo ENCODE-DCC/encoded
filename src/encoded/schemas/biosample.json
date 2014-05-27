@@ -365,6 +365,7 @@
             "enum" : [
                 "in progress",
                 "deleted",
+                "replaced",
                 "released",
                 "proposed"
             ]
@@ -375,15 +376,20 @@
             "title": "Biosample type",
             "type": "string"
         },
-        "organ_slims": {
-            "title": "Organ",
-            "type": "array"
+        "status": {
+            "title": "Biosample status",
+            "type": "string"
         },
         "organism.scientific_name": {
             "title": "Organism",
             "type": "string"
         },
-        "sex": {
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
+        
+        "donor.sex": {
             "title": "Gender",
             "type": "string"
         },
@@ -396,24 +402,24 @@
             "type": "string"
         },
         "phase": {
-            "title": "Phase",
+            "title": "Cell cycle phase",
             "type": "string"
         },
         "treatments.treatment_term_name": {
-            "title": "Treatment",
+            "title": "Biosample treatment",
             "type": "array"
         },
         "source.title": {
             "title": "Source",
             "type": "string"
         },
-        "lab.title": {
-            "title": "Lab",
-            "type": "string"
-        },
         "developmental_slims": {
             "title": "Developmental slim",
             "type": "array"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
         }
     },
     "columns": {
@@ -453,8 +459,8 @@
             "title": "Life stage",
             "type": "string"
         },
-        "rnais.target.label": {
-            "title": "RNAi",
+        "status": {
+            "title": "Status",
             "type": "string"
         },
         "treatments.treatment_term_name": {

@@ -4,9 +4,11 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
+var StatusLabel = antibody.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -151,6 +153,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     render: function() {
         // Creating an object here dedupes when a file is listed under both related_files and original_files
         var rows = {};
+        var encodevers = this.props.encodevers;
         this.props.items.forEach(function (file) {
             var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.download_path;
             rows[file['@id']] = (
@@ -166,6 +169,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <td>{file.submitted_by.title}</td>
                     <td>{file.date_created}</td>
                     <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
+                    {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                 </tr>
             );
         });
@@ -182,6 +186,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                             <th>Added by</th>
                             <th>Date added</th>
                             <th>File download</th>
+                            {encodevers == "3" ? <th>Validation status</th> : null}
                         </tr>
                     </thead>
                     <tbody>
@@ -189,7 +194,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan="8"></td>
+                            <td colSpan={encodevers == "3" ? 9 : 8}></td>
                         </tr>
                     </tfoot>
                 </table>

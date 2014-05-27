@@ -69,6 +69,10 @@
 
 .characterization-meta-data {
     margin: 15px 15px 15px 0;
+
+    .label {
+        display: inline-block;
+    }
 }
 
 
@@ -107,45 +111,137 @@
 
 .characterization-status-labels {
     font-weight: bold;
-    font-size: 1.2em;
-    float: right;
+    font-size: 20px;
+
+    .label {
+        @media screen and (min-width: $screen-sm-min) {
+        }
+    }
 }
 
 
 .label {
+    display: table-cell;
+    position: relative;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.3);
+    text-align: left;
+    padding: .3em .5em .4em;
+    font-size: 0.8em;
     background-color: $gray-light;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+    }
 }
 
-h3 .label {
-    font-size: 16px;
-    line-height: 20px;
-    position: relative;
-    top: -3px;
-    left: 15px;
+.status-list {
+    display: table;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: block;
+        width: auto;
+    }
+
+    li {
+        display: table-cell;
+        @include border-radius(0);
+        vertical-align: bottom;
+        border-left: 1px solid #606060;
+
+        @media screen and (min-width: $screen-sm-min) {
+            display: inline-block;
+        }
+
+        &:first-child {
+            @include border-top-left-radius(4px);
+            @include border-bottom-left-radius(4px);
+            border-left: none;
+        }
+
+        &:last-child {
+            @include border-top-right-radius(4px);
+            @include border-bottom-right-radius(4px);
+        }
+    }
+}
+
+.status-list-title {
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: left;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline;
+        font-size: 16px;
+    }
 }
 
 @each $item in label, badge {
     // ELIGIBLE FOR NEW DATA (green)
-    .#{$item}.status-eligible-for-new-data        { background-color: $state-success-text; }
-    .#{$item}.status-eligible-for-new-data[href]   { background-color: darken($state-success-text, 10%); }
+    .#{$item}.status-eligible-for-new-data        { background-color: $brand-success; }
+    .#{$item}.status-eligible-for-new-data[href]   { background-color: darken($brand-success, 10%); }
     // PENDING DCC REVIEW (blue)
-    .#{$item}.status-pending-dcc-review      { background-color: $state-info-text; }
-    .#{$item}.status-pending-dcc-review[href] { background-color: darken($state-info-text, 10%); }
+    .#{$item}.status-pending-dcc-review      { background-color: $brand-info; }
+    .#{$item}.status-pending-dcc-review[href] { background-color: darken($brand-info, 10%); }
     // NOT ELIGIBLE FOR NEW DATA (red)
-    .#{$item}.status-not-eligible-for-new-data          { background-color: $state-danger-text; }
-    .#{$item}.status-not-eligible-for-new-data[href]    { background-color: darken($state-danger-text, 10%); }
+    .#{$item}.status-not-eligible-for-new-data          { background-color: $brand-danger; }
+    .#{$item}.status-not-eligible-for-new-data[href]    { background-color: darken($brand-danger, 10%); }
     // AWAITING LAB CHARACTERIZATION (yellow)
-    .#{$item}.status-awaiting-lab-characterization      { background-color: $state-warning-text; }
-    .#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($state-warning-text, 10%); }
+    .#{$item}.status-awaiting-lab-characterization      { background-color: $brand-warning; }
+    .#{$item}.status-awaiting-lab-characterization[href]{ background-color: darken($brand-warning, 10%); }
     // COMPLIANT (green)
-    .#{$item}.status-compliant          { background-color: $state-success-text; }
-    .#{$item}.status-compliant[href]    { background-color: darken($state-success-text, 10%); }
+    .#{$item}.status-compliant          { background-color: $brand-success; }
+    .#{$item}.status-compliant[href]    { background-color: darken($brand-success, 10%); }
     // NOT COMPLIANT (red)
-    .#{$item}.status-not-compliant          { background-color: $state-danger-text; }
-    .#{$item}.status-not-compliant[href]    { background-color: darken($state-danger-text, 10%); }
+    .#{$item}.status-not-compliant          { background-color: $brand-danger; }
+    .#{$item}.status-not-compliant[href]    { background-color: darken($brand-danger, 10%); }
     // NOT REVIEWED (red)
-    .#{$item}.status-not-reviewed         { background-color: $state-danger-text; }
-    .#{$item}.status-not-reviewed[href]    { background-color: darken($state-danger-text, 10%); }
+    .#{$item}.status-not-reviewed         { background-color: $brand-danger; }
+    .#{$item}.status-not-reviewed[href]    { background-color: darken($brand-danger, 10%); }
+
+    // Experiment (Dataset) and Biosample states
+    // IN PROGRESS (blue)
+    .#{$item}.status-in-progress        { background-color: $brand-info; }
+    .#{$item}.status-in-progress[href]   { background-color: darken($brand-info, 10%); }
+    // STARTED (blue)
+    .#{$item}.status-started        { background-color: $brand-info; }
+    .#{$item}.status-started[href]   { background-color: darken($brand-info, 10%); }
+    // VERIFIED (blue)
+    .#{$item}.status-verified        { background-color: $brand-info; }
+    .#{$item}.status-verified[href]   { background-color: darken($brand-info, 10%); }
+    // SUBMITTED (blue)
+    .#{$item}.status-submitted        { background-color: $brand-info; }
+    .#{$item}.status-submitted[href]   { background-color: darken($brand-info, 10%); }
+    // PROPOSED (blue)
+    .#{$item}.status-proposed        { background-color: $brand-info; }
+    .#{$item}.status-proposed[href]   { background-color: darken($brand-info, 10%); }
+    // RELEASE READY (blue)
+    .#{$item}.status-release-ready        { background-color: $brand-info; }
+    .#{$item}.status-release-ready[href]   { background-color: darken($brand-info, 10%); }
+    // RELEASED (green)
+    .#{$item}.status-released        { background-color: $brand-success; }
+    .#{$item}.status-released[href]   { background-color: darken($brand-success, 10%); }
+    // DELETED (orange)
+    .#{$item}.status-deleted        { background-color: $brand-warning; }
+    .#{$item}.status-deleted[href]   { background-color: darken($brand-warning, 10%); }
+    // REVOKED (red)
+    .#{$item}.status-revoked        { background-color: $brand-danger; }
+    .#{$item}.status-revoked[href]   { background-color: darken($brand-danger, 10%); }
+
+    // Validation Statuses
+    // PENDING (orange)
+    .#{$item}.status-pending        { background-color: $brand-warning; }
+    .#{$item}.status-pending[href]   { background-color: darken($brand-warning, 10%); }
+    // FAILED (red)
+    .#{$item}.status-fail        { background-color: $brand-danger; }
+    .#{$item}.status-fail[href]   { background-color: darken($brand-danger, 10%); }
+    // PASSED (green)
+    .#{$item}.status-pass        { background-color: $brand-success; }
+    .#{$item}.status-pass[href]   { background-color: darken($brand-success, 10%); }
 
     /* (gray) is the default if no class given */
 }

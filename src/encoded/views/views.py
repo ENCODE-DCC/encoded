@@ -1,7 +1,8 @@
 from pyramid.security import (
+    ALL_PERMISSIONS,
     Allow,
     Authenticated,
-    Deny,
+    DENY_ALL,
     Everyone,
 )
 from .download import ItemWithAttachment
@@ -19,7 +20,7 @@ ACCESSION_KEYS = [
         'name': 'accession',
         'value': '{accession}',
         '$templated': True,
-        '$condition': 'accession',
+        '$condition': lambda accession=None, status=None: accession and status != 'replaced'
     },
     {
         'name': 'accession',
@@ -42,7 +43,7 @@ ALIAS_KEYS = [
 
 
 ALLOW_EVERYONE_VIEW = [
-    (Allow, Everyone, ['view', 'list', 'traverse']),
+    (Allow, Everyone, 'view'),
 ]
 
 ALLOW_SUBMITTER_ADD = [
@@ -50,14 +51,24 @@ ALLOW_SUBMITTER_ADD = [
 ]
 
 ALLOW_LAB_SUBMITTER_EDIT = [
+    (Allow, Authenticated, 'view'),
     (Allow, 'role.lab_submitter', 'edit'),
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
 ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
-    (Allow, 'role.viewer', 'view'),
+    (Allow, Everyone, 'view'),
 ]
 
+ONLY_ADMIN_VIEW = [
+    (Allow, 'group.admin', ALL_PERMISSIONS),
+    (Allow, 'group.read-only-admin', ['traverse', 'view']),
+    (Allow, 'remoteuser.EMBED', ['traverse', 'view']),
+    (Allow, 'remoteuser.INDEXER', ['traverse', 'view', 'index']),
+    DENY_ALL,
+]
+
+# Now unused, kept around for upgrade tests.
 ENCODE2_AWARDS = frozenset([
     '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
     '1f3cffd4-457f-4105-9b3c-3e9119abfcf0',
@@ -97,14 +108,15 @@ class Collection(BaseCollection):
         STATUS_ACL = {
             # standard_status
             'released': ALLOW_CURRENT,
-            'deleted': [],
+            'deleted': ONLY_ADMIN_VIEW,
+            'replaced': ONLY_ADMIN_VIEW,
 
             # shared_status
             'current': ALLOW_CURRENT,
-            'disabled': [],
+            'disabled': ONLY_ADMIN_VIEW,
 
             # file
-            'obsolete': [],
+            'obsolete': ONLY_ADMIN_VIEW,
 
             # antibody_characterization
             'compliant': ALLOW_CURRENT,
@@ -120,6 +132,15 @@ class Collection(BaseCollection):
             # dataset / experiment
             'revoked': ALLOW_CURRENT,
         }
+
+        @property
+        def __name__(self):
+            if self.name_key is None:
+                return self.uuid
+            properties = self.upgrade_properties(finalize=False)
+            if properties.get('status') == 'replaced':
+                return self.uuid
+            return properties.get(self.name_key, None) or self.uuid
 
         def __acl__(self):
             # Don't finalize to avoid validation here.
@@ -137,8 +158,6 @@ class Collection(BaseCollection):
             if 'lab' in properties:
                 lab_submitters = 'submits_for.%s' % properties['lab']
                 roles[lab_submitters] = 'role.lab_submitter'
-            if properties.get('award') in ENCODE2_AWARDS:
-                roles[Everyone] = 'role.viewer'
             return roles
 
 
@@ -726,6 +745,7 @@ class Experiment(Dataset):
             'replicates.library.biosample.submitted_by',
             'replicates.library.biosample.source',
             'replicates.library.biosample.organism',
+            'replicates.library.biosample.treatments',
             'replicates.library.biosample.donor.organism',
             'replicates.library.biosample.treatments',
             'replicates.library.treatments',
@@ -789,9 +809,9 @@ class Page(Collection):
         keys = ['name']
 
         STATUS_ACL = {
-            'in progress': ALLOW_CURRENT,
+            'in progress': [],
             'released': ALLOW_EVERYONE_VIEW,
-            'deleted': [],
+            'deleted': ONLY_ADMIN_VIEW,
         }
 
 
