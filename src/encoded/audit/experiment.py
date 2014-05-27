@@ -51,7 +51,8 @@ def audit_experiment_target(value, system):
 
     if 'target' not in value:
         detail = '{} requires a target'.format(value['assay_term_name'])
-        raise AuditFailure('missing target', detail, level='ERROR')
+        yield AuditFailure('missing target', detail, level='ERROR')
+        return
 
     target = value['target']['name']
     if target.startswith('Control'):
@@ -111,15 +112,18 @@ def audit_experiment_biosample_term(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} - {}'.format(term_id, term_name)
-        raise AuditFailure('NTR', detail, level='WARNING')
+        yield AuditFailure('NTR', detail, level='WARNING')
+        return
 
     if term_id not in ontology:
-        raise AuditFailure('term id not in ontology', term_id, level='ERROR')
+        yield AuditFailure('term id not in ontology', term_id, level='ERROR')
+        return
 
     ontology_term_name = ontology[term_id]['name']
     if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
-        raise AuditFailure('term name mismatch', detail, level='ERROR')
+        yield AuditFailure('term name mismatch', detail, level='ERROR')
+        return
 
     for rep in value['replicates']:
         if 'library' not in rep:
