@@ -22,7 +22,7 @@ var Form = module.exports.Form = React.createClass({
     render: function() {
         var error = this.state.error;
         return (
-          <form>
+          <form className="edit-form">
             <FormFor />
             <div className="pull-right">
                 <a href="" className="btn btn-default">Cancel</a>

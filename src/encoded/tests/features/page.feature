@@ -20,14 +20,14 @@ Feature: Portal pages
 	    And I fill in "name" with "test"
 	    And I fill in "title" with "Test"
 	    And I press "Save"
-	    And I wait for the content to load
+	    And I wait for the form to close
 	    Then the browser's URL should contain "/about/test/"
 	    And the title should contain the text "Test"
 
 	Scenario: Edit (and rename) a page
 		When I visit "/about/about/#!edit"
-	    And I wait for deferred content to fully load
+	    And I wait for the form to fully load
 		And I fill in "name" with "test2"
 		And I press "Save"
-		And I wait for the content to load
+		And I wait for the form to close
 		Then the browser's URL should contain "/about/test2/"
