@@ -48,7 +48,23 @@
 		&:hover {
 			outline: dashed 1px #ccc;
 			cursor: move;
+			.block-toolbar {
+				display: block;
+			}
 		}
+
+		.block-toolbar {
+			position: absolute;
+			top: 3px;
+			right: 3px;
+			text-align: right;
+			display: none;
+			a {
+				text-decoration: none;
+				cursor: pointer;
+			}
+		}
+
 	}
 
 }

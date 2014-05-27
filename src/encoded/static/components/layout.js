@@ -15,11 +15,25 @@ var Block = module.exports.Block = React.createClass({
             block['@type'] = [block['@type'], 'block'];
         }
         var block_view = globals.block_views.lookup(block);
+        if (this.props.editable) {
+            var buttons = (
+                <div className="block-toolbar">
+                    <a className="remove" onClick={this.remove}><i className="icon-trash"></i></a>
+                </div>
+                )
+        } else {
+            var buttons = '';
+        }
         return this.transferPropsTo(
-            <div>
+            <div data-row={this.props.row} data-col={this.props.col}>
+                {buttons}
                 <block_view type={block['@type']} data={block.data} />
             </div>
         );
+    },
+
+    remove: function() {
+        this.props.remove(this.props.row, this.props.col)
     }
 });
 
@@ -49,11 +63,12 @@ var Row = module.exports.Row = React.createClass({
                        editable={this.props.editable}
                        block={block}
                        key={i}
-                       data-row={this.props.i}
-                       data-col={i}
+                       row={this.props.i}
+                       col={i}
                        draggable="true"
                        onDragEnd={this.props.dragEnd}
-                       onDragStart={this.props.dragStart} />
+                       onDragStart={this.props.dragStart}
+                       remove={this.props.remove} />
             );
         }, this);
         var classes = 'row';
@@ -85,7 +100,7 @@ var Layout = module.exports.Layout = React.createClass({
 
     componentDidMount: function() {
         this.$ = require('jquery');
-        this.$('<i id="drag-marker" class="fa fa-file"></i>').appendTo(this.getDOMNode());
+        this.$('<i id="drag-marker"></i>').appendTo(this.getDOMNode());
     },
 
     render: function() {
@@ -96,7 +111,8 @@ var Layout = module.exports.Layout = React.createClass({
                             i={i}
                             editable={true}
                             dragEnd={this.dragEnd}
-                            dragStart={this.dragStart} />;
+                            dragStart={this.dragStart}
+                            remove={this.remove} />;
             } else {
                 return <Row blocks={row.blocks} editable={false} />;
             }
@@ -200,6 +216,18 @@ var Layout = module.exports.Layout = React.createClass({
             });
             this.setState(this.state);
         }
+    },
+
+    remove: function(row, col) {
+        // remove block
+        this.state.value.rows[row].blocks.splice(col, 1)[0];
+        // cull empty rows
+        this.state.value.rows.filter(function(row) {
+            return row.blocks.length;
+        });
+        // refresh
+        this.setState(this.state);
+        this.props.onChange(this.state.value);
     },
 
     mapBlocks: function(func) {
