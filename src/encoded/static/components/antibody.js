@@ -11,11 +11,34 @@ var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = module.exports.StatusLabel = React.createClass({
     render: function() {
         var status = this.props.status;
-        return (
-            <span className={globals.statusClass(status, 'label')}>
-                {status}
-            </span>
-        );
+        var title = this.props.title;
+        if (typeof status === 'string') {
+            // Display simple string and optional title in badge
+            return (
+                <div className="status-list">
+                    <span className={globals.statusClass(status, 'label')}>
+                        {title ? <span className="status-list-title">{title + ': '}</span> : null}
+                        {status}
+                    </span>
+                </div>
+            );
+        } else if (typeof status === 'object') {
+            // Display a list of badges from array of objects with status and optional title
+            return (
+                <ul className="status-list">
+                    {status.map(function (status) {
+                        return(
+                            <li className={globals.statusClass(status.status, 'label')}>
+                                {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
+                                {status.status}
+                            </li>
+                        );
+                    })}
+                </ul>
+            );
+        } else {
+            return null;
+        }
     }
 });
 
@@ -36,8 +59,10 @@ var Approval = module.exports.Approval = React.createClass({
                         <h2>Approval for {context.antibody.accession}</h2>
                         <h3>Antibody against {context.target.organism.name}
                             {' '}{context.target.label}
-                            <StatusLabel status={context.status} />
                         </h3>
+                        <div className="characterization-status-labels">
+                            <StatusLabel title="Status" status={context.status} />
+                        </div>
                     </div>
                 </header>
 

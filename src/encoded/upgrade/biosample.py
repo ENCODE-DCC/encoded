@@ -95,6 +95,13 @@ def biosample_4_5(value, system):
 
 @upgrade_step('biosample', '5', '6')
 def biosample_5_6(value, system):
+    # http://redmine.encodedcc.org/issues/1393
+    if value.get('biosample_type') == 'primary cell line':
+        value['biosample_type'] = 'primary cell'
+
+
+@upgrade_step('biosample', '6', '7')
+def biosample_6_7(value, system):
     # http://encode.stanford.edu/issues/1131
 
     update_properties = {

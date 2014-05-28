@@ -45,7 +45,11 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Antibody: {' ' + result['antibody.accession']}</span>
+                            <div className="pull-right search-meta">
+                                <p className="type meta-title">Antibody</p>
+                                <p className="type">{' ' + result['antibody.accession']}</p>
+                                <p className="type meta-status">{' ' + result['status']}</p>
+                            </div>
                             <div className="accession">
                                 <a href={result['@id']}>{result['target.label'] + ' (' + result['target.organism.name'] + ')'}</a> 
                             </div>
@@ -53,7 +57,6 @@ var Dbxref = dbxref.Dbxref;
                         <div className="data-row"> 
                             <strong>{columns['antibody.source.title']['title']}</strong>: {result['antibody.source.title']}<br />
                             <strong>{columns['antibody.product_id']['title']}/{columns['antibody.lot_id']['title']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
-                            <strong>{columns['status']['title']}</strong>: {result['status']}
                         </div>
                 </li>
             );
@@ -67,7 +70,11 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Biosample: {' ' + result['accession']}</span>
+                            <div className="pull-right search-meta">
+                                <p className="type meta-title">Biosample</p>
+                                <p className="type">{' ' + result['accession']}</p>
+                                <p className="type meta-status">{' ' + result['status']}</p>
+                            </div>
                             <div className="accession">
                                 <a href={result['@id']}>{result['biosample_term_name'] + ' (' + result['organism.name'] + ')'}</a> 
                             </div>
@@ -91,7 +98,11 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Experiment: {' ' + result['accession']}</span>
+                            <div className="pull-right search-meta">
+                                <p className="type meta-title">Experiment</p>
+                                <p className="type">{' ' + result['accession']}</p>
+                                <p className="type meta-status">{' ' + result['status']}</p>
+                            </div>
                             <div className="accession">
                                 <a href={result['@id']}>{result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span></a> 
                             </div>
@@ -115,7 +126,10 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Dataset: {' ' + result['accession']}</span>
+                            <div className="pull-right search-meta">
+                                <p className="type meta-title">Dataset</p>
+                                <p className="type">{' ' + result['accession']}</p>
+                            </div>
                             <div className="accession">
                                 <a href={result['@id']}>{result['description']}</a> 
                             </div>
@@ -137,7 +151,9 @@ var Dbxref = dbxref.Dbxref;
             var columns = this.props.columns;
             return (<li>
                         <div>
-                            <span className="pull-right type">Target</span>
+                            <div className="pull-right search-meta">
+                                <p className="type meta-title">Target</p>
+                            </div>
                             <div className="accession">
                                 <a href={result['@id']}>{result['label'] + ' (' + result['organism.name'] + ')'}</a> 
                             </div>
