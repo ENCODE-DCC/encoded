@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms", "sex", "age", "age_units", "health_status", "life_stage"],
+    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms", "sex", "age", "age_units", "health_status", "life_stage", "synchronization"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -28,7 +28,7 @@
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
             "properties": {
-                "biosample_type": {"enum": ["whole organism"]}
+                "biosample_type": {"enum": ["whole organisms"]}
             }
         }
     },
@@ -304,7 +304,8 @@
                 "cells", 
                 "whole embryos", 
                 "items", 
-                "μg"
+                "μg",
+                "whole animals"
             ]
         },
         "url": {
@@ -321,21 +322,91 @@
                 "male",
                 "female",
                 "unknown",
-                "mixed"
+                "mixed",
+                "hermaphrodite"
             ]
         },
-        "model_organism_life_stage": {
-            "title": "Model organism life stage",
+        "mouse_life_stage": {
+            "title": "Mouse life stage",
             "type": "string",
             "default": "unknown",
             "enum": [
-                "fetal",
-                "newborn",
-                "child",
                 "adult",
                 "unknown",
                 "embryonic",
                 "postnatal"
+            ]
+        },
+        "fly_life_stage": {
+            "title": "Fly life stage",
+            "type": "string",
+            "enum": [
+                "embryonic",
+                "first instar larva",
+                "second instar larva",
+                "third instar larva",
+                "wandering third instar larva",
+                "prepupa",
+                "pupa",
+                "adult"
+            ]
+        },
+        "fly_synchronization_stage": {
+            "title": "Fly synchronization stage",
+            "comment": "Stage at which flies were synchronized. Use in conjunction with time and time units post-synchronization.",
+            "type": "string",
+            "enum": [
+                "fertilization",
+                "white prepupa",
+                "eclosion"
+            ]  
+        },
+        "post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization.",
+            "type": "string",
+            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+        },
+        "post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "comment": "Use in conjunction with post_synchronization_time to specify time elapsed post-synchronization.",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month",
+                "year",
+                "stage"
+            ]
+        },       
+        "worm_life_stage":{
+            "title": "Worm life stage",
+            "type": "string",
+            "enum": [
+                "early embryonic",
+                "late embryonic",
+                "embryonic",
+                "L1 larva",
+                "L2 larva",
+                "L2d larva",
+                "L3 larva",
+                "L4 larva",
+                "dauer",
+                "young adult",
+                "adult"
+            ]    
+        },
+        "worm_synchronization_stage": {
+            "title": "Worm synchronization stage",
+            "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.",
+            "type": "string",
+            "enum": [
+                "fertilization",
+                "egg laying",
+                "starved L1 larva",
+                "dauer exit"
             ]
         },
         "model_organism_age": {
@@ -388,8 +459,7 @@
             "title": "Organ",
             "type": "array"
         },
-        
-        "donor.sex": {
+        "sex": {
             "title": "Gender",
             "type": "string"
         },
@@ -413,13 +483,17 @@
             "title": "Source",
             "type": "string"
         },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
         "developmental_slims": {
             "title": "Developmental slim",
             "type": "array"
         },
-        "lab.title": {
-            "title": "Lab",
-            "type": "string"
+        "synchronization": {
+            "title": "Synchronization stage",
+            "type": "string" 
         }
     },
     "columns": {
@@ -486,6 +560,7 @@
         "subcellular_fraction_term_name": 1.0,
         "phase": 1.0,
         "life_stage": 1.0,
+        "synchronization": 1.0,
         "health_status": 1.0,
         "donor.accession": 1.0,
         "donor.organism.name": 1.0,

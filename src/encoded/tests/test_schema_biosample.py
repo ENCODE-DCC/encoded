@@ -19,7 +19,7 @@ def biosample_depeleted_in(biosample):
     item.update({
         'depleted_in_term_name': ['head'],
         'depleted_in_term_id': ["UBERON:0000033"],
-        "biosample_type": "whole organism"
+        "biosample_type": "whole organisms"
     })
     return item
 
