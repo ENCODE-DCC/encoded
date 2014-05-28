@@ -71,7 +71,7 @@ def wait_for_form(context):
 
 @step(u'I wait for the form to close')
 def wait_for_form_to_close(context):
-    assert context.browser.is_element_not_present_by_css("#content form")
+    assert context.browser.is_element_not_present_by_css("#content form", wait_time=30)
 
 
 @step(u'I wait for the content to load')
