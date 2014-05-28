@@ -1,4 +1,4 @@
-from rdflib import ConjunctiveGraph, exceptions, Namespace
+from rdflib import ConjunctiveGraph, exceptions, Namespace, Graph
 from rdflib import RDFS, RDF, BNode
 
 EPILOG = __doc__
@@ -11,10 +11,12 @@ EFO_Synonym = EFO["alternative_term"]
 Synonym = OBO_OWL["hasExactSynonym"]
 Ontology = OWLNS["Ontology"]
 
+Restriction = OWLNS["Restriction"]
 Class = OWLNS["Class"]
 Thing = OWLNS["Thing"]
 OnProperty = OWLNS["onProperty"]
 SomeValuesFrom = OWLNS["someValuesFrom"]
+IntersectionOf = OWLNS["intersectionOf"]
 
 PART_OF = "http://purl.obolibrary.org/obo/BFO_0000050"
 DEVELOPS_FROM = "http://purl.obolibrary.org/obo/RO_0002202"
@@ -112,10 +114,9 @@ class Inspector(object):
                 self.rdfGraph.parse(uri, format="n3")
             except:
                 raise exceptions.Error("Could not parse the file! Is it a valid RDF/OWL ontology?")
-
         finally:
             self.baseURI = self.get_OntologyURI() or uri
-            self.allclasses = self.__getAllClasses(removeBlankNodes=True)
+            self.allclasses = self.__getAllClasses(includeDomainRange=True, includeImplicit=True, removeBlankNodes=False, excludeRDF_OWL=False)
 
     def get_OntologyURI(self, return_as_string=True):
         
@@ -347,7 +348,11 @@ def splitNameFromNamespace(aUri):
     return (name, ns)
 
 
-def iterativeChildren(nodes, terms):
+def iterativeChildren(nodes, terms, closure):
+    if closure == 'data':
+        data = 'data'
+    else:
+        data = 'data_with_develops_from'
     results = []
     while 1:
         newNodes = []
@@ -356,25 +361,8 @@ def iterativeChildren(nodes, terms):
         for node in nodes:
             results.append(node)
             if node in terms:
-                if terms[node]['data']:
-                    for child in terms[node]['data']:
-                        if child not in results:
-                            newNodes.append(child)
-        nodes = newNodes
-    return results
-
-
-def iterativeDev(nodes, terms):
-    results = []
-    while 1:
-        newNodes = []
-        if len(nodes) == 0:
-            break
-        for node in nodes:
-            results.append(node)
-            if node in terms:
-                if terms[node]['data_with_develops_from']:
-                    for child in terms[node]['data_with_develops_from']:
+                if terms[node][data]:
+                    for child in terms[node][data]:
                         if child not in results:
                             newNodes.append(child)
         nodes = newNodes
@@ -402,6 +390,24 @@ def getSlims(goid, terms, slimType):
     return slims
 
 
+def getTermStructure():
+    return {
+        'id': '',
+        'name': '',
+        'parents': [],
+        'children': [],
+        'part_of': [],
+        'develops_from': [],
+        'organs': [],
+        'closure': [],
+        'slims': [],
+        'data': [],
+        'closure_with_develops_from': [],
+        'data_with_develops_from': [],
+        'synonyms': []
+    }
+
+
 def main():
     ''' Downloads UBERON, EFO and OBI ontologies and create a JSON file '''
 
@@ -416,61 +422,63 @@ def main():
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
-    urls = [efo_url, uberon_url]
+    urls = [uberon_url]
 
     terms = {}
     for url in urls:
         data = Inspector(url)
         for c in data.allclasses:
-            term = {}
-            term['id'] = splitNameFromNamespace(c)[0].replace('_', ':')
-            term['name'] = data.rdfGraph.label(c).value
-            term['part_of'] = []
-            term['develops_from'] = []
-            term['parents'] = []
-            term['closure'] = []
-            term['slims'] = []
-            term['data'] = []
-            term['closure_with_develops_from'] = []
-            term['data_with_develops_from'] = []
+            if isBlankNode(c):
+                for o in data.rdfGraph.objects(c, RDFS.subClassOf):
+                    if isBlankNode(o):
+                        pass
+                    else:
+                        for o1 in data.rdfGraph.objects(c, IntersectionOf):
+                            for s, v, ob in data.rdfGraph.triples((o1, None, None)):
+                                if isBlankNode(ob):
+                                    g = data.rdfGraph.get_context(o1)
+                                    g1 = data.rdfGraph.get_context(ob)
+                                    import pdb; pdb.set_trace();
+                                else:
+                                    print ob
+            else:
+                term = getTermStructure()
+                term['id'] = splitNameFromNamespace(c)[0].replace('_', ':')
+                term['name'] = data.rdfGraph.label(c)
 
-            # Get all parents
-            for parent in data.get_classDirectSupers(c, excludeBnodes=False):
-                if isBlankNode(parent):
-                    for s, v, o in data.rdfGraph.triples((parent, OnProperty, None)):
-                        if o.__str__() == PART_OF:
-                            for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
-                                try:
-                                    term['part_of'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
-                                except:
-                                    pass
-                        elif o.__str__() == DEVELOPS_FROM:
-                            for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
-                                try:
-                                    term['develops_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
-                                except:
-                                    pass
-                else:
-                    term['parents'].append(splitNameFromNamespace(parent)[0].replace('_', ':'))
-            
-            # Get all synonyms
-            term['synonyms'] = []
-            for syn in data.entitySynonyms(c):
-                try:
-                    term['synonyms'].append(syn.__str__())
-                except:
-                    pass
-            terms[term['id']] = term
+                # Get all parents
+                for parent in data.get_classDirectSupers(c, excludeBnodes=False):
+                    if isBlankNode(parent):
+                        for s, v, o in data.rdfGraph.triples((parent, OnProperty, None)):
+                            if o.__str__() == PART_OF:
+                                for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
+                                    if not isBlankNode(o1):
+                                        term['part_of'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                            elif o.__str__() == DEVELOPS_FROM:
+                                for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
+                                    if not isBlankNode(o1):
+                                        term['develops_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                    else:
+                        term['parents'].append(splitNameFromNamespace(parent)[0].replace('_', ':'))
+                
+                # Get all synonyms
+                term['synonyms'] = []
+                for syn in data.entitySynonyms(c):
+                    try:
+                        term['synonyms'].append(syn.__str__())
+                    except:
+                        pass
+                terms[term['id']] = term
     for term in terms:
         terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']))
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
 
     for term in terms:
-        words = iterativeChildren(terms[term]['data'], terms)
+        words = iterativeChildren(terms[term]['data'], terms, 'data')
         for word in words:
             terms[term]['closure'].append(word)
 
-        d = iterativeDev(terms[term]['data_with_develops_from'], terms)
+        d = iterativeChildren(terms[term]['data_with_develops_from'], terms, 'data_with_develops_from')
         for dd in d:
             terms[term]['closure_with_develops_from'].append(dd)
         terms[term]['closure'] = list(set(terms[term]['closure']))
