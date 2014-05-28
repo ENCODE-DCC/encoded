@@ -38,7 +38,8 @@ var Form = module.exports.Form = React.createClass({
         )
     },
 
-    save: function() {
+    save: function(e) {
+        e.preventDefault();
         var $ = require('jquery');
         var value = this.state.value;
         var method = this.props.method;

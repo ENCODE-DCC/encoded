@@ -148,6 +148,10 @@ var Layout = module.exports.Layout = React.createClass({
         }
     },
 
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({value: nextProps.value});
+    },
+
     componentDidMount: function() {
         this.$ = require('jquery');
         this.$('<i id="drag-marker"></i>').appendTo(this.getDOMNode());
@@ -216,7 +220,7 @@ var Layout = module.exports.Layout = React.createClass({
                 this.state.value.rows[this.dst_row].blocks.splice(dst_col, 0, block);
             }
             // cull empty rows
-            this.state.value.rows.filter(function(row) {
+            this.state.value.rows = this.state.value.rows.filter(function(row) {
                 return row.blocks.length;
             });
         }
@@ -283,7 +287,7 @@ var Layout = module.exports.Layout = React.createClass({
         // remove block
         this.state.value.rows[row].blocks.splice(col, 1)[0];
         // cull empty rows
-        this.state.value.rows.filter(function(row) {
+        this.state.value.rows = this.state.value.rows.filter(function(row) {
             return row.blocks.length;
         });
         // refresh

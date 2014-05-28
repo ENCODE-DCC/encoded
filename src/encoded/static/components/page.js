@@ -25,7 +25,9 @@ var PageFormSchema = (
     <Schema>
         <Property name="name" label="Name" />
         <Property name="title" label="Title" />
-        <Property name="layout" label="Layout" input={Layout({editable: true})} />
+        <Property name="layout" label="Layout"
+                  input={Layout({editable: true})}
+                  defaultValue={{ 'rows': [ {'blocks': [ {'@type': 'richtextblock', 'data': {'body': '(new layout)'} } ]}] }} />
     </Schema>
 );
 
