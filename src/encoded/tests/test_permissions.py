@@ -11,6 +11,15 @@ def remote_user_testapp(app, remote_user):
 
 
 @pytest.fixture
+def other_lab(testapp):
+    item = {
+        'title': 'Other lab',
+        'name': 'other-lab',
+    }
+    return testapp.post_json('/lab', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def wrangler_testapp(wrangler, app, external_tx, zsa_savepoints):
     return remote_user_testapp(app, wrangler['uuid'])
 
@@ -47,6 +56,17 @@ def test_submitter_post_update_experiment(submitter_testapp, lab, award):
     assert res.json['has_permission'] is True
     assert 'submits_for.%s' % lab['uuid'] in res.json['principals_allowed_by_permission']
     submitter_testapp.patch_json(location, {'description': 'My experiment'}, status=200)
+
+
+def test_submitter_post_other_lab(submitter_testapp, other_lab, award):
+    experiment = {'lab': other_lab['@id'], 'award': award['@id']}
+    res = submitter_testapp.post_json('/experiment', experiment, status=422)
+    assert "not in user submits_for" in res.json['errors'][0]['description']
+
+
+def test_wrangler_post_other_lab(wrangler_testapp, other_lab, award):
+    experiment = {'lab': other_lab['@id'], 'award': award['@id']}
+    wrangler_testapp.post_json('/experiment', experiment, status=201)
 
 
 def test_users_view_details_admin(submitter, testapp):

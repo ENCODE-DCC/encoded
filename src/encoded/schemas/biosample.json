@@ -34,7 +34,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "accession": {
             "accessionType": "BS"
@@ -446,10 +446,6 @@
             "title": "Biosample type",
             "type": "string"
         },
-        "organ_slims": {
-            "title": "Organ",
-            "type": "array"
-        },
         "status": {
             "title": "Biosample status",
             "type": "string"
@@ -458,6 +454,11 @@
             "title": "Organism",
             "type": "string"
         },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
+        
         "sex": {
             "title": "Gender",
             "type": "string"
@@ -482,10 +483,6 @@
             "title": "Source",
             "type": "string"
         },
-        "lab.title": {
-            "title": "Lab",
-            "type": "string"
-        },
         "developmental_slims": {
             "title": "Developmental slim",
             "type": "array"
@@ -493,6 +490,10 @@
         "synchronization": {
             "title": "Synchronization stage",
             "type": "string" 
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
         }
     },
     "columns": {
@@ -570,6 +571,7 @@
         "synchronization": 1.0,
         "health_status": 1.0,
         "donor.accession": 1.0,
+        "donor.alternate_accessions": 1.0,
         "donor.organism.name": 1.0,
         "donor.organism.scientific_name": 1.0,
         "donor.organism.taxon_id": 1.0,
@@ -594,9 +596,11 @@
         "constructs.target.dbxref": 1.0,
         "constructs.target.aliases": 1.0,
         "derived_from.accession": 1.0,
+        "derived_from.alternate_accessions": 1.0,
         "derived_from.biosample_term_id": 1.0,
         "derived_from.biosample_term_name": 1.0,
         "pooled_from.accession": 1.0,
+        "pooled_from.alternate_accessions": 1.0,
         "pooled_from.biosample_term_id": 1.0,
         "pooled_from.biosample_term_name": 1.0,
         "characterizations.characterization_method": 1.0,

@@ -643,5 +643,26 @@
         "source": "kevin-white",
         "submitted_by": "eni.lectus@nullam.sed",
         "uuid": "e68e44af-6753-41d8-a35a-d1fb5f95bf9b"
-    }
+    },
+    {
+        "_test": "embryonic stem cell",
+        "accession": "ENCBS987RNP",
+        "aliases": [
+            "ENCODE:H9-cells"
+        ],
+        "award": "U54HG004557",
+        "biosample_term_id": "NTR:0000838",
+        "biosample_term_name": "H9-hESC",
+        "biosample_type": "stem cell",
+        "date_obtained": "2012-12-01",
+        "description": "embryonic stem cell (hESC) H9",
+        "health_status": "Healthy",
+        "lab": "thomas-gingeras",
+        "life_stage": "embryonic",
+        "organism": "human",
+        "protocol_documents": [],
+        "source": "michael-snyder",
+        "submitted_by": "dignissim.euismod@amet.habitant",
+        "uuid": "51ddff9b-a477-41bb-91ad-7f6c97380cbe"
+    }  
 ]
