@@ -120,7 +120,9 @@ def test_indexing_simple(testapp, indexer_testapp):
 
 
 def test_listening(testapp, listening_conn):
-    res = testapp.post_json('/testing-post-put-patch/', {'required': ''})
+    import time
+    testapp.post_json('/testing-post-put-patch/', {'required': ''})
+    time.sleep(1)
     listening_conn.poll()
     assert len(listening_conn.notifies) == 1
     notify = listening_conn.notifies.pop()
