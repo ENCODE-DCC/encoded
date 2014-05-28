@@ -125,7 +125,8 @@
              "description": "Lab associated with the submission.",
             "comment": "See lab.json for list of available identifiers.",
             "type": "string",
-            "linkTo": "lab"
+            "linkTo": "lab",
+            "linkSubmitsFor": true
         },
         "award": {
             "title": "Grant",
@@ -200,12 +201,13 @@
             "description": "The categorization of the biosample.",
             "type": "string",
             "enum" : [
-                "primary cell line",
+                "primary cell",
                 "immortalized cell line",
                 "tissue",
                 "in vitro differentiated cells",
                 "induced pluripotent stem cell line",
-                "whole organisms"
+                "whole organisms",
+                "stem cell"
             ]
         }
     },
