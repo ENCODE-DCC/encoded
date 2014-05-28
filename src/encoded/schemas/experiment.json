@@ -86,6 +86,10 @@
             "title": "Assay",
             "type": "string"
         },
+        "status": {
+            "title": "Experiment Status",
+            "type": "string"
+        },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
             "type": "string"
@@ -98,37 +102,37 @@
             "title": "Organ",
             "type": "array"
         },
-        "replicates.library.biosample.life_stage": {
-            "title": "Life stage",
+        "lab.title": {
+            "title": "Lab",
             "type": "string"
-        },
-        "developmental_slims": {
-            "title": "Developmental slim",
-            "type": "array"
-        },
-        "replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Biosample treatment",
-            "type": "array"
         },
         "files.file_format": {
             "title": "Available files",
-            "type": "string"
-        },
-        "replicates.read_length": {
-            "title": "Read length (nt)",
-            "type": "string"
-        },
-        "replicates.library.size_range": {
-            "title": "Library insert size",
             "type": "string"
         },
         "replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment",
             "type": "array"
         },
-        "lab.title": {
-            "title": "Lab",
+        "replicates.read_length": {
+            "title": "Read length (nt)",
             "type": "string"
+        },
+        "developmental_slims": {
+            "title": "Developmental slim",
+            "type": "array"
+        },
+        "replicates.library.biosample.life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "replicates.library.size_range": {
+            "title": "Library insert size",
+            "type": "string"
+        },
+        "replicates.library.biosample.treatments.treatment_term_name": {
+            "title": "Biosample treatment",
+            "type": "array"
         }
     },
     "columns": {
@@ -179,6 +183,10 @@
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Treatment",
             "type": "string"
+        },
+        "replicates.length": {
+            "title": "Replicates",
+            "type": "array"
         },
         "files.length": {
             "title": "Files",

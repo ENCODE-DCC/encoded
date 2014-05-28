@@ -329,7 +329,6 @@
         "mouse_life_stage": {
             "title": "Mouse life stage",
             "type": "string",
-            "default": "unknown",
             "enum": [
                 "adult",
                 "unknown",
@@ -447,6 +446,10 @@
             "title": "Biosample type",
             "type": "string"
         },
+        "organ_slims": {
+            "title": "Organ",
+            "type": "array"
+        },
         "status": {
             "title": "Biosample status",
             "type": "string"
@@ -454,10 +457,6 @@
         "organism.scientific_name": {
             "title": "Organism",
             "type": "string"
-        },
-        "organ_slims": {
-            "title": "Organ",
-            "type": "array"
         },
         "sex": {
             "title": "Gender",
@@ -544,6 +543,14 @@
         "constructs.target.label": {
             "title": "Construct",
             "type": "string"
+        },
+        "treatments.length": {
+            "title": "Treatments length",
+            "type": "array"
+        },
+        "constructs.length": {
+            "title": "Constructs",
+            "type": "array"
         }
     },
     "boost_values": {

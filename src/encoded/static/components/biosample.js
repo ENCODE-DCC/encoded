@@ -320,6 +320,9 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
                 {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
 
+                {context.genotype ? <dt>Genotype</dt> : null}
+                {context.genotype ? <dd>{context.organism.scientific_name}</dd> : null}
+
                 {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
@@ -359,6 +362,9 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
 
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
                 {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
+
+                {context.genotype ? <dt>Genotype</dt> : null}
+                {context.genotype ? <dd>{context.organism.scientific_name}</dd> : null}
 
                 {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
