@@ -27,6 +27,7 @@ requires = [
     'zope.sqlalchemy',
     'PyBrowserID',
     'elasticsearch',
+    'rdflib',
 ]
 
 tests_require = [
@@ -70,6 +71,7 @@ setup(
         sync_edw = encoded.commands.sync_edw:main
         update-keys-links = encoded.commands.update_keys_links:main
         upgrade = encoded.commands.upgrade:main
+        ontology = encoded.commands.ontology:main
 
 
 
