@@ -6,6 +6,9 @@ from ..auditor import (
 
 @audit_checker('biosample')
 def audit_biosample_term(value, system):
+    if value['status'] == 'deleted':
+        return
+    
     if 'biosample_term_id' not in value:
         return
     ontology = system['registry']['ontology']
