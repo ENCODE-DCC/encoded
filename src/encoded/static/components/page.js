@@ -10,7 +10,24 @@ var globals = require('./globals');
 
 var Page = module.exports.Page = React.createClass({
     render: function() {
-        return <Layout value={this.props.context.layout} />;
+        var actions = this.props.context.actions;
+        if (actions && actions.length) {
+            var actions = (
+                <div className="navbar navbar-default">
+                    <div className="container">
+                        {actions.map(action => <a href={action.href}><button className={action.className}>{action.title}</button></a>)}
+                    </div>
+                </div>
+            );
+        } else {
+            var actions = '';
+        }
+        return (
+            <div>
+                {actions}
+                <Layout value={this.props.context.layout} />
+            </div>
+        );
     }
 });
 

@@ -53,6 +53,7 @@ ALLOW_SUBMITTER_ADD = [
 
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, Authenticated, 'view'),
+    (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
@@ -748,7 +749,6 @@ class Page(Collection):
         },
     ]
 
-
     class Item(Collection.Item):
         base_types = ['page'] + Collection.Item.base_types
         name_key = 'name'
@@ -758,6 +758,21 @@ class Page(Collection):
             'in progress': [],
             'released': ALLOW_EVERYONE_VIEW,
             'deleted': ONLY_ADMIN_VIEW,
+        }
+
+        template = {
+            'actions': [
+                {
+                    'name': 'edit',
+                    'title': 'Edit',
+                    'profile': '/profiles/page.json',
+                    'method': 'PUT',
+                    'href': '#!edit',
+                    'className': 'btn navbar-btn',
+                    '$templated': True,
+                    '$condition': 'permission:edit'
+                },
+            ],
         }
 
 
