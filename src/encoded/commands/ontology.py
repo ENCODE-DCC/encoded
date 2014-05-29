@@ -1,5 +1,7 @@
-from rdflib import ConjunctiveGraph, exceptions, Namespace, Graph
+from rdflib import ConjunctiveGraph, exceptions, Namespace
 from rdflib import RDFS, RDF, BNode
+from rdflib.collection import Collection
+import json
 
 EPILOG = __doc__
 
@@ -20,6 +22,7 @@ IntersectionOf = OWLNS["intersectionOf"]
 
 PART_OF = "http://purl.obolibrary.org/obo/BFO_0000050"
 DEVELOPS_FROM = "http://purl.obolibrary.org/obo/RO_0002202"
+HUMAN_TAXON = "http://purl.obolibrary.org/obo/NCBITaxon_9606"
 DEFAULT_LANGUAGE = "en"
 
 developental_slims = {
@@ -119,7 +122,6 @@ class Inspector(object):
             self.allclasses = self.__getAllClasses(includeDomainRange=True, includeImplicit=True, removeBlankNodes=False, excludeRDF_OWL=False)
 
     def get_OntologyURI(self, return_as_string=True):
-        
         test = [x for x, y, z in self.rdfGraph.triples((None, RDF.type, Ontology))]
         if test:
             if return_as_string:
@@ -150,7 +152,7 @@ class Inspector(object):
         if classPredicate == "rdfs" or classPredicate == "":
             for s in rdfGraph.subjects(RDF.type, RDFS.Class):
                 exit = addIfYouCan(s, exit)
-        
+
         if classPredicate == "owl" or classPredicate == "":
             for s in rdfGraph.subjects(RDF.type, Class):
                 exit = addIfYouCan(s, exit)
@@ -173,7 +175,7 @@ class Inspector(object):
         if removeBlankNodes:
             exit = [x for x in exit if not isBlankNode(x)]
         return sort_uri_list_by_name(exit)
-       
+
     def __getTopclasses(self, classPredicate=''):
         returnlist = []
 
@@ -337,7 +339,6 @@ def isBlankNode(aClass):
 
 
 def splitNameFromNamespace(aUri):
-   
     stringa = aUri.__str__()
     try:
         ns = stringa.split("#")[0]
@@ -360,13 +361,12 @@ def iterativeChildren(nodes, terms, closure):
             break
         for node in nodes:
             results.append(node)
-            if node in terms:
-                if terms[node][data]:
-                    for child in terms[node][data]:
-                        if child not in results:
-                            newNodes.append(child)
-        nodes = newNodes
-    return results
+            if terms[node][data]:
+                for child in terms[node][data]:
+                    if child not in results:
+                        newNodes.append(child)
+        nodes = list(set(newNodes))
+    return list(set(results))
 
 
 def getSlims(goid, terms, slimType):
@@ -395,7 +395,6 @@ def getTermStructure():
         'id': '',
         'name': '',
         'parents': [],
-        'children': [],
         'part_of': [],
         'develops_from': [],
         'organs': [],
@@ -418,11 +417,13 @@ def main():
     )
     parser.add_argument('--uberon-url', help="Uberon version URL")
     parser.add_argument('--efo-url', help="EFO version URL")
+    parser.add_argument('--obi-url', help="OBI version URL")
     args = parser.parse_args()
 
     uberon_url = args.uberon_url
     efo_url = args.efo_url
-    urls = [uberon_url]
+    obi_url = args.obi_url
+    urls = [obi_url, efo_url, uberon_url]
 
     terms = {}
     for url in urls:
@@ -434,17 +435,33 @@ def main():
                         pass
                     else:
                         for o1 in data.rdfGraph.objects(c, IntersectionOf):
-                            for s, v, ob in data.rdfGraph.triples((o1, None, None)):
-                                if isBlankNode(ob):
-                                    g = data.rdfGraph.get_context(o1)
-                                    g1 = data.rdfGraph.get_context(ob)
-                                    import pdb; pdb.set_trace();
-                                else:
-                                    print ob
+                            collection = Collection(data.rdfGraph, o1)
+                            col_list = []
+                            for col in data.rdfGraph.objects(collection[1]):
+                                col_list.append(col.__str__())
+                            if HUMAN_TAXON in col_list:
+                                if PART_OF in col_list:
+                                    for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
+                                        term_id = splitNameFromNamespace(collection[0])[0].replace('_', ':')
+                                        if term_id not in terms:
+                                            terms[term_id] = getTermStructure()
+                                        terms[term_id]['part_of'].append(splitNameFromNamespace(subC)[0].replace('_', ':'))
+                                elif DEVELOPS_FROM in col_list:
+                                    for subC in data.rdfGraph.objects(c, RDFS.subClassOf):
+                                        term_id = splitNameFromNamespace(collection[0])[0].replace('_', ':')
+                                        if term_id not in terms:
+                                            terms[term_id] = getTermStructure()
+                                        terms[term_id]['develops_from'].append(splitNameFromNamespace(subC)[0].replace('_', ':'))
             else:
-                term = getTermStructure()
-                term['id'] = splitNameFromNamespace(c)[0].replace('_', ':')
-                term['name'] = data.rdfGraph.label(c)
+                term_id = splitNameFromNamespace(c)[0].replace('_', ':')
+                if term_id not in terms:
+                    terms[term_id] = getTermStructure()
+                terms[term_id]['id'] = term_id
+                
+                try:
+                    terms[term_id]['name'] = data.rdfGraph.label(c).__str__()
+                except:
+                    terms[term_id]['name'] = ''
 
                 # Get all parents
                 for parent in data.get_classDirectSupers(c, excludeBnodes=False):
@@ -453,22 +470,19 @@ def main():
                             if o.__str__() == PART_OF:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        term['part_of'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['part_of'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
                             elif o.__str__() == DEVELOPS_FROM:
                                 for o1 in data.rdfGraph.objects(parent, SomeValuesFrom):
                                     if not isBlankNode(o1):
-                                        term['develops_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
+                                        terms[term_id]['develops_from'].append(splitNameFromNamespace(o1)[0].replace('_', ':'))
                     else:
-                        term['parents'].append(splitNameFromNamespace(parent)[0].replace('_', ':'))
+                        terms[term_id]['parents'].append(splitNameFromNamespace(parent)[0].replace('_', ':'))
                 
-                # Get all synonyms
-                term['synonyms'] = []
                 for syn in data.entitySynonyms(c):
                     try:
-                        term['synonyms'].append(syn.__str__())
+                        terms[term_id]['synonyms'].append(syn.__str__())
                     except:
                         pass
-                terms[term['id']] = term
     for term in terms:
         terms[term]['data'] = list(set(terms[term]['parents']) | set(terms[term]['part_of']))
         terms[term]['data_with_develops_from'] = list(set(terms[term]['data']) | set(terms[term]['develops_from']))
@@ -481,16 +495,21 @@ def main():
         d = iterativeChildren(terms[term]['data_with_develops_from'], terms, 'data_with_develops_from')
         for dd in d:
             terms[term]['closure_with_develops_from'].append(dd)
-        terms[term]['closure'] = list(set(terms[term]['closure']))
+       
         terms[term]['closure'].append(term)
-        terms[term]['closure_with_develops_from'] = list(set(terms[term]['closure_with_develops_from']))
         terms[term]['closure_with_develops_from'].append(term)
 
         terms[term]['systems'] = getSlims(term, terms, 'system')
         terms[term]['organs'] = getSlims(term, terms, 'organ')
         terms[term]['developmental'] = getSlims(term, terms, 'developmental')
+        del terms[term]['closure'], terms[term]['closure_with_develops_from']
 
-    import pdb; pdb.set_trace();
+    for term in terms:
+        del terms[term]['parents'], terms[term]['part_of'], terms[term]['develops_from']
+        del terms[term]['id'], terms[term]['data'], terms[term]['data_with_develops_from']
+
+    with open('ontology.json', 'w') as outfile:
+        json.dump(terms, outfile)
 
 
 if __name__ == '__main__':
