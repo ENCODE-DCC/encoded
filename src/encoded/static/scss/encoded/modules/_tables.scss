@@ -81,12 +81,16 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 
 
 /* Table Controls */
+.table-responsive {
+    overflow-x: auto;
+}
+
 table thead tr th button {
     float: left;
 }
 
 form.table-filter {
-    float: left;
+    float: right;
     margin: 0;
     position: relative;
 }
@@ -98,10 +102,10 @@ form.table-filter {
 }
 
 .table-count {
-    display: inline-block !important;
     font-size: 1em !important;
-    padding: 0.25em 1.5em !important;
-    margin-right: .5em;
+    display: inline-block !important;
+    padding: 0.5em 2em !important;
+    margin-right: 1em;
 }
 
 .spinner-warning {
@@ -110,8 +114,9 @@ form.table-filter {
 }
 
 .table-meta-data {
+    height: $input-height-base;
     display: block;
-    margin-bottom: .5em;
+    float: left;
 }
 
 /* initial state is hidden (see template; class=hide) */
