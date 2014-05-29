@@ -201,7 +201,7 @@
             "description": "The categorization of the biosample.",
             "type": "string",
             "enum" : [
-                "primary cell line",
+                "primary cell",
                 "immortalized cell line",
                 "tissue",
                 "in vitro differentiated cells",

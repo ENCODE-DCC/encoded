@@ -53,7 +53,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                 var lifeAgeString = (biosample.life_stage && biosample.life_stage != 'unknown') ? biosample.life_stage : '';
                 if (biosample.age && biosample.age != 'unknown') {
                     lifeAgeString += (lifeAgeString ? ' ' : '') + biosample.age;
-                    lifeAgeString += (biosample.age_units && age_units != 'unknown') ? ' ' + biosample.age_units : '';
+                    lifeAgeString += (biosample.age_units && biosample.age_units != 'unknown') ? ' ' + biosample.age_units : '';
                 }
                 if (lifeAgeString) {
                     lifeAge.push(lifeAgeString);
@@ -141,15 +141,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Accession</dt>
                         <dd>{context.accession}</dd>
 
-                        {context.target ? <dt>Target</dt> : null}
-                        {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
-
-                        {antibody_accessions.length ? <dt>Antibody</dt> : null}
-                        {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
-
                         {biosamples.length ? <dt>Biosample Summary</dt> : null}
                         {biosamples.length ?
                             <dd>
+                                {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
+                                {'('}
                                 {organismName.map(function(name, i) {
                                     if (i === 0) {
                                         return (<em>{name}</em>);
@@ -158,11 +154,19 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     }
                                 })}
                                 {context.biosample_type ? <span>{' ' + context.biosample_type}</span> : null}
-                                {context.biosample_term_name || lifeAge.length ? <span>: </span> : null}
-                                {context.biosample_term_name ? <span>{context.biosample_term_name}</span> : null}
                                 {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
+                                {')'}
                             </dd>
                         : null}
+
+                        {context.biosample_type ? <dt>Type</dt> : null}
+                        {context.biosample_type ? <dd>{context.biosample_type}</dd> : null}
+
+                        {context.target ? <dt>Target</dt> : null}
+                        {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
+
+                        {antibody_accessions.length ? <dt>Antibody</dt> : null}
+                        {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
                         {treatmentText.length ? <dt>Treatment</dt> : null}
                         {treatmentText.length ?
