@@ -3,7 +3,7 @@
     "id": "/profiles/lab.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name"],
+    "required": ["name", "title"],
     "identifyingProperties": ["uuid", "title", "name"],
     "additionalProperties": false,
     "mixinProperties": [

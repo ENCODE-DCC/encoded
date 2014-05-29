@@ -11,11 +11,13 @@ import uuid
 
 SERVER_DEFAULTS = {}
 
+
 def server_default(func):
     SERVER_DEFAULTS[func.__name__] = func
 
 
 ACCESSION_FACTORY = __name__ + ':accession_factory'
+
 
 def includeme(config):
     from pyramid.path import DottedNameResolver
@@ -62,8 +64,7 @@ def accession(property, subschema):
     raise AssertionError("Free accession not found in %d attempts" % ATTEMPTS)
 
 
-ENC_ACCESSION_FORMAT = (digits, digits, digits, ascii_uppercase, ascii_uppercase, ascii_uppercase,
-)
+ENC_ACCESSION_FORMAT = (digits, digits, digits, ascii_uppercase, ascii_uppercase, ascii_uppercase)
 
 
 def enc_accession(accession_type):
@@ -72,6 +73,7 @@ def enc_accession(accession_type):
 
 
 TEST_ACCESSION_FORMAT = (digits, ) * 6
+
 
 def test_accession(accession_type):
     """ Test accessions are generated on test.encodedcc.org
