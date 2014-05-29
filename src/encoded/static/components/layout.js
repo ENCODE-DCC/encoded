@@ -28,7 +28,8 @@ var Block = module.exports.Block = React.createClass({
             <div data-row={this.props.row} data-col={this.props.col}
                  onDragStart={this.dragStart}>
                 {buttons}
-                <block_view type={block['@type']} data={block.data} />
+                <block_view type={block['@type']} value={block.data}
+                            editable={this.props.editable} onChange={this.onChange} />
             </div>
         );
     },
@@ -37,8 +38,12 @@ var Block = module.exports.Block = React.createClass({
         this.props.dragStart(e, this.props.block, this.props.row, this.props.col);
     },
 
+    onChange: function(value) {
+        this.props.change(this.props.row, this.props.col, value);
+    },
+
     remove: function() {
-        this.props.remove(this.props.row, this.props.col)
+        this.props.remove(this.props.row, this.props.col);
     }
 });
 
@@ -73,6 +78,7 @@ var Row = module.exports.Row = React.createClass({
                        draggable="true"
                        dragStart={this.props.dragStart}
                        onDragEnd={this.props.dragEnd}
+                       change={this.props.change}
                        remove={this.props.remove} />
             );
         }, this);
@@ -166,6 +172,7 @@ var Layout = module.exports.Layout = React.createClass({
                             editable={true}
                             dragStart={this.dragStart}
                             dragEnd={this.dragEnd}
+                            change={this.change}
                             remove={this.remove} />;
             } else {
                 return <Row blocks={row.blocks} editable={false} />;
@@ -281,6 +288,12 @@ var Layout = module.exports.Layout = React.createClass({
             });
             this.setState(this.state);
         }
+    },
+
+    change: function(row, col, value) {
+        this.state.value.rows[row].blocks[col].data = value;
+        this.setState(this.state);
+        this.props.onChange(this.state.value);
     },
 
     remove: function(row, col) {
