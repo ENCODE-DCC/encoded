@@ -87,7 +87,7 @@
             "type": "string"
         },
         "status": {
-            "title": "Experiment Status",
+            "title": "Experiment status",
             "type": "string"
         },
         "replicates.library.biosample.donor.organism.scientific_name": {
@@ -107,7 +107,7 @@
             "type": "string"
         },
         "files.file_format": {
-            "title": "Available files",
+            "title": "Available data",
             "type": "string"
         },
         "replicates.library.treatments.treatment_term_name": {
@@ -127,7 +127,7 @@
             "type": "string"
         },
         "replicates.library.size_range": {
-            "title": "Library insert size",
+            "title": "Library insert size (nt)",
             "type": "string"
         },
         "replicates.library.biosample.treatments.treatment_term_name": {

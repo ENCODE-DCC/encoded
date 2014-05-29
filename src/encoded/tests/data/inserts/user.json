@@ -1743,5 +1743,18 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "04d1cd63-d5d9-4ea4-8d9b-7adad3d5377d"
+    },
+    {
+        "email": "fytanaka@stanford.edu",
+        "first_name": "Forrest",
+        "groups": [],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Tanaka",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "627eedbc-7cb3-4de3-9743-a86266e435a6"
     }
 ]

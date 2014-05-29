@@ -62,7 +62,7 @@
     },
     "facets": {
         "status": {
-            "title": "Approval Status",
+            "title": "Approval status",
             "type": "string"
         },
         "target.organism.scientific_name": {
@@ -78,7 +78,7 @@
             "type": "string"
         },
         "antibody.host_organism.name": {
-            "title": "Host Organism",
+            "title": "Host organism",
             "type": "string"
         },
         "characterizations.lab.title": {
