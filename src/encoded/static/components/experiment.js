@@ -141,32 +141,29 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Accession</dt>
                         <dd>{context.accession}</dd>
 
-                        {biosamples.length ? <dt>Biosample Summary</dt> : null}
+                        {biosamples.length ? <dt>Biosample summary</dt> : null}
                         {biosamples.length ?
                             <dd>
                                 {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
-                                {'('}
-                                {organismName.map(function(name, i) {
-                                    if (i === 0) {
-                                        return (<em>{name}</em>);
-                                    } else {
-                                        return (<span>{ ' and ' }<em>{name}</em></span>);
-                                    }
-                                })}
-                                {context.biosample_type ? <span>{' ' + context.biosample_type}</span> : null}
+                                {organismName.length || lifeAge.length ? '(' : null}
+                                {organismName.length ?
+                                    <span>
+                                        {organismName.map(function(name, i) {
+                                            if (i === 0) {
+                                                return (<em>{name}</em>);
+                                            } else {
+                                                return (<span>{' and '}<em>{name}</em></span>);
+                                            }
+                                        })}
+                                    </span>
+                                : null}
                                 {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
-                                {')'}
+                                {organismName.length || lifeAge.length ? ')' : null}
                             </dd>
                         : null}
 
                         {context.biosample_type ? <dt>Type</dt> : null}
                         {context.biosample_type ? <dd>{context.biosample_type}</dd> : null}
-
-                        {context.target ? <dt>Target</dt> : null}
-                        {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
-
-                        {antibody_accessions.length ? <dt>Antibody</dt> : null}
-                        {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
                         {treatmentText.length ? <dt>Treatment</dt> : null}
                         {treatmentText.length ?
@@ -179,8 +176,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </dd>
                         : null}
 
-                        {context.description ? <dt>Description</dt> : null}
-                        {context.description ? <dd>{context.description}</dd> : null}
+                        {context.target ? <dt>Target</dt> : null}
+                        {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
+
+                        {antibody_accessions.length ? <dt>Antibody</dt> : null}
+                        {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
 
                         {context.possible_controls.length ? <dt>Controls</dt> : null}
                         {context.possible_controls.length ?
@@ -199,17 +199,20 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </dd>
                         : null}
 
+                        {context.description ? <dt>Description</dt> : null}
+                        {context.description ? <dd>{context.description}</dd> : null}
+
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
 
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
 
-                        {context.aliases.length ? <dt>Aliases</dt> : null}
-                        {context.aliases.length ? <dd>{aliasList}</dd> : null}
-
                         {context.dbxrefs.length ? <dt>External resources</dt> : null}
                         {context.dbxrefs.length ? <dd><DbxrefList values={context.dbxrefs} /></dd> : null}
+
+                        {context.aliases.length ? <dt>Aliases</dt> : null}
+                        {context.aliases.length ? <dd>{aliasList}</dd> : null}
 
                     </dl>
                 </div>
