@@ -120,7 +120,7 @@ def login(request):
 
 
 @view_config(name='logout', physical_path='/',
-             subpath_segments=0, permission=NO_PERMISSION_REQUIRED)
+             subpath_segments=0, permission=NO_PERMISSION_REQUIRED, http_cache=0)
 def logout(request):
     """View to forget the user"""
     request.session.get_csrf_token()
