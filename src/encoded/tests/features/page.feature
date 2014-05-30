@@ -29,5 +29,5 @@ Feature: Portal pages
 		And I should see an element with the css selector "#content form"
 		And I fill in "name" with "test2"
 		And I press "Save"
-		And I should see an element with the css selector "h1"
+		And I should not see an element with the css selector "#content form"
 		Then the browser's URL should contain "/about/test2/"
