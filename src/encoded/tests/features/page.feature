@@ -26,8 +26,8 @@ Feature: Portal pages
 
 	Scenario: Edit (and rename) a page
 		When I visit "/about/about/#!edit"
-	    And I wait for deferred content to fully load
+		And I should see an element with the css selector "#content form"
 		And I fill in "name" with "test2"
 		And I press "Save"
-		And I wait for the content to load
+		And I should see an element with the css selector "h1"
 		Then the browser's URL should contain "/about/test2/"
