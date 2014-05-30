@@ -470,8 +470,6 @@ class Biosample(Collection):
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
 
-            root = find_root(self)
-            donor = root.get_by_uuid(self.properties['organism'])
             human_donor_properties = [
                 "sex",
                 "age",
@@ -492,7 +490,11 @@ class Biosample(Collection):
                 "fly_synchronization_stage": "synchronization",
                 "worm_synchronization_stage": "synchronization"
             }
-            if ns['organism'] == '7745b647-ff15-4ff3-9ced-b897d4e2983c':
+            root = find_root(self)
+            organism = root.get_by_uuid(self.properties['organism'])
+
+            if organism.properties['name'] == 'human' and 'donor' in ns:
+                donor = root.get_by_uuid(self.properties['donor'])
                 for value in human_donor_properties:
                     if value in donor.properties:
                         ns[value] = donor.properties[value]
