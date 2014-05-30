@@ -287,7 +287,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
                 {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
 
                 {biosample && biosample.sex ? <dt>Sex</dt> : null}
                 {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
@@ -327,7 +327,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
                 {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
 
                 {biosample && biosample.sex ? <dt>Sex</dt> : null}
                 {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
@@ -370,7 +370,7 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
                 {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
 
                 {biosample && biosample.sex ? <dt>Sex</dt> : null}
                 {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
