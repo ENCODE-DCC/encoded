@@ -49,6 +49,7 @@ script: >
   --browser-arg name "$TRAVIS_REPO_SLUG $TRAVIS_BRANCH $TRAVIS_COMMIT"
   --browser-arg-int wait_time 10
   --browser 'Chrome'
+  -k page.feature
 after_script:
   - export SAUCE_JOB_ID=`grep -m 1 /session/ $CONNECT_LOG | cut -d / -f 7`
   - export SAUCE_PASSED=`((TRAVIS_TEST_RESULT == 0)) && echo true || echo false`
