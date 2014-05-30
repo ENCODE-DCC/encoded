@@ -23,11 +23,3 @@ Feature: Portal pages
 	    And I wait for the content to load
 	    Then the browser's URL should contain "/about/test/"
 	    And the title should contain the text "Test"
-
-	Scenario: Edit (and rename) a page
-		When I visit "/about/about/#!edit"
-		And I should see an element with the css selector "#content form"
-		And I fill in "name" with "test2"
-		And I press "Save"
-		And I should not see an element with the css selector "#content form"
-		Then the browser's URL should contain "/about/test2/"
