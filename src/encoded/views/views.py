@@ -478,18 +478,39 @@ class Biosample(Collection):
                 "life_stage",
                 'synchronization'
             ]
-            model_biosample_properties = {
+            mouse_biosample_properties = {
                 "model_organism_sex": "sex",
                 "model_organism_age": "age",
                 "model_organism_age_units": "age_units",
                 "model_organism_health_status": "health_status",
                 "mouse_life_stage": "life_stage",
+                "mouse_synchronization_stage": "synchronization"
+            }
+            fly_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
                 "fly_life_stage": "life_stage",
+                "fly_synchronization_stage": "synchronization"
+            }
+            worm_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
                 "worm_life_stage": "life_stage",
-                "mouse_synchronization_stage": "synchronization",
-                "fly_synchronization_stage": "synchronization",
                 "worm_synchronization_stage": "synchronization"
             }
+            fly_organisms = [
+                "dmelanogaster",
+                "dananassae",
+                "dmojavensis",
+                "dpseudoobscura",
+                "dsimulans",
+                "dvirilis",
+                "dyakuba"
+            ]
             root = find_root(self)
             organism = root.get_by_uuid(self.properties['organism'])
 
@@ -500,8 +521,20 @@ class Biosample(Collection):
                         ns[value] = donor.properties[value]
                     else:
                         ns[value] = ''
+            elif organism.properties['name'] == "mouse":
+                for key, value in mouse_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
+            elif organism.properties['name'] in fly_organisms:
+                for key, value in fly_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
             else:
-                for key, value in model_biosample_properties.items():
+                for key, value in worm_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
                     else:
