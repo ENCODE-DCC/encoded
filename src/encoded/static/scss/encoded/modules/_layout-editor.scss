@@ -7,14 +7,14 @@
 			content: " ";
 			display: block;
 			width: 100%;
-			border-top: solid 3px blue;
+			border-top: solid 3px $brand-primary;
 			margin-top: -3px;
 		}
 		&.drop-bottom:after {
 			content: " ";
 			display: block;
 			width: 100%;
-			border-bottom: solid 3px blue;
+			border-bottom: solid 3px $brand-primary;
 			margin-bottom: -3px;
 		}
 	}
@@ -33,7 +33,7 @@
 			top: 0;
 			left: 0;
 			height: 100%;
-			border-left: solid 3px blue;
+			border-left: solid 3px $brand-primary;
 		}
 		&.drop-right:after {
 			content: " ";
@@ -42,11 +42,11 @@
 			top: 0;
 			right: 0;
 			height: 100%;
-			border-right: solid 3px blue;
+			border-right: solid 3px $brand-primary;
 		}
 
 		&:hover {
-			outline: dashed 1px #ccc;
+			outline: dashed 1px $brand-primary;
 			cursor: move;
 			.block-toolbar {
 				display: block;
