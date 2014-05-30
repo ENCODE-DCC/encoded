@@ -63,6 +63,17 @@ def wait_for_table(context):
     assert context.browser.is_element_not_present_by_css("table.collection-table.communicating")
 
 
+@step(u'I wait for the form to fully load')
+def wait_for_form(context):
+    assert context.browser.is_element_present_by_css("#content form")
+    assert context.browser.is_element_not_present_by_css(".communicating")
+
+
+@step(u'I wait for the form to close')
+def wait_for_form_to_close(context):
+    assert context.browser.is_element_not_present_by_css("#content form", wait_time=30)
+
+
 @step(u'I wait for the content to load')
 def wait_for_content(context):
     assert context.browser.is_element_present_by_css("#application")

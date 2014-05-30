@@ -113,6 +113,13 @@ form.table-filter {
     display: inline-block;
 }
 
+.table-actions {
+    margin-left: 1em;
+    button {
+        float: none;
+    }
+}
+
 /* initial state is hidden (see template; class=hide) */
 #total-records {
 	font-weight: normal;

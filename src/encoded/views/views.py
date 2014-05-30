@@ -14,6 +14,7 @@ from ..schema_utils import (
     load_schema,
 )
 from pyramid.traversal import find_root
+import copy
 
 ACCESSION_KEYS = [
     {
@@ -727,6 +728,26 @@ class RNAiCharacterization(Characterization):
 
 class Page(Collection):
     schema = load_schema('page.json')
+
+    template = copy.deepcopy(Collection.template)
+    template['@type'] = [
+        {'$value': '{item_type}_collection', '$templated': True},
+        'page_collection',
+        'collection',
+    ]
+    template['actions'] = [
+        {
+            'name': 'add',
+            'title': 'Add',
+            'profile': '/profiles/{item_type}.json',
+            'method': 'GET',
+            'href': '#!add',
+            'className': 'btn btn-success',
+            '$templated': True,
+            '$condition': 'permission:add',
+        },
+    ]
+
 
     class Item(Collection.Item):
         base_types = ['page'] + Collection.Item.base_types

@@ -1,0 +1,8 @@
+.react-forms-radio-button-group-button {
+  @include radio;
+}
+
+.react-forms-radio-button-group-caption {
+  margin-left: 10px;
+  @include user-select(none);
+}
