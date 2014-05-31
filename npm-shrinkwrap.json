@@ -1592,10 +1592,19 @@
         }
       }
     },
+    "grunt-contrib-copy": {
+      "version": "0.5.0",
+      "from": "grunt-contrib-copy@"
+    },
     "jquery": {
       "version": "1.11.1",
       "from": "jquery@^1.11.1",
       "resolved": "https://registry.npmjs.org/jquery/-/jquery-1.11.1.tgz"
+    },
+    "node-ckeditor": {
+      "version": "4.3.2",
+      "from": "node-ckeditor@",
+      "resolved": "https://registry.npmjs.org/node-ckeditor/-/node-ckeditor-4.3.2.tgz"
     },
     "react": {
       "version": "0.10.0",
