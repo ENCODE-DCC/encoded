@@ -286,53 +286,15 @@
     },
     {
         "attachment": "frowny_gel.png",
-        "award": "U41HG006992",
+        "award": "U54HG006996",
         "caption": "This characterization can be anything you want it to be, just use your imagination.",
         "characterizes": "e61ad044-a869-4bd2-ae04-f4fa83bbca00",
-        "date": "2014-05-30",
-        "lab": "michael-snyder",
-        "notes": "I bet the antibody review panel will pass this somehow.",
-        "status": "pending dcc review",
-        "characterization_review": 
-            [{ 
-                "organism": "human",
-                "lane": 2,
-                "status": "pending dcc review",
-                "biosample_term_name": "neural cell",
-                "biosample_term_id": "CL:0002319",
-                "biosample_type": "primary cell"
-            },
-            {
-                "organism": "human",
-                "lane": 3,
-                "status": "pending dcc review",
-                "biosample_term_name": "HepG2",
-                "biosample_term_id": "EFO:0001187",
-                "biosample_type": "immortalized cell line"
-            },
-            {
-                "organism": "mouse",
-                "lane": 4,
-                "status": "pending dcc review",
-                "biosample_term_name": "MEL cell line",
-                "biosample_term_id": "EFO:0003971",
-                "biosample_type": "immortalized cell line"
-            }],
-        
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "target": "JUND-human",
-        "uuid": "856aeb3d-a477-4319-85c9-e4816f16e739"
-    },
-    {
-        "attachment": "frowny_gel.png",
-        "award": "U41HG006992",
-        "caption": "This characterization can be anything you want it to be, just use your imagination.",
-        "characterizes": "e61ad044-a869-4bd2-ae04-f4fa83bbca00",
+        "characterization_method": "immunoblot",
         "date": "2014-05-31",
         "lab": "michael-snyder",
-        "notes": "Oh look, the antibody review panel did make us pass this.",
-        "status": "compliant",
-        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"],
+        "documents": [
+            "ENCODE:Antibody_characterization_standards_February_2014"
+        ],
         "characterization_review": 
             [{ 
                 "organism": "human",
@@ -358,9 +320,10 @@
                 "biosample_term_id": "EFO:0003971",
                 "biosample_type": "immortalized cell line"
             }],
-        
-        "submitted_by": "facilisi.tristique@potenti.vivamus",
-        "target": "JUND-human",
+        "notes": "Oh look, the antibody review panel made us pass this.",
+        "status": "compliant",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "target": "CTCF-human",
         "uuid": "984cfea4-1cf3-43ea-a49b-d499932619aa"
     }
 ]
