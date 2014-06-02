@@ -15,16 +15,6 @@
         "uuid": "c9a34c9e-a19a-4bf5-8b50-5d7c39d190b1"
     },
     {
-        "accession": "ENCDO550XXX",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "organism": "dmelanogaster",
-        "documents": [
-        	"ENCODE:sample_strain_generation_protocol"
-        ],
-        "uuid": "5f6b8f94-86af-447a-8e17-d94865ce1877"
-    },
-    {
         "accession": "ENCDO101XXX",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
@@ -33,6 +23,9 @@
         "strain_background": "VK00033",
         "genotype": "w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033",
         "url": "http://flystocks.bio.indiana.edu/Reports/38626.html",
+        "documents": [
+            "ENCODE:sample_strain_generation_protocol"
+        ],
         "uuid": "094a484e-817c-4cb3-a8dd-9ea2c3c1067b"
     }
 ]

@@ -15,16 +15,6 @@
         "uuid": "a09ce89d-e73a-4bbb-a3c9-9b46cc3a8e5f"
     },
     {
-        "accession": "ENCDO500YYY",
-        "award": "U41HG006992",
-        "lab": "j-michael-cherry",
-        "organism": "celegans",
-        "documents": [
-        	"ENCODE:sample_strain_generation_protocol"
-        ],
-        "uuid": "7f4264e4-107a-4c69-acd5-8033434ebb73"
-    },
-    {
         "accession": "ENCDO976AYR",
         "award": "U41HG006992",
         "lab": "j-michael-cherry",
@@ -33,6 +23,9 @@
         "genotype": "unc-119(tm4063) III; wgIs493.",
         "mutagen": "bombardment",
         "url": "http://www.cgc.cbs.umn.edu/search.php?st=OP493",
+        "documents": [
+            "ENCODE:sample_strain_generation_protocol"
+        ],
         "uuid": "7a1b8636-54fe-48c6-873a-257e3782d5fa"
     }
 ]

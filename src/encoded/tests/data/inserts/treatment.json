@@ -51,11 +51,11 @@
         "uuid": "8661b120-5c82-11e3-949a-0800200c9a66"
     },
     {
-        "submitted_by": "aldbbel.eldat@echmund.rynpald",
+        "submitted_by": "uskuf.shyec@doton.danona",
         "uuid": "8d85581d-d006-42ac-a7f6-b7aab2f6ba58",
         "treatment_term_id": "Taxon:273526",
-        "treatment_type": "exposure",
-        "lab": "valerie-reinke",
+        "treatment_type": "infection",
+        "lab": "robert-waterston",
         "duration_units": "hour",
         "treatment_term_name": "Serratia marcescens subsp. marcescens Db11",
         "duration": 48
