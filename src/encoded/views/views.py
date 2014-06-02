@@ -511,9 +511,9 @@ class Biosample(Collection):
                 "/organisms/dvirilis/",
                 "/organisms/dyakuba/"
             ]
-           
 
             if properties['organism'] == '/organisms/human/' and 'donor' in ns:
+                root = find_root(self)
                 donor = root.get_by_uuid(self.properties['donor'])
                 for value in human_donor_properties:
                     if value in donor.properties:
