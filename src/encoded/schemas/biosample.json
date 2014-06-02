@@ -459,7 +459,7 @@
             "type": "array"
         },
         "sex": {
-            "title": "Gender",
+            "title": "Sex",
             "type": "string"
         },
         "life_stage": {
