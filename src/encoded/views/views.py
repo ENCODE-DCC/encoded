@@ -249,11 +249,9 @@ class Source(Collection):
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
-    item_template = {
-        'actions': [
-            {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': '', '$templated': True, '$condition': 'permission:edit'},
-        ],
-    }
+    item_actions = [
+        {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': ''},
+    ]
     item_name_key = 'name'
     unique_key = 'source:name'
     item_keys = ALIAS_KEYS + ['name']
@@ -875,20 +873,16 @@ class Page(Collection):
             'deleted': ONLY_ADMIN_VIEW,
         }
 
-        template = {
-            'actions': [
-                {
-                    'name': 'edit',
-                    'title': 'Edit',
-                    'profile': '/profiles/page.json',
-                    'method': 'PUT',
-                    'href': '#!edit',
-                    'className': 'btn navbar-btn',
-                    '$templated': True,
-                    '$condition': 'permission:edit'
-                },
-            ],
-        }
+        actions = [
+            {
+                'name': 'edit',
+                'title': 'Edit',
+                'profile': '/profiles/page.json',
+                'method': 'PUT',
+                'href': '#!edit',
+                'className': 'btn navbar-btn',
+            },
+        ]
 
 
 @location('about')
