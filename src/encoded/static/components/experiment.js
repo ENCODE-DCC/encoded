@@ -1,4 +1,5 @@
 /** @jsx React.DOM */
+/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
@@ -71,18 +72,21 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Build the text of the Treatment string
         var treatmentText = [];
-        if (biosamples.length && biosamples[0].treatments && biosamples[0].treatments.length > 0) {
-            treatmentText = biosamples[0].treatments.map(function(treatment) {
+        biosamples.map(function(biosample) {
+            treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
                 var singleTreatment = '';
                 if (treatment.concentration) {
-                    singleTreatment += treatment.concentration + ' ' + treatment.concentration_units + ' ';
+                    singleTreatment += treatment.concentration + (treatment.concentration_units ? ' ' + treatment.concentration_units : '') + ' ';
                 }
-                singleTreatment += treatment.treatment_term_name + ' (' + treatment.treatment_term_id + ') ';
+                singleTreatment += treatment.treatment_term_name + (treatment.treatment_term_id ? ' (' + treatment.treatment_term_id + ')' : '') + ' ';
                 if (treatment.duration) {
-                    singleTreatment += 'for ' + treatment.duration + ' ' + treatment.duration_units;
+                    singleTreatment += 'for ' + treatment.duration + ' ' + (treatment.duration_units ? treatment.duration_units : '');
                 }
                 return singleTreatment;
-            });
+            }));
+        });
+        if (treatmentText) {
+            treatmentText = _.uniq(treatmentText);
         }
 
         // Adding experiment specific documents
