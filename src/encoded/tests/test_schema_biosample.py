@@ -57,12 +57,12 @@ def test_biosample_model_organism_dependencies(testapp, biosample_model_organism
     testapp.post_json('/biosample', biosample_model_organism_dependencies)
 
 
-def test_biosample_model_organism_dependencies_human(testapp, biosample_model_organism_dependencies):
-    biosample_model_organism_dependencies['organism'] = "7745b647-ff15-4ff3-9ced-b897d4e2983c"
+def test_biosample_model_organism_dependencies_human(testapp, biosample_model_organism_dependencies, organism ):
+    biosample_model_organism_dependencies['organism'] = "organism['uuid']"
     testapp.post_json('/biosample', biosample_model_organism_dependencies, status=422)
 
 def test_biosample_model_organism_dependencies_wrom_properties(testapp, biosample_model_organism_dependencies):
     biosample_model_organism_dependencies['worm_synchronization_stage'] = "fertilization"
-    biosample_model_organism_dependencies['post_synchronization_time'] = 4
+    biosample_model_organism_dependencies['post_synchronization_time'] = "4"
     biosample_model_organism_dependencies['post_synchronization_time_units'] = "hour"
     testapp.post_json('/biosample', biosample_model_organism_dependencies, status=422)
