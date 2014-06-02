@@ -503,31 +503,30 @@ class Biosample(Collection):
                 "worm_synchronization_stage": "synchronization"
             }
             fly_organisms = [
-                "/organisms/dmelanogaster",
-                "/organisms/dananassae",
-                "/organisms/dmojavensis",
-                "/organisms/dpseudoobscura",
-                "/organisms/dsimulans",
-                "/organisms/dvirilis",
-                "/organisms/dyakuba"
+                "/organisms/dmelanogaster/",
+                "/organisms/dananassae/",
+                "/organisms/dmojavensis/",
+                "/organisms/dpseudoobscura/",
+                "/organisms/dsimulans/",
+                "/organisms/dvirilis/",
+                "/organisms/dyakuba/"
             ]
-            root = find_root(self)
-            organism = root.get_by_uuid(self.properties['organism'])
+           
 
-            if self.properties['organism'] == '/organisms/human' and 'donor' in ns:
+            if properties['organism'] == '/organisms/human/' and 'donor' in ns:
                 donor = root.get_by_uuid(self.properties['donor'])
                 for value in human_donor_properties:
                     if value in donor.properties:
                         ns[value] = donor.properties[value]
                     else:
                         ns[value] = ''
-            elif self.properties['organism'] == "/organisms/mouse":
+            elif properties['organism'] == "/organisms/mouse/":
                 for key, value in mouse_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
                     else:
                         ns[value] = ''
-            elif self.properties['organism'] in fly_organisms:
+            elif properties['organism'] in fly_organisms:
                 for key, value in fly_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
