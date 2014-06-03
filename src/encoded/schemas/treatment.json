@@ -30,7 +30,8 @@
             "enum": [
                 "protein",
                 "chemical",
-                "exposure"
+                "exposure",
+                "infection"
             ]
         },
         "lab": {

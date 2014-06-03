@@ -24,21 +24,6 @@ def biosample_depeleted_in(biosample):
     return item
 
 
-@pytest.fixture
-def biosample_model_organism_dependencies(biosample):
-    item = biosample.copy()
-    item.update({
-        'organism': "3413218c-3d86-498b-a0a2-9a406638e786",
-        'model_organism_mating_status': 'virgin',
-        'model_organism_age': '14.5',
-        'model_organism_age_units': 'day',
-        'model_organism_health_status': 'Healthy',
-        'mouse_life_stage': 'embryonic',
-        'model_organism_sex': 'mixed',
-    })
-    return item
-
-
 def test_biosample_depeleted_in(testapp, biosample_depeleted_in):
     testapp.post_json('/biosample', biosample_depeleted_in)
 
@@ -51,18 +36,3 @@ def test_biosample_depeleted_in_name_required(testapp, biosample_depeleted_in):
 def test_biosample_depeleted_in_type_whole_organismg(testapp, biosample_depeleted_in):
     biosample_depeleted_in['biosample_type'] = 'tissue'
     testapp.post_json('/biosample', biosample_depeleted_in,  status=422)
-
-
-def test_biosample_model_organism_dependencies(testapp, biosample_model_organism_dependencies):
-    testapp.post_json('/biosample', biosample_model_organism_dependencies)
-
-
-def test_biosample_model_organism_dependencies_human(testapp, biosample_model_organism_dependencies):
-    biosample_model_organism_dependencies['organism'] = "7745b647-ff15-4ff3-9ced-b897d4e2983c"
-    testapp.post_json('/biosample', biosample_model_organism_dependencies, status=422)
-
-def test_biosample_model_organism_dependencies_wrom_properties(testapp, biosample_model_organism_dependencies):
-    biosample_model_organism_dependencies['worm_synchronization_stage'] = "fertilization"
-    biosample_model_organism_dependencies['post_synchronization_time'] = 4
-    biosample_model_organism_dependencies['post_synchronization_time_units'] = "hour"
-    testapp.post_json('/biosample', biosample_model_organism_dependencies, status=422)

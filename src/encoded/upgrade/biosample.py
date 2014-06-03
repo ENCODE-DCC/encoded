@@ -109,7 +109,7 @@ def biosample_6_7(value, system):
         "age": "model_organism_age",
         "age_units": "model_organism_age_units",
         "health_status": "model_organism_health_status",
-        "life_stage": "model_organism_life_stage"
+        "life_stage": "mouse_life_stage"
     }
 
     for key, val in update_properties.items():
