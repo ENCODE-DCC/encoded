@@ -3,6 +3,7 @@ from pyramid.events import (
     BeforeRender,
     subscriber,
 )
+from pyramid.interfaces import IRootFactory
 from pyramid.httpexceptions import (
     HTTPForbidden,
     HTTPMovedPermanently,
@@ -260,8 +261,8 @@ def es_tween_factory(handler, registry):
         if request.params.get('datastore', default_datastore) != 'elasticsearch':
             return handler(request)
 
-        frame = request.params.get('frame', 'embedded')
-        if frame not in ('embedded', 'object',):
+        frame = request.params.get('frame', 'page')
+        if frame not in ('object', 'embedded', 'page',):
             return handler(request)
 
         # Normalize path
@@ -281,7 +282,15 @@ def es_tween_factory(handler, registry):
         if allowed.isdisjoint(request.effective_principals):
             raise HTTPForbidden()
 
-        rendering_val = source[frame]
+        if frame == 'page':
+            rendering_val = source['embedded']
+            allowed = set(source['principals_allowed_edit'])
+            if allowed.intersection(request.effective_principals):
+                root = registry.getUtility(IRootFactory)(request)
+                collection = root.get(rendering_val['@type'][0])
+                rendering_val['actions'] = collection.Item.actions
+        else:
+            rendering_val = source[frame]
         return render_to_response(None, rendering_val, request)
 
     return es_tween

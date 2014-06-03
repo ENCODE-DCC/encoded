@@ -14,6 +14,7 @@ from ..schema_utils import (
     load_schema,
 )
 from pyramid.traversal import find_root
+import copy
 
 ACCESSION_KEYS = [
     {
@@ -52,6 +53,7 @@ ALLOW_SUBMITTER_ADD = [
 
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, Authenticated, 'view'),
+    (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
@@ -247,11 +249,9 @@ class Source(Collection):
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
-    item_template = {
-        'actions': [
-            {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': '', '$templated': True, '$condition': 'permission:edit'},
-        ],
-    }
+    item_actions = [
+        {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': ''},
+    ]
     item_name_key = 'name'
     unique_key = 'source:name'
     item_keys = ALIAS_KEYS + ['name']
@@ -843,6 +843,25 @@ class RNAiCharacterization(Characterization):
 class Page(Collection):
     schema = load_schema('page.json')
 
+    template = copy.deepcopy(Collection.template)
+    template['@type'] = [
+        {'$value': '{item_type}_collection', '$templated': True},
+        'page_collection',
+        'collection',
+    ]
+    template['actions'] = [
+        {
+            'name': 'add',
+            'title': 'Add',
+            'profile': '/profiles/{item_type}.json',
+            'method': 'GET',
+            'href': '#!add',
+            'className': 'btn btn-success',
+            '$templated': True,
+            '$condition': 'permission:add',
+        },
+    ]
+
     class Item(Collection.Item):
         base_types = ['page'] + Collection.Item.base_types
         name_key = 'name'
@@ -853,6 +872,17 @@ class Page(Collection):
             'released': ALLOW_EVERYONE_VIEW,
             'deleted': ONLY_ADMIN_VIEW,
         }
+
+        actions = [
+            {
+                'name': 'edit',
+                'title': 'Edit',
+                'profile': '/profiles/page.json',
+                'method': 'PUT',
+                'href': '#!edit',
+                'className': 'btn navbar-btn',
+            },
+        ]
 
 
 @location('about')
