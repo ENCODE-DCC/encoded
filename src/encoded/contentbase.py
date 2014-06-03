@@ -478,6 +478,7 @@ class Item(object):
         'uuid': {'$value': '{uuid}', '$templated': True},
     }
     template_type = None
+    actions = []
 
     def __init__(self, collection, model):
         self.__parent__ = collection
@@ -636,6 +637,12 @@ class Item(object):
         paths = [p.split('.') for p in self.embedded]
         for path in paths:
             expand_path(request, properties, path)
+
+    def add_actions(self, request, properties):
+        if request.has_permission('edit', self):
+            properties['actions'] = getattr(self, 'actions', [])
+        else:
+            properties['actions'] = []
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -798,6 +805,7 @@ class CustomItemMeta(MergedDictsMeta, ABCMeta):
             'rev',
             'name_key',
             'namespace_from_path',
+            'actions',
         ]
 
         if 'Item' in attrs:
@@ -830,17 +838,6 @@ class Collection(Mapping):
         '@type': [
             {'$value': '{item_type}_collection', '$templated': True},
             'collection',
-        ],
-        'actions': [
-            {
-                'name': 'add',
-                'title': 'Add',
-                'profile': '/profiles/{item_type}.json',
-                'method': 'POST',
-                'href': '',
-                '$templated': True,
-                'condition': 'permission:add',
-            },
         ],
     }
 
@@ -1032,6 +1029,9 @@ class Collection(Mapping):
     def expand_embedded(self, request, properties):
         pass
 
+    def add_actions(self, request, properties):
+        pass
+
 
 def column_value(obj, column):
     path = column.split('.')
@@ -1146,7 +1146,7 @@ def item_view(context, request):
 
     if frame is None:
         if asbool(request.params.get('embed', True)):
-            frame = 'embedded'
+            frame = 'page'
         else:
             frame = 'object'
 
@@ -1154,6 +1154,10 @@ def item_view(context, request):
         return properties
 
     context.expand_embedded(request, properties)
+    if frame == 'embedded':
+        return properties
+
+    context.add_actions(request, properties)
     return properties
 
 
@@ -1251,9 +1255,12 @@ def item_index_data(context, request):
     for key in context.model.unique_keys:
         keys[key.name].append(key.value)
 
-    principals = principals_allowed_by_permission(context, 'view')
-    if principals is Everyone:
-        principals = [Everyone]
+    principals = {}
+    for permission in ('view', 'edit'):
+        p  = principals_allowed_by_permission(context, permission)
+        if p is Everyone:
+            p = [Everyone]
+        principals[permission] = p
 
     path = resource_path(context)
     paths = {path}
@@ -1273,14 +1280,15 @@ def item_index_data(context, request):
                 resource_path(base, key)
                 for key in keys[key_name])
 
-    embedded = embed(request, path + '/')
+    embedded = embed(request, path + '/?frame=embedded')
     audit = request.audit(embedded, embedded['@type'], path=path)
     document = {
         'embedded': embedded,
         'object': embed(request, path + '/?frame=object'),
         'links': links,
         'keys': keys,
-        'principals_allowed_view': sorted(principals),
+        'principals_allowed_view': sorted(principals['view']),
+        'principals_allowed_edit': sorted(principals['edit']),
         'paths': sorted(paths),
         'audit': audit,
     }

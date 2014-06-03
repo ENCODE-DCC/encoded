@@ -82,6 +82,7 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 
 /* Table Controls */
 .table-responsive {
+    position: relative;
     overflow-x: auto;
 }
 
@@ -90,9 +91,9 @@ table thead tr th button {
 }
 
 form.table-filter {
-    float: right;
+    position: absolute;
+    right: 10px;
     margin: 0;
-    position: relative;
 }
 
 #table-filter {
@@ -117,6 +118,13 @@ form.table-filter {
     height: $input-height-base;
     display: block;
     float: left;
+}
+
+.table-actions {
+    margin-left: 1em;
+    button {
+        float: none;
+    }
 }
 
 /* initial state is hidden (see template; class=hide) */
