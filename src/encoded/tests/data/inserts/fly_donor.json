@@ -1,0 +1,31 @@
+[
+    {
+        "accession": "ENCDO242AAA",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "dmelanogaster",
+        "uuid": "ea3bec10-d473-11e3-9c1a-0800200c9a66"
+    },
+    {
+        "accession": "ENCDO180XXX",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "dmelanogaster",
+        "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
+        "uuid": "c9a34c9e-a19a-4bf5-8b50-5d7c39d190b1"
+    },
+    {
+        "accession": "ENCDO101XXX",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "dmelanogaster",
+        "aliases": ["bloomington:38626"],
+        "strain_background": "VK00033",
+        "genotype": "w[1118]; PBac{y[+mDint2] w[+mC]=ab-GFP.FLAG}VK00033",
+        "url": "http://flystocks.bio.indiana.edu/Reports/38626.html",
+        "documents": [
+            "ENCODE:sample_strain_generation_protocol"
+        ],
+        "uuid": "094a484e-817c-4cb3-a8dd-9ea2c3c1067b"
+    }
+]

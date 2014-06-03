@@ -1,7 +1,7 @@
 {
-    "title": "Biosample characterization",
-    "description": "Schema for submitting biosample characterization data",
-    "id": "/profiles/biosample_characterization.json",
+    "title": "Donor characterization",
+    "description": "Schema for submitting model organism donor (strain) characterization data",
+    "id": "/profiles/donor_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "characterizes" ],
@@ -24,9 +24,9 @@
             "default": "4"
         },
         "characterizes": {
-            "title": "Biosample characterized",
-            "comment": "See biosample.json for available identifiers.",
-            "linkTo": "biosample"
+            "title": "Model organism donor (strain) characterized",
+            "comment": "See donor.json for available identifiers.",
+            "linkTo": "donor"
         }
     }
 }
