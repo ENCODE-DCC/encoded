@@ -1,7 +1,7 @@
 Demo Machines
 =============
 
-To launch a demo machine you need an access key (ask me to create one) which you place in ~/.boto::
+To launch a demo machine you need an access key (log into AWS console to create one under IAM) which you place in ~/.boto::
 
     [Credentials]
     aws_access_key_id=AKIA...
