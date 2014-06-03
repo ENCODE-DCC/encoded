@@ -4,9 +4,11 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
+var StatusLabel = antibody.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -37,7 +39,7 @@ var Dataset = module.exports.Dataset = React.createClass({
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <h2>Dataset {context.accession}</h2>
                     </div>
                 </header>
@@ -108,38 +110,40 @@ globals.content_views.register(Dataset, 'dataset');
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     render: function() {
         return (
-            <table>
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Assay</th>
-                        <th>Biosample term name</th>
-                        <th>Target</th>
-                        <th>Description</th>
-                        <th>Lab</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {this.props.items.map(function (experiment) {
-                    // Ensure this can work with search result columns too
-                    return (
-                        <tr key={experiment['@id']}>
-                            <td><a href={experiment['@id']}>{experiment.accession}</a></td>
-                            <td>{experiment.assay_term_name}</td>
-                            <td>{experiment.biosample_term_name}</td>
-                            <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
-                            <td>{experiment.description}</td>
-                            <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Accession</th>
+                            <th>Assay</th>
+                            <th>Biosample term name</th>
+                            <th>Target</th>
+                            <th>Description</th>
+                            <th>Lab</th>
                         </tr>
-                    );
-                })}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="6"></td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </thead>
+                    <tbody>
+                    {this.props.items.map(function (experiment) {
+                        // Ensure this can work with search result columns too
+                        return (
+                            <tr key={experiment['@id']}>
+                                <td><a href={experiment['@id']}>{experiment.accession}</a></td>
+                                <td>{experiment.assay_term_name}</td>
+                                <td>{experiment.biosample_term_name}</td>
+                                <td>{experiment['target.label'] || experiment.target && experiment.target.label}</td>
+                                <td>{experiment.description}</td>
+                                <td>{experiment['lab.title'] || experiment.lab && experiment.lab.title}</td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="6"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         );
     }
 });
@@ -149,6 +153,7 @@ var FileTable = module.exports.FileTable = React.createClass({
     render: function() {
         // Creating an object here dedupes when a file is listed under both related_files and original_files
         var rows = {};
+        var encodevers = this.props.encodevers;
         this.props.items.forEach(function (file) {
             var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.download_path;
             rows[file['@id']] = (
@@ -164,32 +169,36 @@ var FileTable = module.exports.FileTable = React.createClass({
                     <td>{file.submitted_by.title}</td>
                     <td>{file.date_created}</td>
                     <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
+                    {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                 </tr>
             );
         });
         return (
-            <table>
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>File type</th>
-                        <th>Output type</th>
-                        <th>Paired end</th>
-                        <th>Associated replicates</th>
-                        <th>Added by</th>
-                        <th>Date added</th>
-                        <th>File download</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {rows}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="8"></td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Accession</th>
+                            <th>File type</th>
+                            <th>Output type</th>
+                            <th>Paired end</th>
+                            <th>Associated replicates</th>
+                            <th>Added by</th>
+                            <th>Date added</th>
+                            <th>File download</th>
+                            {encodevers == "3" ? <th>Validation status</th> : null}
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {rows}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan={encodevers == "3" ? 9 : 8}></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         );
     }
 });

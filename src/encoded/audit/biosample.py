@@ -6,6 +6,9 @@ from ..auditor import (
 
 @audit_checker('biosample')
 def audit_biosample_term(value, system):
+    if value['status'] == 'deleted':
+        return
+    
     if 'biosample_term_id' not in value:
         return
     ontology = system['registry']['ontology']
@@ -20,6 +23,6 @@ def audit_biosample_term(value, system):
         raise AuditFailure('term id not in ontology', term_id, level='WARNING')
 
     ontology_term_name = ontology[term_id]['name']
-    if ontology_term_name != term_name or term_name not in ontology[term_id]['synonyms']:
+    if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
         detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
         raise AuditFailure('term name mismatch', detail, level='ERROR')

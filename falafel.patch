@@ -1,0 +1,13 @@
+diff -u falafel/package.json new/package.json
+--- falafel/package.json	2014-05-29 15:52:40.000000000 -0700
++++ new/package.json	2014-05-29 15:53:42.000000000 -0700
+@@ -64,6 +64,9 @@
+     "url": "https://github.com/substack/node-falafel/issues"
+   },
+   "homepage": "https://github.com/substack/node-falafel",
++  "dependencies": {
++    "esprima": "1.1.0-dev"
++  },
+   "bundleDependencies": [
+     "esprima"
+   ],

@@ -8,11 +8,12 @@
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
-        { "$ref": "mixins.json#/uuid" }
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/shared_status" }
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "email": {
             "title": "Email",
@@ -58,16 +59,6 @@
             "items": {
                 "type": "string"
             }
-        },
-        "status": {
-            "title": "Status",
-            "type": "string",
-            "default": "CURRENT",
-            "enum" : [
-                "CURRENT",
-                "DELETED",
-                "DISABLED"
-            ]
         },
         "job_title": {
             "title": "Job title",

@@ -96,9 +96,9 @@ def convert_edw(app, file_dict, phase=edw_file.ENCODE_PHASE_ALL):
 
 
     if (file_dict['lab_error_message'] or file_dict['edw_error_message'] ):
-        file_dict['status'] = u'OBSOLETE'
+        file_dict['status'] = u'obsolete'
     else:
-        file_dict['status'] = u'CURRENT'
+        file_dict['status'] = u'current'
 
     del file_dict['lab_error_message']
     del file_dict['edw_error_message']
@@ -647,13 +647,6 @@ def make_app(application, username, password, test=False):
 
     app = internal_app(application, username)
 
-    # check schema version
-    resp = app.get(FILE_PROFILE_URL)
-    schema = resp.json['properties']['schema_version']['default']
-    if schema != FILE_SCHEMA_VERSION:
-        logger.error('ERROR: File schema has changed: is %s, expecting %s' %
-                        (schema, FILE_SCHEMA_VERSION))
-        sys.exit(1)
     return app
 
 

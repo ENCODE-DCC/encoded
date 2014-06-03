@@ -1,45 +1,58 @@
 /*  List key-value pairs display */
-.key-value {
-	dt, dd {
-		margin-bottom: 10px;
-		min-height: 20px; // = line-height ; defined somewhere?
-	}
-	dt {
-		display: inline-block;
-		float: left;
-    	width: $horizontalComponentOffset - 10;
-   		padding-top: 5px;
-    	text-align: right;
-	}
-	dt::after {
-		content: ": ";
-	}
 
-	dd {
-		display: block;
-		padding-top: 5px;
-		margin-left: $horizontalComponentOffset + 10;
-		//margin-bottom: 5px;
-		word-wrap: break-word;
-		overflow-wrap: break-word;
-	}
+// Override bootstrap3 header classes
+dt.h3, dt.h4, dd.h3, dd.h4 {
+    margin-top: 0;
+    font-size: 14px;
+}
+
+dd.h3, dd.h4 {
+    font-weight: normal;
+}
+
+.key-value {
+    dt, dd {
+        min-height: 20px; // = line-height ; defined somewhere?
+        margin-bottom: 10px;
+        padding-top: 5px;
+        line-height: 18px;
+        font-size: 14px;
+    }
+    dt {
+        display: inline-block;
+        float: left;
+        width: $component-offset-horizontal - 10;
+        text-align: right;
+    }
+    dt::after {
+        content: ": ";
+    }
+
+    dd {
+        display: block;
+        margin-left: $component-offset-horizontal + 10;
+        //margin-bottom: 5px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
 }
 
 .unit::before {
-	content: " ";
+    content: " ";
 }
 
 .horizontal-list {
-	li {
-		float: left;
-		margin-right: 0.5em;
-	}
+    li {
+        float: left;
+        margin-right: 0.5em;
+    }
 }
 
 dd ul, .multi-value {
-	list-style: none;
-	margin: 0;
-	display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
 }
 
 // responsive styles in _state.scss

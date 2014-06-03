@@ -1,33 +1,35 @@
 {
   "name": "encoded",
   "version": "0.0.0",
-  "description": "jquery, browserify-shim, domready held back.",
+  "description": "jquery, domready held back.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "find node_modules -name falafel -type d -print0 | xargs -0 patch -p1 -f -i $(pwd)/falafel.patch -d || echo already applied"
   },
   "author": "",
   "license": "MIT",
   "files": [],
   "repository": "ENCODE-DCC/encoded",
   "devDependencies": {
-    "grunt": "^0.4.4",
-    "browserify": "^3.44.1",
-    "reactify": "^0.11.0",
+    "grunt": "^0.4.5",
+    "browserify": "^4.1.4",
+    "reactify": "^0.13.1",
     "grunt-cli": "^0.1.13",
-    "mold-source-map": "^0.3.0",
-    "browserify-shim": "^2.0.10"
+    "exorcist": "^0.1.6",
+    "brfs": "^1.1.1"
   },
   "dependencies": {
     "underscore": "^1.6.0",
     "domready": "^0.3.0",
-    "es5-shim": "^3.0.2",
+    "es5-shim": "^3.3.0",
     "react": "^0.10.0",
-    "twitter-bootstrap": "^2.1.1",
-    "jquery": "^1.11.0",
+    "jquery": "^1.11.1",
     "d3": "^3.4.6",
-    "source-map-support": "^0.2.5",
+    "source-map-support": "^0.2.6",
     "envify": "^1.2.1",
     "brace": "^0.2.1",
-    "cookie-cutter": "^0.1.1"
+    "cookie-cutter": "^0.1.1",
+    "subprocess-middleware": "^0.1.0",
+    "scriptjs": "^2.5.3"
   }
 }

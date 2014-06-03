@@ -1,10 +1,12 @@
 /* overwrites some Bootstrap defaults */
 .breadcrumb {
 	padding: 5px 15px;
-    background-color: rgba(10, 37, 61, 0.01);
-    border: 1px solid rgba(10, 37, 61, 0.05);
-    @include box-shadow(inset 0px 0px 5px 2px rgba(180, 180, 180, 0.05));
-    color: #646464;
+    background-color: rgba(10, 37, 61, 0.03);
     text-transform: capitalize;
+    color: #707070;
+    > li {
+        display: inline;
+        @include text-shadow(0 1px 0 #fff);
+    }
     .active { color: #000; }
 }

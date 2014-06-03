@@ -125,6 +125,22 @@ def linkTo(validator, linkTo, instance, schema):
             yield ValidationError(error)
             return
 
+    if schema.get('linkSubmitsFor'):
+        userid = None
+        for principal in request.effective_principals:
+            if principal.startswith('userid.'):
+                userid = principal[len('userid.'):]
+                break
+        if userid is not None:
+            user = request.root[userid]
+            submits_for = user.upgrade_properties(finalize=False).get('submits_for')
+            if (submits_for is not None and
+                    not any(UUID(uuid) == item.uuid for uuid in submits_for) and
+                    not request.has_permission('submit_for_any')):
+                error = "%r is not in user submits_for" % instance
+                yield ValidationError(error)
+                return
+
     # And normalize the value to a uuid
     if validator._serialize:
         validator._validated[-1] = str(item.uuid)
@@ -167,6 +183,7 @@ class SchemaValidator(Draft4Validator):
 
 
 format_checker = FormatChecker()
+
 
 def load_schema(filename):
     schema = json.load(resource_stream(__name__, 'schemas/' + filename),

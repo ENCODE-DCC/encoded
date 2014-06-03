@@ -32,6 +32,7 @@ from pyramid.security import (
     Everyone,
     authenticated_userid,
     has_permission,
+    principals_allowed_by_permission,
 )
 from pyramid.settings import asbool
 from pyramid.threadlocal import (
@@ -69,7 +70,10 @@ from .storage import (
     Link,
     TransactionRecord,
 )
-from collections import OrderedDict
+from collections import (
+    OrderedDict,
+    defaultdict,
+)
 from .validation import ValidationFailure
 
 PHASE1_5_CONFIG = -15
@@ -198,13 +202,13 @@ def validate_item_content_put(context, request):
                 raise ValidationFailure('body', ['uuid'], msg)
         request.validated.update(data)
         return
-    current = context.properties.copy()
+    current = context.upgrade_properties(finalize=False).copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
 
 def validate_item_content_patch(context, request):
-    data = context.upgrade_properties(request)
+    data = context.upgrade_properties(finalize=False).copy()
     if 'schema_version' in data:
         del data['schema_version']
     data.update(request.json)
@@ -216,7 +220,7 @@ def validate_item_content_patch(context, request):
                 raise ValidationFailure('body', ['uuid'], msg)
         request.validated.update(data)
         return
-    current = context.properties.copy()
+    current = context.upgrade_properties(finalize=False).copy()
     current['uuid'] = str(context.uuid)
     validate_request(schema, request, data, current)
 
@@ -270,7 +274,7 @@ def location_root(factory):
 
     def set_root(config, factory):
         acl = acl_from_settings(config.registry.settings)
-        root = factory(acl)
+        root = factory(config.registry, acl)
         config.registry[LOCATION_ROOT] = root
 
     def callback(scanner, factory_name, factory):
@@ -311,7 +315,8 @@ class Root(object):
         (Allow, 'remoteuser.EMBED', ('view', 'traverse')),
     ]
 
-    def __init__(self, acl=None):
+    def __init__(self, registry, acl=None):
+        self.registry = registry
         if acl is None:
             acl = []
         self.__acl__ = acl + self.builtin_acl
@@ -539,18 +544,23 @@ class Item(object):
                     value.append(item)
         return links
 
-    def upgrade_properties(self, request):
+    def upgrade_properties(self, finalize=True):
         properties = self.properties.copy()
         current_version = properties.get('schema_version', '')
         target_version = self.schema_version
         if target_version is not None and current_version != target_version:
+            root = find_root(self)
+            migrator = root.registry['migrator']
             try:
-                properties = request.upgrade(
+                properties = migrator.upgrade(
                     self.item_type, properties, current_version, target_version,
-                    context=self)
+                    finalize=finalize, context=self, registry=root.registry)
+            except RuntimeError:
+                raise
             except Exception:
-                logger.warning('Unable to upgrade %s%s from %r to %r',
-                    request.resource_path(self.__parent__), self.uuid,
+                logger.warning(
+                    'Unable to upgrade %s from %r to %r',
+                    resource_path(self.__parent__, self.uuid),
                     current_version, target_version, exc_info=True)
         return properties
 
@@ -564,7 +574,7 @@ class Item(object):
 
         Embedding is the responsibility of the view.
         """
-        properties = self.upgrade_properties(request)
+        properties = self.upgrade_properties()
 
         for name, value in self.links(properties).iteritems():
             # XXXX Should this be {'@id': url, '@type': [...]} instead?
@@ -579,8 +589,8 @@ class Item(object):
             properties[name] = [
                 request.resource_path(item)
                     for item in value
-                        if item.upgrade_properties(request).get('status')
-                            not in ('DELETED', 'OBSOLETE')
+                        if item.upgrade_properties().get('status')
+                            not in ('deleted', 'obsolete')
             ]
 
         templated = self.expand_template(properties, request)
@@ -1065,38 +1075,6 @@ def expand_path(request, obj, path):
         expand_path(request, value, remaining)
 
 
-def etag_conditional(view_callable):
-    """ ETag conditional GET support
-
-    Returns 304 Not Modified when the last transaction id, server process id,
-    format and userid all match.
-
-    This might not be strictly correct due to MVCC visibility on postgres.
-    Perhaps use ``select txid_current_snapshot();`` instead there.
-    """
-    def wrapped(context, request):
-        if len(manager.stack) != 1:
-            return view_callable(context, request)
-        format = request.environ.get('encoded.format', 'html')
-        session = DBSession()
-        last_tid = session.query(func.max(TransactionRecord.order)).scalar()
-        processid = request.registry['encoded.processid']
-        userid = authenticated_userid(request) or ''
-        etag = u'%s;%s;%s;%s' % (last_tid, processid, format, userid)
-        etag = quote(etag.encode('utf-8'), ';:@')
-        if etag in request.if_none_match:
-            raise HTTPNotModified()
-        result = view_callable(context, request)
-        request.response.etag = etag
-        cache_control = request.response.cache_control
-        cache_control.private = True
-        cache_control.max_age = 0
-        cache_control.must_revalidate = True
-        return result
-
-    return wrapped
-
-
 def if_match_tid(view_callable):
     """ ETag conditional PUT/PATCH support
 
@@ -1161,8 +1139,7 @@ def traversal_security(event):
             raise HTTPForbidden(msg, result=result)
 
 
-@view_config(context=Item, permission='view', request_method='GET',
-             decorator=etag_conditional)
+@view_config(context=Item, permission='view', request_method='GET')
 def item_view(context, request):
     properties = context.__json__(request)
     frame = request.params.get('frame', None)
@@ -1184,14 +1161,14 @@ def item_view(context, request):
              request_param=['frame=raw'])
 def item_view_raw(context, request):
     if asbool(request.params.get('upgrade', True)):
-        return context.upgrade_properties(request)
+        return context.upgrade_properties()
     return context.properties
 
 
 @view_config(context=Item, permission='view_raw', request_method='GET',
              request_param=['frame=edit'])
 def item_view_edit(context, request):
-    properties = context.upgrade_properties(request)
+    properties = context.upgrade_properties()
     for name, value in context.links(properties).iteritems():
         if isinstance(value, list):
             properties[name] = [request.resource_path(item) for item in value]
@@ -1266,34 +1243,46 @@ class AfterModified(object):
 
 @view_config(context=Item, name='index-data', permission='index', request_method='GET')
 def item_index_data(context, request):
-    from pyramid.security import (
-        Everyone,
-        principals_allowed_by_permission,
-    )
-    links = {}
-    # links for the item
+    links = defaultdict(list)
     for link in context.model.rels:
-        links[link.rel] = link.target_rid
+        links[link.rel].append(link.target_rid)
 
-    # Get keys for the item
-    keys = {}
+    keys = defaultdict(list)
     for key in context.model.unique_keys:
-        keys[key.name] = key.value
+        keys[key.name].append(key.value)
 
-    # Principals for the item
     principals = principals_allowed_by_permission(context, 'view')
     if principals is Everyone:
         principals = [Everyone]
 
-    embedded = embed(request, request.resource_path(context))
+    path = resource_path(context)
+    paths = {path}
+    parent = context.__parent__
+
+    if parent.unique_key in keys:
+        paths.update(
+            resource_path(parent, key)
+            for key in keys[parent.unique_key])
+
+    for base in (parent, request.root):
+        for key_name in ('accession', 'alias'):
+            if key_name not in keys:
+                continue
+            paths.add(resource_path(base, str(context.uuid)))
+            paths.update(
+                resource_path(base, key)
+                for key in keys[key_name])
+
+    embedded = embed(request, path + '/')
+    audit = request.audit(embedded, embedded['@type'], path=path)
     document = {
         'embedded': embedded,
-        'object': embed(request, request.resource_path(context) + '?frame=object'),
+        'object': embed(request, path + '/?frame=object'),
         'links': links,
         'keys': keys,
         'principals_allowed_view': sorted(principals),
-        'url': request.resource_path(context),
-        'audit': [a.__json__() for a in request.audit(embedded, embedded['@type'])],
+        'paths': sorted(paths),
+        'audit': audit,
     }
 
     return document

@@ -2,6 +2,7 @@ from pyramid.traversal import find_root
 from uuid import UUID
 from ..migrator import upgrade_step
 import re
+from ..views.views import ENCODE2_AWARDS
 
 
 @upgrade_step('experiment', '', '2')
@@ -54,3 +55,31 @@ def dataset_2_3(value, system):
                 continue
             value['dbxrefs'].append(new_dbxref)
             value['aliases'].remove(alias)
+
+
+@upgrade_step('experiment', '3', '4')
+@upgrade_step('dataset', '3', '4')
+def dataset_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/1074
+    if 'status' in value:
+        if value['status'] == 'DELETED':
+            value['status'] = 'deleted'
+        elif value['status'] == 'CURRENT':
+            if value['award'] in ENCODE2_AWARDS:
+                value['status'] = 'released'
+            elif value['award'] not in ENCODE2_AWARDS:
+                value['status'] = 'submitted'
+
+    else:
+        if value['award'] in ENCODE2_AWARDS:
+            value['status'] = 'released'
+        elif value['award'] not in ENCODE2_AWARDS:
+            value['status'] = 'submitted'
+
+
+@upgrade_step('experiment', '4', '5')
+@upgrade_step('dataset', '4', '5')
+def experiment_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/1393
+    if value.get('biosample_type') == 'primary cell line':
+        value['biosample_type'] = 'primary cell'

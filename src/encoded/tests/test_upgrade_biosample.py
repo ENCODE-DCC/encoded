@@ -45,6 +45,32 @@ def biosample_3(biosample, biosamples):
     return item
 
 
+@pytest.fixture
+def biosample_4(biosample, biosamples):
+    item = biosample.copy()
+    item.update({
+        'schema_version': '4',
+        'status': 'CURRENT',
+        'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418'
+    })
+    return item
+
+
+@pytest.fixture
+def biosample_6(biosample, biosamples):
+    item = biosample.copy()
+    item.update({
+        'schema_version': '5',
+        'sex': 'male',
+        'age': '2',
+        'age_units': 'week',
+        'health_status': 'Normal',
+        'life_stage': 'newborn',
+
+    })
+    return item
+
+
 def test_biosample_upgrade(app, biosample_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
@@ -138,6 +164,48 @@ def test_biosample_upgrade_encode2_complex_dbxref(app, biosample_3):
     assert 'encode2_dbxrefs' not in value
 
 
+def test_biosample_upgrade_status_encode2(app, biosample_4):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_4, target_version='5')
+    assert value['schema_version'] == '5'
+    assert value['status'] == 'released'
+
+
+def test_biosample_upgrade_status_encode3(app, biosample_4):
+    biosample_4['award'] = 'ea1f650d-43d3-41f0-a96a-f8a2463d332f'
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_4, target_version='5')
+    assert value['schema_version'] == '5'
+    assert value['status'] == 'in progress'
+
+
+def test_biosample_upgrade_model_organism(app, biosample_6):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_6, target_version='7')
+    assert value['schema_version'] == '7'
+    assert 'sex' not in value
+    assert 'age' not in value
+    assert 'age_units' not in value
+    assert 'health_status' not in value
+    assert 'life_stage' not in value
+
+def test_biosample_upgrade_model_organism_mouse(app, biosample_6):
+    biosample_6['organism'] = '3413218c-3d86-498b-a0a2-9a406638e786'
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_6, target_version='7')
+    assert value['schema_version'] == '7'
+    assert 'sex' not in value
+    assert value['model_organism_sex'] == 'male'
+    assert 'age' not in value
+    assert value['model_organism_age'] == '2'
+    assert 'age_units' not in value
+    assert value['model_organism_age_units'] == 'week'
+    assert 'health_status' not in value
+    assert value['model_organism_health_status'] == 'Normal'
+    assert 'life_stage' not in value
+    assert value['mouse_life_stage'] == 'newborn'
+
+
 def test_biosample_upgrade_inline(testapp, biosample_1):
     from encoded.schema_utils import load_schema
     schema = load_schema('biosample.json')
@@ -145,7 +213,7 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
     location = res.location
 
     # The properties are stored un-upgraded.
-    res = testapp.get(location+'?frame=raw&upgrade=false').maybe_follow()
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == '1'
 
     # When the item is fetched, it is upgraded automatically.
@@ -155,7 +223,7 @@ def test_biosample_upgrade_inline(testapp, biosample_1):
     res = testapp.patch_json(location, {})
 
     # The stored properties are now upgraded.
-    res = testapp.get(location+'?frame=raw&upgrade=false').maybe_follow()
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
 
 
@@ -166,6 +234,6 @@ def test_biosample_upgrade_inline_unknown(testapp, biosample_1):
     res = testapp.post_json('/biosample?validate=false&render=uuid', biosample_1)
     location = res.location
     res = testapp.patch_json(location, {})
-    res = testapp.get(location+'?frame=raw&upgrade=false').maybe_follow()
+    res = testapp.get(location + '?frame=raw&upgrade=false').maybe_follow()
     assert res.json['schema_version'] == schema['properties']['schema_version']['default']
     assert 'starting_amount' not in res.json

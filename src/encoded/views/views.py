@@ -1,7 +1,8 @@
 from pyramid.security import (
+    ALL_PERMISSIONS,
     Allow,
     Authenticated,
-    Deny,
+    DENY_ALL,
     Everyone,
 )
 from .download import ItemWithAttachment
@@ -19,7 +20,7 @@ ACCESSION_KEYS = [
         'name': 'accession',
         'value': '{accession}',
         '$templated': True,
-        '$condition': 'accession',
+        '$condition': lambda accession=None, status=None: accession and status != 'replaced'
     },
     {
         'name': 'accession',
@@ -42,7 +43,7 @@ ALIAS_KEYS = [
 
 
 ALLOW_EVERYONE_VIEW = [
-    (Allow, Everyone, ['view', 'list', 'traverse']),
+    (Allow, Everyone, 'view'),
 ]
 
 ALLOW_SUBMITTER_ADD = [
@@ -50,14 +51,24 @@ ALLOW_SUBMITTER_ADD = [
 ]
 
 ALLOW_LAB_SUBMITTER_EDIT = [
+    (Allow, Authenticated, 'view'),
     (Allow, 'role.lab_submitter', 'edit'),
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
 ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
-    (Allow, 'role.viewer', 'view'),
+    (Allow, Everyone, 'view'),
 ]
 
+ONLY_ADMIN_VIEW = [
+    (Allow, 'group.admin', ALL_PERMISSIONS),
+    (Allow, 'group.read-only-admin', ['traverse', 'view']),
+    (Allow, 'remoteuser.EMBED', ['traverse', 'view']),
+    (Allow, 'remoteuser.INDEXER', ['traverse', 'view', 'index']),
+    DENY_ALL,
+]
+
+# Now unused, kept around for upgrade tests.
 ENCODE2_AWARDS = frozenset([
     '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
     '1f3cffd4-457f-4105-9b3c-3e9119abfcf0',
@@ -95,27 +106,58 @@ class Collection(BaseCollection):
 
     class Item(BaseCollection.Item):
         STATUS_ACL = {
-            'CURRENT': ALLOW_CURRENT,
-            'DELETED': [],
+            # standard_status
+            'released': ALLOW_CURRENT,
+            'deleted': ONLY_ADMIN_VIEW,
+            'replaced': ONLY_ADMIN_VIEW,
+
+            # shared_status
+            'current': ALLOW_CURRENT,
+            'disabled': ONLY_ADMIN_VIEW,
+
+            # file
+            'obsolete': ONLY_ADMIN_VIEW,
+
+            # antibody_characterization
+            'compliant': ALLOW_CURRENT,
+            'not compliant': ALLOW_CURRENT,
+            'not reviewed': ALLOW_CURRENT,
+            'not submitted for review by lab': ALLOW_CURRENT,
+
+            # antibody_approval
+            'eligible for new data': ALLOW_CURRENT,
+            'not eligible for new data': ALLOW_CURRENT,
+            'not pursued': ALLOW_CURRENT,
+
+            # dataset / experiment
+            'revoked': ALLOW_CURRENT,
         }
 
+        @property
+        def __name__(self):
+            if self.name_key is None:
+                return self.uuid
+            properties = self.upgrade_properties(finalize=False)
+            if properties.get('status') == 'replaced':
+                return self.uuid
+            return properties.get(self.name_key, None) or self.uuid
+
         def __acl__(self):
-            properties = self.properties.copy()
+            # Don't finalize to avoid validation here.
+            properties = self.upgrade_properties(finalize=False).copy()
             ns = self.template_namespace(properties)
             properties.update(ns)
             status = ns.get('status')
-            return self.STATUS_ACL.get(status, ())
+            return self.STATUS_ACL.get(status, ALLOW_LAB_SUBMITTER_EDIT)
 
         def __ac_local_roles__(self):
             roles = {}
-            properties = self.properties.copy()
+            properties = self.upgrade_properties(finalize=False).copy()
             ns = self.template_namespace(properties)
             properties.update(ns)
             if 'lab' in properties:
                 lab_submitters = 'submits_for.%s' % properties['lab']
                 roles[lab_submitters] = 'role.lab_submitter'
-            if properties.get('award') in ENCODE2_AWARDS:
-                roles[Everyone] = 'role.viewer'
             return roles
 
 
@@ -212,7 +254,7 @@ class Source(Collection):
     }
     item_name_key = 'name'
     unique_key = 'source:name'
-    item_keys =  ALIAS_KEYS + ['name']
+    item_keys = ALIAS_KEYS + ['name']
 
 
 class DonorItem(Collection.Item):
@@ -220,6 +262,9 @@ class DonorItem(Collection.Item):
     embedded = set(['organism'])
     name_key = 'accession'
     keys = ACCESSION_KEYS + ALIAS_KEYS
+    rev = {
+        'characterizations': ('donor_characterization', 'characterizes'),
+    }
 
 
 @location('mouse-donors')
@@ -228,6 +273,32 @@ class MouseDonor(Collection):
     schema = load_schema('mouse_donor.json')
     properties = {
         'title': 'Mouse donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
+
+
+@location('fly-donors')
+class FlyDonor(Collection):
+    item_type = 'fly_donor'
+    schema = load_schema('fly_donor.json')
+    properties = {
+        'title': 'Fly donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
+
+
+@location('worm-donors')
+class WormDonor(Collection):
+    item_type = 'worm_donor'
+    schema = load_schema('worm_donor.json')
+    properties = {
+        'title': 'Worm donors',
         'description': 'Listing Biosample Donors',
     }
 
@@ -277,14 +348,6 @@ class Construct(Collection):
 
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
-        STATUS_ACL = {
-            'IN PROGRESS': ALLOW_LAB_SUBMITTER_EDIT,
-            'PENDING DCC REVIEW': ALLOW_LAB_SUBMITTER_EDIT,
-            'COMPLIANT': ALLOW_CURRENT,
-            'NOT COMPLIANT': ALLOW_CURRENT,
-            'NOT REVIEWED': ALLOW_CURRENT,
-            'NOT SUBMITTED FOR REVIEW BY LAB': ALLOW_CURRENT,
-        }
         base_types = ['characterization'] + Collection.Item.base_types
         embedded = set(['lab', 'award', 'submitted_by'])
         keys = ALIAS_KEYS
@@ -297,6 +360,16 @@ class ConstructCharacterization(Characterization):
     properties = {
         'title': 'Construct characterizations',
         'description': 'Listing of biosample construct characterizations',
+    }
+
+
+@location('donor-characterizations')
+class DonorCharacterization(Characterization):
+    item_type = 'donor_characterization'
+    schema = load_schema('donor_characterization.json')
+    properties = {
+        'title': 'Donor characterizations',
+        'description': 'Listing of model organism donor (strain) construct characterizations',
     }
 
 
@@ -336,9 +409,16 @@ class Biosample(Collection):
             ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
-            ]
+            ],
+            'sex': {'$value': '{sex}', '$templated': True},
+            'age': {'$value': '{age}', '$templated': True},
+            'age_units': {'$value': '{age_units}', '$templated': True},
+            'health_status': {'$value': '{health_status}', '$templated': True},
+            'life_stage': {'$value': '{life_stage}', '$templated': True},
+            'synchronization': {'$value': '{synchronization}', '$templated': True}
         }
         embedded = set([
+            'donor',
             'donor.organism',
             'submitted_by',
             'lab',
@@ -389,6 +469,75 @@ class Biosample(Collection):
                     ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
+
+            human_donor_properties = [
+                "sex",
+                "age",
+                "age_units",
+                "health_status",
+                "life_stage",
+                'synchronization'
+            ]
+            mouse_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "mouse_life_stage": "life_stage",
+                "mouse_synchronization_stage": "synchronization"
+            }
+            fly_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "fly_life_stage": "life_stage",
+                "fly_synchronization_stage": "synchronization"
+            }
+            worm_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "worm_life_stage": "life_stage",
+                "worm_synchronization_stage": "synchronization"
+            }
+            fly_organisms = [
+                "/organisms/dmelanogaster/",
+                "/organisms/dananassae/",
+                "/organisms/dmojavensis/",
+                "/organisms/dpseudoobscura/",
+                "/organisms/dsimulans/",
+                "/organisms/dvirilis/",
+                "/organisms/dyakuba/"
+            ]
+
+            if properties['organism'] == '/organisms/human/' and 'donor' in ns:
+                root = find_root(self)
+                donor = root.get_by_uuid(self.properties['donor'])
+                for value in human_donor_properties:
+                    if value in donor.properties:
+                        ns[value] = donor.properties[value]
+                    else:
+                        ns[value] = ''
+            elif properties['organism'] == "/organisms/mouse/":
+                for key, value in mouse_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
+            elif properties['organism'] in fly_organisms:
+                for key, value in fly_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
+            else:
+                for key, value in worm_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
             return ns
 
 
@@ -461,11 +610,6 @@ class AntibodyApproval(Collection):
     }
 
     class Item(Collection.Item):
-        STATUS_ACL = {
-            'ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
-            'NOT ELIGIBLE FOR NEW DATA': ALLOW_CURRENT,
-            'NOT PURSUED': ALLOW_CURRENT,
-        }
         embedded = [
             'antibody.host_organism',
             'antibody.source',
@@ -495,7 +639,10 @@ class Platform(Collection):
     }
     unique_key = 'platform:term_id'
     item_name_key = 'term_id'
-    item_keys = ALIAS_KEYS + ['term_name', 'term_id']
+    item_keys = ALIAS_KEYS + [
+        {'name': '{item_type}:term_id', 'value': '{term_id}', '$templated': True},
+        {'name': '{item_type}:term_id', 'value': '{term_name}', '$templated': True},
+    ]
 
 
 @location('libraries')
@@ -574,7 +721,7 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
-    
+
     class Item(Collection.Item):
         template = {
             'files': [
@@ -614,7 +761,7 @@ class Experiment(Dataset):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    
+
     class Item(Dataset.Item):
         base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {
@@ -639,6 +786,7 @@ class Experiment(Dataset):
             'replicates.library.biosample.submitted_by',
             'replicates.library.biosample.source',
             'replicates.library.biosample.organism',
+            'replicates.library.biosample.treatments',
             'replicates.library.biosample.donor.organism',
             'replicates.library.treatments',
             'replicates.platform',
@@ -675,7 +823,7 @@ class RNAi(Collection):
         'title': 'RNAi',
         'description': 'Listing of RNAi',
     }
-    item_embedded = set(['source', 'documents'])
+    item_embedded = set(['source', 'documents', 'target'])
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
     }
@@ -690,3 +838,38 @@ class RNAiCharacterization(Characterization):
         'title': 'RNAi characterizations',
         'description': 'Listing of biosample RNAi characterizations',
     }
+
+
+class Page(Collection):
+    schema = load_schema('page.json')
+
+    class Item(Collection.Item):
+        base_types = ['page'] + Collection.Item.base_types
+        name_key = 'name'
+        keys = ['name']
+
+        STATUS_ACL = {
+            'in progress': [],
+            'released': ALLOW_EVERYONE_VIEW,
+            'deleted': ONLY_ADMIN_VIEW,
+        }
+
+
+@location('about')
+class AboutPage(Page):
+    item_type = 'about_page'
+    properties = {
+        'title': 'About Pages',
+        'description': 'Portal pages, about section',
+    }
+    unique_key = 'about_page:name'
+
+
+@location('help')
+class HelpPage(Page):
+    item_type = 'help_page'
+    properties = {
+        'title': 'Help Pages',
+        'description': 'Portal pages, help section',
+    }
+    unique_key = 'help_page:name'

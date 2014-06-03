@@ -14,6 +14,10 @@ module.exports.listing_views = Registry();
 // Cell name listing titles
 module.exports.listing_titles = Registry();
 
+// Block views
+module.exports.block_views = Registry();
+module.exports.block_edit_views = Registry();
+
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
     htmlClass = htmlClass || '';
@@ -30,6 +34,20 @@ var statusClass = module.exports.statusClass = function (status, htmlClass) {
     }
     return htmlClass;
 };
+
+var validationStatusClass = module.exports.validationStatusClass = function (status, htmlClass) {
+    htmlClass = htmlClass || '';
+    if (typeof status == 'string') {
+        htmlClass += ' validation-status-' + status.toLowerCase().replace(/ /g, '-');
+    }
+    return htmlClass;
+};
+
+
+module.exports.encodeVersionMap = {
+    "ENCODE2": "2",
+    "ENCODE3": "3"
+}
 
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",

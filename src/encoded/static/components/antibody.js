@@ -11,11 +11,34 @@ var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = module.exports.StatusLabel = React.createClass({
     render: function() {
         var status = this.props.status;
-        return (
-            <span className={globals.statusClass(status, 'label')}>
-                {status}
-            </span>
-        );
+        var title = this.props.title;
+        if (typeof status === 'string') {
+            // Display simple string and optional title in badge
+            return (
+                <div className="status-list">
+                    <span className={globals.statusClass(status, 'label')}>
+                        {title ? <span className="status-list-title">{title + ': '}</span> : null}
+                        {status}
+                    </span>
+                </div>
+            );
+        } else if (typeof status === 'object') {
+            // Display a list of badges from array of objects with status and optional title
+            return (
+                <ul className="status-list">
+                    {status.map(function (status) {
+                        return(
+                            <li className={globals.statusClass(status.status, 'label')}>
+                                {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
+                                {status.status}
+                            </li>
+                        );
+                    })}
+                </ul>
+            );
+        } else {
+            return null;
+        }
     }
 });
 
@@ -32,12 +55,14 @@ var Approval = module.exports.Approval = React.createClass({
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <h2>Approval for {context.antibody.accession}</h2>
                         <h3>Antibody against {context.target.organism.name}
                             {' '}{context.target.label}
-                            <StatusLabel status={context.status} />
                         </h3>
+                        <div className="characterization-status-labels">
+                            <StatusLabel title="Status" status={context.status} />
+                        </div>
                     </div>
                 </header>
 
@@ -100,39 +125,38 @@ var Characterization = module.exports.Characterization = React.createClass({
         var context = this.props.context;
         var attachmentHref, attachmentUri;
         var figure, download, src, alt;
-        var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             if (context.attachment.type.split('/', 1)[0] == 'image') {
-                imgClass = 'characterization-img';
+                var imgClass = 'characterization-img';
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Characterization Image";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref}>
+                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                    </a>
+                );
             } else if (context.attachment.type == "application/pdf"){
-                src = "/static/img/file-pdf.png";
-                alt = "Characterization PDF Icon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Characterization PDF Icon</a>
+                );
             } else {
-                src = "/static/img/file.png";
-                alt = "Characterization Icon";
+                figure = (
+                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide">Characterization Icon</a>
+                );
             }
-            figure = (
-                <a data-bypass="true" href={attachmentHref}>
-                    <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                </a>
-            );
             download = (
                 <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
                 </a>
             );
         } else {
-            src = "/static/img/file-broken.png";
-            alt = "Characterization file broken icon";
             figure = (
-                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                <div className="file-missing text-hide">Characterization file broken icon</div>
             );
             download = (
                 <em>Document not available</em>
@@ -141,48 +165,46 @@ var Characterization = module.exports.Characterization = React.createClass({
 
         return (
             <section className={globals.itemClass(context, 'view-detail panel')}>
-                <div className="container">
-                    <div className="row">
-                        <div className="span6">
-                            <figure>
-                                {figure}
-                                <figcaption>
-                                    <span>{context.status}</span>
-                                </figcaption>
-                            </figure>
-                        </div>
-                        <div className="span5">
-                            <dl className="characterization-meta-data key-value">
-                                <dt className="h3">Method</dt>
-                                <dd>{context.characterization_method}</dd>
+                <div className="row">
+                    <div className="col-sm-4 col-md-6">
+                        <figure>
+                            {figure}
+                            <figcaption>
+                                <span>{context.status}</span>
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div className="col-sm-8 col-md-6">
+                        <dl className="characterization-meta-data key-value">
+                            <dt className="h3">Method</dt>
+                            <dd className="h3">{context.characterization_method}</dd>
 
-                                <dt className="h4">Target species</dt>
-                                <dd className="h4 sentence-case">{context.target.organism.name}</dd>
+                            <dt className="h4">Target species</dt>
+                            <dd className="h4 sentence-case">{context.target.organism.name}</dd>
 
-                                {context.caption ? <dt>Caption</dt> : null}
-                                {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
+                            {context.caption ? <dt>Caption</dt> : null}
+                            {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
 
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
+                            <dt>Submitted by</dt>
+                            <dd>{context.submitted_by.title}</dd>
 
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
 
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
+                            <dt>Grant</dt>
+                            <dd>{context.award.name}</dd>
 
-                                {/*
-                                <dt>Approver</dt>
-                                <dd>{context.validated_by}</dd>
-                                */}
+                            {/*
+                            <dt>Approver</dt>
+                            <dd>{context.validated_by}</dd>
+                            */}
 
-                                <dt>Image</dt>
-                                <dd><StatusLabel status={context.status} /></dd>
+                            <dt>Image</dt>
+                            <dd><StatusLabel status={context.status} /></dd>
 
-                                <dt><i className="icon-download-alt"></i> Download</dt>
-                                <dd>{download}</dd>
-                            </dl>
-                        </div>
+                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dd>{download}</dd>
+                        </dl>
                     </div>
                 </div>
             </section>

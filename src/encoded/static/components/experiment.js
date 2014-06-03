@@ -5,9 +5,11 @@ var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
+var StatusLabel = antibody.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -18,7 +20,6 @@ var Panel = function (props) {
     }
     return globals.panel_views.lookup(props.context)(props);
 };
-
 
 
 var Experiment = module.exports.Experiment = React.createClass({
@@ -51,18 +52,39 @@ var Experiment = module.exports.Experiment = React.createClass({
         for (var key in antibodies) {
             antibody_accessions.push(antibodies[key].accession);
         }
+
+        // Determine this experiment's ENCODE version
+        var encodevers = "";
+        if (context.award.rfa) {
+            encodevers = globals.encodeVersionMap[context.award.rfa.substring(0,7)];
+            if (typeof encodevers === "undefined") {
+                encodevers = "";
+            }
+        }
+
+        // Make list of statuses
+        var statuses = [{status: context.status, title: "Status"}];
+        if (encodevers === "3" && context.status === "released") {
+            statuses.push({status: "pending", title: "Validation"});
+        }
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <ul className="breadcrumb">
-                            <li>Experiment <span className="divider">/</span></li>
+                            <li>Experiment</li>
                             <li className="active">{context.assay_term_name}</li>
                         </ul>
-                        <h2>Experiment summary for {context.accession}</h2>
-                    </div>
+                        <h2>
+                            Experiment summary for {context.accession}
+                        </h2>
+                        <div className="characterization-status-labels">
+                            <StatusLabel status={statuses} />
+                        </div>
+                   </div>
                 </header>
                 <div className="panel data-display">
                     <dl className="key-value">
@@ -73,7 +95,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.description ? <dd>{context.description}</dd> : null}
 
                         {context.biosample_term_name ? <dt>Biosample</dt> : null}
-                        {context.biosample_term_name ? <dd className="sentence-case">{context.biosample_term_name}</dd> : null}
+                        {context.biosample_term_name ? <dd>{context.biosample_term_name}</dd> : null}
 
                         {context.biosample_type ? <dt>Biosample type</dt> : null}
                         {context.biosample_type ? <dd className="sentence-case">{context.biosample_type}</dd> : null}
@@ -106,7 +128,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                         <dt>Project</dt>
                         <dd>{context.award.project}</dd>
-                        
+
                         {context.aliases.length ? <dt>Aliases</dt> : null}
                         {context.aliases.length ? <dd>{aliasList}</dd> : null}
 
@@ -140,6 +162,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </span>
                         </h3>
                         <FileTable items={context.files} />
+                        <h3>Files linked to {context.accession}</h3>
+                        <FileTable items={context.files} encodevers={encodevers} />
                     </div>
                 : null }
             </div>
@@ -168,39 +192,41 @@ var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
     return (
         <div>
             <h3>Biosamples used</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Accession</th>
-                        <th>Biosample</th>
-                        <th>Type</th>
-                        <th>Species</th>
-                        <th>Source</th>
-                        <th>Submitter</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                { Object.keys(biosamples).map(function (key, index) {
-                    var biosample = biosamples[key].biosample;
-                    return (
-                        <tr key={index}>
-                            <td><a href={biosample['@id']}>{biosample.accession}</a></td>
-                            <td>{biosample.biosample_term_name}</td>
-                            <td>{biosample.biosample_type}</td>
-                            <td>{biosample.donor && biosample.donor.organism.name}</td>
-                            <td>{biosample.source.title}</td>
-                            <td>{biosample.submitted_by.title}</td>
+            <div className="table-responsive">
+                <table className="table table-panel table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Accession</th>
+                            <th>Biosample</th>
+                            <th>Type</th>
+                            <th>Species</th>
+                            <th>Source</th>
+                            <th>Submitter</th>
                         </tr>
-                    );
-                })}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="7"></td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </thead>
+                    <tbody>
+
+                    { Object.keys(biosamples).map(function (key, index) {
+                        var biosample = biosamples[key].biosample;
+                        return (
+                            <tr key={index}>
+                                <td><a href={biosample['@id']}>{biosample.accession}</a></td>
+                                <td>{biosample.biosample_term_name}</td>
+                                <td>{biosample.biosample_type}</td>
+                                <td>{biosample.donor && biosample.donor.organism.name}</td>
+                                <td>{biosample.source.title}</td>
+                                <td>{biosample.submitted_by.title}</td>
+                            </tr>
+                        );
+                    })}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colSpan="7"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         </div>
     );
 };
@@ -213,19 +239,19 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         }
         return a.biological_replicate_number - b.biological_replicate_number;
     });
-    
+
     if (!replicates.length) return (<div hidden={true}></div>);
-    
+
     var replicate = replicates[0];
     var library = replicate.library;
     var platform = replicate.platform;
     var depletedIn;
     var treatments;
-    
+
     if (library && library.depleted_in_term_name && library.depleted_in_term_name.length) {
         depletedIn = library.depleted_in_term_name.join(", ");
     }
-    
+
     if (library && library.treatments && library.treatments.length) {
         var i = library.treatments.length;
         var t;
@@ -236,38 +262,38 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         }
         treatments = treatmentList.join(", ");
     }
-    
+
     return (
         <div>
             <h3>Assay details</h3>
             <dl className="panel key-value">
                 {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
 				{library && library.nucleic_acid_term_name ? <dd>{library.nucleic_acid_term_name}</dd> : null}
-    
+
                 {library && library.nucleic_acid_starting_quantity ? <dt>NA starting quantity</dt> : null}
 				{library && library.nucleic_acid_starting_quantity ? <dd>{library.nucleic_acid_starting_quantity}</dd> : null}
-				
+
                 {depletedIn ? <dt>Depleted in</dt> : null}
 				{depletedIn ? <dd>{depletedIn}</dd> : null}
 
                 {library && library.lysis_method ? <dt>Lysis method</dt> : null}
 				{library && library.lysis_method ? <dd>{library.lysis_method}</dd> : null}
-    
+
                 {library && library.extraction_method ? <dt>Extraction method</dt> : null}
 				{library && library.extraction_method ? <dd>{library.extraction_method}</dd> : null}
-                
+
                 {library && library.fragmentation_method ? <dt>Fragmentation method</dt> : null}
 				{library && library.fragmentation_method ? <dd>{library.fragmentation_method}</dd> : null}
-                
+
                 {library && library.size_range ? <dt>Size range</dt> : null}
 				{library && library.size_range ? <dd>{library.size_range}</dd> : null}
-                
+
                 {library && library.library_size_selection_method ? <dt>Size selection method</dt> : null}
 				{library && library.library_size_selection_method ? <dd>{library.library_size_selection_method}</dd> : null}
-                
+
                 {treatments ? <dt>Treatments</dt> : null}
 				{treatments ? <dd>{treatments}</dd> : null}
-                
+
                 {platform ? <dt>Platform</dt> : null}
 				{platform ? <dd><a href={platform['@id']}>{platform.title}</a></dd> : null}
             </dl>

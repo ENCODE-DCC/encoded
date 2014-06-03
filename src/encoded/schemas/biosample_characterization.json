@@ -1,7 +1,7 @@
 {
     "title": "Biosample characterization",
     "description": "Schema for submitting biosample characterization data",
-    "id": "/profiles/construct_characterization.json",
+    "id": "/profiles/biosample_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "characterizes" ],
@@ -15,12 +15,13 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "characterization.json#/properties" },
         { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/standard_status"},
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/aliases" }
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "characterizes": {
             "title": "Biosample characterized",

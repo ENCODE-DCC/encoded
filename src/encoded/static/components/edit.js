@@ -33,7 +33,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
         return (
             <div className={itemClass}>
                 <header className="row">
-                    <div className="span12">
+                    <div className="col-sm-12">
                         <h2>Edit {title}</h2>
                     </div>
                 </header>
@@ -57,7 +57,7 @@ var EditForm = module.exports.EditForm = React.createClass({
                     width: "100%"
                 }}></div>
                 <div style={{"float": "right", "margin": "10px"}}>
-                    <a href="" className="btn">Cancel</a>
+                    <a href="" className="btn btn-default">Cancel</a>
                     {' '}
                     <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
                 </div>
@@ -73,6 +73,10 @@ var EditForm = module.exports.EditForm = React.createClass({
 
 
     componentDidMount: function () {
+        $script('brace', this.setupEditor);
+    },
+
+    setupEditor: function () {
         var ace = require('brace');
         require('brace/mode/json');
         require('brace/theme/solarized_light');

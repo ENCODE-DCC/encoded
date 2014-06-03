@@ -62,10 +62,25 @@
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "CURRENT",
+            "default": "in progress",
             "enum" : [
-                "CURRENT",
-                "DELETED"
+                "in progress",
+                "deleted",
+                "replaced",
+                "released"
+            ]
+        }
+    },
+    "shared_status": {
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "current",
+            "enum" : [
+                "current",
+                "deleted",
+                "replaced",
+                "disabled"
             ]
         }
     },
@@ -110,7 +125,8 @@
              "description": "Lab associated with the submission.",
             "comment": "See lab.json for list of available identifiers.",
             "type": "string",
-            "linkTo": "lab"
+            "linkTo": "lab",
+            "linkSubmitsFor": true
         },
         "award": {
             "title": "Grant",
@@ -173,7 +189,7 @@
             "description": "Ontology identifier describing biosample.",
             "comment": "NTR is a new term request identifier provided by the DCC.",
             "type": "string",
-            "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR):[0-9]{2,8}$"
+            "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR|FBbt|WBbt):[0-9]{2,8}$"
         },
         "biosample_term_name": {
             "title": "Ontology term",
@@ -185,11 +201,13 @@
             "description": "The categorization of the biosample.",
             "type": "string",
             "enum" : [
-                "primary cell line",
+                "primary cell",
                 "immortalized cell line",
                 "tissue",
                 "in vitro differentiated cells",
-                "induced pluripotent stem cell line"
+                "induced pluripotent stem cell line",
+                "whole organisms",
+                "stem cell"
             ]
         }
     },
@@ -222,6 +240,53 @@
             "description": "Additional information.",
             "type": "string",
             "permission": "import_items"
+        }
+    },
+    "strains": {
+        "strain_background": {
+            "title": "Strain background",
+            "description": "The specific parent strain designation of a non-human donor.",
+            "type": "string"
+        },
+        "strain_name": {
+            "title": "Strain name",
+            "description": "The specific strain designation of a non-human donor.",
+            "type": "string"
+        }
+    },
+    "genomic_alterations": {
+        "genotype": {
+            "title": "Strain genotype",
+            "description": "The genotype of the strain according to accepted nomenclature conventions.",
+            "type": "string" 
+        },
+        "mutagen": {
+            "title": "Mutagen",
+            "description": "The mutagen used to create the strain, if applicable",
+            "type": "string",
+            "enum": [
+                "bombardment",
+                "gamma radiation",
+                "X-ray radiation",
+                "UV radiation",
+                "PTT",
+                "transposon",
+                "unknown",
+                "none" 
+            ]
+        },
+        "constructs": {
+            "title": "DNA constructs",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "DNA Constructs",
+                "description": "An expression or targeting vector stably or transiently transfected (not RNAi).",
+                "comment": "See contstruct.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "construct"
+            }
         }
     }
 }
