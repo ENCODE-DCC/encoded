@@ -102,7 +102,6 @@ def biosample_5_6(value, system):
 
 @upgrade_step('biosample', '6', '7')
 def biosample_6_7(value, system):
-
     # http://encode.stanford.edu/issues/1131
 
     update_properties = {
