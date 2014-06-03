@@ -240,6 +240,13 @@ var globals = require('./globals');
                     </th>
                 );
             });
+            var actions = (context.actions || []).map(action =>
+                <span className="table-actions">
+                    <a href={action.href}>
+                        <button className={action.className}>{action.title}</button>
+                    </a>
+                </span>
+            );
             var searchTermLower = this.state.searchTerm.trim().toLowerCase();
             var matching = [];
             var not_matching = [];
@@ -287,6 +294,7 @@ var globals = require('./globals');
                             <tr className="nosort table-controls">
                                 <th colSpan={columns.length}>
                                     {loading_or_total}
+                                    {actions}
                                     <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
                                         data-skiprequest="true" data-removeempty="true">
                                         <input ref="q" disabled={this.state.communicating || undefined} 

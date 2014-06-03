@@ -14,6 +14,7 @@ from ..schema_utils import (
     load_schema,
 )
 from pyramid.traversal import find_root
+import copy
 
 ACCESSION_KEYS = [
     {
@@ -52,6 +53,7 @@ ALLOW_SUBMITTER_ADD = [
 
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, Authenticated, 'view'),
+    (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
@@ -470,8 +472,6 @@ class Biosample(Collection):
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
 
-            root = find_root(self)
-            donor = root.get_by_uuid(self.properties['organism'])
             human_donor_properties = [
                 "sex",
                 "age",
@@ -481,63 +481,65 @@ class Biosample(Collection):
                 'synchronization'
             ]
             mouse_biosample_properties = {
-                "sex": "model_organism_sex",
-                "age": "model_organism_age",
-                "age_units": "model_organism_age_units",
-                "health_status": "model_organism_health_status",
-                "life_stage": "mouse_life_stage",
-                "synchronization": "synchronization_stage",
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "mouse_life_stage": "life_stage",
+                "mouse_synchronization_stage": "synchronization"
             }
             fly_biosample_properties = {
-                "sex": "model_organism_sex",
-                "age": "model_organism_age",
-                "age_units": "model_organism_age_units",
-                "health_status": "model_organism_health_status",
-                "life_stage": "fly_life_stage",
-                "synchronization": "fly_synchronization_stage",
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "fly_life_stage": "life_stage",
+                "fly_synchronization_stage": "synchronization"
             }
             worm_biosample_properties = {
-                "sex": "model_organism_sex",
-                "age": "model_organism_age",
-                "age_units": "model_organism_age_units",
-                "health_status": "model_organism_health_status",
-                "life_stage": "worm_life_stage",
-                "synchronization": "worm_synchronization_stage",
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "worm_life_stage": "life_stage",
+                "worm_synchronization_stage": "synchronization"
             }
-            if ns['organism'] == '7745b647-ff15-4ff3-9ced-b897d4e2983c':
+            fly_organisms = [
+                "/organisms/dmelanogaster/",
+                "/organisms/dananassae/",
+                "/organisms/dmojavensis/",
+                "/organisms/dpseudoobscura/",
+                "/organisms/dsimulans/",
+                "/organisms/dvirilis/",
+                "/organisms/dyakuba/"
+            ]
+
+            if properties['organism'] == '/organisms/human/' and 'donor' in ns:
+                root = find_root(self)
+                donor = root.get_by_uuid(self.properties['donor'])
                 for value in human_donor_properties:
                     if value in donor.properties:
                         ns[value] = donor.properties[value]
                     else:
                         ns[value] = ''
-            elif ns['organism'] in ["ab546d43-8e2a-4567-8db7-a217e6d6eea0",
-                                    "5be68469-94ba-4d60-b361-dde8958399ca",
-                                    "74144f1f-f3a6-42b9-abfd-186a1ca93198",
-                                    "c3cc08b7-7814-4cae-a363-a16b76883e3f",
-                                    "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
-                                    "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
-                                    "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"]:
-                for key, value in fly_biosample_properties.items():
-                    if value in ns:
-                        ns[key] = ns[value]
-                    else:
-                        ns[key] = ''
-            elif ns['organism'] in ["2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20",
-                                    "e3ec4c1b-a203-4fe7-a013-96c2d45ab242",
-                                    "69efae2b-4df5-4957-81da-346f1b93cb98",
-                                    "a7e711b9-534c-44a3-a782-2a15af620739",
-                                    "451f9e49-685d-40d5-ad89-760b2512262a"]:
-                for key, value in worm_biosample_properties.items():
-                    if value in ns:
-                        ns[key] = ns[value]
-                    else:
-                        ns[key] = ''
-            else:
+            elif properties['organism'] == "/organisms/mouse/":
                 for key, value in mouse_biosample_properties.items():
-                    if value in ns:
-                        ns[key] = ns[value]
+                    if key in ns:
+                        ns[value] = ns[key]
                     else:
-                        ns[key] = ''
+                        ns[value] = ''
+            elif properties['organism'] in fly_organisms:
+                for key, value in fly_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
+            else:
+                for key, value in worm_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
             return ns
 
 
@@ -843,6 +845,25 @@ class RNAiCharacterization(Characterization):
 class Page(Collection):
     schema = load_schema('page.json')
 
+    template = copy.deepcopy(Collection.template)
+    template['@type'] = [
+        {'$value': '{item_type}_collection', '$templated': True},
+        'page_collection',
+        'collection',
+    ]
+    template['actions'] = [
+        {
+            'name': 'add',
+            'title': 'Add',
+            'profile': '/profiles/{item_type}.json',
+            'method': 'GET',
+            'href': '#!add',
+            'className': 'btn btn-success',
+            '$templated': True,
+            '$condition': 'permission:add',
+        },
+    ]
+
     class Item(Collection.Item):
         base_types = ['page'] + Collection.Item.base_types
         name_key = 'name'
@@ -852,6 +873,21 @@ class Page(Collection):
             'in progress': [],
             'released': ALLOW_EVERYONE_VIEW,
             'deleted': ONLY_ADMIN_VIEW,
+        }
+
+        template = {
+            'actions': [
+                {
+                    'name': 'edit',
+                    'title': 'Edit',
+                    'profile': '/profiles/page.json',
+                    'method': 'PUT',
+                    'href': '#!edit',
+                    'className': 'btn navbar-btn',
+                    '$templated': True,
+                    '$condition': 'permission:edit'
+                },
+            ],
         }
 
 

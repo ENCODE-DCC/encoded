@@ -11,7 +11,7 @@ var BlockViewFallback = module.exports.BlockViewFallback = React.createClass({
         return (
         	<div>
         	    <h2>{this.props.type.join(', ')}</h2>
-        		<Panel context={this.props.data} />
+        		<Panel context={this.props.value} />
         	</div>
         );
     }

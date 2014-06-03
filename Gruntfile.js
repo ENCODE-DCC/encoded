@@ -108,6 +108,14 @@ module.exports = function(grunt) {
                 ],
             },
         },
+        copy: {
+            ckeditor: {
+                expand: true,
+                cwd: 'node_modules/node-ckeditor',
+                src: 'ckeditor/**',
+                dest: 'src/encoded/static/build/',
+            }
+        },
     });
 
     grunt.registerMultiTask('browserify', function () {
@@ -180,5 +188,7 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.registerTask('default', ['browserify']);
+    grunt.loadNpmTasks('grunt-contrib-copy');
+
+    grunt.registerTask('default', ['browserify', 'copy']);
 };
