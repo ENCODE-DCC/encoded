@@ -41,6 +41,17 @@ def mouse_donor_1(mouse_donor):
     return item
 
 
+@pytest.fixture
+def mouse_donor_2(mouse_donor):
+    item = mouse_donor.copy()
+    item.update({
+        'schema_version': '2',
+        'sex': 'male',
+
+    })
+    return item
+
+
 def test_human_donor_upgrade(app, human_donor_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('human_donor', human_donor_1, target_version='2')
@@ -61,3 +72,10 @@ def test_donor_upgrade_status_deleted(app, human_donor_1):
     value = migrator.upgrade('human_donor', human_donor_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'deleted'
+
+
+def test_model_organism_donor_upgrade_(app, mouse_donor_2):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('mouse_donor', mouse_donor_2, target_version='3')
+    assert value['schema_version'] == '3'
+    assert 'sex' not in value

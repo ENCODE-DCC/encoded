@@ -1,0 +1,31 @@
+[
+    {
+        "accession": "ENCDO244AAA",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "celegans",
+        "uuid": "08460bf0-d474-11e3-9c1a-0800200c9a66"
+    },
+    {
+        "accession": "ENCDO183YYY",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "celegans",
+        "constructs": ["893d806f-3a88-43eb-afdf-dcc16c79ee45"],
+        "uuid": "a09ce89d-e73a-4bbb-a3c9-9b46cc3a8e5f"
+    },
+    {
+        "accession": "ENCDO976AYR",
+        "award": "U41HG006992",
+        "lab": "j-michael-cherry",
+        "organism": "celegans",
+        "aliases": ["CGC:OP493"],
+        "genotype": "unc-119(tm4063) III; wgIs493.",
+        "mutagen": "bombardment",
+        "url": "http://www.cgc.cbs.umn.edu/search.php?st=OP493",
+        "documents": [
+            "ENCODE:sample_strain_generation_protocol"
+        ],
+        "uuid": "7a1b8636-54fe-48c6-873a-257e3782d5fa"
+    }
+]

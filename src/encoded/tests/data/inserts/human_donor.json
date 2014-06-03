@@ -1,6 +1,8 @@
 [
     {
         "accession": "ENCDO017AAA",
+        "age": "21",
+        "age_units": "year",
         "aliases": [
             "promocell:8121902"
         ],
@@ -9,19 +11,25 @@
         ],
         "award": "U41HG006992",
         "ethnicity": "Caucasian",
+        "health_status": "Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV",
         "lab": "j-michael-cherry",
+        "life_stage": "adult",
         "organism": "human",
         "sex": "male",
         "uuid": "807d50f9-3554-426c-a851-b952099e91f0"
     },
     {
         "accession": "ENCDO058AAA",
+        "age": "34",
+        "age_units": "year",
         "aliases": [
             "michael-snyder:STL003"
         ],
         "award": "U41HG006992",
         "ethnicity": "Caucasian",
+        "health_status": "Healthy",
         "lab": "j-michael-cherry",
+        "life_stage": "adult",
         "organism": "human",
         "sex": "male",
         "uuid": "13e91df8-6ba4-460f-baf3-c313d884bf4b"
@@ -31,7 +39,9 @@
         "accession": "ENCDO000HUM",
         "award": "U41HG006992",
         "ethnicity": "unknown",
+        "health_status": "unknown",
         "lab": "j-michael-cherry",
+        "life_stage": "unknown",
         "organism": "human",
         "references": [
             "PMID:23000965",
@@ -44,7 +54,9 @@
         "accession": "ENCDO106AAA",
         "award": "U41HG006992",
         "ethnicity": "unknown",
+        "health_status": "unknown",
         "lab": "j-michael-cherry",
+        "life_stage": "unknown",
         "organism": "human",
         "sex": "unknown",
         "uuid": "7c4cb5ff-4b21-4f9c-a31f-4a9d00cafb5a"
@@ -53,7 +65,9 @@
         "accession": "ENCDO275AAA",
         "award": "U41HG006992",
         "ethnicity": "unknown",
+        "health_status": "unknown",
         "lab": "j-michael-cherry",
+        "life_stage": "unknown",
         "organism": "human",
         "sex": "unknown",
         "uuid": "2b9fa2c8-5db9-49c9-9c06-000a16e39d11"
@@ -62,9 +76,21 @@
         "accession": "ENCDO276AAA",
         "award": "U41HG006992",
         "ethnicity": "unknown",
+        "health_status": "unknown",
         "lab": "j-michael-cherry",
+        "life_stage": "unknown",
         "organism": "human",
         "sex": "unknown",
         "uuid": "61ef59a0-222e-4008-9f84-c9200358ebe3"
+    },
+    {
+        "accession": "ENCDO568ESC",
+        "award": "U41HG006992",
+        "health_status": "Healthy",
+        "lab": "j-michael-cherry",
+        "life_stage": "embryonic",
+        "organism": "human",
+        "sex": "unknown",
+        "uuid": "f585f150-e6b2-11e3-ac10-0800200c9a66"
     }
 ]
