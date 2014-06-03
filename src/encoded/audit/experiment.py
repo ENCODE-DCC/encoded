@@ -133,6 +133,7 @@ def audit_experiment_biosample_term(value, system):
         if 'biosample' not in lib:
             detail = '{} missing biosample, expected {}'.format(lib['accession'], term_name)
             yield AuditFailure('missing biosample', detail, level='ERROR')
+            continue
 
         biosample = lib['biosample']
         if 'biosample_term_id' not in biosample or 'biosample_term_name' not in biosample or 'biosample_type' not in biosample:
