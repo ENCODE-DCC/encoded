@@ -292,9 +292,6 @@
         "characterization_method": "immunoblot",
         "date": "2014-05-31",
         "lab": "michael-snyder",
-        "documents": [
-            "ENCODE:Antibody_characterization_standards_February_2014"
-        ],
         "characterization_review": 
             [{ 
                 "organism": "human",
