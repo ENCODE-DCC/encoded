@@ -342,6 +342,9 @@ module.exports.HistoryAndTriggers = {
         if (href === null) href = target.getAttribute('data-href');
         if (href === null) return;
 
+        // Skip javascript links
+        if (href.indexOf('javascript:') === 0) return;
+
         // Skip external links
         if (!origin.same(href)) return;
 

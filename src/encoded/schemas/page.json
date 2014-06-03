@@ -4,7 +4,7 @@
     "id": "/profiles/page.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "name", "title", "layout" ],
+    "required": [ "name", "title" ],
     "identifyingProperties": ["uuid", "name" ],
     "additionalProperties": false,
     "mixinProperties": [
@@ -47,6 +47,24 @@
                     }
                 ]
             }
+        }
+    },
+    "columns": {
+        "name": {
+            "title": "Name",
+            "type": "string"
+        },
+        "title": {
+            "title": "Title",
+            "type": "string"
+        },
+        "date_created": {
+            "title": "Created",
+            "type": "datetime"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
         }
     }
 }

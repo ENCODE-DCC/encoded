@@ -831,17 +831,6 @@ class Collection(Mapping):
             {'$value': '{item_type}_collection', '$templated': True},
             'collection',
         ],
-        'actions': [
-            {
-                'name': 'add',
-                'title': 'Add',
-                'profile': '/profiles/{item_type}.json',
-                'method': 'POST',
-                'href': '',
-                '$templated': True,
-                'condition': 'permission:add',
-            },
-        ],
     }
 
     def __init__(self, parent, name):
