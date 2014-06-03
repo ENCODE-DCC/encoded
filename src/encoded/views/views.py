@@ -903,3 +903,16 @@ class HelpPage(Page):
         'description': 'Portal pages, help section',
     }
     unique_key = 'help_page:name'
+
+
+@location('images')
+class Image(Collection):
+    item_type = 'image'
+    schema = load_schema('image.json')
+    properties = {
+        'title': 'Image',
+        'description': 'Listing of portal images',
+    }
+
+    class Item(ItemWithAttachment, Collection.Item):
+        embedded = set(['submitted_by'])
