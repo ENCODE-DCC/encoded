@@ -657,6 +657,10 @@
             "title": "Status",
             "type": "string"
         },
+        "rnais.target.label": {
+            "title": "Target",
+            "type": "string"
+        },
         "treatments.treatment_term_name": {
             "title": "Treatment",
             "type": "string"
