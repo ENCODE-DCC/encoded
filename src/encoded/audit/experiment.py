@@ -195,7 +195,7 @@ def audit_experiment_paired_end(value,system):
             detail = '{} missing paired end information'.format(lib['accession'])
             yield AuditFailure('missing library paired end', detail, level='ERROR')
 
-        if 'paired_ended' not in rep and 'paired_ended' not in lib:
+        if 'paired_ended' not in rep or 'paired_ended' not in lib:
             continue
 
         if (rep['paired_ended'] == False or lib['paired_ended'] == False) and term_name in paired_end_assays:
