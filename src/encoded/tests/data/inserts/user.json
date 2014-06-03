@@ -1029,9 +1029,7 @@
     },
     {
         "timezone": "US/Central",
-        "uuid": "e7bb4fa6-ef92-41b7-871a-5f64db3848fe"
-    },
-    {
+        "uuid": "e7bb4fa6-ef92-41b7-871a-5f64db3848fe",
         "email": "david@glicksoftware.com",
         "first_name": "David",
         "groups": [
