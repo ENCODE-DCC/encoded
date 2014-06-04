@@ -40,5 +40,78 @@
         "scientific_name": "Gallus gallus",
         "taxon_id": "9031",
         "uuid": "c3aff9e7-8460-44b7-8cc2-ed9cade08ead"
+    },
+    {
+        "name": "dmelanogaster",
+        "scientific_name": "Drosophila melanogaster",
+        "taxon_id": "7227",
+        "uuid": "ab546d43-8e2a-4567-8db7-a217e6d6eea0"
+    },
+    {
+        "name": "celegans",
+        "scientific_name": "Caenorhabditis elegans",
+        "taxon_id": "6239",
+        "uuid": "2732dfd9-4fe6-4fd2-9d88-61b7c58cbe20"
+    },
+    
+    {
+        "name": "cbrenneri",
+        "scientific_name": "Caenorhabditis brenneri",
+        "taxon_id": "135651",
+        "uuid": "e3ec4c1b-a203-4fe7-a013-96c2d45ab242"
+    },
+    {
+        "name": "cbriggsae",
+        "scientific_name": "Caenorhabditis briggsae",
+        "taxon_id": "6238",
+        "uuid": "69efae2b-4df5-4957-81da-346f1b93cb98"
+    },
+    {
+        "name": "cjaponica",
+        "scientific_name": "Caenorhabditis japonica",
+        "taxon_id": "281687",
+        "uuid": "a7e711b9-534c-44a3-a782-2a15af620739"
+    },
+    {
+        "name": "cremanei",
+        "scientific_name": "Caenorhabditis remanei",
+        "taxon_id": "31234",
+        "uuid": "451f9e49-685d-40d5-ad89-760b2512262a"
+    },
+    {
+        "name": "dananassae",
+        "scientific_name": "Drosophila ananassae",
+        "taxon_id": "7217",
+        "uuid": "5be68469-94ba-4d60-b361-dde8958399ca"
+    },
+    {
+        "name": "dmojavensis",
+        "scientific_name": "Drosophila mojavensis",
+        "taxon_id": "7230",
+        "uuid": "74144f1f-f3a6-42b9-abfd-186a1ca93198"
+    },
+    {
+        "name": "dpseudoobscura",
+        "scientific_name": "Drosophila pseudoobscura",
+        "taxon_id": "7237",
+        "uuid": "c3cc08b7-7814-4cae-a363-a16b76883e3f"
+    },
+    {
+        "name": "dsimulans",
+        "scientific_name": "Drosophila simulans",
+        "taxon_id": "7240",
+        "uuid": "d1072fd2-8374-4f9b-85ce-8bc2c61de122"
+    },
+    {
+        "name": "dvirilis",
+        "scientific_name": "Drosophila virilis",
+        "taxon_id": "7244",
+        "uuid": "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b"
+    },
+    {
+        "name": "dyakuba",
+        "scientific_name": "Drosophila yakuba",
+        "taxon_id": "7245",
+        "uuid": "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
     }
 ]

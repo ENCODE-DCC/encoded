@@ -9,7 +9,6 @@ package_upgrade: true
 packages:
 - apache2-mpm-event
 - build-essential
-- daemontools
 - elasticsearch
 - git
 - libapache2-mod-wsgi
@@ -44,6 +43,7 @@ bootcmd:
 - mkfs -t ext4 /dev/xvdg
 - mkdir -p /var/lib/postgresql/9.3
 - mkdir -p /var/lib/elasticsearch/elasticsearch
+- echo "TrustedUserCAKeys /etc/ssh/users_ca.pub" >> /etc/ssh/sshd_config
 
 mounts:
 - [ xvdf, /var/lib/postgresql/9.3, "auto", "defaults,nobootwait", "0", "2" ]
@@ -60,18 +60,10 @@ users:
   homedir: /srv/encoded
 
 write_files:
--   path: /etc/postgresql/9.3/main/recovery.conf
-    permissions: '0644'
-    content: restore_command = 'envdir /etc/wal-e.d/env /srv/encoded/bin/wal-e wal-fetch "%%f" "%%p"' 
--   path: /etc/wal-e.d/env/AWS_ACCESS_KEY_ID
-    permissions: '0755'
-    content: %(AWS_ID)s
--   path: /etc/wal-e.d/env/AWS_SECRET_ACCESS_KEY
-    permissions: '0755'
-    content: %(AWS_KEY)s
--   path: /etc/wal-e.d/env/WALE_S3_PREFIX
-    permissions: '0755'
-    content: %(AWS_SERVER)s
+- path: /etc/ssh/users_ca.pub
+  content: ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAv/ymOcnN4LhM4NACc3Or116XXJ6KytuOgB/+1qNkOFBqBosrn7cmJ35rsoNHRgYNrCsRE9ch74RKsN6H72FtSJgBhGh/9oUK7Os6Fqt3/ZZXxgxIx6ubs/MTgrxrAnujiBxUXMXQhLKMriNMpo8mt4nGYVtLk9PBjiyfncaS8H9ZKoNio9dhP8bmTuYvioAI35dqKdSlVLyzr/XkZxia8Ki+pQ0N6uuiEwMR3ToM+LSp8wpFOOAiu4PEAujRW7us/+1hlpKWfn0J7/V3826joHE+I967Vg/+ikcVhF77JjK1nib879VgCWfmn1HPQosIpk4yJfVgGvRVI7I2nfBPVw== encoded@demo-l.encodedcc.org
+- path: /etc/postgresql/9.3/main/recovery.conf
+  content: restore_command = '/srv/encoded/bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" wal-fetch "%%f" "%%p"'
 
 runcmd:
 # Ideally this would build as a different user so encoded only has read
@@ -79,24 +71,23 @@ runcmd:
 - set -e
 - sudo service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
-- chown -R root:postgres /etc/wal-e.d/env
 - sudo -u postgres createuser encoded
 - sudo -u postgres createdb --owner=encoded encoded
 - mkdir /srv/encoded
 - chown encoded:encoded /srv/encoded
 - cd /srv/encoded
-- sudo -u encoded git clone -b %(BRANCH)s https://github.com/ENCODE-DCC/encoded.git .
+- sudo -u encoded git clone --no-checkout https://github.com/ENCODE-DCC/encoded.git .
+- sudo -u encoded git checkout %(COMMIT)s
 - sudo -u encoded python2.7 bootstrap.py
 - sudo -u encoded bin/buildout
 - sudo /etc/init.d/postgresql stop
-- sudo -u postgres envdir /etc/wal-e.d/env /srv/encoded/bin/wal-e backup-fetch /var/lib/postgresql/9.3/main LATEST
+- sudo -u postgres bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres cp /var/lib/postgresql/9.3/main/postgresql.conf.orig /var/lib/postgresql/9.3/main/postgresql.conf
 - sudo -u postgres cp /etc/postgresql/9.3/main/recovery.conf /var/lib/postgresql/9.3/main
 - sudo /etc/init.d/postgresql start
 - until sudo -u postgres psql postgres -c ""; do sleep 10; done
 - sudo -u encoded sh -c 'cat /dev/urandom | head -c 256 | base64 > session-secret.b64'
 - sudo -u encoded bin/update-keys-links production.ini
-- sudo -u encoded bin/upgrade production.ini
 - sudo -u encoded bin/create-mapping production.ini
 - sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
 - sudo a2enmod headers
@@ -105,20 +96,16 @@ runcmd:
 - sudo a2ensite encoded.conf
 - sudo a2dissite 000-default
 - sudo service apache2 reload
+- sleep 10
+- sudo -u encoded bin/upgrade production.ini
 #- sleep 60
 #- PATH="/usr/share/elasticsearch/bin:/usr/lib/postgresql/9.3/bin:$PATH" bin/test -m "not bdd"
-
-## Import ssh keys from launchpad:
-# ssh_import_id:
-# - lrowe
 
 ## Or specify public keys:
 ssh_authorized_keys:
 - ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA4cGlJUDTeX7QHvJ6AHbRKqgXihkooOTtct/JGkNfOIf/0ATG4TlXhDALk7ixUuaQQHTeHFYPnAKCu04ngRRnWUPh1Rjhpgr/DDWoAOw8cQyHs8x4qXW0+RSsE9w+OGACj2JtqpZ/RBrj3ymOrHx6BEepz+6waKb3nEw3eeGSmBGOjq0/Z2iKVPS/vmB33UJLwQu+JoalRR/I1ocCsUTHS756o1tH5zsz8ZSpnAe978vctqGPoc1N8y+U/YHQHLJMtBQnstmVWfNYEen10UhVosUmSxLiPkSEc606HzO6eQN3qjPRFq6ICbifV3jRBBSkzW9uwsEqNc4A4YXQIV2Eew== encoded@demo-a.encodedcc.org
 
 apt_sources:
-# This is not quite the latest version
-# https://github.com/elasticsearch/elasticsearch/issues/3286
 - source: "deb http://packages.elasticsearch.org/elasticsearch/1.1/debian stable main"
   key: |
     -----BEGIN PGP PUBLIC KEY BLOCK-----

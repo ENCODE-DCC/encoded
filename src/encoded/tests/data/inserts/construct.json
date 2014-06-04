@@ -39,5 +39,24 @@
         ],
         "target": "E2F1-human",
         "uuid": "b31106bc-8535-4448-903e-854af460b21d"
+    },
+    {
+        "award": "U41HG007355",
+        "construct_type": "fusion protein",
+        "description": "The fusion protein carried on the integrated transgenic array is driven by the ttr-39 (TransThyretin Related, C04G2.1)gene.  The fusion protein is expression embryonically in GABAergic neurons.",
+        "lab": "kevin-white",
+        "source": "kevin-white",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "tags": [
+            {
+                "location": "N-terminal",
+                "name": "3xFLAG"
+            }
+        ],
+        "target": "3XFLAG-pab-1-celegans",
+        "vector_backbone_name": "pSA2",
+        "endogenous_promoter_target": "mes-4-celegans",
+        "promoter_position_relative_to_target": 35,
+        "uuid": "c65c008a-6085-47ed-aa50-668b321ff035"
     }
 ]

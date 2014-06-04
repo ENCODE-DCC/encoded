@@ -14,6 +14,7 @@ from ..schema_utils import (
     load_schema,
 )
 from pyramid.traversal import find_root
+import copy
 
 ACCESSION_KEYS = [
     {
@@ -52,6 +53,7 @@ ALLOW_SUBMITTER_ADD = [
 
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, Authenticated, 'view'),
+    (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
@@ -247,14 +249,12 @@ class Source(Collection):
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
-    item_template = {
-        'actions': [
-            {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': '', '$templated': True, '$condition': 'permission:edit'},
-        ],
-    }
+    item_actions = [
+        {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': ''},
+    ]
     item_name_key = 'name'
     unique_key = 'source:name'
-    item_keys =  ALIAS_KEYS + ['name']
+    item_keys = ALIAS_KEYS + ['name']
 
 
 class DonorItem(Collection.Item):
@@ -262,6 +262,9 @@ class DonorItem(Collection.Item):
     embedded = set(['organism'])
     name_key = 'accession'
     keys = ACCESSION_KEYS + ALIAS_KEYS
+    rev = {
+        'characterizations': ('donor_characterization', 'characterizes'),
+    }
 
 
 @location('mouse-donors')
@@ -270,6 +273,32 @@ class MouseDonor(Collection):
     schema = load_schema('mouse_donor.json')
     properties = {
         'title': 'Mouse donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
+
+
+@location('fly-donors')
+class FlyDonor(Collection):
+    item_type = 'fly_donor'
+    schema = load_schema('fly_donor.json')
+    properties = {
+        'title': 'Fly donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
+
+
+@location('worm-donors')
+class WormDonor(Collection):
+    item_type = 'worm_donor'
+    schema = load_schema('worm_donor.json')
+    properties = {
+        'title': 'Worm donors',
         'description': 'Listing Biosample Donors',
     }
 
@@ -334,6 +363,16 @@ class ConstructCharacterization(Characterization):
     }
 
 
+@location('donor-characterizations')
+class DonorCharacterization(Characterization):
+    item_type = 'donor_characterization'
+    schema = load_schema('donor_characterization.json')
+    properties = {
+        'title': 'Donor characterizations',
+        'description': 'Listing of model organism donor (strain) construct characterizations',
+    }
+
+
 @location('documents')
 class Document(Collection):
     item_type = 'document'
@@ -370,9 +409,16 @@ class Biosample(Collection):
             ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
-            ]
+            ],
+            'sex': {'$value': '{sex}', '$templated': True},
+            'age': {'$value': '{age}', '$templated': True},
+            'age_units': {'$value': '{age_units}', '$templated': True},
+            'health_status': {'$value': '{health_status}', '$templated': True},
+            'life_stage': {'$value': '{life_stage}', '$templated': True},
+            'synchronization': {'$value': '{synchronization}', '$templated': True}
         }
         embedded = set([
+            'donor',
             'donor.organism',
             'submitted_by',
             'lab',
@@ -423,6 +469,75 @@ class Biosample(Collection):
                     ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
+
+            human_donor_properties = [
+                "sex",
+                "age",
+                "age_units",
+                "health_status",
+                "life_stage",
+                'synchronization'
+            ]
+            mouse_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "mouse_life_stage": "life_stage",
+                "mouse_synchronization_stage": "synchronization"
+            }
+            fly_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "fly_life_stage": "life_stage",
+                "fly_synchronization_stage": "synchronization"
+            }
+            worm_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "worm_life_stage": "life_stage",
+                "worm_synchronization_stage": "synchronization"
+            }
+            fly_organisms = [
+                "/organisms/dmelanogaster/",
+                "/organisms/dananassae/",
+                "/organisms/dmojavensis/",
+                "/organisms/dpseudoobscura/",
+                "/organisms/dsimulans/",
+                "/organisms/dvirilis/",
+                "/organisms/dyakuba/"
+            ]
+
+            if properties['organism'] == '/organisms/human/' and 'donor' in ns:
+                root = find_root(self)
+                donor = root.get_by_uuid(self.properties['donor'])
+                for value in human_donor_properties:
+                    if value in donor.properties:
+                        ns[value] = donor.properties[value]
+                    else:
+                        ns[value] = ''
+            elif properties['organism'] == "/organisms/mouse/":
+                for key, value in mouse_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
+            elif properties['organism'] in fly_organisms:
+                for key, value in fly_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
+            else:
+                for key, value in worm_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
             return ns
 
 
@@ -606,7 +721,7 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
-    
+
     class Item(Collection.Item):
         template = {
             'files': [
@@ -646,7 +761,7 @@ class Experiment(Dataset):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    
+
     class Item(Dataset.Item):
         base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {
@@ -728,6 +843,25 @@ class RNAiCharacterization(Characterization):
 class Page(Collection):
     schema = load_schema('page.json')
 
+    template = copy.deepcopy(Collection.template)
+    template['@type'] = [
+        {'$value': '{item_type}_collection', '$templated': True},
+        'page_collection',
+        'collection',
+    ]
+    template['actions'] = [
+        {
+            'name': 'add',
+            'title': 'Add',
+            'profile': '/profiles/{item_type}.json',
+            'method': 'GET',
+            'href': '#!add',
+            'className': 'btn btn-success',
+            '$templated': True,
+            '$condition': 'permission:add',
+        },
+    ]
+
     class Item(Collection.Item):
         base_types = ['page'] + Collection.Item.base_types
         name_key = 'name'
@@ -738,6 +872,17 @@ class Page(Collection):
             'released': ALLOW_EVERYONE_VIEW,
             'deleted': ONLY_ADMIN_VIEW,
         }
+
+        actions = [
+            {
+                'name': 'edit',
+                'title': 'Edit',
+                'profile': '/profiles/page.json',
+                'method': 'PUT',
+                'href': '#!edit',
+                'className': 'btn navbar-btn',
+            },
+        ]
 
 
 @location('about')

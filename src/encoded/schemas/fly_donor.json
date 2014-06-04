@@ -1,0 +1,55 @@
+{
+    "title": "Fly donor",
+    "description": "Schema for submitting a fly donor.",
+    "id": "/profiles/fly_donor.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "award", "lab", "organism"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "donor.json#/properties" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/strains"},
+        { "$ref": "mixins.json#/genomic_alterations"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "genotype": {
+            "description": "The genotype of the strain according to accepted nomenclature conventions: http://flybase.org/static_pages/docs/nomenclature/nomenclature3.html"
+        },
+        "documents": {
+            "title": "Strain documents",
+            "description": "Documents that describe the strain and its generation.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Strain document",
+                "description": "A document that describes the strain and/or its generation.",
+                "comment": "See document.json for available identifiers.",
+                "type": "string",
+                "linkTo": "document"
+            }
+        },
+        "organism":{ 
+            "linkEnum": [
+                "ab546d43-8e2a-4567-8db7-a217e6d6eea0",
+                "5be68469-94ba-4d60-b361-dde8958399ca",
+                "74144f1f-f3a6-42b9-abfd-186a1ca93198",
+                "c3cc08b7-7814-4cae-a363-a16b76883e3f",
+                "d1072fd2-8374-4f9b-85ce-8bc2c61de122",
+                "b9ce90a4-b791-40e9-9b4d-ffb1c6a5aa2b",
+                "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
+            ]
+        }
+    }
+}
