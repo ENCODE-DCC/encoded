@@ -18,6 +18,27 @@
     "properties": {
         "schema_version": {
             "default": "1"
+        },
+        "status": {
+            "default": "released"
+        },
+        "caption": {
+            "title": "Caption",
+            "type": "string"
+        }
+    },
+    "columns": {
+        "caption": {
+            "title": "Caption",
+            "type": "string"
+        },
+        "date_created": {
+            "title": "Created",
+            "type": "datetime"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
         }
     }
 }

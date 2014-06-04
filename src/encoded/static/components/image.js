@@ -1,8 +1,10 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var url = require('url');
+var ReactForms = require('react-forms');
+var ItemEdit = require('./item').ItemEdit;
 var globals = require('./globals');
+var url = require('url');
 
 
 var Attachment = module.exports.Attachment = React.createClass({
@@ -44,4 +46,89 @@ var Attachment = module.exports.Attachment = React.createClass({
 });
 
 
-globals.content_views.register(Attachment, 'image');
+var Image = React.createClass({
+    render: function() {
+        var actions = this.props.context.actions;
+        if (actions && actions.length) {
+            var actions = (
+                <div className="navbar navbar-default">
+                    <div className="container">
+                        {actions.map(action => <a href={action.href}><button className={action.className}>{action.title}</button></a>)}
+                    </div>
+                </div>
+            );
+        } else {
+            var actions = '';
+        }
+        return (
+            <div>
+                {actions}
+                <Attachment context={this.props.context} />
+            </div>
+        );
+    }
+})
+
+
+globals.content_views.register(Image, 'image');
+
+
+var FileInput = React.createClass({
+
+    getInitialState: function() {
+        return {
+            value: this.props.value
+        }
+    },
+
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({value: nextProps.value});
+    },
+
+    render: function() {
+        return (
+            <div>
+                <input ref="input" type="file" onChange={this.onChange} />
+                <img src={this.state.value.href} width="128" />
+            </div>
+        );
+    },
+
+    onChange: function() {
+        var input = this.refs.input.getDOMNode();
+        var file = input.files[0];
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            var value = {
+                download: file.name,
+                href: reader.result
+            }
+            this.props.onChange(value);
+        }.bind(this);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+});
+
+
+var Schema    = ReactForms.schema.Schema;
+var Property  = ReactForms.schema.Property;
+
+var ImageFormSchema = (
+    <Schema>
+        <Property name="caption" label="Caption" />
+        <Property name="attachment" label="Image" input={FileInput()} />
+    </Schema>
+);
+
+
+var ImageEdit = React.createClass({
+    render: function() {
+        return this.transferPropsTo(<ItemEdit context={this.props.context} schema={ImageFormSchema} />);
+    }
+});
+
+
+globals.content_views.register(ImageEdit, 'image', 'edit');
+globals.content_views.register(ImageEdit, 'image_collection', 'add');

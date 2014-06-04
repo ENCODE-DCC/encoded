@@ -17,6 +17,7 @@ from ..storage import (
     DBSession,
 )
 from ..validation import ValidationFailure
+import magic
 
 
 def parse_data_uri(uri):
@@ -71,8 +72,10 @@ class ItemWithAttachment(Item):
 
             download_meta['download'] = filename = attachment['download']
             mime_type, charset, data = parse_data_uri(href)
-            if mime_type is not None:
-                download_meta['type'] = mime_type
+            detected_type = magic.from_buffer(data, mime=True)
+            attachment['type'] = detected_type
+            if detected_type is not None:
+                download_meta['type'] = detected_type
             if charset is not None:
                 download_meta['charset'] = charset
             blob_id = uuid4()
