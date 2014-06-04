@@ -57,7 +57,7 @@ var Approval = module.exports.Approval = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>Approval for {context.antibody.accession}</h2>
-                        <h3>Antibody against {context.target.organism.scientific_name}
+                        <h3>Antibody against <em>{context.target.organism.scientific_name}</em>
                             {' '}{context.target.label}
                         </h3>
                         <div className="characterization-status-labels">
@@ -84,7 +84,7 @@ var Approval = module.exports.Approval = React.createClass({
                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
 
                         {context.antibody.host_organism ? <dt>Host</dt> : null}
-                        {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.scientific_name}</dd> : null}
+                        {context.antibody.host_organism ? <dd className="sentence-case"><em>{context.antibody.host_organism.scientific_name}</em></dd> : null}
         
                         {context.antibody.clonality ? <dt>Clonality</dt> : null}
                         {context.antibody.clonality ? <dd className="sentence-case">{context.antibody.clonality}</dd> : null}
@@ -180,7 +180,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <dd className="h3">{context.characterization_method}</dd>
 
                             <dt className="h4">Target species</dt>
-                            <dd className="h4 sentence-case">{context.target.organism.scientific_name}</dd>
+                            <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
 
                             {context.caption ? <dt>Caption</dt> : null}
                             {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}

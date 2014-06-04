@@ -51,7 +51,11 @@ var Dbxref = dbxref.Dbxref;
                                 <p className="type meta-status">{' ' + result['status']}</p>
                             </div>
                             <div className="accession">
-                                <a href={result['@id']}>{result['target.label'] + ' (' + result['target.organism.scientific_name'] + ')'}</a> 
+                                <a href={result['@id']}>
+                                    {result['target.label'] + ' ('}
+                                    <em>{result['target.organism.scientific_name']}</em>
+                                    {')'}
+                                </a> 
                             </div>
                         </div>
                         <div className="data-row"> 
@@ -80,8 +84,11 @@ var Dbxref = dbxref.Dbxref;
                                 <p className="type meta-status">{' ' + result['status']}</p>
                             </div>
                             <div className="accession">
-                                <a href={result['@id']}>{result['biosample_term_name'] + ' (' + result['organism.scientific_name'] +
-                                        separator + lifeStage + age + ageUnits + ')'}</a> 
+                                <a href={result['@id']}>
+                                    {result['biosample_term_name'] + ' ('}
+                                    <em>{result['organism.scientific_name']}</em>
+                                    {separator + lifeStage + age + ageUnits + ')'}
+                                </a> 
                             </div>
                         </div>
                         <div className="data-row">
@@ -163,7 +170,13 @@ var Dbxref = dbxref.Dbxref;
                             <div className="accession">
                                 <a href={result['@id']}>
                                     {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
-                                    <span>{name ? (' (' + name + separator + lifeStage + age + ageUnits + ')') : ''}</span>
+                                    {name || lifeStage || age || ageUnits ?
+                                        <span>
+                                            {' ('}
+                                            {name ? <em>{name}</em> : ''}
+                                            {separator + lifeStage + age + ageUnits + ')'}
+                                        </span>
+                                    : ''}
                                 </a>
                             </div>
                         </div>
@@ -224,7 +237,11 @@ var Dbxref = dbxref.Dbxref;
                                 <p className="type meta-title">Target</p>
                             </div>
                             <div className="accession">
-                                <a href={result['@id']}>{result['label'] + ' (' + result['organism.scientific_name'] + ')'}</a> 
+                                <a href={result['@id']}>
+                                    {result['label'] + ' ('}
+                                    <em>{result['organism.scientific_name']}</em>
+                                    {')'}
+                                </a> 
                             </div>
                         </div>
                         <div className="data-row">
@@ -267,6 +284,9 @@ var Dbxref = dbxref.Dbxref;
             var title = this.props.title || term;
             var search_base = this.props.search_base;
             var field = this.props.facet['field'];
+            var em = field === 'target.organism.scientific_name' ||
+                     field === 'organism.scientific_name' ||
+                     field === 'replicates.library.biosample.donor.organism.scientific_name';
             var barStyle = {
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
             };
@@ -276,7 +296,9 @@ var Dbxref = dbxref.Dbxref;
                     <li id="selected" key={term}>
                         <a id="selected" href={link}>
                             <span className="pull-right">{count}<i className="icon-remove-sign"></i></span>
-                            <span className="facet-item">{title}</span>
+                            <span className="facet-item">
+                                {em ? <em>{title}</em> : {title}}
+                            </span>
                         </a>
                     </li>
                 );
@@ -286,7 +308,9 @@ var Dbxref = dbxref.Dbxref;
                         <span className="bar" style={barStyle}></span>
                         <a href={search_base+field+'='+term}>
                             <span className="pull-right">{count}</span>
-                            <span className="facet-item">{title}</span>
+                            <span className="facet-item">
+                                {em ? <em>{title}</em> : {title}}
+                            </span>
                         </a>
                     </li>
                 );
@@ -309,7 +333,7 @@ var Dbxref = dbxref.Dbxref;
         getInitialState: function () {
             return {
                 facetOpen: false
-            }
+            };
         },
 
         handleClick: function () {

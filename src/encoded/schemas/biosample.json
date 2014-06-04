@@ -539,7 +539,7 @@
             "type": "string"
         },
         "rnais.target.label": {
-            "title": "Target",
+            "title": "RNAi target",
             "type": "string"
         },
         "treatments.treatment_term_name": {

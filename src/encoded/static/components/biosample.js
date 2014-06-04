@@ -65,7 +65,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <li>Biosamples</li>
                             <li>{context.biosample_type}</li>
                             {context.donor ?
-                                <li className="active">{context.donor.organism.scientific_name}</li>
+                                <li className="active"><em>{context.donor.organism.scientific_name}</em></li>
                             : null }
                         </ul>
                         <h2>
@@ -281,7 +281,7 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
-                {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
 
                 {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
@@ -318,7 +318,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
-                {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
 
                 {context.genotype ? <dt>Genotype</dt> : null}
                 {context.genotype ? <dd>{context.genotype}</dd> : null}
@@ -361,7 +361,7 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                 {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
-                {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
 
                 {context.genotype ? <dt>Genotype</dt> : null}
                 {context.genotype ? <dd>{context.genotype}</dd> : null}
@@ -404,7 +404,7 @@ var WormDonor = module.exports.WormDonor = React.createClass({
                 {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
-                {context.organism.scientific_name ? <dd className="sentence-case">{context.organism.scientific_name}</dd> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
 
                 {context.genotype ? <dt>Genotype</dt> : null}
                 {context.genotype ? <dd>{context.genotype}</dd> : null}
