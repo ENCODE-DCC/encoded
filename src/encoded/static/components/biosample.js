@@ -41,7 +41,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         var construct_documents = {};
         constructs.forEach(function (construct) {
             construct.documents.forEach(function (doc) {
-                construct_documents[doc['@id']] = Panel({context: doc, popoverContent: StdContent});
+                construct_documents[doc['@id']] = Panel({context: doc, panelContent: DocumentContent});
            }, this);
         }, this);
 
@@ -52,13 +52,13 @@ var Biosample = module.exports.Biosample = React.createClass({
         var rnai_documents = {};
         rnais.forEach(function (rnai) {
             rnai.documents.forEach(function (doc) {
-                rnai_documents[doc['@id']] = Panel({context: doc, popoverContent: StdContent});
+                rnai_documents[doc['@id']] = Panel({context: doc, panelContent: DocumentContent});
             }, this);
         }, this);
 
         var protocol_documents = {};
         context.protocol_documents.forEach(function(doc) {
-            protocol_documents[doc['@id']] = Panel({context: doc, popoverContent: StdContent});
+            protocol_documents[doc['@id']] = Panel({context: doc, panelContent: DocumentContent});
         }, this);
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
@@ -461,33 +461,20 @@ globals.panel_views.register(RNAi, 'rnai');
 
 
 // Popover bubble
-var Popover = module.exports.Popover = React.createClass({
-    contextTypes: {
-        popoverComponent: React.PropTypes.string, // ID of component with visible popup
-        onPopoverChange: React.PropTypes.func // Parent function to process popover
-    },
-
-    handleClick: function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    },
-
+var InfoPanel = module.exports.InfoPanel = React.createClass({
     render: function() {
-        var popoverContent;
+        var panelContent;
         var context = this.props.context;
-        var popoverVisible = this.context.popoverComponent === this.props.popoverComponent;
-        if (this.props.popoverContent) {
-            popoverContent = this.props.popoverContent({context: context});
-        } else {
-            popoverContent = StdContent({context: context});
+        if (this.props.panelContent) {
+            panelContent = this.props.panelContent({context: context});
         }
-        var popoverClass = cx({
-            "key-value-popover": true,
-            "active": popoverVisible
+        var panelClass = cx({
+            "key-value-panel": true,
+            "active": this.props.panelOpen
         });
         return(
-            <dl className={popoverClass} onClick={this.handleClick}>
-                {popoverContent}
+            <dl className={panelClass}>
+                {panelContent}
             </dl>
         );
     }
@@ -496,10 +483,9 @@ var Popover = module.exports.Popover = React.createClass({
 
 // Component: bar that, when clicked, opens a popover with document data
 // Note: uses React context, ≠ props.context
-var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
-    contextTypes: {
-        popoverComponent: React.PropTypes.string, // ID of component with visible popup
-        onPopoverChange: React.PropTypes.func // Parent function to process popover
+var InfoTrigger = module.exports.PopoverTrigger = React.createClass({
+    getInitialState: function() {
+        return {panelOpen: false};
     },
 
     // Clicking the Lab bar inverts visible state of the popover
@@ -509,34 +495,33 @@ var PopoverTrigger = module.exports.PopoverTrigger = React.createClass({
 
         // Tell parent (App component) about new popover state
         // Pass it this component's React unique node ID
-        this.context.onPopoverChange(this._rootNodeID);
+        this.setState({panelOpen: !this.state.panelOpen});
     },
 
     render: function() {
         var context = this.props.context;
-        var popoverVisible = this.context.popoverComponent === this._rootNodeID;
         var keyClass = cx({
             "key-value-trigger": true,
-            "active": popoverVisible
+            "active": this.state.panelOpen
         });
 
         return (
             <div className="document-info">
                 <dl className={keyClass}>
-                    <a href="#" aria-haspopup="true" onClick={this.handleClick}>
+                    <a href="#" onClick={this.handleClick}>
                         <dt>Lab</dt>
                         <dd>{context.lab.title}</dd>
                         <i className="trigger-icon icon-info-sign"></i>
                     </a>
                 </dl>
-                <Popover context={context} popoverContent={this.props.popoverContent} popoverComponent={this._rootNodeID} />
+                <InfoPanel context={context} panelOpen={this.state.panelOpen} panelContent={this.props.panelContent} />
             </div>
         );
     }
 });
 
 
-var StdContent = module.exports.StdContent = React.createClass({
+var DocumentContent = module.exports.DocumentContent = React.createClass({
     render: function() {
         var context = this.props.context;
         return(
@@ -620,7 +605,6 @@ var Document = module.exports.Document = React.createClass({
         var context = this.props.context;
         var attachmentHref, attachmentUri;
         var figure, download, src, alt;
-        var imgClass = "characterization-img characterization-file";
         var height = "100";
         var width = "100";
         if (context.attachment) {
@@ -663,17 +647,19 @@ var Document = module.exports.Document = React.createClass({
         }
 
         return (
-            <section className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+            <section className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                 <div className="type-document type-popover view-detail panel status-none">
-                    <figure>
-                        {figure}
-                    </figure>
-                    <div className="document-intro">
-                        <h3 className="sentence-case">{context.document_type}</h3>
-                        <p>{context.description}</p>
+                    <div className="doc-header">
+                        <figure>
+                            {figure}
+                        </figure>
+                        <div className="document-intro">
+                            <h3 className="sentence-case">{context.document_type}</h3>
+                            <p>{context.description}</p>
+                            {download}
+                        </div>
                     </div>
-                    {download}
-                    <PopoverTrigger context={context} popoverContent={this.props.popoverContent} />
+                    <InfoTrigger context={context} panelContent={this.props.panelContent} />
                     <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={src} clearLightbox={this.clearLightbox} />
                 </div>
             </section>

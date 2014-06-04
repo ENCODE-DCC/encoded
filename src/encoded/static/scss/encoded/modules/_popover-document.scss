@@ -211,28 +211,12 @@ $figure-height: 130px;
 }
 
 
-.key-value-popover {
-    position: absolute;
+.key-value-panel {
+    display: none;
     padding: 10px;
-    bottom: 44px;
-    width: 90%;
-    left: 50%;
-    margin: 0 0 0 -45%;
-    visibility: hidden;
-    background-color: #eff6fc;
-    @include background-image(linear-gradient(top, #e8e8e8 0%,#c8c8c8 100%));
-    background-image: -ms-linear-gradient(top, #e8e8e8 0%,#c8c8c8 100%);
-    @include border-radius(10px);
-    border-width: 1px;
-    border-style: solid;
-    border-color: #fff #e0e0e0 #808080;
-    @include box-shadow(0 4px 8px 0 rgba(0,0,0,.4));
-    opacity: 0;
-    @include transition(all 200ms);
 
     &.active {
-        visibility: visible;
-        opacity: 1;
+        display: block;
     }
 
     &:after,
@@ -315,6 +299,7 @@ $figure-height: 130px;
 
     img {
         display: block;
+        border: 1px solid #808080;
     }
 }
 
