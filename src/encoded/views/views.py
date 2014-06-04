@@ -728,6 +728,7 @@ class Dataset(Collection):
                 {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
                 {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
             ],
+            'hub': {'$value': '{hub}', '$templated': True}
         }
         template_type = {
             'files': 'file',
@@ -751,6 +752,23 @@ class Dataset(Collection):
         rev = {
             'original_files': ('file', 'dataset'),
         }
+
+        def template_namespace(self, properties, request=None):
+            ns = super(Dataset.Item, self).template_namespace(properties, request)
+            if request is None:
+                return ns
+            ns['hub'] = ''
+            return ns
+
+        def expand_embedded(self, request, properties):
+            super(Dataset.Item, self).expand_embedded(request, properties)
+            for f in properties['files']:
+                if f['file_format'] in ['bigWig', 'bigBed']:
+                    assembly = f['assembly']
+                    hub_url = request.url.replace('?' + request.query_string, '@@hub')
+                    properties['hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&' + assembly + \
+                        '&hubUrl=' + hub_url + '/hub.txt'
+                    break
 
 
 @location('experiments')
