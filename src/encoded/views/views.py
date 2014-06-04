@@ -908,6 +908,11 @@ class HelpPage(Page):
 class Image(Collection):
     item_type = 'image'
     schema = load_schema('image.json')
+    schema['properties']['attachment']['properties']['type']['enum'] = [
+        'image/png',
+        'image/jpeg',
+        'image/gif',
+    ]
     properties = {
         'title': 'Image',
         'description': 'Listing of portal images',
