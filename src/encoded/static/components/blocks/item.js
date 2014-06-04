@@ -14,6 +14,11 @@ var ItemBlockView = React.createClass({
 
 
 var FetchedItemBlock = React.createClass({
+
+    shouldComponentUpdate: function(nextProps) {
+        return (this.props.loadingComplete && nextProps.value.uuid != this.props.uuid);
+    },
+
     render: function() {
         var url = '/' + this.props.value.uuid;
         return <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />;
