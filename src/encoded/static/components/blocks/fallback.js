@@ -7,12 +7,12 @@ var item = require('../item');
 
 var BlockViewFallback = module.exports.BlockViewFallback = React.createClass({
     render: function() {
-    	var Panel = item.Panel;
+        var Panel = item.Panel;
         return (
-        	<div>
-        	    <h2>{this.props.type.join(', ')}</h2>
-        		<Panel context={this.props.value} />
-        	</div>
+            <div>
+            <h2>{this.props.type.join(', ')}</h2>
+                <Panel context={this.props.value} />
+            </div>
         );
     }
 });
