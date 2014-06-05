@@ -18,6 +18,7 @@ def render(data):
 
 def getParentTrack(accession, label):
     parent = OrderedDict([
+        ('type', 'bigBed'),
         ('subGroup1', 'view Views Call=calls Signal=signals'),
         ('dragAndDrop', 'subTracks'),
         ('visibility', 'dense'),
