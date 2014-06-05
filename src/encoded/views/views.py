@@ -766,7 +766,7 @@ class Dataset(Collection):
                 if f['file_format'] in ['bigWig', 'bigBed']:
                     assembly = f['assembly']
                     hub_url = request.url.replace('?' + request.query_string, '@@hub')
-                    properties['hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&' + assembly + \
+                    properties['hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&db=' + assembly + \
                         '&hubUrl=' + hub_url + '/hub.txt'
                     break
 
