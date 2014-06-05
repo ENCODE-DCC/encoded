@@ -18,8 +18,8 @@ def render(data):
 
 def getParentTrack(accession, label):
     parent = OrderedDict([
-        ('type', 'bigBed'),
-        ('subGroup1', 'view Views Call=calls Signal=signals'),
+        ('type', 'bed 3'),
+        ('subGroup1', 'view Views PK=Peaks SIG=Signals'),
         ('dragAndDrop', 'subTracks'),
         ('visibility', 'dense'),
         ('compositeTrack', 'on'),
@@ -51,13 +51,30 @@ def getTrack(f, label, parent):
     return (newline + (2 * tab)).join(track_array)
 
 
-def getView(accession, view):
+def getPeaksView(accession, view):
     s_label = view + 's'
     track_name = view + '-view'
     view_data = OrderedDict([
+        ('type', 'bigBed'),
         ('viewUI', 'on'),
         ('visibility', 'dense'),
-        ('view', view),
+        ('view', 'PK'),
+        ('shortLabel', s_label),
+        ('parent', accession),
+        ('track', track_name)
+    ])
+    view_array = render(view_data)
+    return (newline + tab).join(view_array)
+
+
+def getSignalsView(accession, view):
+    s_label = view + 's'
+    track_name = view + '-view'
+    view_data = OrderedDict([
+        ('type', 'bigWig'),
+        ('viewUI', 'on'),
+        ('visibility', 'dense'),
+        ('view', 'SIG'),
         ('shortLabel', s_label),
         ('parent', accession),
         ('track', track_name)
@@ -98,22 +115,27 @@ def hub(context, request):
     else:
         long_label = embedded['assay_term_name'] + ' of ' + embedded['biosample_term_name']
         parent = getParentTrack(embedded['accession'], long_label)
-        call_view = getView(embedded['accession'], 'Call')
-        signal_view = getView(embedded['accession'], 'Signal')
+        peak_view = ''
+        signal_view = ''
         signal_count = 0
         call_count = 0
         for f in files_json:
             if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed']:
                 if call_count == 0:
-                    call_view = call_view + newline + (2 * tab)
-                call_view = call_view + (2 * newline) + (2 * tab) + getTrack(f, long_label, 'Call-view')
+                    peak_view = getPeaksView(embedded['accession'], 'PK') + newline + (2 * tab)
+                peak_view = peak_view + (2 * newline) + (2 * tab) + getTrack(f, long_label, 'PK-view')
                 call_count = call_count + 1
             elif f['file_format'] == 'bigWig':
                 if signal_count == 0:
-                    signal_view = signal_view + newline + (2 * tab)
+                    signal_view = getSignalsView(embedded['accession'], 'SIG') + newline + (2 * tab)
                 else:
                     signal_view = signal_view + newline
-                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'Signal-view')
+                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'SIG-view')
                 signal_count = signal_count + 1
-        parent = parent + (newline * 2) + tab + call_view + (newline * 2) + tab + signal_view
+        if signal_view == '':
+            parent = parent + (newline * 2) + tab + peak_view
+        elif peak_view == '':
+            parent = parent + (newline * 2) + tab + signal_view
+        else:
+            parent = parent + (newline * 2) + tab + peak_view + (newline * 2) + tab + signal_view
         return Response(parent, content_type='text/plain')
