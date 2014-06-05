@@ -64,8 +64,9 @@
     position: relative;
     padding: 5px 0 7px;
     color: #fff;
-    background-color: #202020;
-    @include background-image(linear-gradient(top, darken($navbar-inverse-link-active-bg,10%) 0%,darken($navbar-inverse-link-active-bg,5%) 5%,lighten($navbar-inverse-link-active-bg,5%) 93%,lighten($navbar-inverse-link-active-bg,50%) 95%));
+    background-color: $brand-danger;
+    @include background-image(linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%));
+    background-image: -ms-linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%);
 
     p {
         margin: 0;

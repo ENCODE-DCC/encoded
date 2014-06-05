@@ -35,7 +35,16 @@ var NavBarLayout = React.createClass({
         e.preventDefault();
         e.stopPropagation();
 
+        // Remove the warning banner because the user clicked the close icon
         this.setState({testWarning: false});
+
+        // If collection with .sticky-header on page, jiggle scroll position
+        // to force the sticky header to jump to the top of the page.
+        var hdrs = document.getElementsByClassName('sticky-header');
+        if (hdrs.length) {
+            window.scrollBy(0,-1);
+            window.scrollBy(0,1);
+        }
     },
 
     render: function() {
