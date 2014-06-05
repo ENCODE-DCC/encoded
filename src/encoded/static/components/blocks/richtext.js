@@ -9,7 +9,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
     getInitialState: function() {
         return {
             'value': this.props.value
-        }
+        };
     },
 
     componentWillReceiveProps: function(nextProps) {
