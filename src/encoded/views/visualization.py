@@ -95,7 +95,7 @@ def getGenomeTxt(properties):
 
 def getHubTxt(accession):
     hub = OrderedDict([
-        ('email', 'jseth@stanford.edu'),
+        ('email', 'encode-help@lists.stanford.edu'),
         ('genomesFile', 'genomes.txt'),
         ('longLabel', 'ENCODE Data Coordination Center Data Hub'),
         ('shortLabel', 'Hub (' + accession + ')'),
