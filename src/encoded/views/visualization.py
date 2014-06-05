@@ -39,6 +39,7 @@ def getTrack(f, label, parent):
     if 'replicate' in f:
         replicate_number = str(f['replicate']['biological_replicate_number'])
     track = OrderedDict([
+        ('color', '255,255,255'),
         ('maxHeightPixels', '100:32:8'),
         ('longLabel', label + ' - ' + f['accession'] + ' - ' + replicate_number),
         ('shortLabel', f['accession']),
