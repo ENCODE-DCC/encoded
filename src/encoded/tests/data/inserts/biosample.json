@@ -64,7 +64,7 @@
             "richard-myers:MCF-7 rep 4"
         ],
         "award": "U54HG004576",
-        "biosample_term_id": "BTO:0000093",
+        "biosample_term_id": "EFO:0001203",
         "biosample_term_name": "MCF-7 cell",
         "biosample_type": "immortalized cell line",
         "culture_harvest_date": "2012-04-10",
@@ -164,7 +164,7 @@
     {
         "accession": "ENCBS044ENC",
         "award": "RC2HG005602",
-        "biosample_term_id": "BTO:0002493",
+        "biosample_term_id": "EFO:0005233",
         "biosample_term_name": "CH12.LX cell",
         "biosample_type": "immortalized cell line",
         "description": "B-cell lymphoma (GM12878 analog)",
