@@ -12,7 +12,7 @@ var Page = module.exports.Page = React.createClass({
     render: function() {
         var actions = this.props.context.actions;
         if (actions && actions.length) {
-            var actions = (
+            actions = (
                 <div className="navbar navbar-default">
                     <div className="container">
                         {actions.map(action => <a href={action.href}><button className={action.className}>{action.title}</button></a>)}
@@ -20,7 +20,7 @@ var Page = module.exports.Page = React.createClass({
                 </div>
             );
         } else {
-            var actions = '';
+            actions = '';
         }
         return (
             <div>
@@ -52,18 +52,20 @@ var PageFormSchema = (
 var PageEdit = module.exports.PageEdit = React.createClass({
 
     render: function() {
+        var action;
+        var form;
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var title = globals.listing_titles.lookup(context)({context: context});
         if (context['@type'].indexOf('page_collection') !== -1) {  // add form
             title = 'Add ' + title;
-            var action = this.props.context['@id'];
-            var form = <Form schema={PageFormSchema} action={action} method="POST" />;
+            action = this.props.context['@id'];
+            form = <Form schema={PageFormSchema} action={action} method="POST" />;
         } else {  // edit form
             title = 'Edit ' + title;
             var url = this.props.context['@id'] + '?frame=edit';
-            var action = this.props.context['@id'];
-            var form = <FetchedData Component={Form} url={url} schema={PageFormSchema} action={action} method="PUT" />;
+            action = this.props.context['@id'];
+            form = <FetchedData Component={Form} url={url} schema={PageFormSchema} action={action} method="PUT" />;
         }
         return (
             <div className={itemClass}>
