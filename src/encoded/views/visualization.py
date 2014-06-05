@@ -131,7 +131,8 @@ def hub(context, request):
                     signal_view = getSignalsView(embedded['accession'], 'SIG') + newline + (2 * tab)
                 else:
                     signal_view = signal_view + newline
-                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'SIG-view')
+                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'SIG-view') + \
+                    '\ngraphTypeDefault bars'
                 signal_count = signal_count + 1
         if signal_view == '':
             parent = parent + (newline * 2) + tab + peak_view
