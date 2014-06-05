@@ -3,19 +3,66 @@ from pyramid.view import view_config
 from ..contentbase import Item, embed
 from collections import OrderedDict
 
+tab = '\t'
+newline = '\n'
 
-def getTrack(file_json, label):
-    # Should do a better job with this
-    return OrderedDict([
-        ('maxHeightPixels', '100:32:8'),
-        ('color', '128,0,0'),
-        ('visibility', 'pack'),
-        ('longLabel', label + ' - ' + file_json['accession']),
-        ('shortLabel', file_json['accession']),
-        ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + file_json['download_path']),
-        ('type', file_json['file_format']),
-        ('track', file_json['accession']),
+
+def render(data):
+    arr = []
+    for i in range(len(data)):
+        temp = list(data.popitem())
+        str1 = ' '.join(temp)
+        arr.append(str1)
+    return arr
+
+
+def getParentTrack(accession, label):
+    parent = OrderedDict([
+        ('subGroup1', 'view Views Call=calls Signal=signals'),
+        ('dragAndDrop', 'subTracks'),
+        ('visibility', 'dense'),
+        ('compositeTrack', 'on'),
+        ('longLabel', accession + ' of ' + label),
+        ('shortLabel', accession),
+        ('track', accession)
     ])
+    parent_array = render(parent)
+    return newline.join(parent_array)
+
+
+def getTrack(f, label, parent):
+    file_format = 'bigWig'
+    if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed']:
+        file_format = 'bigBed'
+    replicate_number = str(0)
+    if 'replicate' in f:
+        replicate_number = str(f['replicate']['biological_replicate_number'])
+    track = OrderedDict([
+        ('maxHeightPixels', '100:32:8'),
+        ('longLabel', label + ' - ' + f['accession'] + ' - ' + replicate_number),
+        ('shortLabel', f['accession']),
+        ('parent', parent + ' on'),
+        ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + f['download_path']),
+        ('type', file_format),
+        ('track', f['accession']),
+    ])
+    track_array = render(track)
+    return (newline + (2 * tab)).join(track_array)
+
+
+def getView(accession, view):
+    s_label = view + 's'
+    track_name = view + '-view'
+    view_data = OrderedDict([
+        ('viewUI', 'on'),
+        ('visibility', 'dense'),
+        ('view', view),
+        ('shortLabel', s_label),
+        ('parent', accession),
+        ('track', track_name)
+    ])
+    view_array = render(view_data)
+    return (newline + tab).join(view_array)
 
 
 def getGenomeTxt(properties):
@@ -24,12 +71,7 @@ def getGenomeTxt(properties):
         ('trackDb', assembly + '/trackDb.txt'),
         ('genome', assembly)
     ])
-    genome_array = []
-    for i in range(len(genome)):
-        temp = list(genome.popitem())
-        str1 = ' '.join(temp)
-        genome_array.append(str1)
-    return genome_array
+    return render(genome)
 
 
 def getHubTxt(accession):
@@ -40,25 +82,7 @@ def getHubTxt(accession):
         ('shortLabel', 'Hub (' + accession + ')'),
         ('hub', 'ENCODE_DCC_' + accession)
     ])
-    hub_array = []
-    for i in range(len(hub)):
-        temp = list(hub.popitem())
-        str1 = ' '.join(temp)
-        hub_array.append(str1)
-    return hub_array
-
-
-def getTrackDbTxt(files_json, label):
-    tracks = []
-    for file_json in files_json:
-        if file_json['file_format'] in ['bigWig', 'bigBed']:
-            track = getTrack(file_json, label)
-            for i in range(len(track)):
-                temp = list(track.popitem())
-                str1 = ' '.join(temp)
-                tracks.append(str1)
-            tracks.append('')
-    return tracks
+    return render(hub)
 
 
 @view_config(name='hub', context=Item, request_method='GET', permission='view')
@@ -67,9 +91,28 @@ def hub(context, request):
     files_json = embedded.get('files', None)
     url_ret = (request.url).split('@@hub')
     if url_ret[1] == '/hub.txt':
-        return Response('\n'.join(getHubTxt(embedded['accession'])), content_type='text/plain')
+        return Response(newline.join(getHubTxt(embedded['accession'])), content_type='text/plain')
     elif url_ret[1] == '/genomes.txt':
-        return Response('\n'.join(getGenomeTxt(embedded)), content_type='text/plain')
+        return Response(newline.join(getGenomeTxt(embedded)), content_type='text/plain')
     else:
         long_label = embedded['assay_term_name'] + ' of ' + embedded['biosample_term_name']
-        return Response('\n'.join(getTrackDbTxt(files_json, long_label)), content_type='text/plain')
+        parent = getParentTrack(embedded['accession'], long_label)
+        call_view = getView(embedded['accession'], 'Call')
+        signal_view = getView(embedded['accession'], 'Signal')
+        signal_count = 0
+        call_count = 0
+        for f in files_json:
+            if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed']:
+                if call_count == 0:
+                    call_view = call_view + newline + (2 * tab)
+                call_view = call_view + (2 * newline) + (2 * tab) + getTrack(f, long_label, 'Call-view')
+                call_count = call_count + 1
+            elif f['file_format'] == 'bigWig':
+                if signal_count == 0:
+                    signal_view = signal_view + newline + (2 * tab)
+                else:
+                    signal_view = signal_view + newline
+                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'Signal-view')
+                signal_count = signal_count + 1
+        parent = parent + (newline * 2) + tab + call_view + (newline * 2) + tab + signal_view
+        return Response(parent, content_type='text/plain')
