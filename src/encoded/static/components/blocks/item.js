@@ -8,21 +8,30 @@ var globals = require('../globals');
 var ItemBlockView = React.createClass({
     render: function() {
         var ViewComponent = globals.content_views.lookup(this.props.data);
-        return <ViewComponent context={this.props.data} />;
+        return this.transferPropsTo(<ViewComponent context={this.props.data} />);
     }
 });
 
 
-var FetchedItemBlock = React.createClass({
+var FetchedItemBlockView = React.createClass({
 
     shouldComponentUpdate: function(nextProps) {
-        return (this.props.loadingComplete && nextProps.value.uuid != this.props.uuid);
+        console.log(nextProps);
+        return (nextProps.value.item != this.props.value.item);
     },
 
     render: function() {
-        var url = '/' + this.props.value.uuid;
-        return <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />;
+        var url = this.props.value.item;
+        if (url.indexOf('/') !== 0) {
+            url = '/' + url;
+        }
+        return <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} href={url} />;
     }
 });
 
-globals.block_views.register(FetchedItemBlock, 'itemblock');
+
+globals.blocks.register({
+    label: 'item block',
+    icon: 'icon-file',
+    view: FetchedItemBlockView
+}, 'itemblock');

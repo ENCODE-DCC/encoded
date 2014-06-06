@@ -21,6 +21,7 @@
 
 	.block {
 		position: relative;
+		min-height: 20px;
 
 		&.dragging {
 			opacity: .5;
@@ -55,6 +56,7 @@
 
 		.block-toolbar {
 			position: absolute;
+			z-index: 1;
 			top: 3px;
 			right: 3px;
 			text-align: right;
