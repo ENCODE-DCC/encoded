@@ -56,6 +56,21 @@ def biosample_4(biosample, biosamples):
     return item
 
 
+@pytest.fixture
+def biosample_6(biosample, biosamples):
+    item = biosample.copy()
+    item.update({
+        'schema_version': '5',
+        'sex': 'male',
+        'age': '2',
+        'age_units': 'week',
+        'health_status': 'Normal',
+        'life_stage': 'newborn',
+
+    })
+    return item
+
+
 def test_biosample_upgrade(app, biosample_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('biosample', biosample_1, target_version='2')
@@ -162,6 +177,33 @@ def test_biosample_upgrade_status_encode3(app, biosample_4):
     value = migrator.upgrade('biosample', biosample_4, target_version='5')
     assert value['schema_version'] == '5'
     assert value['status'] == 'in progress'
+
+
+def test_biosample_upgrade_model_organism(app, biosample_6):
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_6, target_version='7')
+    assert value['schema_version'] == '7'
+    assert 'sex' not in value
+    assert 'age' not in value
+    assert 'age_units' not in value
+    assert 'health_status' not in value
+    assert 'life_stage' not in value
+
+def test_biosample_upgrade_model_organism_mouse(app, biosample_6):
+    biosample_6['organism'] = '3413218c-3d86-498b-a0a2-9a406638e786'
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('biosample', biosample_6, target_version='7')
+    assert value['schema_version'] == '7'
+    assert 'sex' not in value
+    assert value['model_organism_sex'] == 'male'
+    assert 'age' not in value
+    assert value['model_organism_age'] == '2'
+    assert 'age_units' not in value
+    assert value['model_organism_age_units'] == 'week'
+    assert 'health_status' not in value
+    assert value['model_organism_health_status'] == 'Normal'
+    assert 'life_stage' not in value
+    assert value['mouse_life_stage'] == 'newborn'
 
 
 def test_biosample_upgrade_inline(testapp, biosample_1):

@@ -2,6 +2,7 @@
     "esnext": true,
     "node": true,
     "browser": true,
+    "predef": ["$script"],
     "globalstrict": true,
     "newcap": false,
     "sub": true

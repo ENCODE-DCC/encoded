@@ -29,7 +29,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var title = globals.listing_titles.lookup(context)({context: context});
-        var url = this.props.context['@id'] + '?frame=edit'
+        var url = this.props.context['@id'] + '?frame=edit';
         return (
             <div className={itemClass}>
                 <header className="row">
@@ -80,15 +80,15 @@ var EditForm = module.exports.EditForm = React.createClass({
         var ace = require('brace');
         require('brace/mode/json');
         require('brace/theme/solarized_light');
-        var value = JSON.stringify(sorted_json(this.props.data), null, 4)
+        var value = JSON.stringify(sorted_json(this.props.data), null, 4);
         var editor = ace.edit(this.refs.editor.getDOMNode());
-        var session = editor.getSession()
+        var session = editor.getSession();
         session.setMode('ace/mode/json');
         editor.setValue(value);
         editor.setOptions({
             maxLines: 1000,
             minLines: 24
-        })
+        });
         editor.clearSelection();
         this.setState({editor: editor});
         session.on("changeAnnotation", this.hasErrors);

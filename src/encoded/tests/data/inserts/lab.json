@@ -585,5 +585,26 @@
         "state": "CA",
         "title": "Xiang-Dong Fu, UCSD",
         "uuid": "17e5f9cf-d429-4794-87a6-cac083e3b275"
+    },
+    {
+        "address1": "Department of Genome Sciences",
+        "address2": "3720 15th Ave NE, Foege S-350D, Box 355065",
+        "awards": [
+            "U01HG004263",
+            "U41HG007355"
+        ],
+        "city": "Seattle",
+        "country": "USA",
+        "fax": "000-000-0000",
+        "institute_label": "UW",
+        "institute_name": "University of Washington",
+        "name": "robert-waterston",
+        "phone1": "000-000-0000",
+        "phone2": "000-000-0000",
+        "pi": "uskuf.shyec@doton.danona",
+        "postal_code": "98195-5065",
+        "state": "WA",
+        "title": "Robert Waterston, UW",
+        "uuid": "44324de6-c057-451f-a8f1-1d9a6cb2762c"
     }
 ]

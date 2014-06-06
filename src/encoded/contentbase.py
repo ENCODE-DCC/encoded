@@ -1,6 +1,4 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
-
-
 import logging
 import venusian
 from abc import ABCMeta
@@ -17,10 +15,8 @@ from pyramid.httpexceptions import (
     HTTPInternalServerError,
     HTTPPreconditionFailed,
     HTTPNotFound,
-    HTTPNotModified,
 )
 from pyramid.interfaces import (
-    PHASE1_CONFIG,
     PHASE2_CONFIG,
 )
 from pyramid.location import lineage
@@ -30,7 +26,6 @@ from pyramid.security import (
     Authenticated,
     Deny,
     Everyone,
-    authenticated_userid,
     has_permission,
     principals_allowed_by_permission,
 )
@@ -44,13 +39,11 @@ from pyramid.traversal import (
 )
 from pyramid.view import view_config
 from sqlalchemy import (
-    func,
     orm,
 )
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import FlushError
 from urllib import (
-    quote,
     unquote,
 )
 from urllib import urlencode
@@ -68,7 +61,6 @@ from .storage import (
     Resource,
     Key,
     Link,
-    TransactionRecord,
 )
 from collections import (
     OrderedDict,
@@ -119,6 +111,7 @@ def make_subrequest(request, path):
 
 
 embed_cache = ManagerLRUCache('embed_cache')
+
 
 def embed(request, path, as_user=False):
     # Should really be more careful about what gets included instead.
@@ -227,7 +220,7 @@ def validate_item_content_patch(context, request):
 
 def permission_checker(context, request):
     def checker(permission):
-        return has_permission(permission, context, request)
+        return request.has_permission(permission, context)
     return checker
 
 
@@ -478,6 +471,7 @@ class Item(object):
         'uuid': {'$value': '{uuid}', '$templated': True},
     }
     template_type = None
+    actions = []
 
     def __init__(self, collection, model):
         self.__parent__ = collection
@@ -588,9 +582,8 @@ class Item(object):
         for name, value in self.rev_links().iteritems():
             properties[name] = [
                 request.resource_path(item)
-                    for item in value
-                        if item.upgrade_properties().get('status')
-                            not in ('deleted', 'obsolete')
+                for item in value
+                if item.upgrade_properties().get('status') not in ('deleted', 'obsolete')
             ]
 
         templated = self.expand_template(properties, request)
@@ -603,6 +596,7 @@ class Item(object):
         ns['item_type'] = self.item_type
         ns['base_types'] = self.base_types
         ns['uuid'] = self.uuid
+
         # When called by update_keys() there is no request.
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)
@@ -636,6 +630,12 @@ class Item(object):
         paths = [p.split('.') for p in self.embedded]
         for path in paths:
             expand_path(request, properties, path)
+
+    def add_actions(self, request, properties):
+        if request.has_permission('edit', self):
+            properties['actions'] = getattr(self, 'actions', [])
+        else:
+            properties['actions'] = []
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -798,6 +798,7 @@ class CustomItemMeta(MergedDictsMeta, ABCMeta):
             'rev',
             'name_key',
             'namespace_from_path',
+            'actions',
         ]
 
         if 'Item' in attrs:
@@ -831,17 +832,6 @@ class Collection(Mapping):
             {'$value': '{item_type}_collection', '$templated': True},
             'collection',
         ],
-        'actions': [
-            {
-                'name': 'add',
-                'title': 'Add',
-                'profile': '/profiles/{item_type}.json',
-                'method': 'POST',
-                'href': '',
-                '$templated': True,
-                'condition': 'permission:add',
-            },
-        ],
     }
 
     def __init__(self, parent, name):
@@ -861,7 +851,7 @@ class Collection(Mapping):
         if self.schema is not None:
             properties = self.schema['properties']
             self.schema_links = [
-                name for name, prop in properties.iteritems()
+                key for key, prop in properties.iteritems()
                 if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
             ]
             self.schema_version = properties.get('schema_version', {}).get('default')
@@ -1009,6 +999,7 @@ class Collection(Mapping):
         ns['collection_uri'] = uri = request.resource_path(self)
         ns['item_type'] = self.item_type
         ns['permission'] = permission_checker(self, request)
+
         compiled = ObjectTemplate(self.merged_template)
         templated = compiled(ns)
         properties.update(templated)
@@ -1030,6 +1021,9 @@ class Collection(Mapping):
         return result
 
     def expand_embedded(self, request, properties):
+        pass
+
+    def add_actions(self, request, properties):
         pass
 
 
@@ -1146,7 +1140,7 @@ def item_view(context, request):
 
     if frame is None:
         if asbool(request.params.get('embed', True)):
-            frame = 'embedded'
+            frame = 'page'
         else:
             frame = 'object'
 
@@ -1154,6 +1148,10 @@ def item_view(context, request):
         return properties
 
     context.expand_embedded(request, properties)
+    if frame == 'embedded':
+        return properties
+
+    context.add_actions(request, properties)
     return properties
 
 
@@ -1251,9 +1249,12 @@ def item_index_data(context, request):
     for key in context.model.unique_keys:
         keys[key.name].append(key.value)
 
-    principals = principals_allowed_by_permission(context, 'view')
-    if principals is Everyone:
-        principals = [Everyone]
+    principals = {}
+    for permission in ('view', 'edit'):
+        p = principals_allowed_by_permission(context, permission)
+        if p is Everyone:
+            p = [Everyone]
+        principals[permission] = p
 
     path = resource_path(context)
     paths = {path}
@@ -1273,14 +1274,15 @@ def item_index_data(context, request):
                 resource_path(base, key)
                 for key in keys[key_name])
 
-    embedded = embed(request, path + '/')
+    embedded = embed(request, path + '/?frame=embedded')
     audit = request.audit(embedded, embedded['@type'], path=path)
     document = {
         'embedded': embedded,
         'object': embed(request, path + '/?frame=object'),
         'links': links,
         'keys': keys,
-        'principals_allowed_view': sorted(principals),
+        'principals_allowed_view': sorted(principals['view']),
+        'principals_allowed_edit': sorted(principals['edit']),
         'paths': sorted(paths),
         'audit': audit,
     }

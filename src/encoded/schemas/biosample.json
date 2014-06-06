@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms"],
+    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms", "sex", "age", "age_units", "health_status", "life_stage", "synchronization"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -23,9 +23,18 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "depleted_in_term_name": ["depleted_in_term_id"],
+        "depleted_in_term_id": {
+            "required": ["depleted_in_term_name"],
+            "properties": {
+                "biosample_type": {"enum": ["whole organisms"]}
+            }
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "6"
+            "default": "7"
         },
         "accession": {
             "accessionType": "BS"
@@ -112,8 +121,58 @@
         },
         "passage_number": {
             "title": "Passage number",
-	"description": "In calculating passage number, include passages from the source.",
+            "description": "In calculating passage number, include passages from the source.",
             "type": "integer"
+        },
+        "depleted_in_term_name": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Depleted in term",
+                "description": "UBERON (Uber Anatomy Ontology) term best matching the tissue(s)/body part(s) that were removed from the biosample.",
+                "type": "string",
+                "enum": [
+                    "head",
+                    "limb",
+                    "salivary gland",
+                    "male accessory sex gland",
+                    "testis",
+                    "female gonad",
+                    "digestive system",
+                    "arthropod fat body"
+                ]
+            }
+        },
+        "depleted_in_term_id": {
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Depleted in ID",
+                "description": "UBERON (Uber Anatomy Ontology) identifier best matching the tissue(s)/body part(s) that were removed from the biosample.",
+                "comment": "Based on the choice in depleted_in_term_name use the following guide: head - UBERON:0000033, limb - UBERON:0002101, salivary gland - UBERON:0001044 , male accessory sex gland - UBERON:0010147, testis - UBERON:0000473, female gonad - UBERON:0000992, digestive system - UBERON:0001007, arthropod fat body - UBERON:0003917",
+                "type": "string",
+                "enum": [
+                    "UBERON:0000033",
+                    "UBERON:0002101",
+                    "UBERON:0001044",
+                    "UBERON:0010147",
+                    "UBERON:0000473",
+                    "UBERON:0000992",
+                    "UBERON:0001007",
+                    "UBERON:0003917"
+                ]
+            }
+        },
+        "model_organism_mating_status": {
+            "title": "Mating status",
+            "description": "The mating status of the animal.",
+            "type": "string",
+            "enum": [
+                "mated",
+                "virgin",
+                "sterile",
+                "mixed"
+            ]
         },
         "derived_from": {
             "title": "Derived from",
@@ -241,7 +300,14 @@
             "title": "Starting amount units",
             "type": "string",
             "enum": [
-                "g","mg","cells/ml","cells", "whole embryos", "items", "μg"
+                "g",
+                "mg",
+                "cells/ml",
+                "cells", 
+                "whole embryos", 
+                "items", 
+                "μg",
+                "whole animals"
             ]
         },
         "url": {
@@ -250,37 +316,121 @@
             "type": "string",
             "format": "uri"
         },
-        "life_stage": {
-            "title": "Life stage",
+        "model_organism_sex": {
+            "title": "Model organism sex",
+            "type": "string",
+            "default": "unknown",
+            "enum": [
+                "male",
+                "female",
+                "unknown",
+                "mixed",
+                "hermaphrodite"
+            ]
+        },
+        "mouse_life_stage": {
+            "title": "Mouse life stage",
             "type": "string",
             "enum": [
-                "fetal",
-                "newborn",
-                "child",
                 "adult",
                 "unknown",
                 "embryonic",
                 "postnatal"
             ]
         },
-        "age": {
-            "title": "Donor age",
-            "description": " The age or age range of the donor organism when biological material was sampled.",
+        "fly_life_stage": {
+            "title": "Fly life stage",
+            "type": "string",
+            "enum": [
+                "embryonic",
+                "first instar larva",
+                "second instar larva",
+                "third instar larva",
+                "wandering third instar larva",
+                "prepupa",
+                "pupa",
+                "adult"
+            ]
+        },
+        "fly_synchronization_stage": {
+            "title": "Fly synchronization stage",
+            "comment": "Stage at which flies were synchronized. Use in conjunction with time and time units post-synchronization.",
+            "type": "string",
+            "enum": [
+                "fertilization",
+                "white prepupa",
+                "eclosion"
+            ]  
+        },
+        "post_synchronization_time": {
+            "title": "Post-synchronization time",
+            "comment": "Use in conjunction with fly_sychronization_stage or worm_synchronization_stage to specify time elapsed post-synchronization.",
             "type": "string",
             "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
         },
-        "age_units": {
-            "title": "Donor age units",
+        "post_synchronization_time_units": {
+            "title": "Post-synchronization time units",
+            "comment": "Use in conjunction with post_synchronization_time to specify time elapsed post-synchronization.",
             "type": "string",
             "enum": [
+                "minute",
+                "hour",
                 "day",
                 "week",
                 "month",
-                "year"
+                "year",
+                "stage"
+            ]
+        },       
+        "worm_life_stage":{
+            "title": "Worm life stage",
+            "type": "string",
+            "enum": [
+                "early embryonic",
+                "late embryonic",
+                "embryonic",
+                "L1 larva",
+                "L2 larva",
+                "L2d larva",
+                "L3 larva",
+                "L4 larva",
+                "dauer",
+                "young adult",
+                "adult"
+            ]    
+        },
+        "worm_synchronization_stage": {
+            "title": "Worm synchronization stage",
+            "comment": "Stage at which worms were synchronized. Use in conjunction with time and time units post-synchronization.",
+            "type": "string",
+            "enum": [
+                "fertilization",
+                "egg laying",
+                "starved L1 larva",
+                "dauer exit"
             ]
         },
-        "health_status": {
-            "title": "Donor health status",
+        "model_organism_age": {
+            "title": "Model organism donor age",
+            "description": " The age or age range of the model donor organism when biological material was sampled.",
+            "type": "string",
+            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+        },
+        "model_organism_age_units": {
+            "title": "Model organism donor age units",
+            "type": "string",
+            "enum": [
+                "minute",
+                "hour",
+                "day",
+                "week",
+                "month",
+                "year",
+                "stage"
+            ]
+        },
+        "model_organism_health_status": {
+            "title": "Model organism donor health status",
             "type": "string"
         },
         "status": {
@@ -294,25 +444,24 @@
         }
     },
     "facets": {
-        "biosample_type": {
-            "title": "Biosample type",
+        "organism.name": {
+            "title": "Organism",
             "type": "string"
         },
         "status": {
             "title": "Biosample status",
             "type": "string"
         },
-        "organism.name": {
-            "title": "Organism",
+        "biosample_type": {
+            "title": "Biosample type",
             "type": "string"
         },
         "organ_slims": {
             "title": "Organ",
             "type": "array"
         },
-        
-        "donor.sex": {
-            "title": "Gender",
+        "sex": {
+            "title": "Sex",
             "type": "string"
         },
         "life_stage": {
@@ -338,6 +487,10 @@
         "developmental_slims": {
             "title": "Developmental slim",
             "type": "array"
+        },
+        "synchronization": {
+            "title": "Synchronization stage",
+            "type": "string" 
         },
         "lab.title": {
             "title": "Lab",
@@ -373,6 +526,10 @@
             "title": "Life stage",
             "type": "string"
         },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
         "treatments.length": {
             "title": "Treatments length",
             "type": "array"
@@ -396,8 +553,10 @@
         "subcellular_fraction_term_name": 1.0,
         "phase": 1.0,
         "life_stage": 1.0,
+        "synchronization": 1.0,
         "health_status": 1.0,
         "donor.accession": 1.0,
+        "donor.alternate_accessions": 1.0,
         "donor.organism.name": 1.0,
         "donor.organism.scientific_name": 1.0,
         "donor.organism.taxon_id": 1.0,
@@ -422,9 +581,11 @@
         "constructs.target.dbxref": 1.0,
         "constructs.target.aliases": 1.0,
         "derived_from.accession": 1.0,
+        "derived_from.alternate_accessions": 1.0,
         "derived_from.biosample_term_id": 1.0,
         "derived_from.biosample_term_name": 1.0,
         "pooled_from.accession": 1.0,
+        "pooled_from.alternate_accessions": 1.0,
         "pooled_from.biosample_term_id": 1.0,
         "pooled_from.biosample_term_name": 1.0,
         "characterizations.characterization_method": 1.0,

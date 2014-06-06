@@ -41,9 +41,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:MCF-7"
         ],
-        "health_status": "unknown",
         "lab": "richard-myers",
-        "life_stage": "unknown",
         "note": "(PMID: 4357757)",
         "organism": "human",
         "references": [
@@ -76,9 +74,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:MCF-7"
         ],
-        "health_status": "unknown",
         "lab": "richard-myers",
-        "life_stage": "unknown",
         "note": "(PMID: 4357757)",
         "organism": "human",
         "passage_number": 5,
@@ -94,8 +90,6 @@
     {
         "_test": "mouse with different start amounts",
         "accession": "ENCBS024AAA",
-        "age": "14.5",
-        "age_units": "day",
         "award": "U54HG006997",
         "biosample_term_id": "UBERON:0012314",
         "biosample_term_name": "embryonic facial prominence",
@@ -103,9 +97,12 @@
         "date_obtained": "2013-01-31",
         "description": "Craniofacial E14.5 one tube",
         "donor": "ENCDO075AAA",
-        "health_status": "Healthy",
         "lab": "len-pennacchio",
-        "life_stage": "embryonic",
+        "model_organism_age": "14.5",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "Healthy",
+        "mouse_life_stage": "embryonic",
+        "model_organism_sex": "mixed",
         "note": "C57BL/6 mice from Taconic Farms, Inc and Charles River Lab interbred.  Tissue extracted from 34 embryos. 1 vial collected.",
         "organism": "mouse",
         "source": "len-pennacchio",
@@ -117,8 +114,6 @@
     {
         "_test": "ENCODE2 dbxref with special characters",
         "accession": "ENCBS026ENC",
-        "age": "14.5",
-        "age_units": "day",
         "award": "RC2HG005654",
         "biosample_term_id": "NTR:0000031",
         "biosample_term_name": "c-Kit-positive CD71-positive TER-119-negative erythroid progenitor cells",
@@ -130,9 +125,12 @@
             "UCSC-ENCODE-cv:EPCPPM",
             "UCSC-ENCODE-cv:EPC (CD117+ CD71+ TER119-)"
         ],
-        "health_status": "unknown",
         "lab": "john-stamatoyannopoulos",
-        "life_stage": "embryonic",
+        "model_organism_age": "14.5",
+        "model_organism_age_units": "day",
+        "model_organism_health_status": "unknown",
+        "mouse_life_stage": "embryonic",
+        "model_organism_sex": "male",
         "organism": "mouse",
         "protocol_documents": [
             "ENCODE:EPC_Stam_protocol"
@@ -152,9 +150,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:K562"
         ],
-        "health_status": "unknown",
         "lab": "encode2-project",
-        "life_stage": "unknown",
         "organism": "human",
         "product_id": "CCL-243",
         "protocol_documents": [
@@ -167,7 +163,6 @@
     },
     {
         "accession": "ENCBS044ENC",
-        "age": "unknown",
         "award": "RC2HG005602",
         "biosample_term_id": "BTO:0002493",
         "biosample_term_name": "CH12.LX cell",
@@ -177,9 +172,11 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:CH12"
         ],
-        "health_status": "unknown",
         "lab": "sherman-weissman",
-        "life_stage": "unknown",
+        "model_organism_age": "unknown",
+        "model_organism_health_status": "unknown",
+        "mouse_life_stage": "unknown",
+        "model_organism_sex": "unknown",
         "organism": "mouse",
         "source": "sherman-weissman",
         "submitted_by": "semper.habitant@ut.venenatis",
@@ -202,9 +199,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:K562"
         ],
-        "health_status": "unknown",
         "lab": "kevin-white",
-        "life_stage": "unknown",
         "organism": "human",
         "source": "kevin-white",
         "submitted_by": "eni.lectus@nullam.sed",
@@ -225,9 +220,7 @@
         "culture_start_date": "2013-02-28",
         "description": "The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. ENCODE3 RNA-seq evaluation replicate 1.",
         "donor": "ENCDO000HUM",
-        "health_status": "unknown",
         "lab": "brenton-graveley",
-        "life_stage": "unknown",
         "lot_id": "59300853",
         "note": "K562 cell line replicate 1 used inENCODE3 RNA-seq evaluation",
         "organism": "human",
@@ -253,9 +246,7 @@
         "culture_start_date": "2013-02-28",
         "description": "The continuous cell line K-562 was established by Lozzio and Lozzio from the pleural effusion of a 53-year-old female with chronic myelogenous leukemia in terminal blast crises. ENCODE3 RNA-seq evaluation replicate 2.",
         "donor": "ENCDO000HUM",
-        "health_status": "unknown",
         "lab": "brenton-graveley",
-        "life_stage": "unknown",
         "lot_id": "59300853",
         "note": "K562 cell line replicate 2 used inENCODE3 RNA-seq evaluation",
         "organism": "human",
@@ -283,9 +274,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:MCF-7"
         ],
-        "health_status": "unknown",
         "lab": "gregory-crawford",
-        "life_stage": "unknown",
         "organism": "human",
         "product_id": "86012803",
         "protocol_documents": [
@@ -311,13 +300,10 @@
             "b31106bc-8535-4448-903e-854af460b21d"
         ],
         "description": "mammary gland, adenocarcinoma. (PMID: 4357757), newly promoted to tier 2: not in 2011 analysis",
-        "donor": "ENCDO000HUM",
         "dbxrefs": [
             "UCSC-ENCODE-cv:MCF-7"
         ],
-        "health_status": "unknown",
         "lab": "peggy-farnham",
-        "life_stage": "unknown",
         "organism": "human",
         "product_id": "HTB-22",
         "protocol_documents": [
@@ -340,9 +326,10 @@
         "biosample_type": "immortalized cell line",
         "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury",
         "donor": "ENCDO000MUS",
-        "health_status": "unknown",
         "lab": "barbara-wold",
-        "life_stage": "unknown",
+        "model_organism_health_status": "unknown",
+        "mouse_life_stage": "unknown",
+        "model_organism_sex": "unknown",
         "organism": "mouse",
         "protocol_documents": [
             "ENCODE:C2C12_Wold_growth_protocol"
@@ -361,9 +348,10 @@
         "derived_from": "ENCBS124ENC",
         "description": "Myoblast cell line derived from thigh muscle of C3H mice after crush injury; differentiated from C2C12 cells for 7 days",
         "donor": "ENCDO000MUS",
-        "health_status": "unknown",
         "lab": "barbara-wold",
-        "life_stage": "unknown",
+        "model_organism_health_status": "unknown",
+        "mouse_life_stage": "unknown",
+        "model_organism_sex": "unknown",
         "organism": "mouse",
         "protocol_documents": [
             "ENCODE:C2C12_Wold_differentiation_protocol"
@@ -380,9 +368,9 @@
         "biosample_type": "stem cell",
         "description": "Undifferentiated mouse embryonic stem cells",
         "donor": "ENCDO015AAA",
-        "health_status": "unknown",
         "lab": "john-stamatoyannopoulos",
-        "life_stage": "embryonic",
+        "model_organism_health_status": "unknown",
+        "mouse_life_stage": "embryonic",
         "organism": "mouse",
         "protocol_documents": [
             "ENCODE:ZhBTc4_Stam_protocol"
@@ -406,9 +394,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:GM06990"
         ],
-        "health_status": "unknown",
         "lab": "john-stamatoyannopoulos",
-        "life_stage": "unknown",
         "organism": "human",
         "phase": "S4",
         "product_id": "GM06990",
@@ -431,9 +417,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:SAEC"
         ],
-        "health_status": "unknown",
         "lab": "john-stamatoyannopoulos",
-        "life_stage": "unknown",
         "organism": "human",
         "product_id": "CC-2547",
         "protocol_documents": [
@@ -459,9 +443,7 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:A549"
         ],
-        "health_status": "unknown",
         "lab": "thomas-gingeras",
-        "life_stage": "unknown",
         "lot_id": "58483235",
         "organism": "human",
         "source": "encode",
@@ -478,9 +460,7 @@
         "biosample_type": "tissue",
         "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
         "donor": "ENCDO275AAA",
-        "health_status": "unknown",
         "lab": "gregory-crawford",
-        "life_stage": "unknown",
         "organism": "human",
         "source": "ndri",
         "submitted_by": "metus.donec@nisl.montes",
@@ -495,9 +475,7 @@
         "biosample_type": "tissue",
         "description": "human pancreatic islets from the National Disease Research Interchange (NDRI)",
         "donor": "ENCDO276AAA",
-        "health_status": "unknown",
         "lab": "gregory-crawford",
-        "life_stage": "unknown",
         "organism": "human",
         "source": "ndri",
         "submitted_by": "metus.donec@nisl.montes",
@@ -507,8 +485,6 @@
     {
         "_test": "donor has alternate_accesion",
         "accession": "ENCBS000RNA",
-        "age": "21",
-        "age_units": "year",
         "aliases": [
             "thomas-gingeras:140WC"
         ],
@@ -518,9 +494,7 @@
         "biosample_type": "primary cell",
         "description": "Normal Human Aortic Smooth Muscle Cells (HAoSMC)",
         "donor": "ENCDO017AAA",
-        "health_status": "Neg for Bac/Fung/Myc, Neg for HIV-1/HBV/HCV",
         "lab": "thomas-gingeras",
-        "life_stage": "adult",
         "lot_id": "8121902.2P",
         "note": "Purchased as total RNA",
         "organism": "human",
@@ -540,8 +514,6 @@
     {
         "_test": "has multiple documents and ENCODE2 dbxref",
         "accession": "ENCBS044RNA",
-        "age": "34",
-        "age_units": "year",
         "aliases": [
             "thomas-gingeras:097WC"
         ],
@@ -555,9 +527,8 @@
         "dbxrefs": [
             "UCSC-ENCODE-cv:Heart_STL003"
         ],
-        "health_status": "Healthy",
+
         "lab": "thomas-gingeras",
-        "life_stage": "adult",
         "organism": "human",
         "protocol_documents": [
             "ENCODE:Heart_STL003_excision_protocol",
@@ -567,7 +538,98 @@
         "submitted_by": "dignissim.euismod@amet.habitant",
         "uuid": "51ddff9b-a477-43bb-91ad-7f6b87380cbe"
     },
-      {
+    {
+        "_test": "has mouse life stage and depleted in term name and id",
+        "accession": "ENCBS000MUS",
+        "award": "U54HG006997",
+        "biosample_term_id": "UBERON:0000468",
+        "biosample_term_name": "multi-cellular organism",
+        "biosample_type": "whole organisms",
+        "description": "Headless mouse embryos",
+        "donor": "ENCDO015AAA",
+        "lab": "kevin-white",
+        "organism": "mouse",
+        "source": "len-pennacchio",
+        "mouse_life_stage": "embryonic",
+        "model_organism_age": "14.5",
+        "model_organism_age_units": "day",
+        "model_organism_sex": "mixed",
+        "depleted_in_term_name": ["head"],
+        "depleted_in_term_id": ["UBERON:0000033"],
+        "submitted_by": "ipsum.mi@torquent.eleifend",
+        "uuid": "45cf28e8-c017-42a6-a0bf-726f633c13e1"
+    },
+    {
+        "_test": "has fly life stage and model organism age",
+        "accession": "ENCBS000FLY",
+        "award": "U41HG007355",
+        "biosample_term_id": "UBERON:0000468",
+        "biosample_term_name": "multi-cellular organism",
+        "biosample_type": "whole organisms",
+        "description": "Whole fly embryos, 10-12 hour",
+        "donor": "ENCDO180XXX",
+        "lab": "kevin-white",
+        "organism": "dmelanogaster",
+        "source": "kevin-white",
+        "fly_life_stage": "embryonic",
+        "model_organism_age": "12-14",
+        "model_organism_age_units": "hour",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "b05b8275-cc8d-44db-b3a3-e5661f4ce800"
+    },
+    {
+        "_test": "has fly synchronization stage and time",
+        "accession": "ENCBS001FLY",
+        "award": "U41HG007355",
+        "biosample_term_id": "UBERON:0000468",
+        "biosample_term_name": "multi-cellular organism",
+        "biosample_type": "whole organisms",
+        "description": "White prepupae + 5 hours",
+        "donor": "ENCDO101XXX",
+        "lab": "kevin-white",
+        "organism": "dmelanogaster",
+        "source": "kevin-white",
+        "fly_synchronization_stage": "white prepupa",
+        "post_synchronization_time": "5",
+        "post_synchronization_time_units": "hour",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "de2ba32c-6ad6-4f5f-bdc4-e690f91feb77"
+    },
+    {
+        "_test": "has worm life stage and worm_anatomy ontology term",
+        "accession": "ENCBS000WRM",
+        "award": "U41HG007355",
+        "biosample_term_id": "WBbt:0005842",
+        "biosample_term_name": "AVA",
+        "biosample_type": "in vitro differentiated cells",
+        "description": "Young adult worms",
+        "donor": "ENCDO183YYY",
+        "lab": "kevin-white",
+        "organism": "celegans",
+        "source": "kevin-white",
+        "worm_life_stage": "young adult",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "f56da869-75c4-4541-a366-a15c14a72948"
+    },
+    {
+        "_test": "has worm synchronization stage and time",
+        "accession": "ENCBS001WRM",
+        "award": "U41HG007355",
+        "biosample_term_id": "UBERON:0000468",
+        "biosample_term_name": "multi-cellular organism",
+        "biosample_type": "whole organisms",
+        "description": "Starved L1 worms + 3 hours",
+        "donor": "ENCDO976AYR",
+        "lab": "kevin-white",
+        "organism": "celegans",
+        "source": "kevin-white",
+        "worm_synchronization_stage": "starved L1 larva",
+        "post_synchronization_time": "3",
+        "post_synchronization_time_units": "hour",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "52905f01-6316-457b-8c18-ee9e7697180a"
+    },
+    {
         "_test": "embryonic stem cell",
         "accession": "ENCBS987RNP",
         "aliases": [
@@ -579,9 +641,8 @@
         "biosample_type": "stem cell",
         "date_obtained": "2012-12-01",
         "description": "embryonic stem cell (hESC) H9",
-        "health_status": "Healthy",
+        "donor": "ENCDO568ESC",
         "lab": "thomas-gingeras",
-        "life_stage": "embryonic",
         "organism": "human",
         "protocol_documents": [],
         "source": "michael-snyder",

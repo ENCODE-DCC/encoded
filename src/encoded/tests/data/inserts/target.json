@@ -207,5 +207,29 @@
         "organism": "human",
         "status": "current",
         "uuid": "618b2122-2a97-44a8-bd6a-f473c1363dd2"
+    },
+    {
+        "uuid": "714c9ca5-63a1-48e3-9603-5b867dbc0c7f",
+        "label": "mes-4",
+        "dbxref": [
+            "WormBase:WBGene00003222",
+            "WormBase:Y2H9A.1",
+            "UniProtKB:Q9NH52"
+        ],
+        "organism": "celegans",
+        "gene_name": "mes-4"
+    },
+    {
+        "uuid": "79cbe489-930b-410e-8cc2-783e4c37d9f5",
+        "label": "3XFLAG-pab-1",
+        "dbxref": [
+            "WormBase:WBGene00003902",
+            "WormBase:Y106G6H.2",
+            "UniProtKB:Q7K797",
+            "UniProtKB:Q9U302",
+            "UniProtKB:Q7K798"
+        ],
+        "organism": "celegans",
+        "gene_name": "pab-1"
     }
 ]

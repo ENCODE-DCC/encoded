@@ -7,11 +7,16 @@ var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
+var antibody = require('./antibody');
+var image = require('./image');
 
 var DbxrefList = dbxref.DbxrefList;
+var StatusLabel = antibody.StatusLabel;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
+
+var Attachment = image.Attachment;
 
 
 var Panel = function (props) {
@@ -66,7 +71,12 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <li className="active">{context.donor.organism.name}</li>
                             : null }
                         </ul>
-                        <h2>{context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span></h2>
+                        <h2>
+                            {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
+                        </h2>
+                        <div className="characterization-status-labels">
+                            <StatusLabel title="Status" status={context.status} />
+                        </div>
                     </div>
                 </header>
                 <div className="panel data-display">
@@ -442,42 +452,17 @@ globals.panel_views.register(RNAi, 'rnai');
 var Document = module.exports.Document = React.createClass({
     render: function() {
         var context = this.props.context;
-        var attachmentHref, attachmentUri;
-        var figure, download, src, alt;
-        var imgClass = "characterization-img characterization-file";
-        var height = "100";
-        var width = "100";
+        var figure = <Attachment context={this.props.context} className="characterization" />;
+
+        var attachmentHref, download;
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
-            if (context.attachment.type.split('/', 1)[0] == 'image') {
-                var imgClass = 'characterization-img';
-                src = attachmentHref;
-                height = context.attachment.height;
-                width = context.attachment.width;
-                alt = "Characterization Image";
-                figure = (
-                    <a data-bypass="true" href={attachmentHref}>
-                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                    </a>
-                );
-            } else if (context.attachment.type == "application/pdf"){
-                figure = (
-                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Characterization PDF Icon</a>
-                );
-            } else {
-                figure = (
-                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide">Characterization Icon</a>
-                );
-            }
             download = (
                 <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
                 </a>
             );
         } else {
-            figure = (
-                <div className="file-missing text-hide">Characterization file broken icon</div>
-            );
             download = (
                 <em>Document not available</em>
             );

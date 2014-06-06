@@ -12,6 +12,10 @@ $navbar-inverse-toggle-hover-bg:            #19334b;
 $navbar-inverse-toggle-border-color:        #19334b;
 $headings-font-weight:                      bold;
 
+$brand-warning: #E59545;
+$brand-success: #4C994C;
+$brand-danger: #B24342;
+$brand-info: #4F689E;
 
 // Core variables and mixins
 @import "bootstrap/variables";
@@ -71,6 +75,9 @@ $headings-font-weight:                      bold;
 // Font Awesome
 @import "fontawesome/fontawesome";
 
+// react-forms bootstrap theme
+@import "react-forms/index";
+
 // ENCODE Project styles & mixins
 @import "encoded/mixins-custom";
 // SMACSS-based architecture (http://smacss.com/)
@@ -87,7 +94,8 @@ $headings-font-weight:                      bold;
 		"encoded/modules/signin-box",
 		"encoded/modules/tables",
 		"encoded/modules/facet",
-		"encoded/modules/characterizations";
+		"encoded/modules/characterizations",
+		"encoded/modules/layout-editor";
 @import "encoded/state";
 @import "encoded/theme"; 
 

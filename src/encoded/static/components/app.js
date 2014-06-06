@@ -49,7 +49,6 @@ var App = React.createClass({
         return {
             errors: [],
             portal: portal,
-            session: null,
             user_actions: user_actions
         };
     },
@@ -65,11 +64,25 @@ var App = React.createClass({
             name = hash.slice(2);
         }
         if (context) {
+            var actions = this.props.context.actions;
+            if (actions && actions.length) {
+                var actions = (
+                    <div className="navbar navbar-default">
+                        <div className="container">
+                            {actions.map(action => <a href={action.href}><button className={action.className}>{action.title}</button></a>)}
+                        </div>
+                    </div>
+                );
+            } else {
+                var actions = '';
+            }
+
             var ContentView = globals.content_views.lookup(context, name);
             content = this.transferPropsTo(ContentView({
                 loadingComplete: this.state.loadingComplete,
                 session: this.state.session,
                 portal: this.state.portal,
+                actions: actions,
                 navigate: this.navigate
             }));
         }

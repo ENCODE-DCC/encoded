@@ -1011,6 +1011,25 @@
         "uuid": "94c85be4-e034-4647-b6b3-15055701a656"
     },
     {
+        "email": "uskuf.shyec@doton.danona",
+        "fax": "000-000-0000",
+        "first_name": "Nuech",
+        "google": "google",
+        "job_title": "PI",
+        "lab": "Robert Waterston, UW",
+        "last_name": "Shueng",
+        "phone1": "000-000-0000",
+        "phone2": "000-000-0000",
+        "skype": "skype",
+        "submits_for": [
+            "Robert Waterston, UW"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "7e763d5a-634b-4181-a812-4361183359e9"
+    },
+    {
+        "timezone": "US/Central",
+        "uuid": "e7bb4fa6-ef92-41b7-871a-5f64db3848fe",
         "email": "david@glicksoftware.com",
         "first_name": "David",
         "groups": [
@@ -1023,5 +1042,18 @@
         ],
         "timezone": "US/Pacific",
         "uuid": "04d1cd63-d5d9-4ea4-8d9b-7adad3d5377d"
+    },
+    {
+        "email": "fytanaka@stanford.edu",
+        "first_name": "Forrest",
+        "groups": [],
+        "job_title": "Software Engineer",
+        "lab": "/labs/j-michael-cherry/",
+        "last_name": "Tanaka",
+        "submits_for": [
+            "/labs/j-michael-cherry/"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "627eedbc-7cb3-4de3-9743-a86266e435a6"
     }
 ]
