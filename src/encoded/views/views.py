@@ -97,6 +97,26 @@ ENCODE2_AWARDS = frozenset([
     '5a009305-4ddc-4dba-bbf3-7327ceda3702',
 ])
 
+ADD_ACTION = {
+    'name': 'add',
+    'title': 'Add',
+    'profile': '/profiles/{item_type}.json',
+    'method': 'GET',
+    'href': '#!add',
+    'className': 'btn btn-success',
+    '$templated': True,
+    '$condition': 'permission:add',
+}
+
+EDIT_ACTION = {
+    'name': 'edit',
+    'title': 'Edit',
+    'profile': '/profiles/page.json',
+    'method': 'PUT',
+    'href': '#!edit',
+    'className': 'btn navbar-btn',
+}
+
 
 class Collection(BaseCollection):
     def __init__(self, parent, name):
@@ -835,40 +855,19 @@ class Page(Collection):
         'page_collection',
         'collection',
     ]
-    template['actions'] = [
-        {
-            'name': 'add',
-            'title': 'Add',
-            'profile': '/profiles/{item_type}.json',
-            'method': 'GET',
-            'href': '#!add',
-            'className': 'btn btn-success',
-            '$templated': True,
-            '$condition': 'permission:add',
-        },
-    ]
+    template['actions'] = [ADD_ACTION]
 
     class Item(Collection.Item):
         base_types = ['page'] + Collection.Item.base_types
         name_key = 'name'
         keys = ['name']
+        actions = [EDIT_ACTION]
 
         STATUS_ACL = {
             'in progress': [],
             'released': ALLOW_EVERYONE_VIEW,
             'deleted': ONLY_ADMIN_VIEW,
         }
-
-        actions = [
-            {
-                'name': 'edit',
-                'title': 'Edit',
-                'profile': '/profiles/page.json',
-                'method': 'PUT',
-                'href': '#!edit',
-                'className': 'btn navbar-btn',
-            },
-        ]
 
 
 @location('about')
@@ -889,3 +888,33 @@ class HelpPage(Page):
         'description': 'Portal pages, help section',
     }
     unique_key = 'help_page:name'
+
+
+@location('images')
+class Image(Collection):
+    item_type = 'image'
+    schema = load_schema('image.json')
+    schema['properties']['attachment']['properties']['type']['enum'] = [
+        'image/png',
+        'image/jpeg',
+        'image/gif',
+    ]
+    properties = {
+        'title': 'Image',
+        'description': 'Listing of portal images',
+    }
+    unique_key = 'image:filename'
+
+    template = copy.deepcopy(Collection.template)
+    template['actions'] = [ADD_ACTION]
+
+    class Item(ItemWithAttachment, Collection.Item):
+        embedded = set(['submitted_by'])
+        keys = [
+            {
+                'name': 'image:filename',
+                'value': "{attachment[download]}",
+                '$templated': True,
+            },
+        ]
+        actions = [EDIT_ACTION]
