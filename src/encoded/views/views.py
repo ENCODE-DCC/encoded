@@ -582,8 +582,11 @@ class Target(Collection):
 
         @property
         def __name__(self):
-            ns = self.template_namespace(self.properties.copy())
-            return u'{label}-{organism_name}'.format(**ns)
+            properties = self.upgrade_properties(finalize=False)
+            root = find_root(self)
+            organism = root.get_by_uuid(self.properties['organism'])
+            return u'{label}-{organism_name}'.format(
+                organism_name=organism.properties['name'], **properties)
 
 
 # The following should really be child collections.
