@@ -6,8 +6,58 @@ var form = require('./form');
 var FetchedData = require('./fetched').FetchedData;
 var globals = require('./globals');
 
+var ModalTrigger = require('react-bootstrap/ModalTrigger');
+var Modal = require('react-bootstrap/Modal');
+
+
+var BlockEditModal = React.createClass({
+
+    getInitialState: function() {
+        return {value: this.props.block.data};
+    },
+
+    render: function() {
+        var block = this.props.block;
+        var EditComponent = globals.block_views.lookup(block, 'edit');
+        return this.transferPropsTo(
+            <Modal title={'Edit ' + block['@type'][0]}>
+                <div className="modal-body">
+                    <EditComponent value={this.state.value} onChange={this.onChange} />
+                </div>
+                <div className="modal-footer">
+                    <button className="btn btn-default" onClick={this.props.onRequestHide}>Cancel</button>
+                    <button className="btn btn-primary" onClick={this.save}>Save</button>
+                </div>
+            </Modal>
+        );
+    },
+
+    onChange: function(value) {
+        this.setState({value: value});
+    },
+
+    save: function() {
+        this.props.onChange(this.state.value);
+        this.props.onRequestHide();
+    }
+
+});
+
 
 var Block = module.exports.Block = React.createClass({
+
+    renderToolbar: function() {
+        var modal = <BlockEditModal block={this.props.block} onChange={this.onChange} />;
+        return (
+            <div className="block-toolbar">
+                <ModalTrigger modal={modal}>
+                    <a className="edit"><i className="icon-edit"></i></a>
+                </ModalTrigger>
+                {' '}
+                <a className="remove" onClick={this.remove}><i className="icon-trash"></i></a>
+            </div>
+        );
+    },
 
     render: function() {
         var block = this.props.block;
@@ -15,19 +65,10 @@ var Block = module.exports.Block = React.createClass({
             block['@type'] = [block['@type'], 'block'];
         }
         var block_view = globals.block_views.lookup(block);
-        if (this.props.editable) {
-            var buttons = (
-                <div className="block-toolbar">
-                    <a className="remove" onClick={this.remove}><i className="icon-trash"></i></a>
-                </div>
-                )
-        } else {
-            var buttons = '';
-        }
         return this.transferPropsTo(
             <div data-row={this.props.row} data-col={this.props.col}
                  onDragStart={this.dragStart}>
-                {buttons}
+                {this.props.editable ? this.renderToolbar() : ''}
                 <block_view type={block['@type']} value={block.data}
                             editable={this.props.editable} onChange={this.onChange} />
             </div>

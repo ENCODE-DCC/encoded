@@ -105,3 +105,15 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	border-color: red !important;
 	color: red;
 }
+
+.dropzone {
+	@extend .form-control;
+	height: auto;
+	text-align: center;
+	.drop {
+		min-height: 100px;
+	}
+	input[type="file"] {
+		display: inline;
+	}
+}

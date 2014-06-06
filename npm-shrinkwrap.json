@@ -1611,6 +1611,11 @@
       "from": "react@^0.10.0",
       "resolved": "https://registry.npmjs.org/react/-/react-0.10.0.tgz"
     },
+    "react-bootstrap": {
+      "version": "0.10.2",
+      "from": "react-bootstrap@",
+      "resolved": "https://registry.npmjs.org/react-bootstrap/-/react-bootstrap-0.10.2.tgz"
+    },
     "react-forms": {
       "version": "0.1.0",
       "from": "react-forms@^0.1.0",
