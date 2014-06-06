@@ -9,7 +9,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
     getInitialState: function() {
         return {
             'value': this.props.value
-        }
+        };
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -52,6 +52,24 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
         );
     }
 });
-
-
 globals.block_views.register(RichTextBlockView, 'richtextblock');
+
+
+var ReactForms = require('react-forms');
+var Form = ReactForms.Form;
+var Schema = ReactForms.schema.Schema;
+var Property = ReactForms.schema.Property;
+
+var RichTextBlockSchema = (
+    <Schema>
+      <Property name="body" label="HTML Source" input={<textarea rows="15" cols="80" />} />
+    </Schema>
+);
+
+
+var RichTextBlockEdit = React.createClass({
+    render: function() {
+        return this.transferPropsTo(<Form schema={RichTextBlockSchema} value={this.props.value} />);
+    }
+});
+globals.block_views.register(RichTextBlockEdit, 'richtextblock', 'edit');

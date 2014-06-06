@@ -45,6 +45,20 @@ class TestingDownload(Collection):
         'title': 'Test download collection',
         'description': 'Testing. Testing. 1, 2, 3.',
     }
+    schema = {
+        'type': 'object',
+        'properties': {
+            'attachment': {
+                'type': 'object',
+                'properties': {
+                    'type': {
+                        'type': 'string',
+                        'enum': ['image/png'],
+                    }
+                }
+            }
+        }
+    }
 
     class Item(ItemWithAttachment):
         pass
@@ -196,6 +210,7 @@ class TestingServerDefault(Collection):
         'title': 'Test server defaults',
         'description': 'Testing. Testing. 1, 2, 3.',
     }
+
 
 @location('testing-dependencies')
 class TestingDependencies(Collection):
