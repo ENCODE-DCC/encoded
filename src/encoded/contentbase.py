@@ -503,6 +503,10 @@ class Item(object):
         return self.model['']
 
     @property
+    def propsheets(self):
+        return self.model
+
+    @property
     def uuid(self):
         return self.model.rid
 
@@ -593,14 +597,19 @@ class Item(object):
 
     def template_namespace(self, properties, request=None):
         ns = properties.copy()
+        ns['properties'] = properties
         ns['item_type'] = self.item_type
         ns['base_types'] = self.base_types
         ns['uuid'] = self.uuid
+        ns['root'] = root = find_root(self)
+        ns['context'] = self
+        ns['registry'] = root.registry
+        ns['collection_uri'] = resource_path(self.__parent__, '')
+        ns['item_uri'] = resource_path(self, '')
 
         # When called by update_keys() there is no request.
         if request is not None:
-            ns['collection_uri'] = request.resource_path(self.__parent__)
-            ns['item_uri'] = request.resource_path(self)
+            ns['request'] = request
             ns['permission'] = permission_checker(self, request)
 
         if self.merged_namespace_from_path:
@@ -996,9 +1005,14 @@ class Collection(Mapping):
     def __json__(self, request):
         properties = self.properties.copy()
         ns = properties.copy()
+        ns['properties'] = properties
         ns['collection_uri'] = uri = request.resource_path(self)
         ns['item_type'] = self.item_type
         ns['permission'] = permission_checker(self, request)
+        ns['request'] = request
+        ns['context'] = self
+        ns['root'] = root = find_root(self)
+        ns['registry'] = root.registry
 
         compiled = ObjectTemplate(self.merged_template)
         templated = compiled(ns)
