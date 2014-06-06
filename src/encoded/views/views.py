@@ -13,7 +13,10 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
-from pyramid.traversal import find_root
+from pyramid.traversal import (
+    find_resource,
+    find_root,
+)
 import copy
 
 ACCESSION_KEYS = [
@@ -728,7 +731,8 @@ class Dataset(Collection):
                 {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
                 {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
             ],
-            'hub': {'$value': '{hub}', '$templated': True}
+            'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
+            'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
         template_type = {
             'files': 'file',
@@ -757,18 +761,21 @@ class Dataset(Collection):
             ns = super(Dataset.Item, self).template_namespace(properties, request)
             if request is None:
                 return ns
-            ns['hub'] = ''
+            for link in ns['original_files'] + ns['related_files']:
+                f = find_resource(request.root, link)
+                if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak']:
+                    ns['assembly'] = f.properties['assembly']
+                    break
             return ns
 
-        def expand_embedded(self, request, properties):
-            super(Dataset.Item, self).expand_embedded(request, properties)
-            for f in properties['files']:
-                if f['file_format'] in ['bigWig', 'bigBed']:
-                    assembly = f['assembly']
-                    hub_url = request.url.replace('?' + request.query_string, '@@hub')
-                    properties['hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&db=' + assembly + \
-                        '&hubUrl=' + hub_url + '/hub.txt'
-                    break
+        @classmethod
+        def expand_page(cls, request, properties):
+            properties = super(Dataset.Item, cls).expand_page(request, properties)
+            if 'hub' in properties:
+                properties = properties.copy()
+                properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&db=' + properties['assembly'] + \
+                    '&hubUrl=http://' + request.host + properties['hub']
+            return properties
 
 
 @location('experiments')
