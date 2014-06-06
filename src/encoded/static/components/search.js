@@ -344,12 +344,16 @@ var Dbxref = dbxref.Dbxref;
             var facet = this.props.facet;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
-                for(var filter in filters) {
-                    if(filters[filter].term === term.term) {
-                        return true;
+                if (term.term) {
+                    for(var filter in filters) {
+                        if(filters[filter].term === term.term) {
+                            return true;
+                        }
                     }
+                    return term.count > 0;
+                } else {
+                    return false;
                 }
-                return term.count > 0;
             });
             var moreTerms = terms.slice(5);
             var title = facet['title'];
