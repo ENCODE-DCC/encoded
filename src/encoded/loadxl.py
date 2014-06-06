@@ -34,6 +34,7 @@ ORDER = [
     # 'software',
     'dataset',
     'file',
+    'image',
     'about',
 ]
 
