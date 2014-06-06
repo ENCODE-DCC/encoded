@@ -296,6 +296,7 @@ FILES = [
         'file_format': 'fastq',
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'rawData',
+        'status': 'current',
     },
     {
         'uuid': '0a38fea0-c067-415a-9710-c887aff95767',
@@ -304,6 +305,7 @@ FILES = [
         'file_format': 'fastq',
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'rawData',
+        'status': 'current',
     },
 ]
 
