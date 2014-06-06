@@ -699,23 +699,6 @@ class Software(Collection):
     }
 
 
-@location('files')
-class File(Collection):
-    item_type = 'file'
-    schema = load_schema('file.json')
-    properties = {
-        'title': 'Files',
-        'description': 'Listing of Files',
-    }
-
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
-    item_namespace_from_path = {
-        'lab': 'dataset.lab',
-        'award': 'dataset.award',
-    }
-
-
 @location('datasets')
 class Dataset(Collection):
     item_type = 'dataset'
