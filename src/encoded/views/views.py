@@ -784,8 +784,9 @@ class Dataset(Collection):
             for link in ns['original_files'] + ns['related_files']:
                 f = find_resource(request.root, link)
                 if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak']:
-                    ns['assembly'] = f.properties['assembly']
-                    break
+                    if 'assembly' in f.properties:
+                        ns['assembly'] = f.properties['assembly']
+                        break
             return ns
 
         @classmethod

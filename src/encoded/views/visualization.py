@@ -18,12 +18,13 @@ def render(data):
 
 def getParentTrack(accession, label):
     parent = OrderedDict([
+        ('configurable', 'on'),
         ('type', 'bed 3'),
         ('subGroup1', 'view Views PK=Peaks SIG=Signals'),
         ('dragAndDrop', 'subTracks'),
         ('visibility', 'dense'),
         ('compositeTrack', 'on'),
-        ('longLabel', accession + ' of ' + label),
+        ('longLabel', label + ' - ' + accession),
         ('shortLabel', accession),
         ('track', accession)
     ])
@@ -39,6 +40,7 @@ def getTrack(f, label, parent):
     if 'replicate' in f:
         replicate_number = str(f['replicate']['biological_replicate_number'])
     track = OrderedDict([
+        ('configurable', 'on'),
         ('maxHeightPixels', '100:32:8'),
         ('longLabel', label + ' - ' + f['accession'] + ' - ' + replicate_number),
         ('shortLabel', f['accession']),
@@ -55,6 +57,7 @@ def getPeaksView(accession, view):
     s_label = view + 's'
     track_name = view + '-view'
     view_data = OrderedDict([
+        ('configurable', 'on'),
         ('type', 'bigBed'),
         ('viewUI', 'on'),
         ('visibility', 'dense'),
@@ -71,6 +74,7 @@ def getSignalsView(accession, view):
     s_label = view + 's'
     track_name = view + '-view'
     view_data = OrderedDict([
+        ('configurable', 'on'),
         ('type', 'bigWig'),
         ('viewUI', 'on'),
         ('visibility', 'dense'),
@@ -84,7 +88,7 @@ def getSignalsView(accession, view):
 
 
 def getGenomeTxt(properties):
-    assembly = properties['files'][0]['assembly']
+    assembly = properties['assembly']
     genome = OrderedDict([
         ('trackDb', assembly + '/trackDb.txt'),
         ('genome', assembly)
@@ -130,8 +134,7 @@ def hub(context, request):
                     signal_view = getSignalsView(embedded['accession'], 'SIG') + newline + (2 * tab)
                 else:
                     signal_view = signal_view + newline
-                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'SIG-view') + \
-                    newline + (2 * tab) + 'graphTypeDefault bars'
+                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'SIG-view')
                 signal_count = signal_count + 1
         if signal_view == '':
             parent = parent + (newline * 2) + tab + peak_view
