@@ -127,6 +127,8 @@ def hub(context, request):
             if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed']:
                 if call_count == 0:
                     peak_view = getPeaksView(embedded['accession'], 'PK') + newline + (2 * tab)
+                else:
+                    peak_view = peak_view + newline
                 peak_view = peak_view + (2 * newline) + (2 * tab) + getTrack(f, long_label, 'PK-view')
                 call_count = call_count + 1
             elif f['file_format'] == 'bigWig':
