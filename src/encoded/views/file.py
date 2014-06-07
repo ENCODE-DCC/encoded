@@ -4,7 +4,12 @@ from .views import (
     ACCESSION_KEYS,
     Collection,
 )
+from pyramid.httpexceptions import (
+    HTTPFound,
+    HTTPNotFound,
+)
 from pyramid.traversal import find_root
+from pyramid.view import view_config
 import boto
 import json
 import time
@@ -80,3 +85,24 @@ class File(Collection):
                 sheets = {} if sheets is None else sheets.copy()
                 sheets['external'] = external_creds(parent, properties)
             return super(File.Item, cls).create(parent, uuid, properties, sheets)
+
+
+@view_config(name='download', context=File.Item, request_method='GET',
+             permission='view', subpath_segments=[0, 1])
+def download(context, request):
+    properties = context.upgrade_properties(finalize=False)
+    if request.subpath:
+        filename, = request.subpath
+        if filename != '{accession}.{file_format}'.format(**properties):
+            raise HTTPNotFound(filename)
+
+    external = context.propsheets.get('external')
+    if external is None:  # EDW
+        location = 'http://encodedcc.sdsc.edu/warehouse/{download_path}'.format(**properties)
+    elif external['service'] == 's3':
+        conn = boto.connect_s3()
+        location = conn.generate_url(36*60*60, 'GET', external['bucket'], external['key'])
+    else:
+        raise ValueError(external['service'])
+
+    raise HTTPFound(location=location)
