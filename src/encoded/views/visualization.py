@@ -2,7 +2,6 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from ..contentbase import Item, embed
 from collections import OrderedDict
-import cgi
 
 tab = '\t'
 newline = '\n'
@@ -153,6 +152,5 @@ def hub(context, request):
         return Response(parent, content_type='text/plain')
     else:
         data_accession = '<p>Experiment - <a href={link}>{accession}<a></p>'.format(link=url_ret[0], accession=embedded['accession'])
-        data_description = '{description}'.format(description=embedded['description'])
-        data = cgi.escape(data_accession + data_description)
-        return Response(data, content_type='text/html')
+        data_description = '<p>{description}</p>'.format(description=embedded['description'])
+        return Response(data_accession + data_description, content_type='text/html')
