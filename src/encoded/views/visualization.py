@@ -2,6 +2,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from ..contentbase import Item, embed
 from collections import OrderedDict
+from pyramid.httpexceptions import HTTPFound
 
 tab = '\t'
 newline = '\n'
@@ -18,7 +19,6 @@ def render(data):
 
 def getParentTrack(accession, label):
     parent = OrderedDict([
-        ('configurable', 'on'),
         ('type', 'bed 3'),
         ('subGroup1', 'view Views PK=Peaks SIG=Signals'),
         ('dragAndDrop', 'subTracks'),
@@ -34,15 +34,18 @@ def getParentTrack(accession, label):
 
 def getTrack(f, label, parent):
     file_format = 'bigWig'
+    sub_group = 'view=SIG'
     if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed']:
         file_format = 'bigBed'
-    replicate_number = str(0)
+        sub_group = 'view=PK'
+    replicate_number = ''
     if 'replicate' in f:
-        replicate_number = str(f['replicate']['biological_replicate_number'])
+        replicate_number = ' (rep - ' + str(f['replicate']['biological_replicate_number']) + ')'
+    else:
+        replicate_number = ' - pooled'
     track = OrderedDict([
-        ('configurable', 'on'),
-        ('maxHeightPixels', '100:32:8'),
-        ('longLabel', label + ' - ' + f['accession'] + ' - ' + replicate_number),
+        ('subGroups', sub_group),
+        ('longLabel', label + ' - ' + f['accession'] + replicate_number),
         ('shortLabel', f['accession']),
         ('parent', parent + ' on'),
         ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + f['download_path']),
@@ -55,11 +58,11 @@ def getTrack(f, label, parent):
 
 def getPeaksView(accession, view):
     s_label = view + 's'
-    track_name = view + '-view'
+    track_name = view + 'View'
     view_data = OrderedDict([
-        ('configurable', 'on'),
+        ('maxHeightPixels', '100:32:8'),
         ('type', 'bigBed'),
-        ('viewUI', 'on'),
+        ('viewUi', 'on'),
         ('visibility', 'dense'),
         ('view', 'PK'),
         ('shortLabel', s_label),
@@ -72,11 +75,11 @@ def getPeaksView(accession, view):
 
 def getSignalsView(accession, view):
     s_label = view + 's'
-    track_name = view + '-view'
+    track_name = view + 'View'
     view_data = OrderedDict([
-        ('configurable', 'on'),
+        ('maxHeightPixels', '100:32:8'),
         ('type', 'bigWig'),
-        ('viewUI', 'on'),
+        ('viewUi', 'on'),
         ('visibility', 'dense'),
         ('view', 'SIG'),
         ('shortLabel', s_label),
@@ -116,7 +119,7 @@ def hub(context, request):
         return Response(newline.join(getHubTxt(embedded['accession'])), content_type='text/plain')
     elif url_ret[1] == '/genomes.txt':
         return Response(newline.join(getGenomeTxt(embedded)), content_type='text/plain')
-    else:
+    elif url_ret[1] == '/trackDb.txt':
         long_label = embedded['assay_term_name'] + ' of ' + embedded['biosample_term_name']
         parent = getParentTrack(embedded['accession'], long_label)
         peak_view = ''
@@ -129,14 +132,14 @@ def hub(context, request):
                     peak_view = getPeaksView(embedded['accession'], 'PK') + newline + (2 * tab)
                 else:
                     peak_view = peak_view + newline
-                peak_view = peak_view + (2 * newline) + (2 * tab) + getTrack(f, long_label, 'PK-view')
+                peak_view = peak_view + (2 * newline) + (2 * tab) + getTrack(f, long_label, 'PKView')
                 call_count = call_count + 1
             elif f['file_format'] == 'bigWig':
                 if signal_count == 0:
                     signal_view = getSignalsView(embedded['accession'], 'SIG') + newline + (2 * tab)
                 else:
                     signal_view = signal_view + newline
-                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'SIG-view')
+                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'SIGView')
                 signal_count = signal_count + 1
         if signal_view == '':
             parent = parent + (newline * 2) + tab + peak_view
@@ -145,3 +148,5 @@ def hub(context, request):
         else:
             parent = parent + (newline * 2) + tab + peak_view + (newline * 2) + tab + signal_view
         return Response(parent, content_type='text/plain')
+    else:
+        return HTTPFound(location=url_ret[0])
