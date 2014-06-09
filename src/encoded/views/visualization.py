@@ -2,7 +2,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from ..contentbase import Item, embed
 from collections import OrderedDict
-from pyramid.httpexceptions import HTTPFound
+import cgi
 
 tab = '\t'
 newline = '\n'
@@ -152,4 +152,7 @@ def hub(context, request):
             parent = parent + (newline * 2) + tab + peak_view + (newline * 2) + tab + signal_view
         return Response(parent, content_type='text/plain')
     else:
-        return HTTPFound(location=url_ret[0])
+        data_accession = '<p>Experiment - <a href={link}>{accession}<a></p>'.format(link=url_ret[0], accession=embedded['accession'])
+        data_description = '{description}'.format(description=embedded['description'])
+        data = cgi.escape(data_accession + data_description)
+        return Response(data, content_type='text/html')
