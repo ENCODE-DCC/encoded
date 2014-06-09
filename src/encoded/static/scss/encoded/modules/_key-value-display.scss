@@ -13,7 +13,7 @@ dd.h3, dd.h4 {
 .key-value {
     dt, dd {
         min-height: 20px; // = line-height ; defined somewhere?
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         padding-top: 5px;
         line-height: 18px;
         font-size: 14px;
@@ -29,6 +29,7 @@ dd.h3, dd.h4 {
     }
 
     dd {
+        @include clearfix();
         display: block;
         margin-left: $component-offset-horizontal + 10;
         //margin-bottom: 5px;
