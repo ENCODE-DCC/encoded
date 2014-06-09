@@ -115,11 +115,14 @@ def hub(context, request):
     embedded = embed(request, request.resource_path(context))
     files_json = embedded.get('files', None)
     url_ret = (request.url).split('@@hub')
+    assembly = ''
+    if 'assembly' in embedded:
+        assembly = embedded['assembly']
     if url_ret[1] == '/hub.txt':
         return Response(newline.join(getHubTxt(embedded['accession'])), content_type='text/plain')
     elif url_ret[1] == '/genomes.txt':
         return Response(newline.join(getGenomeTxt(embedded)), content_type='text/plain')
-    elif url_ret[1] == '/trackDb.txt':
+    elif url_ret[1] == '/' + assembly + '/trackDb.txt':
         long_label = embedded['assay_term_name'] + ' of ' + embedded['biosample_term_name']
         parent = getParentTrack(embedded['accession'], long_label)
         peak_view = ''
