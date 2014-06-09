@@ -1,7 +1,7 @@
-$dl-bar-bg: #e5ebf0;
-$dl-bar-txt: #0a253d;
-$figure-width: 130px;
-$figure-height: 130px;
+$document-figure-width: 130px;
+$document-figure-height: 130px;
+$characterization-figure-width: 200px;
+$characterization-figure-height: 200px;
 
 /* clear first in row in ie 8 or lower */
 .multi-columns-row .first-in-row {
@@ -61,7 +61,7 @@ $figure-height: 130px;
     .multi-columns-row .col-lg-1:nth-child(12n + 13) { clear: left; }
 }
 
-.type-document.type-popover {
+@mixin type-panel($figure-width, $figure-height) {
     margin-top: 0;
 
     &.view-detail {
@@ -70,12 +70,12 @@ $figure-height: 130px;
         figure {
             position: relative;
             display: table;
-            float: left;
+            float: right;
             width: $figure-width;
             height: $figure-height;
-            margin: 0 5px 0 0;
+            margin: 0 0 0 5px;
             padding: 0;
-            border-right: 1px solid #ced5dc;
+            border-left: 1px solid #e8e8e8;
             background-color: #f0f0f0;
             @include background-image(linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%));
             background-image: -ms-linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%);
@@ -89,6 +89,7 @@ $figure-height: 130px;
 
                 img {
                     display: inline-block;
+                    max-height: $figure-height;
                     max-width: $figure-width;
                     height: auto;
                 }
@@ -101,8 +102,36 @@ $figure-height: 130px;
     }
 }
 
-.document-intro {
-    height: 130px;
+.type-document {
+    @include type-panel($document-figure-width, $document-figure-height);
+}
+
+.type-characterization {
+    @include type-panel($characterization-figure-width, $characterization-figure-height);
+}
+
+@mixin panel-header($figure-height) {
+    height: $figure-height;
+    border-bottom: 1px solid #e8e8e8;
+    overflow: hidden;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    -moz-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+}
+
+.document-header {
+    @include panel-header($document-figure-height);
+}
+
+.characterization-header {
+    @include panel-header($characterization-figure-height);
+}
+
+%panel-intro {
     padding: 5px;
 
     h3 {
@@ -121,46 +150,46 @@ $figure-height: 130px;
     }
 }
 
+.document-intro {
+    @extend %panel-intro;
+}
+
+.characterization-intro {
+    @extend %panel-intro;
+    padding: 10px;
+}
+
 .dl-bar {
-    display: block;
-    position: relative;
     height: 32px;
     padding: 0 25px 0 10px;
     line-height: 32px;
-    color: $dl-bar-txt;
-    background-color: $dl-bar-bg;
-    @include text-shadow(0 1px #fff);
-    border-top: 1px solid #c0c0c0;
-    border-bottom: 1px solid darken($dl-bar-bg,10%);
-
-    &:hover {
-        color: #fff;
-        background-color: darken($dl-bar-bg,30%);
-        text-decoration: none;
-        @include text-shadow(0 1px #202020);
-        @include box-shadow(none);
-    }
-
-    span {
-        display: block;
-        overflow-x: hidden;
-    }
+    border-bottom: 1px solid #e8e8e8;
+    white-space: nowrap;
 }
 
 
 .trigger-icon {
     position: absolute;
-    top: 0;
-    right: 5px;
+    right: 10px;
     line-height: 32px;
     font-size: 20px;
+
+    &.icon-sort-down {
+        top: -5px;
+    }
+
+    &.icon-sort-up {
+        top: 5px;
+    }
 }
 
 
 
 
 .key-value-trigger {
+    position: relative;
     margin: 0;
+    background-color: #edf2f5;
 
     a {
         display: block;
@@ -171,7 +200,7 @@ $figure-height: 130px;
 
         &:hover {
             color: #fff;
-            background-color: darken(#eff6fc,50%);
+            background-color: darken(#edf2f5,10%);
             text-decoration: none;
         }
 
@@ -333,4 +362,25 @@ $figure-height: 130px;
     vertical-align: top;
     @include box-shadow(0 1px 2px 0);
     cursor: pointer;
+}
+
+
+.document-slider {
+    display: none;
+    margin: 0;
+    padding: 10px 10px 0;
+    border-bottom: 1px solid #e8e8e8;
+
+    &.active {
+        display: block;
+    }
+}
+
+
+.characterization-slider {
+    height: 160px;
+
+    &.active {
+        height: auto;
+    }
 }

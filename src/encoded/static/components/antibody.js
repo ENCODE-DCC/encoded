@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var cx = require('react/lib/cx');
 var url = require('url');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
@@ -111,7 +112,7 @@ var Approval = module.exports.Approval = React.createClass({
                     </dl>
                 </div>
 
-                <div className="characterizations">
+                <div className="characterizations row multi-columns-row">
                     {characterizations}
                 </div>
             </div>
@@ -123,17 +124,45 @@ globals.content_views.register(Approval, 'antibody_approval');
 
 
 var Characterization = module.exports.Characterization = React.createClass({
+    getInitialState: function() {
+        return {panelOpen: false};
+    },
+
+    // Clicking the Lab bar inverts visible state of the popover
+    handleClick: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Tell parent (App component) about new popover state
+        // Pass it this component's React unique node ID
+        this.setState({panelOpen: !this.state.panelOpen});
+    },
+
     render: function() {
         var context = this.props.context;
+        var keyClass = cx({
+            "characterization-meta-data": true,
+            "key-value-left": true,
+            "characterization-slider": true,
+            "active": this.state.panelOpen
+        });
+        var triggerClass = cx({
+            "trigger-icon": true,
+            "icon-sort-down": !this.state.panelOpen,
+            "icon-sort-up": this.state.panelOpen
+        });
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
         var attachmentHref, download;
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             download = (
-                <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
-                    {context.attachment.download}
-                </a>
+                <div>
+                    <i className="icon-download-alt"></i>&nbsp;
+                    <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
+                        {context.attachment.download}
+                    </a>
+                </div>
             );
         } else {
             download = (
@@ -142,48 +171,49 @@ var Characterization = module.exports.Characterization = React.createClass({
         }
 
         return (
-            <section className={globals.itemClass(context, 'view-detail panel')}>
-                <div className="row">
-                    <div className="col-sm-4 col-md-6">
+            // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
+            <section className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <div className={globals.itemClass(context, 'view-detail panel')}>
+                    <div className="characterization-header">
                         <figure>
                             {figure}
-                            <figcaption>
-                                <span>{context.status}</span>
-                            </figcaption>
                         </figure>
-                    </div>
-                    <div className="col-sm-8 col-md-6">
-                        <dl className="characterization-meta-data key-value">
+
+                        <div className="characterization-intro characterization-meta-data key-value-left">
                             <dt className="h3">Method</dt>
                             <dd className="h3">{context.characterization_method}</dd>
 
                             <dt className="h4">Target species</dt>
                             <dd className="h4 sentence-case">{context.target.organism.name}</dd>
 
-                            {context.caption ? <dt>Caption</dt> : null}
-                            {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
+                            <dt>Image</dt>
+                            {download}
+                        </div>
+                    </div>
+                    <dl className={keyClass}>
+                        {context.caption ? <dt>Caption</dt> : null}
+                        {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
 
-                            <dt>Submitted by</dt>
-                            <dd>{context.submitted_by.title}</dd>
+                        <dt>Submitted by</dt>
+                        <dd>{context.submitted_by.title}</dd>
 
+                        <dt>Grant</dt>
+                        <dd>{context.award.name}</dd>
+
+                        {/*
+                        <dt>Approver</dt>
+                        <dd>{context.validated_by}</dd>
+                        */}
+
+                        <dd><StatusLabel status={context.status} /></dd>
+                    </dl>
+                    <dl className="key-value-trigger">
+                        <a href="#" onClick={this.handleClick}>
                             <dt>Lab</dt>
                             <dd>{context.lab.title}</dd>
-
-                            <dt>Grant</dt>
-                            <dd>{context.award.name}</dd>
-
-                            {/*
-                            <dt>Approver</dt>
-                            <dd>{context.validated_by}</dd>
-                            */}
-
-                            <dt>Image</dt>
-                            <dd><StatusLabel status={context.status} /></dd>
-
-                            <dt><i className="icon-download-alt"></i> Download</dt>
-                            <dd>{download}</dd>
-                        </dl>
-                    </div>
+                            <i className={triggerClass}></i>
+                        </a>
+                    </dl>
                 </div>
             </section>
         );

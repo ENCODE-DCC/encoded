@@ -1,32 +1,96 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var cx = require('react/lib/cx');
 var ReactForms = require('react-forms');
 var ItemEdit = require('./item').ItemEdit;
 var globals = require('./globals');
 var url = require('url');
 
 
+// Fixed-position lightbox background and image
+var Lightbox = module.exports.Lightbox = React.createClass({
+    ignoreClick: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    },
+
+    render: function() {
+        var lightboxVisible = this.props.lightboxVisible;
+        var lightboxClass = cx({
+            "lightbox": true,
+            "active": lightboxVisible
+        });
+
+        return(
+            <div className={lightboxClass} onClick={this.props.clearLightbox}>
+                <div className="lightbox-img">
+                    <img src={this.props.lightboxImg} onClick={this.ignoreClick} />
+                    <i className="lightbox-close icon-remove-sign"></i>
+                </div>
+            </div>
+        );
+    }
+});
+
+
 var Attachment = module.exports.Attachment = React.createClass({
+    // Handle a click on the lightbox trigger (thumbnail)
+    lightboxClick: function(attachmentType, e) {
+        if(attachmentType === 'image') {
+            e.preventDefault();
+            e.stopPropagation();
+            this.setState({lightboxVisible: true});
+        }
+    },
+
+    getInitialState: function() {
+        return {lightboxVisible: false};
+    },
+
+    clearLightbox: function() {
+        this.setState({lightboxVisible: false});
+    },
+
+    // If lightbox visible, ESC key closes it
+    handleEscKey: function(e) {
+        if(this.state.lightboxVisible && e.keyCode == 27) {
+            this.clearLightbox();
+        }
+    },
+
+    // Register for keyup events for ESC key
+    componentDidMount: function() {
+        window.addEventListener('keyup', this.handleEscKey);
+    },
+
+    // Unregister keyup events when component closes
+    componentWillUnmount: function() {
+        window.removeEventListener('keyup', this.handleEscKey);
+    },
+
     render: function() {
         var context = this.props.context;
-        var attachmentHref, attachmentUri;
+        var attachmentHref;
         var src, alt;
         var height = "100";
         var width = "100";
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             var attachmentType = context.attachment.type.split('/', 1)[0];
-            if (context.attachment.type.split('/', 1)[0] == 'image') {
+            if (attachmentType == 'image') {
                 var imgClass = this.props.className ? this.props.className + '-img' : '';
                 src = attachmentHref;
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Attachment Image";
                 return (
-                    <a data-bypass="true" href={attachmentHref} onClick={this.props.lightboxClick.bind(this, attachmentType)}>
-                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                    </a>
+                    <div>
+                        <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
+                            <img className={imgClass} src={src} alt={alt} />
+                        </a>
+                        <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={attachmentHref} clearLightbox={this.clearLightbox} />
+                    </div>
                 );
             } else if (context.attachment.type == "application/pdf"){
                 return (
@@ -42,7 +106,6 @@ var Attachment = module.exports.Attachment = React.createClass({
                 <div className="file-missing text-hide">Attachment file broken icon</div>
             );
         }
-
     }
 });
 
@@ -57,7 +120,7 @@ var Image = React.createClass({
             </figure>
         );
     }
-})
+});
 
 
 globals.content_views.register(Image, 'image');
@@ -68,7 +131,7 @@ var FileInput = React.createClass({
     getInitialState: function() {
         return {
             value: this.props.value
-        }
+        };
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -110,7 +173,7 @@ var FileInput = React.createClass({
                 download: file.name,
                 type: file.type,
                 href: reader.result
-            }
+            };
             this.props.onChange(value);
         }.bind(this);
         if (file) {

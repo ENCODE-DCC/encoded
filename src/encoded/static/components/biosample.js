@@ -44,7 +44,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         var construct_documents = {};
         constructs.forEach(function (construct) {
             construct.documents.forEach(function (doc) {
-                construct_documents[doc['@id']] = Panel({context: doc, panelContent: DocumentContent});
+                construct_documents[doc['@id']] = Panel({context: doc});
            }, this);
         }, this);
 
@@ -55,13 +55,13 @@ var Biosample = module.exports.Biosample = React.createClass({
         var rnai_documents = {};
         rnais.forEach(function (rnai) {
             rnai.documents.forEach(function (doc) {
-                rnai_documents[doc['@id']] = Panel({context: doc, panelContent: DocumentContent});
+                rnai_documents[doc['@id']] = Panel({context: doc});
             }, this);
         }, this);
 
         var protocol_documents = {};
         context.protocol_documents.forEach(function(doc) {
-            protocol_documents[doc['@id']] = Panel({context: doc, panelContent: DocumentContent});
+            protocol_documents[doc['@id']] = Panel({context: doc});
         }, this);
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
@@ -224,7 +224,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {context.characterizations.length ?
                     <div>
                         <h3>Characterizations</h3>
-                        <div className="row">
+                        <div className="row multi-columns-row">
                             {context.characterizations.map(Panel)}
                         </div>
                     </div>
@@ -233,7 +233,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {Object.keys(construct_documents).length ?
                     <div>
                         <h3>Construct documents</h3>
-                        <div className="row">
+                        <div className="row multi-columns-row">
                             {construct_documents}
                         </div>
                     </div>
@@ -242,7 +242,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {Object.keys(rnai_documents).length ?
                     <div>
                         <h3>RNAi documents</h3>
-                        <div className="row">
+                        <div className="row multi-columns-row">
                             {rnai_documents}
                         </div>
                     </div>
@@ -463,30 +463,7 @@ var RNAi = module.exports.RNAi = React.createClass({
 globals.panel_views.register(RNAi, 'rnai');
 
 
-// Popover bubble
-var InfoPanel = module.exports.InfoPanel = React.createClass({
-    render: function() {
-        var panelContent;
-        var context = this.props.context;
-        if (this.props.panelContent) {
-            panelContent = this.props.panelContent({context: context});
-        }
-        var panelClass = cx({
-            "key-value-panel": true,
-            "active": this.props.panelOpen
-        });
-        return(
-            <dl className={panelClass}>
-                {panelContent}
-            </dl>
-        );
-    }
-});
-
-
-// Component: bar that, when clicked, opens a popover with document data
-// Note: uses React context, ≠ props.context
-var InfoTrigger = module.exports.PopoverTrigger = React.createClass({
+var Document = module.exports.Document = React.createClass({
     getInitialState: function() {
         return {panelOpen: false};
     },
@@ -504,119 +481,28 @@ var InfoTrigger = module.exports.PopoverTrigger = React.createClass({
     render: function() {
         var context = this.props.context;
         var keyClass = cx({
-            "key-value-trigger": true,
+            "key-value-left": true,
+            "document-slider": true,
             "active": this.state.panelOpen
         });
-
-        return (
-            <div className="document-info">
-                <dl className={keyClass}>
-                    <a href="#" onClick={this.handleClick}>
-                        <dt>Lab</dt>
-                        <dd>{context.lab.title}</dd>
-                        <i className="trigger-icon icon-info-sign"></i>
-                    </a>
-                </dl>
-                <InfoPanel context={context} panelOpen={this.state.panelOpen} panelContent={this.props.panelContent} />
-            </div>
-        );
-    }
-});
-
-
-var DocumentContent = module.exports.DocumentContent = React.createClass({
-    render: function() {
-        var context = this.props.context;
-        return(
-            <div>
-                {context.caption ? <dt>Caption</dt> : null}
-                {context.caption ? <dd>{context.caption}</dd> : null}
-
-                <dt>Submitted by</dt>
-                <dd>{context.submitted_by.title}</dd>
-
-                <dt>Grant</dt>
-                <dd>{context.award.name}</dd>
-            </div>
-        );
-    }
-});
-
-
-// Fixed-position lightbox background and image
-var Lightbox = module.exports.Lightbox = React.createClass({
-    ignoreClick: function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    },
-
-    render: function() {
-        var lightboxVisible = this.props.lightboxVisible;
-        var lightboxClass = cx({
-            "lightbox": true,
-            "active": lightboxVisible
+        var triggerClass = cx({
+            "trigger-icon": true,
+            "icon-sort-down": !this.state.panelOpen,
+            "icon-sort-up": this.state.panelOpen
         });
-
-        return(
-            <div className={lightboxClass} onClick={this.props.clearLightbox}>
-                <div className="lightbox-img">
-                    <img src={this.props.lightboxImg} onClick={this.ignoreClick} />
-                    <i className="lightbox-close icon-remove-sign"></i>
-                </div>
-            </div>
-        );
-    }
-});
-
-
-var Document = module.exports.Document = React.createClass({
-    getInitialState: function() {
-        return {lightboxVisible: false};
-    },
-
-    // Handle a click on the lightbox trigger (thumbnail)
-    lightboxClick: function(attachmentType, e) {
-        if(attachmentType === 'image') {
-            e.preventDefault();
-            e.stopPropagation();
-            this.setState({lightboxVisible: true});
-        }
-    },
-
-    clearLightbox: function() {
-        this.setState({lightboxVisible: false});
-    },
-
-    // If lightbox visible, ESC key closes it
-    handleEscKey: function(e) {
-        if(this.state.lightboxVisible && e.keyCode == 27) {
-            this.clearLightbox();
-        }
-    },
-
-    // Register for keyup events for ESC key
-    componentDidMount: function() {
-        window.addEventListener('keyup', this.handleEscKey);
-    },
-
-    // Unregister keyup events when component closes
-    componentWillUnmount: function() {
-        window.removeEventListener('keyup', this.handleEscKey);
-    },
-
-    render: function() {
-        var context = this.props.context;
-        var figure = <Attachment context={this.props.context} lightboxClick={this.lightboxClick} className="characterization" />;
+        var figure = <Attachment context={this.props.context} className="characterization" />;
 
         var attachmentHref, download;
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             var dlFileTitle = "Download file " + context.attachment.download;
             download = (
-                <a data-bypass="true" title={dlFileTitle} className="dl-bar" href={attachmentHref} download={context.attachment.download}>
-                    {context.attachment.download}
-                    <i className="trigger-icon icon-download"></i>
-                </a>
+                <div className="dl-bar">
+                    <i className="icon-download-alt"></i>&nbsp;
+                    <a data-bypass="true" title={dlFileTitle} href={attachmentHref} download={context.attachment.download}>
+                        {context.attachment.download}
+                    </a>
+                </div>
             );
         } else {
             download = (
@@ -625,20 +511,33 @@ var Document = module.exports.Document = React.createClass({
         }
 
         return (
-            <section className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                <div className="type-document type-popover view-detail panel status-none">
-                    <div className="doc-header">
+            // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
+            <section className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+                <div className="type-document view-detail panel status-none">
+                    <div className="document-header">
                         <figure>
                             {figure}
                         </figure>
                         <div className="document-intro">
                             <h3 className="sentence-case">{context.document_type}</h3>
                             <p>{context.description}</p>
-                            {download}
                         </div>
                     </div>
-                    <InfoTrigger context={context} panelContent={this.props.panelContent} />
-                    <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={attachmentHref} clearLightbox={this.clearLightbox} />
+                    {download}
+                    <dl className={keyClass}>
+                        <dt>Submitted by</dt>
+                        <dd>{context.submitted_by.title}</dd>
+
+                        <dt>Grant</dt>
+                        <dd>{context.award.name}</dd>
+                    </dl>
+                    <dl className="key-value-trigger">
+                        <a href="#" onClick={this.handleClick}>
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                            <i className={triggerClass}></i>
+                        </a>
+                    </dl>
                 </div>
             </section>
         );

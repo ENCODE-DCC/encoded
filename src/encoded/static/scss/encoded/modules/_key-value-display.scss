@@ -37,6 +37,26 @@ dd.h3, dd.h4 {
     }
 }
 
+// Left-justified key-value
+.key-value-left {
+    @extend .key-value;
+
+    dt, dd {
+        padding-top: 0;
+    }
+
+    dt {
+        float: none;
+        display: block;
+        text-align: left;
+        margin-bottom: 0px;
+    }
+
+    dd {
+        margin-left: 0;
+    }
+}
+
 .unit::before {
     content: " ";
 }
@@ -53,15 +73,6 @@ dd ul, .multi-value {
     margin: 0;
     padding: 0;
     display: inline-block;
-}
-
-
-.document-info {
-    position: relative;
-    margin: 0;
-    padding: 0;
-    background-color: #eff6fc;
-    border-top: 1px solid #fff;
 }
 
 // responsive styles in _state.scss
