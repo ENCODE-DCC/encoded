@@ -9,12 +9,15 @@ var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var antibody = require('./antibody');
+var image = require('./image');
 
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = antibody.StatusLabel;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
+
+var Attachment = image.Attachment;
 
 
 var Panel = function (props) {
@@ -603,33 +606,11 @@ var Document = module.exports.Document = React.createClass({
 
     render: function() {
         var context = this.props.context;
-        var attachmentHref, attachmentUri;
-        var figure, download, src, alt;
-        var height = "100";
-        var width = "100";
+        var figure = <Attachment context={this.props.context} lightboxClick={this.lightboxClick} className="characterization" />;
+
+        var attachmentHref, download;
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
-            var attachmentType = context.attachment.type.split('/', 1)[0];
-            if (attachmentType == 'image') {
-                var imgClass = 'characterization-img';
-                src = attachmentHref;
-                height = context.attachment.height;
-                width = context.attachment.width;
-                alt = "Characterization Image";
-                figure = (
-                    <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
-                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                    </a>
-                );
-            } else if (context.attachment.type == "application/pdf"){
-                figure = (
-                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide" onClick={this.lightboxClick.bind(this, attachmentType)}>Characterization PDF Icon</a>
-                );
-            } else {
-                figure = (
-                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide" onClick={this.lightboxClick.bind(this, attachmentType)}>Characterization Icon</a>
-                );
-            }
             var dlFileTitle = "Download file " + context.attachment.download;
             download = (
                 <a data-bypass="true" title={dlFileTitle} className="dl-bar" href={attachmentHref} download={context.attachment.download}>
@@ -638,9 +619,6 @@ var Document = module.exports.Document = React.createClass({
                 </a>
             );
         } else {
-            figure = (
-                <div className="file-missing text-hide">Characterization file broken icon</div>
-            );
             download = (
                 <em>Document not available</em>
             );
@@ -660,7 +638,7 @@ var Document = module.exports.Document = React.createClass({
                         </div>
                     </div>
                     <InfoTrigger context={context} panelContent={this.props.panelContent} />
-                    <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={src} clearLightbox={this.clearLightbox} />
+                    <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={attachmentHref} clearLightbox={this.clearLightbox} />
                 </div>
             </section>
         );

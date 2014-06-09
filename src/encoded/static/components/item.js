@@ -1,6 +1,8 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var FetchedData = require('./fetched').FetchedData;
+var Form = require('./form').Form;
 var globals = require('./globals');
 
     var Item = module.exports.Item = React.createClass({
@@ -70,3 +72,32 @@ var globals = require('./globals');
     globals.listing_titles.fallback = function () {
         return title;
     };
+
+
+    var ItemEdit = module.exports.ItemEdit = React.createClass({
+        render: function() {
+            var context = this.props.context;
+            var itemClass = globals.itemClass(context, 'view-item');
+            var title = globals.listing_titles.lookup(context)({context: context});
+            if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
+                title = 'Add ' + title;
+                var action = this.props.context['@id'];
+                var form = <Form schema={this.props.schema} action={action} method="POST" />;
+            } else {  // edit form
+                title = 'Edit ' + title;
+                var url = this.props.context['@id'] + '?frame=edit';
+                var action = this.props.context['@id'];
+                var form = <FetchedData Component={Form} url={url} schema={this.props.schema} action={action} method="PUT" />;
+            }
+            return (
+                <div className={itemClass}>
+                    <header className="row">
+                        <div className="col-sm-12">
+                            <h2>{title}</h2>
+                        </div>
+                    </header>
+                    {this.transferPropsTo(form)}
+                </div>
+            );
+        }
+    });
