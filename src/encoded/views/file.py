@@ -72,6 +72,10 @@ class File(Collection):
             'award': 'dataset.award',
         }
         template = {
+            'download': {
+                '$value': '{item_uri}@@download/{accession}.{file_format}',
+                '$templated': True,
+            },
             'upload_credentials': {
                 '$templated': True,
                 '$condition': show_upload_credentials,
