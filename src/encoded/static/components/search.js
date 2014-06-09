@@ -8,7 +8,7 @@ var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
-    var Listing = function (props) {
+    var Listing = module.exports.Listing = function (props) {
         // XXX not all panels have the same markup
         var context;
         if (props['@id']) {
@@ -174,7 +174,7 @@ var Dbxref = dbxref.Dbxref;
     function termSelected(term, field, filters) {
         for (var filter in filters) {
             if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
-                return filters[filter]['remove'];
+                return url.parse(filters[filter]['remove']).search;
             }
         }
         return null;
@@ -196,7 +196,6 @@ var Dbxref = dbxref.Dbxref;
             var term = this.props.term['term'];
             var count = this.props.term['count'];
             var title = this.props.title || term;
-            var search_base = this.props.search_base;
             var field = this.props.facet['field'];
             var barStyle = {
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
@@ -205,7 +204,7 @@ var Dbxref = dbxref.Dbxref;
             if(link) {
                 return (
                     <li id="selected" key={term}>
-                        <a id="selected" href={link}>
+                        <a id="selected" href={link} onClick={this.props.onFilter}>
                             <span className="pull-right">{count}<i className="icon-remove-sign"></i></span>
                             <span className="facet-item">{title}</span>
                         </a>
@@ -215,7 +214,7 @@ var Dbxref = dbxref.Dbxref;
                 return (
                     <li key={term}>
                         <span className="bar" style={barStyle}></span>
-                        <a href={search_base+field+'='+term}>
+                        <a href={this.props.searchBase + field + '=' + term} onClick={this.props.onFilter}>
                             <span className="pull-right">{count}</span>
                             <span className="facet-item">{title}</span>
                         </a>
@@ -229,7 +228,11 @@ var Dbxref = dbxref.Dbxref;
         render: function () {
             var term = this.props.term['term'];
             var filters = this.props.filters;
-            var title = this.props.portal.types[term];
+            try {
+                var title = this.props.portal.types[term];
+            } catch (e) {
+                var title = term;
+            }
             var total = this.props.total;
             return this.transferPropsTo(<Term title={title} filters={filters} total={total} />);
         }
@@ -301,12 +304,10 @@ var Dbxref = dbxref.Dbxref;
             var facets = this.props.facets;
             var filters = this.props.filters;
             if (!facets.length) return <div />;
-            var search_base = url.parse(this.props.href).search || '';
-            search_base += search_base ? '&' : '?';
             return (
                 <div className="box facets">
                     {facets.map(function (facet) {
-                        return this.transferPropsTo(<Facet facet={facet} filters={filters} search_base={search_base} />);
+                        return this.transferPropsTo(<Facet facet={facet} filters={filters} />);
                     }.bind(this))}
                 </div>
             );
@@ -321,7 +322,8 @@ var Dbxref = dbxref.Dbxref;
             var total = context['total'];
             var columns = context['columns'];
             var filters = context['filters'];
-            var search_id = context['@id'];
+            var searchBase = this.props.searchBase;
+            searchBase += searchBase ? '&' : '?';
             
             return (
                     <div>
@@ -329,7 +331,8 @@ var Dbxref = dbxref.Dbxref;
                             <div className="row">
                                 <div className="col-sm-5 col-md-4 col-lg-3">
                                     {this.transferPropsTo(
-                                        <FacetList facets={facets} filters={filters} />
+                                        <FacetList facets={facets} filters={filters}
+                                                   searchBase={searchBase} onFilter={this.onFilter} />
                                     )}
                                 </div>
 
@@ -337,9 +340,13 @@ var Dbxref = dbxref.Dbxref;
                                     <h4>Showing {results.length} of {total} 
                                         {total > results.length ?
                                                 <span className="pull-right">
-                                                    {search_id.indexOf('&limit=all') !== -1 ? 
-                                                        <a className="btn btn-info btn-sm" href={search_id.replace("&limit=all", "")}>View 25</a>
-                                                    : <a rel="nofollow" className="btn btn-info btn-sm" href={search_id+ '&limit=all'}>View All</a>}
+                                                    {searchBase.indexOf('&limit=all') !== -1 ? 
+                                                        <a className="btn btn-info btn-sm"
+                                                           href={searchBase.replace("&limit=all", "")}
+                                                           onClick={this.onFilter}>View 25</a>
+                                                    : <a rel="nofollow" className="btn btn-info btn-sm"
+                                                         href={searchBase+ '&limit=all'}
+                                                         onClick={this.onFilter}>View All</a>}
                                                 </span>
                                             : null}
                                     </h4>
@@ -355,23 +362,27 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         : null }
                     </div>  
-                );
-            }
+            );
+        },
+
+        onFilter: function(e) {
+            var search = e.currentTarget.getAttribute('href');
+            this.props.onChange(search);
+            return false;
         }
-    );
+    });
 
     var Search = search.Search = React.createClass({
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
             var notification = context['notification'];
-            var id = url.parse(this.props.href, true);
-            var searchTerm = id.query['searchTerm'] || '';
+            var searchBase = url.parse(this.props.href).search || '';
             return (
                 <div>
                     {notification === 'Success' ?
                         <div className="panel data-display main-panel"> 
-                            {this.transferPropsTo(<ResultTable key={undefined} />)}
+                            {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
                         </div>
                     : <h4>{notification}</h4>}
                 </div>

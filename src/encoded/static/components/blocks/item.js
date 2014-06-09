@@ -16,7 +16,6 @@ var ItemBlockView = React.createClass({
 var FetchedItemBlockView = React.createClass({
 
     shouldComponentUpdate: function(nextProps) {
-        console.log(nextProps);
         return (nextProps.value.item != this.props.value.item);
     },
 
@@ -25,7 +24,7 @@ var FetchedItemBlockView = React.createClass({
         if (url.indexOf('/') !== 0) {
             url = '/' + url;
         }
-        return <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} href={url} />;
+        return <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />;
     }
 });
 

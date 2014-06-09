@@ -62,6 +62,12 @@
                 {
                     "blocks": [
                         {
+                            "@type": "searchblock",
+                            "data": {
+                                "search": "?type=antibody_approval"
+                            }
+                        },
+                        {
                             "@type": "itemblock",
                             "data": {
                                 "item": "b4589f52-521e-45db-8dfa-378d92cbbd86"

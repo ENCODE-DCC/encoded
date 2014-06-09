@@ -4,3 +4,4 @@
 require('./fallback');
 require('./richtext');
 require('./item');
+require('./search');

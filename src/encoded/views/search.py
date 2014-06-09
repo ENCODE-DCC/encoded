@@ -93,22 +93,17 @@ def search(context, request, search_type=None):
         return result
 
     if search_type is None:
-        search_type = request.params.get('type', '*')
+        search_type = request.params.get('type')
 
         # handling invalid item types
-        if search_type != '*':
+        if search_type not in (None, '*'):
             if search_type not in root.by_item_type:
                 result['notification'] = "'" + search_type + \
                     "' is not a valid 'item type'"
                 return result
 
-    # Handling wildcards
-    if search_term == '*' and search_type == '*':
-        result['notification'] = 'Please enter search term'
-        return result
-
     # Building query for filters
-    if search_type == '*':
+    if search_type in (None, '*'):
         doc_types = ['antibody_approval', 'biosample',
                      'experiment', 'target', 'dataset']
     else:

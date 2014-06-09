@@ -31,7 +31,7 @@ var BlockEditModal = React.createClass({
         return this.transferPropsTo(
             <Modal title={'Edit ' + blocktype.label}>
                 <div className="modal-body">
-                    <BlockEdit value={this.state.value} onChange={this.onChange} />
+                    <BlockEdit schema={blocktype.schema} value={this.state.value} onChange={this.onChange} />
                 </div>
                 <div className="modal-footer">
                     <button className="btn btn-default" onClick={this.props.onRequestHide}>Cancel</button>
@@ -158,14 +158,17 @@ var BlockAddButton = React.createClass({
         var classes = 'icon-large ' + this.props.blockprops.icon;
         return (
             <button className="btn btn-primary navbar-btn btn-sm"
+                    onClick={this.click}
                     draggable="true" onDragStart={this.dragStart} onDragEnd={this.context.dragEnd}
                     title={this.props.blockprops.label}><span className={classes}></span></button>
         );
     },
 
+    click: function() { return false; },
+
     dragStart: function(e) {
         var block = {
-            '@type': [this.props.blocktype, 'block']
+            '@type': [this.props.key, 'block']
         };
         if (this.props.blockprops.initial !== undefined) {
             block.data = this.props.blockprops.initial;
@@ -201,7 +204,7 @@ var LayoutToolbar = React.createClass({
         return (
             <div className={'layout-toolbar navbar navbar-default' + (this.state.fixed ? ' navbar-fixed-top' : '')}>
               <div className="container">
-                {Object.keys(blocks).map(b => <BlockAddButton blocktype={b} blockprops={blocks[b]} /> )}
+                {Object.keys(blocks).map(b => <BlockAddButton key={b} blockprops={blocks[b]} /> )}
               </div>
             </div>
         );

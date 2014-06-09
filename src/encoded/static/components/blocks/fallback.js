@@ -34,7 +34,8 @@ var FallbackBlockSchema = (
 
 var FallbackBlockEdit = module.exports.FallbackBlockEdit = React.createClass({
     render: function() {
-        return this.transferPropsTo(<Form schema={FallbackBlockSchema} value={this.props.value} />);
+        var schema = this.props.schema || FallbackBlockSchema;
+        return this.transferPropsTo(<Form schema={schema} value={this.props.value} />);
     }
 });
 
