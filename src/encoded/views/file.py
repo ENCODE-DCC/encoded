@@ -37,7 +37,7 @@ def external_creds(parent, properties):
         ]
     }
     name = 'upload-{time}-{accession}'.format(time=time.time(), **properties)  # max 32 chars
-    conn = boto.connect_sts()
+    conn = boto.connect_sts(profile_name='encoded-files-upload')
     token = conn.get_federation_token(name, policy=json.dumps(policy))
     # 'access_key' 'secret_key' 'expiration' 'session_token'
     credentials = token.credentials.to_dict()
