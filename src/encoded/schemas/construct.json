@@ -127,9 +127,9 @@
             "type": "string",
             "requestMethod": []
         },
-        "endogenous_promoter_target": {
-           "title": "Endogenous promoter target",
-           "description": "The name of the gene that is the native endogenous target of the promoter.",
+        "promoter_used": {
+           "title": "Promoter used in construct",
+           "description": "The name of the gene that the promoter regulates natively.",
            "comment": "See target.json for available identifiers.",
            "type": "string",
            "linkTo": "target"
