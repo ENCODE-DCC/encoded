@@ -25,6 +25,7 @@ Feature: Antibodies
 
     Scenario: Detail page
         When I visit "/antibodies/35cf08c4-72cf-4408-8552-231e3e35b279/"
+        And I click the link with text that contains "Bradley Bernstein"
         Then I should see an element with the css selector "div.data-display"
         And I should see "eligible for new data"
         And I should see an element with the css selector "div.characterizations"

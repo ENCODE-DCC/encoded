@@ -151,6 +151,10 @@ var Characterization = module.exports.Characterization = React.createClass({
             "icon-sort-down": !this.state.panelOpen,
             "icon-sort-up": this.state.panelOpen
         });
+        var shadowClass = cx({
+            "characterization-slider-shadow": true,
+            "active": this.state.panelOpen
+        });
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
         var attachmentHref, download;
@@ -177,6 +181,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                     <div className="characterization-header">
                         <figure>
                             {figure}
+                            <div className="characterization-badge"><StatusLabel status={context.status} /></div>
                         </figure>
 
                         <div className="characterization-intro characterization-meta-data key-value-left">
@@ -205,7 +210,8 @@ var Characterization = module.exports.Characterization = React.createClass({
                         <dd>{context.validated_by}</dd>
                         */}
 
-                        <dd><StatusLabel status={context.status} /></dd>
+                        <div className={shadowClass}></div>
+
                     </dl>
                     <dl className="key-value-trigger">
                         <a href="#" onClick={this.handleClick}>
