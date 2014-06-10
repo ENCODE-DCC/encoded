@@ -154,4 +154,19 @@ def hub(context, request):
     else:
         data_accession = '<p>Experiment - <a href={link}>{accession}<a></p>'.format(link=url_ret[0], accession=embedded['accession'])
         data_description = '<p>{description}</p>'.format(description=cgi.escape(embedded['description']))
-        return Response(data_accession + data_description, content_type='text/html')
+        data_files = ''
+        for f in files_json:
+            if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed', 'bigWig']:
+                if 'replicate' in f:
+                    replicate_number = 'rep - ' + str(f['replicate']['biological_replicate_number'])
+                else:
+                    replicate_number = 'pooled'
+                data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td></tr>'\
+                    .format(
+                        accession=f['accession'],
+                        file_format=f['file_format'],
+                        output_type=f['output_type'],
+                        replicate_number=replicate_number
+                    )
+        file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Replicate</th></tr>{files}</table>'.format(files=data_files)
+        return Response(data_accession + data_description + file_table, content_type='text/html')
