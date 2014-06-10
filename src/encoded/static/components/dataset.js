@@ -24,9 +24,8 @@ var Dataset = module.exports.Dataset = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
-        var pubmed_url = "http://www.ncbi.nlm.nih.gov/pubmed/?term=";
         var pubmed_links = context.references.map(function(id) {
-            return <li><a href={pubmed_url + id.slice(5)}>{id}</a></li>;
+            return <li><a href={globals.externalRefMap['pubmed'] + id.slice(5)}>{id}</a></li>;
         });
         var experiments = {};
         context.files.forEach(function (file) {

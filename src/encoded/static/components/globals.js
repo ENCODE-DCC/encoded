@@ -47,7 +47,11 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
 module.exports.encodeVersionMap = {
     "ENCODE2": "2",
     "ENCODE3": "3"
-}
+};
+
+module.exports.externalRefMap = {
+    "pubmed": "http://www.ncbi.nlm.nih.gov/pubmed/?term="
+};
 
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",

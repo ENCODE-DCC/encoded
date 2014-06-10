@@ -68,6 +68,11 @@ var Experiment = module.exports.Experiment = React.createClass({
             statuses.push({status: "pending", title: "Validation"});
         }
 
+        // List pubmed links
+        var pubmed_links = context.references.map(function(id) {
+            return <li><a href={globals.externalRefMap['pubmed'] + id.slice(5)}>{id}</a></li>;
+        });
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -135,6 +140,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.dbxrefs.length ? <dt>External resources</dt> : null}
                         {context.dbxrefs.length ? <dd><DbxrefList values={context.dbxrefs} /></dd> : null}
 
+                        {context.references.length ? <dt>References</dt> : null}
+                        {context.references.length ? <dd>
+                            <ul className="horizontal-list">
+                                {pubmed_links}
+                            </ul>
+                        </dd> : null}
                     </dl>
                 </div>
 
