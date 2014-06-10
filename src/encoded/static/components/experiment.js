@@ -312,7 +312,7 @@ var Replicate = module.exports.Replicate = function (props) {
                 {library ? <dt>Library</dt> : null}
                 {library ? <dd>{library.accession}</dd> : null}
 
-                {library && library.nucleic_acid_starting_quantity ? <dt>Nucleic acid starting quantity</dt> : null}
+                {library && library.nucleic_acid_starting_quantity ? <dt>Library starting quantity</dt> : null}
                 {library && library.nucleic_acid_starting_quantity ?
                     <dd>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></dd>
                 : null}
