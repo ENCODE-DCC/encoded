@@ -8,6 +8,15 @@ var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
+    // Should readlly be singular...
+    var types = {
+        antibody_approval: {title: 'Antibodies'},
+        biosample: {title: 'Biosamples'},
+        experiment: {title: 'Experiments'},
+        target: {title: 'Targets'},
+        dataset: {title: 'Datasets'}
+    }
+
     var Listing = module.exports.Listing = function (props) {
         // XXX not all panels have the same markup
         var context;
@@ -229,7 +238,7 @@ var Dbxref = dbxref.Dbxref;
             var term = this.props.term['term'];
             var filters = this.props.filters;
             try {
-                var title = this.props.portal.types[term];
+                var title = types[term];
             } catch (e) {
                 var title = term;
             }
@@ -254,6 +263,9 @@ var Dbxref = dbxref.Dbxref;
             var facet = this.props.facet;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
+                if (facet.field == 'type') {
+                    return types.hasOwnProperty(term.term);
+                }
                 for(var filter in filters) {
                     if(filters[filter].term === term.term) {
                         return true;
@@ -299,15 +311,68 @@ var Dbxref = dbxref.Dbxref;
         }
     });
 
+    var TextFilter = React.createClass({
+
+        getValue: function(props) {
+            var filter = this.props.filters.filter(function(f) {
+                return f.field == 'searchTerm';
+            });
+            return filter.length ? filter[0].term : '';
+        },
+
+        shouldUpdateComponent: function(nextProps) {
+            return (this.getValue(this.props) != this.getValue(nextProps));
+        },
+
+        render: function() {
+            return (
+                <div className="facet">
+                    <input ref="input" type="search" className="form-control search-query"
+                           placeholder="Enter search term(s)"
+                           defaultValue={this.getValue(this.props)} onChange={this.onChange} onBlur={this.onBlur} />
+                </div>
+            );
+        },
+
+        onChange: function(e) {
+            e.stopPropagation();
+            return false;
+        },
+
+        onBlur: function(e) {
+            var search = this.props.searchBase.replace(/&?searchTerm=[^&]*/, '');
+            var value = e.target.value;
+            if (value) {
+                search += 'searchTerm=' + e.target.value;
+            } else {
+                search = search.substring(0, search.length - 1);
+            }
+            this.props.onChange(search);
+        }
+    });
+
     var FacetList = search.FacetList = React.createClass({
         render: function() {
+            var term = this.props.term;
             var facets = this.props.facets;
             var filters = this.props.filters;
             if (!facets.length) return <div />;
+            if (this.props.mode == 'picker') {
+                var hideTypes = false;
+            } else {
+                var hideTypes = filters.filter(function(filter) {
+                    return filter.field == 'type';
+                }).length;
+            }
             return (
                 <div className="box facets">
+                    {this.props.mode === 'picker' ? this.transferPropsTo(<TextFilter filters={filters} />) : ''}
                     {facets.map(function (facet) {
-                        return this.transferPropsTo(<Facet facet={facet} filters={filters} />);
+                        if (hideTypes && facet.field == 'type') {
+                            return <span />;
+                        } else {
+                            return this.transferPropsTo(<Facet facet={facet} filters={filters} />);
+                        }
                     }.bind(this))}
                 </div>
             );
