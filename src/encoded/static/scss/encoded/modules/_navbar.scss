@@ -58,3 +58,52 @@
 .navbar-toggle {
     margin-right: 0;
 }
+
+
+.test-warning {
+    position: relative;
+    padding: 5px 0 7px;
+    color: #fff;
+    background-color: $brand-danger;
+    @include background-image(linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%));
+    background-image: -ms-linear-gradient(top, darken($brand-danger,20%) 0%,darken($brand-danger,10%) 5%,lighten($brand-danger,0%) 93%,lighten($brand-danger,40%) 95%);
+
+    p {
+        margin: 0;
+        width: 90%;
+        font-size: 14px;
+
+        @media screen and (min-width: $screen-md-min) {
+            width: 100%;
+            text-align: center;
+            font-size: 16px;
+        }
+    }
+}
+
+
+.test-warning-close {
+    position: absolute;
+    width: 23px;
+    height: 22px;
+    top: 50%;
+    right: 5px;
+    margin-top: -13px;
+    font-size: 16px;
+    line-height: 23px;
+    color: #fff;
+    vertical-align: top;
+    cursor: pointer;
+
+    &:hover {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    @media screen and (min-width: $screen-md-min) {
+        position: static;
+        display: inline;
+        margin-top: 0;
+        margin-left: 10px;
+    }
+}
