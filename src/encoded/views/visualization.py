@@ -123,7 +123,13 @@ def hub(context, request):
     elif url_ret[1] == '/genomes.txt':
         return Response(newline.join(getGenomeTxt(embedded)), content_type='text/plain')
     elif url_ret[1] == '/' + assembly + '/trackDb.txt':
-        long_label = embedded['assay_term_name'] + ' of ' + embedded['biosample_term_name']
+        if 'target' in embedded:
+            long_label = embedded['assay_term_name'] + ' of ' + \
+                embedded['biosample_term_name']
+        else:
+            long_label = embedded['assay_term_name'] + ' of ' + \
+                embedded['biosample_term_name'] + ' (' + \
+                embedded['target']['name'] + ')'
         parent = getParentTrack(embedded['accession'], long_label)
         peak_view = ''
         signal_view = ''
@@ -152,13 +158,16 @@ def hub(context, request):
             parent = parent + (newline * 2) + tab + peak_view + (newline * 2) + tab + signal_view
         return Response(parent, content_type='text/plain')
     else:
-        data_accession = '<p>Experiment - <a href={link}>{accession}<a></p>'.format(link=url_ret[0], accession=embedded['accession'])
-        data_description = '<p>{description}</p>'.format(description=cgi.escape(embedded['description']))
+        data_accession = '<a href={link}>{accession}<a></p>' \
+            .format(link=url_ret[0], accession=embedded['accession'])
+        data_description = '<p>{description}</p>' \
+            .format(description=cgi.escape(embedded['description']))
         data_files = ''
         for f in files_json:
             if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed', 'bigWig']:
                 if 'replicate' in f:
-                    replicate_number = 'rep - ' + str(f['replicate']['biological_replicate_number'])
+                    replicate_number = 'rep - ' + \
+                        str(f['replicate']['biological_replicate_number'])
                 else:
                     replicate_number = 'pooled'
                 data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td></tr>'\
@@ -168,5 +177,9 @@ def hub(context, request):
                         output_type=f['output_type'],
                         replicate_number=replicate_number
                     )
-        file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Replicate</th></tr>{files}</table>'.format(files=data_files)
-        return Response(data_accession + data_description + file_table, content_type='text/html')
+        file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Replicate</th></tr>{files}</table>' \
+            .format(files=data_files)
+        data_policy = '<a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
+        header = '<p><This trackhub was automatically generated from the files and metadata for experiment '\
+            + data_accession
+        return Response(header + data_description + file_table + data_policy, content_type='text/html')
