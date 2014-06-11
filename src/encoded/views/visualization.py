@@ -126,7 +126,7 @@ def hub(context, request):
     elif url_ret[1] == '/' + assembly + '/trackDb.txt':
         if 'target' in embedded:
             long_label = embedded['assay_term_name'] + ' of ' + \
-                embedded['biosample_term_name'] + ' ' + embedded['accession'] + \
+                embedded['biosample_term_name'] + ' - ' + embedded['accession'] + \
                 ' (Target - ' + embedded['target']['label'] + ')'
         else:
             long_label = embedded['assay_term_name'] + ' of ' + \
