@@ -1,8 +1,10 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var cloneWithProps = require('react/lib/cloneWithProps');
 var url = require('url');
 var globals = require('./globals');
+var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
@@ -14,7 +16,8 @@ var Dbxref = dbxref.Dbxref;
         biosample: {title: 'Biosamples'},
         experiment: {title: 'Experiments'},
         target: {title: 'Targets'},
-        dataset: {title: 'Datasets'}
+        dataset: {title: 'Datasets'},
+        image: {title: 'Images'}
     }
 
     var Listing = module.exports.Listing = function (props) {
@@ -27,13 +30,30 @@ var Dbxref = dbxref.Dbxref;
         return globals.listing_views.lookup(props.context)(props);
     };
 
+    var PickerActionsMixin = {
+        contextTypes: {actions: React.PropTypes.array},
+        renderActions: function() {
+            if (this.context.actions && this.context.actions.length) {
+                return (
+                    <div className="pull-right">
+                        {this.context.actions.map(action => cloneWithProps(action, {id: this.props.context['@id']}))}
+                    </div>
+                );
+            } else {
+                return <span/>
+            }
+        }
+    };
+
     var Item = module.exports.Item = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var title = globals.listing_titles.lookup(result)({context: result});
             var item_type = result['@type'][0];
             return (<li>
                         <div>
+                            {this.renderActions()}
                             {result.accession ? <span className="pull-right type sentence-case">{item_type}: {' ' + result['accession']}</span> : null}
                             <div className="accession">
                                 <a href={result['@id']}>{title}</a>
@@ -49,11 +69,13 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Item, 'item');
 
     var Antibody = module.exports.Antibody = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Antibody</p>
                                 <p className="type">{' ' + result['antibody.accession']}</p>
@@ -74,11 +96,13 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Antibody, 'antibody_approval');
 
     var Biosample = module.exports.Biosample = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Biosample</p>
                                 <p className="type">{' ' + result['accession']}</p>
@@ -102,11 +126,13 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Biosample, 'biosample');
 
     var Experiment = module.exports.Experiment = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Experiment</p>
                                 <p className="type">{' ' + result['accession']}</p>
@@ -130,11 +156,13 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Experiment, 'experiment');
 
     var Dataset = module.exports.Dataset = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Dataset</p>
                                 <p className="type">{' ' + result['accession']}</p>
@@ -155,11 +183,13 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Dataset, 'dataset');
 
     var Target = module.exports.Target = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Target</p>
                             </div>
@@ -178,6 +208,32 @@ var Dbxref = dbxref.Dbxref;
         }
     });
     globals.listing_views.register(Target, 'target');
+
+
+    var Image = module.exports.Image = React.createClass({
+        mixins: [PickerActionsMixin],
+        render: function() {
+            var result = this.props.context;
+            var Attachment = image.Attachment;
+            return (<li>
+                        <div>
+                            {this.renderActions()}
+                            <div className="pull-right search-meta">
+                                <p className="type meta-title">Image</p>
+                            </div>
+                            <div className="accession">
+                                <a href={result['@id']}>{result.caption}</a>
+                            </div>
+                        </div>
+                        <div className="data-row">
+                            <Attachment context={result} />
+                        </div>
+                </li>
+            );
+        }
+    });
+    globals.listing_views.register(Image, 'image');
+
 
     // If the given term is selected, return the href for the term
     function termSelected(term, field, filters) {
@@ -380,6 +436,18 @@ var Dbxref = dbxref.Dbxref;
     });
 
     var ResultTable = search.ResultTable = React.createClass({
+
+        getDefaultProps: function() {
+            return {searchBase: ''};
+        },
+
+        childContextTypes: {actions: React.PropTypes.array},
+        getChildContext: function() {
+            return {
+                actions: this.props.actions
+            };
+        },
+
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
@@ -433,6 +501,7 @@ var Dbxref = dbxref.Dbxref;
         onFilter: function(e) {
             var search = e.currentTarget.getAttribute('href');
             this.props.onChange(search);
+            e.stopPropagation();
             return false;
         }
     });

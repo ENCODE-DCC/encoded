@@ -44,7 +44,7 @@ var TableLayout = React.createClass({
 });
 
 
-var SearchBlockEdit = React.createClass({
+var SearchBlockEdit = module.exports.SearchBlockEdit = React.createClass({
     render: function() {
         var styles = {maxHeight: 300, overflow: 'scroll' };
         return (
