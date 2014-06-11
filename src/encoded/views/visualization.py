@@ -125,11 +125,11 @@ def hub(context, request):
     elif url_ret[1] == '/' + assembly + '/trackDb.txt':
         if 'target' in embedded:
             long_label = embedded['assay_term_name'] + ' of ' + \
-                embedded['biosample_term_name']
-        else:
-            long_label = embedded['assay_term_name'] + ' of ' + \
                 embedded['biosample_term_name'] + ' (' + \
                 embedded['target']['name'] + ')'
+        else:
+            long_label = embedded['assay_term_name'] + ' of ' + \
+                embedded['biosample_term_name']
         parent = getParentTrack(embedded['accession'], long_label)
         peak_view = ''
         signal_view = ''
@@ -180,6 +180,6 @@ def hub(context, request):
         file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Replicate</th></tr>{files}</table>' \
             .format(files=data_files)
         data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
-        header = '<p><This trackhub was automatically generated from the files and metadata for experiment - ' + \
+        header = '<p>This trackhub was automatically generated from the files and metadata for experiment - ' + \
             data_accession
         return Response(header + data_description + file_table + data_policy, content_type='text/html')
