@@ -44,10 +44,12 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
 };
 
 
+module.exports.submitHost = "www.encodedcc.org";
+
 module.exports.encodeVersionMap = {
     "ENCODE2": "2",
     "ENCODE3": "3"
-}
+};
 
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",
