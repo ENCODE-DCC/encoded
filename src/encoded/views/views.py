@@ -430,12 +430,12 @@ class Biosample(Collection):
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
             ],
-            'sex': {'$value': '{sex}', '$templated': True},
-            'age': {'$value': '{age}', '$templated': True},
-            'age_units': {'$value': '{age_units}', '$templated': True},
-            'health_status': {'$value': '{health_status}', '$templated': True},
-            'life_stage': {'$value': '{life_stage}', '$templated': True},
-            'synchronization': {'$value': '{synchronization}', '$templated': True}
+            'sex': {'$value': '{sex}', '$templated': True, '$condition': '{sex}'},
+            'age': {'$value': '{age}', '$templated': True, '$condition': '{age}'},
+            'age_units': {'$value': '{age_units}', '$templated': True, '$condition': '{age_units}'},
+            'health_status': {'$value': '{health_status}', '$templated': True, '$condition': '{health_status}'},
+            'life_stage': {'$value': '{life_stage}', '$templated': True, '$condition': '{life_stage}'},
+            'synchronization': {'$value': '{synchronization}', '$templated': True, '$condition': '{synchronization}'}
         }
         embedded = set([
             'donor',
@@ -538,26 +538,17 @@ class Biosample(Collection):
                 for value in human_donor_properties:
                     if value in donor.properties:
                         ns[value] = donor.properties[value]
-                    else:
-                        ns[value] = ''
             elif properties['organism'] == "/organisms/mouse/":
                 for key, value in mouse_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-                    else:
-                        ns[value] = ''
             elif properties['organism'] in fly_organisms:
                 for key, value in fly_biosample_properties.items():
                     if key in ns:
-                        ns[value] = ns[key]
-                    else:
-                        ns[value] = ''
             else:
                 for key, value in worm_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-                    else:
-                        ns[value] = ''
             return ns
 
 
