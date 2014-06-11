@@ -545,6 +545,7 @@ class Biosample(Collection):
             elif properties['organism'] in fly_organisms:
                 for key, value in fly_biosample_properties.items():
                     if key in ns:
+                         ns[value] = ns[key]
             else:
                 for key, value in worm_biosample_properties.items():
                     if key in ns:
