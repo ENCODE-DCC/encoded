@@ -179,7 +179,7 @@ def hub(context, request):
                     )
         file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Replicate</th></tr>{files}</table>' \
             .format(files=data_files)
-        data_policy = '<a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
-        header = '<p><This trackhub was automatically generated from the files and metadata for experiment '\
-            + data_accession
+        data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
+        header = '<p><This trackhub was automatically generated from the files and metadata for experiment - ' + \
+            data_accession
         return Response(header + data_description + file_table + data_policy, content_type='text/html')
