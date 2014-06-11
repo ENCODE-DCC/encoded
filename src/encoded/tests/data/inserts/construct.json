@@ -55,7 +55,7 @@
         ],
         "target": "3XFLAG-pab-1-celegans",
         "vector_backbone_name": "pSA2",
-        "endogenous_promoter_target": "mes-4-celegans",
+        "promoter_used": "mes-4-celegans",
         "promoter_position_relative_to_target": 35,
         "uuid": "c65c008a-6085-47ed-aa50-668b321ff035"
     }

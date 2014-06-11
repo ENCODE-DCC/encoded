@@ -3,6 +3,7 @@
 var React = require('react');
 var url = require('url');
 var mixins = require('./mixins');
+var submitHost = require('./globals').submitHost;
 var Navbar = require('../react-bootstrap/Navbar');
 var Nav = require('../react-bootstrap/Nav');
 var NavItem = require('../react-bootstrap/NavItem');
@@ -24,6 +25,27 @@ var NavBar = React.createClass({
 
 
 var NavBarLayout = React.createClass({
+    getInitialState: function() {
+        return {
+            testWarning: url.parse(this.props.href).hostname !== submitHost
+        };
+    },
+
+    handleClick: function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Remove the warning banner because the user clicked the close icon
+        this.setState({testWarning: false});
+
+        // If collection with .sticky-header on page, jiggle scroll position
+        // to force the sticky header to jump to the top of the page.
+        var hdrs = document.getElementsByClassName('sticky-header');
+        if (hdrs.length) {
+            window.scrollBy(0,-1);
+            window.scrollBy(0,1);
+        }
+    },
 
     render: function() {
         console.log('render navbar');
@@ -40,6 +62,16 @@ var NavBarLayout = React.createClass({
                         {this.transferPropsTo(<Search />)}
                     </Navbar>
                 </div>
+                {this.state.testWarning ?
+                    <div className="test-warning">
+                        <div className="container">
+                            <p>
+                                The data displayed on this page is not official and only for testing purposes.
+                                <a href="#" className="test-warning-close icon-remove-sign" onClick={this.handleClick}></a>
+                            </p>
+                        </div>
+                    </div>
+                : null}
             </div>
         );
     }
