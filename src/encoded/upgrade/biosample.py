@@ -115,5 +115,8 @@ def biosample_6_7(value, system):
     for key, val in update_properties.items():
         if key in value:
             if value["organism"] != "7745b647-ff15-4ff3-9ced-b897d4e2983c":
-                value[val] = value[key]
+                if key == "life_stage" and value[key] == "newborn":
+                    value[val] = "postnatal"
+                else:
+                    value[val] = value[key]
             del value[key]
