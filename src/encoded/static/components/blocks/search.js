@@ -2,18 +2,20 @@
 'use strict';
 var React = require('react');
 var FetchedData = require('../fetched').FetchedData;
+var collection = require('../collection');
 var globals = require('../globals');
 var search = require('../search');
 
 var Listing = search.Listing;
 var ResultTable = search.ResultTable;
+var Table = collection.Table;
 
 var ReactForms = require('react-forms');
 var Schema = ReactForms.schema.Schema;
 var Property = ReactForms.schema.Property;
 
 
-var SearchBlockView = React.createClass({
+var SearchResultsLayout = React.createClass({
     render: function() {
         var context = this.props.data;
         var results = context['@graph'];
@@ -33,6 +35,15 @@ var SearchBlockView = React.createClass({
 });
 
 
+var TableLayout = React.createClass({
+    render: function() {
+        return (
+            <Table context={this.props.data} href={this.props.href} />
+        );
+    }
+});
+
+
 var SearchBlockEdit = React.createClass({
     render: function() {
         var styles = {maxHeight: 300, overflow: 'scroll' };
@@ -45,7 +56,7 @@ var SearchBlockEdit = React.createClass({
 });
 
 
-var FetchedSearch = React.createClass({
+var SearchBlock = React.createClass({
 
     shouldComponentUpdate: function(nextProps) {
         return (nextProps.value != this.props.value);
@@ -58,10 +69,22 @@ var FetchedSearch = React.createClass({
                                 searchBase={this.props.value} onChange={this.props.onChange} />;
         } else {
             var url = '/search' + this.props.value.search;
-            return <FetchedData url={url} Component={SearchBlockView} loadingComplete={true} />;
+            if (this.props.value.display === 'table') {
+                return <FetchedData url={url} Component={TableLayout} loadingComplete={true} href={url} />;
+            } else {
+                return <FetchedData url={url} Component={SearchResultsLayout} loadingComplete={true} />;
+            }
         }
     }
 });
+
+
+var displayModeSelect = (
+    <div><select>
+      <option value="search">search results</option>
+      <option value="table">table</option>
+    </select></div>
+);
 
 
 globals.blocks.register({
@@ -69,8 +92,9 @@ globals.blocks.register({
     icon: 'icon-search',
     schema: (
         <Schema>
-          <Property name="search" label="Search Criteria" input={<FetchedSearch mode="edit" />} />
+          <Property name="display" label="Display Layout" input={displayModeSelect} defaultValue="search" />
+          <Property name="search" label="Search Criteria" input={<SearchBlock mode="edit" />} />
         </Schema>
     ),
-    view: FetchedSearch
+    view: SearchBlock
 }, 'searchblock');
