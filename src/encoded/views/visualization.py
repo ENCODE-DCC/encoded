@@ -24,7 +24,7 @@ def getParentTrack(accession, label):
         ('dragAndDrop', 'subTracks'),
         ('visibility', 'dense'),
         ('compositeTrack', 'on'),
-        ('longLabel', label + ' - ' + accession),
+        ('longLabel', label),
         ('shortLabel', accession),
         ('track', accession)
     ])
@@ -118,6 +118,7 @@ def hub(context, request):
     assembly = ''
     if 'assembly' in embedded:
         assembly = embedded['assembly']
+    
     if url_ret[1] == '/hub.txt':
         return Response(newline.join(getHubTxt(embedded['accession'])), content_type='text/plain')
     elif url_ret[1] == '/genomes.txt':
@@ -125,8 +126,8 @@ def hub(context, request):
     elif url_ret[1] == '/' + assembly + '/trackDb.txt':
         if 'target' in embedded:
             long_label = embedded['assay_term_name'] + ' of ' + \
-                embedded['biosample_term_name'] + ' (Target - ' + \
-                embedded['target']['label'] + ')'
+                embedded['biosample_term_name'] + ' ' + embedded['accession'] + \
+                ' (Target - ' + embedded['target']['label'] + ')'
         else:
             long_label = embedded['assay_term_name'] + ' of ' + \
                 embedded['biosample_term_name']
