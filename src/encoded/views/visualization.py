@@ -130,7 +130,7 @@ def hub(context, request):
                 ' (Target - ' + embedded['target']['label'] + ')'
         else:
             long_label = embedded['assay_term_name'] + ' of ' + \
-                embedded['biosample_term_name']
+                embedded['biosample_term_name'] + ' - ' + embedded['accession']
         parent = getParentTrack(embedded['accession'], long_label)
         peak_view = ''
         signal_view = ''
