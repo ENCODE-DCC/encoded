@@ -126,7 +126,6 @@
         },
         "depleted_in_term_name": {
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Depleted in term",
                 "description": "UBERON (Uber Anatomy Ontology) term best matching the tissue(s)/body part(s) that were removed from the biosample.",
@@ -145,7 +144,6 @@
         },
         "depleted_in_term_id": {
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Depleted in ID",
                 "description": "UBERON (Uber Anatomy Ontology) identifier best matching the tissue(s)/body part(s) that were removed from the biosample.",
