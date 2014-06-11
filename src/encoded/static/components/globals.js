@@ -44,6 +44,8 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
 };
 
 
+module.exports.submitHost = "www.encodedcc.org";
+
 module.exports.encodeVersionMap = {
     "ENCODE2": "2",
     "ENCODE3": "3"
