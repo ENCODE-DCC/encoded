@@ -538,18 +538,26 @@ class Biosample(Collection):
                 for value in human_donor_properties:
                     if value in donor.properties:
                         ns[value] = donor.properties[value]
+                    else:
+                        ns[value] = ''
             elif properties['organism'] == "/organisms/mouse/":
                 for key, value in mouse_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
             elif properties['organism'] in fly_organisms:
                 for key, value in fly_biosample_properties.items():
                     if key in ns:
-                         ns[value] = ns[key]
+                        ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
             else:
                 for key, value in worm_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
+                    else:
+                        ns[value] = ''
             return ns
 
 
