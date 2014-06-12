@@ -90,7 +90,7 @@
             "title": "Experiment status",
             "type": "string"
         },
-        "replicates.library.biosample.organism.name": {
+        "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
             "type": "string"
         },
@@ -102,37 +102,37 @@
             "title": "Organ",
             "type": "array"
         },
-        "replicates.library.biosample.life_stage": {
-            "title": "Life stage",
+        "lab.title": {
+            "title": "Lab",
             "type": "string"
-        },
-        "developmental_slims": {
-            "title": "Developmental slim",
-            "type": "array"
-        },
-        "replicates.library.biosample.treatments.treatment_term_name": {
-            "title": "Biosample treatment",
-            "type": "array"
         },
         "files.file_format": {
             "title": "Available data",
-            "type": "string"
-        },
-        "replicates.read_length": {
-            "title": "Read length (nt)",
-            "type": "string"
-        },
-        "replicates.library.size_range": {
-            "title": "Library insert size (nt)",
             "type": "string"
         },
         "replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment",
             "type": "array"
         },
-        "lab.title": {
-            "title": "Lab",
+        "replicates.read_length": {
+            "title": "Read length (nt)",
             "type": "string"
+        },
+        "developmental_slims": {
+            "title": "Developmental slim",
+            "type": "array"
+        },
+        "replicates.library.biosample.life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "replicates.library.size_range": {
+            "title": "Library insert size (nt)",
+            "type": "string"
+        },
+        "replicates.library.biosample.treatments.treatment_term_name": {
+            "title": "Biosample treatment",
+            "type": "array"
         }
     },
     "columns": {
@@ -164,8 +164,24 @@
             "title": "Project",
             "type": "string"
         },
-        "status": {
-            "title": "Status",
+        "replicates.library.biosample.organism.scientific_name": {
+            "title": "Species",
+            "type": "array"
+        },
+        "replicates.library.biosample.life_stage": {
+            "title": "Life stage",
+            "type": "array"
+        },
+        "replicates.library.biosample.age": {
+            "title": "Age",
+            "type": "array"
+        },
+        "replicates.library.biosample.age_units": {
+            "title": "Age Units",
+            "type": "array"
+        },
+        "replicates.library.biosample.treatments.treatment_term_name": {
+            "title": "Treatment",
             "type": "string"
         },
         "replicates.length": {

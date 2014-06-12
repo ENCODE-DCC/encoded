@@ -82,7 +82,11 @@ var Dbxref = dbxref.Dbxref;
                                 <p className="type meta-status">{' ' + result['status']}</p>
                             </div>
                             <div className="accession">
-                                <a href={result['@id']}>{result['target.label'] + ' (' + result['target.organism.name'] + ')'}</a> 
+                                <a href={result['@id']}>
+                                    {result['target.label'] + ' ('}
+                                    <em>{result['target.organism.scientific_name']}</em>
+                                    {')'}
+                                </a> 
                             </div>
                         </div>
                         <div className="data-row"> 
@@ -100,6 +104,10 @@ var Dbxref = dbxref.Dbxref;
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
+            var lifeStage = (result['life_stage'] && result['life_stage'] != 'unknown') ? ' ' + result['life_stage'] : '';
+            var age = (result['age'] && result['age'] != 'unknown') ? ' ' + result['age'] : '';
+            var ageUnits = (result['age_units'] && result['age_units'] != 'unknown' && age) ? ' ' + result['age_units'] : '';
+            var separator = (lifeStage || age) ? ',' : '';
             return (<li>
                         <div>
                             {this.renderActions()}
@@ -109,15 +117,34 @@ var Dbxref = dbxref.Dbxref;
                                 <p className="type meta-status">{' ' + result['status']}</p>
                             </div>
                             <div className="accession">
-                                <a href={result['@id']}>{result['biosample_term_name'] + ' (' + result['organism.name'] + ')'}</a> 
+                                <a href={result['@id']}>
+                                    {result['biosample_term_name'] + ' ('}
+                                    <em>{result['organism.scientific_name']}</em>
+                                    {separator + lifeStage + age + ageUnits + ')'}
+                                </a> 
                             </div>
                         </div>
                         <div className="data-row">
-                            <strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}<br />
-                            <strong>{columns['source.title']['title']}</strong>: {result['source.title']}
-                            {result['life_stage'] ? <br /> : null}
-                            {result['life_stage'] ? <strong>{columns['life_stage']['title'] + ': '}</strong> :null}
-                            {result['life_stage'] ? result['life_stage'] : null}
+                            <div><strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}</div>
+                            {result['rnais.target.label'] ?
+                                <div>
+                                    <strong>{columns['rnais.target.label']['title'] + ': '}</strong>
+                                    {result['rnais.target.label']}
+                                </div>
+                            : null}
+                            {result['constructs.target.label'] ?
+                                <div>
+                                    <strong>{columns['constructs.target.label']['title'] + ': '}</strong>
+                                    {result['constructs.target.label']}
+                                </div>
+                            : null}
+                            {result['treatments.treatment_term_name'] ?
+                                <div>
+                                    <strong>{columns['treatments.treatment_term_name']['title'] + ': '}</strong>
+                                    {result['treatments.treatment_term_name']}
+                                </div>
+                            : null}
+                            <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
                         </div>
                 </li>   
             );
@@ -125,11 +152,48 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Biosample, 'biosample');
 
+
+    // Returns array length if array 'a' with 1st index 'i' contains all same non-'unknown' value in its 2nd index
+    // 0 if 'a' contains an 'unknown' value, non-'unknown' values differ, or 'a' has no elements
+    function homogenousArray(a, i) {
+        var aLen = a[i] ? a[i].length : 0;
+        var j = 0;
+
+        if (aLen > 0) {
+            var a0 = a[i][0];
+            if (a0 !== 'unknown' && a0 !== '') {
+                for (j = 1; j < aLen; j++) {
+                    if (a[i][j] === 'unknown' || a[i][j] !== a0) {
+                        break;
+                    }
+                }
+            }
+            return j === aLen ? aLen : 0;
+        }
+        return 0;
+    }
+
     var Experiment = module.exports.Experiment = React.createClass({
         mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
+            var age = '';
+            var ageUnits = '';
+
+            // See if all life stage, age, and age_unit arrays are all homogeneous
+            var name = homogenousArray(result, 'replicates.library.biosample.organism.scientific_name') ?
+                    result['replicates.library.biosample.organism.scientific_name'][0] : '';
+            var lifeStage = homogenousArray(result, 'replicates.library.biosample.life_stage') ?
+                    result['replicates.library.biosample.life_stage'][0] : '';
+            var ageLen = homogenousArray(result, 'replicates.library.biosample.age');
+            var ageUnitsLen = homogenousArray(result, 'replicates.library.biosample.age_units');
+            if (ageLen === ageUnitsLen) {
+                age = ageLen ? ' ' + result['replicates.library.biosample.age'][0] : '';
+                ageUnits = ageUnitsLen ? ' ' + result['replicates.library.biosample.age_units'][0] : '';
+            }
+            var separator = (lifeStage || age) ? ', ' : '';
+
             return (<li>
                         <div>
                             {this.renderActions()}
@@ -139,15 +203,33 @@ var Dbxref = dbxref.Dbxref;
                                 <p className="type meta-status">{' ' + result['status']}</p>
                             </div>
                             <div className="accession">
-                                <a href={result['@id']}>{result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span></a> 
+                                <a href={result['@id']}>
+                                    {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
+                                    {name || lifeStage || age || ageUnits ?
+                                        <span>
+                                            {' ('}
+                                            {name ? <em>{name}</em> : ''}
+                                            {separator + lifeStage + age + ageUnits + ')'}
+                                        </span>
+                                    : ''}
+                                </a>
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['target.label'] ? <strong>{columns['target.label']['title'] + ': '}</strong>: null}
-                            {result['target.label'] ? result['target.label'] : null}
-                            {result['target.label'] ? <br /> : null}
-                            <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
-                            <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
+                            {result['target.label'] ?
+                                <div>
+                                    <strong>{columns['target.label']['title'] + ': '}</strong>
+                                    {result['target.label']}
+                                </div>
+                            : null}
+                            {result['replicates.library.biosample.treatments.treatment_term_name'] ?
+                                <div>
+                                    <strong>{columns['replicates.library.biosample.treatments.treatment_term_name']['title'] + ': '}</strong>
+                                    {result['replicates.library.biosample.treatments.treatment_term_name']}
+                                </div>
+                            : null}
+                            <div><strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}</div>
+                            <div><strong>{columns['award.project']['title']}</strong>: {result['award.project']}</div>
                         </div>
                 </li>
             );
@@ -194,7 +276,11 @@ var Dbxref = dbxref.Dbxref;
                                 <p className="type meta-title">Target</p>
                             </div>
                             <div className="accession">
-                                <a href={result['@id']}>{result['label'] + ' (' + result['organism.name'] + ')'}</a> 
+                                <a href={result['@id']}>
+                                    {result['label'] + ' ('}
+                                    <em>{result['organism.scientific_name']}</em>
+                                    {')'}
+                                </a> 
                             </div>
                         </div>
                         <div className="data-row">
@@ -262,6 +348,9 @@ var Dbxref = dbxref.Dbxref;
             var count = this.props.term['count'];
             var title = this.props.title || term;
             var field = this.props.facet['field'];
+            var em = field === 'target.organism.scientific_name' ||
+                     field === 'organism.scientific_name' ||
+                     field === 'replicates.library.biosample.donor.organism.scientific_name';
             var barStyle = {
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
             };
@@ -271,7 +360,9 @@ var Dbxref = dbxref.Dbxref;
                     <li id="selected" key={term}>
                         <a id="selected" href={link} onClick={this.props.onFilter}>
                             <span className="pull-right">{count}<i className="icon-remove-sign"></i></span>
-                            <span className="facet-item">{title}</span>
+                            <span className="facet-item">
+                                {em ? <em>{title}</em> : {title}}
+                            </span>
                         </a>
                     </li>
                 );
@@ -281,7 +372,9 @@ var Dbxref = dbxref.Dbxref;
                         <span className="bar" style={barStyle}></span>
                         <a href={this.props.searchBase + field + '=' + term} onClick={this.props.onFilter}>
                             <span className="pull-right">{count}</span>
-                            <span className="facet-item">{title}</span>
+                            <span className="facet-item">
+                                {em ? <em>{title}</em> : {title}}
+                            </span>
                         </a>
                     </li>
                 );
@@ -308,7 +401,7 @@ var Dbxref = dbxref.Dbxref;
         getInitialState: function () {
             return {
                 facetOpen: false
-            }
+            };
         },
 
         handleClick: function () {
@@ -319,15 +412,19 @@ var Dbxref = dbxref.Dbxref;
             var facet = this.props.facet;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
-                if (facet.field == 'type') {
-                    return types.hasOwnProperty(term.term);
-                }
-                for(var filter in filters) {
-                    if(filters[filter].term === term.term) {
-                        return true;
+                if (term.term) {
+                    if (facet.field == 'type') {
+                        return types.hasOwnProperty(term.term);
                     }
+                    for(var filter in filters) {
+                        if(filters[filter].term === term.term) {
+                            return true;
+                        }
+                    }
+                    return term.count > 0;
+                } else {
+                    return false;
                 }
-                return term.count > 0;
             });
             var moreTerms = terms.slice(5);
             var title = facet['title'];
