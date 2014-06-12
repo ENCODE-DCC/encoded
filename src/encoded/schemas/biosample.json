@@ -444,16 +444,16 @@
         }
     },
     "facets": {
-        "organism.name": {
-            "title": "Organism",
+        "biosample_type": {
+            "title": "Biosample type",
             "type": "string"
         },
         "status": {
             "title": "Biosample status",
             "type": "string"
         },
-        "biosample_type": {
-            "title": "Biosample type",
+        "organism.scientific_name": {
+            "title": "Organism",
             "type": "string"
         },
         "organ_slims": {
@@ -502,6 +502,14 @@
             "title": "Accession",
             "type": "string"
         },
+        "age": {
+            "title": "Age",
+            "type": "string"
+        },
+        "age_units": {
+            "title": "Age Units",
+            "type": "string"
+        },
         "biosample_term_name": {
             "title": "Term",
             "type": "string"
@@ -510,7 +518,7 @@
             "title": "Type",
             "type": "string"
         },
-        "organism.name": {
+        "organism.scientific_name": {
             "title": "Species",
             "type": "string"
         },
@@ -528,6 +536,18 @@
         },
         "status": {
             "title": "Status",
+            "type": "string"
+        },
+        "rnais.target.label": {
+            "title": "RNAi target",
+            "type": "string"
+        },
+        "treatments.treatment_term_name": {
+            "title": "Treatment",
+            "type": "string"
+        },
+        "constructs.target.label": {
+            "title": "Construct",
             "type": "string"
         },
         "treatments.length": {
