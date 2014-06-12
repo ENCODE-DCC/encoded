@@ -317,7 +317,6 @@
         "model_organism_sex": {
             "title": "Model organism sex",
             "type": "string",
-            "default": "unknown",
             "enum": [
                 "male",
                 "female",
