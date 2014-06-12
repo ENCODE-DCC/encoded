@@ -27,7 +27,7 @@ var Home = module.exports.Home = React.createClass({
                     <div className="row">
                         <div className="col-sm-12">
                             <div className="project-info site-title">
-                                <h1>ENCODE: The Encyclopedia of DNA Elements</h1>
+                                <h1>ENCODE/Roadmap Integration Server</h1>
                             </div>
                             <div id="info-box" className="project-info text-panel">
                                 <h4>Preview the new ENCODE Portal</h4>
