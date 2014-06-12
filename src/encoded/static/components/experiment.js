@@ -288,9 +288,6 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
                 {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
 				{library && library.nucleic_acid_term_name ? <dd>{library.nucleic_acid_term_name}</dd> : null}
     
-                {library && library.nucleic_acid_starting_quantity ? <dt>NA starting quantity</dt> : null}
-				{library && library.nucleic_acid_starting_quantity ? <dd>{library.nucleic_acid_starting_quantity}</dd> : null}
-				
                 {depletedIn ? <dt>Depleted in</dt> : null}
 				{depletedIn ? <dd>{depletedIn}</dd> : null}
 
@@ -339,6 +336,11 @@ var Replicate = module.exports.Replicate = function (props) {
                 {library ? <dt>Library</dt> : null}
                 {library ? <dd>{library.accession}</dd> : null}
 
+                {library && library.nucleic_acid_starting_quantity ? <dt>Library starting quantity</dt> : null}
+                {library && library.nucleic_acid_starting_quantity ?
+                    <dd>{library.nucleic_acid_starting_quantity}<span className="unit">{library.nucleic_acid_starting_quantity_units}</span></dd>
+                : null}
+                
                 {biosample ? <dt>Biosample</dt> : null}
                 {biosample ? <dd>
                     <a href={biosample['@id']}>
