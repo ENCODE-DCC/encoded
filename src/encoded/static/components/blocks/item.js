@@ -29,7 +29,7 @@ var FetchedItemBlockView = React.createClass({
 
     render: function() {
         var url = this.props.value.item;
-        if (url.indexOf('/') !== 0) {
+        if (url && url.indexOf('/') !== 0) {
             url = '/' + url;
         }
         return <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />;
@@ -61,7 +61,7 @@ var ObjectPicker = React.createClass({
 
     render: function() {
         var url = this.props.value;
-        if (url.indexOf('/') !== 0) {
+        if (url && url.indexOf('/') !== 0) {
             url = '/' + url;
         }
         var searchUrl = '/search' + this.state.search;
