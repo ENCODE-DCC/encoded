@@ -255,67 +255,6 @@ var Experiment = module.exports.Experiment = React.createClass({
 
 globals.content_views.register(Experiment, 'experiment');
 
-<<<<<<< HEAD
-var BiosamplesUsed = module.exports.BiosamplesUsed = function (props) {
-    var replicates = props.replicates;
-    if (!replicates.length) return (<div hidden={true}></div>);
-    var biosamples = {};
-    replicates.forEach(function(replicate) {
-        var biosample = replicate.library && replicate.library.biosample;
-        if (biosample) {
-            biosamples[biosample['@id']] = { biosample: biosample, brn: replicate.biological_replicate_number };
-        }
-    });
-
-    // If no libraries in the replicates, then no biosamples; just output nothing.
-    if (!Object.keys(biosamples).length) {
-        return (<div hidden={true}></div>);
-    }
-
-    return (
-        <div>
-            <h3>Biosamples used</h3>
-            <div className="table-responsive">
-                <table className="table table-panel table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <th>Accession</th>
-                            <th>Biosample</th>
-                            <th>Type</th>
-                            <th>Species</th>
-                            <th>Source</th>
-                            <th>Submitter</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    { Object.keys(biosamples).map(function (key, index) {
-                        var biosample = biosamples[key].biosample;
-                        return (
-                            <tr key={index}>
-                                <td><a href={biosample['@id']}>{biosample.accession}</a></td>
-                                <td>{biosample.biosample_term_name}</td>
-                                <td>{biosample.biosample_type}</td>
-                                <td>{biosample.donor && biosample.donor.organism.name}</td>
-                                <td>{biosample.source.title}</td>
-                                <td>{biosample.submitted_by.title}</td>
-                            </tr>
-                        );
-                    })}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colSpan="7"></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-    );
-};
-
-=======
->>>>>>> origin/master
 
 var AssayDetails = module.exports.AssayDetails = function (props) {
     var replicates = props.replicates.sort(function(a, b) {
@@ -354,14 +293,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
             <dl className="panel key-value">
                 {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
 				{library && library.nucleic_acid_term_name ? <dd>{library.nucleic_acid_term_name}</dd> : null}
-<<<<<<< HEAD
 
-                {library && library.nucleic_acid_starting_quantity ? <dt>NA starting quantity</dt> : null}
-				{library && library.nucleic_acid_starting_quantity ? <dd>{library.nucleic_acid_starting_quantity}</dd> : null}
-
-=======
-    
->>>>>>> origin/master
                 {depletedIn ? <dt>Depleted in</dt> : null}
 				{depletedIn ? <dd>{depletedIn}</dd> : null}
 
