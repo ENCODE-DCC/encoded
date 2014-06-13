@@ -16,15 +16,7 @@ var portal = {
         {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
         {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
         {id: 'targets', title: 'Targets', url: '/search/?type=target'}
-    ],
-    // Should readlly be singular...
-    types: {
-        antibody_approval: {title: 'Antibodies'},
-        biosample: {title: 'Biosamples'},
-        experiment: {title: 'Experiments'},
-        target: {title: 'Targets'},
-        dataset: {title: 'Datasets'}
-    }
+    ]
 };
 
 
@@ -64,11 +56,25 @@ var App = React.createClass({
             name = hash.slice(2);
         }
         if (context) {
+            var actions = this.props.context.actions;
+            if (actions && actions.length) {
+                var actions = (
+                    <div className="navbar navbar-default">
+                        <div className="container">
+                            {actions.map(action => <a href={action.href}><button className={action.className}>{action.title}</button></a>)}
+                        </div>
+                    </div>
+                );
+            } else {
+                var actions = '';
+            }
+
             var ContentView = globals.content_views.lookup(context, name);
             content = this.transferPropsTo(ContentView({
                 loadingComplete: this.state.loadingComplete,
                 session: this.state.session,
                 portal: this.state.portal,
+                actions: actions,
                 navigate: this.navigate
             }));
         }

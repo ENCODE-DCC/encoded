@@ -23,5 +23,10 @@ body { background: $mainThemeColor; }
 
 hr { clear: both; }
 
+figure {
+	img { max-width: 100%; height: auto; }
+	margin-bottom: 1em;
+}
+
 .sentence-case::first-letter { text-transform: uppercase; }
 .sentence-case:first-letter { text-transform: uppercase; } // older browser support

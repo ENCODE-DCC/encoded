@@ -160,6 +160,13 @@
     display: inline;    
 }
 
+.data-row img {
+    max-width: 128px;
+    height: auto;
+    margin: auto;
+    display: block;
+}
+
 .result-table {
     list-style-type: none;
     margin: 0;

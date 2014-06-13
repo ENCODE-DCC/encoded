@@ -46,6 +46,11 @@ var Registry = class_({
         return this.fallback(obj, name);
     },
 
+    getAll: function (name) {
+        var views = this.views[name || ''];
+        return views || {};
+    },
+
     fallback: function (obj, name) {
         return;
     }

@@ -1,0 +1,83 @@
+.layout.editable {
+	.row {
+		position: relative;
+		@include clearfix;
+
+		&.drop-top:before {
+			content: " ";
+			display: block;
+			width: 100%;
+			border-top: solid 3px $brand-primary;
+			margin-top: -3px;
+		}
+		&.drop-bottom:after {
+			content: " ";
+			display: block;
+			width: 100%;
+			border-bottom: solid 3px $brand-primary;
+			margin-bottom: -3px;
+		}
+	}
+
+	.block {
+		position: relative;
+		min-height: 20px;
+
+		&.dragging {
+			opacity: .5;
+		}
+
+		&.drop-left:after {
+			content: " ";
+			display: block;
+			position: absolute;
+			top: 0;
+			left: 0;
+			height: 100%;
+			border-left: solid 3px $brand-primary;
+		}
+		&.drop-right:after {
+			content: " ";
+			display: block;
+			position: absolute;
+			top: 0;
+			right: 0;
+			height: 100%;
+			border-right: solid 3px $brand-primary;
+		}
+
+		&:hover {
+			outline: dashed 1px $brand-primary;
+			cursor: move;
+			.block-toolbar {
+				display: block;
+			}
+		}
+
+		.block-toolbar {
+			position: absolute;
+			z-index: 1;
+			top: 3px;
+			right: 3px;
+			text-align: right;
+			display: none;
+			a {
+				text-decoration: none;
+				cursor: pointer;
+			}
+		}
+
+	}
+
+}
+
+.layout-toolbar {
+	.btn {
+		cursor: move;
+	}
+}
+
+
+.modal-dialog {
+	width: $modal-lg;
+}

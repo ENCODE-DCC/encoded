@@ -1011,6 +1011,25 @@
         "uuid": "94c85be4-e034-4647-b6b3-15055701a656"
     },
     {
+        "email": "uskuf.shyec@doton.danona",
+        "fax": "000-000-0000",
+        "first_name": "Nuech",
+        "google": "google",
+        "job_title": "PI",
+        "lab": "Robert Waterston, UW",
+        "last_name": "Shueng",
+        "phone1": "000-000-0000",
+        "phone2": "000-000-0000",
+        "skype": "skype",
+        "submits_for": [
+            "Robert Waterston, UW"
+        ],
+        "timezone": "US/Pacific",
+        "uuid": "7e763d5a-634b-4181-a812-4361183359e9"
+    },
+    {
+        "timezone": "US/Central",
+        "uuid": "e7bb4fa6-ef92-41b7-871a-5f64db3848fe",
         "email": "david@glicksoftware.com",
         "first_name": "David",
         "groups": [

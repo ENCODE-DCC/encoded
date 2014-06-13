@@ -27,6 +27,103 @@
             "title": "Ethnicity",
             "type": "string"
         },
+        "age": {
+            "title": "Donor age",
+            "description": " The age or age range of the model donor organism when biological material was sampled.",
+            "type": "string",
+            "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
+        },
+        "age_units": {
+            "title": "Donor age units",
+            "type": "string",
+            "enum": [
+                "day",
+                "week",
+                "month",
+                "year"
+            ]
+        },
+        "health_status": {
+            "title": "Donor health status",
+            "type": "string"
+        },
+        "life_stage": {
+            "title": "Life stage",
+            "type": "string",
+            "enum": [
+                "fetal",
+                "newborn",
+                "child",
+                "adult",
+                "unknown",
+                "embryonic",
+                "postnatal"
+            ]
+        },
+        "sex": {
+            "title": "Sex",
+            "type": "string",
+            "default": "unknown",
+            "enum": [
+                "male",
+                "female",
+                "unknown",
+                "mixed"
+            ]
+        },
+        "parents": {
+            "title": "Parents",
+            "description": "Donor IDs of biological parents, if known.",
+            "type":  "array",
+            "default": [],
+            "items": {
+                "title": "Parent",
+                "description": "A donor ID of a biological parent, if known.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "type": "string",
+                "linkTo": "donor"
+            }
+        },
+        "children": {
+            "title": "Children",
+            "description": "Donors that genetic material was supplied to.",
+            "type":  "array",
+            "default": [],
+            "XXXnote": "Can be removed since we have parents.",
+            "items": {
+                "title": "Child",
+                "description": "A donor that genetic material was supplied to.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "type": "string",
+                "linkTo": "donor"
+            }
+        },
+        "siblings": {
+            "title": "Siblings",
+            "description": "Donors that have at least one parent in common.",
+            "type":  "array",
+            "default": [],
+            "items": {
+                "title": "Sibling",
+                "description": "A donors that has at least one parent in common.",
+                "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+                "type": "string",
+                "linkTo": "donor"
+            }
+        },
+        "fraternal_twin": {
+            "title": "Fraternal twin",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "donor"
+        },
+        "identical_twin": {
+            "title": "Identical twin",
+            "description": "A donor that have identical genetic material.",
+            "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
+            "type": "string",
+            "linkTo": "donor"
+        },
         "organism": {
             "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
             "linkEnum": ["7745b647-ff15-4ff3-9ced-b897d4e2983c"]

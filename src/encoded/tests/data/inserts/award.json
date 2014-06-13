@@ -322,5 +322,31 @@
         "title": "A COMPREHENSIVE CATALOG OF DNASEL HYPERSENSITIVE SITES",
         "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8402670",
         "uuid": "ea1f650d-43d3-41f0-a96a-f8a2463d332f"
+    },
+    {
+        "description": "A fundamental challenge in decoding the information stored in a genome is to describe the transcripts read from it and their structure. The nematode C. elegans offers an extraordinary opportunity among eukaryotes to accomplish this goal now. The small, compact genome is completely sequenced. The simple anatomy, fixed cell lineage and transparent body through the full life span make each and every cell available for observation and analysis at any time. Already more than 1,300 noncoding RNAs and 17,000 of the estimated 21,000 protein coding genes, along with 2,500 alternative splice forms, have been fully or at least partially defined experimentally. The present proposal seeks to complete the definition of the transcribed genome of C. elegans. We will do this by assembly of all the available experimental data with a variety of gene models to define accurately the extent of the known transcribed genome. From this base, we will extend our knowledge of the transcribed genome through systematic application of genome tiling arrays across various stages and cells of the life cycle, including targeted analysis of microRNAs. In turn we will integrate this new data along with any other new data from the community with the gene models and any new models that develop. We will attempt directed confirmation of unconfirmed gene models through RT-PCR and custom arrays, starting with the initial set of gene models and adding new data as it becomes available. We will also use mass spectrometry to distinguish protein coding transcripts from noncoding transcripts for small potential open reading frames. The result will be a set of transcripts that will approach completion for protein coding genes and their UTRs and alternative splice forms as well as non-coding RNAs. The experience gained with this modest genome should be of value in interpreting more complex genomes, such as human.",
+        "end_date": "2014-03-31",
+        "name": "U01HG004263",
+        "pi": "uskuf.shyec@doton.danona",
+        "project": "modENCODE",
+        "rfa": "modENCODE",
+        "start_date": "2007-05-04",
+        "status": "disabled",
+        "title": "GLOBAL IDENTIFICATION OF TRANSCRIBED ELEMENTS IN THE C. ELEGANS GENOME",
+        "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=7799374&icde=15628221",
+        "uuid": "bf389f17-3f13-4088-b7fc-cb588e255e9d"
+    },
+    {
+        "description": "Our project seeks to identify the regulatory elements recognized by the vast majority of transcription factors (TFs) in the fruit fly Drosophila melanogaster and the nematode Caenorhabditis elegans. In the initial modENCODE project, an experimental pipeline was developed and applied to -100 TFs in each organism. In this intervening year, we expect to capture data for another 75-100 factors. The present project builds on the advances made by the groups in the initial phase and also combines the production pipelines to increase efficiency and to realize economies of scale. With these improvements, we will generate data sets for another 400 factors from each organism, which when combined with previous work will represent the bulk of all transcription factors in these key model organisms. For both organisms, the overall strategy tags transcription factor genes by fusion with an enhanced Green Fluorescent Protein (eGFP) sequence through recombineering of large insert clones, and introducing the tagged genes into the genome by transgenesis. ChlP-seq using a high quality anti-GFP antibody is performed on the developmental stage(s) with maximal GFP expression, as guided by available RNA-seq expression data. The aligned sequence reads are analyzed to identify candidate binding sites and likely target genes. We will prioritize TFs with human homologs to maximize the broader utility of the data. We will also perform RNAi of 125 TFs in each organism, followed by RNA-seq, to validate called peaks and their assigned target genes. Finally, we will integrate the information for the different data setsto construct regulatory networks implied by the TF binding site data. We will coordinate with ENCODE projects on human TFs, and our data will provide key in vivo and developmental regulatory information that will be essential to delineate both fundamentally conserved as well as human-specific properties of TFs. RELEVANCE (See instructions): Insights from the study of the model organisms Drosophila and C. elegans provide the basis for broad understanding of fundamental processes of animal biology. Because many of their genes have clear relatives in humans, these studies have also led directly to improved understanding of human diseases and in some cases to therapies. Similarly, creating a comprehensive understanding of transcription factor binding sites and building regulatory networks in these key model organisms will create the foundation for understanding human regulatory networks both in health and disease.",
+        "end_date": "2017-07-31",
+        "name": "U41HG007355",
+        "pi": "uskuf.shyec@doton.danona",
+        "project": "modENCODE",
+        "rfa": "FlyWormChIP",
+        "start_date": "2013-09-20",
+        "status": "current",
+        "title": "CREATING COMPREHENSIVE MAPS OF WORM AND FLY TRANSCRIPTION FACTOR BINDING SITES",
+        "url": "http://projectreporter.nih.gov/project_info_details.cfm?aid=8566279&icde=19088980",
+        "uuid": "b0b9c607-f8b4-4f02-93f4-9895b461334b"
     }
 ]

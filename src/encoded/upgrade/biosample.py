@@ -98,3 +98,25 @@ def biosample_5_6(value, system):
     # http://redmine.encodedcc.org/issues/1393
     if value.get('biosample_type') == 'primary cell line':
         value['biosample_type'] = 'primary cell'
+
+
+@upgrade_step('biosample', '6', '7')
+def biosample_6_7(value, system):
+    # http://encode.stanford.edu/issues/1131
+
+    update_properties = {
+        "sex": "model_organism_sex",
+        "age": "model_organism_age",
+        "age_units": "model_organism_age_units",
+        "health_status": "model_organism_health_status",
+        "life_stage": "mouse_life_stage"
+    }
+
+    for key, val in update_properties.items():
+        if key in value:
+            if value["organism"] != "7745b647-ff15-4ff3-9ced-b897d4e2983c":
+                if key == "life_stage" and value[key] == "newborn":
+                    value[val] = "postnatal"
+                else:
+                    value[val] = value[key]
+            del value[key]

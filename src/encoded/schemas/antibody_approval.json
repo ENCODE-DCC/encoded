@@ -65,8 +65,8 @@
             "title": "Approval status",
             "type": "string"
         },
-        "target.organism.name": {
-            "title": "Target organism",
+        "target.organism.scientific_name": {
+            "title": "Target Organism",
             "type": "string"
         },
         "antibody.source.title": {
@@ -95,7 +95,7 @@
             "title": "Target",
             "type": "string"
         },
-        "target.organism.name": {
+        "target.organism.scientific_name": {
             "title": "Species",
             "type": "string"
         },

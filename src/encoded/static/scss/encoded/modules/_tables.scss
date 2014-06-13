@@ -32,14 +32,14 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 }
 
 .sortdirection {
-	float: right;
+    float: right;
     margin-top: 2px;
 }
 
 .table-panel {
     border-collapse: separate;
-	background-color: #fff;
-	border: 1px solid #ced5dc;
+    background-color: #fff;
+    border: 1px solid #ced5dc;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
 
@@ -81,41 +81,55 @@ thead:last-child tr:last-child th:first-child, tbody:last-child tr:last-child td
 
 
 /* Table Controls */
+.table-responsive {
+    position: relative;
+    overflow-x: auto;
+}
+
 table thead tr th button {
-	float: left;
+    float: left;
 }
 
 form.table-filter {
-	float: right;
-	margin: 0;
-	position: relative;
+    position: absolute;
+    right: 10px;
+    margin: 0;
 }
 
 #table-filter {
     display: inline-block;
-    width: 300px;
+    width: 265px;
+    font-size: 16px;
 }
 
 .table-count {
-    font-size: 1em;
-    display: inline-block;
-	padding: 0.5em 2em;
-	margin-right: 1em;
+    font-size: 1em !important;
+    display: inline-block !important;
+    padding: 0.5em 2em !important;
+    margin-right: 1em;
 }
 
 .spinner-warning {
-	background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
-	background-position: 7px 9px;
+    background: #F89406 url("../img/spinner-orange-bg.gif") no-repeat;
+    background-position: 7px 9px;
 }
 
 .table-meta-data {
     height: $input-height-base;
-    display: inline-block;
+    display: block;
+    float: left;
+}
+
+.table-actions {
+    margin-left: 1em;
+    button {
+        float: none;
+    }
 }
 
 /* initial state is hidden (see template; class=hide) */
 #total-records {
-	font-weight: normal;
+    font-weight: normal;
 }
 
 // Allow line breaks in table cells (esp Targets)
@@ -124,5 +138,5 @@ form.table-filter {
 }
 
 .col-headers th:hover {
-	cursor: pointer;
+    cursor: pointer;
 }

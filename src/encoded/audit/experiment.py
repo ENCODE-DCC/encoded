@@ -133,6 +133,7 @@ def audit_experiment_biosample_term(value, system):
         if 'biosample' not in lib:
             detail = '{} missing biosample, expected {}'.format(lib['accession'], term_name)
             yield AuditFailure('missing biosample', detail, level='ERROR')
+            continue
 
         biosample = lib['biosample']
         if 'biosample_term_id' not in biosample or 'biosample_term_name' not in biosample or 'biosample_type' not in biosample:
@@ -195,7 +196,7 @@ def audit_experiment_paired_end(value,system):
             detail = '{} missing paired end information'.format(lib['accession'])
             yield AuditFailure('missing library paired end', detail, level='ERROR')
 
-        if 'paired_ended' not in rep and 'paired_ended' not in lib:
+        if 'paired_ended' not in rep or 'paired_ended' not in lib:
             continue
 
         if (rep['paired_ended'] == False or lib['paired_ended'] == False) and term_name in paired_end_assays:
