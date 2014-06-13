@@ -27,6 +27,7 @@ requires = [
     'zope.sqlalchemy',
     'PyBrowserID',
     'elasticsearch',
+    'rdflib',
 ]
 
 tests_require = [
