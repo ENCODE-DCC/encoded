@@ -1,6 +1,5 @@
 import base64
 import json
-import urllib2
 try:
     import subprocess32 as subprocess  # Closes pipes on failure
 except ImportError:
@@ -105,11 +104,11 @@ def load_workbook(app, workbook_filename, docsdir, test=False):
 
 def load_ontology(config):
     settings = config.registry.settings
-    ontology_url = settings.get('ontology_url')
-    if ontology_url is None:
+    path = settings.get('ontology_path')
+    if path is None:
         config.registry['ontology'] = {}
         return
-    config.registry['ontology'] = json.load(urllib2.urlopen(ontology_url))
+    config.registry['ontology'] = json.load(open(path))
 
 
 def session(config):
