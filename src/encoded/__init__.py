@@ -109,7 +109,7 @@ def load_ontology(config):
     if ontology_url is None:
         config.registry['ontology'] = {}
         return
-    config.registry['ontology'] = json.load(urllib2.urlopen(ontology_url).read())
+    config.registry['ontology'] = json.load(urllib2.urlopen(ontology_url))
 
 
 def session(config):
