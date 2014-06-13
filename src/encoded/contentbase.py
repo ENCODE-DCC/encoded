@@ -1027,6 +1027,10 @@ class Collection(Mapping):
     def expand_embedded(self, request, properties):
         pass
 
+    @classmethod
+    def expand_page(cls, request, properties):
+        return properties
+
     def add_actions(self, request, properties):
         pass
 
