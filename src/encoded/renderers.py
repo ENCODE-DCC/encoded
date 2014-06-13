@@ -278,11 +278,12 @@ def es_tween_factory(handler, registry):
             raise HTTPForbidden()
 
         if frame == 'page':
-            rendering_val = source['embedded']
+            properties = source['embedded']
+            root = registry.getUtility(IRootFactory)(request)
+            collection = root.get(properties['@type'][0])
+            rendering_val = collection.Item.expand_page(request, properties)
             allowed = set(source['principals_allowed_edit'])
             if allowed.intersection(request.effective_principals):
-                root = registry.getUtility(IRootFactory)(request)
-                collection = root.get(rendering_val['@type'][0])
                 rendering_val['actions'] = collection.Item.actions
         else:
             rendering_val = source[frame]

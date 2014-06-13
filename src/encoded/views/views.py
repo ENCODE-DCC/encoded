@@ -13,7 +13,10 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
-from pyramid.traversal import find_root
+from pyramid.traversal import (
+    find_resource,
+    find_root,
+)
 import copy
 
 ACCESSION_KEYS = [
@@ -740,6 +743,8 @@ class Dataset(Collection):
                 {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
                 {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
             ],
+            'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
+            'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
         template_type = {
             'files': 'file',
@@ -763,6 +768,27 @@ class Dataset(Collection):
         rev = {
             'original_files': ('file', 'dataset'),
         }
+
+        def template_namespace(self, properties, request=None):
+            ns = super(Dataset.Item, self).template_namespace(properties, request)
+            if request is None:
+                return ns
+            for link in ns['original_files'] + ns['related_files']:
+                f = find_resource(request.root, link)
+                if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and f.properties['status'] == 'released':
+                    if 'assembly' in f.properties:
+                        ns['assembly'] = f.properties['assembly']
+                        break
+            return ns
+
+        @classmethod
+        def expand_page(cls, request, properties):
+            properties = super(Dataset.Item, cls).expand_page(request, properties)
+            if 'hub' in properties:
+                properties = properties.copy()
+                properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&db=' + properties['assembly'] + \
+                    '&hubUrl=http://' + request.host + properties['hub']
+            return properties
 
 
 @location('experiments')

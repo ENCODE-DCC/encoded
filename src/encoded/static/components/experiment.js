@@ -236,6 +236,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                     );
                 })}
 
+                {context.visualize_ucsc  && context.status == "released" ?
+                    <span className="pull-right">
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-small" href={context['visualize_ucsc']}>Visualize Data</a>
+                    </span>
+                : null }
+
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
@@ -257,19 +263,19 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         }
         return a.biological_replicate_number - b.biological_replicate_number;
     });
-    
+
     if (!replicates.length) return (<div hidden={true}></div>);
-    
+
     var replicate = replicates[0];
     var library = replicate.library;
     var platform = replicate.platform;
     var depletedIn;
     var treatments;
-    
+
     if (library && library.depleted_in_term_name && library.depleted_in_term_name.length) {
         depletedIn = library.depleted_in_term_name.join(", ");
     }
-    
+
     if (library && library.treatments && library.treatments.length) {
         var i = library.treatments.length;
         var t;
@@ -280,35 +286,35 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         }
         treatments = treatmentList.join(", ");
     }
-    
+
     return (
         <div>
             <h3>Assay details</h3>
             <dl className="panel key-value">
                 {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
 				{library && library.nucleic_acid_term_name ? <dd>{library.nucleic_acid_term_name}</dd> : null}
-    
+
                 {depletedIn ? <dt>Depleted in</dt> : null}
 				{depletedIn ? <dd>{depletedIn}</dd> : null}
 
                 {library && library.lysis_method ? <dt>Lysis method</dt> : null}
 				{library && library.lysis_method ? <dd>{library.lysis_method}</dd> : null}
-    
+
                 {library && library.extraction_method ? <dt>Extraction method</dt> : null}
 				{library && library.extraction_method ? <dd>{library.extraction_method}</dd> : null}
-                
+
                 {library && library.fragmentation_method ? <dt>Fragmentation method</dt> : null}
 				{library && library.fragmentation_method ? <dd>{library.fragmentation_method}</dd> : null}
-                
+
                 {library && library.size_range ? <dt>Size range</dt> : null}
 				{library && library.size_range ? <dd>{library.size_range}</dd> : null}
-                
+
                 {library && library.library_size_selection_method ? <dt>Size selection method</dt> : null}
 				{library && library.library_size_selection_method ? <dd>{library.library_size_selection_method}</dd> : null}
-                
+
                 {treatments ? <dt>Treatments</dt> : null}
 				{treatments ? <dd>{treatments}</dd> : null}
-                
+
                 {platform ? <dt>Platform</dt> : null}
 				{platform ? <dd><a href={platform['@id']}>{platform.title}</a></dd> : null}
             </dl>
