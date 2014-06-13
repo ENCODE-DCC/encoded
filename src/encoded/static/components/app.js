@@ -16,15 +16,7 @@ var portal = {
         {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
         {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
         {id: 'targets', title: 'Targets', url: '/search/?type=target'}
-    ],
-    // Should readlly be singular...
-    types: {
-        antibody_approval: {title: 'Antibodies'},
-        biosample: {title: 'Biosamples'},
-        experiment: {title: 'Experiments'},
-        target: {title: 'Targets'},
-        dataset: {title: 'Datasets'}
-    }
+    ]
 };
 
 

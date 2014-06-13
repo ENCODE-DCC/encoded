@@ -23,8 +23,6 @@ require('./search');
 require('./target');
 require('./testing');
 require('./edit');
-require('./blocks/fallback.js');
-require('./blocks/richtext.js');
-require('./blocks/item.js');
+require('./blocks');
 
 module.exports = require('./app');

@@ -1,14 +1,26 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var cloneWithProps = require('react/lib/cloneWithProps');
 var url = require('url');
 var globals = require('./globals');
+var image = require('./image');
 var search = module.exports;
 var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
-    var Listing = function (props) {
+    // Should readlly be singular...
+    var types = {
+        antibody_approval: {title: 'Antibodies'},
+        biosample: {title: 'Biosamples'},
+        experiment: {title: 'Experiments'},
+        target: {title: 'Targets'},
+        dataset: {title: 'Datasets'},
+        image: {title: 'Images'}
+    }
+
+    var Listing = module.exports.Listing = function (props) {
         // XXX not all panels have the same markup
         var context;
         if (props['@id']) {
@@ -18,13 +30,30 @@ var Dbxref = dbxref.Dbxref;
         return globals.listing_views.lookup(props.context)(props);
     };
 
+    var PickerActionsMixin = {
+        contextTypes: {actions: React.PropTypes.array},
+        renderActions: function() {
+            if (this.context.actions && this.context.actions.length) {
+                return (
+                    <div className="pull-right">
+                        {this.context.actions.map(action => cloneWithProps(action, {id: this.props.context['@id']}))}
+                    </div>
+                );
+            } else {
+                return <span/>
+            }
+        }
+    };
+
     var Item = module.exports.Item = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var title = globals.listing_titles.lookup(result)({context: result});
             var item_type = result['@type'][0];
             return (<li>
                         <div>
+                            {this.renderActions()}
                             {result.accession ? <span className="pull-right type sentence-case">{item_type}: {' ' + result['accession']}</span> : null}
                             <div className="accession">
                                 <a href={result['@id']}>{title}</a>
@@ -40,11 +69,13 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Item, 'item');
 
     var Antibody = module.exports.Antibody = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Antibody</p>
                                 <p className="type">{' ' + result['antibody.accession']}</p>
@@ -69,6 +100,7 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Antibody, 'antibody_approval');
 
     var Biosample = module.exports.Biosample = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -78,6 +110,7 @@ var Dbxref = dbxref.Dbxref;
             var separator = (lifeStage || age) ? ',' : '';
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Biosample</p>
                                 <p className="type">{' ' + result['accession']}</p>
@@ -141,6 +174,7 @@ var Dbxref = dbxref.Dbxref;
     }
 
     var Experiment = module.exports.Experiment = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
@@ -162,6 +196,7 @@ var Dbxref = dbxref.Dbxref;
 
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Experiment</p>
                                 <p className="type">{' ' + result['accession']}</p>
@@ -203,11 +238,13 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Experiment, 'experiment');
 
     var Dataset = module.exports.Dataset = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Dataset</p>
                                 <p className="type">{' ' + result['accession']}</p>
@@ -228,11 +265,13 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Dataset, 'dataset');
 
     var Target = module.exports.Target = React.createClass({
+        mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
             return (<li>
                         <div>
+                            {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Target</p>
                             </div>
@@ -256,11 +295,37 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Target, 'target');
 
+
+    var Image = module.exports.Image = React.createClass({
+        mixins: [PickerActionsMixin],
+        render: function() {
+            var result = this.props.context;
+            var Attachment = image.Attachment;
+            return (<li>
+                        <div>
+                            {this.renderActions()}
+                            <div className="pull-right search-meta">
+                                <p className="type meta-title">Image</p>
+                            </div>
+                            <div className="accession">
+                                <a href={result['@id']}>{result.caption}</a>
+                            </div>
+                        </div>
+                        <div className="data-row">
+                            <Attachment context={result} />
+                        </div>
+                </li>
+            );
+        }
+    });
+    globals.listing_views.register(Image, 'image');
+
+
     // If the given term is selected, return the href for the term
     function termSelected(term, field, filters) {
         for (var filter in filters) {
             if (filters[filter]['field'] == field && filters[filter]['term'] == term) {
-                return filters[filter]['remove'];
+                return url.parse(filters[filter]['remove']).search;
             }
         }
         return null;
@@ -282,7 +347,6 @@ var Dbxref = dbxref.Dbxref;
             var term = this.props.term['term'];
             var count = this.props.term['count'];
             var title = this.props.title || term;
-            var search_base = this.props.search_base;
             var field = this.props.facet['field'];
             var em = field === 'target.organism.scientific_name' ||
                      field === 'organism.scientific_name' ||
@@ -294,7 +358,7 @@ var Dbxref = dbxref.Dbxref;
             if(link) {
                 return (
                     <li id="selected" key={term}>
-                        <a id="selected" href={link}>
+                        <a id="selected" href={link} onClick={this.props.onFilter}>
                             <span className="pull-right">{count}<i className="icon-remove-sign"></i></span>
                             <span className="facet-item">
                                 {em ? <em>{title}</em> : {title}}
@@ -306,7 +370,7 @@ var Dbxref = dbxref.Dbxref;
                 return (
                     <li key={term}>
                         <span className="bar" style={barStyle}></span>
-                        <a href={search_base+field+'='+term}>
+                        <a href={this.props.searchBase + field + '=' + term} onClick={this.props.onFilter}>
                             <span className="pull-right">{count}</span>
                             <span className="facet-item">
                                 {em ? <em>{title}</em> : {title}}
@@ -322,7 +386,11 @@ var Dbxref = dbxref.Dbxref;
         render: function () {
             var term = this.props.term['term'];
             var filters = this.props.filters;
-            var title = this.props.portal.types[term];
+            try {
+                var title = types[term];
+            } catch (e) {
+                var title = term;
+            }
             var total = this.props.total;
             return this.transferPropsTo(<Term title={title} filters={filters} total={total} />);
         }
@@ -345,6 +413,9 @@ var Dbxref = dbxref.Dbxref;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
                 if (term.term) {
+                    if (facet.field == 'type') {
+                        return types.hasOwnProperty(term.term);
+                    }
                     for(var filter in filters) {
                         if(filters[filter].term === term.term) {
                             return true;
@@ -393,17 +464,68 @@ var Dbxref = dbxref.Dbxref;
         }
     });
 
+    var TextFilter = React.createClass({
+
+        getValue: function(props) {
+            var filter = this.props.filters.filter(function(f) {
+                return f.field == 'searchTerm';
+            });
+            return filter.length ? filter[0].term : '';
+        },
+
+        shouldUpdateComponent: function(nextProps) {
+            return (this.getValue(this.props) != this.getValue(nextProps));
+        },
+
+        render: function() {
+            return (
+                <div className="facet">
+                    <input ref="input" type="search" className="form-control search-query"
+                           placeholder="Enter search term(s)"
+                           defaultValue={this.getValue(this.props)} onChange={this.onChange} onBlur={this.onBlur} />
+                </div>
+            );
+        },
+
+        onChange: function(e) {
+            e.stopPropagation();
+            return false;
+        },
+
+        onBlur: function(e) {
+            var search = this.props.searchBase.replace(/&?searchTerm=[^&]*/, '');
+            var value = e.target.value;
+            if (value) {
+                search += 'searchTerm=' + e.target.value;
+            } else {
+                search = search.substring(0, search.length - 1);
+            }
+            this.props.onChange(search);
+        }
+    });
+
     var FacetList = search.FacetList = React.createClass({
         render: function() {
+            var term = this.props.term;
             var facets = this.props.facets;
             var filters = this.props.filters;
             if (!facets.length) return <div />;
-            var search_base = url.parse(this.props.href).search || '';
-            search_base += search_base ? '&' : '?';
+            if (this.props.mode == 'picker') {
+                var hideTypes = false;
+            } else {
+                var hideTypes = filters.filter(function(filter) {
+                    return filter.field == 'type';
+                }).length;
+            }
             return (
                 <div className="box facets">
+                    {this.props.mode === 'picker' ? this.transferPropsTo(<TextFilter filters={filters} />) : ''}
                     {facets.map(function (facet) {
-                        return this.transferPropsTo(<Facet facet={facet} filters={filters} search_base={search_base} />);
+                        if (hideTypes && facet.field == 'type') {
+                            return <span />;
+                        } else {
+                            return this.transferPropsTo(<Facet facet={facet} filters={filters} />);
+                        }
                     }.bind(this))}
                 </div>
             );
@@ -411,6 +533,18 @@ var Dbxref = dbxref.Dbxref;
     });
 
     var ResultTable = search.ResultTable = React.createClass({
+
+        getDefaultProps: function() {
+            return {searchBase: ''};
+        },
+
+        childContextTypes: {actions: React.PropTypes.array},
+        getChildContext: function() {
+            return {
+                actions: this.props.actions
+            };
+        },
+
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
@@ -418,7 +552,8 @@ var Dbxref = dbxref.Dbxref;
             var total = context['total'];
             var columns = context['columns'];
             var filters = context['filters'];
-            var search_id = context['@id'];
+            var searchBase = this.props.searchBase;
+            searchBase += searchBase ? '&' : '?';
             
             return (
                     <div>
@@ -426,7 +561,8 @@ var Dbxref = dbxref.Dbxref;
                             <div className="row">
                                 <div className="col-sm-5 col-md-4 col-lg-3">
                                     {this.transferPropsTo(
-                                        <FacetList facets={facets} filters={filters} />
+                                        <FacetList facets={facets} filters={filters}
+                                                   searchBase={searchBase} onFilter={this.onFilter} />
                                     )}
                                 </div>
 
@@ -434,9 +570,13 @@ var Dbxref = dbxref.Dbxref;
                                     <h4>Showing {results.length} of {total} 
                                         {total > results.length ?
                                                 <span className="pull-right">
-                                                    {search_id.indexOf('&limit=all') !== -1 ? 
-                                                        <a className="btn btn-info btn-sm" href={search_id.replace("&limit=all", "")}>View 25</a>
-                                                    : <a rel="nofollow" className="btn btn-info btn-sm" href={search_id+ '&limit=all'}>View All</a>}
+                                                    {searchBase.indexOf('&limit=all') !== -1 ? 
+                                                        <a className="btn btn-info btn-sm"
+                                                           href={searchBase.replace("&limit=all", "")}
+                                                           onClick={this.onFilter}>View 25</a>
+                                                    : <a rel="nofollow" className="btn btn-info btn-sm"
+                                                         href={searchBase+ '&limit=all'}
+                                                         onClick={this.onFilter}>View All</a>}
                                                 </span>
                                             : null}
                                     </h4>
@@ -452,23 +592,28 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         : null }
                     </div>  
-                );
-            }
+            );
+        },
+
+        onFilter: function(e) {
+            var search = e.currentTarget.getAttribute('href');
+            this.props.onChange(search);
+            e.stopPropagation();
+            return false;
         }
-    );
+    });
 
     var Search = search.Search = React.createClass({
         render: function() {
             var context = this.props.context;
             var results = context['@graph'];
             var notification = context['notification'];
-            var id = url.parse(this.props.href, true);
-            var searchTerm = id.query['searchTerm'] || '';
+            var searchBase = url.parse(this.props.href).search || '';
             return (
                 <div>
                     {notification === 'Success' ?
                         <div className="panel data-display main-panel"> 
-                            {this.transferPropsTo(<ResultTable key={undefined} />)}
+                            {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
                         </div>
                     : <h4>{notification}</h4>}
                 </div>
