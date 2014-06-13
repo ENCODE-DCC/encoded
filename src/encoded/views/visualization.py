@@ -115,6 +115,7 @@ def hub(context, request):
     embedded = embed(request, request.resource_path(context))
     files_json = embedded.get('files', None)
     url_ret = (request.url).split('@@hub')
+    
     assembly = ''
     if 'assembly' in embedded:
         assembly = embedded['assembly']
@@ -124,13 +125,14 @@ def hub(context, request):
     elif url_ret[1] == '/genomes.txt':
         return Response(newline.join(getGenomeTxt(embedded)), content_type='text/plain')
     elif url_ret[1] == '/' + assembly + '/trackDb.txt':
+        
+        long_label = embedded['assay_term_name'] + ' of ' + \
+            embedded['biosample_term_name'] + ' - ' + embedded['accession']
         if 'target' in embedded:
             long_label = embedded['assay_term_name'] + ' of ' + \
                 embedded['biosample_term_name'] + ' - ' + embedded['accession'] + \
                 ' (Target - ' + embedded['target']['label'] + ')'
-        else:
-            long_label = embedded['assay_term_name'] + ' of ' + \
-                embedded['biosample_term_name'] + ' - ' + embedded['accession']
+            
         parent = getParentTrack(embedded['accession'], long_label)
         peak_view = ''
         signal_view = ''
@@ -159,6 +161,7 @@ def hub(context, request):
             parent = parent + (newline * 2) + tab + peak_view + (newline * 2) + tab + signal_view
         return Response(parent, content_type='text/plain')
     else:
+        # Generates and returns HTML for the track hub
         data_accession = '<a href={link}>{accession}<a></p>' \
             .format(link=url_ret[0], accession=embedded['accession'])
         data_description = '<p>{description}</p>' \
@@ -166,11 +169,10 @@ def hub(context, request):
         data_files = ''
         for f in files_json:
             if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed', 'bigWig']:
+                replicate_number = 'pooled'
                 if 'replicate' in f:
                     replicate_number = 'rep - ' + \
                         str(f['replicate']['biological_replicate_number'])
-                else:
-                    replicate_number = 'pooled'
                 data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td></tr>'\
                     .format(
                         accession=f['accession'],
