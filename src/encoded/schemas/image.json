@@ -26,19 +26,5 @@
             "title": "Caption",
             "type": "string"
         }
-    },
-    "columns": {
-        "caption": {
-            "title": "Caption",
-            "type": "string"
-        },
-        "date_created": {
-            "title": "Created",
-            "type": "datetime"
-        },
-        "status": {
-            "title": "Status",
-            "type": "string"
-        }
     }
 }

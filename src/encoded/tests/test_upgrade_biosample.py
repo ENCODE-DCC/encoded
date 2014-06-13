@@ -203,7 +203,7 @@ def test_biosample_upgrade_model_organism_mouse(app, biosample_6):
     assert 'health_status' not in value
     assert value['model_organism_health_status'] == 'Normal'
     assert 'life_stage' not in value
-    assert value['mouse_life_stage'] == 'newborn'
+    assert value['mouse_life_stage'] == 'postnatal'
 
 
 def test_biosample_upgrade_inline(testapp, biosample_1):
