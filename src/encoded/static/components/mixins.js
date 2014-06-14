@@ -310,6 +310,9 @@ module.exports.HistoryAndTriggers = {
     },
 
     handleClick: function(event) {
+        // https://github.com/facebook/react/issues/1691
+        if (event.isDefaultPrevented()) return;
+
         var target = event.target;
         var nativeEvent = event.nativeEvent;
 
