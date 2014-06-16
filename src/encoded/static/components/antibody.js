@@ -60,7 +60,7 @@ var Approval = module.exports.Approval = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>Approval for {context.antibody.accession}</h2>
-                        <h3>Antibody against {context.target.organism.name}
+                        <h3>Antibody against <em>{context.target.organism.scientific_name}</em>
                             {' '}{context.target.label}
                         </h3>
                         <div className="characterization-status-labels">
@@ -87,7 +87,7 @@ var Approval = module.exports.Approval = React.createClass({
                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
 
                         {context.antibody.host_organism ? <dt>Host</dt> : null}
-                        {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.name}</dd> : null}
+                        {context.antibody.host_organism ? <dd className="sentence-case"><em>{context.antibody.host_organism.scientific_name}</em></dd> : null}
         
                         {context.antibody.clonality ? <dt>Clonality</dt> : null}
                         {context.antibody.clonality ? <dd className="sentence-case">{context.antibody.clonality}</dd> : null}
@@ -125,7 +125,7 @@ globals.content_views.register(Approval, 'antibody_approval');
 
 var Characterization = module.exports.Characterization = React.createClass({
     getInitialState: function() {
-        return {panelOpen: false};
+        return {panelOpen: false, panelFixed: false};
     },
 
     // Clicking the Lab bar inverts visible state of the popover
@@ -138,22 +138,34 @@ var Characterization = module.exports.Characterization = React.createClass({
         this.setState({panelOpen: !this.state.panelOpen});
     },
 
+    componentDidMount: function() {
+        console.log('scroll: ' + this.refs.collapse.getDOMNode().scrollHeight + ', client: ' + this.refs.collapse.getDOMNode().clientHeight);
+        if (this.refs.collapse.getDOMNode().scrollHeight <= this.refs.collapse.getDOMNode().clientHeight) {
+            this.setState({panelFixed: true});
+        }
+    },
+
     render: function() {
         var context = this.props.context;
         var keyClass = cx({
             "characterization-meta-data": true,
             "key-value-left": true,
             "characterization-slider": true,
-            "active": this.state.panelOpen
+            "active": this.state.panelOpen && !this.state.panelFixed
         });
         var triggerClass = cx({
             "trigger-icon": true,
             "icon-sort-down": !this.state.panelOpen,
-            "icon-sort-up": this.state.panelOpen
+            "icon-sort-up": this.state.panelOpen,
+            "disabled": this.state.panelFixed
         });
         var shadowClass = cx({
             "characterization-slider-shadow": true,
-            "active": this.state.panelOpen
+            "active": this.state.panelOpen || this.state.panelFixed
+        });
+        var kvTriggerClass = cx({
+            "key-value-trigger": true,
+            "disabled": this.state.panelFixed
         });
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
@@ -189,13 +201,13 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <dd className="h3">{context.characterization_method}</dd>
 
                             <dt className="h4">Target species</dt>
-                            <dd className="h4 sentence-case">{context.target.organism.name}</dd>
+                            <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
 
                             <dt>Image</dt>
                             {download}
                         </div>
                     </div>
-                    <dl className={keyClass}>
+                    <dl ref="collapse" className={keyClass}>
                         {context.caption ? <dt>Caption</dt> : null}
                         {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
 
@@ -213,7 +225,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                         <div className={shadowClass}></div>
 
                     </dl>
-                    <dl className="key-value-trigger">
+                    <dl className={kvTriggerClass}>
                         <a href="#" onClick={this.handleClick}>
                             <dt>Lab</dt>
                             <dd>{context.lab.title}</dd>
@@ -233,7 +245,7 @@ globals.panel_views.register(Characterization, 'antibody_characterization');
 var antibody_approval_title = function (props) {
     var context = props.context;
     var accession = context.antibody.accession;
-    var organism_name = context.target.organism.name;
+    var organism_name = context.target.organism.scientific_name;
     var target_label = context.target.label;
     return accession + ' in ' + organism_name + ' ' + target_label;
 };

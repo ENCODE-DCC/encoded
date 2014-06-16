@@ -20,6 +20,13 @@ var Fetched = module.exports.Fetched = {
         this.fetch(this.props.url);
     },
 
+    componentWillUnmount: function () {
+        var xhr = this.state.fetchedRequest;
+        if (xhr && xhr.state() == 'pending') {
+            xhr.abort();
+        }
+    },
+
     componentWillReceiveProps: function (nextProps) {
         if (!nextProps.loadingComplete || (
             this.state.fetchedRequest &&
@@ -102,7 +109,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
                 </div>
             );
         }
-        var etag = this.state.fetchedRequest.getResponseHeader('ETag')
+        var etag = this.state.fetchedRequest.getResponseHeader('ETag');
         return (
             <div key={key} className="done">
                 {this.transferPropsTo(

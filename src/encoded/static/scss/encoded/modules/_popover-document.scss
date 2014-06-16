@@ -189,6 +189,10 @@ $characterization-figure-height: 200px;
     &.icon-sort-up {
         top: 5px;
     }
+
+    &.disabled {
+        display: none;
+    }
 }
 
 
@@ -198,6 +202,13 @@ $characterization-figure-height: 200px;
     position: relative;
     margin: 0;
     background-color: #edf2f5;
+
+    &.disabled a:hover {
+        color: #333;
+        background-color: #edf2f5;
+        cursor: default;
+    }
+
 
     a {
         display: block;

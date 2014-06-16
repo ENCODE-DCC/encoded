@@ -4,24 +4,6 @@ var React = require('react');
 var globals = require('../globals');
 var item = require('../item');
 
-
-// Fallback block view
-
-var BlockViewFallback = module.exports.BlockViewFallback = React.createClass({
-    render: function() {
-        var Panel = item.Panel;
-        return (
-            <div>
-            <h2>{this.props.type.join(', ')}</h2>
-                <Panel context={this.props.value} />
-            </div>
-        );
-    }
-});
-
-
-// Fallback block edit form
-
 var ReactForms = require('react-forms');
 var Form = ReactForms.Form;
 var Property = ReactForms.schema.Property;
@@ -31,18 +13,37 @@ var JsonType = {
     deserialize: function(value) { return (typeof value === 'string') ? JSON.parse(value) : value; },
 }
 
-var BlockSchema = (
-    <Property label="JSON" type={JsonType} input={<textarea rows="15" cols="80" />} />
-);
 
-var BlockEditFallback = React.createClass({
+var FallbackBlockView = React.createClass({
     render: function() {
-        return this.transferPropsTo(<Form schema={BlockSchema} value={this.props.value} />);
+        var Panel = item.Panel;
+        return (
+            <div>
+            <h2>{this.props.blocktype.label}</h2>
+                <Panel context={this.props.value} />
+            </div>
+        );
     }
 });
 
 
-// Also use these views as a fallback for anything we haven't registered
-globals.block_views.fallback = function (obj, name) {
-    return (name == 'edit') ? BlockEditFallback : BlockViewFallback;
+var FallbackBlockSchema = (
+    <Property label="JSON" type={JsonType} input={<textarea rows="15" cols="80" />} />
+);
+
+
+var FallbackBlockEdit = module.exports.FallbackBlockEdit = React.createClass({
+    render: function() {
+        var schema = this.props.schema || FallbackBlockSchema;
+        return this.transferPropsTo(<Form schema={schema} value={this.props.value} />);
+    }
+});
+
+
+// Use this as a fallback for any block we haven't registered
+globals.blocks.fallback = function (obj) {
+    return {
+        label: ','.join(obj['@type']),
+        view: FallbackBlockView
+    };
 };

@@ -116,7 +116,7 @@ var Image = React.createClass({
             <figure>
                 {this.props.actions}
                 <Attachment context={this.props.context} />
-                <caption>{this.props.context.caption}</caption>
+                <figcaption>{this.props.context.caption}</figcaption>
             </figure>
         );
     }
@@ -158,11 +158,11 @@ var FileInput = React.createClass({
 
     onDrop: function(e) {
         var file = e.dataTransfer.files[0];
-        this.onChange(file);
+        this.onChange(null, file);
         return false;
     },
 
-    onChange: function(file) {
+    onChange: function(e, file) {
         if (file === undefined) {
             var input = this.refs.input.getDOMNode();
             file = input.files[0];
