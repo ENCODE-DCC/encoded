@@ -413,9 +413,6 @@ var Dbxref = dbxref.Dbxref;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
                 if (term.term) {
-                    if (facet.field == 'type') {
-                        return types.hasOwnProperty(term.term);
-                    }
                     for(var filter in filters) {
                         if(filters[filter].term === term.term) {
                             return true;
