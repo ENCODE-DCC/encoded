@@ -117,18 +117,6 @@ def search(context, request, search_type=None):
             'term': search_type,
             'remove': '{}?{}'.format(request.path, qs)
             })
-        if search_term != '*':
-            field = 'type'
-            term = root.by_item_type[search_type].__name__
-            qs = urlencode([
-                (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.iteritems() if k != field
-            ])
-            result['filters'].append({
-                'field': field,
-                'term': term,
-                'remove': '{}?{}'.format(request.path, qs)
-            })
 
     frame = request.params.get('frame')
     if frame in ['embedded', 'object']:
@@ -245,6 +233,8 @@ def search(context, request, search_type=None):
             }
         }
         for count, used_facet in enumerate(result['filters']):
+            if used_facet['field'] == 'searchTerm':
+                continue
             if field != used_facet['field'] and used_facet['field'] != 'type':
                 if used_facet['field'] != 'audit.category':
                     q_field = 'embedded.' + used_facet['field']
