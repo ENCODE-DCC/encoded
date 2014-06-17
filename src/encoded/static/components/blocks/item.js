@@ -55,7 +55,7 @@ var ObjectPicker = React.createClass({
     getInitialState: function() {
         return {
             browsing: false,
-            search: ''
+            search: '?mode=picker'
         };
     },
 
