@@ -4,6 +4,7 @@ var React = require('react');
 var url = require('url');
 var mixins = require('./mixins');
 var submitHost = require('./globals').submitHost;
+var _ = require('underscore');
 var Navbar = require('../react-bootstrap/Navbar');
 var Nav = require('../react-bootstrap/Nav');
 var NavItem = require('../react-bootstrap/NavItem');
@@ -17,6 +18,7 @@ var NavBar = React.createClass({
             portal: this.props.portal,
             section: section,
             session: this.props.session,
+            edit_actions: this.props.edit_actions,
             user_actions: this.props.user_actions,
             href: this.props.href,
         });
@@ -53,12 +55,14 @@ var NavBarLayout = React.createClass({
         var section = this.props.section;
         var session = this.props.session;
         var user_actions = this.props.user_actions;
+        var groups = session.user_properties && session.user_properties.groups;
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
                     <Navbar brand={portal.portal_title} brandlink="/" noClasses={true} data-target="main-nav">
                         <GlobalSections global_sections={portal.global_sections} section={section} />
                         {this.transferPropsTo(<UserActions />)}
+                        {_.indexOf(groups, "admin") !== -1 ? this.transferPropsTo(<EditActions />) : null}
                         {this.transferPropsTo(<Search />)}
                     </Navbar>
                 </div>
@@ -90,6 +94,28 @@ var GlobalSections = React.createClass({
             );
         });
         return <Nav navbar={true} bsStyle="navbar-nav" activeKey={1}>{actions}</Nav>;
+    }
+});
+
+var EditActions = React.createClass({
+    render: function() {
+        var actions = this.props.edit_actions.map(function (action) {
+            return (
+                <NavItem href={action.url || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
+                    {action.title}
+                </NavItem>
+            );
+        });
+        return (
+            <Nav bsStyle="navbar-nav" navbar={true} right={true} id="edit-actions">
+                <NavItem dropdown={true}>
+                    <i className="icon-pencil"></i>
+                    <Nav navbar={true} dropdown={true}>
+                        {actions}
+                    </Nav>
+                </NavItem>
+            </Nav>
+        );
     }
 });
 
