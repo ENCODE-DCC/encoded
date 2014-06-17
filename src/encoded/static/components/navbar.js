@@ -99,20 +99,11 @@ var GlobalSections = React.createClass({
 
 var EditActions = React.createClass({
     render: function() {
-        var actions = this.props.edit_actions.map(function (action) {
-            return (
-                <NavItem href={action.url || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
-                    {action.title}
-                </NavItem>
-            );
-        });
+        var action = this.props.edit_actions;
         return (
             <Nav bsStyle="navbar-nav" navbar={true} right={true} id="edit-actions">
-                <NavItem dropdown={true}>
+                <NavItem href={action.url || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
                     <i className="icon-pencil"></i>
-                    <Nav navbar={true} dropdown={true}>
-                        {actions}
-                    </Nav>
                 </NavItem>
             </Nav>
         );
