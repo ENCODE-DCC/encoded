@@ -1,6 +1,4 @@
 # See http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/resources.html
-
-
 import logging
 import venusian
 from abc import ABCMeta
@@ -17,10 +15,8 @@ from pyramid.httpexceptions import (
     HTTPInternalServerError,
     HTTPPreconditionFailed,
     HTTPNotFound,
-    HTTPNotModified,
 )
 from pyramid.interfaces import (
-    PHASE1_CONFIG,
     PHASE2_CONFIG,
 )
 from pyramid.location import lineage
@@ -30,7 +26,6 @@ from pyramid.security import (
     Authenticated,
     Deny,
     Everyone,
-    authenticated_userid,
     has_permission,
     principals_allowed_by_permission,
 )
@@ -44,13 +39,11 @@ from pyramid.traversal import (
 )
 from pyramid.view import view_config
 from sqlalchemy import (
-    func,
     orm,
 )
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import FlushError
 from urllib import (
-    quote,
     unquote,
 )
 from urllib import urlencode
@@ -68,7 +61,6 @@ from .storage import (
     Resource,
     Key,
     Link,
-    TransactionRecord,
 )
 from collections import (
     OrderedDict,
@@ -119,6 +111,7 @@ def make_subrequest(request, path):
 
 
 embed_cache = ManagerLRUCache('embed_cache')
+
 
 def embed(request, path, as_user=False):
     # Should really be more careful about what gets included instead.
@@ -227,7 +220,7 @@ def validate_item_content_patch(context, request):
 
 def permission_checker(context, request):
     def checker(permission):
-        return has_permission(permission, context, request)
+        return request.has_permission(permission, context)
     return checker
 
 
@@ -589,9 +582,8 @@ class Item(object):
         for name, value in self.rev_links().iteritems():
             properties[name] = [
                 request.resource_path(item)
-                    for item in value
-                        if item.upgrade_properties().get('status')
-                            not in ('deleted', 'obsolete')
+                for item in value
+                if item.upgrade_properties().get('status') not in ('deleted', 'obsolete')
             ]
 
         templated = self.expand_template(properties, request)
@@ -604,6 +596,7 @@ class Item(object):
         ns['item_type'] = self.item_type
         ns['base_types'] = self.base_types
         ns['uuid'] = self.uuid
+
         # When called by update_keys() there is no request.
         if request is not None:
             ns['collection_uri'] = request.resource_path(self.__parent__)
@@ -637,6 +630,10 @@ class Item(object):
         paths = [p.split('.') for p in self.embedded]
         for path in paths:
             expand_path(request, properties, path)
+
+    @classmethod
+    def expand_page(cls, request, properties):
+        return properties
 
     def add_actions(self, request, properties):
         if request.has_permission('edit', self):
@@ -858,7 +855,7 @@ class Collection(Mapping):
         if self.schema is not None:
             properties = self.schema['properties']
             self.schema_links = [
-                name for name, prop in properties.iteritems()
+                key for key, prop in properties.iteritems()
                 if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
             ]
             self.schema_version = properties.get('schema_version', {}).get('default')
@@ -1006,6 +1003,7 @@ class Collection(Mapping):
         ns['collection_uri'] = uri = request.resource_path(self)
         ns['item_type'] = self.item_type
         ns['permission'] = permission_checker(self, request)
+
         compiled = ObjectTemplate(self.merged_template)
         templated = compiled(ns)
         properties.update(templated)
@@ -1028,6 +1026,10 @@ class Collection(Mapping):
 
     def expand_embedded(self, request, properties):
         pass
+
+    @classmethod
+    def expand_page(cls, request, properties):
+        return properties
 
     def add_actions(self, request, properties):
         pass
@@ -1157,6 +1159,7 @@ def item_view(context, request):
     if frame == 'embedded':
         return properties
 
+    properties = context.expand_page(request, properties)
     context.add_actions(request, properties)
     return properties
 
@@ -1257,7 +1260,7 @@ def item_index_data(context, request):
 
     principals = {}
     for permission in ('view', 'edit'):
-        p  = principals_allowed_by_permission(context, permission)
+        p = principals_allowed_by_permission(context, permission)
         if p is Everyone:
             p = [Everyone]
         principals[permission] = p

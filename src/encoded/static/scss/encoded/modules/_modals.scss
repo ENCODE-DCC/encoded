@@ -7,11 +7,6 @@
   @include box-shadow(none);
 }
 
-.modal-backdrop,
-.modal-backdrop.fade.in {
-  @include opacity(60);
-}
-
 /* used to mask who screen, for modals etc */
 /* STILL USING THE BELOW OR JUST FOR A MOCKUP???????? */
 #mask {

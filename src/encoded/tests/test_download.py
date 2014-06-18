@@ -27,6 +27,9 @@ def test_download_create(testapp, testing_download):
     from base64 import b64decode
     res = testapp.get(testing_download)
     assert res.json['attachment']['href'] == '@@download/attachment/red-dot.png'
+    assert res.json['attachment']['type'] == 'image/png'
+    assert res.json['attachment']['width'] == 5
+    assert res.json['attachment']['height'] == 5
     url = testing_download + '/' + res.json['attachment']['href']
     res = testapp.get(url)
     assert res.content_type == 'image/png'
@@ -75,11 +78,23 @@ def test_download_update_bad_change(testapp, testing_download, href):
     [
         '@@download/attachment/another.png',
         'http://example.com/another.png',
+        'data:image/png;base64,NOT_BASE64',
+        'data:image/png;NOT_A_PNG',
+        'data:text/plain;asdf',
     ])
 def test_download_create_bad_change(testapp, href):
     url = '/testing-downloads/'
     item = {'attachment': {
         'download': 'red-dot.png',
         'href': href,
+    }}
+    testapp.post_json(url, item, status=422)
+
+
+def test_download_create_wrong_extension(testapp):
+    url = '/testing-downloads/'
+    item = {'attachment': {
+        'download': 'red-dot.jpg',
+        'href': RED_DOT,
     }}
     testapp.post_json(url, item, status=422)

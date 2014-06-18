@@ -4,46 +4,108 @@ var React = require('react');
 var ReactForms = require('react-forms');
 var form = require('./form');
 var FetchedData = require('./fetched').FetchedData;
+var FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 var globals = require('./globals');
+
+var ModalTrigger = require('react-bootstrap/ModalTrigger');
+var Modal = require('react-bootstrap/Modal');
+
+var LAYOUT_CONTEXT = {
+    dragStart: React.PropTypes.func,
+    dragEnd: React.PropTypes.func,
+    change: React.PropTypes.func,
+    remove: React.PropTypes.func,
+    editable: React.PropTypes.bool
+}
+
+
+var BlockEditModal = React.createClass({
+
+    getInitialState: function() {
+        return {value: this.props.block.data};
+    },
+
+    render: function() {
+        var blocktype = globals.blocks.lookup(this.props.block);
+        var BlockEdit = blocktype.edit || FallbackBlockEdit;
+        return this.transferPropsTo(
+            <Modal title={'Edit ' + blocktype.label}>
+                <div className="modal-body">
+                    <BlockEdit schema={blocktype.schema} value={this.state.value} onChange={this.onChange} />
+                </div>
+                <div className="modal-footer">
+                    <button className="btn btn-default" onClick={this.props.onRequestHide}>Cancel</button>
+                    <button className="btn btn-primary" onClick={this.save}>Save</button>
+                </div>
+            </Modal>
+        );
+    },
+
+    onChange: function(value) {
+        this.setState({value: value});
+    },
+
+    save: function() {
+        this.props.onChange(this.state.value);
+        this.props.onRequestHide();
+    }
+
+});
 
 
 var Block = module.exports.Block = React.createClass({
+
+    contextTypes: LAYOUT_CONTEXT,
+
+    renderToolbar: function() {
+        var modal = <BlockEditModal block={this.props.block} onChange={this.onChange} />;
+        return (
+            <div className="block-toolbar">
+                <ModalTrigger ref="edit_trigger" modal={modal}>
+                    <a className="edit"><i className="icon-edit"></i></a>
+                </ModalTrigger>
+                {' '}
+                <a className="remove" onClick={this.remove}><i className="icon-trash"></i></a>
+            </div>
+        );
+    },
 
     render: function() {
         var block = this.props.block;
         if (typeof block['@type'] == 'string') {
             block['@type'] = [block['@type'], 'block'];
         }
-        var block_view = globals.block_views.lookup(block);
-        if (this.props.editable) {
-            var buttons = (
-                <div className="block-toolbar">
-                    <a className="remove" onClick={this.remove}><i className="icon-trash"></i></a>
-                </div>
-                )
-        } else {
-            var buttons = '';
-        }
+        var BlockView = globals.blocks.lookup(block).view;
         return this.transferPropsTo(
             <div data-row={this.props.row} data-col={this.props.col}
-                 onDragStart={this.dragStart}>
-                {buttons}
-                <block_view type={block['@type']} value={block.data}
-                            editable={this.props.editable} onChange={this.onChange} />
+                 draggable={this.context.editable}
+                 onDragStart={this.dragStart}
+                 onDragEnd={this.context.dragEnd}>
+                {this.context.editable ? this.renderToolbar() : ''}
+                {block.data !== undefined ?
+                    <BlockView type={block['@type']} value={block.data}
+                               editable={this.context.editable} onChange={this.onChange} /> : ''}
             </div>
         );
     },
 
+    componentDidMount: function() {
+        if (this.props.block.data === undefined) { this.refs.edit_trigger.show(); }
+    },
+    componentDidUpdate: function() {
+        if (this.props.block.data === undefined) { this.refs.edit_trigger.show(); }
+    },
+
     dragStart: function(e) {
-        this.props.dragStart(e, this.props.block, this.props.row, this.props.col);
+        this.context.dragStart(e, this.props.block, this.props.row, this.props.col);
     },
 
     onChange: function(value) {
-        this.props.change(this.props.row, this.props.col, value);
+        this.context.change(this.props.row, this.props.col, value);
     },
 
     remove: function() {
-        this.props.remove(this.props.row, this.props.col);
+        this.context.remove(this.props.row, this.props.col);
     }
 });
 
@@ -70,16 +132,10 @@ var Row = module.exports.Row = React.createClass({
             }
             return (
                 <Block className={classes}
-                       editable={this.props.editable}
                        block={block}
                        key={i}
                        row={this.props.i}
-                       col={i}
-                       draggable="true"
-                       dragStart={this.props.dragStart}
-                       onDragEnd={this.props.dragEnd}
-                       change={this.props.change}
-                       remove={this.props.remove} />
+                       col={i} />
             );
         }, this);
         var classes = 'row';
@@ -93,6 +149,33 @@ var Row = module.exports.Row = React.createClass({
         );
     }
 });
+
+
+var BlockAddButton = React.createClass({
+    contextTypes: LAYOUT_CONTEXT,
+
+    render: function() {
+        var classes = 'icon-large ' + this.props.blockprops.icon;
+        return (
+            <button className="btn btn-primary navbar-btn btn-sm"
+                    onClick={this.click}
+                    draggable="true" onDragStart={this.dragStart} onDragEnd={this.context.dragEnd}
+                    title={this.props.blockprops.label}><span className={classes}></span></button>
+        );
+    },
+
+    click: function() { return false; },
+
+    dragStart: function(e) {
+        var block = {
+            '@type': [this.props.key, 'block']
+        };
+        if (this.props.blockprops.initial !== undefined) {
+            block.data = this.props.blockprops.initial;
+        }
+        this.context.dragStart(e, block);
+    }
+})
 
 
 // "sticky" toolbar for editing layout
@@ -117,25 +200,15 @@ var LayoutToolbar = React.createClass({
     },
 
     render: function() {
+        var blocks = globals.blocks.getAll();
         return (
             <div className={'layout-toolbar navbar navbar-default' + (this.state.fixed ? ' navbar-fixed-top' : '')}>
               <div className="container">
-                <button className="btn btn-primary navbar-btn btn-xs"
-                        draggable="true" onDragStart={this.dragStart} onDragEnd={this.props.dragEnd}
-                        title="Rich text"><i className="icon-file-alt"></i></button>
+                {Object.keys(blocks).map(b => <BlockAddButton key={b} blockprops={blocks[b]} /> )}
               </div>
             </div>
         );
     },
-
-    dragStart: function(e) {
-        this.props.dragStart(e, {
-            'data': {
-                'body': '<p>This is a new block.</p>'
-            },
-            '@type': ['richtextblock', 'block']
-        });
-    }
 
 });
 
@@ -145,13 +218,24 @@ var Layout = module.exports.Layout = React.createClass({
     getDefaultProps: function() {
         return {
             'editable': false
-        }
+        };
     },
 
     getInitialState: function() {
         return {
             'value': this.props.value
-        }
+        };
+    },
+
+    childContextTypes: LAYOUT_CONTEXT,
+    getChildContext: function() {
+        return {
+            dragStart: this.dragStart,
+            dragEnd: this.dragEnd,
+            change: this.change,
+            remove: this.remove,
+            editable: this.props.editable,
+        };
     },
 
     componentWillReceiveProps: function(nextProps) {
@@ -164,25 +248,11 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     render: function() {
-        var rows = this.state.value.rows.map(function(row, i) {
-            if (this.props.editable) {
-                return <Row blocks={row.blocks}
-                            droptarget={row.droptarget}
-                            i={i}
-                            editable={true}
-                            dragStart={this.dragStart}
-                            dragEnd={this.dragEnd}
-                            change={this.change}
-                            remove={this.remove} />;
-            } else {
-                return <Row blocks={row.blocks} editable={false} />;
-            }
-        }, this);
         var className = 'layout' + (this.props.editable ? ' editable' : '');
         return (
             <div className={className} onDragOver={this.dragOver}>
-                {this.props.editable ? <LayoutToolbar dragStart={this.dragStart} dragEnd={this.dragEnd} /> : ''}
-                {rows}
+                {this.props.editable ? <LayoutToolbar /> : ''}
+                {this.state.value.rows.map((row, i) => <Row blocks={row.blocks} droptarget={row.droptarget} i={i} />)}
             </div>
         );
     },

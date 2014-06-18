@@ -13,7 +13,10 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
-from pyramid.traversal import find_root
+from pyramid.traversal import (
+    find_resource,
+    find_root,
+)
 import copy
 
 ACCESSION_KEYS = [
@@ -96,6 +99,26 @@ ENCODE2_AWARDS = frozenset([
     '2cda932c-07d5-4740-a024-d585635f5650',
     '5a009305-4ddc-4dba-bbf3-7327ceda3702',
 ])
+
+ADD_ACTION = {
+    'name': 'add',
+    'title': 'Add',
+    'profile': '/profiles/{item_type}.json',
+    'method': 'GET',
+    'href': '#!add',
+    'className': 'btn btn-success',
+    '$templated': True,
+    '$condition': 'permission:add',
+}
+
+EDIT_ACTION = {
+    'name': 'edit',
+    'title': 'Edit',
+    'profile': '/profiles/page.json',
+    'method': 'PUT',
+    'href': '#!edit',
+    'className': 'btn navbar-btn',
+}
 
 
 class Collection(BaseCollection):
@@ -410,12 +433,12 @@ class Biosample(Collection):
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
             ],
-            'sex': {'$value': '{sex}', '$templated': True},
-            'age': {'$value': '{age}', '$templated': True},
-            'age_units': {'$value': '{age_units}', '$templated': True},
-            'health_status': {'$value': '{health_status}', '$templated': True},
-            'life_stage': {'$value': '{life_stage}', '$templated': True},
-            'synchronization': {'$value': '{synchronization}', '$templated': True}
+            'sex': {'$value': '{sex}', '$templated': True, '$condition': 'sex'},
+            'age': {'$value': '{age}', '$templated': True, '$condition': 'age'},
+            'age_units': {'$value': '{age_units}', '$templated': True, '$condition': 'age_units'},
+            'health_status': {'$value': '{health_status}', '$templated': True, '$condition': 'health_status'},
+            'life_stage': {'$value': '{life_stage}', '$templated': True, '$condition': 'life_stage'},
+            'synchronization': {'$value': '{synchronization}', '$templated': True, '$condition': 'synchronization'}
         }
         embedded = set([
             'donor',
@@ -518,26 +541,18 @@ class Biosample(Collection):
                 for value in human_donor_properties:
                     if value in donor.properties:
                         ns[value] = donor.properties[value]
-                    else:
-                        ns[value] = ''
             elif properties['organism'] == "/organisms/mouse/":
                 for key, value in mouse_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-                    else:
-                        ns[value] = ''
             elif properties['organism'] in fly_organisms:
                 for key, value in fly_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-                    else:
-                        ns[value] = ''
             else:
                 for key, value in worm_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-                    else:
-                        ns[value] = ''
             return ns
 
 
@@ -728,6 +743,8 @@ class Dataset(Collection):
                 {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
                 {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
             ],
+            'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
+            'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
         template_type = {
             'files': 'file',
@@ -751,6 +768,27 @@ class Dataset(Collection):
         rev = {
             'original_files': ('file', 'dataset'),
         }
+
+        def template_namespace(self, properties, request=None):
+            ns = super(Dataset.Item, self).template_namespace(properties, request)
+            if request is None:
+                return ns
+            for link in ns['original_files'] + ns['related_files']:
+                f = find_resource(request.root, link)
+                if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and f.properties['status'] == 'current':
+                    if 'assembly' in f.properties:
+                        ns['assembly'] = f.properties['assembly']
+                        break
+            return ns
+
+        @classmethod
+        def expand_page(cls, request, properties):
+            properties = super(Dataset.Item, cls).expand_page(request, properties)
+            if 'hub' in properties:
+                properties = properties.copy()
+                properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?udcTimeout=1&db=' + properties['assembly'] + \
+                    '&hubUrl=http://' + request.host + properties['hub']
+            return properties
 
 
 @location('experiments')
@@ -788,6 +826,7 @@ class Experiment(Dataset):
             'replicates.library.biosample.organism',
             'replicates.library.biosample.treatments',
             'replicates.library.biosample.donor.organism',
+            'replicates.library.biosample.treatments',
             'replicates.library.treatments',
             'replicates.platform',
             'possible_controls',
@@ -849,40 +888,19 @@ class Page(Collection):
         'page_collection',
         'collection',
     ]
-    template['actions'] = [
-        {
-            'name': 'add',
-            'title': 'Add',
-            'profile': '/profiles/{item_type}.json',
-            'method': 'GET',
-            'href': '#!add',
-            'className': 'btn btn-success',
-            '$templated': True,
-            '$condition': 'permission:add',
-        },
-    ]
+    template['actions'] = [ADD_ACTION]
 
     class Item(Collection.Item):
         base_types = ['page'] + Collection.Item.base_types
         name_key = 'name'
         keys = ['name']
+        actions = [EDIT_ACTION]
 
         STATUS_ACL = {
             'in progress': [],
             'released': ALLOW_EVERYONE_VIEW,
             'deleted': ONLY_ADMIN_VIEW,
         }
-
-        actions = [
-            {
-                'name': 'edit',
-                'title': 'Edit',
-                'profile': '/profiles/page.json',
-                'method': 'PUT',
-                'href': '#!edit',
-                'className': 'btn navbar-btn',
-            },
-        ]
 
 
 @location('about')
@@ -903,3 +921,33 @@ class HelpPage(Page):
         'description': 'Portal pages, help section',
     }
     unique_key = 'help_page:name'
+
+
+@location('images')
+class Image(Collection):
+    item_type = 'image'
+    schema = load_schema('image.json')
+    schema['properties']['attachment']['properties']['type']['enum'] = [
+        'image/png',
+        'image/jpeg',
+        'image/gif',
+    ]
+    properties = {
+        'title': 'Image',
+        'description': 'Listing of portal images',
+    }
+    unique_key = 'image:filename'
+
+    template = copy.deepcopy(Collection.template)
+    template['actions'] = [ADD_ACTION]
+
+    class Item(ItemWithAttachment, Collection.Item):
+        embedded = set(['submitted_by'])
+        keys = [
+            {
+                'name': 'image:filename',
+                'value': "{attachment[download]}",
+                '$templated': True,
+            },
+        ]
+        actions = [EDIT_ACTION]

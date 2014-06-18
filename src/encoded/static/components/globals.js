@@ -14,9 +14,8 @@ module.exports.listing_views = Registry();
 // Cell name listing titles
 module.exports.listing_titles = Registry();
 
-// Block views
-module.exports.block_views = Registry();
-module.exports.block_edit_views = Registry();
+// Blocks
+module.exports.blocks = Registry();
 
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
@@ -44,10 +43,12 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
 };
 
 
+module.exports.submitHost = "www.encodedcc.org";
+
 module.exports.encodeVersionMap = {
     "ENCODE2": "2",
     "ENCODE3": "3"
-}
+};
 
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",
