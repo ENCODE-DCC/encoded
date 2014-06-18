@@ -37,7 +37,7 @@ var BlockEditModal = React.createClass({
                     <BlockEdit schema={blocktype.schema} value={this.state.value} onChange={this.onChange} />
                 </div>
                 <div className="modal-footer">
-                    <button className="btn btn-default" onClick={this.props.onRequestHide}>Cancel</button>
+                    <button className="btn btn-default" onClick={this.cancel}>Cancel</button>
                     <button className="btn btn-primary" onClick={this.save}>Save</button>
                 </div>
             </Modal>
@@ -46,6 +46,13 @@ var BlockEditModal = React.createClass({
 
     onChange: function(value) {
         this.setState({value: value});
+    },
+
+    cancel: function() {
+        if (this.props.onCancel !== undefined) {
+            this.props.onCancel();
+        }
+        this.props.onRequestHide();
     },
 
     save: function() {
@@ -65,7 +72,7 @@ var Block = module.exports.Block = React.createClass({
     },
 
     renderToolbar: function() {
-        var modal = <BlockEditModal value={this.props.value} onChange={this.onChange} />;
+        var modal = <BlockEditModal value={this.props.value} onChange={this.onChange} onCancel={this.onCancelEdit} />;
         return (
             <div className="block-toolbar">
                 <ModalTrigger ref="edit_trigger" modal={modal}>
@@ -107,10 +114,10 @@ var Block = module.exports.Block = React.createClass({
     },
 
     componentDidMount: function() {
-        if (this.props.value === undefined) { this.refs.edit_trigger.show(); }
+        if (this.props.value.is_new) { this.refs.edit_trigger.show(); }
     },
     componentDidUpdate: function() {
-        if (this.props.value === undefined) { this.refs.edit_trigger.show(); }
+        if (this.props.value.is_new) { this.refs.edit_trigger.show(); }
     },
 
     mouseEnter: function() {
@@ -130,7 +137,14 @@ var Block = module.exports.Block = React.createClass({
     },
 
     onChange: function(value) {
-        this.context.change(this.props.pos, value);
+        delete value.is_new;
+        this.context.change(value);
+    },
+
+    onCancelEdit: function() {
+        if (this.props.value.is_new) {
+            this.remove();
+        }
     },
 
     remove: function() {
@@ -146,10 +160,10 @@ var BlockAddButton = React.createClass({
         var classes = 'icon-large ' + this.props.blockprops.icon;
         return (
             <span>
-                <button className="btn btn-primary navbar-btn btn-sm"
-                        onClick={this.click}
-                        draggable="true" onDragStart={this.dragStart} onDragEnd={this.context.dragEnd}
-                        title={this.props.blockprops.label}><span className={classes}></span></button>
+                <span className="btn btn-primary navbar-btn btn-sm"
+                      onClick={this.click}
+                      draggable="true" onDragStart={this.dragStart} onDragEnd={this.context.dragEnd}
+                      title={this.props.blockprops.label}><span className={classes}></span></span>
                 {' '}
             </span>
         );
@@ -159,9 +173,11 @@ var BlockAddButton = React.createClass({
 
     dragStart: function(e) {
         var block = {
-            '@type': [this.props.key, 'block']
+            '@type': [this.props.key, 'block'],
+            'is_new': true
         };
         if (this.props.blockprops.initial !== undefined) {
+            delete block.is_new;
             block = merge(block, this.props.blockprops.initial);
         }
         this.context.dragStart(e, block);
@@ -417,9 +433,8 @@ var Layout = module.exports.Layout = React.createClass({
         }
     },
 
-    change: function(pos, value) {
-        // update the block at a particular position
-        this.state.value.rows[pos[0]].cols[pos[1]].blocks[pos[2]] = value;
+    change: function(value) {
+        this.state.value.blocks[value['@id']] = value;
         this.setState(this.state);
         this.props.onChange(this.state.value);
     },
