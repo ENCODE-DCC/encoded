@@ -7,11 +7,14 @@ var FetchedData = require('./fetched').FetchedData;
 var FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 var globals = require('./globals');
 
+var cx = React.addons.classSet;
+var merge = require('react/lib/merge');
 var ModalTrigger = require('react-bootstrap/ModalTrigger');
 var Modal = require('react-bootstrap/Modal');
 
 var LAYOUT_CONTEXT = {
     dragStart: React.PropTypes.func,
+    dragOver: React.PropTypes.func,
     dragEnd: React.PropTypes.func,
     change: React.PropTypes.func,
     remove: React.PropTypes.func,
@@ -22,11 +25,11 @@ var LAYOUT_CONTEXT = {
 var BlockEditModal = React.createClass({
 
     getInitialState: function() {
-        return {value: this.props.block.data};
+        return {value: this.props.value};
     },
 
     render: function() {
-        var blocktype = globals.blocks.lookup(this.props.block);
+        var blocktype = globals.blocks.lookup(this.props.value);
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
         return this.transferPropsTo(
             <Modal title={'Edit ' + blocktype.label}>
@@ -57,8 +60,12 @@ var Block = module.exports.Block = React.createClass({
 
     contextTypes: LAYOUT_CONTEXT,
 
+    getInitialState: function() {
+        return {hover: false};
+    },
+
     renderToolbar: function() {
-        var modal = <BlockEditModal block={this.props.block} onChange={this.onChange} />;
+        var modal = <BlockEditModal value={this.props.value} onChange={this.onChange} />;
         return (
             <div className="block-toolbar">
                 <ModalTrigger ref="edit_trigger" modal={modal}>
@@ -71,82 +78,63 @@ var Block = module.exports.Block = React.createClass({
     },
 
     render: function() {
-        var block = this.props.block;
+        var block = this.props.value;
         if (typeof block['@type'] == 'string') {
             block['@type'] = [block['@type'], 'block'];
         }
         var BlockView = globals.blocks.lookup(block).view;
-        return this.transferPropsTo(
-            <div data-row={this.props.row} data-col={this.props.col}
+
+        var classes = {
+            block: true,
+            dragging: block.dragging,
+            hover: this.state.hover
+        };
+        if (block.droptarget) {
+            classes['drop-' + block.droptarget] = true;
+        }
+        return (
+            <div className={cx(classes)} data-pos={this.props.pos}
                  draggable={this.context.editable}
                  onDragStart={this.dragStart}
-                 onDragEnd={this.context.dragEnd}>
+                 onDragOver={this.dragOver}
+                 onDragEnd={this.context.dragEnd}
+                 onMouseEnter={this.mouseEnter}
+                 onMouseLeave={this.mouseLeave}>
                 {this.context.editable ? this.renderToolbar() : ''}
-                {block.data !== undefined ?
-                    <BlockView type={block['@type']} value={block.data}
-                               editable={this.context.editable} onChange={this.onChange} /> : ''}
+                <BlockView value={block} onChange={this.onChange} />
             </div>
         );
     },
 
     componentDidMount: function() {
-        if (this.props.block.data === undefined) { this.refs.edit_trigger.show(); }
+        if (this.props.value === undefined) { this.refs.edit_trigger.show(); }
     },
     componentDidUpdate: function() {
-        if (this.props.block.data === undefined) { this.refs.edit_trigger.show(); }
+        if (this.props.value === undefined) { this.refs.edit_trigger.show(); }
+    },
+
+    mouseEnter: function() {
+        this.setState({hover: true});
+    },
+
+    mouseLeave: function() {
+        this.setState({hover: false});
     },
 
     dragStart: function(e) {
-        this.context.dragStart(e, this.props.block, this.props.row, this.props.col);
+        this.context.dragStart(e, this.props.value, this.props.pos);
+    },
+
+    dragOver: function(e) {
+        this.context.dragOver(e, this);
     },
 
     onChange: function(value) {
-        this.context.change(this.props.row, this.props.col, value);
+        this.context.change(this.props.pos, value);
     },
 
     remove: function() {
-        this.context.remove(this.props.row, this.props.col);
-    }
-});
-
-
-var Row = module.exports.Row = React.createClass({
-    render: function() {
-        var col_class;
-        switch (this.props.blocks.length) {
-            case 2: col_class = 'col-md-6'; break;
-            case 3: col_class = 'col-md-4'; break;
-            case 4: col_class = 'col-md-3'; break;
-            default: col_class = 'col-md-12'; break;
-        }
-        var blocks = this.props.blocks.map(function(block, i) {
-            if (block.className) {
-                var classes = block.className + ' block';
-            } else {
-                var classes = col_class + ' block';
-            }
-            if (block.dragging) {
-                classes += ' dragging';
-            } else if (block.droptarget) {
-                classes += ' drop-' + block.droptarget;
-            }
-            return (
-                <Block className={classes}
-                       block={block}
-                       key={i}
-                       row={this.props.i}
-                       col={i} />
-            );
-        }, this);
-        var classes = 'row';
-        if (this.props.droptarget) {
-            classes += ' drop-' + this.props.droptarget;
-        }
-        return this.transferPropsTo(
-            <div className={classes}>
-                {blocks}
-            </div>
-        );
+        this.context.remove(this.props.value, this.props.pos);
     }
 });
 
@@ -157,10 +145,13 @@ var BlockAddButton = React.createClass({
     render: function() {
         var classes = 'icon-large ' + this.props.blockprops.icon;
         return (
-            <button className="btn btn-primary navbar-btn btn-sm"
-                    onClick={this.click}
-                    draggable="true" onDragStart={this.dragStart} onDragEnd={this.context.dragEnd}
-                    title={this.props.blockprops.label}><span className={classes}></span></button>
+            <span>
+                <button className="btn btn-primary navbar-btn btn-sm"
+                        onClick={this.click}
+                        draggable="true" onDragStart={this.dragStart} onDragEnd={this.context.dragEnd}
+                        title={this.props.blockprops.label}><span className={classes}></span></button>
+                {' '}
+            </span>
         );
     },
 
@@ -171,7 +162,7 @@ var BlockAddButton = React.createClass({
             '@type': [this.props.key, 'block']
         };
         if (this.props.blockprops.initial !== undefined) {
-            block.data = this.props.blockprops.initial;
+            block = merge(block, this.props.blockprops.initial);
         }
         this.context.dragStart(e, block);
     }
@@ -222,7 +213,13 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     getInitialState: function() {
+        var nextBlockNum = 2;
+        Object.keys(this.props.value.blocks).map(function(block_id) {
+            var blockNum = parseInt(block_id.replace(/\D/g, ''));
+            if (blockNum >= nextBlockNum) nextBlockNum = blockNum + 1;
+        });
         return {
+            'nextBlockNum': nextBlockNum,
             'value': this.props.value
         };
     },
@@ -231,6 +228,7 @@ var Layout = module.exports.Layout = React.createClass({
     getChildContext: function() {
         return {
             dragStart: this.dragStart,
+            dragOver: this.dragOver,
             dragEnd: this.dragEnd,
             change: this.change,
             remove: this.remove,
@@ -247,78 +245,114 @@ var Layout = module.exports.Layout = React.createClass({
         this.$('<i id="drag-marker"></i>').appendTo(this.getDOMNode());
     },
 
-    render: function() {
-        var className = 'layout' + (this.props.editable ? ' editable' : '');
+    renderBlock: function(blockId, pos) {
+        var block = this.state.value.blocks[blockId];
+        return <Block value={block} key={block['@id']} pos={pos} />;
+    },
+
+    renderCol: function(col, col_class, i, j) {
         return (
-            <div className={className} onDragOver={this.dragOver}>
-                {this.props.editable ? <LayoutToolbar /> : ''}
-                {this.state.value.rows.map((row, i) => <Row blocks={row.blocks} droptarget={row.droptarget} i={i} />)}
+            <div className={col.className || col_class}>
+                {col.blocks.map((blockId, k) => this.renderBlock(blockId, [i,j,k]))}
             </div>
         );
     },
 
-    dragStart: function(e, block, row, col) {
+    renderRow: function(row, i) {
+        var classes = {
+            row: true
+        };
+        if (row.droptarget) {
+            classes['drop-' + row.droptarget] = true;
+        }
+        var col_class;
+        switch (row.cols.length) {
+            case 2: col_class = 'col-md-6'; break;
+            case 3: col_class = 'col-md-4'; break;
+            case 4: col_class = 'col-md-3'; break;
+            default: col_class = 'col-md-12'; break;
+        }        
+        return (
+            <div className={cx(classes)}>
+                {row.cols.map((col, j) => this.renderCol(col, col_class, i, j))}
+            </div>
+        )
+    },
+
+    render: function() {
+        var classes = cx({
+            layout: true,
+            editable: this.props.editable,
+        });
+        return (
+            <div className={classes} onDrop={this.drop}>
+                {this.props.editable ? <LayoutToolbar /> : ''}
+                {this.state.value.rows.map((row, i) => this.renderRow(row, i))}
+            </div>
+        );
+    },
+
+    dragStart: function(e, block, pos) {
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', JSON.stringify(block, null, 4));
         e.dataTransfer.setData('application/json', JSON.stringify(block));
         e.dataTransfer.setDragImage(document.getElementById('drag-marker'), 15, 15);
 
         this.dragged_block = block;
-        this.src_row = row;
-        this.src_col = col;
+        this.src_pos = pos;
         block.dragging = true;
         this.setState(this.state);
     },
 
+    drop: function(e) {
+        e.preventDefault();
+    },
+
     dragEnd: function(e) {
-        if ((this.src_col != this.dst_col || this.src_row != this.dst_row) || (this.quad == 'top' || this.quad == 'bottom')) {
-            if (this.src_row !== undefined) {
-                // remove block from current position
-                var block = this.state.value.rows[this.src_row].blocks.splice(this.src_col, 1)[0];                
+        e.preventDefault();
+        if (this.src_pos != this.dst_pos) {
+            if (this.src_pos) {
+                // cut block from current position
+                var block = this.state.value.rows[this.src_pos[0]].cols[this.src_pos[1]].blocks.splice(this.src_pos[2], 1, 'CUT');
             } else {
-                // new block
                 var block = this.dragged_block;
+                if (typeof block == 'object') {
+                    // new block; give it an id and store it
+                    block['@id'] = '#block' + this.state.nextBlockNum;
+                    this.state.nextBlockNum += 1;
+                    this.state.value.blocks[block['@id']] = block;
+                }
+                block = block['@id'];
             }
+
+            // add to new position
+            var dst_row = this.state.value.rows[this.dst_pos[0]];
+            var dst_col = dst_row.cols[this.dst_pos[1]];
             if (this.quad == 'top') {
-                // add to new row above drop target
-                this.state.value.rows.splice(this.dst_row, 0, {blocks: [block]});
+                // add above drop target in same col
+                dst_col.blocks.splice(this.dst_pos[2], 0, block);
             } else if (this.quad == 'bottom') {
-                // add to new row below drop target
-                this.state.value.rows.splice(this.dst_row + 1, 0, {blocks: [block]});
+                // add below drop target in same col
+                dst_col.blocks.splice(this.dst_pos[2] + 1, 0, block);
             } else if (this.quad == 'left') {
-                // compensate for removed block
-                var dst_col = (this.src_row == this.dst_row && this.src_col && this.src_col < this.dst_col) ? (this.dst_col - 1) : this.dst_col;
-                // add before drop target
-                this.state.value.rows[this.dst_row].blocks.splice(dst_col, 0, block);
+                // add in new col before drop target's col
+                dst_row.cols.splice(this.dst_pos[1], 0, {blocks: [block]});
             } else if (this.quad == 'right') {
-                // compensate for removed block
-                var dst_col = (this.src_row == this.dst_row && this.src_col && this.src_col < this.dst_col) ? this.dst_col : this.dst_col + 1;
-                // add after drop target
-                this.state.value.rows[this.dst_row].blocks.splice(dst_col, 0, block);
+                // add in new col after drop target's col
+                dst_row.cols.splice(this.dst_pos[1] + 1, 0, {blocks: [block]});
             }
-            // cull empty rows
-            this.state.value.rows = this.state.value.rows.filter(function(row) {
-                return row.blocks.length;
-            });
         }
 
-        // clean up drag/drop styles
-        this.state.value.rows.map(function(row) {
-            delete row.droptarget;
-        });
-        this.mapBlocks(function(block) {
-            delete block.dragging;
-            delete block.droptarget;
-        });
+        this.cleanup();
 
         // make sure we re-render and notify form of new value
         this.setState(this.state);
         this.props.onChange(this.state.value);
     },
 
-    dragOver: function(e) {
+    dragOver: function(e, block) {
         e.preventDefault();
-        var $target = this.$(e.target).closest('.block');
+        var $target = this.$(block.getDOMNode());
         if (!$target.length) return;
         var x = e.pageX - $target.offset().left;
         var y = e.pageY - $target.offset().top;
@@ -336,21 +370,14 @@ var Layout = module.exports.Layout = React.createClass({
             var quad = 'top';
         }
         this.quad = quad;
-        var row = this.dst_row = $target.data('row');
-        var col = this.dst_col = $target.data('col');
-        var pos = row + ' ' + col + ' ' + quad;
+        var dst_block_id = block.props.value['@id'];
+        var dst_pos = this.dst_pos = block.props.pos;
+        var pos = dst_pos + ' ' + quad;
         if (pos != this.oldpos) {
             this.oldpos = pos;
-            //console.log(pos);
-            this.state.value.rows.map(function(obj, i) {
-                if (i == row) {
-                    obj.droptarget = quad;
-                } else {
-                    delete obj.droptarget;
-                }
-            });
-            this.mapBlocks(function(block, i, j) {
-                if (i == row && j == col) {
+            console.log(pos);
+            this.mapBlocks(function(block) {
+                if (block['@id'] == dst_block_id) {
                     block.droptarget = quad;
                 } else {
                     delete block.droptarget;
@@ -360,29 +387,43 @@ var Layout = module.exports.Layout = React.createClass({
         }
     },
 
-    change: function(row, col, value) {
-        this.state.value.rows[row].blocks[col].data = value;
+    change: function(pos, value) {
+        // update the block at a particular position
+        this.state.value.rows[pos[0]].cols[pos[1]].blocks[pos[2]] = value;
         this.setState(this.state);
         this.props.onChange(this.state.value);
     },
 
-    remove: function(row, col) {
-        // remove block
-        this.state.value.rows[row].blocks.splice(col, 1)[0];
-        // cull empty rows
-        this.state.value.rows = this.state.value.rows.filter(function(row) {
-            return row.blocks.length;
-        });
-        // refresh
+    remove: function(block, pos) {
+        delete this.state.value.blocks[block['@id']];
+        this.state.value.rows[pos[0]].cols[pos[1]].blocks.splice(pos[2], 1);
+        this.cleanup();
         this.setState(this.state);
         this.props.onChange(this.state.value);
+    },
+
+    cleanup: function() {
+        // remove empty rows and cols
+        this.state.value.rows = this.state.value.rows.filter(function(row) {
+            row.cols = row.cols.filter(function(col) {
+                col.blocks = col.blocks.filter(function(block_id) {
+                    return (block_id != 'CUT');
+                });
+                return col.blocks.length;
+            });
+            return row.cols.length;
+        });
+
+        // remove temporary drag styles
+        this.mapBlocks(function(block) {
+            delete block.droptarget;
+            delete block.dragging;
+        });
     },
 
     mapBlocks: function(func) {
-        this.state.value.rows.map(function(row, i) {
-            row.blocks.map(function(block, j) {
-                func.call(this, block, i, j);
-            }.bind(this));
+        Object.keys(this.state.value.blocks).map(function(block_id) {
+            func.call(this, this.state.value.blocks[block_id]);
         }.bind(this));
     }
 
