@@ -329,9 +329,15 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     dragStart: function(e, block, pos) {
+        if (this.$(e.target).closest('[contenteditable]').length) {
+            // cancel drag to avoid interfering with dragging text
+            return;
+        }
+
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('text/plain', JSON.stringify(block, null, 4));
         e.dataTransfer.setData('application/json', JSON.stringify(block));
+        e.dataTransfer.setData('application/x-encoded-block', '1');
         e.dataTransfer.setDragImage(document.getElementById('drag-marker'), 15, 15);
 
         this.dragged_block = block;
@@ -340,12 +346,30 @@ var Layout = module.exports.Layout = React.createClass({
         this.setState(this.state);
     },
 
+    _isBlockDragEvent: function(e) {
+        var types = e.dataTransfer.types;
+        if (types.indexOf && types.indexOf('application/x-encoded-block') != -1) {
+            return true;
+        } else if (types.contains && types.contains('application/x-encoded-block')) {
+            return true;
+        }   
+        return false;     
+    },
+
     drop: function(e) {
-        e.preventDefault();
+        if (this._isBlockDragEvent(e)) {
+            e.preventDefault();            
+        } else {
+            return;
+        }
     },
 
     dragEnd: function(e) {
-        e.preventDefault();
+        if (this.dst_pos === undefined) {
+            return;
+        } else {
+            e.preventDefault();
+        }
         if (this.src_pos != this.dst_pos) {
             if (this.src_pos) {
                 // cut block from current position
@@ -380,6 +404,7 @@ var Layout = module.exports.Layout = React.createClass({
         }
 
         this.cleanup();
+        delete this.dst_pos;
 
         // make sure we re-render and notify form of new value
         this.setState(this.state);
@@ -387,7 +412,11 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     dragOver: function(e, block) {
-        e.preventDefault();
+        if (this._isBlockDragEvent(e)) {
+            e.preventDefault();            
+        } else {
+            return;
+        }
         var $target = this.$(block.getDOMNode());
         if (!$target.length) return;
         var x = e.pageX - $target.offset().left;
