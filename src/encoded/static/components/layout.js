@@ -251,8 +251,17 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     renderCol: function(col, col_class, i, j) {
+        var classes = {}
+        if (col.className !== undefined) {
+            classes[col.className] = true;
+        } else {
+            classes[col_class] = true;
+        }
+        if (col.droptarget !== undefined) {
+            classes['drop-' + col.droptarget] = true;
+        }
         return (
-            <div className={col.className || col_class}>
+            <div className={cx(classes)}>
                 {col.blocks.map((blockId, k) => this.renderBlock(blockId, [i,j,k]))}
             </div>
         );
@@ -376,6 +385,16 @@ var Layout = module.exports.Layout = React.createClass({
         if (pos != this.oldpos) {
             this.oldpos = pos;
             console.log(pos);
+            this.state.value.rows.map(function(row, i) {
+                row.cols.map(function(col, j) {
+                    if ((quad == 'left' || quad == 'right') && i == dst_pos[0] && j == dst_pos[1]) {
+                        dst_block_id = null;
+                        col.droptarget = quad;
+                    } else {
+                        delete col.droptarget;
+                    }
+                });
+            });
             this.mapBlocks(function(block) {
                 if (block['@id'] == dst_block_id) {
                     block.droptarget = quad;
@@ -406,6 +425,7 @@ var Layout = module.exports.Layout = React.createClass({
         // remove empty rows and cols
         this.state.value.rows = this.state.value.rows.filter(function(row) {
             row.cols = row.cols.filter(function(col) {
+                delete col.droptarget;
                 col.blocks = col.blocks.filter(function(block_id) {
                     return (block_id != 'CUT');
                 });
