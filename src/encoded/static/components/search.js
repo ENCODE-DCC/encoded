@@ -254,7 +254,12 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['dataset_type'] ? <strong>{columns['dataset_type']['title'] + ': '}</strong>: null}
+                            {result['dataset_type'] ?
+                                <div>
+                                    <strong>{columns['dataset_type']['title'] + ': '}</strong>
+                                    {result['dataset_type']}
+                                </div>
+                            : null}
                             <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
                             <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
