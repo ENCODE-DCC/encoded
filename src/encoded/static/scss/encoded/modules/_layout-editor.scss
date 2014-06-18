@@ -70,7 +70,8 @@
 }
 
 .layout-toolbar {
-	.btn {
+	z-index: 2000;
+	.navbar-left .btn {
 		cursor: move;
 	}
 }

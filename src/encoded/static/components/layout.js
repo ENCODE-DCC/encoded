@@ -172,6 +172,10 @@ var BlockAddButton = React.createClass({
 // "sticky" toolbar for editing layout
 var LayoutToolbar = React.createClass({
 
+    contextTypes: {
+        onTriggerSave: React.PropTypes.func
+    },
+
     getInitialState: function() {
         return {fixed: false}
     },
@@ -194,8 +198,15 @@ var LayoutToolbar = React.createClass({
         var blocks = globals.blocks.getAll();
         return (
             <div className={'layout-toolbar navbar navbar-default' + (this.state.fixed ? ' navbar-fixed-top' : '')}>
-              <div className="container">
-                {Object.keys(blocks).map(b => <BlockAddButton key={b} blockprops={blocks[b]} /> )}
+              <div className="container-fluid">
+                <div className="navbar-left">
+                    {Object.keys(blocks).map(b => <BlockAddButton key={b} blockprops={blocks[b]} /> )}
+                </div>
+                <div className="navbar-right">
+                    <a href="" className="btn btn-default navbar-btn">Cancel</a>
+                    {' '}
+                    <button onClick={this.context.onTriggerSave} className="btn btn-success navbar-btn">Save</button>
+                </div>
               </div>
             </div>
         );
