@@ -13,7 +13,9 @@
 
 		&.hover {
 			outline: dashed 1px $brand-primary;
-			cursor: move;
+			&[draggable="true"] {
+				cursor: move;
+			}
 			.block-toolbar {
 				display: block;
 			}

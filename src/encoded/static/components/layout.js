@@ -68,7 +68,7 @@ var Block = module.exports.Block = React.createClass({
     contextTypes: LAYOUT_CONTEXT,
 
     getInitialState: function() {
-        return {hover: false};
+        return {hover: false, focused: false};
     },
 
     renderToolbar: function() {
@@ -101,12 +101,14 @@ var Block = module.exports.Block = React.createClass({
         }
         return (
             <div className={cx(classes)} data-pos={this.props.pos}
-                 draggable={this.context.editable}
+                 draggable={this.context.editable && !this.state.focused}
                  onDragStart={this.dragStart}
                  onDragOver={this.dragOver}
                  onDragEnd={this.context.dragEnd}
                  onMouseEnter={this.mouseEnter}
-                 onMouseLeave={this.mouseLeave}>
+                 onMouseLeave={this.mouseLeave}
+                 onFocus={this.focus}
+                 onBlur={this.blur}>
                 {this.context.editable ? this.renderToolbar() : ''}
                 <BlockView value={block} onChange={this.onChange} />
             </div>
@@ -126,6 +128,14 @@ var Block = module.exports.Block = React.createClass({
 
     mouseLeave: function() {
         this.setState({hover: false});
+    },
+
+    focus: function() {
+        this.setState({focused: true});
+    },
+
+    blur: function() {
+        this.setState({focused: false});
     },
 
     dragStart: function(e) {
