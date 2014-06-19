@@ -104,8 +104,11 @@ def search(context, request, search_type=None):
 
     # Building query for filters
     if search_type in (None, '*'):
-        doc_types = ['antibody_approval', 'biosample',
-                     'experiment', 'target', 'dataset']
+        if request.params.get('mode') == 'picker':
+            doc_types = []
+        else:
+            doc_types = ['antibody_approval', 'biosample',
+                         'experiment', 'target', 'dataset']
     else:
         doc_types = [search_type]
         qs = urlencode([
@@ -117,18 +120,6 @@ def search(context, request, search_type=None):
             'term': search_type,
             'remove': '{}?{}'.format(request.path, qs)
             })
-        if search_term != '*':
-            field = 'type'
-            term = root.by_item_type[search_type].__name__
-            qs = urlencode([
-                (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.iteritems() if k != field
-            ])
-            result['filters'].append({
-                'field': field,
-                'term': term,
-                'remove': '{}?{}'.format(request.path, qs)
-            })
 
     frame = request.params.get('frame')
     if frame in ['embedded', 'object']:
@@ -139,13 +130,14 @@ def search(context, request, search_type=None):
     else:
         frame = 'columns'
         fields = {'@id', '@type'}
-        for doc_type in doc_types:
+        for doc_type in (doc_types or root.by_item_type.keys()):
             collection = root[doc_type]
             if frame == 'columns':
                 if collection.schema is None:
                     continue
-                fields.update(collection.schema.get('columns', ()))
-                result['columns'].update(collection.schema['columns'])
+                columns = collection.schema.get('columns', ())
+                fields.update(columns)
+                result['columns'].update(columns)
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, sorted(fields), principals)
@@ -179,7 +171,7 @@ def search(context, request, search_type=None):
     query_filters = query['filter']['and']['filters']
     used_filters = []
     for field, term in request.params.iteritems():
-        if field not in ['type', 'limit',
+        if field not in ['type', 'limit', 'mode',
                          'format', 'frame', 'datastore']:
             # Add filter to result
             qs = urlencode([
@@ -245,6 +237,8 @@ def search(context, request, search_type=None):
             }
         }
         for count, used_facet in enumerate(result['filters']):
+            if used_facet['field'] == 'searchTerm':
+                continue
             if field != used_facet['field'] and used_facet['field'] != 'type':
                 if used_facet['field'] != 'audit.category':
                     q_field = 'embedded.' + used_facet['field']
@@ -274,7 +268,7 @@ def search(context, request, search_type=None):
                         })
 
     # Execute the query
-    results = es.search(body=query, index='encoded', doc_type=doc_types, size=size)
+    results = es.search(body=query, index='encoded', doc_type=doc_types or None, size=size)
 
     # Loading facets in to the results
     if 'facets' in results:

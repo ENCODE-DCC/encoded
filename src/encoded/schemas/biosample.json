@@ -441,16 +441,16 @@
         }
     },
     "facets": {
-        "biosample_type": {
-            "title": "Biosample type",
+        "organism.scientific_name": {
+            "title": "Organism",
             "type": "string"
         },
         "status": {
             "title": "Biosample status",
             "type": "string"
         },
-        "organism.scientific_name": {
-            "title": "Organism",
+        "biosample_type": {
+            "title": "Biosample type",
             "type": "string"
         },
         "organ_slims": {

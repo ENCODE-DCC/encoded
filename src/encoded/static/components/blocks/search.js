@@ -64,9 +64,11 @@ var SearchBlock = React.createClass({
 
     render: function() {
         if (this.props.mode === 'edit') {
-            var url = '/search' + this.props.value;
+            var searchBase = this.props.value;
+            if (!searchBase) searchBase = '?mode=picker';
+            var url = '/search' + searchBase;
             return <FetchedData url={url} Component={SearchBlockEdit} loadingComplete={true}
-                                searchBase={this.props.value} onChange={this.props.onChange} />;
+                                searchBase={searchBase} onChange={this.props.onChange} />;
         } else {
             var url = '/search' + this.props.value.search;
             if (this.props.value.display === 'table') {

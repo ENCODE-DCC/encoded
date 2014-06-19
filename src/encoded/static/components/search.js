@@ -18,7 +18,7 @@ var Dbxref = dbxref.Dbxref;
         target: {title: 'Targets'},
         dataset: {title: 'Datasets'},
         image: {title: 'Images'}
-    }
+    };
 
     var Listing = module.exports.Listing = function (props) {
         // XXX not all panels have the same markup
@@ -40,7 +40,7 @@ var Dbxref = dbxref.Dbxref;
                     </div>
                 );
             } else {
-                return <span/>
+                return <span/>;
             }
         }
     };
@@ -254,7 +254,12 @@ var Dbxref = dbxref.Dbxref;
                             </div>
                         </div>
                         <div className="data-row">
-                            {result['dataset_type'] ? <strong>{columns['dataset_type']['title'] + ': '}</strong>: null}
+                            {result['dataset_type'] ?
+                                <div>
+                                    <strong>{columns['dataset_type']['title'] + ': '}</strong>
+                                    {result['dataset_type']}
+                                </div>
+                            : null}
                             <strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}<br />
                             <strong>{columns['award.project']['title']}</strong>: {result['award.project']}
                         </div>
@@ -386,10 +391,11 @@ var Dbxref = dbxref.Dbxref;
         render: function () {
             var term = this.props.term['term'];
             var filters = this.props.filters;
+            var title;
             try {
-                var title = types[term];
+                title = types[term];
             } catch (e) {
-                var title = term;
+                title = term;
             }
             var total = this.props.total;
             return this.transferPropsTo(<Term title={title} filters={filters} total={total} />);
@@ -413,9 +419,6 @@ var Dbxref = dbxref.Dbxref;
             var filters = this.props.filters;
             var terms = facet['terms'].filter(function (term) {
                 if (term.term) {
-                    if (facet.field == 'type') {
-                        return types.hasOwnProperty(term.term);
-                    }
                     for(var filter in filters) {
                         if(filters[filter].term === term.term) {
                             return true;
@@ -436,18 +439,18 @@ var Dbxref = dbxref.Dbxref;
             var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
             var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
             return (
-                <div className="facet" key={field} hidden={terms.length === 0}>
+                <div className="facet" hidden={terms.length === 0}>
                     <h5>{title}</h5>
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
+                                return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} />);
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return this.transferPropsTo(<TermComponent term={term} filters={filters} total={total} />);
+                                    return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} />);
                                 }.bind(this))}
                             </div>
                         : null}
@@ -510,10 +513,11 @@ var Dbxref = dbxref.Dbxref;
             var facets = this.props.facets;
             var filters = this.props.filters;
             if (!facets.length) return <div />;
+            var hideTypes;
             if (this.props.mode == 'picker') {
-                var hideTypes = false;
+                hideTypes = false;
             } else {
-                var hideTypes = filters.filter(function(filter) {
+                hideTypes = filters.filter(function(filter) {
                     return filter.field == 'type';
                 }).length;
             }
@@ -522,9 +526,9 @@ var Dbxref = dbxref.Dbxref;
                     {this.props.mode === 'picker' ? this.transferPropsTo(<TextFilter filters={filters} />) : ''}
                     {facets.map(function (facet) {
                         if (hideTypes && facet.field == 'type') {
-                            return <span />;
+                            return <span key={facet.field} />;
                         } else {
-                            return this.transferPropsTo(<Facet facet={facet} filters={filters} />);
+                            return this.transferPropsTo(<Facet key={facet.field} facet={facet} filters={filters} />);
                         }
                     }.bind(this))}
                 </div>
