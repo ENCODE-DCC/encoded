@@ -41,39 +41,8 @@ var App = React.createClass({
         return {
             errors: [],
             portal: portal,
-            user_actions: user_actions,
-            popoverComponent: undefined
+            user_actions: user_actions
         };
-    },
-
-
-    // Document popover context using React context mechanism.
-    childContextTypes: {
-        popoverComponent: React.PropTypes.string,
-        onPopoverChange: React.PropTypes.func
-    },
-
-    getChildContext: function() {
-        return {
-            popoverComponent: this.state.popoverComponent, // ID of component with visible popup
-            onPopoverChange: this.handlePopoverChange // Function to process click in popover bar
-        };
-    },
-
-    handlePopoverChange: function(componentID) {
-        // Use React _rootNodeID to uniquely identify a document with popover;
-        // It's passed in as componentID
-        var newPopoverComponent;
-
-        // If clicked component is component with visible popover, set to undefined to close popover
-        newPopoverComponent = (this.state.popoverComponent === componentID) ? undefined : componentID;
-        this.setState({popoverComponent: newPopoverComponent});
-    },
-
-    handleLayoutClick: function(e) {
-        if(this.state.popoverComponent !== undefined) {
-            this.setState({popoverComponent: undefined});
-        }
     },
 
     render: function() {
@@ -109,14 +78,14 @@ var App = React.createClass({
             }));
         }
         // Switching between collections may leave component in place
-        key = context && context['@id'];
+        var key = context && context['@id'];
         var errors = this.state.errors.map(function (error) {
             return <div className="alert alert-error"></div>;
         });
 
         var appClass = 'done';
         if (this.props.slow) {
-        	appClass = 'communicating'; 
+            appClass = 'communicating'; 
         }
 
         var title = globals.listing_titles.lookup(context)({
@@ -149,8 +118,9 @@ var App = React.createClass({
                     <div id="slot-application">
                         <div id="application" className={appClass}>
                         
-						<div className="loading-spinner"></div>
-                            <div id="layout" onClick={this.handleLayoutClick}>
+                        <div className="loading-spinner"></div>
+                                   
+                            <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         user_actions={this.state.user_actions} session={this.state.session}
                                         loadingComplete={this.state.loadingComplete} />

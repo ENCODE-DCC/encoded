@@ -153,15 +153,11 @@ var Characterization = module.exports.Characterization = React.createClass({
             "characterization-slider": true,
             "active": this.state.panelOpen && !this.state.panelFixed
         });
-        var triggerClass = cx({
-            "trigger-icon": true,
-            "icon-sort-down": !this.state.panelOpen,
-            "icon-sort-up": this.state.panelOpen,
+        var tabTriggerClass = cx({
+            "trigger-tab": true,
+            "text-hide": true,
+            "active": this.state.panelOpen && !this.state.panelFixed,
             "disabled": this.state.panelFixed
-        });
-        var shadowClass = cx({
-            "characterization-slider-shadow": true,
-            "active": this.state.panelOpen || this.state.panelFixed
         });
         var kvTriggerClass = cx({
             "key-value-trigger": true,
@@ -222,14 +218,14 @@ var Characterization = module.exports.Characterization = React.createClass({
                         <dd>{context.validated_by}</dd>
                         */}
 
-                        <div className={shadowClass}></div>
-
                     </dl>
                     <dl className={kvTriggerClass}>
                         <a href="#" onClick={this.handleClick}>
                             <dt>Lab</dt>
                             <dd>{context.lab.title}</dd>
-                            <i className={triggerClass}></i>
+                        </a>
+                        <a className={tabTriggerClass} href="#" onClick={this.handleClick}>
+                            Toggle panel disclosure
                         </a>
                     </dl>
                 </div>

@@ -176,18 +176,19 @@ $characterization-figure-height: 200px;
 }
 
 
-.trigger-icon {
+.trigger-tab {
     position: absolute;
-    right: 10px;
-    line-height: 32px;
-    font-size: 20px;
+    width: 40px;
+    height: 20px !important;
+    left: 50%;
+    top: -20px;
+    margin-left: -20px;
+    background-image: url(../img/disclose-tab-sprite.svg);
+    background-size: 40px 40px;
+    background-position: 0 0;
 
-    &.icon-sort-down {
-        top: -5px;
-    }
-
-    &.icon-sort-up {
-        top: 5px;
+    &.active {
+        background-position: 0 -20px;
     }
 
     &.disabled {
@@ -196,32 +197,19 @@ $characterization-figure-height: 200px;
 }
 
 
-
-
 .key-value-trigger {
     position: relative;
     margin: 0;
-    background-color: #edf2f5;
-
-    &.disabled a:hover {
-        color: #333;
-        background-color: #edf2f5;
-        cursor: default;
-    }
-
+    background-color: #a5b0ba;
+    border-top: 1px solid #808080;
 
     a {
         display: block;
         height: 100%;
         padding: 0 10px;
         line-height: 32px;
-        color: #0a253d;
-
-        &:hover {
-            color: #fff;
-            background-color: darken(#edf2f5,20%);
-            text-decoration: none;
-        }
+        color: #fff;
+        text-shadow: 0 1px 1px #000;
 
         dt {
             display: inline-block;
