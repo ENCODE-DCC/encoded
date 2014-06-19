@@ -154,9 +154,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     <span>
                                         {organismName.map(function(name, i) {
                                             if (i === 0) {
-                                                return (<em>{name}</em>);
+                                                return (<em key={name}>{name}</em>);
                                             } else {
-                                                return (<span>{' and '}<em>{name}</em></span>);
+                                                return (<span key={name}>{' and '}<em>{name}</em></span>);
                                             }
                                         })}
                                     </span>

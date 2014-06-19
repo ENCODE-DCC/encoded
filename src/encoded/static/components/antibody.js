@@ -30,7 +30,7 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
                 <ul className="status-list">
                     {status.map(function (status) {
                         return(
-                            <li className={globals.statusClass(status.status, 'label')}>
+                            <li key={status.title} className={globals.statusClass(status.status, 'label')}>
                                 {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
                                 {status.status}
                             </li>
