@@ -132,7 +132,7 @@
             "type": "string"
         },
         "lab.title": {
-            "title": "Submitter",
+            "title": "Lab",
             "type": "string"
         },
         "award.project": {
