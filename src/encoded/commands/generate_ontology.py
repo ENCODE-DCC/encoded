@@ -423,7 +423,7 @@ def main():
     uberon_url = args.uberon_url
     efo_url = args.efo_url
     obi_url = args.obi_url
-    urls = [obi_url, efo_url, uberon_url]
+    urls = [obi_url, uberon_url, efo_url]
 
     terms = {}
     for url in urls:
