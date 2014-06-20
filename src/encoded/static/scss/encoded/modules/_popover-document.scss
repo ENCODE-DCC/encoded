@@ -104,10 +104,16 @@ $characterization-figure-height: 200px;
 
 .characterization-badge {
     position: absolute;
-    bottom: 20px;
-    left: 50%;
-    width: $characterization-figure-width;
-    margin-left: -($characterization-figure-width / 2);
+    bottom: 5px;
+    left: 5px;
+    width: $characterization-figure-width - 10;
+
+    .label {
+        width: 100%;
+        padding: 8px 0;
+        text-align: center;
+        font-size: 12px;
+    }
 }
 
 .type-document {
@@ -176,6 +182,26 @@ $characterization-figure-height: 200px;
 }
 
 
+.trigger-icon {
+    position: absolute;
+    right: 10px;
+    line-height: 32px;
+    font-size: 20px;
+
+    &:hover {
+        text-decoration: none;
+    }
+
+    &.icon-sort-down {
+        top: -5px;
+    }
+
+    &.icon-sort-up {
+        top: 5px;
+    }
+}
+
+
 .trigger-tab {
     position: absolute;
     width: 40px;
@@ -203,13 +229,19 @@ $characterization-figure-height: 200px;
     background-color: #a5b0ba;
     border-top: 1px solid #808080;
 
+    &.disabled {
+        a {
+            cursor: default;
+        }
+    }
+
     a {
         display: block;
         height: 100%;
         padding: 0 10px;
         line-height: 32px;
         color: #fff;
-        text-shadow: 0 1px 1px #000;
+        text-shadow: 0 1px 1px #606060;
 
         dt {
             display: inline-block;
@@ -228,6 +260,10 @@ $characterization-figure-height: 200px;
         &:focus {
             border: 0;
             outline: none;
+        }
+
+        &:hover {
+            text-decoration: none;
         }
     }
 
