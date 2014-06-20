@@ -13,6 +13,7 @@
   "jest": {
     "rootDir": "src/encoded/static",
     "scriptPreprocessor": "../../../jest/preprocessor.js",
+    "setupEnvScriptFile": "../../../jest/environment.js",
     "unmockedModulePathPatterns": [
       "node_modules/react",
       "libs/react-patches"
