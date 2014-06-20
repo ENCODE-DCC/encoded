@@ -30,7 +30,7 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
                 <ul className="status-list">
                     {status.map(function (status) {
                         return(
-                            <li className={globals.statusClass(status.status, 'label')}>
+                            <li key={status.title} className={globals.statusClass(status.status, 'label')}>
                                 {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
                                 {status.status}
                             </li>
@@ -86,7 +86,7 @@ var Approval = module.exports.Approval = React.createClass({
                         <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
 
                         {context.antibody.host_organism ? <dt>Host</dt> : null}
-                        {context.antibody.host_organism ? <dd className="sentence-case"><em>{context.antibody.host_organism.scientific_name}</em></dd> : null}
+                        {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.name}</dd> : null}
         
                         {context.antibody.clonality ? <dt>Clonality</dt> : null}
                         {context.antibody.clonality ? <dd className="sentence-case">{context.antibody.clonality}</dd> : null}

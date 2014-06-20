@@ -51,14 +51,13 @@ var App = React.createClass({
         var context = this.props.context;
         var hash = url.parse(this.props.href).hash || '';
         var name;
-        var key;
         if (hash.slice(0, 2) === '#!') {
             name = hash.slice(2);
         }
         if (context) {
             var actions = this.props.context.actions;
             if (actions && actions.length) {
-                var actions = (
+                actions = (
                     <div className="navbar navbar-default">
                         <div className="container">
                             {actions.map(action => <a href={action.href}><button className={action.className}>{action.title}</button></a>)}
@@ -66,7 +65,7 @@ var App = React.createClass({
                     </div>
                 );
             } else {
-                var actions = '';
+                actions = null;
             }
 
             var ContentView = globals.content_views.lookup(context, name);
@@ -87,7 +86,7 @@ var App = React.createClass({
         var appClass = 'done';
         if (this.props.slow) {
         	appClass = 'communicating'; 
-        };
+        }
 
         var title = globals.listing_titles.lookup(context)({
             context: context,

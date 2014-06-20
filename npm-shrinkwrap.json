@@ -22,7 +22,8 @@
           "dependencies": {
             "minimist": {
               "version": "0.0.8",
-              "from": "minimist@0.0.8"
+              "from": "minimist@0.0.8",
+              "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.0.8.tgz"
             }
           }
         },
@@ -160,8 +161,9 @@
               "from": "shallow-copy@~0.0.1"
             },
             "static-eval": {
-              "version": "0.2.2",
+              "version": "0.2.3",
               "from": "static-eval@~0.2.0",
+              "resolved": "https://registry.npmjs.org/static-eval/-/static-eval-0.2.3.tgz",
               "dependencies": {
                 "escodegen": {
                   "version": "0.0.28",
@@ -177,7 +179,7 @@
                     },
                     "source-map": {
                       "version": "0.1.34",
-                      "from": "source-map@>= 0.1.2",
+                      "from": "source-map@~0.1.33",
                       "dependencies": {
                         "amdefine": {
                           "version": "0.1.0",
@@ -245,7 +247,7 @@
             },
             "through": {
               "version": "2.3.4",
-              "from": "through@~2.3.4"
+              "from": "through@>=2.2.7 <3"
             }
           }
         },
@@ -397,7 +399,7 @@
           "dependencies": {
             "through": {
               "version": "2.3.4",
-              "from": "through@2.3.4"
+              "from": "through@~2.3.4"
             },
             "JSONStream": {
               "version": "0.6.4",
@@ -415,7 +417,7 @@
             },
             "minimist": {
               "version": "0.0.10",
-              "from": "minimist@~0.0.1"
+              "from": "minimist@~0.0.7"
             }
           }
         },
@@ -862,6 +864,7 @@
         "jsdom": {
           "version": "0.5.7",
           "from": "jsdom@0.5.7",
+          "resolved": "https://registry.npmjs.org/jsdom/-/jsdom-0.5.7.tgz",
           "dependencies": {
             "htmlparser": {
               "version": "1.7.7",
@@ -1073,11 +1076,12 @@
         },
         "minimist": {
           "version": "0.0.5",
-          "from": "minimist@0.0.5"
+          "from": "minimist@0.0.5",
+          "resolved": "https://registry.npmjs.org/minimist/-/minimist-0.0.5.tgz"
         },
         "through2": {
           "version": "0.4.2",
-          "from": "through2@~0.4.0",
+          "from": "through2@~0.4.1",
           "dependencies": {
             "readable-stream": {
               "version": "1.0.27-1",
@@ -1362,9 +1366,9 @@
       "from": "react-bootstrap@^0.10.2"
     },
     "react-forms": {
-      "version": "0.3.1",
-      "from": "react-forms@git://github.com/lrowe/react-forms",
-      "resolved": "git://github.com/lrowe/react-forms#56fb3bb505646cf49d372000dac020e63ffad4cc"
+      "version": "0.3.3",
+      "from": "react-forms@^0.3.3",
+      "resolved": "https://registry.npmjs.org/react-forms/-/react-forms-0.3.3.tgz"
     },
     "reactify": {
       "version": "0.13.1",
@@ -1505,7 +1509,8 @@
                     },
                     "rimraf": {
                       "version": "1.0.1",
-                      "from": "rimraf@= 1.0.1"
+                      "from": "rimraf@= 1.0.1",
+                      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-1.0.1.tgz"
                     },
                     "terminal": {
                       "version": "0.1.3",
