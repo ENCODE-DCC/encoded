@@ -28,7 +28,8 @@
             "type": "string",
             "enum": [
                 "fusion protein",
-                "zinc-finger knockout"
+                "zinc-finger knockout",
+                "TALEN"
             ]
         },
         "description": {
