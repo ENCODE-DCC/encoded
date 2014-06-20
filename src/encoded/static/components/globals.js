@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 'use strict';
-var Registry = require('registry');
+var Registry = require('../libs/registry');
 
 // Item pages
 module.exports.content_views = new Registry();

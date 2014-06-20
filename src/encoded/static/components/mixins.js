@@ -1,8 +1,9 @@
 /** @jsx React.DOM */
+/*jshint scripturl:true */
 'use strict';
 var React = require('react');
 var url = require('url');
-var origin = require('origin');
+var origin = require('../libs/origin');
 
 var parseError = module.exports.parseError = function (xhr, status) {
     var data;
