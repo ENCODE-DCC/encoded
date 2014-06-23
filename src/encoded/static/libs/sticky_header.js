@@ -1,6 +1,5 @@
 'use strict';
-var $ = require('jquery');
-
+(function ($) {
 // http://stackoverflow.com/a/6625189/199100
 // http://css-tricks.com/persistent-headers/
 function translate(element, x, y) {
@@ -40,3 +39,5 @@ $(function() {
     $(window).scroll(sticky_header);
     $(window).resize(sticky_header);
 });
+
+})(require('jquery'));

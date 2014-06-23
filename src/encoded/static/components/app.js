@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var jsonScriptEscape = require('jsonScriptEscape');
+var jsonScriptEscape = require('../libs/jsonScriptEscape');
 var globals = require('./globals');
 var mixins = require('./mixins');
 var NavBar = require('./navbar');
