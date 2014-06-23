@@ -3,8 +3,6 @@
 require('jest-runtime').mock('scriptjs');
 window.$script = require('scriptjs');
 
-require('../src/encoded/static/libs/react-patches');
-
 if (window.DOMParser === undefined) {
     // jsdom
     window.DOMParser = function DOMParser() {};

@@ -3,9 +3,10 @@
 
 jest.autoMockOff();
 jest.mock('jquery');
-// Fixes https://github.com/facebook/jest/issues/78
-jest.dontMock('underscore');
 
+// Fixes https://github.com/facebook/jest/issues/78
+jest.dontMock('react');
+jest.dontMock('underscore');
 
 describe("Server rendering", function () {
     var React;
@@ -20,6 +21,7 @@ describe("Server rendering", function () {
     };
 
     beforeEach(function () {
+        require('../../libs/react-patches');
         React = require('react');
         App = require('..');
         var server_app = <App context={home} href={home_url} />;
@@ -30,6 +32,11 @@ describe("Server rendering", function () {
 
     it("renders the application to html", function () {
         expect(document.title).toBe(home.portal_title);
+    });
+
+    it("react render http-equiv correctly", function () {
+        var meta_http_equiv = document.querySelectorAll('meta[http-equiv]');
+        expect(meta_http_equiv.length).not.toBe(0);
     });
 
     it("mounts the application over the rendered html", function () {
