@@ -1,4 +1,8 @@
-var Registry = require('registry');
+'use strict';
+
+jest.dontMock('../registry');
+jest.dontMock('underscore');
+var Registry = require('../registry');
 
 var test_obj = {'@type': ['test', 'item']};
 var specific_obj = {'@type': ['specific', 'item']};
@@ -11,7 +15,7 @@ var views = [
 ];
 
 var make_one = function () {
-    var registry = Registry();
+    var registry = new Registry();
     views.forEach(function (view) {
         registry.register(view, view.for_, view.name);
     });

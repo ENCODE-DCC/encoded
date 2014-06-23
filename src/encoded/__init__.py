@@ -38,10 +38,6 @@ def static_resources(config):
     config.add_view(favicon, route_name='favicon.ico')
 
 
-def tests_js(config):
-    config.add_static_view('tests/js', 'tests/js', cache_max_age=STATIC_MAX_AGE)
-
-
 def configure_engine(settings, test_setup=False):
     engine_url = settings.get('sqlalchemy.url')
     if not engine_url:
@@ -178,7 +174,6 @@ def main(global_config, **settings):
 
     if asbool(settings.get('testing', False)):
         config.include('.tests.testing_views')
-        config.include(tests_js)
 
     # Load upgrades last so that all views (including testing views) are
     # registered.

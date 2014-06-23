@@ -1,12 +1,12 @@
 // Entry point for browser
 
 /* jshint strict: false */
-require('react-patches');
+require('./libs/react-patches');
 var React = require('react');
 var ReactMount = require('react/lib/ReactMount');
 ReactMount.allowFullPageRender = true;
 
-var App = require('main');
+var App = require('./components');
 var domready = require('domready');
 
 // Treat domready function as the entry point to the application.
