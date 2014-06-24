@@ -108,7 +108,7 @@
                 },
                 "source-map": {
                   "version": "0.1.34",
-                  "from": "source-map@>= 0.1.2",
+                  "from": "source-map@~0.1.33",
                   "dependencies": {
                     "amdefine": {
                       "version": "0.1.0",
@@ -177,7 +177,7 @@
                     },
                     "source-map": {
                       "version": "0.1.34",
-                      "from": "source-map@>= 0.1.2",
+                      "from": "source-map@~0.1.33",
                       "dependencies": {
                         "amdefine": {
                           "version": "0.1.0",
@@ -797,7 +797,7 @@
                 },
                 "source-map": {
                   "version": "0.1.34",
-                  "from": "source-map@~0.1.30",
+                  "from": "source-map@~0.1.33",
                   "dependencies": {
                     "amdefine": {
                       "version": "0.1.0",
@@ -1004,6 +1004,48 @@
                 "nan": {
                   "version": "1.0.0",
                   "from": "nan@~1.0.0"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "deamdify": {
+      "version": "0.1.1",
+      "from": "deamdify@^0.1.1",
+      "dependencies": {
+        "through": {
+          "version": "2.3.4",
+          "from": "through@~2.3.4"
+        },
+        "esprima": {
+          "version": "1.2.2",
+          "from": "esprima@1.x.x"
+        },
+        "estraverse": {
+          "version": "1.5.0",
+          "from": "estraverse@1.x.x"
+        },
+        "escodegen": {
+          "version": "0.0.28",
+          "from": "escodegen@0.0.x",
+          "dependencies": {
+            "esprima": {
+              "version": "1.0.4",
+              "from": "esprima@~1.0.2"
+            },
+            "estraverse": {
+              "version": "1.3.2",
+              "from": "estraverse@~1.3.0"
+            },
+            "source-map": {
+              "version": "0.1.34",
+              "from": "source-map@>= 0.1.2",
+              "dependencies": {
+                "amdefine": {
+                  "version": "0.1.0",
+                  "from": "amdefine@>=0.0.4"
                 }
               }
             }
@@ -1341,10 +1383,6 @@
         }
       }
     },
-    "grunt-contrib-copy": {
-      "version": "0.5.0",
-      "from": "grunt-contrib-copy@^0.5.0"
-    },
     "jest-cli": {
       "version": "0.1.15",
       "from": "jest-cli@^0.1.15",
@@ -1673,10 +1711,6 @@
         }
       }
     },
-    "node-ckeditor": {
-      "version": "4.3.2",
-      "from": "node-ckeditor@^4.3.2"
-    },
     "react": {
       "version": "0.10.0",
       "from": "react@^0.10.0"
@@ -1851,6 +1885,22 @@
         "through": {
           "version": "2.3.4",
           "from": "through@~2.3.4"
+        }
+      }
+    },
+    "scribe-editor": {
+      "version": "0.1.12",
+      "from": "scribe-editor@git://github.com/lrowe/scribe#use-fixed-scribe-common",
+      "resolved": "git://github.com/lrowe/scribe#52c1e527086f4cbf51c998300e2f867ddfded00f",
+      "dependencies": {
+        "lodash-amd": {
+          "version": "2.4.1",
+          "from": "lodash-amd@~2.4.1"
+        },
+        "scribe-common": {
+          "version": "0.0.4",
+          "from": "scribe-common@git://github.com/Automattic/scribe-common.git",
+          "resolved": "git://github.com/Automattic/scribe-common.git#2b49b85babc18240b63f147567a3459534495eb5"
         }
       }
     },
