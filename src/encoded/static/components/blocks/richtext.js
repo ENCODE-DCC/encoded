@@ -22,32 +22,22 @@ var RichTextBlockView = React.createClass({
 
     componentDidMount: function() {
         if (this.props.editable) {
-            $script('ckeditor/ckeditor', this.setupEditor);
+            $script('scribe', this.setupEditor);
         }
     },
 
     setupEditor: function() {
-        var ck = window.CKEDITOR;
-        ck.disableAutoInline = true;
-        this.editor = ck.inline(this.getDOMNode(), {
-            toolbar: [
-                { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
-                { name: 'styles', items: [ 'Format' ] },
-                { name: 'paragraph', groups: [ 'list', 'indent', 'align'], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
-                { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-                { name: 'undo', groups: [ 'undo' ], items: [ 'Undo', 'Redo' ] },
-                { name: 'document', groups: [ 'mode' ], items: [ 'Source' ] },
-            ],
-        });
-        this.editor.on('change', function() {
-            this.state.value.body = this.editor.getData();
+        var Scribe = require('scribe-editor');
+        this.editor = new Scribe(this.getDOMNode());
+        this.editor.on('content-changed', function() {
+            this.state.value.body = this.editor.getHTML();
             this.setState(this.state);
             this.props.onChange(this.state.value);
         }.bind(this));
     },
 
     shouldComponentUpdate: function(nextProps, nextState) {
-        return (!this.editor || nextState.value.body != this.editor.getData());
+        return (!this.editor || nextState.value.body != this.editor.getHTML());
     },
 
     render: function() {
