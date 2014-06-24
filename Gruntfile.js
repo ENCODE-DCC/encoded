@@ -14,6 +14,18 @@ module.exports = function(grunt) {
                     debug: true,
                 },
             },
+            scribe: {
+                dest: './src/encoded/static/build/scribe.js',
+                require: [
+                    'scribe-editor',
+                ],
+                transform: [
+                    [{global: true}, 'deamdify'],
+                ],
+                bundle: {
+                    debug: true,
+                },
+            },
             browser: {
                 dest: './src/encoded/static/build/bundle.js',
                 src: [
@@ -26,6 +38,7 @@ module.exports = function(grunt) {
                     'brace',
                     'brace/mode/json',
                     'brace/theme/solarized_light',
+                    'scribe-editor',
                 ],
                 require: [
                     'domready',
@@ -67,14 +80,6 @@ module.exports = function(grunt) {
                     'd3',
                 ],
             },
-        },
-        copy: {
-            ckeditor: {
-                expand: true,
-                cwd: 'node_modules/node-ckeditor',
-                src: 'ckeditor/**',
-                dest: 'src/encoded/static/build/',
-            }
         },
     });
 
@@ -148,7 +153,5 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.loadNpmTasks('grunt-contrib-copy');
-
-    grunt.registerTask('default', ['browserify', 'copy']);
+    grunt.registerTask('default', ['browserify']);
 };

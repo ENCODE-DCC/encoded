@@ -24,12 +24,12 @@
     "browserify": "^4.1.4",
     "reactify": "^0.13.1",
     "grunt-cli": "^0.1.13",
-    "grunt-contrib-copy": "^0.5.0",
     "exorcist": "^0.1.6",
     "brfs": "^1.1.1",
     "jest-cli": "^0.1.15",
     "react-tools": "^0.10.0",
-    "jstransform": "^4.0.1"
+    "jstransform": "^4.0.1",
+    "deamdify": "^0.1.1"
   },
   "dependencies": {
     "brace": "^0.2.1",
@@ -39,13 +39,13 @@
     "envify": "^1.2.1",
     "es5-shim": "^3.3.0",
     "jquery": "^1.11.1",
-    "node-ckeditor": "^4.3.2",
     "react": "^0.10.0",
     "react-bootstrap": "^0.10.2",
     "react-forms": "^0.3.3",
     "scriptjs": "^2.5.3",
     "source-map-support": "^0.2.6",
     "subprocess-middleware": "^0.1.0",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "scribe-editor": "git://github.com/lrowe/scribe#use-fixed-scribe-common"
   }
 }
