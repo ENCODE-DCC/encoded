@@ -215,6 +215,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.dbxrefs.length ? <dt>External resources</dt> : null}
                         {context.dbxrefs.length ? <dd><DbxrefList values={context.dbxrefs} /></dd> : null}
 
+                        {context.date_released ? <dt>Date released</dt> : null}
+                        {context.date_released ? <dd>{context.date_released}</dd> : null}
+
                         {context.aliases.length ? <dt>Aliases</dt> : null}
                         {context.aliases.length ? <dd>{aliasList}</dd> : null}
 

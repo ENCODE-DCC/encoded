@@ -83,6 +83,7 @@
         "biosample_term_name": "CH12.LX cell",
         "biosample_type": "immortalized cell line",
         "dataset_type": "experiment",
+        "date_released": "2011-10-29",
         "dbxrefs": [
             "UCSC-ENCODE-mm9:wgEncodeEM002004",
             "GEO:GSM798327",
