@@ -786,8 +786,9 @@ class Dataset(Collection):
             properties = super(Dataset.Item, cls).expand_page(request, properties)
             if 'hub' in properties:
                 properties = properties.copy()
+                url = request.resource_url(request.root) + properties['hub']
                 properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?db=' + properties['assembly'] + \
-                    '&hubUrl=http://' + request.host + properties['hub']
+                    '&hubUrl=' + url
             return properties
 
 
