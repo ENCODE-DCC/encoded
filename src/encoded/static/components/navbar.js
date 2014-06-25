@@ -18,7 +18,7 @@ var NavBar = React.createClass({
             portal: this.props.portal,
             section: section,
             session: this.props.session,
-            edit_actions: this.props.edit_actions,
+            context_actions: this.props.context_actions,
             user_actions: this.props.user_actions,
             href: this.props.href,
         });
@@ -55,14 +55,14 @@ var NavBarLayout = React.createClass({
         var section = this.props.section;
         var session = this.props.session;
         var user_actions = this.props.user_actions;
-        var groups = session.user_properties && session.user_properties.groups;
+        var context_actions = this.props.context_actions;
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
                     <Navbar brand={portal.portal_title} brandlink="/" noClasses={true} data-target="main-nav">
                         <GlobalSections global_sections={portal.global_sections} section={section} />
                         {this.transferPropsTo(<UserActions />)}
-                        {_.indexOf(groups, "admin") !== -1 ? this.transferPropsTo(<EditActions />) : null}
+                        {context_actions ? this.transferPropsTo(<ContextActions />) : null}
                         {this.transferPropsTo(<Search />)}
                     </Navbar>
                 </div>
@@ -97,16 +97,17 @@ var GlobalSections = React.createClass({
     }
 });
 
-var EditActions = React.createClass({
+var ContextActions = React.createClass({
     render: function() {
-        var action = this.props.edit_actions;
-        return (
-            <Nav bsStyle="navbar-nav" navbar={true} right={true} id="edit-actions">
-                <NavItem href={action.url || ''} key={action.id} data-bypass={action.bypass} data-trigger={action.trigger}>
+        var actions = this.props.context_actions.map(function(action) {
+            return (
+                <NavItem href={action.href} key={action.name}>
                     <i className="icon-pencil"></i>
+                    {action.title}
                 </NavItem>
-            </Nav>
-        );
+            );
+        });
+        return <Nav bsStyle="navbar-nav" navbar={true} right={true} id="edit-actions">{actions}</Nav>;
     }
 });
 

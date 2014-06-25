@@ -28,12 +28,7 @@ var LayoutType = {
 var Page = module.exports.Page = React.createClass({
     render: function() {
         var value = LayoutType.serialize(this.props.context.layout);
-        return (
-            <div>
-                {this.props.actions}
-                <Layout value={value} />
-            </div>
-        );
+        return <div><Layout value={value} /></div>;
     }
 });
 

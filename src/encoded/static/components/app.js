@@ -20,8 +20,6 @@ var portal = {
 };
 
 
-var edit_actions = {id: 'edit', title: 'Edit', url: "#!edit"};
-
 var user_actions = [
     {id: 'signout', title: 'Sign out', trigger: 'logout'}
 ];
@@ -44,7 +42,6 @@ var App = React.createClass({
         return {
             errors: [],
             portal: portal,
-            edit_actions: edit_actions,
             user_actions: user_actions
         };
     },
@@ -59,25 +56,11 @@ var App = React.createClass({
             name = hash.slice(2);
         }
         if (context) {
-            var actions = this.props.context.actions;
-            if (actions && actions.length) {
-                actions = (
-                    <div className="navbar navbar-default">
-                        <div className="container">
-                            {actions.map(action => <a href={action.href}><button className={action.className}>{action.title}</button></a>)}
-                        </div>
-                    </div>
-                );
-            } else {
-                actions = '';
-            }
-
             var ContentView = globals.content_views.lookup(context, name);
             content = this.transferPropsTo(ContentView({
                 loadingComplete: this.state.loadingComplete,
                 session: this.state.session,
                 portal: this.state.portal,
-                actions: actions,
                 navigate: this.navigate
             }));
         }
@@ -126,7 +109,7 @@ var App = React.createClass({
 								   
                             <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
-                                        edit_actions={this.state.edit_actions}
+                                        context_actions={context.actions || []}
                                         user_actions={this.state.user_actions} session={this.state.session}
                                         loadingComplete={this.state.loadingComplete} />
                                 <div id="content" className="container" key={key}>
