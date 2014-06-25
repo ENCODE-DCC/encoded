@@ -279,8 +279,8 @@ def es_tween_factory(handler, registry):
 
         if frame == 'page':
             properties = source['embedded']
-            root = registry.getUtility(IRootFactory)(request)
-            collection = root.get(properties['@type'][0])
+            request.root = registry.getUtility(IRootFactory)(request)
+            collection = request.root.get(properties['@type'][0])
             rendering_val = collection.Item.expand_page(request, properties)
             allowed = set(source['principals_allowed_edit'])
             if allowed.intersection(request.effective_principals):
