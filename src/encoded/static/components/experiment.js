@@ -15,6 +15,7 @@ var StatusLabel = antibody.StatusLabel;
 var Panel = function (props) {
     // XXX not all panels have the same markup
     var context;
+    console.log(props);
     if (props['@id']) {
         context = props;
         props = {context: context};
@@ -244,13 +245,13 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-small" href={context['visualize_ucsc']}>Visualize Data</a>
                     </span>
                 : null }
-
+/*
                 {context.files.length ?
                     <div>
                         <h3>Files linked to {context.accession}</h3>
                         <FileTable items={context.files} encodevers={encodevers} />
                     </div>
-                : null }
+                : null } */
             </div>
         );
     }
