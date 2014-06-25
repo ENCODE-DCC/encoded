@@ -53,7 +53,7 @@
                 {
                     "cols": [
                         {
-                            "className": "class_override",
+                            "className": "col-xs-12 class_override",
                             "blocks": ["#block1"]
                         }
                     ]
