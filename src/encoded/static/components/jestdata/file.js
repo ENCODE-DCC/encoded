@@ -1,6 +1,7 @@
 module.exports.file_basic = [
     {
         "@id": "/files/ENCFF001REL/",
+        "@type": ["file", "item"],
         "accession": "ENCFF001REL",
         "alternate_accessions": [],
         "dataset": "/experiments/ENCSR000AES/",
@@ -18,6 +19,7 @@ module.exports.file_basic = [
     },
     {
         "@id": "/files/ENCFF001REQ/",
+        "@type": ["file", "item"],
         "accession": "ENCFF001REQ",
         "alternate_accessions": [],
         "dataset": "/experiments/ENCSR000AES/",

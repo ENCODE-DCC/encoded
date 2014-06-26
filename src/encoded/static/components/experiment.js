@@ -15,7 +15,6 @@ var StatusLabel = antibody.StatusLabel;
 var Panel = function (props) {
     // XXX not all panels have the same markup
     var context;
-    console.log(props);
     if (props['@id']) {
         context = props;
         props = {context: context};
