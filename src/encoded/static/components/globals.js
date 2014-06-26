@@ -1,21 +1,21 @@
 /** @jsx React.DOM */
 'use strict';
-var Registry = require('registry');
+var Registry = require('../libs/registry');
 
 // Item pages
-module.exports.content_views = Registry();
+module.exports.content_views = new Registry();
 
 // Panel detail views
-module.exports.panel_views = Registry();
+module.exports.panel_views = new Registry();
 
 // Listing detail views
-module.exports.listing_views = Registry();
+module.exports.listing_views = new Registry();
 
 // Cell name listing titles
-module.exports.listing_titles = Registry();
+module.exports.listing_titles = new Registry();
 
 // Blocks
-module.exports.blocks = Registry();
+module.exports.blocks = new Registry();
 
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
