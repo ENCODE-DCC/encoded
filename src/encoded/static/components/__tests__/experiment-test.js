@@ -49,9 +49,9 @@ describe('experiment', function() {
     var human_donor = require('../jestdata/human_donor.js').human_donors[0];
     var mouse_donor = require('../jestdata/mouse_donor.js').mouse_donors[0];
     var source = require('../jestdata/source.js').sources[0];
-    var organisms = require('../jestdata/organism.js').organisms;
-    human_donor.organism = organisms[0];
-    mouse_donor.organism = organisms[1];
+    var organisms = require('../jestdata/organism.js');
+    human_donor.organism = organisms.human;
+    mouse_donor.organism = organisms.mouse;
     biosamples[0].donor = human_donor;
     biosamples[1].donor = mouse_donor;
     biosamples[0].source = biosamples[1].source = source;
