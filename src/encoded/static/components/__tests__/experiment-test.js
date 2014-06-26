@@ -67,14 +67,15 @@ describe('experiment', function() {
         var experiment = <Experiment context={context} />;
         TestUtils.renderIntoDocument(experiment);
 
-        // Seven key-value elements in summary section
+        // Key-value elements in summary section
         var summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
         expect(summary.length).toEqual(1);
         var defTerms = summary[0].getDOMNode().getElementsByTagName('dt');
-        expect(defTerms.length).toEqual(8);
+        expect(defTerms.length).toEqual(9);
         var defDescs = summary[0].getDOMNode().getElementsByTagName('dd');
-        expect(defDescs.length).toEqual(8);
+        expect(defDescs.length).toEqual(9);
         expect(defDescs[2].textContent).toContain('Homo sapiens and Mus musculus');
+        expect(defDescs[8].textContent).toEqual('2011-10-29');
 
         // Proper links in dbxrefs key-value
         var dbxrefs = defDescs[7].getElementsByTagName('a');

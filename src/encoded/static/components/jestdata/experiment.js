@@ -15,6 +15,7 @@ module.exports.experiment_basic = {
     "biosample_term_name": "K562",
     "biosample_type": "immortalized cell line",
     "dataset_type": "experiment",
+    "date_released": "2011-10-29",
     "dbxrefs": ["UCSC-ENCODE-hg19:wgEncodeEH003317", "GEO:GSM1010811"],
     "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
     "documents": [],
