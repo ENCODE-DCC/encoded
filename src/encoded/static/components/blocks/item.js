@@ -41,11 +41,8 @@ var ItemPreview = React.createClass({
     render: function() {
         var context = this.props.data;
         var style = {width: '80%'};
-        return (
-            <ul className="facet-list nav" style={style}>
-                <Listing context={context} columns={context.columns} />
-            </ul>
-        );
+        var title = globals.listing_titles.lookup(context)({context: context});
+        return <h2><a href={context['@id']}>{title}</a></h2>;
     }
 });
 
