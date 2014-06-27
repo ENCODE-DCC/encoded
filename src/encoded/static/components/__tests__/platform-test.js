@@ -21,7 +21,7 @@ describe('Platform', function() {
         var Panel = require('../platform.js').Panel;
         TestUtils = require('react/lib/ReactTestUtils');
 
-        // Set up context object
+        // Set up context object to be rendered
         var context = {
             url: 'http://www3.appliedbiosystems.com/cms/groups/mcb_marketing/documents/generaldocuments/cms_072050.pdf',
             title: 'Applied Biosystems SOLiD System 3 Plus',
@@ -54,9 +54,9 @@ describe('Platform', function() {
         });
 
         it('has an unordered list with two items', function() {
-            expect(defDescNode.hasChildNodes()).toEqual(true);
+            expect(defDescNode.hasChildNodes()).toBeTruthy();
             expect(defDescNode.childNodes.length).toEqual(1);
-            expect(unorderedList.hasChildNodes()).toEqual(true);
+            expect(unorderedList.hasChildNodes()).toBeTruthy();
             expect(unorderedList.childNodes.length).toEqual(2);
         });
 
@@ -66,9 +66,9 @@ describe('Platform', function() {
         });
 
         it('has links to the proper places', function() {
-            expect(listItems[0].hasChildNodes()).toEqual(true);
+            expect(listItems[0].hasChildNodes()).toBeTruthy();
             expect(listItems[0].childNodes.length).toEqual(1);
-            expect(listItems[1].hasChildNodes()).toEqual(true);
+            expect(listItems[1].hasChildNodes()).toBeTruthy();
             expect(listItems[1].childNodes.length).toEqual(1);
             expect(anchors[0].getAttribute('href')).toEqual('http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term="AB_SOLiD_3.5"');
             expect(anchors[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL9442');
