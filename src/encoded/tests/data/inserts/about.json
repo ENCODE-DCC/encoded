@@ -7,36 +7,38 @@
         "layout": {
             "rows": [
                 {
-                    "blocks": [
-                        {
-                            "@type": "richtextblock",
-                            "data": {
-                                "body": "<div class=\"project-info site-title\">\n    <h1>ENCODE: The Encyclopedia of DNA Elements</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
-                            }
-                        }
+                    "cols": [
+                        {"blocks": ["#block1"]}
                     ]
                 },
                 {
-                    "blocks": [
-                        {
-                            "@type": "richtextblock",
-                            "data": {
-                                "body": "<h2>Transcriptome</h2>\n<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>"
-                            }
-                        },
-                        {
-                            "@type": "richtextblock",
-                            "data": {
-                                "body": "<h2>Regulation</h2>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.</p>"
-                            }
-                        },
-                        {
-                            "@type": "richtextblock",
-                            "data": {
-                                "body": "<h2>Chromatin Structure</h2>\n<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem.</p>"
-                            }
-                        }
+                    "cols": [
+                        {"blocks": ["#block2"]},
+                        {"blocks": ["#block3"]},
+                        {"blocks": ["#block4"]}
                     ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<div class=\"project-info site-title\">\n    <h1>ENCODE: The Encyclopedia of DNA Elements</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
+                },
+                {
+                    "@id": "#block2",
+                    "@type": "richtextblock",
+                    "body": "<h2>Transcriptome</h2>\n<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>"
+                },
+                {
+                    "@id": "#block3",
+                    "@type": "richtextblock",
+                    "body": "<h2>Regulation</h2>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.</p>"
+                },
+                {
+                    "@id": "#block4",
+                    "@type": "richtextblock",
+                    "body": "<h2>Chromatin Structure</h2>\n<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem.</p>"
                 }
             ]
         }
@@ -49,31 +51,40 @@
         "layout": {
             "rows": [
                 {
-                    "blocks": [
+                    "cols": [
                         {
-                            "@type": "richtextblock",
-                            "className": "col-md-4 class_override",
-                            "data": {
-                                "body": "<h1>About</h1>"
-                            }
+                            "className": "col-xs-12 class_override",
+                            "blocks": ["#block1"]
                         }
                     ]
                 },
                 {
-                    "blocks": [
-                        {
-                            "@type": "searchblock",
-                            "data": {
-                                "search": "?type=antibody_approval"
-                            }
-                        },
-                        {
-                            "@type": "itemblock",
-                            "data": {
-                                "item": "b4589f52-521e-45db-8dfa-378d92cbbd86"
-                            }
-                        }
+                    "cols": [
+                        {"blocks": ["#block2", "#block3"]},
+                        {"blocks": ["#block4"]}
                     ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<h1>About</h1>"
+                },
+                {
+                    "@id": "#block2",
+                    "@type": "richtextblock",
+                    "body": "<h2>Antibodies</h2>"
+                },
+                {
+                    "@id": "#block3",
+                    "@type": "searchblock",
+                    "search": "?type=antibody_approval"
+                },
+                {
+                    "@id": "#block4",
+                    "@type": "itemblock",
+                    "item": "b4589f52-521e-45db-8dfa-378d92cbbd86"
                 }
             ]
         }
