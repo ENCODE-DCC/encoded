@@ -928,6 +928,17 @@ class HelpPage(Page):
     unique_key = 'help_page:name'
 
 
+@location('publication')
+class Publication(Collection):
+    item_type = 'publication'
+    schema = load_schema('publication.json')
+    properties = {
+        'title': 'Publication',
+        'description': 'Publication pages',
+    }
+    unique_key = 'publication:title'
+
+
 @location('images')
 class Image(Collection):
     item_type = 'image'
