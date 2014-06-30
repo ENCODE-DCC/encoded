@@ -119,11 +119,6 @@ var Experiment = module.exports.Experiment = React.createClass({
             statuses.push({status: "pending", title: "Validation"});
         }
 
-        // List pubmed links
-        var pubmed_links = context.references.map(function(id) {
-            return <li><a href={globals.externalRefMap['pubmed'] + id.slice(5)}>{id}</a></li>;
-        });
-
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -224,11 +219,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.aliases.length ? <dd>{aliasList}</dd> : null}
 
                         {context.references.length ? <dt>References</dt> : null}
-                        {context.references.length ? <dd>
-                            <ul className="horizontal-list">
-                                {pubmed_links}
-                            </ul>
-                        </dd> : null}
+                        {context.references.length ? <dd><References values={context.references} /></dd> : null}
                     </dl>
                 </div>
 
@@ -377,3 +368,23 @@ var Replicate = module.exports.Replicate = function (props) {
 
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
+
+
+var References = function (props) {
+    var references = props.values.map(function(value) {
+        var sep = value.indexOf(':');
+        if (sep === -1) {
+            return null;
+        }
+
+        var prefix = value.slice(0, sep);
+        var local = value.slice(sep + 1);
+        if (!prefix || !local) {
+            return null;
+        }
+
+        return <li>{globals.referenceMap[prefix] ? <a href={globals.referenceMap[prefix] + local}>{value}</a> : null}</li>;
+    });
+
+    return (<ul className="horizontal-list">{references}</ul>);
+};

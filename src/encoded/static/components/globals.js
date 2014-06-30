@@ -50,8 +50,9 @@ module.exports.encodeVersionMap = {
     "ENCODE3": "3"
 };
 
-module.exports.externalRefMap = {
-    "pubmed": "http://www.ncbi.nlm.nih.gov/pubmed/?term="
+module.exports.referenceMap = {
+    "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
+    "doi": "http://dx.doi.org/doi:"
 };
 
 module.exports.dbxref_prefix_map = {

@@ -28,7 +28,8 @@ module.exports.experiment_basic = {
     "possible_controls": [],
     "references": [
         "PMID:23000965",
-        "PMID:16395128"
+        "PMID:16395128",
+        "doi:10.1038/nature11247"
     ],
     "replicates": [],
     "status": "released",

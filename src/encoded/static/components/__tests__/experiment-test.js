@@ -106,13 +106,13 @@ describe('Experiment', function() {
                 var refsUl = defDescs[8].childNodes;
                 expect(refsUl.length).toEqual(1);
                 var refsLi = refsUl[0].childNodes;
-                expect(refsLi.length).toEqual(2);
+                expect(refsLi.length).toEqual(3);
                 var refsA = refsLi[0].childNodes;
                 expect(refsA.length).toEqual(1);
                 expect(refsA[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=23000965');
-                refsA = refsLi[1].childNodes;
+                refsA = refsLi[2].childNodes;
                 expect(refsA.length).toEqual(1);
-                expect(refsA[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=16395128');
+                expect(refsA[0].getAttribute('href')).toEqual('http://dx.doi.org/doi:10.1038/nature11247');
             });
 
             it('has two experiment status elements in header', function() {
