@@ -21,7 +21,7 @@ dd.h3, dd.h4 {
     dt {
         display: inline-block;
         float: left;
-        width: $component-offset-horizontal - 10;
+        width: $component-offset-horizontal;
         text-align: right;
     }
     dt::after {
@@ -30,7 +30,7 @@ dd.h3, dd.h4 {
 
     dd {
         display: block;
-        margin-left: $component-offset-horizontal + 10;
+        margin-left: $component-offset-horizontal + 20;
         //margin-bottom: 5px;
         word-wrap: break-word;
         overflow-wrap: break-word;
