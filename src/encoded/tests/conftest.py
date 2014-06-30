@@ -649,7 +649,7 @@ def rnai(rnais):
 
 
 @pytest.fixture
-def constructs(testapp,labs, awards, targets):
+def constructs(testapp,labs, awards, targets, sources):
     from . import sample_data
     return sample_data.load(testapp, 'construct')
 
