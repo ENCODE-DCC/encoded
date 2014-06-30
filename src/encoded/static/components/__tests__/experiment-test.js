@@ -87,13 +87,14 @@ describe('Experiment', function() {
 
             it('Has correct summary panel and key-value elements within it', function() {
                 expect(summary.length).toEqual(1);
-                expect(defTerms.length).toEqual(9);
-                expect(defDescs.length).toEqual(9);
+                expect(defTerms.length).toEqual(10);
+                expect(defDescs.length).toEqual(10);
             });
 
-            it('has correct text in Biosample Summary and Release Date', function() {
+            it('has correct text in Biosample Summary, Aliases, and Release Date', function() {
                 expect(defDescs[2].textContent).toContain('Homo sapiens and Mus musculus');
-                expect(defDescs[8].textContent).toEqual('2011-10-29');
+                expect(defDescs[8].textContent).toEqual('gene-yeo:1, gene-yeo:4');
+                expect(defDescs[9].textContent).toEqual('2011-10-29');
             });
 
             it('has proper links in dbxrefs key-value', function() {

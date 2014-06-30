@@ -2,7 +2,7 @@ module.exports.experiment_basic = {
     "@id": "/experiments/ENCSR999NOF/",
     "@type": ["experiment", "dataset", "item"],
     "accession": "ENCSR999NOF",
-    "aliases": [],
+    "aliases": ["gene-yeo:1", "gene-yeo:4"],
     "assay_term_id": "OBI:0001271",
     "assay_term_name": "RNA-seq",
     "award": {
