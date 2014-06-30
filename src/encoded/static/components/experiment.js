@@ -9,6 +9,7 @@ var dataset = require('./dataset');
 var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
+var References = dataset.References;
 var FileTable = dataset.FileTable;
 var StatusLabel = antibody.StatusLabel;
 
@@ -368,23 +369,3 @@ var Replicate = module.exports.Replicate = function (props) {
 
 // Can't be a proper panel as the control must be passed in.
 //globals.panel_views.register(Replicate, 'replicate');
-
-
-var References = function (props) {
-    var references = props.values.map(function(value) {
-        var sep = value.indexOf(':');
-        if (sep === -1) {
-            return null;
-        }
-
-        var prefix = value.slice(0, sep);
-        var local = value.slice(sep + 1);
-        if (!prefix || !local) {
-            return null;
-        }
-
-        return <li>{globals.referenceMap[prefix] ? <a href={globals.referenceMap[prefix] + local}>{value}</a> : null}</li>;
-    });
-
-    return (<ul className="horizontal-list">{references}</ul>);
-};
