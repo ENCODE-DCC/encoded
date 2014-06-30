@@ -23,9 +23,13 @@
             "description": "Title of the publication or communication.",
             "type": "string"
         },
-        "citation": {
-            "title": "Citation",
-            "description": "Full citation of the publication.",
+        "abstract": {
+            "title": "Abstract",
+            "description": "Abstract of the publication or communication.",
+            "type": "string"
+        },
+        "authors": {
+            "title": "Authors",
             "type": "string"
         },
         "date_published": {
@@ -47,7 +51,7 @@
         "issue": {
             "title": "Issue",
             "description": "The issue of the publication.",
-            "type": "string"
+            "type": "integer"
         },
         "page": {
             "title": "Page",
@@ -57,9 +61,9 @@
         "volume": {
             "title": "Volume",
             "description": "The volume of the publication.",
-            "type": "string"
+            "type": "integer"
         },
-        "Journal": {
+        "journal": {
             "title": "Journal",
             "description": "The journal of the publication.",
             "type": "string"
