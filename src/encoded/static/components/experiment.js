@@ -218,6 +218,9 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.aliases.length ? <dt>Aliases</dt> : null}
                         {context.aliases.length ? <dd>{aliasList}</dd> : null}
 
+                        {context.date_released ? <dt>Date released</dt> : null}
+                        {context.date_released ? <dd>{context.date_released}</dd> : null}
+
                     </dl>
                 </div>
 
