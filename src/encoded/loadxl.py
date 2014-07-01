@@ -36,6 +36,7 @@ ORDER = [
     'file',
     'image',
     'about',
+    'publication'
 ]
 
 
