@@ -1,73 +1,67 @@
 /** @jsx React.DOM */
 'use strict';
 
-// Modules needed for all tests
+jest.autoMockOff();
+
+// Fixes https://github.com/facebook/jest/issues/78
 jest.dontMock('react');
 jest.dontMock('underscore');
-jest.dontMock('url');
-jest.dontMock('../../libs/registry.js');
-jest.dontMock('../../libs/origin.js');
-
-jest.autoMockOff();
 
 
 describe('Experiment Page', function() {
-    var TestUtils, Experiment;
-    var experiment, context;
+    var React, TestUtils, Experiment, context, _;
 
     beforeEach(function() {
-        var React = require('react');
+        React = require('react');
         TestUtils = require('react/lib/ReactTestUtils');
-        require('../biosample.js');
+        _ = require('underscore');
 
-        // Load up a single experiment with test data
         Experiment = require('../experiment.js').Experiment;
         context = require('../testdata/experiment.js');
-        context.files = require('../testdata/file.js');
-        context.documents = require('../testdata/document.js');
-        context.replicates = require('../testdata/replicate.js');
 
-        experiment = <Experiment context={context} />;
-        TestUtils.renderIntoDocument(experiment);
     });
 
-    describe('Header and Summary', function() {
-        var summary, defTerms, defDescs;
+    describe('Minimal Experiment', function() {
+        var experiment, summary, defTerms, defDescs;
 
         beforeEach(function() {
+            experiment = <Experiment context={context} />;
+            TestUtils.renderIntoDocument(experiment);
+
             summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
             defTerms = summary[0].getDOMNode().getElementsByTagName('dt');
             defDescs = summary[0].getDOMNode().getElementsByTagName('dd');
         });
 
-        it('Has correct summary panel and key-value elements within it', function() {
+        it('Has correct summary panel and key-value elements counts within it', function() {
             expect(summary.length).toEqual(1);
-            expect(defTerms.length).toEqual(8);
-            expect(defDescs.length).toEqual(8);
-        });
-
-        it('has correct text for Biosample Summary', function() {
-            expect(defDescs[2].textContent).toContain('Homo sapiens and Mus musculus');
+            expect(defTerms.length).toEqual(7);
+            expect(defDescs.length).toEqual(7);
         });
 
         it('has proper links in dbxrefs key-value', function() {
-            var dbxrefs = defDescs[7].getElementsByTagName('a');
+            var dbxrefs = defDescs[6].getElementsByTagName('a');
             expect(dbxrefs.length).toEqual(2);
             expect(dbxrefs[0].getAttribute('href')).toEqual('http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=wgEncodeEH003317');
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
         it('has two experiment status elements in header', function() {
-            var statusList = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'status-list')[0].getDOMNode();
+            var statusList = TestUtils.findRenderedDOMComponentWithClass(experiment, 'status-list').getDOMNode();
             expect(statusList.hasChildNodes()).toBeTruthy();
             expect(statusList.childNodes.length).toEqual(2);
         });
     });
 
-    describe('File List', function() {
-        var fileList, fileDl;
+    describe('Experiment with files', function() {
+        var experiment, fileList, fileDl;
 
-        beforeEach(function(){
+        beforeEach(function() {
+            var context_fs = _.clone(context);
+            context_fs.files = require('../testdata/file.js');
+            experiment = <Experiment context={context_fs} />;
+            TestUtils.renderIntoDocument(experiment);
+
             fileList = TestUtils.findRenderedDOMComponentWithTag(experiment, 'tbody').getDOMNode();
             fileDl = fileList.getElementsByTagName('a');
         });
@@ -85,9 +79,13 @@ describe('Experiment Page', function() {
     });
 
     describe('Document Panel', function() {
-        var doc; // Element for the document panel
+        var experiment, doc;
 
         beforeEach(function() {
+            var context_doc = _.clone(context);
+            context_doc.documents = require('../testdata/document.js');
+            experiment = <Experiment context={context_doc} />;
+            TestUtils.renderIntoDocument(experiment);
             doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
         });
 
@@ -109,6 +107,55 @@ describe('Experiment Page', function() {
             var anchors = defDescs[3].getElementsByTagName('a');
             expect(anchors.length).toEqual(1);
             expect(url.parse(anchors[0].getAttribute('href')).pathname).toEqual('/documents/df9dd0ec-c1cf-4391-a745-a933ab1af7a7/@@download/attachment/Myers_Lab_ChIP-seq_Protocol_v042211.pdf');
+        });
+    });
+
+    describe('Replicate Panels', function() {
+        var experiment, replicates;
+
+        beforeEach(function() {
+            var context_rep = _.clone(context);
+            context_rep.replicates = require('../testdata/replicate.js');
+            experiment = <Experiment context={context_rep} />;
+            TestUtils.renderIntoDocument(experiment);
+            replicates = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-replicate');
+        });
+
+        it('has two replicate panels', function() {
+            expect(replicates.length).toEqual(2);
+        });
+
+        it('has links to the proper biosamples in both replicate panels', function() {
+            var anchors = replicates[0].getDOMNode().getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].textContent).toEqual('ENCBS087RNA');
+            expect(anchors[0].getAttribute('href')).toEqual('/biosamples/ENCBS087RNA/');
+            anchors = replicates[1].getDOMNode().getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].textContent).toEqual('ENCBS088RNA');
+            expect(anchors[0].getAttribute('href')).toEqual('/biosamples/ENCBS088RNA/');
+        });
+
+        describe('Assay Panel', function() {
+            var assay, defTerms, defDescs;
+
+            beforeEach(function() {
+                assay = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-assay');
+                defTerms = assay[0].getDOMNode().getElementsByTagName('dt');
+                defDescs = assay[0].getDOMNode().getElementsByTagName('dd');
+            });
+
+            it('has one assay panel and seven key-value pairs', function() {
+                expect(assay.length).toEqual(1);
+                expect(defTerms.length).toEqual(7);
+                expect(defDescs.length).toEqual(7);
+            });
+
+            it('has a proper link to a platform in the seventh key-value pair', function() {
+                var anchors = defDescs[6].getElementsByTagName('a');
+                expect(anchors.length).toEqual(1);
+                expect(anchors[0].getAttribute('href')).toEqual('/platforms/NTR%3A0000007');
+            });
         });
     });
 });
