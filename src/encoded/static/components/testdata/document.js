@@ -1,4 +1,4 @@
-module.exports.document_basic = [
+module.exports = [
     {
         "@id": "/documents/df9dd0ec-c1cf-4391-a745-a933ab1af7a7/",
         "@type": ["document", "item"],

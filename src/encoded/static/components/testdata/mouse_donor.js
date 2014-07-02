@@ -1,4 +1,4 @@
-module.exports.mouse_donors = [
+module.exports = [
     {
         "@id": "/mouse-donors/ENCDO012AAA/",
         "@type": ["mouse_donor", "donor", "item"],

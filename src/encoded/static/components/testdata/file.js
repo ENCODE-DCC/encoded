@@ -1,4 +1,4 @@
-module.exports.file_basic = [
+module.exports = [
     {
         "@id": "/files/ENCFF001REL/",
         "@type": ["file", "item"],

@@ -1,16 +1,11 @@
-module.exports.experiment_basic = {
+module.exports = {
     "@id": "/experiments/ENCSR999NOF/",
     "@type": ["experiment", "dataset", "item"],
     "accession": "ENCSR999NOF",
     "aliases": [],
     "assay_term_id": "OBI:0001271",
     "assay_term_name": "RNA-seq",
-    "award": {
-        "@id": "/awards/U54HG007004/",
-        "@type": ["award", "item"],
-        "project": "ENCODE",
-        "rfa": "ENCODE3"
-    },
+    "award": {},
     "biosample_term_id": "EFO:0002067",
     "biosample_term_name": "K562",
     "biosample_type": "immortalized cell line",

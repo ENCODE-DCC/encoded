@@ -1,4 +1,4 @@
-module.exports.replicate_basic = [
+module.exports = [
     {
         "@id": "/replicates/30a3e114-139a-4297-9287-4f23d2754c25/",
         "@type": ["replicate", "item"],

@@ -1,4 +1,4 @@
-module.exports.library = [
+module.exports = [
     {
         "@id": "/libraries/ENCLB055ZZZ/",
         "@type": ["library", "item"],

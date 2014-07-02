@@ -1,4 +1,4 @@
-module.exports.biosample = [
+module.exports = [
     {
         "@id": "/biosamples/ENCBS087RNA/",
         "@type": ["biosample", "item"],

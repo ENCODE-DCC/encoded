@@ -1,4 +1,4 @@
-module.exports.sources = [
+module.exports = [
     {
         "@id": "/sources/atcc/",
         "@type": ["source", "item"],

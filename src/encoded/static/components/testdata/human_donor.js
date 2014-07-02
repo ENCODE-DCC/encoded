@@ -1,4 +1,4 @@
-module.exports.human_donors = [
+module.exports = [
     {
         "@id": "/human-donors/ENCDO000HUM/",
         "@type": ["human_donor", "donor", "item"],
