@@ -21,6 +21,7 @@ requires = [
     'pyramid_tm',
     'python-magic',
     'pytz',
+    'rdflib',
     'rfc3987',
     'setuptools',
     'simplejson',
@@ -28,9 +29,6 @@ requires = [
     'subprocess_middleware',
     'xlrd',
     'zope.sqlalchemy',
-    'PyBrowserID',
-    'elasticsearch',
-    'rdflib',
 ]
 
 tests_require = [
