@@ -35,8 +35,8 @@ describe('Experiment Page', function() {
 
         it('Has correct summary panel and key-value elements counts within it', function() {
             expect(summary.length).toEqual(1);
-            expect(defTerms.length).toEqual(7);
-            expect(defDescs.length).toEqual(7);
+            expect(defTerms.length).toEqual(8);
+            expect(defDescs.length).toEqual(8);
         });
 
         it('has proper links in dbxrefs key-value', function() {
@@ -44,6 +44,10 @@ describe('Experiment Page', function() {
             expect(dbxrefs.length).toEqual(2);
             expect(dbxrefs[0].getAttribute('href')).toEqual('http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=wgEncodeEH003317');
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
+        });
+
+        it('has proper proper release date', function() {
+            expect(defDescs[7].textContent).toEqual('2011-10-29');
         });
 
         it('has two experiment status elements in header', function() {
