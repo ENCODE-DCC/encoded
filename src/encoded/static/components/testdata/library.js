@@ -7,7 +7,7 @@ module.exports = [
             "thomas-gingeras:SID38806"
         ],
         "award": "/awards/U54HG007004/",
-        "biosample": {},
+        "biosample": require('./biosample/human.js'),
         "documents": [],
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
         "fragmentation_method": "covaris sheering",
@@ -29,7 +29,7 @@ module.exports = [
             "thomas-gingeras:SID38807"
         ],
         "award": "/awards/U54HG007004/",
-        "biosample": {},
+        "biosample": require('./biosample/mouse.js'),
         "documents": [],
         "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
         "fragmentation_method": "covaris sheering",
