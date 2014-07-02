@@ -3,13 +3,22 @@
   "version": "0.0.0",
   "description": "jquery, domready held back.",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "postinstall": "find node_modules -name falafel -type d -print0 | xargs -0 patch -p1 -f -i $(pwd)/falafel.patch -d || echo already applied"
   },
   "author": "",
   "license": "MIT",
   "files": [],
   "repository": "ENCODE-DCC/encoded",
+  "jest": {
+    "rootDir": "src/encoded/static",
+    "scriptPreprocessor": "../../../jest/preprocessor.js",
+    "setupEnvScriptFile": "../../../jest/environment.js",
+    "unmockedModulePathPatterns": [
+      "node_modules/react",
+      "libs/react-patches"
+    ]
+  },
   "devDependencies": {
     "grunt": "^0.4.5",
     "browserify": "^4.1.4",
@@ -17,7 +26,10 @@
     "grunt-cli": "^0.1.13",
     "grunt-contrib-copy": "^0.5.0",
     "exorcist": "^0.1.6",
-    "brfs": "^1.1.1"
+    "brfs": "^1.1.1",
+    "jest-cli": "^0.1.15",
+    "react-tools": "^0.10.0",
+    "jstransform": "^4.0.1"
   },
   "dependencies": {
     "brace": "^0.2.1",
@@ -30,7 +42,7 @@
     "node-ckeditor": "^4.3.2",
     "react": "^0.10.0",
     "react-bootstrap": "^0.10.2",
-    "react-forms": "^0.1.0",
+    "react-forms": "^0.3.3",
     "scriptjs": "^2.5.3",
     "source-map-support": "^0.2.6",
     "subprocess-middleware": "^0.1.0",

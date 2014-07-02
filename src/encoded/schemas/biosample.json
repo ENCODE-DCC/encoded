@@ -126,7 +126,6 @@
         },
         "depleted_in_term_name": {
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Depleted in term",
                 "description": "UBERON (Uber Anatomy Ontology) term best matching the tissue(s)/body part(s) that were removed from the biosample.",
@@ -145,7 +144,6 @@
         },
         "depleted_in_term_id": {
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Depleted in ID",
                 "description": "UBERON (Uber Anatomy Ontology) identifier best matching the tissue(s)/body part(s) that were removed from the biosample.",
@@ -319,7 +317,6 @@
         "model_organism_sex": {
             "title": "Model organism sex",
             "type": "string",
-            "default": "unknown",
             "enum": [
                 "male",
                 "female",
@@ -444,7 +441,7 @@
         }
     },
     "facets": {
-        "organism.name": {
+        "organism.scientific_name": {
             "title": "Organism",
             "type": "string"
         },
@@ -502,6 +499,14 @@
             "title": "Accession",
             "type": "string"
         },
+        "age": {
+            "title": "Age",
+            "type": "string"
+        },
+        "age_units": {
+            "title": "Age Units",
+            "type": "string"
+        },
         "biosample_term_name": {
             "title": "Term",
             "type": "string"
@@ -510,7 +515,7 @@
             "title": "Type",
             "type": "string"
         },
-        "organism.name": {
+        "organism.scientific_name": {
             "title": "Species",
             "type": "string"
         },
@@ -528,6 +533,18 @@
         },
         "status": {
             "title": "Status",
+            "type": "string"
+        },
+        "rnais.target.label": {
+            "title": "RNAi target",
+            "type": "string"
+        },
+        "treatments.treatment_term_name": {
+            "title": "Treatment",
+            "type": "string"
+        },
+        "constructs.target.label": {
+            "title": "Construct",
             "type": "string"
         },
         "treatments.length": {

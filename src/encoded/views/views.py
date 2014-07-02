@@ -13,7 +13,12 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
-from pyramid.traversal import find_root
+from pyramid.traversal import (
+    find_resource,
+    find_root,
+)
+from urllib import quote_plus
+from urlparse import urljoin
 import copy
 
 ACCESSION_KEYS = [
@@ -430,12 +435,12 @@ class Biosample(Collection):
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
             ],
-            'sex': {'$value': '{sex}', '$templated': True},
-            'age': {'$value': '{age}', '$templated': True},
-            'age_units': {'$value': '{age_units}', '$templated': True},
-            'health_status': {'$value': '{health_status}', '$templated': True},
-            'life_stage': {'$value': '{life_stage}', '$templated': True},
-            'synchronization': {'$value': '{synchronization}', '$templated': True}
+            'sex': {'$value': '{sex}', '$templated': True, '$condition': 'sex'},
+            'age': {'$value': '{age}', '$templated': True, '$condition': 'age'},
+            'age_units': {'$value': '{age_units}', '$templated': True, '$condition': 'age_units'},
+            'health_status': {'$value': '{health_status}', '$templated': True, '$condition': 'health_status'},
+            'life_stage': {'$value': '{life_stage}', '$templated': True, '$condition': 'life_stage'},
+            'synchronization': {'$value': '{synchronization}', '$templated': True, '$condition': 'synchronization'}
         }
         embedded = set([
             'donor',
@@ -538,26 +543,18 @@ class Biosample(Collection):
                 for value in human_donor_properties:
                     if value in donor.properties:
                         ns[value] = donor.properties[value]
-                    else:
-                        ns[value] = ''
             elif properties['organism'] == "/organisms/mouse/":
                 for key, value in mouse_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-                    else:
-                        ns[value] = ''
             elif properties['organism'] in fly_organisms:
                 for key, value in fly_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-                    else:
-                        ns[value] = ''
             else:
                 for key, value in worm_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-                    else:
-                        ns[value] = ''
             return ns
 
 
@@ -734,6 +731,8 @@ class Dataset(Collection):
                 {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
                 {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
             ],
+            'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
+            'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
         template_type = {
             'files': 'file',
@@ -757,6 +756,30 @@ class Dataset(Collection):
         rev = {
             'original_files': ('file', 'dataset'),
         }
+
+        def template_namespace(self, properties, request=None):
+            ns = super(Dataset.Item, self).template_namespace(properties, request)
+            if request is None:
+                return ns
+            for link in ns['original_files'] + ns['related_files']:
+                f = find_resource(request.root, link)
+                if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and f.properties['status'] == 'current':
+                    if 'assembly' in f.properties:
+                        ns['assembly'] = f.properties['assembly']
+                        break
+            return ns
+
+        @classmethod
+        def expand_page(cls, request, properties):
+            properties = super(Dataset.Item, cls).expand_page(request, properties)
+            if 'hub' in properties:
+                hub_url = urljoin(request.resource_url(request.root), properties['hub'])
+                properties = properties.copy()
+                properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
+                    'db=' + quote_plus(properties['assembly']),
+                    'hubUrl=' + quote_plus(hub_url, ':/@'),
+                ])
+            return properties
 
 
 @location('experiments')
@@ -794,6 +817,7 @@ class Experiment(Dataset):
             'replicates.library.biosample.organism',
             'replicates.library.biosample.treatments',
             'replicates.library.biosample.donor.organism',
+            'replicates.library.biosample.treatments',
             'replicates.library.treatments',
             'replicates.platform',
             'possible_controls',
@@ -888,6 +912,17 @@ class HelpPage(Page):
         'description': 'Portal pages, help section',
     }
     unique_key = 'help_page:name'
+
+
+@location('publication')
+class Publication(Collection):
+    item_type = 'publication'
+    schema = load_schema('publication.json')
+    properties = {
+        'title': 'Publication',
+        'description': 'Publication pages',
+    }
+    unique_key = 'publication:title'
 
 
 @location('images')

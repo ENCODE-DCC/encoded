@@ -2,7 +2,20 @@
     "esnext": true,
     "node": true,
     "browser": true,
-    "predef": ["$script"],
+    "predef": [
+        "$script",
+        "DOMParser",
+        "Event",
+        "afterEach",
+        "beforeEach",
+        "describe",
+        "expect",
+        "it",
+        "jest",
+        "pit",
+        "xdescribe",
+        "xit"
+    ],
     "globalstrict": true,
     "newcap": false,
     "sub": true

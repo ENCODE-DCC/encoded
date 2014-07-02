@@ -640,6 +640,10 @@ class Item(object):
         for path in paths:
             expand_path(request, properties, path)
 
+    @classmethod
+    def expand_page(cls, request, properties):
+        return properties
+
     def add_actions(self, request, properties):
         if request.has_permission('edit', self):
             properties['actions'] = getattr(self, 'actions', [])
@@ -1037,6 +1041,10 @@ class Collection(Mapping):
     def expand_embedded(self, request, properties):
         pass
 
+    @classmethod
+    def expand_page(cls, request, properties):
+        return properties
+
     def add_actions(self, request, properties):
         pass
 
@@ -1165,6 +1173,7 @@ def item_view(context, request):
     if frame == 'embedded':
         return properties
 
+    properties = context.expand_page(request, properties)
     context.add_actions(request, properties)
     return properties
 

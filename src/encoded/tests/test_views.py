@@ -35,6 +35,18 @@ def test_home_json(testapp):
     assert res.json['@type']
 
 
+def test_vary_html(anonhtmltestapp):
+    res = anonhtmltestapp.get('/', status=200)
+    assert res.vary is not None
+    assert 'Accept' in res.vary
+
+
+def test_vary_json(anontestapp):
+    res = anontestapp.get('/', status=200)
+    assert res.vary is not None
+    assert 'Accept' in res.vary
+
+
 @pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
 def test_collections_anon(workbook, anontestapp, item_type):
     res = anontestapp.get('/' + item_type).follow(status=200)

@@ -28,6 +28,9 @@ requires = [
     'subprocess_middleware',
     'xlrd',
     'zope.sqlalchemy',
+    'PyBrowserID',
+    'elasticsearch',
+    'rdflib',
 ]
 
 tests_require = [

@@ -30,7 +30,7 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
                 <ul className="status-list">
                     {status.map(function (status) {
                         return(
-                            <li className={globals.statusClass(status.status, 'label')}>
+                            <li key={status.title} className={globals.statusClass(status.status, 'label')}>
                                 {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
                                 {status.status}
                             </li>
@@ -59,7 +59,7 @@ var Approval = module.exports.Approval = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>Approval for {context.antibody.accession}</h2>
-                        <h3>Antibody against {context.target.organism.name}
+                        <h3>Antibody against <em>{context.target.organism.scientific_name}</em>
                             {' '}{context.target.label}
                         </h3>
                         <div className="characterization-status-labels">
@@ -158,7 +158,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <dd className="h3">{context.characterization_method}</dd>
 
                             <dt className="h4">Target species</dt>
-                            <dd className="h4 sentence-case">{context.target.organism.name}</dd>
+                            <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
 
                             {context.caption ? <dt>Caption</dt> : null}
                             {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
@@ -197,7 +197,7 @@ globals.panel_views.register(Characterization, 'antibody_characterization');
 var antibody_approval_title = function (props) {
     var context = props.context;
     var accession = context.antibody.accession;
-    var organism_name = context.target.organism.name;
+    var organism_name = context.target.organism.scientific_name;
     var target_label = context.target.label;
     return accession + ' in ' + organism_name + ' ' + target_label;
 };

@@ -283,6 +283,7 @@ CONSTRUCTS = [
         'lab': 'myers',
         'award': 'Myers',
         'target': 'dcd60c9f-7f2e-4d75-8276-9c9a9c6c7669',
+        'source': 'gingeras',
         'construct_type': 'fusion protein',
         'tags': [],
     },

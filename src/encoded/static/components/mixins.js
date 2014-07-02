@@ -1,8 +1,9 @@
 /** @jsx React.DOM */
+/*jshint scripturl:true */
 'use strict';
 var React = require('react');
 var url = require('url');
-var origin = require('origin');
+var origin = require('../libs/origin');
 
 var parseError = module.exports.parseError = function (xhr, status) {
     var data;
@@ -310,6 +311,9 @@ module.exports.HistoryAndTriggers = {
     },
 
     handleClick: function(event) {
+        // https://github.com/facebook/react/issues/1691
+        if (event.isDefaultPrevented()) return;
+
         var target = event.target;
         var nativeEvent = event.nativeEvent;
 

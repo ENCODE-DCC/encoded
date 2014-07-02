@@ -1,22 +1,21 @@
 /** @jsx React.DOM */
 'use strict';
-var Registry = require('registry');
+var Registry = require('../libs/registry');
 
 // Item pages
-module.exports.content_views = Registry();
+module.exports.content_views = new Registry();
 
 // Panel detail views
-module.exports.panel_views = Registry();
+module.exports.panel_views = new Registry();
 
 // Listing detail views
-module.exports.listing_views = Registry();
+module.exports.listing_views = new Registry();
 
 // Cell name listing titles
-module.exports.listing_titles = Registry();
+module.exports.listing_titles = new Registry();
 
-// Block views
-module.exports.block_views = Registry();
-module.exports.block_edit_views = Registry();
+// Blocks
+module.exports.blocks = new Registry();
 
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
@@ -44,10 +43,12 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
 };
 
 
+module.exports.submitHost = "www.encodedcc.org";
+
 module.exports.encodeVersionMap = {
     "ENCODE2": "2",
     "ENCODE3": "3"
-}
+};
 
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",

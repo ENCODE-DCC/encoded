@@ -93,37 +93,32 @@ def search(context, request, search_type=None):
         return result
 
     if search_type is None:
-        search_type = request.params.get('type', '*')
+        search_type = request.params.get('type')
 
         # handling invalid item types
-        if search_type != '*':
+        if search_type not in (None, '*'):
             if search_type not in root.by_item_type:
                 result['notification'] = "'" + search_type + \
                     "' is not a valid 'item type'"
                 return result
 
-    # Handling wildcards
-    if search_term == '*' and search_type == '*':
-        result['notification'] = 'Please enter search term'
-        return result
-
     # Building query for filters
-    if search_type == '*':
-        doc_types = ['antibody_approval', 'biosample',
-                     'experiment', 'target', 'dataset']
+    if search_type in (None, '*'):
+        if request.params.get('mode') == 'picker':
+            doc_types = []
+        else:
+            doc_types = ['antibody_approval', 'biosample',
+                         'experiment', 'target', 'dataset']
     else:
         doc_types = [search_type]
-        if search_term != '*':
-            field = 'type'
-            term = root.by_item_type[search_type].__name__
-            qs = urlencode([
-                (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.iteritems() if k != field
-            ])
-            result['filters'].append({
-                'field': field,
-                'term': term,
-                'remove': '{}?{}'.format(request.path, qs)
+        qs = urlencode([
+            (k.encode('utf-8'), v.encode('utf-8'))
+            for k, v in request.params.iteritems() if k != 'type'
+        ])
+        result['filters'].append({
+            'field': 'type',
+            'term': search_type,
+            'remove': '{}?{}'.format(request.path, qs)
             })
 
     frame = request.params.get('frame')
@@ -135,13 +130,14 @@ def search(context, request, search_type=None):
     else:
         frame = 'columns'
         fields = {'@id', '@type'}
-        for doc_type in doc_types:
+        for doc_type in (doc_types or root.by_item_type.keys()):
             collection = root[doc_type]
             if frame == 'columns':
                 if collection.schema is None:
                     continue
-                fields.update(collection.schema.get('columns', ()))
-                result['columns'].update(collection.schema['columns'])
+                columns = collection.schema.get('columns', ())
+                fields.update(columns)
+                result['columns'].update(columns)
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, sorted(fields), principals)
@@ -175,8 +171,22 @@ def search(context, request, search_type=None):
     query_filters = query['filter']['and']['filters']
     used_filters = []
     for field, term in request.params.iteritems():
-        if field not in ['type', 'searchTerm', 'limit',
+        if field not in ['type', 'limit', 'mode',
                          'format', 'frame', 'datastore']:
+            # Add filter to result
+            qs = urlencode([
+                (k.encode('utf-8'), v.encode('utf-8'))
+                for k, v in request.params.iteritems() if v != term
+            ])
+            result['filters'].append({
+                'field': field,
+                'term': term,
+                'remove': '{}?{}'.format(request.path, qs)
+            })
+
+            # Add filter to query
+            if field == 'searchTerm':
+                continue  # searchTerm is already in the query
             if field.startswith('audit'):
                 field_query = field
             else:
@@ -195,77 +205,30 @@ def search(context, request, search_type=None):
                         }
                     })
                     used_filters.append(field)
-            qs = urlencode([
-                (k.encode('utf-8'), v.encode('utf-8'))
-                for k, v in request.params.iteritems() if v != term
-            ])
-            result['filters'].append({
-                'field': field,
-                'term': term,
-                'remove': '{}?{}'.format(request.path, qs)
-            })
 
     # Adding facets to the query
     # TODO: Have to simplify this piece of code
+    facets = OrderedDict()
+    facets['Data Type'] = 'type'
     if len(doc_types) == 1 and 'facets' in root[doc_types[0]].schema:
-        facets = OrderedDict()
         for facet in root[doc_types[0]].schema['facets']:
             facets[root[doc_types[0]].schema['facets'][facet]['title']] = facet
-        if request.has_permission('search_audit'):
-            facets = facets.copy()
-            facets['Audit category'] = 'audit.category'
-        for facet_title in facets:
-            field = facets[facet_title]
-            if field != 'audit.category':
-                query_field = 'embedded.' + field
-            else:
-                query_field = field
-            query['facets'][field] = {
-                'terms': {
-                    'field': query_field,
-                    'all_terms': True,
-                    'size': 100
-                },
-                'facet_filter': {
-                    'terms': {
-                        'principals_allowed_view': principals
-                    }
-                }
-            }
-            for count, used_facet in enumerate(result['filters']):
-                if field != used_facet['field'] and used_facet['field'] != 'type':
-                    if used_facet['field'] != 'audit.category':
-                        q_field = 'embedded.' + used_facet['field']
-                    else:
-                        q_field = used_facet['field']
-                    if 'terms' in query['facets'][field]['facet_filter']:
-                        old_terms = query['facets'][field]['facet_filter']
-                        new_terms = {'terms': {q_field:
-                                               [used_facet['term']]}}
-                        query['facets'][field]['facet_filter'] = {
-                            'bool': {
-                                'must': [old_terms, new_terms]
-                            }
-                        }
-                    else:
-                        terms = query['facets'][field]['facet_filter']['bool']['must']
-                        flag = 0
-                        for count, term in enumerate(terms):
-                            if q_field in term['terms'].keys():
-                                terms[count]['terms'][q_field].append(used_facet['term'])
-                                flag = 1
-                        if not flag:
-                            terms.append({
-                                'terms': {
-                                    q_field: [used_facet['term']]
-                                }
-                            })
-    else:
-        facets = {'Data Type': 'type'}
-        query['facets']['type'] = {
+    if request.has_permission('search_audit'):
+        facets = facets.copy()
+        facets['Audit category'] = 'audit.category'
+    for facet_title in facets:
+        field = facets[facet_title]
+        if field == 'type':
+            query_field = '_type'
+        elif field == 'audit.category':
+            query_field = 'audit.category'
+        else:
+            query_field = 'embedded.' + field
+        query['facets'][field] = {
             'terms': {
-                'field': '_type',
-                'all_terms': True
+                'field': query_field,
+                'all_terms': True,
+                'size': 100
             },
             'facet_filter': {
                 'terms': {
@@ -273,9 +236,39 @@ def search(context, request, search_type=None):
                 }
             }
         }
+        for count, used_facet in enumerate(result['filters']):
+            if used_facet['field'] == 'searchTerm':
+                continue
+            if field != used_facet['field'] and used_facet['field'] != 'type':
+                if used_facet['field'] != 'audit.category':
+                    q_field = 'embedded.' + used_facet['field']
+                else:
+                    q_field = used_facet['field']
+                if 'terms' in query['facets'][field]['facet_filter']:
+                    old_terms = query['facets'][field]['facet_filter']
+                    new_terms = {'terms': {q_field:
+                                           [used_facet['term']]}}
+                    query['facets'][field]['facet_filter'] = {
+                        'bool': {
+                            'must': [old_terms, new_terms]
+                        }
+                    }
+                else:
+                    terms = query['facets'][field]['facet_filter']['bool']['must']
+                    flag = 0
+                    for count, term in enumerate(terms):
+                        if q_field in term['terms'].keys():
+                            terms[count]['terms'][q_field].append(used_facet['term'])
+                            flag = 1
+                    if not flag:
+                        terms.append({
+                            'terms': {
+                                q_field: [used_facet['term']]
+                            }
+                        })
 
     # Execute the query
-    results = es.search(body=query, index='encoded', doc_type=doc_types, size=size)
+    results = es.search(body=query, index='encoded', doc_type=doc_types or None, size=size)
 
     # Loading facets in to the results
     if 'facets' in results:

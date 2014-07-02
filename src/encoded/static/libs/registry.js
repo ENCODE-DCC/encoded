@@ -1,36 +1,36 @@
+/** @jsx React.DOM */
 'use strict';
-var class_ = require('class');
 var _ = require('underscore');
 
-var Registry = class_({
-    constructor: function (options) {
+class Registry {
+    constructor(options) {
         // May provide custom providedBy and fallback functions
         this.views = {};
         _.extend(this, options);
-    },
+    }
 
-    providedBy: function (obj) {
+    providedBy(obj) {
         return obj['@type'] || [];
-    },
+    }
 
-    register: function (view, for_, name) {
+    register(view, for_, name) {
         name = name || '';
         var views = this.views[name];
         if (!views) {
             this.views[name] = views = {};
         }
         views[for_] = view;
-    },
+    }
 
-    unregister: function (for_, name) {
+    unregister(for_, name) {
         var views = this.views[name || ''];
         if (!views) {
             return;
         }
         delete views[for_];
-    },
+    }
 
-    lookup: function (obj, name) {
+    lookup(obj, name) {
         var views = this.views[name || ''];
         if (!views) {
             return this.fallback(obj, name);
@@ -44,11 +44,16 @@ var Registry = class_({
             }
         }
         return this.fallback(obj, name);
-    },
+    }
 
-    fallback: function (obj, name) {
+    getAll(name) {
+        var views = this.views[name || ''];
+        return views || {};
+    }
+
+    fallback(obj, name) {
         return;
     }
-});
+}
 
 module.exports = Registry;

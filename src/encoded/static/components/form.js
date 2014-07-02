@@ -19,6 +19,15 @@ var Form = module.exports.Form = React.createClass({
         }
     },
 
+    childContextTypes: {
+        onTriggerSave: React.PropTypes.func
+    },
+    getChildContext: function() {
+        return {
+            onTriggerSave: this.save
+        }
+    },
+
     render: function() {
         var error = this.state.error;
         return (
@@ -41,7 +50,7 @@ var Form = module.exports.Form = React.createClass({
     save: function(e) {
         e.preventDefault();
         var $ = require('jquery');
-        var value = this.state.value;
+        var value = this.value().value;
         var method = this.props.method;
         var url = this.props.action;
         var xhr = $.ajax({

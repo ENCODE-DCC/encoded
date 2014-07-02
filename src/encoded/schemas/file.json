@@ -103,7 +103,7 @@
             "description": "UCSC genome assembly that files were mapped to.",
             "comment": "Applies for mapped files (e.g. BAM, BED and BigWig).",
             "type": "string",
-            "enum": ["mm9", "hg19", "mm10"]
+            "enum": ["mm9", "hg19", "mm10", "ce10", "dm3"]
         },
         "submitted_file_name": {
             "title": "Original file name",
