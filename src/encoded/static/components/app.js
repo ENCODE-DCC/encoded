@@ -31,10 +31,11 @@ var inline = fs.readFileSync(__dirname + '/../inline.js', 'utf8');
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
 var App = React.createClass({
-    mixins: [mixins.Persona, mixins.HistoryAndTriggers],
+    mixins: [mixins.Persona, mixins.HistoryAndTriggers, mixins.Editor],
     triggers: {
         login: 'triggerLogin',
-        logout: 'triggerLogout'
+        logout: 'triggerLogout',
+        edit: 'triggerEdit'
     },
 
     getInitialState: function() {
@@ -55,25 +56,11 @@ var App = React.createClass({
             name = hash.slice(2);
         }
         if (context) {
-            var actions = this.props.context.actions;
-            if (actions && actions.length) {
-                actions = (
-                    <div className="navbar navbar-default">
-                        <div className="container">
-                            {actions.map(action => <a href={action.href}><button className={action.className}>{action.title}</button></a>)}
-                        </div>
-                    </div>
-                );
-            } else {
-                actions = null;
-            }
-
             var ContentView = globals.content_views.lookup(context, name);
             content = this.transferPropsTo(ContentView({
                 loadingComplete: this.state.loadingComplete,
                 session: this.state.session,
                 portal: this.state.portal,
-                actions: actions,
                 navigate: this.navigate
             }));
         }
@@ -122,6 +109,7 @@ var App = React.createClass({
 								   
                             <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
+                                        context_actions={context.actions || []}
                                         user_actions={this.state.user_actions} session={this.state.session}
                                         loadingComplete={this.state.loadingComplete} />
                                 <div id="content" className="container" key={key}>

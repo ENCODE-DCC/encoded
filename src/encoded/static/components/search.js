@@ -485,7 +485,8 @@ var Dbxref = dbxref.Dbxref;
                 <div className="facet">
                     <input ref="input" type="search" className="form-control search-query"
                            placeholder="Enter search term(s)"
-                           defaultValue={this.getValue(this.props)} onChange={this.onChange} onBlur={this.onBlur} />
+                           defaultValue={this.getValue(this.props)}
+                           onChange={this.onChange} onBlur={this.onBlur} onKeyPress={this.onKeyPress} />
                 </div>
             );
         },
@@ -504,6 +505,13 @@ var Dbxref = dbxref.Dbxref;
                 search = search.substring(0, search.length - 1);
             }
             this.props.onChange(search);
+        },
+
+        onKeyPress: function(e) {
+            if (e.keyCode == 13) {
+                this.onBlur(e);
+                return false;                
+            }
         }
     });
 

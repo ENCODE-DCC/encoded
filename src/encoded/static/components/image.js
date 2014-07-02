@@ -50,7 +50,6 @@ var Image = React.createClass({
     render: function() {
         return (
             <figure>
-                {this.props.actions}
                 <Attachment context={this.props.context} />
                 <figcaption>{this.props.context.caption}</figcaption>
             </figure>

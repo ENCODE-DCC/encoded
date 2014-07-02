@@ -4,7 +4,7 @@
     "id": "/profiles/construct.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "construct_type", "target", "tags", "lab", "award"],
+    "required": [ "construct_type", "target", "tags", "lab", "award", "source"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [

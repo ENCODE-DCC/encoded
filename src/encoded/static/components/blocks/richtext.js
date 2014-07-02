@@ -10,6 +10,10 @@ var Property = ReactForms.schema.Property;
 
 var RichTextBlockView = React.createClass({
 
+    contextTypes: {
+        editable: React.PropTypes.bool
+    },
+
     getInitialState: function() {
         return {
             'value': this.props.value
@@ -21,7 +25,7 @@ var RichTextBlockView = React.createClass({
     },
 
     componentDidMount: function() {
-        if (this.props.editable) {
+        if (this.context.editable) {
             $script('ckeditor/ckeditor', this.setupEditor);
         }
     },
@@ -52,7 +56,7 @@ var RichTextBlockView = React.createClass({
 
     render: function() {
         return (
-            <div contentEditable={this.props.editable} dangerouslySetInnerHTML={{__html: this.state.value.body}} />
+            <div contentEditable={this.context.editable} dangerouslySetInnerHTML={{__html: this.state.value.body}} />
         );
     }
 });

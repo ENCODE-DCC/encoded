@@ -19,6 +19,15 @@ var Form = module.exports.Form = React.createClass({
         }
     },
 
+    childContextTypes: {
+        onTriggerSave: React.PropTypes.func
+    },
+    getChildContext: function() {
+        return {
+            onTriggerSave: this.save
+        }
+    },
+
     render: function() {
         var error = this.state.error;
         return (
