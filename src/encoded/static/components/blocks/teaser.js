@@ -36,10 +36,10 @@ var TeaserBlockView = React.createClass({
             url = '/' + url;
         }
         return (
-            <a href={this.props.value.href}>
-              <div class="teaser thumbnail">
+            <a className="img-link" href={this.props.value.href}>
+              <div className="teaser thumbnail">
                 <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />
-                <div class="caption" dangerouslySetInnerHTML={{__html: this.props.value.body}}></div>
+                <div className="caption" dangerouslySetInnerHTML={{__html: this.props.value.body}}></div>
               </div>
             </a>
         );
