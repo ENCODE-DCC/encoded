@@ -15,11 +15,11 @@ describe('Platform', function() {
 
     beforeEach(function() {
         var React = require('react');
-        var Panel = require('../platform.js').Panel;
+        var Panel = require('../platform').Panel;
         TestUtils = require('react/lib/ReactTestUtils');
 
         // Set up context object to be rendered
-        var context = require('../testdata/platform.js');
+        var context = require('../testdata/platform');
 
         // Render platform panel into jsnode
         var platformPanel = <Panel context={context} />;

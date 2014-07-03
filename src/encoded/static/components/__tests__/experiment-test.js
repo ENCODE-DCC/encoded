@@ -16,8 +16,8 @@ describe('Experiment Page', function() {
         TestUtils = require('react/lib/ReactTestUtils');
         _ = require('underscore');
 
-        Experiment = require('../experiment.js').Experiment;
-        context = require('../testdata/experiment.js');
+        Experiment = require('../experiment').Experiment;
+        context = require('../testdata/experiment');
 
     });
 
@@ -46,7 +46,7 @@ describe('Experiment Page', function() {
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
-        it('has proper proper release date', function() {
+        it('has proper release date', function() {
             expect(defDescs[7].textContent).toEqual('2011-10-29');
         });
 
@@ -62,7 +62,7 @@ describe('Experiment Page', function() {
 
         beforeEach(function() {
             var context_fs = _.clone(context);
-            context_fs.files = require('../testdata/file.js');
+            context_fs.files = [require('../testdata/file/text'), require('../testdata/file/fastq')];
             experiment = <Experiment context={context_fs} />;
             TestUtils.renderIntoDocument(experiment);
 
@@ -87,7 +87,7 @@ describe('Experiment Page', function() {
 
         beforeEach(function() {
             var context_doc = _.clone(context);
-            context_doc.documents = require('../testdata/document.js');
+            context_doc.documents = [require('../testdata/document/myerschipseq')];
             experiment = <Experiment context={context_doc} />;
             TestUtils.renderIntoDocument(experiment);
             doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
@@ -119,7 +119,7 @@ describe('Experiment Page', function() {
 
         beforeEach(function() {
             var context_rep = _.clone(context);
-            context_rep.replicates = require('../testdata/replicate.js');
+            context_rep.replicates = [require('../testdata/replicate/human'), require('../testdata/replicate/mouse')];
             experiment = <Experiment context={context_rep} />;
             TestUtils.renderIntoDocument(experiment);
             replicates = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-replicate');
@@ -136,8 +136,8 @@ describe('Experiment Page', function() {
             expect(anchors[0].getAttribute('href')).toEqual('/biosamples/ENCBS087RNA/');
             anchors = replicates[1].getDOMNode().getElementsByTagName('a');
             expect(anchors.length).toEqual(1);
-            expect(anchors[0].textContent).toEqual('ENCBS088RNA');
-            expect(anchors[0].getAttribute('href')).toEqual('/biosamples/ENCBS088RNA/');
+            expect(anchors[0].textContent).toEqual('ENCBS989WPD');
+            expect(anchors[0].getAttribute('href')).toEqual('/biosamples/ENCBS989WPD/');
         });
 
         describe('Assay Panel', function() {

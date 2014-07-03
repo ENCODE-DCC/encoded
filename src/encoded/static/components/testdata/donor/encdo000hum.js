@@ -7,7 +7,7 @@ module.exports = {
     "health_status": "unknown",
     "lab": "j-michael-cherry",
     "life_stage": "unknown",
-    "organism": require('./organism/human.js'),
+    "organism": require('../organism/human'),
     "references": [
         "PMID:23000965",
         "PMID:16395128"

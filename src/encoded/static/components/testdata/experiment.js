@@ -5,7 +5,7 @@ module.exports = {
     "aliases": [],
     "assay_term_id": "OBI:0001271",
     "assay_term_name": "RNA-seq",
-    "award": require('./award.js'),
+    "award": require('./award'),
     "biosample_term_id": "EFO:0002067",
     "biosample_term_name": "K562",
     "biosample_type": "immortalized cell line",
@@ -15,7 +15,7 @@ module.exports = {
     "description": "RNA Evaluation K562 Small Total RNA-seq from Gingeras",
     "documents": [],
     "files": [],
-    "lab": require('./lab.js'),
+    "lab": require('./lab'),
     "possible_controls": [],
     "references": [
         "PMID:23000965",
@@ -23,6 +23,6 @@ module.exports = {
     ],
     "replicates": [],
     "status": "released",
-    "submitted_by": require('./submitter.js'),
+    "submitted_by": require('./submitter'),
     "uuid": "223af596-e5ca-4048-9ea8-9a41c240181d"
 };

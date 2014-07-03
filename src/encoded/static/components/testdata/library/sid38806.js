@@ -6,7 +6,7 @@ module.exports = {
         "thomas-gingeras:SID38806"
     ],
     "award": "/awards/U54HG007004/",
-    "biosample": require('../biosample/human.js'),
+    "biosample": require('../biosample/k562-1'),
     "documents": [],
     "extraction_method": "miRNeasy Mini kit (QIAGEN cat#:217004) (varies, will be same as matched RAMPAGE)",
     "fragmentation_method": "covaris sheering",
