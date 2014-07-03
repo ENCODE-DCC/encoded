@@ -24,6 +24,8 @@ def show_upload_credentials(request=None, context=None, status=None):
 def external_creds(parent, properties):
     registry = find_root(parent).registry
     bucket = registry.settings['file_upload_bucket']
+    mapping = parent.schema['file_format_file_extension']
+    file_extension = mapping[properties['file_format']]
     key = '{uuid}/{accession}{file_extension}'.format(**properties)
     policy = {
         'Version': '2012-10-17',
