@@ -72,7 +72,7 @@ class File(Collection):
             'award': 'dataset.award',
         }
         template = {
-            'download': {
+            'href': {
                 '$value': '{item_uri}@@download/{accession}{file_extension}',
                 '$templated': True,
             },
