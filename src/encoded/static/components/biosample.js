@@ -581,7 +581,7 @@ var Document = module.exports.Document = React.createClass({
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
 
-                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dt><i className="icon icon-download"></i> Download</dt>
                             <dd>{download}</dd>
                         </dl>
                     </div>

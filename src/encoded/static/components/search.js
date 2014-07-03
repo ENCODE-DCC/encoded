@@ -364,7 +364,7 @@ var Dbxref = dbxref.Dbxref;
                 return (
                     <li id="selected" key={term}>
                         <a id="selected" href={link} onClick={this.props.onFilter}>
-                            <span className="pull-right">{count}<i className="icon-remove-sign"></i></span>
+                            <span className="pull-right">{count} <i className="icon icon-times-circle-o"></i></span>
                             <span className="facet-item">
                                 {em ? <em>{title}</em> : {title}}
                             </span>

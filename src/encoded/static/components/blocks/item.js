@@ -98,7 +98,7 @@ var ObjectPicker = React.createClass({
 
 globals.blocks.register({
     label: 'item block',
-    icon: 'icon-file',
+    icon: 'icon icon-paperclip',
     schema: (
         <Schema>
           <Property name="item" label="Item" input={<ObjectPicker />} />

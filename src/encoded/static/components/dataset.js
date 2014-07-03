@@ -160,7 +160,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </td>
                     <td>{file.submitted_by.title}</td>
                     <td>{file.date_created}</td>
-                    <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
+                    <td><a href={href} download><i className="icon icon-download"></i> Download</a></td>
                     {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                 </tr>
             );

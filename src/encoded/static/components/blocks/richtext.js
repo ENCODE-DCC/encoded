@@ -64,7 +64,7 @@ var RichTextBlockView = React.createClass({
 
 globals.blocks.register({
     label: 'rich text block',
-    icon: 'icon-file-alt',
+    icon: 'icon icon-file-text',
     schema: (
         <Schema>
           <Property name="body" label="HTML Source" input={<textarea rows="15" cols="80" />} />
