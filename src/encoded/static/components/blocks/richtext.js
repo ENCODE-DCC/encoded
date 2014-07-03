@@ -8,7 +8,7 @@ var Schema = ReactForms.schema.Schema;
 var Property = ReactForms.schema.Property;
 
 
-var RichTextBlockView = React.createClass({
+var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
 
     contextTypes: {
         editable: React.PropTypes.bool

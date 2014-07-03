@@ -13,7 +13,7 @@ var Listing = require('../search').Listing;
 var SearchBlockEdit = search.SearchBlockEdit;
 
 
-var ItemBlockView = React.createClass({
+var ItemBlockView = module.exports.ItemBlockView = React.createClass({
     render: function() {
         var ViewComponent = globals.content_views.lookup(this.props.data);
         return this.transferPropsTo(<ViewComponent context={this.props.data} />);
@@ -47,12 +47,16 @@ var ItemPreview = React.createClass({
 });
 
 
-var ObjectPicker = React.createClass({
+var ObjectPicker = module.exports.ObjectPicker = React.createClass({
+
+    getDefaultProps: function() {
+        return {searchBase: '?mode=picker'};
+    },
 
     getInitialState: function() {
         return {
             browsing: false,
-            search: '?mode=picker'
+            search: this.props.searchBase
         };
     },
 
