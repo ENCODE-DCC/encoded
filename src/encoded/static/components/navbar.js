@@ -71,7 +71,7 @@ var NavBarLayout = React.createClass({
                         <div className="container">
                             <p>
                                 The data displayed on this page is not official and only for testing purposes.
-                                <a href="#" className="test-warning-close icon-remove-sign" onClick={this.handleClick}></a>
+                                <a href="#" className="test-warning-close icon icon-times-circle-o" onClick={this.handleClick}></a>
                             </p>
                         </div>
                     </div>
@@ -102,8 +102,7 @@ var ContextActions = React.createClass({
         var actions = this.props.context_actions.map(function(action) {
             return (
                 <NavItem href={action.href} key={action.name}>
-                    <i className="icon-pencil"></i>
-                    {action.title}
+                    <i className="icon icon-pencil"></i> {action.title}
                 </NavItem>
             );
         });

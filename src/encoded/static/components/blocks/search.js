@@ -91,7 +91,7 @@ var displayModeSelect = (
 
 globals.blocks.register({
     label: 'search block',
-    icon: 'icon-search',
+    icon: 'icon icon-search',
     schema: (
         <Schema>
           <Property name="display" label="Display Layout" input={displayModeSelect} defaultValue="search" />
