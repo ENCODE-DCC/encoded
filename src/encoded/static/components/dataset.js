@@ -66,7 +66,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                         </dd>
 
                         {context.references.length ? <dt>References</dt> : null}
-                        {context.references.length ? <dd><References values={context.references} /></dd> : null}
+                        {context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
                     </dl>
                 </div>
 
@@ -194,23 +194,3 @@ var FileTable = module.exports.FileTable = React.createClass({
         );
     }
 });
-
-
-var References = module.exports.References = function (props) {
-    var references = props.values.map(function(value) {
-        var sep = value.indexOf(':');
-        if (sep === -1) {
-            return null;
-        }
-
-        var prefix = value.slice(0, sep);
-        var local = value.slice(sep + 1);
-        if (!prefix || !local) {
-            return null;
-        }
-
-        return <li>{globals.referenceMap[prefix] ? <a href={globals.referenceMap[prefix] + local}>{value}</a> : null}</li>;
-    });
-
-    return (<ul className="horizontal-list">{references}</ul>);
-};

@@ -50,11 +50,6 @@ module.exports.encodeVersionMap = {
     "ENCODE3": "3"
 };
 
-module.exports.referenceMap = {
-    "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
-    "doi": "http://dx.doi.org/doi:"
-};
-
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",
     "HGNC": "http://www.genecards.org/cgi-bin/carddisp.pl?gene=",
@@ -68,5 +63,8 @@ module.exports.dbxref_prefix_map = {
     "UCSC-ENCODE-hg19": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=",
     "UCSC-ENCODE-cv": "http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term=",
     "UCSC-GB-mm9": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g=",
-    "UCSC-GB-hg19": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g="
+    "UCSC-GB-hg19": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=",
+    // Dataset, experiment, and document references
+    "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
+    "doi": "http://dx.doi.org/doi:"
 };
