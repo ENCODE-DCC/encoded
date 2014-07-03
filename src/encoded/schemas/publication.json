@@ -1,0 +1,72 @@
+{
+    "title": "Publication",
+    "description": "Schema for a publication page.",
+    "id": "/profiles/publication.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": [ "title" ],
+    "identifyingProperties": ["uuid", "title" ],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/references"}
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+        "title": {
+            "title": "Title",
+            "description": "Title of the publication or communication.",
+            "type": "string"
+        },
+        "abstract": {
+            "title": "Abstract",
+            "description": "Abstract of the publication or communication.",
+            "type": "string"
+        },
+        "authors": {
+            "title": "Authors",
+            "type": "string"
+        },
+        "date_published": {
+            "title": "Date published",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ]
+        },
+        "date_revised": {
+            "title": "Date revised",
+            "type": "string",
+            "anyOf": [
+                {"format": "date-time"},
+                {"format": "date"}
+            ]
+        },
+        "issue": {
+            "title": "Issue",
+            "description": "The issue of the publication.",
+            "type": "integer"
+        },
+        "page": {
+            "title": "Page",
+            "description": "Pagination of the reference",
+            "type": "string"
+        },
+        "volume": {
+            "title": "Volume",
+            "description": "The volume of the publication.",
+            "type": "integer"
+        },
+        "journal": {
+            "title": "Journal",
+            "description": "The journal of the publication.",
+            "type": "string"
+        }
+    }
+}

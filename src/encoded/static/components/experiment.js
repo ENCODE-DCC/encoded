@@ -221,6 +221,10 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                         {context.references.length ? <dt>References</dt> : null}
                         {context.references.length ? <dd><References values={context.references} /></dd> : null}
+
+                        {context.date_released ? <dt>Date released</dt> : null}
+                        {context.date_released ? <dd>{context.date_released}</dd> : null}
+
                     </dl>
                 </div>
 
