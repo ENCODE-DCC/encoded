@@ -1,17 +1,51 @@
 .img-link {
     display: block;
+
+    &:hover {
+        text-decoration: none;
+    }
 }
 
 
 .teaser {
+    position: relative;
+    padding: 0;
+    @include border-radius(0);
+    border: 4px solid #fff;
+
+    &:hover {
+        border-color: #0a253d;
+    }
+
     .caption {
         background-color: #303030;
         color: #fff;
+
+        .col-md-12 & {
+            @media screen and (min-width: $screen-sm-min) {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                width: 33.33%;
+                line-height: 1.6;
+                background-color: rgba(32,32,32,0.9);
+            }
+        }
+    }
+
+    figure {
+        margin-bottom: 0;
     }
 
     figcaption {
         display: none;
     }
 
-    
+    p {
+        margin: 5px 0;
+        font-size: 16px;
+        font-weight: lighter;
+        letter-spacing: 1px;
+    }
 }
