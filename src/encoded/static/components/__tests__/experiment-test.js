@@ -35,8 +35,8 @@ describe('Experiment Page', function() {
 
         it('Has correct summary panel and key-value elements counts within it', function() {
             expect(summary.length).toEqual(1);
-            expect(defTerms.length).toEqual(8);
-            expect(defDescs.length).toEqual(8);
+            expect(defTerms.length).toEqual(9);
+            expect(defDescs.length).toEqual(9);
         });
 
         it('has proper links in dbxrefs key-value', function() {
@@ -46,8 +46,15 @@ describe('Experiment Page', function() {
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
+        it('has proper links in References key-values', function() {
+            var dbxrefs = defDescs[7].getElementsByTagName('a');
+            expect(dbxrefs.length).toEqual(2);
+            expect(dbxrefs[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=23000965');
+            expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=16395128');
+        });
+
         it('has proper release date', function() {
-            expect(defDescs[7].textContent).toEqual('2011-10-29');
+            expect(defDescs[8].textContent).toEqual('2011-10-29');
         });
 
         it('has two experiment status elements in header', function() {
