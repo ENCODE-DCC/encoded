@@ -24,7 +24,7 @@ def show_upload_credentials(request=None, context=None, status=None):
 def external_creds(parent, properties):
     registry = find_root(parent).registry
     bucket = registry.settings['file_upload_bucket']
-    key = '{uuid}/{accession}.{file_format}'.format(**properties)
+    key = '{uuid}/{accession}{file_extension}'.format(**properties)
     policy = {
         'Version': '2012-10-17',
         'Statement': [
@@ -73,7 +73,7 @@ class File(Collection):
         }
         template = {
             'download': {
-                '$value': '{item_uri}@@download/{accession}.{file_format}',
+                '$value': '{item_uri}@@download/{accession}{file_extension}',
                 '$templated': True,
             },
             'upload_credentials': {
@@ -82,6 +82,16 @@ class File(Collection):
                 '$value': lambda context: context.propsheets['external']['upload_credentials'],
             }
         }
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            if 'download_path' in properties:
+                path = properties['download_path']
+                ns['file_extension'] = path[path.find('.', path.rfind('/')):]
+            else:
+                mapping = self.schema['file_format_file_extension']
+                ns['file_extension'] = mapping[properties['file_format']]
+            return ns
 
         @classmethod
         def create(cls, parent, uuid, properties, sheets=None):
@@ -95,14 +105,15 @@ class File(Collection):
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
     properties = context.upgrade_properties(finalize=False)
+    ns = context.template_namespace(properties, request)
     if request.subpath:
         filename, = request.subpath
-        if filename != '{accession}.{file_format}'.format(**properties):
+        if filename != '{accession}{file_extension}'.format(**ns):
             raise HTTPNotFound(filename)
 
     external = context.propsheets.get('external')
     if external is None:  # EDW
-        location = 'http://encodedcc.sdsc.edu/warehouse/{download_path}'.format(**properties)
+        location = 'http://encodedcc.sdsc.edu/warehouse/{download_path}'.format(**ns)
     elif external['service'] == 's3':
         conn = boto.connect_s3()
         location = conn.generate_url(36*60*60, 'GET', external['bucket'], external['key'])
