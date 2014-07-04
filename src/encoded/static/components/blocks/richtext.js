@@ -34,6 +34,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
         var ck = window.CKEDITOR;
         ck.disableAutoInline = true;
         this.editor = ck.inline(this.getDOMNode(), {
+            language: 'en',
             toolbar: [
                 { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
                 { name: 'styles', items: [ 'Format' ] },
