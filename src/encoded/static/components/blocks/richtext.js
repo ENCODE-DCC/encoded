@@ -38,7 +38,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
             toolbar: [
                 { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
                 { name: 'styles', items: [ 'Format' ] },
-                { name: 'paragraph', groups: [ 'list', 'indent', 'align'], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
+                { name: 'paragraph', groups: [ 'list', 'indent', 'align'], items: [ 'NumberedList', 'BulletedList' ] },
                 { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
                 { name: 'undo', groups: [ 'undo' ], items: [ 'Undo', 'Redo' ] },
                 { name: 'document', groups: [ 'mode' ], items: [ 'Source' ] },

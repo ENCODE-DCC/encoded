@@ -22,7 +22,7 @@ var TeaserBlockView = React.createClass({
         return {value: {
             href: '#',
             image: '',
-            caption: '',
+            body: ' ',
         }};
     },
 
@@ -58,7 +58,7 @@ var RichEditor = React.createClass({
     },
 
     getInitialState: function() {
-        return {value: {body: this.props.value}};
+        return {value: {body: this.props.value || '<p></p>'}};
     },
 
     render: function() {
