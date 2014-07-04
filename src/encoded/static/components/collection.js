@@ -227,7 +227,7 @@ var globals = require('./globals');
             data.sort(sortOn, reversed);
             var self = this;
             var headers = columns.map(function (column, index) {
-                var className = "sortdirection icon-";
+                var className = "sortdirection icon";
                 if (index === sortOn) {
                     className += reversed ? " icon-chevron-down" : " icon-chevron-up";
                 }
@@ -299,7 +299,7 @@ var globals = require('./globals');
                                             name="q" type="search" defaultValue={searchTerm} 
                                             placeholder="Filter table by..." className="filter form-control" 
                                             id="table-filter" /> 
-                                        <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
+                                        <i className="icon icon-times-circle-o clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
                                         <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                         <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                     </form>
