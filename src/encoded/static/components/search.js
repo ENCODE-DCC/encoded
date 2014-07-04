@@ -17,7 +17,8 @@ var Dbxref = dbxref.Dbxref;
         experiment: {title: 'Experiments'},
         target: {title: 'Targets'},
         dataset: {title: 'Datasets'},
-        image: {title: 'Images'}
+        image: {title: 'Images'},
+        publication: {title: 'Publications'}
     };
 
     var Listing = module.exports.Listing = function (props) {
@@ -30,7 +31,7 @@ var Dbxref = dbxref.Dbxref;
         return globals.listing_views.lookup(props.context)(props);
     };
 
-    var PickerActionsMixin = {
+    var PickerActionsMixin = module.exports.PickerActionsMixin = {
         contextTypes: {actions: React.PropTypes.array},
         renderActions: function() {
             if (this.context.actions && this.context.actions.length) {
