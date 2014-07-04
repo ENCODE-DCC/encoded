@@ -22,11 +22,15 @@ var Attachment = module.exports.Attachment = React.createClass({
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Attachment Image";
-                return (
-                    <a data-bypass="true" href={attachmentHref}>
-                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                    </a>
-                );
+                if (this.props.show_link === false) {
+                    return <img className={imgClass} src={src} height={height} width={width} alt={alt} />;
+                } else {
+                    return (
+                        <a data-bypass="true" href={attachmentHref}>
+                            <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                        </a>
+                    );
+                }
             } else if (context.attachment.type == "application/pdf"){
                 return (
                     <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Attachment PDF Icon</a>
@@ -50,7 +54,7 @@ var Image = React.createClass({
     render: function() {
         return (
             <figure>
-                <Attachment context={this.props.context} />
+                <Attachment context={this.props.context} show_link={false} />
                 <figcaption>{this.props.context.caption}</figcaption>
             </figure>
         );

@@ -74,10 +74,11 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
               {this.state.browsing
                 ? <FetchedData url={searchUrl} Component={SearchBlockEdit}
                                loadingComplete={true} searchBase={this.state.search}
-                               actions={actions} onChange={this.handleFilter} />
+                               actions={actions} onChange={this.handleFilter}
+                               showSpinnerOnUpdate={false} />
                 : <div className="clearfix">
                     <button className="btn btn-default pull-right" onClick={this.handleBrowse}>Browse&hellip;</button>
-                    {this.transferPropsTo(<FetchedData url={url} Component={ItemPreview} loadingComplete={true} />)}
+                    {this.transferPropsTo(<FetchedData url={url} Component={ItemPreview} loadingComplete={true} showSpinnerOnUpdate={false} />)}
                   </div>}
             </div>
         );

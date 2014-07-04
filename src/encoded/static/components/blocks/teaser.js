@@ -85,7 +85,7 @@ var imagePicker = <ObjectPicker searchBase={"?mode=picker&type=image"} />;
 
 globals.blocks.register({
     label: 'teaser block',
-    icon: 'icon-link',
+    icon: 'icon icon-image',
     schema: (
         <Schema>
           <Property name="display" label="Display Layout" input={displayModeSelect} defaultValue="search" />
