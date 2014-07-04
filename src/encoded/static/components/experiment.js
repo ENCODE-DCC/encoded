@@ -7,7 +7,6 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var antibody = require('./antibody');
-var biosample = require('./biosample.js').Document;
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
