@@ -294,7 +294,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     }
 
     return (
-        <div>
+        <div className = "panel-assay">
             <h3>Assay details</h3>
             <dl className="panel key-value">
                 {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
@@ -336,7 +336,7 @@ var Replicate = module.exports.Replicate = function (props) {
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended;
     return (
-        <div key={props.key}>
+        <div key={props.key} className="panel-replicate">
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
             <dl className="panel key-value">
                 <dt>Technical replicate</dt>
