@@ -1,67 +1,70 @@
 /** @jsx React.DOM */
 'use strict';
 
+jest.autoMockOff();
+
 // Fixes https://github.com/facebook/jest/issues/78
 jest.dontMock('react');
 jest.dontMock('underscore');
 
-jest.dontMock('../platform.js');
-jest.dontMock('../globals.js');
-jest.dontMock('../dbxref.js');
-jest.dontMock('../../libs/registry.js');
+describe('Platform', function() {
+    var TestUtils;
+    var platformPanel;
+    var defTerms;
+    var defDescs;
 
-describe('platform', function() {
-    it('shows proper text and links', function() {
+    beforeEach(function() {
         var React = require('react');
-        var Panel = require('../platform.js').Panel;
-        var TestUtils = require('react/lib/ReactTestUtils');
+        var Panel = require('../platform').Panel;
+        TestUtils = require('react/lib/ReactTestUtils');
 
-        // Set up context object
-        var context = {
-            url: 'http://www3.appliedbiosystems.com/cms/groups/mcb_marketing/documents/generaldocuments/cms_072050.pdf',
-            title: 'Applied Biosystems SOLiD System 3 Plus',
-            term_id: 'OBI:0000000',
-            dbxrefs: ['UCSC-ENCODE-cv:AB_SOLiD_3.5', 'GEO:GPL9442']
-        };
+        // Set up context object to be rendered
+        var context = require('../testdata/platform');
 
-        // Render a platform panel in the document
+        // Render platform panel into jsnode
         var platformPanel = <Panel context={context} />;
         TestUtils.renderIntoDocument(platformPanel);
 
-        // Verify we have three <dt> and <dd> elements
-        var defTerms = TestUtils.scryRenderedDOMComponentsWithTag(platformPanel, 'dt');
+        // Get the <dt> and <dd> terms needed for all tests
+        defTerms = TestUtils.scryRenderedDOMComponentsWithTag(platformPanel, 'dt');
+        defDescs = TestUtils.scryRenderedDOMComponentsWithTag(platformPanel, 'dd');
+    });
+
+    it('has three <dt> and <dd> elements', function() {
         expect(defTerms.length).toEqual(3);
-        var defDescs = TestUtils.scryRenderedDOMComponentsWithTag(platformPanel, 'dd');
         expect(defDescs.length).toEqual(3);
+    });
 
-        // Verify the first <dd> (Platform name) has a link to www3.appliedbiosystems.com
-        var defDescNode = defDescs[0].getDOMNode();
-        expect(defDescNode.hasChildNodes()).toEqual(true);
-        expect(defDescNode.childNodes.length).toEqual(1);
-        var anchor = defDescNode.childNodes[0];
-        expect(anchor.getAttribute('href')).toEqual('http://www3.appliedbiosystems.com/cms/groups/mcb_marketing/documents/generaldocuments/cms_072050.pdf');
+    describe('External References (third key-value) Item', function() {
+        var defDescNode, unorderedList, listItems, anchors;
 
-        // Verify the third <dd> (dbxrefs) has an unordered list with two items
-        defDescNode = defDescs[2].getDOMNode();
-        expect(defDescNode.hasChildNodes()).toEqual(true);
-        expect(defDescNode.childNodes.length).toEqual(1);
-        var unordered = defDescNode.childNodes[0];
-        expect(unordered.hasChildNodes()).toEqual(true);
-        expect(unordered.childNodes.length).toEqual(2);
+        beforeEach(function() {
+            defDescNode = defDescs[2].getDOMNode();
+            unorderedList = defDescNode.childNodes[0];
+            listItems = unorderedList.childNodes;
+            anchors = unorderedList.getElementsByTagName('a');
+        });
 
-        // Make sure the two items got the proper text
-        var listItem = unordered.childNodes;
-        expect(listItem[0].textContent).toEqual('UCSC-ENCODE-cv:AB_SOLiD_3.5');
-        expect(listItem[1].textContent).toEqual('GEO:GPL9442');
+        it('has an unordered list with three items', function() {
+            expect(defDescNode.hasChildNodes()).toBeTruthy();
+            expect(defDescNode.childNodes.length).toEqual(1);
+            expect(unorderedList.hasChildNodes()).toBeTruthy();
+            expect(unorderedList.childNodes.length).toEqual(3);
+        });
 
-        // Make sure the two items contain links to the proper places
-        expect(listItem[0].hasChildNodes()).toEqual(true);
-        expect(listItem[0].childNodes.length).toEqual(1);
-        expect(listItem[1].hasChildNodes()).toEqual(true);
-        expect(listItem[1].childNodes.length).toEqual(1);
-        anchor = listItem[0].childNodes[0];
-        expect(anchor.getAttribute('href')).toEqual('http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term="AB_SOLiD_3.5"');
-        anchor = listItem[1].childNodes[0];
-        expect(anchor.getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL9442');
+        it('has proper link text', function() {
+            expect(listItems[0].textContent).toEqual('UCSC-ENCODE-cv:Illumina_HiSeq_2000');
+            expect(listItems[1].textContent).toEqual('GEO:GPL11154');
+            expect(listItems[2].textContent).toEqual('GEO:GPL13112');
+        });
+
+        it('has links to the proper places', function() {
+            expect(listItems[0].hasChildNodes()).toBeTruthy();
+            expect(listItems[0].childNodes.length).toEqual(1);
+            expect(listItems[1].hasChildNodes()).toBeTruthy();
+            expect(listItems[1].childNodes.length).toEqual(1);
+            expect(anchors[0].getAttribute('href')).toEqual('http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term="Illumina_HiSeq_2000"');
+            expect(anchors[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GPL11154');
+        });
     });
 });

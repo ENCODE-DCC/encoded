@@ -81,10 +81,10 @@ var Block = module.exports.Block = React.createClass({
         return (
             <div className="block-toolbar">
                 <ModalTrigger ref="edit_trigger" modal={modal}>
-                    <a className="edit"><i className="icon-edit"></i></a>
+                    <a className="edit"><i className="icon icon-edit"></i></a>
                 </ModalTrigger>
                 {' '}
-                <a className="remove" onClick={this.remove}><i className="icon-trash"></i></a>
+                <a className="remove" onClick={this.remove}><i className="icon icon-trash-o"></i></a>
             </div>
         );
     },
@@ -156,7 +156,7 @@ var BlockAddButton = React.createClass({
     contextTypes: LAYOUT_CONTEXT,
 
     render: function() {
-        var classes = 'icon-large ' + this.props.blockprops.icon;
+        var classes = 'icon-lg ' + this.props.blockprops.icon;
         return (
             <span>
                 <span className="btn btn-primary navbar-btn btn-sm"

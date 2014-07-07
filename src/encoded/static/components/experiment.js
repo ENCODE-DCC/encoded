@@ -218,6 +218,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.aliases.length ? <dt>Aliases</dt> : null}
                         {context.aliases.length ? <dd>{aliasList}</dd> : null}
 
+                        {context.references.length ? <dt>References</dt> : null}
+                        {context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
+
+                        {context.date_released ? <dt>Date released</dt> : null}
+                        {context.date_released ? <dd>{context.date_released}</dd> : null}
+
                     </dl>
                 </div>
 
@@ -288,7 +294,7 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
     }
 
     return (
-        <div>
+        <div className = "panel-assay">
             <h3>Assay details</h3>
             <dl className="panel key-value">
                 {library && library.nucleic_acid_term_name ? <dt>Nucleic acid type</dt> : null}
@@ -330,7 +336,7 @@ var Replicate = module.exports.Replicate = function (props) {
     var biosample = library && library.biosample;
     var paired_end = replicate.paired_ended;
     return (
-        <div key={props.key}>
+        <div key={props.key} className="panel-replicate">
             <h3>Biological replicate - {replicate.biological_replicate_number}</h3>
             <dl className="panel key-value">
                 <dt>Technical replicate</dt>

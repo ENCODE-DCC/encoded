@@ -180,7 +180,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <dt>Image</dt>
                             <dd><StatusLabel status={context.status} /></dd>
 
-                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dt><i className="icon icon-download"></i> Download</dt>
                             <dd>{download}</dd>
                         </dl>
                     </div>

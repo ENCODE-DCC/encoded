@@ -37,8 +37,10 @@
                 },
                 {
                     "@id": "#block4",
-                    "@type": "richtextblock",
-                    "body": "<h2>Chromatin Structure</h2>\n<p>Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem.</p>"
+                    "@type": "teaserblock",
+                    "image": "8a91ae78-731a-4a92-ae7c-273214be408a",
+                    "body": "<h2>Chromatin Structure</h2>",
+                    "href": "/about/chromatin-structure"
                 }
             ]
         }
@@ -53,7 +55,7 @@
                 {
                     "cols": [
                         {
-                            "className": "col-xs-12 class_override",
+                            "className": "col-md-12 class_override",
                             "blocks": ["#block1"]
                         }
                     ]

@@ -29,7 +29,7 @@
         },
         "age": {
             "title": "Donor age",
-            "description": " The age or age range of the model donor organism when biological material was sampled.",
+            "description": " The age or age range of the donor when biological material was sampled.",
             "type": "string",
             "pattern": "^(\\d+(\\.\\d+)?(\\-\\d+(\\.\\d+)?)?)|(unknown)$"
         },
