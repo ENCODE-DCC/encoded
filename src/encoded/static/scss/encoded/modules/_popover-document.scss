@@ -126,7 +126,7 @@ $characterization-figure-height: 200px;
     position: absolute;
     left: 50%;
     bottom: 5px;
-    margin-left: -($characterization-figure-width / 2);
+    margin-left: -(($characterization-figure-width - 10) / 2);
     width: $characterization-figure-width - 10;
 
     @media screen and (min-width: $screen-sm-min) {
