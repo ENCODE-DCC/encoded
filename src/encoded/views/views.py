@@ -159,6 +159,7 @@ class Collection(BaseCollection):
             # dataset / experiment
             'revoked': ALLOW_CURRENT,
         }
+        actions = [EDIT_ACTION]
 
         @property
         def __name__(self):
@@ -966,4 +967,3 @@ class Image(Collection):
                 '$templated': True,
             },
         ]
-        actions = [EDIT_ACTION]
