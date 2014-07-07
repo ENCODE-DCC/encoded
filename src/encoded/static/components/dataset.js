@@ -24,10 +24,6 @@ var Dataset = module.exports.Dataset = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
-        var pubmed_url = "http://www.ncbi.nlm.nih.gov/pubmed/?term=";
-        var pubmed_links = context.references.map(function(id) {
-            return <li><a href={pubmed_url + id.slice(5)}>{id}</a></li>;
-        });
         var experiments = {};
         context.files.forEach(function (file) {
             var experiment = file.replicate && file.replicate.experiment;
@@ -70,11 +66,7 @@ var Dataset = module.exports.Dataset = React.createClass({
                         </dd>
 
                         {context.references.length ? <dt>References</dt> : null}
-                        {context.references.length ? <dd>
-                            <ul className="horizontal-list">
-                                {pubmed_links}
-                            </ul>
-                        </dd> : null}
+                        {context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
                     </dl>
                 </div>
 
@@ -168,7 +160,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </td>
                     <td>{file.submitted_by.title}</td>
                     <td>{file.date_created}</td>
-                    <td><a href={href} download><i className="icon-download-alt"></i> Download</a></td>
+                    <td><a href={href} download><i className="icon icon-download"></i> Download</a></td>
                     {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                 </tr>
             );

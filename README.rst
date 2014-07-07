@@ -88,7 +88,13 @@ Run the Browser tests with::
 
     $ bin/test -m bdd -v -v
 
-Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
+Run the Javascript tests with::
+
+    $ npm test
+
+Or if you need to supply command line arguments::
+
+    $ ./node_modules/.bin/jest
 
 Step 6: Database modifications
 

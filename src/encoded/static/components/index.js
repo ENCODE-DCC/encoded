@@ -21,6 +21,7 @@ require('./navbar');
 require('./platform');
 require('./search');
 require('./target');
+require('./publication');
 require('./testing');
 require('./edit');
 require('./blocks');
