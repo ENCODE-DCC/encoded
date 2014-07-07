@@ -8,7 +8,11 @@ var Schema = ReactForms.schema.Schema;
 var Property = ReactForms.schema.Property;
 
 
-var RichTextBlockView = React.createClass({
+var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
+
+    contextTypes: {
+        editable: React.PropTypes.bool
+    },
 
     getInitialState: function() {
         return {
@@ -21,7 +25,7 @@ var RichTextBlockView = React.createClass({
     },
 
     componentDidMount: function() {
-        if (this.props.editable) {
+        if (this.context.editable) {
             $script('ckeditor/ckeditor', this.setupEditor);
         }
     },
@@ -30,10 +34,11 @@ var RichTextBlockView = React.createClass({
         var ck = window.CKEDITOR;
         ck.disableAutoInline = true;
         this.editor = ck.inline(this.getDOMNode(), {
+            language: 'en',
             toolbar: [
                 { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
                 { name: 'styles', items: [ 'Format' ] },
-                { name: 'paragraph', groups: [ 'list', 'indent', 'align'], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
+                { name: 'paragraph', groups: [ 'list', 'indent', 'align'], items: [ 'NumberedList', 'BulletedList' ] },
                 { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
                 { name: 'undo', groups: [ 'undo' ], items: [ 'Undo', 'Redo' ] },
                 { name: 'document', groups: [ 'mode' ], items: [ 'Source' ] },
@@ -52,7 +57,7 @@ var RichTextBlockView = React.createClass({
 
     render: function() {
         return (
-            <div contentEditable={this.props.editable} dangerouslySetInnerHTML={{__html: this.state.value.body}} />
+            <div contentEditable={this.context.editable} dangerouslySetInnerHTML={{__html: this.state.value.body}} />
         );
     }
 });
@@ -60,7 +65,7 @@ var RichTextBlockView = React.createClass({
 
 globals.blocks.register({
     label: 'rich text block',
-    icon: 'icon-file-alt',
+    icon: 'icon icon-file-text',
     schema: (
         <Schema>
           <Property name="body" label="HTML Source" input={<textarea rows="15" cols="80" />} />

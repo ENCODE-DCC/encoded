@@ -17,7 +17,8 @@ var Dbxref = dbxref.Dbxref;
         experiment: {title: 'Experiments'},
         target: {title: 'Targets'},
         dataset: {title: 'Datasets'},
-        image: {title: 'Images'}
+        image: {title: 'Images'},
+        publication: {title: 'Publications'}
     };
 
     var Listing = module.exports.Listing = function (props) {
@@ -30,7 +31,7 @@ var Dbxref = dbxref.Dbxref;
         return globals.listing_views.lookup(props.context)(props);
     };
 
-    var PickerActionsMixin = {
+    var PickerActionsMixin = module.exports.PickerActionsMixin = {
         contextTypes: {actions: React.PropTypes.array},
         renderActions: function() {
             if (this.context.actions && this.context.actions.length) {
@@ -364,7 +365,7 @@ var Dbxref = dbxref.Dbxref;
                 return (
                     <li id="selected" key={term}>
                         <a id="selected" href={link} onClick={this.props.onFilter}>
-                            <span className="pull-right">{count}<i className="icon-remove-sign"></i></span>
+                            <span className="pull-right">{count} <i className="icon icon-times-circle-o"></i></span>
                             <span className="facet-item">
                                 {em ? <em>{title}</em> : {title}}
                             </span>
@@ -485,7 +486,8 @@ var Dbxref = dbxref.Dbxref;
                 <div className="facet">
                     <input ref="input" type="search" className="form-control search-query"
                            placeholder="Enter search term(s)"
-                           defaultValue={this.getValue(this.props)} onChange={this.onChange} onBlur={this.onBlur} />
+                           defaultValue={this.getValue(this.props)}
+                           onChange={this.onChange} onBlur={this.onBlur} onKeyPress={this.onKeyPress} />
                 </div>
             );
         },
@@ -504,6 +506,13 @@ var Dbxref = dbxref.Dbxref;
                 search = search.substring(0, search.length - 1);
             }
             this.props.onChange(search);
+        },
+
+        onKeyPress: function(e) {
+            if (e.keyCode == 13) {
+                this.onBlur(e);
+                return false;                
+            }
         }
     });
 

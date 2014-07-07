@@ -26,7 +26,7 @@ var Lightbox = module.exports.Lightbox = React.createClass({
             <div className={lightboxClass} onClick={this.props.clearLightbox}>
                 <div className="lightbox-img">
                     <img src={this.props.lightboxImg} onClick={this.ignoreClick} />
-                    <i className="lightbox-close icon-remove-sign"></i>
+                    <i className="lightbox-close icon icon-times-circle"></i>
                 </div>
             </div>
         );
@@ -84,14 +84,18 @@ var Attachment = module.exports.Attachment = React.createClass({
                 height = context.attachment.height;
                 width = context.attachment.width;
                 alt = "Attachment Image";
-                return (
-                    <div>
-                        <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
-                            <img className={imgClass} src={src} alt={alt} />
-                        </a>
-                        <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={attachmentHref} clearLightbox={this.clearLightbox} />
-                    </div>
-                );
+                if (this.props.show_link === false) {
+                    return <img className={imgClass} src={src} height={height} width={width} alt={alt} />;
+                } else {
+                    return (
+                        <div>
+                            <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
+                                <img className={imgClass} src={src} height={height} width={width} alt={alt} />
+                            </a>
+                            <Lightbox lightboxVisible={this.state.lightboxVisible} lightboxImg={attachmentHref} clearLightbox={this.clearLightbox} />
+                        </div>
+                    );
+                }
             } else if (context.attachment.type == "application/pdf"){
                 return (
                     <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Attachment PDF Icon</a>
@@ -114,8 +118,7 @@ var Image = React.createClass({
     render: function() {
         return (
             <figure>
-                {this.props.actions}
-                <Attachment context={this.props.context} />
+                <Attachment context={this.props.context} show_link={false} />
                 <figcaption>{this.props.context.caption}</figcaption>
             </figure>
         );

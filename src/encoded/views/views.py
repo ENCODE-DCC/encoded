@@ -17,6 +17,8 @@ from pyramid.traversal import (
     find_resource,
     find_root,
 )
+from urllib import quote_plus
+from urlparse import urljoin
 import copy
 
 ACCESSION_KEYS = [
@@ -785,9 +787,12 @@ class Dataset(Collection):
         def expand_page(cls, request, properties):
             properties = super(Dataset.Item, cls).expand_page(request, properties)
             if 'hub' in properties:
+                hub_url = urljoin(request.resource_url(request.root), properties['hub'])
                 properties = properties.copy()
-                properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?db=' + properties['assembly'] + \
-                    '&hubUrl=http://' + request.host + properties['hub']
+                properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
+                    'db=' + quote_plus(properties['assembly']),
+                    'hubUrl=' + quote_plus(hub_url, ':/@'),
+                ])
             return properties
 
 
@@ -921,6 +926,17 @@ class HelpPage(Page):
         'description': 'Portal pages, help section',
     }
     unique_key = 'help_page:name'
+
+
+@location('publication')
+class Publication(Collection):
+    item_type = 'publication'
+    schema = load_schema('publication.json')
+    properties = {
+        'title': 'Publication',
+        'description': 'Publication pages',
+    }
+    unique_key = 'publication:title'
 
 
 @location('images')

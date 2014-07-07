@@ -30,22 +30,33 @@
         },
         "layout": {
             "title": "Page Layout",
-            "description": "Hierarchical description of the page layout, comprising rows of columns and blocks.",
+            "description": "Hierarchical description of the page layout.",
             "type": "object",
-            "properties": {},
-            "default": {
-                "rows": [
-                    {
-                        "blocks": [
-                            {
-                                "@type": "richtextblock",
-                                "data": {
-                                    "body": "<p>Some rich text.</p>"
+            "properties": {
+                "rows": {
+                    "type": "array",
+                    "items": {},
+                    "default": [
+                        {
+                            "cols": [
+                                {
+                                    "blocks": ["#block1"]
                                 }
-                            }
-                        ]
-                    }
-                ]
+                            ]
+                        }
+                    ]
+                },
+                "blocks": {
+                    "type": "array",
+                    "items": {},
+                    "default": [
+                        {
+                            "@id": "#block1",
+                            "@type": "richtextblock",
+                            "body": "<p></p>"
+                        }
+                    ]
+                }
             }
         }
     },

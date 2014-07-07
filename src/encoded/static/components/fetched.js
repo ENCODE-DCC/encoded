@@ -86,6 +86,15 @@ var Fetched = module.exports.Fetched = {
 
 var FetchedData = module.exports.FetchedData = React.createClass({
     mixins: [Fetched],
+
+    shouldComponentUpdate: function(nextProps, nextState) {
+        if (this.props.showSpinnerOnUpdate === false && nextState.communicating) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+
     render: function () {
         var url = this.props.url;
         var data = this.state.data;

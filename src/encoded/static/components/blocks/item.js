@@ -13,7 +13,7 @@ var Listing = require('../search').Listing;
 var SearchBlockEdit = search.SearchBlockEdit;
 
 
-var ItemBlockView = React.createClass({
+var ItemBlockView = module.exports.ItemBlockView = React.createClass({
     render: function() {
         var ViewComponent = globals.content_views.lookup(this.props.data);
         return this.transferPropsTo(<ViewComponent context={this.props.data} />);
@@ -41,21 +41,22 @@ var ItemPreview = React.createClass({
     render: function() {
         var context = this.props.data;
         var style = {width: '80%'};
-        return (
-            <ul className="facet-list nav" style={style}>
-                <Listing context={context} columns={context.columns} />
-            </ul>
-        );
+        var title = globals.listing_titles.lookup(context)({context: context});
+        return <h2><a href={context['@id']}>{title}</a></h2>;
     }
 });
 
 
-var ObjectPicker = React.createClass({
+var ObjectPicker = module.exports.ObjectPicker = React.createClass({
+
+    getDefaultProps: function() {
+        return {searchBase: '?mode=picker'};
+    },
 
     getInitialState: function() {
         return {
             browsing: false,
-            search: '?mode=picker'
+            search: this.props.searchBase
         };
     },
 
@@ -73,10 +74,11 @@ var ObjectPicker = React.createClass({
               {this.state.browsing
                 ? <FetchedData url={searchUrl} Component={SearchBlockEdit}
                                loadingComplete={true} searchBase={this.state.search}
-                               actions={actions} onChange={this.handleFilter} />
+                               actions={actions} onChange={this.handleFilter}
+                               showSpinnerOnUpdate={false} />
                 : <div className="clearfix">
                     <button className="btn btn-default pull-right" onClick={this.handleBrowse}>Browse&hellip;</button>
-                    {this.transferPropsTo(<FetchedData url={url} Component={ItemPreview} loadingComplete={true} />)}
+                    {this.transferPropsTo(<FetchedData url={url} Component={ItemPreview} loadingComplete={true} showSpinnerOnUpdate={false} />)}
                   </div>}
             </div>
         );
@@ -101,7 +103,7 @@ var ObjectPicker = React.createClass({
 
 globals.blocks.register({
     label: 'item block',
-    icon: 'icon-file',
+    icon: 'icon icon-paperclip',
     schema: (
         <Schema>
           <Property name="item" label="Item" input={<ObjectPicker />} />

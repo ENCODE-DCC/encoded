@@ -82,7 +82,7 @@ var globals = require('./globals');
             if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
                 title = 'Add ' + title;
                 var action = this.props.context['@id'];
-                var form = <Form schema={this.props.schema} action={action} method="POST" />;
+                var form = <Form schema={this.props.schema} action={action} data={this.props.defaultValue} method="POST" />;
             } else {  // edit form
                 title = 'Edit ' + title;
                 var url = this.props.context['@id'] + '?frame=edit';

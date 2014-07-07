@@ -45,8 +45,8 @@ var Biosample = module.exports.Biosample = React.createClass({
         constructs.forEach(function (construct) {
             construct.documents.forEach(function (doc) {
                 construct_documents[doc['@id']] = Panel({context: doc});
-           }, this);
-        }, this);
+           });
+        });
 
         // set up RNAi documents panels
         var rnais = _.sortBy(context.rnais, function(item) {
@@ -56,13 +56,13 @@ var Biosample = module.exports.Biosample = React.createClass({
         rnais.forEach(function (rnai) {
             rnai.documents.forEach(function (doc) {
                 rnai_documents[doc['@id']] = Panel({context: doc});
-            }, this);
-        }, this);
+            });
+        });
 
         var protocol_documents = {};
         context.protocol_documents.forEach(function(doc) {
             protocol_documents[doc['@id']] = Panel({context: doc});
-        }, this);
+        });
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
 
@@ -300,17 +300,17 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
                 {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
 
-                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+                {context.life_stage ? <dt>Life stage</dt> : null}
+                {context.life_stage ? <dd className="sentence-case">{context.life_stage}</dd> : null}
 
-                {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
+                {context.age ? <dt>Age</dt> : null}
+                {context.age ? <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd> : null}
 
-                {biosample && biosample.sex ? <dt>Sex</dt> : null}
-                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
+                {context.sex ? <dt>Sex</dt> : null}
+                {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
 
-                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
+                {context.health_status ? <dt>Health status</dt> : null}
+                {context.health_status ? <dd className="sentence-case">{context.health_status}</dd> : null}
 
                 {context.ethnicity ? <dt>Ethnicity</dt> : null}
                 {context.ethnicity ? <dd className="sentence-case">{context.ethnicity}</dd> : null}
@@ -576,8 +576,9 @@ var Document = module.exports.Document = React.createClass({
         });
         var triggerClass = cx({
             "trigger-icon": true,
-            "icon-sort-down": !this.state.panelOpen,
-            "icon-sort-up": this.state.panelOpen
+            "icon": true,
+            "icon-toggle-down": !this.state.panelOpen,
+            "icon-toggle-up": this.state.panelOpen
         });
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
@@ -587,7 +588,7 @@ var Document = module.exports.Document = React.createClass({
             var dlFileTitle = "Download file " + context.attachment.download;
             download = (
                 <div className="dl-bar">
-                    <i className="icon-download-alt"></i>&nbsp;
+                    <i className="icon icon-download"></i>&nbsp;
                     <a data-bypass="true" title={dlFileTitle} href={attachmentHref} download={context.attachment.download}>
                         {context.attachment.download}
                     </a>

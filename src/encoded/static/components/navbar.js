@@ -4,6 +4,7 @@ var React = require('react');
 var url = require('url');
 var mixins = require('./mixins');
 var submitHost = require('./globals').submitHost;
+var _ = require('underscore');
 var Navbar = require('../react-bootstrap/Navbar');
 var Nav = require('../react-bootstrap/Nav');
 var NavItem = require('../react-bootstrap/NavItem');
@@ -17,6 +18,7 @@ var NavBar = React.createClass({
             portal: this.props.portal,
             section: section,
             session: this.props.session,
+            context_actions: this.props.context_actions,
             user_actions: this.props.user_actions,
             href: this.props.href,
         });
@@ -53,12 +55,14 @@ var NavBarLayout = React.createClass({
         var section = this.props.section;
         var session = this.props.session;
         var user_actions = this.props.user_actions;
+        var context_actions = this.props.context_actions;
         return (
             <div id="navbar" className="navbar navbar-fixed-top navbar-inverse">
                 <div className="container">
                     <Navbar brand={portal.portal_title} brandlink="/" noClasses={true} data-target="main-nav">
                         <GlobalSections global_sections={portal.global_sections} section={section} />
                         {this.transferPropsTo(<UserActions />)}
+                        {context_actions ? this.transferPropsTo(<ContextActions />) : null}
                         {this.transferPropsTo(<Search />)}
                     </Navbar>
                 </div>
@@ -67,7 +71,7 @@ var NavBarLayout = React.createClass({
                         <div className="container">
                             <p>
                                 The data displayed on this page is not official and only for testing purposes.
-                                <a href="#" className="test-warning-close icon-remove-sign" onClick={this.handleClick}></a>
+                                <a href="#" className="test-warning-close icon icon-times-circle-o" onClick={this.handleClick}></a>
                             </p>
                         </div>
                     </div>
@@ -90,6 +94,19 @@ var GlobalSections = React.createClass({
             );
         });
         return <Nav navbar={true} bsStyle="navbar-nav" activeKey={1}>{actions}</Nav>;
+    }
+});
+
+var ContextActions = React.createClass({
+    render: function() {
+        var actions = this.props.context_actions.map(function(action) {
+            return (
+                <NavItem href={action.href} key={action.name}>
+                    <i className="icon icon-pencil"></i> {action.title}
+                </NavItem>
+            );
+        });
+        return <Nav bsStyle="navbar-nav" navbar={true} right={true} id="edit-actions">{actions}</Nav>;
     }
 });
 
