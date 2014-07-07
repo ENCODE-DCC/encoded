@@ -88,7 +88,7 @@ var Attachment = module.exports.Attachment = React.createClass({
                     return <img className={imgClass} src={src} height={height} width={width} alt={alt} />;
                 } else {
                     return (
-                        <div>
+                        <div className="attachment">
                             <a data-bypass="true" href={attachmentHref} onClick={this.lightboxClick.bind(this, attachmentType)}>
                                 <img className={imgClass} src={src} height={height} width={width} alt={alt} />
                             </a>

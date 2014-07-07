@@ -70,22 +70,35 @@ $characterization-figure-height: 200px;
         figure {
             position: relative;
             display: table;
-            float: right;
-            width: $figure-width;
+            float: none;
+            width: 100%;
             height: $figure-height;
-            margin: 0 0 0 5px;
+            margin: 0;
             padding: 0;
             border-left: 1px solid #e8e8e8;
             background-color: #f0f0f0;
             @include background-image(linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%));
             background-image: -ms-linear-gradient(left top, #f0f0f0 0%,#e0e0e0 50%,#f8f8f8 100%);
 
-            a {
-                display: table-cell;
+            @media screen and (min-width: $screen-sm-min) {
                 width: $figure-width;
-                height: $figure-height;
+                float: right;
+                margin: 0 0 0 5px;
+            }
+
+            a {
+                display: block;
+                width: $figure-width;
+                height: auto;
+                margin: 0 auto;
                 text-align: center;
                 vertical-align: middle;
+
+                &.file-pdf,
+                &.file-generic,
+                &.file-missing {
+                    height: $figure-height;
+                }
 
                 img {
                     display: inline-block;
@@ -102,11 +115,24 @@ $characterization-figure-height: 200px;
     }
 }
 
+
+.attachment {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+
 .characterization-badge {
     position: absolute;
+    left: 50%;
     bottom: 5px;
-    left: 5px;
+    margin-left: -($characterization-figure-width / 2);
     width: $characterization-figure-width - 10;
+
+    @media screen and (min-width: $screen-sm-min) {
+        left: 5px;
+        margin-left: 0;
+    }
 
     .label {
         width: 100%;
@@ -114,6 +140,11 @@ $characterization-figure-height: 200px;
         text-align: center;
         font-size: 12px;
     }
+}
+
+
+.dl-link {
+    word-break: break-all;
 }
 
 .type-document {
@@ -125,7 +156,7 @@ $characterization-figure-height: 200px;
 }
 
 @mixin panel-header($figure-height) {
-    height: $figure-height;
+    height: auto;
     border-bottom: 1px solid #e8e8e8;
     overflow: hidden;
     -ms-word-break: break-all;
@@ -135,6 +166,10 @@ $characterization-figure-height: 200px;
     -moz-hyphens: auto;
     -ms-hyphens: auto;
     hyphens: auto;
+
+    @media screen and (min-width: $screen-sm-min) {
+        height: $figure-height;
+    }
 }
 
 .document-header {
