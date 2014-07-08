@@ -117,8 +117,44 @@ describe('Experiment Page', function() {
             var defDescs = docKeyValue[0].getElementsByTagName('dd');
             expect(defDescs.length).toEqual(4);
             var anchors = defDescs[3].getElementsByTagName('a');
+            console.log(url.parse(anchors[0].getAttribute('href')).pathname);
             expect(anchors.length).toEqual(1);
             expect(url.parse(anchors[0].getAttribute('href')).pathname).toEqual('/documents/df9dd0ec-c1cf-4391-a745-a933ab1af7a7/@@download/attachment/Myers_Lab_ChIP-seq_Protocol_v042211.pdf');
+        });
+    });
+
+    describe('Document Panel References', function() {
+        var experiment, doc;
+
+        beforeEach(function() {
+            require('../biosample.js').Document;
+            var context_doc = _.clone(context);
+            context_doc.documents = [require('../testdata/document/wgEncodeSydhHist-refs')];
+            experiment = <Experiment context={context_doc} />;
+            TestUtils.renderIntoDocument(experiment);
+            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
+        });
+
+        it('has five key-value pairs, and two good references links', function() {
+            var url = require('url');
+            var docKeyValue = doc.getElementsByClassName('key-value');
+            expect(docKeyValue.length).toEqual(1);
+            var defTerms = docKeyValue[0].getElementsByTagName('dt');
+            expect(defTerms.length).toEqual(5);
+            var defDescs = docKeyValue[0].getElementsByTagName('dd');
+            expect(defDescs.length).toEqual(5);
+            var refUl = defDescs[4].getElementsByTagName('ul');
+            expect(refUl.length).toEqual(1);
+            var refLi = refUl[0].getElementsByTagName('li');
+            expect(refLi.length).toEqual(2);
+
+            // Make sure each link in references is correct
+            var anchors = refLi[0].getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19706456');
+            anchors = refLi[1].getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19122651');
         });
     });
 
