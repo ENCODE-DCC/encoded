@@ -94,7 +94,8 @@
                 "ng/mL",
                 "M",
                 "percent",
-                "units"
+                "units",
+		"U/mL"
             ]
         },
         "duration": {
