@@ -63,8 +63,9 @@ ALLOW_LAB_SUBMITTER_EDIT = [
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
-ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
+ALLOW_CURRENT = [
     (Allow, Everyone, 'view'),
+    (Allow, 'group.admin', 'edit'),
 ]
 
 ONLY_ADMIN_VIEW = [
