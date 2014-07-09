@@ -1,3 +1,6 @@
+@import "../../fontawesome/font-awesome";
+
+
 $document-figure-width: 130px;
 $document-figure-height: 130px;
 $characterization-figure-width: 200px;
@@ -244,16 +247,27 @@ $characterization-figure-height: 200px;
     left: 50%;
     top: -20px;
     margin-left: -20px;
-    background-image: url(../img/disclose-tab-sprite.svg);
-    background-size: 40px 40px;
+    padding: 0 !important;
+    background-image: inline-image("../img/disclose-tab.svg");
+    background-size: 40px 20px;
     background-position: 0 0;
-
-    &.active {
-        background-position: 0 -20px;
-    }
 
     &.disabled {
         display: none;
+    }
+
+    &:after {
+        position: absolute;
+        content: $fa-var-angle-down;
+        font-family: fontawesome;
+        font-size: 20px;
+        color: #fff;
+        top: -3px;
+        left: 13px;
+    }
+
+    &.active:after {
+        content: $fa-var-angle-up;
     }
 }
 

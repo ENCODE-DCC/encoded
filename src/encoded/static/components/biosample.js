@@ -577,8 +577,8 @@ var Document = module.exports.Document = React.createClass({
         var triggerClass = cx({
             "trigger-icon": true,
             "icon": true,
-            "icon-toggle-down": !this.state.panelOpen,
-            "icon-toggle-up": this.state.panelOpen
+            "icon-angle-down": !this.state.panelOpen,
+            "icon-angle-up": this.state.panelOpen
         });
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
