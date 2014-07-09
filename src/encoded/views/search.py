@@ -41,12 +41,23 @@ def get_filtered_query(term, fields, principals):
             }
         },
         'facets': {},
-        'fields': ['embedded.' + field for field in fields],
+        '_source': list(fields),
     }
 
 
 def sanitize_search_string(text):
     return sanitize_search_string_re.sub(r'\\\g<0>', text)
+
+
+def flatten_dict(d):
+    def items():
+        for key, value in d.items():
+            if isinstance(value, dict):
+                for subkey, subvalue in flatten_dict(value).items():
+                    yield key + "." + subkey, subvalue
+            else:
+                yield key, value
+    return dict(items())
 
 
 @view_config(name='search', context=Root, request_method='GET',
@@ -123,29 +134,23 @@ def search(context, request, search_type=None):
 
     frame = request.params.get('frame')
     if frame in ['embedded', 'object']:
-        fields = []
+        fields = [frame + '.*']
     elif len(doc_types) == 1 and 'columns' not in (root[doc_types[0]].schema or ()):
         frame = 'object'
-        fields = []
+        fields = ['object.*']
     else:
         frame = 'columns'
-        fields = {'@id', '@type'}
+        fields = {'object.*', 'embedded.@id', 'embedded.@type'}
         for doc_type in (doc_types or root.by_item_type.keys()):
             collection = root[doc_type]
-            if frame == 'columns':
-                if collection.schema is None:
-                    continue
-                columns = collection.schema.get('columns', ())
-                fields.update(columns)
-                result['columns'].update(columns)
+            if collection.schema is None:
+                continue
+            columns = collection.schema.get('columns', ())
+            fields.update('embedded.' + column for column in columns)
+            result['columns'].update(columns)
 
     # Builds filtered query which supports multiple facet selection
     query = get_filtered_query(search_term, sorted(fields), principals)
-
-    # Handling object fields return for ES 1.0.+
-    if not len(fields):
-        del(query['fields'])
-        query['_source'] = [frame]
 
     if not result['columns']:
         del result['columns']
@@ -291,20 +296,13 @@ def search(context, request, search_type=None):
     hits = results['hits']['hits']
     if frame in ['embedded', 'object']:
         result['@graph'] = [hit['_source'][frame] for hit in hits]
-    else:
-        prefix_len = len('embedded.')
+    else:  # columns
         for hit in hits:
-            item = {}
-            for field, value in hit['fields'].items():
-                if field[prefix_len:] == '@id':
-                    item[field[prefix_len:]] = value[0]
-                elif field[prefix_len:] == '@type':
-                    item[field[prefix_len:]] = value
-                elif result['columns'][field[prefix_len:]]['type'] != 'array':
-                    item[field[prefix_len:]] = value[0]
-                else:
-                    item[field[prefix_len:]] = value
-            result['@graph'].append(item)
+            item_type = hit['_source']['embedded']['@type'][0]
+            if 'columns' in root[item_type].schema:
+                result['@graph'].append(flatten_dict(hit['_source']['embedded']))
+            else:
+                result['@graph'].append(hit['_source']['object'])
 
     # Adding total
     result['total'] = results['hits']['total']
