@@ -1172,7 +1172,7 @@ def item_view_raw(context, request):
     return context.properties
 
 
-@view_config(context=Item, permission='view_raw', request_method='GET',
+@view_config(context=Item, permission='edit', request_method='GET',
              request_param=['frame=edit'])
 def item_view_edit(context, request):
     properties = context.upgrade_properties()
