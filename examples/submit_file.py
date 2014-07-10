@@ -1,5 +1,6 @@
 import hashlib
 import json
+import os
 import requests
 import subprocess
 import time
@@ -7,6 +8,7 @@ import time
 host = 'http://localhost:6543'
 encoded_access_key = '...'
 encoded_secret_access_key = '...'
+
 path = 'example.fastq.gz'
 
 # ~2s/GB
@@ -23,6 +25,10 @@ data = {
     "output_type": "rawData",
     "submitted_file_name": path,
 }
+
+
+####################
+# Local validation
 
 gzip_types = [
     "CEL",
@@ -63,6 +69,10 @@ if data['file_format'] in validate_map:
         path,
     ])
 
+
+####################
+# POST metadata
+
 headers = {
     'Content-type': 'application/json',
     'Accept': 'application/json',
@@ -78,17 +88,24 @@ r = requests.post(
 r.raise_for_status()
 item = r.json()['@graph'][0]
 print(json.dumps(item, indent=4, sort_keys=True))
+
+
+####################
+# POST file to S3
+
 creds = item['upload_credentials']
-env = {
+env = os.environ.copy()
+env.update({
     'AWS_ACCESS_KEY_ID': creds['access_key'],
     'AWS_SECRET_ACCESS_KEY': creds['secret_key'],
     'AWS_SECURITY_TOKEN': creds['session_token'],
-}
+})
 
 # ~10s/GB from Stanford - AWS Oregon
+# ~12-15s/GB from AWS Ireland - AWS Oregon
 print("Uploading file.")
 start = time.time()
-subprocess.check_call(['bin/aws', 's3', 'cp', path, creds['upload_url']], env=env)
+subprocess.check_call(['aws', 's3', 'cp', path, creds['upload_url']], env=env)
 end = time.time()
 duration = end - start
 print("Uploaded in %.2f seconds" % duration)
