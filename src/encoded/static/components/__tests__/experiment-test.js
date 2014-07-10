@@ -170,4 +170,20 @@ describe('Experiment Page', function() {
             });
         });
     });
+
+    describe('Alternate accession display', function() {
+        var experiment, alt;
+
+        beforeEach(function() {
+            var context_alt = _.clone(context);
+            context_alt.alternate_accessions = require('../testdata/alternate_accession/experiment');
+            experiment = <Experiment context={context_alt} />;
+            TestUtils.renderIntoDocument(experiment);
+            alt = TestUtils.findRenderedDOMComponentWithClass(experiment, 'repl-acc');
+        });
+
+        it('displays two alternate accessions', function() {
+            expect(alt.getDOMNode().textContent).toEqual('Replaces ENCSR000ACT, ENCSR999NOF');
+        });
+    });
 });
