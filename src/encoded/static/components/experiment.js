@@ -120,7 +120,7 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Make string of alternate accessions
-        var altacc = context.alternate_accessions.join(', ');
+        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // XXX This makes no sense.
         //var control = context.possible_controls[0];

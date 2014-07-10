@@ -59,7 +59,7 @@ var Biosample = module.exports.Biosample = React.createClass({
         });
 
         // Make string of alternate accessions
-        var altacc = context.alternate_accessions.join(', ');
+        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
 

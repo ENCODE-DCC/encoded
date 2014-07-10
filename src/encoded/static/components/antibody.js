@@ -53,7 +53,7 @@ var Approval = module.exports.Approval = React.createClass({
         });
     
         // Make string of alternate accessions
-        var altacc = context.antibody.alternate_accessions.join(', ');
+        var altacc = context.antibody.alternate_accessions ? context.context.antibody.alternate_accessions.join(', ') : undefined;
 
         // Missing enncode
         return (

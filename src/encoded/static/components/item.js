@@ -13,7 +13,7 @@ var globals = require('./globals');
             var panel = globals.panel_views.lookup(context)();
 
             // Make string of alternate accessions
-            var altacc = context.alternate_accessions.join(', ');
+            var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
             this.transferPropsTo(panel);
             return (
