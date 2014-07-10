@@ -11,12 +11,17 @@ var globals = require('./globals');
             var itemClass = globals.itemClass(context, 'view-item');
             var title = globals.listing_titles.lookup(context)({context: context});
             var panel = globals.panel_views.lookup(context)();
+
+            // Make string of alternate accessions
+            var altacc = context.alternate_accessions.join(', ');
+
             this.transferPropsTo(panel);
             return (
                 <div className={itemClass}>
                     <header className="row">
                         <div className="col-sm-12">
                             <h2>{title}</h2>
+                            {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         </div>
                     </header>
                     <p className="description">{context.description}</p>

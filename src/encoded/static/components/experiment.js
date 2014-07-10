@@ -119,6 +119,9 @@ var Experiment = module.exports.Experiment = React.createClass({
             statuses.push({status: "pending", title: "Validation"});
         }
 
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions.join(', ');
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -132,6 +135,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <h2>
                             Experiment summary for {context.accession}
                         </h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="characterization-status-labels">
                             <StatusLabel status={statuses} />
                         </div>
