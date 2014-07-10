@@ -55,12 +55,22 @@ var defaultLayout = {
 };
 
 
+var statusSelect = (
+    <select className="form-control">
+        <option value="in progress">in progress</option>
+        <option value="released">released</option>
+        <option value="deleted">deleted</option>
+    </select>
+);
+
+
 var Schema    = ReactForms.schema.Schema;
 var Property  = ReactForms.schema.Property;
 var PageFormSchema = (
     <Schema>
         <Property name="name" label="Name" />
         <Property name="title" label="Title" />
+        <Property name="status" label="Status" input={statusSelect} />
         <Property name="layout" label="Layout"
                   type={LayoutType}
                   input={Layout({editable: true})}

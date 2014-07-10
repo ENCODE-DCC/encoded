@@ -38,7 +38,7 @@
                 {
                     "@id": "#block4",
                     "@type": "teaserblock",
-                    "image": "8a91ae78-731a-4a92-ae7c-273214be408a",
+                    "image": "/images/8a91ae78-731a-4a92-ae7c-273214be408a/",
                     "body": "<h2>Chromatin Structure</h2>",
                     "href": "/about/chromatin-structure"
                 }
@@ -86,7 +86,7 @@
                 {
                     "@id": "#block4",
                     "@type": "itemblock",
-                    "item": "b4589f52-521e-45db-8dfa-378d92cbbd86"
+                    "item": "/images/b4589f52-521e-45db-8dfa-378d92cbbd86/"
                 }
             ]
         }
