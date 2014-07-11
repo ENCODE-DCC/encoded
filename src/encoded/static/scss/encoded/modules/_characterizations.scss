@@ -1,6 +1,8 @@
 /* Validation Details Page */
 
 .type-document.view-detail {
+    padding: 0;
+
     figure {
         margin: 14px;
         padding: 10px;
@@ -248,6 +250,7 @@
 
 %file-icon {
     @include img-responsive();
+    @include text-hide;
     width: 100px;
     height: 100px;
     background-position: center center;

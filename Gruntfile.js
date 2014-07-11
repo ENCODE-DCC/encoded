@@ -76,6 +76,23 @@ module.exports = function(grunt) {
                 dest: 'src/encoded/static/build/',
             }
         },
+        compass: {
+            dist: {
+                options: {
+                    sassDir: 'src/encoded/static/scss',
+                    cssDir: 'src/encoded/static/css',
+                    outputStyle: 'compressed'
+                }
+            }
+        },
+        bless: {
+            css: {
+                options: {},
+                files: {
+                    'src/encoded/static/css/style-split.css': 'src/encoded/static/css/style.css'
+                }
+            }
+        }
     });
 
     grunt.registerMultiTask('browserify', function () {
@@ -149,6 +166,9 @@ module.exports = function(grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-compass');
+    grunt.loadNpmTasks('grunt-bless');
 
     grunt.registerTask('default', ['browserify', 'copy']);
+    grunt.registerTask('styles', ['compass', 'bless']);
 };

@@ -95,7 +95,7 @@ var App = React.createClass({
                     <link rel="canonical" href={this.props.href} />
                     <script dangerouslySetInnerHTML={{__html: scriptjs + '\n'}}></script>
                     <script dangerouslySetInnerHTML={{__html: inline}}></script>
-                    <link rel="stylesheet" href="/static/css/style.css" />
+                    <link rel="stylesheet" href="/static/css/style-split.css" />
                     <script src="/static/build/bundle.js" async defer></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>

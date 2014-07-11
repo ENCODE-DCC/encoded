@@ -98,16 +98,16 @@ var Attachment = module.exports.Attachment = React.createClass({
                 }
             } else if (context.attachment.type == "application/pdf"){
                 return (
-                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Attachment PDF Icon</a>
+                    <a data-bypass="true" href={attachmentHref} className="file-pdf">Attachment PDF Icon</a>
                 );
             } else {
                 return (
-                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide">Attachment Icon</a>
+                    <a data-bypass="true" href={attachmentHref} className="file-generic">Attachment Icon</a>
                 );
             }
         } else {
             return (
-                <div className="file-missing text-hide">Attachment file broken icon</div>
+                <div className="file-missing">Attachment file broken icon</div>
             );
         }
     }
