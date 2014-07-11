@@ -24,6 +24,15 @@ def biosample_depeleted_in(biosample):
     return item
 
 
+@pytest.fixture
+def biosample_starting_amount(biosample):
+    item = biosample.copy()
+    item.update({
+        'starting_amount': 'unknown'
+    })
+    return item
+
+
 def test_biosample_depeleted_in(testapp, biosample_depeleted_in):
     testapp.post_json('/biosample', biosample_depeleted_in)
 
@@ -36,3 +45,6 @@ def test_biosample_depeleted_in_name_required(testapp, biosample_depeleted_in):
 def test_biosample_depeleted_in_type_whole_organismg(testapp, biosample_depeleted_in):
     biosample_depeleted_in['biosample_type'] = 'tissue'
     testapp.post_json('/biosample', biosample_depeleted_in,  status=422)
+
+def test_biosample_starting_amount(testapp, biosample_starting_amount):
+    testapp.post_json('/biosample', biosample_starting_amount)
