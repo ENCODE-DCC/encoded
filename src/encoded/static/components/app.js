@@ -72,7 +72,7 @@ var App = React.createClass({
 
         var appClass = 'done';
         if (this.props.slow) {
-            appClass = 'communicating'; 
+        	appClass = 'communicating'; 
         }
 
         var title = globals.listing_titles.lookup(context)({
@@ -95,7 +95,7 @@ var App = React.createClass({
                     <link rel="canonical" href={this.props.href} />
                     <script dangerouslySetInnerHTML={{__html: scriptjs + '\n'}}></script>
                     <script dangerouslySetInnerHTML={{__html: inline}}></script>
-                    <link rel="stylesheet" href="/static/css/style-split.css" />
+                    <link rel="stylesheet" href="/static/css/style.css" />
                     <script src="/static/build/bundle.js" async defer></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>
@@ -105,8 +105,8 @@ var App = React.createClass({
                     <div id="slot-application">
                         <div id="application" className={appClass}>
                         
-                        <div className="loading-spinner"></div>
-                                   
+						<div className="loading-spinner"></div>
+								   
                             <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         context_actions={context.actions || []}

@@ -15,7 +15,9 @@ parts/
 *.egg-info
 *.pyc
 session-secret.b64
-src/encoded/static/css/*.css
+src/encoded/static/css/bootstrap.css
+src/encoded/static/css/responsive.css
+src/encoded/static/css/style.css
 src/encoded/static/scss/_variables.original.scss
 src/encoded/static/build/
 src/encoded/tests/js/build/

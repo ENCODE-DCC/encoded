@@ -30,9 +30,7 @@
     "jstransform": "^4.0.1",
     "moment": "^2.7.0",
     "react-tools": "^0.10.0",
-    "reactify": "^0.13.1",
-    "grunt-contrib-compass": "^0.9.0",
-    "grunt-bless": "^0.1.1"
+    "reactify": "^0.13.1"
   },
   "dependencies": {
     "brace": "^0.2.1",
