@@ -1,7 +1,22 @@
+
+import string
 from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+
+
+@audit_checker('experiment')
+def audit_experiment_description(value, system):
+    '''
+    Experiments should have descriptions that contain the experimental variables and
+    read like phrases.  I cannot get all of that here, but I thought I would start
+    with looking for funny characters.
+    '''
+    allowed = string.letters + string.digits + ' ' + '-'
+    if not all(c in allowed for c in value['description']):
+        detail = ''  # I would like to report the errant char here
+        raise AuditFailure('malformed description', detail, level='WARNING')
 
 
 @audit_checker('experiment')
@@ -77,11 +92,16 @@ def audit_experiment_control(value, system):
     if value['status'] == 'deleted':
         return
 
-    if ('assay_term_name' not in value) or (value['assay_term_name'] not in ['ChIP-seq']):
-        # RBNS, who else
+    # Cureently controls are only be required for ChIP-seq
+    if value.get('assay_term_name') not in ['ChIP-seq']:
         return
 
-    if 'target' not in value or value['target']['name'].startswith('Control'):
+    # If there is no targets, for now will will just ignore it, likely this is an error
+    if 'target' not in value:
+        return
+
+    # We do not want controls
+    if 'control' in value['target']['name'] or 'Control' in value['target']['name']:
         return
 
     if 'possible_controls' == []:
