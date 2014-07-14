@@ -40,11 +40,40 @@
                 margin-bottom: 0;
             }
         }
+
+        pre {
+            padding: 0 10px;
+            overflow: auto;
+            word-wrap: normal;
+            background-color: #f8f8f8;
+            border: 1px solid #e0e0e0;
+
+            code {
+                display: block;
+                margin: 10px 0;
+                white-space: pre;
+                border: none;
+            }
+
+        }
+
+        code {
+            border: 1px solid #e0e0e0;
+        }
+
+        h2, h3, h4, h5, h6 {
+            margin-top: 50px;
+        }
     }
 
     &.teaserblock {
         padding: 0;
     }
+}
+
+
+a.url {
+    word-break: break-all;
 }
 
 
@@ -78,7 +107,7 @@
     @media screen and (min-width: $screen-md-min) {
         float: right;
         margin-left: 10px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         width: 50%;
     }
 }
@@ -89,8 +118,19 @@
     @media screen and (min-width: $screen-md-min) {
         float: left;
         margin-right: 10px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         width: 50%;
+    }
+}
+
+
+// Left aligned figures
+.col-md-12 .fig-align-center {
+    @media screen and (min-width: $screen-md-min) {
+        img {
+            display: block;
+            margin: 0 auto;
+        }
     }
 }
 
@@ -138,4 +178,3 @@
         letter-spacing: 1px;
     }
 }
-
