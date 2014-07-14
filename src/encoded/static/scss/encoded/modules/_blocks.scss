@@ -7,6 +7,95 @@
 }
 
 
+// Applies to all block types, and specific blog styles nest inside
+.block {
+    margin-bottom: 20px;
+    @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
+
+    @media screen and (min-width: $screen-md-min) {
+        margin-bottom: 30px;
+    }
+
+    &.richtextblock {
+        padding: 1px 20px 10px;
+        background-color: #fff;
+        line-height: 1.8;
+
+        .col-md-12 & {
+            @media screen and (min-width: $screen-md-min) {
+                padding-left: 20%;
+                padding-right: 20%;
+            }
+        }
+
+        li {
+            margin-top: 1em;
+            margin-bottom: 1em;
+
+            &:first-child {
+                margin-top: 0;
+            }
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+
+    &.teaserblock {
+        padding: 0;
+    }
+}
+
+
+// All figures get this class
+.fig {
+    padding: 5px;
+    background-color: #f0f0f0;
+    border: 1px solid #808080;
+
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid #e0e0e0;
+    }
+
+    figcaption {
+        margin-top: 5px;
+        font-size: 13px;
+        color: #808080;
+
+        span {
+            font-weight: bold;
+        }
+    }
+}
+
+
+// Right aligned figures
+.col-md-12 .fig-align-right {
+    @media screen and (min-width: $screen-md-min) {
+        float: right;
+        margin-left: 10px;
+        margin-bottom: 20px;
+        width: 50%;
+    }
+}
+
+
+// Left aligned figures
+.col-md-12 .fig-align-left {
+    @media screen and (min-width: $screen-md-min) {
+        float: left;
+        margin-right: 10px;
+        margin-bottom: 20px;
+        width: 50%;
+    }
+}
+
+
+// Teaser block styes
 .teaser {
     position: relative;
     padding: 0;
@@ -49,3 +138,4 @@
         letter-spacing: 1px;
     }
 }
+

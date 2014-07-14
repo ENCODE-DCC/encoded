@@ -90,5 +90,34 @@
                 }
             ]
         }
+    },
+    {
+        "name": "encode_rest_api",
+        "title": "The ENCODE REST API",
+        "status": "in progress",
+        "uuid": "9493f567-c0b9-4910-abbd-5e798f5a9265",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {
+                            "blocks": [
+                                "#block2"
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "body": "<h2>Introduction</h2> <p>Direct interaction with the ENCODE DCC metadata database is typically done through scripts you write and execute on your own Mac, PC or server. Your scripts interact with the database through an industry-standard, HTTP-based, RESTful interface. Data objects exchanged with the server conform to the standard JSON format. JSON is a defined data interchange format that is used web-wide. If you&rsquo;re familiar with JavaScript&rsquo;s object literal notation or Python&rsquo;s dictionary datatype, then JSON-formatted text will look familiar. You will almost certainly use libraries for your language of choice to handle the network connection and parse the objects returned (<a href=\"http://docs.python-requests.org/en/latest/\">requests</a>&nbsp;and <a href=\"http://docs.python.org/2/library/json.html\">json</a> for Python, for example). We have written example scripts you can look at <a href=\"https://github.com/ENCODE-DCC/submission_sample_scripts\">here</a>.</p> <h2>Quickstart Examples</h2> <p>While getting objects from the database, updating existing objects or adding new objects can often be done in just a few lines of code, here are some quick ways of testing your connection and exploring the ENCODE data objects without writing any code.</p> <h3>Prerequisites</h3> <ol> <li>A JSON pretty-printer plugin for your web browser, such as JSONView (for Chrome <a href=\"https://chrome.google.com/webstore/detail/jsonview/chklaanhfefbnpoihckbnefhakgolnmc?hl=en\">here</a>, for <a href=\"https://addons.mozilla.org/en-us/firefox/addon/jsonview/\">Firefox</a>).</li> <li>The curl command, which ships with Mac OSX and all major LINUX/UNIX implementations. If you don&rsquo;t have curl, an executable can be downloaded from <a href=\"http://curl.haxx.se/dlwiz/?type=bin\">here</a>.&nbsp;You will find curl useful later for debugging your scripts (it always works), so if you don&rsquo;t already have it, you&rsquo;ll want to get it.</li> </ol> <h3>ENCODE JSON in your browser</h3> <p>Look at biosample ENCBS000AAA here:</p><p><a href=\"https://www.encodedcc.org/biosamples/ENCBS000AAA/\">https://www.encodedcc.org/biosamples/ENCBS000AAA/</a></p> <figure class=\"fig fig-align-right\"> <img src=\"/images/1a0df3d4-2496-4d1f-ba4f-519bc2a22cfd/@@download/attachment/ENCBS000AAA.png\"><figcaption><span>Figure 1</span>: Publicly released ENCODE object</figcaption></figure> <p>You should see something like Figure 1. You don&rsquo;t need to sign in to the server to see this publicly-released ENCODE object.</p> <p>Now change the URL to be</p> <p><a href=\"https://www.encodedcc.org/biosamples/ENCBS000AAA/?format=json\">https://www.encodedcc.org/biosamples/ENCBS000AAA/?format=json</a></p> <figure class=\"fig fig-align-left\"> <img src=\"/images/218ffd6c-d595-4bbc-8fa4-7c82a5855d4a/@@download/attachment/ENCBS000AAA-json.png\"><figcaption><span>Figure 2</span>: ENCODE object viewed as JSON</figcaption></figure><p>You should see something like Figure 2:</p> <p>By adding the /?format=json parameter, you've instructed the ENCODE webserver to send you the raw contents of the database record for ENCBS000AAA, in JSON format. Rather than being rendered in your browser, you see the native JSON object as it is stored in the ENCODE database. This is a biosample object, and you will see all the properties and their values for this object. You need a JSON pretty printer (see prerequisites above) in order to make sense of the JSON. Notice that many of the object&rsquo;s properties contain other (nested) objects.</p>",
+                    "@id": "#block2",
+                    "@type": [
+                        "richtextblock",
+                        "block"
+                    ]
+                }
+            ]
+        }
     }
 ]

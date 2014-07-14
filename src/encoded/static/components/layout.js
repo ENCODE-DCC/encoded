@@ -105,7 +105,7 @@ var Block = module.exports.Block = React.createClass({
             classes['drop-' + this.context.dst_quad] = true;
         }
         return (
-            <div className={cx(classes)} data-pos={this.props.pos}
+            <div className={block['@type'][0] + ' ' + cx(classes)} data-pos={this.props.pos}
                  draggable={this.context.editable && !this.state.focused}
                  onDragStart={this.dragStart}
                  onDragOver={this.dragOver}
