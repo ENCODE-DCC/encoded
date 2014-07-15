@@ -13,7 +13,7 @@ def audit_experiment_description(value, system):
     read like phrases.  I cannot get all of that here, but I thought I would start
     with looking for funny characters.
     '''
-    allowed = string.letters + string.digits + ' ' + '-'
+    allowed = string.letters + string.digits + [' ', '-', '(', ')', '.', "'"]
     if not all(c in allowed for c in value['description']):
         detail = ''  # I would like to report the errant char here
         raise AuditFailure('malformed description', detail, level='WARNING')
@@ -104,12 +104,50 @@ def audit_experiment_control(value, system):
     if 'control' in value['target']['name'] or 'Control' in value['target']['name']:
         return
 
-    if 'possible_controls' == []:
+    if value['possible_controls'] == []:
         detail = 'missing control'
         raise AuditFailure('missing possible controls', detail, level='ERROR')
 
     # A check should go here that would go through all possible controls to
     # verify that they are the same biosample term
+
+
+@audit_checker('experiment')
+def audit_experiment_ownership(value, system):
+    '''
+    Do the award and lab make sense together. We may want to extend this to submitter
+    ENCODE2 and ENCODE2-Mouse data should have a dbxref for wgEncode
+    '''
+    if 'lab' not in value or 'award' not in value:
+        return
+        # should I make this an error case?
+    if value['award'] not in value['lab']['awards']:
+        detail = '{} is not part of {}'.format(value['lab']['name'], value['award']['name'])
+        raise AuditFailure('award mismatch', detail, level='ERROR')
+    if value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
+        if 'wgEncode' not in value['dbxrefs']:
+            detail = '{} has no dbxref'.format(value['accession'])
+            raise AuditFailure('missing ENCODE2 dbxref', detail, level='ERROR')
+
+
+@audit_checker('experiment')
+def audit_experiment_platform(value, system):
+    '''
+    All ENCODE 3 experiments should specify thier platform, certain platforms require read_length.
+    Eventually we should enforce that the platform is appropirate for the assay.
+    '''
+    if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3') or (value['replicates'] == []):
+        return
+    for i in range(0, len(value['replicates'])):
+        rep = value['replicates'][i]
+        if 'platform' not in rep:
+            detail = 'rep {} missing platform'.format(rep["uuid"])
+            raise AuditFailure('missing platform', detail, level='WARNING')
+        if value['assay_term_name'] in ['Proteogenomics']:  # There will be more
+            return
+        if 'read_length' not in rep:
+            detail = 'rep {} missing read_length'.format(rep["uuid"])
+            raise AuditFailure('missing read_length', detail, level='WARNING')
 
 
 @audit_checker('experiment')
@@ -121,7 +159,7 @@ def audit_experiment_biosample_term(value, system):
     '''
     if value['status'] == 'deleted':
         return
-    
+
     if 'biosample_term_id' not in value:
         return
 
