@@ -12,11 +12,15 @@ In ``~/.boto`` configure your default region::
     [Boto]
     ec2_region_name = us-west-1
 
-You can then run::
+To deploy your currently checked out branch, run::
 
     $ bin/deploy
 
-Which will deploy your currently checked out branch.
+After a few moments, it will return the domain name of your instance::
+
+    ec2...compute.amazonaws.com
+
+The deployment can take some time, especially if it's been a while since the last full database backup.
 
 To login to a demo machine, we first need to `sign your ssh public key`_ (the one uploaded to github, normally ~/.ssh/id_rsa.pub) with the demo_users_ca private key. This creates an id_rsa-cert.pub which you should place in your ~/.ssh/ alongside your keypair.
 
@@ -25,6 +29,10 @@ Note that you need a fairly recent version of OpenSSH for this to work, Mac OS 1
 You can then ssh into the demo machine::
 
     $ ssh ubuntu@ec2...compute.amazonaws.com
+
+You can then follow the deployment progress with::
+
+    $ tail -f /var/log/cloud-init-output.log
 
 .. _sign your ssh public key: https://www.digitalocean.com/community/articles/how-to-create-an-ssh-ca-to-validate-hosts-and-clients-with-ubuntu
 
