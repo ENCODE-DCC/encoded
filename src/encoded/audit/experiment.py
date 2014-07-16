@@ -46,7 +46,15 @@ def audit_experiment_target(value, system):
     if value['status'] == 'deleted':
         return
 
-    if ('assay_term_name' not in value) or (value['assay_term_name'] not in ['ChIP-seq', 'RNA Bind-n-Seq']):
+    if ('assay_term_name' not in value) or 
+       (value['assay_term_name'] not in ['ChIP-seq', 
+                                         'RNA Bind-n-Seq',
+                                         'ChIA-PET',
+                                         'RIP Array',
+                                         'RIP-seq',
+                                         'MeDIP-seq',
+                                         'iCLIP',
+                                         'shRNA knockdown followed by RNA-seq']):
         return
 
     if 'target' not in value:
