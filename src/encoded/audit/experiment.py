@@ -43,18 +43,20 @@ def audit_experiment_target(value, system):
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
     antibodies should match.
     '''
+    
+    assayList =  ['ChIP-seq', 
+                  'RNA Bind-n-Seq',
+                  'ChIA-PET',
+                  'RIP Array',
+                  'RIP-seq',
+                  'MeDIP-seq',
+                  'iCLIP',
+                  'shRNA knockdown followed by RNA-seq']
+
     if value['status'] == 'deleted':
         return
 
-    if ('assay_term_name' not in value) or 
-       (value['assay_term_name'] not in ['ChIP-seq', 
-                                         'RNA Bind-n-Seq',
-                                         'ChIA-PET',
-                                         'RIP Array',
-                                         'RIP-seq',
-                                         'MeDIP-seq',
-                                         'iCLIP',
-                                         'shRNA knockdown followed by RNA-seq']):
+    if value.get('assay_term_name') not in assayList:
         return
 
     if 'target' not in value:
