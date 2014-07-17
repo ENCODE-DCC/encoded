@@ -15,7 +15,7 @@ var Citation = React.createClass({
         var date = moment(context.date_published).format('YYYY MMM D');
         return (
             <div className="journal">
-                {context.authors} {context.title}. <i>{context.journal}</i>. {date};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.
+                {context.authors}. {context.title}. <i>{context.journal}</i>. {date};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.
             </div>
         );
     }
@@ -29,22 +29,15 @@ var Panel = React.createClass({
         var itemClass = globals.itemClass(context);
         return (
             <div className={itemClass}>
-                <p className="lead">{context.authors}</p>
+                {this.transferPropsTo(<Citation />)}
 
                 <div className="view-detail panel">
-                    <div className="row">
-                        <div className="col-md-7 abstract">
-                            <h2>Abstract</h2>
-                            {context.abstract}
-                            <div className="references">
-                                {context.references.length ? <span>References: </span> : null}
-                                {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : null}
-                            </div>
-                        </div>
-
-                        <div className="col-md-4 col-md-offset-1 citation">
-                            <h3>Citation:</h3>
-                            {this.transferPropsTo(<Citation />)}
+                    <div className="abstract">
+                        <h2>Abstract</h2>
+                        {context.abstract}
+                        <div className="references">
+                            {context.references.length ? <span>References: </span> : null}
+                            {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : null}
                         </div>
                     </div>
                 </div>
@@ -66,11 +59,14 @@ var Listing = React.createClass({
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Publication</p>
+                            <p className="type meta-status">{' ' + context['status']}</p>
                         </div>
                         <div className="accession"><a href={context['@id']}>{context.title}</a></div>
                     </div>
                     <div className="data-row">
-                        {context.authors}. {context.title}. <i>{context.journal}</i>. {date}; {context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}. {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : '' }
+                        <p className="list-author">{context.authors}.</p>
+                        <p className="list-citation">{context.title}. <i>{context.journal}</i>. {date}; {context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.</p>
+                        {context.references.length ? <DbxrefList values={context.references} className="list-reference" /> : '' }
                     </div>
             </li>
         );
