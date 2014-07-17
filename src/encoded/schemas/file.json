@@ -118,7 +118,9 @@
             "default": "current",
             "enum" : [
                 "current",
-                "obsolete"
+                "deleted",
+                "obsolete",
+                "released"
                 ]
         }
     },
