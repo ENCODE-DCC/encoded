@@ -4,6 +4,26 @@ from ..auditor import (
 )
 
 
+moleculeDict = { "DNA": "SO:0000352",
+                 "RNA": "SO:0000356",
+                 "polyadenylated mRNA": "SO:0000871",
+                 "miRNA": "SO:0000276"
+                 }
+
+@audit_checker('library')
+def audit_library_nucleic_acid(value, system):
+    '''
+    The library needs the nucleic_acid_term_name to match the nucleic_acid_term_id
+    '''
+    if value['status'] == 'deleted':
+        return
+    if 'nucleic_acid_term_name' not in value or 'nucleic_acid_term_id' not in value:
+        detail = 'library missing molecule'.format(value['accession'])
+        raise AuditFailure('missing molecule', detail, level='ERROR')
+    if moleculeDict[value['nucleic_acid_term_name']] != value['nucleic_acid_term_id']:
+        detail = '{} - {}'.format(value['nucleic_acid_term_name'], value['nucleic_acid_term_id'])
+        raise AuditFailure('mismatched molecule', detail, level='ERROR')
+
 @audit_checker('library')
 def audit_library_documents(value, system):
     '''
