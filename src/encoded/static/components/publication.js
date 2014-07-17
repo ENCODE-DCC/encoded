@@ -9,22 +9,44 @@ var search = require('./search');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
+var Citation = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var date = moment(context.date_published).format('YYYY MMM D');
+        return (
+            <div className="journal">
+                {context.authors} {context.title}. <i>{context.journal}</i>. {date};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.
+            </div>
+        );
+    }
+});
+
+
+
 var Panel = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context);
-        var date = moment(context.date_published).format('YYYY MMM D');
         return (
             <div className={itemClass}>
                 <p className="lead">{context.authors}</p>
 
                 <div className="view-detail panel">
-                    <div>
-                      <i>{context.journal}</i>. {date}; {context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}. {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : '' }
-                    </div>
+                    <div className="row">
+                        <div className="col-md-7 abstract">
+                            <h2>Abstract</h2>
+                            {context.abstract}
+                            <div className="references">
+                                {context.references.length ? <span>References: </span> : null}
+                                {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : null}
+                            </div>
+                        </div>
 
-                    <h2>Abstract</h2>
-                    <div>{context.abstract}</div>
+                        <div className="col-md-4 col-md-offset-1 citation">
+                            <h3>Citation:</h3>
+                            {this.transferPropsTo(<Citation />)}
+                        </div>
+                    </div>
                 </div>
             </div>
         );
