@@ -28,7 +28,7 @@ def audit_experiment_description(value, system):
     read like phrases.  I cannot get all of that here, but I thought I would start
     with looking for funny characters.
     '''
-    allowed = string.letters + string.digits + [' ', '-', '(', ')', '.', "'"]
+    allowed = string.letters + string.digits + [' ', '-', '(', ')', '.']
     if not all(c in allowed for c in value['description']):
         detail = ''  # I would like to report the errant char here
         raise AuditFailure('malformed description', detail, level='WARNING')
@@ -89,8 +89,8 @@ def audit_experiment_target(value, system):
     if target.startswith('Control'):
         return
 
-    # RNA Bind-n-Seq does not need an antibody
-    if value['assay_term_name'] in ['RNA Bind-n-Seq']:
+    # Some assays don't need antibodies
+    if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq']:
         return
 
     for rep in value['replicates']:
@@ -136,22 +136,22 @@ def audit_experiment_control(value, system):
             raise AuditFailure('control has mismatched biosample_id', detail, level='ERROR')
 
 
-@audit_checker('experiment')
-def audit_experiment_ownership(value, system):
-    '''
-    Do the award and lab make sense together. We may want to extend this to submitter
-    ENCODE2 and ENCODE2-Mouse data should have a dbxref for wgEncode
-    '''
-    if 'lab' not in value or 'award' not in value:
-        return
-        # should I make this an error case?
-    if value['award']['@id'] not in value['lab']['awards']:
-        detail = '{} is not part of {}'.format(value['lab']['name'], value['award']['name'])
-        yield AuditFailure('award mismatch', detail, level='ERROR')
-    if value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
-        if 'wgEncode' not in value['dbxrefs']:
-            detail = '{} has no dbxref'.format(value['accession'])
-            raise AuditFailure('missing ENCODE2 dbxref', detail, level='ERROR')
+# @audit_checker('experiment')
+# def audit_experiment_ownership(value, system):
+#     '''
+#     Do the award and lab make sense together. We may want to extend this to submitter
+#     ENCODE2 and ENCODE2-Mouse data should have a dbxref for wgEncode
+#     '''
+#     if 'lab' not in value or 'award' not in value:
+#         return
+#         # should I make this an error case?
+#     if value['award']['@id'] not in value['lab']['awards']:
+#         detail = '{} is not part of {}'.format(value['lab']['name'], value['award']['name'])
+#         yield AuditFailure('award mismatch', detail, level='ERROR')
+#     if value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
+#         if 'wgEncode' not in value['dbxrefs']:
+#             detail = '{} has no dbxref'.format(value['accession'])
+#             raise AuditFailure('missing ENCODE2 dbxref', detail, level='ERROR')
 
 
 @audit_checker('experiment')
@@ -160,6 +160,9 @@ def audit_experiment_platform(value, system):
     All ENCODE 3 experiments should specify thier platform, certain platforms require read_length.
     Eventually we should enforce that the platform is appropirate for the assay.
     '''
+
+    if value['status'] == 'deleted':
+        return
     if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3') or (value['replicates'] == []):
         return
     for i in range(0, len(value['replicates'])):
@@ -194,7 +197,7 @@ def audit_experiment_biosample_term(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} - {}'.format(term_id, term_name)
-        yield AuditFailure('NTR', detail, level='WARNING')
+        yield AuditFailure('NTR,biosample', detail, level='WARNING')
         return
 
     if term_id not in ontology:
