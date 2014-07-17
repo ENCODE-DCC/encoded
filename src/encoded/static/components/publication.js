@@ -15,12 +15,11 @@ var Citation = React.createClass({
         var date = moment(context.date_published).format('YYYY MMM D');
         return (
             <div className="journal">
-                {context.authors}. {context.title}. <i>{context.journal}</i>. {date};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.
+                <i>{context.journal}</i>. {date};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.
             </div>
         );
     }
 });
-
 
 
 var Panel = React.createClass({
@@ -29,6 +28,9 @@ var Panel = React.createClass({
         var itemClass = globals.itemClass(context);
         return (
             <div className={itemClass}>
+                <div className="authors">
+                    {context.authors}.
+                </div>
                 {this.transferPropsTo(<Citation />)}
 
                 <div className="view-detail panel">
@@ -54,6 +56,8 @@ var Listing = React.createClass({
     render: function() {
         var context = this.props.context;
         var date = moment(context.date_published).format('YYYY MMM D');
+        var authorList = context.authors.split(', ', 4);
+        var authors = authorList.length === 4 ? authorList.splice(0, 3).join(', ') + ', et al' : context.authors;
         return (<li>
                     <div>
                         {this.renderActions()}
@@ -64,7 +68,7 @@ var Listing = React.createClass({
                         <div className="accession"><a href={context['@id']}>{context.title}</a></div>
                     </div>
                     <div className="data-row">
-                        <p className="list-author">{context.authors}.</p>
+                        <p className="list-author">{authors}.</p>
                         <p className="list-citation">{context.title}. <i>{context.journal}</i>. {date}; {context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.</p>
                         {context.references.length ? <DbxrefList values={context.references} className="list-reference" /> : '' }
                     </div>

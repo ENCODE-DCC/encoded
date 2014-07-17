@@ -67,7 +67,7 @@ p {
     margin: 0 0 $font-size-base;
     font-size: $font-size-base;
     font-weight: normal;
-    color: #808080;
+    color: #606060;
 }
 
 
@@ -78,17 +78,8 @@ p {
     }
 }
 
-.citation {
-    padding: 10px 5px;
-    font-size: $font-size-base;
-    background-color: #f8f8f8;
-    border: 1px solid #e0e0e0;
-
-    h3 {
-        margin-top: 0;
-        margin-bottom: ($line-height-computed * 0.3);
-        font-size: floor($font-size-base * 1.2);
-    }
+.authors {
+    font-size: floor($font-size-base * 1.1);
 }
 
 .references {
