@@ -240,3 +240,28 @@ def test_user_effective_principals(users, anontestapp, execute_counter):
         'system.Everyone',
         'userid.e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
     ]
+
+
+def test_page_toplevel(workbook, anontestapp):
+    res = anontestapp.get('/test-section/', status=200)
+    assert res.json['@id'] == '/test-section/'
+
+    res = anontestapp.get('/pages/test-section/', status=301)
+    assert res.location == 'http://localhost/test-section/'
+
+
+def test_page_nested(workbook, anontestapp):
+    res = anontestapp.get('/test-section/subpage/', status=200)
+    assert res.json['@id'] == '/test-section/subpage/'
+
+
+def test_page_homepage(workbook, anontestapp):
+    res = anontestapp.get('/', status=200)
+    assert 'layout' in res.json
+    assert res.json['@id'] == '/'
+
+
+def test_page_collection_default(workbook, anontestapp):
+    res = anontestapp.get('/biosamples/', status=200)
+    assert 'layout' in res.json
+    assert res.json['@id'] == '/biosamples/'

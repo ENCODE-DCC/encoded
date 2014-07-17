@@ -1,0 +1,91 @@
+[
+    {
+        "name": "homepage",
+        "title": "The ENCODE Project",
+        "status": "released",
+        "uuid": "27f9abd9-0081-4ade-8c82-95ec12b3a7dd",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {"blocks": ["#block1"]}
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<h1>Homepage</h1>"
+                }
+            ]
+        }
+    },
+    {
+        "name": "test-section",
+        "title": "Test Section",
+        "status": "released",
+        "uuid": "41c4ea4e-7a8e-4b91-8fe3-384d0adc8735",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {"blocks": ["#block1"]}
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<h1>Test Section</h1>"
+                }
+            ]
+        }
+    },
+    {
+        "parent": "/test-section",
+        "name": "subpage",
+        "title": "Subpage",
+        "status": "released",
+        "uuid": "331928f7-d8f7-4ea6-b4e0-8d380fb22974",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {"blocks": ["#block1"]}
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<h1>Subpage</h1>"
+                }
+            ]
+        }
+    },
+    {
+        "name": "biosamples",
+        "title": "Biosamples",
+        "status": "released",
+        "uuid": "61edd6b2-bfdb-4db1-b950-8845ac37f65c",
+        "layout": {
+            "rows": [
+                {
+                    "cols": [
+                        {"blocks": ["#block1"]}
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<h1>Biosamples Landing Page</h1>"
+                }
+            ]
+        }
+    }
+]

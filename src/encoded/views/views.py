@@ -890,7 +890,77 @@ class RNAiCharacterization(Characterization):
     }
 
 
+@location('pages')
 class Page(Collection):
+    item_type = 'page'
+    properties = {
+        'title': 'Pages',
+        'description': 'Portal pages',
+    }
+    schema = load_schema('page.json')
+    unique_key = 'page:location'
+    template = copy.deepcopy(Collection.template)
+    template['actions'] = [ADD_ACTION]
+
+    # Override default get to avoid some unnecessary lookups
+    # and skip the check that parent == collection
+    def get(self, name, default=None):
+        root = find_root(self)
+        resource = root.get_by_uuid(name, None)
+        if resource is not None:
+            return resource
+        if self.unique_key is not None:
+            resource = root.get_by_unique_key(self.unique_key, name)
+            if resource is not None:
+                return resource
+        return default
+
+    class Item(Collection.Item):
+        name_key = 'name'
+        keys = [
+            {'name': 'page:location', 'value': '{name}', '$condition': lambda parent=None: not parent, '$templated': True},
+            {'name': 'page:location', 'value': '{parent}:{name}', '$condition': 'parent', '$templated': True},
+        ]
+
+        actions = [EDIT_ACTION]
+
+        STATUS_ACL = {
+            'in progress': [],
+            'released': ALLOW_EVERYONE_VIEW,
+            'deleted': ONLY_ADMIN_VIEW,
+        }
+
+        def __init__(self, collection, model):
+            self.collection = collection
+            parent_uuid = model[''].get('parent')
+            root = find_root(collection)
+            if parent_uuid:
+                self.__parent__ = root.get_by_uuid(parent_uuid)
+            else:
+                self.__parent__ = root
+            self.model = model
+
+        # Handle traversal to nested pages
+
+        def __getitem__(self, name):
+            resource = self.get(name)
+            if resource is None:
+                raise KeyError(name)
+            return resource
+
+        def __contains__(self, name):
+            return self.get(name, None) is not None
+
+        def get(self, name, default=None):
+            root = find_root(self)
+            location = str(self.uuid) + ':' + name
+            resource = root.get_by_unique_key('page:location', location)
+            if resource is not None:
+                return resource
+            return default
+
+
+class LegacyPage(Collection):
     schema = load_schema('page.json')
 
     template = copy.deepcopy(Collection.template)
@@ -915,7 +985,7 @@ class Page(Collection):
 
 
 @location('about')
-class AboutPage(Page):
+class AboutPage(LegacyPage):
     item_type = 'about_page'
     properties = {
         'title': 'About Pages',
@@ -925,7 +995,7 @@ class AboutPage(Page):
 
 
 @location('help')
-class HelpPage(Page):
+class HelpPage(LegacyPage):
     item_type = 'help_page'
     properties = {
         'title': 'Help Pages',

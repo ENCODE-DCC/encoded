@@ -343,6 +343,9 @@ class Root(object):
         resource = self.get_by_uuid(name, None)
         if resource is not None:
             return resource
+        resource = self.get_by_unique_key('page:location', name)
+        if resource is not None:
+            return resource
         if is_accession(name):
             resource = self.get_by_unique_key('accession', name)
             if resource is not None:
@@ -474,7 +477,7 @@ class Item(object):
     actions = []
 
     def __init__(self, collection, model):
-        self.__parent__ = collection
+        self.__parent__ = self.collection = collection
         self.model = model
 
     def __repr__(self):
@@ -492,11 +495,11 @@ class Item(object):
 
     @property
     def schema(self):
-        return self.__parent__.schema
+        return self.collection.schema
 
     @property
     def schema_version(self):
-        return self.__parent__.schema_version
+        return self.collection.schema_version
 
     @property
     def properties(self):
@@ -508,7 +511,7 @@ class Item(object):
 
     @property
     def schema_links(self):
-        return self.__parent__.schema_links
+        return self.collection.schema_links
 
     def links(self, properties):
         # This works from the schema rather than the links table
@@ -1267,15 +1270,15 @@ def item_index_data(context, request):
 
     path = resource_path(context)
     paths = {path}
-    parent = context.__parent__
+    collection = context.collection
 
-    if parent.unique_key in keys:
+    if collection.unique_key in keys:
         paths.update(
-            resource_path(parent, key)
-            for key in keys[parent.unique_key])
+            resource_path(collection, key)
+            for key in keys[collection.unique_key])
 
-    for base in (parent, request.root):
-        for key_name in ('accession', 'alias'):
+    for base in (collection, request.root):
+        for key_name in ('accession', 'alias', 'page:location'):
             if key_name not in keys:
                 continue
             paths.add(resource_path(base, str(context.uuid)))
