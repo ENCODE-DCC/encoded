@@ -56,7 +56,7 @@
         },
         "file_size": {
             "title": "File size",
-            "comment": "File size is specified in bytes"
+            "comment": "File size is specified in bytes",
             "type": "integer"
         },
         "output_type": {
