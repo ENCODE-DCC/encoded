@@ -5,7 +5,7 @@ from ..auditor import (
     audit_checker,
 )
 
-targetBasedAssayList =  ['ChIP-seq', 
+targetBasedAssayList =  ['ChIP-seq',
                          'RNA Bind-n-Seq',
                          'ChIA-PET',
                          'RIP Array',
@@ -14,6 +14,12 @@ targetBasedAssayList =  ['ChIP-seq',
                          'iCLIP',
                          'shRNA knockdown followed by RNA-seq',
                          ]
+
+controlRequiredAssayList = ['ChIP-seq',
+                            'RNA Bind-n-Seq',
+                            'RIP-seq',
+                            ]
+
 
 @audit_checker('experiment')
 def audit_experiment_description(value, system):
@@ -51,7 +57,7 @@ def audit_experiment_assay(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} - {}'.format(term_id, term_name)
-        raise AuditFailure('NTR', detail, level='WARNING')
+        raise AuditFailure('NTR, assay', detail, level='WARNING')
 
     # if term_id not in ontology:
     #    detail = 'assay_term_id - {}'.format(term_id)
@@ -83,6 +89,10 @@ def audit_experiment_target(value, system):
     if target.startswith('Control'):
         return
 
+    # RNA Bind-n-Seq does not need an antibody
+    if value['assay_term_name'] in ['RNA Bind-n-Seq']:
+        return
+
     for rep in value['replicates']:
         if 'antibody' not in rep:
             detail = 'rep {} missing antibody'.format(rep["uuid"])
@@ -102,11 +112,11 @@ def audit_experiment_control(value, system):
     if value['status'] == 'deleted':
         return
 
-    # Cureently controls are only be required for ChIP-seq
-    if value.get('assay_term_name') not in ['ChIP-seq']:
+    # Currently controls are only be required for ChIP-seq
+    if value.get('assay_term_name') not in controlRequiredAssayList:
         return
 
-    # If there is no targets, for now will will just ignore it, likely this is an error
+    # If there is no targets, for now we will just ignore it, likely this is an error
     if 'target' not in value:
         return
 
@@ -120,6 +130,10 @@ def audit_experiment_control(value, system):
 
     # A check should go here that would go through all possible controls to
     # verify that they are the same biosample term
+    for control in value['possible_controls']:
+        if control.get('biosample_term_id') != value.get('biosample_term_id'):
+            detail = 'mismatch control'
+            raise AuditFailure('control has mismatched biosample_id', detail, level='ERROR')
 
 
 @audit_checker('experiment')
@@ -131,9 +145,9 @@ def audit_experiment_ownership(value, system):
     if 'lab' not in value or 'award' not in value:
         return
         # should I make this an error case?
-    if value['award'] not in value['lab']['awards']:
+    if value['award']['@id'] not in value['lab']['awards']:
         detail = '{} is not part of {}'.format(value['lab']['name'], value['award']['name'])
-        raise AuditFailure('award mismatch', detail, level='ERROR')
+        yield AuditFailure('award mismatch', detail, level='ERROR')
     if value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
         if 'wgEncode' not in value['dbxrefs']:
             detail = '{} has no dbxref'.format(value['accession'])
