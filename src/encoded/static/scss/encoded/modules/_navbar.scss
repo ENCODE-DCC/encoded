@@ -110,36 +110,46 @@
 
 
 .dropdown-menu {
-    left: -1px;
-    margin-top: -1px !important;
-    padding: 0;
-    background-color: #fff;
-    @include background-image(linear-gradient(top,  #ffffff 0%,#f0f0f0 100%));
-
     &>li {
         &>a {
-            padding: 10px 20px;
-            font-size: floor($font-size-base * 0.9);
-            font-weight: bold;
-            border-top: 1px solid transparent;
-            border-bottom: 1px solid transparent;
-
-            &:hover {
-                border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
-                background-color: $navbar-inverse-link-active-bg;
-                color: $navbar-inverse-link-active-color;
-            }
-        }
-
-        &:last-child {
-            &>a {
-                border-radius: 0 0 3px 3px;
-            }
+            padding: 5px 20px;
+            color: #fff !important;
         }
     }
 
-    .navbar-right & {
-        right: -1px;
+    @media screen and (min-width: $grid-float-breakpoint) {
+        left: -1px;
+        margin-top: -1px !important;
+        padding: 0;
+        background-color: #fff;
+        @include background-image(linear-gradient(top,  #ffffff 0%,#f0f0f0 100%));
+
+        &>li {
+            &>a {
+                padding: 10px 20px;
+                font-size: floor($font-size-base * 0.9);
+                font-weight: bold;
+                color: #333;
+                border-top: 1px solid transparent;
+                border-bottom: 1px solid transparent;
+
+                &:hover {
+                    border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
+                    border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
+                    background-color: $navbar-inverse-link-active-bg;
+                    color: $navbar-inverse-link-active-color;
+                }
+            }
+
+            &:last-child {
+                &>a {
+                    border-radius: 0 0 3px 3px;
+                }
+            }
+        }
+
+        .navbar-right & {
+            right: -1px;
+        }
     }
 }
