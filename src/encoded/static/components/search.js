@@ -109,6 +109,9 @@ var Dbxref = dbxref.Dbxref;
             var age = (result['age'] && result['age'] != 'unknown') ? ' ' + result['age'] : '';
             var ageUnits = (result['age_units'] && result['age_units'] != 'unknown' && age) ? ' ' + result['age_units'] : '';
             var separator = (lifeStage || age) ? ',' : '';
+            var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
+            var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
+            var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
             return (<li>
                         <div>
                             {this.renderActions()}
@@ -127,22 +130,22 @@ var Dbxref = dbxref.Dbxref;
                         </div>
                         <div className="data-row">
                             <div><strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}</div>
-                            {result['rnais.target.label'] ?
+                            {rnais ?
                                 <div>
                                     <strong>{columns['rnais.target.label']['title'] + ': '}</strong>
-                                    {result['rnais.target.label']}
+                                    {rnais}
                                 </div>
                             : null}
-                            {result['constructs.target.label'] ?
+                            {constructs ?
                                 <div>
                                     <strong>{columns['constructs.target.label']['title'] + ': '}</strong>
-                                    {result['constructs.target.label']}
+                                    {constructs}
                                 </div>
                             : null}
-                            {result['treatments.treatment_term_name'] ?
+                            {treatment ?
                                 <div>
                                     <strong>{columns['treatments.treatment_term_name']['title'] + ': '}</strong>
-                                    {result['treatments.treatment_term_name']}
+                                    {treatment}
                                 </div>
                             : null}
                             <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
@@ -154,46 +157,89 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Biosample, 'biosample');
 
 
-    // Returns array length if array 'a' with 1st index 'i' contains all same non-'unknown' value in its 2nd index
-    // 0 if 'a' contains an 'unknown' value, non-'unknown' values differ, or 'a' has no elements
-    function homogenousArray(a, i) {
-        var aLen = a[i] ? a[i].length : 0;
-        var j = 0;
-
-        if (aLen > 0) {
-            var a0 = a[i][0];
-            if (a0 !== 'unknown' && a0 !== '') {
-                for (j = 1; j < aLen; j++) {
-                    if (a[i][j] === 'unknown' || a[i][j] !== a0) {
-                        break;
-                    }
-                }
-            }
-            return j === aLen ? aLen : 0;
-        }
-        return 0;
-    }
-
     var Experiment = module.exports.Experiment = React.createClass({
         mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            var age = '';
-            var ageUnits = '';
 
             // See if all life stage, age, and age_unit arrays are all homogeneous
-            var name = homogenousArray(result, 'replicates.library.biosample.organism.scientific_name') ?
-                    result['replicates.library.biosample.organism.scientific_name'][0] : '';
-            var lifeStage = homogenousArray(result, 'replicates.library.biosample.life_stage') ?
-                    result['replicates.library.biosample.life_stage'][0] : '';
-            var ageLen = homogenousArray(result, 'replicates.library.biosample.age');
-            var ageUnitsLen = homogenousArray(result, 'replicates.library.biosample.age_units');
-            if (ageLen === ageUnitsLen) {
-                age = ageLen ? ' ' + result['replicates.library.biosample.age'][0] : '';
-                ageUnits = ageUnitsLen ? ' ' + result['replicates.library.biosample.age_units'][0] : '';
-            }
+            var name, lifeStage, age, ageUnits, homogenous;
+
+            // See if all scientific names are the same
+            homogenous = result.replicates.every(function(replicate) {
+                if (replicate.library && replicate.library.biosample && replicate.library.biosample.organism &&
+                        replicate.library.biosample.organism.scientific_name) {
+                    if (name) {
+                        return name === replicate.library.biosample.organism.scientific_name;
+                    } else {
+                        // First time, so just seed the name. End if the name exists but is empty
+                        name = replicate.library.biosample.organism.scientific_name;
+                        return name !== '' && name != 'unknown';
+                    }
+                } else {
+                    // replicate doesn't have data, so we're done.
+                    return false;
+                }
+            });
+            name = homogenous ? name : '';
+
+            // See if all life stages are the same
+            homogenous = result.replicates.every(function(replicate) {
+                if (replicate.library && replicate.library.biosample && replicate.library.biosample.life_stage) {
+                    if (lifeStage) {
+                        return lifeStage === replicate.library.biosample.life_stage;
+                    } else {
+                        // First time, so just seed the name. End if the name exists but is empty
+                        lifeStage = replicate.library.biosample.life_stage;
+                        return lifeStage !== '' && lifeStage != 'unknown';
+                    }
+                } else {
+                    // replicate doesn't have data, so we're done.
+                    return false;
+                }
+            });
+            lifeStage = homogenous ? lifeStage : '';
+
+            // See if all ages are the same
+            homogenous = result.replicates.every(function(replicate) {
+                if (replicate.library && replicate.library.biosample && replicate.library.biosample.age) {
+                    if (age) {
+                        return age === replicate.library.biosample.age;
+                    } else {
+                        // First time, so just seed the name. End if the name exists but is empty
+                        age = replicate.library.biosample.age;
+                        return age !== '' && age != 'unknown';
+                    }
+                } else {
+                    // replicate doesn't have data, so we're done.
+                    return false;
+                }
+            });
+            age = homogenous ? ' ' + age : '';
+
+            // See if all age units are the same
+            homogenous = result.replicates.every(function(replicate) {
+                if (replicate.library && replicate.library.biosample && replicate.library.biosample.age_units) {
+                    if (ageUnits) {
+                        return ageUnits === replicate.library.biosample.age_units;
+                    } else {
+                        // First time, so just seed the name. End if the name exists but is empty
+                        ageUnits = replicate.library.biosample.age_units;
+                        return ageUnits !== '';
+                    }
+                } else {
+                    // replicate doesn't have data, so we're done.
+                    return false;
+                }
+            });
+            ageUnits = homogenous ? ' ' + ageUnits : '';
+
             var separator = (lifeStage || age) ? ', ' : '';
+
+            // Get the first treatment
+            var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
+                    result.replicates[0].library.biosample.treatments[0]) ? result.replicates[0].library.biosample.treatments[0].treatment_term_name : '';
 
             return (<li>
                         <div>
@@ -223,10 +269,10 @@ var Dbxref = dbxref.Dbxref;
                                     {result['target.label']}
                                 </div>
                             : null}
-                            {result['replicates.library.biosample.treatments.treatment_term_name'] ?
+                            {treatment ?
                                 <div>
                                     <strong>{columns['replicates.library.biosample.treatments.treatment_term_name']['title'] + ': '}</strong>
-                                    {result['replicates.library.biosample.treatments.treatment_term_name']}
+                                    {treatment}
                                 </div>
                             : null}
                             <div><strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}</div>
