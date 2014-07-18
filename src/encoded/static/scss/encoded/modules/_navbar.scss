@@ -129,7 +129,7 @@
                 padding: 10px 20px;
                 font-size: floor($font-size-base * 0.9);
                 font-weight: bold;
-                color: #333;
+                color: #333 !important;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
 
@@ -137,7 +137,7 @@
                     border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
                     border-bottom: 1px solid darken($navbar-inverse-link-active-bg,20%);
                     background-color: $navbar-inverse-link-active-bg;
-                    color: $navbar-inverse-link-active-color;
+                    color: $navbar-inverse-link-active-color !important;
                 }
             }
 
