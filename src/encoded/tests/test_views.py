@@ -256,12 +256,18 @@ def test_page_nested(workbook, anontestapp):
 
 
 def test_page_homepage(workbook, anontestapp):
+    # res = anontestapp.get('/pages/homepage/', status=301)
+    # assert res.location == 'http://localhost/'
+
     res = anontestapp.get('/', status=200)
-    assert 'layout' in res.json
-    assert res.json['@id'] == '/'
+    assert 'default_page' in res.json
+    assert res.json['default_page']['@id'] == '/pages/homepage/'
 
 
 def test_page_collection_default(workbook, anontestapp):
+    # res = anontestapp.get('/pages/images/', status=301)
+    # assert res.location == 'http://localhost/images/'
+
     res = anontestapp.get('/images/', status=200)
-    assert 'layout' in res.json
-    assert res.json['@id'] == '/images/'
+    assert 'default_page' in res.json
+    assert res.json['default_page'] == '/pages/images/'

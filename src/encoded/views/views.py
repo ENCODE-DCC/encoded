@@ -112,7 +112,7 @@ ADD_ACTION = {
     'title': 'Add',
     'profile': '/profiles/{item_type}.json',
     'method': 'GET',
-    'href': '#!add',
+    'href': '{collection_uri}#!add',
     'className': 'btn btn-success',
     '$templated': True,
     '$condition': 'permission:add',
@@ -918,9 +918,18 @@ class Page(Collection):
     class Item(Collection.Item):
         name_key = 'name'
         keys = [
-            {'name': 'page:location', 'value': '{name}', '$condition': lambda parent=None: not parent, '$templated': True},
-            {'name': 'page:location', 'value': '{parent}:{name}', '$condition': 'parent', '$templated': True},
+            {'name': 'page:location', 'value': '{name}', '$templated': True,
+             '$condition': lambda parent=None: parent is None},
+            {'name': 'page:location', 'value': '{parent}:{name}', '$templated': True,
+             '$condition': 'parent', '$templated': True},
         ]
+
+        template = Collection.Item.template.copy()
+        template['canonical_uri'] = {
+            '$value': lambda name: '/%s/' % name if name != 'homepage' else '/',
+            '$condition': lambda collection_uri=None: collection_uri == '/pages/',
+            '$templated': True
+        }
 
         actions = [EDIT_ACTION]
 
@@ -933,9 +942,12 @@ class Page(Collection):
         def __init__(self, collection, model):
             self.collection = collection
             parent_uuid = model[''].get('parent')
+            name = model['']['name']
             root = find_root(collection)
             if parent_uuid:
                 self.__parent__ = root.get_by_uuid(parent_uuid)
+            elif name in root.collections or name == 'homepage':
+                self.__parent__ = collection
             else:
                 self.__parent__ = root
             self.model = model

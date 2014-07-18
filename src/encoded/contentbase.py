@@ -3,7 +3,6 @@ import logging
 import venusian
 from abc import ABCMeta
 from collections import Mapping
-from copy import deepcopy
 from itertools import islice
 from pyramid.events import (
     ContextFound,
@@ -14,7 +13,6 @@ from pyramid.httpexceptions import (
     HTTPForbidden,
     HTTPInternalServerError,
     HTTPPreconditionFailed,
-    HTTPNotFound,
 )
 from pyramid.interfaces import (
     PHASE2_CONFIG,
@@ -30,9 +28,6 @@ from pyramid.security import (
     principals_allowed_by_permission,
 )
 from pyramid.settings import asbool
-from pyramid.threadlocal import (
-    manager,
-)
 from pyramid.traversal import (
     find_root,
     resource_path,
@@ -43,9 +38,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import FlushError
-from urllib import (
-    unquote,
-)
 from urllib import urlencode
 from uuid import (
     UUID,
@@ -53,6 +45,7 @@ from uuid import (
 )
 from .cache import ManagerLRUCache
 from .objtemplate import ObjectTemplate
+from .renderers import embed
 from .schema_formats import is_accession
 from .schema_utils import validate_request
 from .storage import (
@@ -84,68 +77,6 @@ def includeme(config):
 
 def root_factory(request):
     return request.registry[LOCATION_ROOT]
-
-
-def make_subrequest(request, path):
-    """ Make a subrequest
-
-    Copies request environ data for authentication.
-
-    May be better to just pull out the resource through traversal and manually
-    perform security checks.
-    """
-    env = request.environ.copy()
-    if path and '?' in path:
-        path_info, query_string = path.split('?', 1)
-        path_info = unquote(path_info)
-    else:
-        path_info = unquote(path)
-        query_string = ''
-    env['PATH_INFO'] = path_info
-    env['QUERY_STRING'] = query_string
-    subreq = request.__class__(env, method='GET', content_type=None,
-                               body=b'')
-    subreq.remove_conditional_headers()
-    # XXX "This does not remove headers like If-Match"
-    return subreq
-
-
-embed_cache = ManagerLRUCache('embed_cache')
-
-
-def embed(request, path, as_user=False):
-    # Should really be more careful about what gets included instead.
-    # Cache cut response time from ~800ms to ~420ms.
-    if as_user:
-        return _embed(request, path, as_user)
-    result = embed_cache.get(path, None)
-    if result is not None:
-        return deepcopy(result)
-    result = _embed(request, path, as_user)
-    if not as_user:
-        embed_cache[path] = deepcopy(result)
-    return result
-
-
-def _embed(request, path, as_user=False):
-    subreq = make_subrequest(request, path)
-    subreq.override_renderer = 'null_renderer'
-    if not as_user:
-        if 'HTTP_COOKIE' in subreq.environ:
-            del subreq.environ['HTTP_COOKIE']
-        subreq.remote_user = 'EMBED'
-    try:
-        return request.invoke_subrequest(subreq)
-    except HTTPNotFound:
-        raise KeyError(path)
-
-
-def maybe_include_embedded(request, result):
-    if len(manager.stack) != 1:
-        return
-    embedded = manager.stack[0].get('encoded_embedded', None)
-    if embedded:
-        result['_embedded'] = {'resources': embedded}
 
 
 # No-validation validators
@@ -1037,6 +968,12 @@ class Collection(Mapping):
     def add_actions(self, request, properties):
         pass
 
+    def add_default_page(self, request, properties):
+        root = find_root(self)
+        default_page = root['pages'].get(self.__name__)
+        if default_page is not None:
+            properties['default_page'] = item_view(default_page, request)
+
 
 def column_value(obj, column):
     path = column.split('.')
@@ -1096,16 +1033,7 @@ def if_match_tid(view_callable):
 
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
-    result = item_view(context, request)
-
-    # merge in properties from default page
-    default_page = context.__parent__.get_by_unique_key('page:location', context.__name__)
-    if default_page is not None:
-        result['@type'] = ['page', 'collection']
-        for field in ('name', 'date_created', 'status', 'layout'):
-            result[field] = default_page.properties[field]
-
-    return result
+    return item_view(context, request)
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
@@ -1173,6 +1101,8 @@ def item_view(context, request):
 
     properties = context.expand_page(request, properties)
     context.add_actions(request, properties)
+    if hasattr(context, 'add_default_page'):
+        context.add_default_page(request, properties)
     return properties
 
 
@@ -1287,7 +1217,7 @@ def item_index_data(context, request):
             for key in keys[collection.unique_key])
 
     for base in (collection, request.root):
-        for key_name in ('accession', 'alias', 'page:location'):
+        for key_name in ('accession', 'alias'):
             if key_name not in keys:
                 continue
             paths.add(resource_path(base, str(context.uuid)))
