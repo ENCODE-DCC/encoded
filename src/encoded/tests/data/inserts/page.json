@@ -10,13 +10,37 @@
                     "cols": [
                         {"blocks": ["#block1"]}
                     ]
+                },
+                {
+                    "cols": [
+                        {"blocks": ["#block2"]},
+                        {"blocks": ["#block3"]},
+                        {"blocks": ["#block4"]}
+                    ]
                 }
             ],
             "blocks": [
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<h1>Homepage</h1>"
+                    "body": "<div class=\"project-info site-title\">\n    <h1>ENCODE: The Encyclopedia of DNA Elements</h1>\n</div>\n<div id=\"info-box\" class=\"project-info text-panel\">\n  <p>The ENCODE project dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>\n</div>"
+                },
+                {
+                    "@id": "#block2",
+                    "@type": "richtextblock",
+                    "body": "<h2>Transcriptome</h2>\n<p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>"
+                },
+                {
+                    "@id": "#block3",
+                    "@type": "richtextblock",
+                    "body": "<h2>Regulation</h2>\n<p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum.</p>"
+                },
+                {
+                    "@id": "#block4",
+                    "@type": "teaserblock",
+                    "image": "/images/8a91ae78-731a-4a92-ae7c-273214be408a/",
+                    "body": "<h2>Chromatin Structure</h2>",
+                    "href": "/about/chromatin-structure"
                 }
             ]
         }
@@ -67,8 +91,8 @@
         }
     },
     {
-        "name": "biosamples",
-        "title": "Biosamples",
+        "name": "images",
+        "title": "Images",
         "status": "released",
         "uuid": "61edd6b2-bfdb-4db1-b950-8845ac37f65c",
         "layout": {
@@ -83,7 +107,7 @@
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<h1>Biosamples Landing Page</h1>"
+                    "body": "<h1>Image Collection Landing Page</h1>"
                 }
             ]
         }

@@ -37,6 +37,7 @@ Feature: Generics
         | mouse_donor                   | ENCDO012AAA                           |
         | organism                      | human                                 |
         | platform                      | Illumina HiSeq 2000                   |
+        | publication                   | integrated encyclopedia               |
         | replicate                     | 2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f  |
         | rnai                          | d2dc22ba-5e7c-4626-87ac-257c6fff090c  |
         | source                        | Abcam                                 |

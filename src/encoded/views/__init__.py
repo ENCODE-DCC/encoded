@@ -31,6 +31,12 @@ def home(context, request):
         '@type': ['portal'],
         # 'login': {'href': request.resource_path(context, 'login')},
     })
+
+    homepage = context.get_by_unique_key('page:location', 'homepage')
+    if homepage is not None:
+        result['@type'] = ['page', 'item']
+        result['layout'] = homepage.properties['layout']
+
     return result
 
 

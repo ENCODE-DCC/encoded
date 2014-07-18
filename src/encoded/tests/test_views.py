@@ -262,6 +262,6 @@ def test_page_homepage(workbook, anontestapp):
 
 
 def test_page_collection_default(workbook, anontestapp):
-    res = anontestapp.get('/biosamples/', status=200)
+    res = anontestapp.get('/images/', status=200)
     assert 'layout' in res.json
-    assert res.json['@id'] == '/biosamples/'
+    assert res.json['@id'] == '/images/'

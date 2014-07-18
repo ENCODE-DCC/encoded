@@ -1096,7 +1096,16 @@ def if_match_tid(view_callable):
 
 @view_config(context=Collection, permission='list', request_method='GET')
 def collection_list(context, request):
-    return item_view(context, request)
+    result = item_view(context, request)
+
+    # merge in properties from default page
+    default_page = context.__parent__.get_by_unique_key('page:location', context.__name__)
+    if default_page is not None:
+        result['@type'] = ['page', 'collection']
+        for field in ('name', 'date_created', 'status', 'layout'):
+            result[field] = default_page.properties[field]
+
+    return result
 
 
 @view_config(context=Collection, permission='add', request_method='POST',
