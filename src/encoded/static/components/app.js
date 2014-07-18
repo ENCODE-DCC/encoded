@@ -12,10 +12,30 @@ var url = require('url');
 var portal = {
     portal_title: 'ENCODE',
     global_sections: [
-        {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
-        {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
-        {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
-        {id: 'targets', title: 'Targets', url: '/search/?type=target'}
+        {id: 'data', title: 'Data', children: [
+            {id: 'assay', title: 'Assay', url: '/search/?type=experiment'},
+            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
+            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
+            {id: 'targets', title: 'Targets', url: '/search/search/?type=target'},
+            {id: 'datarelease', title: 'Data release policy', url: '/about/data-use-policy'}
+        ]},
+        {id: 'methods', title: 'Methods', children: [
+            {id: 'integrativeanalysis', title: 'Integrative analysis', url: '/about/analysis'},
+            {id: 'softwaretools', title: 'Software tools', url: '/about/tools'},
+            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'},
+            {id: 'platformchar', title: 'Platform characterization', url: '/about/platform-characterizations'},
+            {id: 'qualitymetrics', title: 'Quality metrics', url: '/about/quality-metrics'}
+        ]},
+        {id: 'about', title: 'About ENCODE', children: [
+            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors'},
+            {id: 'publications', title: 'Publications', url: '/search/?type=publication'},
+            {id: 'datarelease', title: 'Data release policy', url: '/about/data-use-policy'}
+        ]},
+        {id: 'help', title: 'Help', children: [
+            {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
+            {id: 'fileformats', title: 'File formats', url: '/help/file-formats'},
+            {id: 'contact', title: 'Contact', url: '/about/contacts'}
+        ]}
     ]
 };
 

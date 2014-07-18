@@ -86,10 +86,19 @@ var GlobalSections = React.createClass({
     render: function() {
         var section = this.props.section;
         var actions = this.props.global_sections.map(function (action) {
-            var active = (section == action.id);
+            var subactions = action.children.map(function (action) {
+                return (
+                    <NavItem href={action.url || ''} key={action.id}>
+                        {action.title}
+                    </NavItem>
+                );
+            });
             return (
-                <NavItem active={active} href={action.url} key={action.id}>
+                <NavItem dropdown={true} key={action.id}>
                     {action.title}
+                    <Nav navbar={true} dropdown={true}>
+                        {subactions}
+                    </Nav>
                 </NavItem>
             );
         });
