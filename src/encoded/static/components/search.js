@@ -182,7 +182,7 @@ var Dbxref = dbxref.Dbxref;
                     return false;
                 }
             });
-            name = homogenous ? name : '';
+            name = (result.replicates.length && homogenous) ? name : '';
 
             // See if all life stages are the same
             homogenous = result.replicates.every(function(replicate) {
@@ -199,7 +199,7 @@ var Dbxref = dbxref.Dbxref;
                     return false;
                 }
             });
-            lifeStage = homogenous ? lifeStage : '';
+            lifeStage = (result.replicates.length && homogenous) ? lifeStage : '';
 
             // See if all ages are the same
             homogenous = result.replicates.every(function(replicate) {
@@ -216,7 +216,7 @@ var Dbxref = dbxref.Dbxref;
                     return false;
                 }
             });
-            age = homogenous ? ' ' + age : '';
+            age = (result.replicates.length && homogenous) ? ' ' + age : '';
 
             // See if all age units are the same
             homogenous = result.replicates.every(function(replicate) {
@@ -233,7 +233,7 @@ var Dbxref = dbxref.Dbxref;
                     return false;
                 }
             });
-            ageUnits = homogenous ? ' ' + ageUnits : '';
+            ageUnits = (result.replicates.length && homogenous) ? ' ' + ageUnits : '';
 
             var separator = (lifeStage || age) ? ', ' : '';
 
