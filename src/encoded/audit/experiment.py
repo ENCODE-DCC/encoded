@@ -28,9 +28,15 @@ def audit_experiment_description(value, system):
     read like phrases.  I cannot get all of that here, but I thought I would start
     with looking for funny characters.
     '''
-    allowed = string.letters + string.digits + [' ', '-', '(', ')', '.']
-    if not all(c in allowed for c in value['description']):
-        detail = ''  # I would like to report the errant char here
+    if value['status'] == 'deleted':
+        return
+
+    if 'description' not in value:
+        return
+
+    notallowed = ['=', '_', ':', ';']
+    if any(c in notallowed for c in value['description']):
+        detail = 'Bad characters'  # I would like to report the errant char here
         raise AuditFailure('malformed description', detail, level='WARNING')
 
 
