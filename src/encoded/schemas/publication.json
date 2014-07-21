@@ -79,10 +79,11 @@
                 "proposed"
             ]
         },
-        "category": {
-            "title": "Category",
+        "categories": {
+            "title": "Categories",
             "type": "array",
             "items": {
+                "title": "Category",
                 "type": "string",
                 "enum" : [
                     "ENCODE",
@@ -99,5 +100,54 @@
             "title": "Purpose",
             "type": "string"
         }
+    },
+    "facets": {
+        "status": {
+            "title": "Publication status",
+            "type": "string"
+        },
+        "categories": {
+            "title": "Category",
+            "type": "array"
+        },
+        "date_published": {
+            "title": "Publication date",
+            "type": "string"
+        }
+    },
+    "columns": {
+        "title": {
+            "title": "Title",
+            "type": "string"
+        },
+        "date_published": {
+            "title": "Publication date",
+            "type": "string"
+        },
+        "journal": {
+            "title": "Journal",
+            "type": "string"
+        },
+        "purpose": {
+            "title": "Purpose",
+            "type": "string"
+        },
+        "abstract": {
+            "title": "Abstract",
+            "type": "string"
+        },
+        "references": {
+            "title": "References",
+            "type": "array"
+        }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "title": 1.0,
+        "abstract": 1.0,
+        "journal": 1.0,
+        "categories": 1.0,
+        "purpose": 1.0,
+        "references": 1.0
     }
 }
