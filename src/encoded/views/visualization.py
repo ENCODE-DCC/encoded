@@ -23,7 +23,7 @@ def getParentTrack(accession, label):
         ('type', 'bed 3'),
         ('subGroup1', 'view Views PK=Peaks SIG=Signals'),
         ('dragAndDrop', 'subTracks'),
-        ('visibility', 'pack'),
+        ('visibility', 'full'),
         ('compositeTrack', 'on'),
         ('longLabel', label),
         ('shortLabel', accession),
@@ -67,7 +67,6 @@ def getPeaksView(accession, view):
     track_name = view + 'View'
     view_data = OrderedDict([
         ('autoScale', 'on'),
-        ('maxHeightPixels', '100:32:8'),
         ('type', 'bigBed'),
         ('viewUi', 'on'),
         ('visibility', 'dense'),
