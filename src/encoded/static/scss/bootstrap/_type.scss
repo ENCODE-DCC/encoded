@@ -70,6 +70,9 @@ p {
     color: #606060;
 }
 
+.authors {
+    font-size: floor($font-size-base * 1.1);
+}
 
 .abstract {
     h2 {
@@ -78,16 +81,14 @@ p {
     }
 
     p {
-        margin-bottom: $line-height-computed;
+        margin-top: $line-height-computed / 2;
+        margin-bottom: $line-height-computed / 2;
     }
 }
 
-.authors {
-    font-size: floor($font-size-base * 1.1);
-}
-
 .references {
-    margin: 0;
+        margin-top: $line-height-computed / 2;
+        margin-bottom: $line-height-computed / 2;
 
     span {
         font-weight: bold;

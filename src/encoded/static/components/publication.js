@@ -22,7 +22,7 @@ var Citation = React.createClass({
 });
 
 
-var Panel = React.createClass({
+var Panel = module.exports.Panel = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context);
@@ -33,16 +33,22 @@ var Panel = React.createClass({
                 </div>
                 {this.transferPropsTo(<Citation />)}
 
-                <div className="view-detail panel">
-                    <div className="abstract">
-                        {context.abstract ? <h2>Abstract</h2> : null}
-                        {context.abstract ? <p>{context.abstract}</p> : null}
+                {context.abstract || context.references.length ?
+                    <div className="view-detail panel">
+                        {context.abstract ?
+                            <div className="abstract">
+                                {context.abstract ? <h2>Abstract</h2> : null}
+                                {context.abstract ? <p>{context.abstract}</p> : null}
+                            </div>
+                        : null}
+                        {context.references && context.references.length ?
+                            <div className="references">
+                                {context.references.length ? <span>References: </span> : null}
+                                {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : null}
+                            </div>
+                        : null}
                     </div>
-                    <div className="references">
-                        {context.references.length ? <span>References: </span> : null}
-                        {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : null}
-                    </div>
-                </div>
+                : null}
             </div>
         );
     }
