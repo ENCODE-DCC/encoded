@@ -145,8 +145,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Accession</dt>
                         <dd>{context.accession}</dd>
 
-                        {biosamples.length ? <dt>Biosample summary</dt> : null}
-                        {biosamples.length ?
+                        {biosamples.length || context.biosample_term_name ? <dt>Biosample summary</dt> : null}
+                        {biosamples.length || context.biosample_term_name ?
                             <dd>
                                 {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
                                 {organismName.length || lifeAge.length ? '(' : null}

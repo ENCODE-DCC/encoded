@@ -35,26 +35,26 @@ describe('Experiment Page', function() {
 
         it('Has correct summary panel and key-value elements counts within it', function() {
             expect(summary.length).toEqual(1);
-            expect(defTerms.length).toEqual(9);
-            expect(defDescs.length).toEqual(9);
+            expect(defTerms.length).toEqual(10);
+            expect(defDescs.length).toEqual(10);
         });
 
         it('has proper links in dbxrefs key-value', function() {
-            var dbxrefs = defDescs[6].getElementsByTagName('a');
+            var dbxrefs = defDescs[7].getElementsByTagName('a');
             expect(dbxrefs.length).toEqual(2);
             expect(dbxrefs[0].getAttribute('href')).toEqual('http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=wgEncodeEH003317');
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM1010811');
         });
 
         it('has proper links in References key-values', function() {
-            var dbxrefs = defDescs[7].getElementsByTagName('a');
+            var dbxrefs = defDescs[8].getElementsByTagName('a');
             expect(dbxrefs.length).toEqual(2);
             expect(dbxrefs[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=23000965');
             expect(dbxrefs[1].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=16395128');
         });
 
         it('has proper release date', function() {
-            expect(defDescs[8].textContent).toEqual('2011-10-29');
+            expect(defDescs[9].textContent).toEqual('2011-10-29');
         });
 
         it('has two experiment status elements in header', function() {
