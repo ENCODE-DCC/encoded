@@ -945,7 +945,7 @@ class Publication(Collection):
     unique_key = 'publication:title'
     item_keys = ALIAS_KEYS + [
         {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
-        {'name': '{item_type}:til', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True},
+        {'name': '{item_type}:title', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True},
     ]
 
 
