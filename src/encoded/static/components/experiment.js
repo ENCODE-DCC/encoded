@@ -293,6 +293,10 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
         treatments = treatmentList.join(", ");
     }
 
+    if (!library && !depletedIn && !treatments && !platform) {
+        return (<div hidden={true}></div>);
+    }
+
     return (
         <div className = "panel-assay">
             <h3>Assay details</h3>
