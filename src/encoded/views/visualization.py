@@ -19,10 +19,11 @@ def render(data):
 
 def getParentTrack(accession, label):
     parent = OrderedDict([
+        ('sortOrder', 'view=+'),
         ('type', 'bed 3'),
         ('subGroup1', 'view Views PK=Peaks SIG=Signals'),
         ('dragAndDrop', 'subTracks'),
-        ('visibility', 'dense'),
+        ('visibility', 'pack'),
         ('compositeTrack', 'on'),
         ('longLabel', label),
         ('shortLabel', accession),
@@ -38,14 +39,19 @@ def getTrack(f, label, parent):
     if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed']:
         file_format = 'bigBed'
         sub_group = 'view=PK'
+    else:
+        file_format = file_format + ' 1.000000 3291154.000000'
+    label = label + ' - ' + f['accession'] + '\t' + f['file_format'] + \
+        '\t' + f['output_type']
     replicate_number = ''
     if 'replicate' in f:
-        replicate_number = ' (rep - ' + str(f['replicate']['biological_replicate_number']) + ')'
+        replicate_number = 'rep ' + str(f['replicate']['biological_replicate_number'])
     else:
-        replicate_number = ' - pooled'
+        replicate_number = 'pooled'
     track = OrderedDict([
         ('subGroups', sub_group),
-        ('longLabel', label + ' - ' + f['accession'] + replicate_number),
+        ('visibility', 'full'),
+        ('longLabel', label + '\t' + replicate_number),
         ('shortLabel', f['accession']),
         ('parent', parent + ' on'),
         ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + f['download_path']),
@@ -60,6 +66,7 @@ def getPeaksView(accession, view):
     s_label = view + 's'
     track_name = view + 'View'
     view_data = OrderedDict([
+        ('autoScale', 'on'),
         ('maxHeightPixels', '100:32:8'),
         ('type', 'bigBed'),
         ('viewUi', 'on'),
@@ -77,10 +84,11 @@ def getSignalsView(accession, view):
     s_label = view + 's'
     track_name = view + 'View'
     view_data = OrderedDict([
+        ('autoScale', 'on'),
         ('maxHeightPixels', '100:32:8'),
         ('type', 'bigWig'),
         ('viewUi', 'on'),
-        ('visibility', 'dense'),
+        ('visibility', 'full'),
         ('view', 'SIG'),
         ('shortLabel', s_label),
         ('parent', accession),
@@ -139,19 +147,21 @@ def hub(context, request):
         signal_count = 0
         call_count = 0
         for f in files_json:
+            track_label = embedded['assay_term_name'] + ' of ' + \
+                embedded['biosample_term_name'] + ' - ' + embedded['accession']
             if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed']:
                 if call_count == 0:
                     peak_view = getPeaksView(embedded['accession'], 'PK') + newline + (2 * tab)
                 else:
                     peak_view = peak_view + newline
-                peak_view = peak_view + (2 * newline) + (2 * tab) + getTrack(f, long_label, 'PKView')
+                peak_view = peak_view + newline + (2 * tab) + getTrack(f, track_label, 'PKView')
                 call_count = call_count + 1
             elif f['file_format'] == 'bigWig':
                 if signal_count == 0:
                     signal_view = getSignalsView(embedded['accession'], 'SIG') + newline + (2 * tab)
                 else:
                     signal_view = signal_view + newline
-                signal_view = signal_view + newline + (2 * tab) + getTrack(f, long_label, 'SIGView')
+                signal_view = signal_view + newline + (2 * tab) + getTrack(f, track_label, 'SIGView')
                 signal_count = signal_count + 1
         if signal_view == '':
             parent = parent + (newline * 2) + tab + peak_view
@@ -159,6 +169,8 @@ def hub(context, request):
             parent = parent + (newline * 2) + tab + signal_view
         else:
             parent = parent + (newline * 2) + tab + peak_view + (newline * 2) + tab + signal_view
+        if not parent.endswith('\n'):
+            parent = parent + '\n'
         return Response(parent, content_type='text/plain')
     else:
         # Generates and returns HTML for the track hub
@@ -171,8 +183,7 @@ def hub(context, request):
             if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed', 'bigWig']:
                 replicate_number = 'pooled'
                 if 'replicate' in f:
-                    replicate_number = 'rep - ' + \
-                        str(f['replicate']['biological_replicate_number'])
+                    replicate_number = str(f['replicate']['biological_replicate_number'])
                 data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td></tr>'\
                     .format(
                         accession=f['accession'],
@@ -180,9 +191,9 @@ def hub(context, request):
                         output_type=f['output_type'],
                         replicate_number=replicate_number
                     )
-        file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Replicate</th></tr>{files}</table>' \
+        file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th></tr>{files}</table>' \
             .format(files=data_files)
         data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
-        header = '<p>This trackhub was automatically generated from the files and metadata for experiment - ' + \
+        header = '<p>This trackhub was automatically generated from the files and metadata for the experiment - ' + \
             data_accession
-        return Response(header + data_description + file_table + data_policy, content_type='text/html')
+        return Response(data_description + header + file_table + data_policy, content_type='text/html')
