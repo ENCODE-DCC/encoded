@@ -35,12 +35,12 @@ var Panel = React.createClass({
 
                 <div className="view-detail panel">
                     <div className="abstract">
-                        <h2>Abstract</h2>
-                        {context.abstract}
-                        <div className="references">
-                            {context.references.length ? <span>References: </span> : null}
-                            {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : null}
-                        </div>
+                        {context.abstract ? <h2>Abstract</h2> : null}
+                        {context.abstract ? <p>{context.abstract}</p> : null}
+                    </div>
+                    <div className="references">
+                        {context.references.length ? <span>References: </span> : null}
+                        {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : null}
                     </div>
                 </div>
             </div>

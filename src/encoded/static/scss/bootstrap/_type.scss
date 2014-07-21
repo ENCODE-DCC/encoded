@@ -76,6 +76,10 @@ p {
         margin-top: 0;
         font-size: floor($font-size-base * 1.5);
     }
+
+    p {
+        margin-bottom: $line-height-computed;
+    }
 }
 
 .authors {
@@ -83,7 +87,7 @@ p {
 }
 
 .references {
-    margin: $line-height-computed 0 0;
+    margin: 0;
 
     span {
         font-weight: bold;
