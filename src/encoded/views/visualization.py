@@ -175,7 +175,7 @@ def hub(context, request):
         # Generates and returns HTML for the track hub
         data_accession = '<a href={link}>{accession}<a></p>' \
             .format(link=url_ret[0], accession=embedded['accession'])
-        data_description = '<p>{description}</p>' \
+        data_description = '<h2>{description}</h2>' \
             .format(description=cgi.escape(embedded['description']))
         data_files = ''
         for f in files_json:
@@ -183,14 +183,15 @@ def hub(context, request):
                 replicate_number = 'pooled'
                 if 'replicate' in f:
                     replicate_number = str(f['replicate']['biological_replicate_number'])
-                data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td></tr>'\
+                data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href={link}>Click here</a></td></tr>'\
                     .format(
                         accession=f['accession'],
                         file_format=f['file_format'],
                         output_type=f['output_type'],
-                        replicate_number=replicate_number
+                        replicate_number=replicate_number,
+                        link='http://encodedcc.sdsc.edu/warehouse/' + f['download_path'],
                     )
-        file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th></tr>{files}</table>' \
+        file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
             .format(files=data_files)
         data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
         header = '<p>This trackhub was automatically generated from the files and metadata for the experiment - ' + \
