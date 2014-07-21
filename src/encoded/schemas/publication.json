@@ -5,12 +5,11 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "title" ],
-    "identifyingProperties": ["uuid", "title" ],
+    "identifyingProperties": ["uuid", "title", "reference"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references"}
     ],
@@ -51,7 +50,7 @@
         "issue": {
             "title": "Issue",
             "description": "The issue of the publication.",
-            "type": "integer"
+            "type": "string"
         },
         "page": {
             "title": "Page",
@@ -61,11 +60,43 @@
         "volume": {
             "title": "Volume",
             "description": "The volume of the publication.",
-            "type": "integer"
+            "type": "string"
         },
         "journal": {
             "title": "Journal",
             "description": "The journal of the publication.",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
+            "enum" : [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "proposed"
+            ]
+        },
+        "category": {
+            "title": "Category",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum" : [
+                    "ENCODE",
+                    "mouseENCODE",
+                    "modENCODE",
+                    "human disease",
+                    "basic biology",
+                    "tools, methods, and database publications",
+                    "community"
+                ]
+            }      
+        },
+        "purpose": {
+            "title": "Purpose",
             "type": "string"
         }
     }
