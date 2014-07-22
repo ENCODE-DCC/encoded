@@ -96,8 +96,8 @@
                 ]
             }      
         },
-        "purpose": {
-            "title": "Purpose",
+        "data_used": {
+            "title": "Data used",
             "type": "string"
         }
     },

@@ -11,7 +11,7 @@
 	"page": "57-74",
 	"status": "in progress",
 	"categories": ["ENCODE"],
-	"purpose": "ENCODE main paper",
+	"data_used": "ENCODE main paper",
 	"uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
     }
 ]
