@@ -689,7 +689,7 @@ class Item(object):
         for name in self.schema_links:
             targets = properties.get(name, [])
             if not isinstance(targets, list):
-                targets = [targets]
+                targets = [targets] if targets else []
             for target in targets:
                 _rels.append((name, UUID(target)))
 

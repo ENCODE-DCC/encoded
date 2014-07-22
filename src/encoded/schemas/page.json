@@ -19,7 +19,7 @@
         },
         "parent": {
             "title": "Parent Page",
-            "type": "string",
+            "type": ["string", "null"],
             "linkTo": "page"
         },
         "name": {

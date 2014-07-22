@@ -92,7 +92,7 @@ def linkTo(validator, linkTo, instance, schema):
     request = get_current_request()
     if validator.is_type(linkTo, "string"):
         base = request.root.by_item_type.get(linkTo, request.context)
-        linkTo = [linkTo]
+        linkTo = [linkTo] if linkTo else []
     elif validator.is_type(linkTo, "array"):
         base = request.context  # XXX
     else:
@@ -109,7 +109,7 @@ def linkTo(validator, linkTo, instance, schema):
         error = "%r is not a linkable resource" % instance
         yield ValidationError(error)
         return
-    if not set([item.item_type] + item.base_types).intersection(set(linkTo)):
+    if linkTo and not set([item.item_type] + item.base_types).intersection(set(linkTo)):
         reprs = (repr(it) for it in linkTo)
         error = "%r is not of type %s" % (instance, ", ".join(reprs))
         yield ValidationError(error)
