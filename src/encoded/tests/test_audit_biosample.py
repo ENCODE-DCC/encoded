@@ -15,6 +15,19 @@ def base_biosample(testapp, lab, award, source, organism):
 
 
 @pytest.fixture
+def base_biosample2(testapp, lab, award, source, organism):
+    item = {
+        'award': award['uuid'],
+        'biosample_term_id': 'UBERON:0000033',
+        'biosample_type': 'tissue',
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def base_human_donor(testapp, lab, award, organism):
     item = {
         'award': award['uuid'],
@@ -33,7 +46,7 @@ def base_chipmunk(testapp):
     }
     return testapp.post_json('/organism', item, status=201).json['@graph'][0]
 
-
+'''
 @pytest.fixture
 def base_rnai(testapp, award, lab, target):
     item = {
@@ -56,7 +69,7 @@ def base_construct(testapp, award, lab, source, target):
         'tags': [{'name': 'eGFP', 'location': 'C-terminal'}]
     }
     return testapp.post_json('/construct', item, status=201).json['@graph'][0]
-
+'''
 
 def test_audit_biosample_term_ntr(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'NTR:0000022', 'biosample_term_name': 'myocyte', 'biosample_type': 'in vitro differentiated cells'})
@@ -91,7 +104,7 @@ def test_audit_subcellular(testapp, base_biosample):
     errors = res.json['audit']
     assert any(error['category'] == 'subcellular term mismatch' for error in errors)
 
-
+'''
 def test_audit_depleted_in(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473', 'UBERON:0000033']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
@@ -99,15 +112,22 @@ def test_audit_depleted_in(testapp, base_biosample):
     assert any(error['category'] == 'depleted_in term mismatch' for error in errors)
 
 
-def test_audit_rnai_transfection(testapp, base_biosample, base_rnai):
-    testapp.patch_json(base_biosample['@id'], {'rnais': [base_rnai['@id']]})
+def test_audit_depleted_in_length(testapp, base_biosample):
+    testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473']})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'depleted_in length mismatch' for error in errors)
+
+
+def test_audit_rnai_transfection(testapp, base_biosample, rnai):
+    testapp.patch_json(base_biosample['@id'], {'rnais': [rnai['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'missing transfection_type' for error in errors)
 
-
-def test_audit_construct_transfection(testapp, base_biosample, base_construct):
-    testapp.patch_json(base_biosample['@id'], {'constructs': [base_construct['@id']]})
+def test_audit_construct_transfection(testapp, base_biosample, construct):
+    testapp.patch_json(base_biosample['@id'], {'constructs': [construct['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'missing transfection_type' for error in errors)
+'''

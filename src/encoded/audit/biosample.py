@@ -54,6 +54,9 @@ def audit_biosample_culture_date(value, system):
     if value['status'] == 'deleted':
         return
 
+    if ('culture_start_date' not in value) or ('culture_harvest_date' not in value):
+        return
+
     if value['culture_harvest_date'] <= value['culture_start_date']:
         detail = 'culture_harvest_date precedes culture_start_date'
         raise AuditFailure('invalid dates', detail, level='ERROR')
@@ -67,6 +70,7 @@ def audit_biosample_donor(value, system):
     if ('donor' not in value) and (not value['pooled_from']):
         detail = 'biosample donor is missing'
         raise AuditFailure('missing donor', detail, level='ERROR')
+        return
 
     donor = value['donor']
     if value['organism']['name'] != donor['organism']['name']:
@@ -75,24 +79,35 @@ def audit_biosample_donor(value, system):
 
 
 @audit_checker('biosample')
-def audit_biosample_term_match(value, system):
+def audit_biosample_subcellular_term_match(value, system):
     if value['status'] == 'deleted':
         return
 
-    if 'subcellular_fraction_term_name' in value:
-        if term_mapping[value['subcellular_fraction_term_name']] != value['subcellular_fraction_term_id']:
-            detail = '{} - {}'.format(value['subcellular_fraction_term_name'], value['subcellular_fraction_term_id'])
-            raise AuditFailure('subcellular term mismatch', detail, level='ERROR')
+    if ('subcellular_fraction_term_name' not in value) or ('subcellular_fraction_term_id' not in value):
+        return
 
-    if 'depleted_in_term_name' in value:
-        if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
-            detail = 'depleted_in_term_name and depleted_in_term_id totals do not match'
-            raise AuditFailure('depleted_in length mismatch', detail, level='ERROR')
+    if (term_mapping[value['subcellular_fraction_term_name']]) != (value['subcellular_fraction_term_id']):
+        detail = '{} - {}'.format(value['subcellular_fraction_term_name'], value['subcellular_fraction_term_id'])
+        raise AuditFailure('subcellular term mismatch', detail, level='ERROR')
 
-        for i, dep_term in enumerate(value['depleted_in_term_name']):
-            if term_mapping[dep_term] != value['depleted_in_term_id'][i]:
-                detail = '{} - {}'.format(dep_term, value['depleted_in_term_id'][i])
-                raise AuditFailure('depleted_in term mismatch', detail, level='ERROR')
+'''
+@audit_checker('biosample')
+def audit_biosample_depleted_term_match(value, system):
+    if value['status'] == 'deleted':
+        return
+
+    if 'depleted_in_term_name' not in value:
+        return
+
+    if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
+        detail = 'depleted_in_term_name and depleted_in_term_id totals do not match'
+        raise AuditFailure('depleted_in length mismatch', detail, level='ERROR')
+        return
+
+    for i, dep_term in enumerate(value['depleted_in_term_name']):
+        if (term_mapping[dep_term]) != (value['depleted_in_term_id'][i]):
+            detail = '{} - {}'.format(dep_term, value['depleted_in_term_id'][i])
+            raise AuditFailure('depleted_in term mismatch', detail, level='ERROR')
 
 
 @audit_checker('biosample')
@@ -107,3 +122,4 @@ def audit_biosample_transfection_type(value, system):
     if (value['constructs']) and ('transfection_type' not in value):
         detail = 'transfection_type is missing'
         raise AuditFailure('missing transfection_type', detail, level='ERROR')
+'''
