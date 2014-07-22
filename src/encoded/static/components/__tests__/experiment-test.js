@@ -33,10 +33,14 @@ describe('Experiment Page', function() {
             defDescs = summary[0].getDOMNode().getElementsByTagName('dd');
         });
 
-        it('Has correct summary panel and key-value elements counts within it', function() {
+        it('has correct summary panel and key-value elements counts within it', function() {
             expect(summary.length).toEqual(1);
             expect(defTerms.length).toEqual(10);
             expect(defDescs.length).toEqual(10);
+        });
+
+        it('has proper biosample summary for no-biosample case (code adds space always)', function() {
+            expect(defDescs[2].textContent).toEqual('K562 ');
         });
 
         it('has proper links in dbxrefs key-value', function() {
@@ -131,6 +135,16 @@ describe('Experiment Page', function() {
             experiment = <Experiment context={context_rep} />;
             TestUtils.renderIntoDocument(experiment);
             replicates = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-replicate');
+        });
+
+        it('has proper biosample summary ', function() {
+            var summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
+            var defDescs = summary[0].getDOMNode().getElementsByTagName('dd');
+            expect(defDescs[2].textContent).toEqual('K562 (Homo sapiens and Mus musculus)');
+            var italics = defDescs[2].getElementsByTagName('em');
+            expect(italics.length).toEqual(2);
+            expect(italics[0].textContent).toEqual('Homo sapiens');
+            expect(italics[1].textContent).toEqual('Mus musculus');
         });
 
         it('has two replicate panels', function() {
