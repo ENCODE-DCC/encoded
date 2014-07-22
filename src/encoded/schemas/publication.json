@@ -128,8 +128,8 @@
             "title": "Journal",
             "type": "string"
         },
-        "purpose": {
-            "title": "Purpose",
+        "data_used": {
+            "title": "Data used",
             "type": "string"
         },
         "abstract": {
@@ -147,7 +147,7 @@
         "abstract": 1.0,
         "journal": 1.0,
         "categories": 1.0,
-        "purpose": 1.0,
+        "data_used": 1.0,
         "references": 1.0
     }
 }
