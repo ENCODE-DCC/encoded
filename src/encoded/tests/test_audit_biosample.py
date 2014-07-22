@@ -2,78 +2,112 @@ import pytest
 
 
 @pytest.fixture
-def base_biosample(testapp, source, award, lab, organism):
+def base_biosample(testapp, lab, award, source, organism):
+    item = {
+        'award': award['uuid'],
+        'biosample_term_id': 'UBERON:349829',
+        'biosample_type': 'tissue',
+        'lab': lab['uuid'],
+        'organism': organism['uuid'],
+        'source': source['uuid']
+    }
+    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def base_human_donor(testapp, lab, award, organism):
     item = {
         'award': award['uuid'],
         'lab': lab['uuid'],
-        'source': source['uuid'],
         'organism': organism['uuid']
     }
-    return testapp.post_json('biosample', item, status=201).json['@graph'][0]
+    return testapp.post_json('/human-donors', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture
-def base_human(testapp, name, taxon_id, scientific_name):
+def base_chipmunk(testapp):
     item = {
-        'name': 'human',
-        'taxon_id': '9606',
-        'scientific_name': 'Homo sapiens'
+        'name': 'chimpmunk',
+        'taxon_id': '12345',
+        'scientific_name': 'Chip chipmunicus'
     }
-    return testapp.post_json('organism', item, status=201).json['@graph'][0]
-
-@pytest.fixture
-def base_fly(testapp, name, taxon_id, scientific_name):
-    item = {
-        'name': 'dmelanogaster',
-        'taxon_id': '7227',
-        'scientific_name': 'Drosophila melanogaster'
-    }
-    return testapp.post_json('organism', item, status=201).json['@graph'][0]
+    return testapp.post_json('/organism', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture
-def base_human_donor(testapp, award, lab, base_human):
+def base_rnai(testapp, award, lab, target):
     item = {
         'award': award['uuid'],
-        'lab': lab['uuid']
-        'organism': base_human['@id']
+        'lab': lab['uuid'],
+        'target': target['uuid'],
+        'rnai_type': 'siRNA'
     }
-    return testapp.post_json('human-donors', item, status=201).json['@graph'][0]
+    return testapp.post_json('/rnai', item, status=201).json['@graph'][0]
 
 
 @pytest.fixture
-def base_fly_donor(testapp, award, lab, base_fly):
+def base_construct(testapp, award, lab, source, target):
     item = {
         'award': award['uuid'],
-        'lab': lab['uuid']
-        'organism': base_fly['@id']
+        'lab': lab['uuid'],
+        'target': target['uuid'],
+        'construct_type': 'fusion protein',
+        'source': source['uuid'],
+        'tags': [{'name': 'eGFP', 'location': 'C-terminal'}]
     }
-    return testapp.post_json('fly-donors', item, status=201).json['@graph'][0]
+    return testapp.post_json('/construct', item, status=201).json['@graph'][0]
 
 
-def test_audit_biosample_term_ntr(testapp, ntr_biosample):
-    res = testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'NTR:0000022', 'biosample_term_name': 'myocyte', 'biosample_type': 'in vitro differentiated cells'})
-    res = testapp.get(res.location + '@@index-data')
-    error, = res.json['audit']
-    assert error['category'] == 'NTR'
+def test_audit_biosample_term_ntr(testapp, base_biosample):
+    testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'NTR:0000022', 'biosample_term_name': 'myocyte', 'biosample_type': 'in vitro differentiated cells'})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'NTR' for error in errors)
 
 
 def test_audit_biosample_culture_dates(testapp, base_biosample):
-    res = testapp.patch_json(base_biosample['@id'], {'culture_start_date': '2014-06-30', 'culture_harvest_date': '2014-06-25'})
-    res = testapp.get(res.location + '@@index-data')
-    error, = res.json['audit']
-    assert error['category'] == 'invalid dates'
+    testapp.patch_json(base_biosample['@id'], {'culture_start_date': '2014-06-30', 'culture_harvest_date': '2014-06-25'})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'invalid dates' for error in errors)
 
 
 def test_audit_biosample_donor(testapp, base_biosample):
-    res = testapp.get(res.location + '@@index-data')
-    error, = res.json['audit']
-    assert error['category'] == 'missing donor'
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'missing donor' for error in errors)
 
 
-def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_donor, base_fly):
-    res = testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id'], 'organism': base_fly['@id']})
-    res = testapp.get(res.location + '@@index-data')
-    error, = res.json['audit']
-    assert error['category'] == 'organism mismatch'
-    
+def test_audit_biosample_donor_organism(testapp, base_biosample, base_human_donor, base_chipmunk):
+    testapp.patch_json(base_biosample['@id'], {'donor': base_human_donor['@id'], 'organism': base_chipmunk['@id']})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'organism mismatch' for error in errors)
+
+
+def test_audit_subcellular(testapp, base_biosample):
+    testapp.patch_json(base_biosample['@id'], {'subcellular_fraction_term_name': 'nucleus', 'subcellular_fraction_term_id': 'GO:0005739'})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'subcellular term mismatch' for error in errors)
+
+
+def test_audit_depleted_in(testapp, base_biosample):
+    testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473', 'UBERON:0000033']})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'depleted_in term mismatch' for error in errors)
+
+
+def test_audit_rnai_transfection(testapp, base_biosample, base_rnai):
+    testapp.patch_json(base_biosample['@id'], {'rnais': [base_rnai['@id']]})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'missing transfection_type' for error in errors)
+
+
+def test_audit_construct_transfection(testapp, base_biosample, base_construct):
+    testapp.patch_json(base_biosample['@id'], {'constructs': [base_construct['@id']]})
+    res = testapp.get(base_biosample['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'missing transfection_type' for error in errors)
