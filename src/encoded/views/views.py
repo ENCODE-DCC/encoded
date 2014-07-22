@@ -939,18 +939,23 @@ class Page(Collection):
             'deleted': ONLY_ADMIN_VIEW,
         }
 
-        def __init__(self, collection, model):
-            self.collection = collection
-            parent_uuid = model[''].get('parent')
-            name = model['']['name']
-            root = find_root(collection)
-            if parent_uuid:
-                self.__parent__ = root.get_by_uuid(parent_uuid)
+        @property
+        def __parent__(self):
+            parent_uuid = self.properties.get('parent')
+            name = self.__name__
+            root = find_root(self.collection)
+            if parent_uuid:  # explicit parent
+                return root.get_by_uuid(parent_uuid)
             elif name in root.collections or name == 'homepage':
-                self.__parent__ = collection
-            else:
-                self.__parent__ = root
-            self.model = model
+                # collection default page; use pages collection as canonical parent
+                return self.collection
+            else:  # top level
+                return root
+
+        # make explicitly setting __parent__ a no-op
+        @__parent__.setter
+        def __parent__(self, value):
+            pass
 
         # Handle traversal to nested pages
 

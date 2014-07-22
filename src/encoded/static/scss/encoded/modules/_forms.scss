@@ -117,3 +117,22 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 		display: inline;
 	}
 }
+
+.item-picker {
+	@include clearfix;
+	@extend .form-control;
+	height: auto;
+	.item-picker-preview {
+		overflow: hidden;		
+		.result-table > li {
+			margin: 4px 6px;
+			border: none;
+		}
+		.clear {
+			float: right;
+		}
+	}
+	> .btn {
+		margin-left: 1em;
+	}
+}
