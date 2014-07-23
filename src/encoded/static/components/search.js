@@ -626,11 +626,16 @@ var Dbxref = dbxref.Dbxref;
             var results = context['@graph'];
             var notification = context['notification'];
             var searchBase = url.parse(this.props.href).search || '';
+            var facetdisplay = context.facets.some(function(facet) {
+                return facet.total > 0;
+            });
             return (
                 <div>
-                    <div className="panel data-display main-panel"> 
-                        {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
-                    </div>
+                    {facetdisplay ?
+                        <div className="panel data-display main-panel"> 
+                            {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
+                        </div>
+                    : <h4>{notification}</h4>}
                 </div>
             );
         }
