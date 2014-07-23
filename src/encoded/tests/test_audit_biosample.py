@@ -104,7 +104,7 @@ def test_audit_subcellular(testapp, base_biosample):
     errors = res.json['audit']
     assert any(error['category'] == 'subcellular term mismatch' for error in errors)
 
-'''
+
 def test_audit_depleted_in(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_type': 'whole organisms', 'depleted_in_term_name': ['head', 'testis'], 'depleted_in_term_id': ['UBERON:0000473', 'UBERON:0000033']})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
@@ -125,9 +125,9 @@ def test_audit_rnai_transfection(testapp, base_biosample, rnai):
     errors = res.json['audit']
     assert any(error['category'] == 'missing transfection_type' for error in errors)
 
+
 def test_audit_construct_transfection(testapp, base_biosample, construct):
     testapp.patch_json(base_biosample['@id'], {'constructs': [construct['@id']]})
     res = testapp.get(base_biosample['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'missing transfection_type' for error in errors)
-'''

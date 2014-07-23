@@ -72,6 +72,9 @@ def audit_biosample_donor(value, system):
         raise AuditFailure('missing donor', detail, level='ERROR')
         return
 
+    if ('donor' not in value) and (value['pooled_from']):
+        return
+
     donor = value['donor']
     if value['organism']['name'] != donor['organism']['name']:
         detail = 'biosample and donor organism mismatch'
@@ -90,7 +93,7 @@ def audit_biosample_subcellular_term_match(value, system):
         detail = '{} - {}'.format(value['subcellular_fraction_term_name'], value['subcellular_fraction_term_id'])
         raise AuditFailure('subcellular term mismatch', detail, level='ERROR')
 
-'''
+
 @audit_checker('biosample')
 def audit_biosample_depleted_term_match(value, system):
     if value['status'] == 'deleted':
@@ -122,4 +125,3 @@ def audit_biosample_transfection_type(value, system):
     if (value['constructs']) and ('transfection_type' not in value):
         detail = 'transfection_type is missing'
         raise AuditFailure('missing transfection_type', detail, level='ERROR')
-'''
