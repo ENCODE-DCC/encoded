@@ -24,7 +24,7 @@
         "status": {
             "title": "Library status",
             "type": "string"
-        },
+        }
     },
     "dependencies": {
         "nucleic_acid_term_id": ["nucleic_acid_term_name"],
