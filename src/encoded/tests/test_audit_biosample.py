@@ -46,30 +46,6 @@ def base_chipmunk(testapp):
     }
     return testapp.post_json('/organism', item, status=201).json['@graph'][0]
 
-'''
-@pytest.fixture
-def base_rnai(testapp, award, lab, target):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'target': target['uuid'],
-        'rnai_type': 'siRNA'
-    }
-    return testapp.post_json('/rnai', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
-def base_construct(testapp, award, lab, source, target):
-    item = {
-        'award': award['uuid'],
-        'lab': lab['uuid'],
-        'target': target['uuid'],
-        'construct_type': 'fusion protein',
-        'source': source['uuid'],
-        'tags': [{'name': 'eGFP', 'location': 'C-terminal'}]
-    }
-    return testapp.post_json('/construct', item, status=201).json['@graph'][0]
-'''
 
 def test_audit_biosample_term_ntr(testapp, base_biosample):
     testapp.patch_json(base_biosample['@id'], {'biosample_term_id': 'NTR:0000022', 'biosample_term_name': 'myocyte', 'biosample_type': 'in vitro differentiated cells'})
