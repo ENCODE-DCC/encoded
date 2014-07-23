@@ -574,40 +574,40 @@ var Dbxref = dbxref.Dbxref;
             
             return (
                     <div>
-                        {results.length ?
-                            <div className="row">
-                                <div className="col-sm-5 col-md-4 col-lg-3">
-                                    {this.transferPropsTo(
-                                        <FacetList facets={facets} filters={filters}
-                                                   searchBase={searchBase} onFilter={this.onFilter} />
-                                    )}
-                                </div>
-
-                                <div className="col-sm-7 col-md-8 col-lg-9">
-                                    <h4>Showing {results.length} of {total} 
-                                        {total > results.length ?
-                                                <span className="pull-right">
-                                                    {searchBase.indexOf('&limit=all') !== -1 ? 
-                                                        <a className="btn btn-info btn-sm"
-                                                           href={searchBase.replace("&limit=all", "")}
-                                                           onClick={this.onFilter}>View 25</a>
-                                                    : <a rel="nofollow" className="btn btn-info btn-sm"
-                                                         href={searchBase+ '&limit=all'}
-                                                         onClick={this.onFilter}>View All</a>}
-                                                </span>
-                                            : null}
-                                    </h4>
-                                    <hr />
-                                    <ul className="nav result-table">
-                                        {results.length ?
-                                            results.map(function (result) {
-                                                return Listing({context:result, columns: columns, key: result['@id']});
-                                            })
-                                        : null}
-                                    </ul>
-                                </div>
+                        <div className="row">
+                            <div className="col-sm-5 col-md-4 col-lg-3">
+                                {this.transferPropsTo(
+                                    <FacetList facets={facets} filters={filters}
+                                               searchBase={searchBase} onFilter={this.onFilter} />
+                                )}
                             </div>
-                        : null }
+                            <div className="col-sm-7 col-md-8 col-lg-9">
+                                {context['notification'] === 'Success' ?
+                                    <h4>
+                                        Showing {results.length} of {total} 
+                                        {total > results.length ?
+                                            <span className="pull-right">
+                                                {searchBase.indexOf('&limit=all') !== -1 ? 
+                                                    <a className="btn btn-info btn-sm"
+                                                       href={searchBase.replace("&limit=all", "")}
+                                                       onClick={this.onFilter}>View 25</a>
+                                                : <a rel="nofollow" className="btn btn-info btn-sm"
+                                                     href={searchBase+ '&limit=all'}
+                                                     onClick={this.onFilter}>View All</a>}
+                                            </span>
+                                        : null}
+                                    </h4>
+                                : <h4>{context['notification']}</h4>}
+                                <hr />
+                                <ul className="nav result-table">
+                                    {results.length ?
+                                        results.map(function (result) {
+                                            return Listing({context:result, columns: columns, key: result['@id']});
+                                        })
+                                    : null}
+                                </ul>
+                            </div>
+                        </div>
                     </div>  
             );
         },
@@ -628,11 +628,9 @@ var Dbxref = dbxref.Dbxref;
             var searchBase = url.parse(this.props.href).search || '';
             return (
                 <div>
-                    {notification === 'Success' ?
-                        <div className="panel data-display main-panel"> 
-                            {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
-                        </div>
-                    : <h4>{notification}</h4>}
+                    <div className="panel data-display main-panel"> 
+                        {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
+                    </div>
                 </div>
             );
         }
