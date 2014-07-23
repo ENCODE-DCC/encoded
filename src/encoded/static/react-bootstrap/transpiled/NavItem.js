@@ -25,6 +25,12 @@ var NavItem = React.createClass({displayName: 'NavItem',
     };
   },
 
+  getInitialState: function() {
+    return {
+      focused: false
+    };
+  },
+
   render: function () {
     var classes = {
       'active': this.props.active,
@@ -41,12 +47,29 @@ var NavItem = React.createClass({displayName: 'NavItem',
         React.DOM.a(
           {className:anchorClass,
           onClick:this.handleClick,
+          onFocus:this.handleFocus,
+          onBlur:this.handleBlur,
+          onKeyDown:this.handleKeyDown,
           ref:"anchor"}, 
           this.props.dropdown ? React.DOM.span(null, this.props.children[0],React.DOM.span( {className:"caret"})) : this.props.children
         )),
         this.props.dropdown ? this.props.children.slice(1) : null
       )
     );
+  },
+
+  handleKeyDown: function(e) {
+    if (e.which === 32 && this.state.focused) {
+      this.setDropdownState(true);
+    }
+  },
+
+  handleFocus: function() {
+    this.setState({focused: true});
+  },
+
+  handleBlur: function() {
+    this.setState({focused: false});
   },
 
   handleOpenClick: function () {
