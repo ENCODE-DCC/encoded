@@ -15,19 +15,6 @@ def base_biosample(testapp, lab, award, source, organism):
 
 
 @pytest.fixture
-def base_biosample2(testapp, lab, award, source, organism):
-    item = {
-        'award': award['uuid'],
-        'biosample_term_id': 'UBERON:0000033',
-        'biosample_type': 'tissue',
-        'lab': lab['uuid'],
-        'organism': organism['uuid'],
-        'source': source['uuid']
-    }
-    return testapp.post_json('/biosample', item, status=201).json['@graph'][0]
-
-
-@pytest.fixture
 def base_human_donor(testapp, lab, award, organism):
     item = {
         'award': award['uuid'],
