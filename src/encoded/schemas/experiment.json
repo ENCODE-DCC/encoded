@@ -90,7 +90,7 @@
             "title": "Experiment status",
             "type": "string"
         },
-        "replicates.library.biosample.organism.name": {
+        "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
             "type": "string"
         },
@@ -166,6 +166,26 @@
         },
         "status": {
             "title": "Status",
+            "type": "string"
+        },
+        "replicates.library.biosample.organism.scientific_name": {
+            "title": "Species",
+            "type": "array"
+        },
+        "replicates.library.biosample.life_stage": {
+            "title": "Life stage",
+            "type": "array"
+        },
+        "replicates.library.biosample.age": {
+            "title": "Age",
+            "type": "array"
+        },
+        "replicates.library.biosample.age_units": {
+            "title": "Age Units",
+            "type": "array"
+        },
+        "replicates.library.biosample.treatments.treatment_term_name": {
+            "title": "Treatment",
             "type": "string"
         },
         "replicates.length": {

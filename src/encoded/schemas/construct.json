@@ -4,7 +4,7 @@
     "id": "/profiles/construct.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "construct_type", "target", "tags", "lab", "award"],
+    "required": [ "construct_type", "target", "tags", "lab", "award", "source"],
     "identifyingProperties": ["uuid","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -28,7 +28,8 @@
             "type": "string",
             "enum": [
                 "fusion protein",
-                "zinc-finger knockout"
+                "zinc-finger knockout",
+                "TALEN"
             ]
         },
         "description": {
@@ -72,7 +73,8 @@
                             "3xFLAG",
                             "DsRed",
                             "TRE",
-                            "T2A"
+                            "T2A",
+                            "YFP"
                         ]
                     },
                     "location": {
@@ -125,6 +127,26 @@
             "comment": "TODO",
             "type": "string",
             "requestMethod": []
-        }
+        },
+        "promoter_used": {
+           "title": "Promoter used in construct",
+           "description": "The name of the gene that the promoter regulates natively.",
+           "comment": "See target.json for available identifiers.",
+           "type": "string",
+           "linkTo": "target"
+       },
+       "promoter_genome_coordinates": {
+           "title": "Promoter genome coordinates",
+           "description": "Genomic coordinates of the promoter. Use NCBI assembly version:chromosome number:nucleotide range (e.g. WBcel235:III:1433720-1434340).",
+           "comment": "TODO",
+           "type": "string",
+           "requestMethod": []
+       },
+       "promoter_position_relative_to_target": {
+           "title": "Promoter position relative to target",
+           "description": "Relative distance of promoter sequence in the construct upstream of the target gene TSS.",
+           "comment": "Distance in bp upstream of target gene TSS in the construct",
+           "type": "number"
+       }
     }
 }

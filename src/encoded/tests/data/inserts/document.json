@@ -342,5 +342,16 @@
         "lab": "j-michael-cherry",
         "submitted_by": "duis.pede@nonummy.scelerisque",
         "uuid": "bcb5f3c8-d5e9-40d2-805f-4274f940c36d"
+    },
+    {
+        "aliases": [
+            "ENCODE:sample_strain_generation_protocol"
+        ],
+        "attachment": "sample_strain_generation_protocol.pdf",
+        "award": "U41HG007355",
+        "document_type": "strain generation protocol",
+        "lab": "robert-waterston",
+        "submitted_by": "uskuf.shyec@doton.danona",
+        "uuid": "30705939-d234-4aca-8379-cd355686fd48"
     }
 ]

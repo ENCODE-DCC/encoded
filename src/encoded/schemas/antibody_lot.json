@@ -122,6 +122,7 @@
             "items": {
                 "title": "Purification method",
                 "description": "A purification protocol used to isolate the antibody.",
+                "comment": "IMAC refers to Immobilized Metal Chelate Chromatography and IEC refers to Ion Exchange Chromatography",
                 "type": "string",
                 "enum": [
                     "Protein A/G",
@@ -133,7 +134,8 @@
                     "IEC",
                     "IMAC",
                     "tissue culture supernatant",
-                    "antiserum"
+                    "antiserum",
+                    "IgG fraction"
                 ]
             }
         },

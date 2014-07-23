@@ -1,0 +1,8 @@
+.rf-CheckboxGroup__button {
+  @include checkbox;
+}
+
+.rf-CheckboxGroup__caption {
+  margin-left: 10px;
+  @include user-select(none);
+}

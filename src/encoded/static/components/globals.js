@@ -1,22 +1,21 @@
 /** @jsx React.DOM */
 'use strict';
-var Registry = require('registry');
+var Registry = require('../libs/registry');
 
 // Item pages
-module.exports.content_views = Registry();
+module.exports.content_views = new Registry();
 
 // Panel detail views
-module.exports.panel_views = Registry();
+module.exports.panel_views = new Registry();
 
 // Listing detail views
-module.exports.listing_views = Registry();
+module.exports.listing_views = new Registry();
 
 // Cell name listing titles
-module.exports.listing_titles = Registry();
+module.exports.listing_titles = new Registry();
 
-// Block views
-module.exports.block_views = Registry();
-module.exports.block_edit_views = Registry();
+// Blocks
+module.exports.blocks = new Registry();
 
 
 var itemClass = module.exports.itemClass = function (context, htmlClass) {
@@ -44,10 +43,12 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
 };
 
 
+module.exports.submitHost = "www.encodedcc.org";
+
 module.exports.encodeVersionMap = {
     "ENCODE2": "2",
     "ENCODE3": "3"
-}
+};
 
 module.exports.dbxref_prefix_map = {
     "UniProtKB": "http://www.uniprot.org/uniprot/",
@@ -62,5 +63,8 @@ module.exports.dbxref_prefix_map = {
     "UCSC-ENCODE-hg19": "http://genome.ucsc.edu/cgi-bin/hgTracks?tsCurTab=advancedTab&tsGroup=Any&tsType=Any&hgt_mdbVar1=dccAccession&hgt_tSearch=search&hgt_tsDelRow=&hgt_tsAddRow=&hgt_tsPage=&tsSimple=&tsName=&tsDescr=&db=hg19&hgt_mdbVal1=",
     "UCSC-ENCODE-cv": "http://genome.cse.ucsc.edu/cgi-bin/hgEncodeVocab?ra=encode%2Fcv.ra&term=",
     "UCSC-GB-mm9": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=mm9&g=",
-    "UCSC-GB-hg19": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g="
+    "UCSC-GB-hg19": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=",
+    // Dataset, experiment, and document references
+    "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
+    "doi": "http://dx.doi.org/doi:"
 };

@@ -13,7 +13,13 @@ from ..contentbase import (
 from ..schema_utils import (
     load_schema,
 )
-from pyramid.traversal import find_root
+from pyramid.traversal import (
+    find_resource,
+    find_root,
+)
+from urllib import quote_plus
+from urlparse import urljoin
+import copy
 
 ACCESSION_KEYS = [
     {
@@ -50,14 +56,20 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', 'add')
 ]
 
+ALLOW_AUTHENTICATED_VIEW = [
+    (Allow, Authenticated, 'view'),
+]
+
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, Authenticated, 'view'),
+    (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
-ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
+ALLOW_CURRENT = [
     (Allow, Everyone, 'view'),
+    (Allow, 'group.admin', 'edit'),
 ]
 
 ONLY_ADMIN_VIEW = [
@@ -95,6 +107,26 @@ ENCODE2_AWARDS = frozenset([
     '5a009305-4ddc-4dba-bbf3-7327ceda3702',
 ])
 
+ADD_ACTION = {
+    'name': 'add',
+    'title': 'Add',
+    'profile': '/profiles/{item_type}.json',
+    'method': 'GET',
+    'href': '#!add',
+    'className': 'btn btn-success',
+    '$templated': True,
+    '$condition': 'permission:add',
+}
+
+EDIT_ACTION = {
+    'name': 'edit',
+    'title': 'Edit',
+    'profile': '/profiles/page.json',
+    'method': 'PUT',
+    'href': '#!edit',
+    'className': 'btn navbar-btn',
+}
+
 
 class Collection(BaseCollection):
     def __init__(self, parent, name):
@@ -130,6 +162,7 @@ class Collection(BaseCollection):
             'not pursued': ALLOW_CURRENT,
 
             # dataset / experiment
+            'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
         }
 
@@ -255,14 +288,12 @@ class Source(Collection):
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
     }
-    item_template = {
-        'actions': [
-            {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': '', '$templated': True, '$condition': 'permission:edit'},
-        ],
-    }
+    item_actions = [
+        {'name': 'edit', 'title': 'Edit', 'profile': '/profiles/{item_type}.json', 'method': 'PUT', 'href': ''},
+    ]
     item_name_key = 'name'
     unique_key = 'source:name'
-    item_keys =  ALIAS_KEYS + ['name']
+    item_keys = ALIAS_KEYS + ['name']
 
 
 class DonorItem(Collection.Item):
@@ -270,6 +301,9 @@ class DonorItem(Collection.Item):
     embedded = set(['organism'])
     name_key = 'accession'
     keys = ACCESSION_KEYS + ALIAS_KEYS
+    rev = {
+        'characterizations': ('donor_characterization', 'characterizes'),
+    }
 
 
 @location('mouse-donors')
@@ -278,6 +312,32 @@ class MouseDonor(Collection):
     schema = load_schema('mouse_donor.json')
     properties = {
         'title': 'Mouse donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
+
+
+@location('fly-donors')
+class FlyDonor(Collection):
+    item_type = 'fly_donor'
+    schema = load_schema('fly_donor.json')
+    properties = {
+        'title': 'Fly donors',
+        'description': 'Listing Biosample Donors',
+    }
+
+    class Item(DonorItem):
+        pass
+
+
+@location('worm-donors')
+class WormDonor(Collection):
+    item_type = 'worm_donor'
+    schema = load_schema('worm_donor.json')
+    properties = {
+        'title': 'Worm donors',
         'description': 'Listing Biosample Donors',
     }
 
@@ -342,6 +402,16 @@ class ConstructCharacterization(Characterization):
     }
 
 
+@location('donor-characterizations')
+class DonorCharacterization(Characterization):
+    item_type = 'donor_characterization'
+    schema = load_schema('donor_characterization.json')
+    properties = {
+        'title': 'Donor characterizations',
+        'description': 'Listing of model organism donor (strain) construct characterizations',
+    }
+
+
 @location('documents')
 class Document(Collection):
     item_type = 'document'
@@ -378,9 +448,16 @@ class Biosample(Collection):
             ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
-            ]
+            ],
+            'sex': {'$value': '{sex}', '$templated': True, '$condition': 'sex'},
+            'age': {'$value': '{age}', '$templated': True, '$condition': 'age'},
+            'age_units': {'$value': '{age_units}', '$templated': True, '$condition': 'age_units'},
+            'health_status': {'$value': '{health_status}', '$templated': True, '$condition': 'health_status'},
+            'life_stage': {'$value': '{life_stage}', '$templated': True, '$condition': 'life_stage'},
+            'synchronization': {'$value': '{synchronization}', '$templated': True, '$condition': 'synchronization'}
         }
         embedded = set([
+            'donor',
             'donor.organism',
             'submitted_by',
             'lab',
@@ -431,6 +508,67 @@ class Biosample(Collection):
                     ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
+
+            human_donor_properties = [
+                "sex",
+                "age",
+                "age_units",
+                "health_status",
+                "life_stage",
+                'synchronization'
+            ]
+            mouse_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "mouse_life_stage": "life_stage",
+                "mouse_synchronization_stage": "synchronization"
+            }
+            fly_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "fly_life_stage": "life_stage",
+                "fly_synchronization_stage": "synchronization"
+            }
+            worm_biosample_properties = {
+                "model_organism_sex": "sex",
+                "model_organism_age": "age",
+                "model_organism_age_units": "age_units",
+                "model_organism_health_status": "health_status",
+                "worm_life_stage": "life_stage",
+                "worm_synchronization_stage": "synchronization"
+            }
+            fly_organisms = [
+                "/organisms/dmelanogaster/",
+                "/organisms/dananassae/",
+                "/organisms/dmojavensis/",
+                "/organisms/dpseudoobscura/",
+                "/organisms/dsimulans/",
+                "/organisms/dvirilis/",
+                "/organisms/dyakuba/"
+            ]
+
+            if properties['organism'] == '/organisms/human/' and 'donor' in ns:
+                root = find_root(self)
+                donor = root.get_by_uuid(self.properties['donor'])
+                for value in human_donor_properties:
+                    if value in donor.properties:
+                        ns[value] = donor.properties[value]
+            elif properties['organism'] == "/organisms/mouse/":
+                for key, value in mouse_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+            elif properties['organism'] in fly_organisms:
+                for key, value in fly_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
+            else:
+                for key, value in worm_biosample_properties.items():
+                    if key in ns:
+                        ns[value] = ns[key]
             return ns
 
 
@@ -614,13 +752,15 @@ class Dataset(Collection):
         'title': 'Datasets',
         'description': 'Listing of datasets',
     }
-    
+
     class Item(Collection.Item):
         template = {
             'files': [
                 {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
                 {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
             ],
+            'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
+            'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
         template_type = {
             'files': 'file',
@@ -645,6 +785,30 @@ class Dataset(Collection):
             'original_files': ('file', 'dataset'),
         }
 
+        def template_namespace(self, properties, request=None):
+            ns = super(Dataset.Item, self).template_namespace(properties, request)
+            if request is None:
+                return ns
+            for link in ns['original_files'] + ns['related_files']:
+                f = find_resource(request.root, link)
+                if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and f.properties['status'] == 'current':
+                    if 'assembly' in f.properties:
+                        ns['assembly'] = f.properties['assembly']
+                        break
+            return ns
+
+        @classmethod
+        def expand_page(cls, request, properties):
+            properties = super(Dataset.Item, cls).expand_page(request, properties)
+            if 'hub' in properties:
+                hub_url = urljoin(request.resource_url(request.root), properties['hub'])
+                properties = properties.copy()
+                properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
+                    'db=' + quote_plus(properties['assembly']),
+                    'hubUrl=' + quote_plus(hub_url, ':/@'),
+                ])
+            return properties
+
 
 @location('experiments')
 class Experiment(Dataset):
@@ -654,7 +818,7 @@ class Experiment(Dataset):
         'title': 'Experiments',
         'description': 'Listing of Experiments',
     }
-    
+
     class Item(Dataset.Item):
         base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {
@@ -681,6 +845,7 @@ class Experiment(Dataset):
             'replicates.library.biosample.organism',
             'replicates.library.biosample.treatments',
             'replicates.library.biosample.donor.organism',
+            'replicates.library.biosample.treatments',
             'replicates.library.treatments',
             'replicates.platform',
             'possible_controls',
@@ -736,10 +901,19 @@ class RNAiCharacterization(Characterization):
 class Page(Collection):
     schema = load_schema('page.json')
 
+    template = copy.deepcopy(Collection.template)
+    template['@type'] = [
+        {'$value': '{item_type}_collection', '$templated': True},
+        'page_collection',
+        'collection',
+    ]
+    template['actions'] = [ADD_ACTION]
+
     class Item(Collection.Item):
         base_types = ['page'] + Collection.Item.base_types
         name_key = 'name'
         keys = ['name']
+        actions = [EDIT_ACTION]
 
         STATUS_ACL = {
             'in progress': [],
@@ -766,3 +940,44 @@ class HelpPage(Page):
         'description': 'Portal pages, help section',
     }
     unique_key = 'help_page:name'
+
+
+@location('publication')
+class Publication(Collection):
+    item_type = 'publication'
+    schema = load_schema('publication.json')
+    properties = {
+        'title': 'Publication',
+        'description': 'Publication pages',
+    }
+    unique_key = 'publication:title'
+
+
+@location('images')
+class Image(Collection):
+    item_type = 'image'
+    schema = load_schema('image.json')
+    schema['properties']['attachment']['properties']['type']['enum'] = [
+        'image/png',
+        'image/jpeg',
+        'image/gif',
+    ]
+    properties = {
+        'title': 'Image',
+        'description': 'Listing of portal images',
+    }
+    unique_key = 'image:filename'
+
+    template = copy.deepcopy(Collection.template)
+    template['actions'] = [ADD_ACTION]
+
+    class Item(ItemWithAttachment, Collection.Item):
+        embedded = set(['submitted_by'])
+        keys = [
+            {
+                'name': 'image:filename',
+                'value': "{attachment[download]}",
+                '$templated': True,
+            },
+        ]
+        actions = [EDIT_ACTION]

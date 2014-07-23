@@ -35,6 +35,18 @@ def test_home_json(testapp):
     assert res.json['@type']
 
 
+def test_vary_html(anonhtmltestapp):
+    res = anonhtmltestapp.get('/', status=200)
+    assert res.vary is not None
+    assert 'Accept' in res.vary
+
+
+def test_vary_json(anontestapp):
+    res = anontestapp.get('/', status=200)
+    assert res.vary is not None
+    assert 'Accept' in res.vary
+
+
 @pytest.mark.parametrize('item_type', [k for k in TYPE_LENGTH if k != 'user'])
 def test_collections_anon(workbook, anontestapp, item_type):
     res = anontestapp.get('/' + item_type).follow(status=200)
@@ -162,7 +174,15 @@ def test_collection_post_bad_(anontestapp):
     anontestapp.post_json('/organism', {}, headers={'Authorization': value}, status=401)
 
 
-def test_actions_filtered_by_permission(testapp, authenticated_testapp, sources):
+def test_collection_actions_filtered_by_permission(workbook, testapp, anontestapp):
+    res = testapp.get('/about/')
+    assert any(action for action in res.json['actions'] if action['name'] == 'add')
+
+    res = anontestapp.get('/about/')
+    assert not any(action for action in res.json['actions'] if action['name'] == 'add')
+
+
+def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, sources):
     location = sources[0]['@id']
 
     res = testapp.get(location)

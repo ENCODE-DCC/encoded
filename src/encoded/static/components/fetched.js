@@ -20,6 +20,13 @@ var Fetched = module.exports.Fetched = {
         this.fetch(this.props.url);
     },
 
+    componentWillUnmount: function () {
+        var xhr = this.state.fetchedRequest;
+        if (xhr && xhr.state() == 'pending') {
+            xhr.abort();
+        }
+    },
+
     componentWillReceiveProps: function (nextProps) {
         if (!nextProps.loadingComplete || (
             this.props.fetchedRequest &&
@@ -79,6 +86,15 @@ var Fetched = module.exports.Fetched = {
 
 var FetchedData = module.exports.FetchedData = React.createClass({
     mixins: [Fetched],
+
+    shouldComponentUpdate: function(nextProps, nextState) {
+        if (this.props.showSpinnerOnUpdate === false && nextState.communicating) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+
     render: function () {
         var url = this.props.url;
         var data = this.state.data;
@@ -102,7 +118,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
                 </div>
             );
         }
-        var etag = this.state.fetchedRequest.getResponseHeader('ETag')
+        var etag = this.state.fetchedRequest.getResponseHeader('ETag');
         return (
             <div key={key} className="done">
                 {this.transferPropsTo(

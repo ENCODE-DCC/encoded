@@ -12,7 +12,7 @@ var Dbxref = module.exports.Dbxref = function (props) {
         local = value;
     } else if (sep != -1) {
         prefix = value.slice(0, sep);
-        local = value.slice(sep + 1);
+        local = encodeURIComponent(value.slice(sep + 1)).replace(/%20/g,'_');
     }
     var base = prefix && globals.dbxref_prefix_map[prefix];
     if (!base) {

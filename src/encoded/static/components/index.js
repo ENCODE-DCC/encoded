@@ -4,6 +4,7 @@
 // Require all components to ensure javascript load ordering
 require('./antibody');
 require('./app');
+require('./image');
 require('./biosample');
 require('./collection');
 require('./dataset');
@@ -20,9 +21,9 @@ require('./navbar');
 require('./platform');
 require('./search');
 require('./target');
+require('./publication');
 require('./testing');
 require('./edit');
-require('./blocks/fallback.js');
-require('./blocks/richtext.js');
+require('./blocks');
 
 module.exports = require('./app');

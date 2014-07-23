@@ -1,52 +1,90 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var ReactForms = require('react-forms');
+var Layout = require('./layout').Layout;
 var globals = require('./globals');
+var merge = require('react/lib/merge');
+var ItemEdit = require('./item').ItemEdit;
 
 
-var Block = module.exports.Block = React.createClass({
-
-    render: function() {
-        var block = this.props.block;
-        if (typeof block['@type'] == 'string') {
-            block['@type'] = [block['@type'], 'block'];
-        }
-        var block_view = globals.block_views.lookup(block);
-        return <block_view type={block['@type']} data={block.data} />;
-    }
-});
-
-
-var Row = module.exports.Row = React.createClass({
-    render: function() {
-        var auto_col_class = "";
-        switch (this.props.blocks.length) {
-            case 2: auto_col_class = 'col-md-6'; break;
-            case 3: auto_col_class = 'col-md-4'; break;
-            case 4: auto_col_class = 'col-md-3'; break;
-            default: auto_col_class = 'col-md-12'; break;
-        }
-        var blocks = this.props.blocks.map(function(block) {
-            return (
-                <div className={block.className || auto_col_class}>
-                    <Block block={block} />
-                </div>
-            );
+var LayoutType = {
+    serialize: function(value) {
+        var blockMap = {};
+        value.blocks.map(function(block) {
+            blockMap[block['@id']] = block;
         });
-        return (
-            <div className="row">
-                {blocks}
-            </div>
-        );
-    }
-});
+        return merge(value, {blocks: blockMap});
+    },
+    deserialize: function(value) {
+        var blockList = Object.keys(value.blocks).map(function(blockId) {
+            return value.blocks[blockId];
+        });
+        return merge(value, {blocks: blockList});
+    },
+}
 
 
 var Page = module.exports.Page = React.createClass({
     render: function() {
-        return <div>{this.props.context.layout.rows.map(row => <Row blocks={row.blocks} />)}</div>;
+        var value = LayoutType.serialize(this.props.context.layout);
+        return <div><Layout value={value} /></div>;
     }
 });
 
 
 globals.content_views.register(Page, 'page');
+
+var defaultLayout = {
+    rows: [
+        {
+            cols: [
+                {
+                    blocks: ['#block1']
+                }
+            ]
+        }
+    ],
+    blocks: [
+        {
+            "@id": "#block1",
+            "@type": "richtextblock",
+            "body": "(new layout)"
+        }
+    ]
+};
+
+
+var statusSelect = (
+    <select className="form-control">
+        <option value="in progress">in progress</option>
+        <option value="released">released</option>
+        <option value="deleted">deleted</option>
+    </select>
+);
+
+
+var Schema    = ReactForms.schema.Schema;
+var Property  = ReactForms.schema.Property;
+var PageFormSchema = (
+    <Schema>
+        <Property name="name" label="Name" />
+        <Property name="title" label="Title" />
+        <Property name="status" label="Status" input={statusSelect} />
+        <Property name="layout" label="Layout"
+                  type={LayoutType}
+                  input={Layout({editable: true})}
+                  defaultValue={defaultLayout} />
+    </Schema>
+);
+
+
+var PageEdit = React.createClass({
+    render: function() {
+        var defaultValue = {layout: defaultLayout};
+        return this.transferPropsTo(<ItemEdit context={this.props.context} schema={PageFormSchema} defaultValue={defaultValue} />);
+    }
+});
+
+globals.content_views.register(PageEdit, 'page', 'edit');
+globals.content_views.register(PageEdit, 'page_collection', 'add');

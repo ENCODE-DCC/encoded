@@ -8,12 +8,15 @@ var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var antibody = require('./antibody');
+var image = require('./image');
 
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = antibody.StatusLabel;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
+
+var Attachment = image.Attachment;
 
 
 var Panel = function (props) {
@@ -65,7 +68,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <li>Biosamples</li>
                             <li>{context.biosample_type}</li>
                             {context.donor ?
-                                <li className="active">{context.donor.organism.name}</li>
+                                <li className="active"><em>{context.donor.organism.scientific_name}</em></li>
                             : null }
                         </ul>
                         <h2>
@@ -280,23 +283,23 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {context.aliases.length ? <dt>Aliases</dt> : null}
                 {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
-                {context.organism.name ? <dt>Species</dt> : null}
-                {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
+                {context.organism.scientific_name ? <dt>Species</dt> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
 
-                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+                {context.life_stage ? <dt>Life stage</dt> : null}
+                {context.life_stage ? <dd className="sentence-case">{context.life_stage}</dd> : null}
 
-                {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                {context.age ? <dt>Age</dt> : null}
+                {context.age ? <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd> : null}
 
                 {context.sex ? <dt>Sex</dt> : null}
                 {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
 
-                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
+                {context.health_status ? <dt>Health status</dt> : null}
+                {context.health_status ? <dd className="sentence-case">{context.health_status}</dd> : null}
 
                 {context.ethnicity ? <dt>Ethnicity</dt> : null}
-                {context.ethnicity ? <dd>{context.ethnicity}</dd> : null}
+                {context.ethnicity ? <dd className="sentence-case">{context.ethnicity}</dd> : null}
             </dl>
         );
     }
@@ -317,23 +320,26 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                 {context.aliases.length ? <dt>Aliases</dt> : null}
                 {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
-                {context.organism.name ? <dt>Species</dt> : null}
-                {context.organism.name ? <dd className="sentence-case">{context.organism.name}</dd> : null}
+                {context.organism.scientific_name ? <dt>Species</dt> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
+
+                {context.genotype ? <dt>Genotype</dt> : null}
+                {context.genotype ? <dd>{context.genotype}</dd> : null}
 
                 {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
                 {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
                 {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd>{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
 
-                <dt>Sex</dt>
-                <dd className="sentence-case">{context.sex}</dd>
+                {biosample && biosample.sex ? <dt>Sex</dt> : null}
+                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
 
                 {biosample && biosample.health_status ? <dt>Health status</dt> : null}
                 {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
-                <dt>Strain background</dt>
-                <dd>{context.strain_background}</dd>
+                {context.strain_background ? <dt>Strain background</dt> : null}
+                {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
 
                 {context.strain_name ? <dt>Strain name</dt> : null}
                 {context.strain_name ? <dd>{context.strain_name}</dd> : null}
@@ -343,6 +349,92 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
 });
 
 globals.panel_views.register(MouseDonor, 'mouse_donor');
+
+
+var FlyDonor = module.exports.FlyDonor = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var biosample = this.props.biosample;
+        return (
+            <dl className="key-value">
+                <dt>Accession</dt>
+                <dd>{context.accession}</dd>
+
+                {context.aliases.length ? <dt>Aliases</dt> : null}
+                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+
+                {context.organism.scientific_name ? <dt>Species</dt> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
+
+                {context.genotype ? <dt>Genotype</dt> : null}
+                {context.genotype ? <dd>{context.genotype}</dd> : null}
+
+                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+
+                {biosample && biosample.age ? <dt>Age</dt> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
+
+                {biosample && biosample.sex ? <dt>Sex</dt> : null}
+                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
+
+                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
+
+                {context.strain_background ? <dt>Strain background</dt> : null}
+                {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
+
+                {context.strain_name ? <dt>Strain name</dt> : null}
+                {context.strain_name ? <dd>{context.strain_name}</dd> : null}
+            </dl>
+        );
+    }
+});
+
+globals.panel_views.register(FlyDonor, 'fly_donor');
+
+
+var WormDonor = module.exports.WormDonor = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var biosample = this.props.biosample;
+        return (
+            <dl className="key-value">
+                <dt>Accession</dt>
+                <dd>{context.accession}</dd>
+
+                {context.aliases.length ? <dt>Aliases</dt> : null}
+                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+
+                {context.organism.scientific_name ? <dt>Species</dt> : null}
+                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
+
+                {context.genotype ? <dt>Genotype</dt> : null}
+                {context.genotype ? <dd>{context.genotype}</dd> : null}
+
+                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+
+                {biosample && biosample.age ? <dt>Age</dt> : null}
+                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+
+                {biosample && biosample.sex ? <dt>Sex</dt> : null}
+                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
+
+                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
+
+                {context.strain_background ? <dt>Strain background</dt> : null}
+                {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
+
+                {context.strain_name ? <dt>Strain name</dt> : null}
+                {context.strain_name ? <dd>{context.strain_name}</dd> : null}
+            </dl>
+        );
+    }
+});
+
+globals.panel_views.register(WormDonor, 'worm_donor');
 
 
 var Treatment = module.exports.Treatment = React.createClass({
@@ -449,42 +541,17 @@ globals.panel_views.register(RNAi, 'rnai');
 var Document = module.exports.Document = React.createClass({
     render: function() {
         var context = this.props.context;
-        var attachmentHref, attachmentUri;
-        var figure, download, src, alt;
-        var imgClass = "characterization-img characterization-file";
-        var height = "100";
-        var width = "100";
+        var figure = <Attachment context={this.props.context} className="characterization" />;
+
+        var attachmentHref, download;
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
-            if (context.attachment.type.split('/', 1)[0] == 'image') {
-                var imgClass = 'characterization-img';
-                src = attachmentHref;
-                height = context.attachment.height;
-                width = context.attachment.width;
-                alt = "Characterization Image";
-                figure = (
-                    <a data-bypass="true" href={attachmentHref}>
-                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                    </a>
-                );
-            } else if (context.attachment.type == "application/pdf"){
-                figure = (
-                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Characterization PDF Icon</a>
-                );
-            } else {
-                figure = (
-                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide">Characterization Icon</a>
-                );
-            }
             download = (
                 <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
                 </a>
             );
         } else {
-            figure = (
-                <div className="file-missing text-hide">Characterization file broken icon</div>
-            );
             download = (
                 <em>Document not available</em>
             );
@@ -514,7 +581,7 @@ var Document = module.exports.Document = React.createClass({
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
 
-                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dt><i className="icon icon-download"></i> Download</dt>
                             <dd>{download}</dd>
                         </dl>
                     </div>

@@ -60,7 +60,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 
 	&:after {
 		font-family: "FontAwesome";
-		content: "\f021";
+		content: "\f002";
 		position: relative;
 		top: 0;
 		left: -24px;
@@ -104,4 +104,16 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 .red {
 	border-color: red !important;
 	color: red;
+}
+
+.dropzone {
+	@extend .form-control;
+	height: auto;
+	text-align: center;
+	.drop {
+		min-height: 100px;
+	}
+	input[type="file"] {
+		display: inline;
+	}
 }

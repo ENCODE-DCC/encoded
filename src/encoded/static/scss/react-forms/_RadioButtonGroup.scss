@@ -1,0 +1,8 @@
+.rf-RadioButtonGroup__button {
+  @include radio;
+}
+
+.rf-RadioButtonGroup__caption {
+  margin-left: 10px;
+  @include user-select(none);
+}

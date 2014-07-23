@@ -1,7 +1,7 @@
 {
     "title": "Biosample characterization",
     "description": "Schema for submitting biosample characterization data",
-    "id": "/profiles/construct_characterization.json",
+    "id": "/profiles/biosample_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "characterizes" ],

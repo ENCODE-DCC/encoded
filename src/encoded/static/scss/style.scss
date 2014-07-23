@@ -73,7 +73,10 @@ $brand-info: #4F689E;
 @import "compass/typography/text/force-wrap";
 
 // Font Awesome
-@import "fontawesome/fontawesome";
+@import "fontawesome/font-awesome";
+
+// react-forms bootstrap theme
+@import "react-forms/index";
 
 // ENCODE Project styles & mixins
 @import "encoded/mixins-custom";
@@ -91,7 +94,9 @@ $brand-info: #4F689E;
 		"encoded/modules/signin-box",
 		"encoded/modules/tables",
 		"encoded/modules/facet",
-		"encoded/modules/characterizations";
+		"encoded/modules/characterizations",
+		"encoded/modules/blocks",
+		"encoded/modules/layout-editor";
 @import "encoded/state";
 @import "encoded/theme"; 
 

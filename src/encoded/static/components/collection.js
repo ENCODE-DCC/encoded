@@ -1,6 +1,5 @@
 /** @jsx React.DOM */
 'use strict';
-var class_ = require('class');
 var React = require('react');
 var url = require('url');
 var globals = require('./globals');
@@ -25,31 +24,30 @@ var globals = require('./globals');
     globals.content_views.register(Collection, 'collection');
 
 
-
-    var Cell = class_({
-        constructor: function(value, sortable) {
+    class Cell {
+        constructor(value, sortable) {
             this.value = value;
             this.sortable = sortable;
         }
-    });
+    }
 
 
-    var Row = class_({
-        constructor: function(item, cells, text) {
+    class Row {
+        constructor(item, cells, text) {
             this.item = item;
             this.cells = cells;
             this.text = text;
         }
-    });
+    }
 
 
-    var Data = class_({
-        constructor: function(rows) {
+    class Data {
+        constructor(rows) {
             this.rows = rows;
             this.sortedOn = null;
             this.reversed = false;
-        },
-        sort: function(sortColumn, reverse) {
+        }
+        sort(sortColumn, reverse) {
             reverse = !!reverse;
             if (this.sortedOn === sortColumn && this.reversed === reverse) return;
             this.sortedOn = sortColumn;
@@ -65,7 +63,7 @@ var globals = require('./globals');
                 return 0;
             });
         }
-    });
+    }
 
     var RowView = function (props) {
         var row = props.row;
@@ -95,7 +93,7 @@ var globals = require('./globals');
         getInitialState: function () {
             var state = this.extractParams(this.props);
             state.columns = this.guessColumns(this.props);
-            state.data = Data([]);  // Tables may be long so render empty first
+            state.data = new Data([]);  // Tables may be long so render empty first
             state.communicating = true;
             return state;
         },
@@ -179,14 +177,14 @@ var globals = require('./globals');
                         value = factory({context: value});
                     }
                     var sortable = ('' + value).toLowerCase();
-                    return Cell(value, sortable);
+                    return new Cell(value, sortable);
                 });
                 var text = cells.map(function (cell) {
                     return cell.value;
                 }).join(' ').toLowerCase();
-                return Row(item, cells, text);
+                return new Row(item, cells, text);
             });
-            var data = Data(rows);
+            var data = new Data(rows);
             this.setState({data: data});
             return data;
         },
@@ -229,7 +227,7 @@ var globals = require('./globals');
             data.sort(sortOn, reversed);
             var self = this;
             var headers = columns.map(function (column, index) {
-                var className = "sortdirection icon-";
+                var className = "sortdirection icon";
                 if (index === sortOn) {
                     className += reversed ? " icon-chevron-down" : " icon-chevron-up";
                 }
@@ -240,6 +238,13 @@ var globals = require('./globals');
                     </th>
                 );
             });
+            var actions = (context.actions || []).map(action =>
+                <span className="table-actions">
+                    <a href={action.href}>
+                        <button className={action.className}>{action.title}</button>
+                    </a>
+                </span>
+            );
             var searchTermLower = this.state.searchTerm.trim().toLowerCase();
             var matching = [];
             var not_matching = [];
@@ -287,13 +292,14 @@ var globals = require('./globals');
                             <tr className="nosort table-controls">
                                 <th colSpan={columns.length}>
                                     {loading_or_total}
+                                    {actions}
                                     <form ref="form" className="table-filter" onKeyUp={this.handleKeyUp} 
                                         data-skiprequest="true" data-removeempty="true">
                                         <input ref="q" disabled={this.state.communicating || undefined} 
                                             name="q" type="search" defaultValue={searchTerm} 
                                             placeholder="Filter table by..." className="filter form-control" 
                                             id="table-filter" /> 
-                                        <i className="icon-remove-sign clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
+                                        <i className="icon icon-times-circle-o clear-input-icon" hidden={!searchTerm} onClick={this.clearFilter}></i>
                                         <input ref="sorton" type="hidden" name="sorton" defaultValue={sortOn !== defaultSortOn ? sortOn : ''} />
                                         <input ref="reversed" type="hidden" name="reversed" defaultValue={!!reversed || ''} />
                                     </form>

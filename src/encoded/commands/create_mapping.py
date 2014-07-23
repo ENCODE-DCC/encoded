@@ -161,10 +161,15 @@ def es_mapping(mapping):
             },
             'object': {
                 'type': 'object',
+                'enabled': False,
                 'include_in_all': False,
-                'properties': {}
             },
             'principals_allowed_view': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'principals_allowed_edit': {
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'

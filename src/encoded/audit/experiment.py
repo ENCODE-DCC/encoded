@@ -3,6 +3,15 @@ from ..auditor import (
     audit_checker,
 )
 
+targetBasedAssayList =  ['ChIP-seq', 
+                         'RNA Bind-n-Seq',
+                         'ChIA-PET',
+                         'RIP Array',
+                         'RIP-seq',
+                         'MeDIP-seq',
+                         'iCLIP',
+                         'shRNA knockdown followed by RNA-seq',
+                         ]
 
 @audit_checker('experiment')
 def audit_experiment_assay(value, system):
@@ -43,10 +52,11 @@ def audit_experiment_target(value, system):
     Certain assay types (ChIP-seq, ...) require valid targets and the replicate's
     antibodies should match.
     '''
+
     if value['status'] == 'deleted':
         return
 
-    if ('assay_term_name' not in value) or (value['assay_term_name'] not in ['ChIP-seq', 'RNA Bind-n-Seq']):
+    if value.get('assay_term_name') not in targetBasedAssayList:
         return
 
     if 'target' not in value:
@@ -133,6 +143,7 @@ def audit_experiment_biosample_term(value, system):
         if 'biosample' not in lib:
             detail = '{} missing biosample, expected {}'.format(lib['accession'], term_name)
             yield AuditFailure('missing biosample', detail, level='ERROR')
+            continue
 
         biosample = lib['biosample']
         if 'biosample_term_id' not in biosample or 'biosample_term_name' not in biosample or 'biosample_type' not in biosample:
@@ -195,7 +206,7 @@ def audit_experiment_paired_end(value,system):
             detail = '{} missing paired end information'.format(lib['accession'])
             yield AuditFailure('missing library paired end', detail, level='ERROR')
 
-        if 'paired_ended' not in rep and 'paired_ended' not in lib:
+        if 'paired_ended' not in rep or 'paired_ended' not in lib:
             continue
 
         if (rep['paired_ended'] == False or lib['paired_ended'] == False) and term_name in paired_end_assays:

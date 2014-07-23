@@ -31,6 +31,7 @@
                 "extraction protocol",
                 "certificate of analysis",
                 "differentiation protocol",
+                "dedifferentiation protocol",
                 "data sheet",
                 "treatment protocol",
                 "general protocol",
@@ -40,6 +41,8 @@
                 "cell isolation protocol",
                 "iPS reprogramming protocol",
                 "standards document",
+                "strain generation protocol",
+                "spike-in concentrations",
                 "other"
            ]
         },

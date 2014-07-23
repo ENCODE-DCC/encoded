@@ -4,7 +4,9 @@ var React = require('react');
 var url = require('url');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
+var image = require('./image');
 
+var Attachment = image.Attachment;
 var DbxrefList = dbxref.DbxrefList;
 
 
@@ -28,7 +30,7 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
                 <ul className="status-list">
                     {status.map(function (status) {
                         return(
-                            <li className={globals.statusClass(status.status, 'label')}>
+                            <li key={status.title} className={globals.statusClass(status.status, 'label')}>
                                 {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
                                 {status.status}
                             </li>
@@ -57,7 +59,7 @@ var Approval = module.exports.Approval = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>Approval for {context.antibody.accession}</h2>
-                        <h3>Antibody against {context.target.organism.name}
+                        <h3>Antibody against <em>{context.target.organism.scientific_name}</em>
                             {' '}{context.target.label}
                         </h3>
                         <div className="characterization-status-labels">
@@ -123,41 +125,17 @@ globals.content_views.register(Approval, 'antibody_approval');
 var Characterization = module.exports.Characterization = React.createClass({
     render: function() {
         var context = this.props.context;
-        var attachmentHref, attachmentUri;
-        var figure, download, src, alt;
-        var height = "100";
-        var width = "100";
+        var figure = <Attachment context={this.props.context} className="characterization" />;
+
+        var attachmentHref, download;
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
-            if (context.attachment.type.split('/', 1)[0] == 'image') {
-                var imgClass = 'characterization-img';
-                src = attachmentHref;
-                height = context.attachment.height;
-                width = context.attachment.width;
-                alt = "Characterization Image";
-                figure = (
-                    <a data-bypass="true" href={attachmentHref}>
-                        <img className={imgClass} src={src} height={height} width={width} alt={alt} />
-                    </a>
-                );
-            } else if (context.attachment.type == "application/pdf"){
-                figure = (
-                    <a data-bypass="true" href={attachmentHref} className="file-pdf text-hide">Characterization PDF Icon</a>
-                );
-            } else {
-                figure = (
-                    <a data-bypass="true" href={attachmentHref} className="file-generic text-hide">Characterization Icon</a>
-                );
-            }
             download = (
                 <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
                     {context.attachment.download}
                 </a>
             );
         } else {
-            figure = (
-                <div className="file-missing text-hide">Characterization file broken icon</div>
-            );
             download = (
                 <em>Document not available</em>
             );
@@ -180,7 +158,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <dd className="h3">{context.characterization_method}</dd>
 
                             <dt className="h4">Target species</dt>
-                            <dd className="h4 sentence-case">{context.target.organism.name}</dd>
+                            <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
 
                             {context.caption ? <dt>Caption</dt> : null}
                             {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
@@ -202,7 +180,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <dt>Image</dt>
                             <dd><StatusLabel status={context.status} /></dd>
 
-                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dt><i className="icon icon-download"></i> Download</dt>
                             <dd>{download}</dd>
                         </dl>
                     </div>
@@ -219,7 +197,7 @@ globals.panel_views.register(Characterization, 'antibody_characterization');
 var antibody_approval_title = function (props) {
     var context = props.context;
     var accession = context.antibody.accession;
-    var organism_name = context.target.organism.name;
+    var organism_name = context.target.organism.scientific_name;
     var target_label = context.target.label;
     return accession + ' in ' + organism_name + ' ' + target_label;
 };

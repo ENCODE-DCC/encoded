@@ -3,6 +3,7 @@ from pyramid.events import (
     BeforeRender,
     subscriber,
 )
+from pyramid.interfaces import IRootFactory
 from pyramid.httpexceptions import (
     HTTPForbidden,
     HTTPMovedPermanently,
@@ -35,7 +36,8 @@ log = logging.getLogger(__name__)
 def includeme(config):
     config.add_renderer(None, json_renderer)
     config.add_renderer('null_renderer', NullRenderer)
-    config.add_tween('.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
+    config.add_tween(
+        '.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
     config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
     config.add_tween('.renderers.security_tween_factory', under='pyramid_tm.tm_tween_factory')
     config.add_tween('.renderers.es_tween_factory', under='.renderers.security_tween_factory')
@@ -185,9 +187,13 @@ def should_transform(request, response):
     if request.method not in ('GET', 'HEAD'):
         return False
 
+    if response.content_type != 'application/json':
+        return False
+
     format = request.params.get('format')
     if format is None:
-        request.environ['encoded.vary'] = ('Accept', 'Authorization')
+        original_vary = response.vary or ()
+        response.vary = original_vary + ('Accept', 'Authorization')
         if request.authorization is not None:
             format = 'json'
         else:
@@ -198,12 +204,7 @@ def should_transform(request, response):
         if format not in ('html', 'json'):
             format = 'html'
 
-    request.environ['encoded.format'] = format
-
     if format == 'json':
-        return False
-
-    if response.content_type != 'application/json':
         return False
 
     response.headers['X-href'] = request.url
@@ -218,11 +219,6 @@ def after_transform(request, response):
     stats['render_count'] = stats.get('render_count', 0) + 1
     stats['render_time'] = stats.get('render_time', 0) + duration
     request._stats_html_attribute = True
-
-    vary = request.environ.get('encoded.vary', None)
-    if vary is not None:
-        original_vary = response.vary or ()
-        response.vary = original_vary + vary
 
 
 node_env = os.environ.copy()
@@ -260,8 +256,8 @@ def es_tween_factory(handler, registry):
         if request.params.get('datastore', default_datastore) != 'elasticsearch':
             return handler(request)
 
-        frame = request.params.get('frame', 'embedded')
-        if frame not in ('embedded', 'object',):
+        frame = request.params.get('frame', 'page')
+        if frame not in ('object', 'embedded', 'page',):
             return handler(request)
 
         # Normalize path
@@ -281,7 +277,16 @@ def es_tween_factory(handler, registry):
         if allowed.isdisjoint(request.effective_principals):
             raise HTTPForbidden()
 
-        rendering_val = source[frame]
+        if frame == 'page':
+            properties = source['embedded']
+            request.root = registry.getUtility(IRootFactory)(request)
+            collection = request.root.get(properties['@type'][0])
+            rendering_val = collection.Item.expand_page(request, properties)
+            allowed = set(source['principals_allowed_edit'])
+            if allowed.intersection(request.effective_principals):
+                rendering_val['actions'] = collection.Item.actions
+        else:
+            rendering_val = source[frame]
         return render_to_response(None, rendering_val, request)
 
     return es_tween

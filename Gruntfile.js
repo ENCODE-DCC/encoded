@@ -18,6 +18,7 @@ module.exports = function(grunt) {
                 dest: './src/encoded/static/build/bundle.js',
                 src: [
                     './src/encoded/static/libs/compat.js', // The shims should execute first
+                    './src/encoded/static/libs/sticky_header.js',
                     './src/encoded/static/libs/respond.js',
                     './src/encoded/static/browser.js',
                 ],
@@ -32,59 +33,18 @@ module.exports = function(grunt) {
                     'react',
                     'underscore',
                     'url',
-
-                    ['./src/encoded/static/libs/class', {expose: 'class'}],
-                    ['./src/encoded/static/libs/jsonScriptEscape', {expose: 'jsonScriptEscape'}],
-                    ['./src/encoded/static/libs/origin' , {expose: 'origin'}],
-                    ['./src/encoded/static/libs/react-patches' , {expose: 'react-patches'}],
-                    ['./src/encoded/static/libs/registry' , {expose: 'registry'}],
-                    ['./src/encoded/static/libs/sticky_header' , {expose: 'stickyheader'}],
-                    ['./src/encoded/static/components', {expose: 'main'}],
                 ],
                 transform: [
-                    [{es6: true}, 'reactify'],
+                    [{harmony: true}, 'reactify'],
                     'brfs',
                 ],
                 bundle: {
                     debug: true,
                 },
             },
-            specs: {
-                dest: './src/encoded/tests/js/build/bundle.js',
-                src: [
-                    './src/encoded/tests/js/specs/*.js',
-                    './src/encoded/tests/js/testing.js',
-                ],
-                bundle: {
-                    debug: true,
-                },
-                external: [
-                    'brace',
-                    'brace/mode/json',
-                    'brace/theme/solarized_light',
-                    'domready',
-                    'jquery',
-                    'jasmine',
-                    'jasmine_html',
-                    'underscore',
-                    'url',
-                    'origin',
-                    'registry',
-                    'main',
-                ],
-            },
             server: {
                 dest: './src/encoded/static/build/renderer.js',
                 src: ['./src/encoded/static/server.js'],
-                require: [
-                    ['./src/encoded/static/libs/class', {expose: 'class'}],
-                    ['./src/encoded/static/libs/jsonScriptEscape', {expose: 'jsonScriptEscape'}],
-                    ['./src/encoded/static/libs/origin' , {expose: 'origin'}],
-                    ['./src/encoded/static/libs/react-middleware' , {expose: 'react-middleware'}],
-                    ['./src/encoded/static/libs/react-patches' , {expose: 'react-patches'}],
-                    ['./src/encoded/static/libs/registry' , {expose: 'registry'}],
-                    ['./src/encoded/static/components', {expose: 'main'}],
-                ],
                 options: {
                     builtins: false,
                 },
@@ -93,7 +53,7 @@ module.exports = function(grunt) {
                     detectGlobals: false,
                 },
                 transform: [
-                    [{es6: true}, 'reactify'],
+                    [{harmony: true}, 'reactify'],
                     'brfs',
                 ],
                 external: [
@@ -107,6 +67,14 @@ module.exports = function(grunt) {
                     'd3',
                 ],
             },
+        },
+        copy: {
+            ckeditor: {
+                expand: true,
+                cwd: 'node_modules/node-ckeditor',
+                src: 'ckeditor/**',
+                dest: 'src/encoded/static/build/',
+            }
         },
     });
 
@@ -180,5 +148,7 @@ module.exports = function(grunt) {
 
     });
 
-    grunt.registerTask('default', ['browserify']);
+    grunt.loadNpmTasks('grunt-contrib-copy');
+
+    grunt.registerTask('default', ['browserify', 'copy']);
 };

@@ -88,7 +88,13 @@ Run the Browser tests with::
 
     $ bin/test -m bdd -v -v
 
-Run the Jasmine tests at http://localhost:6543/tests/js/test_runner.html.
+Run the Javascript tests with::
+
+    $ npm test
+
+Or if you need to supply command line arguments::
+
+    $ ./node_modules/.bin/jest
 
 Step 6: Database modifications
 
@@ -165,7 +171,7 @@ To setup SublimeLinter with Sublime Text 3, first install the linters::
 
     $ easy_install-2.7 flake8
     $ npm install -g jshint
-    $ npm install -g STRML/JSXHint
+    $ npm install -g jsxhint
 
 After first setting up `Package Control`_ (follow install and usage instructions on site), use it to install the following packages in Sublime Text 3:
 

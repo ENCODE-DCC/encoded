@@ -225,8 +225,16 @@ def server_host_port():
 
 @fixture(scope='session')
 def authenticated_app(app):
+    import Cookie
     def wsgi_filter(environ, start_response):
-        environ['REMOTE_USER'] = 'TEST_AUTHENTICATED'
+        # set REMOTE_USER from cookie
+        cookies = Cookie.SimpleCookie()
+        cookies.load(environ.get('HTTP_COOKIE', ''))
+        if 'REMOTE_USER' in cookies:
+            user = cookies['REMOTE_USER'].value
+        else:
+            user = 'TEST_AUTHENTICATED'
+        environ['REMOTE_USER'] = user
         return app(environ, start_response)
     return wsgi_filter
 
@@ -641,7 +649,7 @@ def rnai(rnais):
 
 
 @pytest.fixture
-def constructs(testapp,labs, awards, targets):
+def constructs(testapp,labs, awards, targets, sources):
     from . import sample_data
     return sample_data.load(testapp, 'construct')
 
