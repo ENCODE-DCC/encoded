@@ -20,7 +20,8 @@
         "parent": {
             "title": "Parent Page",
             "type": ["string", "null"],
-            "linkTo": "page"
+            "linkTo": "page",
+            "validators": ["isNotCollectionDefaultPage"]
         },
         "name": {
             "title": "URL Name",

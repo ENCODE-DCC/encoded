@@ -174,11 +174,28 @@ def permission(validator, permission, instance, schema):
         yield IgnoreUnchanged(error)
 
 
+VALIDATOR_REGISTRY = {}
+
+
+def validators(validator, validators, instance, schema):
+    if not validator.is_type(validators, "array"):
+        raise Exception("Bad schema")  # raise some sort of schema error
+
+    for validator_name in validators:
+        validate = VALIDATOR_REGISTRY.get(validator_name)
+        if validate is None:
+            raise Exception('Validator %s not found' % validator_name)
+        error = validate(instance, schema)
+        if error:
+            yield ValidationError(error)
+
+
 class SchemaValidator(Draft4Validator):
     VALIDATORS = Draft4Validator.VALIDATORS.copy()
     VALIDATORS['linkTo'] = linkTo
     VALIDATORS['permission'] = permission
     VALIDATORS['requestMethod'] = requestMethod
+    VALIDATORS['validators'] = validators
     SERVER_DEFAULTS = SERVER_DEFAULTS
 
 

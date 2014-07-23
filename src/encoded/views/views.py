@@ -12,7 +12,10 @@ from ..contentbase import (
 )
 from ..schema_utils import (
     load_schema,
+    lookup_resource,
+    VALIDATOR_REGISTRY,
 )
+from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_resource,
     find_root,
@@ -957,6 +960,13 @@ class Page(Collection):
         def __parent__(self, value):
             pass
 
+        def is_default_page(self):
+            name = self.__name__
+            root = find_root(self.collection)
+            if not self.properties.get('parent') and (name in root.collections or name == 'homepage'):
+                return True
+            return False
+
         # Handle traversal to nested pages
 
         def __getitem__(self, name):
@@ -975,6 +985,15 @@ class Page(Collection):
             if resource is not None:
                 return resource
             return default
+
+
+def isNotCollectionDefaultPage(value, schema):
+    request = get_current_request()
+    page = lookup_resource(request.root, request.root, value.encode('utf-8'))
+    if page.is_default_page():
+        return 'You may not place pages inside an object collection.'
+
+VALIDATOR_REGISTRY['isNotCollectionDefaultPage'] = isNotCollectionDefaultPage
 
 
 class LegacyPage(Collection):
