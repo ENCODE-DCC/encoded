@@ -13,6 +13,7 @@
         "lot_id": "unknown",
         "product_id": "05-379",
         "source": "millipore",
+	"status": "eligible for new data",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "url": "http://www.millipore.com/catalogue/item/05-379#",
         "uuid": "cd8b0112-e01b-4eb6-94ae-5e9257885eba"
@@ -33,6 +34,7 @@
         "lot_id": "JBC1888194",
         "product_id": "07-473",
         "source": "millipore",
+	"status": "awaiting lab characterization",
         "submitted_by": "fames.at@per.varius",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "f24ac237-ba4c-4b3d-af7e-85f0b57c4184"
@@ -51,6 +53,7 @@
             "affinity"
         ],
         "source": "millipore",
+	"status": "awaiting lab characterization",
         "submitted_by": "felis.senectus@hymenaeos.nibh",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "eb4230d7-48d0-4dcc-ab99-da1a5316a0f9"
@@ -79,6 +82,7 @@
         ],
         "product_id": "07-473",
         "source": "millipore",
+	"status": "awaiting lab characterization",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b"
@@ -108,6 +112,7 @@
             "affinity"
         ],
         "source": "abcam",
+	"status": "eligible for new data",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "url": "http://www.abcam.com/index.html?datasheet=4441",
         "uuid": "f211c027-6613-4998-8cf0-90e9041ad254"
@@ -124,6 +129,7 @@
         "lot_id": "QC9473-091124",
         "product_id": "ARP40383_T100",
         "source": "aviva",
+	"status": "awaiting lab characterization",
         "submitted_by": "parturient.ut@et.ve",
         "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-n-terminal-region-arp40383-t100.html",
         "uuid": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea"
@@ -141,6 +147,7 @@
         "notes": "This was a self fail.",
         "product_id": "ARP40384_T100",
         "source": "aviva",
+	"status": "not eligible for new data",
         "submitted_by": "parturient.ut@et.ve",
         "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-c-terminal-region-arp40384-t100.html",
         "uuid": "81d1f148-323c-4420-a05e-62427394fd6b"
@@ -161,6 +168,7 @@
         "lot_id": "unknown",
         "product_id": "IgG-Yale",
         "source": "santa-cruz-biotech",
+	"status": "eligible for new data",
         "submitted_by": "fames.at@per.varius",
         "uuid": "9a69a3d2-655f-49ca-a3b3-48d70ad4a9e1"
     },
@@ -179,6 +187,7 @@
         "lot_id": "unknown",
         "product_id": "MMS-101P",
         "source": "covance",
+	"status": "eligible for new data",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "url": "https://store.crpinc.com/datasheet.aspx?catalogno=MMS-101P",
         "uuid": "981a4b17-65b6-4535-9515-786ecbfeaed8"
@@ -194,6 +203,7 @@
         "lot_id": "QC12000",
         "product_id": "SAB2103447",
         "source": "sigma",
+	"status": "not eligible for new data",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/sab2103447?lang=en&region=US",
         "uuid": "e61ad044-a869-4bd2-ae04-f4fa83bbca00"
@@ -209,6 +219,7 @@
         "lot_id": "E1011",
         "product_id": "SC-32301",
         "source": "santa-cruz-biotech",
+	"status": "awaiting lab characterization",
         "submitted_by": "parturient.ut@et.ve",
         "url": "http://www.scbt.jp/datasheet-32301-hnrnp-a1-4b10-antibody.html",
         "uuid": "c8001233-050d-4dab-bf73-f47133b2e2a3"
@@ -228,6 +239,7 @@
         "lot_id": "K0902",
         "product_id": "sc-5916",
         "source": "santa-cruz-biotech",
+	"status": "pending dcc review",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "url": "http://www.scbt.com/datasheet-5916-ctcf-n-17-antibody.html",
         "uuid": "d563e33c-fea8-4453-909b-ccfdbfd9f8b3"
@@ -249,6 +261,7 @@
         ],
         "product_id": "sc-735",
         "source": "santa-cruz-biotech",
+	"status": "eligible for new data",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "url": "http://www.scbt.com/product.php?datasheet=735",
         "uuid": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773"
@@ -265,6 +278,7 @@
         "lot_id": "12262-1F6",
         "product_id": "WH0006925M2",
         "source": "sigma",
+	"status": "pending dcc review",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/wh0006925m2?lang=en&region=US",
         "uuid": "907ced83-e4bb-4d77-8d97-e969db915533"

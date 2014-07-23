@@ -124,7 +124,7 @@ class Collection(BaseCollection):
             'not reviewed': ALLOW_CURRENT,
             'not submitted for review by lab': ALLOW_CURRENT,
 
-            # antibody_approval
+            # antibody_lot
             'eligible for new data': ALLOW_CURRENT,
             'not eligible for new data': ALLOW_CURRENT,
             'not pursued': ALLOW_CURRENT,
@@ -220,8 +220,16 @@ class AntibodyLot(Collection):
     ]
     item_rev = {
         'characterizations': ('antibody_characterization', 'characterizes'),
-        'approvals': ('antibody_approval', 'antibody'),
+
     }
+    item_embedded = set([
+        'source', 
+        'host_organism',
+        'characterizations.award',
+        'characterizations.lab',
+        'characterizations.submitted_by',
+        'characterizations.target.organism'
+    ])
 
 
 @location('organisms')
@@ -664,7 +672,7 @@ class Experiment(Dataset):
             ]
         }
         embedded = Dataset.Item.embedded + [
-            'replicates.antibody.approvals',
+            'replicates.antibody',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',

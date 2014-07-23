@@ -79,6 +79,7 @@ ANTIBODY_LOTS = [
     'antigen_description': 'ATF4 (NP_001666, a.a. 171-271) partial recombinant protein with GST tag.',
     'lab': 'myers',
     'award': 'Myers',
+    'status': 'eligible for new data'
     },
 ]
 
