@@ -105,7 +105,6 @@ var App = React.createClass({
     },
 
     handleKey: function(e) {
-        console.log('key: ' + e.which + ' - ' + this.state.dropdownComponent + ' : ' + this.state.activeComponent);
         if (e.which === 27 && this.state.dropdownComponent !== undefined) {
             e.preventDefault();
             this.handleDropdownChange(undefined);
