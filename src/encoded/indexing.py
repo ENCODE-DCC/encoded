@@ -201,9 +201,14 @@ def es_update_object(request, objects):
             log.warning('Error indexing %s', uuid, exc_info=True)
         else:
             doctype = result['object']['@type'][0]
-            es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid))
-            if (i + 1) % 50 == 0:
-                log.info('Indexing %s %d', result['object']['@id'], i + 1)
+            try:
+                es.index(index=INDEX, doc_type=doctype, body=result, id=str(uuid))
+            except Exception as e:
+                log.warning('Error indexing %s', uuid, exc_info=True)
+            else:
+                if (i + 1) % 50 == 0:
+                    log.info('Indexing %s %d', result['object']['@id'], i + 1)
+
         if (i + 1) % 50 == 0:
             es.indices.flush(index=INDEX)
 

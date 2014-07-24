@@ -161,8 +161,8 @@ def es_mapping(mapping):
             },
             'object': {
                 'type': 'object',
+                'enabled': False,
                 'include_in_all': False,
-                'properties': {}
             },
             'principals_allowed_view': {
                 'type': 'string',
