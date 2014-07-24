@@ -61,7 +61,7 @@ var NavItem = React.createClass({displayName: 'NavItem',
                     {className:anchorClass,
                     onClick:this.handleClick,
                     onFocus:this.handleFocus,
-                    onBlur:this.handleblur,
+                    onBlur:this.handleBlur,
                     ref:"anchor"}, 
                     this.props.dropdown ? React.DOM.span(null, this.props.children[0],React.DOM.span( {className:"caret"})) : this.props.children
                 )),
