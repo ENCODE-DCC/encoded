@@ -184,10 +184,13 @@ var Dbxref = dbxref.Dbxref;
             var age = (ages.length === 1 && ages[0] && ages[0] !== 'unknown') ? ' ' + ages[0] : '';
 
             // Make array of age units from replicates; remove all duplicates
-            var ageUnits = _.uniq(result.replicates.map(function(replicate) {
-                return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.age_units : undefined;
-            }));
-            var ageUnit = (ageUnits.length === 1 && ageUnits[0] && ageUnits[0] !== 'unknown') ? ' ' + ageUnits[0] : '';
+            var ageUnit = '';
+            if (age) {
+                var ageUnits = _.uniq(result.replicates.map(function(replicate) {
+                    return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.age_units : undefined;
+                }));
+                ageUnit = (ageUnits.length === 1 && ageUnits[0] && ageUnits[0] !== 'unknown') ? ' ' + ageUnits[0] : '';
+            }
 
             // If we have life stage or age, need to separate from scientific name with comma
             var separator = (lifeStage || age) ? ', ' : '';
