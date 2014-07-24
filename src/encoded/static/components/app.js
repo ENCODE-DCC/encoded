@@ -13,7 +13,7 @@ var portal = {
     portal_title: 'ENCODE',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'assay', title: 'Assay', url: '/search/?type=experiment'},
+            {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
             {id: 'targets', title: 'Targets', url: '/search/search/?type=target'},
@@ -62,8 +62,67 @@ var App = React.createClass({
         return {
             errors: [],
             portal: portal,
-            user_actions: user_actions
+            user_actions: user_actions,
+            dropdownComponent: undefined,
+            activeComponent: undefined
         };
+    },
+
+    // Dropdown context using React context mechanism.
+    childContextTypes: {
+        dropdownComponent: React.PropTypes.string,
+        onDropdownChange: React.PropTypes.func,
+        onActiveChange: React.PropTypes.func
+    },
+
+    // Retrieve current React context
+    getChildContext: function() {
+        return {
+            dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
+            onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
+            onActiveChange: this.handleActiveChange // Function to process active menu changes
+        };
+    },
+
+    // When current dropdown changes; componentID is _rootNodeID of newly dropped-down component
+    handleDropdownChange: function(componentID) {
+        // Use React _rootNodeID to uniquely identify a dropdown menu;
+        // It's passed in as componentID
+        this.setState({dropdownComponent: componentID});
+    },
+
+    // When current active menu changes
+    handleActiveChange: function(componentID) {
+        this.setState({activeComponent: componentID});
+    },
+
+    // Handle a click outside a dropdown menu by clearing currently dropped down menu
+    handleLayoutClick: function(e) {
+        if(this.state.dropdownComponent !== undefined) {
+            this.setState({dropdownComponent: undefined});
+        }
+    },
+
+    bindEvent: function (el, eventName, eventHandler) {
+        if (el.addEventListener){
+            el.addEventListener(eventName, eventHandler, false); 
+        } else if (el.attachEvent){
+            el.attachEvent('on' + eventName, eventHandler);
+        }
+    },
+
+    handleKey: function(e) {
+        if (e.which === 27 && this.state.dropdownComponent !== undefined) {
+            e.preventDefault();
+            this.handleDropdownChange(undefined);
+        } else if ((e.which === 32 || e.which === 40) && this.state.dropdownComponent === undefined && this.state.activeComponent !== undefined) {
+            e.preventDefault();
+            this.handleDropdownChange(this.state.activeComponent);
+        }
+    },
+
+    componentDidMount: function() {
+        this.bindEvent(window, 'keyup', this.handleKey);
     },
 
     render: function() {
@@ -127,7 +186,7 @@ var App = React.createClass({
                         
 						<div className="loading-spinner"></div>
 								   
-                            <div id="layout">
+                            <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         context_actions={context.actions || []}
                                         user_actions={this.state.user_actions} session={this.state.session}

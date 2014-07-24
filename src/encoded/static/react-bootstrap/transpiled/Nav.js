@@ -27,38 +27,6 @@ var Nav = React.createClass({displayName: 'Nav',
         };
     },
 
-    getInitialState: function() {
-        console.log('getInitialState');
-        return {
-            dropdownComponent: undefined
-        };
-    },
-
-    // Document popover context using React context mechanism.
-    childContextTypes: {
-        dropdownComponent: React.PropTypes.string,
-        onDropdownChange: React.PropTypes.func
-    },
-
-    getChildContext: function() {
-        console.log('getChildContext');
-        return {
-            dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
-            onDropdownChange: this.handleDropdownChange // Function to process click in nav bar
-        };
-    },
-
-    handleDropdownChange: function(componentID) {
-        console.log('handleDropdownChange');
-        // Use React _rootNodeID to uniquely identify a nav item with a dropdown;
-        // It's passed in as componentID
-        var newDropdownComponent;
-
-        // If clicked component is component with visible dropdown, set to undefined to close popover
-        newDropdownComponent = (this.state.dropdownComponent === componentID) ? undefined : componentID;
-        this.setState({dropdownComponent: newDropdownComponent});
-    },
-
     render: function () {
         var classes = this.getBsClassSet(this.props.navbar);
 
