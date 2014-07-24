@@ -170,9 +170,8 @@ var Characterization = module.exports.Characterization = React.createClass({
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             download = (
                 <div className="dl-link">
-                    <i className="icon icon-download"></i>&nbsp;
-                    <a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
-                        <div>{context.attachment.download}</div>
+                    <i className="icon icon-download"></i>&nbsp;<a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
+                        {context.attachment.download}
                     </a>
                 </div>
             );
