@@ -215,6 +215,9 @@ $characterization-figure-height: 200px;
     right: 10px;
     line-height: 32px;
     font-size: 20px;
+    color: #fff;
+    font-weight: bold;
+    @include text-shadow(0 1px 1px #606060);
 
     &:hover {
         text-decoration: none;
@@ -254,6 +257,7 @@ $characterization-figure-height: 200px;
         color: #fff;
         top: -3px;
         left: 13px;
+        @include text-shadow(0 1px 1px #808080);
     }
 
     &.active:after {
@@ -265,7 +269,7 @@ $characterization-figure-height: 200px;
 .key-value-trigger {
     position: relative;
     margin: 0;
-    background-color: #a5b0ba;
+    background-color: darken($mainThemeColor,10%);
     border-top: 1px solid #808080;
 
     &.disabled {
@@ -279,8 +283,7 @@ $characterization-figure-height: 200px;
         height: 100%;
         padding: 0 10px;
         line-height: 32px;
-        color: #fff;
-        text-shadow: 0 1px 1px #606060;
+        color: #333333;
 
         dt {
             display: inline-block;
