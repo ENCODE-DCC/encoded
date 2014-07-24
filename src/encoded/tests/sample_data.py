@@ -67,18 +67,19 @@ SOURCES = [
 
 ANTIBODY_LOTS = [
     {
-        'uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
-        'accession': 'ENCAB000TST',
-        'clonality': 'monoclonal',
-        'host_organism': 'mouse',
-        'source': 'sigma',  # PK
-        'product_id': 'WH0000468M1',  # PK
-        'lot_id': 'CB191-2B3',  # PK
-        'url': 'http://www.sigmaaldrich.com/catalog/product/sigma/wh0000468m1?lang=en&region=US',
-        'isotype': u'IgG1κ',
-        'antigen_description': 'ATF4 (NP_001666, a.a. 171-271) partial recombinant protein with GST tag.',
-        'lab': 'myers',
-        'award': 'Myers',
+    'uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
+    'accession': 'ENCAB000TST',
+    'clonality': 'monoclonal',
+    'host_organism': 'mouse',
+    'source': 'sigma',  # PK
+    'product_id': 'WH0000468M1',  # PK
+    'lot_id': 'CB191-2B3',  # PK
+    'url': 'http://www.sigmaaldrich.com/catalog/product/sigma/wh0000468m1?lang=en&region=US',
+    'isotype': u'IgG1κ',
+    'antigen_description': 'ATF4 (NP_001666, a.a. 171-271) partial recombinant protein with GST tag.',
+    'lab': 'myers',
+    'award': 'Myers',
+    'status': 'eligible for new data'
     },
 ]
 

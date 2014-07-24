@@ -156,7 +156,7 @@ class Collection(BaseCollection):
             'not reviewed': ALLOW_CURRENT,
             'not submitted for review by lab': ALLOW_CURRENT,
 
-            # antibody_approval
+            # antibody_lot
             'eligible for new data': ALLOW_CURRENT,
             'not eligible for new data': ALLOW_CURRENT,
             'not pursued': ALLOW_CURRENT,
@@ -233,28 +233,59 @@ class AntibodyLot(Collection):
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
     }
-    item_template = {
-        'title': '{accession}',
-        '$templated': True,
-    }
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS + ALIAS_KEYS + [
-        {
-            'name': '{item_type}:source_product_lot',
-            'value': '{source}/{product_id}/{lot_id}',
-            '$templated': True,
-        },
-        {
-            'name': '{item_type}:source_product_lot',
-            'value': '{source}/{product_id}/{alias}',
-            '$repeat': 'alias lot_id_alias',
-            '$templated': True,
-        },
-    ]
-    item_rev = {
-        'characterizations': ('antibody_characterization', 'characterizes'),
-        'approvals': ('antibody_approval', 'antibody'),
-    }
+
+
+    class Item(Collection.Item):
+        template = {
+            'targets': [
+                {'$value': '{target}', '$repeat': 'target targets', '$templated': True}
+            ],
+            'title': {'$value': '{accession}', '$templated': True},
+        }
+        name_key = 'accession'
+
+        keys = ACCESSION_KEYS + ALIAS_KEYS + [
+            {
+                'name': '{item_type}:source_product_lot',
+                'value': '{source}/{product_id}/{lot_id}',
+                '$templated': True,
+            },
+            {
+                'name': '{item_type}:source_product_lot',
+                'value': '{source}/{product_id}/{alias}',
+                '$repeat': 'alias lot_id_alias',
+                '$templated': True,
+            },
+        ]
+
+        rev = {
+            'characterizations': ('antibody_characterization', 'characterizes'),
+        }       
+
+        embedded = set([
+            'source', 
+            'host_organism',
+            'characterizations.award',
+            'characterizations.lab',
+            'characterizations.submitted_by',
+            'characterizations.target.organism'
+        ])
+
+
+        def template_namespace(self, properties, request=None):
+            ns = super(AntibodyLot.Item, self).template_namespace(properties, request)
+            if request is None:
+                return ns
+            if 'characterizations' in ns:
+                targets = []
+                for characterization_uuid in ns['characterizations']:
+                    characterization = find_resource(request.root, characterization_uuid)
+                    targets.append(characterization.properties['target'])
+                ns['targets'] = set(targets)
+            else:
+                ns['targets'] = []
+
+            return ns
 
 
 @location('organisms')
@@ -828,7 +859,7 @@ class Experiment(Dataset):
             ]
         }
         embedded = Dataset.Item.embedded + [
-            'replicates.antibody.approvals',
+            'replicates.antibody',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',

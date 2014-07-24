@@ -40,7 +40,18 @@
         "status": "pending dcc review",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
-        "uuid": "072cbc4e-075e-46b7-df05-58c5092ebd36"
+        "uuid": "072cbc4e-075e-46b7-df05-58c5092ebd36",
+        "characterization_review": [
+            {
+                "organism": "human",
+                "lane": 2,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "K562",
+                "biosample_term_id": "EFO:0002067",
+                "status": "pending dcc review"
+            }
+        ],
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "H3K4me3_Millipore_07-473_lot_DAM1731494.png",
@@ -63,10 +74,22 @@
         "characterizes": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea",
         "date": "2012-07-18",
         "lab": "xiang-dong-fu",
-        "status": "pending dcc review",
+        "status": "not compliant",
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
-        "uuid": "769cbffe-bb59-4d68-a073-367a6fdd0cef"
+        "uuid": "769cbffe-bb59-4d68-a073-367a6fdd0cef",
+        "characterization_review": [
+            {
+                "organism": "human",
+                "lane": 2,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "HeLa-S3",
+                "biosample_term_id": "EFO:0002791",
+                "status": "not compliant"
+            }
+        ],
+        "notes": "Tell the lab to redo this characterization.",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "hnRNPA1_aviva-2_WB_HeLa_Fu.TIF",
@@ -90,10 +113,21 @@
         "characterizes": "c8001233-050d-4dab-bf73-f47133b2e2a3",
         "date": "2011-01-12",
         "lab": "xiang-dong-fu",
-        "status": "pending dcc review",
+        "status": "compliant",
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
-        "uuid": "13a76a0c-9571-489a-aa23-1408c0c88414"
+        "uuid": "13a76a0c-9571-489a-aa23-1408c0c88414",
+        "characterization_review": [
+            {
+                "organism": "human",
+                "lane": 2,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "HeLa-S3",
+                "biosample_term_id": "EFO:0002791",
+                "status": "compliant"
+            }
+        ],
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_CTCF_sc-5916_validation_Myers-1.png",
@@ -106,7 +140,34 @@
         "status": "pending dcc review",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "CTCF-human",
-        "uuid": "15579824-74dc-4b5c-88bd-cd7fadee0df7"
+        "uuid": "15579824-74dc-4b5c-88bd-cd7fadee0df7",
+        "characterization_review": [
+            {
+                "organism": "human",
+                "lane": 2,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "K562",
+                "biosample_term_id": "EFO:0002067",
+                "status": "pending dcc review"
+            },
+            {
+                "organism": "human",
+                "lane": 3,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "GM12878",
+                "biosample_term_id": "EFO:0002784",
+                "status": "pending dcc review"
+            },
+            {
+                "organism": "human",
+                "lane": 4,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "HeLa-S3",
+                "biosample_term_id": "EFO:0002791",
+                "status": "pending dcc review"
+            }
+        ],
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_CTCF_sc-5916_validation_Myers-2.png",
@@ -172,7 +233,35 @@
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-E2F1-human",
-        "uuid": "2f605105-7ec4-46a3-a8e5-1e5a0647aa8a"
+        "uuid": "2f605105-7ec4-46a3-a8e5-1e5a0647aa8a",
+        "characterization_review": [
+            {
+                "organism": "human",
+                "lane": 2,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "GM12878",
+                "biosample_term_id": "EFO:0002784",
+                "status": "compliant"
+            },
+            {
+                "organism": "human",
+                "lane": 3,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "HeLa-S3",
+                "biosample_term_id": "EFO:0002791",
+                "status": "not compliant"
+            },
+            {
+                "organism": "human",
+                "lane": 4,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "K562",
+                "biosample_term_id": "EFO:0002067",
+                "status": "compliant"
+            }
+        ],
+        "notes": "HeLa-S3 lane needs to be done again.",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_H3K4me3_validation_Bernstein.pdf",
@@ -211,7 +300,18 @@
         "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K9ac-human",
-        "uuid": "05a22a07-ab5c-42ad-bf93-801f03b017f7"
+        "uuid": "05a22a07-ab5c-42ad-bf93-801f03b017f7",
+        "characterization_review": [
+            {
+                "organism": "human",
+                "lane": 2,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "HeLa-S3",
+                "biosample_term_id": "EFO:0002791",
+                "status": "compliant"
+            }
+        ],
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_TAF1_validation_Myers.pdf",
@@ -224,7 +324,43 @@
         "status": "compliant",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
-        "uuid": "73ea11a5-b9f7-4c60-b0b7-6319f2dbea65"
+        "uuid": "73ea11a5-b9f7-4c60-b0b7-6319f2dbea65",
+        "characterization_review": [
+            {
+                "organism": "human",
+                "lane": 2,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "K562",
+                "biosample_term_id": "EFO:0002067",
+                "status": "compliant"
+            },
+            {
+                "organism": "human",
+                "lane": 3,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "GM12878",
+                "biosample_term_id": "EFO:0002784",
+                "status": "compliant"
+            },
+            {
+                "organism": "human",
+                "lane": 4,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "HepG2",
+                "biosample_term_id": "EFO:0001187",
+                "status": "not compliant"
+            },
+            {
+                "organism": "human",
+                "lane": 5,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "HeLa-S3",
+                "biosample_term_id": "EFO:0002791",
+                "status": "not compliant"
+            }
+        ],
+        "notes": "The HepG2 and HeLa-S3 lanes look terrible.",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_TAF1_validation_Myers.pdf",
@@ -265,7 +401,18 @@
         "status": "pending dcc review",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TCF4-human",
-        "uuid": "cc1dc011-9d2b-4b61-95b2-a7d03f317f68"
+        "uuid": "cc1dc011-9d2b-4b61-95b2-a7d03f317f68",
+        "characterization_review": [
+            {
+                "organism": "human",
+                "lane": 2,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "K562",
+                "biosample_term_id": "EFO:0002067",
+                "status": "pending dcc review"
+            }
+        ],
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "aliases": [
@@ -283,5 +430,45 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TCF4-human",
         "uuid": "500969eb-e789-442b-b1b7-dd608b2f7a68"
+    },
+    {
+        "attachment": "frowny_gel.png",
+        "award": "U54HG006996",
+        "caption": "This characterization can be anything you want it to be, just use your imagination.",
+        "characterizes": "e61ad044-a869-4bd2-ae04-f4fa83bbca00",
+        "characterization_method": "immunoblot",
+        "date": "2014-05-31",
+        "lab": "michael-snyder",
+        "characterization_review": 
+            [{ 
+                "organism": "human",
+                "lane": 2,
+                "status": "compliant",
+                "biosample_term_name": "neural cell",
+                "biosample_term_id": "CL:0002319",
+                "biosample_type": "primary cell"
+            },
+            {
+                "organism": "human",
+                "lane": 3,
+                "status": "not compliant",
+                "biosample_term_name": "HepG2",
+                "biosample_term_id": "EFO:0001187",
+                "biosample_type": "immortalized cell line"
+            },
+            {
+                "organism": "mouse",
+                "lane": 4,
+                "status": "compliant",
+                "biosample_term_name": "MEL cell line",
+                "biosample_term_id": "EFO:0003971",
+                "biosample_type": "immortalized cell line"
+            }],
+        "notes": "Oh look, the antibody review panel made us pass this.",
+        "status": "compliant",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "target": "CTCF-human",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"],
+        "uuid": "984cfea4-1cf3-43ea-a49b-d499932619aa"
     }
 ]

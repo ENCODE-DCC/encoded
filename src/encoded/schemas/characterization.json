@@ -64,6 +64,19 @@
                 {"format": "date"}
             ]
         },
+        "documents": {
+            "title": "Documents",
+            "description": "Documents that provide additional information on the characterization.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Document",
+                "description": "A document that provides additional information on the characterization.",
+                "comment": "See document.json for available identifiers.",
+                "type": "string",
+                "linkTo": "document"
+            }
+        },
         "status": {
             "description": "The current state of the characterization."
         },

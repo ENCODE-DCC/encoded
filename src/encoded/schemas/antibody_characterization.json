@@ -43,6 +43,67 @@
                 "deleted"
             ]
         },
+        "characterization_review": {
+            "title": "Primary characterization lane reviews",
+            "description": "Characterization details reviewed by each cell type for immunoblot and immunoprecipitation primary characterizations only.",
+            "comment": "Do not submit status, it is assigned by DCC when reviewing the characterization.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Primary characterization lane review", 
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "organism": {
+                        "title": "Organism",
+                        "comment": "See organism.json for available identifiers.",
+                        "type": "string",
+                        "linkTo": "organism"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "integer"
+                    },
+                    "status": {
+                        "title": "Characterization status",
+                        "description": "The current state of the characterization for a particular cell type.",
+                        "type": "string",
+                        "permission": "import_items",
+                        "default": "pending dcc review",
+                        "enum" : [
+                            "pending dcc review",
+                            "compliant",
+                            "not compliant"
+                        ]
+                    },
+                    "biosample_term_id": {
+                        "title": "Ontology ID",
+                        "description": "Ontology identifier describing biosample.",
+                        "comment": "NTR is a new term request identifier provided by the DCC.",
+                        "type": "string",
+                        "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR):[0-9]{2,8}$"
+                    },
+                    "biosample_term_name": {
+                        "title": "Ontology term",
+                        "description": "Ontology term describing biosample.",
+                        "type":  "string"
+                    },
+                    "biosample_type": {
+                        "title": "Biosample type",
+                        "description": "The categorization of the biosample.",
+                        "type": "string",
+                        "enum" : [
+                            "primary cell",
+                            "immortalized cell line",
+                            "tissue",
+                            "in vitro differentiated cells",
+                            "induced pluripotent stem cell line",
+                            "stem cell"
+                        ]
+                    }
+                }
+            }
+        },
         "target": {
             "title": "Target",
             "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
