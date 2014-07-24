@@ -281,7 +281,7 @@ class AntibodyLot(Collection):
                 for characterization_uuid in ns['characterizations']:
                     characterization = find_resource(request.root, characterization_uuid)
                     targets.append(characterization.properties['target'])
-                ns['targets'] = targets
+                ns['targets'] = set(targets)
             else:
                 ns['targets'] = []
 
