@@ -5,6 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "title" ],
+    "calculatedProperties": ["publication_year"],
     "identifyingProperties": ["uuid", "title", "reference"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -33,11 +34,7 @@
         },
         "date_published": {
             "title": "Date published",
-            "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ]
+            "type": "string"
         },
         "date_revised": {
             "title": "Date revised",
@@ -110,8 +107,12 @@
             "title": "Category",
             "type": "array"
         },
-        "date_published": {
-            "title": "Publication date",
+        "publication_year": {
+            "title": "Publication year",
+            "type": "string"
+        },
+        "journal": {
+            "title": "Journal",
             "type": "string"
         }
     },
@@ -144,10 +145,7 @@
     "boost_values": {
         "uuid": 1.0,
         "title": 1.0,
-        "abstract": 1.0,
-        "journal": 1.0,
-        "categories": 1.0,
-        "data_used": 1.0,
+        "authors": 1.0,
         "references": 1.0
     }
 }
