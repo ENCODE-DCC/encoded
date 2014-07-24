@@ -16,5 +16,3 @@ def file_2_3(value, system):
     if value.get('status') == 'current':
         if value['experiment'].get('status') == 'released':
             value['status'] = 'released'
-        else:
-            value['status'] = 'in progress'

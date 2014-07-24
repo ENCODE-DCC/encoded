@@ -50,4 +50,4 @@ def test_file_upgrade2(app, file_1):
 
     value = migrator.upgrade('file', file_1, target_version='3')
     assert value['schema_version'] == '3'
-    assert value['status'] == 'in progress'    
+    assert value['status'] == 'current'    

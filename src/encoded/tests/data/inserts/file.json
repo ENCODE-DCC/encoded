@@ -213,7 +213,7 @@
         "md5sum": "3a25713488522b0ea8a4d9635b5afa41",
         "output_type": "reads2",
         "replicate": "30a3e114-139a-4297-9287-4f23d2754c25",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38806_BC24EYACXX_7_2.txt.gz",
         "uuid": "1b18dab4-50be-4a1d-9b95-5e9fd840c8fb"
@@ -228,7 +228,7 @@
         "md5sum": "0e88b38c8d48806ee98929a5bad06fc4",
         "output_type": "reads1",
         "replicate": "30a3e114-139a-4297-9287-4f23d2754c25",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38806_BC24EYACXX_7_1.txt.gz",
         "uuid": "c8877730-a530-4474-88a8-a5eee259b6c4"
@@ -243,7 +243,7 @@
         "md5sum": "5dd317654eb81f577a0f78745a3c8e66",
         "output_type": "reads2",
         "replicate": "401d9e79-8a0a-42ed-ad1b-1d274fd0b8cb",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38807_BC24EYACXX_7_2.txt.gz",
         "uuid": "f4523cda-acc1-434a-9496-3ff2486a6118"
@@ -258,7 +258,7 @@
         "md5sum": "4c646fa9b822b7f52f9c2c5a9da0f5e3",
         "output_type": "reads1",
         "replicate": "401d9e79-8a0a-42ed-ad1b-1d274fd0b8cb",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38807_BC24EYACXX_7_1.txt.gz",
         "uuid": "22b6066f-d4d8-47f8-831e-ebe2b5c92721"
@@ -273,7 +273,7 @@
         "md5sum": "3ced82e44cea82a4784493c2f640ba12",
         "output_type": "revRead",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R2_001.fastq.gz",
         "uuid": "aab79812-71d8-41d1-bd72-1bf5dbcae381"
@@ -288,7 +288,7 @@
         "md5sum": "3541f1a048453b65ab01a673b743a573",
         "output_type": "revRead",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R2_001.fastq.gz",
         "uuid": "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf"
@@ -303,7 +303,7 @@
         "md5sum": "a8879e9e78f17c37fdcfe1a8b572ac1f",
         "output_type": "forRead",
         "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-B-6-1_pool6_AGTTCC_L006_R1_001.fastq.gz",
         "uuid": "34b653f7-6777-49d9-8e06-d76a96a4d10b"
@@ -318,7 +318,7 @@
         "md5sum": "97b452ae74c7d279706c88141155a00c",
         "output_type": "forRead",
         "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "platea.a@volutpat.viverra",
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R1_001.fastq.gz",
         "uuid": "8772d04a-dfa4-4d85-a81d-6bf5fe2abb8f"
@@ -333,7 +333,7 @@
         "md5sum": "8cd1f9a1fbf709cb0a58e427b0448dbc",
         "output_type": "reads",
         "replicate": "4d66b3a4-d09e-4e2c-8708-10b572bfeb6b",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38816_AC1UHYACXX_7_2.txt.gz",
         "uuid": "8a0c1537-136e-41a3-9369-8595a7d6a726"
@@ -349,7 +349,7 @@
         "output_type": "reads",
         "paired_end": "1",
         "replicate": "4d66b3a4-d09e-4e2c-8708-10b572bfeb6b",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38816_AC1UHYACXX_7_1.txt.gz",
         "uuid": "bd67b71d-5a39-4f61-83d6-7390552ac2fd"
@@ -366,7 +366,7 @@
         "output_type": "reads",
         "paired_end": "2",
         "replicate": "c8af0291-f21a-40d6-91fb-eaf62d22e4da",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38815_AC1UHYACXX_7_2.txt.gz",
         "uuid": "a187b4d9-9d47-4c11-a8fe-425b0c6c20a8"
@@ -383,7 +383,7 @@
         "output_type": "reads",
         "paired_end": "1",
         "replicate": "c8af0291-f21a-40d6-91fb-eaf62d22e4da",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38815_AC1UHYACXX_7_1.txt.gz",
         "uuid": "e9590242-7f15-4ccb-a177-e544c4dfa118"
@@ -414,7 +414,7 @@
         "md5sum": "de9e05ad88fea5664f1c5d90815df360",
         "output_type": "reads",
         "replicate": "ec1ed4db-de5f-481b-a686-261bda0319cb",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "risus.fermentum@vel.at",
         "submitted_file_name": "SID38822_AC1HYAACXX_5.txt.gz",
         "uuid": "e984ec73-0db4-4d30-934d-4cfc49096236"
@@ -431,7 +431,7 @@
         "md5sum": "864cda72c95d776e696b1af69554e5ec",
         "output_type": "RedIdat",
         "replicate": "6049cceb-3703-47d8-be52-0747fb6680aa",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "submitted_file_name": "hg19/hg19_wgEncodeHaibMethyl450NhaSitesRep1_Red.idat",
         "uuid": "5f763026-7838-4564-b768-a16dfc006b1a"
@@ -448,7 +448,7 @@
         "md5sum": "f42f32235d27104036737e4d33b6e13f",
         "output_type": "GreenIdat",
         "replicate": "6049cceb-3703-47d8-be52-0747fb6680aa",
-        "status": "in progress",
+        "status": "current",
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "submitted_file_name": "hg19/hg19_wgEncodeHaibMethyl450NhaSitesRep1_Grn.idat",
         "uuid": "f76ae1b9-6bb4-4cc9-8dcc-2bb5cea877e1"
