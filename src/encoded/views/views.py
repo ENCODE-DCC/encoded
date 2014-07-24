@@ -56,6 +56,10 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', 'add')
 ]
 
+ALLOW_AUTHENTICATED_VIEW = [
+    (Allow, Authenticated, 'view'),
+]
+
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, Authenticated, 'view'),
     (Allow, 'group.admin', 'edit'),
@@ -63,8 +67,9 @@ ALLOW_LAB_SUBMITTER_EDIT = [
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
-ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
+ALLOW_CURRENT = [
     (Allow, Everyone, 'view'),
+    (Allow, 'group.admin', 'edit'),
 ]
 
 ONLY_ADMIN_VIEW = [
@@ -157,6 +162,7 @@ class Collection(BaseCollection):
             'not pursued': ALLOW_CURRENT,
 
             # dataset / experiment
+            'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
         }
 

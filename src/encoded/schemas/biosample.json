@@ -291,8 +291,10 @@
         "starting_amount": {
             "title": "Starting amount",
             "description": "The initial quantity of cells or tissue obtained.",
-            "type": "number",
-            "minimum":0
+            "comment": "The pattern is only enforced when the value supplied is a string.",
+            "type": ["number", "string"],
+            "minimum":0,
+            "pattern": "^unknown$"
         },
         "starting_amount_units": {
             "title": "Starting amount units",
