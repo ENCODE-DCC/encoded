@@ -71,6 +71,7 @@ var App = React.createClass({
     // Dropdown context using React context mechanism.
     childContextTypes: {
         dropdownComponent: React.PropTypes.string,
+        activeComponent: React.PropTypes.string,
         onDropdownChange: React.PropTypes.func,
         onActiveChange: React.PropTypes.func
     },
@@ -79,6 +80,7 @@ var App = React.createClass({
     getChildContext: function() {
         return {
             dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
+            activeComponent: this.state.activeComponent, // ID of active dropdown component
             onDropdownChange: this.handleDropdownChange, // Function to process dropdown state change
             onActiveChange: this.handleActiveChange // Function to process active menu changes
         };
@@ -88,17 +90,22 @@ var App = React.createClass({
     handleDropdownChange: function(componentID) {
         // Use React _rootNodeID to uniquely identify a dropdown menu;
         // It's passed in as componentID
+        console.log('handleDropdownChange: ' + componentID);
         this.setState({dropdownComponent: componentID});
     },
 
     // When current active menu changes
     handleActiveChange: function(componentID) {
+        console.log('handleActiveChange: ' + componentID);
         this.setState({activeComponent: componentID});
+        if (this.state.dropdownComponent !== undefined) {
+            this.setState({dropdownComponent: undefined});
+        }
     },
 
     // Handle a click outside a dropdown menu by clearing currently dropped down menu
     handleLayoutClick: function(e) {
-        if(this.state.dropdownComponent !== undefined) {
+        if (this.state.dropdownComponent !== undefined) {
             this.setState({dropdownComponent: undefined});
         }
     },
@@ -112,17 +119,24 @@ var App = React.createClass({
     },
 
     handleKey: function(e) {
+        console.log('key: ' + e.which + ' - ' + this.state.dropdownComponent + ' : ' + this.state.activeComponent);
         if (e.which === 27 && this.state.dropdownComponent !== undefined) {
             e.preventDefault();
             this.handleDropdownChange(undefined);
-        } else if ((e.which === 32 || e.which === 40) && this.state.dropdownComponent === undefined && this.state.activeComponent !== undefined) {
-            e.preventDefault();
-            this.handleDropdownChange(this.state.activeComponent);
+        } else if (e.which === 32 || e.which === 40) {
+            if (this.state.dropdownComponent === undefined && this.state.activeComponent !== undefined) {
+                // No open dropdown menu, but an active one; drop that one down
+                //e.preventDefault();
+                this.handleDropdownChange(this.state.activeComponent);
+            } else if (this.state.dropdownComponent !== undefined) {
+                // Menu dropped down; don't allow keyboard scrolling
+                e.preventDefault();
+            }
         }
     },
 
     componentDidMount: function() {
-        this.bindEvent(window, 'keyup', this.handleKey);
+        this.bindEvent(window, 'keydown', this.handleKey);
     },
 
     render: function() {

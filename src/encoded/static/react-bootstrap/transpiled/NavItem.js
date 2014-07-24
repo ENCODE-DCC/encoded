@@ -21,6 +21,7 @@ var NavItem = React.createClass({displayName: 'NavItem',
     // Dropdown context using React context mechanism.
     contextTypes: {
         dropdownComponent: React.PropTypes.string,
+        activeComponent: React.PropTypes.string,
         onDropdownChange: React.PropTypes.func,
         onActiveChange: React.PropTypes.func
     },
@@ -37,11 +38,15 @@ var NavItem = React.createClass({displayName: 'NavItem',
     },
 
     handleFocus: function() {
-        this.context.onActiveChange(this._rootNodeID);
+        if (this.props.dropdown) {
+            this.context.onActiveChange(this._rootNodeID);
+        }
     },
 
     handleBlur: function() {
-        this.context.onActiveChange(undefined);
+        if (this.props.dropdown) {
+            this.context.onActiveChange(undefined);
+        }
     },
 
     render: function () {
@@ -55,7 +60,7 @@ var NavItem = React.createClass({displayName: 'NavItem',
         var anchorClass = this.props.dropdown ? 'dropdown-toggle' : '';
 
         return (
-            React.DOM.li( {className:classSet(classes)}, 
+            React.DOM.li( {className:classSet(classes), 'aria-haspopup':this.props.dropdown}, 
                 this.transferPropsTo(
                 React.DOM.a(
                     {className:anchorClass,

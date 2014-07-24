@@ -85,20 +85,28 @@ var NavBarLayout = React.createClass({
 var GlobalSections = React.createClass({
     render: function() {
         var section = this.props.section;
+
+        // Render top-level main menu
         var actions = this.props.global_sections.map(function (action) {
-            var subactions = action.children.map(function (action) {
-                return (
-                    <NavItem href={action.url || ''} key={action.id}>
-                        {action.title}
-                    </NavItem>
-                );
-            });
+            var subactions;
+            if (action.children) {
+                // Has dropdown menu; render it into subactions var
+                subactions = action.children.map(function (action) {
+                    return (
+                        <NavItem href={action.url || ''} key={action.id}>
+                            {action.title}
+                        </NavItem>
+                    );
+                });
+            }
             return (
-                <NavItem dropdown={true} key={action.id}>
+                <NavItem dropdown={action.hasOwnProperty('children')} key={action.id} href={action.url || ''}>
                     {action.title}
-                    <Nav navbar={true} dropdown={true}>
-                        {subactions}
-                    </Nav>
+                    {action.children ?
+                        <Nav navbar={true} dropdown={true}>
+                            {subactions}
+                        </Nav>
+                    : null}
                 </NavItem>
             );
         });
