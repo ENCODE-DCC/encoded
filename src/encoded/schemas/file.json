@@ -117,9 +117,10 @@
             "type": "string",
             "default": "current",
             "enum" : [
-                "current",
+                "in progress",
                 "deleted",
                 "obsolete",
+                "revoked",
                 "released"
                 ]
         }
