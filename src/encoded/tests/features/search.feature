@@ -8,7 +8,8 @@ Feature: Search
 
     
     Scenario: Search Antibodies
-        When I click the link to "/search/?type=antibody_approval"
+        When I click the link with text that contains "Data"
+        And I click the link to "/search/?type=antibody_approval"
         And I wait for the content to load
         And I should see at least 17 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 5 elements with the css selector "div.box.facets > div.facet"
@@ -27,7 +28,8 @@ Feature: Search
         
 
     Scenario: Search Biosamples
-        When I click the link to "/search/?type=biosample"
+        When I click the link with text that contains "Data"
+        And I click the link to "/search/?type=biosample"
         And I wait for the content to load
         And I should see at least 22 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 7 elements with the css selector "div.box.facets > div.facet"
@@ -42,7 +44,8 @@ Feature: Search
         
 
     Scenario: Search Experiments
-        When I click the link to "/search/?type=experiment"
+        When I click the link with text that contains "Data"
+        And I click the link to "/search/?type=experiment"
         And I wait for the content to load
         And I should see at least 13 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 3 elements with the css selector "div.box.facets > div.facet"
@@ -57,7 +60,8 @@ Feature: Search
 
 
     Scenario: Search Targets
-        When I click the link to "/search/?type=target"
+        When I click the link with text that contains "Data"
+        And I click the link to "/search/?type=target"
         And I wait for the content to load
         And I should see at least 15 elements with the css selector "ul.nav.result-table > li"
         And I should see at least 1 elements with the css selector "div.box.facets > div.facet"
