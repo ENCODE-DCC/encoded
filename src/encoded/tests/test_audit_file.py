@@ -12,7 +12,7 @@ def file1(experiment):
     }
 
 
-def test_file_status_audit(testapp, file1):
+def test_file_general_audit(testapp, file1):
 
     file2 = file.copy()
 
@@ -31,3 +31,6 @@ def test_file_status_audit(testapp, file1):
     res = testapp.get(res.location + '@@index-data')
     error, = res.json['audit']
     assert error['category'] == 'status mismatch'
+    assert error['category'] == 'missing lab'
+    assert error['category'] == 'missing award'
+    assert error['category'] == 'missing submitted_by'

@@ -32,22 +32,25 @@ def test_file_upgrade(app, file_1):
 
 def test_file_upgrade2(app, file_1):
 
-    # Set the experiment to released
-    file_1['dataset'].update({
-        'status': 'released'
-        })
-
     migrator = app.registry['migrator']
-    value = migrator.upgrade('file', file_1, target_version='3')
-    assert value['schema_version'] == '3'
-    assert value['status'] == 'released'
+    # Set the experiment to released
+    #    file_1['dataset'].update({
+    #        'status': 'released'
+    #        })
+
+    #   migrator = app.registry['migrator']
+    #    value = migrator.upgrade('file', file_1, target_version='3')
+    #    assert value['schema_version'] == '3'
+    #    assert value['status'] == 'released'
+    #    assert value['lab'] == file_1['dataset']['lab']
+    #    assert value['award'] == file_1['dataset']['award']
 
     # Reset the file and experiment to NOT released
     file_1['status'] = 'current'
-    file_1['dataset'].update({
-        'status': 'release_ready'
-        })
+    #    file_1['dataset'].update({
+    #        'status': 'release_ready'
+    #        })
 
     value = migrator.upgrade('file', file_1, target_version='3')
     assert value['schema_version'] == '3'
-    assert value['status'] == 'current'    
+    assert value['status'] == 'current'
