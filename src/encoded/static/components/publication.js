@@ -9,23 +9,46 @@ var search = require('./search');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
-var Panel = React.createClass({
+var Citation = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        var date = moment(context.date_published).format('YYYY MMM D');
+        return (
+            <div className="journal">
+                <i>{context.journal}</i>. {date};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.
+            </div>
+        );
+    }
+});
+
+
+var Panel = module.exports.Panel = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context);
-        var date = moment(context.date_published).format('YYYY MMM D');
         return (
             <div className={itemClass}>
-                <p className="lead">{context.authors}</p>
-
-                <div className="view-detail panel">
-                    <div>
-                      <i>{context.journal}</i>. {date}; {context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}. {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : '' }
-                    </div>
-
-                    <h2>Abstract</h2>
-                    <div>{context.abstract}</div>
+                <div className="authors">
+                    {context.authors}.
                 </div>
+                {this.transferPropsTo(<Citation />)}
+
+                {context.abstract || context.references.length ?
+                    <div className="view-detail panel">
+                        {context.abstract ?
+                            <div className="abstract">
+                                {context.abstract ? <h2>Abstract</h2> : null}
+                                {context.abstract ? <p>{context.abstract}</p> : null}
+                            </div>
+                        : null}
+                        {context.references && context.references.length ?
+                            <div className="references">
+                                {context.references.length ? <span>References: </span> : null}
+                                {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : null}
+                            </div>
+                        : null}
+                    </div>
+                : null}
             </div>
         );
     }
@@ -39,16 +62,21 @@ var Listing = React.createClass({
     render: function() {
         var context = this.props.context;
         var date = moment(context.date_published).format('YYYY MMM D');
+        var authorList = context.authors.split(', ', 4);
+        var authors = authorList.length === 4 ? authorList.splice(0, 3).join(', ') + ', et al' : context.authors;
         return (<li>
                     <div>
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Publication</p>
+                            <p className="type meta-status">{' ' + context['status']}</p>
                         </div>
                         <div className="accession"><a href={context['@id']}>{context.title}</a></div>
                     </div>
                     <div className="data-row">
-                        {context.authors}. {context.title}. <i>{context.journal}</i>. {date}; {context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}. {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : '' }
+                        <p className="list-author">{authors}.</p>
+                        <p className="list-citation"><i>{context.journal}</i>. {date};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.</p>
+                        {context.references.length ? <DbxrefList values={context.references} className="list-reference" /> : '' }
                     </div>
             </li>
         );

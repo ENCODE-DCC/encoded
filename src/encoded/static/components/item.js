@@ -19,7 +19,7 @@ var globals = require('./globals');
                             <h2>{title}</h2>
                         </div>
                     </header>
-                    <p className="description">{context.description}</p>
+                    {context.description ? <p className="description">{context.description}</p> : null}
                     {panel}
                 </div>
             );
