@@ -110,6 +110,32 @@
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "target"
+        },
+        "primary_characterization_method": {
+            "title": "Primary method",
+            "description": "Primary experimental method of the characterization, as defined in the standards document.",
+            "type": "string",
+            "enum": [
+                "immunoblot",
+                "immunoprecipitation",
+                "immunofluorescence"
+            ]
+        },
+        "secondary_characterization_method": {
+            "title": "Secondary method",
+            "description": "Secondary experimental method of the characterization, as defined in the standards document.",
+            "type": "string",
+            "enum": [
+                "knockdown or knockout",
+                "immunoprecipitation followed by mass spectrometry",
+                "ChIP-seq comparison",
+                "motif enrichment",
+                "dot blot assay",
+                "peptide array assay",
+                "peptide ELISA assay",
+                "peptide competition assay",
+                "overexpression analysis"
+            ]
         }
     }
 }
