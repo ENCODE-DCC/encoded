@@ -947,7 +947,7 @@ class Publication(Collection):
 
     class Item(Collection.Item):
         template = {
-            'published_year': {'$value': '{published_year}', '$templated': True, '$condition': 'published_year'}
+            'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
         }
         
         keys = ALIAS_KEYS + [
@@ -958,7 +958,7 @@ class Publication(Collection):
         def template_namespace(self, properties, request=None):
             ns = Collection.Item.template_namespace(self, properties, request)
             if 'date_published' in ns:
-                ns['published_year'] = ns['date_published'].partition(' ')[0]
+                ns['publication_year'] = ns['date_published'].partition(' ')[0]
             return ns
 
 
