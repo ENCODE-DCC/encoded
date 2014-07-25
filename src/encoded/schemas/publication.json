@@ -96,6 +96,7 @@
 	"published_by": {
 	    "title": "Published by",
 	    "type": "array",
+	    "default": ["ENCODE"],
 	    "items": {
 	        "title": "Published by",
 		"type": "string",
