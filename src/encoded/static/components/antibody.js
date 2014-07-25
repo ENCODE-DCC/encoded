@@ -123,6 +123,19 @@ var Approval = module.exports.Approval = React.createClass({
 globals.content_views.register(Approval, 'antibody_approval');
 
 
+var StandardsDocuments = React.createClass({
+    render: function() {
+        return (
+            <div>
+                {this.props.docs.map(function(doc) {
+                    return doc.aliases[0];
+                })};
+            </div>
+        );
+    }
+});
+
+
 var Characterization = module.exports.Characterization = React.createClass({
     getInitialState: function() {
         return {panelOpen: false, panelFixed: false};
@@ -181,6 +194,11 @@ var Characterization = module.exports.Characterization = React.createClass({
             );
         }
 
+        // Compile a list of attached standards documents
+        var standardsDocuments = context.documents.filter(function(doc) {
+            return doc.document_type === "standards document";
+        });
+
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -211,6 +229,9 @@ var Characterization = module.exports.Characterization = React.createClass({
 
                         <dt>Grant</dt>
                         <dd>{context.award.name}</dd>
+
+                        {standardsDocuments.length ? <dt>Standards Documents</dt> : null}
+                        {standardsDocuments.length ? <dd><StandardsDocuments docs={standardsDocuments} /></dd> : null}
 
                         {/*
                         <dt>Approver</dt>

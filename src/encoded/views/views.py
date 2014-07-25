@@ -668,6 +668,7 @@ class AntibodyApproval(Collection):
             'antibody.host_organism',
             'antibody.source',
             'characterizations.award',
+            'characterizations.documents',
             'characterizations.lab',
             'characterizations.submitted_by',
             'characterizations.target.organism',
