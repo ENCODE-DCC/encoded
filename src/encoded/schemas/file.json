@@ -12,6 +12,7 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -62,6 +63,11 @@
             "title": "MD5sum",
             "type": "string",
             "format": "hex"
+        },
+        "file_size": {
+            "title": "File size",
+            "comment": "File size is specified in bytes",
+            "type": "integer"
         },
         "output_type": {
             "title": "Output type",
