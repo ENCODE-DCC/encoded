@@ -43,10 +43,10 @@ def audit_file_ownership(value, system):
             detail = 'missing {}'.format(term)
             yield AuditFailure('missing {}'.format(term), detail, level='ERROR')
 
-    submitter_lab = value['submitted_by']['lab']['name']
-    dataset_lab = value['dataset']['lab']['name']
-    submitter_award= value['submitted_by']['award']['name']
-    dataset_award = value['dataset']['award']['name']
+    # submitter_lab = value['submitted_by']['lab']['name']
+    # dataset_lab = value['dataset']['lab']['name']
+    # submitter_award= value['submitted_by']['award']['name']
+    # dataset_award = value['dataset']['award']['name']
 
 #    if submitter_lab != dataset_lab:
 #        detail = '{} file - {} dataset'.format(submitter_lab, dataset_lab)
