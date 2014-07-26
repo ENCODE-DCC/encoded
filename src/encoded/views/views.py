@@ -652,6 +652,22 @@ class AntibodyCharacterization(Characterization):
 
     class Item(Characterization.Item):
         embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
+        
+        template = {
+            'characterization_method': {'$value': '{characterization_method}', '$templated': True, '$condition': 'characterization_method'}
+        }
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            if request is None:
+                return ns
+            if 'primary_characterization_method' in ns:
+                ns['characterization_method'] = ns['primary_characterization_method']
+            elif 'secondary_characterization_method' in ns:
+                ns['characterization_method'] = ns['secondary_characterization_method']
+            else:
+                ns['characterization_method'] = ''
+            return ns
 
 
 @location('antibodies')

@@ -239,7 +239,7 @@
 	"host_organism.scientific_name": 1.0,
 	"host_organism.taxon_id": 1.0,
 	"characterizations.primary_characterization_method": 1.0,
-    "characterizations.secondary_characterization_method": 1.0,
+	"characterizations.secondary_characterization_method": 1.0,
 	"characterizations.award.title": 1.0,
 	"characterizations.award.project": 1.0,
 	"characterizations.submitted_by.email": 1.0,
