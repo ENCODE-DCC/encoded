@@ -12,7 +12,7 @@ var Dbxref = dbxref.Dbxref;
 var Citation = React.createClass({
     render: function() {
         var context = this.props.context;
-        var date = moment(context.date_published).format('YYYY MMM D');
+        var date = moment(context.date_published).format('YYYY MMM');
         return (
             <div className="journal">
                 <i>{context.journal}</i>. {date};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.
@@ -61,7 +61,7 @@ var Listing = React.createClass({
     mixins: [search.PickerActionsMixin],
     render: function() {
         var context = this.props.context;
-        var date = moment(context.date_published).format('YYYY MMM D');
+        var date = moment(context.date_published).format('YYYY MMM');
         var authorList = context.authors.split(', ', 4);
         var authors = authorList.length === 4 ? authorList.splice(0, 3).join(', ') + ', et al' : context.authors;
         return (<li>
