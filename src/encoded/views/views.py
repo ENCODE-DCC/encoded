@@ -20,6 +20,7 @@ from pyramid.traversal import (
 from urllib import quote_plus
 from urlparse import urljoin
 import copy
+import datetime
 
 ACCESSION_KEYS = [
     {
@@ -825,6 +826,9 @@ class Experiment(Dataset):
             ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
+            ],
+            'month_released': [
+                {'$value': '{release}', '$repeat': 'release month_released', '$templated': True}
             ]
         }
         embedded = Dataset.Item.embedded + [
@@ -852,6 +856,10 @@ class Experiment(Dataset):
             if request is None:
                 return ns
             terms = request.registry['ontology']
+            if 'date_released' in ns:
+                ns['month_released'] = [datetime.datetime.strptime(ns['date_released'], '%Y-%m-%d').strftime('%B, %Y')]
+            else:
+                ns['month_released'] = []
             if 'biosample_term_id' in ns:
                 if ns['biosample_term_id'] in terms:
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
