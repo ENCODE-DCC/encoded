@@ -59,8 +59,15 @@ var globals = require('./globals');
 
 
     var title = module.exports.title = function (props) {
-        var context = props.context;
-        return context.title || context.name || context.accession || context['@id'];
+        var context = props.context,
+            sciname;
+
+        if (props.windowTitle) {
+            sciname = context.organism && context.organism.scientific_name ? (context.label + ' (' + context.organism.scientific_name + ')') : undefined;
+        } else {
+            sciname = context.organism && context.organism.scientific_name ? <span>{context.label + ' ('}<em>{context.organism.scientific_name}</em>{')'}</span> : undefined;
+        }
+        return sciname || context.title || context.name || context.accession || context['@id'];
     };
 
     globals.listing_titles.register(title, 'item');

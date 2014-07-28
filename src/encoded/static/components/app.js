@@ -77,7 +77,8 @@ var App = React.createClass({
 
         var title = globals.listing_titles.lookup(context)({
             context: context,
-            loadingComplete: this.state.loadingComplete
+            loadingComplete: this.state.loadingComplete,
+            windowTitle: true
         });
         if (title && title != 'Home') {
             title = title + ' – ' + portal.portal_title;
