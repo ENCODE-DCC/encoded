@@ -33,14 +33,19 @@ var BlockEditModal = React.createClass({
         return {value: this.props.value};
     },
 
+    _extendedSchemaCache: {},
+
     render: function() {
         var blocktype = globals.blocks.lookup(this.props.value);
         var schema = blocktype.schema;
         if (schema !== undefined) {
-            // add CSS class property
-            var schema_props = _.values(blocktype.schema.children);
-            schema_props.push(ReactForms.schema.Property({name: 'className', label: 'CSS Class'}));
-            schema = ReactForms.schema.Schema(null, schema_props);
+            var schema = this._extendedSchemaCache[blocktype.label];
+            if (schema === undefined) {
+                // add CSS class property
+                var schema_props = _.values(blocktype.schema.children);
+                schema_props.push(ReactForms.schema.Property({name: 'className', label: 'CSS Class'}));
+                schema = this._extendedSchemaCache[blocktype.label] = ReactForms.schema.Schema(null, schema_props);                
+            }
         }
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
         return this.transferPropsTo(
