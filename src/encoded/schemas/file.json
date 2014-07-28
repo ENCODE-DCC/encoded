@@ -108,11 +108,11 @@
                 "Matrix",
                 "minus signal",
                 "mPepMapGcFt",
-                "mPepMapGcUnFt"
+                "mPepMapGcUnFt",
                 "multi-read minus signal",
                 "multi-read plus signal",
-                "multi-read signal"
-                "PctSignal"
+                "multi-read signal",
+                "PctSignal",
                 "peaks",
                 "pepMapGcFt",
                 "pepMapGcUnFt",
