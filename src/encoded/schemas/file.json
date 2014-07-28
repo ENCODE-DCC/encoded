@@ -203,7 +203,6 @@
             "enum" : [
                 "current",
                 "deleted",
-                "obsolete",
                 "revoked",
                 "released"
                 ]
