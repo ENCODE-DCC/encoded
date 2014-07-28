@@ -176,7 +176,7 @@ describe('Experiment Page', function() {
 
         beforeEach(function() {
             var context_alt = _.clone(context);
-            context_alt.alternate_accessions = require('../testdata/alternate_accession/experiment');
+            context_alt.alternate_accessions = ["ENCSR000ACT", "ENCSR999NOF"];
             experiment = <Experiment context={context_alt} />;
             TestUtils.renderIntoDocument(experiment);
             alt = TestUtils.findRenderedDOMComponentWithClass(experiment, 'repl-acc');
