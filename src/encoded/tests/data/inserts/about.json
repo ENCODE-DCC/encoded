@@ -119,5 +119,100 @@
                 }
             ]
         }
+    },
+    {  
+       "status":"in progress",
+       "layout":{  
+          "rows":[  
+             {  
+                "cols":[  
+                   {  
+                      "blocks":[  
+                         "#block1",
+                         "#block3",
+                         "#block5",
+                         "#block6",
+                         "#block7",
+                         "#block4",
+                         "#block10",
+                         [  
+                            "#block8"
+                         ]
+                      ]
+                   }
+                ]
+             }
+          ],
+          "blocks":[  
+             {  
+                "body":"<p><a href=\"http://encodeproject.org/ENCODE/analysis.html\">http://encodeproject.org/ENCODE/analysis.html</a>&nbsp;---&gt; about/analysis</p>\n",
+                "@id":"#block1",
+                "@type":[  
+                   "richtextblock",
+                   "block"
+                ]
+             },
+             {  
+                "body":"<h1>Integrative Analysis of ENCODE Data</h1>\n",
+                "@id":"#block3",
+                "@type":[  
+                   "richtextblock",
+                   "block"
+                ]
+             },
+             {  
+                "body":"<p><strong>ENCODE Analysis Package Publications and Website</strong></p>\n\n<p>A description of the ENCODE project, data production, data display, and data download has been published previously in the article,&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/21526222\">A user&#39;s guide to the encyclopedia of DNA elements (ENCODE)</a>. The resources in this article, and follow-on analyses, are described in detail in an extensive package of&nbsp;<a href=\"https://docs.google.com/document/pub?id=1Ny3oWp13YsxNX7rl8sqkQ66XLDRZy5O8W88IVs_HJFA\">ENCODE integrative analysis publications</a>&nbsp;and on a&nbsp;<a href=\"http://www.nature.com/encode/\">Nature microsite</a>. Questions regarding the package should be directed to&nbsp;<a href=\"mailto:dunham@ebi.ac.uk\">Ian Dunham</a>.</p>\n\n<p><strong>ENCODE Analysis Virtual Machine</strong></p>\n\n<p>The&nbsp;<a href=\"http://www.nature.com/nature/journal/v489/n7414/full/nature11247.html#/supplementary-information\">supplementary information</a>&nbsp;for the ENCODE integrative analysis Nature publication includes a set of&nbsp;<a href=\"ftp://ftp.ebi.ac.uk/pub/databases/ensembl/encode/supplementary/\">code bundles</a>&nbsp;that provide the scripts and processing steps corresponding to the methodology used in the analyses associated with the paper. The analysis group has established an&nbsp;ENCODE<a href=\"http://genome.ucsc.edu/ENCODE/integrativeAnalysis/VM\"> </a>analysis<a href=\"http://genome.ucsc.edu/ENCODE/integrativeAnalysis/VM\"> </a>virtual<a href=\"http://genome.ucsc.edu/ENCODE/integrativeAnalysis/VM\"> </a>machine&nbsp;instance of the software, using the code bundles, where each analysis program has been tested and run. The virtual machines are freely available for interested parties to use to work with the data and tools used in the integrative analysis.</p>\n\n<p>Questions regarding the ENCODE analysis virtual machines should be directed to&nbsp;<a href=\"mailto:james.taylor@emory.edu\">James Taylor</a>&nbsp;or&nbsp;<a href=\"mailto:dannon.baker@emory.edu\">Dannon Baker</a>.</p>\n\n<p><strong>Software Tools</strong></p>\n\n<p>A page describing the&nbsp;<a href=\"http://encodeproject.org/ENCODE/softwareTools.html\">software tools</a>&nbsp;used in the ENCODE project is provided at ENCODE portal.</p>\n\n<p><strong>Data Standards and Quality Metrics</strong></p>\n\n<p>As part of the integrative analysis, the ENCODE project has established a number of standards, viewable from the ENCODE portal at the&nbsp;<a href=\"http://encodeproject.org/ENCODE/dataStandards.html\">Data Standards</a>&nbsp;page. A detailed description of the ChIP-seq standards is provided in the publication: Landt&nbsp;<em>et al</em>.,&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/pubmed/22955991\">ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia</a>.&nbsp;<em>Genome Res</em>. 2012 Sep;22(9):1813-31. Metrics that have been developed to enable comparison and standardized processing of the data are described on the portal&nbsp;<a href=\"http://encodeproject.org/ENCODE/qualityMetrics.html\">Quality Metrics</a>&nbsp;page.</p>\n\n<p><strong>Other ENCODE Publications</strong></p>\n\n<p>A list of publications funded by the ENCODE project and publications from groups outside the consortium using ENCODE data can be found on the&nbsp;<a href=\"http://encodeproject.org/ENCODE/pubs.html\">ENCODE Publications</a>&nbsp;page.&nbsp;</p>\n",
+                "@id":"#block4",
+                "@type":[  
+                   "richtextblock",
+                   "block"
+                ]
+             },
+             {  
+                "body":"<h3><strong>Introduction</strong></h3>\n",
+                "@id":"#block5",
+                "@type":[  
+                   "richtextblock",
+                   "block"
+                ]
+             },
+             {  
+                "body":"<p>The major goal of the ENCODE project is to identify all functional elements in the human genome sequence, where&nbsp;<em>functional element</em>&nbsp;is defined as a discrete region of the genome that encodes a reproducible biochemical signature. ENCODE data production groups generate data and submit the data to the ENCODE Data Coordinating Center (DCC) for quality control and release. A cross-consortium effort to perform integrated analysis of all the data types to generate useful integrative data interpretations for the community has come to completion. The results of these analyses have been published as the&nbsp;<a href=\"http://www.nature.com/encode/\" style=\"line-height: 1.42857; background-color: rgb(232, 236, 239);\">ENCODE integrative analysis publication package</a>. This page describes a series of resources associated with the integrative analysis of ENCODE data.</p>\n",
+                "@id":"#block6",
+                "@type":[  
+                   "richtextblock",
+                   "block"
+                ]
+             },
+             {  
+                "body":"<h3><strong>Analysis Tools and Other Resources</strong></h3>\n",
+                "@id":"#block7",
+                "@type":[  
+                   "richtextblock",
+                   "block"
+                ]
+             },
+             {  
+                "body":"<p><strong>Data Coordination Center Resources</strong></p>\n\n<p><span style=\"line-height:1.42857\">All ENCODE production data is submitted to the DCC at the University of California, Santa Cruz (UCSC). Data is reviewed for quality and released for display as tracks in the&nbsp;</span><a href=\"http://encodeproject.org/cgi-bin/hgTracks?db=hg19\" style=\"line-height: 1.42857; background-color: rgb(232, 236, 239);\">UCSC Genome Browser</a><span style=\"line-height:1.42857\">&nbsp;and for download at the&nbsp;</span><a href=\"http://encodeproject.org/ENCODE/downloads.html\" style=\"line-height: 1.42857; background-color: rgb(232, 236, 239);\">UCSC downloads site</a><span style=\"line-height:1.42857\">. There are a number of useful tools including&nbsp;</span><a href=\"http://encodeproject.org/ENCODE/search.html\" style=\"line-height: 1.42857; background-color: rgb(232, 236, 239);\">track and file search</a><span style=\"line-height:1.42857\">&nbsp;to assist with locating data of interest. The DCC maintains the&nbsp;</span><a href=\"http://encodeproject.org/\" style=\"line-height: 1.42857; background-color: rgb(232, 236, 239);\">ENCODE portal</a><span style=\"line-height:1.42857\">&nbsp;providing access to this data and tools for interpreting and accessing the data.</span></p>\n\n<p><strong>Analysis Data Hub</strong></p>\n\n<p><span style=\"line-height:1.42857\">The integrative analysis process has been a distributed effort by many groups. Individual analysts downloaded and processed files from the ENCODE download site, and created intermediate and final analysis products in various forms. Now that the analysis has been completed, the analysis data is being made available for viewiing and download through a UCSC public data hub. This data hub includes descriptions of ENCODE data in uniformly processed signal and element representations, as well as genome segmentations. The ENCODE downloads page includes an&nbsp;</span><a href=\"http://encodeproject.org/ENCODE/downloads.html#analysisHub\" style=\"line-height: 1.42857; background-color: rgb(232, 236, 239);\">Analysis Hub section</a><span style=\"line-height:1.42857\">&nbsp;that provides access to files on the hub.&nbsp;</span><a href=\"http://genome.ucsc.edu/cgi-bin/hgTracks?db=hg19&amp;hubUrl=http://ftp.ebi.ac.uk/pub/databases/ensembl/encode/integration_data_jan2011/hub.txt\" style=\"line-height: 1.42857; background-color: rgb(232, 236, 239);\">Click here to visualize the ENCODE Integrative Analysis Data Hub</a><span style=\"line-height:1.42857\">&nbsp;in the UCSC Genome Browser.</span></p>\n\n<p><strong>Analysis FTP Site</strong></p>\n\n<p>Access to the analysis products are also provided via anonymous FTP from the&nbsp;<a href=\"ftp://ftp.ebi.ac.uk/pub/databases/ensembl/encode/supplementary/\">EBI ENCODE analysis FTP server</a>. This site contains an organized file structure with the&nbsp;<a href=\"ftp://ftp.ebi.ac.uk/pub/databases/ensembl/encode/supplementary/integration_data_jan2011\">ENCODE analysis datasets</a>&nbsp;located in subdirectories within the&nbsp;<em>byDataType</em>&nbsp;directory.</p>\n\n<p><strong>Other Locations</strong></p>\n\n<p>ENCODE data is also available through other genomics portals, including&nbsp;<a href=\"http://www.ensembl.org/\">Ensembl</a>&nbsp;and the&nbsp;<a href=\"http://www.ncbi.nlm.nih.gov/geo/info/ENCODE.html\">NCBI Gene Expression Omnibus (GEO)</a>. Raw sequence data are deposited in the sequence read archives,&nbsp;<a href=\"http://trace.ncbi.nlm.nih.gov/Traces/sra\">SRA</a>&nbsp;and&nbsp;<a href=\"http://www.ebi.ac.uk/ena/\">ENA</a>.</p>\n",
+                "@id":"#block8",
+                "@type":[  
+                   "richtextblock",
+                   "block"
+                ]
+             },
+             {  
+                "body":"<h3>Data</h3>\n",
+                "@id":"#block10",
+                "@type":[  
+                   "richtextblock",
+                   "block"
+                ]
+             }
+          ]
+       },
+       "name":"analysis",
+       "title":"analysis",
+       "schema_version":"1",
+       "uuid":"e0287780-3e88-480e-9b89-fa2fac39aa1e"
     }
 ]
