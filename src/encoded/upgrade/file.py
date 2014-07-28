@@ -1,4 +1,5 @@
 from ..migrator import upgrade_step
+from pyramid.traversal import find_root
 
 
 @upgrade_step('file', '', '2')
@@ -11,14 +12,73 @@ def file_0_2(value, system):
 
 @upgrade_step('file', '2', '3')
 def file_2_3(value, system):
+    #  http://redmine.encodedcc.org/issues/1572
+    format = value.get('format')
+    file_name = value['submitted_file_name'].rsplit('/', 1)[-1]
+    file_ext = file_name[file_name.find('.'):]
+
+    # REJECTIONS
+    if file_ext in ['.gtf.bigBed', '.pdf', '.pdf.gz', '.gff.bigBed', '.spikeins']:
+        value['status'] = 'deleted'
+
+    # Find the miscatorgorized bedMethyls
+    if file_ext == '.bed.bigBed' and 'MethylRrbs' in value.get('submitted_file_name'):
+        value['format'] = 'bedMethyl'
+    if file_ext == '.bed.gz' and 'MethylRrbs' in value.get('submitted_file_name'):
+        value['format'] = 'bed_bedMethyl'
+
+    unknownDict = {'.CEL.gz': 'CEL',
+                    '.bb': 'bedMethyl',
+                    '.bed': 'bed',
+                    '.bed.bigBed': 'bigBed',
+                    '.bed9': 'bedMethyl',
+                    '.bedCluster.bigBed': 'bigBed',
+                    '.bedLogR.bigBed': 'bedLogR',
+                    '.bedRnaElements.bigBed': 'bedRnaElements',
+                    '.bedRrbs.bigBed': 'bedMethyl',
+                    '.broadPeak.gz': 'bed_broadPeak',
+                    '.bigBed': 'bigBed',
+                    '.csfasta.gz': 'csfasta',
+                    '.csqual.gz': 'csqual',
+                    '.fasta.gz': 'fasta',
+                    '.gff.bigBed': 'bigBed',
+                    '.gff.gz': 'gtf',
+                    '.gp.bigBed': 'bigBed',
+                    '.matrix.gz': 'tsv',
+                    '.matrix.tgz': 'tar',
+                    '.narrowPeak': 'bed_narrowPeak',
+                    '.narrowPeak.gz': 'bed_narrowPeak',
+                    '.pdf': 'tsv',  # These are going to be obsolete
+                    '.pdf.gz': 'tsv',  # These are going to be obsolete
+                    '.peaks.gz': 'tsv',
+                    '.peptideMapping.bigBed': '.bigBed',
+                    '.shortFrags.bigBed': 'bigBed',
+                    '.sorted.bigBed': 'bigBed',
+                    '.tab.gz': 'tsv',
+                    '.tgz': 'tar',
+                    '.txt': 'tsv',
+                    '.xlsx': 'tsv',  # These need to be converted to tsv
+                   }
+    if format in ['unknown', 'customTrack']:
+        value['format'] = unknownDict[file_ext]
+
     # http://redmine.encodedcc.org/issues/1429
+    context = system['context']
+    root = find_root(context)
+    dataset = root.get_by_uuid(value['dataset']).upgrade_properties(finalize=False)
+
     if value.get('status') == 'current':
-        if value['experiment'].get('status') == 'released':
+        if dataset.get('status') == 'released':
             value['status'] = 'released'
+    if value.get['status'] == 'obsolete':
+        if dataset.get('status') == 'released':
+            value['status'] = 'revoked'
+        else:
+            value['status'] = 'deleted'
 
     # http://redmine.encodedcc.org/issues/1618
-    value['award'] = value['dataset']['award']
-    value['lab'] = value['dataset']['lab']
+    value['award'] = dataset['award']
+    value['lab'] = dataset['lab']
 
     output_type_dict = {
                         "Alignments": "alignments",
@@ -91,4 +151,4 @@ def file_2_3(value, system):
 
     # Help the raw data problem
     if value['output_type'] == 'raw data' and value['format'] == "fastq":
-        value['output_type'] = 'reads'
+        value['output_type'] = 'reads' 

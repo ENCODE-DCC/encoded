@@ -23,6 +23,16 @@ def file_1(file):
     return item
 
 
+@pytest.fixture
+def file_2(file):
+    item = file.copy()
+    item.update({
+        'schema_version': '2',
+        'status': 'current',
+    })
+    return item
+
+
 def test_file_upgrade(app, file_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('file', file_1, target_version='2')
@@ -30,27 +40,14 @@ def test_file_upgrade(app, file_1):
     assert value['status'] == 'current'
 
 
-def test_file_upgrade2(app, file_1):
+def test_file_upgrade2(root, registry, file_2, experiment, threadlocals, dummy_request):
 
-    migrator = app.registry['migrator']
-    # Set the experiment to released
-    #    file_1['dataset'].update({
-    #        'status': 'released'
-    #        })
-
-    #   migrator = app.registry['migrator']
-    #    value = migrator.upgrade('file', file_1, target_version='3')
-    #    assert value['schema_version'] == '3'
-    #    assert value['status'] == 'released'
-    #    assert value['lab'] == file_1['dataset']['lab']
-    #    assert value['award'] == file_1['dataset']['award']
-
-    # Reset the file and experiment to NOT released
-    file_1['status'] = 'current'
-    #    file_1['dataset'].update({
-    #        'status': 'release_ready'
-    #        })
-
-    value = migrator.upgrade('file', file_1, target_version='3')
+    migrator = registry['migrator']
+    context = root.get_by_uuid(experiment['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('file', file_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['status'] == 'current'
+    assert value['lab'] == context['lab']
+    assert value['award'] == context['award']
+    # assert value['file_format'] == ''
