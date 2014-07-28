@@ -11,17 +11,17 @@ def audit_antibody_lot_target(value, system):
     if value['status'] in ['not pursued', 'deleted']:
         return
 
-    context = system['context']
-    root = find_root(context)
+    root = system['root']
     if value['targets']:
-        targets = value['targets']
-        first_target = root.get_by_uuid(targets[0])
-        target_label = first_target['label']
+        
+        first_target = root.get_by_uuid(value['targets'][0])
+        target_label = first_target.properties['label']
 
-        for target in targets:
-            if (target['label'].startswith('eGFP-')):
+        for target_uuid in value['targets']:
+            target = root.get_by_uuid(target_uuid)
+            if (target.properties['label'].startswith('eGFP-')):
                 continue
 
-            if target['label'] != target_label:
+            if target.properties['label'] != target_label:
                 detail = 'target mismatch for {}'.format(value['@id'])
                 yield AuditFailure('target mismatch', detail, level='ERROR')
