@@ -943,6 +943,23 @@ class Publication(Collection):
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
+    name_key = 'title'
+
+    class Item(Collection.Item):
+        template = {
+            'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
+        }
+        
+        keys = ALIAS_KEYS + [
+            {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
+            {'name': '{item_type}:title', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True},
+        ]
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            if 'date_published' in ns:
+                ns['publication_year'] = ns['date_published'].partition(' ')[0]
+            return ns
 
 
 @location('images')
