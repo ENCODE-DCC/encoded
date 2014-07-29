@@ -81,8 +81,8 @@ def file_2_3(value, system):
             value['status'] = 'deleted'
 
     # http://redmine.encodedcc.org/issues/1618
-    value['award'] = dataset['award']
-    value['lab'] = dataset['lab']
+    value['award'] = dataset['award']['uuid']
+    value['lab'] = dataset['lab']['uuid']
 
     output_type_dict = {
                         "Alignments": "alignments",
