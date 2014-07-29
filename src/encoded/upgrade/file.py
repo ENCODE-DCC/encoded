@@ -63,15 +63,17 @@ def file_2_3(value, system):
         value['format'] = unknownDict[file_ext]
 
     # http://redmine.encodedcc.org/issues/1429
+    status = value.get('status')
     context = system['context']
     root = find_root(context)
-    dataset = root.get_by_uuid(value['dataset']).upgrade_properties(finalize=False)
+    dataset = root.get_by_uuid(value['dataset']) #.upgrade_properties(finalize=False)
+    dataset_status = dataset.get('status')
 
-    if value.get('status') == 'current':
-        if dataset.get('status') == 'released':
+    if status == 'current':
+        if dataset_status == 'released':
             value['status'] = 'released'
-    if value.get['status'] == 'obsolete':
-        if dataset.get('status') == 'released':
+    if status == 'obsolete':
+        if dataset_status in ['released', 'revoked']:
             value['status'] = 'revoked'
         else:
             value['status'] = 'deleted'
@@ -142,7 +144,7 @@ def file_2_3(value, system):
                         "TRAINING_DATA_MOUSE_VISTA": "enhancers",
                         "method_description": "enhancers",
                         "unknown": "enhancers",
-                        "Protocol": "RawData",
+                        "Protocol": "raw data",
                         }
 
     if value['output_type'] in output_type_dict:
