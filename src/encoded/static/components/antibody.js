@@ -52,6 +52,8 @@ var Approval = module.exports.Approval = React.createClass({
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
     
+        // Make string of alternate accessions
+        var altacc = context.antibody.alternate_accessions ? context.antibody.alternate_accessions.join(', ') : undefined;
 
         // Missing enncode
         return (
@@ -59,6 +61,7 @@ var Approval = module.exports.Approval = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>Approval for {context.antibody.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>Antibody against <em>{context.target.organism.scientific_name}</em>
                             {' '}{context.target.label}
                         </h3>
