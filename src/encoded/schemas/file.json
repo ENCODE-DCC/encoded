@@ -21,6 +21,10 @@
             "title": "File status",
             "type": "string"
         },
+        "output_type": {
+            "title": "Output type",
+            "type": "string"
+        },
         "file_format": {
             "title": "File format",
             "type": "string"
