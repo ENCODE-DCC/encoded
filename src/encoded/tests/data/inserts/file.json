@@ -17,7 +17,7 @@
         "uuid": "46e82a90-49e5-4c33-afab-9ec90d65faf3"
     },
     {
-        "_test": "test obsolete",
+        "_test": "test deleted",
         "accession": "ENCFF000LSQ",
         "assembly": "hg19",
         "award": "U54HG004576",
@@ -29,7 +29,7 @@
         "md5sum": "a6c7f7513209257b870b031a4493add8",
         "output_type": "sites",
         "replicate": "6e85c807-684a-46e3-b4b9-1f7990e85720",
-        "status": "obsolete",
+        "status": "deleted",
         "submitted_by": "vestibulum.tortor@vitae.nec",
         "submitted_file_name": "obsolete.bigBed",
         "uuid": "582d6675-0b2e-4886-b43d-f6efa9033b37"
@@ -496,7 +496,7 @@
         "file_format": "unknown",
         "md5sum": "d151fab2c55504980fc432e1def8dd5f",
         "output_type": "Primer",
-        "status": "obsolete",
+        "status": "revoked",
         "submitted_by": "vestibulum.tortor@vitae.nec",
         "submitted_file_name": "hg19/wgEncodeUmassDekker5C/wgEncodeUmassDekker5CEnmPrimer.doc.tgz",
         "uuid": "0e2c4df7-e71d-4aca-a278-b994883cc69a"
