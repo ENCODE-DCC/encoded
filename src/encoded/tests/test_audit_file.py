@@ -14,7 +14,7 @@ def file1(experiment):
 
 def test_file_general_audit(testapp, file1):
 
-    file2 = file.copy()
+    file2 = file1.copy()
 
     file1['dataset'].update({
         'status': 'deleted'
