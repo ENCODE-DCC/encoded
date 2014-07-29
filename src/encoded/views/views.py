@@ -955,11 +955,6 @@ class Page(Collection):
             else:  # top level
                 return root
 
-        # make explicitly setting __parent__ a no-op
-        @__parent__.setter
-        def __parent__(self, value):
-            pass
-
         def is_default_page(self):
             name = self.__name__
             root = find_root(self.collection)

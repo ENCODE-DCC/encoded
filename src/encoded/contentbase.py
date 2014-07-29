@@ -408,11 +408,15 @@ class Item(object):
     actions = []
 
     def __init__(self, collection, model):
-        self.__parent__ = self.collection = collection
+        self.collection = collection
         self.model = model
 
     def __repr__(self):
         return '<%s at %s>' % (type(self).__name__, resource_path(self))
+
+    @property
+    def __parent__(self):
+        return self.collection
 
     @property
     def __name__(self):
