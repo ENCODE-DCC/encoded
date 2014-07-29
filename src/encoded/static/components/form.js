@@ -32,7 +32,7 @@ var Form = module.exports.Form = React.createClass({
         var error = this.state.error;
         return (
           <form>
-            <FormFor />
+            <FormFor externalValidation={this.state.externalValidation} />
             <div className="pull-right">
                 <a href="" className="btn btn-default">Cancel</a>
                 {' '}
@@ -83,15 +83,21 @@ var Form = module.exports.Form = React.createClass({
             'exDescription': 'putRequest:' + status + ':' + xhr.statusText,
             'location': window.location.href
         });
-        this.receive(data, status, xhr, true);
+        this.receive(data, status, xhr);
     },
 
-    receive: function (data, status, xhr, erred) {
+    receive: function (data, status, xhr) {
+        var externalValidation = {children: {}};
+        if (data.errors !== undefined) {
+            data.errors.map(function (error) {
+                externalValidation.children[error.name[0]] = {validation: {failure: error.description}};
+            });
+        }
+
         this.setState({
             data: data,
             communicating: false,
-            erred: erred,
-            error: erred ? data : undefined
+            externalValidation: externalValidation,
         });
     }
 });

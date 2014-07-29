@@ -6,6 +6,7 @@ var Layout = require('./layout').Layout;
 var globals = require('./globals');
 var merge = require('react/lib/merge');
 var ItemEdit = require('./item').ItemEdit;
+var ObjectPicker = require('./blocks/item').ObjectPicker;
 
 
 var LayoutType = {
@@ -27,7 +28,7 @@ var LayoutType = {
 
 var Page = module.exports.Page = React.createClass({
     render: function() {
-        var value = LayoutType.serialize(this.props.context.layout);
+        var value = LayoutType.serialize(this.props.context.layout || defaultLayout);
         return <div><Layout value={value} /></div>;
     }
 });
@@ -62,12 +63,14 @@ var statusSelect = (
         <option value="deleted">deleted</option>
     </select>
 );
+var pagePicker = <ObjectPicker searchBase={"?mode=picker&type=page"} />;
 
 
 var Schema    = ReactForms.schema.Schema;
 var Property  = ReactForms.schema.Property;
 var PageFormSchema = (
     <Schema>
+        <Property name="parent" label="Parent Page" input={pagePicker} />
         <Property name="name" label="Name" />
         <Property name="title" label="Title" />
         <Property name="status" label="Status" input={statusSelect} />
