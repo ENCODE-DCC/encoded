@@ -2,6 +2,7 @@ from ..auditor import (
     AuditFailure,
     audit_checker,
 )
+from pyramid.traversal import find_root
 
 current_statuses = ['released', 'in progress']
 not_current_statuses = ['revoked', 'obsolete', 'deleted']
@@ -19,17 +20,25 @@ def audit_file_status(value, system):
         detail = 'missing dataset'
         raise AuditFailure('missing dataset', detail, level='ERROR')
 
-#    dataset_status = value['dataset']
-#    if 'status' not in dataset_status:
-#        return
+    # Here I am trying to get at the dataset object that is a part of file.
+    # I would like to compared its status to that of the file to determine 
+    # a mismatch, howeverm this is not working as it does in the upgrade
+    # I think that we would need to affect the imbedding but then that gets 
+    # circular
 
-#    if file_status == 'released' and dataset_status != 'released':
-#        detail = '{} file - {} dataset'.format(file_status, dataset_status)
-#        raise AuditFailure('status mismatch', detail, level='ERROR')
+    #context = system['context']
+    #root = find_root(context)
+    #dataset = root.get_by_uuid(value['dataset'])
 
-#    if file_status in current_statuses and dataset_status in not_current_statuses:
-#        detail = '{} file - {} dataset'.format(file_status, dataset_status)
-#        raise AuditFailure('status mismatch', detail, level='ERROR')
+    #dataset_status = dataset.get('status')
+
+    #if file_status == 'released' and dataset_status != 'released':
+    #    detail = '{} file - {} dataset'.format(file_status, dataset_status)
+    #    raise AuditFailure('status mismatch', detail, level='ERROR')
+
+    #if file_status in current_statuses and dataset_status in not_current_statuses:
+    #    detail = '{} file - {} dataset'.format(file_status, dataset_status)
+    #    raise AuditFailure('status mismatch', detail, level='ERROR')
 
 
 @audit_checker('file')
@@ -43,18 +52,17 @@ def audit_file_ownership(value, system):
             detail = 'missing {}'.format(term)
             yield AuditFailure('missing {}'.format(term), detail, level='ERROR')
 
-    # submitter_lab = value['submitted_by']['lab']['name']
-    # dataset_lab = value['dataset']['lab']['name']
-    # submitter_award= value['submitted_by']['award']['name']
-    # dataset_award = value['dataset']['award']['name']
+    # Similar to the above issue, I cannot seem to get at the submitted_by information
+    # or the lab information
 
-#    if submitter_lab != dataset_lab:
-#        detail = '{} file - {} dataset'.format(submitter_lab, dataset_lab)
+    # submitter_labs = value['submitted_by']['submits_for']
+    # file_lab = value['lab']['@id']
+
+
+#    if file_lab not in submitter_lab:
+#        detail = '{} lab - {} submitter'.format(file_lab, value['submitted_by'])
 #        raise AuditFailure('lab mismatch', detail, level='ERROR')
 
-#    if submitter_award != dataset_award:
-#        detail = '{} file - {} dataset'.format(submitter_award, dataset_award)
-#        raise AuditFailure('award mismatch', detail, level='ERROR')
 
 
 @audit_checker('file')
