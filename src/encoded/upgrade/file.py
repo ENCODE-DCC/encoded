@@ -30,7 +30,7 @@ def file_2_3(value, system):
     unknownDict = {'.CEL.gz': 'CEL',
                     '.bb': 'bedMethyl',
                     '.bed': 'bed',
-                    '.bed.gz': '.bed',
+                    '.bed.gz': 'bed',
                     '.bed.bigBed': 'bigBed',
                     '.bigBed': 'bigBed',
                     '.bed9': 'bedMethyl',
@@ -53,7 +53,7 @@ def file_2_3(value, system):
                     '.pdf': 'tsv',  # These are going to be obsolete
                     '.pdf.gz': 'tsv',  # These are going to be obsolete
                     '.peaks.gz': 'tsv',
-                    '.peptideMapping.bigBed': '.bigBed',
+                    '.peptideMapping.bigBed': 'bigBed',
                     '.shortFrags.bigBed': 'bigBed',
                     '.sorted.bigBed': 'bigBed',
                     '.tab.gz': 'tsv',
@@ -68,7 +68,7 @@ def file_2_3(value, system):
     status = value.get('status')
     context = system['context']
     root = find_root(context)
-    dataset = root.get_by_uuid(value['dataset']) #.upgrade_properties(finalize=False)
+    dataset = root.get_by_uuid(value['dataset']).upgrade_properties(finalize=False)
     dataset_status = dataset.get('status')
 
     if status == 'current':
