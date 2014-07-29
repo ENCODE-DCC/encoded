@@ -20,6 +20,12 @@
         { "$ref": "mixins.json#/lot_id" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "facets": {
+        "status": {
+            "title": "Library status",
+            "type": "string"
+        }
+    },
     "dependencies": {
         "nucleic_acid_term_id": ["nucleic_acid_term_name"],
         "nucleic_acid_term_name": ["nucleic_acid_term_id"],
