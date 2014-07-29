@@ -12,13 +12,12 @@ def file1(experiment):
     }
 
 
+@pytest.mark.xfail
 def test_file_general_audit(testapp, file1):
 
-    #res = testapp.patch_json(file1['dataset'], {'status': 'deleted'})
     res = testapp.post_json('/file', file1)
     res = testapp.get(res.location + '@@index-data')
-    #error, = res.json['audit']
-    #assert error['category'] == 'status mismatch'
-    #assert error['category'] == 'missing lab'
-    #assert error['category'] == 'missing award'
-    #assert error['category'] == 'missing submitted_by'
+    error, = res.json['audit']  # I have no idea why this fails
+    assert error['category'] == 'missing lab'
+    assert error['category'] == 'missing award'
+    assert error['category'] == 'missing submitted_by'
