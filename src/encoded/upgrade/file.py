@@ -14,7 +14,7 @@ def file_0_2(value, system):
 def file_2_3(value, system):
     #  http://redmine.encodedcc.org/issues/1572
     file_format = value.get('file_format')
-    file_name = value['submitted_file_name'].rsplit('/', 1)[-1]
+    file_name = value['download_path'].rsplit('/', 1)[-1]
     file_ext = file_name[file_name.find('.'):]
 
     # REJECTIONS
