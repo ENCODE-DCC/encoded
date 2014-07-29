@@ -19,9 +19,9 @@ def audit_file_status(value, system):
         detail = 'missing dataset'
         raise AuditFailure('missing dataset', detail, level='ERROR')
 
-    dataset_status = value['dataset']
-    if 'status' not in dataset_status:
-        return
+#    dataset_status = value['dataset']
+#    if 'status' not in dataset_status:
+#        return
 
 #    if file_status == 'released' and dataset_status != 'released':
 #        detail = '{} file - {} dataset'.format(file_status, dataset_status)
@@ -109,7 +109,7 @@ def audit_file_output_type(value, system):
                                 "Valleys",
                                 "WaveSignal"]
 
-    if value['dataset']['award']['rfa'] != 'ENCODE3':
-        if value['output_type'] in undesirable_output_type:
+    #if value['dataset']['award']['rfa'] != 'ENCODE3':
+    if value['output_type'] in undesirable_output_type:
             detail = '{}'.format(value['output_type'])
             raise AuditFailure('undesirable output type', detail, level='ERROR')
