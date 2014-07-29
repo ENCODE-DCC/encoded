@@ -13,7 +13,7 @@ def file_0_2(value, system):
 @upgrade_step('file', '2', '3')
 def file_2_3(value, system):
     #  http://redmine.encodedcc.org/issues/1572
-    format = value.get('format')
+    file_format = value.get('file_format')
     file_name = value['submitted_file_name'].rsplit('/', 1)[-1]
     file_ext = file_name[file_name.find('.'):]
 
@@ -23,9 +23,9 @@ def file_2_3(value, system):
 
     # Find the miscatorgorized bedMethyls
     if file_ext == '.bed.bigBed' and 'MethylRrbs' in value.get('submitted_file_name'):
-        value['format'] = 'bedMethyl'
+        value['file_format'] = 'bedMethyl'
     if file_ext == '.bed.gz' and 'MethylRrbs' in value.get('submitted_file_name'):
-        value['format'] = 'bed_bedMethyl'
+        value['file_format'] = 'bed_bedMethyl'
 
     unknownDict = {'.CEL.gz': 'CEL',
                     '.bb': 'bedMethyl',
@@ -59,8 +59,8 @@ def file_2_3(value, system):
                     '.txt': 'tsv',
                     '.xlsx': 'tsv',  # These need to be converted to tsv
                    }
-    if format in ['unknown', 'customTrack']:
-        value['format'] = unknownDict[file_ext]
+    if file_format in ['unknown', 'customTrack']:
+        value['file_format'] = unknownDict[file_ext]
 
     # http://redmine.encodedcc.org/issues/1429
     status = value.get('status')
@@ -152,5 +152,5 @@ def file_2_3(value, system):
         value['output_type'] = temp
 
     # Help the raw data problem
-    if value['output_type'] == 'raw data' and value['format'] == "fastq":
+    if value['output_type'] == 'raw data' and value['file_format'] == "fastq":
         value['output_type'] = 'reads' 
