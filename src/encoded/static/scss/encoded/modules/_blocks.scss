@@ -23,8 +23,8 @@
 
         .col-md-12 & {
             @media screen and (min-width: $screen-md-min) {
-                padding-left: 20%;
-                padding-right: 20%;
+                padding-left: 10%;
+                padding-right: 10%;
             }
 
             &.full-width {
@@ -46,20 +46,16 @@
             }
         }
 
-        pre {
-            padding: 0 10px;
+        code {
+            display: block;
+            padding: 5px 10px;
             overflow: auto;
             word-wrap: normal;
             background-color: #f8f8f8;
             border: 1px solid #e0e0e0;
-
-            code {
-                display: block;
-                margin: 10px 0;
-                white-space: pre;
-                border: none;
-            }
-
+            margin: 10px 0;
+            white-space: pre;
+            border: none;
         }
 
         code {
