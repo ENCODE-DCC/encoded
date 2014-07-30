@@ -17,16 +17,22 @@
         "schema_version": {
             "default": "1"
         },
-        "title": {
-            "title": "Title",
-            "description": "The name shown in the browser's title bar and tabs.",
-            "type": "string"
+        "parent": {
+            "title": "Parent Page",
+            "type": ["string", "null"],
+            "linkTo": "page",
+            "validators": ["isNotCollectionDefaultPage"]
         },
         "name": {
             "title": "URL Name",
             "description": "The name shown in this page's URL.",
             "type": "string",
             "pattern": "^[a-z0-9_-]+$"
+        },
+        "title": {
+            "title": "Title",
+            "description": "The name shown in the browser's title bar and tabs.",
+            "type": "string"
         },
         "layout": {
             "title": "Page Layout",
@@ -61,8 +67,8 @@
         }
     },
     "columns": {
-        "name": {
-            "title": "Name",
+        "@id": {
+            "title": "Path",
             "type": "string"
         },
         "title": {

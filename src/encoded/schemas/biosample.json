@@ -357,6 +357,9 @@
             "type": "string",
             "enum": [
                 "fertilization",
+                "puff stage: PS (1-2), dark blue gut",
+                "puff stage: PS (3-6), light blue gut",
+                "puff stage: PS (7-9), clear gut",
                 "white prepupa",
                 "eclosion"
             ]  

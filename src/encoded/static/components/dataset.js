@@ -32,11 +32,16 @@ var Dataset = module.exports.Dataset = React.createClass({
             }
         });
         experiments = _.values(experiments);
+
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions.join(', ');
+
         return (
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>Dataset {context.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                     </div>
                 </header>
                 <div className="panel data-display">
