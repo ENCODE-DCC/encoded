@@ -1,6 +1,5 @@
 [
     {
-<<<<<<< HEAD
 	"title": "An integrated encyclopedia of DNA elements in the human genome",
 	"abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
 	"authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
@@ -123,22 +122,7 @@
         "date_published":"2014 Jan",
         "references":["PMID:22952232"],
         "authors":"Hardison RC",
-	"published_by": ["ENCODE"],
+        "published_by": ["ENCODE"],
         "abstract":"Complex traits such as susceptibility to diseases are determined in part by variants at multiple genetic loci. Genome-wide association studies can identify these loci, but most phenotype-associated variants lie distal to protein-coding regions and are likely involved in regulating gene expression. Understanding how  these genetic variants affect complex traits depends on the ability to predict and test the function of the genomic elements harboring them. Community efforts such as the ENCODE Project provide a wealth of data about epigenetic features associated with gene regulation. These data enable the prediction of testable functions for many phenotype-associated variants. AU"
-=======
-    "title": "An integrated encyclopedia of DNA elements in the human genome",
-    "abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
-    "authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
-    "journal": "Nature",
-    "date_published": "2012 Jun",
-    "references": ["PMID:22955616"],
-    "volume": "489",
-    "issue": "7414",
-    "page": "57-74",
-    "status": "in progress",
-    "published_by": ["ENCODE"],
-    "data_used": "ENCODE main paper",
-    "uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
->>>>>>> 1649-pubref
     }
 ]
