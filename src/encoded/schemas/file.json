@@ -28,6 +28,10 @@
         "file_format": {
             "title": "File format",
             "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
         }
     },
     "properties": {

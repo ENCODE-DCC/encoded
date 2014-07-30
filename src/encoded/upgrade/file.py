@@ -34,6 +34,7 @@ def file_2_3(value, system):
                     '.bed.bigBed': 'bigBed',
                     '.bigBed': 'bigBed',
                     '.bed9': 'bedMethyl',
+                    '.bed9.gz': 'bed_bedMethyl',
                     '.bedCluster.bigBed': 'bigBed',
                     '.bedLogR.bigBed': 'bedLogR',
                     '.bedRnaElements.bigBed': 'bedRnaElements',
@@ -65,25 +66,25 @@ def file_2_3(value, system):
         value['file_format'] = unknownDict[file_ext]
 
     # http://redmine.encodedcc.org/issues/1429
-    status = value.get('status')
+
     context = system['context']
     root = find_root(context)
     dataset = root.get_by_uuid(value['dataset']).upgrade_properties(finalize=False)
+
     dataset_status = dataset.get('status')
+    status = value.get('status')
 
     if status == 'current':
         if dataset_status == 'released':
             value['status'] = 'released'
+
     if status == 'obsolete':
         if dataset_status in ['released', 'revoked']:
             value['status'] = 'revoked'
         else:
             value['status'] = 'deleted'
 
-    # http://redmine.encodedcc.org/issues/1618
-    value['award'] = dataset['award']['uuid']
-    value['lab'] = dataset['lab']['uuid']
-
+    # http://redmine.encodedcc.org/issues/568
     output_type_dict = {
                         "Alignments": "alignments",
                         "bigBed": "sites",
@@ -149,9 +150,13 @@ def file_2_3(value, system):
                         "Protocol": "raw data",
                         }
 
-    if value['output_type'] in output_type_dict:
-        temp = output_type_dict[value['output_type']]
-        value['output_type'] = temp
+    current_output_type = value['output_type']
+    if current_output_type in output_type_dict:
+        value['output_type'] = output_type_dict[current_output_type]
+
+    # http://redmine.encodedcc.org/issues/1618
+    value['award'] = dataset['award']['uuid']
+    value['lab'] = dataset['lab']
 
     # Help the raw data problem
     if value['output_type'] == 'raw data' and value['file_format'] == "fastq":
