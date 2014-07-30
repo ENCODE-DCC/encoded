@@ -52,5 +52,3 @@ def test_file_upgrade2(root, registry, file_2, file, threadlocals, dummy_request
     value = migrator.upgrade('file', file_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['status'] == 'current'
-    assert value['lab'] == dataset['lab']
-    assert value['award'] == dataset['award']

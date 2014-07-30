@@ -10,14 +10,3 @@ def file1(experiment):
         'output_type': 'reads',
         'status': 'released'
     }
-
-
-@pytest.mark.xfail
-def test_file_general_audit(testapp, file1):
-
-    res = testapp.post_json('/file', file1)
-    res = testapp.get(res.location + '@@index-data')
-    error, = res.json['audit']  # I have no idea why this fails
-    assert error['category'] == 'missing lab'
-    assert error['category'] == 'missing award'
-    assert error['category'] == 'missing submitted_by'

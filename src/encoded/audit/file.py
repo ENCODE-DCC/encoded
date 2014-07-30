@@ -42,30 +42,6 @@ def audit_file_status(value, system):
 
 
 @audit_checker('file')
-def audit_file_ownership(value, system):
-
-    if value.get('status') == 'deleted':
-        return
-
-    for term in ['submitted_by', 'award', 'lab']:
-        if term not in value:
-            detail = 'missing {}'.format(term)
-            yield AuditFailure('missing {}'.format(term), detail, level='ERROR')
-
-    # Similar to the above issue, I cannot seem to get at the submitted_by information
-    # or the lab information
-
-    # submitter_labs = value['submitted_by']['submits_for']
-    # file_lab = value['lab']['@id']
-
-
-#    if file_lab not in submitter_lab:
-#        detail = '{} lab - {} submitter'.format(file_lab, value['submitted_by'])
-#        raise AuditFailure('lab mismatch', detail, level='ERROR')
-
-
-
-@audit_checker('file')
 def audit_file_output_type(value, system):
 
     if value.get('status') == 'deleted':

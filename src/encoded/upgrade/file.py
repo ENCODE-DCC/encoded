@@ -154,10 +154,6 @@ def file_2_3(value, system):
     if current_output_type in output_type_dict:
         value['output_type'] = output_type_dict[current_output_type]
 
-    # http://redmine.encodedcc.org/issues/1618
-    value['award'] = dataset['award']
-    value['lab'] = dataset['lab']
-
     # Help the raw data problem
     if value['output_type'] == 'raw data' and value['file_format'] == "fastq":
         value['output_type'] = 'reads' 
