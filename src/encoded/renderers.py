@@ -1,3 +1,4 @@
+from copy import deepcopy
 from pkg_resources import resource_filename
 from pyramid.events import (
     BeforeRender,
@@ -7,6 +8,7 @@ from pyramid.interfaces import IRootFactory
 from pyramid.httpexceptions import (
     HTTPForbidden,
     HTTPMovedPermanently,
+    HTTPNotFound,
     HTTPPreconditionFailed,
     HTTPUnauthorized,
     HTTPUnsupportedMediaType,
@@ -21,6 +23,8 @@ from pyramid.traversal import (
     split_path_info,
     _join_path_tuple,
 )
+from urllib import unquote
+from .cache import ManagerLRUCache
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
 import logging
@@ -75,6 +79,68 @@ class NullRenderer:
             return value
         request.response = value
         return None
+
+
+def make_subrequest(request, path):
+    """ Make a subrequest
+
+    Copies request environ data for authentication.
+
+    May be better to just pull out the resource through traversal and manually
+    perform security checks.
+    """
+    env = request.environ.copy()
+    if path and '?' in path:
+        path_info, query_string = path.split('?', 1)
+        path_info = unquote(path_info)
+    else:
+        path_info = unquote(path)
+        query_string = ''
+    env['PATH_INFO'] = path_info
+    env['QUERY_STRING'] = query_string
+    subreq = request.__class__(env, method='GET', content_type=None,
+                               body=b'')
+    subreq.remove_conditional_headers()
+    # XXX "This does not remove headers like If-Match"
+    return subreq
+
+
+embed_cache = ManagerLRUCache('embed_cache')
+
+
+def embed(request, path, as_user=False):
+    # Should really be more careful about what gets included instead.
+    # Cache cut response time from ~800ms to ~420ms.
+    if as_user:
+        return _embed(request, path, as_user)
+    result = embed_cache.get(path, None)
+    if result is not None:
+        return deepcopy(result)
+    result = _embed(request, path, as_user)
+    if not as_user:
+        embed_cache[path] = deepcopy(result)
+    return result
+
+
+def _embed(request, path, as_user=False):
+    subreq = make_subrequest(request, path)
+    subreq.override_renderer = 'null_renderer'
+    if not as_user:
+        if 'HTTP_COOKIE' in subreq.environ:
+            del subreq.environ['HTTP_COOKIE']
+        subreq.remote_user = 'EMBED'
+    try:
+        return request.invoke_subrequest(subreq)
+    except HTTPNotFound:
+        raise KeyError(path)
+
+
+def maybe_include_embedded(request, result):
+    if len(manager.stack) != 1:
+        return
+    embedded = manager.stack[0].get('encoded_embedded', None)
+    if embedded:
+        result['_embedded'] = {'resources': embedded}
 
 
 def security_tween_factory(handler, registry):
@@ -261,7 +327,8 @@ def es_tween_factory(handler, registry):
             return handler(request)
 
         # Normalize path
-        path = _join_path_tuple(('',) + split_path_info(request.path_info))
+        path_tuple = split_path_info(request.path_info)
+        path = _join_path_tuple(('',) + path_tuple)
 
         if path in ignore or path.startswith('/static/'):
             return handler(request)
@@ -282,9 +349,23 @@ def es_tween_factory(handler, registry):
             request.root = registry.getUtility(IRootFactory)(request)
             collection = request.root.get(properties['@type'][0])
             rendering_val = collection.Item.expand_page(request, properties)
+
+            # Add actions
             allowed = set(source['principals_allowed_edit'])
             if allowed.intersection(request.effective_principals):
                 rendering_val['actions'] = collection.Item.actions
+
+            # Add default page
+            default_page_path = None
+            if len(path_tuple) == 0:
+                default_page_path = '/pages/homepage/'
+            elif len(path_tuple) == 1:
+                default_page_path = '/pages' + path
+            if default_page_path:
+                default_page = embed(request, default_page_path)
+                if default_page:
+                    rendering_val['default_page'] = default_page
+
         else:
             rendering_val = source[frame]
         return render_to_response(None, rendering_val, request)

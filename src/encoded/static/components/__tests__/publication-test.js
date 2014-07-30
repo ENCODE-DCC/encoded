@@ -37,7 +37,7 @@ describe('Publication', function() {
 
         it('has a good citation line', function() {
             var journal = TestUtils.findRenderedDOMComponentWithClass(publication, 'journal').getDOMNode();
-            expect(journal.textContent).toEqual('Nature. 2012 Sep 6;489(7414):57-74.');
+            expect(journal.textContent).toEqual('Nature. 2012 Sep;489(7414):57-74.');
         });
 
         it('has a journal name in italics', function() {

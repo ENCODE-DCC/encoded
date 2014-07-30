@@ -84,30 +84,30 @@
                 "type": "string",
                 "enum" : [
                     "human disease",
-		    "basic biology",
-		    "software tool",
-		    "database",
-		    "integrative analysis",
-		    "technology development",
-		    "data standard"
-		]
+            "basic biology",
+            "software tool",
+            "database",
+            "integrative analysis",
+            "technology development",
+            "data standard"
+        ]
             }      
         },
-	"published_by": {
-	    "title": "Published by",
-	    "type": "array",
-	    "default": ["ENCODE"],
-	    "items": {
-	        "title": "Published by",
-		"type": "string",
-		"enum": [
-		    "ENCODE",
-		    "mouseENCODE",
-		    "modENCODE",
-		    "community"
-		]
-	    }
-	},
+    "published_by": {
+        "title": "Published by",
+        "type": "array",
+        "default": ["ENCODE"],
+        "items": {
+            "title": "Published by",
+        "type": "string",
+        "enum": [
+            "ENCODE",
+            "mouseENCODE",
+            "modENCODE",
+            "community"
+        ]
+        }
+    },
         "data_used": {
             "title": "Data used",
             "type": "string"
@@ -130,10 +130,10 @@
             "title": "Journal",
             "type": "string"
         },
-	"published_by": {
-	    "title": "Published by",
-	    "type": "string"
-	}
+        "published_by": {
+            "title": "Published by",
+            "type": "string"
+        }
     },
     "columns": {
         "title": {
@@ -144,8 +144,28 @@
             "title": "Publication date",
             "type": "string"
         },
+        "authors": {
+            "title": "Authors",
+            "type": "string"
+        },
+        "status": {
+            "title": "Publication status",
+            "type": "string"
+        },
         "journal": {
             "title": "Journal",
+            "type": "string"
+        },
+        "volume": {
+            "title": "Volume",
+            "type": "string"
+        },
+        "issue": {
+            "title": "Issue",
+            "type": "string"
+        },
+        "page": {
+            "title": "Page",
             "type": "string"
         },
         "data_used": {
