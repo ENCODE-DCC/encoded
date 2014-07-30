@@ -362,9 +362,13 @@ def es_tween_factory(handler, registry):
             elif len(path_tuple) == 1:
                 default_page_path = '/pages' + path
             if default_page_path:
-                default_page = embed(request, default_page_path)
-                if default_page:
-                    rendering_val['default_page'] = default_page
+                try:
+                    default_page = embed(request, default_page_path)
+                except KeyError:
+                    pass
+                else:
+                    if default_page:
+                        rendering_val['default_page'] = default_page
 
         else:
             rendering_val = source[frame]
