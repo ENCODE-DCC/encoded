@@ -72,13 +72,10 @@ var App = React.createClass({
 
         var appClass = 'done';
         if (this.props.slow) {
-        	appClass = 'communicating'; 
+            appClass = 'communicating'; 
         }
 
-        var title = globals.listing_titles.lookup(context)({
-            context: context,
-            loadingComplete: this.state.loadingComplete
-        });
+        var title = context.title || context.name || context.accession || context['@id'];
         if (title && title != 'Home') {
             title = title + ' – ' + portal.portal_title;
         } else {
@@ -104,9 +101,9 @@ var App = React.createClass({
                     }}></script>
                     <div id="slot-application">
                         <div id="application" className={appClass}>
-                        
-						<div className="loading-spinner"></div>
-								   
+
+                        <div className="loading-spinner"></div>
+
                             <div id="layout">
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         context_actions={context.actions || []}

@@ -87,7 +87,7 @@ var Approval = module.exports.Approval = React.createClass({
 
                         {context.antibody.host_organism ? <dt>Host</dt> : null}
                         {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.name}</dd> : null}
-        
+
                         {context.antibody.clonality ? <dt>Clonality</dt> : null}
                         {context.antibody.clonality ? <dd className="sentence-case">{context.antibody.clonality}</dd> : null}
 
@@ -191,15 +191,3 @@ var Characterization = module.exports.Characterization = React.createClass({
 });
 
 globals.panel_views.register(Characterization, 'antibody_characterization');
-
-
-// XXX Should move to Python code.
-var antibody_approval_title = function (props) {
-    var context = props.context;
-    var accession = context.antibody.accession;
-    var organism_name = context.target.organism.scientific_name;
-    var target_label = context.target.label;
-    return accession + ' in ' + organism_name + ' ' + target_label;
-};
-
-globals.listing_titles.register(antibody_approval_title, 'antibody_approval');

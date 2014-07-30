@@ -10,14 +10,18 @@ var globals = require('./globals');
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
             var title = globals.listing_titles.lookup(context)({context: context});
-            var sciTitleParts = title.split(/[\[\]]/);
             var panel = globals.panel_views.lookup(context)();
+
+            // Make string of alternate accessions
+            var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
             this.transferPropsTo(panel);
             return (
                 <div className={itemClass}>
                     <header className="row">
                         <div className="col-sm-12">
                             <h2>{title}</h2>
+                            {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         </div>
                     </header>
                     <p className="description">{context.description}</p>
@@ -78,15 +82,16 @@ var globals = require('./globals');
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
             var title = globals.listing_titles.lookup(context)({context: context});
+            var action, form;
             if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
                 title = 'Add ' + title;
-                var action = this.props.context['@id'];
-                var form = <Form schema={this.props.schema} action={action} data={this.props.defaultValue} method="POST" />;
+                action = this.props.context['@id'];
+                form = <Form schema={this.props.schema} action={action} data={this.props.defaultValue} method="POST" />;
             } else {  // edit form
                 title = 'Edit ' + title;
                 var url = this.props.context['@id'] + '?frame=edit';
-                var action = this.props.context['@id'];
-                var form = <FetchedData Component={Form} url={url} schema={this.props.schema} action={action} method="PUT" />;
+                action = this.props.context['@id'];
+                form = <FetchedData Component={Form} url={url} schema={this.props.schema} action={action} method="PUT" />;
             }
             return (
                 <div className={itemClass}>
