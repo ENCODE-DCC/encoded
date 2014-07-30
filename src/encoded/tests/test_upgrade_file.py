@@ -2,8 +2,8 @@ import pytest
 
 
 @pytest.fixture
-def file(experiment):
-    return{
+def file_base(experiment):
+    return {
         'accession': 'ENCFF000TST',
         'dataset': experiment['uuid'],
         'file_format': 'fastq',
@@ -13,8 +13,8 @@ def file(experiment):
 
 
 @pytest.fixture
-def file_1(file):
-    item = file.copy()
+def file_1(file_base):
+    item = file_base.copy()
     item.update({
         'schema_version': '1',
         'status': 'CURRENT',
@@ -24,8 +24,8 @@ def file_1(file):
 
 
 @pytest.fixture
-def file_2(file):
-    item = file.copy()
+def file_2(file_base):
+    item = file_base.copy()
     item.update({
         'schema_version': '2',
         'status': 'current',
@@ -34,21 +34,17 @@ def file_2(file):
     return item
 
 
-def test_file_upgrade(app, file_1):
-    migrator = app.registry['migrator']
+def test_file_upgrade(registry, file_1):
+    migrator = registry['migrator']
     value = migrator.upgrade('file', file_1, target_version='2')
     assert value['schema_version'] == '2'
     assert value['status'] == 'current'
 
 
-@pytest.mark.xfail
 def test_file_upgrade2(root, registry, file_2, file, threadlocals, dummy_request):
-
-    # This is not working as I am not getting the experiment information
     migrator = registry['migrator']
     context = root.get_by_uuid(file['uuid'])
     dummy_request.context = context
-    dataset = root.get_by_uuid(file['dataset']['uuid'])
     value = migrator.upgrade('file', file_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['status'] == 'current'
