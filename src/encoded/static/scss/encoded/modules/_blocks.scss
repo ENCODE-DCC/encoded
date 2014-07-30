@@ -28,8 +28,7 @@
 
         .col-md-12 & {
             @media screen and (min-width: $screen-md-min) {
-                padding-left: 10%;
-                padding-right: 10%;
+                padding: 20px 10%;
             }
 
             &.full-width {
