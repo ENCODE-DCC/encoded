@@ -588,7 +588,7 @@ class Target(Collection):
     class Item(Collection.Item):
         template = {
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
-            'title': {'$value': '{label} ({organism_name})', '$templated': True},
+            'title': {'$value': '{label} ([{scientific_name}])', '$templated': True},
         }
         embedded = set(['organism'])
         keys = ALIAS_KEYS + [
@@ -601,6 +601,7 @@ class Target(Collection):
             # self.properties as we need uuid here
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
+            ns['scientific_name'] = organism.properties['scientific_name']
             return ns
 
         @property

@@ -10,13 +10,17 @@ var globals = require('./globals');
             var context = this.props.context;
             var itemClass = globals.itemClass(context, 'view-item');
             var title = globals.listing_titles.lookup(context)({context: context});
+            var sciTitleParts = title.split(/[\[\]]/);
             var panel = globals.panel_views.lookup(context)();
             this.transferPropsTo(panel);
             return (
                 <div className={itemClass}>
                     <header className="row">
                         <div className="col-sm-12">
-                            <h2>{title}</h2>
+                            {sciTitleParts.length === 1 ?
+                                <h2>{title}</h2>
+                            : <h2>{sciTitleParts[0]}<em>{sciTitleParts[1]}</em>{sciTitleParts[2]}</h2>}
+                            
                         </div>
                     </header>
                     <p className="description">{context.description}</p>
