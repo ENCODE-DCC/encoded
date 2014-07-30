@@ -39,10 +39,14 @@ var FetchedItemBlockView = React.createClass({
 
 var ItemPreview = React.createClass({
     render: function() {
-        var context = this.props.data;
+        var context = this.props.data['@graph'][0];
         var style = {width: '80%'};
-        var title = globals.listing_titles.lookup(context)({context: context});
-        return <h2><a href={context['@id']}>{title}</a></h2>;
+        var Listing = globals.listing_views.lookup(context);
+        return (
+            <ul className="nav result-table">
+                <Listing context={context} columns={this.props.data.columns} key={context['@id']} />
+            </ul>
+        );
     }
 });
 
@@ -62,31 +66,30 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
 
     render: function() {
         var url = this.props.value;
-        if (url && url.indexOf('/') !== 0) {
-            url = '/' + url;
-        }
+        var previewUrl = '/search?mode=picker&@id=' + url;
         var searchUrl = '/search' + this.state.search;
         var actions = [
             <button className="btn btn-primary" onClick={this.handleSelect}>Select</button>
         ];
         return (
-            <div>
-              {this.state.browsing
-                ? <FetchedData url={searchUrl} Component={SearchBlockEdit}
-                               loadingComplete={true} searchBase={this.state.search}
-                               actions={actions} onChange={this.handleFilter}
-                               showSpinnerOnUpdate={false} />
-                : <div className="clearfix">
-                    <button className="btn btn-default pull-right" onClick={this.handleBrowse}>Browse&hellip;</button>
-                    {this.transferPropsTo(<FetchedData url={url} Component={ItemPreview} loadingComplete={true} showSpinnerOnUpdate={false} />)}
-                  </div>}
+            <div className="item-picker">
+                <button className="btn btn-primary pull-right" onClick={this.handleBrowse}>Browse&hellip;</button>
+                <div className="item-picker-preview">
+                    {url ? <a className="clear" href="#" onClick={this.handleClear}><i className="icon icon-times"></i></a> : ''}
+                    {url ? this.transferPropsTo(<FetchedData url={previewUrl} Component={ItemPreview} loadingComplete={true} showSpinnerOnUpdate={false} />) : ''}
+                </div>
+                {this.state.browsing ? 
+                    <FetchedData url={searchUrl} Component={SearchBlockEdit}
+                                 loadingComplete={true} searchBase={this.state.search}
+                                 actions={actions} onChange={this.handleFilter}
+                                 showSpinnerOnUpdate={false} /> : ''}
             </div>
         );
     },
 
     handleBrowse: function(e) {
         e.preventDefault();
-        this.setState({browsing: true});
+        this.setState({browsing: !this.state.browsing});
     },
 
     handleFilter: function(href) {
@@ -97,6 +100,11 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
         var value = e.currentTarget.id;
         this.setState({browsing: false});
         this.props.onChange(value);
+    },
+
+    handleClear: function(e) {
+        this.props.onChange("");
+        return false;
     }
 });
 

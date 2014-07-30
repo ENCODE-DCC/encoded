@@ -1,9 +1,9 @@
 import os
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
-from random import randint
 from ..contentbase import (
     Root,
+    item_view,
     location_root,
 )
 
@@ -31,6 +31,11 @@ def home(context, request):
         '@type': ['portal'],
         # 'login': {'href': request.resource_path(context, 'login')},
     })
+
+    homepage = context.get_by_unique_key('page:location', 'homepage')
+    if homepage is not None:
+        result['default_page'] = item_view(homepage, request)
+
     return result
 
 

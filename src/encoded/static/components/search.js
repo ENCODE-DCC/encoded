@@ -3,6 +3,7 @@
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var url = require('url');
+var _ = require('underscore');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
@@ -109,6 +110,9 @@ var Dbxref = dbxref.Dbxref;
             var age = (result['age'] && result['age'] != 'unknown') ? ' ' + result['age'] : '';
             var ageUnits = (result['age_units'] && result['age_units'] != 'unknown' && age) ? ' ' + result['age_units'] : '';
             var separator = (lifeStage || age) ? ',' : '';
+            var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
+            var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
+            var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
             return (<li>
                         <div>
                             {this.renderActions()}
@@ -127,22 +131,22 @@ var Dbxref = dbxref.Dbxref;
                         </div>
                         <div className="data-row">
                             <div><strong>{columns['biosample_type']['title']}</strong>: {result['biosample_type']}</div>
-                            {result['rnais.target.label'] ?
+                            {rnais ?
                                 <div>
                                     <strong>{columns['rnais.target.label']['title'] + ': '}</strong>
-                                    {result['rnais.target.label']}
+                                    {rnais}
                                 </div>
                             : null}
-                            {result['constructs.target.label'] ?
+                            {constructs ?
                                 <div>
                                     <strong>{columns['constructs.target.label']['title'] + ': '}</strong>
-                                    {result['constructs.target.label']}
+                                    {constructs}
                                 </div>
                             : null}
-                            {result['treatments.treatment_term_name'] ?
+                            {treatment ?
                                 <div>
                                     <strong>{columns['treatments.treatment_term_name']['title'] + ': '}</strong>
-                                    {result['treatments.treatment_term_name']}
+                                    {treatment}
                                 </div>
                             : null}
                             <div><strong>{columns['source.title']['title']}</strong>: {result['source.title']}</div>
@@ -154,46 +158,46 @@ var Dbxref = dbxref.Dbxref;
     globals.listing_views.register(Biosample, 'biosample');
 
 
-    // Returns array length if array 'a' with 1st index 'i' contains all same non-'unknown' value in its 2nd index
-    // 0 if 'a' contains an 'unknown' value, non-'unknown' values differ, or 'a' has no elements
-    function homogenousArray(a, i) {
-        var aLen = a[i] ? a[i].length : 0;
-        var j = 0;
-
-        if (aLen > 0) {
-            var a0 = a[i][0];
-            if (a0 !== 'unknown' && a0 !== '') {
-                for (j = 1; j < aLen; j++) {
-                    if (a[i][j] === 'unknown' || a[i][j] !== a0) {
-                        break;
-                    }
-                }
-            }
-            return j === aLen ? aLen : 0;
-        }
-        return 0;
-    }
-
     var Experiment = module.exports.Experiment = React.createClass({
         mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            var age = '';
-            var ageUnits = '';
 
-            // See if all life stage, age, and age_unit arrays are all homogeneous
-            var name = homogenousArray(result, 'replicates.library.biosample.organism.scientific_name') ?
-                    result['replicates.library.biosample.organism.scientific_name'][0] : '';
-            var lifeStage = homogenousArray(result, 'replicates.library.biosample.life_stage') ?
-                    result['replicates.library.biosample.life_stage'][0] : '';
-            var ageLen = homogenousArray(result, 'replicates.library.biosample.age');
-            var ageUnitsLen = homogenousArray(result, 'replicates.library.biosample.age_units');
-            if (ageLen === ageUnitsLen) {
-                age = ageLen ? ' ' + result['replicates.library.biosample.age'][0] : '';
-                ageUnits = ageUnitsLen ? ' ' + result['replicates.library.biosample.age_units'][0] : '';
+            // Make array of scientific names from replicates; remove all duplicates
+            var names = _.uniq(result.replicates.map(function(replicate) {
+                return (replicate.library && replicate.library.biosample && replicate.library.biosample.organism &&
+                        replicate.library.biosample.organism) ? replicate.library.biosample.organism.scientific_name : undefined;
+            }));
+            var name = (names.length === 1 && names[0] && names[0] !== 'unknown') ? names[0] : '';
+
+            // Make array of life stages from replicates; remove all duplicates
+            var lifeStages = _.uniq(result.replicates.map(function(replicate) {
+                return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.life_stage : undefined;
+            }));
+            var lifeStage = (lifeStages.length === 1 && lifeStages[0] && lifeStages[0] !== 'unknown') ? ' ' + lifeStages[0] : '';
+
+            // Make array of ages from replicates; remove all duplicates
+            var ages = _.uniq(result.replicates.map(function(replicate) {
+                return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.age : undefined;
+            }));
+            var age = (ages.length === 1 && ages[0] && ages[0] !== 'unknown') ? ' ' + ages[0] : '';
+
+            // Make array of age units from replicates; remove all duplicates
+            var ageUnit = '';
+            if (age) {
+                var ageUnits = _.uniq(result.replicates.map(function(replicate) {
+                    return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.age_units : undefined;
+                }));
+                ageUnit = (ageUnits.length === 1 && ageUnits[0] && ageUnits[0] !== 'unknown') ? ' ' + ageUnits[0] : '';
             }
+
+            // If we have life stage or age, need to separate from scientific name with comma
             var separator = (lifeStage || age) ? ', ' : '';
+
+            // Get the first treatment if it's there
+            var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
+                    result.replicates[0].library.biosample.treatments[0]) ? result.replicates[0].library.biosample.treatments[0].treatment_term_name : '';
 
             return (<li>
                         <div>
@@ -206,11 +210,11 @@ var Dbxref = dbxref.Dbxref;
                             <div className="accession">
                                 <a href={result['@id']}>
                                     {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
-                                    {name || lifeStage || age || ageUnits ?
+                                    {name || lifeStage || age || ageUnit ?
                                         <span>
                                             {' ('}
                                             {name ? <em>{name}</em> : ''}
-                                            {separator + lifeStage + age + ageUnits + ')'}
+                                            {separator + lifeStage + age + ageUnit + ')'}
                                         </span>
                                     : ''}
                                 </a>
@@ -223,10 +227,10 @@ var Dbxref = dbxref.Dbxref;
                                     {result['target.label']}
                                 </div>
                             : null}
-                            {result['replicates.library.biosample.treatments.treatment_term_name'] ?
+                            {treatment ?
                                 <div>
                                     <strong>{columns['replicates.library.biosample.treatments.treatment_term_name']['title'] + ': '}</strong>
-                                    {result['replicates.library.biosample.treatments.treatment_term_name']}
+                                    {treatment}
                                 </div>
                             : null}
                             <div><strong>{columns['lab.title']['title']}</strong>: {result['lab.title']}</div>
@@ -570,40 +574,40 @@ var Dbxref = dbxref.Dbxref;
             
             return (
                     <div>
-                        {results.length ?
-                            <div className="row">
-                                <div className="col-sm-5 col-md-4 col-lg-3">
-                                    {this.transferPropsTo(
-                                        <FacetList facets={facets} filters={filters}
-                                                   searchBase={searchBase} onFilter={this.onFilter} />
-                                    )}
-                                </div>
-
-                                <div className="col-sm-7 col-md-8 col-lg-9">
-                                    <h4>Showing {results.length} of {total} 
-                                        {total > results.length ?
-                                                <span className="pull-right">
-                                                    {searchBase.indexOf('&limit=all') !== -1 ? 
-                                                        <a className="btn btn-info btn-sm"
-                                                           href={searchBase.replace("&limit=all", "")}
-                                                           onClick={this.onFilter}>View 25</a>
-                                                    : <a rel="nofollow" className="btn btn-info btn-sm"
-                                                         href={searchBase+ '&limit=all'}
-                                                         onClick={this.onFilter}>View All</a>}
-                                                </span>
-                                            : null}
-                                    </h4>
-                                    <hr />
-                                    <ul className="nav result-table">
-                                        {results.length ?
-                                            results.map(function (result) {
-                                                return Listing({context:result, columns: columns, key: result['@id']});
-                                            })
-                                        : null}
-                                    </ul>
-                                </div>
+                        <div className="row">
+                            <div className="col-sm-5 col-md-4 col-lg-3">
+                                {this.transferPropsTo(
+                                    <FacetList facets={facets} filters={filters}
+                                               searchBase={searchBase} onFilter={this.onFilter} />
+                                )}
                             </div>
-                        : null }
+                            <div className="col-sm-7 col-md-8 col-lg-9">
+                                {context['notification'] === 'Success' ?
+                                    <h4>
+                                        Showing {results.length} of {total} 
+                                        {total > results.length ?
+                                            <span className="pull-right">
+                                                {searchBase.indexOf('&limit=all') !== -1 ? 
+                                                    <a className="btn btn-info btn-sm"
+                                                       href={searchBase.replace("&limit=all", "")}
+                                                       onClick={this.onFilter}>View 25</a>
+                                                : <a rel="nofollow" className="btn btn-info btn-sm"
+                                                     href={searchBase+ '&limit=all'}
+                                                     onClick={this.onFilter}>View All</a>}
+                                            </span>
+                                        : null}
+                                    </h4>
+                                : <h4>{context['notification']}</h4>}
+                                <hr />
+                                <ul className="nav result-table">
+                                    {results.length ?
+                                        results.map(function (result) {
+                                            return Listing({context:result, columns: columns, key: result['@id']});
+                                        })
+                                    : null}
+                                </ul>
+                            </div>
+                        </div>
                     </div>  
             );
         },
@@ -622,9 +626,12 @@ var Dbxref = dbxref.Dbxref;
             var results = context['@graph'];
             var notification = context['notification'];
             var searchBase = url.parse(this.props.href).search || '';
+            var facetdisplay = context.facets.some(function(facet) {
+                return facet.total > 0;
+            });
             return (
                 <div>
-                    {notification === 'Success' ?
+                    {facetdisplay ?
                         <div className="panel data-display main-panel"> 
                             {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
                         </div>

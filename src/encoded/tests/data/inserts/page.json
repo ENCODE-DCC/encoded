@@ -1,9 +1,9 @@
 [
     {
-        "name": "home",
-        "title": "Home",
+        "name": "homepage",
+        "title": "The ENCODE Project",
         "status": "released",
-        "uuid": "b7d70724-3fb7-41c6-893c-f90be5c95ae2",
+        "uuid": "27f9abd9-0081-4ade-8c82-95ec12b3a7dd",
         "layout": {
             "rows": [
                 {
@@ -46,24 +46,15 @@
         }
     },
     {
-        "name": "about",
-        "title": "About",
+        "name": "test-section",
+        "title": "Test Section",
         "status": "released",
-        "uuid": "092a47cf-8d7b-4ff0-bf5d-9b16c89a8827",
+        "uuid": "41c4ea4e-7a8e-4b91-8fe3-384d0adc8735",
         "layout": {
             "rows": [
                 {
                     "cols": [
-                        {
-                            "className": "col-md-12 class_override",
-                            "blocks": ["#block1"]
-                        }
-                    ]
-                },
-                {
-                    "cols": [
-                        {"blocks": ["#block2", "#block3"]},
-                        {"blocks": ["#block4"]}
+                        {"blocks": ["#block1"]}
                     ]
                 }
             ],
@@ -71,22 +62,52 @@
                 {
                     "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<h1>About</h1>"
-                },
+                    "body": "<h1>Test Section</h1>"
+                }
+            ]
+        }
+    },
+    {
+        "parent": "/test-section",
+        "name": "subpage",
+        "title": "Subpage",
+        "status": "released",
+        "uuid": "331928f7-d8f7-4ea6-b4e0-8d380fb22974",
+        "layout": {
+            "rows": [
                 {
-                    "@id": "#block2",
+                    "cols": [
+                        {"blocks": ["#block1"]}
+                    ]
+                }
+            ],
+            "blocks": [
+                {
+                    "@id": "#block1",
                     "@type": "richtextblock",
-                    "body": "<h2>Antibodies</h2>"
-                },
+                    "body": "<h1>Subpage</h1>"
+                }
+            ]
+        }
+    },
+    {
+        "name": "images",
+        "title": "Images",
+        "status": "released",
+        "uuid": "61edd6b2-bfdb-4db1-b950-8845ac37f65c",
+        "layout": {
+            "rows": [
                 {
-                    "@id": "#block3",
-                    "@type": "searchblock",
-                    "search": "?type=antibody_approval"
-                },
+                    "cols": [
+                        {"blocks": ["#block1"]}
+                    ]
+                }
+            ],
+            "blocks": [
                 {
-                    "@id": "#block4",
-                    "@type": "itemblock",
-                    "item": "/images/b4589f52-521e-45db-8dfa-378d92cbbd86/"
+                    "@id": "#block1",
+                    "@type": "richtextblock",
+                    "body": "<h1>Image Collection Landing Page</h1>"
                 }
             ]
         }

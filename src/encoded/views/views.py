@@ -12,7 +12,10 @@ from ..contentbase import (
 )
 from ..schema_utils import (
     load_schema,
+    lookup_resource,
+    VALIDATOR_REGISTRY,
 )
+from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_resource,
     find_root,
@@ -56,6 +59,10 @@ ALLOW_SUBMITTER_ADD = [
     (Allow, 'group.submitter', 'add')
 ]
 
+ALLOW_AUTHENTICATED_VIEW = [
+    (Allow, Authenticated, 'view'),
+]
+
 ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, Authenticated, 'view'),
     (Allow, 'group.admin', 'edit'),
@@ -63,8 +70,9 @@ ALLOW_LAB_SUBMITTER_EDIT = [
     # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
-ALLOW_CURRENT = ALLOW_LAB_SUBMITTER_EDIT + [
+ALLOW_CURRENT = [
     (Allow, Everyone, 'view'),
+    (Allow, 'group.admin', 'edit'),
 ]
 
 ONLY_ADMIN_VIEW = [
@@ -107,7 +115,7 @@ ADD_ACTION = {
     'title': 'Add',
     'profile': '/profiles/{item_type}.json',
     'method': 'GET',
-    'href': '#!add',
+    'href': '{collection_uri}#!add',
     'className': 'btn btn-success',
     '$templated': True,
     '$condition': 'permission:add',
@@ -157,6 +165,7 @@ class Collection(BaseCollection):
             'not pursued': ALLOW_CURRENT,
 
             # dataset / experiment
+            'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
         }
 
@@ -884,7 +893,106 @@ class RNAiCharacterization(Characterization):
     }
 
 
+@location('pages')
 class Page(Collection):
+    item_type = 'page'
+    properties = {
+        'title': 'Pages',
+        'description': 'Portal pages',
+    }
+    schema = load_schema('page.json')
+    unique_key = 'page:location'
+    template = copy.deepcopy(Collection.template)
+    template['actions'] = [ADD_ACTION]
+
+    # Override default get to avoid some unnecessary lookups
+    # and skip the check that parent == collection
+    def get(self, name, default=None):
+        root = find_root(self)
+        resource = root.get_by_uuid(name, None)
+        if resource is not None:
+            return resource
+        if self.unique_key is not None:
+            resource = root.get_by_unique_key(self.unique_key, name)
+            if resource is not None:
+                return resource
+        return default
+
+    class Item(Collection.Item):
+        name_key = 'name'
+        keys = [
+            {'name': 'page:location', 'value': '{name}', '$templated': True,
+             '$condition': lambda parent=None: parent is None},
+            {'name': 'page:location', 'value': '{parent}:{name}', '$templated': True,
+             '$condition': 'parent', '$templated': True},
+        ]
+
+        template = Collection.Item.template.copy()
+        template['canonical_uri'] = {
+            '$value': lambda name: '/%s/' % name if name != 'homepage' else '/',
+            '$condition': lambda collection_uri=None: collection_uri == '/pages/',
+            '$templated': True
+        }
+
+        actions = [EDIT_ACTION]
+
+        STATUS_ACL = {
+            'in progress': [],
+            'released': ALLOW_EVERYONE_VIEW,
+            'deleted': ONLY_ADMIN_VIEW,
+        }
+
+        @property
+        def __parent__(self):
+            parent_uuid = self.properties.get('parent')
+            name = self.__name__
+            root = find_root(self.collection)
+            if parent_uuid:  # explicit parent
+                return root.get_by_uuid(parent_uuid)
+            elif name in root.collections or name == 'homepage':
+                # collection default page; use pages collection as canonical parent
+                return self.collection
+            else:  # top level
+                return root
+
+        def is_default_page(self):
+            name = self.__name__
+            root = find_root(self.collection)
+            if not self.properties.get('parent') and (name in root.collections or name == 'homepage'):
+                return True
+            return False
+
+        # Handle traversal to nested pages
+
+        def __getitem__(self, name):
+            resource = self.get(name)
+            if resource is None:
+                raise KeyError(name)
+            return resource
+
+        def __contains__(self, name):
+            return self.get(name, None) is not None
+
+        def get(self, name, default=None):
+            root = find_root(self)
+            location = str(self.uuid) + ':' + name
+            resource = root.get_by_unique_key('page:location', location)
+            if resource is not None:
+                return resource
+            return default
+
+
+def isNotCollectionDefaultPage(value, schema):
+    if value:
+        request = get_current_request()
+        page = lookup_resource(request.root, request.root, value.encode('utf-8'))
+        if page.is_default_page():
+            return 'You may not place pages inside an object collection.'
+
+VALIDATOR_REGISTRY['isNotCollectionDefaultPage'] = isNotCollectionDefaultPage
+
+
+class LegacyPage(Collection):
     schema = load_schema('page.json')
 
     template = copy.deepcopy(Collection.template)
@@ -909,7 +1017,7 @@ class Page(Collection):
 
 
 @location('about')
-class AboutPage(Page):
+class AboutPage(LegacyPage):
     item_type = 'about_page'
     properties = {
         'title': 'About Pages',
@@ -919,7 +1027,7 @@ class AboutPage(Page):
 
 
 @location('help')
-class HelpPage(Page):
+class HelpPage(LegacyPage):
     item_type = 'help_page'
     properties = {
         'title': 'Help Pages',
