@@ -123,6 +123,16 @@ var ContextActions = React.createClass({
                 </NavItem>
             );
         });
+        if (this.props.context_actions.length > 1) {
+            actions = (
+                <NavItem dropdown={true}>
+                    <i className="icon icon-gear"></i>
+                    <Nav navbar={true} dropdown={true}>
+                        {actions}
+                    </Nav>
+                </NavItem>
+            );
+        }
         return <Nav bsStyle="navbar-nav" navbar={true} right={true} id="edit-actions">{actions}</Nav>;
     }
 });
