@@ -26,7 +26,9 @@ def external_creds(parent, properties):
     bucket = registry.settings['file_upload_bucket']
     mapping = parent.schema['file_format_file_extension']
     file_extension = mapping[properties['file_format']]
-    key = '{uuid}/{accession}{file_extension}'.format(file_extension=file_extension, **properties)
+    date = properties['date_created'].split('T')[0].replace('-', '/')
+    key = '{date}/{uuid}/{accession}{file_extension}'.format(
+        date=date, file_extension=file_extension, **properties)
     policy = {
         'Version': '2012-10-17',
         'Statement': [
