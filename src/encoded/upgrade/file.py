@@ -155,7 +155,7 @@ def file_2_3(value, system):
         value['output_type'] = output_type_dict[current_output_type]
 
     # http://redmine.encodedcc.org/issues/1618
-    value['award'] = dataset['award']['uuid']
+    value['award'] = dataset['award']
     value['lab'] = dataset['lab']
 
     # Help the raw data problem
