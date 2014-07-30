@@ -17,8 +17,8 @@ from ..contentbase import (
     item_view_edit,
     item_view_raw,
     location,
-    make_subrequest,
 )
+from ..renderers import make_subrequest
 
 
 @location('users')

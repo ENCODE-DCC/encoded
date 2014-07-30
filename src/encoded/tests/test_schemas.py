@@ -37,3 +37,9 @@ def test_dependencies(testapp):
     testapp.post_json(collection_url, {'dep1': 'dep1'}, status=422)
     testapp.post_json(collection_url, {'dep2': 'dep2'}, status=422)
     testapp.post_json(collection_url, {'dep1': 'dep1', 'dep2': 'disallowed'}, status=422)
+
+
+def test_page_schema_validates_parent_is_not_collection_default_page(testapp):
+    res = testapp.post_json('/pages/', {'name': 'biosamples', 'title': 'Biosamples'})
+    uuid = res.json['@graph'][0]['@id']
+    testapp.post_json('/pages/', {'parent': uuid, 'name': 'test', 'title': 'Test'}, status=422)

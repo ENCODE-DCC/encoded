@@ -3,6 +3,7 @@
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var url = require('url');
+var _ = require('underscore');
 var globals = require('./globals');
 var image = require('./image');
 var search = module.exports;
@@ -163,81 +164,38 @@ var Dbxref = dbxref.Dbxref;
             var result = this.props.context;
             var columns = this.props.columns;
 
-            // See if all life stage, age, and age_unit arrays are all homogeneous
-            var name, lifeStage, age, ageUnits, homogenous;
+            // Make array of scientific names from replicates; remove all duplicates
+            var names = _.uniq(result.replicates.map(function(replicate) {
+                return (replicate.library && replicate.library.biosample && replicate.library.biosample.organism &&
+                        replicate.library.biosample.organism) ? replicate.library.biosample.organism.scientific_name : undefined;
+            }));
+            var name = (names.length === 1 && names[0] && names[0] !== 'unknown') ? names[0] : '';
 
-            // See if all scientific names are the same
-            homogenous = result.replicates.every(function(replicate) {
-                if (replicate.library && replicate.library.biosample && replicate.library.biosample.organism &&
-                        replicate.library.biosample.organism.scientific_name) {
-                    if (name) {
-                        return name === replicate.library.biosample.organism.scientific_name;
-                    } else {
-                        // First time, so just seed the name. End if the name exists but is empty
-                        name = replicate.library.biosample.organism.scientific_name;
-                        return name !== '' && name != 'unknown';
-                    }
-                } else {
-                    // replicate doesn't have data, so we're done.
-                    return false;
-                }
-            });
-            name = homogenous ? name : '';
+            // Make array of life stages from replicates; remove all duplicates
+            var lifeStages = _.uniq(result.replicates.map(function(replicate) {
+                return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.life_stage : undefined;
+            }));
+            var lifeStage = (lifeStages.length === 1 && lifeStages[0] && lifeStages[0] !== 'unknown') ? ' ' + lifeStages[0] : '';
 
-            // See if all life stages are the same
-            homogenous = result.replicates.every(function(replicate) {
-                if (replicate.library && replicate.library.biosample && replicate.library.biosample.life_stage) {
-                    if (lifeStage) {
-                        return lifeStage === replicate.library.biosample.life_stage;
-                    } else {
-                        // First time, so just seed the name. End if the name exists but is empty
-                        lifeStage = replicate.library.biosample.life_stage;
-                        return lifeStage !== '' && lifeStage != 'unknown';
-                    }
-                } else {
-                    // replicate doesn't have data, so we're done.
-                    return false;
-                }
-            });
-            lifeStage = homogenous ? lifeStage : '';
+            // Make array of ages from replicates; remove all duplicates
+            var ages = _.uniq(result.replicates.map(function(replicate) {
+                return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.age : undefined;
+            }));
+            var age = (ages.length === 1 && ages[0] && ages[0] !== 'unknown') ? ' ' + ages[0] : '';
 
-            // See if all ages are the same
-            homogenous = result.replicates.every(function(replicate) {
-                if (replicate.library && replicate.library.biosample && replicate.library.biosample.age) {
-                    if (age) {
-                        return age === replicate.library.biosample.age;
-                    } else {
-                        // First time, so just seed the name. End if the name exists but is empty
-                        age = replicate.library.biosample.age;
-                        return age !== '' && age != 'unknown';
-                    }
-                } else {
-                    // replicate doesn't have data, so we're done.
-                    return false;
-                }
-            });
-            age = homogenous ? ' ' + age : '';
+            // Make array of age units from replicates; remove all duplicates
+            var ageUnit = '';
+            if (age) {
+                var ageUnits = _.uniq(result.replicates.map(function(replicate) {
+                    return (replicate.library && replicate.library.biosample) ? replicate.library.biosample.age_units : undefined;
+                }));
+                ageUnit = (ageUnits.length === 1 && ageUnits[0] && ageUnits[0] !== 'unknown') ? ' ' + ageUnits[0] : '';
+            }
 
-            // See if all age units are the same
-            homogenous = result.replicates.every(function(replicate) {
-                if (replicate.library && replicate.library.biosample && replicate.library.biosample.age_units) {
-                    if (ageUnits) {
-                        return ageUnits === replicate.library.biosample.age_units;
-                    } else {
-                        // First time, so just seed the name. End if the name exists but is empty
-                        ageUnits = replicate.library.biosample.age_units;
-                        return ageUnits !== '';
-                    }
-                } else {
-                    // replicate doesn't have data, so we're done.
-                    return false;
-                }
-            });
-            ageUnits = homogenous ? ' ' + ageUnits : '';
-
+            // If we have life stage or age, need to separate from scientific name with comma
             var separator = (lifeStage || age) ? ', ' : '';
 
-            // Get the first treatment
+            // Get the first treatment if it's there
             var treatment = (result.replicates[0] && result.replicates[0].library && result.replicates[0].library.biosample &&
                     result.replicates[0].library.biosample.treatments[0]) ? result.replicates[0].library.biosample.treatments[0].treatment_term_name : '';
 
@@ -252,11 +210,11 @@ var Dbxref = dbxref.Dbxref;
                             <div className="accession">
                                 <a href={result['@id']}>
                                     {result['assay_term_name']}<span>{result['biosample_term_name'] ? ' of ' + result['biosample_term_name'] : ''}</span>
-                                    {name || lifeStage || age || ageUnits ?
+                                    {name || lifeStage || age || ageUnit ?
                                         <span>
                                             {' ('}
                                             {name ? <em>{name}</em> : ''}
-                                            {separator + lifeStage + age + ageUnits + ')'}
+                                            {separator + lifeStage + age + ageUnit + ')'}
                                         </span>
                                     : ''}
                                 </a>
@@ -616,40 +574,40 @@ var Dbxref = dbxref.Dbxref;
             
             return (
                     <div>
-                        {results.length ?
-                            <div className="row">
-                                <div className="col-sm-5 col-md-4 col-lg-3">
-                                    {this.transferPropsTo(
-                                        <FacetList facets={facets} filters={filters}
-                                                   searchBase={searchBase} onFilter={this.onFilter} />
-                                    )}
-                                </div>
-
-                                <div className="col-sm-7 col-md-8 col-lg-9">
-                                    <h4>Showing {results.length} of {total} 
-                                        {total > results.length ?
-                                                <span className="pull-right">
-                                                    {searchBase.indexOf('&limit=all') !== -1 ? 
-                                                        <a className="btn btn-info btn-sm"
-                                                           href={searchBase.replace("&limit=all", "")}
-                                                           onClick={this.onFilter}>View 25</a>
-                                                    : <a rel="nofollow" className="btn btn-info btn-sm"
-                                                         href={searchBase+ '&limit=all'}
-                                                         onClick={this.onFilter}>View All</a>}
-                                                </span>
-                                            : null}
-                                    </h4>
-                                    <hr />
-                                    <ul className="nav result-table">
-                                        {results.length ?
-                                            results.map(function (result) {
-                                                return Listing({context:result, columns: columns, key: result['@id']});
-                                            })
-                                        : null}
-                                    </ul>
-                                </div>
+                        <div className="row">
+                            <div className="col-sm-5 col-md-4 col-lg-3">
+                                {this.transferPropsTo(
+                                    <FacetList facets={facets} filters={filters}
+                                               searchBase={searchBase} onFilter={this.onFilter} />
+                                )}
                             </div>
-                        : null }
+                            <div className="col-sm-7 col-md-8 col-lg-9">
+                                {context['notification'] === 'Success' ?
+                                    <h4>
+                                        Showing {results.length} of {total} 
+                                        {total > results.length ?
+                                            <span className="pull-right">
+                                                {searchBase.indexOf('&limit=all') !== -1 ? 
+                                                    <a className="btn btn-info btn-sm"
+                                                       href={searchBase.replace("&limit=all", "")}
+                                                       onClick={this.onFilter}>View 25</a>
+                                                : <a rel="nofollow" className="btn btn-info btn-sm"
+                                                     href={searchBase+ '&limit=all'}
+                                                     onClick={this.onFilter}>View All</a>}
+                                            </span>
+                                        : null}
+                                    </h4>
+                                : <h4>{context['notification']}</h4>}
+                                <hr />
+                                <ul className="nav result-table">
+                                    {results.length ?
+                                        results.map(function (result) {
+                                            return Listing({context:result, columns: columns, key: result['@id']});
+                                        })
+                                    : null}
+                                </ul>
+                            </div>
+                        </div>
                     </div>  
             );
         },
@@ -668,9 +626,12 @@ var Dbxref = dbxref.Dbxref;
             var results = context['@graph'];
             var notification = context['notification'];
             var searchBase = url.parse(this.props.href).search || '';
+            var facetdisplay = context.facets.some(function(facet) {
+                return facet.total > 0;
+            });
             return (
                 <div>
-                    {notification === 'Success' ?
+                    {facetdisplay ?
                         <div className="panel data-display main-panel"> 
                             {this.transferPropsTo(<ResultTable key={undefined} searchBase={searchBase} onChange={this.props.navigate} />)}
                         </div>

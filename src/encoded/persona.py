@@ -18,7 +18,7 @@ from pyramid.settings import (
 from pyramid.view import (
     view_config,
 )
-from .contentbase import make_subrequest
+from .renderers import make_subrequest
 
 _marker = object()
 

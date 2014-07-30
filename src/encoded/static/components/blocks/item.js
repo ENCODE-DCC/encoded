@@ -72,23 +72,24 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
             <button className="btn btn-primary" onClick={this.handleSelect}>Select</button>
         ];
         return (
-            <div>
-              {this.state.browsing
-                ? <FetchedData url={searchUrl} Component={SearchBlockEdit}
-                               loadingComplete={true} searchBase={this.state.search}
-                               actions={actions} onChange={this.handleFilter}
-                               showSpinnerOnUpdate={false} />
-                : <div className="clearfix">
-                    <button className="btn btn-default pull-right" onClick={this.handleBrowse}>Browse&hellip;</button>
+            <div className="item-picker">
+                <button className="btn btn-primary pull-right" onClick={this.handleBrowse}>Browse&hellip;</button>
+                <div className="item-picker-preview">
+                    {url ? <a className="clear" href="#" onClick={this.handleClear}><i className="icon icon-times"></i></a> : ''}
                     {url ? this.transferPropsTo(<FetchedData url={previewUrl} Component={ItemPreview} loadingComplete={true} showSpinnerOnUpdate={false} />) : ''}
-                  </div>}
+                </div>
+                {this.state.browsing ? 
+                    <FetchedData url={searchUrl} Component={SearchBlockEdit}
+                                 loadingComplete={true} searchBase={this.state.search}
+                                 actions={actions} onChange={this.handleFilter}
+                                 showSpinnerOnUpdate={false} /> : ''}
             </div>
         );
     },
 
     handleBrowse: function(e) {
         e.preventDefault();
-        this.setState({browsing: true});
+        this.setState({browsing: !this.state.browsing});
     },
 
     handleFilter: function(href) {
@@ -99,6 +100,11 @@ var ObjectPicker = module.exports.ObjectPicker = React.createClass({
         var value = e.currentTarget.id;
         this.setState({browsing: false});
         this.props.onChange(value);
+    },
+
+    handleClear: function(e) {
+        this.props.onChange("");
+        return false;
     }
 });
 
