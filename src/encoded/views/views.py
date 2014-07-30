@@ -588,7 +588,7 @@ class Target(Collection):
     class Item(Collection.Item):
         template = {
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
-            'title': {'$value': '{label} ([{scientific_name}])', '$templated': True},
+            'title': {'$value': '{label} ({scientific_name})', '$templated': True},
         }
         embedded = set(['organism'])
         keys = ALIAS_KEYS + [

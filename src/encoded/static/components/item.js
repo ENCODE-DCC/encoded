@@ -17,10 +17,7 @@ var globals = require('./globals');
                 <div className={itemClass}>
                     <header className="row">
                         <div className="col-sm-12">
-                            {sciTitleParts.length === 1 ?
-                                <h2>{title}</h2>
-                            : <h2>{sciTitleParts[0]}<em>{sciTitleParts[1]}</em>{sciTitleParts[2]}</h2>}
-                            
+                            <h2>{title}</h2>
                         </div>
                     </header>
                     <p className="description">{context.description}</p>
