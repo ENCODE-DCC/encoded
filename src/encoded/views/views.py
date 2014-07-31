@@ -12,7 +12,10 @@ from ..contentbase import (
 )
 from ..schema_utils import (
     load_schema,
+    lookup_resource,
+    VALIDATOR_REGISTRY,
 )
+from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_resource,
     find_root,
@@ -20,6 +23,7 @@ from pyramid.traversal import (
 from urllib import quote_plus
 from urlparse import urljoin
 import copy
+import datetime
 
 ACCESSION_KEYS = [
     {
@@ -112,7 +116,7 @@ ADD_ACTION = {
     'title': 'Add',
     'profile': '/profiles/{item_type}.json',
     'method': 'GET',
-    'href': '#!add',
+    'href': '{collection_uri}#!add',
     'className': 'btn btn-success',
     '$templated': True,
     '$condition': 'permission:add',
@@ -619,7 +623,7 @@ class Target(Collection):
     class Item(Collection.Item):
         template = {
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
-            'title': {'$value': '{label} ({organism_name})', '$templated': True},
+            'title': {'$value': '{label} ({scientific_name})', '$templated': True},
         }
         embedded = set(['organism'])
         keys = ALIAS_KEYS + [
@@ -632,12 +636,16 @@ class Target(Collection):
             # self.properties as we need uuid here
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
+            ns['scientific_name'] = organism.properties['scientific_name']
             return ns
 
         @property
         def __name__(self):
-            ns = self.template_namespace(self.properties.copy())
-            return u'{label}-{organism_name}'.format(**ns)
+            properties = self.upgrade_properties(finalize=False)
+            root = find_root(self)
+            organism = root.get_by_uuid(self.properties['organism'])
+            return u'{label}-{organism_name}'.format(
+                organism_name=organism.properties['name'], **properties)
 
 
 # The following should really be child collections.
@@ -664,6 +672,9 @@ class AntibodyApproval(Collection):
     }
 
     class Item(Collection.Item):
+        template = {
+            'title': {'$value': '{accession} in {scientific_name} {label}', '$templated': True},
+        }
         embedded = [
             'antibody.host_organism',
             'antibody.source',
@@ -677,6 +688,18 @@ class AntibodyApproval(Collection):
         keys = [
             {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
         ]
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            root = find_root(self)
+            # self.properties as we need uuid here
+            antibody = root.get_by_uuid(self.properties['antibody'])
+            ns['accession'] = antibody.properties['accession']
+            target = root.get_by_uuid(self.properties['target'])
+            ns['label'] = target.properties['label']
+            organism = root.get_by_uuid(target.properties['organism'])
+            ns['scientific_name'] = organism.properties['scientific_name']
+            return ns
 
 
 @location('platforms')
@@ -748,23 +771,6 @@ class Software(Collection):
     properties = {
         'title': 'Software',
         'description': 'Listing of software',
-    }
-
-
-@location('files')
-class File(Collection):
-    item_type = 'file'
-    schema = load_schema('file.json')
-    properties = {
-        'title': 'Files',
-        'description': 'Listing of Files',
-    }
-
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
-    item_namespace_from_path = {
-        'lab': 'dataset.lab',
-        'award': 'dataset.award',
     }
 
 
@@ -857,7 +863,9 @@ class Experiment(Dataset):
             ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
-            ]
+            ],
+            'month_released': {'$value': '{month_released}', '$templated': True, '$condition': 'date_released'},
+            'run_type': {'$value': '{run_type}', '$templated': True, '$condition': 'replicates'},
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody',
@@ -884,6 +892,16 @@ class Experiment(Dataset):
             if request is None:
                 return ns
             terms = request.registry['ontology']
+            ns['run_type'] = ''
+            if 'replicates' in ns:
+                for replicate in ns['replicates']:
+                    f = find_resource(request.root, replicate)
+                    if 'paired_ended' in f.properties:
+                        ns['run_type'] = 'Single-ended'
+                        if f.properties['paired_ended'] is True:
+                            ns['run_type'] = 'Paired-ended'
+            if 'date_released' in ns:
+                ns['month_released'] = datetime.datetime.strptime(ns['date_released'], '%Y-%m-%d').strftime('%B, %Y')
             if 'biosample_term_id' in ns:
                 if ns['biosample_term_id'] in terms:
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
@@ -922,7 +940,106 @@ class RNAiCharacterization(Characterization):
     }
 
 
+@location('pages')
 class Page(Collection):
+    item_type = 'page'
+    properties = {
+        'title': 'Pages',
+        'description': 'Portal pages',
+    }
+    schema = load_schema('page.json')
+    unique_key = 'page:location'
+    template = copy.deepcopy(Collection.template)
+    template['actions'] = [ADD_ACTION]
+
+    # Override default get to avoid some unnecessary lookups
+    # and skip the check that parent == collection
+    def get(self, name, default=None):
+        root = find_root(self)
+        resource = root.get_by_uuid(name, None)
+        if resource is not None:
+            return resource
+        if self.unique_key is not None:
+            resource = root.get_by_unique_key(self.unique_key, name)
+            if resource is not None:
+                return resource
+        return default
+
+    class Item(Collection.Item):
+        name_key = 'name'
+        keys = [
+            {'name': 'page:location', 'value': '{name}', '$templated': True,
+             '$condition': lambda parent=None: parent is None},
+            {'name': 'page:location', 'value': '{parent}:{name}', '$templated': True,
+             '$condition': 'parent', '$templated': True},
+        ]
+
+        template = Collection.Item.template.copy()
+        template['canonical_uri'] = {
+            '$value': lambda name: '/%s/' % name if name != 'homepage' else '/',
+            '$condition': lambda collection_uri=None: collection_uri == '/pages/',
+            '$templated': True
+        }
+
+        actions = [EDIT_ACTION]
+
+        STATUS_ACL = {
+            'in progress': [],
+            'released': ALLOW_EVERYONE_VIEW,
+            'deleted': ONLY_ADMIN_VIEW,
+        }
+
+        @property
+        def __parent__(self):
+            parent_uuid = self.properties.get('parent')
+            name = self.__name__
+            root = find_root(self.collection)
+            if parent_uuid:  # explicit parent
+                return root.get_by_uuid(parent_uuid)
+            elif name in root.collections or name == 'homepage':
+                # collection default page; use pages collection as canonical parent
+                return self.collection
+            else:  # top level
+                return root
+
+        def is_default_page(self):
+            name = self.__name__
+            root = find_root(self.collection)
+            if not self.properties.get('parent') and (name in root.collections or name == 'homepage'):
+                return True
+            return False
+
+        # Handle traversal to nested pages
+
+        def __getitem__(self, name):
+            resource = self.get(name)
+            if resource is None:
+                raise KeyError(name)
+            return resource
+
+        def __contains__(self, name):
+            return self.get(name, None) is not None
+
+        def get(self, name, default=None):
+            root = find_root(self)
+            location = str(self.uuid) + ':' + name
+            resource = root.get_by_unique_key('page:location', location)
+            if resource is not None:
+                return resource
+            return default
+
+
+def isNotCollectionDefaultPage(value, schema):
+    if value:
+        request = get_current_request()
+        page = lookup_resource(request.root, request.root, value.encode('utf-8'))
+        if page.is_default_page():
+            return 'You may not place pages inside an object collection.'
+
+VALIDATOR_REGISTRY['isNotCollectionDefaultPage'] = isNotCollectionDefaultPage
+
+
+class LegacyPage(Collection):
     schema = load_schema('page.json')
 
     template = copy.deepcopy(Collection.template)
@@ -946,8 +1063,8 @@ class Page(Collection):
         }
 
 
-@location('about')
-class AboutPage(Page):
+@location('_about')
+class AboutPage(LegacyPage):
     item_type = 'about_page'
     properties = {
         'title': 'About Pages',
@@ -956,8 +1073,8 @@ class AboutPage(Page):
     unique_key = 'about_page:name'
 
 
-@location('help')
-class HelpPage(Page):
+@location('_help')
+class HelpPage(LegacyPage):
     item_type = 'help_page'
     properties = {
         'title': 'Help Pages',
@@ -975,6 +1092,23 @@ class Publication(Collection):
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
+    name_key = 'title'
+
+    class Item(Collection.Item):
+        template = {
+            'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
+        }
+        
+        keys = ALIAS_KEYS + [
+            {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
+            {'name': '{item_type}:title', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True},
+        ]
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            if 'date_published' in ns:
+                ns['publication_year'] = ns['date_published'].partition(' ')[0]
+            return ns
 
 
 @location('images')

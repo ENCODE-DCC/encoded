@@ -64,6 +64,9 @@ var Biosample = module.exports.Biosample = React.createClass({
             protocol_documents[doc['@id']] = Panel({context: doc});
         });
 
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
 
         return (
@@ -80,6 +83,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>

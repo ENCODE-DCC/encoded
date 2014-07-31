@@ -12,26 +12,23 @@ dd.h3, dd.h4 {
 
 .key-value {
     dt, dd {
-        min-height: 20px; // = line-height ; defined somewhere?
-        margin-bottom: 10px;
+        padding-bottom: 10px;
         padding-top: 5px;
         line-height: 18px;
         font-size: 14px;
     }
     dt {
-        display: inline-block;
         float: left;
-        width: $component-offset-horizontal - 10;
+        width: $component-offset-horizontal;
         text-align: right;
+        clear: left;
     }
     dt::after {
         content: ": ";
     }
 
     dd {
-        display: block;
-        margin-left: $component-offset-horizontal + 10;
-        //margin-bottom: 5px;
+        margin-left: 200px;
         word-wrap: break-word;
         overflow-wrap: break-word;
     }

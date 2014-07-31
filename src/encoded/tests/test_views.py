@@ -175,10 +175,10 @@ def test_collection_post_bad_(anontestapp):
 
 
 def test_collection_actions_filtered_by_permission(workbook, testapp, anontestapp):
-    res = testapp.get('/about/')
+    res = testapp.get('/pages/')
     assert any(action for action in res.json['actions'] if action['name'] == 'add')
 
-    res = anontestapp.get('/about/')
+    res = anontestapp.get('/pages/')
     assert not any(action for action in res.json['actions'] if action['name'] == 'add')
 
 
@@ -240,3 +240,34 @@ def test_user_effective_principals(users, anontestapp, execute_counter):
         'system.Everyone',
         'userid.e9be360e-d1c7-4cae-9b3a-caf588e8bb6f',
     ]
+
+
+def test_page_toplevel(workbook, anontestapp):
+    res = anontestapp.get('/test-section/', status=200)
+    assert res.json['@id'] == '/test-section/'
+
+    res = anontestapp.get('/pages/test-section/', status=301)
+    assert res.location == 'http://localhost/test-section/'
+
+
+def test_page_nested(workbook, anontestapp):
+    res = anontestapp.get('/test-section/subpage/', status=200)
+    assert res.json['@id'] == '/test-section/subpage/'
+
+
+def test_page_homepage(workbook, anontestapp):
+    res = anontestapp.get('/pages/homepage/', status=200)
+    assert res.json['canonical_uri'] == '/'
+
+    res = anontestapp.get('/', status=200)
+    assert 'default_page' in res.json
+    assert res.json['default_page']['@id'] == '/pages/homepage/'
+
+
+def test_page_collection_default(workbook, anontestapp):
+    res = anontestapp.get('/pages/images/', status=200)
+    assert res.json['canonical_uri'] == '/images/'
+
+    res = anontestapp.get('/images/', status=200)
+    assert 'default_page' in res.json
+    assert res.json['default_page']['@id'] == '/pages/images/'

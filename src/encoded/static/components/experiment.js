@@ -118,6 +118,9 @@ var Experiment = module.exports.Experiment = React.createClass({
             statuses.push({status: "pending", title: "Validation"});
         }
 
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
         // XXX This makes no sense.
         //var control = context.possible_controls[0];
         return (
@@ -131,6 +134,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <h2>
                             Experiment summary for {context.accession}
                         </h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="characterization-status-labels">
                             <StatusLabel status={statuses} />
                         </div>
@@ -144,8 +148,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <dt>Accession</dt>
                         <dd>{context.accession}</dd>
 
-                        {biosamples.length ? <dt>Biosample summary</dt> : null}
-                        {biosamples.length ?
+                        {biosamples.length || context.biosample_term_name ? <dt>Biosample summary</dt> : null}
+                        {biosamples.length || context.biosample_term_name ?
                             <dd>
                                 {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
                                 {organismName.length || lifeAge.length ? '(' : null}
@@ -292,6 +296,10 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
             treatmentList.push(t.treatment_term_name);
         }
         treatments = treatmentList.join(", ");
+    }
+
+    if (!library && !depletedIn && !treatments && !platform) {
+        return (<div hidden={true}></div>);
     }
 
     return (

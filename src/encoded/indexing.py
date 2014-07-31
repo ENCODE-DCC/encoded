@@ -12,9 +12,11 @@ from .contentbase import (
     AfterModified,
     BeforeModified,
     Created,
+)
+from .renderers import (
+    json_renderer,
     make_subrequest,
 )
-from .renderers import json_renderer
 from .stats import ElasticsearchConnectionMixin
 from .storage import (
     DBSession,
