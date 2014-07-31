@@ -102,7 +102,7 @@ def file_2_3(value, system):
                         "Hotspots": "hotspots",
                         "Interactions": "interactions",
                         "MinusRawSignal": "raw minus signal",
-                        "PlusRawSignal": "plus raw signal",
+                        "PlusRawSignal": "raw plus signal",
                         "macs2_dnase_peaks": "peaks",
                         "macs2_dnase_signal": "signal",
                         "MinusSignal": "minus signal",
