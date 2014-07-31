@@ -34,9 +34,6 @@
         }
     },
     "properties": {
-        "accession": {
-            "accessionType": "FF"
-        },
         "schema_version": {
             "default": "3"
         },
