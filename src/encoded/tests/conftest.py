@@ -605,14 +605,14 @@ def replicate(replicates):
 
 
 @pytest.fixture
-def files(testapp, labs, awards):
+def files(testapp, experiments):
     from . import sample_data
     return sample_data.load(testapp, 'file')
 
 
 @pytest.fixture
-def file(file):
-    return [f for f in files if ['accession'] == 'ENCFF000TST'][0]
+def file(files):
+    return [f for f in files if f['accession'] == 'ENCFF000TST'][0]
 
 
 @pytest.fixture
