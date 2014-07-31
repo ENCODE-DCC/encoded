@@ -83,5 +83,10 @@
             "title": "Status",
             "type": "string"
         }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "name": 2.0,
+        "title": 2.0
     }
 }
