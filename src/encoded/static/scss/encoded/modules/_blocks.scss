@@ -1,3 +1,21 @@
+$block-font-size-h1: floor($font-size-base * 2.4);
+$block-font-size-h2: floor($font-size-base * 2.2);
+$block-font-size-h3: ceil($font-size-base * 1.7);
+$block-font-size-h4: ceil($font-size-base * 1.3);
+$block-font-size-h5: ceil($font-size-base * 1.1);
+$block-font-size-h6: $font-size-base;
+$block-font-size-p:  $font-size-base;
+
+$block-mobile-font-size-h1: $block-font-size-h1;
+$block-mobile-font-size-h2: floor($block-font-size-h2 * 1.1);
+$block-mobile-font-size-h3: floor($block-font-size-h3 * 1.2);
+$block-mobile-font-size-h4: floor($block-font-size-h4 * 1.2);
+$block-mobile-font-size-h5: floor($block-font-size-h5 * 1.2);
+$block-mobile-font-size-h6: floor($block-font-size-h6 * 1.2);
+$block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
+
+
+
 .page-title {
     margin-bottom: 30px;
 }
@@ -22,8 +40,11 @@
     }
 
     &.richtextblock {
-        padding: 20px;
         background-color: #fff;
+    }
+
+    &.richtextblock, .teaser .caption {
+        padding: 20px;
         line-height: 1.8;
 
         .col-md-12 & {
@@ -37,26 +58,13 @@
             }
         }
 
-        li {
-            margin-top: 1em;
-            margin-bottom: 1em;
-
-            &:first-child {
-                margin-top: 0;
-            }
-
-            &:last-child {
-                margin-bottom: 0;
-            }
-        }
-
-        code {
+        pre {
             display: block;
-            padding: 5px 10px;
             overflow: auto;
+            padding: 5px 10px;
             word-wrap: normal;
             background-color: #f8f8f8;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #e0e0e0 !important;
             margin: 10px 0;
             white-space: pre;
             border: none;
@@ -72,6 +80,28 @@
             &:first-child {
                 margin-top: 0;
             }
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        h1 { font-size: $block-mobile-font-size-h1; color: #000; }
+        h2 { font-size: $block-mobile-font-size-h2; color: #000; }
+        h3 { font-size: $block-mobile-font-size-h3; color: #000; }
+        h4 { font-size: $block-mobile-font-size-h4; color: #606090; }
+        h5 { font-size: $block-mobile-font-size-h5; color: #606090; }
+        h6 { font-size: $block-mobile-font-size-h6; color: #606090; }
+        p, li, blockquote, dt, dl { font-size: $block-mobile-font-size-p; }
+
+        @media screen and (min-width: $screen-sm-min) {
+            h1 { font-size: $block-font-size-h1; }
+            h2 { font-size: $block-font-size-h2; }
+            h3 { font-size: $block-font-size-h3; }
+            h4 { font-size: $block-font-size-h4; }
+            h5 { font-size: $block-font-size-h5; }
+            h6 { font-size: $block-font-size-h6; }
+            p, li, blockquote, dt, dl { font-size: $block-font-size-p; }
         }
 
         p {
@@ -79,10 +109,52 @@
                 margin-bottom: 0;
             }
         }
+
+        ul, ol {
+            margin: .3em 0;
+
+            li {
+                margin: .7em 0;
+            }
+        }
+
+        blockquote {
+            background-color: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-left-width: 5px;
+        }
+
+        dl {
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            dt {
+                margin-top: 1em;
+
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+
+            dd {
+                margin: .3em 0 .3em 20px;
+                padding-left: 10px;
+                border-left: 3px solid #e0e0e0;
+            }
+        }
     }
 
     &.teaserblock {
         padding: 0;
+    }
+
+    .teaser .caption {
+        .col-md-12 & {
+            @media screen and (min-width: $screen-md-min) {
+                padding: 20px;
+            }
+        }
     }
 }
 
@@ -164,6 +236,13 @@ a.url {
     .caption {
         background-color: #303030;
         color: #fff;
+
+        h1 { color: #fff !important; }
+        h2 { color: #fff !important; }
+        h3 { color: #fff !important; }
+        h4 { color: #e0e0ff !important; }
+        h5 { color: #e0e0ff !important; }
+        h6 { color: #e0e0ff !important; }
 
         .col-md-12 & {
             @media screen and (min-width: $screen-sm-min) {
