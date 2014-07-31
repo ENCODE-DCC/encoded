@@ -60,7 +60,7 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 
 	&:after {
 		font-family: "FontAwesome";
-		content: "\f021";
+		content: "\f002";
 		position: relative;
 		top: 0;
 		left: -24px;
@@ -115,5 +115,24 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
 	}
 	input[type="file"] {
 		display: inline;
+	}
+}
+
+.item-picker {
+	@include clearfix;
+	@extend .form-control;
+	height: auto;
+	.item-picker-preview {
+		overflow: hidden;		
+		.result-table > li {
+			margin: 4px 6px;
+			border: none;
+		}
+		.clear {
+			float: right;
+		}
+	}
+	> .btn {
+		margin-left: 1em;
 	}
 }

@@ -296,7 +296,7 @@ FILES = [
         'dataset': 'ENCSR000TST',
         'file_format': 'fastq',
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
-        'output_type': 'rawData',
+        'output_type': 'raw data',
         'status': 'current',
     },
     {
@@ -305,7 +305,7 @@ FILES = [
         'dataset': 'ENCSR001TST',
         'file_format': 'fastq',
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
-        'output_type': 'rawData',
+        'output_type': 'raw data',
         'status': 'current',
     },
 ]

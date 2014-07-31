@@ -12,11 +12,34 @@
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/aliases" },        
         { "$ref": "mixins.json#/notes" }
     ],
+    "facets": {
+        "status": {
+            "title": "File status",
+            "type": "string"
+        },
+        "output_type": {
+            "title": "Output type",
+            "type": "string"
+        },
+        "file_format": {
+            "title": "File format",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        }
+    },
     "properties": {
+        "accession": {
+            "accessionType": "FF"
+        },
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "accession": {
             "accessionType": "FF"
@@ -57,16 +80,89 @@
             "type": "string",
             "format": "hex"
         },
+        "file_size": {
+            "title": "File size",
+            "comment": "File size is specified in bytes",
+            "type": "integer"
+        },
         "output_type": {
             "title": "Output type",
             "description": "A description of the file's purpose or contents.",
             "type": "string",
-            "XXXenum": [
-                "sites",
-                "rawData",
-                "peaks",
+            "enum": [
+                "Alignability",
                 "alignments",
-                "signal"
+                "Base_Overlap_Signal",
+                "clusters",
+                "CNV",
+                "contigs",
+                "enhancers",
+                "enhancers_forebrain",
+                "enhancers_heart",
+                "enhancers_wholebrain",
+                "enrichment",
+                "Excludable",
+                "ExonsDeNovo",
+                "ExonsEnsV65IAcuff",
+                "ExonsGencV10",
+                "ExonsGencV3c",
+                "ExonsGencV7",
+                "FiltTransfrags",
+                "GeneDeNovo",
+                "GeneEnsV65IAcuff",
+                "GeneGencV10",
+                "GeneGencV3c",
+                "GeneGencV7",
+                "idat green file",
+                "idat red file",
+                "HMM",
+                "hotspots",
+                "interactions",
+                "Junctions",
+                "library_fraction",
+                "Matrix",
+                "minus signal",
+                "mPepMapGcFt",
+                "mPepMapGcUnFt",
+                "multi-read minus signal",
+                "multi-read plus signal",
+                "multi-read signal",
+                "PctSignal",
+                "peaks",
+                "pepMapGcFt",
+                "pepMapGcUnFt",
+                "plus signal",
+                "Primer",
+                "PrimerPeaks",
+                "raw data",
+                "raw minus signal",
+                "raw plus signal",
+                "raw signal",
+                "RbpAssocRna",
+                "reads",
+                "rejected reads",
+                "signal",
+                "sites",
+                "spike-ins",
+                "splice junctions",
+                "SumSignal",
+                "TranscriptDeNovo",
+                "TranscriptEnsV65IAcuff",
+                "TranscriptGencV10",
+                "TranscriptGencV3c",
+                "TranscriptGencV7",
+                "Transfrags",
+                "TssGencV3c",
+                "TssGencV7",
+                "TssHmm",
+                "UniformlyProcessedPeakCalls",
+                "unique minus signal",
+                "Uniqueness",
+                "unique plus signal",
+                "unique signal",
+                "Validation",
+                "Valleys",
+                "WaveSignal"
             ]
         },
         "paired_end": {
@@ -123,7 +219,9 @@
             "enum" : [
                 "uploading",
                 "current",
-                "obsolete"
+                "deleted",
+                "revoked",
+                "released"
                 ]
         }
     },

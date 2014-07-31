@@ -52,6 +52,8 @@ var Approval = module.exports.Approval = React.createClass({
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
     
+        // Make string of alternate accessions
+        var altacc = context.antibody.alternate_accessions ? context.antibody.alternate_accessions.join(', ') : undefined;
 
         // Missing enncode
         return (
@@ -59,6 +61,7 @@ var Approval = module.exports.Approval = React.createClass({
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>Approval for {context.antibody.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>Antibody against <em>{context.target.organism.scientific_name}</em>
                             {' '}{context.target.label}
                         </h3>
@@ -87,7 +90,7 @@ var Approval = module.exports.Approval = React.createClass({
 
                         {context.antibody.host_organism ? <dt>Host</dt> : null}
                         {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.name}</dd> : null}
-        
+
                         {context.antibody.clonality ? <dt>Clonality</dt> : null}
                         {context.antibody.clonality ? <dd className="sentence-case">{context.antibody.clonality}</dd> : null}
 
@@ -180,7 +183,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <dt>Image</dt>
                             <dd><StatusLabel status={context.status} /></dd>
 
-                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dt><i className="icon icon-download"></i> Download</dt>
                             <dd>{download}</dd>
                         </dl>
                     </div>
@@ -191,15 +194,3 @@ var Characterization = module.exports.Characterization = React.createClass({
 });
 
 globals.panel_views.register(Characterization, 'antibody_characterization');
-
-
-// XXX Should move to Python code.
-var antibody_approval_title = function (props) {
-    var context = props.context;
-    var accession = context.antibody.accession;
-    var organism_name = context.target.organism.scientific_name;
-    var target_label = context.target.label;
-    return accession + ' in ' + organism_name + ' ' + target_label;
-};
-
-globals.listing_titles.register(antibody_approval_title, 'antibody_approval');

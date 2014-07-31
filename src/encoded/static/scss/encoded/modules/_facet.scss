@@ -171,6 +171,7 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
+    overflow: hidden;
 
     li {
         margin-top: 10px;
@@ -213,4 +214,22 @@ span.bar {
     top: 0;
     bottom:0;
     z-index: -1;
+}
+
+
+// Styles for publication listing
+
+.list-author {
+    margin: 0;
+    font-size: floor($font-size-base * 1.1);
+}
+
+.list-citation {
+    margin: 0;
+    font-size: floor($font-size-base * 0.95);;
+}
+
+.list-reference {
+    margin: 0 !important;
+    font-size: floor($font-size-base * 0.95);;
 }

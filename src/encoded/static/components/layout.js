@@ -33,13 +33,25 @@ var BlockEditModal = React.createClass({
         return {value: this.props.value};
     },
 
+    _extendedSchemaCache: {},
+
     render: function() {
         var blocktype = globals.blocks.lookup(this.props.value);
+        var schema = blocktype.schema;
+        if (schema !== undefined) {
+            var schema = this._extendedSchemaCache[blocktype.label];
+            if (schema === undefined) {
+                // add CSS class property
+                var schema_props = _.values(blocktype.schema.children);
+                schema_props.push(ReactForms.schema.Property({name: 'className', label: 'CSS Class'}));
+                schema = this._extendedSchemaCache[blocktype.label] = ReactForms.schema.Schema(null, schema_props);                
+            }
+        }
         var BlockEdit = blocktype.edit || FallbackBlockEdit;
         return this.transferPropsTo(
             <Modal title={'Edit ' + blocktype.label}>
                 <div className="modal-body">
-                    <BlockEdit schema={blocktype.schema} value={this.state.value} onChange={this.onChange} />
+                    <BlockEdit schema={schema} value={this.state.value} onChange={this.onChange} />
                 </div>
                 <div className="modal-footer">
                     <button className="btn btn-default" onClick={this.cancel}>Cancel</button>
@@ -81,10 +93,10 @@ var Block = module.exports.Block = React.createClass({
         return (
             <div className="block-toolbar">
                 <ModalTrigger ref="edit_trigger" modal={modal}>
-                    <a className="edit"><i className="icon-edit"></i></a>
+                    <a className="edit"><i className="icon icon-edit"></i></a>
                 </ModalTrigger>
                 {' '}
-                <a className="remove" onClick={this.remove}><i className="icon-trash"></i></a>
+                <a className="remove" onClick={this.remove}><i className="icon icon-trash-o"></i></a>
             </div>
         );
     },
@@ -101,6 +113,9 @@ var Block = module.exports.Block = React.createClass({
             dragging: _.isEqual(this.props.pos, this.context.src_pos),
             hover: this.state.hover
         };
+        if (block.className !== undefined) {
+            classes[block.className] = true;
+        }
         if (_.isEqual(this.props.pos, this.context.dst_pos)) {
             classes['drop-' + this.context.dst_quad] = true;
         }
@@ -156,7 +171,7 @@ var BlockAddButton = React.createClass({
     contextTypes: LAYOUT_CONTEXT,
 
     render: function() {
-        var classes = 'icon-large ' + this.props.blockprops.icon;
+        var classes = 'icon-lg ' + this.props.blockprops.icon;
         return (
             <span>
                 <span className="btn btn-primary navbar-btn btn-sm"

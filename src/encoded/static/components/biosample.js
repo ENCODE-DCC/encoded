@@ -58,6 +58,9 @@ var Biosample = module.exports.Biosample = React.createClass({
             });
         });
 
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
         var experiments_url = '/search/?type=experiment&replicates.library.biosample.uuid=' + context.uuid;
 
         return (
@@ -74,6 +77,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <h2>
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
@@ -286,17 +290,17 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
                 {context.organism.scientific_name ? <dt>Species</dt> : null}
                 {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
 
-                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+                {context.life_stage ? <dt>Life stage</dt> : null}
+                {context.life_stage ? <dd className="sentence-case">{context.life_stage}</dd> : null}
 
-                {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
+                {context.age ? <dt>Age</dt> : null}
+                {context.age ? <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd> : null}
 
-                {biosample && biosample.sex ? <dt>Sex</dt> : null}
-                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
+                {context.sex ? <dt>Sex</dt> : null}
+                {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
 
-                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
+                {context.health_status ? <dt>Health status</dt> : null}
+                {context.health_status ? <dd className="sentence-case">{context.health_status}</dd> : null}
 
                 {context.ethnicity ? <dt>Ethnicity</dt> : null}
                 {context.ethnicity ? <dd className="sentence-case">{context.ethnicity}</dd> : null}
@@ -581,7 +585,7 @@ var Document = module.exports.Document = React.createClass({
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
 
-                            <dt><i className="icon-download-alt"></i> Download</dt>
+                            <dt><i className="icon icon-download"></i> Download</dt>
                             <dd>{download}</dd>
                         </dl>
                     </div>
