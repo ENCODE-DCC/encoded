@@ -109,9 +109,19 @@ def index_settings():
                     }
                 },
                 'analyzer': {
+                    'default': {
+                        'type': 'custom',
+                        'tokenizer': 'standard',
+                        'char_filter': 'html_strip',
+                        'filter': [
+                            'standard',
+                            'lowercase',
+                        ]
+                    },
                     'encoded_index_analyzer': {
                         'type': 'custom',
                         'tokenizer': 'standard',
+                        'char_filter': 'html_strip',
                         'filter': [
                             'standard',
                             'lowercase',
