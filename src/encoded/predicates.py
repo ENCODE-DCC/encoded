@@ -8,15 +8,17 @@ def includeme(config):
 
 class SubpathSegmentsPredicate(object):
     def __init__(self, val, config):
-        self.val = val
+        if isinstance(val, int):
+            val = (val,)
+        self.val = frozenset(val)
 
     def text(self):
-        return 'subpath_segments = %r' % self.val
+        return 'subpath_segments in %r' % sorted(self.val)
 
     phash = text
 
     def __call__(self, context, request):
-        return len(request.subpath) == self.val
+        return len(request.subpath) in self.val
 
 
 class AdditionalPermissionPredicate(object):

@@ -7,6 +7,7 @@ module.exports = {
     "date_created": "2013-06-14",
     "download_path": "2013/6/14/ENCFF001REL.txt.gz",
     "file_format": "fastq",
+    "href": "/files/ENCFF001REL/@@download/ENCFF001REL.txt.gz",
     "md5sum": "8c46ce8ffd6a281a10672352ba9c9514",
     "output_type": "reads",
     "replicate": "/replicates/66db2e64-f956-4f54-ad87-74f6311bfb85/",

@@ -610,8 +610,11 @@ class Target(Collection):
 
         @property
         def __name__(self):
-            ns = self.template_namespace(self.properties.copy())
-            return u'{label}-{organism_name}'.format(**ns)
+            properties = self.upgrade_properties(finalize=False)
+            root = find_root(self)
+            organism = root.get_by_uuid(self.properties['organism'])
+            return u'{label}-{organism_name}'.format(
+                organism_name=organism.properties['name'], **properties)
 
 
 # The following should really be child collections.
@@ -736,23 +739,6 @@ class Software(Collection):
     properties = {
         'title': 'Software',
         'description': 'Listing of software',
-    }
-
-
-@location('files')
-class File(Collection):
-    item_type = 'file'
-    schema = load_schema('file.json')
-    properties = {
-        'title': 'Files',
-        'description': 'Listing of Files',
-    }
-
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
-    item_namespace_from_path = {
-        'lab': 'dataset.lab',
-        'award': 'dataset.award',
     }
 
 

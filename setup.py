@@ -7,9 +7,12 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 requires = [
     'Pillow',
+    'PyBrowserID',
     'SQLAlchemy',
     'WSGIProxy2',
     'WebTest',
+    'boto',
+    'elasticsearch',
     'jsonschema',
     'loremipsum',
     'passlib',
@@ -18,6 +21,7 @@ requires = [
     'pyramid_tm',
     'python-magic',
     'pytz',
+    'rdflib',
     'rfc3987',
     'setuptools',
     'simplejson',
@@ -25,9 +29,6 @@ requires = [
     'subprocess_middleware',
     'xlrd',
     'zope.sqlalchemy',
-    'PyBrowserID',
-    'elasticsearch',
-    'rdflib',
 ]
 
 tests_require = [
