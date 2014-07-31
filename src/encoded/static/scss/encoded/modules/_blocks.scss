@@ -40,8 +40,11 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
     }
 
     &.richtextblock {
-        padding: 20px;
         background-color: #fff;
+    }
+
+    &.richtextblock, .teaser .caption {
+        padding: 20px;
         line-height: 1.8;
 
         .col-md-12 & {
@@ -76,6 +79,10 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
 
             &:first-child {
                 margin-top: 0;
+            }
+
+            &:last-child {
+                margin-bottom: 0;
             }
         }
 
@@ -140,6 +147,14 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
 
     &.teaserblock {
         padding: 0;
+    }
+
+    .teaser .caption {
+        .col-md-12 & {
+            @media screen and (min-width: $screen-md-min) {
+                padding: 20px;
+            }
+        }
     }
 }
 
