@@ -1016,7 +1016,7 @@ class LegacyPage(Collection):
         }
 
 
-@location('about')
+@location('_about')
 class AboutPage(LegacyPage):
     item_type = 'about_page'
     properties = {
@@ -1026,7 +1026,7 @@ class AboutPage(LegacyPage):
     unique_key = 'about_page:name'
 
 
-@location('help')
+@location('_help')
 class HelpPage(LegacyPage):
     item_type = 'help_page'
     properties = {
