@@ -88,8 +88,8 @@ describe('Experiment Page', function() {
 
         it('has two proper download links', function() {
             expect(fileDl.length).toEqual(2);
-            expect(fileDl[0].getAttribute('href')).toEqual('http://encodedcc.sdsc.edu/warehouse/2013/6/14/ENCFF001REL.txt.gz');
-            expect(fileDl[1].getAttribute('href')).toEqual('http://encodedcc.sdsc.edu/warehouse/2013/6/14/ENCFF001REQ.fastq.gz');
+            expect(fileDl[0].getAttribute('href')).toEqual('/files/ENCFF001REL/@@download/ENCFF001REL.txt.gz');
+            expect(fileDl[1].getAttribute('href')).toEqual('/files/ENCFF001REQ/@@download/ENCFF001REQ.fastq.gz');
         });
     });
 

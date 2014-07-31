@@ -80,6 +80,7 @@ runcmd:
 - sudo -u encoded git checkout %(COMMIT)s
 - sudo -u encoded python2.7 bootstrap.py
 - sudo -u encoded bin/buildout
+- sudo -u encoded bin/aws s3 cp --recursive s3://encoded-conf/.aws .aws
 - sudo /etc/init.d/postgresql stop
 - sudo -u postgres bin/wal-e --aws-instance-profile --s3-prefix="%(WALE_S3_PREFIX)s" backup-fetch /var/lib/postgresql/9.3/main LATEST
 - sudo -u postgres cp /var/lib/postgresql/9.3/main/postgresql.conf.orig /var/lib/postgresql/9.3/main/postgresql.conf

@@ -35,7 +35,6 @@ ORDER = [
     'dataset',
     'file',
     'image',
-    'about',
     'page',
     'publication'
 ]
