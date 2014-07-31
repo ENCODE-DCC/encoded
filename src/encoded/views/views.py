@@ -592,7 +592,7 @@ class Target(Collection):
     class Item(Collection.Item):
         template = {
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
-            'title': {'$value': '{label} ({organism_name})', '$templated': True},
+            'title': {'$value': '{label} ({scientific_name})', '$templated': True},
         }
         embedded = set(['organism'])
         keys = ALIAS_KEYS + [
@@ -605,6 +605,7 @@ class Target(Collection):
             # self.properties as we need uuid here
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
+            ns['scientific_name'] = organism.properties['scientific_name']
             return ns
 
         @property
@@ -637,6 +638,9 @@ class AntibodyApproval(Collection):
     }
 
     class Item(Collection.Item):
+        template = {
+            'title': {'$value': '{accession} in {scientific_name} {label}', '$templated': True},
+        }
         embedded = [
             'antibody.host_organism',
             'antibody.source',
@@ -649,6 +653,18 @@ class AntibodyApproval(Collection):
         keys = [
             {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
         ]
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            root = find_root(self)
+            # self.properties as we need uuid here
+            antibody = root.get_by_uuid(self.properties['antibody'])
+            ns['accession'] = antibody.properties['accession']
+            target = root.get_by_uuid(self.properties['target'])
+            ns['label'] = target.properties['label']
+            organism = root.get_by_uuid(target.properties['organism'])
+            ns['scientific_name'] = organism.properties['scientific_name']
+            return ns
 
 
 @location('platforms')
