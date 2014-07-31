@@ -182,6 +182,7 @@
         "dataset": "ENCSR000ADI",
         "date_created": "2013-04-18",
         "download_path": "2013/4/18/ENCFF001MXF.fastq.gz",
+        "file_format": "fastq",
         "md5sum": "5fbe47e031a0af4b67d356b5bd4c348a",
         "output_type": "raw data",
         "replicate": "2bf12e3c-1d00-4e9f-bbc6-0cced1414f7f",
