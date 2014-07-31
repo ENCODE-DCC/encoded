@@ -94,7 +94,7 @@ var PageFormSchema = (
 
 var PageEdit = React.createClass({
     render: function() {
-        var defaultValue = {layout: defaultLayout};
+        var defaultValue = {layout: defaultLayout, status: "in progress"};
         return this.transferPropsTo(<ItemEdit context={this.props.context} schema={PageFormSchema} defaultValue={defaultValue} />);
     }
 });
