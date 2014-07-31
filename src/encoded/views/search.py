@@ -119,7 +119,7 @@ def search(context, request, search_type=None):
             doc_types = []
         else:
             doc_types = ['antibody_approval', 'biosample',
-                         'experiment', 'target', 'dataset']
+                         'experiment', 'target', 'dataset', 'page']
     else:
         doc_types = [search_type]
         qs = urlencode([
