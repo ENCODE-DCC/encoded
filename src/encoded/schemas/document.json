@@ -18,6 +18,20 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "facets": {
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
+        "document_type": {
+            "title": "Document type",
+            "type": "string"
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "3"

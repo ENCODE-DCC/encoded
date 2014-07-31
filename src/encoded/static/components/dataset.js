@@ -152,7 +152,6 @@ var FileTable = module.exports.FileTable = React.createClass({
         var rows = {};
         var encodevers = this.props.encodevers;
         this.props.items.forEach(function (file) {
-            var href = 'http://encodedcc.sdsc.edu/warehouse/' + file.download_path;
             rows[file['@id']] = (
                 <tr>
                     <td>{file.accession}</td>
@@ -165,7 +164,7 @@ var FileTable = module.exports.FileTable = React.createClass({
                     </td>
                     <td>{file.submitted_by.title}</td>
                     <td>{file.date_created}</td>
-                    <td><a href={href} download><i className="icon icon-download"></i> Download</a></td>
+                    <td><a href={file.href} download={file.href.substr(file.href.lastIndexOf("/") + 1)} data-bypass="true"><i className="icon icon-download"></i> Download</a></td>
                     {encodevers == "3" ? <td className="characterization-meta-data"><StatusLabel status="pending" /></td> : null}
                 </tr>
             );
