@@ -86,6 +86,7 @@ def file_2_3(value, system):
 
     # http://redmine.encodedcc.org/issues/568
     output_type_dict = {
+                        "": "raw data",
                         "Alignments": "alignments",
                         "bigBed": "sites",
                         "bigWig": "sites",
