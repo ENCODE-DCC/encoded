@@ -26,5 +26,9 @@
             "title": "Caption",
             "type": "string"
         }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "caption": 2.0
     }
 }

@@ -1,9 +1,11 @@
+
+import string
 from ..auditor import (
     AuditFailure,
     audit_checker,
 )
 
-targetBasedAssayList =  ['ChIP-seq', 
+targetBasedAssayList =  ['ChIP-seq',
                          'RNA Bind-n-Seq',
                          'ChIA-PET',
                          'RIP Array',
@@ -12,6 +14,31 @@ targetBasedAssayList =  ['ChIP-seq',
                          'iCLIP',
                          'shRNA knockdown followed by RNA-seq',
                          ]
+
+controlRequiredAssayList = ['ChIP-seq',
+                            'RNA Bind-n-Seq',
+                            'RIP-seq',
+                            ]
+
+
+@audit_checker('experiment')
+def audit_experiment_description(value, system):
+    '''
+    Experiments should have descriptions that contain the experimental variables and
+    read like phrases.  I cannot get all of that here, but I thought I would start
+    with looking for funny characters.
+    '''
+    if value['status'] == 'deleted':
+        return
+
+    if 'description' not in value:
+        return
+
+    notallowed = ['=', '_', ':', ';']
+    if any(c in notallowed for c in value['description']):
+        detail = 'Bad characters'  # I would like to report the errant char here
+        raise AuditFailure('malformed description', detail, level='WARNING')
+
 
 @audit_checker('experiment')
 def audit_experiment_assay(value, system):
@@ -36,7 +63,7 @@ def audit_experiment_assay(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} - {}'.format(term_id, term_name)
-        raise AuditFailure('NTR', detail, level='WARNING')
+        raise AuditFailure('NTR, assay', detail, level='WARNING')
 
     # if term_id not in ontology:
     #    detail = 'assay_term_id - {}'.format(term_id)
@@ -68,6 +95,10 @@ def audit_experiment_target(value, system):
     if target.startswith('Control'):
         return
 
+    # Some assays don't need antibodies
+    if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq']:
+        return
+
     for rep in value['replicates']:
         if 'antibody' not in rep:
             detail = 'rep {} missing antibody'.format(rep["uuid"])
@@ -87,19 +118,69 @@ def audit_experiment_control(value, system):
     if value['status'] == 'deleted':
         return
 
-    if ('assay_term_name' not in value) or (value['assay_term_name'] not in ['ChIP-seq']):
-        # RBNS, who else
+    # Currently controls are only be required for ChIP-seq
+    if value.get('assay_term_name') not in controlRequiredAssayList:
         return
 
-    if 'target' not in value or value['target']['name'].startswith('Control'):
+    # If there is no targets, for now we will just ignore it, likely this is an error
+    if 'target' not in value:
         return
 
-    if 'possible_controls' == []:
+    # We do not want controls
+    if 'control' in value['target']['name'] or 'Control' in value['target']['name']:
+        return
+
+    if value['possible_controls'] == []:
         detail = 'missing control'
         raise AuditFailure('missing possible controls', detail, level='ERROR')
 
     # A check should go here that would go through all possible controls to
     # verify that they are the same biosample term
+    for control in value['possible_controls']:
+        if control.get('biosample_term_id') != value.get('biosample_term_id'):
+            detail = 'mismatch control'
+            raise AuditFailure('control has mismatched biosample_id', detail, level='ERROR')
+
+
+# @audit_checker('experiment')
+# def audit_experiment_ownership(value, system):
+#     '''
+#     Do the award and lab make sense together. We may want to extend this to submitter
+#     ENCODE2 and ENCODE2-Mouse data should have a dbxref for wgEncode
+#     '''
+#     if 'lab' not in value or 'award' not in value:
+#         return
+#         # should I make this an error case?
+#     if value['award']['@id'] not in value['lab']['awards']:
+#         detail = '{} is not part of {}'.format(value['lab']['name'], value['award']['name'])
+#         yield AuditFailure('award mismatch', detail, level='ERROR')
+#     if value['award']['rfa'] in ['ENCODE2', 'ENCODE2-Mouse']:
+#         if 'wgEncode' not in value['dbxrefs']:
+#             detail = '{} has no dbxref'.format(value['accession'])
+#             raise AuditFailure('missing ENCODE2 dbxref', detail, level='ERROR')
+
+
+@audit_checker('experiment')
+def audit_experiment_platform(value, system):
+    '''
+    All ENCODE 3 experiments should specify thier platform, certain platforms require read_length.
+    Eventually we should enforce that the platform is appropirate for the assay.
+    '''
+
+    if value['status'] == 'deleted':
+        return
+    if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3') or (value['replicates'] == []):
+        return
+    for i in range(0, len(value['replicates'])):
+        rep = value['replicates'][i]
+        if 'platform' not in rep:
+            detail = 'rep {} missing platform'.format(rep["uuid"])
+            raise AuditFailure('missing platform', detail, level='WARNING')
+        if value['assay_term_name'] in ['Proteogenomics']:  # There will be more
+            return
+        if 'read_length' not in rep:
+            detail = 'rep {} missing read_length'.format(rep["uuid"])
+            raise AuditFailure('missing read_length', detail, level='WARNING')
 
 
 @audit_checker('experiment')
@@ -111,7 +192,7 @@ def audit_experiment_biosample_term(value, system):
     '''
     if value['status'] == 'deleted':
         return
-    
+
     if 'biosample_term_id' not in value:
         return
 
@@ -122,7 +203,7 @@ def audit_experiment_biosample_term(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} - {}'.format(term_id, term_name)
-        yield AuditFailure('NTR', detail, level='WARNING')
+        yield AuditFailure('NTR,biosample', detail, level='WARNING')
         return
 
     if term_id not in ontology:
