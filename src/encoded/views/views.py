@@ -23,6 +23,7 @@ from pyramid.traversal import (
 from urllib import quote_plus
 from urlparse import urljoin
 import copy
+import datetime
 
 ACCESSION_KEYS = [
     {
@@ -828,7 +829,9 @@ class Experiment(Dataset):
             ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
-            ]
+            ],
+            'month_released': {'$value': '{month_released}', '$templated': True, '$condition': 'date_released'},
+            'run_type': {'$value': '{run_type}', '$templated': True, '$condition': 'replicates'},
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody.approvals',
@@ -855,6 +858,16 @@ class Experiment(Dataset):
             if request is None:
                 return ns
             terms = request.registry['ontology']
+            ns['run_type'] = ''
+            if 'replicates' in ns:
+                for replicate in ns['replicates']:
+                    f = find_resource(request.root, replicate)
+                    if 'paired_ended' in f.properties:
+                        ns['run_type'] = 'Single-ended'
+                        if f.properties['paired_ended'] is True:
+                            ns['run_type'] = 'Paired-ended'
+            if 'date_released' in ns:
+                ns['month_released'] = datetime.datetime.strptime(ns['date_released'], '%Y-%m-%d').strftime('%B, %Y')
             if 'biosample_term_id' in ns:
                 if ns['biosample_term_id'] in terms:
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
