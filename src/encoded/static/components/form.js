@@ -29,20 +29,15 @@ var Form = module.exports.Form = React.createClass({
     },
 
     render: function() {
-        var error = this.state.error;
         return (
           <form>
+            {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
             <FormFor externalValidation={this.state.externalValidation} />
             <div className="pull-right">
                 <a href="" className="btn btn-default">Cancel</a>
                 {' '}
                 <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
             </div>
-            <ul style={{clear: 'both'}}>
-                {error && error.code === 422 ? error.errors.map(function (error) {
-                    return <li className="alert alert-error"><b>{'/' + error.name.join('/') + ': '}</b><span>{error.description}</span></li>;
-                }) : error ? <li className="alert alert-error">{JSON.stringify(error)}</li> : null}
-            </ul>
           </form>
         )
     },
@@ -88,9 +83,14 @@ var Form = module.exports.Form = React.createClass({
 
     receive: function (data, status, xhr) {
         var externalValidation = {children: {}};
+        var schemaErrors = [];
         if (data.errors !== undefined) {
             data.errors.map(function (error) {
-                externalValidation.children[error.name[0]] = {validation: {failure: error.description}};
+                if (error.name.length) {
+                    externalValidation.children[error.name[0]] = {validation: {failure: error.description}};
+                } else {
+                    schemaErrors.push(error.description);
+                }
             });
         }
 
@@ -98,6 +98,7 @@ var Form = module.exports.Form = React.createClass({
             data: data,
             communicating: false,
             externalValidation: externalValidation,
+            errors: schemaErrors
         });
     }
 });

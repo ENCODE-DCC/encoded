@@ -5,12 +5,12 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "title" ],
-    "identifyingProperties": ["uuid", "title" ],
+    "calculatedProperties": ["publication_year"],
+    "identifyingProperties": ["uuid", "title", "reference"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references"}
     ],
@@ -34,11 +34,7 @@
         },
         "date_published": {
             "title": "Date published",
-            "type": "string",
-            "anyOf": [
-                {"format": "date-time"},
-                {"format": "date"}
-            ]
+            "type": "string"
         },
         "date_revised": {
             "title": "Date revised",
@@ -51,7 +47,7 @@
         "issue": {
             "title": "Issue",
             "description": "The issue of the publication.",
-            "type": "integer"
+            "type": "string"
         },
         "page": {
             "title": "Page",
@@ -61,12 +57,134 @@
         "volume": {
             "title": "Volume",
             "description": "The volume of the publication.",
-            "type": "integer"
+            "type": "string"
         },
         "journal": {
             "title": "Journal",
             "description": "The journal of the publication.",
             "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "in progress",
+            "enum" : [
+                "in progress",
+                "deleted",
+                "replaced",
+                "released",
+                "proposed"
+            ]
+        },
+        "categories": {
+            "title": "Categories",
+            "type": "array",
+            "items": {
+                "title": "Category",
+                "type": "string",
+                "enum" : [
+                    "human disease",
+            "basic biology",
+            "software tool",
+            "database",
+            "integrative analysis",
+            "technology development",
+            "data standard"
+        ]
+            }      
+        },
+    "published_by": {
+        "title": "Published by",
+        "type": "array",
+        "default": ["ENCODE"],
+        "items": {
+            "title": "Published by",
+        "type": "string",
+        "enum": [
+            "ENCODE",
+            "mouseENCODE",
+            "modENCODE",
+            "community"
+        ]
         }
+    },
+        "data_used": {
+            "title": "Data used",
+            "type": "string"
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Publication status",
+            "type": "string"
+        },
+        "categories": {
+            "title": "Category",
+            "type": "array"
+        },
+        "publication_year": {
+            "title": "Publication year",
+            "type": "string"
+        },
+        "journal": {
+            "title": "Journal",
+            "type": "string"
+        },
+        "published_by": {
+            "title": "Published by",
+            "type": "string"
+        }
+    },
+    "columns": {
+        "title": {
+            "title": "Title",
+            "type": "string"
+        },
+        "date_published": {
+            "title": "Publication date",
+            "type": "string"
+        },
+        "authors": {
+            "title": "Authors",
+            "type": "string"
+        },
+        "status": {
+            "title": "Publication status",
+            "type": "string"
+        },
+        "journal": {
+            "title": "Journal",
+            "type": "string"
+        },
+        "volume": {
+            "title": "Volume",
+            "type": "string"
+        },
+        "issue": {
+            "title": "Issue",
+            "type": "string"
+        },
+        "page": {
+            "title": "Page",
+            "type": "string"
+        },
+        "data_used": {
+            "title": "Data used",
+            "type": "string"
+        },
+        "abstract": {
+            "title": "Abstract",
+            "type": "string"
+        },
+        "references": {
+            "title": "References",
+            "type": "array"
+        }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "title": 1.0,
+        "authors": 1.0,
+        "references": 1.0
     }
 }

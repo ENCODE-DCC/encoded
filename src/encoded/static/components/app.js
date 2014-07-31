@@ -155,13 +155,10 @@ var App = React.createClass({
 
         var appClass = 'done';
         if (this.props.slow) {
-        	appClass = 'communicating'; 
+            appClass = 'communicating'; 
         }
 
-        var title = globals.listing_titles.lookup(context)({
-            context: context,
-            loadingComplete: this.state.loadingComplete
-        });
+        var title = context.title || context.name || context.accession || context['@id'];
         if (title && title != 'Home') {
             title = title + ' – ' + portal.portal_title;
         } else {

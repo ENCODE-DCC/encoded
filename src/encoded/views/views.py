@@ -23,6 +23,7 @@ from pyramid.traversal import (
 from urllib import quote_plus
 from urlparse import urljoin
 import copy
+import datetime
 
 ACCESSION_KEYS = [
     {
@@ -591,7 +592,7 @@ class Target(Collection):
     class Item(Collection.Item):
         template = {
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
-            'title': {'$value': '{label} ({organism_name})', '$templated': True},
+            'title': {'$value': '{label} ({scientific_name})', '$templated': True},
         }
         embedded = set(['organism'])
         keys = ALIAS_KEYS + [
@@ -604,12 +605,16 @@ class Target(Collection):
             # self.properties as we need uuid here
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
+            ns['scientific_name'] = organism.properties['scientific_name']
             return ns
 
         @property
         def __name__(self):
-            ns = self.template_namespace(self.properties.copy())
-            return u'{label}-{organism_name}'.format(**ns)
+            properties = self.upgrade_properties(finalize=False)
+            root = find_root(self)
+            organism = root.get_by_uuid(self.properties['organism'])
+            return u'{label}-{organism_name}'.format(
+                organism_name=organism.properties['name'], **properties)
 
 
 # The following should really be child collections.
@@ -636,6 +641,9 @@ class AntibodyApproval(Collection):
     }
 
     class Item(Collection.Item):
+        template = {
+            'title': {'$value': '{accession} in {scientific_name} {label}', '$templated': True},
+        }
         embedded = [
             'antibody.host_organism',
             'antibody.source',
@@ -648,6 +656,18 @@ class AntibodyApproval(Collection):
         keys = [
             {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
         ]
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            root = find_root(self)
+            # self.properties as we need uuid here
+            antibody = root.get_by_uuid(self.properties['antibody'])
+            ns['accession'] = antibody.properties['accession']
+            target = root.get_by_uuid(self.properties['target'])
+            ns['label'] = target.properties['label']
+            organism = root.get_by_uuid(target.properties['organism'])
+            ns['scientific_name'] = organism.properties['scientific_name']
+            return ns
 
 
 @location('platforms')
@@ -719,23 +739,6 @@ class Software(Collection):
     properties = {
         'title': 'Software',
         'description': 'Listing of software',
-    }
-
-
-@location('files')
-class File(Collection):
-    item_type = 'file'
-    schema = load_schema('file.json')
-    properties = {
-        'title': 'Files',
-        'description': 'Listing of Files',
-    }
-
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
-    item_namespace_from_path = {
-        'lab': 'dataset.lab',
-        'award': 'dataset.award',
     }
 
 
@@ -828,7 +831,9 @@ class Experiment(Dataset):
             ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
-            ]
+            ],
+            'month_released': {'$value': '{month_released}', '$templated': True, '$condition': 'date_released'},
+            'run_type': {'$value': '{run_type}', '$templated': True, '$condition': 'replicates'},
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody.approvals',
@@ -855,6 +860,16 @@ class Experiment(Dataset):
             if request is None:
                 return ns
             terms = request.registry['ontology']
+            ns['run_type'] = ''
+            if 'replicates' in ns:
+                for replicate in ns['replicates']:
+                    f = find_resource(request.root, replicate)
+                    if 'paired_ended' in f.properties:
+                        ns['run_type'] = 'Single-ended'
+                        if f.properties['paired_ended'] is True:
+                            ns['run_type'] = 'Paired-ended'
+            if 'date_released' in ns:
+                ns['month_released'] = datetime.datetime.strptime(ns['date_released'], '%Y-%m-%d').strftime('%B, %Y')
             if 'biosample_term_id' in ns:
                 if ns['biosample_term_id'] in terms:
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
@@ -1016,7 +1031,7 @@ class LegacyPage(Collection):
         }
 
 
-@location('about')
+@location('_about')
 class AboutPage(LegacyPage):
     item_type = 'about_page'
     properties = {
@@ -1026,7 +1041,7 @@ class AboutPage(LegacyPage):
     unique_key = 'about_page:name'
 
 
-@location('help')
+@location('_help')
 class HelpPage(LegacyPage):
     item_type = 'help_page'
     properties = {
@@ -1045,6 +1060,23 @@ class Publication(Collection):
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
+    name_key = 'title'
+
+    class Item(Collection.Item):
+        template = {
+            'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
+        }
+        
+        keys = ALIAS_KEYS + [
+            {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
+            {'name': '{item_type}:title', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True},
+        ]
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            if 'date_published' in ns:
+                ns['publication_year'] = ns['date_published'].partition(' ')[0]
+            return ns
 
 
 @location('images')
