@@ -54,7 +54,14 @@
                 },
                 "blocks": {
                     "type": "array",
-                    "items": {},
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "body": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "default": [
                         {
                             "@id": "#block1",
@@ -87,6 +94,7 @@
     "boost_values": {
         "uuid": 1.0,
         "name": 2.0,
-        "title": 2.0
+        "title": 2.0,
+        "layout.blocks.body": 1.0
     }
 }
