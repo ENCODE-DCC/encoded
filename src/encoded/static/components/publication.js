@@ -26,9 +26,7 @@ var Panel = module.exports.Panel = React.createClass({
         var itemClass = globals.itemClass(context);
         return (
             <div className={itemClass}>
-                <div className="authors">
-                    {context.authors}.
-                </div>
+                {context.authors ? <div className="authors">{context.authors}.</div> : null}
                 {this.transferPropsTo(<Citation />)}
 
                 {context.abstract || context.references.length ?
