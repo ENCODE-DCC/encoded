@@ -1,19 +1,19 @@
 [
     {
-	"title": "An integrated encyclopedia of DNA elements in the human genome",
-	"abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
-	"authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
-	"journal": "Nature",
-	"date_published": "2012 Sep 6",
-	"references": ["PMID:22955616"],
-	"volume": "489",
-	"issue": "7414",
-	"page": "57-74",
-	"status": "in progress",
-	"published_by": ["ENCODE"],
-	"categories": ["integrative analysis"],
-	"data_used": "ENCODE main paper",
-	"uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
+        "title": "An integrated encyclopedia of DNA elements in the human genome",
+        "abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
+        "authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
+        "journal": "Nature",
+        "date_published": "2012 Sep 6",
+        "references": ["PMID:22955616", "PMCID:3735843"],
+        "volume": "489",
+        "issue": "7414",
+        "page": "57-74",
+        "status": "in progress",
+        "published_by": ["ENCODE"],
+        "categories": ["integrative analysis"],
+        "data_used": "ENCODE main paper",
+        "uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
     },
     {
         "status":"in progress",
@@ -26,8 +26,8 @@
         "date_published":"2010 Feb",
         "references":["PMID:20150147"],
         "authors":"Crawford GE",
-	"published_by": ["ENCODE"],
-	"categories": ["data standard"]
+        "published_by": ["ENCODE"],
+        "categories": ["data standard"]
     },
     {
         "status":"in progress",
@@ -39,7 +39,7 @@
         "volume":"9",
         "date_published":"2011 Jul",
         "references":["PMID:21765801"],
-	"published_by": ["ENCODE"],
+        "published_by": ["ENCODE"],
         "authors":"Clark MB, Amaral PP, Schlesinger FJ, Dinger ME, Taft RJ, Rinn JL, Ponting CP, Stadler PF, Morris KV, Morillon A, Rozowsky JS, Gerstein MB, Wahlestedt C, Hayashizaki Y, Carninci P, Gingeras TR, Mattick JS"
     },
     {
@@ -52,7 +52,7 @@
         "volume":"6",
         "date_published":"2009 Oct",
         "references":["PMID:19789528"],
-	"published_by": ["ENCODE"],
+        "published_by": ["ENCODE"],
         "authors":"Lajoie BR, van Berkum NL, Sanyal A, Dekker J"
     },
     {
@@ -65,7 +65,7 @@
         "volume":"27",
         "date_published":"2009 Apr",
         "references":["PMID:19352372"],
-	"published_by": ["ENCODE"],
+        "published_by": ["ENCODE"],
         "authors":"Gingeras T"
     },
     {
@@ -77,9 +77,9 @@
         "page":"310-1",
         "volume":"482",
         "date_published":"2012 Feb 15",
-	"categories": ["basic biology"],
-	"published_by": ["ENCODE"],
-	"references": ["PMID:22337043"],
+        "categories": ["basic biology"],
+        "published_by": ["ENCODE"],
+        "references": ["PMID:22337043"],
         "authors":"Kowalczyk MS, Higgs DR, Gingeras TR"
     },
     {
@@ -92,8 +92,8 @@
         "volume":"22",
         "date_published":"2012 May",
         "authors":"Iyer VR",
-	"references": ["PMID:22421062"],
-	"published_by": ["ENCODE"],
+        "references": ["PMID:22421062"],
+        "published_by": ["ENCODE"],
         "abstract":"Nucleosomes are an essential component of eukaryotic chromosomes. The impact of nucleosomes is seen not just on processes that directly access the genome, such as transcription, but also on an evolutionary timescale. Recent studies in various organisms have provided high-resolution maps of nucleosomes throughout the genome. Computational analysis, in conjunction with many other kinds of data, has shed light on several aspects of nucleosome biology. Nucleosomes are positioned by several means, including intrinsic sequence biases, by stacking against a fixed barrier, by DNA-binding proteins and by chromatin remodelers. These studies underscore the important organizational role of nucleosomes in all  eukaryotic genomes. This paper reviews recent genomic studies that have shed light on the determinants of nucleosome positioning and their impact on the genome. AU"
     },
     {
@@ -106,7 +106,7 @@
         "volume":"288",
         "date_published":"2013 Nov 29",
         "references":["PMID:24151070"],
-	"published_by": ["ENCODE"],
+        "published_by": ["ENCODE"],
         "authors":"Blattler A, Farnham PJ",
         "abstract":"DNA methylation, which occurs predominantly at CpG dinucleotides, is a potent epigenetic repressor of transcription. Because DNA methylation is reversible, there is much interest in understanding the mechanisms by which it can be regulated by DNA-binding transcription factors. We discuss several models that, by incorporating sequence motifs, CpG density, and methylation levels, attempt to link the binding of a transcription factor with the acquisition or loss of DNA methylation at promoters and distal regulatory elements. Additional in vivo genome-wide characterization of transcription factor binding patterns and high-resolution DNA methylation analyses are clearly required for stronger support of each model. AU"
     },
