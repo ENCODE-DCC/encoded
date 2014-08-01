@@ -68,7 +68,6 @@ ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, Authenticated, 'view'),
     (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
-    # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
 ALLOW_CURRENT = [
@@ -169,6 +168,7 @@ class Collection(BaseCollection):
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
         }
+        actions = [EDIT_ACTION]
 
         @property
         def __name__(self):
@@ -1106,4 +1106,3 @@ class Image(Collection):
                 '$templated': True,
             },
         ]
-        actions = [EDIT_ACTION]
