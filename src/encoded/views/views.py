@@ -306,39 +306,48 @@ class DonorItem(Collection.Item):
 class MouseDonor(Collection):
     item_type = 'mouse_donor'
     schema = load_schema('mouse_donor.json')
+    __acl__ = []
     properties = {
         'title': 'Mouse donors',
         'description': 'Listing Biosample Donors',
     }
 
     class Item(DonorItem):
-        pass
+        def __ac_local_roles__(self):
+            # Disallow lab submitter edits
+            return {}
 
 
 @location('fly-donors')
 class FlyDonor(Collection):
     item_type = 'fly_donor'
     schema = load_schema('fly_donor.json')
+    __acl__ = []
     properties = {
         'title': 'Fly donors',
         'description': 'Listing Biosample Donors',
     }
 
     class Item(DonorItem):
-        pass
+        def __ac_local_roles__(self):
+            # Disallow lab submitter edits
+            return {}
 
 
 @location('worm-donors')
 class WormDonor(Collection):
     item_type = 'worm_donor'
     schema = load_schema('worm_donor.json')
+    __acl__ = []
     properties = {
         'title': 'Worm donors',
         'description': 'Listing Biosample Donors',
     }
 
     class Item(DonorItem):
-        pass
+        def __ac_local_roles__(self):
+            # Disallow lab submitter edits
+            return {}
 
 
 @location('human-donors')
