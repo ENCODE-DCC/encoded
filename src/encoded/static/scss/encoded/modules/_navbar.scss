@@ -120,18 +120,19 @@
     @media screen and (min-width: $grid-float-breakpoint) {
         left: -1px;
         margin-top: -1px !important;
-        padding: 0;
+        padding: 10px 0;
         background-color: #fff;
         @include background-image(linear-gradient(top,  #ffffff 0%,#f0f0f0 100%));
 
         &>li {
             &>a {
-                padding: 6px 20px;
-                font-size: floor($font-size-base * 0.9);
-                font-weight: bold;
-                color: #333 !important;
+                padding: 2px 30px 2px 20px;
+                font-size: floor($font-size-base * 1.1);
+                font-weight: 300;
+                color: #444 !important;
                 border-top: 1px solid transparent;
                 border-bottom: 1px solid transparent;
+                letter-spacing: 1px;
 
                 &:hover,&:active {
                     border-top: 1px solid darken($navbar-inverse-link-active-bg,20%);
