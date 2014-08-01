@@ -63,7 +63,7 @@ describe('Publication', function() {
 
         beforeEach(function() {
             var context_ref = _.clone(context);
-            context_ref.references = [require('../testdata/references/PMID19352372'), require('../testdata/references/PMID20150147')];
+            context_ref.references = ['PMID:19352372', 'PMCID:3735843'];
             publication = <Panel context={context_ref} />;
             TestUtils.renderIntoDocument(publication);
         });
@@ -76,7 +76,7 @@ describe('Publication', function() {
             var anchor = li[0].getElementsByTagName('a');
             expect(anchor[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19352372');
             anchor = li[1].getElementsByTagName('a');
-            expect(anchor[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=20150147');
+            expect(anchor[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pmc/articles/3735843');
         });
     });
 });
