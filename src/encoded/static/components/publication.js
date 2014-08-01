@@ -13,7 +13,7 @@ var Citation = React.createClass({
         var context = this.props.context;
         return (
             <div className="journal">
-                <i>{context.journal}</i>. {context.date_published};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.
+                <i>{context.journal}</i>. {context.date_published};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }{context.page ? ':' + context.page : ''}.
             </div>
         );
     }
@@ -72,7 +72,7 @@ var Listing = React.createClass({
                     </div>
                     <div className="data-row">
                         {authors ? <p className="list-author">{authors}.</p> : null}
-                        <p className="list-citation"><i>{context.journal}</i>. {context.date_published};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }:{context.page}.</p>
+                        <p className="list-citation"><i>{context.journal}</i>. {context.date_published};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }{context.page ? ':' + context.page : ''}.</p>
                         {context.references.length ? <DbxrefList values={context.references} className="list-reference" /> : '' }
                     </div>
             </li>

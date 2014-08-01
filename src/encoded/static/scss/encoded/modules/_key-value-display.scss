@@ -46,10 +46,15 @@ dd.h3, dd.h4 {
 }
 
 dd ul, .multi-value {
+    display: block;
     list-style: none;
     margin: 0;
     padding: 0;
-    display: inline-block;
+
+    li {
+        display: inline-block;
+        margin-right: 5px;
+    }
 }
 
 // responsive styles in _state.scss
