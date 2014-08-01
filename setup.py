@@ -7,9 +7,12 @@ CHANGES = open(os.path.join(here, 'CHANGES.rst')).read()
 
 requires = [
     'Pillow',
+    'PyBrowserID',
     'SQLAlchemy',
     'WSGIProxy2',
     'WebTest',
+    'boto',
+    'elasticsearch',
     'jsonschema',
     'loremipsum',
     'passlib',
@@ -18,6 +21,7 @@ requires = [
     'pyramid_tm',
     'python-magic',
     'pytz',
+    'rdflib',
     'rfc3987',
     'setuptools',
     'simplejson',
@@ -25,9 +29,6 @@ requires = [
     'subprocess_middleware',
     'xlrd',
     'zope.sqlalchemy',
-    'PyBrowserID',
-    'elasticsearch',
-    'rdflib',
 ]
 
 tests_require = [
@@ -68,7 +69,6 @@ setup(
         generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
-        sync_edw = encoded.commands.sync_edw:main
         update-keys-links = encoded.commands.update_keys_links:main
         upgrade = encoded.commands.upgrade:main
 

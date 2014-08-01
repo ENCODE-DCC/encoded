@@ -296,7 +296,8 @@ FILES = [
         'dataset': 'ENCSR000TST',
         'file_format': 'fastq',
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
-        'output_type': 'rawData',
+        'output_type': 'raw data',
+        'status': 'current',
     },
     {
         'uuid': '0a38fea0-c067-415a-9710-c887aff95767',
@@ -304,7 +305,8 @@ FILES = [
         'dataset': 'ENCSR001TST',
         'file_format': 'fastq',
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
-        'output_type': 'rawData',
+        'output_type': 'raw data',
+        'status': 'current',
     },
 ]
 
