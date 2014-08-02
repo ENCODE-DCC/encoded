@@ -24,7 +24,7 @@ def run(app, files):
             'key': value['s3_file_name'],
         }
         item.update(properties, sheets={'external': external})
-        if i + 1 % 1000:
+        if i + 1 % 1000 == 0:
             logger.info('Updated %d', i + 1)
 
 
