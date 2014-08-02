@@ -41,8 +41,8 @@ def getTrack(f, label, parent):
         sub_group = 'view=PK'
     else:
         file_format = file_format + ' 1.000000 3291154.000000'
-    label = label + ' - ' + f['accession'] + '\t' + f['file_format'] + \
-        '\t' + f['output_type']
+    label = label + ' - ' + f['accession'] + ' ' + f['file_format'] + \
+        ' ' + f['output_type']
     replicate_number = ''
     if 'replicate' in f:
         replicate_number = 'rep ' + str(f['replicate']['biological_replicate_number'])
@@ -51,7 +51,7 @@ def getTrack(f, label, parent):
     track = OrderedDict([
         ('subGroups', sub_group),
         ('visibility', 'full'),
-        ('longLabel', label + '\t' + replicate_number),
+        ('longLabel', label + ' ' + replicate_number),
         ('shortLabel', f['accession']),
         ('parent', parent + ' on'),
         ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + f['download_path']),
