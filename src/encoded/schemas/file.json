@@ -216,6 +216,7 @@
                 "uploading",
                 "current",
                 "deleted",
+                "replaced",
                 "revoked",
                 "released"
                 ]
