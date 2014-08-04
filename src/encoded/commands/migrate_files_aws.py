@@ -14,16 +14,22 @@ logger = logging.getLogger(__name__)
 
 def run(app, files):
     root = app.root_factory(app)
-    for i, value in enumerate(files):
-        item = root.get_by_uuid(value['uuid'])
-        properties = item.properties.copy()
-        properties['file_size'] = value['file_size']
-        external = {
-            'service': 's3',
-            'bucket': 'encode-files',
-            'key': value['s3_file_name'],
-        }
-        item.update(properties, sheets={'external': external})
+    collection = root['file']
+    for i, uuid in enumerate(collection):
+        item = root.get_by_uuid(uuid)
+        properties = item.properties.upgrade_properties(finalize=True)
+        sheets = None
+        value = files.get(uuid)
+        if value is not None:
+            properties['file_size'] = value['file_size']
+            sheets = {
+                'external': {
+                    'service': 's3',
+                    'bucket': 'encode-files',
+                    'key': value['s3_file_name'],
+                },
+            }
+        item.update(properties, sheets=sheets)
         if i + 1 % 1000 == 0:
             logger.info('Updated %d', i + 1)
 
@@ -46,7 +52,8 @@ def main():
     logging.getLogger('encoded').setLevel(logging.DEBUG)
 
     files_processed = json.load(args.files_processed)
-    good_files = [v for v in files_processed if 'errors' not in v and 'blacklisted' not in v]
+    good_files = {v['uuid']: v for v in files_processed
+        if 'errors' not in v and 'blacklisted' not in v}
 
     raised = False
     try:
