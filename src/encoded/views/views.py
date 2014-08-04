@@ -234,11 +234,16 @@ class AntibodyLot(Collection):
         'description': 'Listing of ENCODE antibodies',
     }
 
-
     class Item(Collection.Item):
         template = {
             'targets': [
                 {'$value': '{target}', '$repeat': 'target targets', '$templated': True}
+            ],
+            'eligible_biosample_term_names': [
+                {'$value': '{term_name}', '$repeat': 'term_name eligible_biosample_term_names', '$templated': True}
+            ],
+            'eligible_biosample_term_ids': [
+                {'$value': '{term_id}', '$repeat': 'term_id eligible_biosample_term_ids', '$templated': True}
             ],
             'title': {'$value': '{accession}', '$templated': True},
         }
@@ -260,10 +265,10 @@ class AntibodyLot(Collection):
 
         rev = {
             'characterizations': ('antibody_characterization', 'characterizes'),
-        }       
+        }
 
         embedded = set([
-            'source', 
+            'source',
             'host_organism',
             'characterizations.award',
             'characterizations.lab',
@@ -271,17 +276,37 @@ class AntibodyLot(Collection):
             'characterizations.target.organism'
         ])
 
-
         def template_namespace(self, properties, request=None):
             ns = super(AntibodyLot.Item, self).template_namespace(properties, request)
             if request is None:
                 return ns
             if 'characterizations' in ns:
                 targets = []
+                eligible_biosample_term_names = []
+                eligible_biosample_term_ids = []
+                compliant_primary_flag = False
+                compliant_secondary_flag = False
                 for characterization_uuid in ns['characterizations']:
                     characterization = find_resource(request.root, characterization_uuid)
                     targets.append(characterization.properties['target'])
+                    if characterization.properties['status'] == 'compliant':
+                        if 'primary_characterization_method' in characterization.properties:
+                            compliant_primary_flag = True
+                            for review_object in characterization.properties['characterization_review']:
+                                if review_object['status'] == 'compliant':
+                                    eligible_biosample_term_names.append(review_object['biosample_term_name'])
+                                    eligible_biosample_term_ids.append(review_object['biosample_term_id'])
+                        else:
+                            compliant_secondary_flag = True
+                    else:
+                        continue
                 ns['targets'] = set(targets)
+                if compliant_primary_flag and compliant_secondary_flag:
+                    ns['eligible_biosample_term_names'] = set(eligible_biosample_term_names)
+                    ns['eligible_biosample_term_ids'] = set(eligible_biosample_term_ids)
+                else:
+                    ns['eligible_biosample_term_names'] = []
+                    ns['eligible_biosample_term_ids'] = []
             else:
                 ns['targets'] = []
 

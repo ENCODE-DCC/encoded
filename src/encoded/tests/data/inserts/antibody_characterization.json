@@ -317,7 +317,7 @@
         "attachment": "human_TAF1_validation_Myers.pdf",
         "award": "U54HG004576",
         "caption": "Western blot protocol: Whole cell lysate was immunoprecipitated using primary antibody, and the IP fraction was loaded on a 12% acrylamide gel and separated with a Bio-Rad PROTEAN II xi system. After separation, the samples were transferred to a nitrocellulose membrane with an Invitrogen iBlot system.  Blotting with primary (same as that used for IP) and secondary HRP-conjugated antibodies was performed on an Invitrogen BenchPro 4100 system. Visualization was achieved using SuperSignal West Femto solution (Thermo Scientific).   Results: Band of expected size visualized, representing strongest signal in the lane.  Figure legend: IP-western with sc-735 in whole cell lysates (WCL) of K562, GM12878, HepG2, and HeLa; PM=protein marker. TAF1 band is indicated.",
-        "secondary_characterization_method": "ChIP-seq comparison",
+        "primary_characterization_method": "immunoprecipitation",
         "characterizes": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
         "date": "2012-07-22",
         "lab": "richard-myers",

@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism", "status"],
-    "calculatedProperties": ["targets"],
+    "calculatedProperties": ["targets", "eligible_biosample_term_names", "eligibile_biosample_term_ids"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -160,6 +160,14 @@
                 "not pursued",
                 "deleted"
             ]
+        },
+        "reviewed_by": {
+            "title": "Reviewed by",
+            "description": "Person (from DCC or antibody review panel) who reviewed the antibody characterizations associated with this antibody lot and determined the lot status",
+            "comment": "Only admins are allowed to set or update this value.",
+            "permission": "import_items",
+            "linkTo": "user",
+            "type": "string"
         }
    },
    "facets": {
