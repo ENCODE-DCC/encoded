@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
+    'file',
 ]
 
 
@@ -56,6 +57,8 @@ def run(testapp, collections):
                     except Exception:
                         logger.exception('Upgrade failed for: /%s/%s', collection_name, uuid)
                         errors += 1
+                if count % 1000 == 0:
+                    logger.info('Upgrading %s: %d', collection_name, count)
             logger.info('Upgraded %s: %d (errors: %d)', collection_name, count, errors)
 
 
