@@ -1,19 +1,19 @@
 [
     {
-	"title": "An integrated encyclopedia of DNA elements in the human genome",
-	"abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
-	"authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
-	"journal": "Nature",
-	"date_published": "2012 Sep 6",
-	"references": ["PMID:22955616", "PMCID:PMC3439153"],
-	"volume": "489",
-	"issue": "7414",
-	"page": "57-74",
-	"status": "published",
-	"published_by": ["ENCODE"],
-	"categories": ["integrative analysis"],
-	"data_used": "ENCODE main paper",
-	"uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
+        "title": "An integrated encyclopedia of DNA elements in the human genome",
+        "abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
+        "authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
+        "journal": "Nature",
+        "date_published": "2012 Sep 6",
+        "references": ["PMID:22955616", "PMCID:PMC3439153"],
+        "volume": "489",
+        "issue": "7414",
+        "page": "57-74",
+        "status": "published",
+        "published_by": ["ENCODE"],
+        "categories": ["integrative analysis"],
+        "data_used": "ENCODE main paper",
+        "uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
     },
     {
         "status":"in progress",
@@ -51,7 +51,7 @@
         "page":"690-1",
         "volume":"6",
         "date_published":"2009 Oct",
-        "references":["PMID:19789528"],
+        "references":["PMID:19789528"], 
         "published_by": ["ENCODE"],
         "authors":"Lajoie BR, van Berkum NL, Sanyal A, Dekker J"
     },
