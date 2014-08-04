@@ -22,6 +22,7 @@ require('./platform');
 require('./search');
 require('./target');
 require('./publication');
+require('./software');
 require('./testing');
 require('./edit');
 require('./blocks');

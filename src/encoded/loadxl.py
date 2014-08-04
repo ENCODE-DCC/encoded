@@ -31,7 +31,7 @@ ORDER = [
     'library',
     'experiment',
     'replicate',
-    # 'software',
+    'software',
     'dataset',
     'file',
     'image',

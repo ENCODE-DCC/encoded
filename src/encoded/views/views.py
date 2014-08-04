@@ -744,16 +744,6 @@ class Replicates(Collection):
         embedded = set(['library', 'platform'])
 
 
-@location('software')
-class Software(Collection):
-    item_type = 'software'
-    schema = load_schema('software.json')
-    properties = {
-        'title': 'Software',
-        'description': 'Listing of software',
-    }
-
-
 @location('datasets')
 class Dataset(Collection):
     item_type = 'dataset'
@@ -1090,6 +1080,19 @@ class Publication(Collection):
             if 'date_published' in ns:
                 ns['publication_year'] = ns['date_published'].partition(' ')[0]
             return ns
+
+
+@location('software')
+class Software(Collection):
+    item_type = 'software'
+    schema = load_schema('software.json')
+    properties = {
+        'title': 'Software',
+        'description': 'Listing of software',
+    }
+    item_name_key = 'name'
+    unique_key = 'software:name'
+    item_keys = ALIAS_KEYS + ['name']
 
 
 @location('images')

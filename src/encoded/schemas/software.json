@@ -1,84 +1,59 @@
 {
     "title": "Software",
-    "description": "Schema for submitting analysis software and parameters.",
+    "description": "Schema for submitting analysis software.",
     "id": "/profiles/software.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name", "arguments", "lab", "award", "software_type"],
+    "required": ["software_type", "name"],
     "additionalProperties": false,
+    "identifyingProperties": ["uuid", "alias", "name"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
+        "software_type": {
+            "title": "Type",
+            "description": "The classification of the software",
+            "type": "string",
+            "enum": [
+                "aligner",
+                "QC",
+                "peak caller",
+                "filtering",
+                "file format conversion",
+                "other"
+            ]
+        },
         "name": {
             "title": "Name",
-            "description": "Unique name of the software package or pipeline.",
-            "type":  "string",
-            "pattern": "[a-z][0-9\\-]"
+            "description": "Unique name of the software package, lower cased version of title.",
+            "type": "string",
+            "pattern": "^[a-z0-9\\-\\_]+"
         },
         "title": {
             "title": "Title",
             "description": "The preferred viewable name of the software.",
             "type": "string"
         },
-        "software_type": {
-            "title": "Type",
-            "description": "The categorization of the software purpose.",
-            "type": "string",
-            "enum" : [
-                "mapper",
-                "peakcaller",
-                "other",
-                "pipeline"
-            ]
-        },
-        "software_version": {
-            "title": "Version",
-            "type": "string"
-        },
-        "arguments": {
-            "title": "Command line arguments",
-            "description": "The arguments used to run the software.",
-            "type": "string"
-        },
-        "dependencies": {
-            "title": "Dependencies",
-            "description": "The list of specific software dependencies.",
-            "type": "string"
-        },
-        "instructions": {
-            "title": "Instructional documents",
-            "description": "Documents with detailed instructions and protocols for running the software.",
+        "publication": {
+            "title": "Publication",
+            "description": "PubMed reference data found in the object.",
             "type": "array",
             "default": [],
             "items": {
-                "title": "Instructional document",
-                "description": "A document with detailed instructions and protocols for running the software.",
-                "comment": "See document.json for a list of available identifiers.",
+                "title": "Publication",
+                "description": "An identifier that references data found in the object.",
                 "type": "string",
-                "linkTo": "document"
-            }
-        },
-        "dbxref": {
-            "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "External identifier",
-                "description": "A unique identifier from external resource.",
-                "type":  "string",
-                "pattern": "^(UCSC-ENCODE-cv:\\S+)$"
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
             }
         },
         "bug_tracker_url": {
@@ -100,5 +75,4 @@
             "format": "uri"
         }
     }
-
 }
