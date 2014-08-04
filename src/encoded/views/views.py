@@ -1072,17 +1072,17 @@ class Publication(Collection):
         'title': 'Publications',
         'description': 'Publication pages',
     }
-    unique_key = 'publication:title'
-    name_key = 'title'
+    unique_key = 'publication:refere'
+   
 
     class Item(Collection.Item):
         template = {
             'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
         }
+        name_key = 'reference'
         
         keys = ALIAS_KEYS + [
-            {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
-            {'name': '{item_type}:title', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True},
+            {'name': '{item_type}:reference', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True, '$condition': 'reference'},
         ]
 
         def template_namespace(self, properties, request=None):
