@@ -747,8 +747,21 @@ class Software(Collection):
     schema = load_schema('software.json')
     properties = {
         'title': 'Software',
-        'description': 'Listing of software',
+        'description': 'Software pages',
     }
+    unique_key = "software:title",
+    name_key = "title"
+
+    class item(Collection.Item):
+        keys = ALIAS_KEYS +[
+            {'name': '{item_type}:name', 'value': '{title}', '$templated': True},
+            {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+        ]
+
+        embedded = set([
+            'references'
+        ])
+
 
 
 @location('datasets')

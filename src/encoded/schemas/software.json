@@ -1,85 +1,57 @@
 {
     "title": "Software",
-    "description": "Schema for submitting analysis software and parameters.",
+    "description": "Schema for submitting analysis software.",
     "id": "/profiles/software.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name", "arguments", "lab", "award", "software_type"],
+    "required": ["name", "description", "title"],
     "additionalProperties": false,
+    "identifyingProperties": ["uuid", "alias", "title"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/references" },
-        { "$ref": "mixins.json#/notes" }
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitted" }
     ],
     "properties": {
         "schema_version": {
             "default": "1"
         },
+        "software_type": {
+            "title": "Types",
+            "description": "The classification of the software",
+            "type": "array",
+            "items": {
+                "title": "Type",
+                "type": "string",
+                "enum": [
+                    "aligner",
+                    "quality metric",
+                    "peak caller",
+                    "filtering",
+                    "file format conversion",
+                    "database",
+                    "variant annotation",
+                    "genome segmentation",
+                    "qualification",
+                    "transcript identification",
+                    "transcriptome assembly",
+                    "other"
+                ]
+            }
+        },
         "name": {
             "title": "Name",
-            "description": "Unique name of the software package or pipeline.",
-            "type":  "string",
-            "pattern": "[a-z][0-9\\-]"
+            "description": "Unique name of the software package, lower cased version of title.",
+            "type": "string",
+            "pattern": "^[a-z0-9\\-\\_]+"
         },
         "title": {
             "title": "Title",
             "description": "The preferred viewable name of the software.",
             "type": "string"
-        },
-        "software_type": {
-            "title": "Type",
-            "description": "The categorization of the software purpose.",
-            "type": "string",
-            "enum" : [
-                "mapper",
-                "peakcaller",
-                "other",
-                "pipeline"
-            ]
-        },
-        "software_version": {
-            "title": "Version",
-            "type": "string"
-        },
-        "arguments": {
-            "title": "Command line arguments",
-            "description": "The arguments used to run the software.",
-            "type": "string"
-        },
-        "dependencies": {
-            "title": "Dependencies",
-            "description": "The list of specific software dependencies.",
-            "type": "string"
-        },
-        "instructions": {
-            "title": "Instructional documents",
-            "description": "Documents with detailed instructions and protocols for running the software.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Instructional document",
-                "description": "A document with detailed instructions and protocols for running the software.",
-                "comment": "See document.json for a list of available identifiers.",
-                "type": "string",
-                "linkTo": "document"
-            }
-        },
-        "dbxref": {
-            "title": "External identifiers",
-            "description": "Unique identifiers from external resources.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "External identifier",
-                "description": "A unique identifier from external resource.",
-                "type":  "string",
-                "pattern": "^(UCSC-ENCODE-cv:\\S+)$"
-            }
         },
         "bug_tracker_url": {
             "title": "Bug tracker URL",
@@ -98,7 +70,105 @@
             "description": "An external resource with additional information about the software.",
             "type": "string",
             "format": "uri"
+        },
+        "purpose": {
+            "title": "Purpose in project",
+            "description": "The purpose that the software was used for in the project.",
+            "type": "array",
+            "items": {
+                "title": "Purpose",
+                "type": "string",
+                "enum": [
+                    "ChIP-seq",
+                    "DNase-seq",
+                    "RNA-seq",
+                    "data QC",
+                    "integrative analysis",
+                    "variant analysis",
+                    "community resource",
+                    "other"
+                ]
+            }
+        },
+        "references": {
+            "title": "References",
+            "type": "array",
+            "items": {
+                "title": "Reference",
+                "type": "string",
+                "linkTo": "publication"
+            }
+        },
+        "used_by": {
+            "title": "Used by project",
+            "type": "array",
+            "items": {
+                "title": "Used by",
+                "type": "string",
+                "enum": [
+                    "ENCODE",
+                    "mouseENCODE",
+                    "modENCODE",
+                    "community"
+                ]
+            }
+        },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the software.",
+            "type": "string"
         }
+    },
+    "facets": {
+        "software_type": {
+            "title": "Software type",
+            "type": "array"
+        },
+        "purpose": {
+            "title": "Purpose in project",
+            "type": "string"
+        },
+        "references.published": {
+            "title": "Created by",
+            "type": "array"
+        }
+    },
+   "columns": {
+        "title": {
+            "title": "Title",
+            "type": "string"
+        },
+        "name": {
+            "title": "Name",
+            "type": "string"
+        },
+        "url": {
+            "title": "URL",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "type": "string"
+        },
+        "references": {
+            "title": "References",
+            "type": "array"
+        },
+        "used_by": {
+            "title": "Use by project",
+            "type": "array"
+        },
+        "purpose": {
+            "title": "Purpose in project" ,
+            "type": "array"
+        }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "title": 1.0,
+        "name": 1.0,
+        "purpose": 1.0,
+        "used_by": 1.0,
+        "software_type": 1.0
     }
-
 }
