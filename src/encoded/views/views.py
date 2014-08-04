@@ -281,14 +281,16 @@ class AntibodyLot(Collection):
             if request is None:
                 return ns
             if 'characterizations' in ns:
+                target_uuids = []
                 targets = []
                 eligible_biosample_term_names = []
                 eligible_biosample_term_ids = []
+                eligible_biosample_organism = []
                 compliant_primary_flag = False
                 compliant_secondary_flag = False
                 for characterization_uuid in ns['characterizations']:
                     characterization = find_resource(request.root, characterization_uuid)
-                    targets.append(characterization.properties['target'])
+                    target_uuids.append(characterization.properties['target'])
                     if characterization.properties['status'] == 'compliant':
                         if 'primary_characterization_method' in characterization.properties:
                             compliant_primary_flag = True
@@ -296,17 +298,23 @@ class AntibodyLot(Collection):
                                 if review_object['status'] == 'compliant':
                                     eligible_biosample_term_names.append(review_object['biosample_term_name'])
                                     eligible_biosample_term_ids.append(review_object['biosample_term_id'])
+                                    eligible_biosample_organism.append(review_object['organism'])
                         else:
                             compliant_secondary_flag = True
                     else:
                         continue
-                ns['targets'] = set(targets)
+                for target_uuid in set(target_uuids):
+                    target = find_resource(request.root, target_uuid)
+                    targets.append(target.properties)
+                ns['targets'] = targets
                 if compliant_primary_flag and compliant_secondary_flag:
                     ns['eligible_biosample_term_names'] = set(eligible_biosample_term_names)
                     ns['eligible_biosample_term_ids'] = set(eligible_biosample_term_ids)
+                    ns['eligible_biosample_organism'] = set(eligible_biosample_organism)
                 else:
                     ns['eligible_biosample_term_names'] = []
                     ns['eligible_biosample_term_ids'] = []
+                    ns['eligible_biosample_organism'] = []
             else:
                 ns['targets'] = []
 
