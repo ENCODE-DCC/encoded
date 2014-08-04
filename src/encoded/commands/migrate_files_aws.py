@@ -24,7 +24,7 @@ def run(app, files):
         dummy_request.context = item
         properties = item.upgrade_properties(finalize=True)
         sheets = None
-        value = files.get(uuid)
+        value = files.get(str(uuid))
         if value is not None:
             properties['file_size'] = value['file_size']
             sheets = {
