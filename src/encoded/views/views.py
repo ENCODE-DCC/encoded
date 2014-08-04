@@ -167,6 +167,9 @@ class Collection(BaseCollection):
             # dataset / experiment
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
+
+            #publication
+            'published': ALLOW_CURRENT,
         }
         actions = [EDIT_ACTION]
 
@@ -1061,12 +1064,12 @@ class HelpPage(LegacyPage):
     unique_key = 'help_page:name'
 
 
-@location('publication')
+@location('publications')
 class Publication(Collection):
     item_type = 'publication'
     schema = load_schema('publication.json')
     properties = {
-        'title': 'Publication',
+        'title': 'Publications',
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
