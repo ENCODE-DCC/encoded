@@ -305,6 +305,7 @@ class AntibodyLot(Collection):
                         continue
                 for target_uuid in set(target_uuids):
                     target = find_resource(request.root, target_uuid)
+                    import pdb; pdb.set_trace();
                     targets.append(target.properties)
                 ns['targets'] = targets
                 if compliant_primary_flag and compliant_secondary_flag:
