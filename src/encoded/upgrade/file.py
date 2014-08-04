@@ -77,6 +77,8 @@ def file_2_3(value, system):
     if status == 'current':
         if dataset_status == 'released':
             value['status'] = 'released'
+        else:
+            value['status'] = 'in progress'
 
     if status == 'obsolete':
         if dataset_status in ['released', 'revoked']:
