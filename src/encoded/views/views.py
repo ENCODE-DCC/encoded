@@ -741,29 +741,6 @@ class Replicates(Collection):
         embedded = set(['library', 'platform'])
 
 
-@location('software')
-class Software(Collection):
-    item_type = 'software'
-    schema = load_schema('software.json')
-    properties = {
-        'title': 'Software',
-        'description': 'Software pages',
-    }
-    unique_key = "software:title",
-    name_key = "title"
-
-    class item(Collection.Item):
-        keys = ALIAS_KEYS +[
-            {'name': '{item_type}:name', 'value': '{title}', '$templated': True},
-            {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
-        ]
-
-        embedded = set([
-            'references'
-        ])
-
-
-
 @location('datasets')
 class Dataset(Collection):
     item_type = 'dataset'
@@ -1100,6 +1077,27 @@ class Publication(Collection):
             if 'date_published' in ns:
                 ns['publication_year'] = ns['date_published'].partition(' ')[0]
             return ns
+
+
+@location('software')
+class Software(Collection):
+    item_type = 'software'
+    schema = load_schema('software.json')
+    properties = {
+        'title': 'Software',
+        'description': 'Software pages',
+    }
+    unique_key = "software:name",
+    name_key = "name"
+
+    class item(Collection.Item):
+        keys = ALIAS_KEYS +[
+            {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+            {'name': '{item_type}:name', 'value': '{title}', '$templated': True}, 
+        ]
+        embedded = [
+            'references'
+        ]
 
 
 @location('images')

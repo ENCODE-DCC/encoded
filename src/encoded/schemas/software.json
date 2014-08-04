@@ -128,7 +128,7 @@
             "title": "Purpose in project",
             "type": "string"
         },
-        "references.published": {
+        "references.published_by": {
             "title": "Created by",
             "type": "array"
         }
@@ -151,7 +151,7 @@
             "type": "string"
         },
         "references": {
-            "title": "References",
+            "title": "references",
             "type": "array"
         },
         "used_by": {
@@ -169,6 +169,8 @@
         "name": 1.0,
         "purpose": 1.0,
         "used_by": 1.0,
-        "software_type": 1.0
+        "software_type": 1.0,
+        "references.references": 1.0,
+        "references.published_by": 1.0
     }
 }
