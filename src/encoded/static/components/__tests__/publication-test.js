@@ -63,7 +63,7 @@ describe('Publication', function() {
 
         beforeEach(function() {
             var context_ref = _.clone(context);
-            context_ref.references = ['PMID:19352372', 'PMCID:3062402'];
+            context_ref.references = ['PMID:19352372', 'PMCID:PMC3062402'];
             publication = <Panel context={context_ref} />;
             TestUtils.renderIntoDocument(publication);
         });

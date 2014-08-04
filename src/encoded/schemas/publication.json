@@ -72,8 +72,8 @@
                 "in progress",
                 "deleted",
                 "replaced",
-                "released",
-                "proposed"
+                "proposed",
+                "published"
             ]
         },
         "categories": {
@@ -89,7 +89,11 @@
             "database",
             "integrative analysis",
             "technology development",
-            "data standard"
+            "data standard",
+            "key publication",
+            "pilot phase publication",
+            "model organism biology",
+            "tutorial"
         ]
             }      
         },

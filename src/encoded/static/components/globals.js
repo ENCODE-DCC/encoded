@@ -66,6 +66,6 @@ module.exports.dbxref_prefix_map = {
     "UCSC-GB-hg19": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=",
     // Dataset, experiment, and document references
     "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
-    "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/PMC",
+    "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/",
     "doi": "http://dx.doi.org/doi:"
 };
