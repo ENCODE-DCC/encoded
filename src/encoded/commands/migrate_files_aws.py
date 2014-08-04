@@ -6,6 +6,8 @@ import json
 import logging
 import transaction
 from pyramid.paster import get_app
+from pyramid.threadlocal import manager
+from pyramid.testing import DummyRequest
 
 EPILOG = __doc__
 
@@ -15,9 +17,12 @@ logger = logging.getLogger(__name__)
 def run(app, files):
     root = app.root_factory(app)
     collection = root['file']
+    dummy_request = DummyRequest(root=root, registry=app.registry, _stats={})
+    manager.push({'request': dummy_request, 'registry': app.registry})
     for i, uuid in enumerate(collection):
         item = root.get_by_uuid(uuid)
-        properties = item.properties.upgrade_properties(finalize=True)
+        dummy_request.context = item
+        properties = item.upgrade_properties(finalize=True)
         sheets = None
         value = files.get(uuid)
         if value is not None:
@@ -30,7 +35,7 @@ def run(app, files):
                 },
             }
         item.update(properties, sheets=sheets)
-        if i + 1 % 1000 == 0:
+        if (i + 1) % 100 == 0:
             logger.info('Updated %d', i + 1)
 
 
