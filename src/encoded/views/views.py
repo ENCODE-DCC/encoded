@@ -245,6 +245,9 @@ class AntibodyLot(Collection):
             'eligible_biosample_term_ids': [
                 {'$value': '{term_id}', '$repeat': 'term_id eligible_biosample_term_ids', '$templated': True}
             ],
+            'eligible_biosample_organisms': [
+                {'$value': '{term_id}', '$repeat': 'term_id eligible_biosample_organisms', '$templated': True}
+            ],
             'title': {'$value': '{accession}', '$templated': True},
         }
         name_key = 'accession'
@@ -281,41 +284,37 @@ class AntibodyLot(Collection):
             if request is None:
                 return ns
             if 'characterizations' in ns:
-                target_uuids = []
                 targets = []
                 eligible_biosample_term_names = []
                 eligible_biosample_term_ids = []
-                eligible_biosample_organism = []
-                compliant_primary_flag = False
-                compliant_secondary_flag = False
+                eligible_biosample_organisms = []
+                compliant_primary = False
+                compliant_secondary = False
                 for characterization_uuid in ns['characterizations']:
                     characterization = find_resource(request.root, characterization_uuid)
-                    target_uuids.append(characterization.properties['target'])
+                    targets.append(characterization.properties['target'])
                     if characterization.properties['status'] == 'compliant':
                         if 'primary_characterization_method' in characterization.properties:
-                            compliant_primary_flag = True
+                            compliant_primary = True
                             for review_object in characterization.properties['characterization_review']:
                                 if review_object['status'] == 'compliant':
                                     eligible_biosample_term_names.append(review_object['biosample_term_name'])
                                     eligible_biosample_term_ids.append(review_object['biosample_term_id'])
-                                    eligible_biosample_organism.append(review_object['organism'])
+                                    eligible_biosample_organisms.append(review_object['organism'])
                         else:
-                            compliant_secondary_flag = True
+                            compliant_secondary = True
                     else:
                         continue
-                for target_uuid in set(target_uuids):
-                    target = find_resource(request.root, target_uuid)
-                    import pdb; pdb.set_trace();
-                    targets.append(target.properties)
-                ns['targets'] = targets
-                if compliant_primary_flag and compliant_secondary_flag:
+
+                ns['targets'] = set(targets)
+                if compliant_primary and compliant_secondary:
                     ns['eligible_biosample_term_names'] = set(eligible_biosample_term_names)
                     ns['eligible_biosample_term_ids'] = set(eligible_biosample_term_ids)
-                    ns['eligible_biosample_organism'] = set(eligible_biosample_organism)
+                    ns['eligible_biosample_organisms'] = set(eligible_biosample_organisms)
                 else:
                     ns['eligible_biosample_term_names'] = []
                     ns['eligible_biosample_term_ids'] = []
-                    ns['eligible_biosample_organism'] = []
+                    ns['eligible_biosample_organisms'] = []
             else:
                 ns['targets'] = []
 
