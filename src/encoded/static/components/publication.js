@@ -29,20 +29,31 @@ var Panel = module.exports.Panel = React.createClass({
                 {context.authors ? <div className="authors">{context.authors}.</div> : null}
                 {this.transferPropsTo(<Citation />)}
 
-                {context.abstract || context.references.length ?
+                {context.abstract || context.data_used || context.references.length ?
                     <div className="view-detail panel">
                         {context.abstract ?
                             <div className="abstract">
-                                {context.abstract ? <h2>Abstract</h2> : null}
-                                {context.abstract ? <p>{context.abstract}</p> : null}
+                                <h2>Abstract</h2>
+                                <p>{context.abstract}</p>
                             </div>
                         : null}
-                        {context.references && context.references.length ?
-                            <div className="references">
-                                {context.references.length ? <span>References: </span> : null}
-                                {context.references.length ? <DbxrefList values={context.references} className="multi-value" /> : null}
+
+                        <dl className="key-value-left">
+                            <div>
+                                {context.references && context.references.length ?
+                                    <div>
+                                        <dt>References</dt>
+                                        <dd><DbxrefList values={context.references} className="multi-value" /></dd>
+                                    </div>
+                                : null}
+                                {context.data_used ?
+                                    <div>
+                                        <dt>Consortium data referenced in this publication</dt>
+                                        <dd>{context.data_used}</dd>
+                                    </div>
+                                : null}
                             </div>
-                        : null}
+                        </dl>
                     </div>
                 : null}
             </div>

@@ -10,29 +10,55 @@ dd.h3, dd.h4 {
     font-weight: normal;
 }
 
-.key-value {
-    dt, dd {
-        padding-bottom: 10px;
-        padding-top: 5px;
-        line-height: 18px;
-        font-size: 14px;
-    }
+.key-value, .key-value-left {
+    margin: 0;
+
     dt {
-        float: left;
-        width: $component-offset-horizontal;
-        text-align: right;
-        clear: left;
+        padding-top: 0;
+        padding-bottom: 2px;
+        text-align: left;
+
+        &:after {
+            content: ": ";
+        }
     }
-    dt::after {
-        content: ": ";
+
+    dt, dd {
+        margin-left: 0;
+        padding-top: 0;
+        margin-bottom: 0px;
     }
 
     dd {
-        margin-left: 200px;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
+        margin-bottom: 10px;
+        padding-bottom: 0;
     }
 }
+
+@media screen and (min-width: $screen-xs-min) {
+    .key-value {
+        dt {
+            float: left;
+            width: $component-offset-horizontal;
+            text-align: right;
+            clear: left;
+
+        }
+
+        dt, dd {
+            padding-top: 5px;
+            line-height: 18px;
+            font-size: 14px;
+        }
+
+        dd {
+            margin-left: 200px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+    }
+}
+
 
 .unit::before {
     content: " ";
