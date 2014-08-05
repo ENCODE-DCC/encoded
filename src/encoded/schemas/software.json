@@ -181,6 +181,7 @@
         "name": 1.0,
         "purpose": 1.0,
         "used_by": 1.0,
-        "software_type": 1.0
+        "software_type": 1.0,
+	"references.title": 1.0
     }
 }

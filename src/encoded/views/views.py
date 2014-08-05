@@ -167,6 +167,9 @@ class Collection(BaseCollection):
             # dataset / experiment
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
+
+            #publication
+            'published': ALLOW_CURRENT,
         }
         actions = [EDIT_ACTION]
 
@@ -1060,7 +1063,7 @@ class Publication(Collection):
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
-    name_key = 'title'
+   
 
     class Item(Collection.Item):
         template = {
@@ -1070,6 +1073,7 @@ class Publication(Collection):
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
             {'name': '{item_type}:reference', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True, '$condition': 'reference'},
+            
         ]
 
         def template_namespace(self, properties, request=None):
@@ -1087,19 +1091,13 @@ class Software(Collection):
         'title': 'Software',
         'description': 'Software pages',
     }
-    unique_key = "software:name",
+    item_name_key = "name"
+    unique_key = "software:name"
+    item_embedded = set(['references'])
+    item_keys = ALIAS_KEYS + [
+        {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+    ]
 
-    class item(Collection.Item):
-        keys = ALIAS_KEYS +[
-            {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
-            {'name': '{item_type}:name', 'value': '{title}', '$templated': True}, 
-        ]
-
-        embedded = [
-            'references'
-        ]
-        
-        name_key = "name"
 
 
 @location('images')
