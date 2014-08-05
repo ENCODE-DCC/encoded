@@ -6,6 +6,7 @@
     "type": "object",
     "required": ["name", "description", "title"],
     "additionalProperties": false,
+    "identifyingProperties": ["uuid", "alias", "title"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
