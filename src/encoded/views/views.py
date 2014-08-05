@@ -1091,19 +1091,13 @@ class Software(Collection):
         'title': 'Software',
         'description': 'Software pages',
     }
-    unique_key = "software:name",
+    item_name_key = "name"
+    unique_key = "software:name"
+    item_embedded = set(['references'])
+    item_keys = ALIAS_KEYS + [
+        {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+    ]
 
-    class item(Collection.Item):
-        keys = ALIAS_KEYS +[
-            {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
-            {'name': '{item_type}:name', 'value': '{title}', '$templated': True}, 
-        ]
-
-        embedded = [
-            'references'
-        ]
-        
-        name_key = "name"
 
 
 @location('images')
