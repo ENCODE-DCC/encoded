@@ -1051,12 +1051,12 @@ class HelpPage(LegacyPage):
     unique_key = 'help_page:name'
 
 
-@location('publication')
+@location('publications')
 class Publication(Collection):
     item_type = 'publication'
     schema = load_schema('publication.json')
     properties = {
-        'title': 'Publication',
+        'title': 'Publications',
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
@@ -1069,7 +1069,7 @@ class Publication(Collection):
         
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
-            {'name': '{item_type}:title', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True},
+            {'name': '{item_type}:reference', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True, '$condition': 'reference'},
         ]
 
         def template_namespace(self, properties, request=None):

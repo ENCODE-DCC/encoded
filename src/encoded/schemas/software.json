@@ -154,6 +154,10 @@
             "title": "Description",
             "type": "string"
         },
+        "source_url": {
+            "title": "Source URL",
+            "type": "string"
+        },
         "references": {
             "title": "references",
             "type": "array"

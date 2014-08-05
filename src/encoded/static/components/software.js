@@ -73,7 +73,10 @@ var Listing = React.createClass({
                             <p className="type meta-title">Software</p>
                             <p className="type meta-status">{' ' + context.status}</p>
                         </div>
-                        <div className="accession"><a href={context['@id']}>{context.title}</a></div>
+                        <div className="accession">
+                            <a href={context['@id']}>{context.title}</a>
+                            <span className="accession-note"> <a href={context.source_url}>source</a></span>
+                        </div>
                     </div>
                     <div className="data-row">
                         <div>{context.description}</div>
