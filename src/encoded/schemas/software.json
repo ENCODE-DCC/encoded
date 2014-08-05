@@ -169,8 +169,6 @@
         "name": 1.0,
         "purpose": 1.0,
         "used_by": 1.0,
-        "software_type": 1.0,
-        "references.references": 1.0,
-        "references.published_by": 1.0
+        "software_type": 1.0
     }
 }
