@@ -167,6 +167,9 @@ class Collection(BaseCollection):
             # dataset / experiment
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
+
+            #publication
+            'published': ALLOW_CURRENT,
         }
         actions = [EDIT_ACTION]
 
@@ -1051,25 +1054,27 @@ class HelpPage(LegacyPage):
     unique_key = 'help_page:name'
 
 
-@location('publication')
+@location('publications')
 class Publication(Collection):
     item_type = 'publication'
     schema = load_schema('publication.json')
     properties = {
-        'title': 'Publication',
+        'title': 'Publications',
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
-    name_key = 'title'
+   
 
     class Item(Collection.Item):
         template = {
             'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
         }
+        name_key = 'title'
         
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
-            {'name': '{item_type}:title', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True},
+            {'name': '{item_type}:reference', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True, '$condition': 'reference'},
+            
         ]
 
         def template_namespace(self, properties, request=None):
