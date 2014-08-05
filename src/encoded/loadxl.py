@@ -31,12 +31,12 @@ ORDER = [
     'library',
     'experiment',
     'replicate',
-    'software',
     'dataset',
     'file',
     'image',
     'page',
-    'publication'
+    'publication',
+    'software',
 ]
 
 

@@ -4,15 +4,13 @@
     "id": "/profiles/software.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["software_type", "name"],
+    "required": ["name", "description", "title"],
     "additionalProperties": false,
-    "identifyingProperties": ["uuid", "alias", "name"],
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/standard_status" },
-        { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitted" }
     ],
@@ -21,17 +19,27 @@
             "default": "1"
         },
         "software_type": {
-            "title": "Type",
+            "title": "Types",
             "description": "The classification of the software",
-            "type": "string",
-            "enum": [
-                "aligner",
-                "QC",
-                "peak caller",
-                "filtering",
-                "file format conversion",
-                "other"
-            ]
+            "type": "array",
+            "items": {
+                "title": "Type",
+                "type": "string",
+                "enum": [
+                    "aligner",
+                    "quality metric",
+                    "peak caller",
+                    "filtering",
+                    "file format conversion",
+                    "database",
+                    "variant annotation",
+                    "genome segmentation",
+                    "qualification",
+                    "transcript identification",
+                    "transcriptome assembly",
+                    "other"
+                ]
+            }
         },
         "name": {
             "title": "Name",
@@ -43,18 +51,6 @@
             "title": "Title",
             "description": "The preferred viewable name of the software.",
             "type": "string"
-        },
-        "publication": {
-            "title": "Publication",
-            "description": "PubMed reference data found in the object.",
-            "type": "array",
-            "default": [],
-            "items": {
-                "title": "Publication",
-                "description": "An identifier that references data found in the object.",
-                "type": "string",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
-            }
         },
         "bug_tracker_url": {
             "title": "Bug tracker URL",
@@ -73,6 +69,107 @@
             "description": "An external resource with additional information about the software.",
             "type": "string",
             "format": "uri"
+        },
+        "purpose": {
+            "title": "Purpose in project",
+            "description": "The purpose that the software was used for in the project.",
+            "type": "array",
+            "items": {
+                "title": "Purpose",
+                "type": "string",
+                "enum": [
+                    "ChIP-seq",
+                    "DNase-seq",
+                    "RNA-seq",
+                    "data QC",
+                    "integrative analysis",
+                    "variant analysis",
+                    "community resource",
+                    "other"
+                ]
+            }
+        },
+        "references": {
+            "title": "References",
+            "type": "array",
+            "items": {
+                "title": "Reference",
+                "type": "string",
+                "linkTo": "publication"
+            }
+        },
+        "used_by": {
+            "title": "Used by project",
+            "type": "array",
+            "items": {
+                "title": "Used by",
+                "type": "string",
+                "enum": [
+                    "ENCODE",
+                    "mouseENCODE",
+                    "modENCODE",
+                    "community"
+                ]
+            }
+        },
+        "description": {
+            "title": "Description",
+            "description": "A plain text description of the software.",
+            "type": "string"
         }
+    },
+    "facets": {
+        "software_type": {
+            "title": "Software type",
+            "type": "array"
+        },
+        "purpose": {
+            "title": "Purpose in project",
+            "type": "string"
+        },
+        "references.published_by": {
+            "title": "Created by",
+            "type": "array"
+        }
+    },
+   "columns": {
+        "title": {
+            "title": "Title",
+            "type": "string"
+        },
+        "name": {
+            "title": "Name",
+            "type": "string"
+        },
+        "url": {
+            "title": "URL",
+            "type": "string"
+        },
+        "description": {
+            "title": "Description",
+            "type": "string"
+        },
+        "references": {
+            "title": "references",
+            "type": "array"
+        },
+        "used_by": {
+            "title": "Use by project",
+            "type": "array"
+        },
+        "purpose": {
+            "title": "Purpose in project" ,
+            "type": "array"
+        }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "title": 1.0,
+        "name": 1.0,
+        "purpose": 1.0,
+        "used_by": 1.0,
+        "software_type": 1.0,
+        "references.references": 1.0,
+        "references.published_by": 1.0
     }
 }

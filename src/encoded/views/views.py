@@ -167,9 +167,6 @@ class Collection(BaseCollection):
             # dataset / experiment
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
-
-            #publication
-            'published': ALLOW_CURRENT,
         }
         actions = [EDIT_ACTION]
 
@@ -1054,12 +1051,12 @@ class HelpPage(LegacyPage):
     unique_key = 'help_page:name'
 
 
-@location('publications')
+@location('publication')
 class Publication(Collection):
     item_type = 'publication'
     schema = load_schema('publication.json')
     properties = {
-        'title': 'Publications',
+        'title': 'Publication',
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
@@ -1088,11 +1085,19 @@ class Software(Collection):
     schema = load_schema('software.json')
     properties = {
         'title': 'Software',
-        'description': 'Listing of software',
+        'description': 'Software pages',
     }
-    item_name_key = 'name'
-    unique_key = 'software:name'
-    item_keys = ALIAS_KEYS + ['name']
+    unique_key = "software:name",
+    name_key = "name"
+
+    class item(Collection.Item):
+        keys = ALIAS_KEYS +[
+            {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+            {'name': '{item_type}:name', 'value': '{title}', '$templated': True}, 
+        ]
+        embedded = [
+            'references'
+        ]
 
 
 @location('images')
