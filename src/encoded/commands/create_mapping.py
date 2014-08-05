@@ -89,9 +89,17 @@ def schema_mapping(name, schema):
             'include_in_all': False
         }
 
-    if type_ in ('boolean', 'integer'):
+    if type_ == 'integer':
         return {
-            'type': type_,
+            'type': 'long',
+            'copy_to': [],
+            'include_in_all': False
+        }
+
+
+    if type_ == 'boolean':
+        return {
+            'type': 'boolean',
             'copy_to': [],
             'include_in_all': False
         }
@@ -109,9 +117,19 @@ def index_settings():
                     }
                 },
                 'analyzer': {
+                    'default': {
+                        'type': 'custom',
+                        'tokenizer': 'standard',
+                        'char_filter': 'html_strip',
+                        'filter': [
+                            'standard',
+                            'lowercase',
+                        ]
+                    },
                     'encoded_index_analyzer': {
                         'type': 'custom',
                         'tokenizer': 'standard',
+                        'char_filter': 'html_strip',
                         'filter': [
                             'standard',
                             'lowercase',

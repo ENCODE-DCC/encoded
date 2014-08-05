@@ -7,7 +7,7 @@ var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
-var Panel = module.exports.Panel = React.createClass({
+var Target = module.exports.Target = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-detail panel key-value');
@@ -22,22 +22,30 @@ var Panel = module.exports.Panel = React.createClass({
             geneLink = globals.dbxref_prefix_map.UniProtKB + uniProtID;
         }
         return (
-            <dl className={itemClass}>
-                <dt>Target name</dt>
-                <dd>{context.label}</dd>
+            <div className={globals.itemClass(context, 'view-item')}>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <h2>{context.label} (<em>{context.organism.scientific_name}</em>)</h2>
+                    </div>
+                </header>
 
-                {context.gene_name ? <dt>Target gene</dt> : null}
-                {context.gene_name ? <dd><a href={geneLink}>{context.gene_name}</a></dd> : null}
+                <dl className={itemClass}>
+                    <dt>Target name</dt>
+                    <dd>{context.label}</dd>
 
-                <dt>External resources</dt>
-                <dd>
-                    {context.dbxref.length ?
-                        <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
-                    : <em>None submitted</em> }
-                </dd>
-            </dl>
+                    {context.gene_name ? <dt>Target gene</dt> : null}
+                    {context.gene_name ? <dd><a href={geneLink}>{context.gene_name}</a></dd> : null}
+
+                    <dt>External resources</dt>
+                    <dd>
+                        {context.dbxref.length ?
+                            <DbxrefList values={context.dbxref} target_gene={context.gene_name} />
+                        : <em>None submitted</em> }
+                    </dd>
+                </dl>
+            </div>
         );
     }
 });
 
-globals.panel_views.register(Panel, 'target');
+globals.content_views.register(Target, 'target');
