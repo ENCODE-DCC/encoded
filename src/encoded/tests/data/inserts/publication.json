@@ -140,7 +140,7 @@
         ],
         "references": [
             "PMID:23104886",
-            "PMCID:3530905"
+            "PMCID:PMC3530905"
         ],
         "status": "published",
         "title": "STAR: ultrafast universal RNA-seq aligner.",
@@ -163,7 +163,7 @@
         ],
         "references": [
             "PMID:22064851",
-            "PMCID:3245002"
+            "PMCID:PMC3245002"
         ],
         "status": "published",
         "title": "HaploReg: a resource for exploring chromatin states, conservation, and regulatory motif alterations within sets of genetically linked variants.",
@@ -186,7 +186,7 @@
         ],
         "references": [
             "PMID:20110278",
-            "PMCID:2832824"
+            "PMCID:PMC2832824"
         ],
         "status": "published",
         "title": "BEDTools: a flexible suite of utilities for comparing genomic features.",
