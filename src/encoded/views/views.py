@@ -1079,7 +1079,6 @@ class Publication(Collection):
         template = {
             'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
         }
-        name_key = 'title'
         
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
