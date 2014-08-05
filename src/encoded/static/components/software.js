@@ -4,64 +4,62 @@ var React = require('react');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var antibody = require('./antibody');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
+var StatusLabel = antibody.StatusLabel;
 
-var Citation = React.createClass({
+
+var Software = module.exports.Software = React.createClass({
     render: function() {
         var context = this.props.context;
-        return (
-            <div className="journal">
-                <i>{context.journal}</i>. {context.date_published};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }{context.page ? ':' + context.page : ''}.
-            </div>
-        );
-    }
-});
-
-
-var Panel = module.exports.Panel = React.createClass({
-    render: function() {
-        var context = this.props.context;
-        var itemClass = globals.itemClass(context);
+        var itemClass = globals.itemClass(context, 'view-item');
         return (
             <div className={itemClass}>
-                {context.authors ? <div className="authors">{context.authors}.</div> : null}
-                {this.transferPropsTo(<Citation />)}
+                <header className="row">
+                    <div className="col-sm-12">
+                        <div>
+                            <h2>{context.title}</h2>
+                        </div>
+                        <div className="characterization-status-labels">
+                            <StatusLabel title="Status" status={context.status} />
+                        </div>
+                    </div>
+                </header>
 
-                {context.abstract || context.data_used || context.references.length ?
-                    <div className="view-detail panel">
-                        {context.abstract ?
-                            <div className="abstract">
-                                <h2>Abstract</h2>
-                                <p>{context.abstract}</p>
+                <div className="panel data-display">
+                    <dl className="key-value">
+                        <dt>Title</dt>
+                        {context.source_url ?
+                            <dd><a href={context.source_url}>{context.title}</a></dd> :
+                            <dd>{context.title}</dd>
+                        }
+
+                        <dt>Description</dt>
+                        <dd>{context.description}</dd>
+
+                        {context.software_type && context.software_type.length ?
+                            <div>
+                                <dt>Software Type</dt>
+                                <dd>{context.software_type.join(", ")}</dd>
                             </div>
                         : null}
 
-                        <dl className="key-value-left">
+                        {context.purpose && context.purpose.length ?
                             <div>
-                                {context.references && context.references.length ?
-                                    <div>
-                                        <dt>References</dt>
-                                        <dd><DbxrefList values={context.references} className="multi-value" /></dd>
-                                    </div>
-                                : null}
-                                {context.data_used ?
-                                    <div>
-                                        <dt>Consortium data referenced in this publication</dt>
-                                        <dd>{context.data_used}</dd>
-                                    </div>
-                                : null}
+                                <dt>Used for</dt>
+                                <dd>{context.purpose.join(", ")}</dd>
                             </div>
-                        </dl>
-                    </div>
-                : null}
+                        : null}
+                    </dl>
+                </div>
             </div>
         );
     }
 });
 
-globals.panel_views.register(Panel, 'software');
+globals.content_views.register(Software, 'software');
 
 
 var Listing = React.createClass({
@@ -73,24 +71,26 @@ var Listing = React.createClass({
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Software</p>
-                            <p className="type meta-status">{' ' + context['status']}</p>
+                            <p className="type meta-status">{' ' + context.status}</p>
                         </div>
                         <div className="accession"><a href={context['@id']}>{context.title}</a></div>
                     </div>
                     <div className="data-row">
-                        {context.software_type ?
+                        <div>{context.description}</div>
+
+                        {context.software_type && context.software_type.length ?
                             <div>
                                 <strong>Software type: </strong>
-                                <div className="sentence-case-block">{context.software_type}</div>
+                                {context.software_type.join(", ")}
                             </div>
                         : null}
-                        {context.purpose ?
+                        {context.purpose && context.purpose.length ?
                             <div>
                                 <strong>Used for: </strong>
-                                <div className="sentence-case-block">{context.context.purpose}</div>
+                                {context.purpose.join(", ")}
                             </div>
                         : null}
-                        {context.publication.length ? <DbxrefList values={context.publication} className="list-reference" /> : '' }
+                        {context.publication && context.publication.length ? <DbxrefList values={context.publication} className="list-reference" /> : '' }
                     </div>
             </li>
         );

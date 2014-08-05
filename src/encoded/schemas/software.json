@@ -142,6 +142,10 @@
             "title": "Name",
             "type": "string"
         },
+        "status": {
+            "title": "Publication status",
+            "type": "string"
+        },
         "url": {
             "title": "URL",
             "type": "string"
@@ -158,8 +162,12 @@
             "title": "Use by project",
             "type": "array"
         },
+        "software_type": {
+            "title": "The classification of the software",
+            "type": "array"
+        },
         "purpose": {
-            "title": "Purpose in project" ,
+            "title": "Purpose in project",
             "type": "array"
         }
     },
@@ -169,8 +177,6 @@
         "name": 1.0,
         "purpose": 1.0,
         "used_by": 1.0,
-        "software_type": 1.0,
-        "references.references": 1.0,
-        "references.published_by": 1.0
+        "software_type": 1.0
     }
 }
