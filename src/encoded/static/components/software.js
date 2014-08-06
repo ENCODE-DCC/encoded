@@ -4,11 +4,47 @@ var React = require('react');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
-var antibody = require('./antibody');
+var StatusLabel = require('./antibody').StatusLabel;
+var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
-var StatusLabel = antibody.StatusLabel;
+
+
+// Count the total number of references in all the publications passed
+// in the pubs array parameter.
+function refCount(pubs) {
+    var total = 0;
+    if (pubs) {
+        pubs.forEach(function(pub) {
+            total += pub.references ? pub.references.length : 0;
+        });
+        return total;
+    } else {
+        return 0;
+    }
+}
+
+
+var References = React.createClass({
+
+    render: function() {
+        // Collect all publications' references into one array
+        // and remove duplicates
+        var allRefs = [];
+        this.props.pubs.forEach(function(pub) {
+            allRefs = allRefs.concat(pub.references);
+        });
+        allRefs = _.uniq(allRefs);
+
+        if (allRefs) {
+            return <DbxrefList values={allRefs} className={this.props.listClass} />;
+        } else {
+            return null;
+        }
+    }
+
+});
 
 
 var Software = module.exports.Software = React.createClass({
@@ -52,6 +88,13 @@ var Software = module.exports.Software = React.createClass({
                                 <dd>{context.purpose.join(", ")}</dd>
                             </div>
                         : null}
+
+                        {refCount(context.references) ?
+                            <div>
+                                <dt>Publication References</dt>
+                                <dd><References pubs={context.references} /></dd>
+                            </div>
+                        : null}
                     </dl>
                 </div>
             </div>
@@ -87,13 +130,9 @@ var Listing = React.createClass({
                                 {context.software_type.join(", ")}
                             </div>
                         : null}
-                        {context.purpose && context.purpose.length ?
-                            <div>
-                                <strong>Used for: </strong>
-                                {context.purpose.join(", ")}
-                            </div>
+                        {refCount(context.references) ?
+                            <References pubs={context.references} listClass="list-reference" />
                         : null}
-                        {context.publication && context.publication.length ? <DbxrefList values={context.publication} className="list-reference" /> : '' }
                     </div>
             </li>
         );
