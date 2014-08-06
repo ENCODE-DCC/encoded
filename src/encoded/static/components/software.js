@@ -8,7 +8,6 @@ var StatusLabel = require('./antibody').StatusLabel;
 var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
-var Dbxref = dbxref.Dbxref;
 
 
 // Count the total number of references in all the publications passed
@@ -19,15 +18,33 @@ function refCount(pubs) {
         pubs.forEach(function(pub) {
             total += pub.references ? pub.references.length : 0;
         });
-        return total;
-    } else {
-        return 0;
     }
+    return total;
 }
 
 
+// Display all references in the array of publications in the 'pubs' property.
 var References = React.createClass({
+    render: function() {
+        var pubElements = null;
 
+        return (
+            <div>
+                {this.props.pubs ?
+                    <div>
+                        {this.props.pubs.map(function(pub) {
+                            return <p><a href={pub['@id']}>{pub.title}</a></p>;
+                        })}
+                    </div>
+                : null}
+            </div>
+        );
+    }
+});
+
+
+// Display all PMID/PMCID references in the array of publications in the 'pubs' property.
+var PubReferences = React.createClass({
     render: function() {
         // Collect all publications' references into one array
         // and remove duplicates
@@ -40,10 +57,9 @@ var References = React.createClass({
         if (allRefs) {
             return <DbxrefList values={allRefs} className={this.props.listClass} />;
         } else {
-            return null;
+            return <div></div>;
         }
     }
-
 });
 
 
@@ -77,7 +93,7 @@ var Software = module.exports.Software = React.createClass({
 
                         {context.software_type && context.software_type.length ?
                             <div>
-                                <dt>Software Type</dt>
+                                <dt>Software type</dt>
                                 <dd>{context.software_type.join(", ")}</dd>
                             </div>
                         : null}
@@ -89,10 +105,17 @@ var Software = module.exports.Software = React.createClass({
                             </div>
                         : null}
 
+                        {context.references && context.references.length ?
+                            <div>
+                                <dt>References</dt>
+                                <dd><References pubs={context.references} /></dd>
+                            </div>
+                        : null}
+
                         {refCount(context.references) ?
                             <div>
-                                <dt>Publication References</dt>
-                                <dd><References pubs={context.references} /></dd>
+                                <dt>Publication references</dt>
+                                <dd><PubReferences pubs={context.references} /></dd>
                             </div>
                         : null}
                     </dl>
@@ -101,7 +124,6 @@ var Software = module.exports.Software = React.createClass({
         );
     }
 });
-
 globals.content_views.register(Software, 'software');
 
 
@@ -130,8 +152,9 @@ var Listing = React.createClass({
                                 {context.software_type.join(", ")}
                             </div>
                         : null}
+
                         {refCount(context.references) ?
-                            <References pubs={context.references} listClass="list-reference" />
+                            <PubReferences pubs={context.references} listClass="list-reference" />
                         : null}
                     </div>
             </li>
