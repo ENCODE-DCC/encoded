@@ -4,8 +4,9 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "md5sum", "output_type"],
-    "identifyingProperties": ["uuid","accession"],
+    "required": ["dataset", "file_format", "md5sum", "output_type", "file_size"],
+    "identifyingProperties": ["uuid","accession", "aliases"],
+    "calculatedProps": ["href"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -80,6 +81,43 @@
             "title": "File size",
             "comment": "File size is specified in bytes",
             "type": "integer"
+        },
+        "platform": {
+            "title": "Platform",
+            "description": "The measurement device used to collect data.",
+            "comment": "See platform.json for available identifiers.",
+            "type": "string",
+            "linkTo": "platform"
+        },
+        "flowcell_details": {
+            "title": "Flowcells",
+            "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Flowcell details",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "machine": {
+                        "title": "Machine Name",
+                        "description": "The lab specific name of the machine used.",
+                        "type": "string"
+                    },
+                    "flowcell": {
+                        "title": "Flowcell ID",
+                        "type": "string"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "string"
+                    },
+                    "barcode": {
+                        "title": "Barcode",
+                        "type": "string"
+                    }
+                }
+            }
         },
         "output_type": {
             "title": "Output type",
@@ -170,6 +208,43 @@
                 "2"
             ]
         },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The files participating as inputs into software to produce this output file.",
+            "type": "array",
+            "items": {
+                    "comment": "See file.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "file"
+                    }
+        },
+        "controlled_by": {
+            "title": "Controlled by",
+            "description": "The files that control this file. ",
+            "type": "array",
+            "items": {
+                    "comment": "See file.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "file"
+            }
+        },
+        "supercedes": {
+            "title": "Supercedes" ,
+            "description": "The files that this file replaces.",
+            "type": "array",
+            "items": {
+                    "comment": "See file.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "file"
+            }
+        },
+        "paired_with": {
+            "title": "File pairing",
+            "description": "The file that corresponds with this file.",
+            "comment": "See file.json for a list of available identifiers.",
+            "type": "string",
+            "linkTo": "file"
+        },
         "dataset": {
             "title": "Dataset",
             "description": "The experiment or dataset the file belongs to.",
@@ -183,13 +258,6 @@
             "comment": "See replicate.json for available identifiers.",
             "type": "string",
             "linkTo": "replicate"
-        },
-        "software": {
-            "title": "Software",
-            "description": "The software and parameters used to generate the file.",
-            "comment": " See software.json for available identifiers. Do not submit, value is not valid for primary data files like FastQ. ",
-            "type": "string",
-            "XXXlinkTo": "software"
         },
         "assembly": {
             "title": "Mapping assembly",
