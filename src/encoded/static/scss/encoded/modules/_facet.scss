@@ -218,6 +218,7 @@ span.bar {
 }
 
 .list-reference {
+    display: inline;
     margin: 0 !important;
     font-size: floor($font-size-base * 0.95);;
 }

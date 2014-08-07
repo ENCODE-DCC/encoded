@@ -40,7 +40,6 @@ var References = React.createClass({
                                         {pub.authors ? pub.authors + '. ' : ''}
                                         {pub.title + ' '}
                                         <Citation context={pub} />
-                                        <span> &mdash; <a href={pub['@id']}>publication</a></span>
                                     </div>
                                     {pub.references.length ? <DbxrefList values={pub.references} className="multi-value" /> : ''}
                                 </div>
@@ -68,7 +67,7 @@ var PubReferences = React.createClass({
         if (allRefs) {
             return <DbxrefList values={allRefs} className={this.props.listClass} />;
         } else {
-            return <div></div>;
+            return <span></span>;
         }
     }
 });
@@ -158,7 +157,10 @@ var Listing = React.createClass({
                         : null}
 
                         {refCount(context.references) ?
-                            <PubReferences pubs={context.references} listClass="list-reference" />
+                            <div>
+                                <strong>Publication: </strong>
+                                <PubReferences pubs={context.references} listClass="list-reference" />
+                            </div>
                         : null}
                     </div>
             </li>

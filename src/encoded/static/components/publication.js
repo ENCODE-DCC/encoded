@@ -84,7 +84,7 @@ var Listing = React.createClass({
                     <div className="data-row">
                         {authors ? <p className="list-author">{authors}.</p> : null}
                         <p className="list-citation">{this.transferPropsTo(<Citation />)}</p>
-                        {context.references.length ? <DbxrefList values={context.references} className="list-reference" /> : '' }
+                        {context.references.length ? <div><DbxrefList values={context.references} className="list-reference" /></div> : '' }
                     </div>
             </li>
         );
