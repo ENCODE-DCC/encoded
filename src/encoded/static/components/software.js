@@ -41,7 +41,7 @@ var References = React.createClass({
                                         {pub.title + ' '}
                                         <Citation context={pub} />
                                     </div>
-                                    {pub.references.length ? <DbxrefList values={pub.references} className="multi-value" /> : ''}
+                                    {pub.references && pub.references.length ? <DbxrefList values={pub.references} className="multi-value" /> : ''}
                                 </div>
                             );
                         })}
@@ -92,31 +92,35 @@ var Software = module.exports.Software = React.createClass({
 
                 <div className="panel data-display">
                     <dl className="key-value">
-                        <dt>Title</dt>
-                        {context.source_url ?
-                            <dd><a href={context.source_url}>{context.title}</a></dd> :
-                            <dd>{context.title}</dd>
-                        }
+                        <div data-test="title">
+                            <dt>Title</dt>
+                            {context.source_url ?
+                                <dd><a href={context.source_url}>{context.title}</a></dd> :
+                                <dd>{context.title}</dd>
+                            }
+                        </div>
 
-                        <dt>Description</dt>
-                        <dd>{context.description}</dd>
+                        <div data-test="description">
+                            <dt>Description</dt>
+                            <dd>{context.description}</dd>
+                        </div>
 
                         {context.software_type && context.software_type.length ?
-                            <div>
+                            <div data-test="type">
                                 <dt>Software type</dt>
                                 <dd>{context.software_type.join(", ")}</dd>
                             </div>
                         : null}
 
                         {context.purpose && context.purpose.length ?
-                            <div>
+                            <div data-test="purpose">
                                 <dt>Used for</dt>
                                 <dd>{context.purpose.join(", ")}</dd>
                             </div>
                         : null}
 
                         {context.references && context.references.length ?
-                            <div>
+                            <div data-test="references">
                                 <dt>References</dt>
                                 <dd><References pubs={context.references} /></dd>
                             </div>
