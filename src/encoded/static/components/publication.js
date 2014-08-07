@@ -8,13 +8,13 @@ var search = require('./search');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
-var Citation = React.createClass({
+var Citation = module.exports.Citation = React.createClass({
     render: function() {
         var context = this.props.context;
         return (
-            <div className="journal">
-                <i>{context.journal}</i>. {context.date_published};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }{context.page ? ':' + context.page : ''}.
-            </div>
+            <span>
+                {context.journal ? <i>{context.journal}. </i> : ''}{context.date_published ? context.date_published + ';' : ''}{context.volume ? context.volume : ''}{context.issue ? '(' + context.issue + ')' : '' }{context.page ? ':' + context.page + '.' : ''}
+            </span>
         );
     }
 });
@@ -27,7 +27,9 @@ var Panel = module.exports.Panel = React.createClass({
         return (
             <div className={itemClass}>
                 {context.authors ? <div className="authors">{context.authors}.</div> : null}
-                {this.transferPropsTo(<Citation />)}
+                <div className="journal">
+                    {this.transferPropsTo(<Citation />)}
+                </div>
 
                 {context.abstract || context.data_used || context.references.length ?
                     <div className="view-detail panel">
@@ -81,7 +83,7 @@ var Listing = React.createClass({
                     </div>
                     <div className="data-row">
                         {authors ? <p className="list-author">{authors}.</p> : null}
-                        <p className="list-citation"><i>{context.journal}</i>. {context.date_published};{context.volume}{context.issue ? '(' + context.issue + ')' : '' }{context.page ? ':' + context.page : ''}.</p>
+                        <p className="list-citation">{this.transferPropsTo(<Citation />)}</p>
                         {context.references.length ? <DbxrefList values={context.references} className="list-reference" /> : '' }
                     </div>
             </li>

@@ -5,6 +5,7 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
 var StatusLabel = require('./antibody').StatusLabel;
+var Citation = require('./publication').Citation;
 var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
@@ -33,7 +34,17 @@ var References = React.createClass({
                 {this.props.pubs ?
                     <div>
                         {this.props.pubs.map(function(pub) {
-                            return <p><a href={pub['@id']}>{pub.title}</a></p>;
+                            return (
+                                <div className="multi-dd">
+                                    <div>
+                                        {pub.authors ? pub.authors + '. ' : ''}
+                                        {pub.title + ' '}
+                                        <Citation context={pub} />
+                                        <span> &mdash; <a href={pub['@id']}>publication</a></span>
+                                    </div>
+                                    {pub.references.length ? <DbxrefList values={pub.references} className="multi-value" /> : ''}
+                                </div>
+                            );
                         })}
                     </div>
                 : null}
@@ -111,13 +122,6 @@ var Software = module.exports.Software = React.createClass({
                                 <dd><References pubs={context.references} /></dd>
                             </div>
                         : null}
-
-                        {refCount(context.references) ?
-                            <div>
-                                <dt>Publication references</dt>
-                                <dd><PubReferences pubs={context.references} /></dd>
-                            </div>
-                        : null}
                     </dl>
                 </div>
             </div>
@@ -136,11 +140,11 @@ var Listing = React.createClass({
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Software</p>
-                            <p className="type meta-status">{' ' + context.status}</p>
+                            {context.status ? <p className="type meta-status">{' ' + context.status}</p> : ''}
                         </div>
                         <div className="accession">
                             <a href={context['@id']}>{context.title}</a>
-                            <span className="accession-note"> <a href={context.source_url}>source</a></span>
+                            {context.source_url ? <span className="accession-note"> &mdash; <a href={context.source_url}>source</a></span> : ''}
                         </div>
                     </div>
                     <div className="data-row">
