@@ -168,6 +168,12 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
             line-height: 1.5;
             font-size: ceil($font-size-base * 0.9);
         }
+
+        a[name] {
+            pointer-events: none;
+            color: #000;
+            text-decoration: none;
+        }
     }
 
     &.teaserblock {
