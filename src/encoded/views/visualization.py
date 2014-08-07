@@ -189,7 +189,7 @@ def hub(context, request):
                         file_format=f['file_format'],
                         output_type=f['output_type'],
                         replicate_number=replicate_number,
-                        link='http://encodedcc.sdsc.edu/warehouse/' + f['download_path'],
+                        link='{href}?proxy=true'.format(**f),
                     )
         file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
             .format(files=data_files)
