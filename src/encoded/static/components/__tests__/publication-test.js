@@ -44,7 +44,7 @@ describe('Publication', function() {
             var journal = TestUtils.findRenderedDOMComponentWithClass(publication, 'journal').getDOMNode();
             var italicTexts = journal.getElementsByTagName('i');
             expect(italicTexts.length).toEqual(1);
-            expect(italicTexts[0].textContent).toEqual('Nature');
+            expect(italicTexts[0].textContent).toEqual('Nature. ');
         });
 
         it('has a good abstract with an h2 and a p', function() {
