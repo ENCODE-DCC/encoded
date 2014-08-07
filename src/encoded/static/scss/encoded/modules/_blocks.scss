@@ -115,6 +115,7 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
 
         ul, ol {
             margin: .3em 0;
+            overflow: hidden;
 
             li {
                 margin: .7em 0;
@@ -168,6 +169,12 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
             line-height: 1.5;
             font-size: ceil($font-size-base * 0.9);
         }
+
+        a[name] {
+            pointer-events: none;
+            color: #000;
+            text-decoration: none;
+        }
     }
 
     &.teaserblock {
@@ -210,42 +217,63 @@ a.url {
         margin-top: 5px;
         font-size: 13px;
         color: #808080;
-
-        span {
-            font-weight: bold;
-        }
     }
 }
 
 
 // Right aligned figures
-.col-md-12 .fig-align-right {
-    @media screen and (min-width: $screen-md-min) {
-        float: right;
-        margin-left: 10px;
-        margin-bottom: 10px;
-        width: 50%;
+.fig-align-right {
+    display: block;
+    width: 100%;
+    margin-bottom: 1em;
+
+    .col-md-12 & {
+        @media screen and (min-width: $screen-md-min) {
+            float: right;
+            margin-left: 10px;
+            margin-bottom: 10px;
+            width: 50%;
+
+            &.fig-width-25 { width: 25%; }
+            &.fig-width-50 { width: 50%; }
+            &.fig-width-75 { width: 75%; }
+        }
     }
 }
 
 
 // Left aligned figures
-.col-md-12 .fig-align-left {
-    @media screen and (min-width: $screen-md-min) {
-        float: left;
-        margin-right: 10px;
-        margin-bottom: 10px;
-        width: 50%;
+.fig-align-left {
+    display: block;
+    width: 100%;
+    margin-bottom: 1em;
+
+    .col-md-12 & {
+        @media screen and (min-width: $screen-md-min) {
+            float: left;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            width: 50%;
+
+            &.fig-width-25 { width: 25%; }
+            &.fig-width-50 { width: 50%; }
+            &.fig-width-75 { width: 75%; }
+        }
     }
 }
 
 
 // Left aligned figures
-.col-md-12 .fig-align-center {
-    @media screen and (min-width: $screen-md-min) {
-        img {
-            display: block;
-            margin: 0 auto;
+.fig-align-center {
+    display: block;
+    width: 100%;
+    margin-bottom: 1em;
+
+    .col-md-12 & {
+
+        @media screen and (min-width: $screen-md-min) {
+            width: auto;
+            margin: 0 auto 1em;
         }
     }
 }
