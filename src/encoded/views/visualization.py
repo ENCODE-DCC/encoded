@@ -54,7 +54,7 @@ def getTrack(f, label, parent):
         ('longLabel', label + ' ' + replicate_number),
         ('shortLabel', f['accession']),
         ('parent', parent + ' on'),
-        ('bigDataUrl', 'http://encodedcc.sdsc.edu/warehouse/' + f['download_path']),
+        ('bigDataUrl', '{href}?proxy=true'.format(**f)),
         ('type', file_format),
         ('track', f['accession']),
     ])
@@ -183,14 +183,9 @@ def hub(context, request):
                 replicate_number = 'pooled'
                 if 'replicate' in f:
                     replicate_number = str(f['replicate']['biological_replicate_number'])
-                data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href={link}>Click here</a></td></tr>'\
-                    .format(
-                        accession=f['accession'],
-                        file_format=f['file_format'],
-                        output_type=f['output_type'],
-                        replicate_number=replicate_number,
-                        link='{href}?proxy=true'.format(**f),
-                    )
+                data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href={href}>Click here</a></td></tr>'\
+                    .format(replicate_number=replicate_number, **f)
+
         file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
             .format(files=data_files)
         data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
