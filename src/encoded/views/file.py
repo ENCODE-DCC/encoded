@@ -9,6 +9,8 @@ from pyramid.httpexceptions import (
     HTTPFound,
     HTTPNotFound,
 )
+from pyramid.response import Response
+from pyramid.settings import asbool
 from pyramid.traversal import find_root
 from pyramid.view import view_config
 import boto
@@ -113,6 +115,13 @@ class File(Collection):
             return super(File.Item, cls).create(parent, uuid, properties, sheets)
 
 
+class InternalResponse(Response):
+    def _abs_headerlist(self, environ):
+        """Avoid making the Location header absolute.
+        """
+        return list(self.headerlist)
+
+
 @view_config(name='download', context=File.Item, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
@@ -128,8 +137,11 @@ def download(context, request):
         location = 'http://encodedcc.sdsc.edu/warehouse/{download_path}'.format(**ns)
     elif external['service'] == 's3':
         conn = boto.connect_s3()
-        location = conn.generate_url(36*60*60, 'GET', external['bucket'], external['key'])
+        location = conn.generate_url(36*60*60, request.method, external['bucket'], external['key'])
     else:
         raise ValueError(external['service'])
+
+    if asbool(request.params.get('proxy')):
+        return InternalResponse(location='/_proxy/' + location)
 
     raise HTTPFound(location=location)
