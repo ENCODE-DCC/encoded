@@ -2,6 +2,7 @@ from ..contentbase import location
 from ..schema_utils import load_schema
 from .views import (
     ACCESSION_KEYS,
+    ALIAS_KEYS,
     Collection,
 )
 from pyramid.httpexceptions import (
@@ -70,7 +71,14 @@ class File(Collection):
 
     class Item(Collection.Item):
         name_key = 'accession'
-        keys = ACCESSION_KEYS  # + ALIAS_KEYS
+        keys = ACCESSION_KEYS + ALIAS_KEYS + [
+            {
+                'name': 'alias',
+                'value': 'md5:{md5sum}',
+                '$templated': True,
+                '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
+            },
+        ]
         namespace_from_path = {
             'lab': 'dataset.lab',
             'award': 'dataset.award',
