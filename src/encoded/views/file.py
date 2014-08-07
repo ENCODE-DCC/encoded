@@ -137,7 +137,7 @@ def download(context, request):
         location = 'http://encodedcc.sdsc.edu/warehouse/{download_path}'.format(**ns)
     elif external['service'] == 's3':
         conn = boto.connect_s3()
-        location = conn.generate_url(36*60*60, 'GET', external['bucket'], external['key'])
+        location = conn.generate_url(36*60*60, request.method, external['bucket'], external['key'])
     else:
         raise ValueError(external['service'])
 
