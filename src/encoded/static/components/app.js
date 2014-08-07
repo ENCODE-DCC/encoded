@@ -18,8 +18,7 @@ var portal = {
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
             {id: 'targets', title: 'Targets', url: '/search/?type=target'},
             {id: 'datarelease', title: 'Data release policy', url: '/about/data-use-policy'},
-            {id: 'datastandards', title: 'Data standards', url: '/data-standards'},
-            {id: 'otherresources', title: 'Other resources', url: '/about'}
+            {id: 'datastandards', title: 'Data standards', url: '/data-standards'}
         ]},
         {id: 'methods', title: 'Methods', children: [
             {id: 'softwaretools', title: 'Software tools', url: '/software'},
@@ -29,7 +28,8 @@ var portal = {
             {id: 'projectoverview', title: 'Project overview', url: '/about/contributors'},
             {id: 'news', title: 'News', url: '/news'},
             {id: 'publications', title: 'Publications', url: '/publications'},
-            {id: 'datause', title: 'Data release policy', url: '/about/data-use-policy'}
+            {id: 'datause', title: 'Data release policy', url: '/about/data-use-policy'},
+            {id: 'dataaccess', title: 'Data access', url: '/about/data-access'}
         ]},
         {id: 'help', title: 'Help', children: [
             {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
