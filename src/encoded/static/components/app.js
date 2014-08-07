@@ -13,28 +13,28 @@ var portal = {
     portal_title: 'ENCODE',
     global_sections: [
         {id: 'data', title: 'Data', children: [
-            {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
+            {id: 'assays', title: 'Assays', url: '/search/?type=experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
             {id: 'targets', title: 'Targets', url: '/search/?type=target'},
-            {id: 'datarelease', title: 'Data release policy', url: '/about/data-use-policy'}
+            {id: 'datarelease', title: 'Data release policy', url: '/about/data-use-policy'},
+            {id: 'datastandards', title: 'Data standards', url: '/data-standards'},
+            {id: 'otherresources', title: 'Other resources', url: '/about'}
         ]},
         {id: 'methods', title: 'Methods', children: [
-            {id: 'integrativeanalysis', title: 'Integrative analysis', url: '/about/analysis'},
-            {id: 'softwaretools', title: 'Software tools', url: '/about/tools'},
-            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'},
-            {id: 'platformchar', title: 'Platform characterization', url: '/about/platform-characterizations'},
-            {id: 'qualitymetrics', title: 'Quality metrics', url: '/about/quality-metrics'}
+            {id: 'softwaretools', title: 'Software tools', url: '/software'},
+            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'}
         ]},
         {id: 'about', title: 'About ENCODE', children: [
             {id: 'projectoverview', title: 'Project overview', url: '/about/contributors'},
-            {id: 'publications', title: 'Publications', url: '/search/?type=publication'},
-            {id: 'datarelease', title: 'Data release policy', url: '/about/data-use-policy'}
+            {id: 'news', title: 'News', url: '/news'},
+            {id: 'publications', title: 'Publications', url: '/publications'},
+            {id: 'datause', title: 'Data release policy', url: '/about/data-use-policy'}
         ]},
         {id: 'help', title: 'Help', children: [
             {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
             {id: 'fileformats', title: 'File formats', url: '/help/file-formats'},
-            {id: 'contact', title: 'Contact', url: '/about/contacts'}
+            {id: 'contact', title: 'Contact', url: '/help/contacts'}
         ]}
     ]
 };
