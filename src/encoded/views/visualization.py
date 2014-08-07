@@ -2,7 +2,6 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from ..contentbase import Item, embed
 from collections import OrderedDict
-from urlparse import urljoin
 import cgi
 
 tab = '\t'
@@ -184,9 +183,8 @@ def hub(context, request):
                 replicate_number = 'pooled'
                 if 'replicate' in f:
                     replicate_number = str(f['replicate']['biological_replicate_number'])
-                f['href'] = urljoin(request.resource_url(request.root), f['href'])
-                data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href={href}>Click here</a></td></tr>'\
-                    .format(replicate_number=replicate_number, **f)
+                data_files = data_files + '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href="{request.host_url}{href}">Click here</a></td></tr>'\
+                    .format(replicate_number=replicate_number, request=request, **f)
 
         file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
             .format(files=data_files)
