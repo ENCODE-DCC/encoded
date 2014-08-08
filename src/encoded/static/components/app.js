@@ -34,7 +34,8 @@ var portal = {
         {id: 'help', title: 'Help', children: [
             {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
             {id: 'fileformats', title: 'File formats', url: '/help/file-formats'},
-            {id: 'contact', title: 'Contact', url: '/help/contacts'}
+            {id: 'contact', title: 'Contact', url: '/help/contacts'},
+            {id: 'tutorials', title: 'Tutorials', url: '/tutorials'}
         ]}
     ]
 };
