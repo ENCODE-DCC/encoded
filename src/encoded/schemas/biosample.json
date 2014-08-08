@@ -441,6 +441,7 @@
                 "deleted",
                 "replaced",
                 "released",
+                "preliminary",
                 "proposed"
             ]
         }
