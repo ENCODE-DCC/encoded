@@ -202,19 +202,37 @@ a.url {
 
 // All figures get this class
 .fig {
-    padding: 5px;
-    background-color: #f0f0f0;
-    border: 1px solid #808080;
+    width: 100%;
+    margin: 0 0 1em;
+
+    @media screen and (min-width: $screen-sm-min) {
+        &.fig-width-25 { width: 25%; }
+        &.fig-width-50 { width: 50%; }
+        &.fig-width-75 { width: 75%; }
+    }
 
     img {
         display: block;
         width: 100%;
-        height: auto;
-        border: 1px solid #e0e0e0;
+    }
+
+    &.fig-align-center {
+        margin-left: auto;
+        margin-right: auto;
+
+    }
+
+    &.fig-align-right {
+        float: right;
+        margin-left: 20px;
+    }
+
+    &.fig-align-left {
+        float: left;
+        margin-right: 20px;
     }
 
     figcaption {
-        margin-top: 5px;
         font-size: 13px;
         color: #808080;
     }
@@ -222,7 +240,7 @@ a.url {
 
 
 // Right aligned figures
-.fig-align-right {
+img.fig-align-right {
     display: block;
     width: 100%;
     margin-bottom: 1em;
@@ -231,8 +249,7 @@ a.url {
         @media screen and (min-width: $screen-md-min) {
             float: right;
             margin-left: 10px;
-            margin-bottom: 10px;
-            width: 50%;
+            width: auto;
 
             &.fig-width-25 { width: 25%; }
             &.fig-width-50 { width: 50%; }
@@ -243,7 +260,7 @@ a.url {
 
 
 // Left aligned figures
-.fig-align-left {
+img.fig-align-left {
     display: block;
     width: 100%;
     margin-bottom: 1em;
@@ -264,7 +281,7 @@ a.url {
 
 
 // Left aligned figures
-.fig-align-center {
+img.fig-align-center {
     display: block;
     width: 100%;
     margin-bottom: 1em;
