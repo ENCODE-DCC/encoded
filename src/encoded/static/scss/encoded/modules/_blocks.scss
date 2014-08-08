@@ -21,15 +21,6 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
 }
 
 
-.img-link {
-    display: block;
-
-    &:hover {
-        text-decoration: none;
-    }
-}
-
-
 // Applies to all block types, and specific blog styles nest inside
 .block {
     margin-bottom: 20px;
@@ -297,13 +288,22 @@ img.fig-align-center {
 
 
 // Teaser block styes
+.img-link {
+    display: block;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+
 .teaser {
     position: relative;
     padding: 0;
     @include border-radius(0);
     border: 4px solid #fff;
 
-    &:hover {
+    .img-link &:hover {
         border-color: #0a253d;
     }
 
@@ -318,6 +318,7 @@ img.fig-align-center {
                 right: 0;
                 bottom: 0;
                 width: 33.33%;
+                padding: 10px 20px !important;
                 line-height: 1.6;
                 background-color: rgba(32,32,32,0.9);
             }
@@ -339,3 +340,8 @@ img.fig-align-center {
         letter-spacing: 1px;
     }
 }
+
+
+.teaser-font-13 p { font-size: 13px !important; }
+.teaser-font-12 p { font-size: 12px !important; }
+.teaser-font-11 p { font-size: 11px !important; }
