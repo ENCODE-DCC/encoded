@@ -23,7 +23,7 @@ var TeaserCore = React.createClass({
             url = '/' + url;
         }
         return (
-            <div className="teaser thumbnail">
+            <div className="teaser thumbnail clearfix">
                 <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />
                 <div className="caption" dangerouslySetInnerHTML={{__html: this.props.value.body}}></div>
             </div>

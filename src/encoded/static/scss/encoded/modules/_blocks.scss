@@ -303,30 +303,31 @@ img.fig-align-center {
     @include border-radius(0);
     border: 4px solid #fff;
 
+    // Only react to hover if there's an href
     .img-link &:hover {
         border-color: #0a253d;
     }
 
     .caption {
-        background-color: #303030;
-        color: #fff;
-
         .col-md-12 & {
             @media screen and (min-width: $screen-sm-min) {
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 0;
+                float: right;
                 width: 33.33%;
-                padding: 10px 20px !important;
+                padding: 0 20px !important;
                 line-height: 1.6;
-                background-color: rgba(32,32,32,0.9);
             }
         }
     }
 
     figure {
         margin-bottom: 0;
+
+        .col-md-12 & {
+            @media screen and (min-width: $screen-sm-min) {
+                float: left;
+                width: 66.66%;
+            }
+        }
     }
 
     figcaption {
@@ -334,9 +335,9 @@ img.fig-align-center {
     }
 
     p {
-        margin: 5px 0;
+        margin: 0;
         font-size: 16px;
-        font-weight: lighter;
+        font-weight: normal;
         letter-spacing: 1px;
     }
 }
