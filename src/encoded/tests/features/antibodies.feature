@@ -5,7 +5,7 @@ Feature: Antibodies
         When I visit "/antibodies/"
         And I wait for the table to fully load
 
-        When I fill in "q" with "musculus"
+        When I fill in "q" with "mus musculus"
         Then I should see an element with the css selector "tr:not([hidden]) a[href='/antibodies/35cf08c4-72cf-4408-8552-231e3e35b279/']" within 1 seconds
         And I should see an element with the css selector "tr[hidden] a[href='/antibodies/c808814f-376f-41ee-b93e-ddd00294ca3d/']"
         And I should see exactly one element with the css selector ".table-count" containing the text "3"
