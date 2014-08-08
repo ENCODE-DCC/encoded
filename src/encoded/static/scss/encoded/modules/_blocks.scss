@@ -36,7 +36,7 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
 
     &.richtextblock, .teaser .caption {
         padding: 20px;
-        line-height: 1.8;
+        line-height: 1.6;
 
         .col-md-12 & {
             @media screen and (min-width: $screen-md-min) {
@@ -109,7 +109,11 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
             overflow: hidden;
 
             li {
-                margin: .7em 0;
+                margin: .4em 0;
+
+                &:last-child {
+                    margin-bottom: 1em;
+                }
             }
         }
 
@@ -174,7 +178,7 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
 
     .teaser .caption {
         h1, h2, h3, h4, h5, h6 {
-            color: #fff;
+            color: #000;
         }
 
         .col-md-12 & {
@@ -193,13 +197,16 @@ a.url {
 
 // All figures get this class
 .fig {
+    display: block;
     width: 100%;
     margin: 0 0 1em;
+    line-height: 0;
 
     @media screen and (min-width: $screen-sm-min) {
         &.fig-width-25 { width: 25%; }
         &.fig-width-50 { width: 50%; }
         &.fig-width-75 { width: 75%; }
+        &.fig-width-100 { width: 100%; }
     }
 
     img {
@@ -226,6 +233,7 @@ a.url {
     figcaption {
         font-size: 13px;
         color: #808080;
+        line-height: 1.5;
     }
 }
 
@@ -282,6 +290,11 @@ img.fig-align-center {
         @media screen and (min-width: $screen-md-min) {
             width: auto;
             margin: 0 auto 1em;
+
+            &.fig-width-25 { width: 25%; }
+            &.fig-width-50 { width: 50%; }
+            &.fig-width-75 { width: 75%; }
+            &.fig-width-100 { width: 100%; }
         }
     }
 }
@@ -342,7 +355,6 @@ img.fig-align-center {
         margin: 0;
         font-size: 16px;
         font-weight: normal;
-        letter-spacing: 1px;
     }
 }
 
