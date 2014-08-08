@@ -23,11 +23,11 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
 
 // Applies to all block types, and specific blog styles nest inside
 .block {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
 
     @media screen and (min-width: $screen-md-min) {
-        margin-bottom: 30px;
+        margin-bottom: 20px;
     }
 
     &.richtextblock {
@@ -306,6 +306,10 @@ img.fig-align-center {
     // Only react to hover if there's an href
     .img-link &:hover {
         border-color: #0a253d;
+    }
+
+    &.thumbnail {
+        margin-bottom: 0;
     }
 
     .caption {
