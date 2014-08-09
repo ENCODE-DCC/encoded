@@ -4,6 +4,7 @@ var React = require('react');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
+var StatusLabel = require('./antibody').StatusLabel;
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
@@ -26,6 +27,9 @@ var Panel = module.exports.Panel = React.createClass({
         var itemClass = globals.itemClass(context);
         return (
             <div className={itemClass}>
+                <div className="characterization-status-labels">
+                    <StatusLabel title="Status" status={context.status} />
+                </div>
                 {context.authors ? <div className="authors">{context.authors}.</div> : null}
                 <div className="journal">
                     {this.transferPropsTo(<Citation />)}
