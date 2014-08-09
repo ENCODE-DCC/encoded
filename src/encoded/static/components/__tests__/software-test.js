@@ -20,11 +20,10 @@ describe('Software', function() {
         context = require('../testdata/software');
     });
 
-    describe('Software object with single references', function() {
+    describe('Software object with no references', function() {
         var software, summary;
 
         beforeEach(function() {
-            // Render publication panel into jsnode
             software = <Software context={context} />;
             TestUtils.renderIntoDocument(software);
 
@@ -62,7 +61,6 @@ describe('Software', function() {
             context_ref.references = [require('../testdata/publication')];
             context_ref.references[0].references = ['PMID:19352372', 'PMCID:PMC3062402'];
 
-            // Render publication panel into jsnode
             software = <Software context={context_ref} />;
             TestUtils.renderIntoDocument(software);
 
