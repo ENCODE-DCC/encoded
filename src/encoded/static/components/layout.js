@@ -110,6 +110,7 @@ var Block = module.exports.Block = React.createClass({
 
         var classes = {
             block: true,
+            clearfix: true,
             dragging: _.isEqual(this.props.pos, this.context.src_pos),
             hover: this.state.hover
         };
