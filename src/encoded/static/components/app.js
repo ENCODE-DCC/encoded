@@ -62,8 +62,7 @@ var App = React.createClass({
             errors: [],
             portal: portal,
             user_actions: user_actions,
-            dropdownComponent: undefined,
-            activeComponent: undefined
+            dropdownComponent: undefined
         };
     },
 
@@ -191,9 +190,9 @@ var App = React.createClass({
                     }}></script>
                     <div id="slot-application">
                         <div id="application" className={appClass}>
-                        
-						<div className="loading-spinner"></div>
-								   
+
+                        <div className="loading-spinner"></div>
+
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         context_actions={context_actions}
