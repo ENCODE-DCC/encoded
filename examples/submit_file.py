@@ -21,8 +21,9 @@ with open(path, 'rb') as f:
 data = {
     "dataset": "ENCSR000ACY",
     "file_format": "fastq",
+    "file_size": os.path.getsize(path),
     "md5sum": md5sum.hexdigest(),
-    "output_type": "rawData",
+    "output_type": "raw data",
     "submitted_file_name": path,
 }
 
