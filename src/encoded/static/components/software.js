@@ -79,9 +79,7 @@ var Software = module.exports.Software = React.createClass({
             <div className={itemClass}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <div>
-                            <h2>{context.title}</h2>
-                        </div>
+                        <h2>{context.title}</h2>
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
