@@ -214,8 +214,9 @@
             "default": "uploading",
             "enum" : [
                 "uploading",
-                "current",
+                "in progress",
                 "deleted",
+                "replaced",
                 "revoked",
                 "released"
                 ]

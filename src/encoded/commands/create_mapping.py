@@ -89,9 +89,17 @@ def schema_mapping(name, schema):
             'include_in_all': False
         }
 
-    if type_ in ('boolean', 'integer'):
+    if type_ == 'integer':
         return {
-            'type': type_,
+            'type': 'long',
+            'copy_to': [],
+            'include_in_all': False
+        }
+
+
+    if type_ == 'boolean':
+        return {
+            'type': 'boolean',
             'copy_to': [],
             'include_in_all': False
         }
