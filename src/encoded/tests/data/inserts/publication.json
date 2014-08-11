@@ -1,19 +1,19 @@
 [
     {
-	"title": "An integrated encyclopedia of DNA elements in the human genome",
-	"abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
-	"authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
-	"journal": "Nature",
-	"date_published": "2012 Sep 6",
-	"references": ["PMID:22955616"],
-	"volume": "489",
-	"issue": "7414",
-	"page": "57-74",
-	"status": "in progress",
-	"published_by": ["ENCODE"],
-	"categories": ["integrative analysis"],
-	"data_used": "ENCODE main paper",
-	"uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
+        "title": "An integrated encyclopedia of DNA elements in the human genome",
+        "abstract": "The human genome encodes the blueprint of life, but the function of the vast majority of its nearly three billion bases is unknown. The Encyclopedia of DNA Elements (ENCODE) project has systematically mapped regions of transcription, transcription factor association, chromatin structure and histone modification. These data enabled us to assign biochemical functions for 80% of the genome, in particular outside of the well-studied protein-coding regions. Many discovered candidate regulatory elements are physically associated with one another and with expressed genes, providing new insights into the mechanisms of gene regulation. The newly identified elements also show a statistical correspondence to sequence variants linked to human disease, and can thereby guide interpretation of this variation. Overall, the project provides new insights into the organization and regulation of our genes and genome, and is an expansive resource of functional annotations for biomedical research.",
+        "authors": "ENCODE Project Consortium, Bernstein BE, Birney E, Dunham I, Green ED, Gunter C, Snyder M.",
+        "journal": "Nature",
+        "date_published": "2012 Sep 6",
+        "references": ["PMID:22955616", "PMCID:PMC3439153"],
+        "volume": "489",
+        "issue": "7414",
+        "page": "57-74",
+        "status": "published",
+        "published_by": ["ENCODE"],
+        "categories": ["integrative analysis"],
+        "data_used": "ENCODE main paper",
+        "uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
     },
     {
         "status":"in progress",
@@ -26,8 +26,8 @@
         "date_published":"2010 Feb",
         "references":["PMID:20150147"],
         "authors":"Crawford GE",
-	"published_by": ["ENCODE"],
-	"categories": ["data standard"]
+        "published_by": ["ENCODE"],
+        "categories": ["data standard"]
     },
     {
         "status":"in progress",
@@ -39,7 +39,7 @@
         "volume":"9",
         "date_published":"2011 Jul",
         "references":["PMID:21765801"],
-	"published_by": ["ENCODE"],
+        "published_by": ["ENCODE"],
         "authors":"Clark MB, Amaral PP, Schlesinger FJ, Dinger ME, Taft RJ, Rinn JL, Ponting CP, Stadler PF, Morris KV, Morillon A, Rozowsky JS, Gerstein MB, Wahlestedt C, Hayashizaki Y, Carninci P, Gingeras TR, Mattick JS"
     },
     {
@@ -51,8 +51,8 @@
         "page":"690-1",
         "volume":"6",
         "date_published":"2009 Oct",
-        "references":["PMID:19789528"],
-	"published_by": ["ENCODE"],
+        "references":["PMID:19789528"], 
+        "published_by": ["ENCODE"],
         "authors":"Lajoie BR, van Berkum NL, Sanyal A, Dekker J"
     },
     {
@@ -65,7 +65,7 @@
         "volume":"27",
         "date_published":"2009 Apr",
         "references":["PMID:19352372"],
-	"published_by": ["ENCODE"],
+        "published_by": ["ENCODE"],
         "authors":"Gingeras T"
     },
     {
@@ -77,9 +77,9 @@
         "page":"310-1",
         "volume":"482",
         "date_published":"2012 Feb 15",
-	"categories": ["basic biology"],
-	"published_by": ["ENCODE"],
-	"references": ["PMID:22337043"],
+        "categories": ["basic biology"],
+        "published_by": ["ENCODE"],
+        "references": ["PMID:22337043"],
         "authors":"Kowalczyk MS, Higgs DR, Gingeras TR"
     },
     {
@@ -92,8 +92,8 @@
         "volume":"22",
         "date_published":"2012 May",
         "authors":"Iyer VR",
-	"references": ["PMID:22421062"],
-	"published_by": ["ENCODE"],
+        "references": ["PMID:22421062"],
+        "published_by": ["ENCODE"],
         "abstract":"Nucleosomes are an essential component of eukaryotic chromosomes. The impact of nucleosomes is seen not just on processes that directly access the genome, such as transcription, but also on an evolutionary timescale. Recent studies in various organisms have provided high-resolution maps of nucleosomes throughout the genome. Computational analysis, in conjunction with many other kinds of data, has shed light on several aspects of nucleosome biology. Nucleosomes are positioned by several means, including intrinsic sequence biases, by stacking against a fixed barrier, by DNA-binding proteins and by chromatin remodelers. These studies underscore the important organizational role of nucleosomes in all  eukaryotic genomes. This paper reviews recent genomic studies that have shed light on the determinants of nucleosome positioning and their impact on the genome. AU"
     },
     {
@@ -106,7 +106,7 @@
         "volume":"288",
         "date_published":"2013 Nov 29",
         "references":["PMID:24151070"],
-	"published_by": ["ENCODE"],
+        "published_by": ["ENCODE"],
         "authors":"Blattler A, Farnham PJ",
         "abstract":"DNA methylation, which occurs predominantly at CpG dinucleotides, is a potent epigenetic repressor of transcription. Because DNA methylation is reversible, there is much interest in understanding the mechanisms by which it can be regulated by DNA-binding transcription factors. We discuss several models that, by incorporating sequence motifs, CpG density, and methylation levels, attempt to link the binding of a transcription factor with the acquisition or loss of DNA methylation at promoters and distal regulatory elements. Additional in vivo genome-wide characterization of transcription factor binding patterns and high-resolution DNA methylation analyses are clearly required for stronger support of each model. AU"
     },
@@ -124,5 +124,73 @@
         "authors":"Hardison RC",
         "published_by": ["ENCODE"],
         "abstract":"Complex traits such as susceptibility to diseases are determined in part by variants at multiple genetic loci. Genome-wide association studies can identify these loci, but most phenotype-associated variants lie distal to protein-coding regions and are likely involved in regulating gene expression. Understanding how  these genetic variants affect complex traits depends on the ability to predict and test the function of the genomic elements harboring them. Community efforts such as the ENCODE Project provide a wealth of data about epigenetic features associated with gene regulation. These data enable the prediction of testable functions for many phenotype-associated variants. AU"
+    },
+    {
+        "abstract": "MOTIVATION: Accurate alignment of high-throughput RNA-seq data is a challenging and yet unsolved problem because of the non-contiguous transcript structure, relatively short read lengths and constantly increasing throughput of the sequencing technologies. Currently available RNA-seq aligners suffer from high mapping error rates, low mapping speed, read length limitation and mapping biases. RESULTS: To align our large (>80 billon reads) ENCODE Transcriptome RNA-seq dataset, we developed the Spliced Transcripts Alignment to a Reference (STAR) software based on a previously undescribed RNA-seq alignment algorithm that uses sequential maximum mappable seed search in uncompressed suffix arrays followed by seed clustering and stitching procedure. STAR outperforms other aligners by a factor of >50 in mapping speed, aligning to the human genome 550 million 2 x 76 bp paired-end reads per hour on a modest 12-core server, while at  the same time improving alignment sensitivity and precision. In addition to unbiased de novo detection of canonical junctions, STAR can discover non-canonical splices and chimeric (fusion) transcripts, and is also capable of mapping full-length RNA sequences. Using Roche 454 sequencing of reverse transcription polymerase chain reaction amplicons, we experimentally validated 1960 novel intergenic splice junctions with an 80-90% success rate, corroborating the high precision of the STAR mapping strategy. AVAILABILITY AND IMPLEMENTATION: STAR is implemented as a standalone C++ code. STAR is free open source software distributed under GPLv3 license and can be downloaded from http://code.google.com/p/rna-star/.",
+        "authors": "Dobin A, Davis CA, Schlesinger F, Drenkow J, Zaleski C, Jha S, Batut P, Chaisson M, Gingeras TR",
+        "categories": [
+            "software tool"
+        ],
+        "date_published": "2013 Jan 1",
+        "issue": "1",
+        "journal": "Bioinformatics",
+        "page": "15-21",
+        "published_by": [
+            "ENCODE"
+        ],
+        "references": [
+            "PMID:23104886",
+            "PMCID:PMC3530905"
+        ],
+        "status": "published",
+        "title": "STAR: ultrafast universal RNA-seq aligner.",
+        "volume": "29",
+        "uuid": "9d43c048-c70c-42ab-895d-77a69fceb42b"
+    },
+    {
+        "abstract": "The resolution of genome-wide association studies (GWAS) is limited by the linkage disequilibrium (LD) structure of the population being studied. Selecting  the most likely causal variants within an LD block is relatively straightforward  within coding sequence, but is more difficult when all variants are intergenic. Predicting functional non-coding sequence has been recently facilitated by the availability of conservation and epigenomic information. We present HaploReg, a tool for exploring annotations of the non-coding genome among the results of published GWAS or novel sets of variants. Using LD information from the 1000 Genomes Project, linked SNPs and small indels can be visualized along with their  predicted chromatin state in nine cell types, conservation across mammals and their effect on regulatory motifs. Sets of SNPs, such as those resulting from GWAS, are analyzed for an enrichment of cell type-specific enhancers. HaploReg will be useful to researchers developing mechanistic hypotheses of the impact of  non-coding variants on clinical phenotypes and normal variation. The HaploReg database is available at http://compbio.mit.edu/HaploReg.",
+        "authors": "Ward LD, Kellis M",
+        "categories": [
+            "integrative analysis",
+            "database"
+        ],
+        "date_published": "2012 Jan",
+        "issue": "Database issue",
+        "journal": "Nucleic acids research",
+        "page": "D930-4",
+        "published_by": [
+            "ENCODE"
+        ],
+        "references": [
+            "PMID:22064851",
+            "PMCID:PMC3245002"
+        ],
+        "status": "published",
+        "title": "HaploReg: a resource for exploring chromatin states, conservation, and regulatory motif alterations within sets of genetically linked variants.",
+        "volume": "40",
+        "uuid": "d40de6c3-7b60-4567-8282-b29f0cafc0e1"
+    },
+    {
+        "abstract": "MOTIVATION: Testing for correlations between different sets of genomic features is a fundamental task in genomics research. However, searching for overlaps between features with existing web-based methods is complicated by the massive datasets that are routinely produced with current sequencing technologies. Fast and flexible tools are therefore required to ask complex questions of these data  in an efficient manner. RESULTS: This article introduces a new software suite for the comparison, manipulation and annotation of genomic features in Browser Extensible Data (BED) and General Feature Format (GFF) format. BEDTools also supports the comparison of sequence alignments in BAM format to both BED and GFF  features. The tools are extremely efficient and allow the user to compare large datasets (e.g. next-generation sequencing data) with both public and custom genome annotation tracks. BEDTools can be combined with one another as well as with standard UNIX commands, thus facilitating routine genomics tasks as well as  pipelines that can quickly answer intricate questions of large genomic datasets.  AVAILABILITY AND IMPLEMENTATION: BEDTools was written in C++. Source code and a comprehensive user manual are freely available at http://code.google.com/p/bedtools CONTACT: aaronquinlan@gmail.com; imh4y@virginia.edu SUPPLEMENTARY INFORMATION: Supplementary data are available at Bioinformatics online.",
+        "authors": "Quinlan AR, Hall IM",
+        "categories": [
+            "software tool"
+        ],
+        "date_created": "2014-08-01T04:33:54.912655+00:00",
+        "date_published": "2010 Mar 15",
+        "issue": "6",
+        "journal": "Bioinformatics",
+        "page": "841-2",
+        "published_by": [
+            "community"
+        ],
+        "references": [
+            "PMID:20110278",
+            "PMCID:PMC2832824"
+        ],
+        "status": "published",
+        "title": "BEDTools: a flexible suite of utilities for comparing genomic features.",
+        "volume": "26",
+        "uuid": "bdd1b360-c377-450d-969a-efc1a7e8611f"
     }
 ]

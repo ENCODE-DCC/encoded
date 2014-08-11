@@ -12,10 +12,31 @@ var url = require('url');
 var portal = {
     portal_title: 'ENCODE',
     global_sections: [
-        {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
-        {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
-        {id: 'experiments', title: 'Experiments', url: '/search/?type=experiment'},
-        {id: 'targets', title: 'Targets', url: '/search/?type=target'}
+        {id: 'data', title: 'Data', children: [
+            {id: 'assays', title: 'Assays', url: '/search/?type=experiment'},
+            {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
+            {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
+            {id: 'targets', title: 'Targets', url: '/search/?type=target'},
+            {id: 'datarelease', title: 'Data release policy', url: '/about/data-use-policy'},
+            {id: 'datastandards', title: 'Data standards', url: '/data-standards'}
+        ]},
+        {id: 'methods', title: 'Methods', children: [
+            {id: 'softwaretools', title: 'Software tools', url: '/software'},
+            {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'}
+        ]},
+        {id: 'about', title: 'About ENCODE', children: [
+            {id: 'projectoverview', title: 'Project overview', url: '/about/contributors'},
+            {id: 'news', title: 'News', url: '/news'},
+            {id: 'publications', title: 'Publications', url: '/publications'},
+            {id: 'datause', title: 'Data release policy', url: '/about/data-use-policy'},
+            {id: 'dataaccess', title: 'Data access', url: '/about/data-access'}
+        ]},
+        {id: 'help', title: 'Help', children: [
+            {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
+            {id: 'fileformats', title: 'File formats', url: '/help/file-formats'},
+            {id: 'tutorials', title: 'Tutorials', url: '/tutorials'},
+            {id: 'contact', title: 'Contact', url: '/help/contacts'}
+        ]}
     ]
 };
 
@@ -41,8 +62,62 @@ var App = React.createClass({
         return {
             errors: [],
             portal: portal,
-            user_actions: user_actions
+            user_actions: user_actions,
+            dropdownComponent: undefined,
+            activeComponent: undefined
         };
+    },
+
+    // Dropdown context using React context mechanism.
+    childContextTypes: {
+        dropdownComponent: React.PropTypes.string,
+        onDropdownChange: React.PropTypes.func
+    },
+
+    // Retrieve current React context
+    getChildContext: function() {
+        return {
+            dropdownComponent: this.state.dropdownComponent, // ID of component with visible dropdown
+            onDropdownChange: this.handleDropdownChange // Function to process dropdown state change
+        };
+    },
+
+    // When current dropdown changes; componentID is _rootNodeID of newly dropped-down component
+    handleDropdownChange: function(componentID) {
+        // Use React _rootNodeID to uniquely identify a dropdown menu;
+        // It's passed in as componentID
+        this.setState({dropdownComponent: componentID});
+    },
+
+    // Handle a click outside a dropdown menu by clearing currently dropped down menu
+    handleLayoutClick: function(e) {
+        if (this.state.dropdownComponent !== undefined) {
+            this.setState({dropdownComponent: undefined});
+        }
+    },
+
+    // Different browsers handle event listeners differently; this function covers all
+    bindEvent: function (el, eventName, eventHandler) {
+        if (el.addEventListener) {
+            // Modern browsers
+            el.addEventListener(eventName, eventHandler, false); 
+        } else if (el.attachEvent) {
+            // IE8 specific
+            el.attachEvent('on' + eventName, eventHandler);
+        }
+    },
+
+    // If ESC pressed while drop-down menu open, close the menu
+    handleKey: function(e) {
+        if (e.which === 27 && this.state.dropdownComponent !== undefined) {
+            e.preventDefault();
+            this.handleDropdownChange(undefined);
+        }
+    },
+
+    // Once the app component is mounted, bind keydowns to handleKey function
+    componentDidMount: function() {
+        this.bindEvent(window, 'keydown', this.handleKey);
     },
 
     render: function() {
@@ -117,10 +192,10 @@ var App = React.createClass({
                     }}></script>
                     <div id="slot-application">
                         <div id="application" className={appClass}>
-
-                        <div className="loading-spinner"></div>
-
-                            <div id="layout">
+                        
+						<div className="loading-spinner"></div>
+								   
+                            <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         context_actions={context_actions}
                                         user_actions={this.state.user_actions} session={this.state.session}

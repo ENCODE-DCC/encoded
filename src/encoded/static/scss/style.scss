@@ -11,6 +11,7 @@ $navbar-inverse-link-active-bg:             #4E7294;//darken($navbar-inverse-bg,
 $navbar-inverse-toggle-hover-bg:            #19334b;
 $navbar-inverse-toggle-border-color:        #19334b;
 $headings-font-weight:                      bold;
+$grid-gutter-width:                         20px;
 
 $brand-warning: #E59545;
 $brand-success: #4C994C;
@@ -23,7 +24,7 @@ $brand-info: #4F689E;
 
 // Reset
 @import "bootstrap/normalize";
-@import "bootstrap/print";
+//@import "bootstrap/print";
 
 // Core CSS
 @import "bootstrap/scaffolding";
@@ -36,31 +37,32 @@ $brand-info: #4F689E;
 
 // Components
 @import "bootstrap/component-animations";
+//@import "bootstrap/glyphicons";
 @import "bootstrap/dropdowns";
 @import "bootstrap/button-groups";
 @import "bootstrap/input-groups";
 @import "bootstrap/navs";
 @import "bootstrap/navbar";
 @import "bootstrap/breadcrumbs";
-@import "bootstrap/pagination";
-@import "bootstrap/pager";
+//@import "bootstrap/pagination";
+//@import "bootstrap/pager";
 @import "bootstrap/labels";
 @import "bootstrap/badges";
-@import "bootstrap/jumbotron";
+//@import "bootstrap/jumbotron";
 @import "bootstrap/thumbnails";
 @import "bootstrap/alerts";
-@import "bootstrap/progress-bars";
-@import "bootstrap/media";
-@import "bootstrap/list-group";
+//@import "bootstrap/progress-bars";
+//@import "bootstrap/media";
+//@import "bootstrap/list-group";
 @import "bootstrap/panels";
 @import "bootstrap/wells";
 @import "bootstrap/close";
 
 // Components w/ JavaScript
 @import "bootstrap/modals";
-@import "bootstrap/tooltip";
-@import "bootstrap/popovers";
-@import "bootstrap/carousel";
+//@import "bootstrap/tooltip";
+//@import "bootstrap/popovers";
+//@import "bootstrap/carousel";
 
 // ENCODED
 // Compass

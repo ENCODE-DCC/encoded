@@ -9,11 +9,11 @@
 
 // fix footer width for small screens + content margin fix
 @media (max-width: 767px) {
-	footer {
-		//margin-left: -20px;
-    	//margin-right: -20px;
-    	//padding: 0 5px;
-	}
+    footer {
+        //margin-left: -20px;
+        //margin-right: -20px;
+        //padding: 0 5px;
+    }
 }
 // make footer look good on larger screens
 // and activate sticky footer
@@ -53,31 +53,4 @@
             padding-right: 10px;
         }
     }
-}
-
-
-
-// make key-value description lists responsive
-@media (max-width: 480px) {
-  // Remove the horizontal styles
-  .key-value {
-    dt {
-    	float: none;
-    	width: auto;
-    	padding-top: 0;
-        padding-bottom: 2px;
-    	text-align: left;
-    }
-    // Move over all values to left
-    dt, dd {
-    	margin-left: 0;
-    	padding-top: 0;
-    	margin-bottom: 0px;
-    }
-    // add vertical space to key-value pairs
-    dd {
-    	margin-bottom: 15px;
-        padding-bottom: 0;
-    }
-  }
 }
