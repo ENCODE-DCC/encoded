@@ -57,15 +57,3 @@ Feature: Search
         When I click the link to "?type=experiment&assay_term_name=ChIP-seq&assay_term_name=MethylArray"
         And I wait for the content to load
         Then I should see at least 5 elements with the css selector "ul.nav.result-table > li"
-
-
-    Scenario: Search Targets
-        When I click the link with text that contains "Data"
-        And I click the link to "/search/?type=target"
-        And I wait for the content to load
-        And I should see at least 15 elements with the css selector "ul.nav.result-table > li"
-        And I should see at least 1 elements with the css selector "div.box.facets > div.facet"
-        
-        When I click the link to "?type=target&organism.scientific_name=Homo sapiens"
-        And I wait for the content to load
-        Then I should see at least 13 elements with the css selector "ul.nav.result-table > li"
