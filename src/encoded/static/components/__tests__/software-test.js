@@ -53,7 +53,7 @@ describe('Software', function() {
         });
     });
 
-    describe('Software object with single references', function() {
+    describe('Software object with a single reference', function() {
         var software, summary;
 
         beforeEach(function() {

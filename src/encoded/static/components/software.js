@@ -27,8 +27,6 @@ function refCount(pubs) {
 // Display all references in the array of publications in the 'pubs' property.
 var References = React.createClass({
     render: function() {
-        var pubElements = null;
-
         return (
             <div>
                 {this.props.pubs ?
