@@ -131,8 +131,8 @@ var StandardsDocuments = React.createClass({
         return (
             <div>
                 {this.props.docs.map(function(doc) {
-                    return doc.aliases[0];
-                })};
+                    return (<div><a href={doc['@id']}>{doc.aliases[0]}</a></div>);
+                })}
             </div>
         );
     }
@@ -155,7 +155,6 @@ var Characterization = module.exports.Characterization = React.createClass({
     },
 
     componentDidMount: function() {
-        console.log('scroll: ' + this.refs.collapse.getDOMNode().scrollHeight + ', client: ' + this.refs.collapse.getDOMNode().clientHeight);
         if (this.refs.collapse.getDOMNode().scrollHeight <= this.refs.collapse.getDOMNode().clientHeight) {
             this.setState({panelFixed: true});
         }
@@ -233,7 +232,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                         <dt>Grant</dt>
                         <dd>{context.award.name}</dd>
 
-                        {standardsDocuments.length ? <dt>Standards Documents</dt> : null}
+                        {standardsDocuments.length ? <dt>Standards documents</dt> : null}
                         {standardsDocuments.length ? <dd><StandardsDocuments docs={standardsDocuments} /></dd> : null}
 
                         {/*
