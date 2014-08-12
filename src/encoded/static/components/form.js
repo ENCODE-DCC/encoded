@@ -42,6 +42,10 @@ var Form = module.exports.Form = React.createClass({
         )
     },
 
+    valueUpdated: function(value) {
+        document._dirty = true;
+    },
+
     save: function(e) {
         e.preventDefault();
         var $ = require('jquery');
@@ -67,6 +71,7 @@ var Form = module.exports.Form = React.createClass({
     },
 
     finish: function (data) {
+        document._dirty = false;
         this.props.navigate(data['@graph'][0]['@id'] + '?datastore=database');
     },
 

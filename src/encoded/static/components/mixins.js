@@ -278,6 +278,7 @@ module.exports.HistoryAndTriggers = {
         } else {
             window.onhashchange = this.onHashChange;
         }
+        window.onbeforeunload = this.handleBeforeUnload;
         if (this.props.href !== window.location.href) {
             this.setProps({href: window.location.href});
         }
@@ -398,6 +399,10 @@ module.exports.HistoryAndTriggers = {
 
     handlePopState: function (event) {
         if (this.DISABLE_POPSTATE) return;
+        if (!this.confirmNavigation()) {
+            window.history.pushState(window.state, '', this.props.href);
+            return;
+        }
         if (!this.historyEnabled) {
             window.location.reload();
             return;
@@ -419,8 +424,31 @@ module.exports.HistoryAndTriggers = {
         this.navigate(href, {replace: true});
     },
 
+    confirmNavigation: function() {
+        // check for beforeunload confirmation
+        if (document._dirty) {
+            var res = confirm('You have unsaved changes. Are you sure you want to lose them?');
+            if (res) {
+                document._dirty = false;
+            }
+            return res;
+        }
+        return true;
+    },
+
+    handleBeforeUnload: function() {
+        if (document._dirty) {
+            return 'You have unsaved changes.';
+        }
+    },
+
     navigate: function (href, options) {
         var $ = require('jquery');
+
+        if (!this.confirmNavigation()) {
+            return;
+        }
+
         options = options || {};
         href = url.resolve(this.props.href, href);
         var xhr = this.props.contextRequest;
