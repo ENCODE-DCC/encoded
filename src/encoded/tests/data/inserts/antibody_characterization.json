@@ -48,7 +48,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "K562",
                 "biosample_term_id": "EFO:0002067",
-                "status": "pending dcc review"
+                "lane_status": "pending dcc review"
             }
         ],
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
@@ -85,7 +85,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "HeLa-S3",
                 "biosample_term_id": "EFO:0002791",
-                "status": "not compliant"
+                "lane_status": "not compliant"
             }
         ],
         "notes": "Tell the lab to redo this characterization.",
@@ -124,7 +124,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "HeLa-S3",
                 "biosample_term_id": "EFO:0002791",
-                "status": "compliant"
+                "lane_status": "compliant"
             }
         ],
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
@@ -148,7 +148,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "K562",
                 "biosample_term_id": "EFO:0002067",
-                "status": "pending dcc review"
+                "lane_status": "pending dcc review"
             },
             {
                 "organism": "human",
@@ -156,7 +156,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "GM12878",
                 "biosample_term_id": "EFO:0002784",
-                "status": "pending dcc review"
+                "lane_status": "pending dcc review"
             },
             {
                 "organism": "human",
@@ -164,7 +164,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "HeLa-S3",
                 "biosample_term_id": "EFO:0002791",
-                "status": "pending dcc review"
+                "lane_status": "pending dcc review"
             }
         ],
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
@@ -241,7 +241,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "GM12878",
                 "biosample_term_id": "EFO:0002784",
-                "status": "compliant"
+                "lane_status": "compliant"
             },
             {
                 "organism": "human",
@@ -249,7 +249,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "HeLa-S3",
                 "biosample_term_id": "EFO:0002791",
-                "status": "not compliant"
+                "lane_status": "not compliant"
             },
             {
                 "organism": "human",
@@ -257,7 +257,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "K562",
                 "biosample_term_id": "EFO:0002067",
-                "status": "compliant"
+                "lane_status": "compliant"
             }
         ],
         "notes": "HeLa-S3 lane needs to be done again.",
@@ -308,7 +308,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "HeLa-S3",
                 "biosample_term_id": "EFO:0002791",
-                "status": "compliant"
+                "lane_status": "compliant"
             }
         ],
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
@@ -332,7 +332,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "K562",
                 "biosample_term_id": "EFO:0002067",
-                "status": "compliant"
+                "lane_status": "compliant"
             },
             {
                 "organism": "human",
@@ -340,7 +340,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "GM12878",
                 "biosample_term_id": "EFO:0002784",
-                "status": "compliant"
+                "lane_status": "compliant"
             },
             {
                 "organism": "human",
@@ -348,7 +348,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "HepG2",
                 "biosample_term_id": "EFO:0001187",
-                "status": "not compliant"
+                "lane_status": "not compliant"
             },
             {
                 "organism": "human",
@@ -356,7 +356,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "HeLa-S3",
                 "biosample_term_id": "EFO:0002791",
-                "status": "not compliant"
+                "lane_status": "not compliant"
             }
         ],
         "notes": "The HepG2 and HeLa-S3 lanes look terrible.",
@@ -409,7 +409,7 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "K562",
                 "biosample_term_id": "EFO:0002067",
-                "status": "pending dcc review"
+                "lane_status": "pending dcc review"
             }
         ],
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
@@ -443,7 +443,7 @@
             [{ 
                 "organism": "human",
                 "lane": 2,
-                "status": "compliant",
+                "lane_status": "compliant",
                 "biosample_term_name": "neural cell",
                 "biosample_term_id": "CL:0002319",
                 "biosample_type": "primary cell"
@@ -451,7 +451,7 @@
             {
                 "organism": "human",
                 "lane": 3,
-                "status": "not compliant",
+                "lane_status": "not compliant",
                 "biosample_term_name": "HepG2",
                 "biosample_term_id": "EFO:0001187",
                 "biosample_type": "immortalized cell line"
@@ -459,7 +459,7 @@
             {
                 "organism": "mouse",
                 "lane": 4,
-                "status": "compliant",
+                "lane_status": "compliant",
                 "biosample_term_name": "MEL cell line",
                 "biosample_term_id": "EFO:0003971",
                 "biosample_type": "immortalized cell line"

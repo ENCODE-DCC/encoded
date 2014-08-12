@@ -4,8 +4,8 @@
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism", "status"],
-    "calculatedProperties": ["targets", "eligible_biosample_term_names", "eligibile_biosample_term_ids", "eligible_biosample_organisms"],
+    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism"],
+    "calculatedProperties": ["lot_reviews"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -145,33 +145,10 @@
             "description": "An external resource with additional information about the antibody.",
             "type": "string",
             "format": "uri"
-        },
-        "status": {
-            "title": "Status",
-            "description": "The current state of the antibody characterizations.",
-            "comment": "Do not submit, the value is assigned by server. The status is updated by the DCC.",
-            "type": "string",
-            "default": "awaiting lab characterization",
-            "enum" : [
-                "awaiting lab characterization",
-                "pending dcc review",
-                "eligible for new data",
-                "not eligible for new data",
-                "not pursued",
-                "deleted"
-            ]
-        },
-        "reviewed_by": {
-            "title": "Reviewed by",
-            "description": "Person (from DCC or antibody review panel) who reviewed the antibody characterizations associated with this antibody lot and determined the lot status",
-            "comment": "Only admins are allowed to set or update this value.",
-            "permission": "import_items",
-            "linkTo": "user",
-            "type": "string"
         }
    },
    "facets": {
-      "status": {
+      "lot_reviews.status": {
           "title": "Approval status",
           "type": "string"
       },
