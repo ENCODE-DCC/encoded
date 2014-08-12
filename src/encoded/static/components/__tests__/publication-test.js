@@ -44,7 +44,7 @@ describe('Publication', function() {
             var journal = TestUtils.findRenderedDOMComponentWithClass(publication, 'journal').getDOMNode();
             var italicTexts = journal.getElementsByTagName('i');
             expect(italicTexts.length).toEqual(1);
-            expect(italicTexts[0].textContent).toEqual('Nature');
+            expect(italicTexts[0].textContent).toEqual('Nature. ');
         });
 
         it('has a good abstract with an h2 and a p', function() {
@@ -63,20 +63,37 @@ describe('Publication', function() {
 
         beforeEach(function() {
             var context_ref = _.clone(context);
-            context_ref.references = [require('../testdata/references/PMID19352372'), require('../testdata/references/PMID20150147')];
+            context_ref.references = ['PMID:19352372', 'PMCID:PMC3062402'];
             publication = <Panel context={context_ref} />;
             TestUtils.renderIntoDocument(publication);
         });
 
         it('has two references', function() {
-            var references = TestUtils.findRenderedDOMComponentWithClass(publication, 'references').getDOMNode();
+            var references = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
             var ul = references.getElementsByTagName('ul');
             var li = ul[0].getElementsByTagName('li');
             expect(li.length).toEqual(2);
             var anchor = li[0].getElementsByTagName('a');
             expect(anchor[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19352372');
             anchor = li[1].getElementsByTagName('a');
-            expect(anchor[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=20150147');
+            expect(anchor[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3062402');
+        });
+    });
+
+    describe('Publication with data_used', function() {
+        var publication;
+
+        beforeEach(function() {
+            var context_du = _.clone(context);
+            context_du.data_used = 'ENCODE main paper';
+            publication = <Panel context={context_du} />;
+            TestUtils.renderIntoDocument(publication);
+        });
+
+        it('has a data-used field', function() {
+            var references = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
+            var dd = references.getElementsByTagName('dd');
+            expect(dd[0].textContent).toEqual('ENCODE main paper');
         });
     });
 });
