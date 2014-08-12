@@ -20,7 +20,8 @@ var Dbxref = dbxref.Dbxref;
         dataset: {title: 'Datasets'},
         image: {title: 'Images'},
         publication: {title: 'Publications'},
-        page: {title: 'Web page'}
+        page: {title: 'Web page'},
+        software: {title: 'Software'}
     };
 
     var Listing = module.exports.Listing = function (props) {
