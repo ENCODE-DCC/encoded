@@ -113,9 +113,10 @@ def search_peaks(request, result):
         else:
             if f not in file_ids:
                 file_ids.append(f)
-                for g in result['graph']:
+                for g in result['@graph']:
                     if g['@id'] == exp:
                         g['files'].append(f)
+                        break
     result['total'] = len(result['@graph'])
     result['facets'].append({
         'field': 'type',
