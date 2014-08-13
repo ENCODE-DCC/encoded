@@ -24,14 +24,12 @@ Feature: Antibodies
         And I should see "Approval for ENCAB000ANU"
 
     Scenario: Detail page
-        When I visit "/antibodies/35cf08c4-72cf-4408-8552-231e3e35b279/"
+        When I visit "/antibodies/58b4df5b-ba21-4111-a715-3b5ba863b9b4/"
         Then I should see an element with the css selector "div.data-display"
-        And I should see "eligible for new data"
+        And I should see "not pursued"
         And I should see an element with the css selector "div.characterizations"
         And I should see at least 1 elements with the css selector "section"
         And I should see at least 1 elements with the css selector "figure"
         And I should see at least 1 elements with the css selector "img.characterization-img"
-        And I should see "Bradley Bernstein, Broad"
-        And I should see "U54HG004570"
-        And I should see "Ross Hardison, PennState"
-        And I should see "RC2HG005573"
+        And I should see "Richard Myers, HAIB"
+        And I should see "U54HG006998"
