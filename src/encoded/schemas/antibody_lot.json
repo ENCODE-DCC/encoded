@@ -4,7 +4,8 @@
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism"],
+    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism", "status"],
+    "calculatedProperties": ["targets", "eligible_biosample_term_names", "eligibile_biosample_term_ids", "eligible_biosample_organisms"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -13,7 +14,6 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
-        { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/product_id" },
@@ -22,7 +22,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "accession": {
             "accessionType": "AB"
@@ -145,6 +145,123 @@
             "description": "An external resource with additional information about the antibody.",
             "type": "string",
             "format": "uri"
+        },
+        "status": {
+            "title": "Status",
+            "description": "The current state of the antibody characterizations.",
+            "comment": "Do not submit, the value is assigned by server. The status is updated by the DCC.",
+            "type": "string",
+            "default": "awaiting lab characterization",
+            "enum" : [
+                "awaiting lab characterization",
+                "pending dcc review",
+                "eligible for new data",
+                "not eligible for new data",
+                "not pursued",
+                "deleted"
+            ]
+        },
+        "reviewed_by": {
+            "title": "Reviewed by",
+            "description": "Person (from DCC or antibody review panel) who reviewed the antibody characterizations associated with this antibody lot and determined the lot status",
+            "comment": "Only admins are allowed to set or update this value.",
+            "permission": "import_items",
+            "linkTo": "user",
+            "type": "string"
         }
+   },
+   "facets": {
+      "status": {
+          "title": "Approval status",
+          "type": "string"
+      },
+      "characterizations.target.organism.scientific_name": {
+          "title": "Target Organism",
+	  "type": "string"
+      },
+      "source.title" : {
+          "title": "Source",
+          "type": "string"
+      },
+      "clonality": {
+          "title": "Clonality",
+          "type": "string"
+      },
+      "host_organism.name": {
+          "title": "Host organism",
+          "type": "string"
+      },
+      "characterizations.lab.title": {
+          "title": "Lab",
+          "type": "string"
+      }
+    },
+   "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+	"characterizations.target.label": {
+	    "title": "Target",
+	    "type": "string"
+	},
+	"characterizations.target.organism.scientific_name": {
+	    "title": "Species",
+	    "type": "string"
+	},
+        "source.title": {
+            "title": "Source",
+            "type": "string"
+        },
+        "product_id": {
+            "title": "Product ID",
+            "type": "string"
+        },
+        "lot_id": {
+            "title": "Lot ID",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
+        "characterizations.length": {
+            "title": "Characterizations",
+            "type": "array"
+        }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "accession": 1.0,
+	   "alternate_accessions": 1.0,
+	   "lot_id": 1.0,
+	   "lot_id_alias": 1.0,
+	   "clonality": 1.0,
+	   "isotype": 1.0,
+	   "purifications": 1.0,
+	   "product_id": 1.0,
+	   "aliases": 1.0,
+	   "dbxrefs": 1.0,
+	   "source.title": 1.0,
+	   "host_organism.name": 1.0,
+	   "host_organism.scientific_name": 1.0,
+	   "host_organism.taxon_id": 1.0,
+	   "characterizations.primary_characterization_method": 1.0,
+	   "characterizations.secondary_characterization_method": 1.0,
+	   "characterizations.award.title": 1.0,
+	   "characterizations.award.project": 1.0,
+	   "characterizations.submitted_by.email": 1.0,
+	   "characterizations.submitted_by.first_name": 1.0,
+	   "characterizations.submitted_by.last_name": 1.0,
+	   "characterizations.lab.institute_name": 1.0,
+	   "characterizations.lab.institute_label": 1.0,
+	   "characterizations.lab.title": 1.0,
+	   "characterizations.target.gene_name": 1.0,
+	   "characterizations.target.label": 1.0,
+	   "characterizations.target.dbxref": 1.0,
+	   "characterizations.target.aliases": 1.0,
+	   "characterizations.target.organism.name": 1.0,
+	   "characterizations.target.organism.scientific_name": 1.0,
+	   "characterizations.target.organism.taxon_id": 1.0
     }
 }

@@ -4,7 +4,8 @@
     "id": "/profiles/antibody_characterization.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "characterizes", "target"],
+    "required": [ "award", "lab", "characterizes", "target", "attachment"],
+    "calculatedProperties": ["characterization_method"],
     "identifyingProperties": ["uuid", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -20,7 +21,7 @@
     ],
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
         },
         "characterizes": {
             "title": "Antibody characterized",
@@ -30,7 +31,7 @@
         "status": {
             "title": "Approval status",
             "description": "The current state of the characterization.",
-            "comment": "Submit a status of 'PENDING DCC REVIEW' to indicate that DCC should begin reviewing characterization. Submit a status of 'WITHDRAWN BY LAB'  to indicate that DCC should not review the characterization.'",
+            "comment": "Submit a status of 'pending dcc review' to indicate that DCC should begin reviewing characterization. Submit a status of 'not submitted for review by lab'  to indicate that DCC should not review the characterization.'",
             "type": "string",
             "default": "in progress",
             "enum" : [
@@ -43,12 +44,99 @@
                 "deleted"
             ]
         },
+        "characterization_review": {
+            "title": "Primary characterization lane reviews",
+            "description": "Characterization details reviewed by each cell type for immunoblot and immunoprecipitation primary characterizations only.",
+            "comment": "Do not submit status, it is assigned by DCC when reviewing the characterization.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Primary characterization lane review", 
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "organism": {
+                        "title": "Organism",
+                        "comment": "See organism.json for available identifiers.",
+                        "type": "string",
+                        "linkTo": "organism"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "integer"
+                    },
+                    "status": {
+                        "title": "Characterization status",
+                        "description": "The current state of the characterization for a particular cell type.",
+                        "type": "string",
+                        "permission": "import_items",
+                        "default": "pending dcc review",
+                        "enum" : [
+                            "pending dcc review",
+                            "compliant",
+                            "not compliant"
+                        ]
+                    },
+                    "biosample_term_id": {
+                        "title": "Ontology ID",
+                        "description": "Ontology identifier describing biosample.",
+                        "comment": "NTR is a new term request identifier provided by the DCC.",
+                        "type": "string",
+                        "pattern": "^(UBERON|EFO|BTO|CL|AMAD|NTR):[0-9]{2,8}$"
+                    },
+                    "biosample_term_name": {
+                        "title": "Ontology term",
+                        "description": "Ontology term describing biosample.",
+                        "type":  "string"
+                    },
+                    "biosample_type": {
+                        "title": "Biosample type",
+                        "description": "The categorization of the biosample.",
+                        "type": "string",
+                        "enum" : [
+                            "primary cell",
+                            "immortalized cell line",
+                            "tissue",
+                            "in vitro differentiated cells",
+                            "induced pluripotent stem cell line",
+                            "stem cell"
+                        ]
+                    }
+                }
+            }
+        },
         "target": {
             "title": "Target",
             "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "target"
+        },
+        "primary_characterization_method": {
+            "title": "Primary method",
+            "description": "Primary experimental method of the characterization, as defined in the standards document.",
+            "type": "string",
+            "enum": [
+                "immunoblot",
+                "immunoprecipitation",
+                "immunofluorescence"
+            ]
+        },
+        "secondary_characterization_method": {
+            "title": "Secondary method",
+            "description": "Secondary experimental method of the characterization, as defined in the standards document.",
+            "type": "string",
+            "enum": [
+                "knockdown or knockout",
+                "immunoprecipitation followed by mass spectrometry",
+                "ChIP-seq comparison",
+                "motif enrichment",
+                "dot blot assay",
+                "peptide array assay",
+                "peptide ELISA assay",
+                "peptide competition assay",
+                "overexpression analysis"
+            ]
         }
     }
 }

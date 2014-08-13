@@ -159,7 +159,7 @@ class Collection(BaseCollection):
             'not reviewed': ALLOW_CURRENT,
             'not submitted for review by lab': ALLOW_CURRENT,
 
-            # antibody_approval
+            # antibody_lot
             'eligible for new data': ALLOW_CURRENT,
             'not eligible for new data': ALLOW_CURRENT,
             'not pursued': ALLOW_CURRENT,
@@ -240,28 +240,92 @@ class AntibodyLot(Collection):
         'title': 'Antibodies Registry',
         'description': 'Listing of ENCODE antibodies',
     }
-    item_template = {
-        'title': '{accession}',
-        '$templated': True,
-    }
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS + ALIAS_KEYS + [
-        {
-            'name': '{item_type}:source_product_lot',
-            'value': '{source}/{product_id}/{lot_id}',
-            '$templated': True,
-        },
-        {
-            'name': '{item_type}:source_product_lot',
-            'value': '{source}/{product_id}/{alias}',
-            '$repeat': 'alias lot_id_alias',
-            '$templated': True,
-        },
-    ]
-    item_rev = {
-        'characterizations': ('antibody_characterization', 'characterizes'),
-        'approvals': ('antibody_approval', 'antibody'),
-    }
+
+    class Item(Collection.Item):
+        template = {
+            'targets': [
+                {'$value': '{target}', '$repeat': 'target targets', '$templated': True}
+            ],
+            'eligible_biosample_term_names': [
+                {'$value': '{term_name}', '$repeat': 'term_name eligible_biosample_term_names', '$templated': True}
+            ],
+            'eligible_biosample_term_ids': [
+                {'$value': '{term_id}', '$repeat': 'term_id eligible_biosample_term_ids', '$templated': True}
+            ],
+            'eligible_biosample_organisms': [
+                {'$value': '{term_id}', '$repeat': 'term_id eligible_biosample_organisms', '$templated': True}
+            ],
+            'title': {'$value': '{accession}', '$templated': True},
+        }
+        name_key = 'accession'
+
+        keys = ACCESSION_KEYS + ALIAS_KEYS + [
+            {
+                'name': '{item_type}:source_product_lot',
+                'value': '{source}/{product_id}/{lot_id}',
+                '$templated': True,
+            },
+            {
+                'name': '{item_type}:source_product_lot',
+                'value': '{source}/{product_id}/{alias}',
+                '$repeat': 'alias lot_id_alias',
+                '$templated': True,
+            },
+        ]
+
+        rev = {
+            'characterizations': ('antibody_characterization', 'characterizes'),
+        }
+
+        embedded = set([
+            'source',
+            'host_organism',
+            'characterizations.award',
+            'characterizations.lab',
+            'characterizations.submitted_by',
+            'characterizations.target.organism'
+        ])
+
+        def template_namespace(self, properties, request=None):
+            ns = super(AntibodyLot.Item, self).template_namespace(properties, request)
+            if request is None:
+                return ns
+            if 'characterizations' in ns:
+                targets = []
+                eligible_biosample_term_names = []
+                eligible_biosample_term_ids = []
+                eligible_biosample_organisms = []
+                compliant_primary = False
+                compliant_secondary = False
+                for characterization_uuid in ns['characterizations']:
+                    characterization = find_resource(request.root, characterization_uuid)
+                    targets.append(characterization.properties['target'])
+                    if characterization.properties['status'] == 'compliant':
+                        if 'primary_characterization_method' in characterization.properties:
+                            compliant_primary = True
+                            for review_object in characterization.properties['characterization_review']:
+                                if review_object['status'] == 'compliant':
+                                    eligible_biosample_term_names.append(review_object['biosample_term_name'])
+                                    eligible_biosample_term_ids.append(review_object['biosample_term_id'])
+                                    eligible_biosample_organisms.append(review_object['organism'])
+                        else:
+                            compliant_secondary = True
+                    else:
+                        continue
+
+                ns['targets'] = set(targets)
+                if compliant_primary and compliant_secondary:
+                    ns['eligible_biosample_term_names'] = set(eligible_biosample_term_names)
+                    ns['eligible_biosample_term_ids'] = set(eligible_biosample_term_ids)
+                    ns['eligible_biosample_organisms'] = set(eligible_biosample_organisms)
+                else:
+                    ns['eligible_biosample_term_names'] = []
+                    ns['eligible_biosample_term_ids'] = []
+                    ns['eligible_biosample_organisms'] = []
+            else:
+                ns['targets'] = []
+
+            return ns
 
 
 @location('organisms')
@@ -642,6 +706,22 @@ class AntibodyCharacterization(Characterization):
     class Item(Characterization.Item):
         embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
 
+        template = {
+            'characterization_method': {'$value': '{characterization_method}', '$templated': True, '$condition': 'characterization_method'}
+        }
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            if request is None:
+                return ns
+            if 'primary_characterization_method' in ns:
+                ns['characterization_method'] = ns['primary_characterization_method']
+            elif 'secondary_characterization_method' in ns:
+                ns['characterization_method'] = ns['secondary_characterization_method']
+            else:
+                ns['characterization_method'] = ''
+            return ns
+
 
 @location('antibodies')
 class AntibodyApproval(Collection):
@@ -839,7 +919,7 @@ class Experiment(Dataset):
             'run_type': {'$value': '{run_type}', '$templated': True, '$condition': 'replicates'},
         }
         embedded = Dataset.Item.embedded + [
-            'replicates.antibody.approvals',
+            'replicates.antibody',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',

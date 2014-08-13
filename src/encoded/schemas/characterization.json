@@ -24,30 +24,6 @@
             "description": "The specific entity for which the characterization applies.",
             "type": "string"
         },
-        "characterization_method": {
-            "title": "Method",
-            "description": "Experimental method of the characterization.",
-            "type": "string",
-            "enum": [
-                "immunoblot",
-                "immunoprecipitation",
-                "immunofluorescence",
-                "knockdown or knockout",
-                "immunoprecipitation followed by mass spectrometry",
-                "ChIP-seq comparison",
-                "motif enrichment",
-                "dot blot assay",
-                "peptide array assay",
-                "peptide ELISA assay",
-                "peptide competition assay",
-                "mutant organism",
-                "mutant histone modifier",
-                "mutant histone",
-                "annotation enrichment",
-                "FACs analysis",
-                "qPCR analysis"
-            ]
-        },
         "caption": {
             "title": "Caption",
             "description": "A plain text description about the characterization. Characterizations for antibodies should include brief methods, expected MW, cell line(s), labels and justification for acceptance, if necessary",
@@ -63,6 +39,19 @@
                 {"format": "date-time"},
                 {"format": "date"}
             ]
+        },
+        "documents": {
+            "title": "Documents",
+            "description": "Documents that provide additional information on the characterization.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Document",
+                "description": "A document that provides additional information on the characterization.",
+                "comment": "See document.json for available identifiers.",
+                "type": "string",
+                "linkTo": "document"
+            }
         },
         "status": {
             "description": "The current state of the characterization."
