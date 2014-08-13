@@ -1,5 +1,8 @@
 from elasticsearch import Elasticsearch
-from elasticsearch.exceptions import NotFoundError
+from elasticsearch.exceptions import (
+    NotFoundError,
+    RequestError,
+)
 from pyramid.events import (
     BeforeRender,
     subscriber,
@@ -26,6 +29,9 @@ import functools
 import json
 import logging
 import transaction
+import os
+import urllib3
+import csv
 
 log = logging.getLogger(__name__)
 ELASTIC_SEARCH = __name__ + ':elasticsearch'
@@ -34,6 +40,7 @@ INDEX = 'encoded'
 
 def includeme(config):
     config.add_route('index', '/index')
+    config.add_route('file_index', '/file_index')
     config.scan(__name__)
 
     if 'elasticsearch.server' in config.registry.settings:
@@ -44,7 +51,6 @@ def includeme(config):
         )
         #es.session.hooks['response'].append(requests_timing_hook('es'))
         config.registry[ELASTIC_SEARCH] = es
-
 
 
 class PyramidJSONSerializer(object):
@@ -217,7 +223,6 @@ def es_update_object(request, objects):
     return i + 1
 
 
-
 def run_in_doomed_transaction(fn, committed, *args, **kw):
     if not committed:
         return
@@ -280,3 +285,74 @@ def es_update_data(event):
     # - Use conditional puts to ES based on serial before commit.
     # txn = transaction.get()
     # txn.addAfterCommitHook(es_update_object_in_txn, (request, updated))
+
+
+@view_config(route_name='file_index', request_method='POST', permission="index")
+def file_index(request):
+    file_index = 'files'
+    doc_type = ['']
+    mapping = {
+        'properties': {
+            'start': {
+                'type': 'long',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'stop': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'experiment': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            },
+            'file': {
+                'type': 'string',
+                'include_in_all': False,
+                'index': 'not_analyzed'
+            }
+        }
+    }
+    es = request.registry.get(ELASTIC_SEARCH, None)
+    try:
+        es.indices.create(index=file_index)
+    except RequestError:
+        es.indices.delete(index=file_index)
+        es.indices.create(index=file_index)
+
+    try:
+        es.indices.put_mapping(index=file_index, doc_type=doc_type, body={doc_type: mapping})
+    except:
+        log.info("Could not create mapping for the collection %s", doc_type)
+    else:
+        es.indices.refresh(index=file_index)
+
+    http = urllib3.PoolManager()
+    path = 'file_index.bigBed'
+    types = ['narrowPeak', 'broadPeak']
+    collection = request.root.by_item_type['file']
+    counter = 0
+    for count, uuid in enumerate(collection):
+        item = request.root.get_by_uuid(uuid)
+        properties = item.__json__(request)
+        if properties['file_format'] in types:
+            r = http.request('GET', 'https://www.encodedcc.org' + properties['href'])
+            with open(path, 'wb') as out:
+                out.write(r.data)
+            r.release_conn()
+            os.system("./bigBedToBed file_index.bigBed file_index.bed")
+            file_data = list(csv.reader(open('file_index.bed', 'rb'), delimiter='\t'))
+            for row in file_data:
+                result = {
+                    'chromosome': row[0],
+                    'start': int(row[1]) + 1,
+                    'stop': int(row[2]) + 1,
+                    'experiment': properties['dataset'],
+                    'file': properties['@id']
+                }
+                es.index(index=file_index, doc_type=doc_type, body=result, id=counter)
+                es.indices.refresh(index=file_index)
+                counter = counter + 1
+            os.system("rm file_index.*")

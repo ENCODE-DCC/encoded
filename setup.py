@@ -72,6 +72,7 @@ setup(
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-keys-links = encoded.commands.update_keys_links:main
         upgrade = encoded.commands.upgrade:main
+        file-indexer = encoded.commands.file_indexer:main
 
 
 
