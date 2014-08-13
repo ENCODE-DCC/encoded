@@ -289,8 +289,7 @@ def es_update_data(event):
 
 @view_config(route_name='file_index', request_method='POST', permission="index")
 def file_index(request):
-    file_index = 'files'
-    doc_type = ['']
+    doc_type = 'peaks'
     mapping = {
         'properties': {
             'start': {
@@ -316,18 +315,13 @@ def file_index(request):
         }
     }
     es = request.registry.get(ELASTIC_SEARCH, None)
-    try:
-        es.indices.create(index=file_index)
-    except RequestError:
-        es.indices.delete(index=file_index)
-        es.indices.create(index=file_index)
 
     try:
-        es.indices.put_mapping(index=file_index, doc_type=doc_type, body={doc_type: mapping})
+        es.indices.put_mapping(index=INDEX, doc_type=doc_type, body={doc_type: mapping})
     except:
         log.info("Could not create mapping for the collection %s", doc_type)
     else:
-        es.indices.refresh(index=file_index)
+        es.indices.refresh(index=INDEX)
 
     http = urllib3.PoolManager()
     path = 'file_index.bigBed'
@@ -352,7 +346,7 @@ def file_index(request):
                     'experiment': properties['dataset'],
                     'file': properties['@id']
                 }
-                es.index(index=file_index, doc_type=doc_type, body=result, id=counter)
-                es.indices.refresh(index=file_index)
+                es.index(index=INDEX, doc_type=doc_type, body=result, id=counter)
+                es.indices.refresh(index=INDEX)
                 counter = counter + 1
             os.system("rm file_index.*")
