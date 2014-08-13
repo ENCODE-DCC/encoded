@@ -53,7 +53,7 @@ var Approval = module.exports.Approval = React.createClass({
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>Approval for {context.accession}</h2>
+                        <h2>{context.accession}</h2>
                     </div>
                 </header>
 
