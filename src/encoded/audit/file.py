@@ -9,6 +9,33 @@ not_current_statuses = ['revoked', 'obsolete', 'deleted']
 
 
 @audit_checker('file')
+def audit_paired_with(value, system):
+
+    if value['status'] in ['deleted','replaced']:
+        return
+
+    if 'paired_end' not in value:
+        return    
+
+    if 'paired_with' not in value:
+        detail = 'Pair {} missing paired_with'.value['paired_end']
+        raise AuditFailure('missing paired_with', detail, level='ERROR')
+
+    # Would love to then check to see if the files shared the same replicate
+
+
+@audit_checker('file')
+def audit_file_size(value, system):
+
+    if value['status'] in ['deleted', 'replaced', 'uploading']:
+        return
+
+    if 'file_size' not in value:
+        detail = 'missing file_size'
+        raise AuditFailure('missing file_size', detail, level='ERROR')
+
+
+@audit_checker('file')
 def audit_file_status(value, system):
 
     file_status = value.get('status')
