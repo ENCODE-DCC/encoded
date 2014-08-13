@@ -160,3 +160,29 @@ def file_2_3(value, system):
     # Help the raw data problem
     if value['output_type'] == 'raw data' and value['file_format'] == "fastq":
         value['output_type'] = 'reads' 
+
+
+@upgrade_step('file', '3', '4')
+def file_3_4(value, system):
+    #  http://redmine.encodedcc.org/issues/1714
+        
+    context = system['context']
+    root = find_root(context)
+    dataset = root.get_by_uuid(value['dataset']).upgrade_properties(finalize=False)    
+
+    value['lab'] = dataset['lab']
+    value['award'] = dataset['award']
+
+    # EDW User
+    if value['submitted_by'] == '/users/0e04cd39-006b-4b4a-afb3-b6d76c4182ff/':
+        value['lab'] = 'w-james-kent'
+        value['award'] = 'U41HG006992'
+      
+
+    if value['paired_end'] in ['1','2']:
+        possible_pairs = []
+        for fileob in dataset['original_files']:
+            if paired_end in fileob and fileob['paired_end'] != value['paired_end']:
+                possible_pairs.append(fileob['accession'])
+        if len(possible_pairs) == 1:
+            value['paired_with'] = possible_pairs[0]
