@@ -364,26 +364,20 @@ class AntibodyLot(Collection):
                                     'organism': lane_review['organism'],
                                     'biosample_term_name': lane_review['biosample_term_name'],
                                     'biosample_term_id': lane_review['biosample_term_id'],
-                                    'status': None
+                                    'status': 'awaiting lab characterization'
                                 }
                                 if lane_review['lane_status'] == 'pending dcc review':
                                     if pending_secondary or compliant_secondary:
                                         new_review['status'] = 'pending dcc review'
-                                    else:
-                                        new_review['status'] = 'awaiting lab characterization'
                                 elif lane_review['lane_status'] == 'not compliant':
                                     if compliant_secondary or not_compliant_secondary:
                                         new_review['status'] = 'not eligible for new data'
-                                    else:
-                                        new_review['status'] = 'awaiting lab characterization'
                                 elif lane_review['lane_status'] == 'compliant':
                                     if compliant_secondary:
                                         new_review['status'] = 'eligible for new data'
-                                    else:
-                                        new_review['status'] = 'awaiting lab characterization'
                                 else:
                                     # all other cases, can keep awaiting status
-                                    new_review['status'] = 'awaiting lab characterization'
+                                    pass
 
                                 key = "%s;%s;%s;%s" % (lane_review['biosample_term_name'], lane_review['biosample_term_id'], lane_review['organism'], target)
                                 if key not in char_reviews:
