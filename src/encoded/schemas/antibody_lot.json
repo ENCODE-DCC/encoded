@@ -221,6 +221,10 @@
             "title": "Lot ID",
             "type": "string"
         },
+        "host_organism.name": {
+            "title": "Host organism",
+            "type": "string"
+        },
         "status": {
             "title": "Status",
             "type": "string"

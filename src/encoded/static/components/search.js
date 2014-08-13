@@ -13,7 +13,7 @@ var Dbxref = dbxref.Dbxref;
 
     // Should readlly be singular...
     var types = {
-        antibody_approval: {title: 'Antibodies'},
+        antibody_lot: {title: 'Antibodies'},
         biosample: {title: 'Biosamples'},
         experiment: {title: 'Experiments'},
         target: {title: 'Targets'},
@@ -82,26 +82,25 @@ var Dbxref = dbxref.Dbxref;
                             {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Antibody</p>
-                                <p className="type">{' ' + result['antibody.accession']}</p>
-                                <p className="type meta-status">{' ' + result['status']}</p>
+                                <p className="type">{' ' + result.accession}</p>
+                                <p className="type meta-status">{' ' + result.status}</p>
                             </div>
                             <div className="accession">
                                 <a href={result['@id']}>
-                                    {result['target.label'] + ' ('}
-                                    <em>{result['target.organism.scientific_name']}</em>
-                                    {')'}
+                                    {result.lot_id}
+                                    {' (' + result['host_organism.name'] + ')'}
                                 </a> 
                             </div>
                         </div>
                         <div className="data-row"> 
-                            <strong>{columns['antibody.source.title']['title']}</strong>: {result['antibody.source.title']}<br />
-                            <strong>{columns['antibody.product_id']['title']}/{columns['antibody.lot_id']['title']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
+                            <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
+                            <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
                         </div>
                 </li>
             );
         }
     });
-    globals.listing_views.register(Antibody, 'antibody_approval');
+    globals.listing_views.register(Antibody, 'antibody_lot');
 
     var Biosample = module.exports.Biosample = React.createClass({
         mixins: [PickerActionsMixin],
