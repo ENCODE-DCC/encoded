@@ -60,6 +60,77 @@ def flatten_dict(d):
     return dict(items())
 
 
+def search_peaks(request, result):
+    es = request.registry[ELASTIC_SEARCH]
+    chromosome = request.params.get('chr', None)
+    s = request.params.get('snip', None)
+    if chromosome is None or s is None:
+        result['notification'] = 'Chr and snip are both required for peaks'
+        return result
+    snip = int(s)
+    query = {
+        'query': {
+            'filtered': {
+                'query': {
+                    'term': {
+                        'chromosome': chromosome
+                    }
+                },
+                'filter': {
+                    'and': {
+                        'filters': [
+                            {
+                                'range': {
+                                    'start': {
+                                        'lte': snip,
+                                    }
+                                }
+                            },
+                            {
+                                'range': {
+                                    'stop': {
+                                        'gte': snip
+                                    }
+                                }
+                            }
+                        ],
+                        '_cache': True
+                    }
+                }
+            }
+        },
+        'fields': ['experiment', 'file']
+    }
+    results = es.search(body=query, index='encoded', doc_type='peaks' or None, size=99999999)
+    file_ids = []
+    exp_ids = []
+    for hit in results['hits']['hits']:
+        exp = hit['fields']['experiment'][0]
+        f = hit['fields']['file'][0]
+        if exp not in exp_ids:
+            exp_ids.append(exp)
+            result['@graph'].append({'@id': exp, '@type': 'peaks', 'files': [f]})
+        else:
+            if f not in file_ids:
+                file_ids.append(f)
+                for g in result['graph']:
+                    if g['@id'] == exp:
+                        g['files'].append(f)
+    result['total'] = len(result['@graph'])
+    result['facets'].append({
+        'field': 'type',
+        'total': len(result['@graph']),
+        'term': [
+            {
+                'count': len(result['@graph']),
+                'term': 'peaks'
+            }
+        ]
+    })
+    result['notification'] = 'Success'
+    return result
+
+
 @view_config(name='search', context=Root, request_method='GET',
              permission='search')
 def search(context, request, search_type=None):
@@ -105,13 +176,15 @@ def search(context, request, search_type=None):
 
     if search_type is None:
         search_type = request.params.get('type')
-
-        # handling invalid item types
-        if search_type not in (None, '*'):
-            if search_type not in root.by_item_type:
-                result['notification'] = "'" + search_type + \
-                    "' is not a valid 'item type'"
-                return result
+        if search_type == 'peaks':
+            return search_peaks(request, result)
+        else:
+            # handling invalid item types
+            if search_type not in (None, '*'):
+                if search_type not in root.by_item_type:
+                    result['notification'] = "'" + search_type + \
+                        "' is not a valid 'item type'"
+                    return result
 
     # Building query for filters
     if search_type in (None, '*'):
