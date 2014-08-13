@@ -94,6 +94,7 @@ runcmd:
 - sudo a2enmod headers
 - sudo a2enmod proxy_http
 - sudo a2enmod rewrite
+- sudo a2enmod ssl
 - sudo a2ensite encoded.conf
 - sudo a2dissite 000-default
 - sudo service apache2 reload

@@ -2,12 +2,15 @@ from ..contentbase import location
 from ..schema_utils import load_schema
 from .views import (
     ACCESSION_KEYS,
+    ALIAS_KEYS,
     Collection,
 )
 from pyramid.httpexceptions import (
     HTTPFound,
     HTTPNotFound,
 )
+from pyramid.response import Response
+from pyramid.settings import asbool
 from pyramid.traversal import find_root
 from pyramid.view import view_config
 import boto
@@ -70,7 +73,14 @@ class File(Collection):
 
     class Item(Collection.Item):
         name_key = 'accession'
-        keys = ACCESSION_KEYS  # + ALIAS_KEYS
+        keys = ACCESSION_KEYS + ALIAS_KEYS + [
+            {
+                'name': 'alias',
+                'value': 'md5:{md5sum}',
+                '$templated': True,
+                '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
+            },
+        ]
         namespace_from_path = {
             'lab': 'dataset.lab',
             'award': 'dataset.award',
@@ -105,6 +115,13 @@ class File(Collection):
             return super(File.Item, cls).create(parent, uuid, properties, sheets)
 
 
+class InternalResponse(Response):
+    def _abs_headerlist(self, environ):
+        """Avoid making the Location header absolute.
+        """
+        return list(self.headerlist)
+
+
 @view_config(name='download', context=File.Item, request_method='GET',
              permission='view', subpath_segments=[0, 1])
 def download(context, request):
@@ -120,8 +137,11 @@ def download(context, request):
         location = 'http://encodedcc.sdsc.edu/warehouse/{download_path}'.format(**ns)
     elif external['service'] == 's3':
         conn = boto.connect_s3()
-        location = conn.generate_url(36*60*60, 'GET', external['bucket'], external['key'])
+        location = conn.generate_url(36*60*60, request.method, external['bucket'], external['key'])
     else:
         raise ValueError(external['service'])
+
+    if asbool(request.params.get('proxy')):
+        return InternalResponse(location='/_proxy/' + location)
 
     raise HTTPFound(location=location)
