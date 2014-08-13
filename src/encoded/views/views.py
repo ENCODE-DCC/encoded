@@ -232,7 +232,7 @@ class Award(Collection):
     item_keys = ['name']
 
 
-@location('antibody-lots')
+@location('antibodies')
 class AntibodyLot(Collection):
     item_type = 'antibody_lot'
     schema = load_schema('antibody_lot.json')
@@ -723,7 +723,7 @@ class AntibodyCharacterization(Characterization):
             return ns
 
 
-@location('antibodies')
+@location('antibody-approvals')
 class AntibodyApproval(Collection):
     schema = load_schema('antibody_approval.json')
     item_type = 'antibody_approval'

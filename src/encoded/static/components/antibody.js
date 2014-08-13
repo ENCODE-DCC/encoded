@@ -48,81 +48,101 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
 var Approval = module.exports.Approval = React.createClass({
     render: function() {
         var context = this.props.context;
-        var characterizations = context.characterizations.map(function (item) {
-            return globals.panel_views.lookup(item)({context: item, key: item['@id']});
-        });
-    
-        // Make string of alternate accessions
-        var altacc = context.antibody.alternate_accessions ? context.antibody.alternate_accessions.join(', ') : undefined;
 
-        // Missing enncode
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>Approval for {context.antibody.accession}</h2>
-                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <h3>Antibody against <em>{context.target.organism.scientific_name}</em>
-                            {' '}{context.target.label}
-                        </h3>
-                        <div className="characterization-status-labels">
-                            <StatusLabel title="Status" status={context.status} />
-                        </div>
+                        <h2>Approval for {context.accession}</h2>
                     </div>
                 </header>
 
                 <div className="panel data-display">
                     <dl className="key-value">
-                        <dt>Source (vendor)</dt>
-                        <dd><a href={context.antibody.source.url}>{context.antibody.source.title}</a></dd>
+                        <div data-test="source">
+                            <dt>Source (vendor)</dt>
+                            <dd><a href={context.source.url}>{context.source.title}</a></dd>
+                        </div>
 
-                        <dt>Product ID</dt>
-                        <dd><a href={context.antibody.url}>{context.antibody.product_id}</a></dd>
+                        <div data-test="productid">
+                            <dt>Product ID</dt>
+                            <dd><a href={context.url}>{context.product_id}</a></dd>
+                        </div>
 
-                        <dt>Lot ID</dt>
-                        <dd>{context.antibody.lot_id}</dd>
+                        <div data-test="lotid">
+                            <dt>Lot ID</dt>
+                            <dd>{context.lot_id}</dd>
+                        </div>
 
-                        {context.antibody.lot_id_alias.length ? <dt>Lot ID aliases</dt> : null}
-                        {context.antibody.lot_id_alias.length ? <dd>{context.antibody.lot_id_alias.join(', ')}</dd> : null}
+                        {context.lot_id_alias.length ?
+                            <div data-test="lotidalias">
+                                <dt>Lot ID aliases</dt>
+                                <dd>{context.lot_id_alias.join(', ')}</dd>
+                            </div>
+                        : null}
 
-                        <dt>Target</dt>
-                        <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                        <div data-test="host">
+                            <dt>Host</dt>
+                            <dd className="sentence-case">{context.host_organism.name}</dd>
+                        </div>
 
-                        {context.antibody.host_organism ? <dt>Host</dt> : null}
-                        {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.name}</dd> : null}
+                        {context.clonality ?
+                            <div data-test="clonality">
+                                <dt>Clonality</dt>
+                                <dd className="sentence-case">{context.clonality}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.clonality ? <dt>Clonality</dt> : null}
-                        {context.antibody.clonality ? <dd className="sentence-case">{context.antibody.clonality}</dd> : null}
+                        {context.purifications.length ?
+                            <div data-test="purifications">
+                                <dt>Purification</dt>
+                                <dd className="sentence-case">{context.purifications.join(', ')}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.purifications.length ? <dt>Purification</dt> : null}
-                        {context.antibody.purifications.length ? <dd className="sentence-case">{context.antibody.purifications.join(', ')}</dd> : null}
+                        {context.isotype ?
+                            <div data-test="isotype">
+                                <dt>Isotype</dt>
+                                <dd className="sentence-case">{context.isotype}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.isotype ? <dt>Isotype</dt> : null}
-                        {context.antibody.isotype ? <dd className="sentence-case">{context.antibody.isotype}</dd> : null}
+                        {context.antigen_description ?
+                            <div data-test="antigendescription">
+                                <dt>Antigen description</dt>
+                                <dd>{context.antigen_description}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.antigen_description ? <dt>Antigen description</dt> : null}
-                        {context.antibody.antigen_description ? <dd>{context.antibody.antigen_description}</dd> : null}
+                        {context.antigen_sequence ?
+                            <div data-test="antigensequence">
+                                <dt>Antigen sequence</dt>
+                                <dd>{context.antigen_sequence}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.antigen_sequence ? <dt>Antigen sequence</dt> : null}
-                        {context.antibody.antigen_sequence ? <dd>{context.antibody.antigen_sequence}</dd> : null}
-
-                        {context.antibody.aliases.length ? <dt>Aliases</dt> : null}
-                        {context.antibody.aliases.length ? <dd>{context.antibody.aliases.join(", ")}</dd> : null}
+                        {context.aliases && context.aliases.length ?
+                            <div data-test="aliases">
+                                <dt>Aliases</dt>
+                                <dd>{context.aliases.join(", ")}</dd>
+                            </div>
+                        : null}
                         
-                        {context.antibody.dbxrefs.length ? <dt>External resources</dt> : null}
-                        {context.antibody.dbxrefs.length ? <dd><DbxrefList values={context.antibody.dbxrefs} /></dd> : null}
-                    </dl>
-                </div>
+                        {context.dbxrefs && context.dbxrefs.length ?
+                            <div data-test="dbxrefs">
+                                <dt>External resources</dt>
+                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                            </div>
+                        : null}
 
-                <div className="characterizations">
-                    {characterizations}
+                    </dl>
                 </div>
             </div>
         );
     }
 });
 
-globals.content_views.register(Approval, 'antibody_approval');
+globals.content_views.register(Approval, 'antibody_lot');
 
 
 var Characterization = module.exports.Characterization = React.createClass({
