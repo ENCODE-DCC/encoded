@@ -338,12 +338,14 @@ def file_index(request):
             r.release_conn()
             os.system("./bigBedToBed file_index.bigBed file_index.bed")
             file_data = list(csv.reader(open('file_index.bed', 'rb'), delimiter='\t'))
+            if 'dataset' in properties:
+                exp = properties['dataset']
             for row in file_data:
                 result = {
                     'chromosome': row[0],
                     'start': int(row[1]) + 1,
                     'stop': int(row[2]) + 1,
-                    'experiment': properties['dataset'],
+                    'experiment': exp,
                     'file': properties['@id']
                 }
                 es.index(index=INDEX, doc_type=doc_type, body=result, id=counter)
