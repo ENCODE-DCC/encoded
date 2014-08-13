@@ -37,8 +37,7 @@
                     "genome segmentation",
                     "qualification",
                     "transcript identification",
-                    "transcriptome assembly",
-                    "other"
+                    "transcriptome assembly"
                 ]
             }
         },
@@ -85,8 +84,7 @@
                     "data QC",
                     "integrative analysis",
                     "variant analysis",
-                    "community resource",
-                    "other"
+                    "community resource"
                 ]
             }
         },
@@ -182,6 +180,6 @@
         "purpose": 1.0,
         "used_by": 1.0,
         "software_type": 1.0,
-	"references.title": 1.0
+        "references.title": 1.0
     }
 }

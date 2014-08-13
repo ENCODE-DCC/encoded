@@ -16,8 +16,7 @@ var portal = {
             {id: 'assays', title: 'Assays', url: '/search/?type=experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_approval'},
-            {id: 'targets', title: 'Targets', url: '/search/?type=target'},
-            {id: 'datarelease', title: 'Data release policy', url: '/about/data-use-policy'},
+            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'},
             {id: 'datastandards', title: 'Data standards', url: '/data-standards'}
         ]},
         {id: 'methods', title: 'Methods', children: [
@@ -28,7 +27,7 @@ var portal = {
             {id: 'projectoverview', title: 'Project overview', url: '/about/contributors'},
             {id: 'news', title: 'News', url: '/news'},
             {id: 'publications', title: 'Publications', url: '/publications'},
-            {id: 'datause', title: 'Data release policy', url: '/about/data-use-policy'},
+            {id: 'datause', title: 'Release policy', url: '/about/data-use-policy'},
             {id: 'dataaccess', title: 'Data access', url: '/about/data-access'}
         ]},
         {id: 'help', title: 'Help', children: [
@@ -63,8 +62,7 @@ var App = React.createClass({
             errors: [],
             portal: portal,
             user_actions: user_actions,
-            dropdownComponent: undefined,
-            activeComponent: undefined
+            dropdownComponent: undefined
         };
     },
 
@@ -192,9 +190,9 @@ var App = React.createClass({
                     }}></script>
                     <div id="slot-application">
                         <div id="application" className={appClass}>
-                        
-						<div className="loading-spinner"></div>
-								   
+
+                        <div className="loading-spinner"></div>
+
                             <div id="layout" onClick={this.handleLayoutClick} onKeyPress={this.handleKey}>
                                 <NavBar href={this.props.href} portal={this.state.portal}
                                         context_actions={context_actions}
