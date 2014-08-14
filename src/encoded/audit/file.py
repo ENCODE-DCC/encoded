@@ -18,7 +18,7 @@ def audit_paired_with(value, system):
         return    
 
     if 'paired_with' not in value:
-        detail = 'Pair {} missing paired_with'.value['paired_end']
+        detail = 'Pair {} missing paired_with'.format(value['paired_end'])
         raise AuditFailure('missing paired_with', detail, level='ERROR')
 
     # Would love to then check to see if the files shared the same replicate
@@ -51,7 +51,7 @@ def audit_file_status(value, system):
     # I would like to compared its status to that of the file to determine 
     # a mismatch, howeverm this is not working as it does in the upgrade
     # I think that we would need to affect the imbedding but then that gets 
-    # circular
+    # circular 
 
     #context = system['context']
     #root = find_root(context)

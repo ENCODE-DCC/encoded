@@ -34,6 +34,16 @@ def file_2(file_base):
     return item
 
 
+@pytest.fixture
+def file_3(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '3',
+        'status': 'current',
+        'download_path': 'bob.bigBed'
+    })
+    return item
+
 def test_file_upgrade(registry, file_1):
     migrator = registry['migrator']
     value = migrator.upgrade('file', file_1, target_version='2')
@@ -48,3 +58,12 @@ def test_file_upgrade2(root, registry, file_2, file, threadlocals, dummy_request
     value = migrator.upgrade('file', file_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['status'] == 'in progress'
+
+def test_file_upgrade3(root, registry, file_3, file, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(file['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('file', file_2, target_version='3', context=context)
+    assert value['schema_version'] == '4'
+    assert value['lab'] != '' 
+    assert value['award'] != ''
