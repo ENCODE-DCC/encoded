@@ -49,6 +49,9 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
 var Lot = module.exports.Approval = React.createClass({
     render: function() {
         var context = this.props.context;
+        var characterizations = context.characterizations.map(function (item) {
+            return globals.panel_views.lookup(item)({context: item, key: item['@id']});
+        });
 
         // Make an array of targets with no falsy entries and no repeats
         var targets = context.characterizations ? context.characterizations.map(function(characterization) {
@@ -163,12 +166,29 @@ var Lot = module.exports.Approval = React.createClass({
 
                     </dl>
                 </div>
+
+                <div className="characterizations">
+                    {characterizations}
+                </div>
             </div>
         );
     }
 });
 
 globals.content_views.register(Lot, 'antibody_lot');
+
+
+var StandardsDocuments = React.createClass({
+    render: function() {
+        return (
+            <div>
+                {this.props.docs.map(function(doc) {
+                    return (<div className="multi-dd"><a href={doc['@id']}>{doc.aliases[0]}</a></div>);
+                })}
+            </div>
+        );
+    }
+});
 
 
 var Characterization = module.exports.Characterization = React.createClass({
@@ -190,6 +210,11 @@ var Characterization = module.exports.Characterization = React.createClass({
             );
         }
 
+        // Compile a list of attached standards documents
+        var standardsDocuments = context.documents.filter(function(doc) {
+            return doc.document_type === "standards document";
+        });
+
         return (
             <section className={globals.itemClass(context, 'view-detail panel')}>
                 <div className="row">
@@ -203,34 +228,55 @@ var Characterization = module.exports.Characterization = React.createClass({
                     </div>
                     <div className="col-sm-8 col-md-6">
                         <dl className="characterization-meta-data key-value">
-                            <dt className="h3">Method</dt>
-                            <dd className="h3">{context.characterization_method}</dd>
+                            <div data-test="method">
+                                <dt className="h3">Method</dt>
+                                <dd className="h3">{context.characterization_method}</dd>
+                            </div>
 
-                            <dt className="h4">Target species</dt>
-                            <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
+                            <div data-test="targetspecies">
+                                <dt className="h4">Target species</dt>
+                                <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
+                            </div>
 
-                            {context.caption ? <dt>Caption</dt> : null}
-                            {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
+                            {context.caption ?
+                                <div data-test="caption">
+                                    <dt>Caption</dt>
+                                    <dd className="sentence-case">{context.caption}</dd>
+                                </div>
+                            : null}
 
-                            <dt>Submitted by</dt>
-                            <dd>{context.submitted_by.title}</dd>
+                            <div data-test="submitted">
+                                <dt>Submitted by</dt>
+                                <dd>{context.submitted_by.title}</dd>
+                            </div>
 
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
 
-                            <dt>Grant</dt>
-                            <dd>{context.award.name}</dd>
+                            <div data-test="grant">
+                                <dt>Grant</dt>
+                                <dd>{context.award.name}</dd>
+                            </div>
 
-                            {/*
-                            <dt>Approver</dt>
-                            <dd>{context.validated_by}</dd>
-                            */}
+                            <div data-test="image">
+                                <dt>Image</dt>
+                                <dd><StatusLabel status={context.status} /></dd>
+                            </div>
 
-                            <dt>Image</dt>
-                            <dd><StatusLabel status={context.status} /></dd>
 
-                            <dt><i className="icon icon-download"></i> Download</dt>
-                            <dd>{download}</dd>
+                            {standardsDocuments.length ?
+                                <div data-test="standardsdoc">
+                                    <dt>Standards documents</dt>
+                                    <dd><StandardsDocuments docs={standardsDocuments} /></dd>
+                                </div>
+                            : null}
+
+                            <div data-test="download">
+                                <dt><i className="icon icon-download"></i> Download</dt>
+                                <dd>{download}</dd>
+                            </div>
                         </dl>
                     </div>
                 </div>
