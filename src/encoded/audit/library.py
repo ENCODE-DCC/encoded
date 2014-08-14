@@ -83,11 +83,13 @@ def audit_library_RNA_size_range(value, system):
 def audit_library_depleted_in(value, system):
     if value['status'] == 'deleted':
         return
-    if ('depleted_in_term_name' not in value) or ('depleted_in_term_id' not in value):
+    if not value['depleted_in_term_name'] or not value['depleted_in_term_id']:
         return
-    if value['depleted_in_term_id'] == value['nucleic_acid_term_id']:
-        detail = '{} - {}'.format(value['depleted_in_term_name'], value['nucleic_acid_term_name'])
-        raise AuditFailure('invalid depleted_in', detail, level='ERROR')
-    if moleculeDict[value['depleted_in_term_name']] != value['depleted_in_term_id']:
-        detail = '{} - {}'.format(value['depleted_in_term_name'], value['depleted_in_term_id'])
-        raise AuditFailure('depleted_in term mismatch', detail, level='ERROR')
+    for i in range(len(value['depleted_in_term_name'])):
+        if value['depleted_in_term_id'][i] == value['nucleic_acid_term_id']:
+            detail = '{} - {}'.format(value['depleted_in_term_name'][i], value['nucleic_acid_term_name'][i])
+            yield AuditFailure('invalid depleted_in', detail, level='ERROR')
+
+        if moleculeDict[value['depleted_in_term_name'][i]] != value['depleted_in_term_id'][i]:
+            detail = '{} - {}'.format(value['depleted_in_term_name'][i], value['depleted_in_term_id'][i])
+            yield AuditFailure('depleted_in term mismatch', detail, level='ERROR')
