@@ -2,6 +2,7 @@
 'use strict';
 var React = require('react');
 var url = require('url');
+var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var image = require('./image');
@@ -45,15 +46,31 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
 });
 
 
-var Approval = module.exports.Approval = React.createClass({
+var Lot = module.exports.Approval = React.createClass({
     render: function() {
         var context = this.props.context;
+
+        // Make an array of targets with no falsy entries and no repeats
+        var targets = context.characterizations ? context.characterizations.map(function(characterization) {
+            return characterization.target; // Might be undefined or empty
+        }) : [];
+        targets = _.uniq(_.compact(targets), function(target) {return target['@id']; });
+
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
                         <h2>{context.accession}</h2>
+                        {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
+                        <h3>
+                            <span>Antibody against </span>
+                            {targets.map(function(target, i) {
+                                return <span>{i !== 0 ? ', ' : ''}{target.label}{' ('}<em>{target.organism.scientific_name}</em>{')'}</span>;
+                            })}
+                        </h3>
                     </div>
                 </header>
 
@@ -73,6 +90,15 @@ var Approval = module.exports.Approval = React.createClass({
                             <dt>Lot ID</dt>
                             <dd>{context.lot_id}</dd>
                         </div>
+
+                        {targets.length ?
+                            <div data-test="targets">
+                                <dt>Targets</dt>
+                                <dd>{targets.map(function(target, i) {
+                                    return <span>{i !== 0 ? ', ' : ''}<a href={target['@id']}>{target.label}{' ('}<em>{target.organism.scientific_name}</em>{')'}</a></span>;
+                                })}</dd>
+                            </div>
+                        : null}
 
                         {context.lot_id_alias.length ?
                             <div data-test="lotidalias">
@@ -142,7 +168,7 @@ var Approval = module.exports.Approval = React.createClass({
     }
 });
 
-globals.content_views.register(Approval, 'antibody_lot');
+globals.content_views.register(Lot, 'antibody_lot');
 
 
 var Characterization = module.exports.Characterization = React.createClass({
