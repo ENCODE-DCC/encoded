@@ -16,6 +16,22 @@ var ObjectPicker = item.ObjectPicker;
 var RichTextBlockView = richtext.RichTextBlockView;
 
 
+var TeaserCore = React.createClass({
+    render: function() {
+        var url = this.props.value.image;
+        if (url && url.indexOf('/') !== 0) {
+            url = '/' + url;
+        }
+        return (
+            <div className="teaser thumbnail clearfix">
+                <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />
+                <div className="caption" dangerouslySetInnerHTML={{__html: this.props.value.body}}></div>
+            </div>
+        );
+    }
+});
+
+
 var TeaserBlockView = React.createClass({
 
     getDefaultProps: function() {
@@ -31,17 +47,18 @@ var TeaserBlockView = React.createClass({
     },
 
     render: function() {
-        var url = this.props.value.image;
-        if (url && url.indexOf('/') !== 0) {
-            url = '/' + url;
-        }
         return (
-            <a className="img-link" href={this.props.value.href}>
-              <div className="teaser thumbnail">
-                <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />
-                <div className="caption" dangerouslySetInnerHTML={{__html: this.props.value.body}}></div>
-              </div>
-            </a>
+            <div>
+                {this.props.value.href ?
+                    <a className="img-link" href={this.props.value.href}>
+                        {this.transferPropsTo(<TeaserCore />)}
+                    </a>
+                :
+                    <div>
+                        {this.transferPropsTo(<TeaserCore />)}
+                    </div>
+                }
+            </div>
         );
     }
 });
@@ -54,7 +71,7 @@ var RichEditor = React.createClass({
     },
 
     getChildContext: function() {
-        return {editable: true}
+        return {editable: true};
     },
 
     getInitialState: function() {
@@ -78,7 +95,7 @@ var RichEditor = React.createClass({
 
 var displayModeSelect = (
     <div><select>
-      <option value="">default</option>
+        <option value="">default</option>
     </select></div>
 );
 var imagePicker = <ObjectPicker searchBase={"?mode=picker&type=image"} />;
@@ -88,10 +105,10 @@ globals.blocks.register({
     icon: 'icon icon-image',
     schema: (
         <Schema>
-          <Property name="display" label="Display Layout" input={displayModeSelect} defaultValue="search" />
-          <Property name="image" label="Image" input={imagePicker} />
-          <Property name="body" label="Caption" input={<RichEditor />} />
-          <Property name="href" label="Link URL" />
+            <Property name="display" label="Display Layout" input={displayModeSelect} defaultValue="search" />
+            <Property name="image" label="Image" input={imagePicker} />
+            <Property name="body" label="Caption" input={<RichEditor />} />
+            <Property name="href" label="Link URL" />
         </Schema>
     ),
     view: TeaserBlockView

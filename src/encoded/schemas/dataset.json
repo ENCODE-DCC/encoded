@@ -99,6 +99,7 @@
                 "started",
                 "verified",
                 "submitted",
+                "preliminary",
                 "proposed",
                 "release ready",
                 "released",

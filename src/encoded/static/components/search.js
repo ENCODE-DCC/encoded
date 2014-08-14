@@ -19,7 +19,9 @@ var Dbxref = dbxref.Dbxref;
         target: {title: 'Targets'},
         dataset: {title: 'Datasets'},
         image: {title: 'Images'},
-        publication: {title: 'Publications'}
+        publication: {title: 'Publications'},
+        page: {title: 'Web page'},
+        software: {title: 'Software'}
     };
 
     var Listing = module.exports.Listing = function (props) {
@@ -371,7 +373,7 @@ var Dbxref = dbxref.Dbxref;
                         <a id="selected" href={link} onClick={this.props.onFilter}>
                             <span className="pull-right">{count} <i className="icon icon-times-circle-o"></i></span>
                             <span className="facet-item">
-                                {em ? <em>{title}</em> : {title}}
+                                {em ? <em>{title}</em> : <span>{title}</span>}
                             </span>
                         </a>
                     </li>
@@ -383,7 +385,7 @@ var Dbxref = dbxref.Dbxref;
                         <a href={this.props.searchBase + field + '=' + term} onClick={this.props.onFilter}>
                             <span className="pull-right">{count}</span>
                             <span className="facet-item">
-                                {em ? <em>{title}</em> : {title}}
+                                {em ? <em>{title}</em> : <span>{title}</span>}
                             </span>
                         </a>
                     </li>
