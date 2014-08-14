@@ -60,9 +60,9 @@ def test_file_upgrade2(root, registry, file_2, file, threadlocals, dummy_request
 
 def test_file_upgrade3(root, registry, file_3, file, threadlocals, dummy_request):
     migrator = registry['migrator']
-    context = root.get_by_uuid(file['uuid'])
+    context = root.get_by_uuid(file3['uuid'])
     dummy_request.context = context
-    value = migrator.upgrade('file', file_2, target_version='4', context=context)
+    value = migrator.upgrade('file', file_3, target_version='4', context=context)
     assert value['schema_version'] == '4'
     assert value['lab'] != '' 
     assert value['award'] != ''
