@@ -756,14 +756,35 @@ class Dataset(Collection):
     class Item(Collection.Item):
         template = {
             'files': [
-                {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
-                {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', lambda status: status != 'revoked'),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', lambda status: status != 'revoked'),
+                    '$templated': True,
+                },
+            ],
+            'revoked_files': [
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', lambda status: status == 'revoked'),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', lambda status: status == 'revoked'),
+                    '$templated': True,
+                },
             ],
             'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
             'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
         template_type = {
             'files': 'file',
+            'revoked_files': 'file',
         }
         embedded = [
             'files',
@@ -772,6 +793,12 @@ class Dataset(Collection):
             'files.replicate.experiment.lab',
             'files.replicate.experiment.target',
             'files.submitted_by',
+            'revoked_files',
+            'revoked_files.replicate',
+            'revoked_files.replicate.experiment',
+            'revoked_files.replicate.experiment.lab',
+            'revoked_files.replicate.experiment.target',
+            'revoked_files.submitted_by',
             'submitted_by',
             'lab',
             'award',
