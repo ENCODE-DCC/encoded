@@ -168,7 +168,7 @@ class Collection(BaseCollection):
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
 
-            #publication
+            # publication
             'published': ALLOW_CURRENT,
         }
         actions = [EDIT_ACTION]
@@ -1063,17 +1063,25 @@ class Publication(Collection):
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
-   
 
     class Item(Collection.Item):
         template = {
-            'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
+            'publication_year': {
+                '$value': '{publication_year}',
+                '$templated': True,
+                '$condition': 'publication_year',
+            },
         }
-        
+
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
-            {'name': '{item_type}:reference', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True, '$condition': 'reference'},
-            
+            {
+                'name': '{item_type}:reference',
+                'value': '{reference}',
+                '$repeat': 'reference references',
+                '$templated': True,
+                '$condition': 'reference',
+            },
         ]
 
         def template_namespace(self, properties, request=None):
@@ -1097,7 +1105,6 @@ class Software(Collection):
     item_keys = ALIAS_KEYS + [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
     ]
-
 
 
 @location('images')
