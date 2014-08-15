@@ -598,6 +598,13 @@ var Dbxref = dbxref.Dbxref;
                                                      onClick={this.onFilter}>View All</a>}
                                             </span>
                                         : null}
+                                        
+                                        {context['batch_hub'] != '' ?
+                                            <span className="pull-right">
+                                                <a className="btn btn-info btn-sm"
+                                                   href={context['batch_hub']}>Visualize</a>&nbsp;
+                                            </span>
+                                        :null}
                                     </h4>
                                 : <h4>{context['notification']}</h4>}
                                 <hr />

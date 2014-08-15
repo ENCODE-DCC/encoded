@@ -1,17 +1,21 @@
 import os
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
+from pyramid.response import Response
 from ..contentbase import (
     Root,
     item_view,
     location_root,
 )
+from .visualization import generate_batch_hubs
 
 
 def includeme(config):
     config.registry['encoded.processid'] = os.getppid()
     config.add_route('schema', '/profiles/{item_type}.json')
     config.add_route('graph', '/profiles/graph.dot')
+    config.add_route('batch_hub', '/batch_hub/{search_params}/{txt}')
+    config.add_route('batch_hub:trackdb', '/batch_hub/{search_params}/{assembly}/{txt}')
     config.scan()
 
 
@@ -47,3 +51,10 @@ def schema(context, request):
     except KeyError:
         raise HTTPNotFound(item_type)
     return collection.schema
+
+
+@view_config(route_name='batch_hub')
+@view_config(route_name='batch_hub:trackdb')
+def batch_hub(context, request):
+    ''' View for batch track hubs '''
+    return Response(generate_batch_hubs(request), content_type='text/plain')

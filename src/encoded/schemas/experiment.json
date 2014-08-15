@@ -90,6 +90,10 @@
             "title": "Experiment status",
             "type": "string"
         },
+        "assembly": {
+            "title": "Genome assembly",
+            "type": "string"
+        },
         "replicates.library.biosample.donor.organism.scientific_name": {
             "title": "Organism",
             "type": "string"

@@ -78,7 +78,8 @@ def search(context, request, search_type=None):
         '@graph': [],
         'columns': OrderedDict(),
         'filters': [],
-        'notification': ''
+        'notification': '',
+        'batch_hub': ''
     }
 
     principals = effective_principals(request)
@@ -291,6 +292,14 @@ def search(context, request, search_type=None):
                 'terms': terms,
                 'total': facet_results[field]['total']
             })
+
+    if search_type == 'experiment':
+        for f in result['filters']:
+            if f['field'] == 'assembly':
+                result['batch_hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
+                    'db=' + f['term'],
+                    'hubUrl=' + request.url.replace('search/?', 'batch_hub/') + '/hub.txt'
+                ])
 
     # Loading result rows
     hits = results['hits']['hits']
