@@ -177,5 +177,5 @@ def file_3_4(value, system):
 
     # EDW User
     if value.get('submitted_by') == '0e04cd39-006b-4b4a-afb3-b6d76c4182ff':
-        value['lab'] = '746eef27-d857-4b38-a469-cac93fb02164'
+        value['lab'] = 'fb0af3d0-3a4c-4e96-b67a-f273fe527b04'
         value['award'] = '8bafd685-aa17-43fe-95aa-37bc1c90074a'
