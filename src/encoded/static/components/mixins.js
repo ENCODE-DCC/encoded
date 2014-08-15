@@ -246,11 +246,49 @@ module.exports.Persona = {
     }
 };
 
+class UnsavedChangesToken {
+    constructor(manager) {
+        this.manager = manager;
+    }
+
+    release() {
+        this.manager.releaseUnsavedChanges(this);
+    }
+}
+
 
 module.exports.HistoryAndTriggers = {
     SLOW_REQUEST_TIME: 750,
     // Detect HTML5 history support
     historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
+
+    childContextTypes: {
+        adviseUnsavedChanges: React.PropTypes.func
+    },
+
+    adviseUnsavedChanges: function () {
+        var token = new UnsavedChangesToken(this);
+        this.setState({unsavedChanges: this.state.unsavedChanges.concat([token])});
+        return token;
+    },
+
+    releaseUnsavedChanges: function (token) {
+        console.assert(this.state.unsavedChanges.indexOf(token) != -1);
+        this.setState({unsavedChanges: this.state.unsavedChanges.filter(x => x !== token)});
+    },
+
+    getChildContext: function() {
+        return {
+            adviseUnsavedChanges: this.adviseUnsavedChanges
+        };
+    },
+
+
+    getInitialState: function () {
+        return {
+            unsavedChanges: []
+        };
+    },
 
     componentWillMount: function () {
         if (typeof window !== 'undefined') {
@@ -426,10 +464,10 @@ module.exports.HistoryAndTriggers = {
 
     confirmNavigation: function() {
         // check for beforeunload confirmation
-        if (document._dirty) {
-            var res = confirm('You have unsaved changes. Are you sure you want to lose them?');
+        if (this.state.unsavedChanges.length) {
+            var res = window.confirm('You have unsaved changes. Are you sure you want to lose them?');
             if (res) {
-                document._dirty = false;
+                this.setState({unsavedChanges: []});
             }
             return res;
         }
@@ -437,7 +475,7 @@ module.exports.HistoryAndTriggers = {
     },
 
     handleBeforeUnload: function() {
-        if (document._dirty) {
+        if (this.state.unsavedChanges.length) {
             return 'You have unsaved changes.';
         }
     },
