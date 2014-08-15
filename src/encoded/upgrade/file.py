@@ -176,15 +176,15 @@ def file_3_4(value, system):
     value['award'] = dataset['award']
 
     # EDW User
-    if value.get('submitted_by') == '/users/0e04cd39-006b-4b4a-afb3-b6d76c4182ff/':
+    if value.get('submitted_by') == u'/users/0e04cd39-006b-4b4a-afb3-b6d76c4182ff/':
         value['lab'] = 'w-james-kent'
         value['award'] = 'U41HG006992'
       
 
     if value.get('paired_end') in ['1','2']:
         possible_pairs = []
-        for fileob in dataset['original_files']:
-            if paired_end in fileob and fileob['paired_end'] != value['paired_end']:
+        for fileob in dataset['files']:
+            if paired_end in fileob and (fileob.get('replicate') == value.get('replicate')) and fileob['paired_end'] != value['paired_end']:
                 possible_pairs.append(fileob['accession'])
         if len(possible_pairs) == 1:
             value['paired_with'] = possible_pairs[0]
