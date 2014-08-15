@@ -49,7 +49,15 @@ var StatusLabel = module.exports.StatusLabel = React.createClass({
 var Lot = module.exports.Approval = React.createClass({
     render: function() {
         var context = this.props.context;
-        var characterizations = context.characterizations.map(function (item) {
+
+        // Sort characterization arrays, first by species, then by primary/secondary characterization method
+        var organismOrder = ['human', 'mouse', 'dmelanogaster', 'celegans'];
+        var sortedChars = _(context.characterizations).sortBy(function(characterization) {
+            return [_(organismOrder).indexOf(characterization.target.organism), characterization.primary_characterization_method ? 0 : 1];
+        });
+
+        // Build array of characterization panels
+        var characterizations = sortedChars.map(function(item) {
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
 
@@ -228,10 +236,12 @@ var Characterization = module.exports.Characterization = React.createClass({
                     </div>
                     <div className="col-sm-8 col-md-6">
                         <dl className="characterization-meta-data key-value">
-                            <div data-test="method">
-                                <dt className="h3">Method</dt>
-                                <dd className="h3">{context.characterization_method}</dd>
-                            </div>
+                            {context.characterization_method ?
+                                <div data-test="method">
+                                    <dt className="h3">Method</dt>
+                                    <dd className="h3">{context.characterization_method} ({context.primary_characterization_method ? 'primary' : 'secondary'})</dd>
+                                </div>
+                            : null}
 
                             <div data-test="targetspecies">
                                 <dt className="h4">Target species</dt>
@@ -245,10 +255,12 @@ var Characterization = module.exports.Characterization = React.createClass({
                                 </div>
                             : null}
 
-                            <div data-test="submitted">
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
-                            </div>
+                            {context.submitted_by && context.submitted_by.title ?
+                                <div data-test="submitted">
+                                    <dt>Submitted by</dt>
+                                    <dd>{context.submitted_by.title}</dd>
+                                </div>
+                            : null}
 
                             <div data-test="lab">
                                 <dt>Lab</dt>
@@ -264,7 +276,6 @@ var Characterization = module.exports.Characterization = React.createClass({
                                 <dt>Image</dt>
                                 <dd><StatusLabel status={context.status} /></dd>
                             </div>
-
 
                             {standardsDocuments.length ?
                                 <div data-test="standardsdoc">
