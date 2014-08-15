@@ -16,8 +16,6 @@ ORDER = [
     'antibody_lot',
     'antibody_characterization',
     'antibody_approval',
-    'mouse_donor',
-    'human_donor',
     'treatment',
     'construct',
     'construct_characterization',
