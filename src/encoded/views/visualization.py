@@ -162,20 +162,18 @@ def generate_trackDb(files, parent, label, accession):
 
 
 def search_hubs(request):
-    ''' should return files '''
+    '''Generate trackDb file here'''
     
     search_params = request.matchdict['search_params']
     search_params = search_params.replace(',,', '&')
     subreq = make_subrequest(request, '/search/?%s' % search_params)
     subreq.override_renderer = 'null_renderer'
-    subreq.remote_user = 'INDEXER'
     files = []
     try:
         results = request.invoke_subrequest(subreq)
         for result in results['@graph']:
             subreq2 = make_subrequest(request, result['@id'])
             subreq2.override_renderer = 'null_renderer'
-            subreq2.remote_user = 'INDEXER'
             dataset = request.invoke_subrequest(subreq2)
             for f in dataset['files']:
                 if f['file_format'] in BIGBED_FILE_TYPES or f['file_format'] in BIGWIG_FILE_TYPES:
