@@ -165,6 +165,7 @@ def search_hubs(request):
     ''' should return files '''
     
     search_params = request.matchdict['search_params']
+    search_params = search_params.replace(',,', '&')
     subreq = make_subrequest(request, '/search/?%s' % search_params)
     subreq.override_renderer = 'null_renderer'
     subreq.remote_user = 'INDEXER'
@@ -198,7 +199,7 @@ def generate_batch_hubs(request):
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
         params = request.matchdict['search_params']
-        for param in params.split('&'):
+        for param in params.split(',,'):
             if param.startswith('assembly'):
                 g_txt = get_genomes_txt(param.split('=')[1])
                 return NEWLINE.join(g_txt)
