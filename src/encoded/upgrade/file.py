@@ -159,16 +159,16 @@ def file_2_3(value, system):
 
     # Help the raw data problem
     if value['output_type'] == 'raw data' and value['file_format'] == "fastq":
-        value['output_type'] = 'reads' 
+        value['output_type'] = 'reads'
 
 
 @upgrade_step('file', '3', '4')
 def file_3_4(value, system):
     #  http://redmine.encodedcc.org/issues/1714
-        
+
     context = system['context']
     root = find_root(context)
-    dataset = root.get_by_uuid(value['dataset']).upgrade_properties(finalize=False)    
+    dataset = root.get_by_uuid(value['dataset']).upgrade_properties(finalize=False)
 
     value.pop('download_path')
 
@@ -176,15 +176,6 @@ def file_3_4(value, system):
     value['award'] = dataset['award']
 
     # EDW User
-    if value.get('submitted_by') == u'/users/0e04cd39-006b-4b4a-afb3-b6d76c4182ff/':
-        value['lab'] = 'w-james-kent'
-        value['award'] = 'U41HG006992'
-      
-
-    if value.get('paired_end') in ['1','2']:
-        possible_pairs = []
-        for fileob in dataset['files']:
-            if paired_end in fileob and (fileob.get('replicate') == value.get('replicate')) and fileob['paired_end'] != value['paired_end']:
-                possible_pairs.append(fileob['accession'])
-        if len(possible_pairs) == 1:
-            value['paired_with'] = possible_pairs[0]
+    if value.get('submitted_by') == '0e04cd39-006b-4b4a-afb3-b6d76c4182ff':
+        value['lab'] = '746eef27-d857-4b38-a469-cac93fb02164'
+        value['award'] = '8bafd685-aa17-43fe-95aa-37bc1c90074a'
