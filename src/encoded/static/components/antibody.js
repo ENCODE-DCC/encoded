@@ -65,7 +65,7 @@ var Lot = module.exports.Approval = React.createClass({
         var targets = context.characterizations ? context.characterizations.map(function(characterization) {
             return characterization.target; // Might be undefined or empty
         }) : [];
-        targets = _.uniq(_.compact(targets), function(target) {return target['@id']; });
+        targets = targets ? _.uniq(_.compact(targets), function(target) {return target['@id']; }) : [];
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -220,7 +220,7 @@ var Characterization = module.exports.Characterization = React.createClass({
 
         // Compile a list of attached standards documents
         var standardsDocuments = context.documents.filter(function(doc) {
-            return doc.document_type === "standards document";
+            return (context.status === 'compliant' || context.status === 'not compliant') && doc.document_type === "standards document";
         });
 
         return (
