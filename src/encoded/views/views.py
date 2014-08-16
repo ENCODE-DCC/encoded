@@ -372,7 +372,7 @@ class AntibodyLot(Collection):
                                 }
                                 if not histone_mod_target:
                                     new_review['target'] = [find_resource(request.root, primary.properties['target'])]
-                                    new_review['organism'] = [find_resource(request.root, new_review['target'].properties['organism'])]
+                                    new_review['organism'] = [find_resource(request.root, new_review['target'][0].properties['organism'])]
                                 else:
                                     new_review['target'] = targets
                                     new_review['organism'] = organisms
