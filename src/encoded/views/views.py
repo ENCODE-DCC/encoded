@@ -287,13 +287,13 @@ class AntibodyLot(Collection):
                 pending_secondary = False
                 has_lane_review = False
                 not_reviewed = False
+                histone_mod_target = False
                 lab_not_reviewed_chars = 0
                 not_reviewed_chars = 0
                 total_characterizations = 0
-                target_uuid = None
-                target = None
-                organism_uuid = None
-                lot_status = 'awaiting lab characterization'
+                num_compliant_celltypes = 0
+                targets = []
+                organisms = []
                 char_reviews = dict()
                 primary_chars = []
                 secondary_chars = []
@@ -301,9 +301,14 @@ class AntibodyLot(Collection):
 
                 for characterization_uuid in ns['characterizations']:
                     characterization = find_resource(request.root, characterization_uuid)
-                    target_uuid = characterization.properties['target']
-                    target = find_resource(request.root, target_uuid)
-                    organism_uuid = target.properties['organism']
+                    target = find_resource(request.root, characterization.properties['target'])
+                    organism = find_resource(request.root, target.properties['organism'])
+                    if target not in targets:
+                        targets.append(target)
+                    if organism not in organisms:
+                        organisms.append(organism)
+                    if 'histone modification' in target.properties['context']:
+                        histone_mod_target = True
 
                     if characterization.properties['status'] == 'deleted':
                         continue
@@ -325,9 +330,9 @@ class AntibodyLot(Collection):
                 base_review = {
                     'biosample_term_name': 'not specified',
                     'biosample_term_id': 'NTR:00000000',
-                    'target': target,
-                    'organism': organism_uuid,
-                    'status': lot_status
+                    'target': targets,
+                    'organism': organisms,
+                    'status': 'awaiting lab characterization'
                 }
                 '''Deal with the easy cases where both characterizations have the same statuses not from DCC reviews'''
                 if lab_not_reviewed_chars == total_characterizations and total_characterizations > 0:
@@ -360,15 +365,18 @@ class AntibodyLot(Collection):
                             continue
                         if primary.properties['characterization_review']:
                             for lane_review in primary.properties['characterization_review']:
-                                # We want the target specific to this characterization
-                                target = find_resource(request.root, primary.properties['target'])
                                 new_review = {
-                                    'target': target,
-                                    'organism': lane_review['organism'],
                                     'biosample_term_name': lane_review['biosample_term_name'],
                                     'biosample_term_id': lane_review['biosample_term_id'],
                                     'status': 'awaiting lab characterization'
                                 }
+                                if not histone_mod_target:
+                                    new_review['target'] = [find_resource(request.root, primary.properties['target'])]
+                                    new_review['organism'] = [find_resource(request.root, new_review['target'].properties['organism'])]
+                                else:
+                                    new_review['target'] = targets
+                                    new_review['organism'] = organisms
+
                                 if lane_review['lane_status'] == 'pending dcc review':
                                     if pending_secondary or compliant_secondary:
                                         new_review['status'] = 'pending dcc review'
@@ -377,7 +385,10 @@ class AntibodyLot(Collection):
                                         new_review['status'] = 'not eligible for new data'
                                 elif lane_review['lane_status'] == 'compliant':
                                     if compliant_secondary:
-                                        new_review['status'] = 'eligible for new data'
+                                        if not histone_mod_target:
+                                            new_review['status'] = 'eligible for new data'
+                                        else:
+                                            new_review['status'] = 'compliant'
                                 else:
                                     # all other cases, can keep awaiting status
                                     pass
@@ -394,12 +405,33 @@ class AntibodyLot(Collection):
                                         no other status overrides an existing one'''
                                         char_reviews[key] = new_review
 
-                    for key in char_reviews:
-                        antibody_lot_reviews.append(char_reviews[key])
+                    if has_lane_review:
+                        for key in char_reviews:
+                            if not histone_mod_target:
+                                antibody_lot_reviews.append(char_reviews[key])
+                            else:
+                                '''Review of antibodies against histone modifications are treated differently.
+                                There should be at least 3 compliant cell types for eligibility for use'''
+                                if char_reviews[key]['status'] == 'compliant':
+                                    char_reviews[key]['status'] = 'awaiting lab characterization'
+                                    num_compliant_celltypes += 1
 
-                    '''The only uncovered case left in this block is if there is only one in progress
-                    primary or secondary.'''
-                    if not has_lane_review:
+                        if histone_mod_target:
+                            if num_compliant_celltypes >= 3:
+                                antibody_lot_reviews = [{
+                                    'biosample_term_name': 'all cell types and tissues',
+                                    'biosample_term_id': 'NTR:00000000',
+                                    'organism': organisms,
+                                    'target': targets,
+                                    'status': 'eligible for new data'
+                                }]
+                            else:
+                                for key in char_reviews:
+                                    antibody_lot_reviews.append(char_reviews[key])
+
+                    else:
+                        '''The only uncovered case left in this block is if there is only one in progress
+                        primary or secondary.'''
                         if len(primary_chars) == 1 and len(secondary_chars) == 0:
                             antibody_lot_reviews.append(base_review)
                         elif len(primary_chars) == 0 and len(secondary_chars) == 1:
