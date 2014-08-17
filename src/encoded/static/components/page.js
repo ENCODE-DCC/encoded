@@ -23,13 +23,23 @@ var LayoutType = {
         });
         return merge(value, {blocks: blockList});
     },
-}
+};
 
 
 var Page = module.exports.Page = React.createClass({
     render: function() {
-        var value = LayoutType.serialize(this.props.context.layout || defaultLayout);
-        return <div><Layout value={value} /></div>;
+        var context = this.props.context;
+        var value = LayoutType.serialize(context.layout || defaultLayout);
+        return (
+            <div>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <h1 className="page-title">{context.title}</h1>
+                    </div>
+                </header>
+                <Layout value={value} />
+            </div>
+        );
     }
 });
 

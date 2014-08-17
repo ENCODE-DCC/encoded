@@ -167,6 +167,9 @@ class Collection(BaseCollection):
             # dataset / experiment
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
+
+            # publication
+            'published': ALLOW_CURRENT,
         }
         actions = [EDIT_ACTION]
 
@@ -741,16 +744,6 @@ class Replicates(Collection):
         embedded = set(['library', 'platform'])
 
 
-@location('software')
-class Software(Collection):
-    item_type = 'software'
-    schema = load_schema('software.json')
-    properties = {
-        'title': 'Software',
-        'description': 'Listing of software',
-    }
-
-
 @location('datasets')
 class Dataset(Collection):
     item_type = 'dataset'
@@ -763,14 +756,35 @@ class Dataset(Collection):
     class Item(Collection.Item):
         template = {
             'files': [
-                {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
-                {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', lambda status: status != 'revoked'),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', lambda status: status != 'revoked'),
+                    '$templated': True,
+                },
+            ],
+            'revoked_files': [
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', lambda status: status == 'revoked'),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', lambda status: status == 'revoked'),
+                    '$templated': True,
+                },
             ],
             'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
             'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
         template_type = {
             'files': 'file',
+            'revoked_files': 'file',
         }
         embedded = [
             'files',
@@ -779,6 +793,12 @@ class Dataset(Collection):
             'files.replicate.experiment.lab',
             'files.replicate.experiment.target',
             'files.submitted_by',
+            'revoked_files',
+            'revoked_files.replicate',
+            'revoked_files.replicate.experiment',
+            'revoked_files.replicate.experiment.lab',
+            'revoked_files.replicate.experiment.target',
+            'revoked_files.submitted_by',
             'submitted_by',
             'lab',
             'award',
@@ -799,7 +819,7 @@ class Dataset(Collection):
             for link in ns['original_files'] + ns['related_files']:
                 f = find_resource(request.root, link)
                 if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
-                        f.properties['status'] in ['released']:
+                        f.properties['status'] in ['current', 'released', 'revoked']:
                     if 'assembly' in f.properties:
                         ns['assembly'] = f.properties['assembly']
                         break
@@ -1061,25 +1081,34 @@ class HelpPage(LegacyPage):
     unique_key = 'help_page:name'
 
 
-@location('publication')
+@location('publications')
 class Publication(Collection):
     item_type = 'publication'
     schema = load_schema('publication.json')
     properties = {
-        'title': 'Publication',
+        'title': 'Publications',
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
-    name_key = 'title'
 
     class Item(Collection.Item):
         template = {
-            'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
+            'publication_year': {
+                '$value': '{publication_year}',
+                '$templated': True,
+                '$condition': 'publication_year',
+            },
         }
-        
+
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
-            {'name': '{item_type}:title', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True},
+            {
+                'name': '{item_type}:reference',
+                'value': '{reference}',
+                '$repeat': 'reference references',
+                '$templated': True,
+                '$condition': 'reference',
+            },
         ]
 
         def template_namespace(self, properties, request=None):
@@ -1087,6 +1116,22 @@ class Publication(Collection):
             if 'date_published' in ns:
                 ns['publication_year'] = ns['date_published'].partition(' ')[0]
             return ns
+
+
+@location('software')
+class Software(Collection):
+    item_type = 'software'
+    schema = load_schema('software.json')
+    properties = {
+        'title': 'Software',
+        'description': 'Software pages',
+    }
+    item_name_key = "name"
+    unique_key = "software:name"
+    item_embedded = set(['references'])
+    item_keys = ALIAS_KEYS + [
+        {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+    ]
 
 
 @location('images')

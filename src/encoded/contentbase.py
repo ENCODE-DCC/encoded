@@ -525,7 +525,7 @@ class Item(object):
             properties[name] = [
                 request.resource_path(item)
                 for item in value
-                if item.upgrade_properties().get('status') not in ('deleted', 'obsolete')
+                if item.upgrade_properties().get('status') not in ('deleted', 'replaced')
             ]
 
         templated = self.expand_template(properties, request)

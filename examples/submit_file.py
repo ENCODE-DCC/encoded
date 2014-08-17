@@ -11,6 +11,10 @@ encoded_secret_access_key = '...'
 
 path = 'example.fastq.gz'
 
+# From http://hgwdev.cse.ucsc.edu/~galt/encode3/validatePackage/validateEncode3-latest.tgz
+encValData = 'encValData'
+assembly = 'hg19'
+
 # ~2s/GB
 print("Calculating md5sum.")
 md5sum = hashlib.md5()
@@ -57,18 +61,42 @@ if data['file_format'] in gzip_types:
 else:
     assert not is_gzipped, 'Expected un-gzipped file'
 
+chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, assembly)
 validate_map = {
-    'fastq': 'fastq',
-    'fasta': 'fasta',
+    'bam': ['-type=bam', chromInfo],
+    'bed': ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
+    'bedLogR': ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
+    'bed_bedLogR': ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
+    'bedMethyl': ['-type=bigBed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
+    'bed_bedMethyl': ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
+    'bigBed': ['-type=bigBed6+', chromInfo],  # if this fails we will drop to bigBed3+
+    'bigWig': ['-type=bigWig', chromInfo],
+    'broadPeak': ['-type=bigBed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
+    'bed_broadPeak': ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
+    'fasta': ['-type=fasta'],
+    'fastq': ['-type=fastq'],
+    'gtf': None,
+    'idat': ['-type=idat'],
+    'narrowPeak': ['-type=bigBed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
+    'bed_narrowPeak': ['-type=bed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
+    'rcc': ['-type=rcc'],
+    'tar': None,
+    'tsv': None,
+    '2bit': None,
+    'csfasta': ['-type=csfasta'],
+    'csqual': ['-type=csqual'],
+    'bedRnaElements': ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
+    'CEL': None,
 }
 
-if data['file_format'] in validate_map:
+validate_args = validate_map.get(data['file_format'])
+if validate_args is not None:
     print("Validating file.")
-    subprocess.check_call([
-        'validateFiles',
-        '-type=%s' % validate_map[data['file_format']],
-        path,
-    ])
+    try:
+        subprocess.check_output(['validateFiles'] + validate_args + [path])
+    except subprocess.CalledProcessError as e:
+        print(e.output)
+        raise
 
 
 ####################

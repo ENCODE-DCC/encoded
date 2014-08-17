@@ -115,7 +115,7 @@
                 "title": "Reference",
                 "description": "An identifier that references data found in the object.",
                 "type": "string",
-                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:[0-9]+|[0-9]{4}\\.[0-9]{4})$"
+                "pattern": "^(PMID:[0-9]+|doi:10\\.[0-9]{4}[\\d\\s\\S\\:\\.\\/]+|PMCID:PMC[0-9]+|[0-9]{4}\\.[0-9]{4})$"
             }
         }
     },
