@@ -289,25 +289,28 @@ def es_update_data(event):
 
 @view_config(route_name='file_index', request_method='POST', permission="index")
 def file_index(request):
-    doc_type = 'peaks'
+    file_index = 'peaks'
+    human_doc_type = 'hg19'
+    mouse_doc_type = 'mm9'
+
     mapping = {
         'properties': {
+            'chromosome': {
+                'type': 'string',
+                'index': 'not_analyzed',
+                'include_in_all': False,
+            },
             'start': {
                 'type': 'long',
+                'index': 'not_analyzed',
                 'include_in_all': False,
-                'index': 'not_analyzed'
             },
             'stop': {
-                'type': 'string',
+                'type': 'long',
+                'index': 'not_analyzed',
                 'include_in_all': False,
-                'index': 'not_analyzed'
             },
-            'experiment': {
-                'type': 'string',
-                'include_in_all': False,
-                'index': 'not_analyzed'
-            },
-            'file': {
+            'uuid': {
                 'type': 'string',
                 'include_in_all': False,
                 'index': 'not_analyzed'
@@ -316,39 +319,66 @@ def file_index(request):
     }
     es = request.registry.get(ELASTIC_SEARCH, None)
 
+    def create_mapping(doc_type):
+        try:
+            es.indices.put_mapping(
+                index=file_index,
+                doc_type=doc_type,
+                body={doc_type: mapping}
+            )
+        except:
+            log.info("Could not create mapping for the collection %s", doc_type)
+        else:
+            es.indices.refresh(index=file_index)
+
     try:
-        es.indices.put_mapping(index=INDEX, doc_type=doc_type, body={doc_type: mapping})
-    except:
-        log.info("Could not create mapping for the collection %s", doc_type)
-    else:
-        es.indices.refresh(index=INDEX)
+        es.indices.create(index=file_index)
+    except RequestError:
+        es.indices.delete(index=file_index)
+        es.indices.create(index=file_index)
+    
+    es.indices.refresh(index=file_index)
+    for doc_type in [human_doc_type, mouse_doc_type]:
+        create_mapping(doc_type)
 
     http = urllib3.PoolManager()
     path = 'file_index.bigBed'
     types = ['narrowPeak', 'broadPeak']
     collection = request.root.by_item_type['file']
-    counter = 0
+    counter = 1
     for count, uuid in enumerate(collection):
         item = request.root.get_by_uuid(uuid)
         properties = item.__json__(request)
-        if properties['file_format'] in types:
+        if properties['file_format'] in types and 'assembly' in properties:
             r = http.request('GET', 'https://www.encodedcc.org' + properties['href'])
             with open(path, 'wb') as out:
                 out.write(r.data)
             r.release_conn()
-            os.system("./bigBedToBed file_index.bigBed file_index.bed")
-            file_data = list(csv.reader(open('file_index.bed', 'rb'), delimiter='\t'))
-            if 'dataset' in properties:
-                exp = properties['dataset']
-            for row in file_data:
-                result = {
-                    'chromosome': row[0],
-                    'start': int(row[1]) + 1,
-                    'stop': int(row[2]) + 1,
-                    'experiment': exp,
-                    'file': properties['@id']
-                }
-                es.index(index=INDEX, doc_type=doc_type, body=result, id=counter)
-                es.indices.refresh(index=INDEX)
-                counter = counter + 1
+            try:
+                os.system("./bigBedToBed file_index.bigBed file_index.bed")
+            except:
+                log.info("Error converting bigbed to bed %s", properties['accession'])
+            else:
+                file_data = list(csv.reader(open('file_index.bed', 'rb'), delimiter='\t'))
+                for row in file_data:
+                    result = {
+                        'chromosome': row[0],
+                        'start': int(row[1]) + 1,
+                        'stop': int(row[2]) + 1,
+                        'uuid': properties['uuid'],
+                    }
+                    es.index(
+                        index=file_index,
+                        doc_type=properties['assembly'],
+                        body=result,
+                        id=counter,
+                        timeout="10m"
+                    )
+                    counter = counter + 1
+                es.indices.flush(
+                    index=file_index,
+                    full=True,
+                    force=True
+                )
+                es.indices.refresh(index=file_index)
             os.system("rm file_index.*")
