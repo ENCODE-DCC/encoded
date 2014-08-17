@@ -29,8 +29,8 @@
     "jest-cli": "^0.1.15",
     "jstransform": "^4.0.1",
     "moment": "^2.7.0",
-    "react-tools": "^0.10.0",
-    "reactify": "^0.13.1"
+    "react-tools": "^0.11.1",
+    "reactify": "^0.14.0"
   },
   "dependencies": {
     "brace": "^0.2.1",
@@ -41,9 +41,9 @@
     "es5-shim": "^3.3.0",
     "jquery": "^1.11.1",
     "node-ckeditor": "^4.3.2",
-    "react": "^0.10.0",
-    "react-bootstrap": "^0.10.2",
-    "react-forms": "^0.3.3",
+    "react": "^0.11.1",
+    "react-bootstrap": "^0.11.1",
+    "react-forms": "^0.6.1",
     "scriptjs": "^2.5.3",
     "source-map-support": "^0.2.6",
     "subprocess-middleware": "^0.1.0",
