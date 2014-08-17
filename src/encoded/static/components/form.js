@@ -16,13 +16,6 @@ var Form = module.exports.Form = React.createClass({
         adviseUnsavedChanges: React.PropTypes.func
     },
 
-    // make sure the Form finds the data from FetchedData
-    getDefaultProps: function() {
-        return {
-            value: this.props.data
-        }
-    },
-
     childContextTypes: {
         onTriggerSave: React.PropTypes.func
     },
