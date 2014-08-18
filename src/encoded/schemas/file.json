@@ -4,8 +4,8 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "md5sum", "output_type"],
-    "identifyingProperties": ["uuid","accession", "aliases","award","lab"],
+    "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
     "calculatedProps": ["href"],
     "additionalProperties": false,
     "mixinProperties": [
