@@ -27,6 +27,15 @@
             "title": "Model organism donor (strain) characterized",
             "comment": "See donor.json for available identifiers.",
             "linkTo": "donor"
+        },
+        "characterization_method": {
+            "title": "Method",
+            "description": "Experimental method of the characterization.",
+            "type": "string",
+            "enum": [
+                "immunoblot",
+                "immunofluorescence"
+            ]
         }
     }
 }

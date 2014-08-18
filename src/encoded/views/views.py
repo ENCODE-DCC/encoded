@@ -232,7 +232,7 @@ class Award(Collection):
     item_keys = ['name']
 
 
-@location('antibody-lots')
+@location('antibodies')
 class AntibodyLot(Collection):
     item_type = 'antibody_lot'
     schema = load_schema('antibody_lot.json')
@@ -241,11 +241,10 @@ class AntibodyLot(Collection):
         'description': 'Listing of ENCODE antibodies',
     }
 
-
     class Item(Collection.Item):
         template = {
-            'targets': [
-                {'$value': '{target}', '$repeat': 'target targets', '$templated': True}
+            'lot_reviews': [
+                {'$value': '{lot_review}', '$repeat': 'lot_review lot_reviews', '$templated': True}
             ],
             'title': {'$value': '{accession}', '$templated': True},
         }
@@ -267,31 +266,161 @@ class AntibodyLot(Collection):
 
         rev = {
             'characterizations': ('antibody_characterization', 'characterizes'),
-        }       
+        }
 
         embedded = set([
-            'source', 
+            'source',
             'host_organism',
             'characterizations.award',
+            'characterizations.documents',
             'characterizations.lab',
             'characterizations.submitted_by',
             'characterizations.target.organism'
         ])
 
-
         def template_namespace(self, properties, request=None):
             ns = super(AntibodyLot.Item, self).template_namespace(properties, request)
             if request is None:
                 return ns
-            if 'characterizations' in ns:
-                targets = []
+            if ns['characterizations']:
+                compliant_secondary = False
+                not_compliant_secondary = False
+                pending_secondary = False
+                has_lane_review = False
+                not_reviewed = False
+                lab_not_reviewed_chars = 0
+                not_reviewed_chars = 0
+                total_characterizations = 0
+                target_uuid = None
+                target = None
+                organism_uuid = None
+                lot_status = 'awaiting lab characterization'
+                char_reviews = dict()
+                primary_chars = []
+                secondary_chars = []
+                antibody_lot_reviews = []
+
                 for characterization_uuid in ns['characterizations']:
                     characterization = find_resource(request.root, characterization_uuid)
-                    targets.append(characterization.properties['target'])
-                ns['targets'] = set(targets)
-            else:
-                ns['targets'] = []
+                    target_uuid = characterization.properties['target']
+                    target = find_resource(request.root, target_uuid)
+                    organism_uuid = target.properties['organism']
 
+                    if characterization.properties['status'] == 'deleted':
+                        continue
+                    elif characterization.properties['status'] == 'not submitted for review by lab':
+                        lab_not_reviewed_chars += 1
+                        total_characterizations += 1
+                    elif characterization.properties['status'] == 'not reviewed':
+                        not_reviewed_chars += 1
+                        total_characterizations += 1
+                    else:
+                        total_characterizations += 1
+
+                    '''Split into primary and secondary to treat separately'''
+                    if 'primary_characterization_method' in characterization.properties:
+                        primary_chars.append(characterization)
+                    else:
+                        secondary_chars.append(characterization)
+
+                base_review = {
+                    'biosample_term_name': 'not specified',
+                    'biosample_term_id': 'NTR:00000000',
+                    'target': target,
+                    'organism': organism_uuid,
+                    'status': lot_status
+                }
+                '''Deal with the easy cases where both characterizations have the same statuses not from DCC reviews'''
+                if lab_not_reviewed_chars == total_characterizations and total_characterizations > 0:
+                    base_review['status'] = 'not pursued'
+                    antibody_lot_reviews.append(base_review)
+                elif not_reviewed_chars == total_characterizations and total_characterizations > 0:
+                    base_review['status'] = 'not eligible for new data'
+                    antibody_lot_reviews.append(base_review)
+                elif (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and total_characterizations > 0:
+                    antibody_lot_reviews.append(base_review)
+                else:
+                    '''Done with easy cases, the remaining require reviews.
+                    Go through the secondary characterizations first'''
+                    for secondary in secondary_chars:
+                        if secondary.properties['status'] == 'compliant':
+                            compliant_secondary = True
+                            break
+                        elif secondary.properties['status'] == 'pending dcc review':
+                            pending_secondary = True
+                        elif secondary.properties['status'] == 'not compliant':
+                            not_compliant_secondary = True
+                        else:
+                            continue
+
+                    '''Now check the primaries and update their status accordingly'''
+                    for primary in primary_chars:
+                        has_lane_review = False
+                        if primary.properties['status'] in ['deleted', 'not reviewed', 'not submitted for review by lab']:
+                            not_reviewed = True
+                            continue
+                        if primary.properties['characterization_review']:
+                            for lane_review in primary.properties['characterization_review']:
+                                # We want the target specific to this characterization
+                                target = find_resource(request.root, primary.properties['target'])
+                                new_review = {
+                                    'target': target,
+                                    'organism': lane_review['organism'],
+                                    'biosample_term_name': lane_review['biosample_term_name'],
+                                    'biosample_term_id': lane_review['biosample_term_id'],
+                                    'status': 'awaiting lab characterization'
+                                }
+                                if lane_review['lane_status'] == 'pending dcc review':
+                                    if pending_secondary or compliant_secondary:
+                                        new_review['status'] = 'pending dcc review'
+                                elif lane_review['lane_status'] == 'not compliant':
+                                    if compliant_secondary or not_compliant_secondary:
+                                        new_review['status'] = 'not eligible for new data'
+                                elif lane_review['lane_status'] == 'compliant':
+                                    if compliant_secondary:
+                                        new_review['status'] = 'eligible for new data'
+                                else:
+                                    # all other cases, can keep awaiting status
+                                    pass
+
+                                key = "%s;%s;%s;%s" % (lane_review['biosample_term_name'], lane_review['biosample_term_id'], lane_review['organism'], target)
+                                if key not in char_reviews:
+                                    char_reviews[key] = new_review
+                                    has_lane_review = True
+                                else:
+                                    has_lane_review = True
+                                    '''Check to see if existing status should be overridden'''
+                                    if lane_review['lane_status'] == 'compliant':
+                                        '''compliant always overrides any other status,
+                                        no other status overrides an existing one'''
+                                        char_reviews[key] = new_review
+
+                    for key in char_reviews:
+                        antibody_lot_reviews.append(char_reviews[key])
+
+                    '''The only uncovered case left in this block is if there is only one in progress
+                    primary or secondary.'''
+                    if not has_lane_review:
+                        if len(primary_chars) == 1 and len(secondary_chars) == 0:
+                            antibody_lot_reviews.append(base_review)
+                        elif len(primary_chars) == 0 and len(secondary_chars) == 1:
+                            antibody_lot_reviews.append(base_review)
+                        elif len(secondary_chars) == 1 and not_reviewed:
+                            antibody_lot_reviews.append(base_review)
+                        else:
+                            pass
+
+            else:
+                '''If there are no characterizations, then default to awaiting lab characterization'''
+                antibody_lot_reviews = [{
+                    'biosample_term_name': 'not specified',
+                    'biosample_term_id': 'NTR:00000000',
+                    'organism': 'unknown',
+                    'target': 'not specified',
+                    'status': 'awaiting lab characterization'
+                }]
+
+            ns['lot_reviews'] = antibody_lot_reviews
             return ns
 
 
@@ -673,8 +802,24 @@ class AntibodyCharacterization(Characterization):
     class Item(Characterization.Item):
         embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
 
+        template = {
+            'characterization_method': {'$value': '{characterization_method}', '$templated': True, '$condition': 'characterization_method'}
+        }
 
-@location('antibodies')
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            if request is None:
+                return ns
+            if 'primary_characterization_method' in ns:
+                ns['characterization_method'] = ns['primary_characterization_method']
+            elif 'secondary_characterization_method' in ns:
+                ns['characterization_method'] = ns['secondary_characterization_method']
+            else:
+                ns['characterization_method'] = ''
+            return ns
+
+
+@location('antibody-approvals')
 class AntibodyApproval(Collection):
     schema = load_schema('antibody_approval.json')
     item_type = 'antibody_approval'

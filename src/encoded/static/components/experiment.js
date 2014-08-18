@@ -5,11 +5,11 @@ var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
-var antibody = require('./antibody');
+var statuslabel = require('./statuslabel');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
-var StatusLabel = antibody.StatusLabel;
+var StatusLabel = statuslabel.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup

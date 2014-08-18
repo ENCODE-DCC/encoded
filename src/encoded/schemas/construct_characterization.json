@@ -26,6 +26,15 @@
             "title": "Construct characterized",
             "comment": "See contstruct.json for available identifiers.",
             "linkTo": "construct"
+        },
+        "characterization_method": {
+            "title": "Method",
+            "description": "Experimental method of the characterization.",
+            "type": "string",
+            "enum": [
+                "immunoblot",
+                "PCR analysis"
+            ]
         }
     }
 }

@@ -8,11 +8,11 @@ var globals = require('./globals');
 var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
-var antibody = require('./antibody');
+var statuslabel = require('./statuslabel');
 var image = require('./image');
 
 var DbxrefList = dbxref.DbxrefList;
-var StatusLabel = antibody.StatusLabel;
+var StatusLabel = statuslabel.StatusLabel;
 
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;

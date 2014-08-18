@@ -4,11 +4,11 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
-var antibody = require('./antibody');
+var statuslabel = require('./statuslabel');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
-var StatusLabel = antibody.StatusLabel;
+var StatusLabel = statuslabel.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup

@@ -27,6 +27,16 @@
             "title": "Biosample characterized",
             "comment": "See biosample.json for available identifiers.",
             "linkTo": "biosample"
+        },
+        "characterization_method": {
+            "title": "Method",
+            "description": "Experimental method of the characterization.",
+            "type": "string",
+            "enum": [
+                "immunoblot",
+                "immunofluorescence",
+                "FACs analysis"
+            ]
         }
     }
 }
