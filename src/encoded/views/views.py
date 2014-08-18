@@ -325,8 +325,8 @@ class AntibodyLot(Collection):
                 base_review = {
                     'biosample_term_name': 'not specified',
                     'biosample_term_id': 'NTR:00000000',
-                    'target': target,
-                    'organism': organism_uuid,
+                    'target': request.resource_path(target),
+                    'organism': organism_uuid,  # XXX This should probably also be a resource path
                     'status': lot_status
                 }
                 '''Deal with the easy cases where both characterizations have the same statuses not from DCC reviews'''
@@ -363,7 +363,7 @@ class AntibodyLot(Collection):
                                 # We want the target specific to this characterization
                                 target = find_resource(request.root, primary.properties['target'])
                                 new_review = {
-                                    'target': target,
+                                    'target': request.resource_path(target),
                                     'organism': lane_review['organism'],
                                     'biosample_term_name': lane_review['biosample_term_name'],
                                     'biosample_term_id': lane_review['biosample_term_id'],
