@@ -4,9 +4,14 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "md5sum", "output_type"],
-    "identifyingProperties": ["uuid","accession", "aliases","award","lab"],
-    "calculatedProps": ["href"],
+    "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "calculated_props": {
+        "href": {
+            "title": "Download URL",
+            "type": "string"
+        }
+    },
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
