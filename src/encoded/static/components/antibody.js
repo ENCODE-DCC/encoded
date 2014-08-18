@@ -193,19 +193,6 @@ var StandardsDocuments = React.createClass({
 });
 
 
-var StandardsDocuments = React.createClass({
-    render: function() {
-        return (
-            <div>
-                {this.props.docs.map(function(doc) {
-                    return (<div><a href={doc['@id']}>{doc.aliases[0]}</a></div>);
-                })}
-            </div>
-        );
-    }
-});
-
-
 var Characterization = module.exports.Characterization = React.createClass({
     getInitialState: function() {
         return {panelOpen: false, panelFixed: false};
@@ -277,9 +264,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                             {figure}
                             <div className="characterization-badge"><StatusLabel status={context.status} /></div>
                         </figure>
-                    </div>
-                    <div className="col-sm-8 col-md-6">
-                        <dl className="characterization-meta-data key-value">
+                        <dl className="characterization-intro characterization-meta-data key-value-left">
                             {context.characterization_method ?
                                 <div data-test="method">
                                     <dt className="h3">Method</dt>
@@ -292,48 +277,56 @@ var Characterization = module.exports.Characterization = React.createClass({
                                 <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
                             </div>
 
-                            {context.caption ?
-                                <div data-test="caption">
-                                    <dt>Caption</dt>
-                                    <dd className="sentence-case">{context.caption}</dd>
-                                </div>
-                            : null}
-
-                            {context.submitted_by && context.submitted_by.title ?
-                                <div data-test="submitted">
-                                    <dt>Submitted by</dt>
-                                    <dd>{context.submitted_by.title}</dd>
-                                </div>
-                            : null}
-
-                            <div data-test="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-
-                            <div data-test="grant">
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
-                            </div>
-
-                            <div data-test="image">
-                                <dt>Image</dt>
-                                <dd><StatusLabel status={context.status} /></dd>
-                            </div>
-
-                            {standardsDocuments.length ?
-                                <div data-test="standardsdoc">
-                                    <dt>Standards documents</dt>
-                                    <dd><StandardsDocuments docs={standardsDocuments} /></dd>
-                                </div>
-                            : null}
-
-                            <div data-test="download">
-                                <dt><i className="icon icon-download"></i> Download</dt>
-                                <dd>{download}</dd>
-                            </div>
+                            <dt>Image</dt>
+                            {download}
                         </dl>
                     </div>
+                    <dl ref="collapse" className={keyClass}>
+                        {context.caption ?
+                            <div data-test="caption">
+                                <dt>Caption</dt>
+                                <dd className="sentence-case">{context.caption}</dd>
+                            </div>
+                        : null}
+
+                        {context.submitted_by && context.submitted_by.title ?
+                            <div data-test="submitted">
+                                <dt>Submitted by</dt>
+                                <dd>{context.submitted_by.title}</dd>
+                            </div>
+                        : null}
+
+                        <div data-test="lab">
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                        </div>
+
+                        <div data-test="grant">
+                            <dt>Grant</dt>
+                            <dd>{context.award.name}</dd>
+                        </div>
+
+                        <div data-test="image">
+                            <dt>Image</dt>
+                            <dd><StatusLabel status={context.status} /></dd>
+                        </div>
+
+                        {standardsDocuments.length ?
+                            <div data-test="standardsdoc">
+                                <dt>Standards documents</dt>
+                                <dd><StandardsDocuments docs={standardsDocuments} /></dd>
+                            </div>
+                        : null}
+                    </dl>
+                    <dl className={kvTriggerClass}>
+                        <a href="#" onClick={this.handleClick}>
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                        </a>
+                        <a className={tabTriggerClass} href="#" onClick={this.handleClick}>
+                            Toggle panel disclosure
+                        </a>
+                    </dl>
                 </div>
             </section>
         );
