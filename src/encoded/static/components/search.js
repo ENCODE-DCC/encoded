@@ -550,6 +550,66 @@ var Dbxref = dbxref.Dbxref;
             );
         }
     });
+    
+    var AdvSearch = React.createClass({
+        getInitialState: function() {
+            return {
+                disclosed: false,
+                terms: {}
+            };
+        },
+
+        handleCBChange: function(e) {
+            this.setState({disclosed: e.target.checked});
+        },
+
+        handleChange: function(e) {
+            var newTerms = this.state.terms;
+            newTerms[e.target.name] = e.target.value;
+            this.setState({terms: newTerms});
+        },
+
+        render: function() {
+            var query = '';
+            Object.keys(this.state.terms).forEach(function(key) {
+                query += this.state.terms[key] ? '&' + key + '=' + this.state.terms[key].replace(/ /g, "+") : '';
+            }.bind(this));
+            query = '/search/?type=experiment&' + query.substr(1);
+
+            return (
+                <div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" onChange={this.handleCBChange}/>Peak search</label>
+                    </div>
+                    {this.state.disclosed ?
+                        <form ref="adv-search" role="form">
+                            <div className="row">
+                                <div className="form-group col-sm-6">
+                                    <label for="assembly">Genome assembly</label>
+                                    <input ref="assembly" name="assembly" type="text" className="form-control" onChange={this.handleChange} />
+                                </div>
+                                <div className="form-group col-sm-6">
+                                    <label for="chromosome">Chromosome</label>
+                                    <input ref="chromosome" name="chromosome" type="text" className="form-control" onChange={this.handleChange} />
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="form-group col-sm-6">
+                                    <label for="start">Start</label>
+                                    <input ref="start" name="start" type="text" className="form-control" onChange={this.handleChange} />
+                                </div>
+                                <div className="form-group col-sm-6">
+                                    <label for="stop">Stop (optional)</label>
+                                    <input ref="stop" name="stop" type="text" className="form-control" onChange={this.handleChange} />
+                                </div>
+                            </div>
+                            <a className="btn btn-primary" href={query}>Submit</a>
+                        </form>
+                    : null}
+                </div>
+            );
+        }
+    });
 
     var ResultTable = search.ResultTable = React.createClass({
 
@@ -584,6 +644,7 @@ var Dbxref = dbxref.Dbxref;
                                 )}
                             </div>
                             <div className="col-sm-7 col-md-8 col-lg-9">
+                                <AdvSearch />
                                 {context['notification'] === 'Success' ?
                                     <h4>
                                         Showing {results.length} of {total} 

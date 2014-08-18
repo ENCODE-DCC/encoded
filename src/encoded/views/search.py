@@ -9,6 +9,18 @@ from urllib import urlencode
 from collections import OrderedDict
 
 sanitize_search_string_re = re.compile(r'[\\\+\-\&\|\!\(\)\{\}\[\]\^\~\:\/\\\*\?]')
+extra_params = [
+    'type',
+    'limit',
+    'mode',
+    'format',
+    'frame',
+    'datastore',
+    'assembly',
+    'chromosome',
+    'start',
+    'stop'
+]
 
 
 def get_filtered_query(term, fields, principals):
@@ -250,8 +262,7 @@ def search(context, request, search_type=None):
     query_filters = query['filter']['and']['filters']
     used_filters = []
     for field, term in request.params.iteritems():
-        if field not in ['type', 'limit', 'mode',
-                         'format', 'frame', 'datastore']:
+        if field not in extra_params:
             # Add filter to result
             qs = urlencode([
                 (k.encode('utf-8'), v.encode('utf-8'))
