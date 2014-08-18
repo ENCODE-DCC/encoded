@@ -4,11 +4,15 @@ var React = require('react');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
+var dataset = require('./dataset');
+var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var image = require('./image');
 
 var Attachment = image.Attachment;
 var DbxrefList = dbxref.DbxrefList;
+var FetchedItems = fetched.FetchedItems;
+var ExperimentTable = dataset.ExperimentTable;
 
 
 var StatusLabel = module.exports.StatusLabel = React.createClass({
@@ -69,6 +73,9 @@ var Lot = module.exports.Approval = React.createClass({
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
+        // To search list of linked experiments
+        var experiments_url = '/search/?type=experiment&replicates.antibody.accession=' + context.accession;
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -178,12 +185,31 @@ var Lot = module.exports.Approval = React.createClass({
                 <div className="characterizations">
                     {characterizations}
                 </div>
+
+                {this.transferPropsTo(
+                    <FetchedItems url={experiments_url} Component={ExperimentsUsingAntibody} />
+                )}
             </div>
         );
     }
 });
 
 globals.content_views.register(Lot, 'antibody_lot');
+
+
+var ExperimentsUsingAntibody = React.createClass({
+    render: function () {
+        var context = this.props.context;
+        return (
+            <div>
+                <h3>Experiments using antibody {context.accession}</h3>
+                {this.transferPropsTo(
+                    <ExperimentTable />
+                )}
+            </div>
+        );
+    }
+});
 
 
 var StandardsDocuments = React.createClass({

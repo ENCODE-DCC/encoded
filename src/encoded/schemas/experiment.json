@@ -176,6 +176,10 @@
             "title": "Status",
             "type": "string"
         },
+        "replicates.antibody.accession": {
+            "title": "Linked Antibody",
+            "type": "string"
+        },
         "replicates.library.biosample.organism.scientific_name": {
             "title": "Species",
             "type": "array"
