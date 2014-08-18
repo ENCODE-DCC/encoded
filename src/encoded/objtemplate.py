@@ -34,16 +34,16 @@ def dict_template(template, namespace):
         templated = templated.split()
     condition = template.get('$condition', _marker)
     if condition is not _marker:
-        arg = None
+        condition_arg = None
         if isinstance(condition, basestring):
             if ':' in condition:
-                condition, arg = condition.split(':', 1)
+                condition, condition_arg = condition.split(':', 1)
             condition = namespace.get(condition, _marker)
             if condition is _marker:
                 return
         if callable(condition):
-            if arg is not None:
-                condition = condition(arg)
+            if condition_arg is not None:
+                condition = condition(condition_arg)
             else:
                 condition = exec_with_namespace(condition, namespace)
         if not condition:
@@ -51,14 +51,48 @@ def dict_template(template, namespace):
     value = template.get('$value', _marker)
     repeat = template.get('$repeat', _marker)
     if repeat is not _marker:
-        repeat_name, repeater = repeat.split()
-        for repeat_value in namespace[repeater]:
+        if isinstance(repeat, basestring):
+            repeat = repeat.split()
+        repeat_condition = _marker
+        repeat_arg = None
+        if len(repeat) == 3:
+            repeat_condition = repeat[2]
+            if isinstance(repeat_condition, basestring):
+                if ':' in repeat_condition:
+                    repeat_condition, repeat_arg = repeat_condition.split(':', 1)
+        elif len(repeat) != 2:
+            raise ValueError('Bad repeat value %r' % template['$repeat'])
+        repeat_name = repeat[0]
+        repeater = repeat[1]
+        repeater_arg = None
+        if isinstance(repeater, basestring):
+            if ':' in repeater:
+                repeater, repeater_arg = repeater.split(':', 1)
+            repeater = namespace[repeater]
+        if callable(repeater):
+            if repeater_arg is not None:
+                repeater = repeater(repeater_arg)
+            else:
+                repeater = exec_with_namespace(repeater, namespace)
+        for repeat_value in repeater:
             repeat_namespace = namespace.copy()
             repeat_namespace[repeat_name] = repeat_value
+            if repeat_condition is not _marker:
+                if isinstance(repeat_condition, basestring):
+                    condition_value = repeat_namespace.get(repeat_condition, _marker)
+                    if condition_value is _marker:
+                        continue
+                else:
+                    condition_value = repeat_condition
+                if callable(condition_value):
+                    if repeat_arg is not None:
+                        condition_value = condition_value(repeat_arg)
+                    else:
+                        condition_value = exec_with_namespace(condition_value, repeat_namespace)
+                if not condition_value:
+                    continue
             if value is not _marker:
-                results = list(object_template(value, repeat_namespace, templated))
-                if not results:
-                    return
+                results = list(object_template(value, repeat_namespace, True))
                 result, = results
             else:
                 result = type(template)()
@@ -73,9 +107,7 @@ def dict_template(template, namespace):
             yield result
     else:
         if value is not _marker:
-            results = list(object_template(value, namespace, templated))
-            if not results:
-                return
+            results = list(object_template(value, namespace, True))
             result, = results
         else:
             result = type(template)()

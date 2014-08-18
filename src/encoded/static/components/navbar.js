@@ -3,7 +3,7 @@
 var React = require('react');
 var url = require('url');
 var mixins = require('./mixins');
-var submitHost = require('./globals').submitHost;
+var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
 var Navbar = require('../react-bootstrap/Navbar');
 var Nav = require('../react-bootstrap/Nav');
@@ -29,7 +29,7 @@ var NavBar = React.createClass({
 var NavBarLayout = React.createClass({
     getInitialState: function() {
         return {
-            testWarning: url.parse(this.props.href).hostname !== submitHost
+            testWarning: !productionHost[url.parse(this.props.href).hostname]
         };
     },
 
