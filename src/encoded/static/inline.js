@@ -17,8 +17,8 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
 // Use a separate tracker for dev / test
-if (({'submit.encodedcc.org':1,'www.encodedcc.org':1,'encodedcc.org':1})[document.location.hostname]) {
-    ga('create', 'UA-47809317-1', {'cookieDomain': 'encodedcc.org', 'siteSpeedSampleRate': 100});
+if (({'www.encodeproject.org':1, 'ssl.encodeproject.org':1, 'www.encodedcc.org':1})[document.location.hostname]) {
+    ga('create', 'UA-47809317-1', {'cookieDomain': 'none', 'siteSpeedSampleRate': 100});
 } else {
     ga('create', 'UA-47809317-2', {'cookieDomain': 'none', 'siteSpeedSampleRate': 100});
 }

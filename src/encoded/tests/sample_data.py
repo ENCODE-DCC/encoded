@@ -299,6 +299,8 @@ FILES = [
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'raw data',
         'status': 'in progress',
+        'lab': 'myers',
+        'award': 'Myers',
     },
     {
         'uuid': '0a38fea0-c067-415a-9710-c887aff95767',
@@ -308,6 +310,8 @@ FILES = [
         'md5sum': '3f9ae164abb55a93bcd891b192d86164',
         'output_type': 'raw data',
         'status': 'in progress',
+        'lab': 'myers',
+        'award': 'Myers',
     },
 ]
 
