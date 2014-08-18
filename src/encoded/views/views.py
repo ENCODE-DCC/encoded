@@ -294,6 +294,7 @@ class AntibodyLot(Collection):
                 num_compliant_celltypes = 0
                 targets = []
                 organisms = []
+                histone_organisms = []
                 char_reviews = dict()
                 primary_chars = []
                 secondary_chars = []
@@ -305,10 +306,11 @@ class AntibodyLot(Collection):
                     organism = find_resource(request.root, target.properties['organism'])
                     if target not in targets:
                         targets.append(target)
-                    if organism not in organisms:
-                        organisms.append(organism)
                     if 'histone modification' in target.properties['context']:
                         histone_mod_target = True
+
+                    if organism not in organisms and not histone_mod_target:
+                        organisms.append(organism)
 
                     if characterization.properties['status'] == 'deleted':
                         continue
@@ -363,6 +365,7 @@ class AntibodyLot(Collection):
                         if primary.properties['status'] in ['deleted', 'not reviewed', 'not submitted for review by lab']:
                             not_reviewed = True
                             continue
+
                         if primary.properties['characterization_review']:
                             for lane_review in primary.properties['characterization_review']:
                                 new_review = {
@@ -370,12 +373,14 @@ class AntibodyLot(Collection):
                                     'biosample_term_id': lane_review['biosample_term_id'],
                                     'status': 'awaiting lab characterization'
                                 }
+                                '''Get the organism information from the lane, not from the target since there are lanes'''
+                                lane_organism = find_resource(request.root, lane_review['organism'])
+                                new_review['organism'] = [lane_organism]
+
                                 if not histone_mod_target:
                                     new_review['target'] = [find_resource(request.root, primary.properties['target'])]
-                                    new_review['organism'] = [find_resource(request.root, new_review['target'][0].properties['organism'])]
                                 else:
                                     new_review['target'] = targets
-                                    new_review['organism'] = organisms
 
                                 if lane_review['lane_status'] == 'pending dcc review':
                                     if pending_secondary or compliant_secondary:
@@ -389,8 +394,13 @@ class AntibodyLot(Collection):
                                             new_review['status'] = 'eligible for new data'
                                         else:
                                             new_review['status'] = 'compliant'
+                                            '''Keep track of compliant organisms for histones and we
+                                            will fill them in after going through all the lanes'''
+                                            if lane_organism not in histone_organisms:
+                                                histone_organisms.append(lane_organism)
+
                                 else:
-                                    # all other cases, can keep awaiting status
+                                    '''For all other cases, can keep the awaiting status'''
                                     pass
 
                                 key = "%s;%s;%s;%s" % (lane_review['biosample_term_name'], lane_review['biosample_term_id'], lane_review['organism'], target)
@@ -421,7 +431,7 @@ class AntibodyLot(Collection):
                                 antibody_lot_reviews = [{
                                     'biosample_term_name': 'all cell types and tissues',
                                     'biosample_term_id': 'NTR:00000000',
-                                    'organism': organisms,
+                                    'organism': histone_organisms,
                                     'target': targets,
                                     'status': 'eligible for new data'
                                 }]
