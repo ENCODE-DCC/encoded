@@ -6,7 +6,12 @@
     "type": "object",
     "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
     "identifyingProperties": ["uuid", "accession", "aliases"],
-    "calculatedProps": ["href"],
+    "calculated_props": {
+        "href": {
+            "title": "Download URL",
+            "type": "string"
+        }
+    },
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
