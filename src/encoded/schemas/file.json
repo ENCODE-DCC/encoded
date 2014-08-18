@@ -4,16 +4,22 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "md5sum", "output_type"],
-    "identifyingProperties": ["uuid","accession", "aliases"],
-    "calculatedProps": ["href"],
+    "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "calculated_props": {
+        "href": {
+            "title": "Download URL",
+            "type": "string"
+        }
+    },
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/aliases" },        
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },        
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -36,7 +42,7 @@
     },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "accession": {
             "accessionType": "FF"
@@ -269,11 +275,6 @@
         "submitted_file_name": {
             "title": "Original file name",
             "description": "The local file name used at time of submission.",
-            "type": "string"
-        },
-        "download_path": {
-            "title": "Download URL",
-            "comment": "The file resource locater.",
             "type": "string"
         },
         "status": {
