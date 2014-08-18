@@ -15,7 +15,6 @@ ORDER = [
     'document',
     'antibody_lot',
     'antibody_characterization',
-    'antibody_approval',
     'treatment',
     'construct',
     'construct_characterization',

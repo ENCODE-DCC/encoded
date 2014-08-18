@@ -244,7 +244,7 @@ class AntibodyLot(Collection):
     class Item(Collection.Item):
         template = {
             'lot_reviews': [
-                {'$value': lambda lot_review: lot_review, '$repeat': 'lot_review lot_reviews', '$templated': True}
+                {'$value': '{lot_review}', '$repeat': 'lot_review lot_reviews', '$templated': True}
             ],
             'title': {'$value': '{accession}', '$templated': True},
         }
