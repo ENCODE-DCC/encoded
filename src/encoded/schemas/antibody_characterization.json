@@ -173,28 +173,6 @@
             "type": "string"
         }
     },
-    "columns": {
-        "status": {
-            "title": "Characterization status",
-            "type": "string"
-        },
-        "target.label": {
-            "title": "Target",
-            "type": "string"
-        },
-        "target.organism.scientific_name": {
-            "title": "Species",
-            "type": "string"
-        },
-        "characterization_method": {
-            "title": "Characterization method",
-            "type": "string"
-        },
-        "@id": {
-            "title": "ID",
-            "type": "string"
-        }
-    },
     "calculated_props": {
         "characterization_method":{
             "title": "Characterization method",
