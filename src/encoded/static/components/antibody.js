@@ -8,49 +8,16 @@ var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var image = require('./image');
+var statuslabel = require('./statuslabel');
 
 var Attachment = image.Attachment;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var ExperimentTable = dataset.ExperimentTable;
+var StatusLabel = statuslabel.StatusLabel;
 
 
-var StatusLabel = module.exports.StatusLabel = React.createClass({
-    render: function() {
-        var status = this.props.status;
-        var title = this.props.title;
-        if (typeof status === 'string') {
-            // Display simple string and optional title in badge
-            return (
-                <div className="status-list">
-                    <span className={globals.statusClass(status, 'label')}>
-                        {title ? <span className="status-list-title">{title + ': '}</span> : null}
-                        {status}
-                    </span>
-                </div>
-            );
-        } else if (typeof status === 'object') {
-            // Display a list of badges from array of objects with status and optional title
-            return (
-                <ul className="status-list">
-                    {status.map(function (status) {
-                        return(
-                            <li key={status.title} className={globals.statusClass(status.status, 'label')}>
-                                {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
-                                {status.status}
-                            </li>
-                        );
-                    })}
-                </ul>
-            );
-        } else {
-            return null;
-        }
-    }
-});
-
-
-var Lot = module.exports.Approval = React.createClass({
+var Lot = module.exports.Lot = React.createClass({
     render: function() {
         var context = this.props.context;
 

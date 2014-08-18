@@ -19,6 +19,7 @@ require('./page');
 require('./mixins');
 require('./navbar');
 require('./platform');
+require('./statuslabel');
 require('./search');
 require('./target');
 require('./publication');

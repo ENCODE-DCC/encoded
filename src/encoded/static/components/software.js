@@ -4,7 +4,7 @@ var React = require('react');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var search = require('./search');
-var StatusLabel = require('./antibody').StatusLabel;
+var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
 var _ = require('underscore');
 
