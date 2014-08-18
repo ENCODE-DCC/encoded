@@ -16,10 +16,10 @@ var portal = {
             {id: 'assays', title: 'Assays', url: '/search/?type=experiment'},
             {id: 'biosamples', title: 'Biosamples', url: '/search/?type=biosample'},
             {id: 'antibodies', title: 'Antibodies', url: '/search/?type=antibody_lot'},
-            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'},
-            {id: 'datastandards', title: 'Data standards', url: '/data-standards'}
+            {id: 'datarelease', title: 'Release policy', url: '/about/data-use-policy'}
         ]},
         {id: 'methods', title: 'Methods', children: [
+            {id: 'datastandards', title: 'Data standards', url: '/data-standards'},
             {id: 'softwaretools', title: 'Software tools', url: '/software'},
             {id: 'experimentguides', title: 'Experiment guidelines', url: '/about/experiment-guidelines'}
         ]},
@@ -31,6 +31,7 @@ var portal = {
             {id: 'dataaccess', title: 'Data access', url: '/about/data-access'}
         ]},
         {id: 'help', title: 'Help', children: [
+            {id: 'gettingstarted', title: 'Getting started', url: '/help/getting-started'},
             {id: 'restapi', title: 'REST API', url: '/help/rest-api'},
             {id: 'fileformats', title: 'File formats', url: '/help/file-formats'},
             {id: 'tutorials', title: 'Tutorials', url: '/tutorials'},

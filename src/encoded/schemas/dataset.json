@@ -7,7 +7,6 @@
     "type": "object",
     "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
-    "calculated_props": ["hub"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -138,6 +137,12 @@
         },
         "award.project": {
             "title": "Project",
+            "type": "string"
+        }
+    },
+    "calculated_props": {
+        "hub": {
+            "title": "Track hub",
             "type": "string"
         }
     },
