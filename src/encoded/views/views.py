@@ -244,7 +244,7 @@ class AntibodyLot(Collection):
     class Item(Collection.Item):
         template = {
             'lot_reviews': [
-                {'$value': '{lot_review}', '$repeat': 'lot_review lot_reviews', '$templated': True}
+                {'$value': lambda lot_review: lot_review, '$repeat': 'lot_review lot_reviews', '$templated': True}
             ],
             'title': {'$value': '{accession}', '$templated': True},
         }
@@ -304,13 +304,13 @@ class AntibodyLot(Collection):
                     characterization = find_resource(request.root, characterization_uuid)
                     target = find_resource(request.root, characterization.properties['target'])
                     organism = find_resource(request.root, target.properties['organism'])
-                    if target not in targets:
-                        targets.append(target)
+                    if request.resource_path(target) not in targets:
+                        targets.append(request.resource_path(target))
                     if 'histone modification' in target.properties['context']:
                         histone_mod_target = True
 
-                    if organism not in organisms and not histone_mod_target:
-                        organisms.append(organism)
+                    if request.resource_path(organism) not in organisms and not histone_mod_target:
+                        organisms.append(request.resource_path(organism))
 
                     if characterization.properties['status'] == 'deleted':
                         continue
@@ -332,8 +332,8 @@ class AntibodyLot(Collection):
                 base_review = {
                     'biosample_term_name': 'not specified',
                     'biosample_term_id': 'NTR:00000000',
-                    'target': targets,
-                    'organism': organisms,
+                    'targets': targets,
+                    'organisms': organisms,
                     'status': 'awaiting lab characterization'
                 }
                 '''Deal with the easy cases where both characterizations have the same statuses not from DCC reviews'''
@@ -375,12 +375,12 @@ class AntibodyLot(Collection):
                                 }
                                 '''Get the organism information from the lane, not from the target since there are lanes'''
                                 lane_organism = find_resource(request.root, lane_review['organism'])
-                                new_review['organism'] = [lane_organism]
+                                new_review['organisms'] = [request.resource_path(lane_organism)]
 
                                 if not histone_mod_target:
-                                    new_review['target'] = [find_resource(request.root, primary.properties['target'])]
+                                    new_review['targets'] = [request.resource_path(find_resource(request.root, primary.properties['target']))]
                                 else:
-                                    new_review['target'] = targets
+                                    new_review['targets'] = targets
 
                                 if lane_review['lane_status'] == 'pending dcc review':
                                     if pending_secondary or compliant_secondary:
@@ -396,8 +396,8 @@ class AntibodyLot(Collection):
                                             new_review['status'] = 'compliant'
                                             '''Keep track of compliant organisms for histones and we
                                             will fill them in after going through all the lanes'''
-                                            if lane_organism not in histone_organisms:
-                                                histone_organisms.append(lane_organism)
+                                            if request.resource_path(lane_organism) not in histone_organisms:
+                                                histone_organisms.append(request.resource_path(lane_organism))
 
                                 else:
                                     '''For all other cases, can keep the awaiting status'''
@@ -431,8 +431,8 @@ class AntibodyLot(Collection):
                                 antibody_lot_reviews = [{
                                     'biosample_term_name': 'all cell types and tissues',
                                     'biosample_term_id': 'NTR:00000000',
-                                    'organism': histone_organisms,
-                                    'target': targets,
+                                    'organisms': histone_organisms,
+                                    'targets': targets,
                                     'status': 'eligible for new data'
                                 }]
                             else:
@@ -452,14 +452,9 @@ class AntibodyLot(Collection):
                             pass
 
             else:
-                '''If there are no characterizations, then default to awaiting lab characterization'''
-                antibody_lot_reviews = [{
-                    'biosample_term_name': 'not specified',
-                    'biosample_term_id': 'NTR:00000000',
-                    'organism': 'unknown',
-                    'target': 'not specified',
-                    'status': 'awaiting lab characterization'
-                }]
+                '''If there are no characterizations, then default to awaiting lab characterization.
+                Instead of having a dummy characterization to inform the UI, let the UI handle this default case.'''
+                antibody_lot_reviews = []
 
             ns['lot_reviews'] = antibody_lot_reviews
             return ns

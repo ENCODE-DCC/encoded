@@ -207,6 +207,67 @@
             "type": "array"
         }
     },
+    "calculated_props": {
+        "lot_reviews": {
+            "title": "Antibody lot reviews",
+            "description": "Review outcome of an antibody lot in each characterized cell type submitted for review.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Antibody lot review",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "biosample_term_id": {
+                        "title": "Ontology ID",
+                        "description": "Ontology identifier describing biosample.",
+                        "comment": "NTR is a new term request identifier provided by the DCC.",
+                        "type": "string",
+                        "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
+                    },
+                    "biosample_term_name": {
+                        "title": "Ontology term",
+                        "description": "Ontology term describing biosample.",
+                        "type":  "string"
+                    },
+                    "organisms": {
+                        "title": "Organism",
+                        "type": "array",
+                        "items": {
+                            "comment": "See organism.json for available identifiers.",
+                            "type": "string",
+                            "linkTo": "organism"
+                        }
+                    },
+                    "targets": {
+                        "title": "Target",
+                        "type": "array",
+                        "items": {
+                            "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
+                            "comment": "See target.json for available identifiers.",
+                            "type": "string",
+                            "linkTo": "target"
+                        }
+                    },
+                    "status": {
+                        "title": "Status",
+                        "description": "The current state of the antibody characterizations.",
+                        "comment": "Do not submit, the value is assigned by server. The status is updated by the DCC.",
+                        "type": "string",
+                        "default": "awaiting lab characterization",
+                        "enum" : [
+                            "awaiting lab characterization",
+                            "pending dcc review",
+                            "eligible for new data",
+                            "not eligible for new data",
+                            "not pursued",
+                            "deleted"
+                        ]
+                    }
+                }
+            }
+        }
+    },
     "boost_values": {
         "uuid": 1.0,
         "accession": 1.0,
