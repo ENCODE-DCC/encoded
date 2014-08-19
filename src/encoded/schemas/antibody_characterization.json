@@ -154,5 +154,29 @@
                 "overexpression analysis"
             ]
         }
+    },
+    "facets": {
+        "status": {
+            "title": "Characterization status",
+            "type": "string"
+        },
+        "target.organism.scientific_name": {
+            "title": "Target Organism",
+            "type": "string"
+        },
+        "characterization_method":{
+            "title": "Characterization method",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        }
+    },
+    "calculated_props": {
+        "characterization_method":{
+            "title": "Characterization method",
+            "type": "string"
+        }
     }
 }

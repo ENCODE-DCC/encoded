@@ -168,7 +168,7 @@ class Collection(BaseCollection):
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
 
-            #publication
+            # publication
             'published': ALLOW_CURRENT,
         }
         actions = [EDIT_ACTION]
@@ -287,13 +287,14 @@ class AntibodyLot(Collection):
                 pending_secondary = False
                 has_lane_review = False
                 not_reviewed = False
+                histone_mod_target = False
                 lab_not_reviewed_chars = 0
                 not_reviewed_chars = 0
                 total_characterizations = 0
-                target_uuid = None
-                target = None
-                organism_uuid = None
-                lot_status = 'awaiting lab characterization'
+                num_compliant_celltypes = 0
+                targets = []
+                organisms = []
+                histone_organisms = []
                 char_reviews = dict()
                 primary_chars = []
                 secondary_chars = []
@@ -301,9 +302,15 @@ class AntibodyLot(Collection):
 
                 for characterization_uuid in ns['characterizations']:
                     characterization = find_resource(request.root, characterization_uuid)
-                    target_uuid = characterization.properties['target']
-                    target = find_resource(request.root, target_uuid)
-                    organism_uuid = target.properties['organism']
+                    target = find_resource(request.root, characterization.properties['target'])
+                    organism = find_resource(request.root, target.properties['organism'])
+                    if request.resource_path(target) not in targets:
+                        targets.append(request.resource_path(target))
+                    if 'histone modification' in target.properties['context']:
+                        histone_mod_target = True
+
+                    if request.resource_path(organism) not in organisms and not histone_mod_target:
+                        organisms.append(request.resource_path(organism))
 
                     if characterization.properties['status'] == 'deleted':
                         continue
@@ -325,9 +332,9 @@ class AntibodyLot(Collection):
                 base_review = {
                     'biosample_term_name': 'not specified',
                     'biosample_term_id': 'NTR:00000000',
-                    'target': target,
-                    'organism': organism_uuid,
-                    'status': lot_status
+                    'targets': targets,
+                    'organisms': organisms,
+                    'status': 'awaiting lab characterization'
                 }
                 '''Deal with the easy cases where both characterizations have the same statuses not from DCC reviews'''
                 if lab_not_reviewed_chars == total_characterizations and total_characterizations > 0:
@@ -358,17 +365,23 @@ class AntibodyLot(Collection):
                         if primary.properties['status'] in ['deleted', 'not reviewed', 'not submitted for review by lab']:
                             not_reviewed = True
                             continue
+
                         if primary.properties['characterization_review']:
                             for lane_review in primary.properties['characterization_review']:
-                                # We want the target specific to this characterization
-                                target = find_resource(request.root, primary.properties['target'])
                                 new_review = {
-                                    'target': target,
-                                    'organism': lane_review['organism'],
                                     'biosample_term_name': lane_review['biosample_term_name'],
                                     'biosample_term_id': lane_review['biosample_term_id'],
                                     'status': 'awaiting lab characterization'
                                 }
+                                '''Get the organism information from the lane, not from the target since there are lanes'''
+                                lane_organism = find_resource(request.root, lane_review['organism'])
+                                new_review['organisms'] = [request.resource_path(lane_organism)]
+
+                                if not histone_mod_target:
+                                    new_review['targets'] = [request.resource_path(find_resource(request.root, primary.properties['target']))]
+                                else:
+                                    new_review['targets'] = targets
+
                                 if lane_review['lane_status'] == 'pending dcc review':
                                     if pending_secondary or compliant_secondary:
                                         new_review['status'] = 'pending dcc review'
@@ -377,9 +390,17 @@ class AntibodyLot(Collection):
                                         new_review['status'] = 'not eligible for new data'
                                 elif lane_review['lane_status'] == 'compliant':
                                     if compliant_secondary:
-                                        new_review['status'] = 'eligible for new data'
+                                        if not histone_mod_target:
+                                            new_review['status'] = 'eligible for new data'
+                                        else:
+                                            new_review['status'] = 'compliant'
+                                            '''Keep track of compliant organisms for histones and we
+                                            will fill them in after going through all the lanes'''
+                                            if request.resource_path(lane_organism) not in histone_organisms:
+                                                histone_organisms.append(request.resource_path(lane_organism))
+
                                 else:
-                                    # all other cases, can keep awaiting status
+                                    '''For all other cases, can keep the awaiting status'''
                                     pass
 
                                 key = "%s;%s;%s;%s" % (lane_review['biosample_term_name'], lane_review['biosample_term_id'], lane_review['organism'], target)
@@ -394,12 +415,33 @@ class AntibodyLot(Collection):
                                         no other status overrides an existing one'''
                                         char_reviews[key] = new_review
 
-                    for key in char_reviews:
-                        antibody_lot_reviews.append(char_reviews[key])
+                    if has_lane_review:
+                        for key in char_reviews:
+                            if not histone_mod_target:
+                                antibody_lot_reviews.append(char_reviews[key])
+                            else:
+                                '''Review of antibodies against histone modifications are treated differently.
+                                There should be at least 3 compliant cell types for eligibility for use'''
+                                if char_reviews[key]['status'] == 'compliant':
+                                    char_reviews[key]['status'] = 'awaiting lab characterization'
+                                    num_compliant_celltypes += 1
 
-                    '''The only uncovered case left in this block is if there is only one in progress
-                    primary or secondary.'''
-                    if not has_lane_review:
+                        if histone_mod_target:
+                            if num_compliant_celltypes >= 3:
+                                antibody_lot_reviews = [{
+                                    'biosample_term_name': 'all cell types and tissues',
+                                    'biosample_term_id': 'NTR:00000000',
+                                    'organisms': histone_organisms,
+                                    'targets': targets,
+                                    'status': 'eligible for new data'
+                                }]
+                            else:
+                                for key in char_reviews:
+                                    antibody_lot_reviews.append(char_reviews[key])
+
+                    else:
+                        '''The only uncovered case left in this block is if there is only one in progress
+                        primary or secondary.'''
                         if len(primary_chars) == 1 and len(secondary_chars) == 0:
                             antibody_lot_reviews.append(base_review)
                         elif len(primary_chars) == 0 and len(secondary_chars) == 1:
@@ -410,14 +452,9 @@ class AntibodyLot(Collection):
                             pass
 
             else:
-                '''If there are no characterizations, then default to awaiting lab characterization'''
-                antibody_lot_reviews = [{
-                    'biosample_term_name': 'not specified',
-                    'biosample_term_id': 'NTR:00000000',
-                    'organism': 'unknown',
-                    'target': 'not specified',
-                    'status': 'awaiting lab characterization'
-                }]
+                '''If there are no characterizations, then default to awaiting lab characterization.
+                Instead of having a dummy characterization to inform the UI, let the UI handle this default case.'''
+                antibody_lot_reviews = []
 
             ns['lot_reviews'] = antibody_lot_reviews
             return ns
@@ -919,6 +956,16 @@ class Replicates(Collection):
         embedded = set(['library', 'platform'])
 
 
+def file_is_revoked(file, root):
+    item = find_resource(root, file)
+    return item.upgrade_properties()['status'] == 'revoked'
+
+
+def file_not_revoked(file, root):
+    item = find_resource(root, file)
+    return item.upgrade_properties()['status'] != 'revoked'
+
+
 @location('datasets')
 class Dataset(Collection):
     item_type = 'dataset'
@@ -931,14 +978,35 @@ class Dataset(Collection):
     class Item(Collection.Item):
         template = {
             'files': [
-                {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
-                {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', file_not_revoked),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', file_not_revoked),
+                    '$templated': True,
+                },
+            ],
+            'revoked_files': [
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', file_is_revoked),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', file_is_revoked),
+                    '$templated': True,
+                },
             ],
             'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
             'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
         template_type = {
             'files': 'file',
+            'revoked_files': 'file',
         }
         embedded = [
             'files',
@@ -947,6 +1015,12 @@ class Dataset(Collection):
             'files.replicate.experiment.lab',
             'files.replicate.experiment.target',
             'files.submitted_by',
+            'revoked_files',
+            'revoked_files.replicate',
+            'revoked_files.replicate.experiment',
+            'revoked_files.replicate.experiment.lab',
+            'revoked_files.replicate.experiment.target',
+            'revoked_files.submitted_by',
             'submitted_by',
             'lab',
             'award',
@@ -1238,17 +1312,25 @@ class Publication(Collection):
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
-   
 
     class Item(Collection.Item):
         template = {
-            'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
+            'publication_year': {
+                '$value': '{publication_year}',
+                '$templated': True,
+                '$condition': 'publication_year',
+            },
         }
-        
+
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
-            {'name': '{item_type}:reference', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True, '$condition': 'reference'},
-            
+            {
+                'name': '{item_type}:reference',
+                'value': '{reference}',
+                '$repeat': 'reference references',
+                '$templated': True,
+                '$condition': 'reference',
+            },
         ]
 
         def template_namespace(self, properties, request=None):
@@ -1272,7 +1354,6 @@ class Software(Collection):
     item_keys = ALIAS_KEYS + [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
     ]
-
 
 
 @location('images')
