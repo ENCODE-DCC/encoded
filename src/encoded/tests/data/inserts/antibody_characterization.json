@@ -37,7 +37,7 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2013-11-20",
         "lab": "bradley-bernstein",
-        "status": "pending dcc review",
+        "status": "compliant",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "072cbc4e-075e-46b7-df05-58c5092ebd36",
@@ -48,7 +48,31 @@
                 "biosample_type": "immortalized cell line",
                 "biosample_term_name": "K562",
                 "biosample_term_id": "EFO:0002067",
-                "lane_status": "pending dcc review"
+                "lane_status": "compliant"
+            },
+            {
+                "organism": "mouse",
+                "lane": 3,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "MEL cell line",
+                "biosample_term_id": "EFO:0003971",
+                "lane_status": "compliant"
+            },
+            {
+                "organism": "human",
+                "lane": 4,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "GM12878",
+                "biosample_term_id": "EFO:0002784",
+                "lane_status": "compliant"
+            },
+            {
+                "organism": "human",
+                "lane": 5,
+                "biosample_type": "immortalized cell line",
+                "biosample_term_name": "HeLa-S3",
+                "biosample_term_id": "EFO:0002791",
+                "lane_status": "not compliant"
             }
         ],
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
@@ -61,7 +85,7 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2011-01-11",
         "lab": "bradley-bernstein",
-        "status": "pending dcc review",
+        "status": "compliant",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "adbb7ba3-0bca-4bca-b892-15f997781515"
@@ -212,7 +236,7 @@
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham.pdf",
         "award": "U54HG004558",
-        "caption": "ChlPseq was performed in Hela cells stably trnsfected with a plasmid expressing an HA tagged E21 protein. Two different biological replicates of HeLa cells were used; one sample was ChIPseq profiles: 99% of the top 40% of targets identified with the HA antibody are in teh targets identified using the E2F1 antibody and 97.5% of the top 40% of targets identified using the E2F1 antibody are in the target identified using the HA antibody.",
+        "caption": "ChIPseq was performed in Hela cells stably trnsfected with a plasmid expressing an HA tagged E21 protein. Two different biological replicates of HeLa cells were used; one sample was ChIPseq profiles: 99% of the top 40% of targets identified with the HA antibody are in teh targets identified using the E2F1 antibody and 97.5% of the top 40% of targets identified using the E2F1 antibody are in the target identified using the HA antibody.",
         "secondary_characterization_method": "ChIP-seq comparison",
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2013-11-23",
