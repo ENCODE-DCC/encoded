@@ -20,17 +20,8 @@
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
-        "primary_characterization_method": {
-            "not": {
-                "properties": {"secondary_characterization_method": { "type" : "string"}}
-            }
-        },
-        "secondary_characterization_method": {
-            "not": {
-                "properties": {"primary_characterization_method": { "type" : "string"}}
-            }
-        }
-   },
+        "characterization_review": ["primary_characterization_method"]
+    },
     "properties": {
         "schema_version": {
             "default": "5"

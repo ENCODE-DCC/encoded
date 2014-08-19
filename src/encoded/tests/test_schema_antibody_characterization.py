@@ -11,7 +11,7 @@ def antibody_characterization(submitter, award, lab, antibody_lot, target):
     }
 
 
-def test_antiboddy_characterization_two_methods(testapp, antibody_characterization):
-    antibody_characterization['primary_characterization_method'] = 'immunoblot'
-    antibody_characterization['secondary_characterization_method'] = 'ChIP-seq comparison'
-    testapp.post_json('/antibody_characterization', antibody_characterization,  status=422)
+def test_antibody_characterization_review(testapp, antibody_characterization):
+    antibody_characterization['characterization_review'] = [ {"organism": "human", "lane": 2, "biosample_type": "immortalized cell line", "biosample_term_name": "K562", "biosample_term_id": "EFO:0002067"}]
+    testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
+
