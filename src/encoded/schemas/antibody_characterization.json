@@ -21,9 +21,23 @@
     ],
     "dependencies": {
         "characterization_review": ["primary_characterization_method"],
-        "primary_characterization_method": ["characterization_review"],
-    	"attachment": {
-	    "oneOf": [
+        "primary_characterization_method": {
+            "oneOf": [
+                {
+                    "required": ["characterization_review"],
+                    "properties": {
+                        "status": {"enum": ["pending dcc review", "compliant", "not compliant" ]}
+                    }
+                },
+                {
+                    "properties": {
+                        "status": {"enum": ["in progress", "not reviewed", "not submitted for review by lab", "deleted" ]}
+                    }
+                }
+            ]   
+        },
+        "attachment": {
+            "oneOf": [
     	        {
 		    "required": ["primary_characterization_method"]
 		},

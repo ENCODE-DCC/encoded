@@ -24,3 +24,9 @@ def test_antibody_characterizaton_two_methods(testapp, antibody_characterization
     antibody_characterization['secondary_characterization_method'] = 'dot blot assay'
     antibody_characterization['attachment'] =  {'download': 'red-dot.png', 'href': RED_DOT}
     testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
+
+
+def test_antibody_characterizaton_review(testapp, antibody_characterization):
+    antibody_characterization['primary_characterization_method'] = 'immunoblot'
+    antibody_characterization['status'] = 'compliant'
+    testapp.post_json('/antibody_characterization', antibody_characterization, status=422)
