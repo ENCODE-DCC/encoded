@@ -21,6 +21,7 @@
     ],
     "dependencies": {
         "characterization_review": ["primary_characterization_method"],
+        "primary_characterization_method": ["characterization_review"],
     	"attachment": {
 	    "oneOf": [
     	        {
