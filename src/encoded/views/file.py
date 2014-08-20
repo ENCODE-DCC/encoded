@@ -70,6 +70,7 @@ class File(Collection):
         'title': 'Files',
         'description': 'Listing of Files',
     }
+    __acl__ = ()
 
     class Item(Collection.Item):
         name_key = 'accession'
@@ -81,10 +82,6 @@ class File(Collection):
                 '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
             },
         ]
-        namespace_from_path = {
-            'lab': 'dataset.lab',
-            'award': 'dataset.award',
-        }
         template = {
             'href': {
                 '$value': '{item_uri}@@download/{accession}{file_extension}',
@@ -99,12 +96,8 @@ class File(Collection):
 
         def template_namespace(self, properties, request=None):
             ns = Collection.Item.template_namespace(self, properties, request)
-            if 'download_path' in properties:
-                path = properties['download_path']
-                ns['file_extension'] = path[path.find('.', path.rfind('/')):]
-            else:
-                mapping = self.schema['file_format_file_extension']
-                ns['file_extension'] = mapping[properties['file_format']]
+            mapping = self.schema['file_format_file_extension']
+            ns['file_extension'] = mapping[properties['file_format']]
             return ns
 
         @classmethod
@@ -113,6 +106,9 @@ class File(Collection):
                 sheets = {} if sheets is None else sheets.copy()
                 sheets['external'] = external_creds(parent, properties)
             return super(File.Item, cls).create(parent, uuid, properties, sheets)
+
+        def __ac_local_roles__(self):
+            return {}
 
 
 class InternalResponse(Response):
