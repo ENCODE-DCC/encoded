@@ -231,5 +231,24 @@
         ],
         "organism": "celegans",
         "gene_name": "pab-1"
+    },
+    {
+        "uuid": "e27c61e7-aab0-4602-b702-0db8cb081fba",
+        "label": "eGFP-Mes4",
+        "organism": "dmelanogaster",
+        "dbxref": [
+            "FlyBase:FBgn0034726",
+            "FlyBase:FBtr0071827",
+            "RefSeq:NM_137825",
+            "UniProtKB:Q9W256",
+            "FlyBase:CG11301-RA",
+            "FlyBase:FBtr0301243",
+            "RefSeq:NM_001169782",
+            "FlyBase:Mes4-RA",
+            "FlyBase:Mes4-RB",
+            "FlyBase:Mesoderm-expressed 4",
+            "FlyBase:CG11301"
+        ],
+        "gene_name": "Mes4"
     }
 ]
