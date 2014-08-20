@@ -213,30 +213,30 @@
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
         "award": "U54HG004558",
         "secondary_characterization_method": "ChIP-seq comparison",
-        "characterizes": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
+        "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2011-01-13",
         "lab": "michael-snyder",
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "target": "E2F1-human",
+        "target": "HA-influenza",
         "uuid": "7ad24205-c246-4c67-929f-12974de1fee7"
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
         "award": "U54HG004558",
         "primary_characterization_method": "immunoprecipitation",
-        "characterizes": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
+        "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2012-07-20",
         "lab": "michael-snyder",
         "status": "not reviewed",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "target": "E2F1-human",
+        "target": "HA-influenza",
         "uuid": "7a824fb0-280d-4a4f-8169-20a33bb661e1"
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham.pdf",
         "award": "U54HG004558",
-        "caption": "ChIPseq was performed in Hela cells stably trnsfected with a plasmid expressing an HA tagged E21 protein. Two different biological replicates of HeLa cells were used; one sample was ChIPseq profiles: 99% of the top 40% of targets identified with the HA antibody are in teh targets identified using the E2F1 antibody and 97.5% of the top 40% of targets identified using the E2F1 antibody are in the target identified using the HA antibody.",
+        "caption": "ChIPseq was performed in Hela cells stably transfected with a plasmid expressing an HA tagged E21 protein. Two different biological replicates of HeLa cells were used; one sample was ChIPseq profiles: 99% of the top 40% of targets identified with the HA antibody are in teh targets identified using the E2F1 antibody and 97.5% of the top 40% of targets identified using the E2F1 antibody are in the target identified using the HA antibody.",
         "secondary_characterization_method": "ChIP-seq comparison",
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2013-11-23",
@@ -463,8 +463,8 @@
         "primary_characterization_method": "immunoblot",
         "date": "2014-05-31",
         "lab": "michael-snyder",
-        "characterization_review": 
-            [{ 
+        "characterization_review": [
+            { 
                 "organism": "human",
                 "lane": 2,
                 "lane_status": "compliant",
@@ -487,7 +487,8 @@
                 "biosample_term_name": "MEL cell line",
                 "biosample_term_id": "EFO:0003971",
                 "biosample_type": "immortalized cell line"
-            }],
+            }
+        ],
         "notes": "Oh look, the antibody review panel made us pass this.",
         "status": "compliant",
         "submitted_by": "amet.fusce@est.fermentum",
@@ -502,18 +503,20 @@
         "characterizes": "c3ebc1c5-9abd-4db9-b34a-29b8e7c299b3",
         "primary_characterization_method": "immunoblot",
         "lab": "michael-snyder",
-        "characterization_review": 
-            [{ 
+        "date": "2014-08-20",
+        "characterization_review": [
+            { 
                 "organism": "human",
                 "lane": 2,
                 "lane_status": "pending dcc review",
                 "biosample_term_name": "K562",
                 "biosample_term_id": "EFO:0002067",
-                "biosample_type": "primary cell"
-            }],
+                "biosample_type": "immortalized cell line"
+            }
+        ],
         "status": "pending dcc review",
         "submitted_by": "amet.fusce@est.fermentum",
-        "target": "GFP-avictoria",
+        "target": "eGFP-avictoria",
         "uuid": "e422093e-8350-44bc-915f-6ef878eb2e3b"
     }
 ]

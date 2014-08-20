@@ -270,7 +270,7 @@
     {
         "uuid": "de60396f-11bc-46ee-b4cd-0989e682dc62",
         "label": "eGFP-CTCF",
-        "organism": "human",
+        "organism": "mouse",
         "context": ["transcription factor", "recombinant protein"]
     },
     {
