@@ -396,7 +396,7 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                 {context.constructs && context.constructs.length ?
                     <section>
                         <hr />
-                        <h4>Fly Donor Construct details</h4>
+                        <h4>Fly donor construct details</h4>
                         {context.constructs.map(Panel)}
                     </section>
                 : null}
@@ -449,7 +449,7 @@ var WormDonor = module.exports.WormDonor = React.createClass({
                 {context.constructs && context.constructs.length ?
                     <section>
                         <hr />
-                        <h4>Worm Donor Construct details</h4>
+                        <h4>Worm donor construct details</h4>
                         {context.constructs.map(Panel)}
                     </section>
                 : null}
