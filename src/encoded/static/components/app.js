@@ -123,7 +123,8 @@ var App = React.createClass({
         console.log('render app');
         var content;
         var context = this.props.context;
-        var hash = url.parse(this.props.href).hash || '';
+        var href_url = url.parse(this.props.href);
+        var hash = href_url.hash || '';
         var name;
         var context_actions = [];
         if (hash.slice(0, 2) === '#!') {
@@ -170,7 +171,19 @@ var App = React.createClass({
             title = portal.portal_title;
         }
 
-        var canonical = context.canonical_uri || this.props.href;
+        var canonical = this.props.href;
+        if (context.canonical_uri) {
+            if (href_url.host) {
+                canonical = (href_url.protocol || '') + '//' + href_url.host + context.canonical_uri;
+            } else {
+                canonical = context.canonical_uri;
+            }
+        }
+
+        // Google does not update the content of 301 redirected pages
+        if (({'http://www.encodeproject.org/': 1, 'http://encodeproject.org/': 1})[canonical]) {
+            canonical = 'https://www.encodeproject.org/';
+        }
 
         return (
             <html lang="en">
