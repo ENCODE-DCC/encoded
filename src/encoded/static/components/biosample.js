@@ -195,7 +195,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     {context.constructs.length ?
                         <section>
                             <hr />
-                            <h4>Construct details</h4>
+                            <h4>Biosample Construct details</h4>
                             {context.constructs.map(Panel)}
                         </section>
                     : null}
@@ -360,37 +360,47 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         return (
-            <dl className="key-value">
-                <dt>Accession</dt>
-                <dd>{context.accession}</dd>
+            <div>
+                <dl className="key-value">
+                    <dt>Accession</dt>
+                    <dd>{context.accession}</dd>
 
-                {context.aliases.length ? <dt>Aliases</dt> : null}
-                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+                    {context.aliases.length ? <dt>Aliases</dt> : null}
+                    {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
-                {context.organism.scientific_name ? <dt>Species</dt> : null}
-                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
+                    {context.organism.scientific_name ? <dt>Species</dt> : null}
+                    {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
 
-                {context.genotype ? <dt>Genotype</dt> : null}
-                {context.genotype ? <dd>{context.genotype}</dd> : null}
+                    {context.genotype ? <dt>Genotype</dt> : null}
+                    {context.genotype ? <dd>{context.genotype}</dd> : null}
 
-                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                    {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
-                {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
+                    {biosample && biosample.age ? <dt>Age</dt> : null}
+                    {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
 
-                {biosample && biosample.sex ? <dt>Sex</dt> : null}
-                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
+                    {biosample && biosample.sex ? <dt>Sex</dt> : null}
+                    {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
 
-                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
+                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                    {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
-                {context.strain_background ? <dt>Strain background</dt> : null}
-                {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
+                    {context.strain_background ? <dt>Strain background</dt> : null}
+                    {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
 
-                {context.strain_name ? <dt>Strain name</dt> : null}
-                {context.strain_name ? <dd>{context.strain_name}</dd> : null}
-            </dl>
+                    {context.strain_name ? <dt>Strain name</dt> : null}
+                    {context.strain_name ? <dd>{context.strain_name}</dd> : null}
+                </dl>
+
+                {context.constructs && context.constructs.length ?
+                    <section>
+                        <hr />
+                        <h4>Fly Donor Construct details</h4>
+                        {context.constructs.map(Panel)}
+                    </section>
+                : null}
+            </div>
         );
     }
 });
@@ -403,37 +413,47 @@ var WormDonor = module.exports.WormDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         return (
-            <dl className="key-value">
-                <dt>Accession</dt>
-                <dd>{context.accession}</dd>
+            <div>
+                <dl className="key-value">
+                    <dt>Accession</dt>
+                    <dd>{context.accession}</dd>
 
-                {context.aliases.length ? <dt>Aliases</dt> : null}
-                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+                    {context.aliases.length ? <dt>Aliases</dt> : null}
+                    {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
 
-                {context.organism.scientific_name ? <dt>Species</dt> : null}
-                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
+                    {context.organism.scientific_name ? <dt>Species</dt> : null}
+                    {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
 
-                {context.genotype ? <dt>Genotype</dt> : null}
-                {context.genotype ? <dd>{context.genotype}</dd> : null}
+                    {context.genotype ? <dt>Genotype</dt> : null}
+                    {context.genotype ? <dd>{context.genotype}</dd> : null}
 
-                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
+                    {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
 
-                {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                    {biosample && biosample.age ? <dt>Age</dt> : null}
+                    {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
 
-                {biosample && biosample.sex ? <dt>Sex</dt> : null}
-                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
+                    {biosample && biosample.sex ? <dt>Sex</dt> : null}
+                    {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
 
-                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
+                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
+                    {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
 
-                {context.strain_background ? <dt>Strain background</dt> : null}
-                {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
+                    {context.strain_background ? <dt>Strain background</dt> : null}
+                    {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
 
-                {context.strain_name ? <dt>Strain name</dt> : null}
-                {context.strain_name ? <dd>{context.strain_name}</dd> : null}
-            </dl>
+                    {context.strain_name ? <dt>Strain name</dt> : null}
+                    {context.strain_name ? <dd>{context.strain_name}</dd> : null}
+                </dl>
+
+                {context.constructs && context.constructs.length ?
+                    <section>
+                        <hr />
+                        <h4>Worm Donor Construct details</h4>
+                        {context.constructs.map(Panel)}
+                    </section>
+                : null}
+            </div>
         );
     }
 });

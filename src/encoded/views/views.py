@@ -332,6 +332,8 @@ class FlyDonor(Collection):
     }
 
     class Item(DonorItem):
+        embedded = set(['organism', 'constructs', 'constructs.target'])
+
         def __ac_local_roles__(self):
             # Disallow lab submitter edits
             return {}
@@ -348,6 +350,8 @@ class WormDonor(Collection):
     }
 
     class Item(DonorItem):
+        embedded = set(['organism', 'constructs', 'constructs.target'])
+
         def __ac_local_roles__(self):
             # Disallow lab submitter edits
             return {}
@@ -467,6 +471,8 @@ class Biosample(Collection):
         embedded = set([
             'donor',
             'donor.organism',
+            'donor.constructs',
+            'donor.constructs.target',
             'submitted_by',
             'lab',
             'award',
