@@ -248,5 +248,23 @@
         "organism": "celegans",
         "gene_name": "pab-1",
         "context": ["transcription factor"]
+    },
+    {
+        "uuid": "d7e8b30a-5fde-4201-a287-be53814abca7",
+        "label": "GFP",
+        "organism": "avictoria",
+        "context": ["tag"]
+    },
+    {
+        "uuid": "f2d60a72-7b9c-422a-a80e-9493640c1d58",
+        "label": "FLAG",
+        "organism": "synthetic",
+        "context": ["tag"]
+    },
+    {
+        "uuid": "77d56f5a-e445-4f2c-83ac-65e00ce50ac1",
+        "label": "HA",
+        "organism": "influenza",
+        "context": ["tag"]
     }
 ]

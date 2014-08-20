@@ -243,7 +243,7 @@
         "lab": "michael-snyder",
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "target": "HA-E2F1-human",
+        "target": "HA-influenza",
         "uuid": "e430c823-f95e-4b34-beca-41c07cf10376"
     },
     {
@@ -256,7 +256,7 @@
         "lab": "michael-snyder",
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "target": "HA-E2F1-human",
+        "target": "HA-influenza",
         "uuid": "2f605105-7ec4-46a3-a8e5-1e5a0647aa8a",
         "characterization_review": [
             {
@@ -494,5 +494,26 @@
         "target": "CTCF-human",
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"],
         "uuid": "984cfea4-1cf3-43ea-a49b-d499932619aa"
+    },
+    {
+        "attachment": "frowny_gel.png",
+        "award": "U54HG006996",
+        "caption": "This immunoblot characterizes the goatV GFP antibody in K562 cells expressing eGFP-JUNB",
+        "characterizes": "c3ebc1c5-9abd-4db9-b34a-29b8e7c299b3",
+        "primary_characterization_method": "immunoblot",
+        "lab": "michael-snyder",
+        "characterization_review": 
+            [{ 
+                "organism": "human",
+                "lane": 2,
+                "lane_status": "pending dcc review",
+                "biosample_term_name": "K562",
+                "biosample_term_id": "EFO:0002067",
+                "biosample_type": "primary cell"
+            }],
+        "status": "pending dcc review",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "target": "GFP-avictoria",
+        "uuid": "e422093e-8350-44bc-915f-6ef878eb2e3b"
     }
 ]

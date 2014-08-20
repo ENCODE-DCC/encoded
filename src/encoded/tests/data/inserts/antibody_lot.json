@@ -268,5 +268,27 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/wh0006925m2?lang=en&region=US",
         "uuid": "907ced83-e4bb-4d77-8d97-e969db915533"
+    },
+    {
+        "_test": "anti-GFP antibody to test tag targets",
+        "accession": "ENCAB728YTO",
+        "antigen_description": "Antisera raised against a peptide from the GFP protein. Produced commercially for the modENCODE Project by K. White's group and Millipore.",
+        "antigen_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTLTYGVQCFSRYPDHMKRHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
+        "award": "/awards/U54HG006996/",
+        "lab": "/labs/kevin-white/",
+        "clonality": "polyclonal",
+        "product_id": "goat-anti-GFP-UC",
+        "source": "/sources/kevin-white/",
+        "lot_id": "unknown",
+        "aliases": [
+            "kevin-white:GFP NewGoat UofC",
+            "kevin-white:GoatV-anti-GFP"
+        ],
+        "purifications": [
+            "affinity"
+        ],
+        "host_organism": "/organisms/goat/",
+        "submitted_by": "eni.lectus@nullam.sed",
+        "uuid": "c3ebc1c5-9abd-4db9-b34a-29b8e7c299b3"
     }
 ]
