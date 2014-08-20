@@ -1,1 +1,0 @@
-module.exports = "PMID:20150147";

@@ -28,6 +28,15 @@ figure {
 	margin-bottom: 1em;
 }
 
+.sentence-case-block {
+    display: inline-block;
+
+    &::first-letter,
+    &:first-letter {
+        text-transform: uppercase;
+    }
+}
+
 .sentence-case::first-letter { text-transform: uppercase; }
 .sentence-case:first-letter { text-transform: uppercase; } // older browser support
 

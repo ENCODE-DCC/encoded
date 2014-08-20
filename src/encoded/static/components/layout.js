@@ -110,6 +110,7 @@ var Block = module.exports.Block = React.createClass({
 
         var classes = {
             block: true,
+            clearfix: true,
             dragging: _.isEqual(this.props.pos, this.context.src_pos),
             hover: this.state.hover
         };
@@ -120,7 +121,7 @@ var Block = module.exports.Block = React.createClass({
             classes['drop-' + this.context.dst_quad] = true;
         }
         return (
-            <div className={cx(classes)} data-pos={this.props.pos}
+            <div className={block['@type'][0] + ' ' + cx(classes)} data-pos={this.props.pos}
                  draggable={this.context.editable && !this.state.focused}
                  onDragStart={this.dragStart}
                  onDragOver={this.dragOver}

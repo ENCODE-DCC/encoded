@@ -5,7 +5,12 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "title" ],
-    "calculatedProperties": ["publication_year"],
+    "calculated_props": {
+        "publication_year": {
+            "title": "Publication year",
+            "type": "string"
+        }
+    },
     "identifyingProperties": ["uuid", "title", "reference"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -72,8 +77,8 @@
                 "in progress",
                 "deleted",
                 "replaced",
-                "released",
-                "proposed"
+                "proposed",
+                "published"
             ]
         },
         "categories": {
@@ -89,7 +94,11 @@
             "database",
             "integrative analysis",
             "technology development",
-            "data standard"
+            "data standard",
+            "key publication",
+            "pilot phase publication",
+            "model organism biology",
+            "tutorial"
         ]
             }      
         },
