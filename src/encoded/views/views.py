@@ -336,6 +336,7 @@ class AntibodyLot(Collection):
                     'organisms': organisms,
                     'status': 'awaiting lab characterization'
                 }
+
                 '''Deal with the easy cases where both characterizations have the same statuses not from DCC reviews'''
                 if lab_not_reviewed_chars == total_characterizations and total_characterizations > 0:
                     base_review['status'] = 'not pursued'
@@ -398,6 +399,8 @@ class AntibodyLot(Collection):
                                             will fill them in after going through all the lanes'''
                                             if request.resource_path(lane_organism) not in histone_organisms:
                                                 histone_organisms.append(request.resource_path(lane_organism))
+                                    if pending_secondary:
+                                        new_review['status'] = 'pending dcc review'
 
                                 else:
                                     '''For all other cases, can keep the awaiting status'''
