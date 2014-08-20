@@ -90,7 +90,7 @@
         "label": "eGFP-E2F1",
         "organism": "human",
         "status": "current",
-        "context": ["transcription factor"],
+        "context": ["transcription factor", "recombinant protein"],
         "uuid": "19afbc42-c08b-4b5b-a2b3-7f5c84db7d5d"
     },
     {
