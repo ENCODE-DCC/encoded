@@ -12,7 +12,7 @@ var Target = module.exports.Target = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-detail panel key-value');
-        var geneLink, geneRef, sep;
+        var geneLink, geneRef, baseName, sep;
 
         if (context.organism.name == "human") {
             geneLink = globals.dbxref_prefix_map.HGNC + context.gene_name;
@@ -21,23 +21,16 @@ var Target = module.exports.Target = React.createClass({
             sep = uniProtValue.indexOf(":") + 1;
             var uniProtID = uniProtValue.substring(sep, uniProtValue.length - 2);
             geneLink = globals.dbxref_prefix_map.UniProtKB + uniProtID;
-        } else if (context.organism.name == 'dmelanogaster') {
+        } else if (context.organism.name == 'dmelanogaster' || context.organism.name == 'celegans') {
+            var organismPrefix = context.organism.name == 'dmelanogaster' ? 'FBgn': 'WBGene';
+            var baseUrl = context.organism.name == 'dmelanogaster' ? globals.dbxref_prefix_map.FlyBase : globals.dbxref_prefix_map.WormBase;
             geneRef = _.find(context.dbxref, function(ref) {
-                return ref.indexOf('FBgn') != -1;
+                return ref.indexOf(organismPrefix) != -1;
             });
             if (geneRef) {
                 sep = geneRef.indexOf(":") + 1;
-                var flybaseName = geneRef.substring(sep, geneRef.length);
-                geneLink = globals.dbxref_prefix_map.FlyBase + flybaseName;
-            }
-        } else if (context.organism.name == 'celegans') {
-            geneRef = _.find(context.dbxref, function(ref) {
-                return ref.indexOf('WBGene') != -1;
-            });
-            if (geneRef) {
-                sep = geneRef.indexOf(":") + 1;
-                var wormbaseName = geneRef.substring(sep, geneRef.length);
-                geneLink = globals.dbxref_prefix_map.WormBase + wormbaseName;
+                baseName = geneRef.substring(sep, geneRef.length);
+                geneLink = baseUrl + baseName;
             }
         }
         return (
@@ -52,8 +45,8 @@ var Target = module.exports.Target = React.createClass({
                     <dt>Target name</dt>
                     <dd>{context.label}</dd>
 
-                    {context.gene_name ? <dt>Target gene</dt> : null}
-                    {context.gene_name ? <dd><a href={geneLink}>{context.gene_name}</a></dd> : null}
+                    {context.gene_name && geneLink ? <dt>Target gene</dt> : null}
+                    {context.gene_name && geneLink ? <dd><a href={geneLink}>{context.gene_name}</a></dd> : null}
 
                     <dt>External resources</dt>
                     <dd>
