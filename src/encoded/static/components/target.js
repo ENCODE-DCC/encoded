@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 
@@ -11,15 +12,33 @@ var Target = module.exports.Target = React.createClass({
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-detail panel key-value');
-        var geneLink;
+        var geneLink, geneRef, sep;
 
         if (context.organism.name == "human") {
             geneLink = globals.dbxref_prefix_map.HGNC + context.gene_name;
         } else if (context.organism.name == "mouse") {
             var uniProtValue = JSON.stringify(context.dbxref);
-            var sep = uniProtValue.indexOf(":") + 1;
+            sep = uniProtValue.indexOf(":") + 1;
             var uniProtID = uniProtValue.substring(sep, uniProtValue.length - 2);
             geneLink = globals.dbxref_prefix_map.UniProtKB + uniProtID;
+        } else if (context.organism.name == 'dmelanogaster') {
+            geneRef = _.find(context.dbxref, function(ref) {
+                return ref.indexOf('FBgn') != -1;
+            });
+            if (geneRef) {
+                sep = geneRef.indexOf(":") + 1;
+                var flybaseName = geneRef.substring(sep, geneRef.length);
+                geneLink = globals.dbxref_prefix_map.FlyBase + flybaseName;
+            }
+        } else if (context.organism.name == 'celegans') {
+            geneRef = _.find(context.dbxref, function(ref) {
+                return ref.indexOf('WBGene') != -1;
+            });
+            if (geneRef) {
+                sep = geneRef.indexOf(":") + 1;
+                var wormbaseName = geneRef.substring(sep, geneRef.length);
+                geneLink = globals.dbxref_prefix_map.WormBase + wormbaseName;
+            }
         }
         return (
             <div className={globals.itemClass(context, 'view-item')}>
