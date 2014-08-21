@@ -40,6 +40,30 @@
             "type": "string"
         }
     },
+    "dependencies": {
+    	"paired_end": {
+	    "oneOf": [
+	    	{
+		   "required": ["paired_with"],
+		   "enum": ["2"]
+		},
+		{
+		    "enum": ["1"]
+		}
+	    ]
+	},
+	"file_type":{
+	    "oneOf": [
+	    	{
+		    "required": ["replicate"],
+		    "enum": ["fastq"]
+		},
+		{
+		    "not": {"enum": ["fastq"]}
+		}
+	    ]
+	}
+    },
     "properties": {
         "schema_version": {
             "default": "4"
