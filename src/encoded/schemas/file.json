@@ -41,28 +41,54 @@
         }
     },
     "dependencies": {
-    	"paired_end": {
-	    "oneOf": [
-	    	{
-		   "required": ["paired_with"],
-		   "enum": ["2"]
-		},
-		{
-		    "enum": ["1"]
-		}
-	    ]
-	},
-	"file_type":{
-	    "oneOf": [
-	    	{
-		    "required": ["replicate"],
-		    "enum": ["fastq"]
-		},
-		{
-		    "not": {"enum": ["fastq"]}
-		}
-	    ]
-	}
+        "paired_end": {
+            "oneOf": [
+                {
+                   "required": ["paired_with"],
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["2"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["1"]
+                        }
+                    }
+                }
+            ]
+        },
+        "paired_with": {
+            "required": ["paired_end"],
+            "properties": {
+                "paired_end": {
+                    "enum": ["2"]
+                }
+            }
+        },
+        "file_format":{
+            "oneOf": [
+                {
+                    "required": ["replicate"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["fastq"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "file_format": {
+                                "enum": ["fastq"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
     },
     "properties": {
         "schema_version": {
