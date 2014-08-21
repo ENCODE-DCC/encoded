@@ -43,7 +43,7 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
 };
 
 
-module.exports.productionHost = {'www.encodeproject.org':1, 'ssl.encodeproject.org':1, 'www.encodedcc.org':1};
+module.exports.productionHost = {'www.encodeproject.org':1, 'encodeproject.org':1, 'www.encodedcc.org':1};
 
 module.exports.encodeVersionMap = {
     "ENCODE2": "2",
