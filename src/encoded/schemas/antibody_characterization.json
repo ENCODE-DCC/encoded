@@ -26,26 +26,51 @@
                 {
                     "required": ["characterization_review"],
                     "properties": {
-                        "status": {"enum": ["pending dcc review", "compliant", "not compliant" ]}
+                        "status": {
+                            "enum": ["pending dcc review", "compliant", "not compliant" ]
+                        }
                     }
                 },
                 {
                     "properties": {
-                        "status": {"enum": ["in progress", "not reviewed", "not submitted for review by lab", "deleted" ]}
+                        "status": {
+                            "enum": ["in progress", "not reviewed", "not submitted for review by lab", "deleted" ]
+                        }
                     }
                 }
             ]   
         },
         "attachment": {
             "oneOf": [
-    	        {
-		    "required": ["primary_characterization_method"]
-		},
-	        {
-		    "required": ["secondary_characterization_method"]
-		}
+                {
+                    "required": ["primary_characterization_method"]
+                },
+                {
+                    "required": ["secondary_characterization_method"]
+                }
             ]
-	}
+        },
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["reviewed_by"],
+                    "properties": {
+                        "status": {
+                            "enum": ["compliant", "not compliant", "not reviewed"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["compliant", "not compliant", "not reviewed"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
     },
     "properties": {
         "schema_version": {
