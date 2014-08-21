@@ -63,6 +63,9 @@
         "paired_with": {
             "required": ["paired_end"],
             "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                },
                 "paired_end": {
                     "enum": ["2"]
                 }
