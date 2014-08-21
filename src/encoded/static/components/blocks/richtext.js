@@ -43,6 +43,10 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
                 { name: 'undo', groups: [ 'undo' ], items: [ 'Undo', 'Redo' ] },
                 { name: 'document', groups: [ 'mode' ], items: [ 'Source' ] },
             ],
+            format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;code;cite',
+            format_code: { name: 'Inline Code', element: 'code'},
+            format_cite: { name: 'Citation', element: 'cite'},
+            allowedContent: true
         });
         this.editor.on('change', function() {
             this.state.value.body = this.editor.getData();

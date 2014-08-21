@@ -4,48 +4,78 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["accession", "dataset", "file_format", "md5sum", "output_type"],
-    "identifyingProperties": ["uuid","accession"],
+    "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "calculated_props": {
+        "href": {
+            "title": "Download URL",
+            "type": "string"
+        }
+    },
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" },
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },        
         { "$ref": "mixins.json#/notes" }
     ],
+    "facets": {
+        "status": {
+            "title": "File status",
+            "type": "string"
+        },
+        "output_type": {
+            "title": "Output type",
+            "type": "string"
+        },
+        "file_format": {
+            "title": "File format",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "4"
+        },
+        "accession": {
+            "accessionType": "FF"
         },
         "file_format": {
             "title": "File format",
             "comment": "Not all of the types are valid for new submissions, but are present for historical purposes.",
             "type": "string",
-            "XXXenum": [
+            "enum": [
                 "bam",
-                "bed12",
-                "bed12+3",
-                "bed12+3.bigBed",
-                "bed15",
-                "bed3",
-                "bed4",
-                "bed5",
-                "bed6",
-                "bed6+3",
-                "bed6+3.bigBed",
-                "bed8",
-                "bed9",
-                "bed9+1",
-                "bed9+1.bigBed",
-                "bed9+2",
-                "bed9+2.bigBed",
+                "bed",
+                "bedLogR",
+                "bed_bedLogR",
+                "bedMethyl",
+                "bed_bedMethyl",
+                "bigBed",
                 "bigWig",
                 "broadPeak",
+                "bed_broadPeak",
+                "fasta",
                 "fastq",
                 "gtf",
+                "idat",
                 "narrowPeak",
-                "narrowPeak.bigBed"
+                "bed_narrowPeak",
+                "rcc",
+                "tar",
+                "tsv",
+                "2bit",
+                "csfasta",
+                "csqual",
+                "bedRnaElements",
+                "CEL"
             ]
         },
         "md5sum": {
@@ -53,16 +83,126 @@
             "type": "string",
             "format": "hex"
         },
+        "file_size": {
+            "title": "File size",
+            "comment": "File size is specified in bytes",
+            "type": "integer"
+        },
+        "platform": {
+            "title": "Platform",
+            "description": "The measurement device used to collect data.",
+            "comment": "See platform.json for available identifiers.",
+            "type": "string",
+            "linkTo": "platform"
+        },
+        "flowcell_details": {
+            "title": "Flowcells",
+            "description": "For high-throughput sequencing, the flowcells used for the sequencing of the replicate.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Flowcell details",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "machine": {
+                        "title": "Machine Name",
+                        "description": "The lab specific name of the machine used.",
+                        "type": "string"
+                    },
+                    "flowcell": {
+                        "title": "Flowcell ID",
+                        "type": "string"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "string"
+                    },
+                    "barcode": {
+                        "title": "Barcode",
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "output_type": {
             "title": "Output type",
             "description": "A description of the file's purpose or contents.",
             "type": "string",
-            "XXXenum": [
-                "sites",
-                "rawData",
-                "peaks",
+            "enum": [
+                "Alignability",
                 "alignments",
-                "signal"
+                "Base_Overlap_Signal",
+                "clusters",
+                "CNV",
+                "contigs",
+                "enhancers",
+                "enhancers_forebrain",
+                "enhancers_heart",
+                "enhancers_wholebrain",
+                "enrichment",
+                "Excludable",
+                "ExonsDeNovo",
+                "ExonsEnsV65IAcuff",
+                "ExonsGencV10",
+                "ExonsGencV3c",
+                "ExonsGencV7",
+                "FiltTransfrags",
+                "GeneDeNovo",
+                "GeneEnsV65IAcuff",
+                "GeneGencV10",
+                "GeneGencV3c",
+                "GeneGencV7",
+                "idat green file",
+                "idat red file",
+                "HMM",
+                "hotspots",
+                "interactions",
+                "Junctions",
+                "library_fraction",
+                "Matrix",
+                "minus signal",
+                "mPepMapGcFt",
+                "mPepMapGcUnFt",
+                "multi-read minus signal",
+                "multi-read plus signal",
+                "multi-read signal",
+                "PctSignal",
+                "peaks",
+                "pepMapGcFt",
+                "pepMapGcUnFt",
+                "plus signal",
+                "Primer",
+                "PrimerPeaks",
+                "raw data",
+                "raw minus signal",
+                "raw plus signal",
+                "raw signal",
+                "RbpAssocRna",
+                "reads",
+                "rejected reads",
+                "signal",
+                "sites",
+                "spike-ins",
+                "splice junctions",
+                "SumSignal",
+                "TranscriptDeNovo",
+                "TranscriptEnsV65IAcuff",
+                "TranscriptGencV10",
+                "TranscriptGencV3c",
+                "TranscriptGencV7",
+                "Transfrags",
+                "TssGencV3c",
+                "TssGencV7",
+                "TssHmm",
+                "UniformlyProcessedPeakCalls",
+                "unique minus signal",
+                "Uniqueness",
+                "unique plus signal",
+                "unique signal",
+                "Validation",
+                "Valleys",
+                "WaveSignal"
             ]
         },
         "paired_end": {
@@ -73,6 +213,43 @@
                 "1",
                 "2"
             ]
+        },
+        "derived_from": {
+            "title": "Derived from",
+            "description": "The files participating as inputs into software to produce this output file.",
+            "type": "array",
+            "items": {
+                    "comment": "See file.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "file"
+                    }
+        },
+        "controlled_by": {
+            "title": "Controlled by",
+            "description": "The files that control this file. ",
+            "type": "array",
+            "items": {
+                    "comment": "See file.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "file"
+            }
+        },
+        "supercedes": {
+            "title": "Supercedes" ,
+            "description": "The files that this file replaces.",
+            "type": "array",
+            "items": {
+                    "comment": "See file.json for a list of available identifiers.",
+                    "type": "string",
+                    "linkTo": "file"
+            }
+        },
+        "paired_with": {
+            "title": "File pairing",
+            "description": "The file that corresponds with this file.",
+            "comment": "See file.json for a list of available identifiers.",
+            "type": "string",
+            "linkTo": "file"
         },
         "dataset": {
             "title": "Dataset",
@@ -88,37 +265,29 @@
             "type": "string",
             "linkTo": "replicate"
         },
-        "software": {
-            "title": "Software",
-            "description": "The software and parameters used to generate the file.",
-            "comment": " See software.json for available identifiers. Do not submit, value is not valid for primary data files like FastQ. ",
-            "type": "string",
-            "XXXlinkTo": "software"
-        },
         "assembly": {
             "title": "Mapping assembly",
             "description": "UCSC genome assembly that files were mapped to.",
             "comment": "Applies for mapped files (e.g. BAM, BED and BigWig).",
             "type": "string",
-            "enum": ["mm9", "hg19", "mm10", "ce10", "dm3"]
+            "enum": ["mm9", "hg19", "mm10", "ce10", "dm3", "dm6"]
         },
         "submitted_file_name": {
             "title": "Original file name",
             "description": "The local file name used at time of submission.",
             "type": "string"
         },
-        "download_path": {
-            "title": "Download URL",
-            "comment": "The file resource locater.",
-            "type": "string"
-        },
         "status": {
             "title": "Status",
             "type": "string",
-            "default": "current",
+            "default": "uploading",
             "enum" : [
-                "current",
-                "obsolete"
+                "uploading",
+                "in progress",
+                "deleted",
+                "replaced",
+                "revoked",
+                "released"
                 ]
         }
     },
@@ -143,5 +312,33 @@
             "title": "Output Type",
             "type": "string"
         }
+    },
+    "file_format_file_extension": {
+        "2bit": ".2bit",
+        "CEL": ".cel.gz",
+        "bam": ".bam",
+        "bedLogR": ".bedLogR.bigBed  ",
+        "bedMethyl": ".bedMethyl.bigBed",
+        "bedRnaElements": ".bedRnaElements.bigBed",
+        "bed": ".bed.gz",
+        "bed_bedLogR": ".bedLogR.gz",
+        "bed_bedMethyl": ".bedMethyl.gz",
+        "bed_bedRnaElements": ".bedRnaElements.gz",
+        "bed_broadPeak": ".broadPeak.gz",
+        "bed_narrowPeak": ".narrowPeak.gz",
+        "bigBed": ".bigBed",
+        "bigWig": ".bigWig",
+        "broadPeak": ".broadPeak.bigbed",
+        "csfasta": ".csfasta.gz",
+        "csqual": ".csqual.gz",
+        "fasta": ".fasta.gz",
+        "fastq": ".fastq.gz",
+        "gff": ".gff.gz",
+        "gtf": ".gtf.gz",
+        "idat": ".idat",
+        "narrowPeak": ".narrowPeak.bigBed",
+        "rcc": ".rcc",
+        "tar": ".tar.gz",
+        "tsv": ".tsv"
     }
 }

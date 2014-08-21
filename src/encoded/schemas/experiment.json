@@ -6,7 +6,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["award", "lab"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],
     "additionalProperties": false,
@@ -118,6 +117,10 @@
             "title": "Available data",
             "type": "string"
         },
+        "run_type": {
+            "title": "Run type",
+            "type": "string"
+        },
         "replicates.read_length": {
             "title": "Read length (nt)",
             "type": "string"
@@ -129,6 +132,10 @@
         "replicates.library.treatments.treatment_term_name": {
             "title": "Library treatment",
             "type": "array"
+        },
+        "month_released": {
+            "title": "Date released",
+            "type": "string"
         },
         "lab.title": {
             "title": "Lab",
@@ -199,6 +206,36 @@
         "encode2_dbxrefs": {
             "title": "Dbxrefs",
             "type": "array"
+        }
+    },
+    "calculated_props": {
+        "organ_slims": {
+            "title": "Organ slims",
+            "type": "string"
+        }, 
+        "system_slims": {
+            "title": "System slims",
+            "type": "string"
+        }, 
+        "developmental_slims": {
+            "title": "Developmental slims",
+            "type": "string"
+        }, 
+        "synonyms": {
+            "title": "Synonyms",
+            "type": "string"
+        },
+        "month_released": {
+            "title": "Month releases",
+            "type": "string"
+        },
+        "run_type": {
+            "title": "Run type",
+            "type": "string"
+        },
+        "hub": {
+            "title": "Track hub",
+            "type": "string"
         }
     },
     "boost_values": {

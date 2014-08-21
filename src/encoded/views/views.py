@@ -12,7 +12,10 @@ from ..contentbase import (
 )
 from ..schema_utils import (
     load_schema,
+    lookup_resource,
+    VALIDATOR_REGISTRY,
 )
+from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_resource,
     find_root,
@@ -20,6 +23,7 @@ from pyramid.traversal import (
 from urllib import quote_plus
 from urlparse import urljoin
 import copy
+import datetime
 
 ACCESSION_KEYS = [
     {
@@ -64,7 +68,6 @@ ALLOW_LAB_SUBMITTER_EDIT = [
     (Allow, Authenticated, 'view'),
     (Allow, 'group.admin', 'edit'),
     (Allow, 'role.lab_submitter', 'edit'),
-    # (Allow, 'role.lab_submitter', 'view_raw'),
 ]
 
 ALLOW_CURRENT = [
@@ -112,7 +115,7 @@ ADD_ACTION = {
     'title': 'Add',
     'profile': '/profiles/{item_type}.json',
     'method': 'GET',
-    'href': '#!add',
+    'href': '{collection_uri}#!add',
     'className': 'btn btn-success',
     '$templated': True,
     '$condition': 'permission:add',
@@ -164,7 +167,11 @@ class Collection(BaseCollection):
             # dataset / experiment
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
+
+            # publication
+            'published': ALLOW_CURRENT,
         }
+        actions = [EDIT_ACTION]
 
         @property
         def __name__(self):
@@ -234,11 +241,10 @@ class AntibodyLot(Collection):
         'description': 'Listing of ENCODE antibodies',
     }
 
-
     class Item(Collection.Item):
         template = {
-            'targets': [
-                {'$value': '{target}', '$repeat': 'target targets', '$templated': True}
+            'lot_reviews': [
+                {'$value': lambda lot_review: lot_review, '$repeat': 'lot_review lot_reviews', '$templated': True}
             ],
             'title': {'$value': '{accession}', '$templated': True},
         }
@@ -260,10 +266,10 @@ class AntibodyLot(Collection):
 
         rev = {
             'characterizations': ('antibody_characterization', 'characterizes'),
-        }       
+        }
 
         embedded = set([
-            'source', 
+            'source',
             'host_organism',
             'characterizations.award',
             'characterizations.lab',
@@ -271,20 +277,189 @@ class AntibodyLot(Collection):
             'characterizations.target.organism'
         ])
 
-
         def template_namespace(self, properties, request=None):
             ns = super(AntibodyLot.Item, self).template_namespace(properties, request)
             if request is None:
                 return ns
-            if 'characterizations' in ns:
+            if ns['characterizations']:
+                compliant_secondary = False
+                not_compliant_secondary = False
+                pending_secondary = False
+                has_lane_review = False
+                not_reviewed = False
+                histone_mod_target = False
+                lab_not_reviewed_chars = 0
+                not_reviewed_chars = 0
+                total_characterizations = 0
+                num_compliant_celltypes = 0
                 targets = []
+                organisms = []
+                histone_organisms = []
+                char_reviews = dict()
+                primary_chars = []
+                secondary_chars = []
+                antibody_lot_reviews = []
+
                 for characterization_uuid in ns['characterizations']:
                     characterization = find_resource(request.root, characterization_uuid)
-                    targets.append(characterization.properties['target'])
-                ns['targets'] = set(targets)
-            else:
-                ns['targets'] = []
+                    target = find_resource(request.root, characterization.properties['target'])
+                    organism = find_resource(request.root, target.properties['organism'])
+                    if request.resource_path(target) not in targets:
+                        targets.append(request.resource_path(target))
+                    if 'histone modification' in target.properties['context']:
+                        histone_mod_target = True
 
+                    if request.resource_path(organism) not in organisms and not histone_mod_target:
+                        organisms.append(request.resource_path(organism))
+
+                    if characterization.properties['status'] == 'deleted':
+                        continue
+                    elif characterization.properties['status'] == 'not submitted for review by lab':
+                        lab_not_reviewed_chars += 1
+                        total_characterizations += 1
+                    elif characterization.properties['status'] == 'not reviewed':
+                        not_reviewed_chars += 1
+                        total_characterizations += 1
+                    else:
+                        total_characterizations += 1
+
+                    '''Split into primary and secondary to treat separately'''
+                    if 'primary_characterization_method' in characterization.properties:
+                        primary_chars.append(characterization)
+                    else:
+                        secondary_chars.append(characterization)
+
+                base_review = {
+                    'biosample_term_name': 'not specified',
+                    'biosample_term_id': 'NTR:00000000',
+                    'targets': targets,
+                    'organisms': organisms,
+                    'status': 'awaiting lab characterization'
+                }
+
+                '''Deal with the easy cases where both characterizations have the same statuses not from DCC reviews'''
+                if lab_not_reviewed_chars == total_characterizations and total_characterizations > 0:
+                    base_review['status'] = 'not pursued'
+                    antibody_lot_reviews.append(base_review)
+                elif not_reviewed_chars == total_characterizations and total_characterizations > 0:
+                    base_review['status'] = 'not eligible for new data'
+                    antibody_lot_reviews.append(base_review)
+                elif (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and total_characterizations > 0:
+                    antibody_lot_reviews.append(base_review)
+                else:
+                    '''Done with easy cases, the remaining require reviews.
+                    Go through the secondary characterizations first'''
+                    for secondary in secondary_chars:
+                        if secondary.properties['status'] == 'compliant':
+                            compliant_secondary = True
+                            break
+                        elif secondary.properties['status'] == 'pending dcc review':
+                            pending_secondary = True
+                        elif secondary.properties['status'] == 'not compliant':
+                            not_compliant_secondary = True
+                        else:
+                            continue
+
+                    '''Now check the primaries and update their status accordingly'''
+                    for primary in primary_chars:
+                        has_lane_review = False
+                        if primary.properties['status'] in ['deleted', 'not reviewed', 'not submitted for review by lab']:
+                            not_reviewed = True
+                            continue
+
+                        if primary.properties['characterization_review']:
+                            for lane_review in primary.properties['characterization_review']:
+                                new_review = {
+                                    'biosample_term_name': lane_review['biosample_term_name'],
+                                    'biosample_term_id': lane_review['biosample_term_id'],
+                                    'status': 'awaiting lab characterization'
+                                }
+                                '''Get the organism information from the lane, not from the target since there are lanes'''
+                                lane_organism = find_resource(request.root, lane_review['organism'])
+                                new_review['organisms'] = [request.resource_path(lane_organism)]
+
+                                if not histone_mod_target:
+                                    new_review['targets'] = [request.resource_path(find_resource(request.root, primary.properties['target']))]
+                                else:
+                                    new_review['targets'] = targets
+
+                                if lane_review['lane_status'] == 'pending dcc review':
+                                    if pending_secondary or compliant_secondary:
+                                        new_review['status'] = 'pending dcc review'
+                                elif lane_review['lane_status'] == 'not compliant':
+                                    if compliant_secondary or not_compliant_secondary:
+                                        new_review['status'] = 'not eligible for new data'
+                                elif lane_review['lane_status'] == 'compliant':
+                                    if compliant_secondary:
+                                        if not histone_mod_target:
+                                            new_review['status'] = 'eligible for new data'
+                                        else:
+                                            new_review['status'] = 'compliant'
+                                            '''Keep track of compliant organisms for histones and we
+                                            will fill them in after going through all the lanes'''
+                                            if request.resource_path(lane_organism) not in histone_organisms:
+                                                histone_organisms.append(request.resource_path(lane_organism))
+                                    if pending_secondary:
+                                        new_review['status'] = 'pending dcc review'
+
+                                else:
+                                    '''For all other cases, can keep the awaiting status'''
+                                    pass
+
+                                key = "%s;%s;%s;%s" % (lane_review['biosample_term_name'], lane_review['biosample_term_id'], lane_review['organism'], target)
+                                if key not in char_reviews:
+                                    char_reviews[key] = new_review
+                                    has_lane_review = True
+                                else:
+                                    has_lane_review = True
+                                    '''Check to see if existing status should be overridden'''
+                                    if lane_review['lane_status'] == 'compliant':
+                                        '''compliant always overrides any other status,
+                                        no other status overrides an existing one'''
+                                        char_reviews[key] = new_review
+
+                    if has_lane_review:
+                        for key in char_reviews:
+                            if not histone_mod_target:
+                                antibody_lot_reviews.append(char_reviews[key])
+                            else:
+                                '''Review of antibodies against histone modifications are treated differently.
+                                There should be at least 3 compliant cell types for eligibility for use'''
+                                if char_reviews[key]['status'] == 'compliant':
+                                    char_reviews[key]['status'] = 'awaiting lab characterization'
+                                    num_compliant_celltypes += 1
+
+                        if histone_mod_target:
+                            if num_compliant_celltypes >= 3:
+                                antibody_lot_reviews = [{
+                                    'biosample_term_name': 'all cell types and tissues',
+                                    'biosample_term_id': 'NTR:00000000',
+                                    'organisms': histone_organisms,
+                                    'targets': targets,
+                                    'status': 'eligible for new data'
+                                }]
+                            else:
+                                for key in char_reviews:
+                                    antibody_lot_reviews.append(char_reviews[key])
+
+                    else:
+                        '''The only uncovered case left in this block is if there is only one in progress
+                        primary or secondary.'''
+                        if len(primary_chars) == 1 and len(secondary_chars) == 0:
+                            antibody_lot_reviews.append(base_review)
+                        elif len(primary_chars) == 0 and len(secondary_chars) == 1:
+                            antibody_lot_reviews.append(base_review)
+                        elif len(secondary_chars) == 1 and not_reviewed:
+                            antibody_lot_reviews.append(base_review)
+                        else:
+                            pass
+
+            else:
+                '''If there are no characterizations, then default to awaiting lab characterization.
+                Instead of having a dummy characterization to inform the UI, let the UI handle this default case.'''
+                antibody_lot_reviews = []
+
+            ns['lot_reviews'] = antibody_lot_reviews
             return ns
 
 
@@ -333,39 +508,48 @@ class DonorItem(Collection.Item):
 class MouseDonor(Collection):
     item_type = 'mouse_donor'
     schema = load_schema('mouse_donor.json')
+    __acl__ = []
     properties = {
         'title': 'Mouse donors',
         'description': 'Listing Biosample Donors',
     }
 
     class Item(DonorItem):
-        pass
+        def __ac_local_roles__(self):
+            # Disallow lab submitter edits
+            return {}
 
 
 @location('fly-donors')
 class FlyDonor(Collection):
     item_type = 'fly_donor'
     schema = load_schema('fly_donor.json')
+    __acl__ = []
     properties = {
         'title': 'Fly donors',
         'description': 'Listing Biosample Donors',
     }
 
     class Item(DonorItem):
-        pass
+        def __ac_local_roles__(self):
+            # Disallow lab submitter edits
+            return {}
 
 
 @location('worm-donors')
 class WormDonor(Collection):
     item_type = 'worm_donor'
     schema = load_schema('worm_donor.json')
+    __acl__ = []
     properties = {
         'title': 'Worm donors',
         'description': 'Listing Biosample Donors',
     }
 
     class Item(DonorItem):
-        pass
+        def __ac_local_roles__(self):
+            # Disallow lab submitter edits
+            return {}
 
 
 @location('human-donors')
@@ -619,7 +803,7 @@ class Target(Collection):
     class Item(Collection.Item):
         template = {
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
-            'title': {'$value': '{label} ({organism_name})', '$templated': True},
+            'title': {'$value': '{label} ({scientific_name})', '$templated': True},
         }
         embedded = set(['organism'])
         keys = ALIAS_KEYS + [
@@ -632,12 +816,16 @@ class Target(Collection):
             # self.properties as we need uuid here
             organism = root.get_by_uuid(self.properties['organism'])
             ns['organism_name'] = organism.properties['name']
+            ns['scientific_name'] = organism.properties['scientific_name']
             return ns
 
         @property
         def __name__(self):
-            ns = self.template_namespace(self.properties.copy())
-            return u'{label}-{organism_name}'.format(**ns)
+            properties = self.upgrade_properties(finalize=False)
+            root = find_root(self)
+            organism = root.get_by_uuid(self.properties['organism'])
+            return u'{label}-{organism_name}'.format(
+                organism_name=organism.properties['name'], **properties)
 
 
 # The following should really be child collections.
@@ -652,7 +840,7 @@ class AntibodyCharacterization(Characterization):
 
     class Item(Characterization.Item):
         embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
-        
+
         template = {
             'characterization_method': {'$value': '{characterization_method}', '$templated': True, '$condition': 'characterization_method'}
         }
@@ -680,6 +868,9 @@ class AntibodyApproval(Collection):
     }
 
     class Item(Collection.Item):
+        template = {
+            'title': {'$value': '{accession} in {scientific_name} {label}', '$templated': True},
+        }
         embedded = [
             'antibody.host_organism',
             'antibody.source',
@@ -692,6 +883,18 @@ class AntibodyApproval(Collection):
         keys = [
             {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
         ]
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            root = find_root(self)
+            # self.properties as we need uuid here
+            antibody = root.get_by_uuid(self.properties['antibody'])
+            ns['accession'] = antibody.properties['accession']
+            target = root.get_by_uuid(self.properties['target'])
+            ns['label'] = target.properties['label']
+            organism = root.get_by_uuid(target.properties['organism'])
+            ns['scientific_name'] = organism.properties['scientific_name']
+            return ns
 
 
 @location('platforms')
@@ -756,31 +959,14 @@ class Replicates(Collection):
         embedded = set(['library', 'platform'])
 
 
-@location('software')
-class Software(Collection):
-    item_type = 'software'
-    schema = load_schema('software.json')
-    properties = {
-        'title': 'Software',
-        'description': 'Listing of software',
-    }
+def file_is_revoked(file, root):
+    item = find_resource(root, file)
+    return item.upgrade_properties()['status'] == 'revoked'
 
 
-@location('files')
-class File(Collection):
-    item_type = 'file'
-    schema = load_schema('file.json')
-    properties = {
-        'title': 'Files',
-        'description': 'Listing of Files',
-    }
-
-    item_name_key = 'accession'
-    item_keys = ACCESSION_KEYS  # + ALIAS_KEYS
-    item_namespace_from_path = {
-        'lab': 'dataset.lab',
-        'award': 'dataset.award',
-    }
+def file_not_revoked(file, root):
+    item = find_resource(root, file)
+    return item.upgrade_properties()['status'] != 'revoked'
 
 
 @location('datasets')
@@ -795,14 +981,35 @@ class Dataset(Collection):
     class Item(Collection.Item):
         template = {
             'files': [
-                {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
-                {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', file_not_revoked),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', file_not_revoked),
+                    '$templated': True,
+                },
+            ],
+            'revoked_files': [
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', file_is_revoked),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', file_is_revoked),
+                    '$templated': True,
+                },
             ],
             'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
             'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
         template_type = {
             'files': 'file',
+            'revoked_files': 'file',
         }
         embedded = [
             'files',
@@ -811,6 +1018,12 @@ class Dataset(Collection):
             'files.replicate.experiment.lab',
             'files.replicate.experiment.target',
             'files.submitted_by',
+            'revoked_files',
+            'revoked_files.replicate',
+            'revoked_files.replicate.experiment',
+            'revoked_files.replicate.experiment.lab',
+            'revoked_files.replicate.experiment.target',
+            'revoked_files.submitted_by',
             'submitted_by',
             'lab',
             'award',
@@ -830,7 +1043,8 @@ class Dataset(Collection):
                 return ns
             for link in ns['original_files'] + ns['related_files']:
                 f = find_resource(request.root, link)
-                if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and f.properties['status'] == 'current':
+                if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
+                        f.properties['status'] in ['current', 'released', 'revoked']:
                     if 'assembly' in f.properties:
                         ns['assembly'] = f.properties['assembly']
                         break
@@ -872,7 +1086,9 @@ class Experiment(Dataset):
             ],
             'synonyms': [
                 {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
-            ]
+            ],
+            'month_released': {'$value': '{month_released}', '$templated': True, '$condition': 'date_released'},
+            'run_type': {'$value': '{run_type}', '$templated': True, '$condition': 'replicates'},
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody',
@@ -899,6 +1115,16 @@ class Experiment(Dataset):
             if request is None:
                 return ns
             terms = request.registry['ontology']
+            ns['run_type'] = ''
+            if 'replicates' in ns:
+                for replicate in ns['replicates']:
+                    f = find_resource(request.root, replicate)
+                    if 'paired_ended' in f.properties:
+                        ns['run_type'] = 'Single-ended'
+                        if f.properties['paired_ended'] is True:
+                            ns['run_type'] = 'Paired-ended'
+            if 'date_released' in ns:
+                ns['month_released'] = datetime.datetime.strptime(ns['date_released'], '%Y-%m-%d').strftime('%B, %Y')
             if 'biosample_term_id' in ns:
                 if ns['biosample_term_id'] in terms:
                     ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
@@ -937,7 +1163,106 @@ class RNAiCharacterization(Characterization):
     }
 
 
+@location('pages')
 class Page(Collection):
+    item_type = 'page'
+    properties = {
+        'title': 'Pages',
+        'description': 'Portal pages',
+    }
+    schema = load_schema('page.json')
+    unique_key = 'page:location'
+    template = copy.deepcopy(Collection.template)
+    template['actions'] = [ADD_ACTION]
+
+    # Override default get to avoid some unnecessary lookups
+    # and skip the check that parent == collection
+    def get(self, name, default=None):
+        root = find_root(self)
+        resource = root.get_by_uuid(name, None)
+        if resource is not None:
+            return resource
+        if self.unique_key is not None:
+            resource = root.get_by_unique_key(self.unique_key, name)
+            if resource is not None:
+                return resource
+        return default
+
+    class Item(Collection.Item):
+        name_key = 'name'
+        keys = [
+            {'name': 'page:location', 'value': '{name}', '$templated': True,
+             '$condition': lambda parent=None: parent is None},
+            {'name': 'page:location', 'value': '{parent}:{name}', '$templated': True,
+             '$condition': 'parent', '$templated': True},
+        ]
+
+        template = Collection.Item.template.copy()
+        template['canonical_uri'] = {
+            '$value': lambda name: '/%s/' % name if name != 'homepage' else '/',
+            '$condition': lambda collection_uri=None: collection_uri == '/pages/',
+            '$templated': True
+        }
+
+        actions = [EDIT_ACTION]
+
+        STATUS_ACL = {
+            'in progress': [],
+            'released': ALLOW_EVERYONE_VIEW,
+            'deleted': ONLY_ADMIN_VIEW,
+        }
+
+        @property
+        def __parent__(self):
+            parent_uuid = self.properties.get('parent')
+            name = self.__name__
+            root = find_root(self.collection)
+            if parent_uuid:  # explicit parent
+                return root.get_by_uuid(parent_uuid)
+            elif name in root.collections or name == 'homepage':
+                # collection default page; use pages collection as canonical parent
+                return self.collection
+            else:  # top level
+                return root
+
+        def is_default_page(self):
+            name = self.__name__
+            root = find_root(self.collection)
+            if not self.properties.get('parent') and (name in root.collections or name == 'homepage'):
+                return True
+            return False
+
+        # Handle traversal to nested pages
+
+        def __getitem__(self, name):
+            resource = self.get(name)
+            if resource is None:
+                raise KeyError(name)
+            return resource
+
+        def __contains__(self, name):
+            return self.get(name, None) is not None
+
+        def get(self, name, default=None):
+            root = find_root(self)
+            location = str(self.uuid) + ':' + name
+            resource = root.get_by_unique_key('page:location', location)
+            if resource is not None:
+                return resource
+            return default
+
+
+def isNotCollectionDefaultPage(value, schema):
+    if value:
+        request = get_current_request()
+        page = lookup_resource(request.root, request.root, value.encode('utf-8'))
+        if page.is_default_page():
+            return 'You may not place pages inside an object collection.'
+
+VALIDATOR_REGISTRY['isNotCollectionDefaultPage'] = isNotCollectionDefaultPage
+
+
+class LegacyPage(Collection):
     schema = load_schema('page.json')
 
     template = copy.deepcopy(Collection.template)
@@ -961,8 +1286,8 @@ class Page(Collection):
         }
 
 
-@location('about')
-class AboutPage(Page):
+@location('_about')
+class AboutPage(LegacyPage):
     item_type = 'about_page'
     properties = {
         'title': 'About Pages',
@@ -971,8 +1296,8 @@ class AboutPage(Page):
     unique_key = 'about_page:name'
 
 
-@location('help')
-class HelpPage(Page):
+@location('_help')
+class HelpPage(LegacyPage):
     item_type = 'help_page'
     properties = {
         'title': 'Help Pages',
@@ -981,15 +1306,57 @@ class HelpPage(Page):
     unique_key = 'help_page:name'
 
 
-@location('publication')
+@location('publications')
 class Publication(Collection):
     item_type = 'publication'
     schema = load_schema('publication.json')
     properties = {
-        'title': 'Publication',
+        'title': 'Publications',
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
+
+    class Item(Collection.Item):
+        template = {
+            'publication_year': {
+                '$value': '{publication_year}',
+                '$templated': True,
+                '$condition': 'publication_year',
+            },
+        }
+
+        keys = ALIAS_KEYS + [
+            {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
+            {
+                'name': '{item_type}:reference',
+                'value': '{reference}',
+                '$repeat': 'reference references',
+                '$templated': True,
+                '$condition': 'reference',
+            },
+        ]
+
+        def template_namespace(self, properties, request=None):
+            ns = Collection.Item.template_namespace(self, properties, request)
+            if 'date_published' in ns:
+                ns['publication_year'] = ns['date_published'].partition(' ')[0]
+            return ns
+
+
+@location('software')
+class Software(Collection):
+    item_type = 'software'
+    schema = load_schema('software.json')
+    properties = {
+        'title': 'Software',
+        'description': 'Software pages',
+    }
+    item_name_key = "name"
+    unique_key = "software:name"
+    item_embedded = set(['references'])
+    item_keys = ALIAS_KEYS + [
+        {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
+    ]
 
 
 @location('images')
@@ -1019,4 +1386,3 @@ class Image(Collection):
                 '$templated': True,
             },
         ]
-        actions = [EDIT_ACTION]

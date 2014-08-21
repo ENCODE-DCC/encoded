@@ -4,67 +4,68 @@
 var React = require("react");
 var classSet = require("react/lib/cx");
 var BootstrapMixin = require("./BootstrapMixin")["default"];
-var DropdownStateMixin = require("./DropdownStateMixin")["default"];
 
 var NavItem = React.createClass({displayName: 'NavItem',
-  mixins: [BootstrapMixin, DropdownStateMixin],
+    mixins: [BootstrapMixin],
 
-  propTypes: {
-    onSelect: React.PropTypes.func,
-    active: React.PropTypes.bool,
-    disabled: React.PropTypes.bool,
-    href: React.PropTypes.string,
-    title: React.PropTypes.string,
-    trigger: React.PropTypes.string,
-    dropdown: React.PropTypes.bool
-  },
+    propTypes: {
+        onSelect: React.PropTypes.func,
+        active: React.PropTypes.bool,
+        disabled: React.PropTypes.bool,
+        href: React.PropTypes.string,
+        title: React.PropTypes.string,
+        trigger: React.PropTypes.string,
+        dropdown: React.PropTypes.bool
+    },
 
-  getDefaultProps: function () {
-    return {
-      href: '#'
-    };
-  },
+    // Dropdown context using React context mechanism.
+    contextTypes: {
+        dropdownComponent: React.PropTypes.string,
+        onDropdownChange: React.PropTypes.func
+    },
 
-  render: function () {
-    var classes = {
-      'active': this.props.active,
-      'disabled': this.props.disabled,
-      'dropdown': this.props.dropdown,
-      'open': this.state.open
-    };
+    getDefaultProps: function () {
+        return {
+            href: '#'
+        };
+    },
 
-    var anchorClass = this.props.dropdown ? 'dropdown-toggle' : '';
+    // Call app with our React node ID if opening drop-down menu, or undefined if closing
+    setDropdownState: function (newState) {
+        this.context.onDropdownChange(newState ? this._rootNodeID : undefined);
+    },
 
-    return (
-      React.DOM.li( {className:classSet(classes)}, 
-        this.transferPropsTo(
-        React.DOM.a(
-          {className:anchorClass,
-          onClick:this.handleClick,
-          ref:"anchor"}, 
-          this.props.dropdown ? React.DOM.span(null, this.props.children[0],React.DOM.span( {className:"caret"})) : this.props.children
-        )),
-        this.props.dropdown ? this.props.children.slice(1) : null
-      )
-    );
-  },
+    render: function () {
+        var classes = {
+            'active': this.props.active,
+            'disabled': this.props.disabled,
+            'dropdown': this.props.dropdown,
+            'open': this.context.dropdownComponent === this._rootNodeID
+        };
 
-  handleOpenClick: function () {
-    this.setDropdownState(true);
-  },
+        var anchorClass = this.props.dropdown ? 'dropdown-toggle' : '';
 
-  handleClick: function (e) {
-    if (this.props.dropdown) {
-      e.preventDefault();
-      this.handleOpenClick();
-    } else if (this.props.onSelect) {
-      e.preventDefault();
+        return (
+            React.DOM.li( {className:classSet(classes), 'aria-haspopup':this.props.dropdown}, 
+                this.transferPropsTo(
+                React.DOM.a(
+                    {className:anchorClass,
+                    onClick:this.handleClick,
+                    ref:"anchor"}, 
+                    this.props.dropdown ? React.DOM.span(null, this.props.children[0],React.DOM.span( {className:"caret"})) : this.props.children
+                )),
+                this.props.dropdown ? this.props.children.slice(1) : null
+            )
+        );
+    },
 
-      if (!this.props.disabled) {
-        this.props.onSelect(this.props.key,this.props.href);
-      }
+    handleClick: function (e) {
+        if (this.props.dropdown) {
+            e.preventDefault();
+            e.stopPropagation();
+            this.setDropdownState(this.context.dropdownComponent !== this._rootNodeID);
+        }
     }
-  }
 });
 
 exports["default"] = NavItem;

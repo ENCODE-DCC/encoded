@@ -29,20 +29,15 @@ var Form = module.exports.Form = React.createClass({
     },
 
     render: function() {
-        var error = this.state.error;
         return (
           <form>
-            <FormFor />
+            {(this.state.errors || []).map(error => <div className="alert alert-danger">{error}</div>)}
+            <FormFor externalValidation={this.state.externalValidation} />
             <div className="pull-right">
                 <a href="" className="btn btn-default">Cancel</a>
                 {' '}
                 <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
             </div>
-            <ul style={{clear: 'both'}}>
-                {error && error.code === 422 ? error.errors.map(function (error) {
-                    return <li className="alert alert-error"><b>{'/' + error.name.join('/') + ': '}</b><span>{error.description}</span></li>;
-                }) : error ? <li className="alert alert-error">{JSON.stringify(error)}</li> : null}
-            </ul>
           </form>
         )
     },
@@ -83,15 +78,27 @@ var Form = module.exports.Form = React.createClass({
             'exDescription': 'putRequest:' + status + ':' + xhr.statusText,
             'location': window.location.href
         });
-        this.receive(data, status, xhr, true);
+        this.receive(data, status, xhr);
     },
 
-    receive: function (data, status, xhr, erred) {
+    receive: function (data, status, xhr) {
+        var externalValidation = {children: {}};
+        var schemaErrors = [];
+        if (data.errors !== undefined) {
+            data.errors.map(function (error) {
+                if (error.name.length) {
+                    externalValidation.children[error.name[0]] = {validation: {failure: error.description}};
+                } else {
+                    schemaErrors.push(error.description);
+                }
+            });
+        }
+
         this.setState({
             data: data,
             communicating: false,
-            erred: erred,
-            error: erred ? data : undefined
+            externalValidation: externalValidation,
+            errors: schemaErrors
         });
     }
 });

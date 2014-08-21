@@ -6,6 +6,7 @@ var Layout = require('./layout').Layout;
 var globals = require('./globals');
 var merge = require('react/lib/merge');
 var ItemEdit = require('./item').ItemEdit;
+var ObjectPicker = require('./blocks/item').ObjectPicker;
 
 
 var LayoutType = {
@@ -22,13 +23,23 @@ var LayoutType = {
         });
         return merge(value, {blocks: blockList});
     },
-}
+};
 
 
 var Page = module.exports.Page = React.createClass({
     render: function() {
-        var value = LayoutType.serialize(this.props.context.layout);
-        return <div><Layout value={value} /></div>;
+        var context = this.props.context;
+        var value = LayoutType.serialize(context.layout || defaultLayout);
+        return (
+            <div>
+                <header className="row">
+                    <div className="col-sm-12">
+                        <h1 className="page-title">{context.title}</h1>
+                    </div>
+                </header>
+                <Layout value={value} />
+            </div>
+        );
     }
 });
 
@@ -62,12 +73,14 @@ var statusSelect = (
         <option value="deleted">deleted</option>
     </select>
 );
+var pagePicker = <ObjectPicker searchBase={"?mode=picker&type=page"} />;
 
 
 var Schema    = ReactForms.schema.Schema;
 var Property  = ReactForms.schema.Property;
 var PageFormSchema = (
     <Schema>
+        <Property name="parent" label="Parent Page" input={pagePicker} />
         <Property name="name" label="Name" />
         <Property name="title" label="Title" />
         <Property name="status" label="Status" input={statusSelect} />
@@ -81,7 +94,7 @@ var PageFormSchema = (
 
 var PageEdit = React.createClass({
     render: function() {
-        var defaultValue = {layout: defaultLayout};
+        var defaultValue = {layout: defaultLayout, status: "in progress"};
         return this.transferPropsTo(<ItemEdit context={this.props.context} schema={PageFormSchema} defaultValue={defaultValue} />);
     }
 });

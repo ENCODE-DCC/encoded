@@ -28,5 +28,21 @@ figure {
 	margin-bottom: 1em;
 }
 
+.sentence-case-block {
+    display: inline-block;
+
+    &::first-letter,
+    &:first-letter {
+        text-transform: uppercase;
+    }
+}
+
 .sentence-case::first-letter { text-transform: uppercase; }
 .sentence-case:first-letter { text-transform: uppercase; } // older browser support
+
+.repl-acc {
+    margin: -5px 0 15px;
+    font-size: 14px;
+    font-weight: normal;
+    color: #808080;
+}

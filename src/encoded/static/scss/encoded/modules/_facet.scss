@@ -89,21 +89,15 @@
 .accession {
     font-size: 1.3em;
     font-weight: bold;
-    display: block;
-    width: 90%;
 }
 
-.accession a {
-    width: 90%;
-    display:block;
-}
+.accession-note {
+    font-size: 0.9em;
+    font-weight: normal;
 
-.accession div {
-    font-size: 0.8em;
-    font-weigt: normal;
-    display: block;
-    width: 90%; 
-    margin: 0 0 0 0;
+    a[href^="http"]:after {
+        font-size: 0.9em;
+    }
 }
 
 .type {
@@ -186,12 +180,6 @@
             font-size: 0.9em;
         }
 
-        a {
-            text-decoration: none;
-            display: block;
-
-            @include transition(font-size 0.3s ease, background-color 0.3s ease);
-        }
     }
 
     &:before {
@@ -214,4 +202,23 @@ span.bar {
     top: 0;
     bottom:0;
     z-index: -1;
+}
+
+
+// Styles for publication listing
+
+.list-author {
+    margin: 0;
+    font-size: floor($font-size-base * 1.1);
+}
+
+.list-citation {
+    margin: 0;
+    font-size: floor($font-size-base * 0.95);;
+}
+
+.list-reference {
+    display: inline;
+    margin: 0 !important;
+    font-size: floor($font-size-base * 0.95);;
 }

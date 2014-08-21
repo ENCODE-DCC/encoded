@@ -43,7 +43,7 @@ var validationStatusClass = module.exports.validationStatusClass = function (sta
 };
 
 
-module.exports.submitHost = "www.encodedcc.org";
+module.exports.productionHost = {'www.encodeproject.org':1, 'ssl.encodeproject.org':1, 'www.encodedcc.org':1};
 
 module.exports.encodeVersionMap = {
     "ENCODE2": "2",
@@ -66,5 +66,6 @@ module.exports.dbxref_prefix_map = {
     "UCSC-GB-hg19": "http://genome.cse.ucsc.edu/cgi-bin/hgTrackUi?db=hg19&g=",
     // Dataset, experiment, and document references
     "PMID": "http://www.ncbi.nlm.nih.gov/pubmed/?term=",
+    "PMCID": "http://www.ncbi.nlm.nih.gov/pmc/articles/",
     "doi": "http://dx.doi.org/doi:"
 };

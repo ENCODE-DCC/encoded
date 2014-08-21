@@ -89,9 +89,16 @@ def schema_mapping(name, schema):
             'include_in_all': False
         }
 
-    if type_ in ('boolean', 'integer'):
+    if type_ == 'integer':
         return {
-            'type': type_,
+            'type': 'long',
+            'copy_to': [],
+            'include_in_all': False
+        }
+
+    if type_ == 'boolean':
+        return {
+            'type': 'boolean',
             'copy_to': [],
             'include_in_all': False
         }
@@ -109,9 +116,19 @@ def index_settings():
                     }
                 },
                 'analyzer': {
+                    'default': {
+                        'type': 'custom',
+                        'tokenizer': 'standard',
+                        'char_filter': 'html_strip',
+                        'filter': [
+                            'standard',
+                            'lowercase',
+                        ]
+                    },
                     'encoded_index_analyzer': {
                         'type': 'custom',
                         'tokenizer': 'standard',
+                        'char_filter': 'html_strip',
                         'filter': [
                             'standard',
                             'lowercase',
@@ -235,23 +252,22 @@ def collection_mapping(collection, embed=True):
     if schema is None:
         return None
 
+    for c in schema.get('calculated_props', {}):
+        schema['properties'][c] = dict(schema['calculated_props'][c])
     mapping = schema_mapping(collection.item_type, schema)
 
     merged_rev = collection.Item.merged_rev
     merged_template_type = collection.Item.merged_template_type
 
-    calculated_props = list(schema.get('calculated_props', ()))
-    calculated_props.extend(['@id', '@type'])
-    calculated_props.extend(merged_rev.keys())
-
-    for name in calculated_props:
+    mixins = ['@id', '@type']
+    mixins.extend(merged_rev.keys())
+    for name in mixins:
         mapping['properties'][name] = schema_mapping(name, {'type': 'string'})
 
     if not embed:
         return mapping
 
     root = find_root(collection)
-
     for prop in collection.Item.embedded:
         new_mapping = mapping
         new_schema = schema

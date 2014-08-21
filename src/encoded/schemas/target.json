@@ -50,6 +50,22 @@
             "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
             "format": "target_label"
+        },
+        "context": {
+            "type": "array",
+            "items": {
+                "title": "Target project context",
+                "description": "The project context(s) the target was registered in",
+                "type": "string",
+                "enum": [
+                    "histone modification",
+                    "transcription factor",
+                    "RNA binding protein",
+                    "chromatin remodeller",
+                    "control",
+                    "other"
+                ]
+            }
         }
     },
     "facets": {

@@ -17,16 +17,22 @@
         "schema_version": {
             "default": "1"
         },
-        "title": {
-            "title": "Title",
-            "description": "The name shown in the browser's title bar and tabs.",
-            "type": "string"
+        "parent": {
+            "title": "Parent Page",
+            "type": ["string", "null"],
+            "linkTo": "page",
+            "validators": ["isNotCollectionDefaultPage"]
         },
         "name": {
             "title": "URL Name",
             "description": "The name shown in this page's URL.",
             "type": "string",
             "pattern": "^[a-z0-9_-]+$"
+        },
+        "title": {
+            "title": "Title",
+            "description": "The name shown in the browser's title bar and tabs.",
+            "type": "string"
         },
         "layout": {
             "title": "Page Layout",
@@ -48,7 +54,14 @@
                 },
                 "blocks": {
                     "type": "array",
-                    "items": {},
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "body": {
+                                "type": "string"
+                            }
+                        }
+                    },
                     "default": [
                         {
                             "@id": "#block1",
@@ -61,8 +74,8 @@
         }
     },
     "columns": {
-        "name": {
-            "title": "Name",
+        "@id": {
+            "title": "Path",
             "type": "string"
         },
         "title": {
@@ -77,5 +90,11 @@
             "title": "Status",
             "type": "string"
         }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "name": 2.0,
+        "title": 2.0,
+        "layout.blocks.body": 1.0
     }
 }

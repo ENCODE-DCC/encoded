@@ -16,8 +16,6 @@ ORDER = [
     'antibody_lot',
     'antibody_characterization',
     'antibody_approval',
-    'mouse_donor',
-    'human_donor',
     'treatment',
     'construct',
     'construct_characterization',
@@ -33,12 +31,12 @@ ORDER = [
     'library',
     'experiment',
     'replicate',
-    # 'software',
     'dataset',
     'file',
     'image',
-    'about',
-    'publication'
+    'page',
+    'publication',
+    'software',
 ]
 
 

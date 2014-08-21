@@ -3,7 +3,7 @@
 var React = require('react');
 var url = require('url');
 var mixins = require('./mixins');
-var submitHost = require('./globals').submitHost;
+var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
 var Navbar = require('../react-bootstrap/Navbar');
 var Nav = require('../react-bootstrap/Nav');
@@ -29,7 +29,7 @@ var NavBar = React.createClass({
 var NavBarLayout = React.createClass({
     getInitialState: function() {
         return {
-            testWarning: url.parse(this.props.href).hostname !== submitHost
+            testWarning: !productionHost[url.parse(this.props.href).hostname]
         };
     },
 
@@ -85,11 +85,28 @@ var NavBarLayout = React.createClass({
 var GlobalSections = React.createClass({
     render: function() {
         var section = this.props.section;
+
+        // Render top-level main menu
         var actions = this.props.global_sections.map(function (action) {
-            var active = (section == action.id);
+            var subactions;
+            if (action.children) {
+                // Has dropdown menu; render it into subactions var
+                subactions = action.children.map(function (action) {
+                    return (
+                        <NavItem href={action.url || ''} key={action.id}>
+                            {action.title}
+                        </NavItem>
+                    );
+                });
+            }
             return (
-                <NavItem active={active} href={action.url} key={action.id}>
+                <NavItem dropdown={action.hasOwnProperty('children')} key={action.id} href={action.url || ''}>
                     {action.title}
+                    {action.children ?
+                        <Nav navbar={true} dropdown={true}>
+                            {subactions}
+                        </Nav>
+                    : null}
                 </NavItem>
             );
         });
@@ -106,6 +123,16 @@ var ContextActions = React.createClass({
                 </NavItem>
             );
         });
+        if (this.props.context_actions.length > 1) {
+            actions = (
+                <NavItem dropdown={true}>
+                    <i className="icon icon-gear"></i>
+                    <Nav navbar={true} dropdown={true}>
+                        {actions}
+                    </Nav>
+                </NavItem>
+            );
+        }
         return <Nav bsStyle="navbar-nav" navbar={true} right={true} id="edit-actions">{actions}</Nav>;
     }
 });
