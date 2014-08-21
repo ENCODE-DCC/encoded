@@ -74,7 +74,7 @@ def audit_library_status(value, system):
 def audit_library_RNA_size_range(value, system):
     if value['status'] == 'deleted':
         return
-    if (value['nucleic_acid_term_id'] == 'SO:0000356') and ('size_range' not in value):
+    if (value['nucleic_acid_term_id'] in ['SO:0000356', 'SO:0000871']) and ('size_range' not in value):
         detail = 'RNA libraries should have size_range specified'
         raise AuditFailure('missing size_range', detail, level='ERROR')
 
