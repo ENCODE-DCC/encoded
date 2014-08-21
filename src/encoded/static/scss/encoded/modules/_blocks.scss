@@ -32,6 +32,14 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
 
     &.richtextblock {
         background-color: #fff;
+
+        @media screen and (min-width: $screen-md-min) {
+            :target {
+                margin-top: -40px !important;
+                padding-top: 40px !important;
+                @include animation(bgfade 1s linear);
+            }
+        }
     }
 
     &.richtextblock, .teaser .caption {
