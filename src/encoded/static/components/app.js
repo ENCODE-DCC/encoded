@@ -181,8 +181,10 @@ var App = React.createClass({
         }
 
         // Google does not update the content of 301 redirected pages
+        var base;
         if (({'http://www.encodeproject.org/': 1, 'http://encodeproject.org/': 1})[canonical]) {
-            canonical = 'https://www.encodeproject.org/';
+            base = canonical = 'https://www.encodeproject.org/';
+            this.historyEnabled = false;
         }
 
         return (
@@ -192,6 +194,7 @@ var App = React.createClass({
                     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
                     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                     <title>{title}</title>
+                    {base ? <base href={base}/> : null}
                     <link rel="canonical" href={canonical} />
                     <script dangerouslySetInnerHTML={{__html: scriptjs + '\n'}}></script>
                     <script dangerouslySetInnerHTML={{__html: inline}}></script>
