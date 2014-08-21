@@ -53,11 +53,14 @@ var Lot = module.exports.Lot = React.createClass({
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>
-                            <span>Antibody against </span>
-                            {Object.keys(targets).map(function(target, i) {
-                                var targetObj = targets[target];
-                                return <span>{i !== 0 ? ', ' : ''}{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</span>;
-                            })}
+                            {Object.keys(targets).length ?
+                                <span>Antibody against {Object.keys(targets).map(function(target, i) {
+                                    var targetObj = targets[target];
+                                    return <span>{i !== 0 ? ', ' : ''}{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</span>;
+                                })}</span>
+                            :
+                                <span>Antibody</span>
+                            }
                         </h3>
                     </div>
                 </header>
