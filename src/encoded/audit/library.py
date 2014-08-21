@@ -85,8 +85,13 @@ def audit_library_depleted_in(value, system):
         return
     if not value['depleted_in_term_name'] or not value['depleted_in_term_id']:
         return
-    for i in range(len(value['depleted_in_term_name'])):
-        if value['depleted_in_term_id'][i] == value['nucleic_acid_term_id']:
+
+    if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
+        detail = 'depleted_in_term_name and depleted_in_term_id totals do not match'
+        yield AuditFailure('depleted_in length mismatch', detail, level='ERROR')
+
+    for i, dep_term in enumerate(value['depleted_in_term_id']):
+        if dep_term == value['nucleic_acid_term_id']:
             detail = '{} - {}'.format(value['depleted_in_term_name'][i], value['nucleic_acid_term_name'][i])
             yield AuditFailure('invalid depleted_in', detail, level='ERROR')
 
