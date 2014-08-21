@@ -39,6 +39,7 @@ var Lot = module.exports.Lot = React.createClass({
                 targets[characterization.target['@id']] = characterization.target;
             });
         }
+        var targetKeys = Object.keys(targets);
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -53,7 +54,7 @@ var Lot = module.exports.Lot = React.createClass({
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>
-                            {Object.keys(targets).length ?
+                            {targetKeys.length ?
                                 <span>Antibody against {Object.keys(targets).map(function(target, i) {
                                     var targetObj = targets[target];
                                     return <span>{i !== 0 ? ', ' : ''}{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</span>;
@@ -86,7 +87,7 @@ var Lot = module.exports.Lot = React.createClass({
                             <div data-test="targets">
                                 <dt>Targets</dt>
                                 <dd>
-                                    {Object.keys(targets).map(function(target, i) {
+                                    {targetKeys.map(function(target, i) {
                                         var targetObj = targets[target];
                                         return <span>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</a></span>;
                                     })}
