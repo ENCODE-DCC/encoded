@@ -33,10 +33,12 @@ var Lot = module.exports.Lot = React.createClass({
         });
 
         // Make an array of targets with no falsy entries and no repeats
-        var targets = context.characterizations ? context.characterizations.map(function(characterization) {
-            return characterization.target; // Might be undefined or empty
-        }) : [];
-        targets = targets ? _.uniq(_.compact(targets), function(target) {return target['@id']; }) : [];
+        var targets = {};
+        if (context.characterizations) {
+            context.characterizations.forEach(function(characterization) {
+                targets[characterization.target['@id']] = characterization.target;
+            });
+        }
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -52,8 +54,9 @@ var Lot = module.exports.Lot = React.createClass({
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>
                             <span>Antibody against </span>
-                            {targets.map(function(target, i) {
-                                return <span>{i !== 0 ? ', ' : ''}{target.label}{' ('}<em>{target.organism.scientific_name}</em>{')'}</span>;
+                            {Object.keys(targets).map(function(target, i) {
+                                var targetObj = targets[target];
+                                return <span>{i !== 0 ? ', ' : ''}{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</span>;
                             })}
                         </h3>
                     </div>
@@ -76,12 +79,15 @@ var Lot = module.exports.Lot = React.createClass({
                             <dd>{context.lot_id}</dd>
                         </div>
 
-                        {targets.length ?
+                        {Object.keys(targets).length ?
                             <div data-test="targets">
                                 <dt>Targets</dt>
-                                <dd>{targets.map(function(target, i) {
-                                    return <span>{i !== 0 ? ', ' : ''}<a href={target['@id']}>{target.label}{' ('}<em>{target.organism.scientific_name}</em>{')'}</a></span>;
-                                })}</dd>
+                                <dd>
+                                    {Object.keys(targets).map(function(target, i) {
+                                        var targetObj = targets[target];
+                                        return <span>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</a></span>;
+                                    })}
+                                </dd>
                             </div>
                         : null}
 
