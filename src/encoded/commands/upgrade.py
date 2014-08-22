@@ -21,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 
 DEFAULT_COLLECTIONS = [
-    'file',
 ]
 
 

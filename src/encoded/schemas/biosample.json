@@ -486,10 +486,6 @@
             "title": "Source",
             "type": "string"
         },
-        "developmental_slims": {
-            "title": "Developmental slim",
-            "type": "array"
-        },
         "synchronization": {
             "title": "Synchronization stage",
             "type": "string" 

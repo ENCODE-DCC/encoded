@@ -40,6 +40,59 @@
             "type": "string"
         }
     },
+    "dependencies": {
+        "paired_end": {
+            "oneOf": [
+                {
+                   "required": ["paired_with"],
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["2"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["1"]
+                        }
+                    }
+                }
+            ]
+        },
+        "paired_with": {
+            "required": ["paired_end"],
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq"]
+                },
+                "paired_end": {
+                    "enum": ["2"]
+                }
+            }
+        },
+        "file_format":{
+            "oneOf": [
+                {
+                    "required": ["replicate"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["fastq"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "file_format": {
+                                "enum": ["fastq"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "4"

@@ -105,10 +105,6 @@
             "title": "Life stage",
             "type": "string"
         },
-        "developmental_slims": {
-            "title": "Developmental slim",
-            "type": "array"
-        },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment",
             "type": "array"
