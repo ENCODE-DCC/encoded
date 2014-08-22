@@ -39,7 +39,8 @@
             "enum": [
                 "project",
                 "composite",
-                "publication"
+                "publication",
+                "paired set"
             ]
         },
         "dbxrefs": {
