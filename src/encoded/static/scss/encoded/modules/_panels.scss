@@ -1,7 +1,7 @@
 /* Panels */
 .panel {
-	background-color: #fff;
-	border: 1px solid #ced5dc;
+    background-color: #fff;
+    border: 1px solid #ced5dc;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin-top: 10px;
@@ -32,33 +32,76 @@ border: 1px solid #3276ca;
 .view-detail h3 {line-height: 24.5px;}
 
 /* add external-link icon to all offsite links (in .panels); modified from _FontAwesome.scss */
-.panel a[href^="http"]:after, td a[href^="http"]:after		{
-	content: " \f08e";
-	font-family: FontAwesome;
-	font-weight: normal;
-	font-style: normal;
-	text-decoration: none;
-	-webkit-font-smoothing: antialiased;
+.panel a[href^="http"]:after, td a[href^="http"]:after      {
+    content: " \f08e";
+    font-family: FontAwesome;
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: none;
+    -webkit-font-smoothing: antialiased;
 
-	/* sprites.less reset */
-	display: inline;
-	width: auto;
-	height: auto;
-	line-height: normal;
-	vertical-align: baseline;
-	background-image: none;
-	background-position: 0% 0%;
-	background-repeat: repeat;
-	margin-top: 0;
+    /* sprites.less reset */
+    display: inline;
+    width: auto;
+    height: auto;
+    line-height: normal;
+    vertical-align: baseline;
+    background-image: none;
+    background-position: 0% 0%;
+    background-repeat: repeat;
+    margin-top: 0;
 }
 /* remove external-link icon if there is no text in link <a></a>
 Note does not work in =<IE8, oh well */
 a[href^="http"]:empty:after {
-	content: none;
+    content: none;
 }
 
 /* do not use external link icon in these cases... */
 /* downloads */
 a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
-	content: none !important;
+    content: none !important;
 } 
+
+
+// Antibody Status Panels
+.type-antibody-status {
+    .status-status-row {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-top: 1px solid #e0e0e0;
+
+        &:first-child {
+            border-top: none;
+        }
+    }
+
+    .status-organism-row {
+        margin: 5px 0;
+    }
+
+    .status-organism {
+        padding: 0;
+        font-style: italic;
+        font-weight: bold;
+    }
+
+    .status-terms {
+        padding: 0;
+        color: #808080;
+    }
+
+    .status-status {
+        position: relative;
+        padding: 0 25px 0 0;
+        text-align: right;
+        font-weight: bold;
+    }
+
+    .icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 20px;
+    }
+}

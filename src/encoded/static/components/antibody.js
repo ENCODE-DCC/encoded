@@ -32,6 +32,9 @@ var Lot = module.exports.Lot = React.createClass({
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
 
+        // Build antibody status panel
+        var antibodyStatuses = globals.panel_views.lookup(context)({context: context, key: context['@id']});
+
         // Make an array of targets with no falsy entries and no repeats
         var targets = {};
         if (context.characterizations) {
@@ -65,6 +68,16 @@ var Lot = module.exports.Lot = React.createClass({
                         </h3>
                     </div>
                 </header>
+
+                {characterizations.length ?
+                    <div className="antibody-statuses">
+                        {antibodyStatuses}
+                    </div>
+                :
+                    <div className="characterization-status-labels">
+                        <StatusLabel status="Awaiting lab characterization" />
+                    </div>
+                }
 
                 <div className="panel data-display">
                     <dl className="key-value">
@@ -300,3 +313,66 @@ var Characterization = module.exports.Characterization = React.createClass({
 });
 
 globals.panel_views.register(Characterization, 'antibody_characterization');
+
+
+var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
+    render: function() {
+        var context = this.props.context;
+
+        // Build antibody display structure
+        var statusTree = {};
+        var organismCount = 0;
+        context.lot_reviews.forEach(function(lot_review, i) {
+            if (!statusTree[lot_review.status]) {
+                statusTree[lot_review.status] = {};
+            }
+            var statusNode = statusTree[lot_review.status];
+            lot_review.organisms.forEach(function(organism, j) {
+                if (!statusNode[organism]) {
+                    statusNode[organism] = {};
+                    organismCount++;
+                }
+                var organismNode = statusNode[organism];
+                if (!organismNode[lot_review.biosample_term_name]) {
+                    organismNode[lot_review.biosample_term_name] = {};
+                }
+            });
+        });
+
+        if (!organismCount) {
+            return <div></div>;
+        }
+
+        return (
+            <section className="type-antibody-status view-detail panel">
+                <div className="row">
+                    <div className="col-xs-12">
+                        {Object.keys(statusTree).map(function(status) {
+                            var organisms = statusTree[status];
+                            return (
+                                <div className="row status-status-row">
+                                    {Object.keys(organisms).map(function(organism, i) {
+                                        var terms = Object.keys(organisms[organism]);
+                                        return (
+                                            <div className="row status-organism-row">
+                                                <div className="col-sm-2 status-organism">
+                                                    {organism}
+                                                </div>
+                                                <div className="col-sm-7 status-terms">
+                                                    {terms.join(', ')}
+                                                </div>
+                                                {i === 0 ? <div className="col-sm-3 status-status sentence-case">{status}<i className={globals.statusClass(status, 'indicator icon icon-circle')}></i></div> : ''}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+});
+
+globals.panel_views.register(AntibodyStatus, 'antibody_lot');
