@@ -37,7 +37,6 @@ $block-mobile-font-size-p:  floor($block-font-size-p * 1.2);
             :target {
                 margin-top: -40px !important;
                 padding-top: 40px !important;
-                @include animation(bgfade 1s linear);
             }
         }
     }
