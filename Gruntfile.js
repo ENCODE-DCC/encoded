@@ -10,7 +10,7 @@ module.exports = function(grunt) {
                     'brace/mode/json',
                     'brace/theme/solarized_light',
                 ],
-                bundle: {
+                options: {
                     debug: true,
                 },
             },
@@ -35,10 +35,10 @@ module.exports = function(grunt) {
                     'url',
                 ],
                 transform: [
-                    [{harmony: true}, 'reactify'],
+                    [{harmony: true, sourceMap: true}, './reactify'],
                     'brfs',
                 ],
-                bundle: {
+                options: {
                     debug: true,
                 },
             },
@@ -47,13 +47,11 @@ module.exports = function(grunt) {
                 src: ['./src/encoded/static/server.js'],
                 options: {
                     builtins: false,
-                },
-                bundle: {
                     debug: true,
                     detectGlobals: false,
                 },
                 transform: [
-                    [{harmony: true}, 'reactify'],
+                    [{harmony: true, sourceMap: true}, './reactify'],
                     'brfs',
                 ],
                 external: [
@@ -86,7 +84,6 @@ module.exports = function(grunt) {
         var data = this.data;
         var done = this.async();
         var options = data.options || {};
-        var bundle = data.bundle || {};
 
         var b = browserify(options);
 
@@ -111,7 +108,7 @@ module.exports = function(grunt) {
             b.external(external[i]);
         }
 
-        bundle.filter = function (id) {
+        options.filter = function (id) {
             return external.indexOf(id) < 0;
         };
 
@@ -130,8 +127,8 @@ module.exports = function(grunt) {
 
         var mapFilePath = dest + '.map';
 
-        b = b.bundle(bundle);
-        if (bundle.debug) {
+        b = b.bundle();
+        if (options.debug) {
             b = b.pipe(exorcist(mapFilePath));
         }
         b.on('error', function (err) { console.error(err); });
