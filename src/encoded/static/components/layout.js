@@ -428,7 +428,11 @@ var Layout = module.exports.Layout = React.createClass({
             var new_col = {blocks: [block]};
             var new_row = {cols: [new_col]};
             if (dst_pos.length == 0) {
-                layout.rows = [new_row];  // first row/col/block
+                if (layout.rows.length) {
+                    return;
+                } else {
+                    layout.rows = [new_row];  // first row/col/block
+                }
             } else if (dst_pos.length == 1) {
                 if (quad == 'top') {  // add new row above
                     layout.rows.splice(dst_pos[0], 0, new_row);
