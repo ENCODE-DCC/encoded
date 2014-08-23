@@ -93,15 +93,28 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
 
     .status-status {
         position: relative;
-        padding: 0 25px 0 0;
-        text-align: right;
+        padding: 0;
+        margin-bottom: 10px;
+        text-align: left;
         font-weight: bold;
+
+        @media screen and (min-width: $screen-sm-min) {
+            padding: 0 25px 0 0;
+            margin-bottom: 0;
+            text-align: right;
+        }
     }
 
     .icon {
-        position: absolute;
-        top: 0;
-        right: 0;
+        position: relative;
+        top: 3px;
         font-size: 20px;
+        margin-right: 5px;
+
+        @media screen and (min-width: $screen-sm-min) {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
     }
 }

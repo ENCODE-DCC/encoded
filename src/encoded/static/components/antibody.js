@@ -355,13 +355,13 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
                                         var terms = Object.keys(organisms[organism]);
                                         return (
                                             <div className="row status-organism-row">
-                                                <div className="col-sm-2 status-organism">
+                                                <div className="col-sm-3 col-sm-push-9 status-status sentence-case">{i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}</div>
+                                                <div className="col-sm-2 col-sm-pull-3 status-organism">
                                                     {organism}
                                                 </div>
-                                                <div className="col-sm-7 status-terms">
+                                                <div className="col-sm-7 col-sm-pull-3 status-terms">
                                                     {terms.join(', ')}
                                                 </div>
-                                                {i === 0 ? <div className="col-sm-3 status-status sentence-case">{status}<i className={globals.statusClass(status, 'indicator icon icon-circle')}></i></div> : ''}
                                             </div>
                                         );
                                     })}
