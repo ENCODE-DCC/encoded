@@ -195,7 +195,6 @@
                 {
                     "enum": [
                         "CNV",
-                        "PctSignal",
                         "alignments",
                         "clusters",
                         "contigs",
@@ -205,12 +204,10 @@
                         "idat green file",
                         "idat red file",
                         "interactions",
-                        "mPepMapGcUnFt",
                         "multi-read minus signal",
                         "multi-read plus signal",
                         "multi-read signal",
                         "peaks",
-                        "pepMapGcFt",
                         "plus signal",
                         "raw data",
                         "raw minus signal",
