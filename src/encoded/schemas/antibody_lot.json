@@ -14,6 +14,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/product_id" },
@@ -140,6 +141,16 @@
                 ]
             }
         },
+        "targets": {
+            "title": "Target",
+            "type": "array",
+            "items": {
+                "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
+                "comment": "See target.json for available identifiers.",
+                "type": "string",
+                "linkTo": "target"
+            }
+        },
         "url": {
             "title": "URL",
             "description": "An external resource with additional information about the antibody.",
@@ -178,9 +189,9 @@
             "title": "Accession",
             "type": "string"
         },
-        "characterizations.target.label": {
-            "title": "Target",
-            "type": "string"
+        "targets": {
+            "title": "Targets",
+            "type": "array"
         },
         "characterizations.target.organism.scientific_name": {
             "title": "Species",
@@ -201,10 +212,6 @@
         "status": {
             "title": "Status",
             "type": "string"
-        },
-        "characterizations.length": {
-            "title": "Characterizations",
-            "type": "array"
         }
     },
     "calculated_props": {
@@ -239,16 +246,6 @@
                             "linkTo": "organism"
                         }
                     },
-                    "targets": {
-                        "title": "Target",
-                        "type": "array",
-                        "items": {
-                            "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
-                            "comment": "See target.json for available identifiers.",
-                            "type": "string",
-                            "linkTo": "target"
-                        }
-                    },
                     "status": {
                         "title": "Status",
                         "description": "The current state of the antibody characterizations.",
@@ -260,8 +257,7 @@
                             "pending dcc review",
                             "eligible for new data",
                             "not eligible for new data",
-                            "not pursued",
-                            "deleted"
+                            "not pursued"
                         ]
                     }
                 }
