@@ -136,8 +136,9 @@ describe('Experiment Page', function() {
             require('../biosample.js').Document;
             var context_doc = _.clone(context);
             context_doc.documents = [require('../testdata/document/wgEncodeSydhHist-refs')];
-            experiment = <Experiment context={context_doc} />;
-            TestUtils.renderIntoDocument(experiment);
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context_doc} />
+            );
             doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
         });
 
