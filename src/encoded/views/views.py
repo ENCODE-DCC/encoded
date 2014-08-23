@@ -367,7 +367,7 @@ class AntibodyLot(Collection):
                             not_reviewed = True
                             continue
 
-                        if primary.properties['characterization_review']:
+                        if 'characterization_review' in primary.properties:
                             for lane_review in primary.properties['characterization_review']:
                                 new_review = {
                                     'biosample_term_name': lane_review['biosample_term_name'],
