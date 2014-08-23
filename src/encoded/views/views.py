@@ -744,6 +744,16 @@ class Replicates(Collection):
         embedded = set(['library', 'platform'])
 
 
+def file_is_revoked(file, root):
+    item = find_resource(root, file)
+    return item.upgrade_properties()['status'] == 'revoked'
+
+
+def file_not_revoked(file, root):
+    item = find_resource(root, file)
+    return item.upgrade_properties()['status'] != 'revoked'
+
+
 @location('datasets')
 class Dataset(Collection):
     item_type = 'dataset'
@@ -758,33 +768,29 @@ class Dataset(Collection):
             'files': [
                 {
                     '$value': '{file}',
-                    '$repeat': ('file', 'original_files', lambda status: status != 'revoked'),
+                    '$repeat': ('file', 'original_files', file_not_revoked),
                     '$templated': True,
                 },
                 {
                     '$value': '{file}',
-                    '$repeat': ('file', 'related_files', lambda status: status != 'revoked'),
+                    '$repeat': ('file', 'related_files', file_not_revoked),
                     '$templated': True,
                 },
             ],
             'revoked_files': [
                 {
                     '$value': '{file}',
-                    '$repeat': ('file', 'original_files', lambda status: status == 'revoked'),
+                    '$repeat': ('file', 'original_files', file_is_revoked),
                     '$templated': True,
                 },
                 {
                     '$value': '{file}',
-                    '$repeat': ('file', 'related_files', lambda status: status == 'revoked'),
+                    '$repeat': ('file', 'related_files', file_is_revoked),
                     '$templated': True,
                 },
             ],
             'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
             'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
-        }
-        template_type = {
-            'files': 'file',
-            'revoked_files': 'file',
         }
         embedded = [
             'files',

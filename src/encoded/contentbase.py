@@ -385,7 +385,6 @@ class Item(object):
     __metaclass__ = MergedKeysMeta
     __merged_dicts__ = [
         'template',
-        'template_type',
         'rev',
         'namespace_from_path',
     ]
@@ -404,7 +403,6 @@ class Item(object):
         ],
         'uuid': {'$value': '{uuid}', '$templated': True},
     }
-    template_type = None
     actions = []
 
     def __init__(self, collection, model):
@@ -743,7 +741,6 @@ class CustomItemMeta(MergedDictsMeta, ABCMeta):
 
         NAMES_TO_TRANSFER = [
             'template',
-            'template_type',
             'embedded',
             'keys',
             'rev',
