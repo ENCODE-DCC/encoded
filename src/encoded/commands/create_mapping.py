@@ -51,11 +51,15 @@ def schema_mapping(name, schema):
 
     if type_ == 'object':
         properties = {}
-        for k, v in schema['properties'].items():
+        all_props = schema['properties'].items() + schema.get('calculated_props', {}).items()
+        for k, v in all_props:
             mapping = schema_mapping(k, v)
             if mapping is not None:
                 properties[k] = mapping
-        return {'properties': properties}
+        return {
+            'type': 'object',
+            'properties': properties,
+        }
 
     if type_ == ["number", "string"]:
         return {
@@ -252,12 +256,9 @@ def collection_mapping(collection, embed=True):
     if schema is None:
         return None
 
-    for c in schema.get('calculated_props', {}):
-        schema['properties'][c] = dict(schema['calculated_props'][c])
     mapping = schema_mapping(collection.item_type, schema)
 
     merged_rev = collection.Item.merged_rev
-    merged_template_type = collection.Item.merged_template_type
 
     mixins = ['@id', '@type']
     mixins.extend(merged_rev.keys())
@@ -271,23 +272,20 @@ def collection_mapping(collection, embed=True):
     for prop in collection.Item.embedded:
         new_mapping = mapping
         new_schema = schema
+        new_merged_rev = merged_rev
 
         for i, p in enumerate(prop.split('.')):
-            if i == 0 and p in merged_rev:
-                name = merged_rev[p][0]
-            elif i == 0 and p in merged_template_type:
-                name = merged_template_type[p]
-            else:
-                if p not in new_schema['properties']:
-                    if p in root[name].Item.merged_rev:
-                        name = root[name].Item.merged_rev[p][0]
-                    else:
-                        name = root[name].Item.merged_template_type[p]
-                else:
-                    try:
-                        name = new_schema['properties'][p]['linkTo']
-                    except KeyError:
-                        name = new_schema['properties'][p]['items']['linkTo']
+            name = None
+            subschema = None
+
+            if name is None:
+                subschema = new_schema.get('properties', {}).get(p) or new_schema.get('calculated_props', {}).get(p)
+                if subschema is not None:
+                    subschema = subschema.get('items', subschema)
+                    name = subschema.get('linkTo')
+
+            if name is None and p in new_merged_rev:
+                name, merged_rev_path = new_merged_rev[p]
 
             # XXX Need to union with mouse_donor here
             if name == 'donor':
@@ -297,33 +295,35 @@ def collection_mapping(collection, embed=True):
 
             # Check if mapping for property is already an object
             # multiple subobjects may be embedded, so be carful here
-            try:
-                new_mapping['properties'][p]['properties']
-            except KeyError:
+            if name is not None and new_mapping['properties'][p]['type'] == 'string':
                 new_mapping['properties'][p] = collection_mapping(
                     root.by_item_type[name], embed=False)
 
             new_mapping = new_mapping['properties'][p]
-            new_schema = root[name].schema
+
+            if name is not None:
+                new_schema = root[name].schema
+                new_merged_rev = root[name].Item.merged_rev
+            elif subschema is not None:
+                new_schema = subschema
 
     boost_values = schema.get('boost_values', ())
     for value in boost_values:
         props = value.split('.')
+        last = props.pop()
         new_mapping = mapping['properties']
         for prop in props:
-            if len(props) == props.index(prop) + 1:
-                new_mapping[prop]['boost'] = boost_values[value]
-                new_mapping[prop]['copy_to'] = ['encoded_all_ngram', 'encoded_all_standard', 'encoded_all_untouched']
-                new_mapping = mapping['properties']
-            else:
-                new_mapping = new_mapping[prop]['properties']
+            new_mapping = new_mapping[prop]['properties']
+
+        new_mapping[last]['boost'] = boost_values[value]
+        new_mapping[last]['copy_to'] = ['encoded_all_ngram', 'encoded_all_standard', 'encoded_all_untouched']
+
     return mapping
 
 
 def run(app, collections=None, dry_run=False):
     index = 'encoded'
     root = app.root_factory(app)
-
     if not dry_run:
         es = app.registry[ELASTIC_SEARCH]
         try:
@@ -358,7 +358,7 @@ def run(app, collections=None, dry_run=False):
         try:
             es.indices.put_mapping(index=index, doc_type=doc_type, body={doc_type: mapping})
         except:
-            log.info("Could not create mapping for the collection %s", doc_type)
+            log.exception("Could not create mapping for the collection %s", doc_type)
         else:
             es.indices.refresh(index=index)
 
