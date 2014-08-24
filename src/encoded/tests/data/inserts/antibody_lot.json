@@ -16,7 +16,28 @@
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "url": "http://www.millipore.com/catalogue/item/05-379#",
         "uuid": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
-        "targets": ["E2F1-human"]
+        "targets": ["E2F1-human"],
+        "status": "current"
+    },
+    {
+        "_test": "several variations of different lots, aliases, alternate accessions",
+        "accession": "ENCAB000ASG",
+        "antigen_description": "Synthetic peptide corresponding to residues surrounding and including trimethlyated Lys 4 of Histone H3.",
+        "award": "ROADMAP",
+        "clonality": "polyclonal",
+        "host_organism": "rabbit",
+        "lab": "roadmap-epigenomics",
+        "lot_id": "R0903B0054",
+        "product_id": "07-473",
+        "purifications": [
+            "affinity"
+        ],
+        "source": "millipore",
+        "submitted_by": "felis.senectus@hymenaeos.nibh",
+        "url": "http://www.millipore.com/catalogue/item/07-473",
+        "uuid": "eb4230d7-48d0-4dcc-ab99-da1a5316a0f9",
+        "targets": ["H3K4me3-human"],
+        "status": "current"
     },
     {
         "_test": "has alternate_accesion",
@@ -37,26 +58,8 @@
         "submitted_by": "fames.at@per.varius",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "f24ac237-ba4c-4b3d-af7e-85f0b57c4184",
-        "targets": ["H3K4me3-human", "H3K4me3-mouse", "H3K4me3-dmelanogaster", "H3K4me3-celegans"]
-    },
-    {
-        "_test": "several variations of different lots, aliases, alternate accessions",
-        "accession": "ENCAB000ASG",
-        "antigen_description": "Synthetic peptide corresponding to residues surrounding and including trimethlyated Lys 4 of Histone H3.",
-        "award": "ROADMAP",
-        "clonality": "polyclonal",
-        "host_organism": "rabbit",
-        "lab": "roadmap-epigenomics",
-        "lot_id": "R0903B0054",
-        "product_id": "07-473",
-        "purifications": [
-            "affinity"
-        ],
-        "source": "millipore",
-        "submitted_by": "felis.senectus@hymenaeos.nibh",
-        "url": "http://www.millipore.com/catalogue/item/07-473",
-        "uuid": "eb4230d7-48d0-4dcc-ab99-da1a5316a0f9",
-        "targets": ["H3K4me3-human"]
+        "targets": ["H3K4me3-human", "H3K4me3-mouse"],
+        "status": "current"
     },
     {
         "_test": "multiple lot aliases and accessions",
@@ -85,7 +88,8 @@
         "submitted_by": "sit.nascetur@accumsan.quis",
         "url": "http://www.millipore.com/catalogue/item/07-473",
         "uuid": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
-        "targets": ["H3K4me3-human", "H3K4me3-mouse"]
+        "targets": ["H3K4me3-human", "H3K4me3-mouse"],
+        "status": "current"
     },
     {
         "_test": "multiple alternate accesions and lot alias",
@@ -115,7 +119,8 @@
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "url": "http://www.abcam.com/index.html?datasheet=4441",
         "uuid": "f211c027-6613-4998-8cf0-90e9041ad254",
-        "targets": ["H3K9ac-human"]
+        "targets": ["H3K9ac-human"],
+        "status": "current"
     },
     {
         "_test": "refer to same target",
@@ -132,7 +137,8 @@
         "submitted_by": "parturient.ut@et.ve",
         "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-n-terminal-region-arp40383-t100.html",
         "uuid": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea",
-        "targets": ["HNRPA1-human"]
+        "targets": ["HNRNPA1-human"],
+        "status": "current"
     },
     {
         "_test": "refer to same target and lab self-fail",
@@ -150,7 +156,8 @@
         "submitted_by": "parturient.ut@et.ve",
         "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-c-terminal-region-arp40384-t100.html",
         "uuid": "81d1f148-323c-4420-a05e-62427394fd6b",
-        "targets": ["HNRPA1-human"]
+        "targets": ["HNRNPA1-human"],
+        "status": "current"
     },
     {
         "_test": "control",
@@ -170,7 +177,8 @@
         "source": "santa-cruz-biotech",
         "submitted_by": "fames.at@per.varius",
         "uuid": "9a69a3d2-655f-49ca-a3b3-48d70ad4a9e1",
-        "targets": ["mouse-IgG-control"]
+        "targets": ["mouse-IgG-control-human", "mouse-IgG-control-mouse"],
+        "status": "current"
     },
     {
         "_test": "tagged target",
@@ -190,7 +198,8 @@
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "url": "https://store.crpinc.com/datasheet.aspx?catalogno=MMS-101P",
         "uuid": "981a4b17-65b6-4535-9515-786ecbfeaed8",
-        "targets": ["HA-influenza"]
+        "targets": ["HA-influenza"],
+        "status": "current"
     },
     {
         "_test": "frowny gel",
@@ -206,7 +215,8 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/sab2103447?lang=en&region=US",
         "uuid": "e61ad044-a869-4bd2-ae04-f4fa83bbca00",
-        "targets": ["CXXC1-human"]
+        "targets": ["CXXC1-human"],
+        "status": "current"
     },
     {
         "_test": "refer to same target",
@@ -222,7 +232,8 @@
         "submitted_by": "parturient.ut@et.ve",
         "url": "http://www.scbt.jp/datasheet-32301-hnrnp-a1-4b10-antibody.html",
         "uuid": "c8001233-050d-4dab-bf73-f47133b2e2a3",
-        "targets": ["HNRNPA1-human"]
+        "targets": ["HNRNPA1-human"],
+        "status": "current"
     },
     {
         "_test": "ENCODE2 dbxref with special characters",
@@ -242,7 +253,8 @@
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "url": "http://www.scbt.com/datasheet-5916-ctcf-n-17-antibody.html",
         "uuid": "d563e33c-fea8-4453-909b-ccfdbfd9f8b3",
-        "targets": ["CTCF-human", "CTCF-mouse"]
+        "targets": ["CTCF-human"],
+        "status": "current"
     },
     {
         "_test": "has lot aliases",
@@ -264,7 +276,8 @@
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "url": "http://www.scbt.com/product.php?datasheet=735",
         "uuid": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
-        "targets": ["TAF1-human"]
+        "targets": ["TAF1-human"],
+        "status": "current"
     },
     {
         "_test": "has tsv validation",
@@ -281,18 +294,19 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "url": "http://www.sigmaaldrich.com/catalog/product/sigma/wh0006925m2?lang=en&region=US",
         "uuid": "907ced83-e4bb-4d77-8d97-e969db915533",
-        "targets": ["TCF4-human"]
+        "targets": ["TCF4-human"],
+        "status": "current"
     },
     {
         "_test": "anti-GFP antibody to test tags",
         "accession": "ENCAB728YTO",
         "antigen_description": "Antisera raised against a peptide from the GFP protein. Produced commercially for the modENCODE Project by K. White's group and Millipore.",
         "antigen_sequence": "MSKGEELFTGVVPILVELDGDVNGHKFSVSGEGEGDATYGKLTLKFICTTGKLPVPWPTLVTTLTYGVQCFSRYPDHMKRHDFFKSAMPEGYVQERTIFFKDDGNYKTRAEVKFEGDTLVNRIELKGIDFKEDGNILGHKLEYNYNSHNVYIMADKQKNGIKVNFKIRHNIEDGSVQLADHYQQNTPIGDGPVLLPDNHYLSTQSALSKDPNEKRDHMVLLEFVTAAGITHGMDELYK",
-        "award": "/awards/U54HG006996/",
-        "lab": "/labs/kevin-white/",
+        "award": "U54HG006996",
+        "lab": "kevin-white",
         "clonality": "polyclonal",
         "product_id": "goat-anti-GFP-UC",
-        "source": "/sources/kevin-white/",
+        "source": "kevin-white",
         "lot_id": "unknown",
         "aliases": [
             "kevin-white:GFP NewGoat UofC",
@@ -301,9 +315,10 @@
         "purifications": [
             "affinity"
         ],
-        "host_organism": "/organisms/goat/",
+        "host_organism": "goat",
         "submitted_by": "eni.lectus@nullam.sed",
         "uuid": "c3ebc1c5-9abd-4db9-b34a-29b8e7c299b3",
-        "targets": ["eGFP-avictoria"]
+        "targets": ["eGFP-avictoria"],
+        "status": "current"
     }
 ]

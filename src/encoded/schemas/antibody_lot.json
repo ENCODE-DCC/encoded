@@ -4,7 +4,7 @@
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism"],
+    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism", "targets"],
     "calculatedProperties": ["lot_reviews"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
@@ -142,7 +142,7 @@
             }
         },
         "targets": {
-            "title": "Target",
+            "title": "Targets",
             "type": "array",
             "items": {
                 "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
@@ -193,7 +193,7 @@
             "title": "Targets",
             "type": "array"
         },
-        "characterizations.target.organism.scientific_name": {
+        "targets.organism.scientific_name": {
             "title": "Species",
             "type": "string"
         },

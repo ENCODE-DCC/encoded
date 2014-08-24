@@ -41,7 +41,7 @@
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "072cbc4e-075e-46b7-df05-58c5092ebd36",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -102,7 +102,7 @@
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
         "uuid": "769cbffe-bb59-4d68-a073-367a6fdd0cef",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -141,7 +141,7 @@
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
         "uuid": "13a76a0c-9571-489a-aa23-1408c0c88414",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -165,7 +165,7 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "CTCF-human",
         "uuid": "15579824-74dc-4b5c-88bd-cd7fadee0df7",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -258,7 +258,7 @@
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-influenza",
         "uuid": "2f605105-7ec4-46a3-a8e5-1e5a0647aa8a",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -325,7 +325,7 @@
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K9ac-human",
         "uuid": "05a22a07-ab5c-42ad-bf93-801f03b017f7",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -349,7 +349,7 @@
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
         "uuid": "73ea11a5-b9f7-4c60-b0b7-6319f2dbea65",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -426,7 +426,7 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TCF4-human",
         "uuid": "cc1dc011-9d2b-4b61-95b2-a7d03f317f68",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -463,7 +463,7 @@
         "primary_characterization_method": "immunoblot",
         "date": "2014-05-31",
         "lab": "michael-snyder",
-        "characterization_review": [
+        "characterization_reviews": [
             { 
                 "organism": "human",
                 "lane": 2,
@@ -504,7 +504,7 @@
         "primary_characterization_method": "immunoblot",
         "lab": "michael-snyder",
         "date": "2014-08-20",
-        "characterization_review": [
+        "characterization_reviews": [
             { 
                 "organism": "human",
                 "lane": 2,
