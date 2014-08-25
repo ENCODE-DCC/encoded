@@ -26,7 +26,7 @@ Feature: Antibodies
     Scenario: Detail page
         When I visit "/antibodies/ENCAB000ANU/"
         Then I should see an element with the css selector "div.data-display"
-        And I should see "pending dcc review"
+        And I should see "compliant"
         And I should see an element with the css selector "div.characterizations"
         And I should see at least 1 elements with the css selector "section"
         And I should see at least 1 elements with the css selector "figure"

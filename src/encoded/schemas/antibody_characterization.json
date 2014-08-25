@@ -70,6 +70,7 @@
                 "title": "Primary characterization lane review", 
                 "type": "object",
                 "additionalProperties": false,
+                "required": [ "organism", "lane", "lane_status", "biosample_term_id", "biosample_term_name", "biosample_type"],
                 "properties": {
                     "organism": {
                         "title": "Organism",
@@ -153,6 +154,30 @@
                 "peptide competition assay",
                 "overexpression analysis"
             ]
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Characterization status",
+            "type": "string"
+        },
+        "target.organism.scientific_name": {
+            "title": "Target Organism",
+            "type": "string"
+        },
+        "characterization_method":{
+            "title": "Characterization method",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        }
+    },
+    "calculated_props": {
+        "characterization_method":{
+            "title": "Characterization method",
+            "type": "string"
         }
     }
 }

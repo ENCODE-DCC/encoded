@@ -33,11 +33,17 @@ var Lot = module.exports.Lot = React.createClass({
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
 
+        // Build antibody status panel
+        var antibodyStatuses = globals.panel_views.lookup(context)({context: context, key: context['@id']});
+
         // Make an array of targets with no falsy entries and no repeats
-        var targets = context.characterizations ? context.characterizations.map(function(characterization) {
-            return characterization.target; // Might be undefined or empty
-        }) : [];
-        targets = targets ? _.uniq(_.compact(targets), function(target) {return target['@id']; }) : [];
+        var targets = {};
+        if (context.characterizations) {
+            context.characterizations.forEach(function(characterization) {
+                targets[characterization.target['@id']] = characterization.target;
+            });
+        }
+        var targetKeys = Object.keys(targets);
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
@@ -52,13 +58,27 @@ var Lot = module.exports.Lot = React.createClass({
                         <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
                         <h3>
-                            <span>Antibody against </span>
-                            {targets.map(function(target, i) {
-                                return <span>{i !== 0 ? ', ' : ''}{target.label}{' ('}<em>{target.organism.scientific_name}</em>{')'}</span>;
-                            })}
+                            {targetKeys.length ?
+                                <span>Antibody against {Object.keys(targets).map(function(target, i) {
+                                    var targetObj = targets[target];
+                                    return <span>{i !== 0 ? ', ' : ''}{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</span>;
+                                })}</span>
+                            :
+                                <span>Antibody</span>
+                            }
                         </h3>
                     </div>
                 </header>
+
+                {characterizations.length ?
+                    <div className="antibody-statuses">
+                        {antibodyStatuses}
+                    </div>
+                :
+                    <div className="characterization-status-labels">
+                        <StatusLabel status="Awaiting lab characterization" />
+                    </div>
+                }
 
                 <div className="panel data-display">
                     <dl className="key-value">
@@ -77,12 +97,15 @@ var Lot = module.exports.Lot = React.createClass({
                             <dd>{context.lot_id}</dd>
                         </div>
 
-                        {targets.length ?
+                        {Object.keys(targets).length ?
                             <div data-test="targets">
                                 <dt>Targets</dt>
-                                <dd>{targets.map(function(target, i) {
-                                    return <span>{i !== 0 ? ', ' : ''}<a href={target['@id']}>{target.label}{' ('}<em>{target.organism.scientific_name}</em>{')'}</a></span>;
-                                })}</dd>
+                                <dd>
+                                    {targetKeys.map(function(target, i) {
+                                        var targetObj = targets[target];
+                                        return <span>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</a></span>;
+                                    })}
+                                </dd>
                             </div>
                         : null}
 
@@ -334,3 +357,66 @@ var Characterization = module.exports.Characterization = React.createClass({
 });
 
 globals.panel_views.register(Characterization, 'antibody_characterization');
+
+
+var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
+    render: function() {
+        var context = this.props.context;
+
+        // Build antibody display structure
+        var statusTree = {};
+        var organismCount = 0;
+        context.lot_reviews.forEach(function(lot_review, i) {
+            if (!statusTree[lot_review.status]) {
+                statusTree[lot_review.status] = {};
+            }
+            var statusNode = statusTree[lot_review.status];
+            lot_review.organisms.forEach(function(organism, j) {
+                if (!statusNode[organism]) {
+                    statusNode[organism] = {};
+                    organismCount++;
+                }
+                var organismNode = statusNode[organism];
+                if (!organismNode[lot_review.biosample_term_name]) {
+                    organismNode[lot_review.biosample_term_name] = {};
+                }
+            });
+        });
+
+        if (!organismCount) {
+            return <div></div>;
+        }
+
+        return (
+            <section className="type-antibody-status view-detail panel">
+                <div className="row">
+                    <div className="col-xs-12">
+                        {Object.keys(statusTree).map(function(status) {
+                            var organisms = statusTree[status];
+                            return (
+                                <div className="row status-status-row">
+                                    {Object.keys(organisms).map(function(organism, i) {
+                                        var terms = Object.keys(organisms[organism]);
+                                        return (
+                                            <div className="row status-organism-row">
+                                                <div className="col-sm-3 col-sm-push-9 status-status sentence-case">{i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}</div>
+                                                <div className="col-sm-2 col-sm-pull-3 status-organism">
+                                                    {organism}
+                                                </div>
+                                                <div className="col-sm-7 col-sm-pull-3 status-terms">
+                                                    {terms.join(', ')}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+});
+
+globals.panel_views.register(AntibodyStatus, 'antibody_lot');

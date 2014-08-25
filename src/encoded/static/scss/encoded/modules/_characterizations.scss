@@ -247,6 +247,13 @@
     /* (gray) is the default if no class given */
 }
 
+// Status indicator glyph colors
+.indicator.status-eligible-for-new-data { color: lighten($brand-success, 10%) }
+.indicator.status-pending-dcc-review { color: lighten($brand-info, 10%) }
+.indicator.status-not-eligible-for-new-data { color: lighten($brand-danger, 10%) }
+.indicator.status-awaiting-lab-characterization { color: lighten($brand-warning, 10%) }
+.indicator.status-not-pursued { color: lighten($brand-danger, 10%) }
+.indicator.status-not-reviewed { color: lighten($brand-danger, 10%) }
 
 %file-icon {
     @include img-responsive();
