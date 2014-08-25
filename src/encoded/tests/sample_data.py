@@ -78,7 +78,8 @@ ANTIBODY_LOTS = [
     'isotype': u'IgG1κ',
     'antigen_description': 'ATF4 (NP_001666, a.a. 171-271) partial recombinant protein with GST tag.',
     'lab': 'myers',
-    'award': 'Myers'
+    'award': 'Myers',
+    'targets': ['ATF4-human']
     },
 ]
 
