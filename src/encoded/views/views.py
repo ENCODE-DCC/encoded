@@ -292,7 +292,6 @@ class AntibodyLot(Collection):
                 not_reviewed_chars = 0
                 total_characterizations = 0
                 num_compliant_celltypes = 0
-                targets = []
                 organisms = []
                 histone_organisms = []
                 char_reviews = dict()
@@ -304,9 +303,7 @@ class AntibodyLot(Collection):
                     characterization = find_resource(request.root, characterization_uuid)
                     target = find_resource(request.root, characterization.properties['target'])
                     organism = find_resource(request.root, target.properties['organism'])
-                    if request.resource_path(target) not in targets:
-                        targets.append(request.resource_path(target))
-                    if 'histone modification' in target.properties['context']:
+                    if 'histone modification' in target.properties['investigated_as']:
                         histone_mod_target = True
 
                     if request.resource_path(organism) not in organisms and not histone_mod_target:
@@ -332,7 +329,6 @@ class AntibodyLot(Collection):
                 base_review = {
                     'biosample_term_name': 'not specified',
                     'biosample_term_id': 'NTR:00000000',
-                    'targets': targets,
                     'organisms': organisms,
                     'status': 'awaiting lab characterization'
                 }
@@ -367,8 +363,8 @@ class AntibodyLot(Collection):
                             not_reviewed = True
                             continue
 
-                        if primary.properties['characterization_review']:
-                            for lane_review in primary.properties['characterization_review']:
+                        if 'characterization_reviews' in primary.properties:
+                            for lane_review in primary.properties['characterization_reviews']:
                                 new_review = {
                                     'biosample_term_name': lane_review['biosample_term_name'],
                                     'biosample_term_id': lane_review['biosample_term_id'],
@@ -377,11 +373,6 @@ class AntibodyLot(Collection):
                                 '''Get the organism information from the lane, not from the target since there are lanes'''
                                 lane_organism = find_resource(request.root, lane_review['organism'])
                                 new_review['organisms'] = [request.resource_path(lane_organism)]
-
-                                if not histone_mod_target:
-                                    new_review['targets'] = [request.resource_path(find_resource(request.root, primary.properties['target']))]
-                                else:
-                                    new_review['targets'] = targets
 
                                 if lane_review['lane_status'] == 'pending dcc review':
                                     if pending_secondary or compliant_secondary:
@@ -435,7 +426,6 @@ class AntibodyLot(Collection):
                                     'biosample_term_name': 'all cell types and tissues',
                                     'biosample_term_id': 'NTR:00000000',
                                     'organisms': histone_organisms,
-                                    'targets': targets,
                                     'status': 'eligible for new data'
                                 }]
                             else:
