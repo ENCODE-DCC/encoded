@@ -11,7 +11,6 @@
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
@@ -50,6 +49,14 @@
             "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
             "format": "target_label"
+        },
+        "status": {
+            "enum" : [
+                "current",
+                "deleted",
+                "replaced",
+                "proposed"
+            ]
         }
     },
     "facets": {
