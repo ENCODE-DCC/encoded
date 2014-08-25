@@ -1007,10 +1007,6 @@ class Dataset(Collection):
             'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
             'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
         }
-        template_type = {
-            'files': 'file',
-            'revoked_files': 'file',
-        }
         embedded = [
             'files',
             'files.replicate',

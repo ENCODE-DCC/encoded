@@ -236,6 +236,32 @@
         "hub": {
             "title": "Track hub",
             "type": "string"
+        },
+        "assembly": {
+            "title": "Assembly",
+            "type": "string"
+        },
+        "files": {
+            "title": "Files",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Data file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "file"
+            }
+        },
+        "revoked_files": {
+            "title": "Revoked Files",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Data file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "file"
+            }
         }
     },
     "boost_values": {
