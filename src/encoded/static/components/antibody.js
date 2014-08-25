@@ -319,19 +319,25 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
     render: function() {
         var context = this.props.context;
 
-        // Build antibody display structure
+        // Build antibody display object as a hierarchy: status=>organism=>biosample_term_name
         var statusTree = {};
         var organismCount = 0;
-        context.lot_reviews.forEach(function(lot_review, i) {
+        context.lot_reviews.forEach(function(lot_review) {
+            // Status at top of hierarchy. If haven’t seen this status before, remember it
             if (!statusTree[lot_review.status]) {
                 statusTree[lot_review.status] = {};
             }
+
+            // Look at all organisms in current lot_review. They go under this lot_review's status
             var statusNode = statusTree[lot_review.status];
-            lot_review.organisms.forEach(function(organism, j) {
+            lot_review.organisms.forEach(function(organism) {
+                // If haven’t seen this organism with this status before, remember it
                 if (!statusNode[organism]) {
                     statusNode[organism] = {};
                     organismCount++;
                 }
+
+                // If haven't seen this biosample term name for this organism, remember it
                 var organismNode = statusNode[organism];
                 if (!organismNode[lot_review.biosample_term_name]) {
                     organismNode[lot_review.biosample_term_name] = {};
@@ -339,8 +345,9 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
             });
         });
 
+        // Now have hierarchical object. If no organisms in it, then nothing to display
         if (!organismCount) {
-            return <div></div>;
+            return null;
         }
 
         return (
