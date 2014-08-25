@@ -193,10 +193,6 @@
             "title": "Targets",
             "type": "array"
         },
-        "targets.organism.scientific_name": {
-            "title": "Species",
-            "type": "string"
-        },
         "source.title": {
             "title": "Source",
             "type": "string"
