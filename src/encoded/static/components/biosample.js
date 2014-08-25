@@ -619,11 +619,29 @@ var Document = module.exports.Document = React.createClass({
                     </div>
                     {download}
                     <dl className={keyClass}>
-                        <dt>Submitted by</dt>
-                        <dd>{context.submitted_by.title}</dd>
+                        {context.caption ?
+                            <div data-test="caption">
+                                <dt>Caption</dt>
+                                <dd>{context.caption}</dd>
+                            </div>
+                        : null}
 
-                        <dt>Grant</dt>
-                        <dd>{context.award.name}</dd>
+                        <div data-test="submitted">
+                            <dt>Submitted by</dt>
+                            <dd>{context.submitted_by.title}</dd>
+                        </div>
+
+                        <div data-test="grant">
+                            <dt>Grant</dt>
+                            <dd>{context.award.name}</dd>
+                        </div>
+
+                        {context.references && context.references.length ?
+                            <div data-test="references">
+                                <dt>References</dt>
+                                <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
+                            </div>
+                        : null}
                     </dl>
                     <dl className="key-value-trigger">
                         <a href="#" onClick={this.handleClick}>

@@ -88,12 +88,12 @@ var globals = require('./globals');
             if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
                 title = 'Add ' + title;
                 action = this.props.context['@id'];
-                form = <Form schema={this.props.schema} action={action} data={this.props.defaultValue} method="POST" />;
+                form = <Form schema={this.props.schema} action={action} defaultValue={this.props.defaultValue} method="POST" />;
             } else {  // edit form
                 title = 'Edit ' + title;
                 var url = this.props.context['@id'] + '?frame=edit';
                 action = this.props.context['@id'];
-                form = <FetchedData Component={Form} url={url} schema={this.props.schema} action={action} method="PUT" />;
+                form = <FetchedData fetched_prop_name="defaultValue" Component={Form} url={url} schema={this.props.schema} action={action} method="PUT" />;
             }
             return (
                 <div className={itemClass}>

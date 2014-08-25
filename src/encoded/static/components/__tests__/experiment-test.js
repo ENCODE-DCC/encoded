@@ -25,8 +25,9 @@ describe('Experiment Page', function() {
         var experiment, summary, defTerms, defDescs;
 
         beforeEach(function() {
-            experiment = <Experiment context={context} />;
-            TestUtils.renderIntoDocument(experiment);
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context} />
+            );
 
             summary = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'data-display');
             defTerms = summary[0].getDOMNode().getElementsByTagName('dt');
@@ -74,8 +75,9 @@ describe('Experiment Page', function() {
         beforeEach(function() {
             var context_fs = _.clone(context);
             context_fs.files = [require('../testdata/file/text'), require('../testdata/file/fastq')];
-            experiment = <Experiment context={context_fs} />;
-            TestUtils.renderIntoDocument(experiment);
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context_fs} />
+            );
 
             fileList = TestUtils.findRenderedDOMComponentWithTag(experiment, 'tbody').getDOMNode();
             fileDl = fileList.getElementsByTagName('a');
@@ -100,8 +102,9 @@ describe('Experiment Page', function() {
             require('../biosample.js').Document;
             var context_doc = _.clone(context);
             context_doc.documents = [require('../testdata/document/myerschipseq')];
-            experiment = <Experiment context={context_doc} />;
-            TestUtils.renderIntoDocument(experiment);
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context_doc} />
+            );
             doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
         });
 
@@ -135,14 +138,52 @@ describe('Experiment Page', function() {
         });
     });
 
+    describe('Document Panel References', function() {
+        var experiment, doc;
+
+        beforeEach(function() {
+            require('../biosample.js').Document;
+            var context_doc = _.clone(context);
+            context_doc.documents = [require('../testdata/document/wgEncodeSydhHist-refs')];
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context_doc} />
+            );
+            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
+        });
+
+        it('has five key-value pairs, and two good references links', function() {
+            var url = require('url');
+            var docKeyValue = doc.getElementsByClassName('key-value-left');
+            expect(docKeyValue.length).toEqual(1);
+            var defTerms = docKeyValue[0].getElementsByTagName('dt');
+            expect(defTerms.length).toEqual(3);
+            var defDescs = docKeyValue[0].getElementsByTagName('dd');
+            expect(defDescs.length).toEqual(3);
+            var item = docKeyValue[0].querySelector('[data-test="references"]');
+            var refUl = item.getElementsByTagName('ul');
+            expect(refUl.length).toEqual(1);
+            var refLi = refUl[0].getElementsByTagName('li');
+            expect(refLi.length).toEqual(2);
+
+            // Make sure each link in references is correct
+            var anchors = refLi[0].getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19706456');
+            anchors = refLi[1].getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19122651');
+        });
+    });
+
     describe('Replicate Panels', function() {
         var experiment, replicates;
 
         beforeEach(function() {
             var context_rep = _.clone(context);
             context_rep.replicates = [require('../testdata/replicate/human'), require('../testdata/replicate/mouse')];
-            experiment = <Experiment context={context_rep} />;
-            TestUtils.renderIntoDocument(experiment);
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context_rep} />
+            );
             replicates = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-replicate');
         });
 
@@ -200,8 +241,9 @@ describe('Experiment Page', function() {
         beforeEach(function() {
             var context_alt = _.clone(context);
             context_alt.alternate_accessions = ["ENCSR000ACT", "ENCSR999NOF"];
-            experiment = <Experiment context={context_alt} />;
-            TestUtils.renderIntoDocument(experiment);
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context_alt} />
+            );
             alt = TestUtils.findRenderedDOMComponentWithClass(experiment, 'repl-acc');
         });
 
