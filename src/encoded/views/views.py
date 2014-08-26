@@ -275,7 +275,8 @@ class AntibodyLot(Collection):
             'characterizations.lab',
             'characterizations.submitted_by',
             'characterizations.target.organism',
-            'lot_reviews.targets'
+            'lot_reviews.targets',
+            'lot_reviews.organisms'
         ])
 
         def template_namespace(self, properties, request=None):
