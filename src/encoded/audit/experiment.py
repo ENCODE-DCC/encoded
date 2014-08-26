@@ -92,7 +92,7 @@ def audit_experiment_target(value, system):
         return
 
     target = value['target']['name']
-    if target.startswith('Control'):
+    if 'control' in target['investigated_as']:
         return
 
     # Some assays don't need antibodies
@@ -106,7 +106,7 @@ def audit_experiment_target(value, system):
             # What we really want here is a way to the approval, we want to know
             # if there is an approval for this antibody to this target
             # likely we should check if it the right species before thie point, or in library check
-
+        
 
 @audit_checker('experiment')
 def audit_experiment_control(value, system):
@@ -242,6 +242,30 @@ def audit_experiment_biosample_term(value, system):
             detail = '{} - {} in {}'.format(term_id, biosample.get('biosample_term_id'), lib['accession'])
             yield AuditFailure('biosample mismatch', detail, level='ERROR')
 
+        # Basically, we want to check if an antibody has been characterized in the same biosample_term_name and
+        # organism combination for TFs, RBPs, chromatin remodellers. For histone modifications, we want to
+        # check if the antibody is eligible in the organism the experiment biosamples are in.
+        #if value.get('assay_term_name') in targetBasedAssayList and 'antibody' in rep:
+        #    antibody = rep['antibody']
+        #    eligible = False
+        #    is_histone_mod = False
+        #    if 'histone modification' in value['target']['investigated_as']:
+        #        is_histone_mod = True
+        #
+        #    for review in antibody['lot_reviews']:
+        #        if 'control' in value['target']['investigated_as']:
+        #            break
+        #        if is_histone_mod:
+        #            for org in review['organisms']:
+        #                if biosample['organism']['scientific_name'] == org['scientific_name'] and review['status'] == 'eligible for new data':
+        #                    eligible = True
+        #        else:
+        #            if value['biosample_term_id'] == review['biosample_term_id'] and review['status'] == 'eligible for new data':
+        #                eligible = True
+        #
+        #    if not eligible:
+        #        detail = '{} is not eligible for use with {}'.format(antibody['accession'], value['biosample_term_name'])
+        #        raise AuditFailure('not eligible antibody', detail, level='ERROR')
 
 @audit_checker('experiment')
 def audit_experiment_paired_end(value,system):
