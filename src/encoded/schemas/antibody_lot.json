@@ -186,6 +186,22 @@
             "title": "Species",
             "type": "string"
         },
+        "lot_reviews.biosample_term_name": {
+            "title": "Ontology term",
+            "type":  "string"
+        },
+        "lot_reviews.status": {
+            "title": "Status",
+            "type":  "string"
+        },
+        "lot_reviews.organisms": {
+            "title": "Organism",
+            "type": "array"
+        },
+        "lot_reviews.targets": {
+            "title": "Target",
+            "type":  "array"
+        },
         "source.title": {
             "title": "Source",
             "type": "string"
