@@ -24,8 +24,18 @@ def base_characterization_review(testapp, organism):
     }
 
 
+@pytest.fixture
+def base_document(testapp, lab, award):
+    item = {
+        'lab': lab['uuid'],
+        'award': award['uuid'],
+        'document_type': 'growth protocol'
+    }
+    return testapp.post_json('/document', item, status=201).json['@graph'][0]
+
+
 def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characterization, base_characterization_review):
-    testapp.patch_json(base_antibody_characterization['@id'], {'primary_characterization_method': 'immunoblot'})
+    testapp.patch_json(base_antibody_characterization['@id'], {'primary_characterization_method': 'immunoblot', 'status': 'pending dcc review'})
     base_characterization_review['biosample_term_name'] = 'qwijibo'
     characterization_review_list = []
     characterization_review_list.append(base_characterization_review)
@@ -33,3 +43,25 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'term id not in ontology' for error in errors)
+
+
+def test_audit_antibody_no_standards(testapp, base_antibody_characterization, base_characterization_review):
+    testapp.patch_json(base_antibody_characterization['@id'], {'primary_characterization_method': 'immunoblot', 'status': 'compliant'})
+    characterization_review_list = []
+    base_characterization_review['lane_status'] = 'compliant'
+    characterization_review_list.append(base_characterization_review)
+    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list})
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'missing standards' for error in errors)
+
+
+#def test_audit_antibody_wrong_doc(testapp, base_antibody_characterization, base_characterization_review, base_document):
+#    testapp.patch_json(base_antibody_characterization['@id'], {'primary_characterization_method': 'immunoblot', 'status': 'not compliant', 'documents': [base_document['@id']]})
+#    characterization_review_list = []
+#    base_characterization_review['lane_status'] = 'not compliant'
+#    characterization_review_list.append(base_characterization_review)
+#    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list})
+#    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+#    errors = res.json['audit']
+#    assert any(error['category'] == 'missing standards' for error in errors)

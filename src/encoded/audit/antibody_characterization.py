@@ -33,3 +33,26 @@ def audit_antibody_characterization_review(value, system):
             if ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']:
                 detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
                 raise AuditFailure('term name mismatch', detail, level='ERROR')
+
+
+@audit_checker('antibody_characterization')
+def audit_antibody_characterization_standards(value, system):
+    if (value['status'] in ['in progress', 'not submitted for review by lab', 'not reviewed', 'pending dcc review', 'deleted']):
+        return
+
+    if not value['documents']:
+        detail = 'Missing standards document'
+        raise AuditFailure('missing standards', detail, level='ERROR')
+
+    #Need to account for if there are documents, but none of them are the standards document
+    #has_standards = False
+    #for i in range(len(value['documents'])):
+    # This is the path to the document, not the document itself...so the rest doesnt work
+    #    doc = value['documents'][i]
+    #   
+    #    if doc.get('document_type') == 'standards document':
+    #        has_standards = True
+    #
+    #if not has_standards:
+    #    detail = 'Missing standards document'
+    #    raise AuditFailure('missing standards', detail, level='ERROR')
