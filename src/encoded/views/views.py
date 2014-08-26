@@ -274,7 +274,8 @@ class AntibodyLot(Collection):
             'characterizations.award',
             'characterizations.lab',
             'characterizations.submitted_by',
-            'characterizations.target.organism'
+            'characterizations.target.organism',
+            'lot_reviews.targets'
         ])
 
         def template_namespace(self, properties, request=None):
@@ -293,6 +294,7 @@ class AntibodyLot(Collection):
                 total_characterizations = 0
                 num_compliant_celltypes = 0
                 organisms = []
+                targets = []
                 histone_organisms = []
                 char_reviews = dict()
                 primary_chars = []
@@ -303,6 +305,8 @@ class AntibodyLot(Collection):
                     characterization = find_resource(request.root, characterization_uuid)
                     target = find_resource(request.root, characterization.properties['target'])
                     organism = find_resource(request.root, target.properties['organism'])
+                    if request.resource_path(target) not in targets:
+                        targets.append(request.resource_path(target))
                     if 'histone modification' in target.properties['investigated_as']:
                         histone_mod_target = True
 
@@ -330,6 +334,7 @@ class AntibodyLot(Collection):
                     'biosample_term_name': 'not specified',
                     'biosample_term_id': 'NTR:00000000',
                     'organisms': organisms,
+                    'targets': targets,
                     'status': 'awaiting lab characterization'
                 }
 
@@ -373,6 +378,11 @@ class AntibodyLot(Collection):
                                 '''Get the organism information from the lane, not from the target since there are lanes'''
                                 lane_organism = find_resource(request.root, lane_review['organism'])
                                 new_review['organisms'] = [request.resource_path(lane_organism)]
+
+                                if not histone_mod_target:
+                                    new_review['targets'] = [request.resource_path(find_resource(request.root, primary.properties['target']))]
+                                else:
+                                    new_review['targets'] = targets
 
                                 if lane_review['lane_status'] == 'pending dcc review':
                                     if pending_secondary or compliant_secondary:
@@ -426,6 +436,7 @@ class AntibodyLot(Collection):
                                     'biosample_term_name': 'all cell types and tissues',
                                     'biosample_term_id': 'NTR:00000000',
                                     'organisms': histone_organisms,
+                                    'targets': targets,
                                     'status': 'eligible for new data'
                                 }]
                             else:
@@ -445,9 +456,29 @@ class AntibodyLot(Collection):
                             pass
 
             else:
-                '''If there are no characterizations, then default to awaiting lab characterization.
-                Instead of having a dummy characterization to inform the UI, let the UI handle this default case.'''
-                antibody_lot_reviews = []
+                '''If there are no characterizations, then default to awaiting lab characterization.'''
+                targets = ns['targets']
+                is_control = False
+                organisms = []
+                for t in targets:
+                    target = find_resource(request.root, t)
+                    if 'control' in target.properties['investigated_as']:
+                        is_control = True
+
+                    organism = find_resource(request.root, target.properties['organism'])
+                    if request.resource_path(organism) not in organisms:
+                        organisms.append(request.resource_path(organism))
+
+                antibody_lot_reviews = [{
+                    'biosample_term_name': 'not specified',
+                    'biosample_term_id': 'NTR:00000000',
+                    'organisms': organisms,
+                    'targets': ns['targets']
+                }]
+                if is_control:
+                    antibody_lot_reviews[0]['status'] = 'eligible for new data'
+                else:
+                    antibody_lot_reviews[0]['status'] = 'awaiting lab characterization'
 
             ns['lot_reviews'] = antibody_lot_reviews
             return ns
