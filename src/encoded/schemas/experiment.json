@@ -105,10 +105,6 @@
             "title": "Life stage",
             "type": "string"
         },
-        "developmental_slims": {
-            "title": "Developmental slim",
-            "type": "array"
-        },
         "replicates.library.biosample.treatments.treatment_term_name": {
             "title": "Biosample treatment",
             "type": "array"
@@ -236,6 +232,32 @@
         "hub": {
             "title": "Track hub",
             "type": "string"
+        },
+        "assembly": {
+            "title": "Assembly",
+            "type": "string"
+        },
+        "files": {
+            "title": "Files",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Data file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "file"
+            }
+        },
+        "revoked_files": {
+            "title": "Revoked Files",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Data file",
+                "comment": "See file.json for available identifiers.",
+                "type": "string",
+                "linkTo": "file"
+            }
         }
     },
     "boost_values": {
