@@ -3,16 +3,6 @@ from ..auditor import (
     audit_checker,
 )
 
-@audit_checker('antibody_characterization')
-def audit_antibody_characterization_method(value, system):
-    if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted']):
-        return
-
-    '''Make sure the characterization method is specified'''
-    if ('primary_characterization_method' not in value) and ('secondary_characterization_method' not in value):
-        detail = 'characterization_method must be specified'
-        yield AuditFailure('missing characterization_method', detail, level='ERROR')
-
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_review(value, system):
@@ -23,30 +13,10 @@ def audit_antibody_characterization_review(value, system):
     if ('secondary_characterization_method' in value):
         return
 
-    if not value['characterization_review']:
-        detail = 'primary characterizations require a characterization_review'
-        yield AuditFailure('missing characterization_review', detail, level='ERROR')
-
     '''Make sure the lane information is filled out in characterization_review'''
-    if value['characterization_review']:
+    if value['characterization_reviews']:
         ontology = system['registry']['ontology']
-        for review in value['characterization_review']:
-
-            if 'lane' not in review:
-                detail = 'biosample_term_id is required for each lane'
-                yield AuditFailure('missing lane', detail, level='ERROR')
-
-            if 'organism' not in review:
-                detail = 'organism is required for each lane'
-                yield AuditFailure('missing organism', detail, level='ERROR')
-
-            if 'biosample_type' not in review:
-                detail = 'biosample_type is required for each lane'
-                yield AuditFailure('missing biosample_type', detail, level='ERROR')
-
-            if 'biosample_term_id' not in review or 'biosample_term_name' not in review:
-                detail = 'biosample is required for each lane'
-                yield AuditFailure('missing biosample', detail, level='ERROR')
+        for review in value['characterization_reviews']:
 
             term_id = review['biosample_term_id']
             term_name = review['biosample_term_name']
