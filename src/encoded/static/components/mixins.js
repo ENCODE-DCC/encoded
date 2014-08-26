@@ -246,11 +246,49 @@ module.exports.Persona = {
     }
 };
 
+class UnsavedChangesToken {
+    constructor(manager) {
+        this.manager = manager;
+    }
+
+    release() {
+        this.manager.releaseUnsavedChanges(this);
+    }
+}
+
 
 module.exports.HistoryAndTriggers = {
     SLOW_REQUEST_TIME: 750,
     // Detect HTML5 history support
     historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
+
+    childContextTypes: {
+        adviseUnsavedChanges: React.PropTypes.func
+    },
+
+    adviseUnsavedChanges: function () {
+        var token = new UnsavedChangesToken(this);
+        this.setState({unsavedChanges: this.state.unsavedChanges.concat([token])});
+        return token;
+    },
+
+    releaseUnsavedChanges: function (token) {
+        console.assert(this.state.unsavedChanges.indexOf(token) != -1);
+        this.setState({unsavedChanges: this.state.unsavedChanges.filter(x => x !== token)});
+    },
+
+    getChildContext: function() {
+        return {
+            adviseUnsavedChanges: this.adviseUnsavedChanges
+        };
+    },
+
+
+    getInitialState: function () {
+        return {
+            unsavedChanges: []
+        };
+    },
 
     componentWillMount: function () {
         if (typeof window !== 'undefined') {
@@ -278,6 +316,7 @@ module.exports.HistoryAndTriggers = {
         } else {
             window.onhashchange = this.onHashChange;
         }
+        window.onbeforeunload = this.handleBeforeUnload;
         if (this.props.href !== window.location.href) {
             this.setProps({href: window.location.href});
         }
@@ -398,6 +437,10 @@ module.exports.HistoryAndTriggers = {
 
     handlePopState: function (event) {
         if (this.DISABLE_POPSTATE) return;
+        if (!this.confirmNavigation()) {
+            window.history.pushState(window.state, '', this.props.href);
+            return;
+        }
         if (!this.historyEnabled) {
             window.location.reload();
             return;
@@ -419,8 +462,31 @@ module.exports.HistoryAndTriggers = {
         this.navigate(href, {replace: true});
     },
 
+    confirmNavigation: function() {
+        // check for beforeunload confirmation
+        if (this.state.unsavedChanges.length) {
+            var res = window.confirm('You have unsaved changes. Are you sure you want to lose them?');
+            if (res) {
+                this.setState({unsavedChanges: []});
+            }
+            return res;
+        }
+        return true;
+    },
+
+    handleBeforeUnload: function() {
+        if (this.state.unsavedChanges.length) {
+            return 'You have unsaved changes.';
+        }
+    },
+
     navigate: function (href, options) {
         var $ = require('jquery');
+
+        if (!this.confirmNavigation()) {
+            return;
+        }
+
         options = options || {};
         href = url.resolve(this.props.href, href);
         var xhr = this.props.contextRequest;

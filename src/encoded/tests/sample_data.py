@@ -68,19 +68,19 @@ SOURCES = [
 
 ANTIBODY_LOTS = [
     {
-    'uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
-    'accession': 'ENCAB000TST',
-    'clonality': 'monoclonal',
-    'host_organism': 'mouse',
-    'source': 'sigma',  # PK
-    'product_id': 'WH0000468M1',  # PK
-    'lot_id': 'CB191-2B3',  # PK
-    'url': 'http://www.sigmaaldrich.com/catalog/product/sigma/wh0000468m1?lang=en&region=US',
-    'isotype': u'IgG1κ',
-    'antigen_description': 'ATF4 (NP_001666, a.a. 171-271) partial recombinant protein with GST tag.',
-    'lab': 'myers',
-    'award': 'Myers',
-    'targets': ['ATF4-human']
+        'uuid': 'bc293400-eab3-41fb-a41e-35552686b67d',
+        'accession': 'ENCAB000TST',
+        'clonality': 'monoclonal',
+        'host_organism': 'mouse',
+        'source': 'sigma',  # PK
+        'product_id': 'WH0000468M1',  # PK
+        'lot_id': 'CB191-2B3',  # PK
+        'url': 'http://www.sigmaaldrich.com/catalog/product/sigma/wh0000468m1?lang=en&region=US',
+        'isotype': u'IgG1κ',
+        'antigen_description': 'ATF4 (NP_001666, a.a. 171-271) partial recombinant protein with GST tag.',
+        'lab': 'myers',
+        'award': 'Myers',
+        'targets': ['ATF4-human']
     },
 ]
 
@@ -296,7 +296,7 @@ FILES = [
         'uuid': 'c22e0390-af36-483c-950d-5a2e0efe37ec',
         'accession': 'ENCFF000TST',
         'dataset': 'ENCSR000TST',
-        'file_format': 'fastq',
+        'file_format': 'fasta',
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'raw data',
         'status': 'in progress',
@@ -307,7 +307,7 @@ FILES = [
         'uuid': '0a38fea0-c067-415a-9710-c887aff95767',
         'accession': 'ENCFF001TST',
         'dataset': 'ENCSR001TST',
-        'file_format': 'fastq',
+        'file_format': 'fasta',
         'md5sum': '3f9ae164abb55a93bcd891b192d86164',
         'output_type': 'raw data',
         'status': 'in progress',
