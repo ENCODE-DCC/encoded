@@ -22,6 +22,7 @@ TARGETS = [
         'label': 'ATF4',
         'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
         'gene_name': 'ATF4',
+        'investigated_as': ['transcription factor']
         # 'aliases': [
         #     {'alias': 'CREB2', 'source': 'HGNC'},
         #     {'alias': 'TXREB', 'source': 'HGNC'},
