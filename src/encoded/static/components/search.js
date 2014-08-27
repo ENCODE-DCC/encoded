@@ -81,22 +81,27 @@ var Dbxref = dbxref.Dbxref;
             // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
             var targetTree = {};
             result.lot_reviews.forEach(function(lot_review) {
-                // Target at top of hierarchy. If haven’t seen this target before, remember it
                 lot_review.targets.forEach(function(target) {
-                    // Get target's organism object, if there is one
-                    target.lotInfo = {};
-                    target.lotInfo.organismObj = _(lot_review.organisms).find(function(organism) {
+                    // Get the organism object for this target
+                    var targetOrganism = _(lot_review.organisms).find(function(organism) {
                         return organism['@id'] === target.organism;
                     });
 
-                    // If we haven't seen target name before save it
+                    // If we haven't seen this target, save it in targetTree along with the
+                    // corresponding target and organism structures.
                     if (!targetTree[target.name]) {
-                        targetTree[target.name] = target;
+                        targetTree[target.name] = {target: target, organism: targetOrganism};
                     }
+                    var targetNode = targetTree[target.name];
 
-                    // Store the lot_review status and biosample term name into the target
-                    target.lotInfo.status = lot_review.status;
-                    target.lotInfo.biosample = lot_review.biosample_term_name;
+                    // If we haven't seen the status, save it in the targetTree target
+                    if (!targetNode[lot_review.status]) {
+                        targetNode[lot_review.status] = [];
+                    }
+                    var statusNode = targetNode[lot_review.status];
+
+                    // If we haven't seen the biosample term name, save it in the targetTree target status
+                    statusNode.push(lot_review.biosample_term_name);
                 });
             });
 
@@ -110,12 +115,27 @@ var Dbxref = dbxref.Dbxref;
                                     <div className="pull-right search-meta">
                                         <p className="type meta-title">Antibody</p>
                                         <p className="type">{' ' + result.accession}</p>
-                                        <p className="type meta-status">{' ' + targetTree[target]}</p>
+                                        <div className="type meta-status clearfix">
+                                            {Object.keys(targetTree[target]).map(function(status) {
+                                                return (
+                                                    <div className="status-dots">
+                                                        {(status !== 'target' && status !== 'organism') ?
+                                                            <div className="tooltip-trigger">
+                                                                <i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>
+                                                                <div className="tooltip sentence-case">
+                                                                    {status}<span>{targetTree[target][status].join(', ')}</span>
+                                                                </div>
+                                                            </div>
+                                                        : ''}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
                                     <div className="accession">
                                         <a href={result['@id']}>
-                                            {targetTree[target].label}
-                                            {targetTree[target].lotInfo.organismObj ? <span>{' ('}<i>{targetTree[target].lotInfo.organismObj.scientific_name}</i>{')'}</span> : ''}
+                                            {targetTree[target].target.label}
+                                            {targetTree[target].organism ? <span>{' ('}<i>{targetTree[target].organism.scientific_name}</i>{')'}</span> : ''}
                                         </a> 
                                     </div>
                                 </div>
