@@ -58,7 +58,15 @@
                     "required": ["reviewed_by"],
                     "properties": {
                         "status": {
-                            "enum": ["compliant", "not compliant", "not reviewed"]
+                            "enum": ["not reviewed"]
+                        }
+                    }
+                },
+                {
+                    "required": ["reviewed_by", "documents"],
+                    "properties": {
+                        "status": {
+                            "enum": ["compliant", "not compliant"]
                         }
                     }
                 },
