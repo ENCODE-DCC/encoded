@@ -274,7 +274,9 @@ class AntibodyLot(Collection):
             'characterizations.award',
             'characterizations.lab',
             'characterizations.submitted_by',
-            'characterizations.target.organism'
+            'characterizations.target.organism',
+            'lot_reviews.targets',
+            'lot_reviews.organisms'
         ])
 
         def template_namespace(self, properties, request=None):
@@ -292,8 +294,8 @@ class AntibodyLot(Collection):
                 not_reviewed_chars = 0
                 total_characterizations = 0
                 num_compliant_celltypes = 0
-                targets = []
                 organisms = []
+                targets = []
                 histone_organisms = []
                 char_reviews = dict()
                 primary_chars = []
@@ -306,7 +308,7 @@ class AntibodyLot(Collection):
                     organism = find_resource(request.root, target.properties['organism'])
                     if request.resource_path(target) not in targets:
                         targets.append(request.resource_path(target))
-                    if 'histone modification' in target.properties['context']:
+                    if 'histone modification' in target.properties['investigated_as']:
                         histone_mod_target = True
 
                     if request.resource_path(organism) not in organisms and not histone_mod_target:
@@ -332,8 +334,8 @@ class AntibodyLot(Collection):
                 base_review = {
                     'biosample_term_name': 'not specified',
                     'biosample_term_id': 'NTR:00000000',
-                    'targets': targets,
                     'organisms': organisms,
+                    'targets': targets,
                     'status': 'awaiting lab characterization'
                 }
 
@@ -367,8 +369,8 @@ class AntibodyLot(Collection):
                             not_reviewed = True
                             continue
 
-                        if primary.properties['characterization_review']:
-                            for lane_review in primary.properties['characterization_review']:
+                        if 'characterization_reviews' in primary.properties:
+                            for lane_review in primary.properties['characterization_reviews']:
                                 new_review = {
                                     'biosample_term_name': lane_review['biosample_term_name'],
                                     'biosample_term_id': lane_review['biosample_term_id'],
@@ -455,9 +457,29 @@ class AntibodyLot(Collection):
                             pass
 
             else:
-                '''If there are no characterizations, then default to awaiting lab characterization.
-                Instead of having a dummy characterization to inform the UI, let the UI handle this default case.'''
-                antibody_lot_reviews = []
+                '''If there are no characterizations, then default to awaiting lab characterization.'''
+                targets = ns['targets']
+                is_control = False
+                organisms = []
+                for t in targets:
+                    target = find_resource(request.root, t)
+                    if 'control' in target.properties['investigated_as']:
+                        is_control = True
+
+                    organism = find_resource(request.root, target.properties['organism'])
+                    if request.resource_path(organism) not in organisms:
+                        organisms.append(request.resource_path(organism))
+
+                antibody_lot_reviews = [{
+                    'biosample_term_name': 'not specified',
+                    'biosample_term_id': 'NTR:00000000',
+                    'organisms': organisms,
+                    'targets': ns['targets']
+                }]
+                if is_control:
+                    antibody_lot_reviews[0]['status'] = 'eligible for new data'
+                else:
+                    antibody_lot_reviews[0]['status'] = 'awaiting lab characterization'
 
             ns['lot_reviews'] = antibody_lot_reviews
             return ns
@@ -1006,10 +1028,6 @@ class Dataset(Collection):
             ],
             'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
             'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
-        }
-        template_type = {
-            'files': 'file',
-            'revoked_files': 'file',
         }
         embedded = [
             'files',

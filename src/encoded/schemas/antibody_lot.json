@@ -4,7 +4,7 @@
     "id": "/profiles/antibody_lot.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism"],
+    "required": [ "award", "lab", "product_id", "source", "lot_id", "host_organism", "targets"],
     "calculatedProperties": ["lot_reviews"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
@@ -14,6 +14,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/attribution" },
+        { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/source" },
         { "$ref": "mixins.json#/product_id" },
@@ -140,6 +141,16 @@
                 ]
             }
         },
+        "targets": {
+            "title": "Targets",
+            "type": "array",
+            "items": {
+                "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
+                "comment": "See target.json for available identifiers.",
+                "type": "string",
+                "linkTo": "target"
+            }
+        },
         "url": {
             "title": "URL",
             "description": "An external resource with additional information about the antibody.",
@@ -178,13 +189,9 @@
             "title": "Accession",
             "type": "string"
         },
-        "characterizations.target.label": {
-            "title": "Target",
-            "type": "string"
-        },
-        "characterizations.target.organism.scientific_name": {
-            "title": "Species",
-            "type": "string"
+        "targets": {
+            "title": "Targets",
+            "type": "array"
         },
         "source.title": {
             "title": "Source",
@@ -201,10 +208,6 @@
         "status": {
             "title": "Status",
             "type": "string"
-        },
-        "characterizations.length": {
-            "title": "Characterizations",
-            "type": "array"
         }
     },
     "calculated_props": {
@@ -240,7 +243,7 @@
                         }
                     },
                     "targets": {
-                        "title": "Target",
+                        "title": "Targets",
                         "type": "array",
                         "items": {
                             "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
@@ -260,8 +263,7 @@
                             "pending dcc review",
                             "eligible for new data",
                             "not eligible for new data",
-                            "not pursued",
-                            "deleted"
+                            "not pursued"
                         ]
                     }
                 }

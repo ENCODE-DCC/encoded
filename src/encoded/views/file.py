@@ -81,10 +81,6 @@ class File(Collection):
                 '$condition': lambda md5sum=None, status=None: md5sum and status != 'replaced',
             },
         ]
-        namespace_from_path = {
-            'lab': 'dataset.lab',
-            'award': 'dataset.award',
-        }
         template = {
             'href': {
                 '$value': '{item_uri}@@download/{accession}{file_extension}',
@@ -99,12 +95,8 @@ class File(Collection):
 
         def template_namespace(self, properties, request=None):
             ns = Collection.Item.template_namespace(self, properties, request)
-            if 'download_path' in properties:
-                path = properties['download_path']
-                ns['file_extension'] = path[path.find('.', path.rfind('/')):]
-            else:
-                mapping = self.schema['file_format_file_extension']
-                ns['file_extension'] = mapping[properties['file_format']]
+            mapping = self.schema['file_format_file_extension']
+            ns['file_extension'] = mapping[properties['file_format']]
             return ns
 
         @classmethod

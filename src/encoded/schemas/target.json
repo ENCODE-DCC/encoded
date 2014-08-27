@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": ["organism", "label"],
-    "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
+    "identifyingProperties": ["uuid", "label-organism.name", "aliases", "investigated_as"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
@@ -51,11 +51,11 @@
             "type": "string",
             "format": "target_label"
         },
-        "context": {
+        "investigated_as": {
             "type": "array",
             "items": {
-                "title": "Target project context",
-                "description": "The project context(s) the target was registered in",
+                "title": "Target project investigation context",
+                "description": "The context(s) the target was investigated in",
                 "type": "string",
                 "enum": [
                     "histone modification",
@@ -63,7 +63,10 @@
                     "RNA binding protein",
                     "chromatin remodeller",
                     "control",
-                    "other"
+                    "tag",
+                    "recombinant protein",
+                    "nucleotide modification",
+                    "other context"
                 ]
             }
         }
