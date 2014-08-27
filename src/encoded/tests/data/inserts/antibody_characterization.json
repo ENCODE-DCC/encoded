@@ -37,6 +37,7 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2013-11-20",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
@@ -85,10 +86,12 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2011-01-11",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
-        "uuid": "adbb7ba3-0bca-4bca-b892-15f997781515"
+        "uuid": "adbb7ba3-0bca-4bca-b892-15f997781515",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "hnRNPA1_aviva-1_WB_HeLa_Fu.TIF",
@@ -98,6 +101,7 @@
         "characterizes": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea",
         "date": "2012-07-18",
         "lab": "xiang-dong-fu",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "not compliant",
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
@@ -137,6 +141,7 @@
         "characterizes": "c8001233-050d-4dab-bf73-f47133b2e2a3",
         "date": "2011-01-12",
         "lab": "xiang-dong-fu",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
@@ -215,10 +220,12 @@
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2011-01-13",
         "lab": "michael-snyder",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-influenza",
-        "uuid": "7ad24205-c246-4c67-929f-12974de1fee7"
+        "uuid": "7ad24205-c246-4c67-929f-12974de1fee7",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
@@ -227,6 +234,7 @@
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2012-07-20",
         "lab": "michael-snyder",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "not reviewed",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-influenza",
@@ -240,10 +248,12 @@
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2013-11-23",
         "lab": "michael-snyder",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-influenza",
-        "uuid": "e430c823-f95e-4b34-beca-41c07cf10376"
+        "uuid": "e430c823-f95e-4b34-beca-41c07cf10376",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham.pdf",
@@ -253,6 +263,7 @@
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2011-01-14",
         "lab": "michael-snyder",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
         "target": "HA-influenza",
@@ -294,10 +305,12 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2012-07-21",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K4me3-human",
-        "uuid": "2db3adb8-5d5c-4bb0-8580-9633ec610de6"
+        "uuid": "2db3adb8-5d5c-4bb0-8580-9633ec610de6",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_H3K9ac_ab4441_validation_Bernstein.pdf",
@@ -307,10 +320,12 @@
         "characterizes": "f211c027-6613-4998-8cf0-90e9041ad254",
         "date": "2013-11-24",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K9ac-human",
-        "uuid": "15bd73e2-fa04-4268-95ce-fee4a0cdf7f3"
+        "uuid": "15bd73e2-fa04-4268-95ce-fee4a0cdf7f3",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_H3K9ac_ab4441_validation_Bernstein.pdf",
@@ -320,6 +335,7 @@
         "characterizes": "f211c027-6613-4998-8cf0-90e9041ad254",
         "date": "2011-01-15",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K9ac-human",
@@ -344,6 +360,7 @@
         "characterizes": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
         "date": "2012-07-22",
         "lab": "richard-myers",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
@@ -393,10 +410,12 @@
         "characterizes": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
         "date": "2013-11-25",
         "lab": "richard-myers",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
-        "uuid": "c105221e-2c2f-449d-9942-4f4b5f2f36fe"
+        "uuid": "c105221e-2c2f-449d-9942-4f4b5f2f36fe",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "mouse_H3K4me3_07-473_validation_Hardison.pdf",
@@ -405,10 +424,12 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2011-01-16",
         "lab": "ross-hardison",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "tempor.convallis@libero.nibh",
         "target": "H3K4me3-mouse",
-        "uuid": "77b39794-eca3-4799-bac7-27a71a74313f"
+        "uuid": "77b39794-eca3-4799-bac7-27a71a74313f",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "aliases": [
@@ -462,6 +483,7 @@
         "primary_characterization_method": "immunoblot",
         "date": "2014-05-31",
         "lab": "michael-snyder",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "characterization_reviews": [
             { 
                 "organism": "human",
