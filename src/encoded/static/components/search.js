@@ -123,7 +123,7 @@ var Dbxref = dbxref.Dbxref;
                                                             <div className="tooltip-trigger">
                                                                 <i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>
                                                                 <div className="tooltip sentence-case">
-                                                                    {status}<span>{targetTree[target][status].join(', ')}</span>
+                                                                    {status}<br /><span>{targetTree[target][status].join(', ')}</span>
                                                                 </div>
                                                             </div>
                                                         : ''}
