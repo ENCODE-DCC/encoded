@@ -332,13 +332,13 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
             var statusNode = statusTree[lot_review.status];
             lot_review.organisms.forEach(function(organism) {
                 // If haven’t seen this organism with this status before, remember it
-                if (!statusNode[organism]) {
-                    statusNode[organism] = {};
+                if (!statusNode[organism.scientific_name]) {
+                    statusNode[organism.scientific_name] = {};
                     organismCount++;
                 }
 
                 // If haven't seen this biosample term name for this organism, remember it
-                var organismNode = statusNode[organism];
+                var organismNode = statusNode[organism.scientific_name];
                 if (!organismNode[lot_review.biosample_term_name]) {
                     organismNode[lot_review.biosample_term_name] = {};
                 }
@@ -362,7 +362,9 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
                                         var terms = Object.keys(organisms[organism]);
                                         return (
                                             <div className="row status-organism-row">
-                                                <div className="col-sm-3 col-sm-push-9 status-status sentence-case">{i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}</div>
+                                                <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
+                                                    {i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}
+                                                </div>
                                                 <div className="col-sm-2 col-sm-pull-3 status-organism">
                                                     {organism}
                                                 </div>
