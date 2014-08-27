@@ -19,6 +19,69 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "characterization_reviews": ["primary_characterization_method"],
+        "primary_characterization_method": {
+            "oneOf": [
+                {
+                    "required": ["characterization_reviews"],
+                    "properties": {
+                        "status": {
+                            "enum": ["pending dcc review", "compliant", "not compliant" ]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                               "enum": ["pending dcc review", "compliant", "not compliant" ]
+                            }
+                        }
+                    }
+                }
+            ]   
+        },
+        "attachment": {
+            "oneOf": [
+                {
+                    "required": ["primary_characterization_method"]
+                },
+                {
+                    "required": ["secondary_characterization_method"]
+                }
+            ]
+        },
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["reviewed_by"],
+                    "properties": {
+                        "status": {
+                            "enum": ["not reviewed"]
+                        }
+                    }
+                },
+                {
+                    "required": ["reviewed_by", "documents"],
+                    "properties": {
+                        "status": {
+                            "enum": ["compliant", "not compliant"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["compliant", "not compliant", "not reviewed"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "5"
