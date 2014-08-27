@@ -75,54 +75,58 @@ var Dbxref = dbxref.Dbxref;
     var Antibody = module.exports.Antibody = React.createClass({
         mixins: [PickerActionsMixin],
         render: function() {
-            var antibodyResult = this.props.context;
             var result = this.props.context;
             var columns = this.props.columns;
 
             // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
             var targetTree = {};
-            antibodyResult.lot_reviews.forEach(function(lot_review) {
+            result.lot_reviews.forEach(function(lot_review) {
                 // Target at top of hierarchy. If haven’t seen this target before, remember it
                 lot_review.targets.forEach(function(target) {
-                    if (!targetTree[target]) {
-                        targetTree[target] = {};
+                    // Get target's organism object, if there is one
+                    target.lotInfo = {};
+                    target.lotInfo.organismObj = _(lot_review.organisms).find(function(organism) {
+                        return organism['@id'] === target.organism;
+                    });
+
+                    // If we haven't seen target name before save it
+                    if (!targetTree[target.name]) {
+                        targetTree[target.name] = target;
                     }
 
-                    // Look at all statuses in current lot_review. They go under this lot_review's target
-                    var targetNode = targetTree[target];
-                    if (!targetNode[lot_review.status]) {
-                        targetNode[lot_review.status] = {};
-                    }
-
-                    // If haven't seen this biosample term name for this organism, remember it
-                    var statusNode = targetNode[lot_review.status];
-                    if (!statusNode[lot_review.biosample_term_name]) {
-                        statusNode[lot_review.biosample_term_name] = {};
-                    }
+                    // Store the lot_review status and biosample term name into the target
+                    target.lotInfo.status = lot_review.status;
+                    target.lotInfo.biosample = lot_review.biosample_term_name;
                 });
             });
 
             return (
-                <li>
-                    <div>
-                        {this.renderActions()}
-                        <div className="pull-right search-meta">
-                            <p className="type meta-title">Antibody</p>
-                            <p className="type">{' ' + result.accession}</p>
-                            <p className="type meta-status">{' ' + result.status}</p>
-                        </div>
-                        <div className="accession">
-                            <a href={result['@id']}>
-                                {result.lot_id}
-                                {' (' + result['host_organism.name'] + ')'}
-                            </a> 
-                        </div>
-                    </div>
-                    <div className="data-row"> 
-                        <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
-                        <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
-                    </div>
-                </li>
+                <div>
+                    {Object.keys(targetTree).map(function(target) {
+                        return (
+                            <li>
+                                <div>
+                                    {this.renderActions()}
+                                    <div className="pull-right search-meta">
+                                        <p className="type meta-title">Antibody</p>
+                                        <p className="type">{' ' + result.accession}</p>
+                                        <p className="type meta-status">{' ' + targetTree[target]}</p>
+                                    </div>
+                                    <div className="accession">
+                                        <a href={result['@id']}>
+                                            {targetTree[target].label}
+                                            {targetTree[target].lotInfo.organismObj ? <span>{' ('}<i>{targetTree[target].lotInfo.organismObj.scientific_name}</i>{')'}</span> : ''}
+                                        </a> 
+                                    </div>
+                                </div>
+                                <div className="data-row"> 
+                                    <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
+                                    <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
+                                </div>
+                            </li>
+                        );
+                    }.bind(this))}
+                </div>
             );
         }
     });
