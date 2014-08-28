@@ -37,6 +37,7 @@ def audit_antibody_characterization_review(value, system):
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_standards(value, system):
+    '''Make sure that a standards document is attached if status is compliant or not compliant.'''
     if (value['status'] in ['compliant', 'not compliant']):
         has_standards = False
         for document in value['documents']:
