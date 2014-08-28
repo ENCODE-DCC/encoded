@@ -53,14 +53,3 @@ def test_audit_antibody_no_standards(testapp, base_antibody_characterization, ba
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'missing standards' for error in errors)
-
-
-#def test_audit_antibody_wrong_doc(testapp, base_antibody_characterization, base_characterization_review, base_document):
-#    testapp.patch_json(base_antibody_characterization['@id'], {'primary_characterization_method': 'immunoblot', 'status': 'not compliant', 'documents': [base_document['@id']]})
-#    characterization_review_list = []
-#    base_characterization_review['lane_status'] = 'not compliant'
-#    characterization_review_list.append(base_characterization_review)
-#    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list})
-#    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
-#    errors = res.json['audit']
-#    assert any(error['category'] == 'missing standards' for error in errors)
