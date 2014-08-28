@@ -22,9 +22,8 @@ var Lot = module.exports.Lot = React.createClass({
         var context = this.props.context;
 
         // Sort characterization arrays, first by species, then by primary/secondary characterization method
-        var organismOrder = ['human', 'mouse', 'dmelanogaster', 'celegans'];
         var sortedChars = _(context.characterizations).sortBy(function(characterization) {
-            return [_(organismOrder).indexOf(characterization.target.organism), characterization.primary_characterization_method ? 0 : 1];
+            return [characterization.target.label, characterization.target.organism.name];
         });
 
         // Build array of characterization panels
@@ -245,11 +244,12 @@ var Characterization = module.exports.Characterization = React.createClass({
 
         // Compile a list of attached standards documents
         var standardsDocuments = context.documents.filter(function(doc) {
-            return (context.status === 'compliant' || context.status === 'not compliant') && doc.document_type === "standards document";
+            return doc.document_type === "standards document";
         });
 
         return (
             <section className={globals.itemClass(context, 'view-detail panel')}>
+                <h4>{context.target.label} (<i>{context.target.organism.scientific_name}</i>)</h4>
                 <div className="row">
                     <div className="col-sm-4 col-md-6">
                         <figure>
