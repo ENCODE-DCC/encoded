@@ -84,7 +84,7 @@ var Dbxref = dbxref.Dbxref;
                 lot_review.targets.forEach(function(target) {
                     // Get the organism object for this target
                     var targetOrganism = _(lot_review.organisms).find(function(organism) {
-                        return organism['@id'] === target.organism;
+                        return organism['@id'] === target.organism['@id'];
                     });
 
                     // If we haven't seen this target, save it in targetTree along with the

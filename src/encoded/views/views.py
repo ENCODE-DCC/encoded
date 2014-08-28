@@ -276,6 +276,7 @@ class AntibodyLot(Collection):
             'characterizations.submitted_by',
             'characterizations.target.organism',
             'lot_reviews.targets',
+            'lot_reviews.targets.organism',
             'lot_reviews.organisms'
         ])
 

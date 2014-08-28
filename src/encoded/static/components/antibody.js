@@ -37,9 +37,11 @@ var Lot = module.exports.Lot = React.createClass({
 
         // Make an array of targets with no falsy entries and no repeats
         var targets = {};
-        if (context.characterizations) {
-            context.characterizations.forEach(function(characterization) {
-                targets[characterization.target['@id']] = characterization.target;
+        if (context.lot_reviews && context.lot_reviews.length) {
+            context.lot_reviews.forEach(function(lot_review) {
+                lot_review.targets.forEach(function(target) {
+                    targets[target['@id']] = target;
+                });
             });
         }
         var targetKeys = Object.keys(targets);
