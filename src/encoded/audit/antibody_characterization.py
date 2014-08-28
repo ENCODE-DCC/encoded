@@ -45,16 +45,3 @@ def audit_antibody_characterization_standards(value, system):
         if not has_standards:
             detail = 'Missing standards document'
             raise AuditFailure('missing standards', detail, level='ERROR')
-
-    #Need to account for if there are documents, but none of them are the standards document
-    #has_standards = False
-    #for i in range(len(value['documents'])):
-    # This is the path to the document, not the document itself...so the rest doesnt work
-    #    doc = value['documents'][i]
-    #   
-    #    if doc.get('document_type') == 'standards document':
-    #        has_standards = True
-    #
-    #if not has_standards:
-    #    detail = 'Missing standards document'
-    #    raise AuditFailure('missing standards', detail, level='ERROR')
