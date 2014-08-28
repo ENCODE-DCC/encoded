@@ -190,12 +190,19 @@ globals.content_views.register(Lot, 'antibody_lot');
 var ExperimentsUsingAntibody = React.createClass({
     render: function () {
         var context = this.props.context;
+
         return (
             <div>
-                <h3>Experiments using antibody {context.accession}</h3>
-                {this.transferPropsTo(
-                    <ExperimentTable />
-                )}
+                <span className="pull-right">
+                    <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
+                </span>
+
+                <div>
+                    <h3>Experiments using antibody {context.accession}</h3>
+                    {this.transferPropsTo(
+                        <ExperimentTable limit={5} />
+                    )}
+                </div>
             </div>
         );
     }
