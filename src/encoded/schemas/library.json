@@ -43,6 +43,13 @@
         "accession": {
             "accessionType": "LB"
         },
+        "spikeins_used": {
+            "title": "Spike-ins used",
+            "description": "The dataset containing the fasta and the concentrations used for the library spike-ins.",
+            "comment": "See dataset.json for available identifiers.",
+            "type": "string",
+            "linkTo": "dataset"
+        },
         "biosample": {
             "title": "Biosample",
             "description": "The biosample that nucleic acid was isolated from to generate the library.",
