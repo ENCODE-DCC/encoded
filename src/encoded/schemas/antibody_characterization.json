@@ -19,6 +19,69 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "characterization_reviews": ["primary_characterization_method"],
+        "primary_characterization_method": {
+            "oneOf": [
+                {
+                    "required": ["characterization_reviews"],
+                    "properties": {
+                        "status": {
+                            "enum": ["pending dcc review", "compliant", "not compliant" ]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                               "enum": ["pending dcc review", "compliant", "not compliant" ]
+                            }
+                        }
+                    }
+                }
+            ]   
+        },
+        "attachment": {
+            "oneOf": [
+                {
+                    "required": ["primary_characterization_method"]
+                },
+                {
+                    "required": ["secondary_characterization_method"]
+                }
+            ]
+        },
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["reviewed_by"],
+                    "properties": {
+                        "status": {
+                            "enum": ["not reviewed"]
+                        }
+                    }
+                },
+                {
+                    "required": ["reviewed_by", "documents"],
+                    "properties": {
+                        "status": {
+                            "enum": ["compliant", "not compliant"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["compliant", "not compliant", "not reviewed"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
             "default": "5"
@@ -31,12 +94,12 @@
             "linkTo": "user",
             "type": "string",
             "enum": [
-                "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
-                "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
-                "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
-                "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
-                "6800d05f-7213-48b1-9ad8-254c73c5b83f",
-                "ff7b77e7-bb55-4307-b665-814c9f1e65fb"
+                "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
+                "/users/4c23ec32-c7c8-4ac0-affb-04befcc881d4/",
+                "/users/ce2bde01-07ec-4b8a-b179-554ef95b71dd/",
+                "/users/20ce8cd4-c407-453c-b0f3-7e45e5b7e493/",
+                "/users/6800d05f-7213-48b1-9ad8-254c73c5b83f/",
+                "/users/ff7b77e7-bb55-4307-b665-814c9f1e65fb/"
             ]
         },
         "characterizes": {
@@ -60,12 +123,11 @@
                 "deleted"
             ]
         },
-        "characterization_review": {
+        "characterization_reviews": {
             "title": "Primary characterization lane reviews",
             "description": "Characterization details reviewed by each cell type for immunoblot and immunoprecipitation primary characterizations only.",
             "comment": "Do not submit status, it is assigned by DCC when reviewing the characterization.",
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Primary characterization lane review", 
                 "type": "object",

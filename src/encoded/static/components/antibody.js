@@ -23,9 +23,8 @@ var Lot = module.exports.Lot = React.createClass({
         var context = this.props.context;
 
         // Sort characterization arrays, first by species, then by primary/secondary characterization method
-        var organismOrder = ['human', 'mouse', 'dmelanogaster', 'celegans'];
         var sortedChars = _(context.characterizations).sortBy(function(characterization) {
-            return [_(organismOrder).indexOf(characterization.target.organism), characterization.primary_characterization_method ? 0 : 1];
+            return [characterization.target.label, characterization.target.organism.name];
         });
 
         // Build array of characterization panels
@@ -38,9 +37,11 @@ var Lot = module.exports.Lot = React.createClass({
 
         // Make an array of targets with no falsy entries and no repeats
         var targets = {};
-        if (context.characterizations) {
-            context.characterizations.forEach(function(characterization) {
-                targets[characterization.target['@id']] = characterization.target;
+        if (context.lot_reviews && context.lot_reviews.length) {
+            context.lot_reviews.forEach(function(lot_review) {
+                lot_review.targets.forEach(function(target) {
+                    targets[target['@id']] = target;
+                });
             });
         }
         var targetKeys = Object.keys(targets);
@@ -70,7 +71,7 @@ var Lot = module.exports.Lot = React.createClass({
                     </div>
                 </header>
 
-                {characterizations.length ?
+                {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">
                         {antibodyStatuses}
                     </div>
@@ -191,12 +192,19 @@ globals.content_views.register(Lot, 'antibody_lot');
 var ExperimentsUsingAntibody = React.createClass({
     render: function () {
         var context = this.props.context;
+
         return (
             <div>
-                <h3>Experiments using antibody {context.accession}</h3>
-                {this.transferPropsTo(
-                    <ExperimentTable />
-                )}
+                <span className="pull-right">
+                    <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
+                </span>
+
+                <div>
+                    <h3>Experiments using antibody {context.accession}</h3>
+                    {this.transferPropsTo(
+                        <ExperimentTable limit={5} />
+                    )}
+                </div>
             </div>
         );
     }
@@ -275,13 +283,16 @@ var Characterization = module.exports.Characterization = React.createClass({
 
         // Compile a list of attached standards documents
         var standardsDocuments = context.documents.filter(function(doc) {
-            return (context.status === 'compliant' || context.status === 'not compliant') && doc.document_type === "standards document";
+            return doc.document_type === "standards document";
         });
 
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                 <div className={globals.itemClass(context, 'view-detail panel')}>
+                    <div className="characterization-target">
+                        {context.target.label} {context.target.organism.scientific_name ? <span>{' ('}<i>{context.target.organism.scientific_name}</i>{')'}</span> : ''}
+                    </div>
                     <div className="characterization-header">
                         <figure>
                             {figure}
@@ -363,54 +374,83 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
     render: function() {
         var context = this.props.context;
 
-        // Build antibody display structure
+        // Build antibody display object as a hierarchy: status=>organism=>biosample_term_name
         var statusTree = {};
         var organismCount = 0;
-        context.lot_reviews.forEach(function(lot_review, i) {
+        context.lot_reviews.forEach(function(lot_review) {
+            // Status at top of hierarchy. If haven’t seen this status before, remember it
             if (!statusTree[lot_review.status]) {
                 statusTree[lot_review.status] = {};
             }
-            var statusNode = statusTree[lot_review.status];
-            lot_review.organisms.forEach(function(organism, j) {
-                if (!statusNode[organism]) {
-                    statusNode[organism] = {};
-                    organismCount++;
-                }
-                var organismNode = statusNode[organism];
-                if (!organismNode[lot_review.biosample_term_name]) {
-                    organismNode[lot_review.biosample_term_name] = {};
-                }
-            });
-        });
 
-        if (!organismCount) {
-            return <div></div>;
-        }
+            // Look at all organisms in current lot_review. They go under this lot_review's status
+            var statusNode = statusTree[lot_review.status];
+            if (lot_review.organisms && lot_review.organisms.length) {
+                lot_review.organisms.forEach(function(organism) {
+                    // If haven’t seen this organism with this status before, remember it
+                    if (!statusNode[organism.scientific_name]) {
+                        statusNode[organism.scientific_name] = {};
+                        organismCount++;
+                    }
+
+                    // If haven't seen this biosample term name for this organism, remember it
+                    var organismNode = statusNode[organism.scientific_name];
+                    if (!organismNode[lot_review.biosample_term_name]) {
+                        organismNode[lot_review.biosample_term_name] = true;
+                    }
+                });
+            } else {
+                if (!statusNode[lot_review.biosample_term_name]) {
+                    statusNode[lot_review.biosample_term_name] = true;
+                }
+            }
+        });
 
         return (
             <section className="type-antibody-status view-detail panel">
                 <div className="row">
                     <div className="col-xs-12">
                         {Object.keys(statusTree).map(function(status) {
-                            var organisms = statusTree[status];
-                            return (
-                                <div className="row status-status-row">
-                                    {Object.keys(organisms).map(function(organism, i) {
-                                        var terms = Object.keys(organisms[organism]);
-                                        return (
-                                            <div className="row status-organism-row">
-                                                <div className="col-sm-3 col-sm-push-9 status-status sentence-case">{i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}</div>
-                                                <div className="col-sm-2 col-sm-pull-3 status-organism">
-                                                    {organism}
+                            if (organismCount) {
+                                var organisms = statusTree[status];
+                                return (
+                                    <div className="row status-status-row">
+                                        {Object.keys(organisms).map(function(organism, i) {
+                                            var terms = Object.keys(organisms[organism]);
+                                            return (
+                                                <div className="row status-organism-row">
+                                                    <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
+                                                        {i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}
+                                                    </div>
+                                                    <div className="col-sm-2 col-sm-pull-3 status-organism">
+                                                        {organism}
+                                                    </div>
+                                                    <div className="col-sm-7 col-sm-pull-3 status-terms">
+                                                        {terms.join(', ')}
+                                                    </div>
                                                 </div>
-                                                <div className="col-sm-7 col-sm-pull-3 status-terms">
-                                                    {terms.join(', ')}
-                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            } else {
+                                var terms = Object.keys(statusTree[status]);
+                                return (
+                                    <div className="row status-status-row">
+                                        <div className="row status-organism-row">
+                                            <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
+                                                <span>
+                                                    <i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>
+                                                    {status}
+                                                </span>
                                             </div>
-                                        );
-                                    })}
-                                </div>
-                            );
+                                            <div className="col-sm-9 col-sm-pull-3 status-terms">
+                                                {terms.join(', ')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            }
                         })}
                     </div>
                 </div>

@@ -133,6 +133,18 @@ var StdContent = module.exports.StdContent = React.createClass({
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     render: function() {
+        var experiments;
+
+        // If there's a limit on entries to display and the array is greater than that
+        // limit, then clone the array with just that specified number of elements
+        if (this.props.limit && (this.props.limit < this.props.items.length)) {
+            // Limit the experiment list by cloning first {limit} elements
+            experiments = this.props.items.slice(0, this.props.limit);
+        } else {
+            // No limiting; just reference the original array
+            experiments = this.props.items;
+        }
+
         return (
             <div className="table-responsive">
                 <table className="table table-panel table-striped table-hover">
@@ -147,7 +159,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
                         </tr>
                     </thead>
                     <tbody>
-                    {this.props.items.map(function (experiment) {
+                    {experiments.map(function (experiment) {
                         // Ensure this can work with search result columns too
                         return (
                             <tr key={experiment['@id']}>

@@ -249,7 +249,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-small" href={context['visualize_ucsc']}>Visualize Data</a>
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
                     </span>
                 : null }
 

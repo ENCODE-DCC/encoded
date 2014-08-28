@@ -37,11 +37,12 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2013-11-20",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
         "uuid": "072cbc4e-075e-46b7-df05-58c5092ebd36",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -85,10 +86,12 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2011-01-11",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "sit.nascetur@accumsan.quis",
         "target": "H3K4me3-human",
-        "uuid": "adbb7ba3-0bca-4bca-b892-15f997781515"
+        "uuid": "adbb7ba3-0bca-4bca-b892-15f997781515",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "hnRNPA1_aviva-1_WB_HeLa_Fu.TIF",
@@ -98,11 +101,12 @@
         "characterizes": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea",
         "date": "2012-07-18",
         "lab": "xiang-dong-fu",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "not compliant",
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
         "uuid": "769cbffe-bb59-4d68-a073-367a6fdd0cef",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -137,11 +141,12 @@
         "characterizes": "c8001233-050d-4dab-bf73-f47133b2e2a3",
         "date": "2011-01-12",
         "lab": "xiang-dong-fu",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "parturient.ut@et.ve",
         "target": "HNRNPA1-human",
         "uuid": "13a76a0c-9571-489a-aa23-1408c0c88414",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -165,7 +170,7 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "CTCF-human",
         "uuid": "15579824-74dc-4b5c-88bd-cd7fadee0df7",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -213,38 +218,43 @@
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
         "award": "U54HG004558",
         "secondary_characterization_method": "ChIP-seq comparison",
-        "characterizes": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
+        "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2011-01-13",
         "lab": "michael-snyder",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "target": "E2F1-human",
-        "uuid": "7ad24205-c246-4c67-929f-12974de1fee7"
+        "target": "HA-influenza",
+        "uuid": "7ad24205-c246-4c67-929f-12974de1fee7",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham-1_1.jpg",
         "award": "U54HG004558",
         "primary_characterization_method": "immunoprecipitation",
-        "characterizes": "cd8b0112-e01b-4eb6-94ae-5e9257885eba",
+        "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2012-07-20",
         "lab": "michael-snyder",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "not reviewed",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "target": "E2F1-human",
+        "target": "HA-influenza",
         "uuid": "7a824fb0-280d-4a4f-8169-20a33bb661e1"
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham.pdf",
         "award": "U54HG004558",
-        "caption": "ChIPseq was performed in Hela cells stably trnsfected with a plasmid expressing an HA tagged E21 protein. Two different biological replicates of HeLa cells were used; one sample was ChIPseq profiles: 99% of the top 40% of targets identified with the HA antibody are in teh targets identified using the E2F1 antibody and 97.5% of the top 40% of targets identified using the E2F1 antibody are in the target identified using the HA antibody.",
+        "caption": "ChIPseq was performed in Hela cells stably transfected with a plasmid expressing an HA tagged E21 protein. Two different biological replicates of HeLa cells were used; one sample was ChIPseq profiles: 99% of the top 40% of targets identified with the HA antibody are in teh targets identified using the E2F1 antibody and 97.5% of the top 40% of targets identified using the E2F1 antibody are in the target identified using the HA antibody.",
         "secondary_characterization_method": "ChIP-seq comparison",
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2013-11-23",
         "lab": "michael-snyder",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "target": "HA-E2F1-human",
-        "uuid": "e430c823-f95e-4b34-beca-41c07cf10376"
+        "target": "HA-influenza",
+        "uuid": "e430c823-f95e-4b34-beca-41c07cf10376",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_E2F1_HA-E2F1_validation_Farnham.pdf",
@@ -254,11 +264,12 @@
         "characterizes": "981a4b17-65b6-4535-9515-786ecbfeaed8",
         "date": "2011-01-14",
         "lab": "michael-snyder",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "taciti.vehicula@vitae.vivamus",
-        "target": "HA-E2F1-human",
+        "target": "HA-influenza",
         "uuid": "2f605105-7ec4-46a3-a8e5-1e5a0647aa8a",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -295,10 +306,12 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2012-07-21",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K4me3-human",
-        "uuid": "2db3adb8-5d5c-4bb0-8580-9633ec610de6"
+        "uuid": "2db3adb8-5d5c-4bb0-8580-9633ec610de6",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_H3K9ac_ab4441_validation_Bernstein.pdf",
@@ -308,10 +321,12 @@
         "characterizes": "f211c027-6613-4998-8cf0-90e9041ad254",
         "date": "2013-11-24",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K9ac-human",
-        "uuid": "15bd73e2-fa04-4268-95ce-fee4a0cdf7f3"
+        "uuid": "15bd73e2-fa04-4268-95ce-fee4a0cdf7f3",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "human_H3K9ac_ab4441_validation_Bernstein.pdf",
@@ -321,11 +336,12 @@
         "characterizes": "f211c027-6613-4998-8cf0-90e9041ad254",
         "date": "2011-01-15",
         "lab": "bradley-bernstein",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "hymenaeos.blandit@sit.dictum",
         "target": "H3K9ac-human",
         "uuid": "05a22a07-ab5c-42ad-bf93-801f03b017f7",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -345,11 +361,12 @@
         "characterizes": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
         "date": "2012-07-22",
         "lab": "richard-myers",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
         "uuid": "73ea11a5-b9f7-4c60-b0b7-6319f2dbea65",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -394,10 +411,12 @@
         "characterizes": "ed7270b0-9dfc-4ce5-b33a-c0be11fe5773",
         "date": "2013-11-25",
         "lab": "richard-myers",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "maecenas.curabitur@nibh.phasellus",
         "target": "TAF1-human",
-        "uuid": "c105221e-2c2f-449d-9942-4f4b5f2f36fe"
+        "uuid": "c105221e-2c2f-449d-9942-4f4b5f2f36fe",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "attachment": "mouse_H3K4me3_07-473_validation_Hardison.pdf",
@@ -406,10 +425,12 @@
         "characterizes": "3422bec2-cbe5-4bd2-acf8-dbb67388f43b",
         "date": "2011-01-16",
         "lab": "ross-hardison",
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
         "status": "compliant",
         "submitted_by": "tempor.convallis@libero.nibh",
         "target": "H3K4me3-mouse",
-        "uuid": "77b39794-eca3-4799-bac7-27a71a74313f"
+        "uuid": "77b39794-eca3-4799-bac7-27a71a74313f",
+        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
     },
     {
         "aliases": [
@@ -426,7 +447,7 @@
         "submitted_by": "facilisi.tristique@potenti.vivamus",
         "target": "TCF4-human",
         "uuid": "cc1dc011-9d2b-4b61-95b2-a7d03f317f68",
-        "characterization_review": [
+        "characterization_reviews": [
             {
                 "organism": "human",
                 "lane": 2,
@@ -463,8 +484,9 @@
         "primary_characterization_method": "immunoblot",
         "date": "2014-05-31",
         "lab": "michael-snyder",
-        "characterization_review": 
-            [{ 
+        "reviewed_by": "/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/",
+        "characterization_reviews": [
+            { 
                 "organism": "human",
                 "lane": 2,
                 "lane_status": "compliant",
@@ -487,12 +509,36 @@
                 "biosample_term_name": "MEL cell line",
                 "biosample_term_id": "EFO:0003971",
                 "biosample_type": "immortalized cell line"
-            }],
+            }
+        ],
         "notes": "Oh look, the antibody review panel made us pass this.",
         "status": "compliant",
         "submitted_by": "amet.fusce@est.fermentum",
         "target": "CTCF-human",
         "documents": ["ENCODE:Antibody_characterization_standards_February_2014"],
         "uuid": "984cfea4-1cf3-43ea-a49b-d499932619aa"
+    },
+    {
+        "attachment": "frowny_gel.png",
+        "award": "U54HG006996",
+        "caption": "This immunoblot characterizes the goatV GFP antibody in K562 cells expressing eGFP-JUNB",
+        "characterizes": "c3ebc1c5-9abd-4db9-b34a-29b8e7c299b3",
+        "primary_characterization_method": "immunoblot",
+        "lab": "michael-snyder",
+        "date": "2014-08-20",
+        "characterization_reviews": [
+            { 
+                "organism": "human",
+                "lane": 2,
+                "lane_status": "pending dcc review",
+                "biosample_term_name": "K562",
+                "biosample_term_id": "EFO:0002067",
+                "biosample_type": "immortalized cell line"
+            }
+        ],
+        "status": "pending dcc review",
+        "submitted_by": "amet.fusce@est.fermentum",
+        "target": "eGFP-avictoria",
+        "uuid": "e422093e-8350-44bc-915f-6ef878eb2e3b"
     }
 ]

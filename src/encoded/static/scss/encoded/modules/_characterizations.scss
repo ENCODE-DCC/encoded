@@ -30,6 +30,14 @@
 }
 
 
+.characterization-target {
+    padding: 5px 10px;
+    background-color: lighten(#0a253d,10%);
+    color: #fff;
+    font-weight: bold;
+}
+
+
 @mixin status-colors($border, $bg, $text) {
     figure {
         border-color: $border;
@@ -289,5 +297,42 @@
 
     .no-svg & {
         background-image: url(/static/img/file-broken.png);
+    }
+}
+
+.status-dots {
+    display: inline-block;
+}
+
+.tooltip {
+    display: none; 
+    position: absolute;
+    top: -40px;
+    right: 10px;
+    padding: 2px 10px;
+    z-index: 100;
+    border: 1px solid #333;
+    background-color: #0a253d;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    font-size: 13px;
+    @include border-radius(4px);
+
+    span:last-child {
+        font-weight: normal;
+    }
+}
+
+
+.tooltip-trigger {
+    position: relative;
+    margin-left: 5px;
+    font-size: 16px;
+
+    &:hover {
+        .tooltip {
+            display: block;
+        }
     }
 }
