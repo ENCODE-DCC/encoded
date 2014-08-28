@@ -69,7 +69,7 @@ var Lot = module.exports.Lot = React.createClass({
                     </div>
                 </header>
 
-                {characterizations.length ?
+                {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">
                         {antibodyStatuses}
                     </div>
@@ -337,52 +337,72 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
 
             // Look at all organisms in current lot_review. They go under this lot_review's status
             var statusNode = statusTree[lot_review.status];
-            lot_review.organisms.forEach(function(organism) {
-                // If haven’t seen this organism with this status before, remember it
-                if (!statusNode[organism.scientific_name]) {
-                    statusNode[organism.scientific_name] = {};
-                    organismCount++;
-                }
+            if (lot_review.organisms && lot_review.organisms.length) {
+                lot_review.organisms.forEach(function(organism) {
+                    // If haven’t seen this organism with this status before, remember it
+                    if (!statusNode[organism.scientific_name]) {
+                        statusNode[organism.scientific_name] = {};
+                        organismCount++;
+                    }
 
-                // If haven't seen this biosample term name for this organism, remember it
-                var organismNode = statusNode[organism.scientific_name];
-                if (!organismNode[lot_review.biosample_term_name]) {
-                    organismNode[lot_review.biosample_term_name] = {};
+                    // If haven't seen this biosample term name for this organism, remember it
+                    var organismNode = statusNode[organism.scientific_name];
+                    if (!organismNode[lot_review.biosample_term_name]) {
+                        organismNode[lot_review.biosample_term_name] = true;
+                    }
+                });
+            } else {
+                if (!statusNode[lot_review.biosample_term_name]) {
+                    statusNode[lot_review.biosample_term_name] = true;
                 }
-            });
+            }
         });
-
-        // Now have hierarchical object. If no organisms in it, then nothing to display
-        if (!organismCount) {
-            return null;
-        }
 
         return (
             <section className="type-antibody-status view-detail panel">
                 <div className="row">
                     <div className="col-xs-12">
                         {Object.keys(statusTree).map(function(status) {
-                            var organisms = statusTree[status];
-                            return (
-                                <div className="row status-status-row">
-                                    {Object.keys(organisms).map(function(organism, i) {
-                                        var terms = Object.keys(organisms[organism]);
-                                        return (
-                                            <div className="row status-organism-row">
-                                                <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
-                                                    {i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}
+                            if (organismCount) {
+                                var organisms = statusTree[status];
+                                return (
+                                    <div className="row status-status-row">
+                                        {Object.keys(organisms).map(function(organism, i) {
+                                            var terms = Object.keys(organisms[organism]);
+                                            return (
+                                                <div className="row status-organism-row">
+                                                    <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
+                                                        {i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}
+                                                    </div>
+                                                    <div className="col-sm-2 col-sm-pull-3 status-organism">
+                                                        {organism}
+                                                    </div>
+                                                    <div className="col-sm-7 col-sm-pull-3 status-terms">
+                                                        {terms.join(', ')}
+                                                    </div>
                                                 </div>
-                                                <div className="col-sm-2 col-sm-pull-3 status-organism">
-                                                    {organism}
-                                                </div>
-                                                <div className="col-sm-7 col-sm-pull-3 status-terms">
-                                                    {terms.join(', ')}
-                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            } else {
+                                var terms = Object.keys(statusTree[status]);
+                                return (
+                                    <div className="row status-status-row">
+                                        <div className="row status-organism-row">
+                                            <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
+                                                <span>
+                                                    <i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>
+                                                    {status}
+                                                </span>
                                             </div>
-                                        );
-                                    })}
-                                </div>
-                            );
+                                            <div className="col-sm-9 col-sm-pull-3 status-terms">
+                                                {terms.join(', ')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            }
                         })}
                     </div>
                 </div>
