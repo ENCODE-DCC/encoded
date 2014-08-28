@@ -53,3 +53,12 @@ def test_audit_antibody_no_standards(testapp, base_antibody_characterization, ba
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'missing standards' for error in errors)
+
+def test_audit_antibody_duplicate_review_subobject(testapp, base_antibody_characterization, base_characterization_review, base_document):
+    characterization_review_list = []
+    characterization_review_list.append(base_characterization_review)
+    characterization_review_list.append(base_characterization_review)
+    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot' })
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'duplicate lane review' for error in errors)

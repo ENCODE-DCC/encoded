@@ -46,3 +46,22 @@ def audit_antibody_characterization_standards(value, system):
         if not has_standards:
             detail = 'Missing standards document'
             raise AuditFailure('missing standards', detail, level='ERROR')
+
+@audit_checker('antibody_characterization')
+def audit_antibody_characterization_unique_reviews(value, system):
+    '''Make sure primary characterizations have unique lane, biosample_term_id and organism combinations for characterization reviews'''
+    if(value['status'] in ["deleted", "not submitted for review by lab"]):
+        return
+
+    unique_reviews = set()
+    for review in value['characterization_reviews']:
+        lane = review['lane']
+        term_id = review['biosample_term_id']
+        organism = review['organism']
+        review_lane = frozenset([lane, term_id, organism])
+        if review_lane not in unique_reviews:
+            unique_reviews.add(review_lane)
+        else:
+            detail = '{} - {} - {}'.format(lane, term_id, organism)
+            raise AuditFailure('duplicate lane review', detail, level='ERROR')
+
