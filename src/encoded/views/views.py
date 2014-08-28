@@ -861,7 +861,7 @@ class AntibodyCharacterization(Characterization):
     }
 
     class Item(Characterization.Item):
-        embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
+        embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism', 'documents']
 
         template = {
             'characterization_method': {'$value': '{characterization_method}', '$templated': True, '$condition': 'characterization_method'}

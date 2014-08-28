@@ -37,12 +37,14 @@ def audit_antibody_characterization_review(value, system):
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_standards(value, system):
-    if (value['status'] in ['in progress', 'not submitted for review by lab', 'not reviewed', 'pending dcc review', 'deleted']):
-        return
-
-    if not value['documents']:
-        detail = 'Missing standards document'
-        raise AuditFailure('missing standards', detail, level='ERROR')
+    if (value['status'] in ['compliant', 'not compliant']):
+        has_standards = False
+        for document in value['documents']:
+            if document.get('document_type') == 'standards document':
+                has_standards = True
+        if not has_standards:
+            detail = 'Missing standards document'
+            raise AuditFailure('missing standards', detail, level='ERROR')
 
     #Need to account for if there are documents, but none of them are the standards document
     #has_standards = False

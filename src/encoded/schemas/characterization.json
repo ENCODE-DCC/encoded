@@ -44,7 +44,6 @@
             "title": "Documents",
             "description": "Documents that provide additional information on the characterization.",
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Document",
                 "description": "A document that provides additional information on the characterization.",
