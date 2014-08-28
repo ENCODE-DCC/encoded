@@ -426,7 +426,7 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
                                                         {organism}
                                                     </div>
                                                     <div className="col-sm-7 col-sm-pull-3 status-terms">
-                                                        {terms.join(', ')}
+                                                        {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
                                                     </div>
                                                 </div>
                                             );
@@ -444,7 +444,8 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
                                                     {status}
                                                 </span>
                                             </div>
-                                            <div className="col-sm-9 col-sm-pull-3 status-terms">
+                                            <div className="col-sm-2 col-sm-pull-3 status-organism">&nbsp;</div>
+                                            <div className="col-sm-7 col-sm-pull-3 status-terms">
                                                 {terms.join(', ')}
                                             </div>
                                         </div>

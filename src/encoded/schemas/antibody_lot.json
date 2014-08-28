@@ -189,10 +189,6 @@
             "title": "Accession",
             "type": "string"
         },
-        "targets": {
-            "title": "Targets",
-            "type": "array"
-        },
         "lot_reviews.biosample_term_name": {
             "title": "Ontology term",
             "type":  "string"
@@ -201,12 +197,24 @@
             "title": "Status",
             "type":  "string"
         },
-        "lot_reviews.organisms": {
-            "title": "Organism",
+        "lot_reviews.organisms.@id": {
+            "title": "Organism ID",
             "type": "array"
         },
-        "lot_reviews.targets": {
-            "title": "Target",
+        "lot_reviews.organisms.scientific_name": {
+            "title": "Organism scientific name",
+            "type": "array"
+        },
+        "lot_reviews.targets.name": {
+            "title": "Target name",
+            "type":  "array"
+        },
+        "lot_reviews.targets.label": {
+            "title": "Target label",
+            "type":  "array"
+        },
+        "lot_reviews.targets.organism.@id": {
+            "title": "Target organism ID",
             "type":  "array"
         },
         "source.title": {
