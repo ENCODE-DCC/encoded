@@ -148,7 +148,13 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan="6"></td>
+                            <td colSpan="6">
+                                {this.props.limit && (this.props.limit < this.props.items.length) ?
+                                    <div>
+                                        {'Displaying '}{this.props.limit}{' experiments out of '}{this.props.items.length}{' total related experiments'}
+                                    </div>
+                                : ''}
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
