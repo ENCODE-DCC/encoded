@@ -109,16 +109,16 @@ var Dbxref = dbxref.Dbxref;
                 <div>
                     {Object.keys(targetTree).map(function(target) {
                         return (
-                            <li>
+                            <li key={target}>
                                 <div>
                                     {this.renderActions()}
                                     <div className="pull-right search-meta">
                                         <p className="type meta-title">Antibody</p>
                                         <p className="type">{' ' + result.accession}</p>
                                         <div className="type meta-status clearfix">
-                                            {Object.keys(targetTree[target]).map(function(status) {
+                                            {Object.keys(targetTree[target]).map(function(status, i) {
                                                 return (
-                                                    <div className="status-dots">
+                                                    <div key={i} className="status-dots">
                                                         {(status !== 'target' && status !== 'organism') ?
                                                             <div className="tooltip-trigger">
                                                                 <i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>
