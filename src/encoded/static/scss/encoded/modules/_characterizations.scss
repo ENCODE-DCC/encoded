@@ -70,7 +70,7 @@
     h4 {
         margin: 0;
         padding: 5px 20px 8px;
-        background-color: lighten(#0a253d,10%);
+        background-color: desaturate(lighten(#0a253d,30%),30%);
         color: #fff;
         font-size: 15px;
         font-weight: bold;
@@ -322,7 +322,8 @@
     padding: 2px 10px;
     z-index: 100;
     border: 1px solid #fff;
-    background-color: lighten(#0a253d,10%);
+    background-color: desaturate(lighten(#0a253d,30%),30%);
+    @include box-shadow(0 2px 4px 0 rgba(0,0,0,0.3));
     color: #fff;
     text-align: center;
     white-space: nowrap;
