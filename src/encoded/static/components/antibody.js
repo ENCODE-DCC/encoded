@@ -61,7 +61,7 @@ var Lot = module.exports.Lot = React.createClass({
                             {targetKeys.length ?
                                 <span>Antibody against {Object.keys(targets).map(function(target, i) {
                                     var targetObj = targets[target];
-                                    return <span>{i !== 0 ? ', ' : ''}{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</span>;
+                                    return <span key={i}>{i !== 0 ? ', ' : ''}{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</span>;
                                 })}</span>
                             :
                                 <span>Antibody</span>
@@ -103,7 +103,7 @@ var Lot = module.exports.Lot = React.createClass({
                                 <dd>
                                     {targetKeys.map(function(target, i) {
                                         var targetObj = targets[target];
-                                        return <span>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</a></span>;
+                                        return <span key={i}>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</a></span>;
                                     })}
                                 </dd>
                             </div>
@@ -214,8 +214,8 @@ var StandardsDocuments = React.createClass({
     render: function() {
         return (
             <div>
-                {this.props.docs.map(function(doc) {
-                    return (<div className="multi-dd"><a href={doc['@id']}>{doc.aliases[0]}</a></div>);
+                {this.props.docs.map(function(doc, i) {
+                    return (<div key={i} className="multi-dd"><a href={doc['@id']}>{doc.aliases[0]}</a></div>);
                 })}
             </div>
         );
@@ -368,11 +368,11 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
                             if (organismCount) {
                                 var organisms = statusTree[status];
                                 return (
-                                    <div className="row status-status-row">
+                                    <div key={status} className="row status-status-row">
                                         {Object.keys(organisms).map(function(organism, i) {
                                             var terms = Object.keys(organisms[organism]);
                                             return (
-                                                <div className="row status-organism-row">
+                                                <div key={i} className="row status-organism-row">
                                                     <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
                                                         {i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}
                                                     </div>
