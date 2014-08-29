@@ -61,12 +61,20 @@ var Attachment = module.exports.Attachment = React.createClass({
 
     // Register for keyup events for ESC key
     componentDidMount: function() {
-        window.addEventListener('keyup', this.handleEscKey);
+        if (window.addEventListener){
+            window.addEventListener('keyup', this.handleEscKey, false); 
+        } else if (window.attachEvent){
+            window.attachEvent('onKeyup', this.handleEscKey);
+        }
     },
 
     // Unregister keyup events when component closes
     componentWillUnmount: function() {
-        window.removeEventListener('keyup', this.handleEscKey);
+        if (window.removeEventListener){
+            window.removeEventListener('keyup', this.handleEscKey, false); 
+        } else if (window.detachEvent){
+            window.detachEvent('onKeyup', this.handleEscKey);
+        }
     },
 
     render: function() {
