@@ -11,9 +11,6 @@
         font-size: floor($font-size-base * 1.4);
         font-weight: 200;
         text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-        @include transition-property(text-shadow);
-        @include transition-duration(0.2s);
-        @include transition-timing-function(ease-in-out);
 
         &:hover {
             @include text-shadow(0px 0px 8px rgba(255, 255, 255, 0.8));
@@ -22,10 +19,6 @@
 
     .nav > li > a {
         color: #fff;   
-        @include transition-property(background-color);
-        @include transition-duration(0.15s);
-        @include transition-timing-function(ease-in-out);
-
         &:focus,
         &:hover {
             background-color: #2f4961;

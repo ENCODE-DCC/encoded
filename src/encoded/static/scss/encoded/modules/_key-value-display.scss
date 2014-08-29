@@ -10,7 +10,7 @@ dd.h3, dd.h4 {
     font-weight: normal;
 }
 
-.key-value, .key-value-left {
+.key-value {
     margin: 0;
 
     dt {
@@ -65,18 +65,18 @@ dd.h3, dd.h4 {
     @extend .key-value;
 
     dt, dd {
-        padding-top: 0;
+        padding-top: 0 !important;
     }
 
     dt {
-        float: none;
-        display: block;
-        text-align: left;
-        margin-bottom: 0px;
+        float: none !important;
+        display: block !important;
+        text-align: left !important;
+        margin-bottom: 0px !important;
     }
 
     dd {
-        margin-left: 0;
+        margin-left: 0 !important;
     }
 }
 
@@ -85,6 +85,8 @@ dd.h3, dd.h4 {
 }
 
 .horizontal-list {
+    @include clearfix;
+
     li {
         float: left;
         margin-right: 0.5em;
