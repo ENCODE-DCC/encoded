@@ -127,6 +127,35 @@ def test_audit_experiment_paired_end_required(testapp, base_experiment, base_rep
     errors = res.json['audit']
     assert any(error['category'] == 'paired end required for assay' for error in errors)
 
+
+def test_audit_experiment_target_mistmatch(testapp, base_experiment, base_replicate, organism, antibody_lot):
+    other_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'ABC', 'investigated_as': ['transcription factor']}).json['@graph'][0]
+    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'target mismatch' for error in errors)
+
+
+def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot):
+    other_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'eGFP', 'investigated_as': ['tag']}).json['@graph'][0]
+    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'not tagged antibody' for error in errors)
+
+
+def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot, base_target):
+    ha_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'HA', 'investigated_as': ['tag']}).json['@graph'][0]
+    testapp.patch_json(antibody_lot['@id'], {'targets': [ha_target['@id']]})
+    testapp.patch_json(base_target['@id'], {'investigated_as': ['tag']})
+    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'tag target mismatch' for error in errors)
+
 # These don't work right now
 #def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, base_antibody_characterization1, base_antibody_characterization2, base_target):
 #    testapp.patch_json(antibody_lot['@id'], {'targets': [base_target['@id']]})

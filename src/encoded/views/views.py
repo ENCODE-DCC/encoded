@@ -1110,6 +1110,7 @@ class Experiment(Dataset):
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody',
+            'replicates.antibody.targets',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',
