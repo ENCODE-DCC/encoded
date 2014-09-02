@@ -74,13 +74,13 @@ def audit_antibody_characterization_target(value, system):
     if 'tag' in target['investigated_as']:
         prefix = target['label']
         unique_antibody_target = set ()
-        unique_investiaged_as = set()
+        unique_investigated_as = set()
         for antibody_target in antibody['targets']:
             label = antibody_target['@id'].split('-')[0]
             unique_antibody_target.add(label)
             for investigated_as in antibody_target['investigated_as']:
-                unique_investiaged_as.add(investigated_as)
-        if 'tag' not in unique_investiaged_as:
+                unique_investigated_as.add(investigated_as)
+        if 'tag' not in unique_investigated_as:
             detail = '{} is not to tagged protein'.format(antibody['@id'])
             raise AuditFailure('not tagged antibody', detail, level='ERROR')
         else: 
