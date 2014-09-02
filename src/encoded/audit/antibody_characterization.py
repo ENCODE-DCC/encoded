@@ -76,7 +76,7 @@ def audit_antibody_characterization_target(value, system):
         unique_antibody_target = set ()
         unique_investigated_as = set()
         for antibody_target in antibody['targets']:
-            label = antibody_target['@id'].split('-')[0]
+            label = antibody_target['label']
             unique_antibody_target.add(label)
             for investigated_as in antibody_target['investigated_as']:
                 unique_investigated_as.add(investigated_as)
