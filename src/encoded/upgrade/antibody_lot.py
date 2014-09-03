@@ -27,3 +27,19 @@ def antibody_lot_2_3(value, system):
                 value['status'] = 'released'
             elif value['award'] not in ENCODE2_AWARDS:
                 value['status'] = 'in progress'
+
+
+@upgrade_step('antibody_lot', '3', '4')
+def antibody_lot_3_4(value, system):
+    # http://redmine.encodedcc.org/issues/380
+
+    if 'status' in value and value['status'] in ['in progress', 'released']:    
+        value['status'] = 'current'
+
+    context = system['context']
+    root = find_root(context)
+    targets = []
+    for approval_uuid in value['approvals']:
+        approval = root.get_by_uuid(approval_uuid).upgrade_properties(finalize=False)
+        targets.append(approval['target'])
+    value['targets'] = targets
