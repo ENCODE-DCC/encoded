@@ -98,10 +98,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 antibodies[replicate.antibody['@id']] = replicate.antibody;
             }
         });
-        var antibody_accessions = [];
-        for (var key in antibodies) {
-            antibody_accessions.push(antibodies[key].accession);
-        }
 
         // Determine this experiment's ENCODE version
         var encodevers = "";
@@ -186,8 +182,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.target ? <dt>Target</dt> : null}
                         {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
 
-                        {antibody_accessions.length ? <dt>Antibody</dt> : null}
-                        {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
+                        {Object.keys(antibodies).length ?
+                            <div>
+                                <dt>Antibody</dt>
+                                <dd>{Object.keys(antibodies).map(function(antibody, i) {
+                                    return (<span>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
+                                })}</dd>
+                            </div>
+                        : null}
 
                         {context.possible_controls.length ? <dt>Controls</dt> : null}
                         {context.possible_controls.length ?
