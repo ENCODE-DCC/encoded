@@ -18,8 +18,7 @@
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" },
-        { "$ref": "mixins.json#/strains"},
-        { "$ref": "mixins.json#/genomic_alterations"}
+        { "$ref": "mixins.json#/strains"}
     ],
     "properties": {
         "schema_version": {
