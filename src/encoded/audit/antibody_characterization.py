@@ -9,10 +9,6 @@ def audit_antibody_characterization_review(value, system):
     if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted']):
         return
 
-    '''Make sure primary characterizations have characterization review subobjects'''
-    if ('secondary_characterization_method' in value):
-        return
-
     '''Make sure the lane information is filled out in characterization_review'''
     if value['characterization_reviews']:
         ontology = system['registry']['ontology']
