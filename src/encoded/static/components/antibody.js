@@ -62,7 +62,7 @@ var Lot = module.exports.Lot = React.createClass({
                             {targetKeys.length ?
                                 <span>Antibody against {Object.keys(targets).map(function(target, i) {
                                     var targetObj = targets[target];
-                                    return <span key={i}>{i !== 0 ? ', ' : ''}{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</span>;
+                                    return <span key={i}>{i !== 0 ? ', ' : ''}<em>{targetObj.organism.scientific_name}</em>{' ' + targetObj.label}</span>;
                                 })}</span>
                             :
                                 <span>Antibody</span>
