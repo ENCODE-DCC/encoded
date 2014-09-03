@@ -607,6 +607,9 @@ var Document = module.exports.Document = React.createClass({
 
                             <dt><i className="icon icon-download"></i> Download</dt>
                             <dd>{download}</dd>
+
+                            {context.references && context.references.length ? <dt>References</dt> : null}
+                            {context.references && context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
                         </dl>
                     </div>
                 </div>

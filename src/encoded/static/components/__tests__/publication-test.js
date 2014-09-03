@@ -25,8 +25,9 @@ describe('Publication', function() {
 
         beforeEach(function() {
             // Render publication panel into jsnode
-            publication = <Panel context={context} />;
-            TestUtils.renderIntoDocument(publication);
+            publication = TestUtils.renderIntoDocument(
+                <Panel context={context} />
+            );
         });
 
         it('has a good author line', function() {
@@ -64,8 +65,9 @@ describe('Publication', function() {
         beforeEach(function() {
             var context_ref = _.clone(context);
             context_ref.references = ['PMID:19352372', 'PMCID:PMC3062402'];
-            publication = <Panel context={context_ref} />;
-            TestUtils.renderIntoDocument(publication);
+            publication = TestUtils.renderIntoDocument(
+                <Panel context={context_ref} />
+            );
         });
 
         it('has two references', function() {
@@ -86,8 +88,9 @@ describe('Publication', function() {
         beforeEach(function() {
             var context_du = _.clone(context);
             context_du.data_used = 'ENCODE main paper';
-            publication = <Panel context={context_du} />;
-            TestUtils.renderIntoDocument(publication);
+            publication = TestUtils.renderIntoDocument(
+                <Panel context={context_du} />
+            );
         });
 
         it('has a data-used field', function() {

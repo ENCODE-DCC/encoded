@@ -24,8 +24,9 @@ describe('Software', function() {
         var software, summary;
 
         beforeEach(function() {
-            software = <Software context={context} />;
-            TestUtils.renderIntoDocument(software);
+            software = TestUtils.renderIntoDocument(
+                <Software context={context} />
+            );
 
             summary = TestUtils.scryRenderedDOMComponentsWithClass(software, 'key-value');
         });
@@ -61,8 +62,9 @@ describe('Software', function() {
             context_ref.references = [require('../testdata/publication')];
             context_ref.references[0].references = ['PMID:19352372', 'PMCID:PMC3062402'];
 
-            software = <Software context={context_ref} />;
-            TestUtils.renderIntoDocument(software);
+            software = TestUtils.renderIntoDocument(
+                <Software context={context_ref} />
+            );
 
             summary = TestUtils.scryRenderedDOMComponentsWithClass(software, 'key-value');
         });

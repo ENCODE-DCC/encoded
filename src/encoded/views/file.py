@@ -70,7 +70,6 @@ class File(Collection):
         'title': 'Files',
         'description': 'Listing of Files',
     }
-    __acl__ = ()
 
     class Item(Collection.Item):
         name_key = 'accession'
@@ -106,9 +105,6 @@ class File(Collection):
                 sheets = {} if sheets is None else sheets.copy()
                 sheets['external'] = external_creds(parent, properties)
             return super(File.Item, cls).create(parent, uuid, properties, sheets)
-
-        def __ac_local_roles__(self):
-            return {}
 
 
 class InternalResponse(Response):

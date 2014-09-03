@@ -12,11 +12,8 @@ var FormFor = ReactForms.FormFor;
 var Form = module.exports.Form = React.createClass({
     mixins: [ReactForms.FormMixin],
 
-    // make sure the Form finds the data from FetchedData
-    getDefaultProps: function() {
-        return {
-            value: this.props.data
-        }
+    contextTypes: {
+        adviseUnsavedChanges: React.PropTypes.func
     },
 
     childContextTypes: {
@@ -40,6 +37,12 @@ var Form = module.exports.Form = React.createClass({
             </div>
           </form>
         )
+    },
+
+    valueUpdated: function(value) {
+        if (!this.state.unsavedToken) {
+            this.setState({unsavedToken: this.context.adviseUnsavedChanges()});
+        }
     },
 
     save: function(e) {
@@ -67,6 +70,10 @@ var Form = module.exports.Form = React.createClass({
     },
 
     finish: function (data) {
+        if (this.state.unsavedToken) {
+            this.state.unsavedToken.release();
+            this.setState({unsavedToken: null});
+        }
         this.props.navigate(data['@graph'][0]['@id'] + '?datastore=database');
     },
 
