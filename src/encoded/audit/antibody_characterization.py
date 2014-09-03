@@ -9,14 +9,14 @@ def audit_antibody_characterization_review(value, system):
     if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted']):
         return
 
-    '''Make sure the lane information is filled out in characterization_review'''
+    '''Make sure that biosample terms are in ontology for each characterization_review'''
     if value['characterization_reviews']:
         ontology = system['registry']['ontology']
         for review in value['characterization_reviews']:
 
             term_id = review['biosample_term_id']
             term_name = review['biosample_term_name']
-            print "ontology: %s" % ontology
+            
 
             if term_id.startswith('NTR:'):
                 detail = '{} - {}'.format(term_id, term_name)
