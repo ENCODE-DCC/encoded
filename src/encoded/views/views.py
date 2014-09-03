@@ -466,13 +466,16 @@ class Biosample(Collection):
             'age_units': {'$value': '{age_units}', '$templated': True, '$condition': 'age_units'},
             'health_status': {'$value': '{health_status}', '$templated': True, '$condition': 'health_status'},
             'life_stage': {'$value': '{life_stage}', '$templated': True, '$condition': 'life_stage'},
-            'synchronization': {'$value': '{synchronization}', '$templated': True, '$condition': 'synchronization'}
+            'synchronization': {'$value': '{synchronization}', '$templated': True, '$condition': 'synchronization'},
+            'model_organism_donor_constructs': [
+                {'$value': lambda model_organism_donor_construct: model_organism_donor_construct, '$repeat': 'model_organism_donor_construct model_organism_donor_constructs', '$templated': True}
+            ]
         }
         embedded = set([
             'donor',
             'donor.organism',
-            'donor.constructs',
-            'donor.constructs.target',
+            'model_organism_donor_constructs.constructs',
+            'model_organism_donor_constructs.constructs.target',
             'submitted_by',
             'lab',
             'award',
@@ -522,6 +525,32 @@ class Biosample(Collection):
                     ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
+            
+            fly_organisms = [
+                "/organisms/dmelanogaster/",
+                "/organisms/dananassae/",
+                "/organisms/dmojavensis/",
+                "/organisms/dpseudoobscura/",
+                "/organisms/dsimulans/",
+                "/organisms/dvirilis/",
+                "/organisms/dyakuba/"
+            ]
+
+            worm_organisms = [
+                "/organisms/celegans/",
+                "/organisms/cbrenneri/",
+                "/organisms/cbriggsae/",
+                "/organisms/cjaponica/",
+                "/organisms/cremanei/"
+            ]
+
+            model_organism_donor_constructs = []
+            if 'donor' in ns:
+                donor_organism = ns['donor']['organism']
+                if donor_organism['@id'] in fly_organisms or donor_organism['@id'] in worm_organisms:
+                    model_organism_donor_constructs = donor_organism['constructs']
+
+            ns['model_organism_donor_constructs'] = model_organism_donor_constructs
 
             human_donor_properties = [
                 "sex",
@@ -529,7 +558,7 @@ class Biosample(Collection):
                 "age_units",
                 "health_status",
                 "life_stage",
-                'synchronization'
+                "synchronization"
             ]
             mouse_biosample_properties = {
                 "model_organism_sex": "sex",
@@ -555,15 +584,6 @@ class Biosample(Collection):
                 "worm_life_stage": "life_stage",
                 "worm_synchronization_stage": "synchronization"
             }
-            fly_organisms = [
-                "/organisms/dmelanogaster/",
-                "/organisms/dananassae/",
-                "/organisms/dmojavensis/",
-                "/organisms/dpseudoobscura/",
-                "/organisms/dsimulans/",
-                "/organisms/dvirilis/",
-                "/organisms/dyakuba/"
-            ]
 
             if properties['organism'] == '/organisms/human/' and 'donor' in ns:
                 root = find_root(self)
