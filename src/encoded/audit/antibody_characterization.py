@@ -84,6 +84,10 @@ def audit_antibody_characterization_target(value, system):
                 detail = '{} not found in target for {}'.format(prefix, antibody['@id'])
                 raise AuditFailure('tag target mismatch', detail, level='ERROR')
     else:
-        if target['@id'] not in antibody['targets']:
-            detail = '{} not found in target for {}'.format(target['@id'], antibody['@id'])
+        target_matches = False
+        for antibody_target in antibody['targets']:
+            if target['name'] == antibody_target.get('name'):
+                target_matches = True
+        if not target_matches:
+            detail = '{} not found in target for {}'.format(target['name'], antibody['@id'])
             raise AuditFailure('target mismatch', detail, level='ERROR')
