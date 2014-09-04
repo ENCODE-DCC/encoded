@@ -186,15 +186,6 @@ def test_audit_experiment_paired_end_required(testapp, base_experiment, base_rep
     assert any(error['category'] == 'paired end required for assay' for error in errors)
 
 
-def test_audit_experiment_target_mistmatch(testapp, base_experiment, base_replicate, organism, antibody_lot):
-    other_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'ABC', 'investigated_as': ['transcription factor']}).json['@graph'][0]
-    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    assert any(error['category'] == 'target mismatch' for error in errors)
-
-
 def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot):
     other_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'eGFP-AVCD', 'investigated_as': ['recombinant protein']}).json['@graph'][0]
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
@@ -215,38 +206,9 @@ def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_rep
     assert any(error['category'] == 'tag target mismatch' for error in errors)
 
 
-def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_primary_characterization, base_secondary_characterization, base_target, base_antibody):
-    base_antibody['targets'] = [base_target['@id']]
-    antibody_tf = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
-    base_primary_characterization['target'] = base_target['@id']
-    base_primary_characterization['characterizes'] = antibody_tf['@id']
-    testapp.post_json('/antibody_characterization', base_primary_characterization)
-    base_secondary_characterization['target'] = base_target['@id']
-    base_secondary_characterization['characterizes'] = antibody_tf['@id']
-    testapp.post_json('/antibody_characterization', base_secondary_characterization)
-    testapp.patch_json(base_library['@id'], {'biosample': base_biosample['@id']})
-    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_tf['@id'], 'library': base_library['@id']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
-    base_target['@id']})
+def test_audit_experiment_target_mismatch(testapp, base_experiment, base_replicate, base_target, antibody_lot):
+    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
-    print errors
-    assert any(error['category'] == 'not eligible antibody' for error in errors)
-
-
-def test_audit_experiment_eligible__histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, base_primary_characterization, base_secondary_characterization, histone_target, base_antibody):
-    base_antibody['targets'] = [histone_target['@id']]
-    antibody_histone = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
-    base_primary_characterization['target'] = histone_target['@id']
-    base_primary_characterization['characterizes'] = antibody_tf['@id']
-    testapp.post_json('/antibody_characterization', base_primary_characterization)
-    base_secondary_characterization['target'] = base_target['@id']
-    base_secondary_characterization['characterizes'] = antibody_tf['@id']
-    testapp.post_json('/antibody_characterization', base_secondary_characterization)
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
-    histone_target['@id']})
-    testapp.patch_json(base_library['@id'], {'biosample': base_biosample['@id']})
-    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'], 'library': base_library['@id']})
-    res = testapp.get(base_experiment['@id'] + '@@index-data')
-    errors = res.json['audit']
-    assert any(error['category'] == 'not eligible histone antibody' for error in errors)
+    assert any(error['category'] == 'target mismatch' for error in errors)
