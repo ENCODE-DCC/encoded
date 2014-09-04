@@ -66,6 +66,16 @@ def tag_target(testapp, organism):
 
 
 @pytest.fixture
+def histone_target(testapp, organism):
+    item = {
+        'organism': organism['uuid'],
+        'label': 'Histone',
+        'investigated_as': ['histone modification']
+    }
+    return testapp.post_json('/target', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
 def base_antibody(award, lab, source, organism, target):
    return {
         'award': award['uuid'],
@@ -99,6 +109,24 @@ def base_antibody_characterization1(testapp, lab, award, base_target, antibody_l
     }
     return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
 
+@pytest.fixture
+def base_primary_characterization(lab, award, organism):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'primary_characterization_method': 'immunoblot',
+        'characterization_reviews': [
+            {
+                'lane': 2,
+                'organism': organism['uuid'],
+                'biosample_term_name': 'K562',
+                'biosample_term_id': 'EFO:0002067',
+                'biosample_type': 'immortalized cell line',
+                'lane_status': 'not compliant'
+            }
+        ]
+    }
+
 
 @pytest.fixture
 def base_antibody_characterization2(testapp, lab, award, base_target, antibody_lot, organism):
@@ -110,6 +138,15 @@ def base_antibody_characterization2(testapp, lab, award, base_target, antibody_l
         'secondary_characterization_method': 'dot blot assay'
     }
     return testapp.post_json('/antibody-characterizations', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def base_secondary_characterization(lab, award, organism):
+    return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'secondary_characterization_method': 'dot blot assay'
+    }
 
 
 def test_audit_experiment_target(testapp, base_experiment):
@@ -178,23 +215,36 @@ def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_rep
     assert any(error['category'] == 'tag target mismatch' for error in errors)
 
 
-def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, base_antibody_characterization1, base_antibody_characterization2, base_target):
-    testapp.patch_json(antibody_lot['@id'], {'targets': [base_target['@id']]})
+def test_audit_experiment_eligible_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, base_primary_characterization, base_secondary_characterization, base_target, base_antibody):
+    base_antibody['targets'] = [base_target['@id']]
+    antibody_tf = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
+    base_primary_characterization['target'] = base_target['@id']
+    base_primary_characterization['characterizes'] = antibody_tf['@id']
+    testapp.post_json('/antibody_characterization', base_primary_characterization)
+    base_secondary_characterization['target'] = base_target['@id']
+    base_secondary_characterization['characterizes'] = antibody_tf['@id']
+    testapp.post_json('/antibody_characterization', base_secondary_characterization)
+    testapp.patch_json(base_library['@id'], {'biosample': base_biosample['@id']})
+    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_tf['@id'], 'library': base_library['@id']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
     base_target['@id']})
-    testapp.patch_json(base_library['@id'], {'biosample': base_biosample['@id']})
-    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'], 'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
+    print errors
     assert any(error['category'] == 'not eligible antibody' for error in errors)
 
 
-def test_audit_experiment_eligible_antibody_histone(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, base_antibody_characterization1, base_antibody_characterization2, base_target):
-    base_target = testapp.patch_json(base_target['@id'], {'investigated_as': ['histone modification']}).json['@graph'][0]
-    antibody_lot = testapp.patch_json(antibody_lot['@id'], {'targets': [base_target['@id']]}).json['@graph'][0]
+def test_audit_experiment_eligible__histone_antibody(testapp, base_experiment, base_replicate, base_library, base_biosample, antibody_lot, base_primary_characterization, base_secondary_characterization, histone_target, base_antibody):
+    base_antibody['targets'] = [histone_target['@id']]
+    antibody_histone = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
+    base_primary_characterization['target'] = histone_target['@id']
+    base_primary_characterization['characterizes'] = antibody_tf['@id']
+    testapp.post_json('/antibody_characterization', base_primary_characterization)
+    base_secondary_characterization['target'] = base_target['@id']
+    base_secondary_characterization['characterizes'] = antibody_tf['@id']
+    testapp.post_json('/antibody_characterization', base_secondary_characterization)
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'biosample_term_id': 'EFO:0002067', 'biosample_term_name': 'K562',  'biosample_type': 'immortalized cell line', 'target': 
-    base_target['@id']})
-    testapp.patch_json(base_antibody_characterization1['@id'], { })
+    histone_target['@id']})
     testapp.patch_json(base_library['@id'], {'biosample': base_biosample['@id']})
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['@id'], 'library': base_library['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
