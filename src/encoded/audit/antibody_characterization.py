@@ -67,8 +67,8 @@ def audit_antibody_characterization_target(value, system):
     '''Make sure that target in characterization matches target of antibody'''
     antibody = value['characterizes']
     target = value['target']
-    if 'tag' in target['investigated_as']:
-        prefix = target['label']
+    if 'recombinant protein' in target['investigated_as']:
+        prefix = target['label'].split('-')[0]
         unique_antibody_target = set ()
         unique_investigated_as = set()
         for antibody_target in antibody['targets']:
