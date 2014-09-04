@@ -59,6 +59,18 @@ def mixinProperties(schema, resolver):
     return schema
 
 
+def expandRefs(schema, resolver):
+    for name in ['@context']:
+        value = schema.get(name)
+        if value is None:
+            continue
+        ref = value.get('$ref')
+        if ref is not None:
+            with resolver.resolving(ref) as resolved:
+                schema[name] = resolved
+    return schema
+
+
 def lookup_resource(root, base, path):
     try:
         UUID(path)
@@ -206,6 +218,7 @@ def load_schema(filename):
     schema = json.load(resource_stream(__name__, 'schemas/' + filename),
                        object_pairs_hook=collections.OrderedDict)
     resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
+    schema = expandRefs(schema, resolver)
     schema = mixinProperties(schema, resolver)
 
     # SchemaValidator is not thread safe for now
