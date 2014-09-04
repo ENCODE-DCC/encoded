@@ -217,7 +217,8 @@
             "UniProtKB:Q9NH52"
         ],
         "organism": "celegans",
-        "gene_name": "mes-4"
+        "gene_name": "mes-4",
+        "status": "proposed"
     },
     {
         "uuid": "79cbe489-930b-410e-8cc2-783e4c37d9f5",
@@ -230,6 +231,7 @@
             "UniProtKB:Q7K798"
         ],
         "organism": "celegans",
-        "gene_name": "pab-1"
+        "gene_name": "pab-1",
+        "status": "proposed"
     }
 ]
