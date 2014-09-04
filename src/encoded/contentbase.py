@@ -831,6 +831,8 @@ class Collection(Mapping):
             self.schema.get('calculated_props', {}).iteritems(),
         )
         for name, schema in all_props:
+            if '@id' in schema and schema['@id'] is None:
+                continue
             jsonld_context[name] = prop_ld = {
                 k: v for k, v in schema.iteritems() if k.startswith('@')
             }
