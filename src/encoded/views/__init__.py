@@ -28,6 +28,9 @@ class EncodedRoot(Root):
 def home(context, request):
     result = context.__json__(request)
     result.update({
+        '@context': {
+            'portal': '/ld/portal',
+        },
         '@id': request.resource_path(context),
         '@type': ['portal'],
         # 'login': {'href': request.resource_path(context, 'login')},

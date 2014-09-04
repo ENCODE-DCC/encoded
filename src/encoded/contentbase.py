@@ -786,6 +786,11 @@ class Collection(Mapping):
             {'$value': '{item_type}_collection', '$templated': True},
             'collection',
         ],
+        '@context': {
+            '{item_type}_collection': '/ld/{item_type}_collection',
+            'collection': '/ld/collection',
+            '$templated': True
+        },
     }
     jsonld_context_template = {
     }
