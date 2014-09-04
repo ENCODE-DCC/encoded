@@ -56,6 +56,29 @@ def base_target(testapp, organism):
 
 
 @pytest.fixture
+def tag_target(testapp, organism):
+    item = {
+        'organism': organism['uuid'],
+        'label': 'eGFP',
+        'investigated_as': ['tag']
+    }
+    return testapp.post_json('/target', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def base_antibody(award, lab, source, organism, target):
+   return {
+        'award': award['uuid'],
+        'lab': lab['uuid'],
+        'source': source['uuid'],
+        'host_organism': organism['uuid'],
+        'targets': [target['uuid']],
+        'product_id': 'KDKF123',
+        'lot_id': '123'
+    }
+
+
+@pytest.fixture
 def base_antibody_characterization1(testapp, lab, award, base_target, antibody_lot, organism):
     item = {
         'award': award['uuid'],
@@ -136,7 +159,7 @@ def test_audit_experiment_target_mistmatch(testapp, base_experiment, base_replic
 
 
 def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot):
-    other_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'eGFP', 'investigated_as': ['tag']}).json['@graph'][0]
+    other_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'eGFP-AVCD', 'investigated_as': ['recombinant protein']}).json['@graph'][0]
     testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
     testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': other_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
@@ -144,12 +167,12 @@ def test_audit_experiment_not_tag_antibody(testapp, base_experiment, base_replic
     assert any(error['category'] == 'not tagged antibody' for error in errors)
 
 
-def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_replicate, organism, antibody_lot, base_target):
-    ha_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'HA', 'investigated_as': ['tag']}).json['@graph'][0]
-    testapp.patch_json(antibody_lot['@id'], {'targets': [ha_target['@id']]})
-    testapp.patch_json(base_target['@id'], {'investigated_as': ['tag']})
-    testapp.patch_json(base_replicate['@id'], {'antibody': antibody_lot['uuid']})
-    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': base_target['@id']})
+def test_audit_experiment_target_tag_antibody(testapp, base_experiment, base_replicate, organism, base_antibody, tag_target):
+    ha_target = testapp.post_json('/target', {'organism': organism['uuid'], 'label': 'HA-ABCD', 'investigated_as': ['recombinant protein']}).json['@graph'][0]
+    base_antibody['targets'] = [tag_target['@id']]
+    tag_antibody = testapp.post_json('/antibody_lot', base_antibody).json['@graph'][0]
+    testapp.patch_json(base_replicate['@id'], {'antibody': tag_antibody['@id']})
+    testapp.patch_json(base_experiment['@id'], {'assay_term_id': 'OBI:0000716', 'assay_term_name': 'ChIP-seq', 'target': ha_target['@id']})
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'tag target mismatch' for error in errors)

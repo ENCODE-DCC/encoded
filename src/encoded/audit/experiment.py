@@ -108,8 +108,8 @@ def audit_experiment_target(value, system):
             antibody = rep['antibody']
 
             # Check that target of experiment matches target of antibody
-            if 'tag' in target['investigated_as']:
-                prefix = target['label']
+            if 'recombinant protein' in target['investigated_as']:
+                prefix = target['label'].split('-')[0]
                 unique_antibody_target = set ()
                 unique_investigated_as = set()  
                 for antibody_target in antibody['targets']:
@@ -130,26 +130,26 @@ def audit_experiment_target(value, system):
                     yield AuditFailure('target mismatch', detail, level='ERROR')
 
             # Check that biosample is eligible for new data
-            lib = rep['library']
-            biosample = lib['biosample']
-            organism = biosample['organism']['@id']
-            if 'histone modification' in target['investigated_as']:
-                for lot_review in antibody['lot_reviews']:
-                    if (lot_review['status'] == 'eligible for new data') and (lot_review['biosample_term_id'] == 'NTR:00000000') and (organism not in lot_review['organisms']):
-                        detail = '{} not eligible for {}'.format(antibody["@id"], organism)
-                        yield AuditFailure('not eligible histone antibody', detail, level='ERROR')
-            else:
-                biosample_term_id = value['biosample_term_id']
-                biosample_term_name = value['biosample_term_name']
-                experiment_biosample = set([biosample_term_id, organism])
-                eligilbe_biosamples = set()
-                for lot_review in antibody['lot_reviews']:
-                    if lot_review['status'] == 'eligible for new data':
-                        eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_review['organism']])
-                        eligilbe_biosamples.add(eligible_biosample)
-                if experiment_biosample not in eligilbe_biosamples:
-                    detail = '{} not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
-                    yield AuditFailure('not eligible antibody', detail, level='ERROR')
+            #lib = rep['library']
+            #biosample = lib['biosample']
+            #organism = biosample['organism']['@id']
+            #if 'histone modification' in target['investigated_as']:
+                #for lot_review in antibody['lot_reviews']:
+                    #if (lot_review['status'] == 'eligible for new data') and (lot_review['biosample_term_id'] == 'NTR:00000000') and (organism not in lot_review['organisms']):
+                        #detail = '{} not eligible for {}'.format(antibody["@id"], organism)
+                        #yield AuditFailure('not eligible histone antibody', detail, level='ERROR')
+            #else:
+                #biosample_term_id = value['biosample_term_id']
+                #biosample_term_name = value['biosample_term_name']
+                #experiment_biosample = set([biosample_term_id, organism])
+                #eligilbe_biosamples = set()
+                #for lot_review in antibody['lot_reviews']:
+                    #if lot_review['status'] == 'eligible for new data':
+                        #eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_review['organism']])
+                        #eligilbe_biosamples.add(eligible_biosample)
+                #if experiment_biosample not in eligilbe_biosamples:
+                    #detail = '{} not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
+                    #yield AuditFailure('not eligible antibody', detail, level='ERROR')
 
 
 @audit_checker('experiment')
