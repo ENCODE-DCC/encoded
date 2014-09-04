@@ -79,3 +79,10 @@ def test_audit_experiment_paired_end_required(testapp, base_experiment, base_rep
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'paired end required for assay' for error in errors)
+
+
+def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067", 'biosample_term_name':'K562'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'biosample type missing' for error in errors)
