@@ -525,7 +525,7 @@ class Biosample(Collection):
                     ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
-            
+
             fly_organisms = [
                 "/organisms/dmelanogaster/",
                 "/organisms/dananassae/",
@@ -540,17 +540,9 @@ class Biosample(Collection):
                 "/organisms/celegans/",
                 "/organisms/cbrenneri/",
                 "/organisms/cbriggsae/",
-                "/organisms/cjaponica/",
-                "/organisms/cremanei/"
+                "/organisms/cremanei/",
+                "/organisms/cjaponica/"
             ]
-
-            model_organism_donor_constructs = []
-            if 'donor' in ns:
-                donor_organism = ns['donor']['organism']
-                if donor_organism['@id'] in fly_organisms or donor_organism['@id'] in worm_organisms:
-                    model_organism_donor_constructs = donor_organism['constructs']
-
-            ns['model_organism_donor_constructs'] = model_organism_donor_constructs
 
             human_donor_properties = [
                 "sex",
@@ -585,6 +577,8 @@ class Biosample(Collection):
                 "worm_synchronization_stage": "synchronization"
             }
 
+            model_organism_donor_constructs = []
+
             if properties['organism'] == '/organisms/human/' and 'donor' in ns:
                 root = find_root(self)
                 donor = root.get_by_uuid(self.properties['donor'])
@@ -596,13 +590,25 @@ class Biosample(Collection):
                     if key in ns:
                         ns[value] = ns[key]
             elif properties['organism'] in fly_organisms:
+                root = find_root(self)
+                donor = root.get_by_uuid(self.properties['donor'])
                 for key, value in fly_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-            else:
+                if donor.properties['constructs']:
+                    model_organism_donor_constructs = donor.properties['constructs']
+            elif properties['organism'] in worm_organisms:
+                root = find_root(self)
+                donor = root.get_by_uuid(self.properties['donor'])
                 for key, value in worm_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
+                if donor.properties['constructs']:
+                    model_organism_donor_constructs = donor.properties['constructs']
+            else:
+                pass
+
+            ns['model_organism_donor_constructs'] = model_organism_donor_constructs
             return ns
 
 
