@@ -208,3 +208,10 @@ def test_audit_experiment_eligible_histone_antibody(testapp, base_experiment, ba
     res = testapp.get(base_experiment['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'not eligible histone antibody' for error in errors)
+
+
+def test_audit_experiment_biosample_type_missing(testapp, base_experiment):
+    testapp.patch_json(base_experiment['@id'], {'biosample_term_id': "EFO:0002067", 'biosample_term_name':'K562'})
+    res = testapp.get(base_experiment['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'biosample type missing' for error in errors)
