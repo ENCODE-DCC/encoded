@@ -3,6 +3,7 @@
     "description": "Schema for submitting a nucleic acid library.",
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "@context": { "$ref": "namespaces.json" },
     "type": "object",
     "required": [ "award", "lab", "nucleic_acid_term_id"],
     "identifyingProperties": ["uuid","accession", "aliases"],
@@ -60,6 +61,7 @@
             "description": "The vendor, for nucleic acids or proteins purchased directly from a vendor (e.g. total RNA)."
         },
         "nucleic_acid_term_name": {
+            "@id": null,
             "title": "Nucleic acid term",
             "description": "SO (Sequence Ontology) term best matching the nucleic acid isolated to generate the library (e.g. 'RNA' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
             "type": "string",
@@ -71,6 +73,7 @@
             ]
         },
         "nucleic_acid_term_id": {
+            "@type": "@id",
             "title": "Nucleic acid ID",
             "description": "SO (Sequence Ontology) identifier best matching the nucleic acid isolated to generate the library (e.g. 'SO:0000356' for a total RNA library, even if that library is subsequently reverse transcribed for DNA sequencing.)",
             "comment": "Based on the choice in nucleic_acid_term_name use the following guide: DNA - SO:0000352, RNA - SO:0000356,  polyadenylated mRNA - SO:0000871 or miRNA - SO:0000276" ,
@@ -217,6 +220,7 @@
             }
         },
         "depleted_in_term_name": {
+            "@id": null,
             "type": "array",
             "default": [],
             "items": {
@@ -231,6 +235,7 @@
             }
         },
         "depleted_in_term_id": {
+            "@type": "@id",
             "type": "array",
             "default": [],
             "items": {

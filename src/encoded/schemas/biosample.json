@@ -3,6 +3,7 @@
     "description": "Schema for submitting a biosample.",
     "id": "/profiles/biosample.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
+    "@context": { "$ref": "namespaces.json" },
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
     "identifyingProperties": ["uuid","accession","aliases"],
@@ -82,6 +83,7 @@
             }
         },
         "dbxrefs": {
+            "@type": "@id",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",
@@ -124,6 +126,7 @@
             "type": "integer"
         },
         "depleted_in_term_name": {
+            "@id": null,
             "type": "array",
             "items": {
                 "title": "Depleted in term",
@@ -142,6 +145,7 @@
             }
         },
         "depleted_in_term_id": {
+            "@type": "@id",
             "type": "array",
             "items": {
                 "title": "Depleted in ID",
@@ -203,6 +207,7 @@
             "type": "string"
         },
         "subcellular_fraction_term_name": {
+            "@id": null,
             "title": "Subcellular fraction name",
             "description": "The GO (Gene Ontology) term name for cellular component that constitutes the biosample.",
             "type": "string",
@@ -219,6 +224,7 @@
             ]
         },
         "subcellular_fraction_term_id": {
+            "@type": "@id",
             "title": "Subcellular fraction ID",
             "description":  "The GO (Gene Ontology) identifier for cellular component that constitutes the biosample.",
             "comment": "Based on the choice in subcellular_fraction_term_name use the following guide: nucleus - GO:0005634, cytosol - GO:0005829, chromatin - GO:0000785, membrane - GO:0016020, mitochondria - GO:0005739, nuclear matrix - GO:0016363, nucleolus - GO:0005730, nucleoplasm - GO:0005654, polysome - GO:0005844.",
