@@ -9,7 +9,6 @@ moleculeDict = {"DNA": "SO:0000352",
                 "polyadenylated mRNA": "SO:0000871",
                 "miRNA": "SO:0000276",
                 "rRNA": "SO:0000252",
-                "polyadenylated mRNA": "SO:0000871",
                 "capped mRNA": "SO:0000862"
                 }
 
