@@ -52,6 +52,7 @@
             "format": "target_label"
         },
         "status": {
+            "default": "proposed",
             "enum" : [
                 "current",
                 "deleted",
