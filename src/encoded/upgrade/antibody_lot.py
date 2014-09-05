@@ -40,14 +40,21 @@ def antibody_lot_3_4(value, system):
         'HA'
     ]
 
+    context = system['context']
+    root = find_root(context)
+    approvals = [
+        root.get_by_uuid(link.source_rid)
+        for link in self.model.revs
+        if (link.source.item_type, link.rel) == ('antibody_approval', 'antibody')
+    ]
+
     targets = set()
-    for approval_uuid in value['approvals']:
-        context = system['context']
-        root = find_root(context)
-        approval = root.get_by_uuid(approval_uuid).upgrade_properties(finalize=False)
-        target = approval.get('target')
-        if target['label'].split('-')[0] in tagged_ab:
-            target['label'].split('-')[0].add(targets)
+    for approval in approvals:
+        target = root.get_by_uuid(approval.properties['target'])
+        tag, _ = target.properties['label'].split('-', 1)
+        if tag in tagged_ab:
+            # need to fix logic
+            target.properties['label'].split('-')[0].add(targets)
         else:
-            targets.add(approval.get('target'))
+            targets.add(target.uuid)
     value['targets'] = list(targets)
