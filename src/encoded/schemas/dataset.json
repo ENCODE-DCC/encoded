@@ -45,6 +45,7 @@
             ]
         },
         "dbxrefs": {
+            "@type": "@id",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",
