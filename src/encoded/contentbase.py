@@ -780,6 +780,7 @@ class Collection(Mapping):
             {'$value': '{item_type}_collection', '$templated': True},
             'collection',
         ],
+        '@context': lambda request: request.route_url('jsonld_context'),
     }
 
     def __init__(self, parent, name):
@@ -941,22 +942,27 @@ class Collection(Mapping):
 
         return result
 
-    def __json__(self, request):
-        properties = self.properties.copy()
+    def template_namespace(self, properties, request=None):
         ns = properties.copy()
         ns['properties'] = properties
-        ns['collection_uri'] = uri = request.resource_path(self)
+        ns['collection_uri'] = resource_path(self, '')
         ns['item_type'] = self.item_type
-        ns['permission'] = permission_checker(self, request)
-        ns['request'] = request
         ns['context'] = self
         ns['root'] = root = find_root(self)
         ns['registry'] = root.registry
+        if request is not None:
+            ns['permission'] = permission_checker(self, request)
+            ns['request'] = request
+        return ns
 
+    def __json__(self, request):
+        properties = self.properties.copy()
+        ns = self.template_namespace(properties, request)
         compiled = ObjectTemplate(self.merged_template)
         templated = compiled(ns)
         properties.update(templated)
 
+        uri = ns['collection_uri']
         if request.query_string:
             uri += '?' + request.query_string
         properties['@id'] = uri
@@ -978,6 +984,7 @@ class Collection(Mapping):
 
     @classmethod
     def expand_page(cls, request, properties):
+        properties['@context'] = request.route_url('jsonld_context')
         return properties
 
     def add_actions(self, request, properties):
