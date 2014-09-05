@@ -393,11 +393,11 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                     {context.strain_name ? <dd>{context.strain_name}</dd> : null}
                 </dl>
 
-                {context.constructs && context.constructs.length ?
+                {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
                     <section>
                         <hr />
                         <h4>Fly donor construct details</h4>
-                        {context.constructs.map(Panel)}
+                        {biosample.model_organism_donor_constructs.map(Panel)}
                     </section>
                 : null}
             </div>
@@ -446,11 +446,11 @@ var WormDonor = module.exports.WormDonor = React.createClass({
                     {context.strain_name ? <dd>{context.strain_name}</dd> : null}
                 </dl>
 
-                {context.constructs && context.constructs.length ?
+                {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
                     <section>
                         <hr />
                         <h4>Worm donor construct details</h4>
-                        {context.constructs.map(Panel)}
+                        {biosample.model_organism_donor_constructs.map(Panel)}
                     </section>
                 : null}
             </div>
