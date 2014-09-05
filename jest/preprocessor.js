@@ -1,11 +1,7 @@
 'use strict';
-
-// Use newer
-var transform = require('jstransform').transform;
-var visitors = require('react-tools/vendor/fbtransform/visitors');
-
+var ReactTools = require('react-tools');
 module.exports = {
   process: function(src) {
-    return transform(visitors.getAllVisitors(), src).code;
+    return ReactTools.transform(src, {harmony: true});
   }
 };

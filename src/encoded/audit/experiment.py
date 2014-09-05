@@ -98,6 +98,10 @@ def audit_experiment_target(value, system):
     # Some assays don't need antibodies
     if value['assay_term_name'] in ['RNA Bind-n-Seq', 'shRNA knockdown followed by RNA-seq']:
         return
+    
+    # Some statuses shouldn't have antibodies
+    if value['status'] in ['deleted','replaced','proposed']:
+        return
 
     for rep in value['replicates']:
         if 'antibody' not in rep:
@@ -194,6 +198,11 @@ def audit_experiment_biosample_term(value, system):
         return
 
     if 'biosample_term_id' not in value:
+        return
+
+    if 'biosample_type' not in value:
+        detail = 'biosample type missing'
+        yield AuditFailure('biosample type missing', detail, level='ERROR')
         return
 
     ontology = system['registry']['ontology']
