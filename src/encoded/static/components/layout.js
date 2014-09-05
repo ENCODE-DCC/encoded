@@ -250,8 +250,13 @@ var Col = React.createClass({
     contextTypes: LAYOUT_CONTEXT,
 
     renderBlock: function(blockId, pos) {
-        var block = this.context.blocks[blockId];
-        return <Block value={block} key={block['@id']} pos={pos} />;
+        if (typeof blockId == 'string') {
+            var block = this.context.blocks[blockId];
+            return <Block value={block} key={block['@id']} pos={pos} />;
+        } else {
+            var row = blockId;
+            return <Row value={row} pos={pos} />;
+        }
     },
 
     render: function() {
@@ -399,6 +404,35 @@ var Layout = module.exports.Layout = React.createClass({
         }
     },
 
+    _traverse: function(pos) {
+        var layout = this.state.value;
+        var path = [{type: 'layout', obj: layout}];
+        var target = path[path.length - 1];
+        var target_idx = 0;
+        for (var i = 0; i < pos.length; i++) {
+            target_idx = pos[i];
+            if (target.type == 'layout') {
+                path.push({type: 'row', obj: target.obj.rows[target_idx]});
+            } else if (target.type == 'row') {
+                path.push({type: 'col', obj: target.obj.cols[target_idx]});
+            } else if (target.type == 'col') {
+                var obj = target.obj.blocks[target_idx];
+                if (typeof obj == 'string') {
+                    path.push({type: 'block', obj: obj});
+                } else {
+                    path.push({type: 'row', obj: obj});
+                }
+            }
+            target = path[path.length - 1];
+        }
+        return {
+            path: path,
+            target: target,
+            container: path[path.length - 2],
+            target_idx: target_idx,
+        }
+    },
+
     dragEnd: function(e) {
         if (this.state.dst_pos === undefined) {
             return;
@@ -410,7 +444,8 @@ var Layout = module.exports.Layout = React.createClass({
         if (!_.isEqual(src_pos, dst_pos)) {
             if (src_pos) {
                 // cut block from current position
-                var block = this.state.value.rows[src_pos[0]].cols[src_pos[1]].blocks.splice(src_pos[2], 1, 'CUT');
+                var src = this._traverse(src_pos);
+                var block = src.container.obj.blocks.splice(src.target_idx, 1, 'CUT')[0];
             } else {
                 var block = this.dragged_block;
                 if (typeof block == 'object') {
@@ -423,36 +458,45 @@ var Layout = module.exports.Layout = React.createClass({
             }
 
             // add to new position
-            var layout = this.state.value;
-            var quad = this.state.dst_quad;
             var new_col = {blocks: [block]};
             var new_row = {cols: [new_col]};
-            if (dst_pos.length == 0) {
-                if (layout.rows.length) {
-                    return;
-                } else {
-                    layout.rows = [new_row];  // first row/col/block
+            var quad = this.state.dst_quad;
+            var dest = this._traverse(dst_pos);
+            if (dest.target.type == 'block') {
+                if (quad == 'top') { // add block above in same col
+                    dest.container.obj.blocks.splice(dest.target_idx, 0, block);
+                } else if (quad == 'bottom') { // add block below in same col
+                    dest.container.obj.blocks.splice(dest.target_idx + 1, 0, block);
+                } else if (quad == 'left') { // split block into a new row
+                    var row = {cols: [new_col, {blocks: [dest.container.obj.blocks[dest.target_idx]]}]};
+                    dest.container.obj.blocks.splice(dest.target_idx, 1, row);
+                } else if (quad == 'right') { // split block into a new row
+                    var row = {cols: [{blocks: [dest.container.obj.blocks[dest.target_idx]]}, new_col]};
+                    dest.container.obj.blocks.splice(dest.target_idx, 1, row);
                 }
-            } else if (dst_pos.length == 1) {
-                if (quad == 'top') {  // add new row above
-                    layout.rows.splice(dst_pos[0], 0, new_row);
-                } else {  // add new row below
-                    layout.rows.splice(dst_pos[0] + 1, 0, new_row);
+            } else if (dest.target.type == 'col') {
+                if (quad == 'top') { // add block at top of col
+                    dest.target.obj.blocks.splice(0, 0, block);
+                } else if (quad == 'bottom') { // add block at bottom of col
+                    dest.target.obj.blocks.push(block);
+                } else if (quad == 'left') { // add col to left
+                    dest.container.obj.cols.splice(dest.target_idx, 0, new_col);
+                } else if (quad == 'right') { // add col to right
+                    dest.container.obj.cols.splice(dest.target_idx + 1, 0, new_col);
                 }
-            } else if (dst_pos.length == 2) {
-                var dst_row = layout.rows[dst_pos[0]];
-                if (quad == 'left') {  // add new col before
-                    dst_row.cols.splice(dst_pos[1], 0, new_col);
-                } else {  // add new col after
-                    dst_row.cols.splice(dst_pos[1] + 1, 0, new_col);
+            } else if (dest.target.type == 'row') {
+                var container = dest.container.obj.rows || dest.container.obj.blocks;
+                if (quad == 'top') { // add new row above
+                    container.splice(dest.target_idx, 0, new_row);
+                } else if (quad == 'bottom') { // add new row below
+                    container.splice(dest.target_idx + 1, 0, new_row);
+                } else if (quad == 'left') { // add col at left of row
+                    dest.target.obj.cols.splice(0, 0, new_col);
+                } else if (quad == 'right') { // add col at right of row
+                    dest.target.obj.cols.push(new_col);
                 }
-            } else if (dst_pos.length == 3) {
-                var dst_col = layout.rows[dst_pos[0]].cols[dst_pos[1]];
-                if (quad == 'top') {
-                    dst_col.blocks.splice(dst_pos[2], 0, block);
-                } else {
-                    dst_col.blocks.splice(dst_pos[2] + 1, 0, block);
-                }
+            } else if (dest.target.type == 'layout') {
+                dest.target.obj.rows.push(new_row);
             }
         }
 
@@ -492,23 +536,12 @@ var Layout = module.exports.Layout = React.createClass({
         }
 
         var pos = target.props.pos;
-        if (pos.length == 3 && pos[2] == 0 && y < 10) {  // top 10 pixels of 1st block in col -> add row
-            pos = pos.slice(0, 1);
-            quad = 'top';
-        } else if (pos.length == 3 && pos[2] == this.props.value.rows[pos[0]].cols[pos[1]].length && y > (h - 10)) {
-            // bottom 10 pixels of last block in col -> add row
-            pos = pos.slice(0, 1);
-            quad = 'bottom';
-        } else if (pos.length == 3 && (quad == 'left' || quad == 'right')) {
-            pos = pos.slice(0, -1);  // left/right of block -> add column
-        } else if (pos.length == 2 && (quad == 'top' || quad == 'bottom')) {
-            pos = pos.slice(0, -1);  // top/bottom of column -> add row
-        } else if (pos.length == 1 && (quad == 'left')) {
-            pos = pos.concat([0]);  // left of row -> add column
-        } else if (pos.length == 1 && (quad == 'right')) {
-            pos = pos.concat([target.value.cols.length])  // right of row -> add column
-        } else if (pos.length == 0) {
-            quad = 'bottom'; // first block in layout; always show indicator on bottom
+        if (pos.length == 0) {
+            if (this.state.value.rows.length == 0) {
+                quad = 'bottom'; // first block in layout; always show indicator on bottom
+            } else {
+                return;
+            }
         }
 
         if (this.state.dst_quad != quad || !_.isEqual(this.state.dst_pos, pos)) {
@@ -528,24 +561,37 @@ var Layout = module.exports.Layout = React.createClass({
 
     remove: function(block, pos) {
         delete this.state.value.blocks[block['@id']];
-        this.state.value.rows[pos[0]].cols[pos[1]].blocks.splice(pos[2], 1);
+        var dest = this._traverse(pos);
+        dest.container.obj.blocks.splice(dest.target_idx, 1);
         this.cleanup();
         this.setState(this.state);
         this.props.onChange(this.state.value);
     },
 
+    _filter: function(objs) {
+        return objs.filter(function(obj) {
+            if (obj == 'CUT') {  // block
+                return false;
+            } else if (obj.blocks !== undefined) {  // col
+                delete obj.droptarget;
+                obj.blocks = this._filter(obj.blocks);
+                if (obj.blocks.length == 1 && obj.blocks[0].cols !== undefined && obj.blocks[0].cols.length == 1) {
+                    // flatten nested row & col
+                    obj.blocks = obj.blocks[0].cols[0].blocks;
+                }
+                return obj.blocks.length;
+            } else if (obj.cols !== undefined) {
+                obj.cols = this._filter(obj.cols);
+                return obj.cols.length;
+            } else {
+                return true;
+            }
+        }.bind(this));
+    },
+
     cleanup: function() {
         // remove empty rows and cols
-        this.state.value.rows = this.state.value.rows.filter(function(row) {
-            row.cols = row.cols.filter(function(col) {
-                delete col.droptarget;
-                col.blocks = col.blocks.filter(function(block_id) {
-                    return (block_id != 'CUT');
-                });
-                return col.blocks.length;
-            });
-            return row.cols.length;
-        });
+        this.state.value.rows = this._filter(this.state.value.rows);
     },
 
     mapBlocks: function(func) {
