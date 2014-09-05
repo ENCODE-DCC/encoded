@@ -34,10 +34,20 @@ def antibody_lot_2_3(value, system):
 def antibody_lot_3_4(value, system):
     # http://redmine.encodedcc.org/issues/380
 
-    targets = []
+    tagged_ab = [
+        'eGFP',
+        'YFP',
+        'HA'
+    ]
+
+    targets = set()
     for approval_uuid in value['approvals']:
         context = system['context']
         root = find_root(context)
         approval = root.get_by_uuid(approval_uuid).upgrade_properties(finalize=False)
-        targets.append(approval.get('target'))
-    value['targets'] = targets
+        target = approval.get('target')
+        if target['label'].split('-')[0] in tagged_ab:
+            target['label'].split('-')[0].add(targets)
+        else:
+            targets.add(approval.get('target'))
+    value['targets'] = list(targets)
