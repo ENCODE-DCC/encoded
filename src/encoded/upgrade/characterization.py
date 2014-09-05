@@ -92,4 +92,12 @@ def antibody_characterization_4_5(value, system):
         elif value['characterization_method'] in secondary:
             value['secondary_characterization_method'] = value['characterization_method']
         del value['characterization_method']
+
+    if 'status' in value:
+        if value['status'] == 'not reviewed':
+            value['reviewed_by'] = '/users/ff7b77e7-bb55-4307-b665-814c9f1e65fb/'
+        elif value['status'] in ['compliant', 'not compliant']:
+            value['reviewed_by'] = '/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/'
+            value['docments'] = ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']
+        
   

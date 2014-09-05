@@ -212,6 +212,28 @@ def test_antibody_characterization_upgrade_secondary(app, antibody_characterizat
     assert 'characterization_method' not in value
 
 
+def test_antibody_characterization_upgrade_compliant_status(app, antibody_characterization_3):
+    antibody_characterization_3['characterization_method'] = 'immunoprecipitation followed by mass spectrometry'
+    antibody_characterization_3['status'] = 'compliant'
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('antibody_characterization', antibody_characterization_3, target_version='5')
+    assert value['schema_version'] == '5'
+    assert value['secondary_characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
+    assert 'characterization_method' not in value
+    assert value['reviewed_by'] = '/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/'
+    assert '88dc12f7-c72d-4b43-a6cd-c6f3a9d08821' in value['documents']
+
+def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_characterization_3):
+    antibody_characterization_3['characterization_method'] = 'immunoprecipitation followed by mass spectrometry'
+    antibody_characterization_3['status'] = 'not reviewed'
+    migrator = app.registry['migrator']
+    value = migrator.upgrade('antibody_characterization', antibody_characterization_3, target_version='5')
+    assert value['schema_version'] == '5'
+    assert value['secondary_characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
+    assert 'characterization_method' not in value
+    assert value['reviewed_by'] = '/users/ff7b77e7-bb55-4307-b665-814c9f1e65fb/'
+
+
 def test_antibody_characterization_upgrade_inline(testapp, root, antibody_characterization_1):
     schema = root.by_item_type['antibody_characterization'].schema
 
