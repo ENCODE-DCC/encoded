@@ -71,9 +71,7 @@ def search(context, request, search_type=None):
 
     root = request.root
     result = {
-        '@context': {
-            'search': '/ld/search',
-        },
+        '@context': request.route_url('jsonld_context'),
         '@id': uri,
         '@type': ['search'],
         'title': 'Search',
@@ -143,7 +141,7 @@ def search(context, request, search_type=None):
         fields = ['object.*']
     else:
         frame = 'columns'
-        fields = {'object.*', 'embedded.@id', 'embedded.@type', 'embedded.@context'}
+        fields = {'object.*', 'embedded.@id', 'embedded.@type'}
         for doc_type in (doc_types or root.by_item_type.keys()):
             collection = root[doc_type]
             if collection.schema is None:

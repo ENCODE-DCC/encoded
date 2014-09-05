@@ -3,7 +3,6 @@
     "description": "Schema for submitting a nucleic acid library.",
     "id": "/profiles/library.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "@context": { "$ref": "namespaces.json" },
     "type": "object",
     "required": [ "award", "lab", "nucleic_acid_term_id"],
     "identifyingProperties": ["uuid","accession", "aliases"],

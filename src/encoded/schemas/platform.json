@@ -3,7 +3,6 @@
     "description": "Schema for submitting a measurement device.",
     "id": "/profiles/platform.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "@context": { "$ref": "namespaces.json" },
     "type": "object",
     "required": ["term_id"],
     "identifyingProperties": ["uuid", "term_name", "aliases", "term_id"],

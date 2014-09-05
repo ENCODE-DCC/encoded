@@ -273,8 +273,6 @@ def test_page_collection_default(workbook, anontestapp):
     assert res.json['default_page']['@id'] == '/pages/images/'
 
 
-@pytest.mark.parametrize('item_type', TYPE_LENGTH)
-def test_jsonld_context(testapp, item_type):
-    url = '/contexts/{item_type}.jsonld'.format(item_type=item_type)
-    res = testapp.get(url)
+def test_jsonld_context(testapp):
+    res = testapp.get('/context.jsonld')
     assert res.json

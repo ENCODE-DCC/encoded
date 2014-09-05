@@ -3,11 +3,7 @@ import logging
 import venusian
 from abc import ABCMeta
 from collections import Mapping
-from itertools import (
-    chain,
-    islice,
-)
-from pyramid.decorator import reify
+from itertools import islice
 from pyramid.events import (
     ContextFound,
     subscriber,
@@ -405,7 +401,6 @@ class Item(object):
             {'$value': '{item_type}', '$templated': True},
             {'$value': '{base}', '$repeat': 'base base_types', '$templated': True},
         ],
-        '@context': {'$value': '/contexts/{item_type}.jsonld', '$templated': True},
         'uuid': {'$value': '{uuid}', '$templated': True},
     }
     actions = []
@@ -771,7 +766,6 @@ class Collection(Mapping):
     __metaclass__ = CustomItemMeta
     __merged_dicts__ = [
         'template',
-        'jsonld_context_template',
     ]
     Item = Item
     schema = None
@@ -786,13 +780,7 @@ class Collection(Mapping):
             {'$value': '{item_type}_collection', '$templated': True},
             'collection',
         ],
-        '@context': {
-            '{item_type}_collection': '/ld/{item_type}_collection',
-            'collection': '/ld/collection',
-            '$templated': True
-        },
-    }
-    jsonld_context_template = {
+        '@context': lambda request: request.route_url('jsonld_context'),
     }
 
     def __init__(self, parent, name):
@@ -816,44 +804,6 @@ class Collection(Mapping):
                 if 'linkTo' in prop or 'linkTo' in prop.get('items', ())
             ]
             self.schema_version = properties.get('schema_version', {}).get('default')
-
-        self.jsonld_context
-
-    @reify
-    def jsonld_context(self):
-        ns = self.template_namespace(self.properties)
-        compiled = ObjectTemplate(self.merged_jsonld_context_template)
-        jsonld_context = compiled(ns)
-
-        for type_name in self.Item.base_types + [self.item_type]:
-            jsonld_context[type_name] = '/ld/' + type_name
-
-        if self.schema is None:
-            return jsonld_context
-
-        all_props = chain(
-            self.schema.get('properties', {}).iteritems(),
-            self.schema.get('calculated_props', {}).iteritems(),
-        )
-        for name, schema in all_props:
-            if '@id' in schema and schema['@id'] is None:
-                continue
-            jsonld_context[name] = prop_ld = {
-                k: v for k, v in schema.iteritems() if k.startswith('@')
-            }
-            if '@reverse' in prop_ld:
-                continue
-            if '@id' not in prop_ld:
-                prop_ld['@id'] = '/ld/' + name
-            if '@type' not in prop_ld:
-                subschema = schema.get('items', schema)
-                if 'linkTo' in subschema:
-                    prop_ld['@type'] = '@id'
-
-        if '@context' in self.schema:
-            jsonld_context.update(self.schema['@context'])
-
-        return jsonld_context
 
     def __getitem__(self, name):
         try:
@@ -1034,6 +984,7 @@ class Collection(Mapping):
 
     @classmethod
     def expand_page(cls, request, properties):
+        properties['@context'] = request.route_url('jsonld_context')
         return properties
 
     def add_actions(self, request, properties):

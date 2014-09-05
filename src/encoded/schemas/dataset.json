@@ -4,7 +4,6 @@
     "description": "Schema for submitting metadata for a dataset.",
     "id": "/profiles/dataset.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "@context": { "$ref": "namespaces.json" },
     "type": "object",
     "required": [ "award", "lab"],
     "identifyingProperties": ["uuid", "accession" , "aliases"],

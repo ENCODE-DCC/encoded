@@ -4,7 +4,6 @@
     "comment": "An experiment is a special case of dataset. It includes assay metadata, replicate information and data files.",
     "id": "/profiles/experiment.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "@context": { "$ref": "namespaces.json" },
     "type": "object",
     "required": ["award", "lab"],
     "approvalRequired": ["assay_term_id", "biosample_term_id", "biosample_type"],

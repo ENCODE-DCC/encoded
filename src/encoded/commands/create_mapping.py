@@ -260,7 +260,7 @@ def collection_mapping(collection, embed=True):
 
     merged_rev = collection.Item.merged_rev
 
-    mixins = ['@id', '@type', '@context']
+    mixins = ['@id', '@type']
     mixins.extend(merged_rev.keys())
     for name in mixins:
         mapping['properties'][name] = schema_mapping(name, {'type': 'string'})

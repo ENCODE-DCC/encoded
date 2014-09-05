@@ -3,7 +3,6 @@
     "description": "Schema for submitting a biosample.",
     "id": "/profiles/biosample.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "@context": { "$ref": "namespaces.json" },
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
     "identifyingProperties": ["uuid","accession","aliases"],
