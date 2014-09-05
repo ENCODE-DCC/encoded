@@ -11,6 +11,8 @@ var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
+var cx = React.addons.classSet;
+
     // Should readlly be singular...
     var types = {
         antibody_lot: {title: 'Antibodies'},
@@ -72,6 +74,65 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Item, 'item');
 
+    var StatusIndicator = React.createClass({
+        getInitialState: function() {
+            return {
+                tipOpen: false,
+                tipStyles: {}
+            };
+        },
+
+        onMouseEnter: function () {
+            // Get viewport bounds of result table and of this tooltip
+            var resultBounds = document.getElementById('result-table').getBoundingClientRect();
+            var tipElement = this.refs.indicator.getDOMNode().nextElementSibling;
+            var tipBounds = tipElement.getBoundingClientRect();
+
+            if (tipBounds.right > resultBounds.right) {
+                this.setState({tipStyles: {left: (resultBounds.right - tipBounds.right + 10) + 'px'}});
+            }
+            this.setState({tipOpen: true});
+        },
+
+        onMouseLeave: function() {
+            this.setState({tipOpen: false});
+        },
+
+        render: function() {
+            var classes = {tooltipopen: this.state.tipOpen};
+
+            return (
+                <span className="tooltip-trigger">
+                    <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref="indicator" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}></i>
+                    <div className={"tooltip sentence-case " + cx(classes)} style={this.state.tipStyles}>
+                        {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
+                    </div>
+                </span>
+            );
+        }
+    });
+
+    var StatusIndicators = React.createClass({
+        render: function() {
+            var targetTree = this.props.targetTree;
+            var target = this.props.target;
+
+            return (
+                <span>
+                    {Object.keys(targetTree[target]).map(function(status, i) {
+                        return (
+                            <span key={i} className="status-dots">
+                                {(status !== 'target' && status !== 'organism') ?
+                                    <StatusIndicator status={status} terms={targetTree[target][status]} />
+                                : ''}
+                            </span>
+                        );
+                    }.bind(this))}
+                </span>
+            );
+        }
+    });
+
     var Antibody = module.exports.Antibody = React.createClass({
         mixins: [PickerActionsMixin],
         render: function() {
@@ -106,47 +167,32 @@ var Dbxref = dbxref.Dbxref;
             });
 
             return (
-                <div>
-                    {Object.keys(targetTree).map(function(target) {
-                        return (
-                            <li key={target}>
-                                <div>
-                                    {this.renderActions()}
-                                    <div className="pull-right search-meta">
-                                        <p className="type meta-title">Antibody</p>
-                                        <p className="type">{' ' + result.accession}</p>
-                                        <div className="type meta-status clearfix">
-                                            {Object.keys(targetTree[target]).map(function(status, i) {
-                                                return (
-                                                    <div key={i} className="status-dots">
-                                                        {(status !== 'target' && status !== 'organism') ?
-                                                            <div className="tooltip-trigger">
-                                                                <i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>
-                                                                <div className="tooltip sentence-case">
-                                                                    {status}<br /><span>{targetTree[target][status].join(', ')}</span>
-                                                                </div>
-                                                            </div>
-                                                        : ''}
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                    <div className="accession">
+                <li>
+                    <div>
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Antibody</p>
+                            <p className="type">{' ' + result.accession}</p>
+                        </div>
+                        <div className="accession accession-antibody">
+                            {Object.keys(targetTree).map(function(target) {
+                                return (
+                                    <div>
                                         <a href={result['@id']}>
                                             {targetTree[target].target.label}
                                             {targetTree[target].organism ? <span>{' ('}<i>{targetTree[target].organism.scientific_name}</i>{')'}</span> : ''}
-                                        </a> 
+                                        </a>
+                                        <StatusIndicators targetTree={targetTree} target={target} />
                                     </div>
-                                </div>
-                                <div className="data-row"> 
-                                    <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
-                                    <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
-                                </div>
-                            </li>
-                        );
-                    }.bind(this))}
-                </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <div className="data-row"> 
+                        <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
+                        <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
+                    </div>
+                </li>
             );
         }
     });
@@ -650,7 +696,7 @@ var Dbxref = dbxref.Dbxref;
                                     </h4>
                                 : <h4>{context['notification']}</h4>}
                                 <hr />
-                                <ul className="nav result-table">
+                                <ul className="nav result-table" id="result-table">
                                     {results.length ?
                                         results.map(function (result) {
                                             return Listing({context:result, columns: columns, key: result['@id']});
