@@ -1,5 +1,6 @@
 from ..migrator import upgrade_step
 from ..views.views import ENCODE2_AWARDS
+from pyramid.traversal import find_root
 
 
 @upgrade_step('antibody_lot', '', '2')
@@ -33,13 +34,10 @@ def antibody_lot_2_3(value, system):
 def antibody_lot_3_4(value, system):
     # http://redmine.encodedcc.org/issues/380
 
-    if 'status' in value and value['status'] in ['in progress', 'released']:    
-        value['status'] = 'current'
-
-    context = system['context']
-    root = find_root(context)
     targets = []
     for approval_uuid in value['approvals']:
+        context = system['context']
+        root = find_root(context)
         approval = root.get_by_uuid(approval_uuid).upgrade_properties(finalize=False)
-        targets.append(approval['target'])
+        targets.append(approval.get('target'))
     value['targets'] = targets

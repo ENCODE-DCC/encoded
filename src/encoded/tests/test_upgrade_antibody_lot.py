@@ -33,6 +33,18 @@ def antibody_lot_2(antibody_lot):
     return item
 
 
+@pytest.fixture
+def antibody_lot_3(root, antibody_lot, antibody_approval):
+    item = root.get_by_uuid(antibody_lot['uuid'])
+    properties = item.properties.copy()
+    assert properties['approvals']
+    del properties['targets']
+    properties.update({
+        'schema_version': '3'
+    })
+    return properties
+
+
 def test_antibody_lot_upgrade(app, antibody_lot_1):
     migrator = app.registry['migrator']
     value = migrator.upgrade('antibody_lot', antibody_lot_1, target_version='2')
@@ -62,3 +74,11 @@ def test_antibody_lot_upgrade_status_deleted(app, antibody_lot_2):
     value = migrator.upgrade('antibody_lot', antibody_lot_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['status'] == 'deleted'
+
+def test_antibody_lot_upgrade_targets(root, registry, antibody_lot, antibody_lot_3, antibody_approval, target, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(antibody_lot['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('antibody_lot_3', antibody_lot_3, target_version='4', context=context)
+    assert value['schema_version'] == '4'
+    assert properties['targets'] = [target['uuid']]
