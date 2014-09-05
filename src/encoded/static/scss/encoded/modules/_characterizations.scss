@@ -319,8 +319,8 @@ $indicator-notpursued:  #d0d0d0;
     }
 }
 
-.status-dots {
-    display: inline-block;
+.status-indicators {
+    white-space: nowrap;
 }
 
 .tooltip {

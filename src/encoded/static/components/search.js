@@ -74,6 +74,7 @@ var cx = React.addons.classSet;
     });
     globals.listing_views.register(Item, 'item');
 
+    // Display one antibody status indicator
     var StatusIndicator = React.createClass({
         getInitialState: function() {
             return {
@@ -82,18 +83,22 @@ var cx = React.addons.classSet;
             };
         },
 
+        // Display tooltip on hover
         onMouseEnter: function () {
             // Get viewport bounds of result table and of this tooltip
             var resultBounds = document.getElementById('result-table').getBoundingClientRect();
             var tipElement = this.refs.indicator.getDOMNode().nextElementSibling;
             var tipBounds = tipElement.getBoundingClientRect();
 
+            // Set an inline style to move the tooltip if it runs off right edge of result table
             if (tipBounds.right > resultBounds.right) {
                 this.setState({tipStyles: {left: (resultBounds.right - tipBounds.right + 10) + 'px'}});
             }
+
             this.setState({tipOpen: true});
         },
 
+        // Close tooltip when not hovering
         onMouseLeave: function() {
             this.setState({tipOpen: false});
         },
@@ -112,6 +117,7 @@ var cx = React.addons.classSet;
         }
     });
 
+    // Display the status indicators for one target
     var StatusIndicators = React.createClass({
         render: function() {
             var targetTree = this.props.targetTree;
@@ -121,13 +127,13 @@ var cx = React.addons.classSet;
                 <span>
                     {Object.keys(targetTree[target]).map(function(status, i) {
                         return (
-                            <span key={i} className="status-dots">
+                            <span key={i} className="status-indicators">
                                 {(status !== 'target' && status !== 'organism') ?
                                     <StatusIndicator status={status} terms={targetTree[target][status]} />
                                 : ''}
                             </span>
                         );
-                    }.bind(this))}
+                    })}
                 </span>
             );
         }
@@ -174,7 +180,7 @@ var cx = React.addons.classSet;
                             <p className="type meta-title">Antibody</p>
                             <p className="type">{' ' + result.accession}</p>
                         </div>
-                        <div className="accession accession-antibody">
+                        <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
                                 return (
                                     <div>
