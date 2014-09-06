@@ -126,30 +126,22 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                         {context.note ? <dt>Note</dt> : null}
                         {context.note ? <dd>{context.note}</dd> : null}
-                        
-                        {context.date_obtained ? <dt>Date obtained</dt> : null}
-						{context.date_obtained ? <dd>{context.date_obtained}</dd> : null}
-						
-						{context.starting_amount ? <dt>Starting amount</dt> : null}
-						{context.starting_amount ? <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd> : null}
-                        
-                        {context.culture_start_date ? <dt>Culture start date</dt> : null}
-						{context.culture_start_date ? <dd>{context.culture_start_date}</dd> : null}
-				
-						{context.culture_harvest_date ? <dt>Culture harvest date</dt> : null}
-						{context.culture_harvest_date ? <dd>{context.culture_harvest_date}</dd> : null}
-				
-						{context.passage_number ? <dt>Passage number</dt> : null}
-						{context.passage_number ? <dd>{context.passage_number}</dd> : null}
-                    </dl>
 
-                    {(context.donor) ?
-                        <section>
-                            <hr />
-                            <h4>Donor information</h4>
-                            <Panel context={context.donor} biosample={context} />
-                        </section>
-                    : null}
+                        {context.date_obtained ? <dt>Date obtained</dt> : null}
+                        {context.date_obtained ? <dd>{context.date_obtained}</dd> : null}
+
+                        {context.starting_amount ? <dt>Starting amount</dt> : null}
+                        {context.starting_amount ? <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd> : null}
+
+                        {context.culture_start_date ? <dt>Culture start date</dt> : null}
+                        {context.culture_start_date ? <dd>{context.culture_start_date}</dd> : null}
+
+                        {context.culture_harvest_date ? <dt>Culture harvest date</dt> : null}
+                        {context.culture_harvest_date ? <dd>{context.culture_harvest_date}</dd> : null}
+
+                        {context.passage_number ? <dt>Passage number</dt> : null}
+                        {context.passage_number ? <dd>{context.passage_number}</dd> : null}
+                    </dl>
 
                      {context.derived_from ?
                         <section>
@@ -195,7 +187,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     {context.constructs.length ?
                         <section>
                             <hr />
-                            <h4>Biosample Construct details</h4>
+                            <h4>Construct details</h4>
                             {context.constructs.map(Panel)}
                         </section>
                     : null}
@@ -210,6 +202,10 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 </div>
 
+                {(context.donor) ?
+                    this.transferPropsTo(<Donor />)
+                : null}
+
                 {context.protocol_documents.length ?
                     <div>
                         <h3>Protocol documents</h3>
@@ -220,14 +216,18 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {context.characterizations.length ?
                     <div>
                         <h3>Characterizations</h3>
-                        {context.characterizations.map(Panel)}
+                        <section className="type-document view-detail panel status-none">
+                            {context.characterizations.map(Panel)}
+                        </section>
                     </div>
                 : null}
 
                 {Object.keys(construct_documents).length ?
                     <div>
                         <h3>Construct documents</h3>
-                        {construct_documents}
+                        <section className="type-document view-detail panel status-none">
+                            {construct_documents}
+                        </section>
                     </div>
                 : null}
 
@@ -248,6 +248,22 @@ var Biosample = module.exports.Biosample = React.createClass({
 });
 
 globals.content_views.register(Biosample, 'biosample');
+
+
+var Donor = React.createClass({
+    render: function() {
+        var context = this.props.context;
+
+        return (
+            <div>
+                <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
+                <div className="panel data-display">
+                    <Panel context={context.donor} biosample={context} />
+                </div>
+            </div>
+        );
+    }
+});
 
 
 var ExperimentsUsingBiosample = module.exports.ExperimentsUsingBiosample = React.createClass({
@@ -396,10 +412,19 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                 {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
                     <section>
                         <hr />
-                        <h4>Fly donor construct details</h4>
+                        <h4>Construct details</h4>
                         {biosample.model_organism_donor_constructs.map(Panel)}
                     </section>
                 : null}
+
+                {biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                    <section>
+                        <hr />
+                        <h4>Characterizations</h4>
+                        {biosample.donor.characterizations.map(Panel)}
+                    </section>
+                : null}
+
             </div>
         );
     }
@@ -449,7 +474,7 @@ var WormDonor = module.exports.WormDonor = React.createClass({
                 {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
                     <section>
                         <hr />
-                        <h4>Worm donor construct details</h4>
+                        <h4>Construct details</h4>
                         {biosample.model_organism_donor_constructs.map(Panel)}
                     </section>
                 : null}
@@ -582,41 +607,52 @@ var Document = module.exports.Document = React.createClass({
         }
 
         return (
-            <section className="type-document view-detail panel status-none">
-                <div className="row">
-                    <div className="col-sm-5 col-md-6">
-                        <figure>
-                            {figure}
-                        </figure>
-                    </div>
-                    <div className="col-sm-7 col-md-6">
-                        <h3 className="sentence-case">{context.document_type}</h3>
-                        <p>{context.description}</p>
-                        <dl className="key-value">
-                            {context.caption ? <dt>Caption</dt> : null}
-                            {context.caption ? <dd>{context.caption}</dd> : null}
-
-                            <dt>Submitted by</dt>
-                            <dd>{context.submitted_by.title}</dd>
-
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-
-                            <dt>Grant</dt>
-                            <dd>{context.award.name}</dd>
-
-                            <dt><i className="icon icon-download"></i> Download</dt>
-                            <dd>{download}</dd>
-
-                            {context.references && context.references.length ? <dt>References</dt> : null}
-                            {context.references && context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
-                        </dl>
-                    </div>
+            <div className="row">
+                <div className="col-sm-5 col-md-6">
+                    <figure>
+                        {figure}
+                    </figure>
                 </div>
-            </section>
+                <div className="col-sm-7 col-md-6">
+                    <h3 className="sentence-case">{context.document_type}</h3>
+                    <p>{context.description}</p>
+                    <dl className="key-value">
+                        {context.caption ? <dt>Caption</dt> : null}
+                        {context.caption ? <dd>{context.caption}</dd> : null}
+
+                        {context.submitted_by && context.submitted_by.title ?
+                            <div>
+                                <dt>Submitted by</dt>
+                                <dd>{context.submitted_by.title}</dd>
+                            </div>
+                        : null}
+
+                        {context.lab && context.lab.title ?
+                            <div>
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
+                        : null}
+
+                        {context.award && context.award.name ?
+                            <div>
+                                <dt>Grant</dt>
+                                <dd>{context.award.name}</dd>
+                            </div>
+                        : null}
+
+                        <dt><i className="icon icon-download"></i> Download</dt>
+                        <dd>{download}</dd>
+
+                        {context.references && context.references.length ? <dt>References</dt> : null}
+                        {context.references && context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
+                    </dl>
+                </div>
+            </div>
         );
     }
 });
 
 globals.panel_views.register(Document, 'document');
 globals.panel_views.register(Document, 'biosample_characterization');
+globals.panel_views.register(Document, 'donor_characterization');

@@ -474,6 +474,7 @@ class Biosample(Collection):
         embedded = set([
             'donor',
             'donor.organism',
+            'donor.characterizations',
             'model_organism_donor_constructs',
             'model_organism_donor_constructs.target',
             'submitted_by',
