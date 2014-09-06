@@ -417,7 +417,7 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                     </section>
                 : null}
 
-                {biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
                     <section>
                         <hr />
                         <h4>Characterizations</h4>
