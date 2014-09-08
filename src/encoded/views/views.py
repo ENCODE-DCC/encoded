@@ -474,7 +474,7 @@ class AntibodyLot(Collection):
                     'biosample_term_name': 'not specified',
                     'biosample_term_id': 'NTR:00000000',
                     'organisms': organisms,
-                    'targets': ns['targets']
+                    'targets': list(ns['targets']),
                 }]
                 if is_control:
                     antibody_lot_reviews[0]['status'] = 'eligible for new data'
