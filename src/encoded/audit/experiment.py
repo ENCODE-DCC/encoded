@@ -106,7 +106,7 @@ def audit_experiment_target(value, system):
             yield AuditFailure('missing antibody', detail, level='ERROR')
         else:
             antibody = rep['antibody']
-
+    
             if 'recombinant protein' in target['investigated_as']:
                 prefix = target['label'].split('-')[0]
                 unique_antibody_target = set()
@@ -153,8 +153,6 @@ def audit_experiment_control(value, system):
 
     # We do not want controls
     target = value['target']
-    if 'control' in target['investigated_as']:
-        return
 
     if value['possible_controls'] == []:
         detail = 'missing control'
@@ -195,8 +193,10 @@ def audit_experiment_platform(value, system):
 
     if value['status'] == 'deleted':
         return
+
     if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3') or (value['replicates'] == []):
         return
+
     for i in range(0, len(value['replicates'])):
         rep = value['replicates'][i]
         if 'platform' not in rep:
@@ -225,6 +225,10 @@ def audit_experiment_biosample_term(value, system):
     if 'biosample_type' not in value:
         detail = 'biosample type missing'
         yield AuditFailure('biosample type missing', detail, level='ERROR')
+        return
+
+    target = value['target']
+    if 'control' in target['investigated_as']:
         return
 
     ontology = system['registry']['ontology']
@@ -382,11 +386,12 @@ def audit_experiment_antibody_eligible(value, system):
             biosample_term_id = value['biosample_term_id']
             biosample_term_name = value['biosample_term_name']
             experiment_biosample = set([biosample_term_id, organism])
-            eligilbe_biosamples = set()
+            eligible_biosamples = set()
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] == 'eligible for new data':
-                    eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_review['organisms'][0]])
-                    eligilbe_biosamples.add(eligible_biosample)
-            if experiment_biosample not in eligilbe_biosamples:
+                    for lot_organism in lot_review['organisms']:
+                        eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_organism.get('name')])
+                        eligible_biosamples.add(eligible_biosample)
+            if experiment_biosample not in eligible_biosamples:
                 detail = '{} not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
                 yield AuditFailure('not eligible antibody', detail, level='ERROR')
