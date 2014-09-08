@@ -200,6 +200,7 @@ describe('Experiment Page', function() {
         it('has two replicate panels', function() {
             expect(replicates.length).toEqual(2);
         });
+ 
 
         it('has links to the proper biosamples in both replicate panels', function() {
             var anchors = replicates[0].getDOMNode().getElementsByTagName('a');
