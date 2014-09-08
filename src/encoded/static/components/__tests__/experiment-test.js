@@ -95,6 +95,76 @@ describe('Experiment Page', function() {
         });
     });
 
+    describe('Document Panel', function() {
+        var experiment, doc;
+
+        beforeEach(function() {
+            require('../biosample.js').Document;
+            var context_doc = _.clone(context);
+            context_doc.documents = [require('../testdata/document/myerschipseq')];
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context_doc} />
+            );
+            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
+        });
+
+        it('has one document panel with a PDF image anchor', function() {
+            var figures = doc.getElementsByTagName('figure');
+            expect(figures.length).toEqual(1);
+            var anchors = figures[0].getElementsByClassName('file-pdf');
+            expect(anchors.length).toEqual(1);
+        });
+
+        it('has four key-value pairs, and proper DL link', function() {
+            var url = require('url');
+            var docKeyValue = doc.getElementsByClassName('key-value');
+            expect(docKeyValue.length).toEqual(1);
+            var defTerms = docKeyValue[0].getElementsByTagName('dt');
+            expect(defTerms.length).toEqual(4);
+            var defDescs = docKeyValue[0].getElementsByTagName('dd');
+            expect(defDescs.length).toEqual(4);
+            var anchors = defDescs[3].getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(url.parse(anchors[0].getAttribute('href')).pathname).toEqual('/documents/df9dd0ec-c1cf-4391-a745-a933ab1af7a7/@@download/attachment/Myers_Lab_ChIP-seq_Protocol_v042211.pdf');
+        });
+    });
+
+    describe('Document Panel References', function() {
+        var experiment, doc;
+
+        beforeEach(function() {
+            require('../biosample.js').Document;
+            var context_doc = _.clone(context);
+            context_doc.documents = [require('../testdata/document/wgEncodeSydhHist-refs')];
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context_doc} />
+            );
+            doc = TestUtils.findRenderedDOMComponentWithClass(experiment, 'type-document').getDOMNode();
+        });
+
+        it('has five key-value pairs, and two good references links', function() {
+            var url = require('url');
+            var docKeyValue = doc.getElementsByClassName('key-value');
+            expect(docKeyValue.length).toEqual(1);
+            var defTerms = docKeyValue[0].getElementsByTagName('dt');
+            expect(defTerms.length).toEqual(5);
+            var defDescs = docKeyValue[0].getElementsByTagName('dd');
+            expect(defDescs.length).toEqual(5);
+            var refUl = defDescs[4].getElementsByTagName('ul');
+            expect(refUl.length).toEqual(1);
+            var refLi = refUl[0].getElementsByTagName('li');
+            expect(refLi.length).toEqual(2);
+
+            // Make sure each link in references is correct
+            var anchors = refLi[0].getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19706456');
+            anchors = refLi[1].getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].getAttribute('href')).toEqual('http://www.ncbi.nlm.nih.gov/pubmed/?term=19122651');
+        });
+    });
+
     describe('Replicate Panels', function() {
         var experiment, replicates;
 
@@ -119,6 +189,57 @@ describe('Experiment Page', function() {
 
         it('has two replicate panels', function() {
             expect(replicates.length).toEqual(2);
+        });
+ 
+
+        it('has links to the proper biosamples in both replicate panels', function() {
+            var anchors = replicates[0].getDOMNode().getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].textContent).toEqual('ENCBS087RNA');
+            expect(anchors[0].getAttribute('href')).toEqual('/biosamples/ENCBS087RNA/');
+            anchors = replicates[1].getDOMNode().getElementsByTagName('a');
+            expect(anchors.length).toEqual(1);
+            expect(anchors[0].textContent).toEqual('ENCBS989WPD');
+            expect(anchors[0].getAttribute('href')).toEqual('/biosamples/ENCBS989WPD/');
+        });
+
+        describe('Assay Panel', function() {
+            var assay, defTerms, defDescs;
+
+            beforeEach(function() {
+                assay = TestUtils.scryRenderedDOMComponentsWithClass(experiment, 'panel-assay');
+                defTerms = assay[0].getDOMNode().getElementsByTagName('dt');
+                defDescs = assay[0].getDOMNode().getElementsByTagName('dd');
+            });
+
+            it('has one assay panel and seven key-value pairs', function() {
+                expect(assay.length).toEqual(1);
+                expect(defTerms.length).toEqual(7);
+                expect(defDescs.length).toEqual(7);
+            });
+
+            it('has a proper link to a platform in the seventh key-value pair', function() {
+                var anchors = defDescs[6].getElementsByTagName('a');
+                expect(anchors.length).toEqual(1);
+                expect(anchors[0].getAttribute('href')).toEqual('/platforms/NTR%3A0000007');
+            });
+        });
+    });
+
+    describe('Alternate accession display', function() {
+        var experiment, alt;
+
+        beforeEach(function() {
+            var context_alt = _.clone(context);
+            context_alt.alternate_accessions = ["ENCSR000ACT", "ENCSR999NOF"];
+            experiment = TestUtils.renderIntoDocument(
+                <Experiment context={context_alt} />
+            );
+            alt = TestUtils.findRenderedDOMComponentWithClass(experiment, 'repl-acc');
+        });
+
+        it('displays two alternate accessions', function() {
+            expect(alt.getDOMNode().textContent).toEqual('Replaces ENCSR000ACT, ENCSR999NOF');
         });
     });
 });
