@@ -574,10 +574,10 @@ var RNAi = module.exports.RNAi = React.createClass({
              <dl className="key-value">
                 {context.target ? <dt>Target</dt> : null}
                 {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
-                
+
                 {context.rnai_type ? <dt>RNAi type</dt> : null}
                 {context.rnai_type ? <dd>{context.rnai_type}</dd> : null}
-                
+
                 {context.source.title ? <dt>Source</dt> : null}
                 {context.source.title ? <dd><a href={context.source.url}>{context.source.title}</a></dd> : null}
 
@@ -647,9 +647,8 @@ var Document = module.exports.Document = React.createClass({
 
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
-            <section className={context['@type'][0] !== 'donor_characterization' ? 'type-document view-detail panel status-none' : ''}>
             <section className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                <div className="type-document view-detail panel status-none">
+                <div className={context['@type'][0] !== 'donor_characterization' ? 'type-document view-detail panel status-none' : ''}>
                     <div className="document-header">
                         <figure>
                             {figure}
@@ -661,34 +660,38 @@ var Document = module.exports.Document = React.createClass({
                     </div>
                     {download}
                     <dl className={keyClass}>
-                            {context.caption ? <dt>Caption</dt> : null}
-                            {context.caption ? <dd>{context.caption}</dd> : null}
+                        {context.caption ?
+                            <div data-test="caption">
+                                <dt>Caption</dt> : null}
+                                <dd>{context.caption}</dd>
+                            </div>
+                        : null}
 
-                            {context.submitted_by && context.submitted_by.title ?
-                                <div>
-                                    <dt>Submitted by</dt>
-                                    <dd>{context.submitted_by.title}</dd>
-                                </div>
-                            : null}
+                        {context.submitted_by && context.submitted_by.title ?
+                            <div data-test="submitted">
+                                <dt>Submitted by</dt>
+                                <dd>{context.submitted_by.title}</dd>
+                            </div>
+                        : null}
 
-                            {context.lab && context.lab.title ?
-                                <div>
-                                    <dt>Lab</dt>
-                                    <dd>{context.lab.title}</dd>
-                                </div>
-                            : null}
+                        {context.lab && context.lab.title ?
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
+                        : null}
 
                         <div data-test="submitted">
                             <dt>Submitted by</dt>
                             <dd>{context.submitted_by.title}</dd>
                         </div>
 
-                            {context.award && context.award.name ?
-                                <div>
-                                    <dt>Grant</dt>
-                                    <dd>{context.award.name}</dd>
-                                </div>
-                            : null}
+                        {context.award && context.award.name ?
+                            <div data-test="award">
+                                <dt>Grant</dt>
+                                <dd>{context.award.name}</dd>
+                            </div>
+                        : null}
 
                         {context.references && context.references.length ?
                             <div data-test="references">
