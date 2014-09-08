@@ -6,7 +6,13 @@ from ..auditor import (
 
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_review(value, system):
-    if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted']):
+    if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted', 'in progress']):
+        return
+
+    secondary = False
+    if 'secondary_characterization_method' in value:
+        secondary = True
+    if secondary:
         return
 
     '''Make sure that biosample terms are in ontology for each characterization_review'''
@@ -16,7 +22,6 @@ def audit_antibody_characterization_review(value, system):
 
             term_id = review['biosample_term_id']
             term_name = review['biosample_term_name']
-            
 
             if term_id.startswith('NTR:'):
                 detail = '{} - {}'.format(term_id, term_name)
@@ -46,7 +51,13 @@ def audit_antibody_characterization_standards(value, system):
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_unique_reviews(value, system):
     '''Make sure primary characterizations have unique lane, biosample_term_id and organism combinations for characterization reviews'''
-    if(value['status'] in ["deleted", "not submitted for review by lab"]):
+    if(value['status'] in ['deleted', 'not submitted for review by lab', 'in progress', 'not reviewed']):
+        return
+
+    secondary = False
+    if 'secondary_characterization_method' in value:
+        secondary = True
+    if secondary:
         return
 
     unique_reviews = set()
@@ -69,7 +80,7 @@ def audit_antibody_characterization_target(value, system):
     target = value['target']
     if 'recombinant protein' in target['investigated_as']:
         prefix = target['label'].split('-')[0]
-        unique_antibody_target = set ()
+        unique_antibody_target = set()
         unique_investigated_as = set()
         for antibody_target in antibody['targets']:
             label = antibody_target['label']
@@ -79,7 +90,7 @@ def audit_antibody_characterization_target(value, system):
         if 'tag' not in unique_investigated_as:
             detail = '{} is not to tagged protein'.format(antibody['@id'])
             raise AuditFailure('not tagged antibody', detail, level='ERROR')
-        else: 
+        else:
             if prefix not in unique_antibody_target:
                 detail = '{} not found in target for {}'.format(prefix, antibody['@id'])
                 raise AuditFailure('tag target mismatch', detail, level='ERROR')
