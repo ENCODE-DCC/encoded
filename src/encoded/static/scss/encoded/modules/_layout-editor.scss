@@ -3,6 +3,18 @@
 }
 
 .layout.editable {
+	position: relative;
+	.row {
+		position: relative;
+		margin-top: -5px;
+		margin-bottom: -5px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		outline: dashed 1px red;
+	}
+	[class^="col"] {
+		outline: dashed 1px blue;
+	}
 	.block {
 		position: relative;
 		min-height: 20px;
@@ -40,30 +52,36 @@
 
 .drop-top:before {
 	content: " ";
-	display: block;
+	display: block !important;
 	width: 100%;
 	border-top: solid 3px $brand-primary;
 	margin-top: -3px;
+	position: absolute; top: 0; left: 0;
 }
 .drop-bottom:after {
 	content: " ";
-	display: block;
+	display: block !important;
 	width: 100%;
 	border-bottom: solid 3px $brand-primary;
 	margin-bottom: -3px;
+	position: absolute; bottom: 0; left: 0;
 }
-.drop-left:after {
+.row.drop-bottom:after {
+	display: table !important;
+	position: static;
+}
+.drop-left:before {
 	content: " ";
-	display: block;
+	display: block !important;
 	position: absolute;
 	top: 0;
 	left: 0;
 	height: 100%;
 	border-left: solid 3px $brand-primary;
 }
-.drop-right:after {
+.drop-right:before {
 	content: " ";
-	display: block;
+	display: block !important;
 	position: absolute;
 	top: 0;
 	right: 0;

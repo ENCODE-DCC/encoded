@@ -17,7 +17,6 @@ packages:
 - libjpeg-dev
 - liblcms2-dev
 - libmagic-dev
-- libmysqlclient-dev
 - libpq-dev
 - libssl-dev
 - libtiff5-dev
@@ -25,7 +24,6 @@ packages:
 - libxml2-dev
 - libxslt1-dev
 - lzop
-- mysql-client 
 - nodejs-dev
 - nodejs-legacy
 - npm
