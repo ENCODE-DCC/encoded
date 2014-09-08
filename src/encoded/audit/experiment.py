@@ -153,7 +153,8 @@ def audit_experiment_control(value, system):
         return
 
     # We do not want controls
-    if 'control' in value['target']['name'] or 'Control' in value['target']['name']:
+    target = value['target']
+    if 'control' in target['investigated_as']:
         return
 
     if value['possible_controls'] == []:
@@ -225,6 +226,9 @@ def audit_experiment_biosample_term(value, system):
     if 'biosample_type' not in value:
         detail = 'biosample type missing'
         yield AuditFailure('biosample type missing', detail, level='ERROR')
+        return
+
+    if 'control' in target['investigated_as']:
         return
 
     ontology = system['registry']['ontology']
