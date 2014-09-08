@@ -2,6 +2,7 @@ from itertools import chain
 from pkg_resources import resource_stream
 from pyramid.events import (
     ApplicationCreated,
+    BeforeRender,
     subscriber,
 )
 from pyramid.view import view_config
@@ -61,3 +62,12 @@ def context_from_collection(collection, jsonld_base):
 @view_config(route_name='jsonld_context', request_method='GET')
 def jsonld_context(context, request):
     return request.registry['encoded.jsonld_context']
+
+
+@subscriber(BeforeRender)
+def add_jsonld_context(event):
+    request = event['request']
+    value = event.rendering_val
+    if ('@id' in value or '@graph' in value) and '@context' not in value:
+        # The context link needs to be a canonicalised URI
+        value['@context'] = request.route_url('jsonld_context')
