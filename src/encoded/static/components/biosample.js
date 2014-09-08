@@ -216,18 +216,14 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {context.characterizations.length ?
                     <div>
                         <h3>Characterizations</h3>
-                        <section className="type-document view-detail panel status-none">
-                            {context.characterizations.map(Panel)}
-                        </section>
+                        {context.characterizations.map(Panel)}
                     </div>
                 : null}
 
                 {Object.keys(construct_documents).length ?
                     <div>
                         <h3>Construct documents</h3>
-                        <section className="type-document view-detail panel status-none">
-                            {construct_documents}
-                        </section>
+                        {construct_documents}
                     </div>
                 : null}
 
@@ -607,48 +603,50 @@ var Document = module.exports.Document = React.createClass({
         }
 
         return (
-            <div className="row">
-                <div className="col-sm-5 col-md-6">
-                    <figure>
-                        {figure}
-                    </figure>
+            <section className={context['@type'][0] !== 'donor_characterization' ? 'type-document view-detail panel status-none' : ''}>
+                <div className="row">
+                    <div className="col-sm-5 col-md-6">
+                        <figure>
+                            {figure}
+                        </figure>
+                    </div>
+                    <div className="col-sm-7 col-md-6">
+                        <h3 className="sentence-case">{context.document_type}</h3>
+                        <p>{context.description}</p>
+                        <dl className="key-value">
+                            {context.caption ? <dt>Caption</dt> : null}
+                            {context.caption ? <dd>{context.caption}</dd> : null}
+
+                            {context.submitted_by && context.submitted_by.title ?
+                                <div>
+                                    <dt>Submitted by</dt>
+                                    <dd>{context.submitted_by.title}</dd>
+                                </div>
+                            : null}
+
+                            {context.lab && context.lab.title ?
+                                <div>
+                                    <dt>Lab</dt>
+                                    <dd>{context.lab.title}</dd>
+                                </div>
+                            : null}
+
+                            {context.award && context.award.name ?
+                                <div>
+                                    <dt>Grant</dt>
+                                    <dd>{context.award.name}</dd>
+                                </div>
+                            : null}
+
+                            <dt><i className="icon icon-download"></i> Download</dt>
+                            <dd>{download}</dd>
+
+                            {context.references && context.references.length ? <dt>References</dt> : null}
+                            {context.references && context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
+                        </dl>
+                    </div>
                 </div>
-                <div className="col-sm-7 col-md-6">
-                    <h3 className="sentence-case">{context.document_type}</h3>
-                    <p>{context.description}</p>
-                    <dl className="key-value">
-                        {context.caption ? <dt>Caption</dt> : null}
-                        {context.caption ? <dd>{context.caption}</dd> : null}
-
-                        {context.submitted_by && context.submitted_by.title ?
-                            <div>
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
-                            </div>
-                        : null}
-
-                        {context.lab && context.lab.title ?
-                            <div>
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-
-                        {context.award && context.award.name ?
-                            <div>
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
-                            </div>
-                        : null}
-
-                        <dt><i className="icon icon-download"></i> Download</dt>
-                        <dd>{download}</dd>
-
-                        {context.references && context.references.length ? <dt>References</dt> : null}
-                        {context.references && context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
-                    </dl>
-                </div>
-            </div>
+            </section>
         );
     }
 });
