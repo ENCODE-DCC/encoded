@@ -9,10 +9,7 @@ def audit_antibody_characterization_review(value, system):
     if (value['status'] in ['not reviewed', 'not submitted for review by lab', 'deleted', 'in progress']):
         return
 
-    secondary = False
     if 'secondary_characterization_method' in value:
-        secondary = True
-    if secondary:
         return
 
     '''Make sure that biosample terms are in ontology for each characterization_review'''
@@ -51,13 +48,10 @@ def audit_antibody_characterization_standards(value, system):
 @audit_checker('antibody_characterization')
 def audit_antibody_characterization_unique_reviews(value, system):
     '''Make sure primary characterizations have unique lane, biosample_term_id and organism combinations for characterization reviews'''
-    if(value['status'] in ['deleted', 'not submitted for review by lab', 'in progress', 'not reviewed']):
+    if(value['status'] in ["deleted", "not submitted for review by lab", 'in progress', 'not reviewed']):
         return
 
-    secondary = False
     if 'secondary_characterization_method' in value:
-        secondary = True
-    if secondary:
         return
 
     unique_reviews = set()

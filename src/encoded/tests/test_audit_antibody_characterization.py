@@ -82,7 +82,7 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     base_characterization_review['biosample_term_name'] = 'qwijibo'
     characterization_review_list = []
     characterization_review_list.append(base_characterization_review)
-    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot'})
+    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'status': 'pending dcc review'})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'term id not in ontology' for error in errors)
@@ -103,7 +103,7 @@ def test_audit_antibody_duplicate_review_subobject(testapp, base_antibody_charac
     characterization_review_list = []
     characterization_review_list.append(base_characterization_review)
     characterization_review_list.append(base_characterization_review)
-    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot' })
+    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'status': 'pending dcc review' })
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'duplicate lane review' for error in errors)
