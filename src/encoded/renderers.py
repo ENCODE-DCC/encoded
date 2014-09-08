@@ -263,8 +263,16 @@ def should_transform(request, response):
         if request.authorization is not None:
             format = 'json'
         else:
-            mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
+            mime_type = request.accept.best_match(
+                [
+                    'text/html',
+                    'application/ld+json',
+                    'application/json',
+                ],
+                'text/html')
             format = mime_type.split('/', 1)[1]
+            if format == 'ld+json':
+                format = 'json'
     else:
         format = format.lower()
         if format not in ('html', 'json'):

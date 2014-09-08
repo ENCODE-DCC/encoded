@@ -50,6 +50,15 @@
             "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
             "format": "target_label"
+        },
+        "status": {
+            "default": "proposed",
+            "enum" : [
+                "current",
+                "deleted",
+                "replaced",
+                "proposed"
+            ]
         }
     },
     "facets": {
