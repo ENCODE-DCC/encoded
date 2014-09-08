@@ -329,16 +329,16 @@ $indicator-notpursued:  #d0d0d0;
     }
 }
 
-.status-dots {
-    display: inline-block;
+.status-indicators {
+    white-space: nowrap;
 }
 
 .tooltip {
-    display: none; 
     position: absolute;
-    top: -40px;
-    right: 10px;
-    padding: 2px 10px;
+    visibility: hidden;
+    top: 20px;
+    left: 15px;
+    padding: 2px 5px;
     z-index: 100;
     border: 1px solid #fff;
     background-color: desaturate(lighten(#0a253d,30%),30%);
@@ -352,6 +352,10 @@ $indicator-notpursued:  #d0d0d0;
     span:last-child {
         font-weight: normal;
     }
+
+    &.tooltipopen {
+        visibility: visible;
+    }
 }
 
 
@@ -360,10 +364,4 @@ $indicator-notpursued:  #d0d0d0;
     margin-left: 5px;
     font-size: 16px;
     cursor: default;
-
-    &:hover {
-        .tooltip {
-            display: block;
-        }
-    }
 }

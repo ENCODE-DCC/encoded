@@ -64,7 +64,7 @@
             "required": ["paired_end"],
             "properties": {
                 "file_format": {
-                    "enum": ["fastq"]
+                    "enum": ["fastq", "csfasta", "csqual"]
                 },
                 "paired_end": {
                     "enum": ["2"]

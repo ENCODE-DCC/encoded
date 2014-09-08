@@ -271,3 +271,8 @@ def test_page_collection_default(workbook, anontestapp):
     res = anontestapp.get('/images/', status=200)
     assert 'default_page' in res.json
     assert res.json['default_page']['@id'] == '/pages/images/'
+
+
+def test_jsonld_context(testapp):
+    res = testapp.get('/context.jsonld')
+    assert res.json

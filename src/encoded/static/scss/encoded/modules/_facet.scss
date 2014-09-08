@@ -87,8 +87,22 @@
 }
 
 .accession {
+    position: relative;
+    margin-left: 8px;
     font-size: 1.3em;
     font-weight: bold;
+
+    a {
+        &::before {
+            position: absolute;
+            content: "\25AA ";
+            left: -8px;
+        }
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
 }
 
 .accession-note {
@@ -104,10 +118,6 @@
     font-size: 0.9em;
     font-weight: normal;
     color: #808080;
-}
-
-.accession a:hover {
-    text-decoration: none;
 }
 
 .search-meta {

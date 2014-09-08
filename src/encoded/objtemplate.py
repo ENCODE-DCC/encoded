@@ -96,10 +96,11 @@ def dict_template(template, namespace):
                 result, = results
             else:
                 result = type(template)()
-                for key, tmpl_value in template.items():
-                    if key in TEMPLATE_NAMES:
+                for tmpl_key, tmpl_value in template.items():
+                    if tmpl_key in TEMPLATE_NAMES:
                         continue
-                    tmpl_string = templated is True or key in templated
+                    tmpl_string = templated is True or tmpl_key in templated
+                    key, = list(object_template(tmpl_key, repeat_namespace, tmpl_string))
                     results = list(object_template(tmpl_value, repeat_namespace, tmpl_string))
                     if not results:
                         continue
@@ -111,10 +112,11 @@ def dict_template(template, namespace):
             result, = results
         else:
             result = type(template)()
-            for key, tmpl_value in template.items():
-                if key in TEMPLATE_NAMES:
+            for tmpl_key, tmpl_value in template.items():
+                if tmpl_key in TEMPLATE_NAMES:
                     continue
-                tmpl_string = templated is True or key in templated
+                tmpl_string = templated is True or tmpl_key in templated
+                key, = list(object_template(tmpl_key, namespace, tmpl_string))
                 results = list(object_template(tmpl_value, namespace, tmpl_string))
                 if not results:
                     continue
