@@ -5,15 +5,15 @@ from ..auditor import (
     audit_checker,
 )
 
-targetBasedAssayList =  ['ChIP-seq',
-                         'RNA Bind-n-Seq',
-                         'ChIA-PET',
-                         'RIP Array',
-                         'RIP-seq',
-                         'MeDIP-seq',
-                         'iCLIP',
-                         'shRNA knockdown followed by RNA-seq',
-                         ]
+targetBasedAssayList = ['ChIP-seq',
+                        'RNA Bind-n-Seq',
+                        'ChIA-PET',
+                        'RIP Array',
+                        'RIP-seq',
+                        'MeDIP-seq',
+                        'iCLIP',
+                        'shRNA knockdown followed by RNA-seq',
+                        ]
 
 controlRequiredAssayList = ['ChIP-seq',
                             'RNA Bind-n-Seq',
@@ -107,11 +107,10 @@ def audit_experiment_target(value, system):
         else:
             antibody = rep['antibody']
 
-            
             if 'recombinant protein' in target['investigated_as']:
                 prefix = target['label'].split('-')[0]
-                unique_antibody_target = set ()
-                unique_investigated_as = set()  
+                unique_antibody_target = set()
+                unique_investigated_as = set()
                 for antibody_target in antibody['targets']:
                     label = antibody_target['label']
                     unique_antibody_target.add(label)
@@ -228,9 +227,6 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('biosample type missing', detail, level='ERROR')
         return
 
-    if 'control' in target['investigated_as']:
-        return
-
     ontology = system['registry']['ontology']
     term_id = value.get('biosample_term_id')
     term_type = value.get('biosample_type')
@@ -325,11 +321,11 @@ def audit_experiment_paired_end(value,system):
         if 'paired_ended' not in rep or 'paired_ended' not in lib:
             continue
 
-        if (rep['paired_ended'] == False or lib['paired_ended'] == False) and term_name in paired_end_assays:
+        if (rep['paired_ended'] is False or lib['paired_ended'] is False) and term_name in paired_end_assays:
             detail = 'paired ended required for {} either {} or {} is not paired ended'.format(term_name, rep['uuid'], lib['accession'])
             yield AuditFailure('paired end required for assay', detail, level='ERROR')
 
-        if rep['paired_ended'] != lib['paired_ended'] and lib['paired_ended'] == False:
+        if rep['paired_ended'] != lib['paired_ended'] and lib['paired_ended'] is False:
             detail = 'paired ended mismatch between {} - {}'.format(rep['uuid'], lib['accession'])
             yield AuditFailure('paired end mismatch', detail, level='ERROR')
 
@@ -359,7 +355,7 @@ def audit_experiment_antibody_eligible(value, system):
             continue
         if 'library' not in rep:
             continue
-        
+
         antibody = rep['antibody']
         lib = rep['library']
 
@@ -389,7 +385,7 @@ def audit_experiment_antibody_eligible(value, system):
             eligilbe_biosamples = set()
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] == 'eligible for new data':
-                    eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_review['organism']['name']])
+                    eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_review['organisms'][0]])
                     eligilbe_biosamples.add(eligible_biosample)
             if experiment_biosample not in eligilbe_biosamples:
                 detail = '{} not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
