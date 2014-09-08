@@ -85,14 +85,22 @@ var cx = React.addons.classSet;
 
         // Display tooltip on hover
         onMouseEnter: function () {
+            function getNextElementSibling(el) {
+                return el.nextElementSibling ? el.nextElementSibling : el.nextSibling;
+            }
+
             // Get viewport bounds of result table and of this tooltip
             var resultBounds = document.getElementById('result-table').getBoundingClientRect();
-            var tipElement = this.refs.indicator.getDOMNode().nextElementSibling;
+            var tipElement = getNextElementSibling(this.refs.indicator.getDOMNode());
             var tipBounds = tipElement.getBoundingClientRect();
 
             // Set an inline style to move the tooltip if it runs off right edge of result table
-            if (tipBounds.right > resultBounds.right) {
-                this.setState({tipStyles: {left: (resultBounds.right - tipBounds.right + 10) + 'px'}});
+            var leftStyle = tipElement.style.left ? parseInt(tipElement.style.left, 10) - 10 : 0;
+            var leftOffset = resultBounds.right - tipBounds.right + leftStyle;
+            if (leftOffset < 0) {
+                this.setState({tipStyles: {left: (leftOffset + 10) + 'px'}});
+            } else {
+                this.setState({tipStyles: {left: '10px'}});
             }
 
             this.setState({tipOpen: true});
