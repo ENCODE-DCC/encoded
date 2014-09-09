@@ -231,7 +231,7 @@ def test_antibody_characterization_upgrade_compliant_status(app, antibody_charac
     assert value['secondary_characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
     assert 'characterization_method' not in value
     assert value['reviewed_by'] == '/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/'
-    assert '88dc12f7-c72d-4b43-a6cd-c6f3a9d08821' in value['documents']
+    assert value['documents'] == ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']
 
 
 def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_characterization_3):

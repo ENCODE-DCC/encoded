@@ -71,9 +71,9 @@ def characterization_3_4(value, system):
 def antibody_characterization_4_5(value, system):
     # http://redmine.encodedcc.org/issues/380
     primary = [
-    "immunoblot",
-    "immunoprecipitation",
-    "immunofluorescence"
+        "immunoblot",
+        "immunoprecipitation",
+        "immunofluorescence"
     ]
     secondary = [
         "knockdown or knockout",
@@ -98,7 +98,4 @@ def antibody_characterization_4_5(value, system):
             value['reviewed_by'] = '/users/ff7b77e7-bb55-4307-b665-814c9f1e65fb/'
         elif value['status'] in ['compliant', 'not compliant']:
             value['reviewed_by'] = '/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/'
-            value['docments'] = ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']
-
-    if 'documents' in value and value['documents'] == []:
-        del value['documents']
+            value['documents'] = ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']
