@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture
-def antibody_lot(lab, award, source):
+def antibody_lot_base(lab, award, source):
     return {
         'award': award['uuid'],
         'product_id': 'SAB2100398',
@@ -13,8 +13,8 @@ def antibody_lot(lab, award, source):
 
 
 @pytest.fixture
-def antibody_lot_1(antibody_lot):
-    item = antibody_lot.copy()
+def antibody_lot_1(antibody_lot_base):
+    item = antibody_lot_base.copy()
     item.update({
         'schema_version': '1',
         'encode2_dbxrefs': ['CEBPZ'],
@@ -23,8 +23,8 @@ def antibody_lot_1(antibody_lot):
 
 
 @pytest.fixture
-def antibody_lot_2(antibody_lot):
-    item = antibody_lot.copy()
+def antibody_lot_2(antibody_lot_base):
+    item = antibody_lot_base.copy()
     item.update({
         'schema_version': '2',
         'award': '1a4d6443-8e29-4b4a-99dd-f93e72d42418',
@@ -34,10 +34,9 @@ def antibody_lot_2(antibody_lot):
 
 
 @pytest.fixture
-def antibody_lot_3(root, antibody_lot, antibody_approval):
+def antibody_lot_3(root, antibody_lot):
     item = root.get_by_uuid(antibody_lot['uuid'])
     properties = item.properties.copy()
-    assert properties['approvals']
     del properties['targets']
     properties.update({
         'schema_version': '3'
@@ -75,10 +74,11 @@ def test_antibody_lot_upgrade_status_deleted(app, antibody_lot_2):
     assert value['schema_version'] == '3'
     assert value['status'] == 'deleted'
 
-#def test_antibody_lot_upgrade_targets(root, registry, antibody_lot, antibody_lot_3, antibody_approval, target, threadlocals, dummy_request):
-#    migrator = registry['migrator']
-#    context = root.get_by_uuid(antibody_lot['uuid'])
-#    dummy_request.context = context
-#    value = migrator.upgrade('antibody_lot_3', antibody_lot_3, target_version='4', context=context)
-#    assert value['schema_version'] == '4'
-#    assert properties['targets'] = [target['uuid']]
+
+def test_antibody_lot_upgrade_targets(root, registry, antibody_lot, antibody_lot_3, target, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(antibody_lot['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('antibody_lot', antibody_lot_3, target_version='4', context=context)
+    assert value['schema_version'] == '4'
+    assert value['targets'] == [target['uuid']]
