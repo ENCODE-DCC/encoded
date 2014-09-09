@@ -195,8 +195,7 @@
                 "biosample_term_id": "EFO:0002791",
                 "lane_status": "pending dcc review"
             }
-        ],
-        "documents": ["ENCODE:Antibody_characterization_standards_February_2014"]
+        ]
     },
     {
         "attachment": "human_CTCF_sc-5916_validation_Myers-2.png",
@@ -480,7 +479,7 @@
         "attachment": "frowny_gel.png",
         "award": "U54HG006996",
         "caption": "This characterization can be anything you want it to be, just use your imagination.",
-        "characterizes": "e61ad044-a869-4bd2-ae04-f4fa83bbca00",
+        "characterizes": "d563e33c-fea8-4453-909b-ccfdbfd9f8b3",
         "primary_characterization_method": "immunoblot",
         "date": "2014-05-31",
         "lab": "michael-snyder",
