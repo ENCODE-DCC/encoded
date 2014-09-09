@@ -102,13 +102,3 @@ def antibody_characterization_4_5(value, system):
 
     if 'documents' in value and value['documents'] == []:
         del value['documents']
-
-
-@upgrade_step('biosample_characterization', '4', '5')
-@upgrade_step('rnai_characterization', '4', '5')
-@upgrade_step('construct_characterization', '4', '5')
-def characterization_4_5(value, system):
-     # http://redmine.encodedcc.org/issues/380
-
-     if 'documents' in value and value['documents'] == []:
-        del value['documents']
