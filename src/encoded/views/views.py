@@ -476,7 +476,7 @@ class AntibodyLot(Collection):
                     'biosample_term_name': 'not specified',
                     'biosample_term_id': 'NTR:00000000',
                     'organisms': organisms,
-                    'targets': ns['targets']
+                    'targets': list(ns['targets']),
                 }]
                 if is_control:
                     antibody_lot_reviews[0]['status'] = 'eligible for new data'
@@ -899,7 +899,7 @@ class AntibodyCharacterization(Characterization):
     }
 
     class Item(Characterization.Item):
-        embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism']
+        embedded = ['submitted_by', 'lab', 'award', 'target', 'target.organism', 'documents', 'characterizes.targets']
 
         template = {
             'characterization_method': {'$value': '{characterization_method}', '$templated': True, '$condition': 'characterization_method'}
@@ -1149,6 +1149,7 @@ class Experiment(Dataset):
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody',
+            'replicates.antibody.targets',
             'replicates.library.documents.lab',
             'replicates.library.documents.submitted_by',
             'replicates.library.documents.award',

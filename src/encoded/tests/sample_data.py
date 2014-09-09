@@ -202,7 +202,7 @@ USERS = [
         'groups': ['admin', 'programmer'],
     },
     {
-        'uuid': '1e945b04-aa54-4732-8b81-b41d4565f5f9',
+        'uuid': '81a6cc12-2847-4e2e-8f2c-f566699eb29e',
         'first_name': 'Cricket',
         'last_name': 'Sloan',
         'email': 'cricket@stanford.edu',
