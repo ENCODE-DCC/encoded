@@ -243,9 +243,12 @@ var Characterization = module.exports.Characterization = React.createClass({
         }
 
         // Compile a list of attached standards documents
-        var standardsDocuments = context.documents.filter(function(doc) {
-            return doc.document_type === "standards document";
-        });
+        standardsDocuments = [];
+        if (context.documents) {
+            var standardsDocuments = context.documents.filter(function(doc) {
+                return doc.document_type === "standards document";
+            });
+        }
 
         return (
             <section className={globals.itemClass(context, 'view-detail panel')}>
