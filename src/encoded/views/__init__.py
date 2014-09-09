@@ -11,6 +11,7 @@ from ..contentbase import (
 def includeme(config):
     config.registry['encoded.processid'] = os.getppid()
     config.add_route('schema', '/profiles/{item_type}.json')
+    config.add_route('jsonld_terms', '/terms')
     config.add_route('jsonld_context', '/context.jsonld')
     config.add_route('graph', '/profiles/graph.dot')
     config.scan()
