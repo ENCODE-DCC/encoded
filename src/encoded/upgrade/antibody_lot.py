@@ -30,31 +30,31 @@ def antibody_lot_2_3(value, system):
                 value['status'] = 'in progress'
 
 
-@upgrade_step('antibody_lot', '3', '4')
-def antibody_lot_3_4(value, system):
+#@upgrade_step('antibody_lot', '3', '4')
+#def antibody_lot_3_4(value, system):
     # http://redmine.encodedcc.org/issues/380
 
-    tagged_ab = [
-        'eGFP',
-        'YFP',
-        'HA'
-    ]
+#    tagged_ab = [
+#        'eGFP',
+#        'YFP',
+#        'HA'
+#    ]
 
-    context = system['context']
-    root = find_root(context)
-    approvals = [
-        root.get_by_uuid(link.source_rid)
-        for link in self.model.revs
-        if (link.source.item_type, link.rel) == ('antibody_approval', 'antibody')
-    ]
+#    context = system['context']
+#    root = find_root(context)
+#    approvals = [
+#        root.get_by_uuid(link.source_rid)
+#        for link in self.model.revs:
+#            if (link.source.item_type, link.rel) == ('antibody_approval', 'antibody')
+#    ]
 
-    targets = set()
-    for approval in approvals:
-        target = root.get_by_uuid(approval.properties['target'])
-        tag, _ = target.properties['label'].split('-', 1)
-        if tag in tagged_ab:
-            # need to fix logic
-            target.properties['label'].split('-')[0].add(targets)
-        else:
-            targets.add(target.uuid)
-    value['targets'] = list(targets)
+#    targets = set()
+#    for approval in approvals:
+#        target = root.get_by_uuid(approval.properties['target'])
+#        tag, _ = target.properties['label'].split('-', 1)
+#        if tag in tagged_ab:
+#            # need to fix logic
+#            target.properties['label'].split('-')[0].add(targets)
+#        else:
+#            targets.add(target.uuid)
+#    value['targets'] = list(targets)
