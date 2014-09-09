@@ -1,15 +1,9 @@
-import pyramid.tweens
 import time
 from pyramid.threadlocal import manager as threadlocal_manager
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from urllib import urlencode
 from xml.sax.saxutils import quoteattr
-
-
-def includeme(config):
-    config.add_tween(
-        '.stats.stats_tween_factory', under=pyramid.tweens.INGRESS)
 
 
 def get_root_request():
