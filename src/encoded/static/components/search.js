@@ -90,17 +90,25 @@ var cx = React.addons.classSet;
             }
 
             // Get viewport bounds of result table and of this tooltip
+            var whiteSpace = 'nowrap';
             var resultBounds = document.getElementById('result-table').getBoundingClientRect();
+            var resultWidth = resultBounds.right - resultBounds.left;
             var tipElement = getNextElementSibling(this.refs.indicator.getDOMNode());
-            var tipBounds = tipElement.getBoundingClientRect();
+            var tipBounds = _.clone(tipElement.getBoundingClientRect());
+            var tipWidth = tipBounds.right - tipBounds.left;
+            var width = tipWidth;
+            if (tipWidth > resultWidth) {
+                tipBounds.right = tipBounds.left + resultWidth - 2;
+                whiteSpace = 'normal';
+                width = tipBounds.right - tipBounds.left - 2;
+            }
 
             // Set an inline style to move the tooltip if it runs off right edge of result table
-            var leftStyle = tipElement.style.left ? parseInt(tipElement.style.left, 10) - 10 : 0;
-            var leftOffset = resultBounds.right - tipBounds.right + leftStyle;
+            var leftOffset = resultBounds.right - tipBounds.right;
             if (leftOffset < 0) {
-                this.setState({tipStyles: {left: (leftOffset + 10) + 'px'}});
+                this.setState({tipStyles: {left: (leftOffset + 10) + 'px', maxWidth: resultWidth + 'px', whiteSpace: whiteSpace, width: width + 'px'}});
             } else {
-                this.setState({tipStyles: {left: '10px'}});
+                this.setState({tipStyles: {left: '10px', maxWidth: resultWidth + 'px', whiteSpace: whiteSpace, width: width + 'px'}});
             }
 
             this.setState({tipOpen: true});
@@ -108,6 +116,7 @@ var cx = React.addons.classSet;
 
         // Close tooltip when not hovering
         onMouseLeave: function() {
+            this.setState({tipStyles: {maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px'}});
             this.setState({tipOpen: false});
         },
 
@@ -132,15 +141,13 @@ var cx = React.addons.classSet;
             var target = this.props.target;
 
             return (
-                <span>
+                <span className="status-indicators">
                     {Object.keys(targetTree[target]).map(function(status, i) {
-                        return (
-                            <span key={i} className="status-indicators">
-                                {(status !== 'target' && status !== 'organism') ?
-                                    <StatusIndicator status={status} terms={targetTree[target][status]} />
-                                : ''}
-                            </span>
-                        );
+                        if (status !== 'target' && status !== 'organism') {
+                            return <StatusIndicator key={i} status={status} terms={targetTree[target][status]} />;
+                        } else {
+                            return null;
+                        }
                     })}
                 </span>
             );
