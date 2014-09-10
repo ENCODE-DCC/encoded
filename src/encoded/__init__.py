@@ -141,7 +141,6 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     config.include(session)
-    config.include('.stats')
     config.include('pyramid_tm')
     configure_engine(settings)
 
