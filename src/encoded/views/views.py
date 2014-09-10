@@ -310,7 +310,7 @@ class AntibodyLot(Collection):
                     organism = find_resource(request.root, target.properties['organism'])
                     if request.resource_path(target) not in targets:
                         targets.append(request.resource_path(target))
-                    if 'histone modification' in target.update_properites(finalize=False)['investigated_as']:
+                    if 'histone modification' in target.upgrade_properties(finalize=False)['investigated_as']:
                         histone_mod_target = True
 
                     if request.resource_path(organism) not in organisms and not histone_mod_target:
@@ -465,7 +465,7 @@ class AntibodyLot(Collection):
                 organisms = []
                 for t in targets:
                     target = find_resource(request.root, t)
-                    if 'control' in target.update_properites(finalize=False)['investigated_as']:
+                    if 'control' in target.upgrade_properties(finalize=False)['investigated_as']:
                         is_control = True
 
                     organism = find_resource(request.root, target.properties['organism'])
