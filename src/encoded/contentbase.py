@@ -836,25 +836,25 @@ class Collection(Mapping):
         root = find_root(self)
         resource = root.get_by_uuid(name, None)
         if resource is not None:
-            if resource.__parent__ is not self:
+            if resource.collection is not self and resource.__parent__ is not self:
                 return default
             return resource
         if is_accession(name):
             resource = root.get_by_unique_key('accession', name)
             if resource is not None:
-                if resource.__parent__ is not self:
+                if resource.collection is not self and resource.__parent__ is not self:
                     return default
                 return resource
         if ':' in name:
             resource = root.get_by_unique_key('alias', name)
             if resource is not None:
-                if resource.__parent__ is not self:
+                if resource.collection is not self and resource.__parent__ is not self:
                     return default
                 return resource
         if self.unique_key is not None:
             resource = root.get_by_unique_key(self.unique_key, name)
             if resource is not None:
-                if resource.__parent__ is not self:
+                if resource.collection is not self and resource.__parent__ is not self:
                     return default
                 return resource
         return default
