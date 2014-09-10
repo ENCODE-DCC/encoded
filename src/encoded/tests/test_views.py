@@ -276,3 +276,8 @@ def test_page_collection_default(workbook, anontestapp):
 def test_jsonld_context(testapp):
     res = testapp.get('/context.jsonld')
     assert res.json
+
+
+def test_jsonld_base(testapp):
+    res = testapp.get('/terms')
+    assert res.json
