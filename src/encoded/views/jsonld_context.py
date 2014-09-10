@@ -181,7 +181,7 @@ def jsonld_terms(context, request):
     return request.registry['encoded.jsonld_terms']
 
 
-@subscriber(BeforeRender)
+# @subscriber(BeforeRender)  # disable for now
 def add_jsonld_context(event):
     request = event['request']
     value = event.rendering_val
