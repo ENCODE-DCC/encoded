@@ -23,6 +23,7 @@
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
+        "transfection_type": ["transfection_method"],
         "depleted_in_term_name": ["depleted_in_term_id"],
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
@@ -260,6 +261,14 @@
             "type": "string",
             "enum": [
                 "stable", "transient"
+            ]
+        },
+        "transfection_method": {
+            "title": "Transfection method",
+            "description": "How the transfection was performed on the biosample to introduce the contruct or RNAi.",
+            "type": "string",
+            "enum": [
+                "electroporation", "transduction"
             ]
         },
         "culture_harvest_date": {
