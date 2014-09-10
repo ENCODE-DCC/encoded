@@ -51,9 +51,9 @@ def antibody_lot_3_4(value, system):
     targets = set()
     for approval in approvals:
         target = root.get_by_uuid(approval.properties['target'])
-        tag, _ = target.properties['label'].split('-', 1)
+        tag = target.properties['label'].split('-')[0]
         if tag in tagged_ab.keys():
             targets.add(tagged_ab[tag])
         else:
-            targets.add(target.uuid)
+            targets.add(approval.properties['target'])
     value['targets'] = list(targets)
