@@ -431,7 +431,9 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                     <section>
                         <hr />
                         <h4>Characterizations</h4>
-                        {biosample.donor.characterizations.map(Panel)}
+                        <div className="row">
+                            {biosample.donor.characterizations.map(Panel)}
+                        </div>
                     </section>
                 : null}
 
@@ -485,7 +487,9 @@ var WormDonor = module.exports.WormDonor = React.createClass({
                     <section>
                         <hr />
                         <h4>Construct details</h4>
-                        {biosample.model_organism_donor_constructs.map(Panel)}
+                        <div className="row">
+                            {biosample.model_organism_donor_constructs.map(Panel)}
+                        </div>
                     </section>
                 : null}
             </div>
@@ -645,24 +649,27 @@ var Document = module.exports.Document = React.createClass({
             );
         }
 
+        var panelClass = 'type-document view-detail status-none' + (context['@type'][0] !== 'donor_characterization' ? ' panel' : ' sub-panel');
+        var characterization = context['@type'].indexOf('characterization') >= 0;
+
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
-                <div className={context['@type'][0] !== 'donor_characterization' ? 'type-document view-detail panel status-none' : ''}>
+                <div className={panelClass}>
                     <div className="document-header">
                         <figure>
                             {figure}
                         </figure>
                         <div className="document-intro">
-                            <h3 className="sentence-case">{context.document_type}</h3>
-                            <p>{context.description}</p>
+                            <h3 className="sentence-case">{characterization ? context.characterization_method : context.document_type}</h3>
+                            <p>{characterization ? context.caption : context.description}</p>
                         </div>
                     </div>
                     {download}
                     <dl className={keyClass}>
                         {context.caption ?
                             <div data-test="caption">
-                                <dt>Caption</dt> : null}
+                                <dt>Caption</dt>
                                 <dd>{context.caption}</dd>
                             </div>
                         : null}
@@ -673,18 +680,6 @@ var Document = module.exports.Document = React.createClass({
                                 <dd>{context.submitted_by.title}</dd>
                             </div>
                         : null}
-
-                        {context.lab && context.lab.title ?
-                            <div data-test="lab">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-
-                        <div data-test="submitted">
-                            <dt>Submitted by</dt>
-                            <dd>{context.submitted_by.title}</dd>
-                        </div>
 
                         {context.award && context.award.name ?
                             <div data-test="award">
