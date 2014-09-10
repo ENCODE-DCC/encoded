@@ -273,6 +273,13 @@ def test_page_collection_default(workbook, anontestapp):
     assert res.json['default_page']['@id'] == '/pages/images/'
 
 
+def test_antibody_redirect(testapp, antibody_approval):
+    res = testapp.get('/antibodies/%s/?frame=edit' % antibody_approval['uuid'], status=200)
+    assert 'antibody' in res.json
+    res = testapp.get('/antibodies/%s/' % antibody_approval['uuid']).follow(status=200)
+    assert res.json['@type'] == ['antibody_lot', 'item']
+
+
 def test_jsonld_context(testapp):
     res = testapp.get('/context.jsonld')
     assert res.json

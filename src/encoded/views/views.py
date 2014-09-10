@@ -929,6 +929,8 @@ class AntibodyApproval(Collection):
 
     class Item(Collection.Item):
         template = {
+            # trigger redirect to antibody_lot
+            '@id': {'$value': '{antibody}', '$templated': True},
             'title': {'$value': '{accession} in {scientific_name} {label}', '$templated': True},
         }
         embedded = [
@@ -943,6 +945,12 @@ class AntibodyApproval(Collection):
         keys = [
             {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
         ]
+
+        @property
+        def __parent__(self):
+            # Use /antibodies/{uuid} as url
+            root = find_root(self.collection)
+            return root.by_item_type['antibody_lot']
 
         def template_namespace(self, properties, request=None):
             ns = Collection.Item.template_namespace(self, properties, request)
