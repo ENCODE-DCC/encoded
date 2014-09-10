@@ -71,9 +71,9 @@ def characterization_3_4(value, system):
 def antibody_characterization_4_5(value, system):
     # http://redmine.encodedcc.org/issues/380
     primary = [
-    "immunoblot",
-    "immunoprecipitation",
-    "immunofluorescence"
+        "immunoblot",
+        "immunoprecipitation",
+        "immunofluorescence"
     ]
     secondary = [
         "knockdown or knockout",
@@ -93,15 +93,9 @@ def antibody_characterization_4_5(value, system):
             value['secondary_characterization_method'] = value['characterization_method']
         del value['characterization_method']
 
-    if 'documents' in value and value['documents'] == []:
-        del value['documents']
-
-
-@upgrade_step('biosample_characterization', '4', '5')
-@upgrade_step('rnai_characterization', '4', '5')
-@upgrade_step('construct_characterization', '4', '5')
-def characterization_4_5(value, system):
-     # http://redmine.encodedcc.org/issues/380
-
-     if 'documents' in value and value['documents'] == []:
-        del value['documents']
+    if 'status' in value:
+        if value['status'] == 'not reviewed':
+            value['reviewed_by'] = '/users/ff7b77e7-bb55-4307-b665-814c9f1e65fb/'
+        elif value['status'] in ['compliant', 'not compliant']:
+            value['reviewed_by'] = '/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/'
+            value['documents'] = ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']
