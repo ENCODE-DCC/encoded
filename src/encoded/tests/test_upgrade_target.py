@@ -23,7 +23,6 @@ def target_2(target):
     item = target.copy()
     item.update({
         'schema_version': '2',
-        'uuid': '96f97790-3853-11e4-916c-0800200c9a66'
     })
     return item
 
@@ -43,7 +42,7 @@ def test_target_investigated_as_upgrade(app, target_2):
 
 def test_target_investigated_as_upgrade_tag(app, target_2):
     migrator = app.registry['migrator']
-    target_2['uuid'] = '59c3efe9-00c6-4b1b-858b-5a208478972c'
+    target_2['label'] = 'eGFP'
     value = migrator.upgrade('target', target_2, target_version='3')
     assert value['schema_version'] == '3'
     assert value['investigated_as'] == ['tag']
