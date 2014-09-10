@@ -5,7 +5,6 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms", "sex", "age", "age_units", "health_status", "life_stage", "synchronization"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -83,6 +82,7 @@
             }
         },
         "dbxrefs": {
+            "@type": "@id",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",
@@ -125,6 +125,7 @@
             "type": "integer"
         },
         "depleted_in_term_name": {
+            "@id": null,
             "type": "array",
             "items": {
                 "title": "Depleted in term",
@@ -143,6 +144,7 @@
             }
         },
         "depleted_in_term_id": {
+            "@type": "@id",
             "type": "array",
             "items": {
                 "title": "Depleted in ID",
@@ -204,6 +206,7 @@
             "type": "string"
         },
         "subcellular_fraction_term_name": {
+            "@id": null,
             "title": "Subcellular fraction name",
             "description": "The GO (Gene Ontology) term name for cellular component that constitutes the biosample.",
             "type": "string",
@@ -220,6 +223,7 @@
             ]
         },
         "subcellular_fraction_term_id": {
+            "@type": "@id",
             "title": "Subcellular fraction ID",
             "description":  "The GO (Gene Ontology) identifier for cellular component that constitutes the biosample.",
             "comment": "Based on the choice in subcellular_fraction_term_name use the following guide: nucleus - GO:0005634, cytosol - GO:0005829, chromatin - GO:0000785, membrane - GO:0016020, mitochondria - GO:0005739, nuclear matrix - GO:0016363, nucleolus - GO:0005730, nucleoplasm - GO:0005654, polysome - GO:0005844.",
@@ -487,10 +491,6 @@
             "title": "Source",
             "type": "string"
         },
-        "developmental_slims": {
-            "title": "Developmental slim",
-            "type": "array"
-        },
         "synchronization": {
             "title": "Synchronization stage",
             "type": "string" 
@@ -560,6 +560,48 @@
         "constructs.length": {
             "title": "Constructs",
             "type": "array"
+        }
+    },
+    "calculated_props": {
+        "organ_slims": {
+            "title": "Organ slims",
+            "type": "string"
+        },
+        "system_slims": {
+            "title": "System slims",
+            "type": "string"
+        },
+        "developmental_slims": {
+            "title": "Developmental slims",
+            "type": "string"
+        },
+        "synonyms": {
+            "title": "Ontology synonyms",
+            "type": "string"
+        },
+        "sex": {
+            "title": "Sex",
+            "type": "string"
+        },
+        "age": {
+            "title": "Age",
+            "type": "string"
+        },
+        "age_units": {
+            "title": "Age units",
+            "type": "string"
+        },
+        "health_status": {
+            "title": "Health status",
+            "type": "string"
+        },
+        "life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "synchronization": {
+            "title": "Synchronization",
+            "type": "string"
         }
     },
     "boost_values": {

@@ -6,7 +6,7 @@ def file_base(experiment):
     return {
         'accession': 'ENCFF000TST',
         'dataset': experiment['uuid'],
-        'file_format': 'fastq',
+        'file_format': 'fasta',
         'md5sum': 'd41d8cd98f00b204e9800998ecf8427e',
         'output_type': 'raw data',
     }
@@ -34,6 +34,17 @@ def file_2(file_base):
     return item
 
 
+@pytest.fixture
+def file_3(file_base):
+    item = file_base.copy()
+    item.update({
+        'schema_version': '3',
+        'status': 'current',
+        'download_path': 'bob.bigBed'
+    })
+    return item
+
+
 def test_file_upgrade(registry, file_1):
     migrator = registry['migrator']
     value = migrator.upgrade('file', file_1, target_version='2')
@@ -48,3 +59,14 @@ def test_file_upgrade2(root, registry, file_2, file, threadlocals, dummy_request
     value = migrator.upgrade('file', file_2, target_version='3', context=context)
     assert value['schema_version'] == '3'
     assert value['status'] == 'in progress'
+
+
+def test_file_upgrade3(root, registry, file_3, file, threadlocals, dummy_request):
+    migrator = registry['migrator']
+    context = root.get_by_uuid(file['uuid'])
+    dummy_request.context = context
+    value = migrator.upgrade('file', file_3, target_version='4', context=context)
+    assert value['schema_version'] == '4'
+    assert value['lab'] != ''
+    assert value['award'] != ''
+    assert 'download_path' not in value

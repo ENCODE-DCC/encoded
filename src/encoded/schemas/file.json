@@ -4,16 +4,22 @@
     "id": "/profiles/file.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["dataset", "file_format", "md5sum", "output_type"],
-    "identifyingProperties": ["uuid","accession", "aliases"],
-    "calculatedProps": ["href"],
+    "required": ["dataset", "file_format", "md5sum", "output_type", "award", "lab"],
+    "identifyingProperties": ["uuid", "accession", "aliases"],
+    "calculated_props": {
+        "href": {
+            "title": "Download URL",
+            "type": "string"
+        }
+    },
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" },
-        { "$ref": "mixins.json#/aliases" },        
+        { "$ref": "mixins.json#/aliases" },
+        { "$ref": "mixins.json#/attribution" },        
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -34,42 +40,104 @@
             "type": "string"
         }
     },
+    "dependencies": {
+        "paired_end": {
+            "oneOf": [
+                {
+                   "required": ["paired_with"],
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["2"]
+                        }
+                    }
+                },
+                {
+                    "properties": {
+                        "paired_end": {
+                            "enum": ["1"]
+                        }
+                    }
+                }
+            ]
+        },
+        "paired_with": {
+            "required": ["paired_end"],
+            "properties": {
+                "file_format": {
+                    "enum": ["fastq", "csfasta", "csqual"]
+                },
+                "paired_end": {
+                    "enum": ["2"]
+                }
+            }
+        },
+        "file_format":{
+            "oneOf": [
+                {
+                    "required": ["replicate"],
+                    "properties": {
+                        "file_format": {
+                            "enum": ["fastq"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "file_format": {
+                                "enum": ["fastq"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "3"
+            "default": "4"
         },
         "accession": {
             "accessionType": "FF"
         },
         "file_format": {
             "title": "File format",
-            "comment": "Not all of the types are valid for new submissions, but are present for historical purposes.",
             "type": "string",
-            "enum": [
-                "bam",
-                "bed",
-                "bedLogR",
-                "bed_bedLogR",
-                "bedMethyl",
-                "bed_bedMethyl",
-                "bigBed",
-                "bigWig",
-                "broadPeak",
-                "bed_broadPeak",
-                "fasta",
-                "fastq",
-                "gtf",
-                "idat",
-                "narrowPeak",
-                "bed_narrowPeak",
-                "rcc",
-                "tar",
-                "tsv",
-                "2bit",
-                "csfasta",
-                "csqual",
-                "bedRnaElements",
-                "CEL"
+            "oneOf": [
+                {
+                    "enum": [
+                        "bam",
+                        "bed",
+                        "bedLogR",
+                        "bed_bedLogR",
+                        "bedMethyl",
+                        "bed_bedMethyl",
+                        "bigBed",
+                        "bigWig",
+                        "broadPeak",
+                        "bed_broadPeak",
+                        "fasta",
+                        "fastq",
+                        "gtf",
+                        "idat",
+                        "narrowPeak",
+                        "bed_narrowPeak",
+                        "rcc",
+                        "CEL"
+                    ]
+                },
+                {
+                    "comment": "Historical file formats, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "tar",
+                        "tsv",
+                        "2bit",
+                        "csfasta",
+                        "csqual",
+                        "bedRnaElements"
+                    ]
+                }
             ]
         },
         "md5sum": {
@@ -123,80 +191,90 @@
             "title": "Output type",
             "description": "A description of the file's purpose or contents.",
             "type": "string",
-            "enum": [
-                "Alignability",
-                "alignments",
-                "Base_Overlap_Signal",
-                "clusters",
-                "CNV",
-                "contigs",
-                "enhancers",
-                "enhancers_forebrain",
-                "enhancers_heart",
-                "enhancers_wholebrain",
-                "enrichment",
-                "Excludable",
-                "ExonsDeNovo",
-                "ExonsEnsV65IAcuff",
-                "ExonsGencV10",
-                "ExonsGencV3c",
-                "ExonsGencV7",
-                "FiltTransfrags",
-                "GeneDeNovo",
-                "GeneEnsV65IAcuff",
-                "GeneGencV10",
-                "GeneGencV3c",
-                "GeneGencV7",
-                "idat green file",
-                "idat red file",
-                "HMM",
-                "hotspots",
-                "interactions",
-                "Junctions",
-                "library_fraction",
-                "Matrix",
-                "minus signal",
-                "mPepMapGcFt",
-                "mPepMapGcUnFt",
-                "multi-read minus signal",
-                "multi-read plus signal",
-                "multi-read signal",
-                "PctSignal",
-                "peaks",
-                "pepMapGcFt",
-                "pepMapGcUnFt",
-                "plus signal",
-                "Primer",
-                "PrimerPeaks",
-                "raw data",
-                "raw minus signal",
-                "raw plus signal",
-                "raw signal",
-                "RbpAssocRna",
-                "reads",
-                "rejected reads",
-                "signal",
-                "sites",
-                "spike-ins",
-                "splice junctions",
-                "SumSignal",
-                "TranscriptDeNovo",
-                "TranscriptEnsV65IAcuff",
-                "TranscriptGencV10",
-                "TranscriptGencV3c",
-                "TranscriptGencV7",
-                "Transfrags",
-                "TssGencV3c",
-                "TssGencV7",
-                "TssHmm",
-                "UniformlyProcessedPeakCalls",
-                "unique minus signal",
-                "Uniqueness",
-                "unique plus signal",
-                "unique signal",
-                "Validation",
-                "Valleys",
-                "WaveSignal"
+            "oneOf": [
+                {
+                    "enum": [
+                        "CNV",
+                        "alignments",
+                        "clusters",
+                        "contigs",
+                        "enhancers",
+                        "enrichment",
+                        "hotspots",
+                        "idat green file",
+                        "idat red file",
+                        "interactions",
+                        "multi-read minus signal",
+                        "multi-read plus signal",
+                        "multi-read signal",
+                        "peaks",
+                        "plus signal",
+                        "raw data",
+                        "raw minus signal",
+                        "raw plus signal",
+                        "raw signal",
+                        "reads",
+                        "rejected reads",
+                        "signal",
+                        "sites",
+                        "spike-ins",
+                        "splice junctions",
+                        "unique minus signal",
+                        "unique plus signal",
+                        "unique signal"
+                    ]
+                },
+                {
+                    "comment": "Historical output types, not valid for new submissions.",
+                    "permission": "import_items",
+                    "enum": [
+                        "Alignability",
+                        "Base_Overlap_Signal",
+                        "enhancers_forebrain",
+                        "enhancers_heart",
+                        "enhancers_wholebrain",
+                        "Excludable",
+                        "ExonsDeNovo",
+                        "ExonsEnsV65IAcuff",
+                        "ExonsGencV10",
+                        "ExonsGencV3c",
+                        "ExonsGencV7",
+                        "FiltTransfrags",
+                        "GeneDeNovo",
+                        "GeneEnsV65IAcuff",
+                        "GeneGencV10",
+                        "GeneGencV3c",
+                        "GeneGencV7",
+                        "HMM",
+                        "Junctions",
+                        "library_fraction",
+                        "Matrix",
+                        "minus signal",
+                        "mPepMapGcFt",
+                        "mPepMapGcUnFt",
+                        "PctSignal",
+                        "pepMapGcFt",
+                        "pepMapGcUnFt",
+                        "Primer",
+                        "PrimerPeaks",
+                        "RbpAssocRna",
+                        "SumSignal",
+                        "TranscriptDeNovo",
+                        "TranscriptEnsV65IAcuff",
+                        "TranscriptGencV10",
+                        "TranscriptGencV3c",
+                        "TranscriptGencV7",
+                        "Transfrags",
+                        "TssGencV3c",
+                        "TssGencV7",
+                        "TssHmm",
+                        "UniformlyProcessedPeakCalls",
+                        "Uniqueness",
+                        "Validation",
+                        "Valleys",
+                        "WaveSignal"
+                    ]
+                }
             ]
         },
         "paired_end": {
@@ -269,11 +347,6 @@
         "submitted_file_name": {
             "title": "Original file name",
             "description": "The local file name used at time of submission.",
-            "type": "string"
-        },
-        "download_path": {
-            "title": "Download URL",
-            "comment": "The file resource locater.",
             "type": "string"
         },
         "status": {

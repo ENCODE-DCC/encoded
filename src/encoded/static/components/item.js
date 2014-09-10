@@ -5,6 +5,30 @@ var FetchedData = require('./fetched').FetchedData;
 var Form = require('./form').Form;
 var globals = require('./globals');
 
+    var Fallback = module.exports.Fallback = React.createClass({
+        render: function() {
+            var url = require('url');
+            var context = this.props.context;
+            var title = typeof context.title == "string" ? context.title : url.parse(this.props.href).path;
+            return (
+                <div className="view-item">
+                    <header className="row">
+                        <div className="col-sm-12">
+                            <h2>{title}</h2>
+                        </div>
+                    </header>
+                    {typeof context.description == "string" ? <p className="description">{context.description}</p> : null}
+                    <section className="view-detail panel">
+                        <div className="container">
+                            <pre>{JSON.stringify(context, null, 4)}</pre>
+                        </div>
+                    </section>
+                </div>
+            );
+        }
+    });
+
+
     var Item = module.exports.Item = React.createClass({
         render: function() {
             var context = this.props.context;
@@ -36,7 +60,7 @@ var globals = require('./globals');
 
     // Also use this view as a fallback for anything we haven't registered
     globals.content_views.fallback = function () {
-        return Item;
+        return Fallback;
     };
 
 
@@ -86,12 +110,12 @@ var globals = require('./globals');
             if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
                 title = 'Add ' + title;
                 action = this.props.context['@id'];
-                form = <Form schema={this.props.schema} action={action} data={this.props.defaultValue} method="POST" />;
+                form = <Form schema={this.props.schema} action={action} defaultValue={this.props.defaultValue} method="POST" />;
             } else {  // edit form
                 title = 'Edit ' + title;
                 var url = this.props.context['@id'] + '?frame=edit';
                 action = this.props.context['@id'];
-                form = <FetchedData Component={Form} url={url} schema={this.props.schema} action={action} method="PUT" />;
+                form = <FetchedData fetched_prop_name="defaultValue" Component={Form} url={url} schema={this.props.schema} action={action} method="PUT" />;
             }
             return (
                 <div className={itemClass}>

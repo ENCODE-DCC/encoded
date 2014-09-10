@@ -9,7 +9,6 @@ moleculeDict = {"DNA": "SO:0000352",
                 "polyadenylated mRNA": "SO:0000871",
                 "miRNA": "SO:0000276",
                 "rRNA": "SO:0000252",
-                "polyadenylated mRNA": "SO:0000871",
                 "capped mRNA": "SO:0000862"
                 }
 
@@ -74,7 +73,7 @@ def audit_library_status(value, system):
 def audit_library_RNA_size_range(value, system):
     if value['status'] == 'deleted':
         return
-    if (value['nucleic_acid_term_id'] == 'SO:0000356') and ('size_range' not in value):
+    if (value['nucleic_acid_term_id'] in ['SO:0000356', 'SO:0000871']) and ('size_range' not in value):
         detail = 'RNA libraries should have size_range specified'
         raise AuditFailure('missing size_range', detail, level='ERROR')
 
@@ -85,8 +84,13 @@ def audit_library_depleted_in(value, system):
         return
     if not value['depleted_in_term_name'] or not value['depleted_in_term_id']:
         return
-    for i in range(len(value['depleted_in_term_name'])):
-        if value['depleted_in_term_id'][i] == value['nucleic_acid_term_id']:
+
+    if len(value['depleted_in_term_name']) != len(value['depleted_in_term_id']):
+        detail = 'depleted_in_term_name and depleted_in_term_id totals do not match'
+        yield AuditFailure('depleted_in length mismatch', detail, level='ERROR')
+
+    for i, dep_term in enumerate(value['depleted_in_term_id']):
+        if dep_term == value['nucleic_acid_term_id']:
             detail = '{} - {}'.format(value['depleted_in_term_name'][i], value['nucleic_acid_term_name'][i])
             yield AuditFailure('invalid depleted_in', detail, level='ERROR')
 

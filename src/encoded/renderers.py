@@ -40,6 +40,9 @@ log = logging.getLogger(__name__)
 def includeme(config):
     config.add_renderer(None, json_renderer)
     config.add_renderer('null_renderer', NullRenderer)
+    config.add_tween('.renderers.fix_request_method_tween_factory', under=pyramid.tweens.INGRESS)
+    config.add_tween(
+        '.stats.stats_tween_factory', under='.renderers.fix_request_method_tween_factory')
     config.add_tween(
         '.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
     config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
@@ -141,6 +144,24 @@ def maybe_include_embedded(request, result):
     embedded = manager.stack[0].get('encoded_embedded', None)
     if embedded:
         result['_embedded'] = {'resources': embedded}
+
+
+def fix_request_method_tween_factory(handler, registry):
+    """ Fix Request method changed by mod_wsgi.
+
+    See: https://github.com/GrahamDumpleton/mod_wsgi/issues/2
+
+    Apache config:
+        SetEnvIf Request_Method HEAD X_REQUEST_METHOD=HEAD
+    """
+
+    def fix_request_method_tween(request):
+        environ = request.environ
+        if 'X_REQUEST_METHOD' in environ:
+            environ['REQUEST_METHOD'] = environ['X_REQUEST_METHOD']
+        return handler(request)
+
+    return fix_request_method_tween
 
 
 def security_tween_factory(handler, registry):
@@ -263,8 +284,16 @@ def should_transform(request, response):
         if request.authorization is not None:
             format = 'json'
         else:
-            mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
+            mime_type = request.accept.best_match(
+                [
+                    'text/html',
+                    'application/ld+json',
+                    'application/json',
+                ],
+                'text/html')
             format = mime_type.split('/', 1)[1]
+            if format == 'ld+json':
+                format = 'json'
     else:
         format = format.lower()
         if format not in ('html', 'json'):

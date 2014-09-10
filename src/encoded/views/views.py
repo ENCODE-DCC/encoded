@@ -168,7 +168,7 @@ class Collection(BaseCollection):
             'release ready': ALLOW_AUTHENTICATED_VIEW,
             'revoked': ALLOW_CURRENT,
 
-            #publication
+            # publication
             'published': ALLOW_CURRENT,
         }
         actions = [EDIT_ACTION]
@@ -744,6 +744,16 @@ class Replicates(Collection):
         embedded = set(['library', 'platform'])
 
 
+def file_is_revoked(file, root):
+    item = find_resource(root, file)
+    return item.upgrade_properties()['status'] == 'revoked'
+
+
+def file_not_revoked(file, root):
+    item = find_resource(root, file)
+    return item.upgrade_properties()['status'] != 'revoked'
+
+
 @location('datasets')
 class Dataset(Collection):
     item_type = 'dataset'
@@ -756,14 +766,31 @@ class Dataset(Collection):
     class Item(Collection.Item):
         template = {
             'files': [
-                {'$value': '{file}', '$repeat': 'file original_files', '$templated': True},
-                {'$value': '{file}', '$repeat': 'file related_files', '$templated': True},
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', file_not_revoked),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', file_not_revoked),
+                    '$templated': True,
+                },
+            ],
+            'revoked_files': [
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'original_files', file_is_revoked),
+                    '$templated': True,
+                },
+                {
+                    '$value': '{file}',
+                    '$repeat': ('file', 'related_files', file_is_revoked),
+                    '$templated': True,
+                },
             ],
             'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
             'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
-        }
-        template_type = {
-            'files': 'file',
         }
         embedded = [
             'files',
@@ -772,6 +799,12 @@ class Dataset(Collection):
             'files.replicate.experiment.lab',
             'files.replicate.experiment.target',
             'files.submitted_by',
+            'revoked_files',
+            'revoked_files.replicate',
+            'revoked_files.replicate.experiment',
+            'revoked_files.replicate.experiment.lab',
+            'revoked_files.replicate.experiment.target',
+            'revoked_files.submitted_by',
             'submitted_by',
             'lab',
             'award',
@@ -792,7 +825,7 @@ class Dataset(Collection):
             for link in ns['original_files'] + ns['related_files']:
                 f = find_resource(request.root, link)
                 if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
-                        f.properties['status'] in ['current', 'released', 'revoked']:
+                        f.properties['status'] in ['released']:
                     if 'assembly' in f.properties:
                         ns['assembly'] = f.properties['assembly']
                         break
@@ -1063,17 +1096,25 @@ class Publication(Collection):
         'description': 'Publication pages',
     }
     unique_key = 'publication:title'
-   
 
     class Item(Collection.Item):
         template = {
-            'publication_year': {'$value': '{publication_year}', '$templated': True, '$condition': 'publication_year'}
+            'publication_year': {
+                '$value': '{publication_year}',
+                '$templated': True,
+                '$condition': 'publication_year',
+            },
         }
-        
+
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
-            {'name': '{item_type}:reference', 'value': '{reference}',  '$repeat': 'reference references', '$templated': True, '$condition': 'reference'},
-            
+            {
+                'name': '{item_type}:reference',
+                'value': '{reference}',
+                '$repeat': 'reference references',
+                '$templated': True,
+                '$condition': 'reference',
+            },
         ]
 
         def template_namespace(self, properties, request=None):
@@ -1097,7 +1138,6 @@ class Software(Collection):
     item_keys = ALIAS_KEYS + [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
     ]
-
 
 
 @location('images')
