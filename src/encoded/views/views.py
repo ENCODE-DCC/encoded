@@ -1232,19 +1232,6 @@ class Page(Collection):
     template = copy.deepcopy(Collection.template)
     template['actions'] = [ADD_ACTION]
 
-    # Override default get to avoid some unnecessary lookups
-    # and skip the check that parent == collection
-    def get(self, name, default=None):
-        root = find_root(self)
-        resource = root.get_by_uuid(name, None)
-        if resource is not None:
-            return resource
-        if self.unique_key is not None:
-            resource = root.get_by_unique_key(self.unique_key, name)
-            if resource is not None:
-                return resource
-        return default
-
     class Item(Collection.Item):
         name_key = 'name'
         keys = [
