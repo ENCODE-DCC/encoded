@@ -39,6 +39,7 @@ TARGETS = [
         'label': 'H3K4me3',
         'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
         'gene_name': 'H3F3A',
+        'investigated_as': ['histone modification']
         # 'aliases': [
         #     {'alias': 'H3.3', 'source': 'HGNC'},
         #     {'alias': 'H3F3', 'source': 'HGNC'},
