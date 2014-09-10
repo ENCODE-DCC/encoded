@@ -474,6 +474,15 @@ var WormDonor = module.exports.WormDonor = React.createClass({
                         {biosample.model_organism_donor_constructs.map(Panel)}
                     </section>
                 : null}
+
+                {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
+                    <section>
+                        <hr />
+                        <h4>Characterizations</h4>
+                        {biosample.donor.characterizations.map(Panel)}
+                    </section>
+                : null}
+
             </div>
         );
     }
