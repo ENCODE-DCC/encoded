@@ -210,6 +210,7 @@ def test_antibody_characterization_upgrade_primary(app, antibody_characterizatio
     value = migrator.upgrade('antibody_characterization', antibody_characterization_3, target_version='5')
     assert value['schema_version'] == '5'
     assert value['primary_characterization_method'] == 'immunoblot'
+    assert 'characterization_reviews' in value
     assert 'characterization_method' not in value
 
 
