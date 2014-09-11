@@ -289,6 +289,7 @@ class AntibodyLot(Collection):
                 compliant_secondary = False
                 not_compliant_secondary = False
                 pending_secondary = False
+                not_reviewed_secondary = False
                 has_lane_review = False
                 not_reviewed = False
                 histone_mod_target = False
@@ -314,7 +315,7 @@ class AntibodyLot(Collection):
                     if 'histone modification' in target.upgrade_properties(finalize=False)['investigated_as']:
                         histone_mod_target = True
 
-                    if request.resource_path(organism) not in organisms and not histone_mod_target:
+                    if request.resource_path(organism) not in organisms:
                         organisms.append(request.resource_path(organism))
 
                     if characterization.properties['status'] == 'deleted':
@@ -368,6 +369,7 @@ class AntibodyLot(Collection):
                         elif secondary.properties['status'] == 'not compliant':
                             not_compliant_secondary = True
                         else:
+                            not_reviewed_secondary = True
                             continue
 
                     '''Now check the primaries and update their status accordingly'''
@@ -455,7 +457,7 @@ class AntibodyLot(Collection):
                     else:
                         '''The only uncovered case left in this block is if there is only 1 or more active
                         secondary and 0 or more inactive primaries.'''
-                        if len(secondary_chars) >= 1 and not_reviewed:
+                        if (len(primary_chars) >= 1 and not_reviewed_secondary) or (len(secondary_chars) >= 1 and not_reviewed):
                             antibody_lot_reviews.append(base_review)
                         else:
                             pass
