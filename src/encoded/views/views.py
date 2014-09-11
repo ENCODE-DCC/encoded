@@ -289,11 +289,13 @@ class AntibodyLot(Collection):
                 compliant_secondary = False
                 not_compliant_secondary = False
                 pending_secondary = False
+                not_reviewed_secondary = False
                 has_lane_review = False
                 not_reviewed = False
                 histone_mod_target = False
                 lab_not_reviewed_chars = 0
                 not_reviewed_chars = 0
+                in_progress_chars = 0
                 total_characterizations = 0
                 num_compliant_celltypes = 0
                 organisms = []
@@ -310,10 +312,10 @@ class AntibodyLot(Collection):
                     organism = find_resource(request.root, target.properties['organism'])
                     if request.resource_path(target) not in targets:
                         targets.append(request.resource_path(target))
-                    if 'histone modification' in target.properties['investigated_as']:
+                    if 'histone modification' in target.upgrade_properties(finalize=False)['investigated_as']:
                         histone_mod_target = True
 
-                    if request.resource_path(organism) not in organisms and not histone_mod_target:
+                    if request.resource_path(organism) not in organisms:
                         organisms.append(request.resource_path(organism))
 
                     if characterization.properties['status'] == 'deleted':
@@ -323,6 +325,9 @@ class AntibodyLot(Collection):
                         total_characterizations += 1
                     elif characterization.properties['status'] == 'not reviewed':
                         not_reviewed_chars += 1
+                        total_characterizations += 1
+                    elif characterization.properties['status'] == 'in progress':
+                        in_progress_chars += 1
                         total_characterizations += 1
                     else:
                         total_characterizations += 1
@@ -348,6 +353,8 @@ class AntibodyLot(Collection):
                 elif not_reviewed_chars == total_characterizations and total_characterizations > 0:
                     base_review['status'] = 'not eligible for new data'
                     antibody_lot_reviews.append(base_review)
+                elif in_progress_chars == total_characterizations and total_characterizations > 0:
+                    antibody_lot_reviews.append(base_review)
                 elif (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and total_characterizations > 0:
                     antibody_lot_reviews.append(base_review)
                 else:
@@ -362,6 +369,7 @@ class AntibodyLot(Collection):
                         elif secondary.properties['status'] == 'not compliant':
                             not_compliant_secondary = True
                         else:
+                            not_reviewed_secondary = True
                             continue
 
                     '''Now check the primaries and update their status accordingly'''
@@ -447,13 +455,9 @@ class AntibodyLot(Collection):
                                     antibody_lot_reviews.append(char_reviews[key])
 
                     else:
-                        '''The only uncovered case left in this block is if there is only one in progress
-                        primary or secondary.'''
-                        if len(primary_chars) == 1 and len(secondary_chars) == 0:
-                            antibody_lot_reviews.append(base_review)
-                        elif len(primary_chars) == 0 and len(secondary_chars) == 1:
-                            antibody_lot_reviews.append(base_review)
-                        elif len(secondary_chars) == 1 and not_reviewed:
+                        '''The only uncovered case left in this block is if there is only 1 or more active
+                        secondary and 0 or more inactive primaries.'''
+                        if (len(primary_chars) >= 1 and not_reviewed_secondary) or (len(secondary_chars) >= 1 and not_reviewed):
                             antibody_lot_reviews.append(base_review)
                         else:
                             pass
@@ -465,7 +469,7 @@ class AntibodyLot(Collection):
                 organisms = []
                 for t in targets:
                     target = find_resource(request.root, t)
-                    if 'control' in target.properties['investigated_as']:
+                    if 'control' in target.upgrade_properties(finalize=False)['investigated_as']:
                         is_control = True
 
                     organism = find_resource(request.root, target.properties['organism'])
