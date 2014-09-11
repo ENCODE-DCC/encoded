@@ -412,6 +412,7 @@
         "narrowPeak": ".narrowPeak.bigBed",
         "rcc": ".rcc",
         "tar": ".tar.gz",
-        "tsv": ".tsv"
+        "tsv": ".tsv",
+        "csv": ".csv"
     }
 }
