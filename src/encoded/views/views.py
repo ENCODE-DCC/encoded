@@ -424,10 +424,18 @@ class AntibodyLot(Collection):
                                     has_lane_review = True
                                 else:
                                     has_lane_review = True
-                                    '''Check to see if existing status should be overridden'''
-                                    if lane_review['lane_status'] == 'compliant':
-                                        '''compliant always overrides any other status,
-                                        no other status overrides an existing one'''
+                                    status_ranking = {
+                                        'compliant': 3,
+                                        'pending dcc review': 2,
+                                        'in progress': 1,
+                                        'not compliant': 0,
+                                        'not reviewed': 0,
+                                        'not submitted for review by lab': 0,
+                                        'deleted': 0
+                                    }
+
+                                    if status_ranking[lane_review['lane_status']] > status_ranking[char_reviews[key]['status']]:
+                                        '''Check to see if existing status should be overridden'''
                                         char_reviews[key] = new_review
 
                     if has_lane_review:
@@ -442,7 +450,7 @@ class AntibodyLot(Collection):
                                     num_compliant_celltypes += 1
 
                         if histone_mod_target:
-                            if num_compliant_celltypes >= 3:
+                            if num_compliant_celltypes >= 3 and compliant_secondary:
                                 antibody_lot_reviews = [{
                                     'biosample_term_name': 'all cell types and tissues',
                                     'biosample_term_id': 'NTR:00000000',
@@ -461,7 +469,9 @@ class AntibodyLot(Collection):
                             antibody_lot_reviews.append(base_review)
                         else:
                             pass
-
+                if len(primary_chars) == 0 and len(secondary_chars) > 0:
+                    '''There's only seocndary characterization(s)'''
+                    antibody_lot_reviews.append(base_review)
             else:
                 '''If there are no characterizations, then default to awaiting lab characterization.'''
                 targets = ns['targets']
