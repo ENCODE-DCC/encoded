@@ -127,7 +127,6 @@
             "description": "Characterization details reviewed by each cell type for immunoblot and immunoprecipitation primary characterizations only.",
             "comment": "Do not submit status, it is assigned by DCC when reviewing the characterization.",
             "type": "array",
-            "permission": "import_items",
             "items": {
                 "title": "Primary characterization lane review", 
                 "type": "object",
