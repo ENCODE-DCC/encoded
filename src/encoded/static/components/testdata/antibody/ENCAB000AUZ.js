@@ -1,0 +1,22 @@
+module.exports = {
+    "@id":"/antibodies/ENCAB000AUZ/",
+    "@type":["antibody_lot", "item"],
+    "accession": "ENCAB000AUZ",
+    "clonality": "polyclonal",
+    "host_organism": {},
+    "lot_id": "QC9473-091124",
+    "targets": [],
+    "submitted_by": "",
+    "antigen_sequence": "MSKSESPKEPEQLRKLFIGGLSFETTDESLRSHFEQWGTLTDCVVMRDPN",
+    "uuid": "43e36b83-758c-4bd7-8829-7bdb6e38b4ea",
+    "schema_version": "4",
+    "source": {},
+    "status": "in progress",
+    "award": "/awards/U54HG007005/",
+    "lab": "/labs/xiang-dong-fu/",
+    "product_id": "ARP40383_T100",
+    "characterizations":[],
+    "isotype": "IgG",
+    "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-n-terminal-region-arp40383-t100.html",
+    "lot_reviews": []
+};

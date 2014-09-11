@@ -623,35 +623,45 @@ var Document = module.exports.Document = React.createClass({
                         <h3 className="sentence-case">{context.document_type}</h3>
                         <p>{context.description}</p>
                         <dl className="key-value">
-                            {context.caption ? <dt>Caption</dt> : null}
-                            {context.caption ? <dd>{context.caption}</dd> : null}
+                            {context.caption ?
+                                <div data-test="caption">
+                                    <dt>Caption</dt>
+                                    <dd>{context.caption}</dd>
+                                </div>
+                            : null}
 
                             {context.submitted_by && context.submitted_by.title ?
-                                <div>
+                                <div data-test="submitted-by">
                                     <dt>Submitted by</dt>
                                     <dd>{context.submitted_by.title}</dd>
                                 </div>
                             : null}
 
                             {context.lab && context.lab.title ?
-                                <div>
+                                <div data-test="title">
                                     <dt>Lab</dt>
                                     <dd>{context.lab.title}</dd>
                                 </div>
                             : null}
 
                             {context.award && context.award.name ?
-                                <div>
+                                <div data-test="award-name">
                                     <dt>Grant</dt>
                                     <dd>{context.award.name}</dd>
                                 </div>
                             : null}
 
-                            <dt><i className="icon icon-download"></i> Download</dt>
-                            <dd>{download}</dd>
+                            <div data-test="download">
+                                <dt><i className="icon icon-download"></i> Download</dt>
+                                <dd>{download}</dd>
+                            </div>
 
-                            {context.references && context.references.length ? <dt>References</dt> : null}
-                            {context.references && context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
+                            {context.references && context.references.length ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
+                                </div>
+                            : null}
                         </dl>
                     </div>
                 </div>
