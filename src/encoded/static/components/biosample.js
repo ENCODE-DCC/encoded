@@ -428,7 +428,7 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                 : null}
 
                 {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
-                    <section>
+                    <section className="multi-columns-row">
                         <hr />
                         <h4>Characterizations</h4>
                         <div className="row">
@@ -494,7 +494,7 @@ var WormDonor = module.exports.WormDonor = React.createClass({
                 : null}
 
                 {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
-                    <section>
+                    <section className="multi-columns-row">
                         <hr />
                         <h4>Characterizations</h4>
                         {biosample.donor.characterizations.map(Panel)}
@@ -663,7 +663,7 @@ var Document = module.exports.Document = React.createClass({
 
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
-            <section className="col-xs-12 col-sm-6 col-md-4 col-lg-4">
+            <section className="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                 <div className={panelClass}>
                     <div className="document-header">
                         <figure>
