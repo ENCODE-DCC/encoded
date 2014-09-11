@@ -6,7 +6,7 @@ from .views import (
     Collection,
 )
 from pyramid.httpexceptions import (
-    HTTPFound,
+    HTTPTemporaryRedirect,
     HTTPNotFound,
 )
 from pyramid.response import Response
@@ -124,16 +124,18 @@ def download(context, request):
         if filename != '{accession}{file_extension}'.format(**ns):
             raise HTTPNotFound(filename)
 
-    external = context.propsheets.get('external')
-    if external is None:  # EDW
-        location = 'http://encodedcc.sdsc.edu/warehouse/{download_path}'.format(**ns)
-    elif external['service'] == 's3':
+    proxy = asbool(request.params.get('proxy'))
+
+    external = context.propsheets.get('external', {})
+    if external['service'] == 's3':
         conn = boto.connect_s3()
-        location = conn.generate_url(36*60*60, request.method, external['bucket'], external['key'])
+        method = 'GET' if proxy else request.method  # mod_wsgi forces a GET
+        location = conn.generate_url(36*60*60, method, external['bucket'], external['key'])
     else:
         raise ValueError(external['service'])
 
-    if asbool(request.params.get('proxy')):
+    if proxy:
         return InternalResponse(location='/_proxy/' + location)
 
-    raise HTTPFound(location=location)
+    # 307 redirect specifies to keep original method
+    raise HTTPTemporaryRedirect(location=location)

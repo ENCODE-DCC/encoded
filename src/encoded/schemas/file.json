@@ -205,6 +205,7 @@
                         "idat green file",
                         "idat red file",
                         "interactions",
+                        "library_fraction",
                         "multi-read minus signal",
                         "multi-read plus signal",
                         "multi-read signal",
@@ -248,7 +249,6 @@
                         "GeneGencV7",
                         "HMM",
                         "Junctions",
-                        "library_fraction",
                         "Matrix",
                         "minus signal",
                         "mPepMapGcFt",
@@ -412,6 +412,7 @@
         "narrowPeak": ".narrowPeak.bigBed",
         "rcc": ".rcc",
         "tar": ".tar.gz",
-        "tsv": ".tsv"
+        "tsv": ".tsv",
+        "csv": ".csv"
     }
 }

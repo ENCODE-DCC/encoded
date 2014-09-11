@@ -110,7 +110,7 @@ var Lot = module.exports.Lot = React.createClass({
                             </div>
                         : null}
 
-                        {context.lot_id_alias.length ?
+                        {context.lot_id_alias && context.lot_id_alias.length ?
                             <div data-test="lotidalias">
                                 <dt>Lot ID aliases</dt>
                                 <dd>{context.lot_id_alias.join(', ')}</dd>
@@ -129,7 +129,7 @@ var Lot = module.exports.Lot = React.createClass({
                             </div>
                         : null}
 
-                        {context.purifications.length ?
+                        {context.purifications && context.purifications.length ?
                             <div data-test="purifications">
                                 <dt>Purification</dt>
                                 <dd className="sentence-case">{context.purifications.join(', ')}</dd>

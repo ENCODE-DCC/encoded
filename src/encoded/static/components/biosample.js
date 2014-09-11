@@ -684,9 +684,16 @@ var Document = module.exports.Document = React.createClass({
                         : null}
 
                         {context.submitted_by && context.submitted_by.title ?
-                            <div data-test="submitted">
+                            <div data-test="submitted-by">
                                 <dt>Submitted by</dt>
                                 <dd>{context.submitted_by.title}</dd>
+                            </div>
+                        : null}
+
+                        {context.lab && context.lab.title ?
+                            <div data-test="title">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
                             </div>
                         : null}
 
@@ -699,6 +706,7 @@ var Document = module.exports.Document = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
+                                    <dt>References</dt>
                                 <dt>References</dt>
                                 <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
                             </div>
