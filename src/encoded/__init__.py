@@ -141,7 +141,6 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     config.include(session)
-    config.include('.stats')
     config.include('pyramid_tm')
     configure_engine(settings)
 
@@ -163,6 +162,7 @@ def main(global_config, **settings):
         hostname = subprocess.check_output(hostname_command, shell=True).strip()
         settings.setdefault('persona.audiences', '')
         settings['persona.audiences'] += '\nhttp://%s' % hostname
+        settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
 
     config.include('.persona')
     config.include('pyramid_multiauth')

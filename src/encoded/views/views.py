@@ -929,6 +929,8 @@ class AntibodyApproval(Collection):
 
     class Item(Collection.Item):
         template = {
+            # trigger redirect to antibody_lot
+            '@id': {'$value': '{antibody}', '$templated': True},
             'title': {'$value': '{accession} in {scientific_name} {label}', '$templated': True},
         }
         embedded = [
@@ -944,6 +946,12 @@ class AntibodyApproval(Collection):
         keys = [
             {'name': '{item_type}:lot_target', 'value': '{antibody}/{target}', '$templated': True}
         ]
+
+        @property
+        def __parent__(self):
+            # Use /antibodies/{uuid} as url
+            root = find_root(self.collection)
+            return root.by_item_type['antibody_lot']
 
         def template_namespace(self, properties, request=None):
             ns = Collection.Item.template_namespace(self, properties, request)
@@ -1101,7 +1109,7 @@ class Dataset(Collection):
             for link in ns['original_files'] + ns['related_files']:
                 f = find_resource(request.root, link)
                 if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
-                        f.properties['status'] in ['current', 'released', 'revoked']:
+                        f.properties['status'] in ['released']:
                     if 'assembly' in f.properties:
                         ns['assembly'] = f.properties['assembly']
                         break
@@ -1232,19 +1240,6 @@ class Page(Collection):
     unique_key = 'page:location'
     template = copy.deepcopy(Collection.template)
     template['actions'] = [ADD_ACTION]
-
-    # Override default get to avoid some unnecessary lookups
-    # and skip the check that parent == collection
-    def get(self, name, default=None):
-        root = find_root(self)
-        resource = root.get_by_uuid(name, None)
-        if resource is not None:
-            return resource
-        if self.unique_key is not None:
-            resource = root.get_by_unique_key(self.unique_key, name)
-            if resource is not None:
-                return resource
-        return default
 
     class Item(Collection.Item):
         name_key = 'name'
