@@ -25,6 +25,7 @@ ORDER = [
     'fly_donor',
     'worm_donor',
     'human_donor',
+    'donor_characterization',
     'biosample',
     'biosample_characterization',
     'platform',

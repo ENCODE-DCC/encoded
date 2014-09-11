@@ -5,6 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
+    "calculatedProperties": ["model_organism_donor_constructs"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -602,6 +603,19 @@
         "synchronization": {
             "title": "Synchronization",
             "type": "string"
+        },
+        "model_organism_donor_constructs": {
+            "default": [],
+            "items": {
+                "title": "DNA Constructs",
+                "description": "An expression or targeting vector stably or transiently transfected (not RNAi) into a donor organism.",
+                "comment": "See contstruct.json for available identifiers.",
+                "type": "string",
+                "linkTo": "construct"
+            },
+            "type": "array",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi) into a donor organism.",
+            "title": "DNA constructs"
         }
     },
     "boost_values": {
