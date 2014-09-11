@@ -230,7 +230,7 @@ def test_antibody_characterization_upgrade_compliant_status(app, antibody_charac
     assert value['schema_version'] == '5'
     assert value['secondary_characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
     assert 'characterization_method' not in value
-    assert value['reviewed_by'] == '/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/'
+    assert value['reviewed_by'] == '81a6cc12-2847-4e2e-8f2c-f566699eb29e'
     assert value['documents'] == ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']
 
 
@@ -242,7 +242,7 @@ def test_antibody_characterization_upgrade_not_compliant_status(app, antibody_ch
     assert value['schema_version'] == '5'
     assert value['secondary_characterization_method'] == 'immunoprecipitation followed by mass spectrometry'
     assert 'characterization_method' not in value
-    assert value['reviewed_by'] == '/users/ff7b77e7-bb55-4307-b665-814c9f1e65fb/'
+    assert value['reviewed_by'] == 'ff7b77e7-bb55-4307-b665-814c9f1e65fb'
 
 
 def test_antibody_characterization_upgrade_inline(testapp, root, antibody_characterization_1):
