@@ -23,7 +23,7 @@
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
-        "transfection_type": ["transfection_method"],
+        "transfection_method": ["transfection_type"],
         "depleted_in_term_name": ["depleted_in_term_id"],
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
