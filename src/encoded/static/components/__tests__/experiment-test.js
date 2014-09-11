@@ -132,9 +132,9 @@ describe('Experiment Page', function() {
             var docKeyValue = doc.getElementsByClassName('key-value-left');
             expect(docKeyValue.length).toEqual(1);
             var defTerms = docKeyValue[0].getElementsByTagName('dt');
-            expect(defTerms.length).toEqual(2);
+            expect(defTerms.length).toEqual(3);
             var defDescs = docKeyValue[0].getElementsByTagName('dd');
-            expect(defDescs.length).toEqual(2);
+            expect(defDescs.length).toEqual(3);
         });
     });
 
@@ -145,6 +145,7 @@ describe('Experiment Page', function() {
             require('../biosample.js').Document;
             var context_doc = _.clone(context);
             context_doc.documents = [require('../testdata/document/wgEncodeSydhHist-refs')];
+            console.log(React.renderComponentToString(Experiment({context: context_doc})));
             experiment = TestUtils.renderIntoDocument(
                 <Experiment context={context_doc} />
             );
@@ -156,9 +157,9 @@ describe('Experiment Page', function() {
             var docKeyValue = doc.getElementsByClassName('key-value-left');
             expect(docKeyValue.length).toEqual(1);
             var defTerms = docKeyValue[0].getElementsByTagName('dt');
-            expect(defTerms.length).toEqual(3);
+            expect(defTerms.length).toEqual(4);
             var defDescs = docKeyValue[0].getElementsByTagName('dd');
-            expect(defDescs.length).toEqual(3);
+            expect(defDescs.length).toEqual(4);
             var item = docKeyValue[0].querySelector('[data-test="references"]');
             var refUl = item.getElementsByTagName('ul');
             expect(refUl.length).toEqual(1);

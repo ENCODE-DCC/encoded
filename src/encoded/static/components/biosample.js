@@ -706,7 +706,6 @@ var Document = module.exports.Document = React.createClass({
 
                         {context.references && context.references.length ?
                             <div data-test="references">
-                                    <dt>References</dt>
                                 <dt>References</dt>
                                 <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
                             </div>
