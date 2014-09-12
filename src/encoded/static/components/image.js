@@ -26,7 +26,6 @@ var Lightbox = module.exports.Lightbox = React.createClass({
             <div className={lightboxClass} onClick={this.props.clearLightbox}>
                 <div className="lightbox-img">
                     <img src={this.props.lightboxImg} onClick={this.ignoreClick} />
-                    <i className="lightbox-close icon icon-times-circle"></i>
                 </div>
             </div>
         );

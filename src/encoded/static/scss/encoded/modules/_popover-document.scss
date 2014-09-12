@@ -438,16 +438,17 @@ $characterization-figure-height: 200px;
 
 
 .lightbox-img {
-    display: inline-block;
     position: relative;
     margin: 20px auto 0;
-    max-width: 90%;
     cursor: default;
 
     img {
         display: block;
-        width: 100%;
+        width: auto;
         height: auto;
+        margin: 0 auto;
+        max-width: 90%;
+        max-height: 90%;
     }
 }
 
