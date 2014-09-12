@@ -9,7 +9,21 @@ from pyramid.view import view_config
 import json
 
 
-jsonld_base = 'https://www.encodeproject.org/terms/'
+jsonld_base = 'https://www.encodeproject.org/terms#'
+prefix = 'encode:'
+
+
+def aslist(value):
+    if isinstance(value, basestring):
+        return [value]
+    return value
+
+
+def allprops(schema):
+    return chain(
+        schema.get('properties', {}).iteritems(),
+        schema.get('calculated_props', {}).iteritems(),
+    )
 
 
 @subscriber(ApplicationCreated)
@@ -17,33 +31,31 @@ def make_jsonld_context(event):
     app = event.app
     root = app.root_factory(app)
     merged = {
-        'portal': jsonld_base + 'portal',
-        'search': jsonld_base + 'search',
+        'encode': jsonld_base,
+        'portal': prefix + 'portal',
+        'search': prefix + 'search',
     }
 
     for name, collection in root.by_item_type.iteritems():
         if name.startswith('testing-') or collection.schema is None:
             continue
         merged.update(context_from_schema(
-            collection.schema, jsonld_base, collection.item_type, collection.Item.base_types))
+            collection.schema, prefix, collection.item_type, collection.Item.base_types))
 
     namespaces = json.load(resource_stream(__name__, '../schemas/namespaces.json'))
     merged.update(namespaces)
     app.registry['encoded.jsonld_context'] = merged
 
 
-def context_from_schema(schema, jsonld_base, item_type, base_types):
+def context_from_schema(schema, prefix, item_type, base_types):
     jsonld_context = {}
 
     for type_name in base_types + [item_type]:
-        jsonld_context[type_name] = jsonld_base + type_name
+        jsonld_context[type_name] = prefix + type_name
 
-    all_props = chain(
-        schema.get('properties', {}).iteritems(),
-        schema.get('calculated_props', {}).iteritems(),
-    )
-    for name, schema in all_props:
+    for name, schema in allprops(schema):
         if '@id' in schema and schema['@id'] is None:
+            jsonld_context[name] = None
             continue
         jsonld_context[name] = prop_ld = {
             k: v for k, v in schema.iteritems() if k.startswith('@')
@@ -51,7 +63,7 @@ def context_from_schema(schema, jsonld_base, item_type, base_types):
         if '@reverse' in prop_ld:
             continue
         if '@id' not in prop_ld:
-            prop_ld['@id'] = jsonld_base + name
+            prop_ld['@id'] = prefix + name
         if '@type' not in prop_ld:
             if 'linkTo' in schema.get('items', schema):
                 prop_ld['@type'] = '@id'
@@ -66,7 +78,7 @@ def make_jsonld_terms(event):
 
     ontology = {
         '@context': {
-            '@base': jsonld_base,
+            'encode': jsonld_base,
             'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
             'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
             'owl': 'http://www.w3.org/2002/07/owl#',
@@ -74,7 +86,7 @@ def make_jsonld_terms(event):
                 '@id': 'owl:defines',
                 '@container': '@index',
             },
-            'rdfs:Property': {
+            'rdf:Property': {
                 '@type': '@id',
             },
             'rdfs:subPropertyOf': {
@@ -92,67 +104,85 @@ def make_jsonld_terms(event):
             'rdfs:range': {
                 '@type': '@id',
             },
-            'rdf:type': {
-                '@type': '@id',
-            },
         },
         '@type': 'owl:Ontology',
-        '@id': '',
-        'defines': {
-            'item': {
-                '@id': 'item',
-                'rdf:type': 'rdfs:Class',
-            },
-            'collection': {
-                '@id': 'collection',
-                'rdf:type': 'rdfs:Class',
-            },
-        },
+        '@id': jsonld_base,
     }
 
-    defines = ontology['defines']
+    defines = ontology['defines'] = {}
+    for type_name in ['item', 'collection', 'portal', 'search']:
+        defines[type_name] = {
+            '@id': prefix + type_name,
+            '@type': 'rdfs:Class',
+        }
+
+    MERGED_PROPS = [
+        '@type',
+        'rdfs:range',
+        'rdfs:domain',
+        'rdfs:subClassOf',
+        'rdfs:label',
+        'rdfs:comment',
+    ]
+
     for name, collection in root.by_item_type.iteritems():
         if name.startswith('testing-') or collection.schema is None:
             continue
         iter_defs = ontology_from_schema(
-            collection.schema, collection.item_type, collection.Item.base_types)
+            collection.schema, prefix, collection.item_type, collection.Item.base_types)
 
         for definition in iter_defs:
-            defines[definition['@id']] = definition
+            if definition['@id'].startswith(prefix):
+                name = definition['@id'][len(prefix):]
+            else:
+                name = definition['@id']
+            if name not in defines:
+                defines[name] = definition
+                continue
+            existing = defines[name]
+            for prop in MERGED_PROPS:
+                if prop not in definition:
+                    continue
+                if prop not in existing:
+                    existing[prop] = definition[prop]
+                    continue
+                if existing[prop] == definition[prop]:
+                    continue
+                existing[prop] = sorted(
+                    set(aslist(existing.get(prop, [])) + aslist(definition[prop])))
 
     app.registry['encoded.jsonld_terms'] = ontology
 
 
-def ontology_from_schema(schema, item_type, base_types):
+def ontology_from_schema(schema, prefix, item_type, base_types):
     yield {
-        '@id': item_type,
-        'rdf:type': 'rdfs:Class',
-        'rdfs:subClassOf': base_types,
+        '@id': prefix + item_type,
+        '@type': 'rdfs:Class',
+        'rdfs:subClassOf': [prefix + type_name for type_name in base_types],
     }
+
     for base_type in base_types[:-1]:
         yield {
-            '@id': base_type,
-            'rdf:type': 'rdfs:Class',
-            'rdfs:subClassOf': 'item',
+            '@id': prefix + base_type,
+            '@type': 'rdfs:Class',
+            'rdfs:subClassOf': prefix + 'item',
         }
 
-    all_props = chain(
-        schema.get('properties', {}).iteritems(),
-        schema.get('calculated_props', {}).iteritems(),
-    )
-    for name, schema in all_props:
+    for name, schema in allprops(schema):
         if '@id' in schema and schema['@id'] is None:
             continue
         if '@reverse' in schema:
             continue
+
         prop_ld = {
-            '@id': schema.get('@id', name),
-            '@type': schema.get('rdf:type', 'rdf:Property'),
-            'rdfs:domain': schema.get('rdf:domain', []),
+            '@id': schema.get('@id', prefix + name),
+            '@type': schema.get('@type', 'rdf:Property'),
+            'rdfs:domain': aslist(schema.get('rdfs:domain', [])),
         }
-        prop_ld['rdfs:domain'].append(item_type)
+        prop_ld['rdfs:domain'].append(prefix + item_type)
+
         if 'rdfs:subPropertyOf' in schema:
-            prop_ld['rdfs:subPropertyOf'] = schema['rdfs:subPropertyOf']
+            prop_ld['rdfs:subPropertyOf'] = aslist(schema['rdfs:subPropertyOf'])
 
         if 'title' in schema:
             prop_ld['rdfs:label'] = schema['title']
@@ -161,10 +191,8 @@ def ontology_from_schema(schema, item_type, base_types):
             prop_ld['rdfs:comment'] = schema['description']
 
         linkTo = schema.get('items', schema).get('linkTo')
-        if isinstance(linkTo, basestring):
-            linkTo = [linkTo]
         if linkTo is not None:
-            prop_ld['rdfs:range'] = linkTo
+            prop_ld['rdfs:range'] = [prefix + type_name for type_name in aslist(linkTo)]
 
         yield prop_ld
 
