@@ -145,7 +145,6 @@ describe('Experiment Page', function() {
             require('../biosample.js').Document;
             var context_doc = _.clone(context);
             context_doc.documents = [require('../testdata/document/wgEncodeSydhHist-refs')];
-            console.log(React.renderComponentToString(Experiment({context: context_doc})));
             experiment = TestUtils.renderIntoDocument(
                 <Experiment context={context_doc} />
             );
