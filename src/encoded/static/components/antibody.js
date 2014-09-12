@@ -49,7 +49,7 @@ var Lot = module.exports.Lot = React.createClass({
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // To search list of linked experiments
-        var experiments_url = '/search/?type=experiment&replicates.antibody.accession=' + context.accession;
+        var experiments_url = '/search/?type=experiment&limit=all&replicates.antibody.accession=' + context.accession;
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
