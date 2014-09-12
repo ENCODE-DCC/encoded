@@ -232,6 +232,9 @@ def audit_experiment_biosample_term(value, system):
         if 'control' in target['investigated_as']:
             return
 
+    if 'biosample_term_id' not in value:
+        yield AuditFailure('term id missing', detail, level='ERROR')
+
     ontology = system['registry']['ontology']
     term_id = value.get('biosample_term_id')
     term_type = value.get('biosample_type')
