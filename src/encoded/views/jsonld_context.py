@@ -222,4 +222,4 @@ def add_jsonld_context(event):
     value = event.rendering_val
     if ('@id' in value or '@graph' in value) and '@context' not in value:
         # The context link needs to be a canonicalised URI
-        value['@context'] = request.route_url('jsonld_context')
+        value['@context'] = request.route_path('jsonld_context')
