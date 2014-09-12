@@ -135,10 +135,6 @@ describe('Antibody', function() {
             itemDescription = item.getElementsByTagName('dd')[0];
             expect(itemDescription.textContent).toEqual('Ad Est');
 
-            item = charData.querySelector('[data-test="lab"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('Thomas Gingeras, CSHL');
-
             item = charData.querySelector('[data-test="grant"]');
             itemDescription = item.getElementsByTagName('dd')[0];
             expect(itemDescription.textContent).toEqual('RC2HG005602');

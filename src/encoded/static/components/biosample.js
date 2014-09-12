@@ -690,13 +690,6 @@ var Document = module.exports.Document = React.createClass({
                             </div>
                         : null}
 
-                        {context.lab && context.lab.title ?
-                            <div data-test="title">
-                                <dt>Lab</dt>
-                                <dd>{context.lab.title}</dd>
-                            </div>
-                        : null}
-
                         {context.award && context.award.name ?
                             <div data-test="award">
                                 <dt>Grant</dt>

@@ -333,11 +333,6 @@ var Characterization = module.exports.Characterization = React.createClass({
                             </div>
                         : null}
 
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                        </div>
-
                         <div data-test="grant">
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
