@@ -34,10 +34,11 @@ def make_jsonld_context(event):
         'encode': jsonld_base,
         'portal': prefix + 'portal',
         'search': prefix + 'search',
+        'xsd': 'http://www.w3.org/2001/XMLSchema#',
     }
 
     for name, collection in root.by_item_type.iteritems():
-        if name.startswith('testing-') or collection.schema is None:
+        if name.startswith('testing_') or collection.schema is None:
             continue
         merged.update(context_from_schema(
             collection.schema, prefix, collection.item_type, collection.Item.base_types))
@@ -53,20 +54,38 @@ def context_from_schema(schema, prefix, item_type, base_types):
     for type_name in base_types + [item_type]:
         jsonld_context[type_name] = prefix + type_name
 
-    for name, schema in allprops(schema):
-        if '@id' in schema and schema['@id'] is None:
+    for name, subschema in allprops(schema):
+        if '@id' in subschema and subschema['@id'] is None:
             jsonld_context[name] = None
             continue
         jsonld_context[name] = prop_ld = {
-            k: v for k, v in schema.iteritems() if k.startswith('@')
+            k: v for k, v in subschema.iteritems() if k.startswith('@')
         }
         if '@reverse' in prop_ld:
             continue
         if '@id' not in prop_ld:
             prop_ld['@id'] = prefix + name
-        if '@type' not in prop_ld:
-            if 'linkTo' in schema.get('items', schema):
-                prop_ld['@type'] = '@id'
+
+        subschema.get('items', subschema)
+        if '@type' in prop_ld:
+            pass
+        elif 'linkTo' in subschema:
+            prop_ld['@type'] = '@id'
+        elif subschema.get('anyOf') == [{"format": "date-time"}, {"format": "date"}]:
+            prop_ld['@type'] = 'xsd:dateTime'
+        elif subschema.get('format') == 'date-time':
+            prop_ld['@type'] = 'xsd:date'
+        elif subschema.get('format') == 'date':
+            prop_ld['@type'] = 'xsd:date'
+        elif subschema.get('format') == 'uri':
+            # Should this be @id?
+            prop_ld['@type'] = '@id'
+        elif subschema.get('type') == 'integer':
+            prop_ld['@type'] = 'xsd:integer'
+        elif subschema.get('type') == 'number':
+            prop_ld['@type'] = 'xsd:float'
+        elif subschema.get('type') == 'boolean':
+            prop_ld['@type'] = 'xsd:boolean'
 
     return jsonld_context
 
@@ -79,9 +98,11 @@ def make_jsonld_terms(event):
     ontology = {
         '@context': {
             'encode': jsonld_base,
+            'dc': 'http://purl.org/dc/terms/',
             'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
             'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
             'owl': 'http://www.w3.org/2002/07/owl#',
+            'xsd': 'http://www.w3.org/2001/XMLSchema#',
             'defines': {
                 '@id': 'owl:defines',
                 '@container': '@index',
@@ -121,12 +142,13 @@ def make_jsonld_terms(event):
         'rdfs:range',
         'rdfs:domain',
         'rdfs:subClassOf',
+        'rdfs:subPropertyOf',
         'rdfs:label',
         'rdfs:comment',
     ]
 
     for name, collection in root.by_item_type.iteritems():
-        if name.startswith('testing-') or collection.schema is None:
+        if name.startswith('testing_') or collection.schema is None:
             continue
         iter_defs = ontology_from_schema(
             collection.schema, prefix, collection.item_type, collection.Item.base_types)
@@ -168,29 +190,30 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
             'rdfs:subClassOf': prefix + 'item',
         }
 
-    for name, schema in allprops(schema):
-        if '@id' in schema and schema['@id'] is None:
+    for name, subschema in allprops(schema):
+        if '@id' in subschema and subschema['@id'] is None:
             continue
-        if '@reverse' in schema:
+        if '@reverse' in subschema:
             continue
 
         prop_ld = {
-            '@id': schema.get('@id', prefix + name),
-            '@type': schema.get('@type', 'rdf:Property'),
-            'rdfs:domain': aslist(schema.get('rdfs:domain', [])),
+            '@id': subschema.get('@id', prefix + name),
+            '@type': 'rdf:Property',
+            'rdfs:domain': aslist(subschema.get('rdfs:domain', [])),
         }
         prop_ld['rdfs:domain'].append(prefix + item_type)
 
-        if 'rdfs:subPropertyOf' in schema:
-            prop_ld['rdfs:subPropertyOf'] = aslist(schema['rdfs:subPropertyOf'])
+        if 'rdfs:subPropertyOf' in subschema:
+            prop_ld['rdfs:subPropertyOf'] = aslist(subschema['rdfs:subPropertyOf'])
 
-        if 'title' in schema:
-            prop_ld['rdfs:label'] = schema['title']
+        subschema.get('items', subschema)
+        if 'title' in subschema:
+            prop_ld['rdfs:label'] = subschema['title']
 
-        if 'description' in schema:
-            prop_ld['rdfs:comment'] = schema['description']
+        if 'description' in subschema:
+            prop_ld['rdfs:comment'] = subschema['description']
 
-        linkTo = schema.get('items', schema).get('linkTo')
+        linkTo = subschema.get('linkTo')
         if linkTo is not None:
             prop_ld['rdfs:range'] = [prefix + type_name for type_name in aslist(linkTo)]
 
