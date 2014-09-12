@@ -30,101 +30,49 @@ def allprops(schema):
 def make_jsonld_context(event):
     app = event.app
     root = app.root_factory(app)
-    merged = {
+    context = {
         'encode': jsonld_base,
+        'dc': 'http://purl.org/dc/terms/',
+        'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+        'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
+        'owl': 'http://www.w3.org/2002/07/owl#',
+        'xsd': 'http://www.w3.org/2001/XMLSchema#',
+        'owl:defines': {
+            '@container': '@index',
+        },
+        'rdfs:subPropertyOf': {
+            '@type': '@id',
+        },
+        'rdfs:subClassOf': {
+            '@type': '@id',
+        },
+        'rdfs:domain': {
+            '@type': '@id',
+        },
+        'rdfs:range': {
+            '@type': '@id',
+        },
         'portal': prefix + 'portal',
         'search': prefix + 'search',
-        'xsd': 'http://www.w3.org/2001/XMLSchema#',
+        'collection': prefix + 'collection',
     }
 
     for name, collection in root.by_item_type.iteritems():
         if name.startswith('testing_') or collection.schema is None:
             continue
-        merged.update(context_from_schema(
+        context.update(context_from_schema(
             collection.schema, prefix, collection.item_type, collection.Item.base_types))
 
     namespaces = json.load(resource_stream(__name__, '../schemas/namespaces.json'))
-    merged.update(namespaces)
-    app.registry['encoded.jsonld_context'] = merged
-
-
-def context_from_schema(schema, prefix, item_type, base_types):
-    jsonld_context = {}
-
-    for type_name in base_types + [item_type]:
-        jsonld_context[type_name] = prefix + type_name
-
-    for name, subschema in allprops(schema):
-        if '@id' in subschema and subschema['@id'] is None:
-            jsonld_context[name] = None
-            continue
-        jsonld_context[name] = prop_ld = {
-            k: v for k, v in subschema.iteritems() if k.startswith('@')
-        }
-        if '@reverse' in prop_ld:
-            continue
-        if '@id' not in prop_ld:
-            prop_ld['@id'] = prefix + name
-
-        subschema.get('items', subschema)
-        if '@type' in prop_ld:
-            pass
-        elif 'linkTo' in subschema:
-            prop_ld['@type'] = '@id'
-        elif subschema.get('anyOf') == [{"format": "date-time"}, {"format": "date"}]:
-            prop_ld['@type'] = 'xsd:dateTime'
-        elif subschema.get('format') == 'date-time':
-            prop_ld['@type'] = 'xsd:date'
-        elif subschema.get('format') == 'date':
-            prop_ld['@type'] = 'xsd:date'
-        elif subschema.get('format') == 'uri':
-            # Should this be @id?
-            prop_ld['@type'] = '@id'
-        elif subschema.get('type') == 'integer':
-            prop_ld['@type'] = 'xsd:integer'
-        elif subschema.get('type') == 'number':
-            prop_ld['@type'] = 'xsd:float'
-        elif subschema.get('type') == 'boolean':
-            prop_ld['@type'] = 'xsd:boolean'
-
-    return jsonld_context
-
-
-@subscriber(ApplicationCreated)
-def make_jsonld_terms(event):
-    app = event.app
-    root = app.root_factory(app)
+    context.update(namespaces)
 
     ontology = {
-        '@context': {
-            'encode': jsonld_base,
-            'dc': 'http://purl.org/dc/terms/',
-            'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-            'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
-            'owl': 'http://www.w3.org/2002/07/owl#',
-            'xsd': 'http://www.w3.org/2001/XMLSchema#',
-            'defines': {
-                '@id': 'owl:defines',
-                '@container': '@index',
-            },
-            'rdfs:subPropertyOf': {
-                '@type': '@id',
-            },
-            'rdfs:subClassOf': {
-                '@type': '@id',
-            },
-            'rdfs:domain': {
-                '@type': '@id',
-            },
-            'rdfs:range': {
-                '@type': '@id',
-            },
-        },
+        '@context': context,
         '@type': 'owl:Ontology',
         '@id': jsonld_base,
     }
 
-    defines = ontology['defines'] = {}
+    defines = ontology['owl:defines'] = {}
     for type_name in ['item', 'collection', 'portal', 'search']:
         defines[type_name] = {
             '@id': prefix + type_name,
@@ -167,7 +115,49 @@ def make_jsonld_terms(event):
                 existing[prop] = sorted(
                     set(aslist(existing.get(prop, [])) + aslist(definition[prop])))
 
-    app.registry['encoded.jsonld_terms'] = ontology
+    app.registry['encoded.jsonld_context'] = ontology
+
+
+def context_from_schema(schema, prefix, item_type, base_types):
+    jsonld_context = {}
+
+    for type_name in base_types + [item_type, item_type + '_collection']:
+        jsonld_context[type_name] = prefix + type_name
+
+    for name, subschema in allprops(schema):
+        if '@id' in subschema and subschema['@id'] is None:
+            jsonld_context[name] = None
+            continue
+        jsonld_context[name] = prop_ld = {
+            k: v for k, v in subschema.iteritems() if k.startswith('@')
+        }
+        if '@reverse' in prop_ld:
+            continue
+        if '@id' not in prop_ld:
+            prop_ld['@id'] = prefix + name
+
+        subschema.get('items', subschema)
+        if '@type' in prop_ld:
+            pass
+        elif 'linkTo' in subschema:
+            prop_ld['@type'] = '@id'
+        elif subschema.get('anyOf') == [{"format": "date-time"}, {"format": "date"}]:
+            prop_ld['@type'] = 'xsd:dateTime'
+        elif subschema.get('format') == 'date-time':
+            prop_ld['@type'] = 'xsd:date'
+        elif subschema.get('format') == 'date':
+            prop_ld['@type'] = 'xsd:date'
+        elif subschema.get('format') == 'uri':
+            # Should this be @id?
+            prop_ld['@type'] = '@id'
+        elif subschema.get('type') == 'integer':
+            prop_ld['@type'] = 'xsd:integer'
+        elif subschema.get('type') == 'number':
+            prop_ld['@type'] = 'xsd:float'
+        elif subschema.get('type') == 'boolean':
+            prop_ld['@type'] = 'xsd:boolean'
+
+    return jsonld_context
 
 
 def ontology_from_schema(schema, prefix, item_type, base_types):
@@ -183,6 +173,12 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
             '@type': 'rdfs:Class',
             'rdfs:subClassOf': prefix + 'item',
         }
+
+    yield {
+        '@id': prefix + item_type + '_collection',
+        '@type': 'rdfs:Class',
+        'rdfs:subClassOf': [prefix + 'collection'],
+    }
 
     for name, subschema in allprops(schema):
         if '@id' in subschema and subschema['@id'] is None:
@@ -218,12 +214,6 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
 def jsonld_context(context, request):
     request.environ['encoded.canonical_redirect'] = False
     return request.registry['encoded.jsonld_context']
-
-
-@view_config(route_name='jsonld_terms', request_method='GET')
-def jsonld_terms(context, request):
-    request.environ['encoded.canonical_redirect'] = False
-    return request.registry['encoded.jsonld_terms']
 
 
 # @subscriber(BeforeRender)  # disable for now
