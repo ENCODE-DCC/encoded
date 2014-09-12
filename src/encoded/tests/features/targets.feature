@@ -16,7 +16,7 @@ Feature: Targets
 
         When I click the link to "http://www.uniprot.org/uniprot/Q9H2P0"
         Then the browser's URL should contain "www.uniprot.org"
-        Then I should see "Q9H2P0 - ADNP_HUMAN"
+        Then I should see "Q9H2P0"
 
         When I go back
         Then the browser's URL should contain "/targets/"
