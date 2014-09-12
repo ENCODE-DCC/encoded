@@ -71,7 +71,6 @@ def search(context, request, search_type=None):
 
     root = request.root
     result = {
-        '@context': request.route_url('jsonld_context'),
         '@id': uri,
         '@type': ['search'],
         'title': 'Search',

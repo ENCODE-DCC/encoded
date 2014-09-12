@@ -5,6 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
+    "calculatedProperties": ["model_organism_donor_constructs"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -23,6 +24,7 @@
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
+        "transfection_method": ["transfection_type"],
         "depleted_in_term_name": ["depleted_in_term_id"],
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
@@ -83,6 +85,7 @@
         },
         "dbxrefs": {
             "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",
@@ -260,6 +263,14 @@
             "type": "string",
             "enum": [
                 "stable", "transient"
+            ]
+        },
+        "transfection_method": {
+            "title": "Transfection method",
+            "description": "How the transfection was performed on the biosample to introduce the contruct or RNAi.",
+            "type": "string",
+            "enum": [
+                "electroporation", "transduction"
             ]
         },
         "culture_harvest_date": {
@@ -602,6 +613,19 @@
         "synchronization": {
             "title": "Synchronization",
             "type": "string"
+        },
+        "model_organism_donor_constructs": {
+            "default": [],
+            "items": {
+                "title": "DNA Constructs",
+                "description": "An expression or targeting vector stably or transiently transfected (not RNAi) into a donor organism.",
+                "comment": "See contstruct.json for available identifiers.",
+                "type": "string",
+                "linkTo": "construct"
+            },
+            "type": "array",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi) into a donor organism.",
+            "title": "DNA constructs"
         }
     },
     "boost_values": {

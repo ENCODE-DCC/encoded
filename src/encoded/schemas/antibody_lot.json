@@ -65,6 +65,8 @@
             ]
         },
         "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",

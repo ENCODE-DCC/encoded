@@ -205,7 +205,6 @@ class Collection(BaseCollection):
 class Lab(Collection):
     item_type = 'lab'
     schema = load_schema('lab.json')
-    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Labs',
         'description': 'Listing of ENCODE DCC labs',
@@ -222,7 +221,6 @@ class Lab(Collection):
 class Award(Collection):
     item_type = 'award'
     schema = load_schema('award.json')
-    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Awards (Grants)',
         'description': 'Listing of awards (aka grants)',
@@ -268,7 +266,6 @@ class AntibodyLot(Collection):
 class Organism(Collection):
     item_type = 'organism'
     schema = load_schema('organism.json')
-    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Organisms',
         'description': 'Listing of all registered organisms',
@@ -282,7 +279,6 @@ class Organism(Collection):
 class Source(Collection):
     item_type = 'source'
     schema = load_schema('source.json')
-    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Sources',
         'description': 'Listing of sources and vendors for ENCODE material',
@@ -332,6 +328,8 @@ class FlyDonor(Collection):
     }
 
     class Item(DonorItem):
+        embedded = set(['organism', 'constructs', 'constructs.target'])
+
         def __ac_local_roles__(self):
             # Disallow lab submitter edits
             return {}
@@ -348,6 +346,8 @@ class WormDonor(Collection):
     }
 
     class Item(DonorItem):
+        embedded = set(['organism', 'constructs', 'constructs.target'])
+
         def __ac_local_roles__(self):
             # Disallow lab submitter edits
             return {}
@@ -370,7 +370,6 @@ class HumanDonor(Collection):
 class Treatment(Collection):
     item_type = 'treatment'
     schema = load_schema('treatment.json')
-    __acl__ = ALLOW_EVERYONE_VIEW + ALLOW_SUBMITTER_ADD
     properties = {
         'title': 'Treatments',
         'description': 'Listing Biosample Treatments',
@@ -462,11 +461,20 @@ class Biosample(Collection):
             'age_units': {'$value': '{age_units}', '$templated': True, '$condition': 'age_units'},
             'health_status': {'$value': '{health_status}', '$templated': True, '$condition': 'health_status'},
             'life_stage': {'$value': '{life_stage}', '$templated': True, '$condition': 'life_stage'},
-            'synchronization': {'$value': '{synchronization}', '$templated': True, '$condition': 'synchronization'}
+            'synchronization': {'$value': '{synchronization}', '$templated': True, '$condition': 'synchronization'},
+            'model_organism_donor_constructs': [
+                {'$value': lambda model_organism_donor_construct: model_organism_donor_construct, '$repeat': 'model_organism_donor_construct model_organism_donor_constructs', '$templated': True}
+            ]
         }
         embedded = set([
             'donor',
             'donor.organism',
+            'donor.characterizations',
+            'donor.characterizations.award',
+            'donor.characterizations.lab',
+            'donor.characterizations.submitted_by',
+            'model_organism_donor_constructs',
+            'model_organism_donor_constructs.target',
             'submitted_by',
             'lab',
             'award',
@@ -517,13 +525,31 @@ class Biosample(Collection):
             else:
                 ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
 
+            fly_organisms = [
+                "/organisms/dmelanogaster/",
+                "/organisms/dananassae/",
+                "/organisms/dmojavensis/",
+                "/organisms/dpseudoobscura/",
+                "/organisms/dsimulans/",
+                "/organisms/dvirilis/",
+                "/organisms/dyakuba/"
+            ]
+
+            worm_organisms = [
+                "/organisms/celegans/",
+                "/organisms/cbrenneri/",
+                "/organisms/cbriggsae/",
+                "/organisms/cremanei/",
+                "/organisms/cjaponica/"
+            ]
+
             human_donor_properties = [
                 "sex",
                 "age",
                 "age_units",
                 "health_status",
                 "life_stage",
-                'synchronization'
+                "synchronization"
             ]
             mouse_biosample_properties = {
                 "model_organism_sex": "sex",
@@ -549,15 +575,8 @@ class Biosample(Collection):
                 "worm_life_stage": "life_stage",
                 "worm_synchronization_stage": "synchronization"
             }
-            fly_organisms = [
-                "/organisms/dmelanogaster/",
-                "/organisms/dananassae/",
-                "/organisms/dmojavensis/",
-                "/organisms/dpseudoobscura/",
-                "/organisms/dsimulans/",
-                "/organisms/dvirilis/",
-                "/organisms/dyakuba/"
-            ]
+
+            model_organism_donor_constructs = []
 
             if properties['organism'] == '/organisms/human/' and 'donor' in ns:
                 root = find_root(self)
@@ -570,13 +589,25 @@ class Biosample(Collection):
                     if key in ns:
                         ns[value] = ns[key]
             elif properties['organism'] in fly_organisms:
+                root = find_root(self)
+                donor = root.get_by_uuid(self.properties['donor'])
                 for key, value in fly_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
-            else:
+                if donor.properties['constructs']:
+                    model_organism_donor_constructs = donor.properties['constructs']
+            elif properties['organism'] in worm_organisms:
+                root = find_root(self)
+                donor = root.get_by_uuid(self.properties['donor'])
                 for key, value in worm_biosample_properties.items():
                     if key in ns:
                         ns[value] = ns[key]
+                if donor.properties['constructs']:
+                    model_organism_donor_constructs = donor.properties['constructs']
+            else:
+                pass
+
+            ns['model_organism_donor_constructs'] = model_organism_donor_constructs
             return ns
 
 
@@ -594,7 +625,6 @@ class BiosampleCharacterization(Characterization):
 class Target(Collection):
     item_type = 'target'
     schema = load_schema('target.json')
-    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Targets',
         'description': 'Listing of ENCODE3 targets',
@@ -686,7 +716,6 @@ class AntibodyApproval(Collection):
 class Platform(Collection):
     item_type = 'platform'
     schema = load_schema('platform.json')
-    __acl__ = ALLOW_EVERYONE_VIEW
     properties = {
         'title': 'Platforms',
         'description': 'Listing of Platforms',
@@ -955,19 +984,6 @@ class Page(Collection):
     unique_key = 'page:location'
     template = copy.deepcopy(Collection.template)
     template['actions'] = [ADD_ACTION]
-
-    # Override default get to avoid some unnecessary lookups
-    # and skip the check that parent == collection
-    def get(self, name, default=None):
-        root = find_root(self)
-        resource = root.get_by_uuid(name, None)
-        if resource is not None:
-            return resource
-        if self.unique_key is not None:
-            resource = root.get_by_unique_key(self.unique_key, name)
-            if resource is not None:
-                return resource
-        return default
 
     class Item(Collection.Item):
         name_key = 'name'
