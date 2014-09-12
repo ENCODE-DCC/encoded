@@ -80,7 +80,7 @@ def audit_experiment_target(value, system):
     antibodies should match.
     '''
 
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted', 'proposed']:
         return
 
     if value.get('assay_term_name') not in targetBasedAssayList:
@@ -140,7 +140,7 @@ def audit_experiment_control(value, system):
     Of course, controls do not require controls.
     '''
 
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted', 'proposed']:
         return
 
     # Currently controls are only be required for ChIP-seq
@@ -191,7 +191,7 @@ def audit_experiment_platform(value, system):
     Eventually we should enforce that the platform is appropirate for the assay.
     '''
 
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted', 'proposed']:
         return
 
     if ('award' not in value) or (value['award'].get('rfa') != 'ENCODE3') or (value['replicates'] == []):
@@ -216,7 +216,7 @@ def audit_experiment_biosample_term(value, system):
     concordent with library biosamples,
     probably there are assays that are the exception
     '''
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted', 'proposed']:
         return
 
     if 'biosample_term_id' not in value:
@@ -227,9 +227,10 @@ def audit_experiment_biosample_term(value, system):
         yield AuditFailure('biosample type missing', detail, level='ERROR')
         return
 
-    target = value['target']
-    if 'control' in target['investigated_as']:
-        return
+    if 'target' in value:
+        target = value['target']
+        if 'control' in target['investigated_as']:
+            return
 
     ontology = system['registry']['ontology']
     term_id = value.get('biosample_term_id')
@@ -300,7 +301,7 @@ def audit_experiment_paired_end(value,system):
         "DNA-PET"
     ]
 
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted', 'proposed']:
         return
 
     term_name = value.get('assay_term_name')
@@ -338,7 +339,7 @@ def audit_experiment_paired_end(value,system):
 def audit_experiment_antibody_eligible(value, system):
     '''Check that biosample in the experiment is eligible for new data for the given antibody.'''
 
-    if value['status'] == 'deleted':
+    if value['status'] in ['deleted', 'proposed']:
         return
 
     if value.get('assay_term_name') not in targetBasedAssayList:
