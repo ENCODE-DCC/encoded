@@ -107,13 +107,7 @@ def make_jsonld_terms(event):
                 '@id': 'owl:defines',
                 '@container': '@index',
             },
-            'rdf:Property': {
-                '@type': '@id',
-            },
             'rdfs:subPropertyOf': {
-                '@type': '@id',
-            },
-            'rdfs:Class': {
                 '@type': '@id',
             },
             'rdfs:subClassOf': {
