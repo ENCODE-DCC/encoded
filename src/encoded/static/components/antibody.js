@@ -291,7 +291,7 @@ var Characterization = module.exports.Characterization = React.createClass({
 
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
-            <section className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <section className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <div className={globals.itemClass(context, 'view-detail panel')}>
                     <div className="characterization-target">
                         {context.target.label} {context.target.organism.scientific_name ? <span>{' ('}<i>{context.target.organism.scientific_name}</i>{')'}</span> : ''}
