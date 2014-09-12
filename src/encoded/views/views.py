@@ -425,13 +425,15 @@ class AntibodyLot(Collection):
                                 else:
                                     has_lane_review = True
                                     status_ranking = {
+                                        'eligible for new data': 4,
                                         'compliant': 3,
                                         'pending dcc review': 2,
-                                        'in progress': 1,
+                                        'awaiting lab characterization': 1,
                                         'not compliant': 0,
                                         'not reviewed': 0,
                                         'not submitted for review by lab': 0,
-                                        'deleted': 0
+                                        'deleted': 0,
+                                        'not eligible for new data': 0
                                     }
 
                                     if status_ranking[lane_review['lane_status']] > status_ranking[char_reviews[key]['status']]:
