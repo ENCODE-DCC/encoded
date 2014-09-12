@@ -671,7 +671,7 @@ var Document = module.exports.Document = React.createClass({
         var panelClass = 'type-document view-detail status-none' + (context['@type'][0] !== 'donor_characterization' ? ' panel' : ' sub-panel');
         var characterization = context['@type'].indexOf('characterization') >= 0;
         var excerpt = characterization ? context.caption : context.description;
-        if (excerpt.length > 100) {
+        if (excerpt && excerpt.length > 100) {
             excerpt = truncateString(excerpt, 100);
         }
 
