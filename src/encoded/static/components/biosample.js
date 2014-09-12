@@ -149,7 +149,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         {context.passage_number ? <dd>{context.passage_number}</dd> : null}
                     </dl>
 
-                     {context.derived_from ?
+                    {context.derived_from ?
                         <section>
                             <hr />
                             <h4>Derived from biosample</h4>
@@ -626,6 +626,16 @@ var Document = module.exports.Document = React.createClass({
     },
 
     render: function() {
+        function truncateString(str, len) {
+            if (str.length > len) {
+                str = str.replace(/(^\s)|(\s$)/gi, ''); // Trim leading/trailing white space
+                var isOneWord = str.match(/\s/gi) === null; // Detect single-word string
+                str = str.substr(0, len - 1); // Truncate to length ignoring word boundary
+                str = (!isOneWord ? str.substr(0, str.lastIndexOf(' ')) : str) + '…';
+            }
+            return str;
+        }
+
         var context = this.props.context;
         var keyClass = cx({
             "key-value-left": true,
@@ -660,6 +670,10 @@ var Document = module.exports.Document = React.createClass({
 
         var panelClass = 'type-document view-detail status-none' + (context['@type'][0] !== 'donor_characterization' ? ' panel' : ' sub-panel');
         var characterization = context['@type'].indexOf('characterization') >= 0;
+        var excerpt = characterization ? context.caption : context.description;
+        if (excerpt.length > 100) {
+            excerpt = truncateString(excerpt, 100);
+        }
 
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
@@ -671,7 +685,7 @@ var Document = module.exports.Document = React.createClass({
                         </figure>
                         <div className="document-intro">
                             <h3 className="sentence-case">{characterization ? context.characterization_method : context.document_type}</h3>
-                            <p>{characterization ? context.caption : context.description}</p>
+                            <p>{excerpt}</p>
                         </div>
                     </div>
                     {download}

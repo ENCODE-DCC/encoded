@@ -202,12 +202,8 @@ $characterization-figure-height: 200px;
 
     p {
         margin: 2px 0 0 0;
-        font-size: 13px;
+        font-size: 14px;
         word-wrap: break-word;
-
-        @media screen and (min-width: $screen-lg) {
-            font-size: 14px;
-        }
     }
 }
 
