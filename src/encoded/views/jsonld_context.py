@@ -239,7 +239,7 @@ def jsonld_term(context, request):
         raise HTTPNotFound(term)
 
 
-@subscriber(BeforeRender)  # disable for now
+# @subscriber(BeforeRender)  # disable for now
 def add_jsonld_context(event):
     request = event['request']
     value = event.rendering_val
