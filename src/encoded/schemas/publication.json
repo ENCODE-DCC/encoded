@@ -29,6 +29,7 @@
             "type": "string"
         },
         "abstract": {
+            "rdfs:subPropertyOf": "dc:abstract",
             "title": "Abstract",
             "description": "Abstract of the publication or communication.",
             "type": "string"
