@@ -10,6 +10,8 @@ encoded_access_key = '...'
 encoded_secret_access_key = '...'
 
 path = 'example.fastq.gz'
+my_lab = '/labs/your-lab-here'
+my_award = '/awards/your-award-here'
 
 # From http://hgwdev.cse.ucsc.edu/~galt/encode3/validatePackage/validateEncode3-latest.tgz
 encValData = 'encValData'
@@ -29,6 +31,8 @@ data = {
     "md5sum": md5sum.hexdigest(),
     "output_type": "raw data",
     "submitted_file_name": path,
+    "lab": my_lab,
+    "award": my_award
 }
 
 
@@ -115,7 +119,12 @@ r = requests.post(
     data=json.dumps(data),
     headers=headers,
 )
-r.raise_for_status()
+try:
+    r.raise_for_status()
+except:
+    print('Submission failed: %s %s' % (r.status_code, r.reason))
+    print(r.text)
+    raise
 item = r.json()['@graph'][0]
 print(json.dumps(item, indent=4, sort_keys=True))
 
