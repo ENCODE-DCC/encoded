@@ -49,7 +49,7 @@ var Lot = module.exports.Lot = React.createClass({
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
         // To search list of linked experiments
-        var experiments_url = '/search/?type=experiment&limit=all&replicates.antibody.accession=' + context.accession;
+        var experiments_url = '/search/?type=experiment&replicates.antibody.accession=' + context.accession;
 
         return (
             <div className={globals.itemClass(context, 'view-item')}>
@@ -201,7 +201,7 @@ var ExperimentsUsingAntibody = React.createClass({
                 <div>
                     <h3>Experiments using antibody {context.accession}</h3>
                     {this.transferPropsTo(
-                        <ExperimentTable limit={5} />
+                        <ExperimentTable limit={5} total={this.props.total} />
                     )}
                 </div>
             </div>

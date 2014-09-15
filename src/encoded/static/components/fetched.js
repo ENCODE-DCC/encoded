@@ -176,7 +176,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
         return (
             <div key={key} className="done">
                 {this.transferPropsTo(
-                    <Component Component={undefined} items={items} />
+                    <Component Component={undefined} items={items} total={data.total} />
                 )}
             </div>
         );
