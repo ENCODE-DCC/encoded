@@ -10,6 +10,8 @@ encoded_access_key = '...'
 encoded_secret_access_key = '...'
 
 path = 'example.fastq.gz'
+my_lab = '/labs/your-lab-here'
+my_award = '/awards/your-award-here'
 
 # From http://hgwdev.cse.ucsc.edu/~galt/encode3/validatePackage/validateEncode3-latest.tgz
 encValData = 'encValData'
@@ -29,6 +31,8 @@ data = {
     "md5sum": md5sum.hexdigest(),
     "output_type": "raw data",
     "submitted_file_name": path,
+    "lab": my_lab,
+    "award": my_award
 }
 
 
