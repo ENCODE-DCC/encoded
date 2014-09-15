@@ -86,6 +86,7 @@ var cx = React.addons.classSet;
         // Display tooltip on hover
         onMouseEnter: function () {
             function getNextElementSibling(el) {
+                // IE8 doesn't support nextElementSibling
                 return el.nextElementSibling ? el.nextElementSibling : el.nextSibling;
             }
 
@@ -93,11 +94,11 @@ var cx = React.addons.classSet;
             var whiteSpace = 'nowrap';
             var resultBounds = document.getElementById('result-table').getBoundingClientRect();
             var resultWidth = resultBounds.right - resultBounds.left;
-            var tipElement = getNextElementSibling(this.refs.indicator.getDOMNode());
-            var tipBounds = _.clone(tipElement.getBoundingClientRect());
+            var tipBounds = _.clone(getNextElementSibling(this.refs.indicator.getDOMNode()).getBoundingClientRect());
             var tipWidth = tipBounds.right - tipBounds.left;
             var width = tipWidth;
             if (tipWidth > resultWidth) {
+                // Tooltip wider than result table; set tooltip to result table width and allow text to wrap
                 tipBounds.right = tipBounds.left + resultWidth - 2;
                 whiteSpace = 'normal';
                 width = tipBounds.right - tipBounds.left - 2;
@@ -106,8 +107,10 @@ var cx = React.addons.classSet;
             // Set an inline style to move the tooltip if it runs off right edge of result table
             var leftOffset = resultBounds.right - tipBounds.right;
             if (leftOffset < 0) {
+                // Tooltip goes outside right edge of result table; move it to the left
                 this.setState({tipStyles: {left: (leftOffset + 10) + 'px', maxWidth: resultWidth + 'px', whiteSpace: whiteSpace, width: width + 'px'}});
             } else {
+                // Tooltip fits inside result table; move it to native position
                 this.setState({tipStyles: {left: '10px', maxWidth: resultWidth + 'px', whiteSpace: whiteSpace, width: width + 'px'}});
             }
 
@@ -116,7 +119,7 @@ var cx = React.addons.classSet;
 
         // Close tooltip when not hovering
         onMouseLeave: function() {
-            this.setState({tipStyles: {maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px'}});
+            this.setState({tipStyles: {maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px'}}); // Reset position and width
             this.setState({tipOpen: false});
         },
 
