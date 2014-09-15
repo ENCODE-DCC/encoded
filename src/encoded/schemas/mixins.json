@@ -86,6 +86,7 @@
     },
     "submitted": {
         "date_created": {
+            "rdfs:subPropertyOf": "dc:created",
             "title": "Date created",
             "comment": "Do not submit, value is assigned by the server. The date the object is created.",
             "type": "string",
@@ -97,6 +98,7 @@
             "permission": "import_items"
         },
         "submitted_by": {
+            "rdfs:subPropertyOf": "dc:creator",
             "title": "Submitted by",
             "comment": "Do not submit, value is assigned by the server. The user that created the object.",
             "type": "string",

@@ -67,6 +67,7 @@
             "default": ""
         },
         "urls": {
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "URLs",
             "description": "External resources with additional information to the document.",
             "type": "array",
