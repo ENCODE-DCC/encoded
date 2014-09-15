@@ -44,6 +44,10 @@ def make_jsonld_context(event):
             '@container': '@index',
             '@reverse': 'rdfs:isDefinedBy'
         },
+        'owl:unionOf': {
+            '@container': '@list',
+            '@type': '@id'
+        },
         'rdfs:isDefinedBy': {
             '@type': '@id',
         },
@@ -89,16 +93,27 @@ def make_jsonld_context(event):
             '@type': 'rdfs:Class',
         }
 
+    # These are broken definitions
+    defines['BrokenPropertyOrClass'] = {
+        '@id': 'encoded:BrokenPropertyOrClass',
+        'owl:unionOf': [
+            'rdf:Property',
+            'rdfs:Class',
+        ],
+        '@type': 'owl:Class',
+    },
+
     MERGED_PROPS = [
-        '@type',
-        'rdfs:range',
-        'rdfs:domain',
         'rdfs:subClassOf',
         'rdfs:subPropertyOf',
         'rdfs:label',
         'rdfs:comment',
         'rdfs:isDefinedBy',
         'rdfs:seeAlso',
+    ]
+    MERGED_TYPES = [
+        'rdfs:range',
+        'rdfs:domain',
     ]
 
     for name, collection in root.by_item_type.iteritems():
@@ -116,6 +131,7 @@ def make_jsonld_context(event):
                 defines[name] = definition
                 continue
             existing = defines[name]
+
             for prop in MERGED_PROPS:
                 if prop not in definition:
                     continue
@@ -126,6 +142,31 @@ def make_jsonld_context(event):
                     continue
                 existing[prop] = sorted(
                     set(aslist(existing.get(prop, [])) + aslist(definition[prop])))
+
+            if existing['@type'] != definition['@type']:
+                existing['@type'] = 'encoded:BrokenPropertyOrClass'
+
+            for prop in MERGED_TYPES:
+                if prop not in definition:
+                    continue
+                if prop not in existing:
+                    existing[prop] = definition[prop]
+                    continue
+                if existing[prop] == definition[prop]:
+                    continue
+                classes = set()
+                for d in [definition, existing]:
+                    if isinstance(d[prop], dict):
+                        classes.update(d[prop]['owl:unionOf'])
+                    else:
+                        classes.add(d[prop])
+                if len(classes) == 1:
+                    existing[prop] = classes.pop()
+                else:
+                    existing[prop] = {
+                        '@type': 'owl:Class',
+                        'owl:unionOf': sorted(classes),
+                    }
 
     app.registry['encoded.jsonld_context'] = ontology
 
@@ -202,9 +243,8 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
         prop_ld = {
             '@id': subschema.get('@id', term_path + name),
             '@type': 'rdf:Property',
-            'rdfs:domain': aslist(subschema.get('rdfs:domain', [])),
+            'rdfs:domain': term_path + item_type,
         }
-        prop_ld['rdfs:domain'].append(term_path + item_type)
 
         if 'rdfs:subPropertyOf' in subschema:
             prop_ld['rdfs:subPropertyOf'] = aslist(subschema['rdfs:subPropertyOf'])
@@ -216,9 +256,15 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
         if 'description' in subschema:
             prop_ld['rdfs:comment'] = subschema['description']
 
-        linkTo = subschema.get('linkTo')
-        if linkTo is not None:
-            prop_ld['rdfs:range'] = [term_path + type_name for type_name in aslist(linkTo)]
+        linkTo = aslist(subschema.get('linkTo', []))
+        if len(linkTo) == 1:
+            linkTo, = linkTo
+            prop_ld['rdfs:range'] = term_path + linkTo
+        elif len(linkTo) > 1:
+            prop_ld['rdfs:range'] = {
+                '@type': 'owl:Class',
+                'owl:unionOf': [term_path + type_name for type_name in aslist(linkTo)],
+            }
 
         yield prop_ld
 
@@ -239,7 +285,7 @@ def jsonld_term(context, request):
         raise HTTPNotFound(term)
 
 
-@subscriber(BeforeRender)  # disable for now
+# @subscriber(BeforeRender)  # disable for now
 def add_jsonld_context(event):
     request = event['request']
     value = event.rendering_val
