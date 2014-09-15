@@ -75,6 +75,7 @@ def antibody_characterization_4_5(value, system):
         "immunoprecipitation",
         "immunofluorescence"
     ]
+
     secondary = [
         "knockdown or knockout",
         "immunoprecipitation followed by mass spectrometry",
@@ -86,16 +87,28 @@ def antibody_characterization_4_5(value, system):
         "peptide competition assay",
         "overexpression analysis"
     ]
+
+    dummy_review = {
+        'lane': 100,
+        'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',
+        'biosample_term_name': 'Not a real biosample',
+        'biosample_term_id': 'NTR:00000000',
+        'biosample_type': 'immortalized cell line',
+        'lane_status': 'pending dcc review'
+    }
+
     if 'characterization_method' in value:
         if value['characterization_method'] in primary:
             value['primary_characterization_method'] = value['characterization_method']
+            if 'characterization_reviews' not in value:
+                value['characterization_reviews'] = [dummy_review]
         elif value['characterization_method'] in secondary:
             value['secondary_characterization_method'] = value['characterization_method']
         del value['characterization_method']
 
     if 'status' in value:
         if value['status'] == 'not reviewed':
-            value['reviewed_by'] = '/users/ff7b77e7-bb55-4307-b665-814c9f1e65fb/'
+            value['reviewed_by'] = 'ff7b77e7-bb55-4307-b665-814c9f1e65fb'
         elif value['status'] in ['compliant', 'not compliant']:
-            value['reviewed_by'] = '/users/81a6cc12-2847-4e2e-8f2c-f566699eb29e/'
+            value['reviewed_by'] = '81a6cc12-2847-4e2e-8f2c-f566699eb29e'
             value['documents'] = ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']
