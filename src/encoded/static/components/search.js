@@ -572,6 +572,7 @@ var Dbxref = dbxref.Dbxref;
             var columns = context['columns'];
             var filters = context['filters'];
             var searchBase = this.props.searchBase;
+            var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
             
             return (
                     <div>
@@ -597,7 +598,7 @@ var Dbxref = dbxref.Dbxref;
                                                 {results.length > 25 ?
                                                     <span className="pull-right">
                                                         <a className="btn btn-info btn-sm"
-                                                           href={searchBase.replace(/[\?|\&]limit=all/, "")}
+                                                           href={trimmedSearchBase ? trimmedSearchBase : "/search/"}
                                                            onClick={this.onFilter}>View 25</a>
                                                     </span>
                                                 : null}
