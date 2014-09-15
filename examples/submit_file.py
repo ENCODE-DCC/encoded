@@ -115,7 +115,12 @@ r = requests.post(
     data=json.dumps(data),
     headers=headers,
 )
-r.raise_for_status()
+try:
+    r.raise_for_status()
+except:
+    print('Submission failed: %s %s' % (r.status_code, r.reason))
+    print(r.text)
+    raise
 item = r.json()['@graph'][0]
 print(json.dumps(item, indent=4, sort_keys=True))
 
