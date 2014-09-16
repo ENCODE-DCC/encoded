@@ -152,6 +152,7 @@ def main(global_config, **settings):
     config.include('.contentbase')
     config.include('.indexing')
     config.include('.server_defaults')
+    config.include('.types')
     config.include('.views')
     config.include('.migrator')
     config.include('.auditor')
