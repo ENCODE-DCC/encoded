@@ -22,6 +22,7 @@ TARGETS = [
         'label': 'ATF4',
         'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
         'gene_name': 'ATF4',
+        'investigated_as': ['transcription factor']
         # 'aliases': [
         #     {'alias': 'CREB2', 'source': 'HGNC'},
         #     {'alias': 'TXREB', 'source': 'HGNC'},
@@ -38,6 +39,7 @@ TARGETS = [
         'label': 'H3K4me3',
         'organism': '7745b647-ff15-4ff3-9ced-b897d4e2983c',  # looked up on insert?
         'gene_name': 'H3F3A',
+        'investigated_as': ['histone modification']
         # 'aliases': [
         #     {'alias': 'H3.3', 'source': 'HGNC'},
         #     {'alias': 'H3F3', 'source': 'HGNC'},
@@ -79,6 +81,7 @@ ANTIBODY_LOTS = [
         'antigen_description': 'ATF4 (NP_001666, a.a. 171-271) partial recombinant protein with GST tag.',
         'lab': 'myers',
         'award': 'Myers',
+        'targets': ['ATF4-human']
     },
 ]
 
@@ -200,7 +203,7 @@ USERS = [
         'groups': ['admin', 'programmer'],
     },
     {
-        'uuid': '1e945b04-aa54-4732-8b81-b41d4565f5f9',
+        'uuid': '81a6cc12-2847-4e2e-8f2c-f566699eb29e',
         'first_name': 'Cricket',
         'last_name': 'Sloan',
         'email': 'cricket@stanford.edu',

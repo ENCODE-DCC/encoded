@@ -21,7 +21,6 @@ Feature: Generics
 
     Examples: Collections
         | item_type                     | link_text                             |
-        | antibody_approval             | ENCAB000ACQ                           |
         | antibody_lot                  | ENCAB000ACQ                           |
         | antibody_characterization     | 05a22a07-ab5c-42ad-bf93-801f03b017f7  |
         | award                         | A DATA COORDINATING CENTER FOR ENCODE |

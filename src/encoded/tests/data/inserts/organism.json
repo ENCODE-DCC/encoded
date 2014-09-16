@@ -113,5 +113,22 @@
         "scientific_name": "Drosophila yakuba",
         "taxon_id": "7245",
         "uuid": "0bdd955a-57f0-4e4b-b93d-6dd1df9b766c"
+    },
+    {
+        "name": "avictoria",
+        "scientific_name": "Aequorea victoria",
+        "taxon_id": "6100",
+        "uuid": "2ca583ff-71b8-4cf8-bfe3-392b7ddd28a2"
+    },
+    {
+        "name": "synthetic",
+        "taxon_id": "0",
+        "uuid": "5d8f172c-2220-4d76-89e2-e26ed08c42e8"
+    },
+    {
+        "name": "influenza",
+        "taxon_id": "11309",
+        "scientific_name": "influenzavirus",
+        "uuid": "7349d69e-04f3-4650-b2c8-963cce2341d6"
     }
 ]
