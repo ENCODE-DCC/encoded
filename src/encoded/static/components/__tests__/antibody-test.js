@@ -147,7 +147,7 @@ describe('Antibody', function() {
             itemDescription = item.getElementsByTagName('dd')[0];
             anchor = itemDescription.getElementsByTagName('a')[0];
             expect(itemDescription.textContent).toEqual('ENCODE:Antibody_characterization_standards_February_2014');
-            expect(anchor.getAttribute('href')).toEqual('/documents/bcb5f3c8-d5e9-40d2-805f-4274f940c36d/');
+            expect(anchor.getAttribute('href')).toEqual('/documents/bcb5f3c8-d5e9-40d2-805f-4274f940c36d/@@download/attachment/Antibody_Characterization_ENCODE3_February2014.pdf');
         });
     });
 });
