@@ -2,127 +2,232 @@
 'use strict';
 var React = require('react');
 var url = require('url');
+var _ = require('underscore');
 var globals = require('./globals');
+var dataset = require('./dataset');
+var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var image = require('./image');
+var statuslabel = require('./statuslabel');
 
 var Attachment = image.Attachment;
 var DbxrefList = dbxref.DbxrefList;
+var FetchedItems = fetched.FetchedItems;
+var ExperimentTable = dataset.ExperimentTable;
+var StatusLabel = statuslabel.StatusLabel;
 
 
-var StatusLabel = module.exports.StatusLabel = React.createClass({
-    render: function() {
-        var status = this.props.status;
-        var title = this.props.title;
-        if (typeof status === 'string') {
-            // Display simple string and optional title in badge
-            return (
-                <div className="status-list">
-                    <span className={globals.statusClass(status, 'label')}>
-                        {title ? <span className="status-list-title">{title + ': '}</span> : null}
-                        {status}
-                    </span>
-                </div>
-            );
-        } else if (typeof status === 'object') {
-            // Display a list of badges from array of objects with status and optional title
-            return (
-                <ul className="status-list">
-                    {status.map(function (status) {
-                        return(
-                            <li key={status.title} className={globals.statusClass(status.status, 'label')}>
-                                {status.title ? <span className="status-list-title">{status.title + ': '}</span> : null}
-                                {status.status}
-                            </li>
-                        );
-                    })}
-                </ul>
-            );
-        } else {
-            return null;
-        }
-    }
-});
-
-
-var Approval = module.exports.Approval = React.createClass({
+var Lot = module.exports.Lot = React.createClass({
     render: function() {
         var context = this.props.context;
-        var characterizations = context.characterizations.map(function (item) {
+
+        // Sort characterization arrays, first by species, then by primary/secondary characterization method
+        var sortedChars = _(context.characterizations).sortBy(function(characterization) {
+            return [characterization.target.label, characterization.target.organism.name];
+        });
+
+        // Build array of characterization panels
+        var characterizations = sortedChars.map(function(item) {
             return globals.panel_views.lookup(item)({context: item, key: item['@id']});
         });
-    
-        // Make string of alternate accessions
-        var altacc = context.antibody.alternate_accessions ? context.antibody.alternate_accessions.join(', ') : undefined;
 
-        // Missing enncode
+        // Build antibody status panel
+        var antibodyStatuses = globals.panel_views.lookup(context)({context: context, key: context['@id']});
+
+        // Make an array of targets with no falsy entries and no repeats
+        var targets = {};
+        if (context.lot_reviews && context.lot_reviews.length) {
+            context.lot_reviews.forEach(function(lot_review) {
+                lot_review.targets.forEach(function(target) {
+                    targets[target['@id']] = target;
+                });
+            });
+        }
+        var targetKeys = Object.keys(targets);
+
+        // Make string of alternate accessions
+        var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
+
+        // To search list of linked experiments
+        var experiments_url = '/search/?type=experiment&replicates.antibody.accession=' + context.accession;
+
         return (
             <div className={globals.itemClass(context, 'view-item')}>
                 <header className="row">
                     <div className="col-sm-12">
-                        <h2>Approval for {context.antibody.accession}</h2>
+                        <h2>{context.accession}</h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <h3>Antibody against <em>{context.target.organism.scientific_name}</em>
-                            {' '}{context.target.label}
+                        <h3>
+                            {targetKeys.length ?
+                                <span>Antibody against {Object.keys(targets).map(function(target, i) {
+                                    var targetObj = targets[target];
+                                    return <span key={i}>{i !== 0 ? ', ' : ''}<em>{targetObj.organism.scientific_name}</em>{' ' + targetObj.label}</span>;
+                                })}</span>
+                            :
+                                <span>Antibody</span>
+                            }
                         </h3>
-                        <div className="characterization-status-labels">
-                            <StatusLabel title="Status" status={context.status} />
-                        </div>
                     </div>
                 </header>
 
+                {context.lot_reviews && context.lot_reviews.length ?
+                    <div className="antibody-statuses">
+                        {antibodyStatuses}
+                    </div>
+                :
+                    <div className="characterization-status-labels">
+                        <StatusLabel status="Awaiting lab characterization" />
+                    </div>
+                }
+
                 <div className="panel data-display">
                     <dl className="key-value">
-                        <dt>Source (vendor)</dt>
-                        <dd><a href={context.antibody.source.url}>{context.antibody.source.title}</a></dd>
+                        <div data-test="source">
+                            <dt>Source (vendor)</dt>
+                            <dd><a href={context.source.url}>{context.source.title}</a></dd>
+                        </div>
 
-                        <dt>Product ID</dt>
-                        <dd><a href={context.antibody.url}>{context.antibody.product_id}</a></dd>
+                        <div data-test="productid">
+                            <dt>Product ID</dt>
+                            <dd><a href={context.url}>{context.product_id}</a></dd>
+                        </div>
 
-                        <dt>Lot ID</dt>
-                        <dd>{context.antibody.lot_id}</dd>
+                        <div data-test="lotid">
+                            <dt>Lot ID</dt>
+                            <dd>{context.lot_id}</dd>
+                        </div>
 
-                        {context.antibody.lot_id_alias.length ? <dt>Lot ID aliases</dt> : null}
-                        {context.antibody.lot_id_alias.length ? <dd>{context.antibody.lot_id_alias.join(', ')}</dd> : null}
+                        {Object.keys(targets).length ?
+                            <div data-test="targets">
+                                <dt>Targets</dt>
+                                <dd>
+                                    {targetKeys.map(function(target, i) {
+                                        var targetObj = targets[target];
+                                        return <span key={i}>{i !== 0 ? ', ' : ''}<a href={target}>{targetObj.label}{' ('}<em>{targetObj.organism.scientific_name}</em>{')'}</a></span>;
+                                    })}
+                                </dd>
+                            </div>
+                        : null}
 
-                        <dt>Target</dt>
-                        <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                        {context.lot_id_alias && context.lot_id_alias.length ?
+                            <div data-test="lotidalias">
+                                <dt>Lot ID aliases</dt>
+                                <dd>{context.lot_id_alias.join(', ')}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.host_organism ? <dt>Host</dt> : null}
-                        {context.antibody.host_organism ? <dd className="sentence-case">{context.antibody.host_organism.name}</dd> : null}
+                        <div data-test="host">
+                            <dt>Host</dt>
+                            <dd className="sentence-case">{context.host_organism.name}</dd>
+                        </div>
 
-                        {context.antibody.clonality ? <dt>Clonality</dt> : null}
-                        {context.antibody.clonality ? <dd className="sentence-case">{context.antibody.clonality}</dd> : null}
+                        {context.clonality ?
+                            <div data-test="clonality">
+                                <dt>Clonality</dt>
+                                <dd className="sentence-case">{context.clonality}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.purifications.length ? <dt>Purification</dt> : null}
-                        {context.antibody.purifications.length ? <dd className="sentence-case">{context.antibody.purifications.join(', ')}</dd> : null}
+                        {context.purifications && context.purifications.length ?
+                            <div data-test="purifications">
+                                <dt>Purification</dt>
+                                <dd className="sentence-case">{context.purifications.join(', ')}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.isotype ? <dt>Isotype</dt> : null}
-                        {context.antibody.isotype ? <dd className="sentence-case">{context.antibody.isotype}</dd> : null}
+                        {context.isotype ?
+                            <div data-test="isotype">
+                                <dt>Isotype</dt>
+                                <dd className="sentence-case">{context.isotype}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.antigen_description ? <dt>Antigen description</dt> : null}
-                        {context.antibody.antigen_description ? <dd>{context.antibody.antigen_description}</dd> : null}
+                        {context.antigen_description ?
+                            <div data-test="antigendescription">
+                                <dt>Antigen description</dt>
+                                <dd>{context.antigen_description}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.antigen_sequence ? <dt>Antigen sequence</dt> : null}
-                        {context.antibody.antigen_sequence ? <dd>{context.antibody.antigen_sequence}</dd> : null}
+                        {context.antigen_sequence ?
+                            <div data-test="antigensequence">
+                                <dt>Antigen sequence</dt>
+                                <dd>{context.antigen_sequence}</dd>
+                            </div>
+                        : null}
 
-                        {context.antibody.aliases.length ? <dt>Aliases</dt> : null}
-                        {context.antibody.aliases.length ? <dd>{context.antibody.aliases.join(", ")}</dd> : null}
+                        {context.aliases && context.aliases.length ?
+                            <div data-test="aliases">
+                                <dt>Aliases</dt>
+                                <dd>{context.aliases.join(", ")}</dd>
+                            </div>
+                        : null}
                         
-                        {context.antibody.dbxrefs.length ? <dt>External resources</dt> : null}
-                        {context.antibody.dbxrefs.length ? <dd><DbxrefList values={context.antibody.dbxrefs} /></dd> : null}
+                        {context.dbxrefs && context.dbxrefs.length ?
+                            <div data-test="dbxrefs">
+                                <dt>External resources</dt>
+                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                            </div>
+                        : null}
+
                     </dl>
                 </div>
 
                 <div className="characterizations">
                     {characterizations}
                 </div>
+
+                {this.transferPropsTo(
+                    <FetchedItems url={experiments_url} Component={ExperimentsUsingAntibody} />
+                )}
             </div>
         );
     }
 });
 
-globals.content_views.register(Approval, 'antibody_approval');
+globals.content_views.register(Lot, 'antibody_lot');
+
+
+var ExperimentsUsingAntibody = React.createClass({
+    render: function () {
+        var context = this.props.context;
+
+        return (
+            <div>
+                <span className="pull-right">
+                    <a className="btn btn-info btn-sm" href={this.props.url}>View all</a>
+                </span>
+
+                <div>
+                    <h3>Experiments using antibody {context.accession}</h3>
+                    {this.transferPropsTo(
+                        <ExperimentTable limit={5} total={this.props.total} />
+                    )}
+                </div>
+            </div>
+        );
+    }
+});
+
+
+var StandardsDocuments = React.createClass({
+    render: function() {
+        return (
+            <div>
+                {this.props.docs.map(function(doc, i) {
+                    var attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
+                    return (
+                        <div key={i} className="multi-dd">
+                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                                {doc.aliases[0]}
+                            </a>
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    }
+});
 
 
 var Characterization = module.exports.Characterization = React.createClass({
@@ -144,8 +249,17 @@ var Characterization = module.exports.Characterization = React.createClass({
             );
         }
 
+        // Compile a list of attached standards documents
+        var standardsDocuments = [];
+        if (context.documents) {
+            standardsDocuments = context.documents.filter(function(doc) {
+                return doc.document_type === "standards document";
+            });
+        }
+
         return (
             <section className={globals.itemClass(context, 'view-detail panel')}>
+                <h4>{context.target.label} (<i>{context.target.organism.scientific_name}</i>)</h4>
                 <div className="row">
                     <div className="col-sm-4 col-md-6">
                         <figure>
@@ -157,34 +271,58 @@ var Characterization = module.exports.Characterization = React.createClass({
                     </div>
                     <div className="col-sm-8 col-md-6">
                         <dl className="characterization-meta-data key-value">
-                            <dt className="h3">Method</dt>
-                            <dd className="h3">{context.characterization_method}</dd>
+                            {context.characterization_method ?
+                                <div data-test="method">
+                                    <dt className="h3">Method</dt>
+                                    <dd className="h3">{context.characterization_method} ({context.primary_characterization_method ? 'primary' : 'secondary'})</dd>
+                                </div>
+                            : null}
 
-                            <dt className="h4">Target species</dt>
-                            <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
+                            <div data-test="targetspecies">
+                                <dt className="h4">Target species</dt>
+                                <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
+                            </div>
 
-                            {context.caption ? <dt>Caption</dt> : null}
-                            {context.caption ? <dd className="sentence-case">{context.caption}</dd> : null}
+                            {context.caption ?
+                                <div data-test="caption">
+                                    <dt>Caption</dt>
+                                    <dd className="sentence-case">{context.caption}</dd>
+                                </div>
+                            : null}
 
-                            <dt>Submitted by</dt>
-                            <dd>{context.submitted_by.title}</dd>
+                            {context.submitted_by && context.submitted_by.title ?
+                                <div data-test="submitted">
+                                    <dt>Submitted by</dt>
+                                    <dd>{context.submitted_by.title}</dd>
+                                </div>
+                            : null}
 
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
 
-                            <dt>Grant</dt>
-                            <dd>{context.award.name}</dd>
+                            <div data-test="grant">
+                                <dt>Grant</dt>
+                                <dd>{context.award.name}</dd>
+                            </div>
 
-                            {/*
-                            <dt>Approver</dt>
-                            <dd>{context.validated_by}</dd>
-                            */}
+                            <div data-test="image">
+                                <dt>Image</dt>
+                                <dd><StatusLabel status={context.status} /></dd>
+                            </div>
 
-                            <dt>Image</dt>
-                            <dd><StatusLabel status={context.status} /></dd>
+                            {standardsDocuments.length ?
+                                <div data-test="standardsdoc">
+                                    <dt>Standards documents</dt>
+                                    <dd><StandardsDocuments docs={standardsDocuments} /></dd>
+                                </div>
+                            : null}
 
-                            <dt><i className="icon icon-download"></i> Download</dt>
-                            <dd>{download}</dd>
+                            <div data-test="download">
+                                <dt><i className="icon icon-download"></i> Download</dt>
+                                <dd>{download}</dd>
+                            </div>
                         </dl>
                     </div>
                 </div>
@@ -194,3 +332,68 @@ var Characterization = module.exports.Characterization = React.createClass({
 });
 
 globals.panel_views.register(Characterization, 'antibody_characterization');
+
+
+var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
+    render: function() {
+        var context = this.props.context;
+
+        // Build antibody display object as a hierarchy: status=>organism=>biosample_term_name
+        var statusTree = {};
+        context.lot_reviews.forEach(function(lot_review) {
+            // Status at top of hierarchy. If haven’t seen this status before, remember it
+            if (!statusTree[lot_review.status]) {
+                statusTree[lot_review.status] = {};
+            }
+
+            // Look at all organisms in current lot_review. They go under this lot_review's status
+            var statusNode = statusTree[lot_review.status];
+            lot_review.organisms.forEach(function(organism) {
+                // If haven’t seen this organism with this status before, remember it
+                if (!statusNode[organism.scientific_name]) {
+                    statusNode[organism.scientific_name] = {};
+                }
+
+                // If haven't seen this biosample term name for this organism, remember it
+                var organismNode = statusNode[organism.scientific_name];
+                if (!organismNode[lot_review.biosample_term_name]) {
+                    organismNode[lot_review.biosample_term_name] = true;
+                }
+            });
+        });
+
+        return (
+            <section className="type-antibody-status view-detail panel">
+                <div className="row">
+                    <div className="col-xs-12">
+                        {Object.keys(statusTree).map(function(status) {
+                            var organisms = statusTree[status];
+                            return (
+                                <div key={status} className="row status-status-row">
+                                    {Object.keys(organisms).map(function(organism, i) {
+                                        var terms = Object.keys(organisms[organism]);
+                                        return (
+                                            <div key={i} className="row status-organism-row">
+                                                <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
+                                                    {i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}
+                                                </div>
+                                                <div className="col-sm-2 col-sm-pull-3 status-organism">
+                                                    {organism}
+                                                </div>
+                                                <div className="col-sm-7 col-sm-pull-3 status-terms">
+                                                    {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+        );
+    }
+});
+
+globals.panel_views.register(AntibodyStatus, 'antibody_lot');

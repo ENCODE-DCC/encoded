@@ -11,9 +11,11 @@ var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
+var cx = React.addons.classSet;
+
     // Should readlly be singular...
     var types = {
-        antibody_approval: {title: 'Antibodies'},
+        antibody_lot: {title: 'Antibodies'},
         biosample: {title: 'Biosamples'},
         experiment: {title: 'Experiments'},
         target: {title: 'Targets'},
@@ -72,36 +74,150 @@ var Dbxref = dbxref.Dbxref;
     });
     globals.listing_views.register(Item, 'item');
 
+    // Display one antibody status indicator
+    var StatusIndicator = React.createClass({
+        getInitialState: function() {
+            return {
+                tipOpen: false,
+                tipStyles: {}
+            };
+        },
+
+        // Display tooltip on hover
+        onMouseEnter: function () {
+            function getNextElementSibling(el) {
+                // IE8 doesn't support nextElementSibling
+                return el.nextElementSibling ? el.nextElementSibling : el.nextSibling;
+            }
+
+            // Get viewport bounds of result table and of this tooltip
+            var whiteSpace = 'nowrap';
+            var resultBounds = document.getElementById('result-table').getBoundingClientRect();
+            var resultWidth = resultBounds.right - resultBounds.left;
+            var tipBounds = _.clone(getNextElementSibling(this.refs.indicator.getDOMNode()).getBoundingClientRect());
+            var tipWidth = tipBounds.right - tipBounds.left;
+            var width = tipWidth;
+            if (tipWidth > resultWidth) {
+                // Tooltip wider than result table; set tooltip to result table width and allow text to wrap
+                tipBounds.right = tipBounds.left + resultWidth - 2;
+                whiteSpace = 'normal';
+                width = tipBounds.right - tipBounds.left - 2;
+            }
+
+            // Set an inline style to move the tooltip if it runs off right edge of result table
+            var leftOffset = resultBounds.right - tipBounds.right;
+            if (leftOffset < 0) {
+                // Tooltip goes outside right edge of result table; move it to the left
+                this.setState({tipStyles: {left: (leftOffset + 10) + 'px', maxWidth: resultWidth + 'px', whiteSpace: whiteSpace, width: width + 'px'}});
+            } else {
+                // Tooltip fits inside result table; move it to native position
+                this.setState({tipStyles: {left: '10px', maxWidth: resultWidth + 'px', whiteSpace: whiteSpace, width: width + 'px'}});
+            }
+
+            this.setState({tipOpen: true});
+        },
+
+        // Close tooltip when not hovering
+        onMouseLeave: function() {
+            this.setState({tipStyles: {maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px'}}); // Reset position and width
+            this.setState({tipOpen: false});
+        },
+
+        render: function() {
+            var classes = {tooltipopen: this.state.tipOpen};
+
+            return (
+                <span className="tooltip-trigger">
+                    <i className={globals.statusClass(this.props.status, 'indicator icon icon-circle')} ref="indicator" onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}></i>
+                    <div className={"tooltip sentence-case " + cx(classes)} style={this.state.tipStyles}>
+                        {this.props.status}<br /><span>{this.props.terms.join(', ')}</span>
+                    </div>
+                </span>
+            );
+        }
+    });
+
+    // Display the status indicators for one target
+    var StatusIndicators = React.createClass({
+        render: function() {
+            var targetTree = this.props.targetTree;
+            var target = this.props.target;
+
+            return (
+                <span className="status-indicators">
+                    {Object.keys(targetTree[target]).map(function(status, i) {
+                        if (status !== 'target') {
+                            return <StatusIndicator key={i} status={status} terms={targetTree[target][status]} />;
+                        } else {
+                            return null;
+                        }
+                    })}
+                </span>
+            );
+        }
+    });
+
     var Antibody = module.exports.Antibody = React.createClass({
         mixins: [PickerActionsMixin],
         render: function() {
             var result = this.props.context;
             var columns = this.props.columns;
-            return (<li>
-                        <div>
-                            {this.renderActions()}
-                            <div className="pull-right search-meta">
-                                <p className="type meta-title">Antibody</p>
-                                <p className="type">{' ' + result['antibody.accession']}</p>
-                                <p className="type meta-status">{' ' + result['status']}</p>
-                            </div>
-                            <div className="accession">
-                                <a href={result['@id']}>
-                                    {result['target.label'] + ' ('}
-                                    <em>{result['target.organism.scientific_name']}</em>
-                                    {')'}
-                                </a> 
-                            </div>
+
+            // Build antibody display object as a hierarchy: target=>status=>biosample_term_names
+            var targetTree = {};
+            result.lot_reviews.forEach(function(lot_review) {
+                lot_review.targets.forEach(function(target) {
+                    // If we haven't seen this target, save it in targetTree along with the
+                    // corresponding target and organism structures.
+                    if (!targetTree[target.name]) {
+                        targetTree[target.name] = {target: target};
+                    }
+                    var targetNode = targetTree[target.name];
+
+                    // If we haven't seen the status, save it in the targetTree target
+                    if (!targetNode[lot_review.status]) {
+                        targetNode[lot_review.status] = [];
+                    }
+                    var statusNode = targetNode[lot_review.status];
+
+                    // If we haven't seen the biosample term name, save it in the targetTree target status
+                    if (statusNode.indexOf(lot_review.biosample_term_name) === -1) {
+                        statusNode.push(lot_review.biosample_term_name);
+                    }
+                });
+            });
+
+            return (
+                <li>
+                    <div>
+                        {this.renderActions()}
+                        <div className="pull-right search-meta">
+                            <p className="type meta-title">Antibody</p>
+                            <p className="type">{' ' + result.accession}</p>
                         </div>
-                        <div className="data-row"> 
-                            <strong>{columns['antibody.source.title']['title']}</strong>: {result['antibody.source.title']}<br />
-                            <strong>{columns['antibody.product_id']['title']}/{columns['antibody.lot_id']['title']}</strong>: {result['antibody.product_id']} / {result['antibody.lot_id']}<br />
+                        <div className="accession">
+                            {Object.keys(targetTree).map(function(target) {
+                                return (
+                                    <div>
+                                        <a href={result['@id']}>
+                                            {targetTree[target].target.label}
+                                            {targetTree[target].target.organism ? <span>{' ('}<i>{targetTree[target].target.organism.scientific_name}</i>{')'}</span> : ''}
+                                        </a>
+                                        <StatusIndicators targetTree={targetTree} target={target} />
+                                    </div>
+                                );
+                            })}
                         </div>
+                    </div>
+                    <div className="data-row"> 
+                        <strong>{columns['source.title']['title']}</strong>: {result['source.title']}<br />
+                        <strong>{columns.product_id.title}/{columns.lot_id.title}</strong>: {result.product_id} / {result.lot_id}<br />
+                    </div>
                 </li>
             );
         }
     });
-    globals.listing_views.register(Antibody, 'antibody_approval');
+    globals.listing_views.register(Antibody, 'antibody_lot');
 
     var Biosample = module.exports.Biosample = React.createClass({
         mixins: [PickerActionsMixin],
@@ -601,7 +717,7 @@ var Dbxref = dbxref.Dbxref;
                                     </h4>
                                 : <h4>{context['notification']}</h4>}
                                 <hr />
-                                <ul className="nav result-table">
+                                <ul className="nav result-table" id="result-table">
                                     {results.length ?
                                         results.map(function (result) {
                                             return Listing({context:result, columns: columns, key: result['@id']});

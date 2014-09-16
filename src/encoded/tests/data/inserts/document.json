@@ -334,6 +334,17 @@
     },
     {
         "aliases": [
+            "ENCODE:Antibody_characterization_standards_February_2014"
+        ],
+        "attachment": "Antibody_Characterization_ENCODE3_February2014.pdf",
+        "award": "U41HG006992",
+        "document_type": "standards document",
+        "lab": "j-michael-cherry",
+        "submitted_by": "duis.pede@nonummy.scelerisque",
+        "uuid": "bcb5f3c8-d5e9-40d2-805f-4274f940c36d"
+    },
+    {
+        "aliases": [
             "ENCODE:sample_strain_generation_protocol"
         ],
         "attachment": "sample_strain_generation_protocol.pdf",
