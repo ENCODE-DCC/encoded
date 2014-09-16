@@ -423,6 +423,7 @@
             "enum": [
                 "fertilization",
                 "egg laying",
+                "egg bleaching",
                 "starved L1 larva",
                 "dauer exit"
             ]
