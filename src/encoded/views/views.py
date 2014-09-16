@@ -1323,50 +1323,6 @@ def isNotCollectionDefaultPage(value, schema):
 VALIDATOR_REGISTRY['isNotCollectionDefaultPage'] = isNotCollectionDefaultPage
 
 
-class LegacyPage(Collection):
-    schema = load_schema('page.json')
-
-    template = copy.deepcopy(Collection.template)
-    template['@type'] = [
-        {'$value': '{item_type}_collection', '$templated': True},
-        'page_collection',
-        'collection',
-    ]
-    template['actions'] = [ADD_ACTION]
-
-    class Item(Collection.Item):
-        base_types = ['page'] + Collection.Item.base_types
-        name_key = 'name'
-        keys = ['name']
-        actions = [EDIT_ACTION]
-
-        STATUS_ACL = {
-            'in progress': [],
-            'released': ALLOW_EVERYONE_VIEW,
-            'deleted': ONLY_ADMIN_VIEW,
-        }
-
-
-@location('_about')
-class AboutPage(LegacyPage):
-    item_type = 'about_page'
-    properties = {
-        'title': 'About Pages',
-        'description': 'Portal pages, about section',
-    }
-    unique_key = 'about_page:name'
-
-
-@location('_help')
-class HelpPage(LegacyPage):
-    item_type = 'help_page'
-    properties = {
-        'title': 'Help Pages',
-        'description': 'Portal pages, help section',
-    }
-    unique_key = 'help_page:name'
-
-
 @location('publications')
 class Publication(Collection):
     item_type = 'publication'
