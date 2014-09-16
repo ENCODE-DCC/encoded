@@ -215,7 +215,14 @@ var StandardsDocuments = React.createClass({
         return (
             <div>
                 {this.props.docs.map(function(doc, i) {
-                    return (<div key={i} className="multi-dd"><a href={doc['@id']}>{doc.aliases[0]}</a></div>);
+                    var attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
+                    return (
+                        <div key={i} className="multi-dd">
+                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                                {doc.aliases[0]}
+                            </a>
+                        </div>
+                    );
                 })}
             </div>
         );
