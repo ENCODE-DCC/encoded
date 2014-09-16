@@ -17,7 +17,6 @@ from pyramid.threadlocal import get_current_request
 from pyramid.traversal import (
     find_root,
 )
-import copy
 
 
 @location('pages')
@@ -29,8 +28,9 @@ class Page(Collection):
     }
     schema = load_schema('page.json')
     unique_key = 'page:location'
-    template = copy.deepcopy(Collection.template)
-    template['actions'] = [ADD_ACTION]
+    template = {
+        'actions': [ADD_ACTION],
+    }
 
     class Item(Collection.Item):
         name_key = 'name'
