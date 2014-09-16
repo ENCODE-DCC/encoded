@@ -780,7 +780,6 @@ class Collection(Mapping):
             {'$value': '{item_type}_collection', '$templated': True},
             'collection',
         ],
-        '@context': lambda request: request.route_url('jsonld_context'),
     }
 
     def __init__(self, parent, name):
@@ -984,7 +983,6 @@ class Collection(Mapping):
 
     @classmethod
     def expand_page(cls, request, properties):
-        properties['@context'] = request.route_url('jsonld_context')
         return properties
 
     def add_actions(self, request, properties):

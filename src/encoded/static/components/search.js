@@ -86,6 +86,7 @@ var cx = React.addons.classSet;
         // Display tooltip on hover
         onMouseEnter: function () {
             function getNextElementSibling(el) {
+                // IE8 doesn't support nextElementSibling
                 return el.nextElementSibling ? el.nextElementSibling : el.nextSibling;
             }
 
@@ -93,11 +94,11 @@ var cx = React.addons.classSet;
             var whiteSpace = 'nowrap';
             var resultBounds = document.getElementById('result-table').getBoundingClientRect();
             var resultWidth = resultBounds.right - resultBounds.left;
-            var tipElement = getNextElementSibling(this.refs.indicator.getDOMNode());
-            var tipBounds = _.clone(tipElement.getBoundingClientRect());
+            var tipBounds = _.clone(getNextElementSibling(this.refs.indicator.getDOMNode()).getBoundingClientRect());
             var tipWidth = tipBounds.right - tipBounds.left;
             var width = tipWidth;
             if (tipWidth > resultWidth) {
+                // Tooltip wider than result table; set tooltip to result table width and allow text to wrap
                 tipBounds.right = tipBounds.left + resultWidth - 2;
                 whiteSpace = 'normal';
                 width = tipBounds.right - tipBounds.left - 2;
@@ -106,8 +107,10 @@ var cx = React.addons.classSet;
             // Set an inline style to move the tooltip if it runs off right edge of result table
             var leftOffset = resultBounds.right - tipBounds.right;
             if (leftOffset < 0) {
+                // Tooltip goes outside right edge of result table; move it to the left
                 this.setState({tipStyles: {left: (leftOffset + 10) + 'px', maxWidth: resultWidth + 'px', whiteSpace: whiteSpace, width: width + 'px'}});
             } else {
+                // Tooltip fits inside result table; move it to native position
                 this.setState({tipStyles: {left: '10px', maxWidth: resultWidth + 'px', whiteSpace: whiteSpace, width: width + 'px'}});
             }
 
@@ -116,7 +119,7 @@ var cx = React.addons.classSet;
 
         // Close tooltip when not hovering
         onMouseLeave: function() {
-            this.setState({tipStyles: {maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px'}});
+            this.setState({tipStyles: {maxWidth: 'none', whiteSpace: 'nowrap', width: 'auto', left: '15px'}}); // Reset position and width
             this.setState({tipOpen: false});
         },
 
@@ -143,7 +146,7 @@ var cx = React.addons.classSet;
             return (
                 <span className="status-indicators">
                     {Object.keys(targetTree[target]).map(function(status, i) {
-                        if (status !== 'target' && status !== 'organism') {
+                        if (status !== 'target') {
                             return <StatusIndicator key={i} status={status} terms={targetTree[target][status]} />;
                         } else {
                             return null;
@@ -164,15 +167,10 @@ var cx = React.addons.classSet;
             var targetTree = {};
             result.lot_reviews.forEach(function(lot_review) {
                 lot_review.targets.forEach(function(target) {
-                    // Get the organism object for this target
-                    var targetOrganism = _(lot_review.organisms).find(function(organism) {
-                        return organism['@id'] === target.organism['@id'];
-                    });
-
                     // If we haven't seen this target, save it in targetTree along with the
                     // corresponding target and organism structures.
                     if (!targetTree[target.name]) {
-                        targetTree[target.name] = {target: target, organism: targetOrganism};
+                        targetTree[target.name] = {target: target};
                     }
                     var targetNode = targetTree[target.name];
 
@@ -183,7 +181,9 @@ var cx = React.addons.classSet;
                     var statusNode = targetNode[lot_review.status];
 
                     // If we haven't seen the biosample term name, save it in the targetTree target status
-                    statusNode.push(lot_review.biosample_term_name);
+                    if (statusNode.indexOf(lot_review.biosample_term_name) === -1) {
+                        statusNode.push(lot_review.biosample_term_name);
+                    }
                 });
             });
 
@@ -201,7 +201,7 @@ var cx = React.addons.classSet;
                                     <div>
                                         <a href={result['@id']}>
                                             {targetTree[target].target.label}
-                                            {targetTree[target].organism ? <span>{' ('}<i>{targetTree[target].organism.scientific_name}</i>{')'}</span> : ''}
+                                            {targetTree[target].target.organism ? <span>{' ('}<i>{targetTree[target].target.organism.scientific_name}</i>{')'}</span> : ''}
                                         </a>
                                         <StatusIndicators targetTree={targetTree} target={target} />
                                     </div>

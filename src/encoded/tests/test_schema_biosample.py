@@ -48,3 +48,7 @@ def test_biosample_depeleted_in_type_whole_organismg(testapp, biosample_depelete
 
 def test_biosample_starting_amount(testapp, biosample_starting_amount):
     testapp.post_json('/biosample', biosample_starting_amount)
+
+def test_biosample_transfection_method(testapp, biosample):
+    biosample['transfection_method'] = 'transduction'
+    testapp.post_json('/biosample', biosample, status=422)

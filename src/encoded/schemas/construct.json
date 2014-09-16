@@ -90,7 +90,7 @@
             }
         },
         "vector_backbone_name": {
-            "title": "Backbone Name",
+            "title": "Backbone name",
             "description": "The name of the vector backbone used for the construct.",
             "type": "string"
         },

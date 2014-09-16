@@ -109,7 +109,7 @@ var Lot = module.exports.Lot = React.createClass({
                             </div>
                         : null}
 
-                        {context.lot_id_alias.length ?
+                        {context.lot_id_alias && context.lot_id_alias.length ?
                             <div data-test="lotidalias">
                                 <dt>Lot ID aliases</dt>
                                 <dd>{context.lot_id_alias.join(', ')}</dd>
@@ -128,7 +128,7 @@ var Lot = module.exports.Lot = React.createClass({
                             </div>
                         : null}
 
-                        {context.purifications.length ?
+                        {context.purifications && context.purifications.length ?
                             <div data-test="purifications">
                                 <dt>Purification</dt>
                                 <dd className="sentence-case">{context.purifications.join(', ')}</dd>
@@ -201,7 +201,7 @@ var ExperimentsUsingAntibody = React.createClass({
                 <div>
                     <h3>Experiments using antibody {context.accession}</h3>
                     {this.transferPropsTo(
-                        <ExperimentTable limit={5} />
+                        <ExperimentTable limit={5} total={this.props.total} />
                     )}
                 </div>
             </div>
@@ -243,9 +243,9 @@ var Characterization = module.exports.Characterization = React.createClass({
         }
 
         // Compile a list of attached standards documents
-        standardsDocuments = [];
+        var standardsDocuments = [];
         if (context.documents) {
-            var standardsDocuments = context.documents.filter(function(doc) {
+            standardsDocuments = context.documents.filter(function(doc) {
                 return doc.document_type === "standards document";
             });
         }
@@ -333,7 +333,6 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
 
         // Build antibody display object as a hierarchy: status=>organism=>biosample_term_name
         var statusTree = {};
-        var organismCount = 0;
         context.lot_reviews.forEach(function(lot_review) {
             // Status at top of hierarchy. If haven’t seen this status before, remember it
             if (!statusTree[lot_review.status]) {
@@ -342,25 +341,18 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
 
             // Look at all organisms in current lot_review. They go under this lot_review's status
             var statusNode = statusTree[lot_review.status];
-            if (lot_review.organisms && lot_review.organisms.length) {
-                lot_review.organisms.forEach(function(organism) {
-                    // If haven’t seen this organism with this status before, remember it
-                    if (!statusNode[organism.scientific_name]) {
-                        statusNode[organism.scientific_name] = {};
-                        organismCount++;
-                    }
-
-                    // If haven't seen this biosample term name for this organism, remember it
-                    var organismNode = statusNode[organism.scientific_name];
-                    if (!organismNode[lot_review.biosample_term_name]) {
-                        organismNode[lot_review.biosample_term_name] = true;
-                    }
-                });
-            } else {
-                if (!statusNode[lot_review.biosample_term_name]) {
-                    statusNode[lot_review.biosample_term_name] = true;
+            lot_review.organisms.forEach(function(organism) {
+                // If haven’t seen this organism with this status before, remember it
+                if (!statusNode[organism.scientific_name]) {
+                    statusNode[organism.scientific_name] = {};
                 }
-            }
+
+                // If haven't seen this biosample term name for this organism, remember it
+                var organismNode = statusNode[organism.scientific_name];
+                if (!organismNode[lot_review.biosample_term_name]) {
+                    organismNode[lot_review.biosample_term_name] = true;
+                }
+            });
         });
 
         return (
@@ -368,47 +360,27 @@ var AntibodyStatus = module.exports.AntibodyStatus = React.createClass({
                 <div className="row">
                     <div className="col-xs-12">
                         {Object.keys(statusTree).map(function(status) {
-                            if (organismCount) {
-                                var organisms = statusTree[status];
-                                return (
-                                    <div key={status} className="row status-status-row">
-                                        {Object.keys(organisms).map(function(organism, i) {
-                                            var terms = Object.keys(organisms[organism]);
-                                            return (
-                                                <div key={i} className="row status-organism-row">
-                                                    <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
-                                                        {i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}
-                                                    </div>
-                                                    <div className="col-sm-2 col-sm-pull-3 status-organism">
-                                                        {organism}
-                                                    </div>
-                                                    <div className="col-sm-7 col-sm-pull-3 status-terms">
-                                                        {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
-                                                    </div>
+                            var organisms = statusTree[status];
+                            return (
+                                <div key={status} className="row status-status-row">
+                                    {Object.keys(organisms).map(function(organism, i) {
+                                        var terms = Object.keys(organisms[organism]);
+                                        return (
+                                            <div key={i} className="row status-organism-row">
+                                                <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
+                                                    {i === 0 ? <span><i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>{status}</span> : ''}
                                                 </div>
-                                            );
-                                        })}
-                                    </div>
-                                );
-                            } else {
-                                var terms = Object.keys(statusTree[status]);
-                                return (
-                                    <div className="row status-status-row">
-                                        <div className="row status-organism-row">
-                                            <div className="col-sm-3 col-sm-push-9 status-status sentence-case">
-                                                <span>
-                                                    <i className={globals.statusClass(status, 'indicator icon icon-circle')}></i>
-                                                    {status}
-                                                </span>
+                                                <div className="col-sm-2 col-sm-pull-3 status-organism">
+                                                    {organism}
+                                                </div>
+                                                <div className="col-sm-7 col-sm-pull-3 status-terms">
+                                                    {terms.length === 1 && terms[0] === 'not specified' ? '' : terms.join(', ')}
+                                                </div>
                                             </div>
-                                            <div className="col-sm-2 col-sm-pull-3 status-organism">&nbsp;</div>
-                                            <div className="col-sm-7 col-sm-pull-3 status-terms">
-                                                {terms.join(', ')}
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            }
+                                        );
+                                    })}
+                                </div>
+                            );
                         })}
                     </div>
                 </div>

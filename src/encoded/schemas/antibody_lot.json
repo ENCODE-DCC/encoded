@@ -66,6 +66,8 @@
             ]
         },
         "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",
@@ -215,6 +217,10 @@
         },
         "lot_reviews.targets.organism.@id": {
             "title": "Target organism ID",
+            "type":  "array"
+        },
+        "lot_reviews.targets.organism.scientific_name": {
+            "title": "Target organism scientific name",
             "type":  "array"
         },
         "source.title": {

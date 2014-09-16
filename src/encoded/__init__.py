@@ -162,6 +162,7 @@ def main(global_config, **settings):
         hostname = subprocess.check_output(hostname_command, shell=True).strip()
         settings.setdefault('persona.audiences', '')
         settings['persona.audiences'] += '\nhttp://%s' % hostname
+        settings['persona.audiences'] += '\nhttp://%s:6543' % hostname
 
     config.include('.persona')
     config.include('pyramid_multiauth')

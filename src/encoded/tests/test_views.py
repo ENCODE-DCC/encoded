@@ -281,5 +281,10 @@ def test_antibody_redirect(testapp, antibody_approval):
 
 
 def test_jsonld_context(testapp):
-    res = testapp.get('/context.jsonld')
+    res = testapp.get('/terms/')
+    assert res.json
+
+
+def test_jsonld_term(testapp):
+    res = testapp.get('/terms/submitted_by')
     assert res.json

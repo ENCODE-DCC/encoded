@@ -11,7 +11,9 @@ from ..contentbase import (
 def includeme(config):
     config.registry['encoded.processid'] = os.getppid()
     config.add_route('schema', '/profiles/{item_type}.json')
-    config.add_route('jsonld_context', '/context.jsonld')
+    config.add_route('jsonld_context', '/terms/')
+    config.add_route('jsonld_context_no_slash', '/terms')
+    config.add_route('jsonld_term', '/terms/{term}')
     config.add_route('graph', '/profiles/graph.dot')
     config.scan()
 
@@ -28,7 +30,6 @@ class EncodedRoot(Root):
 def home(context, request):
     result = context.__json__(request)
     result.update({
-        '@context': request.route_url('jsonld_context'),
         '@id': request.resource_path(context),
         '@type': ['portal'],
         # 'login': {'href': request.resource_path(context, 'login')},
