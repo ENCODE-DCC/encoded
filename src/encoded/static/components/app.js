@@ -199,6 +199,7 @@ var App = React.createClass({
                     <script dangerouslySetInnerHTML={{__html: scriptjs + '\n'}}></script>
                     <script dangerouslySetInnerHTML={{__html: inline}}></script>
                     <link rel="stylesheet" href="/static/css/style.css" />
+                    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700' rel='stylesheet' type='text/css' />
                     <script src="/static/build/bundle.js" async defer></script>
                 </head>
                 <body onClick={this.handleClick} onSubmit={this.handleSubmit}>

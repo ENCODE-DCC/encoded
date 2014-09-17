@@ -26,6 +26,7 @@ var Lightbox = module.exports.Lightbox = React.createClass({
             <div className={lightboxClass} onClick={this.props.clearLightbox}>
                 <div className="lightbox-img">
                     <img src={this.props.lightboxImg} onClick={this.ignoreClick} />
+                    <button className="btn btn-primary btn-xs lightbox-close" alt="Close lightbox">Close</button>
                 </div>
             </div>
         );

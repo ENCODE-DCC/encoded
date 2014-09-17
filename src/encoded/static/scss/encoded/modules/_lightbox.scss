@@ -43,17 +43,6 @@
 
 
 .lightbox-close {
-    position: absolute;
-    width: 23px;
-    height: 22px;
-    top: -12px;
-    right: -12px;
-    font-size: 21px;
-    line-height: 23px;
-    color: #000;
-    background-color: #fff;
-    @include border-radius(12px);
-    vertical-align: top;
-    @include box-shadow(0 1px 2px 0);
-    cursor: pointer;
+    position: relative;
+    bottom: 5px;
 }
