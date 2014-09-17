@@ -31,7 +31,7 @@ def lot_reviews(root, characterizations, targets):
         total_characterizations = 0
         num_compliant_celltypes = 0
         organisms = []
-        targets = []
+        review_targets = []
         histone_organisms = []
         char_reviews = dict()
         primary_chars = []
@@ -42,8 +42,8 @@ def lot_reviews(root, characterizations, targets):
             characterization = find_resource(root, characterization_path)
             target = find_resource(root, characterization.properties['target'])
             organism = find_resource(root, target.properties['organism'])
-            if resource_path(target, '') not in targets:
-                targets.append(resource_path(target, ''))
+            if resource_path(target, '') not in review_targets:
+                review_targets.append(resource_path(target, ''))
             if 'histone modification' in target.upgrade_properties(finalize=False)['investigated_as']:
                 histone_mod_target = True
 
@@ -74,7 +74,7 @@ def lot_reviews(root, characterizations, targets):
             'biosample_term_name': 'not specified',
             'biosample_term_id': 'NTR:00000000',
             'organisms': organisms,
-            'targets': targets,
+            'targets': review_targets,
             'status': 'awaiting lab characterization'
         }
 
@@ -125,7 +125,7 @@ def lot_reviews(root, characterizations, targets):
                         if not histone_mod_target:
                             new_review['targets'] = [resource_path(find_resource(root, primary.properties['target']), '')]
                         else:
-                            new_review['targets'] = targets
+                            new_review['targets'] = review_targets
 
                         if lane_review['lane_status'] == 'pending dcc review':
                             if pending_secondary or compliant_secondary:
@@ -189,7 +189,7 @@ def lot_reviews(root, characterizations, targets):
                             'biosample_term_name': 'all cell types and tissues',
                             'biosample_term_id': 'NTR:00000000',
                             'organisms': histone_organisms,
-                            'targets': targets,
+                            'targets': review_targets,
                             'status': 'eligible for new data'
                         }]
                     else:
