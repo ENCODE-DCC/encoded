@@ -72,9 +72,9 @@ class Page(Collection):
         def is_default_page(self):
             name = self.__name__
             root = find_root(self.collection)
-            if not self.properties.get('parent') and (name in root.collections or name == 'homepage'):
-                return True
-            return False
+            if self.properties.get('parent'):
+                return False
+            return name in root.collections or name == 'homepage'
 
         # Handle traversal to nested pages
 

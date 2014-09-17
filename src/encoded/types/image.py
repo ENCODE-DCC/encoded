@@ -30,7 +30,7 @@ class Image(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
-        embedded = set(['submitted_by'])
+        embedded = ['submitted_by']
         keys = [
             {
                 'name': 'image:filename',

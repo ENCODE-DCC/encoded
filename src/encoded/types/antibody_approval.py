@@ -22,6 +22,11 @@ class AntibodyApproval(Collection):
     }
 
     class Item(Collection.Item):
+        namespace_from_path = {
+            'accession': 'antibody.accession',
+            'label': 'target.label',
+            'scientific_name': 'target.organism.scientific_name'
+        }
         template = {
             # trigger redirect to antibody_lot
             '@id': {'$value': '{antibody}', '$templated': True},
@@ -45,15 +50,3 @@ class AntibodyApproval(Collection):
             # Use /antibodies/{uuid} as url
             root = find_root(self.collection)
             return root.by_item_type['antibody_lot']
-
-        def template_namespace(self, properties, request=None):
-            ns = Collection.Item.template_namespace(self, properties, request)
-            root = find_root(self)
-            # self.properties as we need uuid here
-            antibody = root.get_by_uuid(self.properties['antibody'])
-            ns['accession'] = antibody.properties['accession']
-            target = root.get_by_uuid(self.properties['target'])
-            ns['label'] = target.properties['label']
-            organism = root.get_by_uuid(target.properties['organism'])
-            ns['scientific_name'] = organism.properties['scientific_name']
-            return ns

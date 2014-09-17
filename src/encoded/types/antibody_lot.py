@@ -26,9 +26,12 @@ class AntibodyLot(Collection):
     class Item(Collection.Item):
         template = {
             'lot_reviews': [
-                {'$value': lambda lot_review: lot_review, '$repeat': 'lot_review lot_reviews', '$templated': True}
+                {
+                    '$value': lambda lot_review: lot_review,
+                    '$repeat': 'lot_review lot_reviews',
+                },
             ],
-            'title': {'$value': '{accession}', '$templated': True},
+            'title': {'$value': '{accession}'},
         }
         name_key = 'accession'
 
@@ -50,7 +53,7 @@ class AntibodyLot(Collection):
             'characterizations': ('antibody_characterization', 'characterizes'),
         }
 
-        embedded = set([
+        embedded = [
             'source',
             'host_organism',
             'characterizations.award',
@@ -61,7 +64,7 @@ class AntibodyLot(Collection):
             'lot_reviews.targets',
             'lot_reviews.targets.organism',
             'lot_reviews.organisms'
-        ])
+        ]
 
         def template_namespace(self, properties, request=None):
             ns = super(AntibodyLot.Item, self).template_namespace(properties, request)
