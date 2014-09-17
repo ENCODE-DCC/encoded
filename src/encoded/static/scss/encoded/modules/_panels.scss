@@ -1,7 +1,7 @@
 /* Panels */
 .panel {
     background-color: #fff;
-    border: 1px solid #ced5dc;
+    border: 1px solid #a0a0a0;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin-top: 10px;

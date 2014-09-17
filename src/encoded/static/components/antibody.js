@@ -260,12 +260,6 @@ var Characterization = module.exports.Characterization = React.createClass({
             "characterization-slider": true,
             "active": this.state.panelOpen && !this.state.panelFixed
         });
-        var tabTriggerClass = cx({
-            "trigger-tab": true,
-            "text-hide": true,
-            "active": this.state.panelOpen && !this.state.panelFixed,
-            "disabled": this.state.panelFixed
-        });
         var kvTriggerClass = cx({
             "key-value-trigger": true,
             "disabled": this.state.panelFixed
@@ -300,7 +294,7 @@ var Characterization = module.exports.Characterization = React.createClass({
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <div className={globals.itemClass(context, 'view-detail panel')}>
-                    <div className="characterization-target">
+                    <div className="characterization-title">
                         {context.target.label} {context.target.organism.scientific_name ? <span>{' ('}<i>{context.target.organism.scientific_name}</i>{')'}</span> : ''}
                     </div>
                     <div className="characterization-header">
@@ -329,7 +323,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                         {context.caption ?
                             <div data-test="caption">
                                 <dt>Caption</dt>
-                                <dd className="sentence-case">{context.caption}</dd>
+                                <dd className="sentence-case para-text">{context.caption}</dd>
                             </div>
                         : null}
 
@@ -357,14 +351,12 @@ var Characterization = module.exports.Characterization = React.createClass({
                             </div>
                         : null}
                     </dl>
-                    <dl className={kvTriggerClass}>
-                        <a href="#" onClick={this.handleClick}>
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                        </a>
-                        <a className={tabTriggerClass} href="#" onClick={this.handleClick}>
-                            Toggle panel disclosure
-                        </a>
+                    <dl className="key-value-trigger">
+                        <dt>Lab</dt>
+                        <dd>{context.lab.title}</dd>
+                        {!this.state.panelFixed ?
+                            <button onClick={this.handleClick} className="trigger-btn">{this.state.panelOpen ? 'Less' : 'More'}</button>
+                        : null}
                     </dl>
                 </div>
             </section>

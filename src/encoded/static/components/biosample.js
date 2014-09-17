@@ -642,12 +642,6 @@ var Document = module.exports.Document = React.createClass({
             "document-slider": true,
             "active": this.state.panelOpen
         });
-        var triggerClass = cx({
-            "trigger-icon": true,
-            "icon": true,
-            "icon-angle-down": !this.state.panelOpen,
-            "icon-angle-up": this.state.panelOpen
-        });
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
         var attachmentHref, download;
@@ -679,12 +673,14 @@ var Document = module.exports.Document = React.createClass({
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                 <div className={panelClass}>
+                    <div className="document-title sentence-case">
+                        {characterization ? context.characterization_method : context.document_type}
+                    </div>
                     <div className="document-header">
                         <figure>
                             {figure}
                         </figure>
                         <div className="document-intro">
-                            <h3 className="sentence-case">{characterization ? context.characterization_method : context.document_type}</h3>
                             <p>{excerpt}</p>
                         </div>
                     </div>
@@ -719,11 +715,9 @@ var Document = module.exports.Document = React.createClass({
                         : null}
                     </dl>
                     <dl className="key-value-trigger">
-                        <a href="#" onClick={this.handleClick}>
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                            <i className={triggerClass}></i>
-                        </a>
+                        <dt>Lab</dt>
+                        <dd>{context.lab.title}</dd>
+                        <button onClick={this.handleClick} className="trigger-btn">{this.state.panelOpen ? 'Less' : 'More'}</button>
                     </dl>
                 </div>
             </section>
