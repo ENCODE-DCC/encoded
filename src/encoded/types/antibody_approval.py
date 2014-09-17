@@ -25,7 +25,7 @@ class AntibodyApproval(Collection):
         namespace_from_path = {
             'accession': 'antibody.accession',
             'label': 'target.label',
-            'scientific_name': 'organism.scientific_name'
+            'scientific_name': 'target.organism.scientific_name'
         }
         template = {
             # trigger redirect to antibody_lot
