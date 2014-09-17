@@ -165,7 +165,7 @@ def search_hubs(request):
     '''Generate trackDb file here'''
     
     search_params = request.matchdict['search_params']
-    search_params = search_params.replace(',,', '&')
+    search_params = search_params.replace(';', '&')
     subreq = make_subrequest(request, '/search/?%s' % search_params)
     subreq.override_renderer = 'null_renderer'
     files = []
@@ -189,18 +189,47 @@ def search_hubs(request):
 def generate_batch_hubs(request):
     '''search for the input params and return the trackhub'''
 
+    results = {}
     txt = request.matchdict['txt']
+    params = request.matchdict['search_params']
+    params = params.replace(';', '&')
+    
     if len(request.matchdict) == 3:
         if txt == TRACKDB_TXT:
-            return search_hubs(request)
+            trackdb = ''
+            assembly = request.matchdict['assembly']
+            params = params + '&limit=all&assembly=' + assembly 
+            subreq = make_subrequest(request, '/search/?%s' % params)
+            subreq.override_renderer = 'null_renderer'
+            try:
+                results = request.invoke_subrequest(subreq)
+            except Exception as e:
+                print e
+            for item in results['@graph']:
+                if trackdb == '':
+                    trackdb = 'include ' + item['accession'] + '.txt' + 2 * NEWLINE
+                else:
+                    trackdb = trackdb + 'include ' + item['accession'] + '.txt' + 2 * NEWLINE
+            return trackdb
     elif txt == HUB_TXT:
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
-        params = request.matchdict['search_params']
-        for param in params.split(',,'):
-            if param.startswith('assembly'):
-                g_txt = get_genomes_txt(param.split('=')[1])
-                return NEWLINE.join(g_txt)
+        subreq = make_subrequest(request, '/search/?%s' % params)
+        subreq.override_renderer = 'null_renderer'
+        try:
+            results = request.invoke_subrequest(subreq)
+        except Exception as e:
+            print e
+        g_text = ''
+        for facet in results['facets']:
+            if facet['field'] == 'assembly':
+                for term in facet['terms']:
+                    if term['count'] != 0:
+                        if g_text == '':
+                            g_text = NEWLINE.join(get_genomes_txt(term['term']))
+                        else :
+                            g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['term']))
+        return g_text
     else:
         print "Here I am supposed to generate HTML file"
 

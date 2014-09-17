@@ -294,14 +294,12 @@ def search(context, request, search_type=None):
             })
 
     if search_type == 'experiment':
-        for f in result['filters']:
-            if f['field'] == 'assembly':
-                hub = request.url.replace('search/?', 'batch_hub/') + '/hub.txt'
-                hub = hub.replace('&', ',,')
-                result['batch_hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
-                    'db=' + f['term'],
-                    'hubUrl=' + hub
-                ])
+        hub = request.url.replace('search/?', 'batch_hub/') + '/hub.txt'
+        hub = hub.replace('&', ';')
+        result['batch_hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
+            'db=hg19',
+            'hubUrl=' + hub
+        ])
 
     # Loading result rows
     hits = results['hits']['hits']
