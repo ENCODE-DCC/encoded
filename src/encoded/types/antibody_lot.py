@@ -233,12 +233,8 @@ def lot_reviews(root, characterizations, targets):
             'biosample_term_id': 'NTR:00000000',
             'organisms': organisms,
             'targets': list(targets),
+            'status': 'eligible for new data' if is_control else 'awaiting lab characterization'
         }]
-
-        if is_control:
-            antibody_lot_reviews[0]['status'] = 'eligible for new data'
-        else:
-            antibody_lot_reviews[0]['status'] = 'awaiting lab characterization'
 
     return antibody_lot_reviews
 
