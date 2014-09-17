@@ -40,25 +40,16 @@ def lot_reviews(root, characterizations, targets):
             'status': 'eligible for new data' if is_control else 'awaiting lab characterization'
         }]
 
-    compliant_secondary = False
-    not_compliant_secondary = False
-    pending_secondary = False
-    not_reviewed_secondary = False
-    has_lane_review = False
-    not_reviewed = False
+
     histone_mod_target = False
-    lab_not_reviewed_chars = 0
-    not_reviewed_chars = 0
-    in_progress_chars = 0
-    total_characterizations = 0
-    num_compliant_celltypes = 0
     organisms = []
     review_targets = []
-    histone_organisms = []
-    char_reviews = dict()
+    lab_not_reviewed_chars = 0
+    total_characterizations = 0
+    not_reviewed_chars = 0
+    in_progress_chars = 0
     primary_chars = []
     secondary_chars = []
-    antibody_lot_reviews = []
 
     for characterization_path in characterizations:
         characterization = find_resource(root, characterization_path)
@@ -115,9 +106,14 @@ def lot_reviews(root, characterizations, targets):
     if (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and total_characterizations > 0:
         return [base_review]
 
-
     # Done with easy cases, the remaining require reviews.
     # Go through the secondary characterizations first
+    antibody_lot_reviews = []
+    compliant_secondary = False
+    not_compliant_secondary = False
+    pending_secondary = False
+    not_reviewed_secondary = False
+
     for secondary in secondary_chars:
         if secondary.properties['status'] == 'compliant':
             compliant_secondary = True
@@ -131,6 +127,11 @@ def lot_reviews(root, characterizations, targets):
             continue
 
     # Now check the primaries and update their status accordingly
+    char_reviews = {}
+    has_lane_review = False
+    histone_organisms = []
+    not_reviewed = False
+
     for primary in primary_chars:
         has_lane_review = False
         if primary.properties['status'] in ['not reviewed', 'not submitted for review by lab']:
@@ -181,13 +182,13 @@ def lot_reviews(root, characterizations, targets):
                 # For all other cases, can keep the awaiting status
                 pass
 
+            has_lane_review = True
+
             key = "%s;%s;%s;%s" % (lane_review['biosample_term_name'], lane_review['biosample_term_id'], lane_review['organism'], target)
             if key not in char_reviews:
                 char_reviews[key] = new_review
-                has_lane_review = True
                 continue
 
-            has_lane_review = True
             status_ranking = {
                 'eligible for new data': 4,
                 'compliant': 3,
@@ -204,7 +205,12 @@ def lot_reviews(root, characterizations, targets):
                 # Check to see if existing status should be overridden
                 char_reviews[key] = new_review
 
+    # XXX This condition looks suspect. The variable `has_lane_review` only reflects the status of
+    # the last in the list of primary_chars as it is reset to False at the top of the loop above.
+    # Perhaps it should be ``if char_reviews:`` instead?
     if has_lane_review:
+        num_compliant_celltypes = 0
+
         for key in char_reviews:
             if not histone_mod_target:
                 antibody_lot_reviews.append(char_reviews[key])
@@ -237,6 +243,7 @@ def lot_reviews(root, characterizations, targets):
         else:
             pass
 
+    # XXX Another easy case to move up?
     if len(primary_chars) == 0 and len(secondary_chars) > 0:
         # There's only seocndary characterization(s)
         antibody_lot_reviews.append(base_review)
