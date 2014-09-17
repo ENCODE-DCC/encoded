@@ -8,6 +8,7 @@ from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
 from pyramid.traversal import (
     find_resource,
@@ -33,6 +34,9 @@ class AntibodyLot(Collection):
                 },
             ],
             'title': {'$value': '{accession}'},
+            'characterizations': (
+                lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+            ),
         }
         name_key = 'accession'
 
@@ -70,6 +74,7 @@ class AntibodyLot(Collection):
         def template_namespace(self, properties, request=None):
             ns = super(AntibodyLot.Item, self).template_namespace(properties, request)
             root = ns['root']
+            ns['characterizations'] = paths_filtered_by_status(root, ns['characterizations'])
             if ns['characterizations']:
                 compliant_secondary = False
                 not_compliant_secondary = False

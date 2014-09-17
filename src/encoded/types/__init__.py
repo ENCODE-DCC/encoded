@@ -8,6 +8,7 @@ from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
 from .download import ItemWithAttachment
 
@@ -94,6 +95,11 @@ class Construct(Collection):
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
+    item_template = {
+        'characterizations': (
+            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+        ),
+    }
     item_embedded = ['target']
 
 
@@ -155,6 +161,11 @@ class RNAi(Collection):
     item_embedded = ['source', 'documents', 'target']
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
+    }
+    item_template = {
+        'characterizations': (
+            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+        ),
     }
     item_keys = ALIAS_KEYS
 

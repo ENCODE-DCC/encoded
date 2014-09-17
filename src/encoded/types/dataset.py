@@ -8,7 +8,9 @@ from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
+from itertools import chain
 from pyramid.traversal import (
     find_resource,
 )
@@ -16,14 +18,9 @@ from urllib import quote_plus
 from urlparse import urljoin
 
 
-def file_is_revoked(file, root):
-    item = find_resource(root, file)
+def file_is_revoked(root, path):
+    item = find_resource(root, path)
     return item.upgrade_properties()['status'] == 'revoked'
-
-
-def file_not_revoked(file, root):
-    item = find_resource(root, file)
-    return item.upgrade_properties()['status'] != 'revoked'
 
 
 @location('datasets')
@@ -37,38 +34,28 @@ class Dataset(Collection):
 
     class Item(Collection.Item):
         template = {
-            'files': [
-                {
-                    '$value': '{file}',
-                    '$repeat': ('file', 'original_files', file_not_revoked),
-                    '$templated': True,
-                },
-                {
-                    '$value': '{file}',
-                    '$repeat': ('file', 'related_files', file_not_revoked),
-                    '$templated': True,
-                },
-            ],
-            'revoked_files': [
-                {
-                    '$value': '{file}',
-                    '$repeat': ('file', 'original_files', file_is_revoked),
-                    '$templated': True,
-                },
-                {
-                    '$value': '{file}',
-                    '$repeat': ('file', 'related_files', file_is_revoked),
-                    '$templated': True,
-                },
-            ],
+            # XXX Still needed?
+            'original_files': (
+                lambda root, original_files: paths_filtered_by_status(root, original_files)
+            ),
+            'files': (
+                lambda root, original_files, related_files: paths_filtered_by_status(
+                    root, chain(original_files, related_files),
+                    exclude=('revoked', 'deleted', 'replaced'),
+                )
+            ),
+            'revoked_files': (
+                lambda root, original_files, related_files: [
+                    path for path in chain(original_files, related_files)
+                    if file_is_revoked(root, path)
+                ]
+            ),
             'hub': {
                 '$value': '{item_uri}@@hub/hub.txt',
-                '$templated': True,
                 '$condition': 'assembly',
             },
             'assembly': {
                 '$value': '{assembly}',
-                '$templated': True,
                 '$condition': 'assembly',
             },
         }
