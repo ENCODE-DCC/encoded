@@ -54,9 +54,7 @@ def lot_reviews(root, characterizations, targets):
             if resource_path(organism, '') not in organisms:
                 organisms.append(resource_path(organism, ''))
 
-            if characterization.properties['status'] == 'deleted':
-                continue
-            elif characterization.properties['status'] == 'not submitted for review by lab':
+            if characterization.properties['status'] == 'not submitted for review by lab':
                 lab_not_reviewed_chars += 1
                 total_characterizations += 1
             elif characterization.properties['status'] == 'not reviewed':
@@ -111,7 +109,7 @@ def lot_reviews(root, characterizations, targets):
             # Now check the primaries and update their status accordingly
             for primary in primary_chars:
                 has_lane_review = False
-                if primary.properties['status'] in ['deleted', 'not reviewed', 'not submitted for review by lab']:
+                if primary.properties['status'] in ['not reviewed', 'not submitted for review by lab']:
                     not_reviewed = True
                     continue
 
