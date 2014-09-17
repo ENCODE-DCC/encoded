@@ -100,10 +100,9 @@ class Dataset(Collection):
 
         def template_namespace(self, properties, request=None):
             ns = super(Dataset.Item, self).template_namespace(properties, request)
-            if request is None:
-                return ns
+            root = ns['root']
             for link in ns['original_files'] + ns['related_files']:
-                f = find_resource(request.root, link)
+                f = find_resource(root, link)
                 if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
                         f.properties['status'] in ['released']:
                     if 'assembly' in f.properties:

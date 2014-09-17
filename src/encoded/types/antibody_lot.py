@@ -11,6 +11,7 @@ from .base import (
 )
 from pyramid.traversal import (
     find_resource,
+    resource_path,
 )
 
 
@@ -68,8 +69,7 @@ class AntibodyLot(Collection):
 
         def template_namespace(self, properties, request=None):
             ns = super(AntibodyLot.Item, self).template_namespace(properties, request)
-            if request is None:
-                return ns
+            root = ns['root']
             if ns['characterizations']:
                 compliant_secondary = False
                 not_compliant_secondary = False
@@ -92,16 +92,16 @@ class AntibodyLot(Collection):
                 antibody_lot_reviews = []
 
                 for characterization_uuid in ns['characterizations']:
-                    characterization = find_resource(request.root, characterization_uuid)
-                    target = find_resource(request.root, characterization.properties['target'])
-                    organism = find_resource(request.root, target.properties['organism'])
-                    if request.resource_path(target) not in targets:
-                        targets.append(request.resource_path(target))
+                    characterization = find_resource(root, characterization_uuid)
+                    target = find_resource(root, characterization.properties['target'])
+                    organism = find_resource(root, target.properties['organism'])
+                    if resource_path(target, '') not in targets:
+                        targets.append(resource_path(target, ''))
                     if 'histone modification' in target.upgrade_properties(finalize=False)['investigated_as']:
                         histone_mod_target = True
 
-                    if request.resource_path(organism) not in organisms:
-                        organisms.append(request.resource_path(organism))
+                    if resource_path(organism, '') not in organisms:
+                        organisms.append(resource_path(organism, ''))
 
                     if characterization.properties['status'] == 'deleted':
                         continue
@@ -172,11 +172,11 @@ class AntibodyLot(Collection):
                                     'status': 'awaiting lab characterization'
                                 }
                                 '''Get the organism information from the lane, not from the target since there are lanes'''
-                                lane_organism = find_resource(request.root, lane_review['organism'])
-                                new_review['organisms'] = [request.resource_path(lane_organism)]
+                                lane_organism = find_resource(root, lane_review['organism'])
+                                new_review['organisms'] = [resource_path(lane_organism, '')]
 
                                 if not histone_mod_target:
-                                    new_review['targets'] = [request.resource_path(find_resource(request.root, primary.properties['target']))]
+                                    new_review['targets'] = [resource_path(find_resource(root, primary.properties['target']), '')]
                                 else:
                                     new_review['targets'] = targets
 
@@ -194,8 +194,8 @@ class AntibodyLot(Collection):
                                             new_review['status'] = 'compliant'
                                             '''Keep track of compliant organisms for histones and we
                                             will fill them in after going through all the lanes'''
-                                            if request.resource_path(lane_organism) not in histone_organisms:
-                                                histone_organisms.append(request.resource_path(lane_organism))
+                                            if resource_path(lane_organism, '') not in histone_organisms:
+                                                histone_organisms.append(resource_path(lane_organism, ''))
                                     if pending_secondary:
                                         new_review['status'] = 'pending dcc review'
 
@@ -265,13 +265,13 @@ class AntibodyLot(Collection):
                 is_control = False
                 organisms = []
                 for t in targets:
-                    target = find_resource(request.root, t)
+                    target = find_resource(root, t)
                     if 'control' in target.upgrade_properties(finalize=False)['investigated_as']:
                         is_control = True
 
-                    organism = find_resource(request.root, target.properties['organism'])
-                    if request.resource_path(organism) not in organisms:
-                        organisms.append(request.resource_path(organism))
+                    organism = find_resource(root, target.properties['organism'])
+                    if resource_path(organism, '') not in organisms:
+                        organisms.append(resource_path(organism, ''))
 
                 antibody_lot_reviews = [{
                     'biosample_term_name': 'not specified',
