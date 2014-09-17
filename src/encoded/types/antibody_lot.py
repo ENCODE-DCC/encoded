@@ -17,8 +17,10 @@ from pyramid.traversal import (
 
 
 def lot_reviews(root, characterizations, targets):
+    characterizations = paths_filtered_by_status(root, characterizations)
+
+    # If there are no characterizations, then default to awaiting lab characterization.
     if not characterizations:
-        # If there are no characterizations, then default to awaiting lab characterization.
         is_control = False
         organisms = []
         for t in targets:
@@ -51,9 +53,6 @@ def lot_reviews(root, characterizations, targets):
 
     for characterization_path in characterizations:
         characterization = find_resource(root, characterization_path)
-        if characterization.properties['status'] == 'deleted':
-            continue
-
         target = find_resource(root, characterization.properties['target'])
         organism = find_resource(root, target.properties['organism'])
 
