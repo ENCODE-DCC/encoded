@@ -44,8 +44,10 @@ def lot_reviews(root, characterizations, targets):
             characterization = find_resource(root, characterization_path)
             target = find_resource(root, characterization.properties['target'])
             organism = find_resource(root, target.properties['organism'])
+
             if resource_path(target, '') not in review_targets:
                 review_targets.append(resource_path(target, ''))
+
             if 'histone modification' in target.upgrade_properties(finalize=False)['investigated_as']:
                 histone_mod_target = True
 
@@ -66,7 +68,7 @@ def lot_reviews(root, characterizations, targets):
             else:
                 total_characterizations += 1
 
-            '''Split into primary and secondary to treat separately'''
+            # Split into primary and secondary to treat separately
             if 'primary_characterization_method' in characterization.properties:
                 primary_chars.append(characterization)
             else:
@@ -80,7 +82,7 @@ def lot_reviews(root, characterizations, targets):
             'status': 'awaiting lab characterization'
         }
 
-        '''Deal with the easy cases where both characterizations have the same statuses not from DCC reviews'''
+        # Deal with the easy cases where both characterizations have the same statuses not from DCC reviews
         if lab_not_reviewed_chars == total_characterizations and total_characterizations > 0:
             base_review['status'] = 'not pursued'
             antibody_lot_reviews.append(base_review)
@@ -92,8 +94,8 @@ def lot_reviews(root, characterizations, targets):
         elif (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and total_characterizations > 0:
             antibody_lot_reviews.append(base_review)
         else:
-            '''Done with easy cases, the remaining require reviews.
-            Go through the secondary characterizations first'''
+            # Done with easy cases, the remaining require reviews.
+            # Go through the secondary characterizations first
             for secondary in secondary_chars:
                 if secondary.properties['status'] == 'compliant':
                     compliant_secondary = True
@@ -106,7 +108,7 @@ def lot_reviews(root, characterizations, targets):
                     not_reviewed_secondary = True
                     continue
 
-            '''Now check the primaries and update their status accordingly'''
+            # Now check the primaries and update their status accordingly
             for primary in primary_chars:
                 has_lane_review = False
                 if primary.properties['status'] in ['deleted', 'not reviewed', 'not submitted for review by lab']:
@@ -120,7 +122,8 @@ def lot_reviews(root, characterizations, targets):
                             'biosample_term_id': lane_review['biosample_term_id'],
                             'status': 'awaiting lab characterization'
                         }
-                        '''Get the organism information from the lane, not from the target since there are lanes'''
+
+                        # Get the organism information from the lane, not from the target since there are lanes
                         lane_organism = find_resource(root, lane_review['organism'])
                         new_review['organisms'] = [resource_path(lane_organism, '')]
 
@@ -141,15 +144,17 @@ def lot_reviews(root, characterizations, targets):
                                     new_review['status'] = 'eligible for new data'
                                 else:
                                     new_review['status'] = 'compliant'
-                                    '''Keep track of compliant organisms for histones and we
-                                    will fill them in after going through all the lanes'''
+
+                                    # Keep track of compliant organisms for histones and we
+                                    # will fill them in after going through all the lanes
                                     if resource_path(lane_organism, '') not in histone_organisms:
                                         histone_organisms.append(resource_path(lane_organism, ''))
+
                             if pending_secondary:
                                 new_review['status'] = 'pending dcc review'
 
                         else:
-                            '''For all other cases, can keep the awaiting status'''
+                            # For all other cases, can keep the awaiting status
                             pass
 
                         key = "%s;%s;%s;%s" % (lane_review['biosample_term_name'], lane_review['biosample_term_id'], lane_review['organism'], target)
@@ -171,7 +176,7 @@ def lot_reviews(root, characterizations, targets):
                             }
 
                             if status_ranking[lane_review['lane_status']] > status_ranking[char_reviews[key]['status']]:
-                                '''Check to see if existing status should be overridden'''
+                                # Check to see if existing status should be overridden
                                 char_reviews[key] = new_review
 
             if has_lane_review:
@@ -179,8 +184,8 @@ def lot_reviews(root, characterizations, targets):
                     if not histone_mod_target:
                         antibody_lot_reviews.append(char_reviews[key])
                     else:
-                        '''Review of antibodies against histone modifications are treated differently.
-                        There should be at least 3 compliant cell types for eligibility for use'''
+                        # Review of antibodies against histone modifications are treated differently.
+                        # There should be at least 3 compliant cell types for eligibility for use
                         if char_reviews[key]['status'] == 'compliant':
                             char_reviews[key]['status'] = 'awaiting lab characterization'
                             num_compliant_celltypes += 1
@@ -199,17 +204,19 @@ def lot_reviews(root, characterizations, targets):
                             antibody_lot_reviews.append(char_reviews[key])
 
             else:
-                '''The only uncovered case left in this block is if there is only 1 or more active
-                secondary and 0 or more inactive primaries.'''
+                # The only uncovered case left in this block is if there is only 1 or more active
+                # secondary and 0 or more inactive primaries.
                 if (len(primary_chars) >= 1 and not_reviewed_secondary) or (len(secondary_chars) >= 1 and not_reviewed):
                     antibody_lot_reviews.append(base_review)
                 else:
                     pass
+
         if len(primary_chars) == 0 and len(secondary_chars) > 0:
-            '''There's only seocndary characterization(s)'''
+            # There's only seocndary characterization(s)
             antibody_lot_reviews.append(base_review)
+
     else:
-        '''If there are no characterizations, then default to awaiting lab characterization.'''
+        # If there are no characterizations, then default to awaiting lab characterization.
         is_control = False
         organisms = []
         for t in targets:
@@ -227,6 +234,7 @@ def lot_reviews(root, characterizations, targets):
             'organisms': organisms,
             'targets': list(targets),
         }]
+
         if is_control:
             antibody_lot_reviews[0]['status'] = 'eligible for new data'
         else:
