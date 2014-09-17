@@ -61,8 +61,16 @@ class Dataset(Collection):
                     '$templated': True,
                 },
             ],
-            'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
-            'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
+            'hub': {
+                '$value': '{item_uri}@@hub/hub.txt',
+                '$templated': True,
+                '$condition': 'assembly',
+            },
+            'assembly': {
+                '$value': '{assembly}',
+                '$templated': True,
+                '$condition': 'assembly',
+            },
         }
         embedded = [
             'files',
@@ -109,7 +117,8 @@ class Dataset(Collection):
             if 'hub' in properties:
                 hub_url = urljoin(request.resource_url(request.root), properties['hub'])
                 properties = properties.copy()
-                properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
+                hgTracks = 'http://genome.ucsc.edu/cgi-bin/hgTracks?'
+                properties['visualize_ucsc'] = hgTracks + '&'.join([
                     'db=' + quote_plus(properties['assembly']),
                     'hubUrl=' + quote_plus(hub_url, ':/@'),
                 ])
