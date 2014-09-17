@@ -126,8 +126,8 @@ describe('Experiment Page', function() {
         });
 
         it('has two key-value pairs, and proper DL link', function() {
-            var trigger = doc.getElementsByTagName('a');
-            TestUtils.Simulate.click(trigger[2]);
+            var trigger = doc.getElementsByTagName('button');
+            TestUtils.Simulate.click(trigger[0]);
 
             var docKeyValue = doc.getElementsByClassName('key-value-left');
             expect(docKeyValue.length).toEqual(1);
