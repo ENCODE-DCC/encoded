@@ -5,12 +5,14 @@ from pyramid.events import (
     BeforeRender,
     subscriber,
 )
+from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 import json
 
 
-jsonld_base = 'https://www.encodeproject.org/terms#'
+jsonld_base = 'https://www.encodeproject.org/terms/'
 prefix = 'encode:'
+term_path = '/terms/'
 
 
 def aslist(value):
@@ -32,13 +34,22 @@ def make_jsonld_context(event):
     root = app.root_factory(app)
     context = {
         'encode': jsonld_base,
+        '@base': jsonld_base,
         'dc': 'http://purl.org/dc/terms/',
         'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
         'rdfs': 'http://www.w3.org/2000/01/rdf-schema#',
         'owl': 'http://www.w3.org/2002/07/owl#',
         'xsd': 'http://www.w3.org/2001/XMLSchema#',
-        'owl:defines': {
+        'defines': {
             '@container': '@index',
+            '@reverse': 'rdfs:isDefinedBy'
+        },
+        'owl:unionOf': {
+            '@container': '@list',
+            '@type': '@id'
+        },
+        'rdfs:isDefinedBy': {
+            '@type': '@id',
         },
         'rdfs:subPropertyOf': {
             '@type': '@id',
@@ -50,6 +61,9 @@ def make_jsonld_context(event):
             '@type': '@id',
         },
         'rdfs:range': {
+            '@type': '@id',
+        },
+        'rdfs:seeAlso': {
             '@type': '@id',
         },
         'portal': prefix + 'portal',
@@ -69,24 +83,37 @@ def make_jsonld_context(event):
     ontology = {
         '@context': context,
         '@type': 'owl:Ontology',
-        '@id': jsonld_base,
+        '@id': term_path,
     }
 
-    defines = ontology['owl:defines'] = {}
+    defines = ontology['defines'] = {}
     for type_name in ['item', 'collection', 'portal', 'search']:
         defines[type_name] = {
-            '@id': prefix + type_name,
+            '@id': term_path + type_name,
             '@type': 'rdfs:Class',
         }
 
+    # These are broken definitions
+    defines['BrokenPropertyOrClass'] = {
+        '@id': 'encoded:BrokenPropertyOrClass',
+        'owl:unionOf': [
+            'rdf:Property',
+            'rdfs:Class',
+        ],
+        '@type': 'owl:Class',
+    },
+
     MERGED_PROPS = [
-        '@type',
-        'rdfs:range',
-        'rdfs:domain',
         'rdfs:subClassOf',
         'rdfs:subPropertyOf',
         'rdfs:label',
         'rdfs:comment',
+        'rdfs:isDefinedBy',
+        'rdfs:seeAlso',
+    ]
+    MERGED_TYPES = [
+        'rdfs:range',
+        'rdfs:domain',
     ]
 
     for name, collection in root.by_item_type.iteritems():
@@ -96,14 +123,15 @@ def make_jsonld_context(event):
             collection.schema, prefix, collection.item_type, collection.Item.base_types)
 
         for definition in iter_defs:
-            if definition['@id'].startswith(prefix):
-                name = definition['@id'][len(prefix):]
+            if definition['@id'].startswith(term_path):
+                name = definition['@id'][len(term_path):]
             else:
                 name = definition['@id']
             if name not in defines:
                 defines[name] = definition
                 continue
             existing = defines[name]
+
             for prop in MERGED_PROPS:
                 if prop not in definition:
                     continue
@@ -114,6 +142,31 @@ def make_jsonld_context(event):
                     continue
                 existing[prop] = sorted(
                     set(aslist(existing.get(prop, [])) + aslist(definition[prop])))
+
+            if existing['@type'] != definition['@type']:
+                existing['@type'] = 'encoded:BrokenPropertyOrClass'
+
+            for prop in MERGED_TYPES:
+                if prop not in definition:
+                    continue
+                if prop not in existing:
+                    existing[prop] = definition[prop]
+                    continue
+                if existing[prop] == definition[prop]:
+                    continue
+                classes = set()
+                for d in [definition, existing]:
+                    if isinstance(d[prop], dict):
+                        classes.update(d[prop]['owl:unionOf'])
+                    else:
+                        classes.add(d[prop])
+                if len(classes) == 1:
+                    existing[prop] = classes.pop()
+                else:
+                    existing[prop] = {
+                        '@type': 'owl:Class',
+                        'owl:unionOf': sorted(classes),
+                    }
 
     app.registry['encoded.jsonld_context'] = ontology
 
@@ -162,22 +215,23 @@ def context_from_schema(schema, prefix, item_type, base_types):
 
 def ontology_from_schema(schema, prefix, item_type, base_types):
     yield {
-        '@id': prefix + item_type,
+        '@id': term_path + item_type,
         '@type': 'rdfs:Class',
-        'rdfs:subClassOf': [prefix + type_name for type_name in base_types],
+        'rdfs:subClassOf': [term_path + type_name for type_name in base_types],
+        'rdfs:seeAlso': '/profiles/{item_type}.json'.format(item_type=item_type)
     }
 
     for base_type in base_types[:-1]:
         yield {
-            '@id': prefix + base_type,
+            '@id': term_path + base_type,
             '@type': 'rdfs:Class',
-            'rdfs:subClassOf': prefix + 'item',
+            'rdfs:subClassOf': term_path + 'item',
         }
 
     yield {
-        '@id': prefix + item_type + '_collection',
+        '@id': term_path + item_type + '_collection',
         '@type': 'rdfs:Class',
-        'rdfs:subClassOf': [prefix + 'collection'],
+        'rdfs:subClassOf': [term_path + 'collection'],
     }
 
     for name, subschema in allprops(schema):
@@ -187,11 +241,10 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
             continue
 
         prop_ld = {
-            '@id': subschema.get('@id', prefix + name),
+            '@id': subschema.get('@id', term_path + name),
             '@type': 'rdf:Property',
-            'rdfs:domain': aslist(subschema.get('rdfs:domain', [])),
+            'rdfs:domain': term_path + item_type,
         }
-        prop_ld['rdfs:domain'].append(prefix + item_type)
 
         if 'rdfs:subPropertyOf' in subschema:
             prop_ld['rdfs:subPropertyOf'] = aslist(subschema['rdfs:subPropertyOf'])
@@ -203,17 +256,33 @@ def ontology_from_schema(schema, prefix, item_type, base_types):
         if 'description' in subschema:
             prop_ld['rdfs:comment'] = subschema['description']
 
-        linkTo = subschema.get('linkTo')
-        if linkTo is not None:
-            prop_ld['rdfs:range'] = [prefix + type_name for type_name in aslist(linkTo)]
+        linkTo = aslist(subschema.get('linkTo', []))
+        if len(linkTo) == 1:
+            linkTo, = linkTo
+            prop_ld['rdfs:range'] = term_path + linkTo
+        elif len(linkTo) > 1:
+            prop_ld['rdfs:range'] = {
+                '@type': 'owl:Class',
+                'owl:unionOf': [term_path + type_name for type_name in aslist(linkTo)],
+            }
 
         yield prop_ld
 
 
+@view_config(route_name='jsonld_context_no_slash', request_method='GET')
 @view_config(route_name='jsonld_context', request_method='GET')
 def jsonld_context(context, request):
-    request.environ['encoded.canonical_redirect'] = False
     return request.registry['encoded.jsonld_context']
+
+
+@view_config(route_name='jsonld_term', request_method='GET')
+def jsonld_term(context, request):
+    ontology = request.registry['encoded.jsonld_context']
+    term = request.matchdict['term']
+    try:
+        return ontology['defines'][term]
+    except KeyError:
+        raise HTTPNotFound(term)
 
 
 # @subscriber(BeforeRender)  # disable for now
@@ -221,5 +290,4 @@ def add_jsonld_context(event):
     request = event['request']
     value = event.rendering_val
     if ('@id' in value or '@graph' in value) and '@context' not in value:
-        # The context link needs to be a canonicalised URI
-        value['@context'] = request.route_url('jsonld_context')
+        value['@context'] = request.route_path('jsonld_context')

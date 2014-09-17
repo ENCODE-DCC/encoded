@@ -6,7 +6,7 @@
         "attachment": "frowny_gel.png",
         "award": "U54HG004563",
         "caption": "This is an example rnai characterizations",
-        "characterization_method": "immunoblot",
+        "characterization_method": "knockdown or knockout",
         "characterizes": "d2dc22ba-5e7c-4626-87ac-257c6fff090c",
         "date": "2013-11-13",
         "lab": "gregory-crawford",

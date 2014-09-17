@@ -1,6 +1,6 @@
 from ..contentbase import location
 from ..schema_utils import load_schema
-from .views import (
+from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
     Collection,

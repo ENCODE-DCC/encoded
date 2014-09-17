@@ -616,7 +616,7 @@ def file(files):
 
 
 @pytest.fixture
-def antibody_lots(testapp, labs, awards, sources, organisms):
+def antibody_lots(testapp, labs, awards, sources, organisms, targets):
     from . import sample_data
     return sample_data.load(testapp, 'antibody_lot')
 
@@ -635,6 +635,28 @@ def targets(testapp,organisms):
 @pytest.fixture
 def target(targets):
     return [t for t in targets if t['label'] == 'ATF4'][0]
+
+
+@pytest.fixture
+def antibody_characterizations(testapp, awards, labs, targets, antibody_lots):
+    from . import sample_data
+    return sample_data.load(testapp, 'antibody_characterization')
+
+
+@pytest.fixture
+def antibody_characterization(antibody_characterizations):
+    return [ac for ac in antibody_characterizations if ac['lab'] == 'myers'][0]
+
+
+@pytest.fixture
+def antibody_approvals(testapp, awards, labs, targets, antibody_lots, antibody_characterizations):
+    from . import sample_data
+    return sample_data.load(testapp, 'antibody_approval')
+
+
+@pytest.fixture
+def antibody_approval(antibody_approvals):
+    return [aa for aa in antibody_approvals if aa['uuid'] == 'a8f94078-2d3b-4647-91a2-8ec91b096708'][0]
 
 
 @pytest.fixture

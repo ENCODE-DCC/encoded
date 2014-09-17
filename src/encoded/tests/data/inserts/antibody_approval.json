@@ -83,9 +83,7 @@
         "antibody": "ENCAB000ANU", 
         "award": "U41HG004568", 
         "characterizations": [
-            "77b39794-eca3-4799-bac7-27a71a74313f", 
-            "2db3adb8-5d5c-4bb0-8580-9633ec610de6", 
-            "adbb7ba3-0bca-4bca-b892-15f997781515"
+            "77b39794-eca3-4799-bac7-27a71a74313f"
         ], 
         "lab": "w-james-kent", 
         "status": "eligible for new data", 

@@ -12,10 +12,10 @@ ORDER = [
     'organism',
     'source',
     'target',
+    'document',
     'antibody_lot',
     'antibody_characterization',
     'antibody_approval',
-    'document',
     'treatment',
     'construct',
     'construct_characterization',
@@ -39,7 +39,6 @@ ORDER = [
     'publication',
     'software',
 ]
-
 
 ##############################################################################
 # Pipeline components

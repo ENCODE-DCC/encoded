@@ -6,11 +6,11 @@ var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
-var antibody = require('./antibody');
+var statuslabel = require('./statuslabel');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
-var StatusLabel = antibody.StatusLabel;
+var StatusLabel = statuslabel.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -99,10 +99,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                 antibodies[replicate.antibody['@id']] = replicate.antibody;
             }
         });
-        var antibody_accessions = [];
-        for (var key in antibodies) {
-            antibody_accessions.push(antibodies[key].accession);
-        }
 
         // Determine this experiment's ENCODE version
         var encodevers = "";
@@ -187,8 +183,14 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.target ? <dt>Target</dt> : null}
                         {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
 
-                        {antibody_accessions.length ? <dt>Antibody</dt> : null}
-                        {antibody_accessions.length ? <dd>{antibody_accessions.join(', ')}</dd> : null}
+                        {Object.keys(antibodies).length ?
+                            <div>
+                                <dt>Antibody</dt>
+                                <dd>{Object.keys(antibodies).map(function(antibody, i) {
+                                    return (<span>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
+                                })}</dd>
+                            </div>
+                        : null}
 
                         {context.possible_controls.length ? <dt>Controls</dt> : null}
                         {context.possible_controls.length ?
@@ -248,7 +250,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 {context.visualize_ucsc  && context.status == "released" ?
                     <span className="pull-right">
-                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-small" href={context['visualize_ucsc']}>Visualize Data</a>
+                        <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm" href={context['visualize_ucsc']}>Visualize Data</a>
                     </span>
                 : null }
 

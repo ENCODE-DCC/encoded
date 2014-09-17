@@ -1,5 +1,5 @@
 from ..migrator import upgrade_step
-from ..views.views import ENCODE2_AWARDS
+from .shared import ENCODE2_AWARDS
 
 
 def number(value):

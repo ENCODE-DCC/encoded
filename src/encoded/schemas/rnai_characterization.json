@@ -26,6 +26,15 @@
             "title": "RNAi characterized",
             "comment": "See rnai.json for available identifiers.",
             "linkTo": "rnai"
+        },
+        "characterization_method": {
+            "title": "Method",
+            "description": "Experimental method of the characterization.",
+            "type": "string",
+            "enum": [
+                "knockdown or knockout",
+                "qPCR analysis"
+            ]
         }
     }
 }
