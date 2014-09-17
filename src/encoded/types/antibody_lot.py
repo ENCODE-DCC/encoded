@@ -40,6 +40,9 @@ def lot_reviews(root, characterizations, targets):
 
         for characterization_path in characterizations:
             characterization = find_resource(root, characterization_path)
+            if characterization.properties['status'] == 'deleted':
+                continue
+
             target = find_resource(root, characterization.properties['target'])
             organism = find_resource(root, target.properties['organism'])
             if resource_path(target, '') not in review_targets:
@@ -50,9 +53,7 @@ def lot_reviews(root, characterizations, targets):
             if resource_path(organism, '') not in organisms:
                 organisms.append(resource_path(organism, ''))
 
-            if characterization.properties['status'] == 'deleted':
-                continue
-            elif characterization.properties['status'] == 'not submitted for review by lab':
+            if characterization.properties['status'] == 'not submitted for review by lab':
                 lab_not_reviewed_chars += 1
                 total_characterizations += 1
             elif characterization.properties['status'] == 'not reviewed':
