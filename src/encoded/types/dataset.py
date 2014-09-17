@@ -23,6 +23,16 @@ def file_is_revoked(root, path):
     return item.upgrade_properties()['status'] == 'revoked'
 
 
+def assembly(root, original_files, related_files):
+    for path in chain(original_files, related_files):
+        f = find_resource(root, path)
+        if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
+                f.properties['status'] in ['released']:
+            if 'assembly' in f.properties:
+                return f.properties['assembly']
+    return None
+
+
 @location('datasets')
 class Dataset(Collection):
     item_type = 'dataset'
@@ -55,8 +65,8 @@ class Dataset(Collection):
                 '$condition': 'assembly',
             },
             'assembly': {
-                '$value': '{assembly}',
-                '$condition': 'assembly',
+                '$value': assembly,
+                '$condition': assembly,
             },
         }
         embedded = [
@@ -84,18 +94,6 @@ class Dataset(Collection):
         rev = {
             'original_files': ('file', 'dataset'),
         }
-
-        def template_namespace(self, properties, request=None):
-            ns = super(Dataset.Item, self).template_namespace(properties, request)
-            root = ns['root']
-            for link in ns['original_files'] + ns['related_files']:
-                f = find_resource(root, link)
-                if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
-                        f.properties['status'] in ['released']:
-                    if 'assembly' in f.properties:
-                        ns['assembly'] = f.properties['assembly']
-                        break
-            return ns
 
         @classmethod
         def expand_page(cls, request, properties):
