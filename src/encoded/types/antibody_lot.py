@@ -8,6 +8,7 @@ from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
 from pyramid.traversal import (
     find_resource,
@@ -33,6 +34,9 @@ class AntibodyLot(Collection):
                 },
             ],
             'title': {'$value': '{accession}'},
+            'characterizations': (
+                lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+            ),
         }
         name_key = 'accession'
 

@@ -517,15 +517,6 @@ class Item(object):
             else:
                 properties[name] = request.resource_path(value)
 
-        # XXX Should reverse links move to embedding?
-        # - would necessitate a second templating stage.
-        for name, value in self.rev_links().iteritems():
-            properties[name] = [
-                request.resource_path(item)
-                for item in value
-                if item.upgrade_properties().get('status') not in ('deleted', 'replaced')
-            ]
-
         templated = self.expand_template(properties, request)
         properties.update(templated)
 
@@ -547,6 +538,9 @@ class Item(object):
         if request is not None:
             ns['request'] = request
             ns['permission'] = permission_checker(self, request)
+
+        for name, value in self.rev_links().iteritems():
+            ns[name] = [resource_path(item, '') for item in value]
 
         if self.merged_namespace_from_path:
             root = find_root(self)

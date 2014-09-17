@@ -8,6 +8,7 @@ from .base import (
     ALLOW_SUBMITTER_ADD,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
 from .dataset import Dataset
 from pyramid.traversal import (
@@ -18,7 +19,9 @@ import datetime
 
 def run_type(root, registry, replicates):
     for replicate in replicates:
-        properties = find_resource(root, replicate).properties
+        properties = find_resource(root, replicate).upgrade_properties()
+        if properties.get('status') in ('deleted', 'replaced'):
+            continue
         if 'paired_ended' in properties:
             return 'Paired-ended' if properties['paired_ended'] else 'Single-ended'
 
@@ -74,8 +77,11 @@ class Experiment(Dataset):
             },
             'run_type': {
                 '$value': run_type,
-                '$condition': 'replicates',
+                '$condition': run_type,
             },
+            'replicates': (
+                lambda root, replicates: paths_filtered_by_status(root, replicates)
+            ),
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody',

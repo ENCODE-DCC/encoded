@@ -8,6 +8,7 @@ from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
 
 
@@ -101,6 +102,9 @@ class Biosample(Collection):
                 '$value': lambda model_organism_donor_constructs: model_organism_donor_constructs,
                 '$condition': 'model_organism_donor_constructs',
             },
+            'characterizations': (
+                lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+            ),
         }
         embedded = [
             'donor',
