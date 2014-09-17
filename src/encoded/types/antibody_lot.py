@@ -133,80 +133,84 @@ def lot_reviews(root, characterizations, targets):
                 not_reviewed = True
                 continue
 
-            if 'characterization_reviews' in primary.properties:
-                for lane_review in primary.properties['characterization_reviews']:
-                    new_review = {
-                        'biosample_term_name': lane_review['biosample_term_name'],
-                        'biosample_term_id': lane_review['biosample_term_id'],
-                        'status': 'awaiting lab characterization'
-                    }
+            if 'characterization_reviews' not in primary.properties:
+                continue
 
-                    # Get the organism information from the lane, not from the target since there are lanes
-                    lane_organism = find_resource(root, lane_review['organism'])
-                    new_review['organisms'] = [resource_path(lane_organism, '')]
+            for lane_review in primary.properties['characterization_reviews']:
+                new_review = {
+                    'biosample_term_name': lane_review['biosample_term_name'],
+                    'biosample_term_id': lane_review['biosample_term_id'],
+                    'status': 'awaiting lab characterization'
+                }
 
-                    if not histone_mod_target:
-                        new_review['targets'] = [resource_path(find_resource(root, primary.properties['target']), '')]
-                    else:
-                        new_review['targets'] = review_targets
+                # Get the organism information from the lane, not from the target since there are lanes
+                lane_organism = find_resource(root, lane_review['organism'])
+                new_review['organisms'] = [resource_path(lane_organism, '')]
 
-                    if lane_review['lane_status'] == 'pending dcc review':
-                        if pending_secondary or compliant_secondary:
-                            new_review['status'] = 'pending dcc review'
-                    elif lane_review['lane_status'] == 'not compliant':
-                        if compliant_secondary or not_compliant_secondary:
-                            new_review['status'] = 'not eligible for new data'
-                    elif lane_review['lane_status'] == 'compliant':
-                        if compliant_secondary:
-                            if not histone_mod_target:
-                                new_review['status'] = 'eligible for new data'
-                            else:
-                                new_review['status'] = 'compliant'
+                if not histone_mod_target:
+                    new_review['targets'] = [resource_path(find_resource(root, primary.properties['target']), '')]
+                else:
+                    new_review['targets'] = review_targets
 
-                                # Keep track of compliant organisms for histones and we
-                                # will fill them in after going through all the lanes
-                                if resource_path(lane_organism, '') not in histone_organisms:
-                                    histone_organisms.append(resource_path(lane_organism, ''))
+                if lane_review['lane_status'] == 'pending dcc review':
+                    if pending_secondary or compliant_secondary:
+                        new_review['status'] = 'pending dcc review'
+                elif lane_review['lane_status'] == 'not compliant':
+                    if compliant_secondary or not_compliant_secondary:
+                        new_review['status'] = 'not eligible for new data'
+                elif lane_review['lane_status'] == 'compliant':
+                    if compliant_secondary:
+                        if not histone_mod_target:
+                            new_review['status'] = 'eligible for new data'
+                        else:
+                            new_review['status'] = 'compliant'
 
-                        if pending_secondary:
-                            new_review['status'] = 'pending dcc review'
+                            # Keep track of compliant organisms for histones and we
+                            # will fill them in after going through all the lanes
+                            if resource_path(lane_organism, '') not in histone_organisms:
+                                histone_organisms.append(resource_path(lane_organism, ''))
 
-                    else:
-                        # For all other cases, can keep the awaiting status
-                        pass
+                    if pending_secondary:
+                        new_review['status'] = 'pending dcc review'
 
-                    key = "%s;%s;%s;%s" % (lane_review['biosample_term_name'], lane_review['biosample_term_id'], lane_review['organism'], target)
-                    if key not in char_reviews:
-                        char_reviews[key] = new_review
-                        has_lane_review = True
-                    else:
-                        has_lane_review = True
-                        status_ranking = {
-                            'eligible for new data': 4,
-                            'compliant': 3,
-                            'pending dcc review': 2,
-                            'awaiting lab characterization': 1,
-                            'not compliant': 0,
-                            'not reviewed': 0,
-                            'not submitted for review by lab': 0,
-                            'deleted': 0,
-                            'not eligible for new data': 0
-                        }
+                else:
+                    # For all other cases, can keep the awaiting status
+                    pass
 
-                        if status_ranking[lane_review['lane_status']] > status_ranking[char_reviews[key]['status']]:
-                            # Check to see if existing status should be overridden
-                            char_reviews[key] = new_review
+                key = "%s;%s;%s;%s" % (lane_review['biosample_term_name'], lane_review['biosample_term_id'], lane_review['organism'], target)
+                if key not in char_reviews:
+                    char_reviews[key] = new_review
+                    has_lane_review = True
+                    continue
+
+                has_lane_review = True
+                status_ranking = {
+                    'eligible for new data': 4,
+                    'compliant': 3,
+                    'pending dcc review': 2,
+                    'awaiting lab characterization': 1,
+                    'not compliant': 0,
+                    'not reviewed': 0,
+                    'not submitted for review by lab': 0,
+                    'deleted': 0,
+                    'not eligible for new data': 0
+                }
+
+                if status_ranking[lane_review['lane_status']] > status_ranking[char_reviews[key]['status']]:
+                    # Check to see if existing status should be overridden
+                    char_reviews[key] = new_review
 
         if has_lane_review:
             for key in char_reviews:
                 if not histone_mod_target:
                     antibody_lot_reviews.append(char_reviews[key])
-                else:
-                    # Review of antibodies against histone modifications are treated differently.
-                    # There should be at least 3 compliant cell types for eligibility for use
-                    if char_reviews[key]['status'] == 'compliant':
-                        char_reviews[key]['status'] = 'awaiting lab characterization'
-                        num_compliant_celltypes += 1
+                    continue
+
+                # Review of antibodies against histone modifications are treated differently.
+                # There should be at least 3 compliant cell types for eligibility for use
+                if char_reviews[key]['status'] == 'compliant':
+                    char_reviews[key]['status'] = 'awaiting lab characterization'
+                    num_compliant_celltypes += 1
 
             if histone_mod_target:
                 if num_compliant_celltypes >= 3 and compliant_secondary:
