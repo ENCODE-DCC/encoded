@@ -176,7 +176,7 @@ class AntibodyLot(Collection):
                                 new_review['organisms'] = [resource_path(lane_organism, '')]
 
                                 if not histone_mod_target:
-                                    new_review['targets'] = [resource_path(find_resource(root, primary.properties['target'], ''))]
+                                    new_review['targets'] = [resource_path(find_resource(root, primary.properties['target']), '')]
                                 else:
                                     new_review['targets'] = targets
 
