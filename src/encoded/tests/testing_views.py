@@ -6,7 +6,7 @@ from ..contentbase import (
     Collection,
     location,
 )
-from ..views.download import ItemWithAttachment
+from ..types.download import ItemWithAttachment
 
 
 def includeme(config):
