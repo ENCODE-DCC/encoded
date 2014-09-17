@@ -550,17 +550,22 @@ class Item(object):
 
         if self.merged_namespace_from_path:
             root = find_root(self)
-            for name, path in self.merged_namespace_from_path.items():
-                path = path.split('.')
-                last = path[-1]
-                obj = self
-                for n in path[:-1]:
-                    obj_props = obj.properties
-                    if n not in obj_props:
-                        break
-                    obj = root.get_by_uuid(obj_props[n])
-                else:
-                    ns[name] = obj.properties[last]
+            for name, paths in self.merged_namespace_from_path.items():
+                # Treat a list of paths as a search path for the value
+                if isinstance(paths, basestring):
+                    paths = [paths]
+                for path in paths:
+                    path = path.split('.')
+                    last = path[-1]
+                    obj_props = self.properties
+                    for n in path[:-1]:
+                        if n not in obj_props:
+                            break
+                        obj_props = root.get_by_uuid(obj_props[n]).properties
+                    else:
+                        if last in obj_props:
+                            ns[name] = obj_props[last]
+                            break
 
         return ns
 
