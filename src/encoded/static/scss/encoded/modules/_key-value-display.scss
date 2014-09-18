@@ -13,6 +13,10 @@ dd.h3, dd.h4 {
 .key-value {
     margin: 0;
 
+    div {
+        @extend .clearfix;
+    }
+
     dt {
         padding-top: 0;
         padding-bottom: 2px;
