@@ -91,74 +91,170 @@ var Biosample = module.exports.Biosample = React.createClass({
                 </header>
                 <div className="panel data-display">
                     <dl className="key-value">
-                        <dt>Term name</dt>
-                        <dd>{context.biosample_term_name}</dd>
+                        <div data-test="term-name">
+                            <dt>Term name</dt>
+                            <dd>{context.biosample_term_name}</dd>
+                        </div>
 
-                        <dt>Term ID</dt>
-                        <dd>{context.biosample_term_id}</dd>
+                        <div data-test="term-id">
+                            <dt>Term ID</dt>
+                            <dd>{context.biosample_term_id}</dd>
+                        </div>
 
-                        {context.description ? <dt>Description</dt> : null}
-                        {context.description ? <dd className="sentence-case">{context.description}</dd> : null}
-                        
-                        {context.subcellular_fraction_term_name ? <dt>Subcellular fraction</dt> : null}
-                        {context.subcellular_fraction_term_name ? <dd>{context.subcellular_fraction_term_name}</dd> : null}
+                        {context.description ? 
+                            <div data-test="description">
+                                <dt>Description</dt>
+                                <dd className="sentence-case">{context.description}</dd>
+                            </div>
+                        : null}
 
-                        <dt>Source</dt>
-                        <dd><a href={context.source.url}>{context.source.title}</a></dd>
+                        {context.subcellular_fraction_term_name ?
+                            <div data-test="subcellular-term-name">
+                                <dt>Subcellular fraction</dt>
+                                <dd>{context.subcellular_fraction_term_name}</dd>
+                            </div>
+                        : null}
 
-                        {context.product_id ? <dt>Product ID</dt> : null}
-                        {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
+                        <div data-test="source-title">
+                            <dt>Source</dt>
+                            <dd><a href={context.source.url}>{context.source.title}</a></dd>
+                        </div>
 
-                        {context.lot_id ? <dt>Lot ID</dt> : null}
-                        {context.lot_id ? <dd>{context.lot_id}</dd> : null}
+                        {context.product_id ?
+                            <div data-test="product-id">
+                                <dt>Product ID</dt>
+                                <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                            </div>
+                        : null}
 
-                        <dt>Project</dt>
-                        <dd>{context.award.project}</dd>
+                        {context.lot_id ?
+                            <div data-test="lot-id">
+                                <dt>Lot ID</dt>
+                                <dd>{context.lot_id}</dd>
+                            </div>
+                        : null}
 
-                        <dt>Submitted by</dt>
-                        <dd>{context.submitted_by.title}</dd>
+                        <div data-test="project">
+                            <dt>Project</dt>
+                            <dd>{context.award.project}</dd>
+                        </div>
 
-                        <dt>Lab</dt>
-                        <dd>{context.lab.title}</dd>
+                        <div data-test="submitted-by">
+                            <dt>Submitted by</dt>
+                            <dd>{context.submitted_by.title}</dd>
+                        </div>
 
-                        <dt>Grant</dt>
-                        <dd>{context.award.name}</dd>
+                        <div data-test="lab">
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                        </div>
 
-                        {context.aliases.length ? <dt>Aliases</dt> : null}
-                        {context.aliases.length ? <dd>{aliasList}</dd>: null}
+                        <div data-test="grant">
+                            <dt>Grant</dt>
+                            <dd>{context.award.name}</dd>
+                        </div>
 
-                        {context.dbxrefs.length ? <dt>External resources</dt> : null}
-                        {context.dbxrefs.length ? <dd><DbxrefList values={context.dbxrefs} /></dd> : null}
+                        {context.aliases.length ?
+                            <div data-test="aliases">
+                                <dt>Aliases</dt>
+                                <dd>{aliasList}</dd>
+                            </div>
+                        : null}
 
-                        {context.note ? <dt>Note</dt> : null}
-                        {context.note ? <dd>{context.note}</dd> : null}
+                        {context.dbxrefs.length ?
+                            <div data-test="external-resources">
+                                <dt>External resources</dt>
+                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                            </div>
+                        : null}
 
-                        {context.date_obtained ? <dt>Date obtained</dt> : null}
-                        {context.date_obtained ? <dd>{context.date_obtained}</dd> : null}
+                        {context.note ?
+                            <div data-test="note">
+                                <dt>Note</dt>
+                                <dd>{context.note}</dd>
+                            </div>
+                        : null}
 
-                        {context.starting_amount ? <dt>Starting amount</dt> : null}
-                        {context.starting_amount ? <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd> : null}
+                        {context.date_obtained ?
+                            <div data-test="date-obtained">
+                                <dt>Date obtained</dt>
+                                <dd>{context.date_obtained}</dd>
+                            </div>
+                        : null}
 
-                        {context.culture_start_date ? <dt>Culture start date</dt> : null}
-                        {context.culture_start_date ? <dd>{context.culture_start_date}</dd> : null}
+                        {context.starting_amount ?
+                            <div data-test="starting-amount">
+                                <dt>Starting amount</dt>
+                                <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd>
+                            </div>
+                        : null}
 
-                        {context.culture_harvest_date ? <dt>Culture harvest date</dt> : null}
-                        {context.culture_harvest_date ? <dd>{context.culture_harvest_date}</dd> : null}
+                        {context.culture_start_date ?
+                            <div data-test="culture-start-date">
+                                <dt>Culture start date</dt>
+                                <dd>{context.culture_start_date}</dd>
+                            </div>
+                        : null}
 
-                        {context.passage_number ? <dt>Passage number</dt> : null}
-                        {context.passage_number ? <dd>{context.passage_number}</dd> : null}
+                        {context.culture_harvest_date ?
+                            <div data-test="culture-harvest-date">
+                                <dt>Culture harvest date</dt>
+                                <dd>{context.culture_harvest_date}</dd>
+                            </div>
+                        : null}
+
+                        {context.passage_number ?
+                            <div data-test="passage-number">
+                                <dt>Passage number</dt>
+                                <dd>{context.passage_number}</dd>
+                            </div>
+                        : null}
+
+                        {context.donor && context.donor.organism.name !== 'human' ?
+                            <div>
+                                {context.life_stage ?
+                                    <div data-test="life-stage">
+                                        <dt>Life stage</dt>
+                                        <dd className="sentence-case">{context.life_stage}</dd>
+                                    </div>
+                                : null}
+
+                                {context.age ?
+                                    <div data-test="age">
+                                        <dt>Age</dt>
+                                        <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
+                                    </div>
+                                : null}
+                            </div>
+                        : null}
+
+                        {context.synchronization ?
+                            <div data-test="synchronization-stage">
+                                <dt>Synchronization stage</dt>
+                                <dd>{context.synchronization}</dd>
+                            </div>
+                        : null}
+
+                        {context.post_synchronization_time ?
+                            <div data-test="synchronization-time">
+                                <dt>Post-synchronization time</dt>
+                                <dd className="sentence-case">
+                                    {context.post_synchronization_time}{context.post_synchronization_time_units ? ' ' + context.post_synchronization_time_units : null}
+                                </dd>
+                            </div>
+                        : null}
                     </dl>
 
                     {context.derived_from ?
-                        <section>
+                        <section data-test="derived-from">
                             <hr />
                             <h4>Derived from biosample</h4>
                             <a className="non-dl-item" href={context.derived_from['@id']}> {context.derived_from.accession} </a>
                         </section>
                     : null}
 
-                     {context.part_of ?
-                        <section>
+                    {context.part_of ?
+                        <section data-test="separated-from">
                             <hr />
                             <h4>Separated from biosample</h4>
                             <a className="non-dl-item" href={context.part_of['@id']}> {context.part_of.accession} </a>
@@ -166,7 +262,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     : null}
 
                     {context.pooled_from.length ?
-                        <section>
+                        <section data-test="pooled-from">
                             <hr />
                             <h4>Pooled from biosamples</h4>
                             <ul className="non-dl-list">
@@ -178,7 +274,6 @@ var Biosample = module.exports.Biosample = React.createClass({
                                     );
                                 })}
                             </ul>
-
                         </section>
                     : null}
 
@@ -208,8 +303,13 @@ var Biosample = module.exports.Biosample = React.createClass({
 
                 </div>
 
-                {(context.donor) ?
-                    this.transferPropsTo(<Donor />)
+                {context.donor ?
+                    <div>
+                        <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
+                        <div className="panel data-display">
+                            <Panel context={context.donor} biosample={context} />
+                        </div>
+                    </div>
                 : null}
 
                 {Object.keys(protocol_documents).length ?
@@ -251,29 +351,12 @@ var Biosample = module.exports.Biosample = React.createClass({
                 {this.transferPropsTo(
                     <FetchedItems url={experiments_url} Component={ExperimentsUsingBiosample} />
                 )}
-
             </div>
         );
     }
 });
 
 globals.content_views.register(Biosample, 'biosample');
-
-
-var Donor = React.createClass({
-    render: function() {
-        var context = this.props.context;
-
-        return (
-            <div>
-                <h3>{context.donor.organism.name === 'human' ? 'Donor' : 'Strain'} information</h3>
-                <div className="panel data-display">
-                    <Panel context={context.donor} biosample={context} />
-                </div>
-            </div>
-        );
-    }
-});
 
 
 var ExperimentsUsingBiosample = module.exports.ExperimentsUsingBiosample = React.createClass({
@@ -307,29 +390,59 @@ var HumanDonor = module.exports.HumanDonor = React.createClass({
         var biosample = this.props.biosample;
         return (
             <dl className="key-value">
-                <dt>Accession</dt>
-                <dd>{context.accession}</dd>
+                <div data-test="accession">
+                    <dt>Accession</dt>
+                    <dd>{context.accession}</dd>
+                </div>
 
-                {context.aliases.length ? <dt>Aliases</dt> : null}
-                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+                {context.aliases.length ?
+                    <div data-test="aliases">
+                        <dt>Aliases</dt>
+                        <dd>{context.aliases.join(", ")}</dd>
+                    </div>
+                : null}
 
-                {context.organism.scientific_name ? <dt>Species</dt> : null}
-                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
+                {context.organism.scientific_name ?
+                    <div data-test="species">
+                        <dt>Species</dt>
+                        <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                    </div>
+                : null}
 
-                {context.life_stage ? <dt>Life stage</dt> : null}
-                {context.life_stage ? <dd className="sentence-case">{context.life_stage}</dd> : null}
+                {context.life_stage ?
+                    <div data-test="life-stage">
+                        <dt>Life stage</dt>
+                        <dd className="sentence-case">{context.life_stage}</dd>
+                    </div>
+                : null}
 
-                {context.age ? <dt>Age</dt> : null}
-                {context.age ? <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd> : null}
+                {context.age ?
+                    <div data-test="age">
+                        <dt>Age</dt>
+                        <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
+                    </div>
+                : null}
 
-                {context.sex ? <dt>Sex</dt> : null}
-                {context.sex ? <dd className="sentence-case">{context.sex}</dd> : null}
+                {context.sex ?
+                    <div data-test="sex">
+                        <dt>Sex</dt>
+                        <dd className="sentence-case">{context.sex}</dd>
+                    </div>
+                : null}
 
-                {context.health_status ? <dt>Health status</dt> : null}
-                {context.health_status ? <dd className="sentence-case">{context.health_status}</dd> : null}
+                {context.health_status ?
+                    <div data-test="health-status">
+                        <dt>Health status</dt>
+                        <dd className="sentence-case">{context.health_status}</dd>
+                    </div>
+                : null}
 
-                {context.ethnicity ? <dt>Ethnicity</dt> : null}
-                {context.ethnicity ? <dd className="sentence-case">{context.ethnicity}</dd> : null}
+                {context.ethnicity ?
+                    <div data-test="ethnicity">
+                        <dt>Ethnicity</dt>
+                        <dd className="sentence-case">{context.ethnicity}</dd>
+                    </div>
+                : null}
             </dl>
         );
     }
@@ -344,87 +457,58 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
         var biosample = this.props.biosample;
         return (
             <dl className="key-value">
-                <dt>Accession</dt>
-                <dd>{context.accession}</dd>
-
-                {context.aliases.length ? <dt>Aliases</dt> : null}
-                {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
-
-                {context.organism.scientific_name ? <dt>Species</dt> : null}
-                {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
-
-                {context.genotype ? <dt>Genotype</dt> : null}
-                {context.genotype ? <dd>{context.genotype}</dd> : null}
-
-                {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
-
-                {biosample && biosample.age ? <dt>Age</dt> : null}
-                {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
-
-                {biosample && biosample.sex ? <dt>Sex</dt> : null}
-                {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
-
-                {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
-
-                {context.strain_background ? <dt>Strain background</dt> : null}
-                {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
-
-                {context.strain_name ? <dt>Strain name</dt> : null}
-                {context.strain_name ? <dd>{context.strain_name}</dd> : null}
-            </dl>
-        );
-    }
-});
-
-globals.panel_views.register(MouseDonor, 'mouse_donor');
-
-
-var FlyDonor = module.exports.FlyDonor = React.createClass({
-    render: function() {
-        var context = this.props.context;
-        var biosample = this.props.biosample;
-        return (
-            <div>
-                <dl className="key-value">
+                <div data-test="accession">
                     <dt>Accession</dt>
                     <dd>{context.accession}</dd>
+                </div>
 
-                    {context.aliases.length ? <dt>Aliases</dt> : null}
-                    {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+                {context.aliases.length ?
+                    <div data-test="aliases">
+                        <dt>Aliases</dt>
+                        <dd>{context.aliases.join(", ")}</dd>
+                    </div>
+                : null}
 
-                    {context.organism.scientific_name ? <dt>Species</dt> : null}
-                    {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
+                {context.organism.scientific_name ?
+                    <div data-test="organism">
+                        <dt>Species</dt>
+                        <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                    </div>
+                : null}
 
-                    {context.genotype ? <dt>Genotype</dt> : null}
-                    {context.genotype ? <dd>{context.genotype}</dd> : null}
+                {context.genotype ?
+                    <div data-test="genotype">
+                        <dt>Genotype</dt>
+                        <dd>{context.genotype}</dd>
+                    </div>
+                : null}
 
-                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                    {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+                {biosample && biosample.sex ?
+                    <div data-test="sex">
+                        <dt>Sex</dt>
+                        <dd className="sentence-case">{biosample.sex}</dd>
+                    </div>
+                : null}
 
-                    {biosample && biosample.age ? <dt>Age</dt> : null}
-                    {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd> : null}
+                {biosample && biosample.health_status ?
+                    <div data-test="health-status">
+                        <dt>Health status</dt>
+                        <dd className="sentence-case">{biosample.health_status}</dd>
+                    </div>
+                : null}
+                {context.strain_background ?
 
-                    {biosample && biosample.sex ? <dt>Sex</dt> : null}
-                    {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
+                    <div data-test="strain-background">
+                        <dt>Strain background</dt>
+                        <dd className="sentence-case">{context.strain_background}</dd>
+                    </div>
+                : null}
 
-                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                    {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
-
-                    {context.strain_background ? <dt>Strain background</dt> : null}
-                    {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
-
-                    {context.strain_name ? <dt>Strain name</dt> : null}
-                    {context.strain_name ? <dd>{context.strain_name}</dd> : null}
-                </dl>
-
-                {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
-                    <section>
-                        <hr />
-                        <h4>Construct details</h4>
-                        {biosample.model_organism_donor_constructs.map(Panel)}
-                    </section>
+                {context.strain_name ?
+                    <div data-test="strain-name">
+                        <dt>Strain name</dt>
+                        <dd>{context.strain_name}</dd>
+                    </div>
                 : null}
 
                 {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
@@ -436,60 +520,88 @@ var FlyDonor = module.exports.FlyDonor = React.createClass({
                         </div>
                     </section>
                 : null}
-
-            </div>
+            </dl>
         );
     }
 });
 
-globals.panel_views.register(FlyDonor, 'fly_donor');
+globals.panel_views.register(MouseDonor, 'mouse_donor');
 
 
-var WormDonor = module.exports.WormDonor = React.createClass({
+var FlyWormDonor = module.exports.FlyDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
+        var donor_constructs = {};
+        if (biosample && biosample.model_organism_donor_constructs) {
+            biosample.model_organism_donor_constructs.forEach(function (construct) {
+                donor_constructs[construct['@id']] = Panel({context: construct, embeddedDocs: true});
+            });
+        }
+
         return (
             <div>
                 <dl className="key-value">
-                    <dt>Accession</dt>
-                    <dd>{context.accession}</dd>
+                    <div data-test="accession">
+                        <dt>Accession</dt>
+                        <dd>{context.accession}</dd>
+                    </div>
 
-                    {context.aliases.length ? <dt>Aliases</dt> : null}
-                    {context.aliases.length ? <dd>{context.aliases.join(", ")}</dd> : null}
+                    {context.aliases.length ?
+                        <div data-test="aliases">
+                            <dt>Aliases</dt>
+                            <dd>{context.aliases.join(", ")}</dd>
+                        </div>
+                    : null}
 
-                    {context.organism.scientific_name ? <dt>Species</dt> : null}
-                    {context.organism.scientific_name ? <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd> : null}
+                    {context.organism.scientific_name ?
+                        <div data-test="species">
+                            <dt>Species</dt>
+                            <dd className="sentence-case"><em>{context.organism.scientific_name}</em></dd>
+                        </div>
+                    : null}
 
-                    {context.genotype ? <dt>Genotype</dt> : null}
-                    {context.genotype ? <dd>{context.genotype}</dd> : null}
+                    {context.genotype ?
+                        <div data-test="genotype">
+                            <dt>Genotype</dt>
+                            <dd>{context.genotype}</dd>
+                        </div>
+                    : null}
+                    {biosample && biosample.sex ?
 
-                    {biosample && biosample.life_stage ? <dt>Life stage</dt> : null}
-                    {biosample && biosample.life_stage ? <dd className="sentence-case">{biosample.life_stage}</dd> : null}
+                        <div data-test="sex">
+                            <dt>Sex</dt>
+                            <dd className="sentence-case">{biosample.sex}</dd>
+                        </div>
+                    : null}
 
-                    {biosample && biosample.age ? <dt>Age</dt> : null}
-                    {biosample && biosample.age ? <dd className="sentence-case">{biosample.age}{' '}{biosample.age_units}</dd> : null}
+                    {biosample && biosample.health_status ?
+                        <div data-test="health-status">
+                            <dt>Health status</dt>
+                            <dd className="sentence-case">{biosample.health_status}</dd>
+                        </div>
+                    : null}
 
-                    {biosample && biosample.sex ? <dt>Sex</dt> : null}
-                    {biosample && biosample.sex ? <dd className="sentence-case">{biosample.sex}</dd> : null}
+                    {context.strain_background ?
+                        <div data-test="strain-background">
+                            <dt>Strain background</dt>
+                            <dd className="sentence-case">{context.strain_background}</dd>
+                        </div>
+                    : null}
 
-                    {biosample && biosample.health_status ? <dt>Health status</dt> : null}
-                    {biosample && biosample.health_status ? <dd className="sentence-case">{biosample.health_status}</dd> : null}
-
-                    {context.strain_background ? <dt>Strain background</dt> : null}
-                    {context.strain_background ? <dd className="sentence-case">{context.strain_background}</dd> : null}
-
-                    {context.strain_name ? <dt>Strain name</dt> : null}
-                    {context.strain_name ? <dd>{context.strain_name}</dd> : null}
+                    {context.strain_name ?
+                        <div data-test="strain-name">
+                            <dt>Strain name</dt>
+                            <dd>{context.strain_name}</dd>
+                        </div>
+                    : null}
                 </dl>
 
                 {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
                     <section>
                         <hr />
                         <h4>Construct details</h4>
-                        <div className="row">
-                            {biosample.model_organism_donor_constructs.map(Panel)}
-                        </div>
+                        {donor_constructs}
                     </section>
                 : null}
 
@@ -506,7 +618,8 @@ var WormDonor = module.exports.WormDonor = React.createClass({
     }
 });
 
-globals.panel_views.register(WormDonor, 'worm_donor');
+globals.panel_views.register(FlyWormDonor, 'fly_donor');
+globals.panel_views.register(FlyWormDonor, 'worm_donor');
 
 
 var Treatment = module.exports.Treatment = React.createClass({
@@ -527,7 +640,6 @@ var Treatment = module.exports.Treatment = React.createClass({
 
                 <dt>Type</dt>
                 <dd>{context.treatment_type}</dd>
-
             </dl>
         );
     }
@@ -539,40 +651,85 @@ globals.panel_views.register(Treatment, 'treatment');
 var Construct = module.exports.Construct = React.createClass({
     render: function() {
         var context = this.props.context;
+        var embeddedDocs = this.props.embeddedDocs;
+        var construct_documents = {};
+        context.documents.forEach(function (doc) {
+            construct_documents[doc['@id']] = Panel({context: doc, embeddedDocs: embeddedDocs});
+        });
+
         return (
-            <dl className="key-value">
-                {context.target ? <dt>Target</dt> : null}
-                {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+            <div>
+                <dl className="key-value">
+                    {context.target ?
+                        <div data-test="target">
+                            <dt>Target</dt>
+                            <dd><a href={context.target['@id']}>{context.target.name}</a></dd>
+                        </div>
+                    : null}
 
-                {context.vector_backbone_name ? <dt>Vector</dt> : null}
-                {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}
+                    {context.vector_backbone_name ?
+                        <div data-test="vector">
+                            <dt>Vector</dt>
+                            <dd>{context.vector_backbone_name}</dd>
+                        </div>
+                    : null}
 
-                {context.construct_type ? <dt>Construct Type</dt> : null}
-                {context.construct_type ? <dd>{context.construct_type}</dd> : null}
+                    {context.construct_type ?
+                        <div data-test="construct-type">
+                            <dt>Construct Type</dt>
+                            <dd>{context.construct_type}</dd>
+                        </div>
+                    : null}
 
-                {context.description ?  <dt>Description</dt> : null}
-                {context.description ? <dd>{context.description}</dd> : null}
+                    {context.description ?
+                        <div data-test="description">
+                            <dt>Description</dt>
+                            <dd>{context.description}</dd>
+                        </div>
+                    : null}
 
-                {context.tags.length ? <dt>Tags</dt> : null}
-                {context.tags.length ? <dd>
-                    <ul>
-                        {context.tags.map(function (tag, index) {
-                            return (
-                                <li key={index}>
-                                    {tag.name} (Location: {tag.location})
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </dd> : null}
+                    {context.tags.length ?
+                        <div data-test="tags">
+                            <dt>Tags</dt>
+                            <dd>
+                                <ul>
+                                    {context.tags.map(function (tag, index) {
+                                        return (
+                                            <li key={index}>
+                                                {tag.name} (Location: {tag.location})
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </dd>
+                        </div>
+                    : null}
 
+                    {context.source.title ?
+                        <div data-test="source">
+                            <dt>Source</dt>
+                            <dd>{context.source.title}</dd>
+                        </div>
+                    : null}
 
-                {context.source.title ? <dt>Source</dt> : null}
-                {context.source.title ? <dd>{context.source.title}</dd> : null}
+                    {context.product_id ?
+                        <div data-test="product-id">
+                            <dt>Product ID</dt>
+                            <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                        </div>
+                    : null}
+                </dl>
 
-                {context.product_id ? <dt>Product ID</dt> : null}
-                {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
-            </dl>
+                {embeddedDocs && Object.keys(construct_documents).length ?
+                    <div>
+                        <hr />
+                        <h4>Construct documents</h4>
+                        <div className="row multi-columns-row">
+                            {construct_documents}
+                        </div>
+                    </div>
+                : null}
+            </div>
         );
     }
 });
@@ -662,7 +819,7 @@ var Document = module.exports.Document = React.createClass({
             );
         }
 
-        var panelClass = 'type-document view-detail status-none' + (context['@type'][0] !== 'donor_characterization' ? ' panel' : ' sub-panel');
+        var panelClass = 'view-item view-detail status-none panel';
         var characterization = context['@type'].indexOf('characterization') >= 0;
         var excerpt = characterization ? context.caption : context.description;
         if (excerpt && excerpt.length > 100) {
@@ -672,7 +829,7 @@ var Document = module.exports.Document = React.createClass({
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-6 col-md-6 col-lg-4">
-                <div className={panelClass}>
+                <div className={globals.itemClass(context, panelClass)}>
                     <div className="document-title sentence-case">
                         {characterization ? context.characterization_method : context.document_type}
                     </div>
