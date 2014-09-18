@@ -515,7 +515,7 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                     <section className="multi-columns-row">
                         <hr />
                         <h4>Characterizations</h4>
-                        <div className="row">
+                        <div className="row multi-columns-row">
                             {biosample.donor.characterizations.map(Panel)}
                         </div>
                     </section>
@@ -609,7 +609,9 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                     <section className="multi-columns-row">
                         <hr />
                         <h4>Characterizations</h4>
-                        {biosample.donor.characterizations.map(Panel)}
+                        <div className="row multi-columns-row">
+                            {biosample.donor.characterizations.map(Panel)}
+                        </div>
                     </section>
                 : null}
 
