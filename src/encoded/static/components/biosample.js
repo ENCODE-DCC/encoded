@@ -509,9 +509,9 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
         var context = this.props.context;
         var biosample = this.props.biosample;
         var donor_constructs = {};
-        if (biosample.model_organism_donor_constructs) {
+        if (biosample && biosample.model_organism_donor_constructs) {
             biosample.model_organism_donor_constructs.forEach(function (construct) {
-                donor_constructs[construct['@id']] = Panel({context: construct, embedded: true});
+                donor_constructs[construct['@id']] = Panel({context: construct, embeddedDocs: true});
             });
         }
 
@@ -627,10 +627,10 @@ globals.panel_views.register(Treatment, 'treatment');
 var Construct = module.exports.Construct = React.createClass({
     render: function() {
         var context = this.props.context;
-        var embedded = this.props.embedded;
+        var embeddedDocs = this.props.embeddedDocs;
         var construct_documents = {};
         context.documents.forEach(function (doc) {
-            construct_documents[doc['@id']] = Panel({context: doc, embedded: embedded});
+            construct_documents[doc['@id']] = Panel({context: doc, embeddedDocs: embeddedDocs});
         });
 
         return (
@@ -696,7 +696,7 @@ var Construct = module.exports.Construct = React.createClass({
                     : null}
                 </dl>
 
-                {Object.keys(construct_documents).length ?
+                {embeddedDocs && Object.keys(construct_documents).length ?
                     <div>
                         <hr />
                         <h4>Construct documents</h4>
@@ -759,7 +759,7 @@ var Document = module.exports.Document = React.createClass({
                 <em>Document not available</em>
             );
         }
-        var panelClass = 'view-item view-detail status-none' + (this.props.embedded ? '' : ' panel');
+        var panelClass = 'view-item view-detail status-none' + (this.props.embeddedDocs ? '' : ' panel');
 
         return (
             <section className={globals.itemClass(context, panelClass)}>
