@@ -56,6 +56,7 @@ class Biosample(Collection):
             'donor.characterizations.submitted_by',
             'model_organism_donor_constructs',
             'model_organism_donor_constructs.target',
+            'model_organism_donor_constructs.documents',
             'submitted_by',
             'lab',
             'award',

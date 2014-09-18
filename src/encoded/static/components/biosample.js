@@ -508,6 +508,13 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
+        var donor_constructs = {};
+        if (biosample.model_organism_donor_constructs) {
+            biosample.model_organism_donor_constructs.forEach(function (construct) {
+                donor_constructs[construct['@id']] = Panel({context: construct, embedded: true});
+            });
+        }
+
         return (
             <div>
                 <dl className="key-value">
@@ -570,7 +577,7 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                     <section>
                         <hr />
                         <h4>Construct details</h4>
-                        {biosample.model_organism_donor_constructs.map(Panel)}
+                        {donor_constructs}
                     </section>
                 : null}
 
@@ -609,7 +616,6 @@ var Treatment = module.exports.Treatment = React.createClass({
 
                 <dt>Type</dt>
                 <dd>{context.treatment_type}</dd>
-
             </dl>
         );
     }
@@ -621,39 +627,83 @@ globals.panel_views.register(Treatment, 'treatment');
 var Construct = module.exports.Construct = React.createClass({
     render: function() {
         var context = this.props.context;
+        var embedded = this.props.embedded;
+        var construct_documents = {};
+        context.documents.forEach(function (doc) {
+            construct_documents[doc['@id']] = Panel({context: doc, embedded: embedded});
+        });
+
         return (
-            <dl className="key-value">
-                {context.target ? <dt>Target</dt> : null}
-                {context.target ? <dd><a href={context.target['@id']}>{context.target.name}</a></dd> : null}
+            <div>
+                <dl className="key-value">
+                    {context.target ?
+                        <div data-test="target">
+                            <dt>Target</dt>
+                            <dd><a href={context.target['@id']}>{context.target.name}</a></dd>
+                        </div>
+                    : null}
 
-                {context.vector_backbone_name ? <dt>Vector</dt> : null}
-                {context.vector_backbone_name ? <dd>{context.vector_backbone_name}</dd> : null}
+                    {context.vector_backbone_name ?
+                        <div data-test="vector">
+                            <dt>Vector</dt>
+                            <dd>{context.vector_backbone_name}</dd>
+                        </div>
+                    : null}
 
-                {context.construct_type ? <dt>Construct Type</dt> : null}
-                {context.construct_type ? <dd>{context.construct_type}</dd> : null}
+                    {context.construct_type ?
+                        <div data-test="construct-type">
+                            <dt>Construct Type</dt>
+                            <dd>{context.construct_type}</dd>
+                        </div>
+                    : null}
 
-                {context.description ?  <dt>Description</dt> : null}
-                {context.description ? <dd>{context.description}</dd> : null}
+                    {context.description ?
+                        <div data-test="description">
+                            <dt>Description</dt>
+                            <dd>{context.description}</dd>
+                        </div>
+                    : null}
 
-                {context.tags.length ? <dt>Tags</dt> : null}
-                {context.tags.length ? <dd>
-                    <ul>
-                        {context.tags.map(function (tag, index) {
-                            return (
-                                <li key={index}>
-                                    {tag.name} (Location: {tag.location})
-                                </li>
-                            );
-                        })}
-                    </ul>
-                </dd> : null}
+                    {context.tags.length ?
+                        <div data-test="tags">
+                            <dt>Tags</dt>
+                            <dd>
+                                <ul>
+                                    {context.tags.map(function (tag, index) {
+                                        return (
+                                            <li key={index}>
+                                                {tag.name} (Location: {tag.location})
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </dd>
+                        </div>
+                    : null}
 
-                {context.source.title ? <dt>Source</dt> : null}
-                {context.source.title ? <dd>{context.source.title}</dd> : null}
+                    {context.source.title ?
+                        <div data-test="source">
+                            <dt>Source</dt>
+                            <dd>{context.source.title}</dd>
+                        </div>
+                    : null}
 
-                {context.product_id ? <dt>Product ID</dt> : null}
-                {context.product_id ? <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd> : null}
-            </dl>
+                    {context.product_id ?
+                        <div data-test="product-id">
+                            <dt>Product ID</dt>
+                            <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
+                        </div>
+                    : null}
+                </dl>
+
+                {Object.keys(construct_documents).length ?
+                    <div>
+                        <hr />
+                        <h4>Construct documents</h4>
+                        {construct_documents}
+                    </div>
+                : null}
+            </div>
         );
     }
 });
@@ -709,9 +759,10 @@ var Document = module.exports.Document = React.createClass({
                 <em>Document not available</em>
             );
         }
+        var panelClass = 'view-item view-detail status-none' + (this.props.embedded ? '' : ' panel');
 
         return (
-            <section className={context['@type'][0] !== 'donor_characterization' ? 'type-document view-detail panel status-none' : ''}>
+            <section className={globals.itemClass(context, panelClass)}>
                 <div className="row">
                     <div className="col-sm-5 col-md-6">
                         <figure>
