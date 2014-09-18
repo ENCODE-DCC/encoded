@@ -270,7 +270,7 @@
             "description": "How the transfection was performed on the biosample to introduce the contruct or RNAi.",
             "type": "string",
             "enum": [
-                "electroporation", "transduction"
+                "electroporation", "transduction", "chemical"
             ]
         },
         "culture_harvest_date": {
