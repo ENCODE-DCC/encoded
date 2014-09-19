@@ -315,7 +315,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                                 <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
                             </div>
 
-                            <dt>Image</dt>
+                            <dt>Download</dt>
                             {download}
                         </dl>
                     </div>

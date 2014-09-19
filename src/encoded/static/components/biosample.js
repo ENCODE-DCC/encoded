@@ -790,7 +790,7 @@ var Document = module.exports.Document = React.createClass({
                 str = str.replace(/(^\s)|(\s$)/gi, ''); // Trim leading/trailing white space
                 var isOneWord = str.match(/\s/gi) === null; // Detect single-word string
                 str = str.substr(0, len - 1); // Truncate to length ignoring word boundary
-                str = (!isOneWord ? str.substr(0, str.lastIndexOf(' ')) : str) + '…';
+                str = (!isOneWord ? str.substr(0, str.lastIndexOf(' ')) : str) + '…'; // Back up to word boundary
             }
             return str;
         }
@@ -823,9 +823,10 @@ var Document = module.exports.Document = React.createClass({
 
         var panelClass = 'view-item view-detail status-none panel';
         var characterization = context['@type'].indexOf('characterization') >= 0;
-        var excerpt = characterization ? context.caption : context.description;
-        if (excerpt && excerpt.length > 100) {
-            excerpt = truncateString(excerpt, 100);
+        var caption = characterization ? context.caption : context.description;
+        var excerpt;
+        if (caption && caption.length > 100) {
+            excerpt = truncateString(caption, 100);
         }
 
         return (
@@ -840,15 +841,24 @@ var Document = module.exports.Document = React.createClass({
                             {figure}
                         </figure>
                         <div className="document-intro">
-                            <p>{excerpt}</p>
+                            <p>{excerpt ? excerpt : caption}</p>
                         </div>
                     </div>
                     {download}
                     <dl className={keyClass}>
-                        {context.caption ?
-                            <div data-test="caption">
-                                <dt>Caption</dt>
-                                <dd>{context.caption}</dd>
+                        {excerpt ?
+                            <div>
+                                {characterization ?
+                                    <div data-test="caption">
+                                        <dt>Caption</dt>
+                                        <dd>{context.caption}</dd>
+                                    </div>
+                                :
+                                    <div data-test="caption">
+                                        <dt>Description</dt>
+                                        <dd>{context.description}</dd>
+                                    </div>
+                                }
                             </div>
                         : null}
 
