@@ -59,6 +59,8 @@ def lot_reviews(root, characterizations, targets):
         if resource_path(target, '') not in review_targets:
             review_targets.append(resource_path(target, ''))
 
+        # All characterization targets should be a histone_mod_target or all not.
+        # (Checked by an audit.)
         if 'histone modification' in target.upgrade_properties(finalize=False)['investigated_as']:
             histone_mod_target = True
 
@@ -210,31 +212,26 @@ def lot_reviews(root, characterizations, targets):
                 char_reviews[key] = new_review
 
     if has_lane_review:
-        num_compliant_celltypes = 0
-
-        for key in char_reviews:
-            if not histone_mod_target:
-                antibody_lot_reviews.append(char_reviews[key])
-                continue
-
+        if histone_mod_target:
             # Review of antibodies against histone modifications are treated differently.
             # There should be at least 3 compliant cell types for eligibility for use
-            if char_reviews[key]['status'] == 'compliant':
-                char_reviews[key]['status'] = 'awaiting lab characterization'
-                num_compliant_celltypes += 1
+            num_compliant_celltypes = 0
+            for key in char_reviews:
+                if char_reviews[key]['status'] == 'compliant':
+                    char_reviews[key]['status'] = 'awaiting lab characterization'
+                    num_compliant_celltypes += 1
 
-        if histone_mod_target:
             if num_compliant_celltypes >= 3 and compliant_secondary:
-                antibody_lot_reviews = [{
+                return [{
                     'biosample_term_name': 'all cell types and tissues',
                     'biosample_term_id': 'NTR:00000000',
                     'organisms': histone_organisms,
                     'targets': review_targets,
                     'status': 'eligible for new data'
                 }]
-            else:
-                for key in char_reviews:
-                    antibody_lot_reviews.append(char_reviews[key])
+
+        for key in char_reviews:
+            antibody_lot_reviews.append(char_reviews[key])
 
     else:
         # The only uncovered case left in this block is if there is only 1 or more active
