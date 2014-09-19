@@ -123,7 +123,6 @@ $characterization-figure-height: 200px;
 .document-title {
     padding: 5px 10px;
     background-color: #fff;
-    @include background-image(linear-gradient(top, #fff 0%, #f0f0f0 100%));
     color: #333;
     border-bottom: 1px solid #c0c0c0;
     font-weight: bold;
@@ -547,7 +546,7 @@ $characterization-figure-height: 200px;
     @include type-panel($document-figure-width, $document-figure-height);
 }
 
-.type-characterization {
+.type-characterization.type-antibody_characterization {
     @include type-panel($characterization-figure-width, $characterization-figure-height);
 }
 
@@ -624,7 +623,7 @@ $characterization-figure-height: 200px;
     position: relative;
     margin: 0;
     background-color: darken($mainThemeColor,10%);
-    @include background-image(linear-gradient(top, darken($mainThemeColor,10%) 0%, darken($mainThemeColor,15%) 100%));
+    @include background-image(linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%));
     border-top: 1px solid #808080;
     padding: 0 10px;
     line-height: 32px;
