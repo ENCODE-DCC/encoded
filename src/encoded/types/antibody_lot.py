@@ -106,9 +106,12 @@ def lot_reviews(root, characterizations, targets):
     if (lab_not_reviewed_chars + not_reviewed_chars) == total_characterizations and total_characterizations > 0:
         return [base_review]
 
+    if len(primary_chars) == 0 and len(secondary_chars) > 0:
+        # There're only secondary characterization(s)
+        return [base_review]
+
     # Done with easy cases, the remaining require reviews.
     # Go through the secondary characterizations first
-    antibody_lot_reviews = []
     compliant_secondary = False
     not_compliant_secondary = False
     pending_secondary = False
@@ -127,6 +130,7 @@ def lot_reviews(root, characterizations, targets):
             continue
 
     # Now check the primaries and update their status accordingly
+    antibody_lot_reviews = []
     char_reviews = {}
     has_lane_review = False
     histone_organisms = []
@@ -239,11 +243,6 @@ def lot_reviews(root, characterizations, targets):
             antibody_lot_reviews.append(base_review)
         else:
             pass
-
-    # XXX Another easy case to move up?
-    if len(primary_chars) == 0 and len(secondary_chars) > 0:
-        # There's only seocndary characterization(s)
-        antibody_lot_reviews.append(base_review)
 
     return antibody_lot_reviews
 
