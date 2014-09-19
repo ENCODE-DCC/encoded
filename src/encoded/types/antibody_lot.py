@@ -136,12 +136,12 @@ def lot_reviews(root, characterizations, targets):
     char_reviews = {}
     has_lane_review = False
     histone_organisms = []
-    not_reviewed = False
+    not_reviewed_primary = False
     has_lane_review = False
 
     for primary in primary_chars:
         if primary.properties['status'] in ['not reviewed', 'not submitted for review by lab']:
-            not_reviewed = True
+            not_reviewed_primary = True
             continue
 
         if 'characterization_reviews' not in primary.properties:
@@ -236,7 +236,7 @@ def lot_reviews(root, characterizations, targets):
     else:
         # The only uncovered case left in this block is if there is only 1 or more active
         # secondary and 0 or more inactive primaries.
-        if (len(primary_chars) >= 1 and not_reviewed_secondary) or (len(secondary_chars) >= 1 and not_reviewed):
+        if (len(primary_chars) >= 1 and not_reviewed_secondary) or (len(secondary_chars) >= 1 and not_reviewed_primary):
             antibody_lot_reviews.append(base_review)
         else:
             pass
