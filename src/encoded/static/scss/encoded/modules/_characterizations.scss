@@ -622,8 +622,9 @@ $characterization-figure-height: 200px;
 .key-value-trigger {
     position: relative;
     margin: 0;
-    background-color: darken($mainThemeColor,10%);
+    background-color: $mainThemeColor;
     @include background-image(linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%));
+    background-image: -ms-linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
     border-top: 1px solid #808080;
     padding: 0 10px;
     line-height: 32px;
