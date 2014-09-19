@@ -131,9 +131,9 @@ def lot_reviews(root, characterizations, targets):
     has_lane_review = False
     histone_organisms = []
     not_reviewed = False
+    has_lane_review = False
 
     for primary in primary_chars:
-        has_lane_review = False
         if primary.properties['status'] in ['not reviewed', 'not submitted for review by lab']:
             not_reviewed = True
             continue
@@ -205,9 +205,6 @@ def lot_reviews(root, characterizations, targets):
                 # Check to see if existing status should be overridden
                 char_reviews[key] = new_review
 
-    # XXX This condition looks suspect. The variable `has_lane_review` only reflects the status of
-    # the last in the list of primary_chars as it is reset to False at the top of the loop above.
-    # Perhaps it should be ``if char_reviews:`` instead?
     if has_lane_review:
         num_compliant_celltypes = 0
 
