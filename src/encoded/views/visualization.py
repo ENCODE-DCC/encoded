@@ -75,6 +75,12 @@ def get_track(f, label, parent):
         ('type', file_format),
         ('track', f['accession']),
     ])
+    
+    if parent == '':
+        del(track['parent'])
+        del(track['subGroups'])
+        track_array = render(track)
+        return NEWLINE.join(track_array)
     track_array = render(track)
     return (NEWLINE + (2 * TAB)).join(track_array)
 
@@ -263,7 +269,20 @@ def generate_batch_hubs(request):
             exp = txt[:-4]
             experiment = find_resource(request.root, exp)
             embedded = embed(request, request.resource_path(experiment))
-            return generate_trackDb(embedded)
+            files = embedded.get('files', None)
+            track_label = '{assay} of {biosample} - {accession}'.format(
+                assay=embedded['assay_term_name'],
+                biosample=embedded['biosample_term_name'],
+                accession=embedded['accession']
+            )
+            tracks = ''
+            for f in files:
+                if f['file_format'] in BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES:
+                    if tracks == '':
+                        tracks = get_track(f, track_label, '')
+                    else:
+                        tracks = tracks + 2 * NEWLINE + get_track(f, track_label, '')
+            return tracks
         else:
             # generate HTML for each experiment
             exp = txt[:-5]
