@@ -239,7 +239,7 @@ def generate_batch_hubs(request):
     results = {}
     txt = request.matchdict['txt']
     params = request.matchdict['search_params']
-    params = params.replace(';', '&')
+    params = params.replace(',,', '&')
     
     if len(request.matchdict) == 3:
         if txt == TRACKDB_TXT:
