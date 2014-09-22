@@ -70,9 +70,11 @@ var Experiment = module.exports.Experiment = React.createClass({
             organismName = _.uniq(organismName);
         }
 
-        // Build the text of the Treatment string
+        // Build the text of the Treatment string; see if there's at least one synchronization
         var treatmentText = [];
+        var hasSynchronization = false;
         biosamples.map(function(biosample) {
+            hasSynchronization = hasSynchronization || !!biosample.synchronization;
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
                 var singleTreatment = '';
                 if (treatment.concentration) {
@@ -139,52 +141,90 @@ var Experiment = module.exports.Experiment = React.createClass({
                 </header>
                 <div className="panel data-display">
                     <dl className="key-value">
-                        <dt>Assay</dt>
-                        <dd>{context.assay_term_name}</dd>
+                        <div data-test="assay">
+                            <dt>Assay</dt>
+                            <dd>{context.assay_term_name}</dd>
+                        </div>
 
-                        <dt>Accession</dt>
-                        <dd>{context.accession}</dd>
+                        <div data-test="accession">
+                            <dt>Accession</dt>
+                            <dd>{context.accession}</dd>
+                        </div>
 
-                        {biosamples.length || context.biosample_term_name ? <dt>Biosample summary</dt> : null}
                         {biosamples.length || context.biosample_term_name ?
-                            <dd>
-                                {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
-                                {organismName.length || lifeAge.length ? '(' : null}
-                                {organismName.length ?
-                                    <span>
-                                        {organismName.map(function(name, i) {
-                                            if (i === 0) {
-                                                return (<em key={name}>{name}</em>);
-                                            } else {
-                                                return (<span key={name}>{' and '}<em>{name}</em></span>);
-                                            }
-                                        })}
-                                    </span>
-                                : null}
-                                {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
-                                {organismName.length || lifeAge.length ? ')' : null}
-                            </dd>
+                            <div data-test="biosample-summary">
+                                <dt>Biosample summary</dt>
+                                <dd>
+                                    {context.biosample_term_name ? <span>{context.biosample_term_name + ' '}</span> : null}
+                                    {organismName.length || lifeAge.length ? '(' : null}
+                                    {organismName.length ?
+                                        <span>
+                                            {organismName.map(function(name, i) {
+                                                if (i === 0) {
+                                                    return (<em key={name}>{name}</em>);
+                                                } else {
+                                                    return (<span key={name}>{' and '}<em>{name}</em></span>);
+                                                }
+                                            })}
+                                        </span>
+                                    : null}
+                                    {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
+                                    {organismName.length || lifeAge.length ? ')' : null}
+                                </dd>
+                            </div>
                         : null}
 
-                        {context.biosample_type ? <dt>Type</dt> : null}
-                        {context.biosample_type ? <dd>{context.biosample_type}</dd> : null}
-
-                        {treatmentText.length ? <dt>Treatment</dt> : null}
-                        {treatmentText.length ?
-                            <dd>
-                                <ul>
-                                    {treatmentText.map(function (treatment) {
-                                        return (<li>{treatment}</li>);
+                        {hasSynchronization ?
+                            <div data-test="biosample-synchronization">
+                                <dt>Biosample synch</dt>
+                                <dd>
+                                    {biosamples.map(function(biosample, i) {
+                                        return biosample.synchronization ?
+                                            <span>
+                                                {i > 0 ? ', ' : ''}
+                                                {biosample.synchronization}
+                                                {biosample.post_synchronization_time ?
+                                                    <span>
+                                                        {' + ' + biosample.post_synchronization_time}
+                                                        {biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : ''}
+                                                    </span>
+                                                : ''}
+                                            </span>
+                                        : null;
                                     })}
-                                </ul>
-                            </dd>
+                                </dd>
+                            </div>
                         : null}
 
-                        {context.target ? <dt>Target</dt> : null}
-                        {context.target ? <dd><a href={context.target['@id']}>{context.target.label}</a></dd> : null}
+                        {context.biosample_type ?
+                            <div data-test="biosample-type">
+                                <dt>Type</dt>
+                                <dd>{context.biosample_type}</dd>
+                            </div>
+                        : null}
+
+                        {treatmentText.length ?
+                            <div data-test="treatment">
+                                <dt>Treatment</dt>
+                                <dd>
+                                    <ul>
+                                        {treatmentText.map(function (treatment) {
+                                            return (<li>{treatment}</li>);
+                                        })}
+                                    </ul>
+                                </dd>
+                            </div>
+                        : null}
+
+                        {context.target ?
+                            <div data-test="target">
+                                <dt>Target</dt>
+                                <dd><a href={context.target['@id']}>{context.target.label}</a></dd>
+                            </div>
+                        : null}
 
                         {Object.keys(antibodies).length ?
-                            <div>
+                            <div data-test="antibody">
                                 <dt>Antibody</dt>
                                 <dd>{Object.keys(antibodies).map(function(antibody, i) {
                                     return (<span>{i !== 0 ? ', ' : ''}<a href={antibody}>{antibodies[antibody].accession}</a></span>);
@@ -192,51 +232,76 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {context.possible_controls.length ? <dt>Controls</dt> : null}
                         {context.possible_controls.length ?
-                            <dd>
-                                <ul>
-                                    {context.possible_controls.map(function (control) {
-                                        return (
-                                            <li key={control['@id']}>
-                                                <a href={control['@id']}>
-                                                    {control.accession}
-                                                </a>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            </dd>
+                            <div data-test="possible-controls">
+                                <dt>Controls</dt>
+                                <dd>
+                                    <ul>
+                                        {context.possible_controls.map(function (control) {
+                                            return (
+                                                <li key={control['@id']}>
+                                                    <a href={control['@id']}>
+                                                        {control.accession}
+                                                    </a>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                </dd>
+                            </div>
                         : null}
 
-                        {context.description ? <dt>Description</dt> : null}
-                        {context.description ? <dd>{context.description}</dd> : null}
+                        {context.description ?
+                            <div data-test="description">
+                                <dt>Description</dt>
+                                <dd>{context.description}</dd>
+                            </div>
+                        : null}
 
-                        <dt>Lab</dt>
-                        <dd>{context.lab.title}</dd>
+                        <div data-test="lab">
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                        </div>
 
-                        <dt>Project</dt>
-                        <dd>{context.award.project}</dd>
+                        <div data-test="project">
+                            <dt>Project</dt>
+                            <dd>{context.award.project}</dd>
+                        </div>
 
-                        {context.dbxrefs.length ? <dt>External resources</dt> : null}
-                        {context.dbxrefs.length ? <dd><DbxrefList values={context.dbxrefs} /></dd> : null}
+                        {context.dbxrefs.length ?
+                            <div data-test="external-resources">
+                                <dt>External resources</dt>
+                                <dd><DbxrefList values={context.dbxrefs} /></dd>
+                            </div>
+                        : null}
 
-                        {context.aliases.length ? <dt>Aliases</dt> : null}
-                        {context.aliases.length ? <dd>{aliasList}</dd> : null}
+                        {context.aliases.length ?
+                            <div data-test="aliases">
+                                <dt>Aliases</dt>
+                                <dd>{aliasList}</dd>
+                            </div>
+                        : null}
 
-                        {context.references.length ? <dt>References</dt> : null}
-                        {context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
+                        {context.references.length ?
+                            <div data-test="references">
+                                <dt>References</dt>
+                                <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
+                            </div>
+                        : null}
 
-                        {context.date_released ? <dt>Date released</dt> : null}
-                        {context.date_released ? <dd>{context.date_released}</dd> : null}
-
+                        {context.date_released ?
+                            <div data-test="date-released">
+                                <dt>Date released</dt>
+                                <dd>{context.date_released}</dd>
+                            </div>
+                        : null}
                     </dl>
                 </div>
 
                 <AssayDetails replicates={replicates} />
 
                 {Object.keys(documents).length ?
-                    <div>
+                    <div data-test="protocols">
                         <h3>Protocols</h3>
                         {documents}
                     </div>
