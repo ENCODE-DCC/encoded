@@ -4,6 +4,9 @@ from ..contentbase import Item, embed
 from ..renderers import make_subrequest
 from collections import OrderedDict
 import cgi
+from pyramid.traversal import (
+    find_resource,
+)
 
 TAB = '\t'
 NEWLINE = '\n'
@@ -129,8 +132,24 @@ def get_hub(label):
     return render(hub)
 
 
-def generate_trackDb(files, parent, label, accession):
+def generate_trackDb(embedded):
     
+    files = embedded.get('files', None)
+    long_label = '{assay_term_name} of {biosample_term_name} - {accession}'.format(
+        assay_term_name=embedded['assay_term_name'],
+        biosample_term_name=embedded['biosample_term_name'],
+        accession=embedded['accession']
+    )
+    if 'target' in embedded:
+        long_label = long_label + '(Target - {label})'.format(
+            label=embedded['target']['label']
+        )
+    parent = get_parent_track(embedded['accession'], long_label)
+    track_label = '{assay} of {biosample} - {accession}'.format(
+        assay=embedded['assay_term_name'],
+        biosample=embedded['biosample_term_name'],
+        accession=embedded['accession']
+    )
     peak_view = ''
     signal_view = ''
     signal_count = 0
@@ -138,17 +157,17 @@ def generate_trackDb(files, parent, label, accession):
     for f in files:
         if f['file_format'] in BIGBED_FILE_TYPES:
             if call_count == 0:
-                peak_view = get_peak_view(accession, 'PK') + NEWLINE + (2 * TAB)
+                peak_view = get_peak_view(embedded['accession'], 'PK') + NEWLINE + (2 * TAB)
             else:
                 peak_view = peak_view + NEWLINE
-            peak_view = peak_view + NEWLINE + (2 * TAB) + get_track(f, label, 'PKView')
+            peak_view = peak_view + NEWLINE + (2 * TAB) + get_track(f, track_label, 'PKView')
             call_count = call_count + 1
         elif f['file_format'] == 'bigWig':
             if signal_count == 0:
-                signal_view = get_signal_view(accession, 'SIG') + NEWLINE + (2 * TAB)
+                signal_view = get_signal_view(embedded['accession'], 'SIG') + NEWLINE + (2 * TAB)
             else:
                 signal_view = signal_view + NEWLINE
-            signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(f, label, 'SIGView')
+            signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(f, track_label, 'SIGView')
             signal_count = signal_count + 1
     if signal_view == '':
         parent = parent + (NEWLINE * 2) + TAB + peak_view
@@ -186,6 +205,34 @@ def search_hubs(request):
         return data
 
 
+def generate_html(context, request):
+    ''' Generates and returns HTML for the track hub'''
+
+    url_ret = (request.url).split('@@hub')
+    embedded = embed(request, request.resource_path(context))
+    files_json = embedded.get('files', None)
+    data_accession = '<a href={link}>{accession}<a></p>' \
+        .format(link=url_ret[0], accession=embedded['accession'])
+    data_description = '<h2>{description}</h2>' \
+        .format(description=cgi.escape(embedded['description']))
+    data_files = ''
+    for f in files_json:
+        if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed', 'bigWig']:
+            replicate_number = 'pooled'
+            if 'replicate' in f:
+                replicate_number = str(f['replicate']['biological_replicate_number'])
+            data_files = data_files + \
+                '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href="{request.host_url}{href}">Click here</a></td></tr>'\
+                .format(replicate_number=replicate_number, request=request, **f)
+
+    file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
+        .format(files=data_files)
+    data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
+    header = '<p>This trackhub was automatically generated from the files and metadata for the experiment - ' + \
+        data_accession
+    return data_description + header + file_table + data_policy
+
+
 def generate_batch_hubs(request):
     '''search for the input params and return the trackhub'''
 
@@ -211,6 +258,16 @@ def generate_batch_hubs(request):
                 else:
                     trackdb = trackdb + 'include ' + item['accession'] + '.txt' + 2 * NEWLINE
             return trackdb
+        elif txt.startswith("ENCSR"):
+            exp = txt[:-4]
+            experiment = find_resource(request.root, exp)
+            embedded = embed(request, request.resource_path(experiment))
+            return generate_trackDb(embedded)
+        else:
+            # generate HTML for each experiment
+            exp = txt[:-5]
+            experiment = find_resource(request.root, exp)
+            return generate_html(experiment, request)
     elif txt == HUB_TXT:
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
@@ -230,8 +287,6 @@ def generate_batch_hubs(request):
                         else :
                             g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['term']))
         return g_text
-    else:
-        print "Here I am supposed to generate HTML file"
 
 
 @view_config(name='hub', context=Item, request_method='GET', permission='view')
@@ -240,8 +295,7 @@ def hub(context, request):
 
     url_ret = (request.url).split('@@hub')
     embedded = embed(request, request.resource_path(context))
-    files_json = embedded.get('files', None)
-    
+
     assembly = ''
     if 'assembly' in embedded:
         assembly = embedded['assembly']
@@ -257,42 +311,7 @@ def hub(context, request):
             content_type='text/plain'
         )
     elif url_ret[1][1:] == assembly + '/' + TRACKDB_TXT:
-        long_label = '{assay_term_name} of {biosample_term_name} - {accession}'.format(
-            assay_term_name=embedded['assay_term_name'],
-            biosample_term_name=embedded['biosample_term_name'],
-            accession=embedded['accession']
-        )
-        if 'target' in embedded:
-            long_label = long_label + '(Target - {label})'.format(
-                label=embedded['target']['label']
-            )
-        parent = get_parent_track(embedded['accession'], long_label)
-        track_label = '{assay} of {biosample} - {accession}'.format(
-            assay=embedded['assay_term_name'],
-            biosample=embedded['biosample_term_name'],
-            accession=embedded['accession']
-        )
-        parent_track = generate_trackDb(files_json, parent, track_label, embedded['accession'])
+        parent_track = generate_trackDb(embedded)
         return Response(parent_track, content_type='text/plain')
     else:
-        # Generates and returns HTML for the track hub
-        data_accession = '<a href={link}>{accession}<a></p>' \
-            .format(link=url_ret[0], accession=embedded['accession'])
-        data_description = '<h2>{description}</h2>' \
-            .format(description=cgi.escape(embedded['description']))
-        data_files = ''
-        for f in files_json:
-            if f['file_format'] in ['narrowPeak', 'broadPeak', 'bigBed', 'bigWig']:
-                replicate_number = 'pooled'
-                if 'replicate' in f:
-                    replicate_number = str(f['replicate']['biological_replicate_number'])
-                data_files = data_files + \
-                    '<tr><td>{accession}</td><td>{file_format}</td><td>{output_type}</td><td>{replicate_number}</td><td><a href="{request.host_url}{href}">Click here</a></td></tr>'\
-                    .format(replicate_number=replicate_number, request=request, **f)
-
-        file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
-            .format(files=data_files)
-        data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
-        header = '<p>This trackhub was automatically generated from the files and metadata for the experiment - ' + \
-            data_accession
-        return Response(data_description + header + file_table + data_policy, content_type='text/html')
+        return Response(generate_html(context, request), content_type='text/html')
