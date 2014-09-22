@@ -108,6 +108,24 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
+                        {context.donor && context.donor.organism.name !== 'human' ?
+                            <div>
+                                {context.life_stage ?
+                                    <div data-test="life-stage">
+                                        <dt>Life stage</dt>
+                                        <dd className="sentence-case">{context.life_stage}</dd>
+                                    </div>
+                                : null}
+
+                                {context.age ?
+                                    <div data-test="age">
+                                        <dt>Age</dt>
+                                        <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
+                                    </div>
+                                : null}
+                            </div>
+                        : null}
+
                         {context.subcellular_fraction_term_name ?
                             <div data-test="subcellular-term-name">
                                 <dt>Subcellular fraction</dt>
@@ -207,24 +225,6 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div data-test="passage-number">
                                 <dt>Passage number</dt>
                                 <dd>{context.passage_number}</dd>
-                            </div>
-                        : null}
-
-                        {context.donor && context.donor.organism.name !== 'human' ?
-                            <div>
-                                {context.life_stage ?
-                                    <div data-test="life-stage">
-                                        <dt>Life stage</dt>
-                                        <dd className="sentence-case">{context.life_stage}</dd>
-                                    </div>
-                                : null}
-
-                                {context.age ?
-                                    <div data-test="age">
-                                        <dt>Age</dt>
-                                        <dd className="sentence-case">{context.age}{context.age_units ? ' ' + context.age_units : null}</dd>
-                                    </div>
-                                : null}
                             </div>
                         : null}
 
