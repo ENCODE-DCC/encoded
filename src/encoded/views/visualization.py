@@ -15,6 +15,7 @@ GENOMES_TXT = 'genomes.txt'
 TRACKDB_TXT = 'trackDb.txt'
 BIGWIG_FILE_TYPES = ['bigWig']
 BIGBED_FILE_TYPES = ['narrowPeak', 'broadPeak', 'bigBed']
+FILE_QUERY = '&files.file_format=bigWig&files.file_format=broadPeak&files.file_format=narrowPeak&files.file_format=bigBed'
 
 
 def render(data):
@@ -245,7 +246,7 @@ def generate_batch_hubs(request):
         if txt == TRACKDB_TXT:
             trackdb = ''
             assembly = request.matchdict['assembly']
-            params = params + '&limit=all&assembly=' + assembly 
+            params = params + FILE_QUERY + '&limit=all&assembly=' + assembly 
             subreq = make_subrequest(request, '/search/?%s' % params)
             subreq.override_renderer = 'null_renderer'
             try:
