@@ -25,11 +25,32 @@ def base_characterization_review(testapp, organism):
 
 
 @pytest.fixture
+def base_characterization_review2(testapp, organism):
+    return {
+        'lane': 3,
+        'organism': organism['uuid'],
+        'biosample_term_name': 'HepG2',
+        'biosample_term_id': 'EFO:0001187',
+        'biosample_type': 'immortalized cell line',
+        'lane_status': 'compliant'
+    }
+
+@pytest.fixture
 def base_document(testapp, lab, award):
     item = {
         'lab': lab['uuid'],
         'award': award['uuid'],
         'document_type': 'growth protocol'
+    }
+    return testapp.post_json('/document', item, status=201).json['@graph'][0]
+
+
+@pytest.fixture
+def standards_document(testapp, lab, award):
+    item = {
+        'lab': lab['uuid'],
+        'award': award['uuid'],
+        'document_type': 'standards document'
     }
     return testapp.post_json('/document', item, status=201).json['@graph'][0]
 
@@ -136,3 +157,35 @@ def test_audit_antibody_target_tag_antibody(testapp, base_antibody_characterizat
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
     assert any(error['category'] == 'tag target mismatch' for error in errors)
+
+
+def test_audit_antibody_lane_status_pending_mismatch1(testapp, base_antibody_characterization, base_antibody, target, base_characterization_review, wrangler, standards_document):
+    characterization_review_list = []
+    characterization_review_list.append(base_characterization_review)
+    reviewed_by = "/users/" + wrangler['uuid'] + "/"
+    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': target['@id'], 'status': 'compliant', 'reviewed_by': reviewed_by, 'documents': [standards_document['uuid']]})
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'char/lane status mismatch' for error in errors)
+
+
+def test_audit_antibody_lane_status_pending_mismatch2(testapp, base_antibody_characterization, base_antibody, target, base_characterization_review):
+    characterization_review_list = []
+    base_characterization_review['lane_status'] = 'compliant'
+    characterization_review_list.append(base_characterization_review)
+    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': target['@id'], 'status': 'pending dcc review'})
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'char/lane status mismatch' for error in errors)
+
+
+def test_audit_antibody_lane_status_compliant_mismatch(testapp, base_antibody_characterization, base_antibody, target, base_characterization_review, base_characterization_review2, wrangler, standards_document):
+    characterization_review_list = []
+    base_characterization_review['lane_status'] = 'not compliant'
+    characterization_review_list.append(base_characterization_review)
+    characterization_review_list.append(base_characterization_review2)
+    reviewed_by = "/users/" + wrangler['uuid'] + "/"
+    testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'target': target['@id'], 'status': 'not compliant', 'reviewed_by': reviewed_by, 'documents': [standards_document['uuid']]})
+    res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
+    errors = res.json['audit']
+    assert any(error['category'] == 'char/lane status mismatch' for error in errors)
