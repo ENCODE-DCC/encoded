@@ -817,7 +817,9 @@ var Document = module.exports.Document = React.createClass({
             );
         } else {
             download = (
-                <em>Document not available</em>
+                <div className="dl-bar">
+                    <em>Document not available</em>
+                </div>
             );
         }
 
