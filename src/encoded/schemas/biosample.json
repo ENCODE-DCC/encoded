@@ -361,6 +361,7 @@
             "type": "string",
             "enum": [
                 "embryonic",
+                "larva",
                 "first instar larva",
                 "second instar larva",
                 "third instar larva",
@@ -377,6 +378,8 @@
             "enum": [
                 "fertilization",
                 "egg laying",
+                "L1 to L2 molt",
+                "L2 to L3 molt",
                 "puff stage: PS (1-2), dark blue gut",
                 "puff stage: PS (3-6), light blue gut",
                 "puff stage: PS (7-9), clear gut",
@@ -507,10 +510,6 @@
         "source.title": {
             "title": "Source",
             "type": "string"
-        },
-        "synchronization": {
-            "title": "Synchronization stage",
-            "type": "string" 
         },
         "lab.title": {
             "title": "Lab",
