@@ -82,6 +82,24 @@
                 "published"
             ]
         },
+        "method_summary": {
+            "title": "Method summary",
+            "description": "An explanation how the methods or results presented in the publication advance the understanding of how regions on the genome interact with each other.",
+            "type": "string"
+        },
+        "url": {
+            "title": "URL",
+            "description": "An external resource with additional information or supplemental files associated with the publication.",
+            "type": "string",
+            "format": "uri"
+        },
+        "dataset": {
+            "title": "Dataset",
+            "description": "The experiment or dataset the file belongs to.",
+            "comment": "See dataset.json for available identifiers.",
+            "type": "string",
+            "linkTo": "dataset"
+        },
         "categories": {
             "title": "Categories",
             "type": "array",
@@ -99,7 +117,8 @@
             "key publication",
             "pilot phase publication",
             "model organism biology",
-            "tutorial"
+            "tutorial",
+            "ENCODE elements"
         ]
             }      
         },
