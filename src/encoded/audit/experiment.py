@@ -51,11 +51,13 @@ def audit_experiment_assay(value, system):
 
     if 'assay_term_id' not in value:
         detail = 'assay_term_id missing'
-        raise AuditFailure('missing assay information', detail, level='ERROR')
+        yield AuditFailure('missing assay information', detail, level='ERROR')
+        return
 
     if 'assay_term_name' not in value:
         detail = 'assay_term_name missing'
-        raise AuditFailure('missing assay information', detail, level='ERROR')
+        yield AuditFailure('missing assay information', detail, level='ERROR')
+        return
 
     ontology = system['registry']['ontology']
     term_id = value.get('assay_term_id')
@@ -63,11 +65,13 @@ def audit_experiment_assay(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} - {}'.format(term_id, term_name)
-        raise AuditFailure('NTR, assay', detail, level='WARNING')
+        yield AuditFailure('NTR, assay', detail, level='WARNING')
+        return
 
     if term_id not in ontology:
         detail = 'assay_term_id - {}'.format(term_id)
-        raise AuditFailure('assay term_id not in ontology', term_id, level='ERROR')
+        yield AuditFailure('assay term_id not in ontology', term_id, level='ERROR')
+        return
 
     ontology_term_name = ontology[term_id]['name']
     modifed_term_name = term_name + ' assay'
