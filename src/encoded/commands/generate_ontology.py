@@ -8,8 +8,10 @@ EPILOG = __doc__
 OWLNS = Namespace("http://www.w3.org/2002/07/owl#")
 OBO_OWL = Namespace("http://www.geneontology.org/formats/oboInOwl#")
 EFO = Namespace("http://www.ebi.ac.uk/efo/")
+OBO = Namespace("http://purl.obolibrary.org/obo/")
 
 EFO_Synonym = EFO["alternative_term"]
+OBO_Synonym = OBO["IAO_0000118"]
 Synonym = OBO_OWL["hasExactSynonym"]
 Ontology = OWLNS["Ontology"]
 
@@ -265,6 +267,9 @@ class Inspector(object):
                 temp += [o]
             # EFO synonyms
             for o in self.rdfGraph.objects(anEntity, EFO_Synonym):
+                temp += [o]
+            # OBI synonyms
+            for o in self.rdfGraph.objects(anEntity, OBO_Synonym):
                 temp += [o]
             return temp
         else:
