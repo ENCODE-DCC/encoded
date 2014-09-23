@@ -3,6 +3,7 @@ import logging
 import venusian
 from abc import ABCMeta
 from collections import Mapping
+from copy import deepcopy
 from itertools import islice
 from pyramid.events import (
     ContextFound,
@@ -297,6 +298,8 @@ class Root(object):
                 uuid = UUID(uuid)
             except ValueError:
                 return default
+        elif not isinstance(uuid, UUID):
+            raise TypeError(uuid)
 
         cached = self.item_cache.get(uuid)
         if cached is not None:
@@ -558,7 +561,7 @@ class Item(object):
                         obj_props = root.get_by_uuid(obj_props[n]).properties
                     else:
                         if last in obj_props:
-                            ns[name] = obj_props[last]
+                            ns[name] = deepcopy(obj_props[last])
                             break
 
         return ns
