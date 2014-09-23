@@ -3,6 +3,7 @@ import logging
 import venusian
 from abc import ABCMeta
 from collections import Mapping
+from copy import deepcopy
 from itertools import islice
 from pyramid.events import (
     ContextFound,
@@ -297,6 +298,8 @@ class Root(object):
                 uuid = UUID(uuid)
             except ValueError:
                 return default
+        elif not isinstance(uuid, UUID):
+            raise TypeError(uuid)
 
         cached = self.item_cache.get(uuid)
         if cached is not None:
@@ -517,15 +520,6 @@ class Item(object):
             else:
                 properties[name] = request.resource_path(value)
 
-        # XXX Should reverse links move to embedding?
-        # - would necessitate a second templating stage.
-        for name, value in self.rev_links().iteritems():
-            properties[name] = [
-                request.resource_path(item)
-                for item in value
-                if item.upgrade_properties().get('status') not in ('deleted', 'replaced')
-            ]
-
         templated = self.expand_template(properties, request)
         properties.update(templated)
 
@@ -548,19 +542,27 @@ class Item(object):
             ns['request'] = request
             ns['permission'] = permission_checker(self, request)
 
+        for name, value in self.rev_links().iteritems():
+            ns[name] = [resource_path(item, '') for item in value]
+
         if self.merged_namespace_from_path:
             root = find_root(self)
-            for name, path in self.merged_namespace_from_path.items():
-                path = path.split('.')
-                last = path[-1]
-                obj = self
-                for n in path[:-1]:
-                    obj_props = obj.properties
-                    if n not in obj_props:
-                        break
-                    obj = root.get_by_uuid(obj_props[n])
-                else:
-                    ns[name] = obj.properties[last]
+            for name, paths in self.merged_namespace_from_path.items():
+                # Treat a list of paths as a search path for the value
+                if isinstance(paths, basestring):
+                    paths = [paths]
+                for path in paths:
+                    path = path.split('.')
+                    last = path[-1]
+                    obj_props = self.properties
+                    for n in path[:-1]:
+                        if n not in obj_props:
+                            break
+                        obj_props = root.get_by_uuid(obj_props[n]).properties
+                    else:
+                        if last in obj_props:
+                            ns[name] = deepcopy(obj_props[last])
+                            break
 
         return ns
 

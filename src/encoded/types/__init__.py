@@ -8,6 +8,7 @@ from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
 from .download import ItemWithAttachment
 
@@ -94,7 +95,12 @@ class Construct(Collection):
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }
-    item_embedded = set(['target'])
+    item_template = {
+        'characterizations': (
+            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+        ),
+    }
+    item_embedded = ['target']
 
 
 @location('documents')
@@ -107,7 +113,7 @@ class Document(Collection):
     }
 
     class Item(ItemWithAttachment, Collection.Item):
-        embedded = set(['lab', 'award', 'submitted_by'])
+        embedded = ['lab', 'award', 'submitted_by']
         keys = ALIAS_KEYS
 
 
@@ -139,7 +145,7 @@ class Library(Collection):
         'title': 'Libraries',
         'description': 'Listing of Libraries',
     }
-    item_embedded = set(['biosample'])
+    item_embedded = ['biosample']
     item_name_key = 'accession'
     item_keys = ACCESSION_KEYS + ALIAS_KEYS
 
@@ -152,9 +158,14 @@ class RNAi(Collection):
         'title': 'RNAi',
         'description': 'Listing of RNAi',
     }
-    item_embedded = set(['source', 'documents', 'target'])
+    item_embedded = ['source', 'documents', 'target']
     item_rev = {
         'characterizations': ('rnai_characterization', 'characterizes'),
+    }
+    item_template = {
+        'characterizations': (
+            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+        ),
     }
     item_keys = ALIAS_KEYS
 
@@ -172,9 +183,8 @@ class Publication(Collection):
     class Item(Collection.Item):
         template = {
             'publication_year': {
-                '$value': '{publication_year}',
-                '$templated': True,
-                '$condition': 'publication_year',
+                '$value': lambda date_published: date_published.partition(' ')[0],
+                '$condition': 'date_published',
             },
         }
 
@@ -189,12 +199,6 @@ class Publication(Collection):
             },
         ]
 
-        def template_namespace(self, properties, request=None):
-            ns = Collection.Item.template_namespace(self, properties, request)
-            if 'date_published' in ns:
-                ns['publication_year'] = ns['date_published'].partition(' ')[0]
-            return ns
-
 
 @location('software')
 class Software(Collection):
@@ -206,7 +210,7 @@ class Software(Collection):
     }
     item_name_key = "name"
     unique_key = "software:name"
-    item_embedded = set(['references'])
+    item_embedded = ['references']
     item_keys = ALIAS_KEYS + [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
     ]
