@@ -5,6 +5,9 @@ from pyramid.security import (
     DENY_ALL,
     Everyone,
 )
+from pyramid.traversal import (
+    find_resource,
+)
 from ..contentbase import (
     Collection as BaseCollection,
 )
@@ -86,6 +89,13 @@ EDIT_ACTION = {
     'href': '#!edit',
     'className': 'btn navbar-btn',
 }
+
+
+def paths_filtered_by_status(root, paths, exclude=('deleted', 'replaced')):
+    return [
+        path for path in paths
+        if find_resource(root, path).upgrade_properties().get('status') not in exclude
+    ]
 
 
 class Collection(BaseCollection):
