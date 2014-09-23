@@ -378,8 +378,8 @@
             "enum": [
                 "fertilization",
                 "egg laying",
-                "L1 to L2 molt",
-                "L2 to L3 molt",
+                "first larval molt",
+                "second larval molt",
                 "puff stage: PS (1-2), dark blue gut",
                 "puff stage: PS (3-6), light blue gut",
                 "puff stage: PS (7-9), clear gut",
