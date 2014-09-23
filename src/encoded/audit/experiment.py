@@ -65,12 +65,18 @@ def audit_experiment_assay(value, system):
         detail = '{} - {}'.format(term_id, term_name)
         raise AuditFailure('NTR, assay', detail, level='WARNING')
 
-    # if term_id not in ontology:
-    #    detail = 'assay_term_id - {}'.format(term_id)
-    #    raise AuditFailure('assay term_id not in ontology', term_id, level='ERROR')
+    if term_id not in ontology:
+        detail = 'assay_term_id - {}'.format(term_id)
+        raise AuditFailure('assay term_id not in ontology', term_id, level='ERROR')
 
-    # Must talk to nikhil and venkat about synonyms.  We want to  have a valid
-    # synonym for that term
+    ontology_term_name = ontology[term_id]['name']
+    modifed_term_name = term_name + ' assay'
+    if (ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']) and \
+        (ontology_term_name != modifed_term_name and
+            modifed_term_name not in ontology[term_id]['synonyms']):
+        detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
+        yield AuditFailure('assay term name mismatch', detail, level='ERROR')
+        return
 
 
 @audit_checker('experiment')
@@ -106,7 +112,7 @@ def audit_experiment_target(value, system):
             yield AuditFailure('missing antibody', detail, level='ERROR')
         else:
             antibody = rep['antibody']
-    
+                   
             if 'recombinant protein' in target['investigated_as']:
                 prefix = target['label'].split('-')[0]
                 unique_antibody_target = set()
