@@ -24,23 +24,18 @@ class Target(Collection):
     unique_key = 'target:name'
 
     class Item(Collection.Item):
+        namespace_from_path = {
+            'organism_name': 'organism.name',
+            'scientific_name': 'organism.scientific_name',
+        }
         template = {
             'name': {'$value': '{label}-{organism_name}', '$templated': True},
             'title': {'$value': '{label} ({scientific_name})', '$templated': True},
         }
-        embedded = set(['organism'])
+        embedded = ['organism']
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:name', 'value': '{label}-{organism_name}', '$templated': True},
         ]
-
-        def template_namespace(self, properties, request=None):
-            ns = Collection.Item.template_namespace(self, properties, request)
-            root = find_root(self)
-            # self.properties as we need uuid here
-            organism = root.get_by_uuid(self.properties['organism'])
-            ns['organism_name'] = organism.properties['name']
-            ns['scientific_name'] = organism.properties['scientific_name']
-            return ns
 
         @property
         def __name__(self):

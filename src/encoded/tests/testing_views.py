@@ -6,6 +6,7 @@ from ..contentbase import (
     Collection,
     location,
 )
+from ..types.base import paths_filtered_by_status
 from ..types.download import ItemWithAttachment
 
 
@@ -120,6 +121,9 @@ class TestingLinkTarget(Collection):
     item_embedded = [
         'reverse',
     ]
+    item_template = {
+        'reverse': lambda root, reverse: paths_filtered_by_status(root, reverse),
+    }
 
 
 @location('testing-post-put-patch')
