@@ -8,7 +8,6 @@ from .base import (
     ADD_ACTION,
     Collection,
 )
-import copy
 from .download import ItemWithAttachment
 
 
@@ -26,12 +25,12 @@ class Image(Collection):
         'description': 'Listing of portal images',
     }
     unique_key = 'image:filename'
-
-    template = copy.deepcopy(Collection.template)
-    template['actions'] = [ADD_ACTION]
+    template = {
+        'actions': [ADD_ACTION],
+    }
 
     class Item(ItemWithAttachment, Collection.Item):
-        embedded = set(['submitted_by'])
+        embedded = ['submitted_by']
         keys = [
             {
                 'name': 'image:filename',

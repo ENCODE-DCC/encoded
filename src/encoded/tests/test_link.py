@@ -68,7 +68,7 @@ def test_links_reverse(content, testapp, session):
     res = testapp.get('/testing-link-targets/%s/?frame=object' % target['uuid'])
     assert res.json['reverse'] == ['/testing-link-sources/%s/' % sources[0]['uuid']]
 
-    # DELTED sources are hidden from the list.
+    # DELETED sources are hidden from the list.
     target = targets[1]
     res = testapp.get('/testing-link-targets/%s/' % target['uuid'])
     assert res.json['reverse'] == []
