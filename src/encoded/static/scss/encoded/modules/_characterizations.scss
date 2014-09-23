@@ -481,7 +481,7 @@ $characterization-figure-height: 200px;
                 margin: 0 0 0 5px;
             }
 
-            a, div {
+            a, div.file-missing {
                 display: block;
                 width: $figure-width;
                 height: auto;
