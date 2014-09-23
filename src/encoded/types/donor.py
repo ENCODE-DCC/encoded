@@ -8,6 +8,7 @@ from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
 
 
@@ -18,6 +19,11 @@ class DonorItem(Collection.Item):
     keys = ACCESSION_KEYS + ALIAS_KEYS
     rev = {
         'characterizations': ('donor_characterization', 'characterizes'),
+    }
+    template = {
+        'characterizations': (
+            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+        ),
     }
 
 
