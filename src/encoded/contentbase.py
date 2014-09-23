@@ -297,6 +297,8 @@ class Root(object):
                 uuid = UUID(uuid)
             except ValueError:
                 return default
+        elif not isinstance(uuid, UUID):
+            raise TypeError(uuid)
 
         cached = self.item_cache.get(uuid)
         if cached is not None:
