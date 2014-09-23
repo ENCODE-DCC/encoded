@@ -185,7 +185,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {synchText ?
+                        {synchText.length ?
                             <div data-test="biosample-synchronization">
                                 <dt>Synchronization timepoint</dt>
                                 <dd>
