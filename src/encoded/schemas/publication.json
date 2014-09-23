@@ -93,12 +93,17 @@
             "type": "string",
             "format": "uri"
         },
-        "dataset": {
+        "datasets": {
             "title": "Dataset",
-            "description": "The experiment or dataset the file belongs to.",
-            "comment": "See dataset.json for available identifiers.",
-            "type": "string",
-            "linkTo": "dataset"
+            "description": "The datasets referred to by the publication.",
+            "type": "array",
+            "items": {
+                "title": "Datasets",
+                "description": "A datasets referred to by the publication.",
+                "comment": "See dataset.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "dataset"
+            }
         },
         "categories": {
             "title": "Categories",
