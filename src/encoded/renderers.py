@@ -117,12 +117,10 @@ def embed(request, path, as_user=False):
     if as_user:
         return _embed(request, path, as_user)
     result = embed_cache.get(path, None)
-    if result is not None:
-        return deepcopy(result)
-    result = _embed(request, path, as_user)
-    if not as_user:
-        embed_cache[path] = deepcopy(result)
-    return result
+    if result is None:
+        result = _embed(request, path, as_user)
+        embed_cache[path] = result
+    return deepcopy(result)
 
 
 def _embed(request, path, as_user=False):
