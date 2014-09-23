@@ -70,11 +70,11 @@ var Experiment = module.exports.Experiment = React.createClass({
             organismName = _.uniq(organismName);
         }
 
-        // Build the text of the Treatment string; see if there's at least one synchronization
+        // Build the text of the Treatment string array and the synchronization string array
         var treatmentText = [];
-        var hasSynchronization = false;
+        var synchText = [];
         biosamples.map(function(biosample) {
-            hasSynchronization = hasSynchronization || !!biosample.synchronization;
+            // Collect treatments
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
                 var singleTreatment = '';
                 if (treatment.concentration) {
@@ -86,9 +86,20 @@ var Experiment = module.exports.Experiment = React.createClass({
                 }
                 return singleTreatment;
             }));
+
+            // Collect synchronizations
+            if (biosample.synchronization) {
+                synchText.push(biosample.synchronization +
+                    (biosample.post_synchronization_time ?
+                        ' + ' + biosample.post_synchronization_time + (biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : '')
+                    : ''));
+            }
         });
         if (treatmentText) {
             treatmentText = _.uniq(treatmentText);
+        }
+        if (synchText) {
+            synchText = _.uniq(synchText);
         }
 
         // Adding experiment specific documents
@@ -174,24 +185,11 @@ var Experiment = module.exports.Experiment = React.createClass({
                             </div>
                         : null}
 
-                        {hasSynchronization ?
+                        {synchText ?
                             <div data-test="biosample-synchronization">
-                                <dt>Biosample synch</dt>
+                                <dt>Synchronization timepoint</dt>
                                 <dd>
-                                    {biosamples.map(function(biosample, i) {
-                                        return biosample.synchronization ?
-                                            <span>
-                                                {i > 0 ? ', ' : ''}
-                                                {biosample.synchronization}
-                                                {biosample.post_synchronization_time ?
-                                                    <span>
-                                                        {' + ' + biosample.post_synchronization_time}
-                                                        {biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : ''}
-                                                    </span>
-                                                : ''}
-                                            </span>
-                                        : null;
-                                    })}
+                                    {synchText.join(', ')}
                                 </dd>
                             </div>
                         : null}
