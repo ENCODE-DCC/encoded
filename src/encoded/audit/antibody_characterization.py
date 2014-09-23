@@ -96,3 +96,35 @@ def audit_antibody_characterization_target(value, system):
         if not target_matches:
             detail = '{} not found in target for {}'.format(target['name'], antibody['@id'])
             raise AuditFailure('target mismatch', detail, level='ERROR')
+
+
+@audit_checker('antibody_characterization')
+def audit_antibody_characterization_status(value, system):
+    '''Make sure the lane_status matches the characterization status'''
+    if 'secondary_characterization_method' in value:
+        return
+
+    if(value['status'] in ["deleted", "not submitted for review by lab", 'in progress', 'not reviewed']):
+        if 'characterization_reviews' in value:
+            '''If any of these statuses, we shouldn't have characterization_reviews'''
+            detail = 'status: {} is incompatible with having characterization_reviews'.format(value['status'])
+            raise AuditFailure('unexpected characterization_reviews')
+        else:
+            return
+
+    '''Check each of the lane_statuses in characterization_reviews for an appropriate match'''
+    has_compliant_lane = False
+    is_pending = False
+    if value['status'] == 'pending dcc review':
+        is_pending = True
+    for lane in value['characterization_reviews']:
+        if (is_pending and lane['lane_status'] != 'pending dcc review') or (not is_pending and lane['lane_status'] == 'pending dcc review'):
+            detail = 'lane_status: {} is incompatible with pending dcc review'.format(lane['lane_status'])
+            raise AuditFailure('char/lane status mismatch')
+            continue
+        if lane['lane_status'] == 'compliant':
+            has_compliant_lane = True
+
+    if has_compliant_lane and value['status'] != 'compliant':
+        detail = 'lane_status: {} is incompatible with char status: {}'.format(lane['lane_status'], value['status'])
+        raise AuditFailure('char/lane status mismatch')
