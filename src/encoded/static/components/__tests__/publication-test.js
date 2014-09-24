@@ -57,6 +57,22 @@ describe('Publication', function() {
             expect(abstractPart.length).toEqual(1);
             expect(abstractPart[0].textContent).toContain('The human genome encodes the blueprint of life,');
         });
+
+        it('has a good method summary', function() {
+            var pubdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
+            var item = pubdata.querySelector('[data-test="methodsummary"]');
+            var itemDescription = item.getElementsByTagName('dd')[0];
+            expect(itemDescription.textContent).toEqual('Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.');
+        });
+
+        it('has a good supplemental data link', function() {
+            var pubdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
+            var item = pubdata.querySelector('[data-test="url"]');
+            var itemDescription = item.getElementsByTagName('dd')[0];
+            expect(itemDescription.textContent).toEqual('http://www.millipore.com/catalogue/item/07-473');
+            var anchor = itemDescription.getElementsByTagName('a')[0];
+            expect(anchor.getAttribute('href')).toEqual('http://www.millipore.com/catalogue/item/07-473');
+        });
     });
 
     describe('Publication with references', function() {
@@ -97,6 +113,30 @@ describe('Publication', function() {
             var references = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
             var dd = references.getElementsByTagName('dd');
             expect(dd[0].textContent).toEqual('ENCODE main paper');
+        });
+    });
+
+    describe('Publication with datasets', function() {
+        var publication;
+
+        beforeEach(function() {
+            var context_ds = _.clone(context);
+            context_ds.datasets = [require('../testdata/dataset/ENCSR000AJW.js'), require('../testdata/dataset/ENCSR999BLA.js')];
+            publication = TestUtils.renderIntoDocument(
+                <Panel context={context_ds} />
+            );
+        });
+
+        it('has two dataset links', function() {
+            var pubdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
+            var item = pubdata.querySelector('[data-test="datasets"]');
+            var itemDescription = item.getElementsByTagName('dd')[0];
+            var anchors = itemDescription.getElementsByTagName('a');
+            expect(anchors.length).toEqual(2);
+            expect(anchors[0].getAttribute('href')).toEqual('/datasets/ENCSR000AJW/');
+            expect(anchors[0].textContent).toEqual('ENCSR000AJW');
+            expect(anchors[1].getAttribute('href')).toEqual('/datasets/ENCSR999BLA/');
+            expect(anchors[1].textContent).toEqual('ENCSR999BLA');
         });
     });
 });
