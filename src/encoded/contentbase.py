@@ -554,11 +554,13 @@ class Item(object):
                 for path in paths:
                     path = path.split('.')
                     last = path[-1]
-                    obj_props = self.properties
+                    obj = self
+                    obj_props = obj.upgrade_properties(finalize=False)
                     for n in path[:-1]:
                         if n not in obj_props:
                             break
-                        obj_props = root.get_by_uuid(obj_props[n]).properties
+                        obj = root.get_by_uuid(obj_props[n])
+                        obj_props = obj.upgrade_properties(finalize=False)
                     else:
                         if last in obj_props:
                             ns[name] = deepcopy(obj_props[last])
