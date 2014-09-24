@@ -87,11 +87,16 @@
             "description": "An explanation how the methods or results presented in the publication advance the understanding of how regions on the genome interact with each other.",
             "type": "string"
         },
-        "url": {
+        "urls": {
             "title": "URL",
-            "description": "An external resource with additional information or supplemental files associated with the publication.",
-            "type": "string",
-            "format": "uri"
+            "description": "External resources with additional information or supplemental files associated with the publication.",
+            "type": "array",
+            "items": {
+                "title": "URLs",
+                "description": "External resources with additional information or supplemental files associated with the publication.",
+                "type": "string",
+                "format": "uri"
+            }
         },
         "datasets": {
             "title": "Dataset",

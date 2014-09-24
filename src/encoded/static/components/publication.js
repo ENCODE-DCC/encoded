@@ -53,10 +53,16 @@ var Panel = module.exports.Panel = React.createClass({
                                     <dd>{context.method_summary}</dd>
                                 </div>
                             : null}
-                            {context.url ?
-                                <div data-test="url">
+                            {context.urls && context.urls.length ?
+                                <div data-test="urls">
                                     <dt>Supplemental data</dt>
-                                    <dd><a href={context.url}>{context.url}</a></dd>
+                                    <dd>
+                                        <ul className="multi-value">
+                                            {context.urls.map(function(url){
+                                                return <li><a href={url}>{url}</a></li>;
+                                            })}
+                                        </ul>
+                                    </dd>
                                 </div>
                             : null}
                             {context.datasets && context.datasets.length ?

@@ -65,12 +65,17 @@ describe('Publication', function() {
             expect(itemDescription.textContent).toEqual('Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.');
         });
 
-        it('has a good supplemental data link', function() {
+        it('has good supplemental data links', function() {
             var pubdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
-            var item = pubdata.querySelector('[data-test="url"]');
+            var item = pubdata.querySelector('[data-test="urls"]');
             var itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('http://www.millipore.com/catalogue/item/07-473');
-            var anchor = itemDescription.getElementsByTagName('a')[0];
+            var li = itemDescription.getElementsByTagName('li');
+            expect(li.length).toEqual(2);
+            expect(li[0].textContent).toEqual('http://www.millipore.com/catalogue/item/05-379#');
+            var anchor = li[0].getElementsByTagName('a')[0];
+            expect(anchor.getAttribute('href')).toEqual('http://www.millipore.com/catalogue/item/05-379#');
+            expect(li[1].textContent).toEqual('http://www.millipore.com/catalogue/item/07-473');
+            anchor = li[1].getElementsByTagName('a')[0];
             expect(anchor.getAttribute('href')).toEqual('http://www.millipore.com/catalogue/item/07-473');
         });
     });
@@ -87,8 +92,9 @@ describe('Publication', function() {
         });
 
         it('has two references', function() {
-            var references = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
-            var ul = references.getElementsByTagName('ul');
+            var pubdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
+            var item = pubdata.querySelector('[data-test="references"]');
+            var ul = item.getElementsByTagName('ul');
             var li = ul[0].getElementsByTagName('li');
             expect(li.length).toEqual(2);
             var anchor = li[0].getElementsByTagName('a');
