@@ -26,10 +26,11 @@ def file_is_revoked(root, path):
 def assembly(root, original_files, related_files):
     for path in chain(original_files, related_files):
         f = find_resource(root, path)
-        if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
-                f.properties['status'] in ['released']:
-            if 'assembly' in f.properties:
-                return f.properties['assembly']
+        properties = f.upgrade_properties(finalize=False)
+        if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
+                properties['status'] in ['released']:
+            if 'assembly' in properties:
+                return properties['assembly']
     return None
 
 

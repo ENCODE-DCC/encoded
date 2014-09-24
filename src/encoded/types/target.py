@@ -42,5 +42,6 @@ class Target(Collection):
             properties = self.upgrade_properties(finalize=False)
             root = find_root(self)
             organism = root.get_by_uuid(self.properties['organism'])
+            organism_properties = organism.upgrade_properties(finalize=False)
             return u'{label}-{organism_name}'.format(
-                organism_name=organism.properties['name'], **properties)
+                organism_name=organism_properties['name'], **properties)
