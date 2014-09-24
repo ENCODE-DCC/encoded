@@ -214,18 +214,19 @@ var ExperimentsUsingAntibody = React.createClass({
 var StandardsDocuments = React.createClass({
     render: function() {
         return (
-            <div>
+            <dd>
                 {this.props.docs.map(function(doc, i) {
                     var attachmentHref = url.resolve(doc['@id'], doc.attachment.href);
                     return (
-                        <div key={i} className="multi-dd">
-                            <a data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
+                        <div className="multi-dd dl-link">
+                            <i className="icon icon-download"></i>&nbsp;
+                            <a key={i} data-bypass="true" href={attachmentHref} download={doc.attachment.download}>
                                 {doc.aliases[0]}
                             </a>
                         </div>
                     );
                 })}
-            </div>
+            </dd>
         );
     }
 });
@@ -270,11 +271,11 @@ var Characterization = module.exports.Characterization = React.createClass({
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             download = (
-                <div className="dl-link">
+                <dd className="dl-link">
                     <i className="icon icon-download"></i>&nbsp;<a data-bypass="true" href={attachmentHref} download={context.attachment.download}>
                         {context.attachment.download}
                     </a>
-                </div>
+                </dd>
             );
         } else {
             download = (
@@ -315,8 +316,12 @@ var Characterization = module.exports.Characterization = React.createClass({
                                 <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
                             </div>
 
-                            <dt>Download</dt>
-                            {download}
+                            {standardsDocuments.length ?
+                                <div data-test="standardsdoc">
+                                    <dt>Standards documents</dt>
+                                    <StandardsDocuments docs={standardsDocuments} />
+                                </div>
+                            : null}
                         </dl>
                     </div>
                     <dl ref="collapse" className={keyClass}>
@@ -344,12 +349,10 @@ var Characterization = module.exports.Characterization = React.createClass({
                             <dd><StatusLabel status={context.status} /></dd>
                         </div>
 
-                        {standardsDocuments.length ?
-                            <div data-test="standardsdoc">
-                                <dt>Standards documents</dt>
-                                <dd><StandardsDocuments docs={standardsDocuments} /></dd>
-                            </div>
-                        : null}
+                        <div data-test="download">
+                            <dt>Download</dt>
+                            {download}
+                        </div>
                     </dl>
                     <dl className="key-value-trigger">
                         <dt>Lab</dt>
