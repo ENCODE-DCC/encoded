@@ -75,11 +75,14 @@
             "type": "string",
             "default": "in progress",
             "enum" : [
-                "in progress",
+                "planned",
+                "in preparation",
+                "submitted",
+                "in revision",
+                "in press",
+                "published",
                 "deleted",
-                "replaced",
-                "proposed",
-                "published"
+                "replaced"
             ]
         },
         "method_summary": {
