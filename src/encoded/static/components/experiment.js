@@ -71,9 +71,7 @@ var Experiment = module.exports.Experiment = React.createClass({
 
         // Build the text of the Treatment string; see if there's at least one synchronization
         var treatmentText = [];
-        var hasSynchronization = false;
         biosamples.map(function(biosample) {
-            hasSynchronization = hasSynchronization || !!biosample.synchronization;
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
                 var singleTreatment = '';
                 if (treatment.concentration) {
@@ -169,28 +167,6 @@ var Experiment = module.exports.Experiment = React.createClass({
                                     : null}
                                     {lifeAge.length ? ', ' + lifeAge.join(' and ') : ''}
                                     {organismName.length || lifeAge.length ? ')' : null}
-                                </dd>
-                            </div>
-                        : null}
-
-                        {hasSynchronization ?
-                            <div data-test="biosample-synchronization">
-                                <dt>Biosample synch</dt>
-                                <dd>
-                                    {biosamples.map(function(biosample, i) {
-                                        return biosample.synchronization ?
-                                            <span>
-                                                {i > 0 ? ', ' : ''}
-                                                {biosample.synchronization}
-                                                {biosample.post_synchronization_time ?
-                                                    <span>
-                                                        {' + ' + biosample.post_synchronization_time}
-                                                        {biosample.post_synchronization_time_units ? ' ' + biosample.post_synchronization_time_units : ''}
-                                                    </span>
-                                                : ''}
-                                            </span>
-                                        : null;
-                                    })}
                                 </dd>
                             </div>
                         : null}

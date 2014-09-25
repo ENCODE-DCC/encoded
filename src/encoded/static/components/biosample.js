@@ -227,22 +227,6 @@ var Biosample = module.exports.Biosample = React.createClass({
                                 <dd>{context.passage_number}</dd>
                             </div>
                         : null}
-
-                        {context.synchronization ?
-                            <div data-test="synchronization-stage">
-                                <dt>Synchronization stage</dt>
-                                <dd>{context.synchronization}</dd>
-                            </div>
-                        : null}
-
-                        {context.post_synchronization_time ?
-                            <div data-test="synchronization-time">
-                                <dt>Post-synchronization time</dt>
-                                <dd className="sentence-case">
-                                    {context.post_synchronization_time}{context.post_synchronization_time_units ? ' ' + context.post_synchronization_time_units : null}
-                                </dd>
-                            </div>
-                        : null}
                     </dl>
 
                     {context.derived_from ?
@@ -483,6 +467,20 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                     </div>
                 : null}
 
+                {biosample.life_stage ?
+                    <div data-test="life-stage">
+                        <dt>Life stage</dt>
+                        <dd className="sentence-case">{biosample.life_stage}</dd>
+                    </div>
+                : null}
+
+                {biosample.age ?
+                    <div data-test="age">
+                        <dt>Age</dt>
+                        <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd>
+                    </div>
+                : null}
+
                 {biosample && biosample.sex ?
                     <div data-test="sex">
                         <dt>Sex</dt>
@@ -532,12 +530,6 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
     render: function() {
         var context = this.props.context;
         var biosample = this.props.biosample;
-        var donor_constructs = {};
-        if (biosample && biosample.model_organism_donor_constructs) {
-            biosample.model_organism_donor_constructs.forEach(function (construct) {
-                donor_constructs[construct['@id']] = Panel({context: construct, embeddedDocs: true});
-            });
-        }
 
         return (
             <div>
@@ -567,8 +559,22 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                             <dd>{context.genotype}</dd>
                         </div>
                     : null}
-                    {biosample && biosample.sex ?
 
+                    {biosample.life_stage ?
+                        <div data-test="life-stage">
+                            <dt>Life stage</dt>
+                            <dd className="sentence-case">{biosample.life_stage}</dd>
+                        </div>
+                    : null}
+
+                    {biosample.age ?
+                        <div data-test="age">
+                            <dt>Age</dt>
+                            <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd>
+                        </div>
+                    : null}
+
+                    {biosample && biosample.sex ?
                         <div data-test="sex">
                             <dt>Sex</dt>
                             <dd className="sentence-case">{biosample.sex}</dd>
@@ -596,14 +602,6 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         </div>
                     : null}
                 </dl>
-
-                {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
-                    <section>
-                        <hr />
-                        <h4>Construct details</h4>
-                        {donor_constructs}
-                    </section>
-                : null}
 
                 {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
                     <section className="multi-columns-row">
