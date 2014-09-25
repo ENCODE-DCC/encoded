@@ -467,14 +467,14 @@ var MouseDonor = module.exports.MouseDonor = React.createClass({
                     </div>
                 : null}
 
-                {biosample.life_stage ?
+                {biosample && biosample.life_stage ?
                     <div data-test="life-stage">
                         <dt>Life stage</dt>
                         <dd className="sentence-case">{biosample.life_stage}</dd>
                     </div>
                 : null}
 
-                {biosample.age ?
+                {biosample && biosample.age ?
                     <div data-test="age">
                         <dt>Age</dt>
                         <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd>
@@ -560,14 +560,14 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                         </div>
                     : null}
 
-                    {biosample.life_stage ?
+                    {biosample && biosample.life_stage ?
                         <div data-test="life-stage">
                             <dt>Life stage</dt>
                             <dd className="sentence-case">{biosample.life_stage}</dd>
                         </div>
                     : null}
 
-                    {biosample.age ?
+                    {biosample && biosample.age ?
                         <div data-test="age">
                             <dt>Age</dt>
                             <dd className="sentence-case">{biosample.age}{biosample.age_units ? ' ' + biosample.age_units : null}</dd>
