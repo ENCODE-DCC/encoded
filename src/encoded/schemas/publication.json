@@ -85,22 +85,6 @@
                 "replaced"
             ]
         },
-        "method_summary": {
-            "title": "Method summary",
-            "description": "An explanation how the methods or results presented in the publication advance the understanding of how regions on the genome interact with each other.",
-            "type": "string"
-        },
-        "urls": {
-            "title": "URL",
-            "description": "External resources with additional information or supplemental files associated with the publication.",
-            "type": "array",
-            "items": {
-                "title": "URLs",
-                "description": "External resources with additional information or supplemental files associated with the publication.",
-                "type": "string",
-                "format": "uri"
-            }
-        },
         "datasets": {
             "title": "Dataset",
             "description": "The datasets referred to by the publication.",
@@ -111,6 +95,59 @@
                 "comment": "See dataset.json for available identifiers.",
                 "type":  "string",
                 "linkTo": "dataset"
+            }
+        },
+        "supplementary_data": {
+            "title": "Supplementary_data",
+            "description": "Description of data found in the publication.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Supplementary data details",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "url": {
+                        "title": "URL",
+                        "description": "External resources with additional information or supplemental files associated with the publication.",
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "file_format": {
+                        "title": "File format",
+                        "description": "Description of the file format of files downloaded from the URL.",
+                        "type": "string",
+                        "enum" : [
+                            "BED",
+                            "TSV",
+                            "GTF",
+                            "VCF",
+                            "text",
+                            "other format"
+                            ]
+                    },
+                    "element_type": {
+                        "title": "Element type",
+                        "description": "The type of genome region expected from the files located at the URL.",
+                        "type": "string",
+                        "enum" : [
+                            "peak",
+                            "enhancer",
+                            "RNA",
+                            "promoter",
+                            "HMM region",
+                            "HOT region",
+                            "other region",
+                            "motifs",
+                            "connectivity"
+                            ]
+                    },
+                    "method_summary": {
+                        "title": "Method summary",
+                        "description": "An explanation how the methods or results presented in the publication advance the understanding of how regions on the genome interact with each other.",
+                        "type": "string"
+                    }
+                }
             }
         },
         "categories": {
@@ -163,6 +200,10 @@
         "categories": {
             "title": "Category",
             "type": "array"
+        },
+        "supplementary_data.element_type": {
+            "title": "Elements",
+            "type": "string"
         },
         "publication_year": {
             "title": "Publication year",
