@@ -130,10 +130,12 @@ def audit_checker(item_type, category=None, detail=None, level=0):
     return decorate
 
 
-def audit(request, value, item_type, path=None, **kw):
+def audit(request, value, item_type, path=None, context=None, **kw):
     auditor = request.registry['auditor']
     if path is None:
         path = request.path
+    if context is None:
+        context = request.context
     return auditor.audit(
-        value, item_type, path=path, root=request.root,
+        value, item_type, path=path, root=request.root, context=context,
         registry=request.registry, **kw)

@@ -99,6 +99,13 @@ TEMPLATE_VALUE = [
        '$value': '$value {bar}'}],
      ['$value foo2']),
     ({'$value': calculated_value, '$templated': True}, 'calculated foo'),
+    ({'key_{foo}': 'value_{foo}', '$templated': True},
+     {'key_foo': 'value_foo'}),
+    ({'a': [{'$templated': True, '$repeat': 'bar bar_list',
+             'key_{bar}': '$value {bar}', 'b': 1}]},
+     {'a': [{'key_bar1': '$value bar1', 'b': 1},
+            {'key_bar2': '$value bar2', 'b': 1},
+            ]}),
 ]
 
 

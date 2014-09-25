@@ -1,5 +1,5 @@
 from ..migrator import upgrade_step
-from ..views.views import ENCODE2_AWARDS
+from .shared import ENCODE2_AWARDS
 
 
 @upgrade_step('antibody_characterization', '', '3')
@@ -65,3 +65,39 @@ def characterization_3_4(value, system):
             value['status'] = 'released'
         elif value['status'] == 'IN PROGRESS' and value['award'] not in ENCODE2_AWARDS:
             value['status'] = 'in progress'
+
+
+@upgrade_step('antibody_characterization', '4', '5')
+def antibody_characterization_4_5(value, system):
+    # http://redmine.encodedcc.org/issues/380
+    primary = [
+        "immunoblot",
+        "immunoprecipitation",
+        "immunofluorescence"
+    ]
+
+    secondary = [
+        "knockdown or knockout",
+        "immunoprecipitation followed by mass spectrometry",
+        "ChIP-seq comparison",
+        "motif enrichment",
+        "dot blot assay",
+        "peptide array assay",
+        "peptide ELISA assay",
+        "peptide competition assay",
+        "overexpression analysis"
+    ]
+
+    if 'characterization_method' in value:
+        if value['characterization_method'] in primary:
+            value['primary_characterization_method'] = value['characterization_method']
+        elif value['characterization_method'] in secondary:
+            value['secondary_characterization_method'] = value['characterization_method']
+        del value['characterization_method']
+
+    if 'status' in value:
+        if value['status'] == 'not reviewed':
+            value['reviewed_by'] = 'ff7b77e7-bb55-4307-b665-814c9f1e65fb'
+        elif value['status'] in ['compliant', 'not compliant']:
+            value['reviewed_by'] = '81a6cc12-2847-4e2e-8f2c-f566699eb29e'
+            value['documents'] = ['88dc12f7-c72d-4b43-a6cd-c6f3a9d08821']

@@ -33,12 +33,14 @@
             "linkTo": "target"
         },
         "assay_term_name": {
+            "@id": null,
             "title": "Assay name",
             "description": "OBI (Ontology for Biomedical Investigations) ontology term for the assay.",
             "default": "",
             "type":  "string"
         },
         "assay_term_id": {
+            "@type": "@id",
             "title": "Assay ID",
             "description": "OBI (Ontology for Biomedical Investigations) ontology identifier for the assay.",
             "type": "string",
@@ -52,6 +54,8 @@
             "enum": ["experiment"]
         },
         "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",
@@ -171,6 +175,10 @@
             "title": "Status",
             "type": "string"
         },
+        "replicates.antibody.accession": {
+            "title": "Linked Antibody",
+            "type": "string"
+        },
         "replicates.library.biosample.organism.scientific_name": {
             "title": "Species",
             "type": "array"
@@ -217,8 +225,12 @@
             "title": "Developmental slims",
             "type": "string"
         }, 
-        "synonyms": {
-            "title": "Synonyms",
+        "assay_synonyms": {
+            "title": "Assay synonyms",
+            "type": "string"
+        },
+        "biosample_synonyms": {
+            "title": "Biosample synonyms",
             "type": "string"
         },
         "month_released": {
@@ -273,7 +285,8 @@
         "biosample_type": 1.0,
         "organ_slims": 1.0,
         "developmental_slims": 1.0,
-        "synonyms": 1.0,
+        "assay_synonyms": 1.0,
+        "biosample_synonyms": 1.0,
         "files.accession": 1.0,
         "files.alternate_accessions": 1.0,
         "files.file_format": 1.0,

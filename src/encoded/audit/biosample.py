@@ -13,6 +13,8 @@ term_mapping = {
     "female gonad": "UBERON:0000992",
     "digestive system": "UBERON:0001007",
     "arthropod fat body": "UBERON:0003917",
+    "antenna": "UBERON:0000972",
+    "adult maxillary segment": "FBbt:00003016",
     "nucleus": "GO:0005634",
     "cytosol": "GO:0005829",
     "chromatin": "GO:0000785",

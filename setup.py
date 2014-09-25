@@ -22,6 +22,7 @@ requires = [
     'python-magic',
     'pytz',
     'rdflib',
+    'rdflib-jsonld',
     'rfc3987',
     'setuptools',
     'simplejson',
@@ -60,14 +61,15 @@ setup(
 
         add-date-created = encoded.commands.add_date_created:main
         check-rendering = encoded.commands.check_rendering:main
+        create-mapping = encoded.commands.create_mapping:main
         deploy = encoded.commands.deploy:main
         dev-servers = encoded.commands.dev_servers:main
         extract_test_data = encoded.commands.extract_test_data:main
         es-index-data = encoded.commands.es_index_data:main
         es-index-listener = encoded.commands.es_index_listener:main
-        create-mapping = encoded.commands.create_mapping:main
         generate-ontology = encoded.commands.generate_ontology:main
         import-data = encoded.commands.import_data:main
+        jsonld-rdf = encoded.commands.jsonld_rdf:main
         migrate-files-aws = encoded.commands.migrate_files_aws:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
         update-keys-links = encoded.commands.update_keys_links:main

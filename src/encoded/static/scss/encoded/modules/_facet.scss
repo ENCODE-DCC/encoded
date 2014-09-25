@@ -87,8 +87,15 @@
 }
 
 .accession {
+    position: relative;
     font-size: 1.3em;
     font-weight: bold;
+
+    a {
+        &:hover {
+            text-decoration: none;
+        }
+    }
 }
 
 .accession-note {
@@ -104,10 +111,6 @@
     font-size: 0.9em;
     font-weight: normal;
     color: #808080;
-}
-
-.accession a:hover {
-    text-decoration: none;
 }
 
 .search-meta {
@@ -129,6 +132,10 @@
 
 .meta-status {
     font-weight: bold;
+}
+
+div.meta-status {
+    text-align: right;
 }
 
 .data-row {

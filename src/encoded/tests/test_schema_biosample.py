@@ -14,7 +14,7 @@ def biosample(submitter, lab, award, source, organism):
 
 
 @pytest.fixture
-def biosample_depeleted_in(biosample):
+def biosample_depleted_in(biosample):
     item = biosample.copy()
     item.update({
         'depleted_in_term_name': ['head'],
@@ -33,18 +33,24 @@ def biosample_starting_amount(biosample):
     return item
 
 
-def test_biosample_depeleted_in(testapp, biosample_depeleted_in):
-    testapp.post_json('/biosample', biosample_depeleted_in)
+def test_biosample_depleted_in(testapp, biosample_depleted_in):
+    testapp.post_json('/biosample', biosample_depleted_in)
 
 
-def test_biosample_depeleted_in_name_required(testapp, biosample_depeleted_in):
-    del biosample_depeleted_in['depleted_in_term_name']
-    testapp.post_json('/biosample', biosample_depeleted_in,  status=422)
+def test_biosample_depleted_in_name_required(testapp, biosample_depleted_in):
+    del biosample_depleted_in['depleted_in_term_name']
+    testapp.post_json('/biosample', biosample_depleted_in,  status=422)
 
 
-def test_biosample_depeleted_in_type_whole_organismg(testapp, biosample_depeleted_in):
-    biosample_depeleted_in['biosample_type'] = 'tissue'
-    testapp.post_json('/biosample', biosample_depeleted_in,  status=422)
+def test_biosample_depleted_in_type_whole_organism(testapp, biosample_depleted_in):
+    biosample_depleted_in['biosample_type'] = 'immortalized cell line'
+    testapp.post_json('/biosample', biosample_depleted_in,  status=422)
+
 
 def test_biosample_starting_amount(testapp, biosample_starting_amount):
     testapp.post_json('/biosample', biosample_starting_amount)
+
+
+def test_biosample_transfection_method(testapp, biosample):
+    biosample['transfection_method'] = 'transduction'
+    testapp.post_json('/biosample', biosample, status=422)

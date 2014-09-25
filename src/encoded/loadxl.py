@@ -12,10 +12,10 @@ ORDER = [
     'organism',
     'source',
     'target',
+    'document',
     'antibody_lot',
     'antibody_characterization',
     'antibody_approval',
-    'document',
     'treatment',
     'construct',
     'construct_characterization',
@@ -25,6 +25,7 @@ ORDER = [
     'fly_donor',
     'worm_donor',
     'human_donor',
+    'donor_characterization',
     'biosample',
     'biosample_characterization',
     'platform',
@@ -38,7 +39,6 @@ ORDER = [
     'publication',
     'software',
 ]
-
 
 ##############################################################################
 # Pipeline components

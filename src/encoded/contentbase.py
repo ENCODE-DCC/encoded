@@ -3,6 +3,7 @@ import logging
 import venusian
 from abc import ABCMeta
 from collections import Mapping
+from copy import deepcopy
 from itertools import islice
 from pyramid.events import (
     ContextFound,
@@ -297,6 +298,8 @@ class Root(object):
                 uuid = UUID(uuid)
             except ValueError:
                 return default
+        elif not isinstance(uuid, UUID):
+            raise TypeError(uuid)
 
         cached = self.item_cache.get(uuid)
         if cached is not None:
@@ -517,15 +520,6 @@ class Item(object):
             else:
                 properties[name] = request.resource_path(value)
 
-        # XXX Should reverse links move to embedding?
-        # - would necessitate a second templating stage.
-        for name, value in self.rev_links().iteritems():
-            properties[name] = [
-                request.resource_path(item)
-                for item in value
-                if item.upgrade_properties().get('status') not in ('deleted', 'replaced')
-            ]
-
         templated = self.expand_template(properties, request)
         properties.update(templated)
 
@@ -548,19 +542,29 @@ class Item(object):
             ns['request'] = request
             ns['permission'] = permission_checker(self, request)
 
+        for name, value in self.rev_links().iteritems():
+            ns[name] = [resource_path(item, '') for item in value]
+
         if self.merged_namespace_from_path:
             root = find_root(self)
-            for name, path in self.merged_namespace_from_path.items():
-                path = path.split('.')
-                last = path[-1]
-                obj = self
-                for n in path[:-1]:
-                    obj_props = obj.properties
-                    if n not in obj_props:
-                        break
-                    obj = root.get_by_uuid(obj_props[n])
-                else:
-                    ns[name] = obj.properties[last]
+            for name, paths in self.merged_namespace_from_path.items():
+                # Treat a list of paths as a search path for the value
+                if isinstance(paths, basestring):
+                    paths = [paths]
+                for path in paths:
+                    path = path.split('.')
+                    last = path[-1]
+                    obj = self
+                    obj_props = obj.upgrade_properties(finalize=False)
+                    for n in path[:-1]:
+                        if n not in obj_props:
+                            break
+                        obj = root.get_by_uuid(obj_props[n])
+                        obj_props = obj.upgrade_properties(finalize=False)
+                    else:
+                        if last in obj_props:
+                            ns[name] = deepcopy(obj_props[last])
+                            break
 
         return ns
 
@@ -835,25 +839,25 @@ class Collection(Mapping):
         root = find_root(self)
         resource = root.get_by_uuid(name, None)
         if resource is not None:
-            if resource.__parent__ is not self:
+            if resource.collection is not self and resource.__parent__ is not self:
                 return default
             return resource
         if is_accession(name):
             resource = root.get_by_unique_key('accession', name)
             if resource is not None:
-                if resource.__parent__ is not self:
+                if resource.collection is not self and resource.__parent__ is not self:
                     return default
                 return resource
         if ':' in name:
             resource = root.get_by_unique_key('alias', name)
             if resource is not None:
-                if resource.__parent__ is not self:
+                if resource.collection is not self and resource.__parent__ is not self:
                     return default
                 return resource
         if self.unique_key is not None:
             resource = root.get_by_unique_key(self.unique_key, name)
             if resource is not None:
-                if resource.__parent__ is not self:
+                if resource.collection is not self and resource.__parent__ is not self:
                     return default
                 return resource
         return default
@@ -941,22 +945,27 @@ class Collection(Mapping):
 
         return result
 
-    def __json__(self, request):
-        properties = self.properties.copy()
+    def template_namespace(self, properties, request=None):
         ns = properties.copy()
         ns['properties'] = properties
-        ns['collection_uri'] = uri = request.resource_path(self)
+        ns['collection_uri'] = resource_path(self, '')
         ns['item_type'] = self.item_type
-        ns['permission'] = permission_checker(self, request)
-        ns['request'] = request
         ns['context'] = self
         ns['root'] = root = find_root(self)
         ns['registry'] = root.registry
+        if request is not None:
+            ns['permission'] = permission_checker(self, request)
+            ns['request'] = request
+        return ns
 
+    def __json__(self, request):
+        properties = self.properties.copy()
+        ns = self.template_namespace(properties, request)
         compiled = ObjectTemplate(self.merged_template)
         templated = compiled(ns)
         properties.update(templated)
 
+        uri = ns['collection_uri']
         if request.query_string:
             uri += '?' + request.query_string
         properties['@id'] = uri

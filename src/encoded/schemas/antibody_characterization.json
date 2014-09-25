@@ -18,9 +18,91 @@
         { "$ref": "mixins.json#/references" },
         { "$ref": "mixins.json#/notes" }
     ],
+    "dependencies": {
+        "characterization_reviews": ["primary_characterization_method"],
+        "primary_characterization_method": {
+            "oneOf": [
+                {
+                    "required": ["characterization_reviews"],
+                    "properties": {
+                        "characterization_reviews": {
+                            "minItems": 1
+                        },
+                        "status": {
+                            "enum": ["pending dcc review", "compliant", "not compliant" ]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                               "enum": ["pending dcc review", "compliant", "not compliant" ]
+                            }
+                        }
+                    }
+                }
+            ]   
+        },
+        "attachment": {
+            "oneOf": [
+                {
+                    "required": ["primary_characterization_method"]
+                },
+                {
+                    "required": ["secondary_characterization_method"]
+                }
+            ]
+        },
+        "status": {
+            "oneOf": [
+                {
+                    "required": ["reviewed_by"],
+                    "properties": {
+                        "status": {
+                            "enum": ["not reviewed"]
+                        }
+                    }
+                },
+                {
+                    "required": ["reviewed_by", "documents"],
+                    "properties": {
+                        "status": {
+                            "enum": ["compliant", "not compliant"]
+                        }
+                    }
+                },
+                {
+                    "not": {
+                        "properties": {
+                            "status": {
+                                "enum": ["compliant", "not compliant", "not reviewed"]
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    },
     "properties": {
         "schema_version": {
-            "default": "4"
+            "default": "5"
+        },
+        "reviewed_by": {
+            "title": "Reviewed by",
+            "description": "Person (from DCC or antibody review panel) who reviewed the antibody characterizations associated with this antibody lot and determined the lot status",
+            "comment": "Only admins are allowed to set or update this value.",
+            "permission": "import_items",
+            "linkTo": "user",
+            "type": "string",
+            "linkEnum": [
+                "81a6cc12-2847-4e2e-8f2c-f566699eb29e",
+                "4c23ec32-c7c8-4ac0-affb-04befcc881d4",
+                "ce2bde01-07ec-4b8a-b179-554ef95b71dd",
+                "20ce8cd4-c407-453c-b0f3-7e45e5b7e493",
+                "6800d05f-7213-48b1-9ad8-254c73c5b83f",
+                "ff7b77e7-bb55-4307-b665-814c9f1e65fb"
+            ]
         },
         "characterizes": {
             "title": "Antibody characterized",
@@ -30,7 +112,7 @@
         "status": {
             "title": "Approval status",
             "description": "The current state of the characterization.",
-            "comment": "Submit a status of 'PENDING DCC REVIEW' to indicate that DCC should begin reviewing characterization. Submit a status of 'WITHDRAWN BY LAB'  to indicate that DCC should not review the characterization.'",
+            "comment": "Submit a status of 'pending dcc review' to indicate that DCC should begin reviewing characterization. Submit a status of 'not submitted for review by lab'  to indicate that DCC should not review the characterization.'",
             "type": "string",
             "default": "in progress",
             "enum" : [
@@ -43,12 +125,123 @@
                 "deleted"
             ]
         },
+        "characterization_reviews": {
+            "title": "Primary characterization lane reviews",
+            "description": "Characterization details reviewed by each cell type for immunoblot and immunoprecipitation primary characterizations only.",
+            "comment": "Do not submit status, it is assigned by DCC when reviewing the characterization.",
+            "type": "array",
+            "items": {
+                "title": "Primary characterization lane review", 
+                "type": "object",
+                "additionalProperties": false,
+                "required": [ "organism", "lane", "biosample_term_id", "biosample_term_name", "biosample_type"],
+                "properties": {
+                    "organism": {
+                        "title": "Organism",
+                        "comment": "See organism.json for available identifiers.",
+                        "type": "string",
+                        "linkTo": "organism"
+                    },
+                    "lane": {
+                        "title": "Lane",
+                        "type": "integer"
+                    },
+                    "lane_status": {
+                        "title": "Characterization status",
+                        "description": "The current state of the characterization for a particular cell type.",
+                        "type": "string",
+                        "permission": "import_items",
+                        "default": "pending dcc review",
+                        "enum" : [
+                            "pending dcc review",
+                            "compliant",
+                            "not compliant"
+                        ]
+                    },
+                    "biosample_term_id": {
+                        "title": "Ontology ID",
+                        "description": "Ontology identifier describing biosample.",
+                        "comment": "NTR is a new term request identifier provided by the DCC.",
+                        "type": "string",
+                        "pattern": "^(UBERON|EFO|CL|NTR|FBbt|WBbt):[0-9]{2,8}$"
+                    },
+                    "biosample_term_name": {
+                        "title": "Ontology term",
+                        "description": "Ontology term describing biosample.",
+                        "type":  "string"
+                    },
+                    "biosample_type": {
+                        "title": "Biosample type",
+                        "description": "The categorization of the biosample.",
+                        "type": "string",
+                        "enum" : [
+                            "primary cell",
+                            "immortalized cell line",
+                            "tissue",
+                            "in vitro differentiated cells",
+                            "induced pluripotent stem cell line",
+                            "stem cell"
+                        ]
+                    }
+                }
+            }
+        },
         "target": {
             "title": "Target",
             "description": "The name of the gene whose expression or product is the intended goal of the antibody.",
             "comment": "See target.json for available identifiers.",
             "type": "string",
             "linkTo": "target"
+        },
+        "primary_characterization_method": {
+            "title": "Primary method",
+            "description": "Primary experimental method of the characterization, as defined in the standards document.",
+            "type": "string",
+            "enum": [
+                "immunoblot",
+                "immunoprecipitation",
+                "immunofluorescence"
+            ]
+        },
+        "secondary_characterization_method": {
+            "title": "Secondary method",
+            "description": "Secondary experimental method of the characterization, as defined in the standards document.",
+            "type": "string",
+            "enum": [
+                "knockdown or knockout",
+                "immunoprecipitation followed by mass spectrometry",
+                "ChIP-seq comparison",
+                "motif enrichment",
+                "dot blot assay",
+                "peptide array assay",
+                "peptide ELISA assay",
+                "peptide competition assay",
+                "overexpression analysis"
+            ]
+        }
+    },
+    "facets": {
+        "status": {
+            "title": "Characterization status",
+            "type": "string"
+        },
+        "target.organism.scientific_name": {
+            "title": "Target Organism",
+            "type": "string"
+        },
+        "characterization_method":{
+            "title": "Characterization method",
+            "type": "string"
+        },
+        "lab.title": {
+            "title": "Lab",
+            "type": "string"
+        }
+    },
+    "calculated_props": {
+        "characterization_method":{
+            "title": "Characterization method",
+            "type": "string"
         }
     }
 }
