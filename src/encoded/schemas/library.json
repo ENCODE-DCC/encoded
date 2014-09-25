@@ -47,6 +47,7 @@
             "title": "Spike-ins datasets used",
             "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",
             "type": "array",
+            "default": [],
             "items" : {
                 "title": "A spike-ins dataset.",
                 "description": "A specific spike-ins type dataset",
