@@ -44,11 +44,16 @@
             "accessionType": "LB"
         },
         "spikeins_used": {
-            "title": "Spike-ins used",
-            "description": "The dataset containing the fasta and the concentrations used for the library spike-ins.",
-            "comment": "See dataset.json for available identifiers.",
-            "type": "string",
-            "linkTo": "dataset"
+            "title": "Spike-ins datasets used",
+            "description": "The datasets containing the fasta and the concentrations of the library spike-ins.",
+            "type": "array",
+            "items" : {
+                "title": "A spike-ins dataset.",
+                "description": "A specific spike-ins type dataset",
+                "comment": "See dataset.json for available identifiers.",
+                "type": "string",
+                "linkTo": "dataset"
+            }
         },
         "biosample": {
             "title": "Biosample",
