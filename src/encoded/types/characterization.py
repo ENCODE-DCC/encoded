@@ -14,7 +14,7 @@ from .download import ItemWithAttachment
 class Characterization(Collection):
     class Item(ItemWithAttachment, Collection.Item):
         base_types = ['characterization'] + Collection.Item.base_types
-        embedded = set(['lab', 'award', 'submitted_by'])
+        embedded = ['lab', 'award', 'submitted_by']
         keys = ALIAS_KEYS
 
 
@@ -77,23 +77,15 @@ class AntibodyCharacterization(Characterization):
             'documents',
             'characterizes.targets',
         ]
-
+        namespace_from_path = {
+            'characterization_method': [
+                'primary_characterization_method',
+                'secondary_characterization_method',
+            ],
+        }
         template = {
             'characterization_method': {
                 '$value': '{characterization_method}',
-                '$templated': True,
                 '$condition': 'characterization_method',
             },
         }
-
-        def template_namespace(self, properties, request=None):
-            ns = Collection.Item.template_namespace(self, properties, request)
-            if request is None:
-                return ns
-            if 'primary_characterization_method' in ns:
-                ns['characterization_method'] = ns['primary_characterization_method']
-            elif 'secondary_characterization_method' in ns:
-                ns['characterization_method'] = ns['secondary_characterization_method']
-            else:
-                ns['characterization_method'] = ''
-            return ns

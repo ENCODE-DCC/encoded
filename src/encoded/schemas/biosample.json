@@ -29,7 +29,7 @@
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
             "properties": {
-                "biosample_type": {"enum": ["whole organisms"]}
+                "biosample_type": {"enum": ["whole organisms", "tissue"]}
             }
         }
     },
@@ -142,7 +142,9 @@
                     "testis",
                     "female gonad",
                     "digestive system",
-                    "arthropod fat body"
+                    "arthropod fat body",
+                    "antenna",
+                    "adult maxillary segment"
                 ]
             }
         },
@@ -152,7 +154,7 @@
             "items": {
                 "title": "Depleted in ID",
                 "description": "UBERON (Uber Anatomy Ontology) identifier best matching the tissue(s)/body part(s) that were removed from the biosample.",
-                "comment": "Based on the choice in depleted_in_term_name use the following guide: head - UBERON:0000033, limb - UBERON:0002101, salivary gland - UBERON:0001044 , male accessory sex gland - UBERON:0010147, testis - UBERON:0000473, female gonad - UBERON:0000992, digestive system - UBERON:0001007, arthropod fat body - UBERON:0003917",
+                "comment": "Based on the choice in depleted_in_term_name use the following guide: head - UBERON:0000033, limb - UBERON:0002101, salivary gland - UBERON:0001044 , male accessory sex gland - UBERON:0010147, testis - UBERON:0000473, female gonad - UBERON:0000992, digestive system - UBERON:0001007, arthropod fat body - UBERON:0003917, antenna - UBERON:0000972, adult maxillary segmant - FBbt:00003016",
                 "type": "string",
                 "enum": [
                     "UBERON:0000033",
@@ -162,7 +164,9 @@
                     "UBERON:0000473",
                     "UBERON:0000992",
                     "UBERON:0001007",
-                    "UBERON:0003917"
+                    "UBERON:0003917",
+                    "UBERON:0000972",
+                    "FBbt:00003016"
                 ]
             }
         },
@@ -270,7 +274,7 @@
             "description": "How the transfection was performed on the biosample to introduce the contruct or RNAi.",
             "type": "string",
             "enum": [
-                "electroporation", "transduction"
+                "electroporation", "transduction", "chemical"
             ]
         },
         "culture_harvest_date": {
@@ -357,6 +361,7 @@
             "type": "string",
             "enum": [
                 "embryonic",
+                "larva",
                 "first instar larva",
                 "second instar larva",
                 "third instar larva",
@@ -372,6 +377,9 @@
             "type": "string",
             "enum": [
                 "fertilization",
+                "egg laying",
+                "first larval molt",
+                "second larval molt",
                 "puff stage: PS (1-2), dark blue gut",
                 "puff stage: PS (3-6), light blue gut",
                 "puff stage: PS (7-9), clear gut",
@@ -423,6 +431,7 @@
             "enum": [
                 "fertilization",
                 "egg laying",
+                "egg bleaching",
                 "starved L1 larva",
                 "dauer exit"
             ]
@@ -501,10 +510,6 @@
         "source.title": {
             "title": "Source",
             "type": "string"
-        },
-        "synchronization": {
-            "title": "Synchronization stage",
-            "type": "string" 
         },
         "lab.title": {
             "title": "Lab",
