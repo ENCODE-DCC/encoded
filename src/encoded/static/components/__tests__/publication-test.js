@@ -49,11 +49,12 @@ describe('Publication', function() {
         });
 
         it('has a good abstract with an h2 and a p', function() {
-            var abstract = TestUtils.findRenderedDOMComponentWithClass(publication, 'abstract').getDOMNode();
-            expect(abstract.getElementsByTagName('*').length).toEqual(2);
-            var abstractPart = abstract.getElementsByTagName('h2');
+            var panel = TestUtils.findRenderedDOMComponentWithClass(publication, 'panel').getDOMNode();
+            var item = panel.querySelector('[data-test="abstract"]');
+            expect(item.getElementsByTagName('*').length).toEqual(2);
+            var abstractPart = item.getElementsByTagName('h2');
             expect(abstractPart.length).toEqual(1);
-            abstractPart = abstract.getElementsByTagName('p');
+            abstractPart = item.getElementsByTagName('p');
             expect(abstractPart.length).toEqual(1);
             expect(abstractPart[0].textContent).toContain('The human genome encodes the blueprint of life,');
         });

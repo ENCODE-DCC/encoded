@@ -155,7 +155,14 @@
             "database"
         ],
         "datasets": ["ENCSR000AJW", "ENCSR825ZJX"],
+        "data_used": "Complex traits such as susceptibility to diseases are determined in part by variants at multiple genetic loci.",
         "supplementary_data": [
+            {
+                "url": "http://www.avivasysbio.com/anti-hnrpa1-antibody-c-terminal-region-arp40384-t100.html",
+                "file_format": "other format",
+                "element_type": "RNA",
+                "method_summary": "Clone 16B12 was raised against the twelve amino acid peptide CYPYDVPDYASL. This second-generation HA antibody is an excellent substitute for the 12CA5 monoclonal antibody. The HA.11 antibody recognizes the influenza hemagglutinin epitope (YPYDVPDYA) which has been used extensively as a general epitope tag in expression vectors. The extreme specificity of the antibody allows unambiguous identification and quantitative analysis of the tagged protein. The HA.11 antibody recognizes HA epitopes located in the middle of protein sequences as well as at the N- or C-terminus."
+            },
             {
                 "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
                 "file_format": "BED",

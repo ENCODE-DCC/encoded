@@ -158,35 +158,35 @@
                 "type": "string",
                 "enum" : [
                     "human disease",
-            "basic biology",
-            "software tool",
-            "database",
-            "integrative analysis",
-            "technology development",
-            "data standard",
-            "key publication",
-            "pilot phase publication",
-            "model organism biology",
-            "tutorial",
-            "ENCODE elements"
-        ]
+                    "basic biology",
+                    "software tool",
+                    "database",
+                    "integrative analysis",
+                    "technology development",
+                    "data standard",
+                    "key publication",
+                    "pilot phase publication",
+                    "model organism biology",
+                    "tutorial",
+                    "ENCODE elements"
+                ]
             }      
         },
-    "published_by": {
-        "title": "Published by",
-        "type": "array",
-        "default": ["ENCODE"],
-        "items": {
+        "published_by": {
             "title": "Published by",
-        "type": "string",
-        "enum": [
-            "ENCODE",
-            "mouseENCODE",
-            "modENCODE",
-            "community"
-        ]
-        }
-    },
+            "type": "array",
+            "default": ["ENCODE"],
+            "items": {
+                "title": "Published by",
+            "type": "string",
+            "enum": [
+                "ENCODE",
+                "mouseENCODE",
+                "modENCODE",
+                "community"
+                ]
+            }
+        },
         "data_used": {
             "title": "Data used",
             "type": "string"
