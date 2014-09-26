@@ -20,6 +20,44 @@ var Citation = module.exports.Citation = React.createClass({
 });
 
 
+var SupplementaryData = React.createClass({
+    render: function() {
+        var data = this.props.data;
+        return (
+            <dl key={data.key}>
+                {data.element_type ?
+                    <div data-test="elementtype">
+                        <dt>Element type</dt>
+                        <dd>{data.element_type}</dd>
+                    </div>
+                : null}
+
+                {data.file_format ?
+                    <div data-test="fileformat">
+                        <dt>File format</dt>
+                        <dd>{data.file_format}</dd>
+                    </div>
+                : null}
+
+                {data.url ?
+                    <div data-test="urls">
+                        <dt>URL</dt>
+                        <dd><a href={data.url}>{data.url}</a></dd>
+                    </div>
+                : null}
+
+                {data.method_summary ?
+                    <div data-test="methodsummary">
+                        <dt>Method summary</dt>
+                        <dd>{data.method_summary}</dd>
+                    </div>
+                : null}
+            </dl>
+        );
+    }
+});
+
+
 var Panel = module.exports.Panel = React.createClass({
     render: function() {
         var context = this.props.context;
@@ -31,7 +69,8 @@ var Panel = module.exports.Panel = React.createClass({
                     {this.transferPropsTo(<Citation />)}
                 </div>
 
-                {context.abstract || context.data_used || context.references.length ?
+                {context.abstract || context.data_used || context.references.length ||
+                    (context.datasets && context.datasets.length) || (context.supplementary_data && context.supplementary_data.length) ?
                     <div className="view-detail panel">
                         {context.abstract ?
                             <div className="abstract">
@@ -47,24 +86,14 @@ var Panel = module.exports.Panel = React.createClass({
                                     <dd>{context.data_used}</dd>
                                 </div>
                             : null}
-                            {context.method_summary ?
-                                <div data-test="methodsummary">
-                                    <dt>Method summary</dt>
-                                    <dd>{context.method_summary}</dd>
+
+                            {context.references && context.references.length ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd><DbxrefList values={context.references} className="multi-value" /></dd>
                                 </div>
                             : null}
-                            {context.urls && context.urls.length ?
-                                <div data-test="urls">
-                                    <dt>Supplemental data</dt>
-                                    <dd>
-                                        <ul className="multi-value">
-                                            {context.urls.map(function(url){
-                                                return <li><a href={url}>{url}</a></li>;
-                                            })}
-                                        </ul>
-                                    </dd>
-                                </div>
-                            : null}
+
                             {context.datasets && context.datasets.length ?
                                 <div data-test="datasets">
                                     <dt>Datasets</dt>
@@ -80,10 +109,13 @@ var Panel = module.exports.Panel = React.createClass({
                                     </dd>
                                 </div>
                             : null}
-                            {context.references && context.references.length ?
-                                <div data-test="references">
-                                    <dt>References</dt>
-                                    <dd><DbxrefList values={context.references} className="multi-value" /></dd>
+
+                            {context.supplementary_data && context.supplementary_data.length ?
+                                <div>
+                                    <h4>Supplementary data</h4>
+                                    {context.supplementary_data.map(function(data) {
+                                        return <SupplementaryData data={data} />;
+                                    })}
                                 </div>
                             : null}
                         </dl>

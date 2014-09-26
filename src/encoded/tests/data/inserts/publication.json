@@ -154,6 +154,15 @@
             "integrative analysis",
             "database"
         ],
+        "datasets": ["ENCSR000AJW", "ENCSR825ZJX"],
+        "supplementary_data": [
+            {
+                "url": "http://www.atcc.org/Products/All/HTB-22.aspx",
+                "file_format": "BED",
+                "element_type": "HOT region",
+                "method_summary": "MS: Testing for correlations between different sets of genomic features is a fundamental"
+            }
+        ],
         "date_published": "2012 Jan",
         "issue": "Database issue",
         "journal": "Nucleic acids research",
