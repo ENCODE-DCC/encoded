@@ -1,3 +1,7 @@
+""" Example file submission script
+
+Requires the `aws` command line utility: http://aws.amazon.com/cli/
+"""
 import hashlib
 import json
 import os
