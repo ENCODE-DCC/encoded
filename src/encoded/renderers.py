@@ -27,6 +27,7 @@ from urllib import unquote
 from .cache import ManagerLRUCache
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
+import json
 import logging
 import os
 import pyramid.renderers
@@ -57,10 +58,22 @@ class JSON(pyramid.renderers.JSON):
     def dumps(self, value):
         request = get_current_request()
         default = self._make_default(request)
-        return self.serializer(value, default=default, **self.kw)
+        return json.dumps(value, default=default, **self.kw)
 
 
-json_renderer = JSON()
+class JSONResult(object):
+    def __init__(self):
+        self.app_iter = []
+        self.write = self.app_iter.append
+
+    @classmethod
+    def serializer(cls, value, **kw):
+        fp = cls()
+        json.dump(value, fp, **kw)
+        return fp.app_iter
+
+
+json_renderer = JSON(serializer=JSONResult.serializer)
 
 
 def uuid_adapter(obj, request):
