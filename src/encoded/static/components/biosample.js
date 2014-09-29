@@ -698,6 +698,7 @@ var Construct = module.exports.Construct = React.createClass({
 
                 {embeddedDocs && Object.keys(construct_documents).length ?
                     <div>
+                        <hr />
                         <h4>Construct documents</h4>
                         <div>{construct_documents}</div>
                     </div>
