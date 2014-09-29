@@ -91,7 +91,6 @@ class BasicAuthAuthenticationPolicy(_BasicAuthAuthenticationPolicy):
         super(BasicAuthAuthenticationPolicy, self).__init__(check, *args, **kw)
 
 
-# Currently unused, see views/edw_key.py
 def basic_auth_check(username, password, request):
     # We may get called before the context is found and the root set
     root = request.registry[LOCATION_ROOT]
