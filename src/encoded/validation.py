@@ -65,6 +65,8 @@ class ValidationFailure(HTTPUnprocessableEntity):
             assert name is None and description is None and not kw
             self.detail = None
         else:
+            if name is None:
+                name = []
             self.detail = dict(location=location, name=name,
                                description=description, **kw)
 
