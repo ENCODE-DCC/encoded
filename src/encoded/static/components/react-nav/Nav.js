@@ -1,13 +1,21 @@
-"use strict";
 /** @jsx React.DOM */
+'use strict';
+var React = require('react');
+var utils = require('./utils').utils;
+var BootstrapMixin = require('./BootstrapMixin').BootstrapMixin;
+var cloneWithProps = require('react/lib/cloneWithProps');
 
-var React = require("react");
-var classSet = require("react/lib/cx");
-var BootstrapMixin = require("./BootstrapMixin")["default"];
-var utils = require("./utils")["default"];
+var classSet = React.addons.classSet;
 
+var NavItemRender = function (props) {
+    return (
+        <ul className={classSet(props.classes)} id={props.id}>
+            {utils.modifyChildren(props.children, props.renderNavItem)}
+        </ul>
+    );
+};
 
-var Nav = React.createClass({displayName: 'Nav',
+var Nav = module.exports.Nav = React.createClass({
     mixins: [BootstrapMixin],
 
     propTypes: {
@@ -41,13 +49,13 @@ var Nav = React.createClass({displayName: 'Nav',
 
         if (!this.props.navbar && !this.props.dropdown) {
             return this.transferPropsTo(
-                React.DOM.nav(null, 
-                    NavItemRender( {classes:classes, children:this.props.children, renderNavItem:this.renderNavItem, id:this.props.id, topLevel:true} )
-                )
+                <nav>
+                    <NavItemRender classes={classes} children={this.props.children} renderNavItem={this.renderNavItem} id={this.props.id} topLevel={true} />
+                </nav>
             );
         } else {
             return (
-                NavItemRender( {classes:classes, children:this.props.children, renderNavItem:this.renderNavItem, id:this.props.id}  )
+                <NavItemRender classes={classes} children={this.props.children} renderNavItem={this.renderNavItem} id={this.props.id}  />
             );
         }
     },
@@ -56,12 +64,12 @@ var Nav = React.createClass({displayName: 'Nav',
         if (child.props.active) {
             return true;
         }
-        if (this.props.activeKey != null) {
+        if (this.props.activeKey) {
             if (child.props.key === this.props.activeKey) {
                 return true;
             }
         }
-        if (this.props.activeHref != null) {
+        if (this.props.activeHref) {
             if (child.props.href === this.props.activeHref) {
                 return true;
             }
@@ -71,7 +79,7 @@ var Nav = React.createClass({displayName: 'Nav',
     },
 
     renderNavItem: function (child) {
-        return utils.cloneWithProps(
+        return cloneWithProps(
             child,
             {
                 active: this.getChildActiveProp(child),
@@ -84,13 +92,3 @@ var Nav = React.createClass({displayName: 'Nav',
         );
     }
 });
-
-var NavItemRender = function (props) {
-    return (
-        React.DOM.ul( {className:classSet(props.classes), id:props.id}, 
-            utils.modifyChildren(props.children, props.renderNavItem)
-        )
-    );
-};
-
-exports["default"] = Nav;

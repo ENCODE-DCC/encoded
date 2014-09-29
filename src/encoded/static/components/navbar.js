@@ -5,9 +5,9 @@ var url = require('url');
 var mixins = require('./mixins');
 var productionHost = require('./globals').productionHost;
 var _ = require('underscore');
-var Navbar = require('../react-bootstrap/Navbar');
-var Nav = require('../react-bootstrap/Nav');
-var NavItem = require('../react-bootstrap/NavItem');
+var Navbar = require('./react-nav/Navbar').Navbar;
+var Nav = require('./react-nav/Nav').Nav;
+var NavItem = require('./react-nav/NavItem').NavItem;
 
 // Hide data from NavBarLayout
 var NavBar = React.createClass({

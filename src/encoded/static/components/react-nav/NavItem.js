@@ -1,11 +1,11 @@
-"use strict";
 /** @jsx React.DOM */
+'use strict';
+var React = require('react');
+var BootstrapMixin = require('./BootstrapMixin').BootstrapMixin;
 
-var React = require("react");
-var classSet = require("react/lib/cx");
-var BootstrapMixin = require("./BootstrapMixin")["default"];
+var classSet = React.addons.classSet;
 
-var NavItem = React.createClass({displayName: 'NavItem',
+var NavItem = module.exports.NavItem = React.createClass({
     mixins: [BootstrapMixin],
 
     propTypes: {
@@ -35,6 +35,14 @@ var NavItem = React.createClass({displayName: 'NavItem',
         this.context.onDropdownChange(newState ? this._rootNodeID : undefined);
     },
 
+    handleMouseEnter: function(e) {
+        console.log('enter: ' + e);
+    },
+
+    handleMouseLeave: function(e) {
+        console.log('leave: ' + e);
+    },
+
     render: function () {
         var classes = {
             'active': this.props.active,
@@ -46,16 +54,18 @@ var NavItem = React.createClass({displayName: 'NavItem',
         var anchorClass = this.props.dropdown ? 'dropdown-toggle' : '';
 
         return (
-            React.DOM.li( {className:classSet(classes), 'aria-haspopup':this.props.dropdown}, 
-                this.transferPropsTo(
-                React.DOM.a(
-                    {className:anchorClass,
-                    onClick:this.handleClick,
-                    ref:"anchor"}, 
-                    this.props.dropdown ? React.DOM.span(null, this.props.children[0],React.DOM.span( {className:"caret"})) : this.props.children
-                )),
-                this.props.dropdown ? this.props.children.slice(1) : null
-            )
+            <li className={classSet(classes)} aria-haspopup={this.props.dropdown}>
+                {this.transferPropsTo(
+                <a
+                    className={anchorClass}
+                    onClick={this.handleClick}
+                    onMouseEnter={this.handleMouseEnter}
+                    onMouseLeave={this.handleMouseLeave}
+                    ref={this.rootNodeID}>
+                    {this.props.dropdown ? <span>{this.props.children[0]}<span className="caret"></span></span> : this.props.children}
+                </a>)}
+                {this.props.dropdown ? this.props.children.slice(1) : null}
+            </li>
         );
     },
 
@@ -67,5 +77,3 @@ var NavItem = React.createClass({displayName: 'NavItem',
         }
     }
 });
-
-exports["default"] = NavItem;
