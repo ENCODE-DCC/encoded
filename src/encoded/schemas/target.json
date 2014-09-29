@@ -69,6 +69,14 @@
                     "other context"
                 ]
             }
+        },
+        "status": {
+            "default": "proposed",
+            "enum": [
+                "proposed",
+                "current",
+                "deleted",
+                "replaced"]
         }
     },
     "facets": {
