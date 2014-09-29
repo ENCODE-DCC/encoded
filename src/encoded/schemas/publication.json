@@ -75,12 +75,43 @@
             "type": "string",
             "default": "in progress",
             "enum" : [
-                "in progress",
+                "planned",
+                "in preparation",
+                "submitted",
+                "in revision",
+                "in press",
+                "published",
                 "deleted",
-                "replaced",
-                "proposed",
-                "published"
+                "replaced"
             ]
+        },
+        "method_summary": {
+            "title": "Method summary",
+            "description": "An explanation how the methods or results presented in the publication advance the understanding of how regions on the genome interact with each other.",
+            "type": "string"
+        },
+        "urls": {
+            "title": "URL",
+            "description": "External resources with additional information or supplemental files associated with the publication.",
+            "type": "array",
+            "items": {
+                "title": "URLs",
+                "description": "External resources with additional information or supplemental files associated with the publication.",
+                "type": "string",
+                "format": "uri"
+            }
+        },
+        "datasets": {
+            "title": "Dataset",
+            "description": "The datasets referred to by the publication.",
+            "type": "array",
+            "items": {
+                "title": "Datasets",
+                "description": "A datasets referred to by the publication.",
+                "comment": "See dataset.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "dataset"
+            }
         },
         "categories": {
             "title": "Categories",
@@ -99,7 +130,8 @@
             "key publication",
             "pilot phase publication",
             "model organism biology",
-            "tutorial"
+            "tutorial",
+            "ENCODE elements"
         ]
             }      
         },

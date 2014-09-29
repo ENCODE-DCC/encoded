@@ -27,8 +27,10 @@ from urllib import unquote
 from .cache import ManagerLRUCache
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
+import json
 import logging
 import os
+import psutil
 import pyramid.renderers
 import time
 import uuid
@@ -57,10 +59,22 @@ class JSON(pyramid.renderers.JSON):
     def dumps(self, value):
         request = get_current_request()
         default = self._make_default(request)
-        return self.serializer(value, default=default, **self.kw)
+        return json.dumps(value, default=default, **self.kw)
 
 
-json_renderer = JSON()
+class JSONResult(object):
+    def __init__(self):
+        self.app_iter = []
+        self.write = self.app_iter.append
+
+    @classmethod
+    def serializer(cls, value, **kw):
+        fp = cls()
+        json.dump(value, fp, **kw)
+        return fp.app_iter
+
+
+json_renderer = JSON(serializer=JSONResult.serializer)
 
 
 def uuid_adapter(obj, request):
@@ -117,12 +131,10 @@ def embed(request, path, as_user=False):
     if as_user:
         return _embed(request, path, as_user)
     result = embed_cache.get(path, None)
-    if result is not None:
-        return deepcopy(result)
-    result = _embed(request, path, as_user)
-    if not as_user:
-        embed_cache[path] = deepcopy(result)
-    return result
+    if result is None:
+        result = _embed(request, path, as_user)
+        embed_cache[path] = result
+    return deepcopy(result)
 
 
 def _embed(request, path, as_user=False):
@@ -316,12 +328,27 @@ def after_transform(request, response):
     request._stats_html_attribute = True
 
 
+# Rendering huge pages can make the node process memory usage explode.
+# Ideally we would let the OS handle this with `ulimit` or by calling
+# `resource.setrlimit()` from  a `subprocess.Popen(preexec_fn=...)`.
+# Unfortunately Linux does not enforce RLIMIT_RSS.
+# An alternative would be to use cgroups, but that makes per-process limits
+# tricky to enforce (we would need to create one cgroup per process.)
+# So we just manually check the resource usage after each transform.
+
+rss_limit = 256 * (1024 ** 2)  # MB
+
+
+def reload_process(process):
+    return psutil.Process(process.pid).memory_info().rss > rss_limit
+
 node_env = os.environ.copy()
 node_env['NODE_PATH'] = ''
 
 page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
+    reload_process=reload_process,
     args=['node', resource_filename(__name__, 'static/build/renderer.js')],
     env=node_env,
 )

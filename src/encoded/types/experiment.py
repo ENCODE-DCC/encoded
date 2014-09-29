@@ -62,13 +62,23 @@ class Experiment(Dataset):
                 ),
                 '$condition': 'biosample_term_id',
             },
-            'synonyms': {
+            'biosample_synonyms': {
                 '$value': (
                     lambda registry, biosample_term_id:
                         registry['ontology'][biosample_term_id]['synonyms']
                         if biosample_term_id in registry['ontology'] else []
                 ),
                 '$condition': 'biosample_term_id',
+            },
+            'assay_synonyms': {
+                '$value': (
+                    lambda registry, assay_term_id:
+                        # Add synonym and names since using differnt names for facet display
+                        registry['ontology'][assay_term_id]['synonyms'] +
+                        [registry['ontology'][assay_term_id]['name']]
+                        if assay_term_id in registry['ontology'] else []
+                ),
+                '$condition': 'assay_term_id',
             },
             'month_released': {
                 '$value': lambda date_released: datetime.datetime.strptime(
@@ -95,6 +105,7 @@ class Experiment(Dataset):
             'replicates.library.biosample.treatments',
             'replicates.library.biosample.donor.organism',
             'replicates.library.biosample.treatments',
+            'replicates.library.spikeins_used',
             'replicates.library.treatments',
             'replicates.platform',
             'possible_controls',

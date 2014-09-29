@@ -196,6 +196,7 @@
                 {
                     "enum": [
                         "CNV",
+                        "HMM",
                         "alignments",
                         "clusters",
                         "contigs",
@@ -247,7 +248,6 @@
                         "GeneGencV10",
                         "GeneGencV3c",
                         "GeneGencV7",
-                        "HMM",
                         "Junctions",
                         "Matrix",
                         "minus signal",

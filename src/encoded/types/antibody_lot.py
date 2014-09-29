@@ -25,10 +25,11 @@ def lot_reviews(root, characterizations, targets):
         is_control = False
         for t in targets:
             target = find_resource(root, t)
-            if 'control' in target.upgrade_properties(finalize=False)['investigated_as']:
+            target_properties = target.upgrade_properties(finalize=False)
+            if 'control' in target_properties['investigated_as']:
                 is_control = True
 
-            organism = find_resource(root, target.properties['organism'])
+            organism = find_resource(root, target_properties['organism'])
             organisms.add(resource_path(organism, ''))
 
         return [{
@@ -50,33 +51,35 @@ def lot_reviews(root, characterizations, targets):
 
     for characterization_path in characterizations:
         characterization = find_resource(root, characterization_path)
-        target = find_resource(root, characterization.properties['target'])
-        organism = find_resource(root, target.properties['organism'])
+        characterization_properties = characterization.upgrade_properties(finalize=False)
+        target = find_resource(root, characterization_properties['target'])
+        target_properties = target.upgrade_properties(finalize=False)
+        organism = find_resource(root, target_properties['organism'])
 
         review_targets.add(resource_path(target, ''))
 
         # All characterization targets should be a histone_mod_target or all not.
         # (Checked by an audit.)
-        if 'histone modification' in target.upgrade_properties(finalize=False)['investigated_as']:
+        if 'histone modification' in target_properties['investigated_as']:
             histone_mod_target = True
 
         if resource_path(organism, '') not in organisms:
             organisms.add(resource_path(organism, ''))
 
-        if characterization.properties['status'] == 'not submitted for review by lab':
+        if characterization_properties['status'] == 'not submitted for review by lab':
             lab_not_reviewed_chars += 1
             total_characterizations += 1
-        elif characterization.properties['status'] == 'not reviewed':
+        elif characterization_properties['status'] == 'not reviewed':
             not_reviewed_chars += 1
             total_characterizations += 1
-        elif characterization.properties['status'] == 'in progress':
+        elif characterization_properties['status'] == 'in progress':
             in_progress_chars += 1
             total_characterizations += 1
         else:
             total_characterizations += 1
 
         # Split into primary and secondary to treat separately
-        if 'primary_characterization_method' in characterization.properties:
+        if 'primary_characterization_method' in characterization_properties:
             primary_chars.append(characterization)
         else:
             secondary_chars.append(characterization)
@@ -117,12 +120,13 @@ def lot_reviews(root, characterizations, targets):
     pending_secondary = False
 
     for secondary in secondary_chars:
-        if secondary.properties['status'] == 'compliant':
+        secondary_properties = secondary.upgrade_properties(finalize=False)
+        if secondary_properties['status'] == 'compliant':
             compliant_secondary = True
             break
-        elif secondary.properties['status'] == 'pending dcc review':
+        elif secondary_properties['status'] == 'pending dcc review':
             pending_secondary = True
-        elif secondary.properties['status'] == 'not compliant':
+        elif secondary_properties['status'] == 'not compliant':
             not_compliant_secondary = True
 
     # Now check the primaries and update their status accordingly
@@ -130,10 +134,11 @@ def lot_reviews(root, characterizations, targets):
     histone_organisms = set()
 
     for primary in primary_chars:
-        if primary.properties['status'] in ['not reviewed', 'not submitted for review by lab']:
+        primary_properties = primary.upgrade_properties(finalize=False)
+        if primary_properties['status'] in ['not reviewed', 'not submitted for review by lab']:
             continue
 
-        for lane_review in primary.properties.get('characterization_reviews', []):
+        for lane_review in primary_properties.get('characterization_reviews', []):
             # Get the organism information from the lane, not from the target since there are lanes
             lane_organism = find_resource(root, lane_review['organism'])
 
@@ -143,7 +148,7 @@ def lot_reviews(root, characterizations, targets):
                 'organisms': [resource_path(lane_organism, '')],
                 'targets':
                     sorted(review_targets) if histone_mod_target
-                    else [resource_path(find_resource(root, primary.properties['target']), '')],
+                    else [resource_path(find_resource(root, primary_properties['target']), '')],
                 'status': 'awaiting lab characterization'
             }
 

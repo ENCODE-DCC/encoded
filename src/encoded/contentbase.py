@@ -3,6 +3,7 @@ import logging
 import venusian
 from abc import ABCMeta
 from collections import Mapping
+from copy import deepcopy
 from itertools import islice
 from pyramid.events import (
     ContextFound,
@@ -297,6 +298,8 @@ class Root(object):
                 uuid = UUID(uuid)
             except ValueError:
                 return default
+        elif not isinstance(uuid, UUID):
+            raise TypeError(uuid)
 
         cached = self.item_cache.get(uuid)
         if cached is not None:
@@ -551,14 +554,16 @@ class Item(object):
                 for path in paths:
                     path = path.split('.')
                     last = path[-1]
-                    obj_props = self.properties
+                    obj = self
+                    obj_props = obj.upgrade_properties(finalize=False)
                     for n in path[:-1]:
                         if n not in obj_props:
                             break
-                        obj_props = root.get_by_uuid(obj_props[n]).properties
+                        obj = root.get_by_uuid(obj_props[n])
+                        obj_props = obj.upgrade_properties(finalize=False)
                     else:
                         if last in obj_props:
-                            ns[name] = obj_props[last]
+                            ns[name] = deepcopy(obj_props[last])
                             break
 
         return ns
@@ -664,7 +669,7 @@ class Item(object):
 
         if len(keys) != len(_keys):
             msg = "Duplicate keys: %r" % _keys
-            raise ValidationFailure('body', None, msg)
+            raise ValidationFailure('body', [], msg)
 
         existing = {
             (key.name, key.value)
@@ -706,7 +711,7 @@ class Item(object):
         rels = set(_rels)
         if len(rels) != len(_rels):
             msg = "Duplicate links: %r" % _rels
-            raise ValidationFailure('body', None, msg)
+            raise ValidationFailure('body', [], msg)
 
         existing = {
             (link.rel, link.target_rid)
