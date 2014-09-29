@@ -351,7 +351,7 @@ var Layout = module.exports.Layout = React.createClass({
 
     componentDidMount: function() {
         this.$ = require('jquery');
-        this.$('<i id="drag-marker"></i>').appendTo(this.getDOMNode());
+        this.$('<canvas id="drag-marker" height="1" width="1"></canvas>').appendTo(this.getDOMNode());
     },
 
     render: function() {
