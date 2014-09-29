@@ -187,6 +187,11 @@ def security_tween_factory(handler, registry):
                 detail = 'X-If-Match-User does not match'
                 raise HTTPPreconditionFailed(detail)
 
+        if request.authorization is not None:
+            login = authenticated_userid(request)
+            if login is None:
+                raise HTTPUnauthorized()
+
         if request.method in ('GET', 'HEAD'):
             return handler(request)
 
@@ -208,8 +213,6 @@ def security_tween_factory(handler, registry):
             namespace, userid = login.split('.', 1)
             if namespace != 'mailto':
                 return handler(request)
-        if request.authorization is not None:
-            raise HTTPUnauthorized()
         raise CSRFTokenError('Missing CSRF token')
 
     return security_tween
