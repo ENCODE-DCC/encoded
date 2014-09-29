@@ -41,20 +41,51 @@ var Panel = module.exports.Panel = React.createClass({
                         : null}
 
                         <dl className="key-value-left">
-                            <div>
-                                {context.references && context.references.length ?
-                                    <div>
-                                        <dt>References</dt>
-                                        <dd><DbxrefList values={context.references} className="multi-value" /></dd>
-                                    </div>
-                                : null}
-                                {context.data_used ?
-                                    <div>
-                                        <dt>Consortium data referenced in this publication</dt>
-                                        <dd>{context.data_used}</dd>
-                                    </div>
-                                : null}
-                            </div>
+                            {context.data_used ?
+                                <div data-test="dataused">
+                                    <dt>Consortium data referenced in this publication</dt>
+                                    <dd>{context.data_used}</dd>
+                                </div>
+                            : null}
+                            {context.method_summary ?
+                                <div data-test="methodsummary">
+                                    <dt>Method summary</dt>
+                                    <dd>{context.method_summary}</dd>
+                                </div>
+                            : null}
+                            {context.urls && context.urls.length ?
+                                <div data-test="urls">
+                                    <dt>Supplemental data</dt>
+                                    <dd>
+                                        <ul className="multi-value">
+                                            {context.urls.map(function(url){
+                                                return <li><a href={url}>{url}</a></li>;
+                                            })}
+                                        </ul>
+                                    </dd>
+                                </div>
+                            : null}
+                            {context.datasets && context.datasets.length ?
+                                <div data-test="datasets">
+                                    <dt>Datasets</dt>
+                                    <dd>
+                                        {context.datasets.map(function(dataset, i) {
+                                            return (
+                                                <span key={i}>
+                                                    {i > 0 ? ', ' : ''}
+                                                    <a href={dataset['@id']}>{dataset.accession}</a>
+                                                </span>
+                                            );
+                                        })}
+                                    </dd>
+                                </div>
+                            : null}
+                            {context.references && context.references.length ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd><DbxrefList values={context.references} className="multi-value" /></dd>
+                                </div>
+                            : null}
                         </dl>
                     </div>
                 : null}

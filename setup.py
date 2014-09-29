@@ -16,6 +16,7 @@ requires = [
     'jsonschema',
     'loremipsum',
     'passlib',
+    'psutil',
     'pyramid',
     'pyramid_multiauth',
     'pyramid_tm',
