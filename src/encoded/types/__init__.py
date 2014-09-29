@@ -188,6 +188,8 @@ class Publication(Collection):
             },
         }
 
+        embedded = ['datasets']
+
         keys = ALIAS_KEYS + [
             {'name': '{item_type}:title', 'value': '{title}', '$templated': True},
             {

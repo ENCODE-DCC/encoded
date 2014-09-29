@@ -63,6 +63,26 @@ dd.h3, dd.h4 {
     }
 }
 
+// Left-justified key-value
+.key-value-left {
+    @extend .key-value;
+
+    dt, dd {
+        width: auto;
+        padding-top: 0 !important;
+    }
+
+    dt {
+        float: none !important;
+        display: block !important;
+        text-align: left !important;
+        margin-bottom: 0px !important;
+    }
+
+    dd {
+        margin-left: 0 !important;
+    }
+}
 
 // Left-justified key-value
 .key-value-left {
