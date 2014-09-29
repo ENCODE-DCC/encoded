@@ -26,6 +26,27 @@ border: 1px solid #3276ca;
     overflow: hidden;
 }
 
+.panel-embedded {
+    @extend .panel;
+    margin: 0;
+    @include border-radius(0);
+    @include box-shadow(none);
+    border-bottom: none;
+
+    &:first-child {
+        margin-top: 10px;
+        @include border-top-left-radius($border-radius-base);
+        @include border-top-right-radius($border-radius-base);
+    }
+
+    &:last-child {
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ced5dc;
+        @include border-bottom-left-radius($border-radius-base);
+        @include border-bottom-right-radius($border-radius-base);
+    }
+}
+
 
 .panel h3, .panel h4 {color: #0A253D;}
 

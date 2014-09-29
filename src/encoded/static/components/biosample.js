@@ -698,9 +698,8 @@ var Construct = module.exports.Construct = React.createClass({
 
                 {embeddedDocs && Object.keys(construct_documents).length ?
                     <div>
-                        <hr />
                         <h4>Construct documents</h4>
-                        {construct_documents}
+                        <div>{construct_documents}</div>
                     </div>
                 : null}
             </div>
@@ -759,7 +758,7 @@ var Document = module.exports.Document = React.createClass({
                 <em>Document not available</em>
             );
         }
-        var panelClass = 'view-item view-detail status-none' + (this.props.embeddedDocs ? '' : ' panel');
+        var panelClass = 'view-item view-detail status-none' + (this.props.embeddedDocs ? ' panel-embedded' : ' panel');
 
         return (
             <section className={globals.itemClass(context, panelClass)}>
