@@ -24,7 +24,7 @@ var LAYOUT_CONTEXT = {
     dst_pos: React.PropTypes.array,
     dst_quad: React.PropTypes.string,
     blocks: React.PropTypes.object
-}
+};
 
 
 var BlockEditModal = React.createClass({
@@ -39,7 +39,7 @@ var BlockEditModal = React.createClass({
         var blocktype = globals.blocks.lookup(this.props.value);
         var schema = blocktype.schema;
         if (schema !== undefined) {
-            var schema = this._extendedSchemaCache[blocktype.label];
+            schema = this._extendedSchemaCache[blocktype.label];
             if (schema === undefined) {
                 // add CSS class property
                 var schema_props = _.values(blocktype.schema.children);
@@ -197,7 +197,7 @@ var BlockAddButton = React.createClass({
         }
         this.context.dragStart(e, block);
     }
-})
+});
 
 
 // "sticky" toolbar for editing layout
@@ -208,7 +208,7 @@ var LayoutToolbar = React.createClass({
     },
 
     getInitialState: function() {
-        return {fixed: false}
+        return {fixed: false};
     },
 
     componentDidMount: function() {
@@ -298,7 +298,7 @@ var Row = React.createClass({
             <div className={cx(classes)} onDragOver={this.dragOver}>
                 {cols.map((col, j) => <Col value={col} className={col.className || col_class} pos={this.props.pos.concat([j])} />)}
             </div>
-        )
+        );
     },
 
     dragOver: function(e) { this.context.dragOver(e, this); },
@@ -351,7 +351,7 @@ var Layout = module.exports.Layout = React.createClass({
 
     componentDidMount: function() {
         this.$ = require('jquery');
-        this.$('<i id="drag-marker"></i>').appendTo(this.getDOMNode());
+        this.$('<canvas id="drag-marker" height="1" width="1"></canvas>').appendTo(this.getDOMNode());
     },
 
     render: function() {
@@ -371,6 +371,9 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     dragStart: function(e, block, pos) {
+        if (!this.props.editable) {
+            return;
+        }
         if (this.$(e.target).closest('[contenteditable]').length) {
             // cancel drag to avoid interfering with dragging text
             return;
@@ -430,24 +433,25 @@ var Layout = module.exports.Layout = React.createClass({
             target: target,
             container: path[path.length - 2],
             target_idx: target_idx,
-        }
+        };
     },
 
     dragEnd: function(e) {
-        if (this.state.dst_pos === undefined) {
+        var dst_pos = this.state.dst_pos;
+        if (dst_pos === undefined || dst_pos === null) {
             return;
         } else {
             e.preventDefault();
         }
         var src_pos = this.state.src_pos;
-        var dst_pos = this.state.dst_pos;
         if (!_.isEqual(src_pos, dst_pos)) {
+            var block;
             if (src_pos) {
                 // cut block from current position
                 var src = this._traverse(src_pos);
-                var block = src.container.obj.blocks.splice(src.target_idx, 1, 'CUT')[0];
+                block = src.container.obj.blocks.splice(src.target_idx, 1, 'CUT')[0];
             } else {
-                var block = this.dragged_block;
+                block = this.dragged_block;
                 if (typeof block == 'object') {
                     // new block; give it an id and store it
                     block['@id'] = '#block' + this.state.nextBlockNum;
@@ -462,16 +466,17 @@ var Layout = module.exports.Layout = React.createClass({
             var new_row = {cols: [new_col]};
             var quad = this.state.dst_quad;
             var dest = this._traverse(dst_pos);
+            var row;
             if (dest.target.type == 'block') {
                 if (quad == 'top') { // add block above in same col
                     dest.container.obj.blocks.splice(dest.target_idx, 0, block);
                 } else if (quad == 'bottom') { // add block below in same col
                     dest.container.obj.blocks.splice(dest.target_idx + 1, 0, block);
                 } else if (quad == 'left') { // split block into a new row
-                    var row = {cols: [new_col, {blocks: [dest.container.obj.blocks[dest.target_idx]]}]};
+                    row = {cols: [new_col, {blocks: [dest.container.obj.blocks[dest.target_idx]]}]};
                     dest.container.obj.blocks.splice(dest.target_idx, 1, row);
                 } else if (quad == 'right') { // split block into a new row
-                    var row = {cols: [{blocks: [dest.container.obj.blocks[dest.target_idx]]}, new_col]};
+                    row = {cols: [{blocks: [dest.container.obj.blocks[dest.target_idx]]}, new_col]};
                     dest.container.obj.blocks.splice(dest.target_idx, 1, row);
                 }
             } else if (dest.target.type == 'col') {
@@ -525,19 +530,20 @@ var Layout = module.exports.Layout = React.createClass({
         var w = $target.width();
         var sw_ne = h * x / w;
         var nw_se = h * (1 - x / w);
+        var quad;
         if (y >= sw_ne && y >= nw_se) {
-            var quad = 'bottom';
+            quad = 'bottom';
         } else if (y >= sw_ne && y < nw_se) {
-            var quad = 'left';
+            quad = 'left';
         } else if (y < sw_ne && y >= nw_se) {
-            var quad = 'right';
+            quad = 'right';
         } else {
-            var quad = 'top';
+            quad = 'top';
         }
 
         var pos = target.props.pos;
-        if (pos.length == 0) {
-            if (this.state.value.rows.length == 0) {
+        if (pos.length === 0) {
+            if (this.state.value.rows.length === 0) {
                 quad = 'bottom'; // first block in layout; always show indicator on bottom
             } else {
                 return;

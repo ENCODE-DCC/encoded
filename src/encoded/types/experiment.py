@@ -105,6 +105,7 @@ class Experiment(Dataset):
             'replicates.library.biosample.treatments',
             'replicates.library.biosample.donor.organism',
             'replicates.library.biosample.treatments',
+            'replicates.library.spikeins_used',
             'replicates.library.treatments',
             'replicates.platform',
             'possible_controls',

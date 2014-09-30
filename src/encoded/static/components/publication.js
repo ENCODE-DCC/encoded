@@ -20,6 +20,24 @@ var Citation = module.exports.Citation = React.createClass({
 });
 
 
+var SupplementaryData = React.createClass({
+    render: function() {
+        var data = this.props.data;
+        return (
+            <div className="publication-subsection" key={this.props.key}>
+                {data.element_type ? <span><strong>Available data: </strong>{data.element_type}</span> : null}
+                {data.file_format ? <span>{data.element_type ? ' ' : ''}{<span>(<strong>File format: </strong>{data.file_format})</span>}</span> : null}
+                {data.url ? <span>{data.element_type || data.file_format ? ': ' : ''}<a href={data.url}>{data.url}</a></span> : null}
+
+                {data.method_summary ?
+                    <div><strong>Method summary: </strong>{data.method_summary}</div>
+                : null}
+            </div>
+        );
+    }
+});
+
+
 var Panel = module.exports.Panel = React.createClass({
     render: function() {
         var context = this.props.context;
@@ -31,30 +49,55 @@ var Panel = module.exports.Panel = React.createClass({
                     {this.transferPropsTo(<Citation />)}
                 </div>
 
-                {context.abstract || context.data_used || context.references.length ?
+                {context.abstract || context.data_used || context.references.length ||
+                    (context.datasets && context.datasets.length) || (context.supplementary_data && context.supplementary_data.length) ?
                     <div className="view-detail panel">
                         {context.abstract ?
-                            <div className="abstract">
+                            <div className="publication-section" data-test="abstract">
                                 <h2>Abstract</h2>
                                 <p>{context.abstract}</p>
                             </div>
                         : null}
 
-                        <dl className="key-value-left">
-                            <div>
-                                {context.references && context.references.length ?
-                                    <div>
-                                        <dt>References</dt>
-                                        <dd><DbxrefList values={context.references} className="multi-value" /></dd>
-                                    </div>
-                                : null}
-                                {context.data_used ?
-                                    <div>
-                                        <dt>Consortium data referenced in this publication</dt>
-                                        <dd>{context.data_used}</dd>
-                                    </div>
-                                : null}
+                        {context.supplementary_data && context.supplementary_data.length ?
+                            <div className="publication-section" data-test="supplementarydata">
+                                <h2>Supplementary data</h2>
+                                {context.supplementary_data.map(function(data, i) {
+                                    return <SupplementaryData key={i} data={data} />;
+                                })}
                             </div>
+                        : null}
+
+                        <dl className="key-value-left">
+                            {context.data_used ?
+                                <div data-test="dataused">
+                                    <dt>Consortium data referenced in this publication</dt>
+                                    <dd>{context.data_used}</dd>
+                                </div>
+                            : null}
+
+                            {context.datasets && context.datasets.length ?
+                                <div data-test="datasets">
+                                    <dt>Datasets</dt>
+                                    <dd>
+                                        {context.datasets.map(function(dataset, i) {
+                                            return (
+                                                <span key={i}>
+                                                    {i > 0 ? ', ' : ''}
+                                                    <a href={dataset['@id']}>{dataset.accession}</a>
+                                                </span>
+                                            );
+                                        })}
+                                    </dd>
+                                </div>
+                            : null}
+
+                            {context.references && context.references.length ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd><DbxrefList values={context.references} className="multi-value" /></dd>
+                                </div>
+                            : null}
                         </dl>
                     </div>
                 : null}

@@ -203,8 +203,11 @@ format_checker = FormatChecker()
 
 
 def load_schema(filename):
-    schema = json.load(resource_stream(__name__, 'schemas/' + filename),
-                       object_pairs_hook=collections.OrderedDict)
+    if isinstance(filename, dict):
+        schema = filename
+    else:
+        schema = json.load(resource_stream(__name__, 'schemas/' + filename),
+                           object_pairs_hook=collections.OrderedDict)
     resolver = RefResolver.from_schema(schema, handlers={'': local_handler})
     schema = mixinProperties(schema, resolver)
 

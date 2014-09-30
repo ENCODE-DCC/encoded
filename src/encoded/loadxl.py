@@ -21,6 +21,7 @@ ORDER = [
     'construct_characterization',
     'rnai',
     'rnai_characterization',
+    'talen',
     'mouse_donor',
     'fly_donor',
     'worm_donor',
