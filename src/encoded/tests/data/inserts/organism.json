@@ -130,5 +130,11 @@
         "taxon_id": "11309",
         "scientific_name": "influenzavirus",
         "uuid": "7349d69e-04f3-4650-b2c8-963cce2341d6"
+    },
+    {
+        "name": "bacteriophage-t7",
+        "taxon_id": "10760",
+        "scientific_name": "enterobacteria phage t7",
+        "uuid": "e426f5b3-e577-4afb-8bb5-ce57a6d4d050"
     }
 ]

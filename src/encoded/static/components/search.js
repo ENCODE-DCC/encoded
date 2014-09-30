@@ -609,7 +609,7 @@ var cx = React.addons.classSet;
                     <input ref="input" type="search" className="form-control search-query"
                            placeholder="Enter search term(s)"
                            defaultValue={this.getValue(this.props)}
-                           onChange={this.onChange} onBlur={this.onBlur} onKeyPress={this.onKeyPress} />
+                           onChange={this.onChange} onBlur={this.onBlur} onKeyDown={this.onKeyDown} />
                 </div>
             );
         },
@@ -630,7 +630,7 @@ var cx = React.addons.classSet;
             this.props.onChange(search);
         },
 
-        onKeyPress: function(e) {
+        onKeyDown: function(e) {
             if (e.keyCode == 13) {
                 this.onBlur(e);
                 return false;                

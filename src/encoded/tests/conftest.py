@@ -28,8 +28,6 @@ _app_settings = {
     'allow.traverse': 'Everyone',
     'allow.search': 'Everyone',
     'allow.ALL_PERMISSIONS': 'group.admin',
-    'allow.edw_key_create': 'accesskey.edw',
-    'allow.edw_key_update': 'accesskey.edw',
     'load_test_only': True,
     'load_sample_data': False,
     'testing': True,

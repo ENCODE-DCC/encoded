@@ -669,7 +669,7 @@ class Item(object):
 
         if len(keys) != len(_keys):
             msg = "Duplicate keys: %r" % _keys
-            raise ValidationFailure('body', None, msg)
+            raise ValidationFailure('body', [], msg)
 
         existing = {
             (key.name, key.value)
@@ -711,7 +711,7 @@ class Item(object):
         rels = set(_rels)
         if len(rels) != len(_rels):
             msg = "Duplicate links: %r" % _rels
-            raise ValidationFailure('body', None, msg)
+            raise ValidationFailure('body', [], msg)
 
         existing = {
             (link.rel, link.target_rid)
