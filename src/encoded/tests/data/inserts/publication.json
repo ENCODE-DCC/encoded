@@ -154,6 +154,7 @@
             "integrative analysis",
             "database"
         ],
+        "datasets": ["ENCSR000AJW", "ENCSR825ZJX"],
         "date_published": "2012 Jan",
         "issue": "Database issue",
         "journal": "Nucleic acids research",

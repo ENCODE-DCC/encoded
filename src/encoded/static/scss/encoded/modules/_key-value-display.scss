@@ -81,6 +81,10 @@ dd.h3, dd.h4 {
 
     dd {
         margin-left: 0 !important;
+
+        &.key-value-left-indent {
+            margin-left: 20px !important;
+        }
     }
 }
 
