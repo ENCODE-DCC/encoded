@@ -48,7 +48,7 @@
         },
        "constructs": {
             "title": "DNA constructs",
-            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi or TALEN).",
             "type": "array",
             "default": [],
             "items": {
@@ -70,6 +70,19 @@
                 "comment": "See rnai.json for available identifiers.",
                 "type":  "string",
                 "linkTo": "rnai"
+            }
+        },
+        "talens": {
+            "title": "TALEN constructs",
+            "description": "TALEN constructs used to modify the biosample",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "TALEN",
+                "description": "TALEN used to modify the biosample",
+                "comment": "See talen.json for valid identifiers.",
+                "type": "string",
+                "linkTo": "talen"
             }
         },
         "treatments": {
