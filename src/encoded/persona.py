@@ -7,7 +7,6 @@ from pyramid.httpexceptions import (
 )
 from pyramid.security import (
     NO_PERMISSION_REQUIRED,
-    authenticated_userid,
     remember,
     forget,
 )
@@ -104,7 +103,7 @@ class PersonaAuthenticationPolicy(CallbackAuthenticationPolicy):
              permission=NO_PERMISSION_REQUIRED)
 def login(request):
     """View to check the persona assertion and remember the user"""
-    login = authenticated_userid(request)
+    login = request.authenticated_userid
     if login is None:
         namespace = userid = None
     else:

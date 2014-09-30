@@ -17,13 +17,9 @@ def includeme(config):
 
 @view_config(name='testing-user', request_method='GET')
 def user(request):
-    from pyramid.security import (
-        authenticated_userid,
-        effective_principals,
-    )
     return {
-        'authenticated_userid': authenticated_userid(request),
-        'effective_principals': effective_principals(request),
+        'authenticated_userid': request.authenticated_userid,
+        'effective_principals': request.effective_principals,
     }
 
 
