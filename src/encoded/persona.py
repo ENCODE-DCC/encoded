@@ -33,7 +33,7 @@ def includeme(config):
     config.scan(__name__)
     settings = config.registry.settings
 
-    if not 'persona.audiences' in settings:
+    if 'persona.audiences' not in settings:
         raise ConfigurationError(AUDIENCES_MESSAGE)
     # Construct a browserid Verifier using the configured audience.
     # This will pre-compile some regexes to reduce per-request overhead.
@@ -41,6 +41,9 @@ def includeme(config):
                                                         'browserid.RemoteVerifier'))
     audiences = aslist(settings['persona.audiences'])
     config.registry['persona.verifier'] = verifier_factory(audiences)
+    config.add_route('login', 'login')
+    config.add_route('logout', 'logout')
+    config.add_route('session', 'session')
 
 
 class LoginDenied(HTTPForbidden):
@@ -51,12 +54,11 @@ class PersonaAuthenticationPolicy(CallbackAuthenticationPolicy):
     """
     Checks assertion during authentication so login can construct user session.
     """
-    view_name = 'login'
+    login_path = '/login'
     method = 'POST'
 
     def unauthenticated_userid(self, request):
-        if request.method != self.method or \
-                getattr(request, 'view_name', None) != self.view_name:
+        if request.method != self.method or request.path != self.login_path:
             return None
 
         cached = getattr(request, '_persona_authenticated', _marker)
@@ -98,8 +100,8 @@ class PersonaAuthenticationPolicy(CallbackAuthenticationPolicy):
 # Unfortunately, X-Requested-With is not sufficient.
 # http://lists.webappsec.org/pipermail/websecurity_lists.webappsec.org/2011-February/007533.html
 # Checking the CSRF token in middleware is easier
-@view_config(name='login', physical_path='/', request_method='POST',
-             subpath_segments=0, permission=NO_PERMISSION_REQUIRED)
+@view_config(route_name='login', request_method='POST',
+             permission=NO_PERMISSION_REQUIRED)
 def login(request):
     """View to check the persona assertion and remember the user"""
     login = authenticated_userid(request)
@@ -119,8 +121,8 @@ def login(request):
     return request.session
 
 
-@view_config(name='logout', physical_path='/',
-             subpath_segments=0, permission=NO_PERMISSION_REQUIRED, http_cache=0)
+@view_config(route_name='logout',
+             permission=NO_PERMISSION_REQUIRED, http_cache=0)
 def logout(request):
     """View to forget the user"""
     request.session.get_csrf_token()
@@ -131,9 +133,9 @@ def logout(request):
     return request.session
 
 
-@view_config(name='session', physical_path='/', request_method='GET',
-             subpath_segments=0, permission=NO_PERMISSION_REQUIRED)
-def session(context, request):
+@view_config(route_name='session', request_method='GET',
+             permission=NO_PERMISSION_REQUIRED)
+def session(request):
     """ Possibly refresh the user's session cookie
     """
     request.session.get_csrf_token()
