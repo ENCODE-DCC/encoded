@@ -1,6 +1,9 @@
 from ..contentbase import location
 from ..renderers import embed
-from ..schema_utils import load_schema
+from ..schema_utils import (
+    load_schema,
+    schema_validator,
+)
 from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
@@ -126,7 +129,7 @@ def get_upload(context, request):
 
 
 @view_config(name='upload', context=File.Item, request_method='POST',
-             permission='edit')
+             permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
     properties = context.upgrade_properties(finalize=False)
     if properties['status'] != 'uploading':
