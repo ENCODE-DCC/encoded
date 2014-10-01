@@ -14,6 +14,8 @@ from pyramid.httpexceptions import (
     HTTPUnsupportedMediaType,
 )
 from pyramid.renderers import render_to_response
+from pyramid.security import forget
+from pyramid.settings import asbool
 from pyramid.threadlocal import (
     get_current_request,
     manager,
@@ -186,10 +188,12 @@ def security_tween_factory(handler, registry):
                 detail = 'X-If-Match-User does not match'
                 raise HTTPPreconditionFailed(detail)
 
-        if request.authorization is not None:
+        # wget may only send credentials following a challenge response.
+        auth_challenge = asbool(request.headers.get('X-Auth-Challenge', False))
+        if auth_challenge or request.authorization is not None:
             login = request.authenticated_userid
             if login is None:
-                raise HTTPUnauthorized()
+                raise HTTPUnauthorized(headerlist=forget(request))
 
         if request.method in ('GET', 'HEAD'):
             return handler(request)

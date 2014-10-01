@@ -63,7 +63,7 @@ class Dataset(Collection):
             ),
             'hub': {
                 '$value': '{item_uri}@@hub/hub.txt',
-                '$condition': 'assembly',
+                '$condition': assembly,
             },
             'assembly': {
                 '$value': assembly,
