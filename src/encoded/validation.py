@@ -97,6 +97,7 @@ def http_error(exc, request):
     if 'response' in vars(request):
         del request.response
     request.response.status = exc.status
+    request.response.headerlist.extend(exc.headerlist)
     result = {
         '@type': [type(exc).__name__, 'error'],
         'status': 'error',

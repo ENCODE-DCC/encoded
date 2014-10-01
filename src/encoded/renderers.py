@@ -14,6 +14,7 @@ from pyramid.httpexceptions import (
     HTTPUnsupportedMediaType,
 )
 from pyramid.renderers import render_to_response
+from pyramid.security import forget
 from pyramid.settings import asbool
 from pyramid.threadlocal import (
     get_current_request,
@@ -192,7 +193,7 @@ def security_tween_factory(handler, registry):
         if auth_challenge or request.authorization is not None:
             login = request.authenticated_userid
             if login is None:
-                raise HTTPUnauthorized()
+                raise HTTPUnauthorized(headerlist=forget(request))
 
         if request.method in ('GET', 'HEAD'):
             return handler(request)
