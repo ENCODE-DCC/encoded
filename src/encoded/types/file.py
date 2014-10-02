@@ -24,7 +24,7 @@ import time
 
 
 def show_upload_credentials(request=None, context=None, status=None):
-    if request is None or status != 'uploading':
+    if request is None or status not in ('uploading', 'upload failed'):
         return False
     return request.has_permission('edit', context)
 
@@ -132,7 +132,7 @@ def get_upload(context, request):
              permission='edit', validators=[schema_validator({"type": "object"})])
 def post_upload(context, request):
     properties = context.upgrade_properties(finalize=False)
-    if properties['status'] != 'uploading':
+    if properties['status'] not in ('uploading', 'upload failed'):
         raise HTTPForbidden('status must be "uploading" to issue new credentials')
 
     external = context.propsheets.get('external', {})
