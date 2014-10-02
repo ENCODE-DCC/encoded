@@ -34,8 +34,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         var documents = {};
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;
-            replicate.library.documents.forEach(function (doc) {
-                documents[doc['@id']] = Panel({context: doc});
+            replicate.library.documents.forEach(function (doc, i) {
+                documents[doc['@id']] = Panel({context: doc, key: i + 1});
             });
         });
 
@@ -89,8 +89,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Adding experiment specific documents
-        context.documents.forEach(function (document) {
-            documents[document['@id']] = Panel({context: document});
+        context.documents.forEach(function (document, i) {
+            documents[document['@id']] = Panel({context: document, key: i + 1});
         });
         var antibodies = {};
         replicates.forEach(function (replicate) {

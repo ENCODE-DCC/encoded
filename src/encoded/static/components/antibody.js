@@ -234,7 +234,7 @@ var StandardsDocuments = React.createClass({
 
 var Characterization = module.exports.Characterization = React.createClass({
     getInitialState: function() {
-        return {panelOpen: false, panelFixed: false};
+        return {panelOpen: false};
     },
 
     // Clicking the Lab bar inverts visible state of the popover
@@ -247,23 +247,13 @@ var Characterization = module.exports.Characterization = React.createClass({
         this.setState({panelOpen: !this.state.panelOpen});
     },
 
-    componentDidMount: function() {
-        if (this.refs.collapse.getDOMNode().scrollHeight <= this.refs.collapse.getDOMNode().clientHeight) {
-            this.setState({panelFixed: true});
-        }
-    },
-
     render: function() {
         var context = this.props.context;
         var keyClass = cx({
             "characterization-meta-data": true,
             "key-value-left": true,
             "characterization-slider": true,
-            "active": this.state.panelOpen && !this.state.panelFixed
-        });
-        var kvTriggerClass = cx({
-            "key-value-trigger": true,
-            "disabled": this.state.panelFixed
+            "active": this.state.panelOpen
         });
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
@@ -291,6 +281,11 @@ var Characterization = module.exports.Characterization = React.createClass({
             });
         }
 
+        var excerpt;
+        if (context.caption && context.caption.length > 200) {
+            excerpt = globals.truncateString(context.caption, 200);
+        }
+
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
@@ -303,29 +298,25 @@ var Characterization = module.exports.Characterization = React.createClass({
                             {figure}
                             <div className="characterization-badge"><StatusLabel status={context.status} /></div>
                         </figure>
+
                         <dl className="characterization-intro characterization-meta-data key-value-left">
                             {context.characterization_method ?
                                 <div data-test="method">
-                                    <dt className="h3">Method</dt>
-                                    <dd className="h3">{context.characterization_method}</dd>
+                                    <dt>Method</dt>
+                                    <dd>{context.characterization_method}</dd>
                                 </div>
                             : null}
 
-                            <div data-test="targetspecies">
-                                <dt className="h4">Target species</dt>
-                                <dd className="h4 sentence-case"><em>{context.target.organism.scientific_name}</em></dd>
-                            </div>
-
-                            {standardsDocuments.length ?
-                                <div data-test="standardsdoc">
-                                    <dt>Standards documents</dt>
-                                    <StandardsDocuments docs={standardsDocuments} />
+                            {excerpt || (context.caption && context.caption.length) ?
+                                <div data-test="caption">
+                                    <dt>Caption</dt>
+                                    <dd>{excerpt ? excerpt : context.caption}</dd>
                                 </div>
                             : null}
                         </dl>
                     </div>
                     <dl ref="collapse" className={keyClass}>
-                        {context.caption ?
+                        {excerpt ?
                             <div data-test="caption">
                                 <dt>Caption</dt>
                                 <dd className="sentence-case para-text">{context.caption}</dd>
@@ -339,28 +330,32 @@ var Characterization = module.exports.Characterization = React.createClass({
                             </div>
                         : null}
 
+                        <div data-test="lab">
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                        </div>
+
                         <div data-test="grant">
                             <dt>Grant</dt>
                             <dd>{context.award.name}</dd>
-                        </div>
-
-                        <div data-test="image">
-                            <dt>Image</dt>
-                            <dd><StatusLabel status={context.status} /></dd>
                         </div>
 
                         <div data-test="download">
                             <dt>Download</dt>
                             {download}
                         </div>
-                    </dl>
-                    <dl className="key-value-trigger">
-                        <dt>Lab</dt>
-                        <dd>{context.lab.title}</dd>
-                        {!this.state.panelFixed ?
-                            <button onClick={this.handleClick} className="trigger-btn">{this.state.panelOpen ? 'Less' : 'More'}</button>
+
+                        {standardsDocuments.length ?
+                            <div data-test="standardsdoc">
+                                <dt>Standards documents</dt>
+                                <StandardsDocuments docs={standardsDocuments} />
+                            </div>
                         : null}
                     </dl>
+
+                    <button onClick={this.handleClick} className="key-value-trigger">
+                        {this.state.panelOpen ? 'Less' : 'More'}
+                    </button>
                 </div>
             </section>
         );

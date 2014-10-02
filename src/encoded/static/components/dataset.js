@@ -35,8 +35,8 @@ var Dataset = module.exports.Dataset = React.createClass({
 
         // Build up array of documents attached to this dataset
         var datasetDocuments = {};
-        context.documents.forEach(function (document) {
-            datasetDocuments[document['@id']] = Panel({context: document, popoverContent: StdContent});
+        context.documents.forEach(function (document, i) {
+            datasetDocuments[document['@id']] = Panel({context: document, key: i});
         }, this);
 
         // Make string of alternate accessions
@@ -110,25 +110,6 @@ var Dataset = module.exports.Dataset = React.createClass({
 });
 
 globals.content_views.register(Dataset, 'dataset');
-
-
-var StdContent = module.exports.StdContent = React.createClass({
-    render: function() {
-        var context = this.props.context;
-        return(
-            <div>
-                {context.caption ? <dt>Caption</dt> : null}
-                {context.caption ? <dd>{context.caption}</dd> : null}
-
-                <dt>Submitted by</dt>
-                <dd>{context.submitted_by.title}</dd>
-
-                <dt>Grant</dt>
-                <dd>{context.award.name}</dd>
-            </div>
-        );
-    }
-});
 
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({

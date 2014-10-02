@@ -13,8 +13,8 @@ dd.h3, dd.h4 {
 .key-value {
     margin: 0;
 
-    div {
-        @extend .clearfix;
+    > div {
+        clear: left;
     }
 
     dt {

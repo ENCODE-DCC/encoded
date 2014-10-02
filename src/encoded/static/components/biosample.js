@@ -43,8 +43,8 @@ var Biosample = module.exports.Biosample = React.createClass({
         });
         var construct_documents = {};
         constructs.forEach(function (construct) {
-            construct.documents.forEach(function (doc) {
-                construct_documents[doc['@id']] = Panel({context: doc});
+            construct.documents.forEach(function (doc, i) {
+                construct_documents[doc['@id']] = Panel({context: doc, key: i + 1});
            });
         });
 
@@ -54,14 +54,14 @@ var Biosample = module.exports.Biosample = React.createClass({
         });
         var rnai_documents = {};
         rnais.forEach(function (rnai) {
-            rnai.documents.forEach(function (doc) {
-                rnai_documents[doc['@id']] = Panel({context: doc});
+            rnai.documents.forEach(function (doc, i) {
+                rnai_documents[doc['@id']] = Panel({context: doc, key: i + 1});
             });
         });
 
         var protocol_documents = {};
-        context.protocol_documents.forEach(function(doc) {
-            protocol_documents[doc['@id']] = Panel({context: doc});
+        context.protocol_documents.forEach(function(doc, i) {
+            protocol_documents[doc['@id']] = Panel({context: doc, key: i + 1});
         });
 
         // Make string of alternate accessions
@@ -765,15 +765,6 @@ var Document = module.exports.Document = React.createClass({
     },
 
     render: function() {
-        function truncateString(str, len) {
-            if (str.length > len) {
-                str = str.replace(/(^\s)|(\s$)/gi, ''); // Trim leading/trailing white space
-                var isOneWord = str.match(/\s/gi) === null; // Detect single-word string
-                str = str.substr(0, len - 1); // Truncate to length ignoring word boundary
-                str = (!isOneWord ? str.substr(0, str.lastIndexOf(' ')) : str) + '…'; // Back up to word boundary
-            }
-            return str;
-        }
 
         var context = this.props.context;
         var keyClass = cx({
@@ -808,7 +799,7 @@ var Document = module.exports.Document = React.createClass({
         var caption = characterization ? context.caption : context.description;
         var excerpt;
         if (caption && caption.length > 100) {
-            excerpt = truncateString(caption, 100);
+            excerpt = globals.truncateString(caption, 100);
         }
 
         return (
@@ -827,7 +818,7 @@ var Document = module.exports.Document = React.createClass({
                         </div>
                     </div>
                     {download}
-                    <dl className={keyClass}>
+                    <dl className={keyClass} id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
                         {excerpt ?
                             <div>
                                 {characterization ?
@@ -851,6 +842,11 @@ var Document = module.exports.Document = React.createClass({
                             </div>
                         : null}
 
+                        <div data-test="lab">
+                            <dt>Lab</dt>
+                            <dd>{context.lab.title}</dd>
+                        </div>
+
                         {context.award && context.award.name ?
                             <div data-test="award">
                                 <dt>Grant</dt>
@@ -865,11 +861,10 @@ var Document = module.exports.Document = React.createClass({
                             </div>
                         : null}
                     </dl>
-                    <dl className="key-value-trigger">
-                        <dt>Lab</dt>
-                        <dd>{context.lab.title}</dd>
-                        <button onClick={this.handleClick} className="trigger-btn">{this.state.panelOpen ? 'Less' : 'More'}</button>
-                    </dl>
+
+                    <button onClick={this.handleClick} className="key-value-trigger" id={'tab' + this.props.key} aria-controls={'panel' + this.props.key} role="tab">
+                        {this.state.panelOpen ? 'Less' : 'More'}
+                    </button>
                 </div>
             </section>
         );

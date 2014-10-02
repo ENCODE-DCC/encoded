@@ -602,79 +602,32 @@ $characterization-figure-height: 200px;
 }
 
 
-.trigger-btn {
-    @extend .btn;
-    @extend .btn-default;
-    @extend .btn-xs;
-    position: absolute;
-    right: 6px;
-    top: 6px;
-    font-size: 11px;
-    font-weight: normal !important;
-    @include box-shadow(none !important);
-    border: 1px solid #808080;
-
-    &:hover {
-        text-decoration: none;
-    }
-}
-
-
 .key-value-trigger {
-    position: relative;
+    display: block;
+    width: 100%;
     margin: 0;
     background-color: $mainThemeColor;
+    text-align: center;
     @include background-image(linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%));
     background-image: -ms-linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
     border-top: 1px solid #808080;
+    border-bottom: none;
+    border-left: none;
+    border-right: none;
     padding: 0 10px;
     line-height: 32px;
     color: #333333;
 
-    dt {
-        display: inline-block;
-
-        &:after {
-            content: ": ";
-        }
-    }
-
-    dd {
-        margin-left: 5px;
-        display: inline-block;
-    }
-
-    &::-moz-focus-inner,
-    &:focus {
-        border: 0;
-        outline: none;
-    }
-
     &:hover {
-        text-decoration: none;
+        @include background-image(linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%));
+        background-image: -ms-linear-gradient(top, $mainThemeColor 0%, darken($mainThemeColor,5%) 100%);
     }
 
-    &.disabled {
-        a {
-            cursor: default;
-        }
-    }
-
-    &.active {
-        a {
-            background-color: darken(#eff6fc,50%);
-
-            dt {
-                color: #fff;
-            }
-
-            dd {
-                color: #fff;
-            }
-        }
+    &:focus {
+        outline: none;
+        @include box-shadow(0 0 3px 2px #94bfe7 inset);
     }
 }
-
 
 
 .document-slider {
@@ -698,19 +651,10 @@ $characterization-figure-height: 200px;
 
 
 .characterization-slider {
-    position: relative;
-    height: 160px;
+    display: none;
 
     &.active {
-        height: auto;
-    }
-
-    > div {
-        margin-top: 20px;
-
-        &:first-child {
-            margin-top: 0;
-        }
+        display: block;
     }
 }
 
