@@ -22,7 +22,7 @@ var Lot = module.exports.Lot = React.createClass({
     render: function() {
         var context = this.props.context;
 
-        // Sort characterization arrays, first by species, then by primary/secondary characterization method
+        // Sort characterization arrays
         var sortedChars = _(context.characterizations).sortBy(function(characterization) {
             return [characterization.target.label, characterization.target.organism.name];
         });
@@ -307,7 +307,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                             {context.characterization_method ?
                                 <div data-test="method">
                                     <dt className="h3">Method</dt>
-                                    <dd className="h3">{context.characterization_method} ({context.primary_characterization_method ? 'primary' : 'secondary'})</dd>
+                                    <dd className="h3">{context.characterization_method}</dd>
                                 </div>
                             : null}
 

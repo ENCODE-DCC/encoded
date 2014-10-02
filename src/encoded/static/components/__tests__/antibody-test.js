@@ -115,7 +115,7 @@ describe('Antibody', function() {
             var charData = panel.getElementsByClassName('characterization-intro')[0];
             var item = charData.querySelector('[data-test="method"]');
             var itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('immunoblot (primary)');
+            expect(itemDescription.textContent).toEqual('immunoblot');
 
             item = charData.querySelector('[data-test="targetspecies"]');
             itemDescription = item.getElementsByTagName('dd')[0];
