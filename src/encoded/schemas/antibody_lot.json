@@ -162,7 +162,7 @@
    },
    "facets": {
         "lot_reviews.status": {
-            "title": "Approval status",
+            "title": "Eligibility status",
             "type": "string"
         },
         "characterizations.target.organism.scientific_name": {
