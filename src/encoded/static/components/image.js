@@ -10,9 +10,22 @@ var url = require('url');
 
 // Fixed-position lightbox background and image
 var Lightbox = module.exports.Lightbox = React.createClass({
-    ignoreClick: function(e) {
-        e.preventDefault();
-        e.stopPropagation();
+    getInitialState: function() {
+        return {imgHeight: 0};
+    },
+
+    // Window resized; set max-height of image
+    handleResize: function() {
+        this.setState({imgHeight: this.refs.lightbox.getDOMNode().offsetHeight - 40});
+    },
+
+    componentDidMount: function() {
+        window.addEventListener('resize', this.handleResize);
+        this.setState({imgHeight: this.refs.lightbox.getDOMNode().offsetHeight - 40});
+    },
+
+    componentWillUnmount: function() {
+        window.removeEventListener('resize', this.handleResize);
     },
 
     render: function() {
@@ -21,12 +34,15 @@ var Lightbox = module.exports.Lightbox = React.createClass({
             "lightbox": true,
             "active": lightboxVisible
         });
+        var imgStyle = {maxHeight: this.state.imgHeight};
 
-        return(
-            <div className={lightboxClass} onClick={this.props.clearLightbox}>
+        return (
+            <div className={lightboxClass} onClick={this.props.clearLightbox} aria-label="Close" ref="lightbox">
                 <div className="lightbox-img">
-                    <img src={this.props.lightboxImg} onClick={this.ignoreClick} />
-                    <button className="btn btn-primary btn-xs lightbox-close" alt="Close lightbox">Close</button>
+                    <a aria-label="Open image" data-bypass="true" href={this.props.lightboxImg}>
+                        <img src={this.props.lightboxImg} style={imgStyle} />
+                    </a>
+                    <button className="lightbox-close" aria-label="Close" onClick={this.clearLightbox}></button>
                 </div>
             </div>
         );
@@ -81,8 +97,8 @@ var Attachment = module.exports.Attachment = React.createClass({
         var context = this.props.context;
         var attachmentHref;
         var src, alt;
-        var height = "100";
-        var width = "100";
+        var height;
+        var width;
         if (context.attachment) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             var attachmentType = context.attachment.type.split('/', 1)[0];
@@ -106,16 +122,22 @@ var Attachment = module.exports.Attachment = React.createClass({
                 }
             } else if (context.attachment.type == "application/pdf"){
                 return (
-                    <a data-bypass="true" href={attachmentHref} className="file-pdf">Attachment PDF Icon</a>
+                    <div className="attachment">
+                        <a data-bypass="true" href={attachmentHref} className="file-pdf">Attachment PDF Icon</a>
+                    </div>
                 );
             } else {
                 return (
-                    <a data-bypass="true" href={attachmentHref} className="file-generic">Attachment Icon</a>
+                    <div className="attachment">
+                        <a data-bypass="true" href={attachmentHref} className="file-generic">Attachment Icon</a>
+                    </div>
                 );
             }
         } else {
             return (
-                <div className="file-missing">Attachment file broken icon</div>
+                <div className="attachment">
+                    <div className="file-missing">Attachment file broken icon</div>
+                </div>
             );
         }
     }
