@@ -117,19 +117,11 @@ describe('Antibody', function() {
             var itemDescription = item.getElementsByTagName('dd')[0];
             expect(itemDescription.textContent).toEqual('immunoblot');
 
-            item = charData.querySelector('[data-test="targetspecies"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('Homo sapiens');
-
+            charData = panel.getElementsByClassName('characterization-slider')[0];
             item = charData.querySelector('[data-test="standardsdoc"]');
             anchor = item.getElementsByTagName('a')[0];
             expect(anchor.textContent).toEqual('ENCODE:Antibody_characterization_standards_February_2014');
             expect(anchor.getAttribute('href')).toEqual('/documents/bcb5f3c8-d5e9-40d2-805f-4274f940c36d/@@download/attachment/Antibody_Characterization_ENCODE3_February2014.pdf');
-
-            charData = panel.getElementsByClassName('characterization-slider')[0];
-            item = charData.querySelector('[data-test="caption"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toContain('Western blot analysis of lysates from HeLa cells');
 
             item = charData.querySelector('[data-test="submitted"]');
             itemDescription = item.getElementsByTagName('dd')[0];
@@ -138,10 +130,6 @@ describe('Antibody', function() {
             item = charData.querySelector('[data-test="grant"]');
             itemDescription = item.getElementsByTagName('dd')[0];
             expect(itemDescription.textContent).toEqual('RC2HG005602');
-
-            item = charData.querySelector('[data-test="image"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('not compliant');
 
             item = charData.querySelector('[data-test="download"]');
             itemDescription = item.getElementsByTagName('dd')[0];
