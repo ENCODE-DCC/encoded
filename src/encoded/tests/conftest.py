@@ -2,6 +2,7 @@
 
 http://pyramid.readthedocs.org/en/latest/narr/testing.html
 '''
+import pkg_resources
 import pytest
 from pytest import fixture
 
@@ -33,6 +34,7 @@ _app_settings = {
     'testing': True,
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
+    'ontology_path': pkg_resources.resource_filename('encoded', '../../ontology.json'),
 }
 
 
@@ -554,8 +556,13 @@ def organisms(testapp):
 
 
 @pytest.fixture
-def organism(organisms):
+def human(organisms):
     return [o for o in organisms if o['name'] == 'human'][0]
+
+
+@pytest.fixture
+def organism(human):
+    return human
 
 
 @pytest.fixture
