@@ -67,7 +67,7 @@
             "type": "string",
             "pattern": "^[ACTG]+$"
         },
-        "platform": {
+        "talen_platform": {
             "title": "TALEN platform",
             "description": "The TALEN platform used to make the construct. E.g. Golden Gate",
             "type": "string"
