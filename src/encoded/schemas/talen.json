@@ -101,7 +101,7 @@
                     "title": "Chromosome",
                     "description": "The number (or letter) designation for the target chromosome. E.g. 1, 21, or X",
                     "type": "string",
-                    "pattern": "^(\\d{1,2}|[XY])$"
+                    "pattern": "^(\\d{1,2}|[XYM])$"
                 },
                 "start": {
                     "title": "Start",
