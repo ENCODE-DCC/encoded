@@ -173,30 +173,7 @@ def fetch_files(url, username, password):
         urljoin(url, '/search/?type=file&status=uploading&frame=object&limit=all'),
         auth=(username, password), headers=HEADERS)
     r.raise_for_status()
-    files = r.json()['@graph']
-
-    r = requests.get(
-        urljoin(
-            url, '/search/?' +
-            'type=experiment&type=dataset&files.status=uploading&frame=object&limit=all'),
-        auth=(username, password), headers=HEADERS)
-    r.raise_for_status()
-    datasets = dict((item['@id'], item) for item in r.json()['@graph'])
-
-    for item in files:
-        dataset_id = item['dataset']
-        if dataset_id not in datasets:
-            r = requests.get(
-                urljoin(url, dataset_id + '?frame=object'),
-                auth=(username, password), headers=HEADERS)
-            r.raise_for_status()
-            datasets[dataset_id] = r.json()
-
-        dataset = datasets[dataset_id]
-        if 'assembly' in dataset:
-            item['assembly'] = dataset['assembly']
-
-    return files
+    return r.json()['@graph']
 
 
 def run(output, url, username, password, encValData, bucket, mirror):
