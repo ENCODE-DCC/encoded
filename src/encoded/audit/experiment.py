@@ -1,5 +1,6 @@
 
 import string
+from pyramid.traversal import find_resource
 from ..auditor import (
     AuditFailure,
     audit_checker,
