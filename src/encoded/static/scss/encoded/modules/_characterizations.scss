@@ -56,7 +56,6 @@ $indicator-notpursued:  #d0d0d0;
 }
 
 .type-characterization.view-detail.status-not-compliant,
-.type-characterization.view-detail.status-not-reviewed,
 .type-document.view-detail.status-deleted {
     @include status-colors($state-danger-border, $state-danger-bg, $state-danger-text);
 }
@@ -67,6 +66,7 @@ $indicator-notpursued:  #d0d0d0;
 
 .type-characterization.view-detail.status-in-progress,
 .type-characterization.view-detail.status-not-submitted-for-review-by-lab,
+.type-characterization.view-detail.status-not-reviewed,
 .type-document.view-detail.status-none {
     @include status-colors($border: #e1e1e8, $bg: #f7f7f9, $text: #333);
 }
@@ -229,8 +229,8 @@ $indicator-notpursued:  #d0d0d0;
     .#{$item}.status-not-compliant          { background-color: $brand-danger; }
     .#{$item}.status-not-compliant[href]    { background-color: darken($brand-danger, 10%); }
     // NOT REVIEWED (red)
-    .#{$item}.status-not-reviewed         { background-color: $brand-danger; }
-    .#{$item}.status-not-reviewed[href]    { background-color: darken($brand-danger, 10%); }
+    .#{$item}.status-not-reviewed         { background-color: #a0a0a0; }
+    .#{$item}.status-not-reviewed[href]    { background-color: darken(#a0a0a0, 10%); }
 
     // Experiment (Dataset) and Biosample states
     // IN PROGRESS (blue)
