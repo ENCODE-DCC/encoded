@@ -1,5 +1,6 @@
 
 import string
+from pyramid.traversal import find_resource
 from ..auditor import (
     AuditFailure,
     audit_checker,
@@ -382,13 +383,16 @@ def audit_experiment_antibody_eligible(value, system):
 
         biosample = lib['biosample']
         organism = biosample['organism']['name']
+        context = system['context']
 
         if 'histone modification' in target['investigated_as']:
             for lot_review in antibody['lot_reviews']:
                 if (lot_review['status'] == 'eligible for new data') and (lot_review['biosample_term_id'] == 'NTR:00000000'):
                     organism_match = False
-                    for lot_organism in lot_review['organisms']:
-                        if organism == lot_organism.get('name'):
+                    for lo in lot_review['organisms']:
+                        lot_organism = find_resource(context, lo)
+                        lot_organism_properties = lot_organism.upgrade_properties(finalize=False)
+                        if organism == lot_organism_properties['name']:
                             organism_match = True
                     if not organism_match:
                         detail = '{} not eligible for {}'.format(antibody["@id"], organism)
@@ -403,8 +407,10 @@ def audit_experiment_antibody_eligible(value, system):
             eligible_biosamples = set()
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] == 'eligible for new data':
-                    for lot_organism in lot_review['organisms']:
-                        eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_organism.get('name')])
+                    for lo in lot_review['organisms']:
+                        lot_organism = find_resource(context, lo)
+                        lot_organism_properties = lot_organism.upgrade_properties(finalize=False)
+                        eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_organism_properties['name']])
                         eligible_biosamples.add(eligible_biosample)
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)
