@@ -130,10 +130,10 @@ describe('Experiment Page', function() {
             TestUtils.Simulate.click(trigger[0]);
 
             var docKeyValue = doc.getElementsByClassName('key-value-left');
-            expect(docKeyValue.length).toEqual(1);
-            var defTerms = docKeyValue[0].getElementsByTagName('dt');
+            expect(docKeyValue.length).toEqual(2);
+            var defTerms = docKeyValue[1].getElementsByTagName('dt');
             expect(defTerms.length).toEqual(3);
-            var defDescs = docKeyValue[0].getElementsByTagName('dd');
+            var defDescs = docKeyValue[1].getElementsByTagName('dd');
             expect(defDescs.length).toEqual(3);
         });
     });
@@ -154,12 +154,12 @@ describe('Experiment Page', function() {
         it('has five key-value pairs, and two good references links', function() {
             var url = require('url');
             var docKeyValue = doc.getElementsByClassName('key-value-left');
-            expect(docKeyValue.length).toEqual(1);
-            var defTerms = docKeyValue[0].getElementsByTagName('dt');
+            expect(docKeyValue.length).toEqual(2);
+            var defTerms = docKeyValue[1].getElementsByTagName('dt');
             expect(defTerms.length).toEqual(4);
-            var defDescs = docKeyValue[0].getElementsByTagName('dd');
+            var defDescs = docKeyValue[1].getElementsByTagName('dd');
             expect(defDescs.length).toEqual(4);
-            var item = docKeyValue[0].querySelector('[data-test="references"]');
+            var item = docKeyValue[1].querySelector('[data-test="references"]');
             var refUl = item.getElementsByTagName('ul');
             expect(refUl.length).toEqual(1);
             var refLi = refUl[0].getElementsByTagName('li');
