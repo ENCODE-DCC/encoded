@@ -25,13 +25,11 @@ var SupplementaryData = React.createClass({
         var data = this.props.data;
         return (
             <div className="publication-subsection" key={this.props.key}>
-                {data.element_type ? <span><strong>Available data: </strong>{data.element_type}</span> : null}
-                {data.file_format ? <span>{data.element_type ? ' ' : ''}{<span>(<strong>File format: </strong>{data.file_format})</span>}</span> : null}
-                {data.url ? <span>{data.element_type || data.file_format ? ': ' : ''}<a href={data.url}>{data.url}</a></span> : null}
+                {data.supplementary_data_type ? <span><strong>Available data: </strong>{data.supplementary_data_type}</span> : null}
+                {data.file_format ? <span>{data.supplementary_data_type ? ' ' : ''}{<span>(<strong>File format: </strong>{data.file_format})</span>}</span> : null}
+                {data.url ? <span>{data.supplementary_data_type || data.file_format ? ': ' : ''}<a href={data.url}>{data.url}</a></span> : null}
 
-                {data.method_summary ?
-                    <div><strong>Method summary: </strong>{data.method_summary}</div>
-                : null}
+                {data.data_summary ? <div><strong>Data summary:</strong> {data.data_summary}</div> : null}
             </div>
         );
     }
@@ -71,7 +69,7 @@ var Panel = module.exports.Panel = React.createClass({
                         <dl className="key-value-left">
                             {context.data_used ?
                                 <div data-test="dataused">
-                                    <dt>Consortium data referenced in this publication</dt>
+                                    <dt>Consortium data used in this publication</dt>
                                     <dd>{context.data_used}</dd>
                                 </div>
                             : null}
