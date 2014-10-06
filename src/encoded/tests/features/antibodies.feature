@@ -25,6 +25,7 @@ Feature: Antibodies
 
     Scenario: Detail page
         When I visit "/antibodies/ENCAB000ANU/"
+        And I press "More"
         Then I should see an element with the css selector "div.data-display"
         And I should see "compliant"
         And I should see an element with the css selector "div.characterizations"
