@@ -309,7 +309,7 @@ var Characterization = module.exports.Characterization = React.createClass({
 
                             {excerpt || (context.caption && context.caption.length) ?
                                 <div data-test="caption">
-                                    <dt>Caption</dt>
+                                    <dt>{excerpt ? 'Caption excerpt' : 'Caption'}</dt>
                                     <dd>{excerpt ? excerpt : context.caption}</dd>
                                 </div>
                             : null}
