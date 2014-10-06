@@ -121,12 +121,12 @@ $characterization-figure-height: 200px;
 
 
 .document-title {
-    padding: 5px 10px;
+    padding: 5px;
     background-color: #fff;
     color: #333;
     border-bottom: 1px solid #c0c0c0;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
     font-size: 14px;
 }
 
@@ -186,6 +186,10 @@ $characterization-figure-height: 200px;
         padding-left: 30px;
         padding-right: 30px;
     }
+
+    .panel-footer {
+        padding: 0;
+    }
 }
 
 .characterization-img {
@@ -193,7 +197,7 @@ $characterization-figure-height: 200px;
     max-height: 360px;
 }
 
-.characterization-meta-data {
+.characterization-meta-data, .document-meta-data {
     margin: 0;
     padding: 10px;
 
@@ -239,11 +243,6 @@ $characterization-figure-height: 200px;
 .characterization-status-labels {
     font-weight: bold;
     font-size: 20px;
-
-    .label {
-        @media screen and (min-width: $screen-sm-min) {
-        }
-    }
 }
 
 
@@ -545,6 +544,18 @@ $characterization-figure-height: 200px;
 
 .type-document {
     @include type-panel($document-figure-width, $document-figure-height);
+
+    .panel-body {
+        padding: 0;
+    }
+}
+
+.type-characterization {
+    @include type-panel($document-figure-width, $document-figure-height);
+
+    .panel-body {
+        padding: 0;
+    }
 }
 
 .type-characterization.type-antibody_characterization {
@@ -567,6 +578,10 @@ $characterization-figure-height: 200px;
 
 .characterization-header {
     @include panel-header($characterization-figure-height);
+
+    &.panel-body {
+        padding: 0;
+    }
 }
 
 %panel-intro {
@@ -610,7 +625,7 @@ $characterization-figure-height: 200px;
     text-align: center;
     @include background-image(linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%));
     background-image: -ms-linear-gradient(top, lighten($mainThemeColor,5%) 0%, $mainThemeColor 100%);
-    border-top: 1px solid #808080;
+    border-top: 1px solid #808080 !important;
     border-bottom: none;
     border-left: none;
     border-right: none;
@@ -627,13 +642,19 @@ $characterization-figure-height: 200px;
         outline: none;
         @include box-shadow(0 0 3px 2px #94bfe7 inset);
     }
+
+    &.panel-footer {
+        padding: 0;
+    }
 }
+
+
 
 
 .document-slider {
     display: none;
     margin: 0;
-    padding: 10px 10px 0;
+    padding: 10px 5px 0;
     border-bottom: 1px solid #e8e8e8;
 
     &.active {

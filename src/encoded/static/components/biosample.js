@@ -806,63 +806,75 @@ var Document = module.exports.Document = React.createClass({
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-6 col-md-6 col-lg-4">
                 <div className={globals.itemClass(context, panelClass)}>
-                    <div className="document-title sentence-case">
+                    <div className="panel-header document-title sentence-case">
                         {characterization ? context.characterization_method : context.document_type}
                     </div>
-                    <div className="document-header">
-                        <figure>
-                            {figure}
-                        </figure>
-                        <div className="document-intro">
-                            <p>{excerpt ? excerpt : caption}</p>
+                    <div className="panel-body">
+                        <div className="document-header">
+                            <figure>
+                                {figure}
+                            </figure>
+
+                            <dl className="document-intro document-meta-data key-value-left">
+                                {excerpt || caption ?
+                                    <div data-test="caption">
+                                        {characterization ?
+                                            <dt>{excerpt ? 'Caption excerpt' : 'Caption'}</dt>
+                                        :
+                                            <dt>{excerpt ? 'Description excerpt' : 'Description'}</dt>
+                                        }
+                                        <dd>{excerpt ? excerpt : caption}</dd>
+                                    </div>
+                                : null}
+                            </dl>
                         </div>
+                        {download}
+                        <dl className={keyClass} id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
+                            {excerpt ?
+                                <div>
+                                    {characterization ?
+                                        <div data-test="caption">
+                                            <dt>Caption</dt>
+                                            <dd>{context.caption}</dd>
+                                        </div>
+                                    :
+                                        <div data-test="caption">
+                                            <dt>Description</dt>
+                                            <dd>{context.description}</dd>
+                                        </div>
+                                    }
+                                </div>
+                            : null}
+
+                            {context.submitted_by && context.submitted_by.title ?
+                                <div data-test="submitted-by">
+                                    <dt>Submitted by</dt>
+                                    <dd>{context.submitted_by.title}</dd>
+                                </div>
+                            : null}
+
+                            <div data-test="lab">
+                                <dt>Lab</dt>
+                                <dd>{context.lab.title}</dd>
+                            </div>
+
+                            {context.award && context.award.name ?
+                                <div data-test="award">
+                                    <dt>Grant</dt>
+                                    <dd>{context.award.name}</dd>
+                                </div>
+                            : null}
+
+                            {context.references && context.references.length ?
+                                <div data-test="references">
+                                    <dt>References</dt>
+                                    <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
+                                </div>
+                            : null}
+                        </dl>
                     </div>
-                    {download}
-                    <dl className={keyClass} id={'panel' + this.props.key} aria-labeledby={'tab' + this.props.key} role="tabpanel">
-                        {excerpt ?
-                            <div>
-                                {characterization ?
-                                    <div data-test="caption">
-                                        <dt>Caption</dt>
-                                        <dd>{context.caption}</dd>
-                                    </div>
-                                :
-                                    <div data-test="caption">
-                                        <dt>Description</dt>
-                                        <dd>{context.description}</dd>
-                                    </div>
-                                }
-                            </div>
-                        : null}
 
-                        {context.submitted_by && context.submitted_by.title ?
-                            <div data-test="submitted-by">
-                                <dt>Submitted by</dt>
-                                <dd>{context.submitted_by.title}</dd>
-                            </div>
-                        : null}
-
-                        <div data-test="lab">
-                            <dt>Lab</dt>
-                            <dd>{context.lab.title}</dd>
-                        </div>
-
-                        {context.award && context.award.name ?
-                            <div data-test="award">
-                                <dt>Grant</dt>
-                                <dd>{context.award.name}</dd>
-                            </div>
-                        : null}
-
-                        {context.references && context.references.length ?
-                            <div data-test="references">
-                                <dt>References</dt>
-                                <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>
-                            </div>
-                        : null}
-                    </dl>
-
-                    <button onClick={this.handleClick} className="key-value-trigger" id={'tab' + this.props.key} aria-controls={'panel' + this.props.key} role="tab">
+                    <button onClick={this.handleClick} className="key-value-trigger panel-footer" id={'tab' + this.props.key} aria-controls={'panel' + this.props.key} role="tab">
                         {this.state.panelOpen ? 'Less' : 'More'}
                     </button>
                 </div>

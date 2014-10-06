@@ -290,10 +290,10 @@ var Characterization = module.exports.Characterization = React.createClass({
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
             <section className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                 <div className={globals.itemClass(context, 'view-detail panel')}>
-                    <div className="characterization-title">
+                    <div className="panel-heading characterization-title">
                         {context.target.label} {context.target.organism.scientific_name ? <span>{' ('}<i>{context.target.organism.scientific_name}</i>{')'}</span> : ''}
                     </div>
-                    <div className="characterization-header">
+                    <div className="panel-body characterization-header">
                         <figure>
                             {figure}
                             <div className="characterization-badge"><StatusLabel status={context.status} /></div>
@@ -353,7 +353,7 @@ var Characterization = module.exports.Characterization = React.createClass({
                         : null}
                     </dl>
 
-                    <button onClick={this.handleClick} className="key-value-trigger">
+                    <button onClick={this.handleClick} className="key-value-trigger panel-footer">
                         {this.state.panelOpen ? 'Less' : 'More'}
                     </button>
                 </div>
