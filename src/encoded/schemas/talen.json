@@ -9,7 +9,7 @@
         "lab",
         "award",
         "source",
-        "platform",
+        "talen_platform",
         "RVD_sequence",
         "vector_backbone_name",
         "target_sequence",
@@ -67,7 +67,7 @@
             "type": "string",
             "pattern": "^[ACTG]+$"
         },
-        "platform": {
+        "talen_platform": {
             "title": "TALEN platform",
             "description": "The TALEN platform used to make the construct. E.g. Golden Gate",
             "type": "string"
@@ -101,7 +101,7 @@
                     "title": "Chromosome",
                     "description": "The number (or letter) designation for the target chromosome. E.g. 1, 21, or X",
                     "type": "string",
-                    "pattern": "^(\\d{1,2}|[XY])$"
+                    "pattern": "^(\\d{1,2}|[XYM])$"
                 },
                 "start": {
                     "title": "Start",

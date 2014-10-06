@@ -126,23 +126,24 @@
                             "other format"
                             ]
                     },
-                    "element_type": {
-                        "title": "Element type",
-                        "description": "The type of genome region expected from the files located at the URL.",
+                    "supplementary_data_type": {
+                        "title": "Supplementary data type",
+                        "description": "The type of supplementary data reader should expect.",
                         "type": "string",
                         "enum" : [
-                            "peak",
-                            "enhancer",
-                            "RNA",
-                            "promoter",
-                            "HMM region",
-                            "HOT region",
-                            "other region",
+                            "peak calls",
+                            "enhancer annotations",
+                            "RNA annotations",
+                            "promoter regions",
+                            "HMM regions",
+                            "HOT regions",
+                            "website",
                             "motifs",
+                            "genomic annotations",
                             "connectivity"
                             ]
                     },
-                    "method_summary": {
+                    "data_summary": {
                         "title": "Method summary",
                         "description": "An explanation how the methods or results presented in the publication advance the understanding of how regions on the genome interact with each other.",
                         "type": "string"
@@ -168,7 +169,7 @@
                     "pilot phase publication",
                     "model organism biology",
                     "tutorial",
-                    "ENCODE elements"
+                    "genomic annotations"
                 ]
             }      
         },
@@ -201,8 +202,8 @@
             "title": "Category",
             "type": "array"
         },
-        "supplementary_data.element_type": {
-            "title": "Elements",
+        "supplementary_data.supplementary_data_type": {
+            "title": "Available supplemental data",
             "type": "string"
         },
         "publication_year": {

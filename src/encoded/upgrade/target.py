@@ -18,7 +18,8 @@ def target_2_3(value, system):
         'eGFP',
         '3XFLAG',
         'HA',
-        'YFP'
+        'YFP',
+        'FLAG'
     ]
 
     nucleotide_targets = [

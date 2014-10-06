@@ -106,7 +106,7 @@ def test_audit_antibody_mismatched_in_review(testapp, base_antibody_characteriza
     testapp.patch_json(base_antibody_characterization['@id'], {'characterization_reviews': characterization_review_list, 'primary_characterization_method': 'immunoblot', 'status': 'pending dcc review'})
     res = testapp.get(base_antibody_characterization['@id'] + '@@index-data')
     errors = res.json['audit']
-    assert any(error['category'] == 'term id not in ontology' for error in errors)
+    assert any(error['category'] == 'term name mismatch' for error in errors)
 
 
 def test_audit_antibody_no_standards(testapp, base_antibody_characterization, base_characterization_review, base_document, wrangler):
