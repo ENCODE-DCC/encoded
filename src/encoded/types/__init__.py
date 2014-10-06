@@ -111,6 +111,8 @@ class Talen(Collection):
         'description': 'Listing of TALEN Constructs',
     }
     item_keys = ALIAS_KEYS + ['name']
+    unique_key = 'talen:name'
+    item_name_key = 'name'
     item_rev = {
         'characterizations': ('construct_characterization', 'characterizes'),
     }

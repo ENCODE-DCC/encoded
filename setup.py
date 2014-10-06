@@ -61,6 +61,7 @@ setup(
         [console_scripts]
 
         add-date-created = encoded.commands.add_date_created:main
+        check-files = encoded.commands.check_files:main
         check-rendering = encoded.commands.check_rendering:main
         create-mapping = encoded.commands.create_mapping:main
         deploy = encoded.commands.deploy:main
@@ -73,6 +74,7 @@ setup(
         jsonld-rdf = encoded.commands.jsonld_rdf:main
         migrate-files-aws = encoded.commands.migrate_files_aws:main
         spreadsheet-to-json = encoded.commands.spreadsheet_to_json:main
+        update-file-status = encoded.commands.update_file_status:main
         update-keys-links = encoded.commands.update_keys_links:main
         upgrade = encoded.commands.upgrade:main
 
