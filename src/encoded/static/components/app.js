@@ -45,8 +45,7 @@ var user_actions = [
     {id: 'signout', title: 'Sign out', trigger: 'logout'}
 ];
 
-var scriptjs = fs.readFileSync(__dirname + '/../../../../node_modules/scriptjs/dist/script.min.js', 'utf-8');
-var inline = fs.readFileSync(__dirname + '/../inline.js', 'utf8');
+var inline = fs.readFileSync(__dirname + '/../build/inline.js').toString();
 
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
@@ -196,7 +195,8 @@ var App = React.createClass({
                     <title>{title}</title>
                     {base ? <base href={base}/> : null}
                     <link rel="canonical" href={canonical} />
-                    <script dangerouslySetInnerHTML={{__html: scriptjs + '\n'}}></script>
+                    <script async src='//www.google-analytics.com/analytics.js'></script>
+                    <script>{'window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;'}</script>
                     <script dangerouslySetInnerHTML={{__html: inline}}></script>
                     <link rel="stylesheet" href="/static/css/style.css" />
                     <script src="/static/build/bundle.js" async defer></script>

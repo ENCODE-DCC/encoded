@@ -4,6 +4,7 @@ var React = require('react');
 var ReactForms = require('react-forms');
 var parseError = require('./mixins').parseError;
 var globals = require('./globals');
+var ga = require('google-analytics');
 
 
 var FormFor = ReactForms.FormFor;
@@ -22,7 +23,7 @@ var Form = module.exports.Form = React.createClass({
     getChildContext: function() {
         return {
             onTriggerSave: this.save
-        }
+        };
     },
 
     render: function() {
@@ -36,7 +37,7 @@ var Form = module.exports.Form = React.createClass({
                 <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
             </div>
           </form>
-        )
+        );
     },
 
     valueUpdated: function(value) {
@@ -79,7 +80,6 @@ var Form = module.exports.Form = React.createClass({
 
     fail: function (xhr, status, error) {
         if (status == 'abort') return;
-        var ga = window.ga;
         var data = parseError(xhr, status);
         ga('send', 'exception', {
             'exDescription': 'putRequest:' + status + ':' + xhr.statusText,
