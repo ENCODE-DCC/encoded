@@ -14,13 +14,13 @@ var Attachment = module.exports.Attachment = React.createClass({
         var src, alt;
         var height = "100";
         var width = "100";
-        if (context.attachment) {
+        if (context.attachment && context.attachment.href && context.attachment.type) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             if (context.attachment.type.split('/', 1)[0] == 'image') {
                 var imgClass = this.props.className ? this.props.className + '-img' : '';
                 src = attachmentHref;
-                height = context.attachment.height;
-                width = context.attachment.width;
+                height = context.attachment.height || 100;
+                width = context.attachment.width || 100;
                 alt = "Attachment Image";
                 if (this.props.show_link === false) {
                     return <img className={imgClass} src={src} height={height} width={width} alt={alt} />;
