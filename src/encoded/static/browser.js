@@ -1,6 +1,5 @@
+'use strict';
 // Entry point for browser
-
-/* jshint strict: false */
 require('./libs/react-patches');
 var React = require('react');
 var ReactMount = require('react/lib/ReactMount');
@@ -23,7 +22,12 @@ if (!window.TEST_RUNNER) domready(function ready() {
     var script_props = document.querySelectorAll('script[data-prop-name]');
     for (var i = 0; i < script_props.length; i++) {
         var elem = script_props[i];
-        props[elem.getAttribute('data-prop-name')] = JSON.parse(elem.text);
+        var value = elem.text;
+        var elem_type = elem.getAttribute('type') || '';
+        if (elem_type == 'application/json' || elem_type.slice(-5) == '+json') {
+            value = JSON.parse(value);
+        }
+        props[elem.getAttribute('data-prop-name')] = value;
     }
 
     var stats_header = document.documentElement.getAttribute('data-stats') || '';
