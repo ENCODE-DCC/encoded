@@ -1,0 +1,18 @@
+{
+    "esnext": true,
+    "node": true,
+    "predef": [
+        "afterEach",
+        "beforeEach",
+        "describe",
+        "expect",
+        "it",
+        "jest",
+        "pit",
+        "xdescribe",
+        "xit"
+    ],
+    "globalstrict": true,
+    "newcap": false,
+    "sub": true
+}
