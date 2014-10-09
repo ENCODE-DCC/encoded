@@ -351,7 +351,7 @@ var Layout = module.exports.Layout = React.createClass({
 
     componentDidMount: function() {
         this.$ = require('jquery');
-        this.$('<i id="drag-marker"></i>').appendTo(this.getDOMNode());
+        this.$('<canvas id="drag-marker" height="1" width="1"></canvas>').appendTo(this.getDOMNode());
     },
 
     render: function() {
@@ -371,6 +371,9 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     dragStart: function(e, block, pos) {
+        if (!this.props.editable) {
+            return;
+        }
         if (this.$(e.target).closest('[contenteditable]').length) {
             // cancel drag to avoid interfering with dragging text
             return;
@@ -434,13 +437,13 @@ var Layout = module.exports.Layout = React.createClass({
     },
 
     dragEnd: function(e) {
-        if (this.state.dst_pos === undefined) {
+        var dst_pos = this.state.dst_pos;
+        if (dst_pos === undefined || dst_pos === null) {
             return;
         } else {
             e.preventDefault();
         }
         var src_pos = this.state.src_pos;
-        var dst_pos = this.state.dst_pos;
         if (!_.isEqual(src_pos, dst_pos)) {
             var block;
             if (src_pos) {

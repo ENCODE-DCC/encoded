@@ -102,6 +102,26 @@ class Construct(Collection):
     }
     item_embedded = ['target']
 
+@location('talens')
+class Talen(Collection):
+    item_type = 'talen'
+    schema = load_schema('talen.json')
+    properties = {
+        'title': 'TALENs',
+        'description': 'Listing of TALEN Constructs',
+    }
+    item_keys = ALIAS_KEYS + ['name']
+    unique_key = 'talen:name'
+    item_name_key = 'name'
+    item_rev = {
+        'characterizations': ('construct_characterization', 'characterizes'),
+    }
+    item_template = {
+        'characterizations': (
+            lambda root, characterizations: paths_filtered_by_status(root, characterizations)
+        ),
+    }
+    item_embedded = ['lab', 'submitted_by']
 
 @location('documents')
 class Document(Collection):

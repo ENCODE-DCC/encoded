@@ -1,0 +1,20 @@
+diff -ur react/lib/setInnerHTML.js new/lib/setInnerHTML.js
+--- react/lib/setInnerHTML.js	2014-09-16 11:12:19.000000000 -0700
++++ new/lib/setInnerHTML.js	2014-10-08 21:18:58.000000000 -0700
+@@ -52,11 +52,15 @@
+         node.parentNode.replaceChild(node, node);
+       }
+ 
++      // Setting innerHTML of raw text elements or manipulating child nodes
++      // can trigger `Unknown runtime error` in IE8.
++      if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE') {
++        node.text = html;
+       // We also implement a workaround for non-visible tags disappearing into
+       // thin air on IE8, this only happens if there is no visible text
+       // in-front of the non-visible tags. Piggyback on the whitespace fix
+       // and simply check if any non-visible tags appear in the source.
+-      if (html.match(/^[ \r\n\t\f]/) ||
++      } else if (html.match(/^[ \r\n\t\f]/) ||
+           html[0] === '<' && (
+             html.indexOf('<noscript') !== -1 ||
+             html.indexOf('<script') !== -1 ||

@@ -356,6 +356,9 @@
             "default": "uploading",
             "enum" : [
                 "uploading",
+                "uploaded",
+                "upload failed",
+                "format check failed",
                 "in progress",
                 "deleted",
                 "replaced",

@@ -18,7 +18,8 @@ def target_2_3(value, system):
         'eGFP',
         '3XFLAG',
         'HA',
-        'YFP'
+        'YFP',
+        'FLAG'
     ]
 
     nucleotide_targets = [
@@ -41,6 +42,7 @@ def target_2_3(value, system):
         'mouse-IgG-control',
         'rabbit-IgG-control',
         'rat-IgG-control',
+        'T7-control',
         'Input library control',
         'No protein target control',
         'Non-specific target control'
@@ -54,7 +56,7 @@ def target_2_3(value, system):
     ]
 
     histone_targets = [
-        'H2AK5ac', 
+        'H2AK5ac',
         'H2AK9ac',
         'H2BK120ac',
         'H2BK12ac',

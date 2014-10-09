@@ -14,7 +14,8 @@ from pyramid.httpexceptions import (
     HTTPUnsupportedMediaType,
 )
 from pyramid.renderers import render_to_response
-from pyramid.security import authenticated_userid
+from pyramid.security import forget
+from pyramid.settings import asbool
 from pyramid.threadlocal import (
     get_current_request,
     manager,
@@ -182,10 +183,17 @@ def security_tween_factory(handler, registry):
         login = None
         expected_user = request.headers.get('X-If-Match-User')
         if expected_user is not None:
-            login = authenticated_userid(request)
+            login = request.authenticated_userid
             if login != 'mailto.' + expected_user:
                 detail = 'X-If-Match-User does not match'
                 raise HTTPPreconditionFailed(detail)
+
+        # wget may only send credentials following a challenge response.
+        auth_challenge = asbool(request.headers.get('X-Auth-Challenge', False))
+        if auth_challenge or request.authorization is not None:
+            login = request.authenticated_userid
+            if login is None:
+                raise HTTPUnauthorized(headerlist=forget(request))
 
         if request.method in ('GET', 'HEAD'):
             return handler(request)
@@ -203,13 +211,11 @@ def security_tween_factory(handler, registry):
             raise CSRFTokenError('Incorrect CSRF token')
 
         if login is None:
-            login = authenticated_userid(request)
+            login = request.authenticated_userid
         if login is not None:
             namespace, userid = login.split('.', 1)
             if namespace != 'mailto':
                 return handler(request)
-        if request.authorization is not None:
-            raise HTTPUnauthorized()
         raise CSRFTokenError('Missing CSRF token')
 
     return security_tween

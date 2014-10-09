@@ -101,8 +101,8 @@ def test_json_basic_auth(anonhtmltestapp):
     import base64
     url = '/'
     value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
-    res = anonhtmltestapp.get(url, headers={'Authorization': value}, status=200)
-    assert res.json['@id']
+    res = anonhtmltestapp.get(url, headers={'Authorization': value}, status=401)
+    assert res.content_type == 'application/json'
 
 
 def _test_antibody_approval_creation(testapp):
