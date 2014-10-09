@@ -3,18 +3,7 @@
     "node": true,
     "browser": true,
     "predef": [
-        "$script",
-        "DOMParser",
-        "Event",
-        "afterEach",
-        "beforeEach",
-        "describe",
-        "expect",
-        "it",
-        "jest",
-        "pit",
-        "xdescribe",
-        "xit"
+        "Event"
     ],
     "globalstrict": true,
     "newcap": false,

@@ -6,7 +6,9 @@ var through         = require('through');
 module.exports = function(file, options) {
 
   function transformer(source) {
-    return reactTransform(source, options);
+    var opts = Object.create(options);
+    opts.sourceFilename = file;
+    return reactTransform(source, opts);
   }
 
   var data = '';
