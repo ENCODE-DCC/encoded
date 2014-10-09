@@ -2,13 +2,16 @@
 var React = require('react');
 var doctype = '<!DOCTYPE html>\n';
 var transformResponse = require('subprocess-middleware').transformResponse;
+var fs = require('fs');
+var inline = fs.readFileSync(__dirname + '/../build/inline.js').toString();
 
 var render = function (Component, body, res) {
     //var start = process.hrtime();
     var context = JSON.parse(body);
     var props = {
         context: context,
-        href: res.getHeader('X-href') || context['@id']
+        href: res.getHeader('X-href') || context['@id'],
+        inline: inline
     };
     var component, markup;
     try {

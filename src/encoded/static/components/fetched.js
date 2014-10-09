@@ -3,6 +3,7 @@
 var React = require('react');
 var parseError = require('./mixins').parseError;
 var globals = require('./globals');
+var ga = require('google-analytics');
 
 
 var Fetched = module.exports.Fetched = {
@@ -65,7 +66,6 @@ var Fetched = module.exports.Fetched = {
 
     fail: function (xhr, status, error) {
         if (status == 'abort') return;
-        var ga = window.ga;
         var data = parseError(xhr, status);
         ga('send', 'exception', {
             'exDescription': 'fetchedRequest:' + status + ':' + xhr.statusText,
