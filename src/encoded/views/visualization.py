@@ -27,13 +27,13 @@ def render(data):
     return arr
 
 
-def get_parent_track(accession, label):
+def get_parent_track(accession, label, visibility):
     parent = OrderedDict([
         ('sortOrder', 'view=+'),
         ('type', 'bed 3'),
         ('subGroup1', 'view Views PK=Peaks SIG=Signals'),
         ('dragAndDrop', 'subTracks'),
-        ('visibility', 'full'),
+        ('visibility', visibility),
         ('compositeTrack', 'on'),
         ('longLabel', label),
         ('shortLabel', accession),
@@ -43,7 +43,7 @@ def get_parent_track(accession, label):
     return NEWLINE.join(parent_array)
 
 
-def get_track(f, label, parent):
+def get_track(f, label, parent, visibility):
     '''Returns tracks for each file'''
 
     file_format = 'bigWig 1.000000 3291154.000000'
@@ -67,7 +67,7 @@ def get_track(f, label, parent):
 
     track = OrderedDict([
         ('subGroups', sub_group),
-        ('visibility', 'full'),
+        ('visibility', visibility),
         ('longLabel', label + ' ' + replicate_number),
         ('shortLabel', f['accession']),
         ('parent', parent + ' on'),
@@ -85,14 +85,14 @@ def get_track(f, label, parent):
     return (NEWLINE + (2 * TAB)).join(track_array)
 
 
-def get_peak_view(accession, view):
+def get_peak_view(accession, view, visibility):
     s_label = view + 's'
     track_name = view + 'View'
     view_data = OrderedDict([
         ('autoScale', 'on'),
         ('type', 'bigBed'),
         ('viewUi', 'on'),
-        ('visibility', 'dense'),
+        ('visibility', visibility),
         ('view', 'PK'),
         ('shortLabel', s_label),
         ('parent', accession),
@@ -102,7 +102,7 @@ def get_peak_view(accession, view):
     return (NEWLINE + TAB).join(view_array)
 
 
-def get_signal_view(accession, view):
+def get_signal_view(accession, view, visibility):
     s_label = view + 's'
     track_name = view + 'View'
     view_data = OrderedDict([
@@ -110,7 +110,7 @@ def get_signal_view(accession, view):
         ('maxHeightPixels', '100:32:8'),
         ('type', 'bigWig'),
         ('viewUi', 'on'),
-        ('visibility', 'full'),
+        ('visibility', visibility),
         ('view', 'SIG'),
         ('shortLabel', s_label),
         ('parent', accession),
@@ -139,7 +139,7 @@ def get_hub(label):
     return render(hub)
 
 
-def generate_trackDb(embedded):
+def generate_trackDb(embedded, visibility):
     
     files = embedded.get('files', None)
     long_label = '{assay_term_name} of {biosample_term_name} - {accession}'.format(
@@ -151,7 +151,7 @@ def generate_trackDb(embedded):
         long_label = long_label + '(Target - {label})'.format(
             label=embedded['target']['label']
         )
-    parent = get_parent_track(embedded['accession'], long_label)
+    parent = get_parent_track(embedded['accession'], long_label, visibility)
     track_label = '{assay} of {biosample} - {accession}'.format(
         assay=embedded['assay_term_name'],
         biosample=embedded['biosample_term_name'],
@@ -164,17 +164,17 @@ def generate_trackDb(embedded):
     for f in files:
         if f['file_format'] in BIGBED_FILE_TYPES:
             if call_count == 0:
-                peak_view = get_peak_view(embedded['accession'], 'PK') + NEWLINE + (2 * TAB)
+                peak_view = get_peak_view(embedded['accession'], 'PK', visibility) + NEWLINE + (2 * TAB)
             else:
                 peak_view = peak_view + NEWLINE
-            peak_view = peak_view + NEWLINE + (2 * TAB) + get_track(f, track_label, 'PKView')
+            peak_view = peak_view + NEWLINE + (2 * TAB) + get_track(f, track_label, 'PKView', visibility)
             call_count = call_count + 1
         elif f['file_format'] == 'bigWig':
             if signal_count == 0:
-                signal_view = get_signal_view(embedded['accession'], 'SIG') + NEWLINE + (2 * TAB)
+                signal_view = get_signal_view(embedded['accession'], 'SIG', visibility) + NEWLINE + (2 * TAB)
             else:
                 signal_view = signal_view + NEWLINE
-            signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(f, track_label, 'SIGView')
+            signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(f, track_label, 'SIGView', visibility)
             signal_count = signal_count + 1
     if signal_view == '':
         parent = parent + (NEWLINE * 2) + TAB + peak_view
@@ -234,11 +234,9 @@ def generate_html(context, request):
 
     file_table = '<table><tr><th>Accession</th><th>File format</th><th>Output type</th><th>Biological replicate</th><th>Download link</th></tr>{files}</table>' \
         .format(files=data_files)
-    data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
     header = '<p>This trackhub was automatically generated from the files and metadata for the experiment - ' + \
         data_accession
-    return data_description + header + file_table + data_policy
-
+    return data_description + header + file_table
 
 def generate_batch_hubs(request):
     '''search for the input params and return the trackhub'''
@@ -249,45 +247,37 @@ def generate_batch_hubs(request):
     params = params.replace(',,', '&')
     
     if len(request.matchdict) == 3:
+        assembly = request.matchdict['assembly']
+        params = params + FILE_QUERY + '&limit=all&assembly=' + assembly 
+        subreq = make_subrequest(request, '/search/?%s' % params)
+        subreq.override_renderer = 'null_renderer'
+        try:
+            results = request.invoke_subrequest(subreq)
+        except Exception as e:
+            print e
         if txt == TRACKDB_TXT:
             trackdb = ''
-            assembly = request.matchdict['assembly']
-            params = params + FILE_QUERY + '&limit=all&assembly=' + assembly 
-            subreq = make_subrequest(request, '/search/?%s' % params)
-            subreq.override_renderer = 'null_renderer'
-            try:
-                results = request.invoke_subrequest(subreq)
-            except Exception as e:
-                print e
-            for item in results['@graph']:
-                if trackdb == '':
-                    trackdb = 'include ' + item['accession'] + '.txt' + 2 * NEWLINE
-                else:
-                    trackdb = trackdb + 'include ' + item['accession'] + '.txt' + 2 * NEWLINE
-            return trackdb
-        elif txt.startswith("ENCSR"):
-            exp = txt[:-4]
-            experiment = find_resource(request.root, exp)
-            embedded = embed(request, request.resource_path(experiment))
-            files = embedded.get('files', None)
-            track_label = '{assay} of {biosample} - {accession}'.format(
-                assay=embedded['assay_term_name'],
-                biosample=embedded['biosample_term_name'],
-                accession=embedded['accession']
-            )
-            tracks = ''
-            for f in files:
-                if f['file_format'] in BIGBED_FILE_TYPES + BIGWIG_FILE_TYPES:
-                    if tracks == '':
-                        tracks = get_track(f, track_label, '')
+            for i, item in enumerate(results['@graph']):
+                exp = item['accession']
+                experiment = find_resource(request.root, exp)
+                embedded = embed(request, request.resource_path(experiment))
+                if i < 5:
+                    if i == 1:
+                        trackdb = generate_trackDb(embedded, 'full')
                     else:
-                        tracks = tracks + 2 * NEWLINE + get_track(f, track_label, '')
-            return tracks
+                        trackdb = trackdb + NEWLINE + generate_trackDb(embedded, 'full')
+                else:
+                    trackdb = trackdb + NEWLINE + generate_trackDb(embedded, 'hide')
+            return trackdb
         else:
             # generate HTML for each experiment
-            exp = txt[:-5]
-            experiment = find_resource(request.root, exp)
-            return generate_html(experiment, request)
+            report = ''
+            data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
+            for item in results['@graph']:
+                exp = item['accession']
+                experiment = find_resource(request.root, exp)
+                report = report + '<br/><br/>' + generate_html(experiment, request)
+            return report + data_policy
     elif txt == HUB_TXT:
         return NEWLINE.join(get_hub('search'))
     elif txt == GENOMES_TXT:
@@ -331,7 +321,8 @@ def hub(context, request):
             content_type='text/plain'
         )
     elif url_ret[1][1:] == assembly + '/' + TRACKDB_TXT:
-        parent_track = generate_trackDb(embedded)
+        parent_track = generate_trackDb(embedded, 'full')
         return Response(parent_track, content_type='text/plain')
     else:
-        return Response(generate_html(context, request), content_type='text/html')
+        data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
+        return Response(generate_html(context, request) + data_policy, content_type='text/html')
