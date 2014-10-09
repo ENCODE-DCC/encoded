@@ -289,8 +289,8 @@ def search(context, request, search_type=None):
             if facet['count'] > 0:
                 hub = request.url.replace('search/?', 'batch_hub/') + '/hub.txt'
                 hub = hub.replace('&', ',,')
-                result['batch_hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
-                    'db=hg19',
+                hgConnect = 'http://genome.ucsc.edu/cgi-bin/hgHubConnect?hgHub_do_redirect=on&hgHubConnect.remakeTrackHub=on&'
+                result['batch_hub'] = hgConnect + '&'.join([
                     'hubUrl=' + hub
                 ])
                 break

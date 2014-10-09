@@ -4,9 +4,6 @@ from ..contentbase import Item, embed
 from ..renderers import make_subrequest
 from collections import OrderedDict
 import cgi
-from pyramid.traversal import (
-    find_resource,
-)
 
 TAB = '\t'
 NEWLINE = '\n'
