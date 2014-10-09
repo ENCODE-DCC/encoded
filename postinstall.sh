@@ -14,4 +14,4 @@ do
 done
 
 # Symlink shim modules.
-(cd node_modules && ln -s ../node_shims/* .)
+(cd node_modules && ln -s ../node_shims/* . || echo already installed)
