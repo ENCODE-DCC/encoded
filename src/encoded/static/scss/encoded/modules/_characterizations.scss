@@ -348,10 +348,14 @@ $indicator-notpursued:  #d0d0d0;
     }
 }
 
-
 .tooltip-trigger {
     position: relative;
     margin-left: 5px;
     font-size: 16px;
     cursor: default;
+}
+
+.facet-term-key {
+    margin-right: 5px;
+    font-size: 15px;
 }
