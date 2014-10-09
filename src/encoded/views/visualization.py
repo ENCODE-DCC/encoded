@@ -268,8 +268,8 @@ def generate_batch_hubs(request):
         if txt == TRACKDB_TXT:
             trackdb = ''
             for i, experiment in enumerate(results['@graph']):
-                if i < 6:
-                    if i == 1:
+                if i < 5:
+                    if i == 0:
                         trackdb = generate_trackDb(experiment, 'full')
                     else:
                         trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'full')
