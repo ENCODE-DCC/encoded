@@ -40,13 +40,7 @@ describe("Server rendering", function () {
     });
 
     it("mounts the application over the rendered html", function () {
-        var props = {};
-        props.href = document.querySelector('link[rel="canonical"]').href;
-        var script_props = document.querySelectorAll('script[data-prop-name]');
-        for (var i = 0; i < script_props.length; i++) {
-            var elem = script_props[i];
-            props[elem.getAttribute('data-prop-name')] = JSON.parse(elem.text);
-        }
+        var props = App.getRenderedProps(document);
         var app = React.renderComponent(App(props), document);
         expect(app.getDOMNode()).toBe(document.documentElement);
     });
