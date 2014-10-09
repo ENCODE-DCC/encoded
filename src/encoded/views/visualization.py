@@ -164,17 +164,29 @@ def generate_trackDb(embedded, visibility):
     for f in files:
         if f['file_format'] in BIGBED_FILE_TYPES:
             if call_count == 0:
-                peak_view = get_peak_view(embedded['accession'], embedded['accession'] + 'PK', visibility) + NEWLINE + (2 * TAB)
+                peak_view = get_peak_view(
+                    embedded['accession'],
+                    embedded['accession'] + 'PK', visibility
+                ) + NEWLINE + (2 * TAB)
             else:
                 peak_view = peak_view + NEWLINE
-            peak_view = peak_view + NEWLINE + (2 * TAB) + get_track(f, track_label, embedded['accession'] + 'PKView', visibility)
+            peak_view = peak_view + NEWLINE + (2 * TAB) + get_track(
+                f, track_label,
+                embedded['accession'] + 'PKView', visibility
+            )
             call_count = call_count + 1
         elif f['file_format'] == 'bigWig':
             if signal_count == 0:
-                signal_view = get_signal_view(embedded['accession'], embedded['accession'] + 'SIG', visibility) + NEWLINE + (2 * TAB)
+                signal_view = get_signal_view(
+                    embedded['accession'],
+                    embedded['accession'] + 'SIG', visibility
+                ) + NEWLINE + (2 * TAB)
             else:
                 signal_view = signal_view + NEWLINE
-            signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(f, track_label, embedded['accession'] + 'SIGView', visibility)
+            signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(
+                f, track_label,
+                embedded['accession'] + 'SIGView',
+                visibility)
             signal_count = signal_count + 1
     if signal_view == '':
         parent = parent + (NEWLINE * 2) + TAB + peak_view
@@ -249,7 +261,7 @@ def generate_batch_hubs(request):
     
     if len(request.matchdict) == 3:
         assembly = request.matchdict['assembly']
-        params = params + FILE_QUERY + '&limit=all&assembly=' + assembly
+        params = params + FILE_QUERY + '&limit=all&frame=embedded&assembly=' + assembly
         subreq = make_subrequest(request, '/search/?%s' % params)
         subreq.override_renderer = 'null_renderer'
         try:
@@ -258,25 +270,20 @@ def generate_batch_hubs(request):
             print e
         if txt == TRACKDB_TXT:
             trackdb = ''
-            for i, item in enumerate(results['@graph']):
-                exp = item['accession']
-                experiment = find_resource(request.root, exp)
-                embedded = embed(request, request.resource_path(experiment))
+            for i, experiment in enumerate(results['@graph']):
                 if i < 6:
                     if i == 1:
-                        trackdb = generate_trackDb(embedded, 'full')
+                        trackdb = generate_trackDb(experiment, 'full')
                     else:
-                        trackdb = trackdb + NEWLINE + generate_trackDb(embedded, 'full')
+                        trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'full')
                 else:
-                    trackdb = trackdb + NEWLINE + generate_trackDb(embedded, 'hide')
+                    trackdb = trackdb + NEWLINE + generate_trackDb(experiment, 'hide')
             return trackdb
         else:
             # generate HTML for each experiment
             report = ''
             data_policy = '<br /><a href="http://encodeproject.org/ENCODE/terms.html">ENCODE data use policy</p>'
-            for item in results['@graph']:
-                exp = item['accession']
-                experiment = find_resource(request.root, exp)
+            for experiment in results['@graph']:
                 report = report + '<br/><br/>' + generate_html(experiment, request)
             return report + data_policy
     elif txt == HUB_TXT:
