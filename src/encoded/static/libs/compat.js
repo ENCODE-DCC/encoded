@@ -6,7 +6,30 @@ require('es5-shim/es5-sham');
 
 if (typeof console === 'undefined') {
     window.console = {};
-    window.console.log = window.console.warn = window.console.table = function () {};
+}
+var console_methods = [
+    'count',
+    'dir',
+    'error',
+    'group',
+    'groupCollapsed',
+    'groupEnd',
+    'info',
+    'log',
+    'time',
+    'timeEnd',
+    'trace',
+    'warn',
+    'debug',
+    'table',
+    'assert'
+];
+function ignore() {}
+for (var i=0, l=console_methods.length; i < l; i++) {
+    var name = console_methods[i];
+    if (window.console[name] === undefined) {
+        window.console[name] = ignore;
+    }
 }
 
 })();

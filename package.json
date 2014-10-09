@@ -4,7 +4,7 @@
   "description": "jquery, domready held back.",
   "scripts": {
     "test": "jest",
-    "postinstall": "find node_modules -name falafel -type d -print0 | xargs -0 patch -p1 -f -i $(pwd)/falafel.patch -d || echo already applied"
+    "postinstall": "sh postinstall.sh"
   },
   "author": "",
   "license": "MIT",
@@ -22,11 +22,12 @@
   "devDependencies": {
     "brfs": "^1.2.0",
     "browserify": "^5.10.1",
-    "exorcist": "^0.1.6",
+    "envify": "^3.0.0",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-copy": "^0.5.0",
     "jest-cli": "^0.1.18",
+    "minifyify": "^4.4.0",
     "moment": "^2.8.2",
     "react-tools": "^0.11.2",
     "through": "^2.3.4"
@@ -36,7 +37,6 @@
     "cookie-cutter": "^0.1.1",
     "d3": "^3.4.6",
     "domready": "^0.3.0",
-    "envify": "^3.0.0",
     "es5-shim": "^4.0.3",
     "jquery": "^1.11.1",
     "node-ckeditor": "^4.3.2",

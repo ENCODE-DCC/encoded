@@ -2,6 +2,7 @@
 'use strict';
 var React = require('react');
 var globals = require('../globals');
+var $script = require('scriptjs');
 
 var ReactForms = require('react-forms');
 var Schema = ReactForms.schema.Schema;
@@ -31,7 +32,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
     },
 
     setupEditor: function() {
-        var ck = window.CKEDITOR;
+        var ck = require('ckeditor');
         ck.disableAutoInline = true;
         this.editor = ck.inline(this.getDOMNode(), {
             language: 'en',
