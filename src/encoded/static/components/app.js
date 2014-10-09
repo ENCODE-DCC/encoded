@@ -194,7 +194,6 @@ var App = React.createClass({
                     {base ? <base href={base}/> : null}
                     <link rel="canonical" href={canonical} />
                     <script async src='//www.google-analytics.com/analytics.js'></script>
-                    <script dangerouslySetInnerHTML={{__html: '\nwindow.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;'}}></script>
                     <script data-prop-name="inline" dangerouslySetInnerHTML={{__html: this.props.inline}}></script>
                     <link rel="stylesheet" href="/static/css/style.css" />
                     <script src="/static/build/bundle.js" async defer></script>

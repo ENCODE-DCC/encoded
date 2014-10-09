@@ -1,8 +1,6 @@
 'use strict';
 module.exports = function(grunt) {
     var path = require('path');
-    var exposify = require('exposify');
-    exposify.config = {'google-analytics': 'ga', ckeditor: 'CKEDITOR'};
 
     function compressPath(p) {
         var src = 'src/encoded/static/';
@@ -45,12 +43,12 @@ module.exports = function(grunt) {
                 },
                 require: [
                     'scriptjs',
+                    'google-analytics',
                 ],
                 transform: [
                     [{harmony: true, sourceMap: true}, './reactify'],
                     'brfs',
                     'envify',
-                    'exposify',
                 ],
                 plugin: [
                     ['minifyify', {
@@ -89,7 +87,6 @@ module.exports = function(grunt) {
                     [{harmony: true, sourceMap: true}, './reactify'],
                     'brfs',
                     'envify',
-                    'exposify',
                 ],
                 plugin: [
                     ['minifyify', {
