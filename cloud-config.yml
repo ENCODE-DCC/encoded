@@ -67,6 +67,7 @@ runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - set -e
+- sudo update-rc.d elasticsearch defaults
 - sudo service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
 - sudo -u postgres createuser encoded

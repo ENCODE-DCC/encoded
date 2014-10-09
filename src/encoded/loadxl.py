@@ -21,6 +21,7 @@ ORDER = [
     'construct_characterization',
     'rnai',
     'rnai_characterization',
+    'talen',
     'mouse_donor',
     'fly_donor',
     'worm_donor',
@@ -488,6 +489,9 @@ PHASE1_PIPELINES = {
     'biosample': [
         remove_keys('derived_from', 'pooled_from'),
     ],
+    'library': [
+        remove_keys('spikeins_used'),
+    ],
     'dataset': [
         remove_keys('related_files'),
     ],
@@ -510,6 +514,9 @@ PHASE2_PIPELINES = {
     ],
     'biosample': [
         skip_rows_missing_all_keys('derived_from', 'pooled_from'),
+    ],
+    'library': [
+        skip_rows_missing_all_keys('spikeins_used'),
     ],
     'experiment': [
         skip_rows_missing_all_keys('related_files', 'possible_controls'),

@@ -90,7 +90,8 @@ class ItemWithAttachment(Item):
                 download_meta['charset'] = charset
             # Make sure the mimetype appears to be what the client says it is
             mime_type_detected = magic.from_buffer(data, mime=True)
-            if mime_type_declared and not mimetypes_are_equal(mime_type_declared, mime_type_detected):
+            if mime_type_declared and not mimetypes_are_equal(
+                    mime_type_declared, mime_type_detected):
                 msg = "Incorrect file type. (Appears to be %s)" % mime_type_detected
                 raise ValidationFailure('body', [prop_name, 'href'], msg)
             mime_type = mime_type_declared or mime_type_detected
@@ -113,7 +114,8 @@ class ItemWithAttachment(Item):
             mime_type_from_filename, _ = mimetypes.guess_type(filename)
             if not mimetypes_are_equal(mime_type, mime_type_from_filename):
                 raise ValidationFailure(
-                    'body', [prop_name, 'href'], 'Wrong file extension for %s mimetype.' % mime_type)
+                    'body', [prop_name, 'href'],
+                    'Wrong file extension for %s mimetype.' % mime_type)
 
             # Validate images and store height/width
             major, minor = mime_type.split('/')

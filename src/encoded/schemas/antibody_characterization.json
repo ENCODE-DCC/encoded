@@ -25,6 +25,9 @@
                 {
                     "required": ["characterization_reviews"],
                     "properties": {
+                        "characterization_reviews": {
+                            "minItems": 1
+                        },
                         "status": {
                             "enum": ["pending dcc review", "compliant", "not compliant" ]
                         }

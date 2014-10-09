@@ -6,6 +6,7 @@ from ..contentbase import (
     Collection,
     location,
 )
+from ..types.base import paths_filtered_by_status
 from ..types.download import ItemWithAttachment
 
 
@@ -16,13 +17,9 @@ def includeme(config):
 
 @view_config(name='testing-user', request_method='GET')
 def user(request):
-    from pyramid.security import (
-        authenticated_userid,
-        effective_principals,
-    )
     return {
-        'authenticated_userid': authenticated_userid(request),
-        'effective_principals': effective_principals(request),
+        'authenticated_userid': request.authenticated_userid,
+        'effective_principals': request.effective_principals,
     }
 
 
@@ -120,6 +117,9 @@ class TestingLinkTarget(Collection):
     item_embedded = [
         'reverse',
     ]
+    item_template = {
+        'reverse': lambda root, reverse: paths_filtered_by_status(root, reverse),
+    }
 
 
 @location('testing-post-put-patch')

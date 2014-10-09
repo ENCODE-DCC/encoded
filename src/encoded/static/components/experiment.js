@@ -225,7 +225,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         {context.aliases.length ? <dd>{aliasList}</dd> : null}
 
                         {context.references.length ? <dt>References</dt> : null}
-                        {context.references.length ? <dd><DbxrefList values={context.references} className="horizontal-list"/></dd> : null}
+                        {context.references.length ? <dd><DbxrefList values={context.references} /></dd> : null}
 
                         {context.date_released ? <dt>Date released</dt> : null}
                         {context.date_released ? <dd>{context.date_released}</dd> : null}
@@ -333,6 +333,22 @@ var AssayDetails = module.exports.AssayDetails = function (props) {
 
                 {platform ? <dt>Platform</dt> : null}
 				{platform ? <dd><a href={platform['@id']}>{platform.title}</a></dd> : null}
+
+                {library && library.spikeins_used && library.spikeins_used.length ?
+                    <div data-test="spikeins">
+                        <dt>Spike-ins datasets</dt>
+                        <dd>
+                            {library.spikeins_used.map(function(dataset, i) {
+                                return (
+                                    <span key={i}>
+                                        {i > 0 ? ', ' : ''}
+                                        <a href={dataset['@id']}>{dataset.accession}</a>
+                                    </span>
+                                );
+                            })}
+                        </dd>
+                    </div>
+                : null}
             </dl>
         </div>
     );

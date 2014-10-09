@@ -88,17 +88,10 @@
 
 .accession {
     position: relative;
-    margin-left: 8px;
     font-size: 1.3em;
     font-weight: bold;
 
     a {
-        &::before {
-            position: absolute;
-            content: "\25AA ";
-            left: -8px;
-        }
-
         &:hover {
             text-decoration: none;
         }

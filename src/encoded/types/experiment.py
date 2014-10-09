@@ -8,12 +8,22 @@ from .base import (
     ALLOW_SUBMITTER_ADD,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
 from .dataset import Dataset
 from pyramid.traversal import (
     find_resource,
 )
 import datetime
+
+
+def run_type(root, registry, replicates):
+    for replicate in replicates:
+        properties = find_resource(root, replicate).upgrade_properties()
+        if properties.get('status') in ('deleted', 'replaced'):
+            continue
+        if 'paired_ended' in properties:
+            return 'Paired-ended' if properties['paired_ended'] else 'Single-ended'
 
 
 @location('experiments')
@@ -28,20 +38,60 @@ class Experiment(Dataset):
     class Item(Dataset.Item):
         base_types = [Dataset.item_type] + Dataset.Item.base_types
         template = {
-            'organ_slims': [
-                {'$value': '{slim}', '$repeat': 'slim organ_slims', '$templated': True}
-            ],
-            'system_slims': [
-                {'$value': '{slim}', '$repeat': 'slim system_slims', '$templated': True}
-            ],
-            'developmental_slims': [
-                {'$value': '{slim}', '$repeat': 'slim developmental_slims', '$templated': True}
-            ],
-            'synonyms': [
-                {'$value': '{synonym}', '$repeat': 'synonym synonyms', '$templated': True}
-            ],
-            'month_released': {'$value': '{month_released}', '$templated': True, '$condition': 'date_released'},
-            'run_type': {'$value': '{run_type}', '$templated': True, '$condition': 'replicates'},
+            'organ_slims': {
+                '$value': (
+                    lambda registry, biosample_term_id:
+                        registry['ontology'][biosample_term_id]['organs']
+                        if biosample_term_id in registry['ontology'] else []
+                ),
+                '$condition': 'biosample_term_id',
+            },
+            'system_slims': {
+                '$value': (
+                    lambda registry, biosample_term_id:
+                        registry['ontology'][biosample_term_id]['systems']
+                        if biosample_term_id in registry['ontology'] else []
+                ),
+                '$condition': 'biosample_term_id',
+            },
+            'developmental_slims': {
+                '$value': (
+                    lambda registry, biosample_term_id:
+                        registry['ontology'][biosample_term_id]['developmental']
+                        if biosample_term_id in registry['ontology'] else []
+                ),
+                '$condition': 'biosample_term_id',
+            },
+            'biosample_synonyms': {
+                '$value': (
+                    lambda registry, biosample_term_id:
+                        registry['ontology'][biosample_term_id]['synonyms']
+                        if biosample_term_id in registry['ontology'] else []
+                ),
+                '$condition': 'biosample_term_id',
+            },
+            'assay_synonyms': {
+                '$value': (
+                    lambda registry, assay_term_id:
+                        # Add synonym and names since using differnt names for facet display
+                        registry['ontology'][assay_term_id]['synonyms'] +
+                        [registry['ontology'][assay_term_id]['name']]
+                        if assay_term_id in registry['ontology'] else []
+                ),
+                '$condition': 'assay_term_id',
+            },
+            'month_released': {
+                '$value': lambda date_released: datetime.datetime.strptime(
+                    date_released, '%Y-%m-%d').strftime('%B, %Y'),
+                '$condition': 'date_released',
+            },
+            'run_type': {
+                '$value': run_type,
+                '$condition': run_type,
+            },
+            'replicates': (
+                lambda root, replicates: paths_filtered_by_status(root, replicates)
+            ),
         }
         embedded = Dataset.Item.embedded + [
             'replicates.antibody',
@@ -55,6 +105,7 @@ class Experiment(Dataset):
             'replicates.library.biosample.treatments',
             'replicates.library.biosample.donor.organism',
             'replicates.library.biosample.treatments',
+            'replicates.library.spikeins_used',
             'replicates.library.treatments',
             'replicates.platform',
             'possible_controls',
@@ -63,33 +114,6 @@ class Experiment(Dataset):
         rev = {
             'replicates': ('replicate', 'experiment'),
         }
-
-        def template_namespace(self, properties, request=None):
-            ns = super(Experiment.Item, self).template_namespace(properties, request)
-            if request is None:
-                return ns
-            terms = request.registry['ontology']
-            ns['run_type'] = ''
-            if 'replicates' in ns:
-                for replicate in ns['replicates']:
-                    f = find_resource(request.root, replicate)
-                    if 'paired_ended' in f.properties:
-                        ns['run_type'] = 'Single-ended'
-                        if f.properties['paired_ended'] is True:
-                            ns['run_type'] = 'Paired-ended'
-            if 'date_released' in ns:
-                ns['month_released'] = datetime.datetime.strptime(ns['date_released'], '%Y-%m-%d').strftime('%B, %Y')
-            if 'biosample_term_id' in ns:
-                if ns['biosample_term_id'] in terms:
-                    ns['organ_slims'] = terms[ns['biosample_term_id']]['organs']
-                    ns['system_slims'] = terms[ns['biosample_term_id']]['systems']
-                    ns['developmental_slims'] = terms[ns['biosample_term_id']]['developmental']
-                    ns['synonyms'] = terms[ns['biosample_term_id']]['synonyms']
-                else:
-                    ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
-            else:
-                ns['organ_slims'] = ns['system_slims'] = ns['developmental_slims'] = ns['synonyms'] = []
-            return ns
 
 
 @location('replicates')
@@ -103,7 +127,6 @@ class Replicates(Collection):
     }
 
     class Item(Collection.Item):
-        parent_property = 'experiment'
         namespace_from_path = {
             'lab': 'experiment.lab',
             'award': 'experiment.award',
@@ -115,4 +138,7 @@ class Replicates(Collection):
                 '$templated': True,
             },
         ]
-        embedded = set(['library', 'platform'])
+        embedded = [
+            'library',
+            'platform',
+        ]

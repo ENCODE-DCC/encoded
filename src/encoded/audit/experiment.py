@@ -1,5 +1,6 @@
 
 import string
+from pyramid.traversal import find_resource
 from ..auditor import (
     AuditFailure,
     audit_checker,
@@ -51,11 +52,13 @@ def audit_experiment_assay(value, system):
 
     if 'assay_term_id' not in value:
         detail = 'assay_term_id missing'
-        raise AuditFailure('missing assay information', detail, level='ERROR')
+        yield AuditFailure('missing assay information', detail, level='ERROR')
+        return
 
     if 'assay_term_name' not in value:
         detail = 'assay_term_name missing'
-        raise AuditFailure('missing assay information', detail, level='ERROR')
+        yield AuditFailure('missing assay information', detail, level='ERROR')
+        return
 
     ontology = system['registry']['ontology']
     term_id = value.get('assay_term_id')
@@ -63,14 +66,22 @@ def audit_experiment_assay(value, system):
 
     if term_id.startswith('NTR:'):
         detail = '{} - {}'.format(term_id, term_name)
-        raise AuditFailure('NTR, assay', detail, level='WARNING')
+        yield AuditFailure('NTR, assay', detail, level='WARNING')
+        return
 
-    # if term_id not in ontology:
-    #    detail = 'assay_term_id - {}'.format(term_id)
-    #    raise AuditFailure('assay term_id not in ontology', term_id, level='ERROR')
+    if term_id not in ontology:
+        detail = 'assay_term_id - {}'.format(term_id)
+        yield AuditFailure('assay term_id not in ontology', term_id, level='ERROR')
+        return
 
-    # Must talk to nikhil and venkat about synonyms.  We want to  have a valid
-    # synonym for that term
+    ontology_term_name = ontology[term_id]['name']
+    modifed_term_name = term_name + ' assay'
+    if (ontology_term_name != term_name and term_name not in ontology[term_id]['synonyms']) and \
+        (ontology_term_name != modifed_term_name and
+            modifed_term_name not in ontology[term_id]['synonyms']):
+        detail = '{} - {} - {}'.format(term_id, term_name, ontology_term_name)
+        yield AuditFailure('assay term name mismatch', detail, level='ERROR')
+        return
 
 
 @audit_checker('experiment')
@@ -106,7 +117,7 @@ def audit_experiment_target(value, system):
             yield AuditFailure('missing antibody', detail, level='ERROR')
         else:
             antibody = rep['antibody']
-    
+                   
             if 'recombinant protein' in target['investigated_as']:
                 prefix = target['label'].split('-')[0]
                 unique_antibody_target = set()
@@ -372,13 +383,16 @@ def audit_experiment_antibody_eligible(value, system):
 
         biosample = lib['biosample']
         organism = biosample['organism']['name']
+        context = system['context']
 
         if 'histone modification' in target['investigated_as']:
             for lot_review in antibody['lot_reviews']:
                 if (lot_review['status'] == 'eligible for new data') and (lot_review['biosample_term_id'] == 'NTR:00000000'):
                     organism_match = False
-                    for lot_organism in lot_review['organisms']:
-                        if organism == lot_organism.get('name'):
+                    for lo in lot_review['organisms']:
+                        lot_organism = find_resource(context, lo)
+                        lot_organism_properties = lot_organism.upgrade_properties(finalize=False)
+                        if organism == lot_organism_properties['name']:
                             organism_match = True
                     if not organism_match:
                         detail = '{} not eligible for {}'.format(antibody["@id"], organism)
@@ -393,8 +407,10 @@ def audit_experiment_antibody_eligible(value, system):
             eligible_biosamples = set()
             for lot_review in antibody['lot_reviews']:
                 if lot_review['status'] == 'eligible for new data':
-                    for lot_organism in lot_review['organisms']:
-                        eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_organism.get('name')])
+                    for lo in lot_review['organisms']:
+                        lot_organism = find_resource(context, lo)
+                        lot_organism_properties = lot_organism.upgrade_properties(finalize=False)
+                        eligible_biosample = frozenset([lot_review['biosample_term_id'], lot_organism_properties['name']])
                         eligible_biosamples.add(eligible_biosample)
             if experiment_biosample not in eligible_biosamples:
                 detail = '{} not eligible for {} in {}'.format(antibody["@id"], biosample_term_name, organism)

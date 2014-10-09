@@ -75,12 +75,81 @@
             "type": "string",
             "default": "in progress",
             "enum" : [
-                "in progress",
+                "planned",
+                "in preparation",
+                "submitted",
+                "in revision",
+                "in press",
+                "published",
                 "deleted",
-                "replaced",
-                "proposed",
-                "published"
+                "replaced"
             ]
+        },
+        "datasets": {
+            "title": "Dataset",
+            "description": "The datasets referred to by the publication.",
+            "type": "array",
+            "items": {
+                "title": "Datasets",
+                "description": "A datasets referred to by the publication.",
+                "comment": "See dataset.json for available identifiers.",
+                "type":  "string",
+                "linkTo": "dataset"
+            }
+        },
+        "supplementary_data": {
+            "title": "Supplementary_data",
+            "description": "Description of data found in the publication.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Supplementary data details",
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "url": {
+                        "title": "URL",
+                        "description": "External resources with additional information or supplemental files associated with the publication.",
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "file_format": {
+                        "title": "File format",
+                        "description": "Description of the file format of files downloaded from the URL.",
+                        "type": "string",
+                        "enum" : [
+                            "BED",
+                            "TSV",
+                            "GTF",
+                            "VCF",
+                            "text",
+                            "other format"
+                            ]
+                    },
+                    "supplementary_data_type": {
+                        "title": "Supplementary data type",
+                        "description": "The type of supplementary data reader should expect.",
+                        "type": "string",
+                        "enum" : [
+                            "peak calls",
+                            "enhancer annotations",
+                            "RNA annotations",
+                            "promoter regions",
+                            "HMM regions",
+                            "HOT regions",
+                            "website",
+                            "motifs",
+                            "genomic annotations",
+                            "connectivity"
+                            ]
+                    },
+                    "data_summary": {
+                        "title": "Method summary",
+                        "description": "An explanation how the methods or results presented in the publication advance the understanding of how regions on the genome interact with each other.",
+                        "type": "string"
+                    }
+                }
+            }
         },
         "categories": {
             "title": "Categories",
@@ -90,34 +159,35 @@
                 "type": "string",
                 "enum" : [
                     "human disease",
-            "basic biology",
-            "software tool",
-            "database",
-            "integrative analysis",
-            "technology development",
-            "data standard",
-            "key publication",
-            "pilot phase publication",
-            "model organism biology",
-            "tutorial"
-        ]
+                    "basic biology",
+                    "software tool",
+                    "database",
+                    "integrative analysis",
+                    "technology development",
+                    "data standard",
+                    "key publication",
+                    "pilot phase publication",
+                    "model organism biology",
+                    "tutorial",
+                    "genomic annotations"
+                ]
             }      
         },
-    "published_by": {
-        "title": "Published by",
-        "type": "array",
-        "default": ["ENCODE"],
-        "items": {
+        "published_by": {
             "title": "Published by",
-        "type": "string",
-        "enum": [
-            "ENCODE",
-            "mouseENCODE",
-            "modENCODE",
-            "community"
-        ]
-        }
-    },
+            "type": "array",
+            "default": ["ENCODE"],
+            "items": {
+                "title": "Published by",
+            "type": "string",
+            "enum": [
+                "ENCODE",
+                "mouseENCODE",
+                "modENCODE",
+                "community"
+                ]
+            }
+        },
         "data_used": {
             "title": "Data used",
             "type": "string"
@@ -131,6 +201,10 @@
         "categories": {
             "title": "Category",
             "type": "array"
+        },
+        "supplementary_data.supplementary_data_type": {
+            "title": "Available supplemental data",
+            "type": "string"
         },
         "publication_year": {
             "title": "Publication year",

@@ -8,7 +8,9 @@ from .base import (
     ACCESSION_KEYS,
     ALIAS_KEYS,
     Collection,
+    paths_filtered_by_status,
 )
+from itertools import chain
 from pyramid.traversal import (
     find_resource,
 )
@@ -16,14 +18,20 @@ from urllib import quote_plus
 from urlparse import urljoin
 
 
-def file_is_revoked(file, root):
-    item = find_resource(root, file)
+def file_is_revoked(root, path):
+    item = find_resource(root, path)
     return item.upgrade_properties()['status'] == 'revoked'
 
 
-def file_not_revoked(file, root):
-    item = find_resource(root, file)
-    return item.upgrade_properties()['status'] != 'revoked'
+def assembly(root, original_files, related_files):
+    for path in chain(original_files, related_files):
+        f = find_resource(root, path)
+        properties = f.upgrade_properties(finalize=False)
+        if properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
+                properties['status'] in ['released']:
+            if 'assembly' in properties:
+                return properties['assembly']
+    return None
 
 
 @location('datasets')
@@ -37,32 +45,30 @@ class Dataset(Collection):
 
     class Item(Collection.Item):
         template = {
-            'files': [
-                {
-                    '$value': '{file}',
-                    '$repeat': ('file', 'original_files', file_not_revoked),
-                    '$templated': True,
-                },
-                {
-                    '$value': '{file}',
-                    '$repeat': ('file', 'related_files', file_not_revoked),
-                    '$templated': True,
-                },
-            ],
-            'revoked_files': [
-                {
-                    '$value': '{file}',
-                    '$repeat': ('file', 'original_files', file_is_revoked),
-                    '$templated': True,
-                },
-                {
-                    '$value': '{file}',
-                    '$repeat': ('file', 'related_files', file_is_revoked),
-                    '$templated': True,
-                },
-            ],
-            'hub': {'$value': '{item_uri}@@hub/hub.txt', '$templated': True, '$condition': 'assembly'},
-            'assembly': {'$value': '{assembly}', '$templated': True, '$condition': 'assembly'},
+            # XXX Still needed?
+            'original_files': (
+                lambda root, original_files: paths_filtered_by_status(root, original_files)
+            ),
+            'files': (
+                lambda root, original_files, related_files: paths_filtered_by_status(
+                    root, chain(original_files, related_files),
+                    exclude=('revoked', 'deleted', 'replaced'),
+                )
+            ),
+            'revoked_files': (
+                lambda root, original_files, related_files: [
+                    path for path in chain(original_files, related_files)
+                    if file_is_revoked(root, path)
+                ]
+            ),
+            'hub': {
+                '$value': '{item_uri}@@hub/hub.txt',
+                '$condition': assembly,
+            },
+            'assembly': {
+                '$value': assembly,
+                '$condition': assembly,
+            },
         }
         embedded = [
             'files',
@@ -90,26 +96,14 @@ class Dataset(Collection):
             'original_files': ('file', 'dataset'),
         }
 
-        def template_namespace(self, properties, request=None):
-            ns = super(Dataset.Item, self).template_namespace(properties, request)
-            if request is None:
-                return ns
-            for link in ns['original_files'] + ns['related_files']:
-                f = find_resource(request.root, link)
-                if f.properties['file_format'] in ['bigWig', 'bigBed', 'narrowPeak', 'broadPeak'] and \
-                        f.properties['status'] in ['released']:
-                    if 'assembly' in f.properties:
-                        ns['assembly'] = f.properties['assembly']
-                        break
-            return ns
-
         @classmethod
         def expand_page(cls, request, properties):
             properties = super(Dataset.Item, cls).expand_page(request, properties)
             if 'hub' in properties:
                 hub_url = urljoin(request.resource_url(request.root), properties['hub'])
                 properties = properties.copy()
-                properties['visualize_ucsc'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
+                hgTracks = 'http://genome.ucsc.edu/cgi-bin/hgTracks?'
+                properties['visualize_ucsc'] = hgTracks + '&'.join([
                     'db=' + quote_plus(properties['assembly']),
                     'hubUrl=' + quote_plus(hub_url, ':/@'),
                 ])
