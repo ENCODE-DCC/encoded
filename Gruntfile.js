@@ -75,6 +75,7 @@ module.exports = function(grunt) {
                     'brace/mode/json',
                     'brace/theme/solarized_light',
                     'scriptjs',
+                    'google-analytics',
                 ],
                 require: [
                     'domready',
