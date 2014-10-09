@@ -40,7 +40,7 @@ def get_parent_track(accession, label, visibility):
     return NEWLINE.join(parent_array)
 
 
-def get_track(f, label, parent, visibility):
+def get_track(f, label, parent):
     '''Returns tracks for each file'''
 
     file_format = 'bigWig 1.000000 3291154.000000'
@@ -64,7 +64,7 @@ def get_track(f, label, parent, visibility):
 
     track = OrderedDict([
         ('subGroups', sub_group),
-        ('visibility', visibility),
+        ('visibility', 'full'),
         ('longLabel', label + ' ' + replicate_number),
         ('shortLabel', f['accession']),
         ('parent', parent + ' on'),
@@ -82,14 +82,14 @@ def get_track(f, label, parent, visibility):
     return (NEWLINE + (2 * TAB)).join(track_array)
 
 
-def get_peak_view(accession, view, visibility):
+def get_peak_view(accession, view):
     s_label = view + 's'
     track_name = view + 'View'
     view_data = OrderedDict([
         ('autoScale', 'on'),
         ('type', 'bigBed'),
         ('viewUi', 'on'),
-        ('visibility', visibility),
+        ('visibility', 'full'),
         ('view', 'PK'),
         ('shortLabel', s_label),
         ('parent', accession),
@@ -99,7 +99,7 @@ def get_peak_view(accession, view, visibility):
     return (NEWLINE + TAB).join(view_array)
 
 
-def get_signal_view(accession, view, visibility):
+def get_signal_view(accession, view):
     s_label = view + 's'
     track_name = view + 'View'
     view_data = OrderedDict([
@@ -107,7 +107,7 @@ def get_signal_view(accession, view, visibility):
         ('maxHeightPixels', '100:32:8'),
         ('type', 'bigWig'),
         ('viewUi', 'on'),
-        ('visibility', visibility),
+        ('visibility', 'full'),
         ('view', 'SIG'),
         ('shortLabel', s_label),
         ('parent', accession),
@@ -163,27 +163,27 @@ def generate_trackDb(embedded, visibility):
             if call_count == 0:
                 peak_view = get_peak_view(
                     embedded['accession'],
-                    embedded['accession'] + 'PK', visibility
+                    embedded['accession'] + 'PK'
                 ) + NEWLINE + (2 * TAB)
             else:
                 peak_view = peak_view + NEWLINE
             peak_view = peak_view + NEWLINE + (2 * TAB) + get_track(
                 f, track_label,
-                embedded['accession'] + 'PKView', visibility
+                embedded['accession'] + 'PKView'
             )
             call_count = call_count + 1
         elif f['file_format'] == 'bigWig':
             if signal_count == 0:
                 signal_view = get_signal_view(
                     embedded['accession'],
-                    embedded['accession'] + 'SIG', visibility
+                    embedded['accession'] + 'SIG'
                 ) + NEWLINE + (2 * TAB)
             else:
                 signal_view = signal_view + NEWLINE
             signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(
                 f, track_label,
-                embedded['accession'] + 'SIGView',
-                visibility)
+                embedded['accession'] + 'SIGView'
+                )
             signal_count = signal_count + 1
     if signal_view == '':
         parent = parent + (NEWLINE * 2) + TAB + peak_view
