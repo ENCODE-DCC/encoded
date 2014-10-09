@@ -164,17 +164,17 @@ def generate_trackDb(embedded, visibility):
     for f in files:
         if f['file_format'] in BIGBED_FILE_TYPES:
             if call_count == 0:
-                peak_view = get_peak_view(embedded['accession'], 'PK', visibility) + NEWLINE + (2 * TAB)
+                peak_view = get_peak_view(embedded['accession'], embedded['accession'] + 'PK', visibility) + NEWLINE + (2 * TAB)
             else:
                 peak_view = peak_view + NEWLINE
-            peak_view = peak_view + NEWLINE + (2 * TAB) + get_track(f, track_label, 'PKView', visibility)
+            peak_view = peak_view + NEWLINE + (2 * TAB) + get_track(f, track_label, embedded['accession'] + 'PKView', visibility)
             call_count = call_count + 1
         elif f['file_format'] == 'bigWig':
             if signal_count == 0:
-                signal_view = get_signal_view(embedded['accession'], 'SIG', visibility) + NEWLINE + (2 * TAB)
+                signal_view = get_signal_view(embedded['accession'], embedded['accession'] + 'SIG', visibility) + NEWLINE + (2 * TAB)
             else:
                 signal_view = signal_view + NEWLINE
-            signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(f, track_label, 'SIGView', visibility)
+            signal_view = signal_view + NEWLINE + (2 * TAB) + get_track(f, track_label, embedded['accession'] + 'SIGView', visibility)
             signal_count = signal_count + 1
     if signal_view == '':
         parent = parent + (NEWLINE * 2) + TAB + peak_view
