@@ -37,7 +37,6 @@
     "cookie-cutter": "^0.1.1",
     "d3": "^3.4.6",
     "domready": "^0.3.0",
-    "envify": "^3.0.0",
     "es5-shim": "^4.0.3",
     "jquery": "^1.11.1",
     "node-ckeditor": "^4.3.2",
