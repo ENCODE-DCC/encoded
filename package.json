@@ -4,7 +4,7 @@
   "description": "jquery, domready held back.",
   "scripts": {
     "test": "jest",
-    "postinstall": "find node_modules -name falafel -type d -print0 | xargs -0 patch -p1 -f -i $(pwd)/falafel.patch -d || echo already applied"
+    "postinstall": "sh postinstall.sh"
   },
   "author": "",
   "license": "MIT",
