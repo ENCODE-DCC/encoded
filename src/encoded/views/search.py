@@ -285,12 +285,15 @@ def search(context, request, search_type=None):
             })
 
     if search_type == 'experiment':
-        hub = request.url.replace('search/?', 'batch_hub/') + '/hub.txt'
-        hub = hub.replace('&', ',,')
-        result['batch_hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
-            'db=hg19',
-            'hubUrl=' + hub
-        ])
+        for facet in results['facets']['assembly']['terms']:
+            if facet['count'] > 0:
+                hub = request.url.replace('search/?', 'batch_hub/') + '/hub.txt'
+                hub = hub.replace('&', ',,')
+                result['batch_hub'] = 'http://genome.ucsc.edu/cgi-bin/hgTracks?' + '&'.join([
+                    'db=hg19',
+                    'hubUrl=' + hub
+                ])
+                break
 
     # Loading result rows
     hits = results['hits']['hits']

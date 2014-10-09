@@ -238,6 +238,7 @@ def generate_html(context, request):
         data_accession
     return data_description + header + file_table
 
+
 def generate_batch_hubs(request):
     '''search for the input params and return the trackhub'''
 
@@ -248,7 +249,7 @@ def generate_batch_hubs(request):
     
     if len(request.matchdict) == 3:
         assembly = request.matchdict['assembly']
-        params = params + FILE_QUERY + '&limit=all&assembly=' + assembly 
+        params = params + FILE_QUERY + '&limit=all&assembly=' + assembly
         subreq = make_subrequest(request, '/search/?%s' % params)
         subreq.override_renderer = 'null_renderer'
         try:
@@ -261,7 +262,7 @@ def generate_batch_hubs(request):
                 exp = item['accession']
                 experiment = find_resource(request.root, exp)
                 embedded = embed(request, request.resource_path(experiment))
-                if i < 5:
+                if i < 6:
                     if i == 1:
                         trackdb = generate_trackDb(embedded, 'full')
                     else:
@@ -294,7 +295,7 @@ def generate_batch_hubs(request):
                     if term['count'] != 0:
                         if g_text == '':
                             g_text = NEWLINE.join(get_genomes_txt(term['term']))
-                        else :
+                        else:
                             g_text = g_text + 2 * NEWLINE + NEWLINE.join(get_genomes_txt(term['term']))
         return g_text
 
