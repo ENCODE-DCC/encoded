@@ -1,5 +1,16 @@
 'use strict';
 module.exports = function(grunt) {
+    var path = require('path');
+
+    function compressPath(p) {
+        var src = 'src/encoded/static/';
+        p = path.relative(__dirname, p);
+        if (p.slice(0, src.length) == src) {
+            return '../' + p.slice(src.length);
+        }
+        return '../../' + p;
+    }
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         browserify: {
@@ -13,6 +24,40 @@ module.exports = function(grunt) {
                 options: {
                     debug: true,
                 },
+                plugin: [
+                    ['minifyify', {
+                        map: 'brace.js.map',
+                        output: './src/encoded/static/build/brace.js.map',
+                        compressPath: compressPath,
+                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                    }],
+                ],
+            },
+            inline: {
+                dest: './src/encoded/static/build/inline.js',
+                src: [
+                    './src/encoded/static/inline.js',
+                ],
+                options: {
+                    debug: true,
+                },
+                require: [
+                    'scriptjs',
+                    'google-analytics',
+                ],
+                transform: [
+                    [{harmony: true, sourceMap: true}, './reactify'],
+                    'brfs',
+                    'envify',
+                ],
+                plugin: [
+                    ['minifyify', {
+                        map: '/static/build/inline.js.map',
+                        output: './src/encoded/static/build/inline.js.map',
+                        compressPath: compressPath,
+                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                    }],
+                ],
             },
             browser: {
                 dest: './src/encoded/static/build/bundle.js',
@@ -22,10 +67,15 @@ module.exports = function(grunt) {
                     './src/encoded/static/libs/respond.js',
                     './src/encoded/static/browser.js',
                 ],
+                options: {
+                    debug: true,
+                },
                 external: [
                     'brace',
                     'brace/mode/json',
                     'brace/theme/solarized_light',
+                    'scriptjs',
+                    'google-analytics',
                 ],
                 require: [
                     'domready',
@@ -37,10 +87,16 @@ module.exports = function(grunt) {
                 transform: [
                     [{harmony: true, sourceMap: true}, './reactify'],
                     'brfs',
+                    'envify',
                 ],
-                options: {
-                    debug: true,
-                },
+                plugin: [
+                    ['minifyify', {
+                        map: 'bundle.js.map',
+                        output: './src/encoded/static/build/bundle.js.map',
+                        compressPath: compressPath,
+                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                    }],
+                ],
             },
             server: {
                 dest: './src/encoded/static/build/renderer.js',
@@ -53,16 +109,29 @@ module.exports = function(grunt) {
                 transform: [
                     [{harmony: true, sourceMap: true}, './reactify'],
                     'brfs',
+                    'envify',
+                ],
+                plugin: [
+                    ['minifyify', {map:
+                        'renderer.js.map',
+                        output: './src/encoded/static/build/renderer.js.map',
+                        compressPath: compressPath,
+                        uglify: {mangle: process.env.NODE_ENV == 'production'},
+                    }],
                 ],
                 external: [
                     'assert',
                     'brace',
                     'brace/mode/json',
                     'brace/theme/solarized_light',
+                    'source-map-support',
                 ],
                 ignore: [
                     'jquery',
                     'd3',
+                    'scriptjs',
+                    'google-analytics',
+                    'ckeditor',
                 ],
             },
         },
@@ -78,7 +147,6 @@ module.exports = function(grunt) {
 
     grunt.registerMultiTask('browserify', function () {
         var browserify = require('browserify');
-        var exorcist = require('exorcist');
         var path = require('path');
         var fs = require('fs');
         var data = this.data;
@@ -122,26 +190,17 @@ module.exports = function(grunt) {
             b.transform.apply(b, args);
         });
 
+        (data.plugin || []).forEach(function (args) {
+            if (typeof args === 'string') args = [args];
+            b.plugin.apply(b, args);
+        });
+
         var dest = data.dest;
         grunt.file.mkdir(path.dirname(dest));
 
-        var mapFilePath = dest + '.map';
-
-        b = b.bundle();
-        if (options.debug) {
-            b = b.pipe(exorcist(mapFilePath));
-        }
-        b.on('error', function (err) { console.error(err); });
         var out = fs.createWriteStream(dest);
-
-        b = b.pipe(out);
-        out.on('close', function () {
-            if (data.footer) {
-                fs.writeFileSync(dest, '\n' + data.footer, {flag: 'a'});
-            }
-            console.log('File ' + dest + ' created.');
-            done();
-        });
+        b.bundle().pipe(out);
+        out.on('close', done);
 
     });
 

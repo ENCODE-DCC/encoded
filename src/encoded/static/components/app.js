@@ -45,9 +45,6 @@ var user_actions = [
     {id: 'signout', title: 'Sign out', trigger: 'logout'}
 ];
 
-var scriptjs = fs.readFileSync(__dirname + '/../../../../node_modules/scriptjs/dist/script.min.js', 'utf-8');
-var inline = fs.readFileSync(__dirname + '/../inline.js', 'utf8');
-
 // App is the root component, mounted on document.body.
 // It lives for the entire duration the page is loaded.
 // App maintains state for the
@@ -196,8 +193,8 @@ var App = React.createClass({
                     <title>{title}</title>
                     {base ? <base href={base}/> : null}
                     <link rel="canonical" href={canonical} />
-                    <script dangerouslySetInnerHTML={{__html: scriptjs + '\n'}}></script>
-                    <script dangerouslySetInnerHTML={{__html: inline}}></script>
+                    <script async src='//www.google-analytics.com/analytics.js'></script>
+                    <script data-prop-name="inline" dangerouslySetInnerHTML={{__html: this.props.inline}}></script>
                     <link rel="stylesheet" href="/static/css/style.css" />
                     <script src="/static/build/bundle.js" async defer></script>
                 </head>
@@ -227,8 +224,26 @@ var App = React.createClass({
                 </body>
             </html>
         );
-    }
+    },
 
+    statics: {
+        getRenderedProps: function (document) {
+            var props = {};
+            // Ensure the initial render is exactly the same
+            props.href = document.querySelector('link[rel="canonical"]').href;
+            var script_props = document.querySelectorAll('script[data-prop-name]');
+            for (var i = 0; i < script_props.length; i++) {
+                var elem = script_props[i];
+                var value = elem.text;
+                var elem_type = elem.getAttribute('type') || '';
+                if (elem_type == 'application/json' || elem_type.slice(-5) == '+json') {
+                    value = JSON.parse(value);
+                }
+                props[elem.getAttribute('data-prop-name')] = value;
+            }
+            return props;
+        }
+    }
 });
 
 module.exports = App;

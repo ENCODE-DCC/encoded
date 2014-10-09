@@ -5,6 +5,8 @@ var globals = require('./globals');
 var parseError = require('./mixins').parseError;
 var FetchedData = require('./fetched').FetchedData;
 var _ = require('underscore');
+var $script = require('scriptjs');
+var ga = require('google-analytics');
 
 
 var sorted_json = module.exports.sorted_json = function (obj) {
@@ -138,7 +140,6 @@ var EditForm = module.exports.EditForm = React.createClass({
 
     fail: function (xhr, status, error) {
         if (status == 'abort') return;
-        var ga = window.ga;
         var data = parseError(xhr, status);
         ga('send', 'exception', {
             'exDescription': 'putRequest:' + status + ':' + xhr.statusText,
