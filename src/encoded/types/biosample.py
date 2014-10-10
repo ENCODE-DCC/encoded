@@ -119,7 +119,6 @@ class Biosample(Collection):
             'model_organism_donor_constructs.documents',
             'model_organism_donor_constructs.documents.award',
             'model_organism_donor_constructs.documents.lab',
-            'model_organism_donor_constructs.documents.references',
             'model_organism_donor_constructs.documents.submitted_by',
             'submitted_by',
             'lab',
