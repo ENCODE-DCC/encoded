@@ -58,6 +58,15 @@ var Biosample = module.exports.Biosample = React.createClass({
             });
         });
 
+        // Build the text of the synchronization string
+        var synchText;
+        if (context.synchronization) {
+            synchText = context.synchronization +
+                (context.post_synchronization_time ?
+                    ' + ' + context.post_synchronization_time + (context.post_synchronization_time_units ? ' ' + context.post_synchronization_time_units : '')
+                : '');
+        }
+
         // Make string of alternate accessions
         var altacc = context.alternate_accessions ? context.alternate_accessions.join(', ') : undefined;
 
@@ -120,19 +129,10 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
-                        {context.synchronization ?
-                            <div data-test="synchronization-stage">
-                                <dt>Synchronization stage</dt>
-                                <dd>{context.synchronization}</dd>
-                            </div>
-                        : null}
-
-                        {context.post_synchronization_time ?
-                            <div data-test="synchronization-time">
-                                <dt>Post-synchronization time</dt>
-                                <dd className="sentence-case">
-                                    {context.post_synchronization_time}{context.post_synchronization_time_units ? ' ' + context.post_synchronization_time_units : null}
-                                </dd>
+                        {synchText ?
+                            <div data-test="biosample-synchronization">
+                                <dt>Synchronization timepoint</dt>
+                                <dd>{synchText}</dd>
                             </div>
                         : null}
 
