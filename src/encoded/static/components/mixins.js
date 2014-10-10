@@ -4,6 +4,9 @@
 var React = require('react');
 var url = require('url');
 var origin = require('../libs/origin');
+var $script = require('scriptjs');
+var ga = require('google-analytics');
+
 
 var parseError = module.exports.parseError = function (xhr, status) {
     var data;
@@ -337,7 +340,6 @@ module.exports.HistoryAndTriggers = {
     handleError: function(msg, url, line, column) {
         // When an unhandled exception occurs, reload the page on navigation
         this.historyEnabled = false;
-        var ga = window.ga;
         var parsed = url && require('url').parse(url);
         if (url && parsed.hostname === window.location.hostname) {
             url = parsed.path;
@@ -539,7 +541,6 @@ module.exports.HistoryAndTriggers = {
             clearTimeout(xhr.slowTimer);
             return;
         }
-        var ga = window.ga;
         var data = parseError(xhr, status);
         ga('send', 'exception', {
             'exDescription': 'contextRequest:' + status + ':' + xhr.statusText,
@@ -570,8 +571,6 @@ module.exports.HistoryAndTriggers = {
         if (!xhr || !xhr.xhr_end || xhr.browser_stats) return;
         var browser_end = 1 * new Date();
 
-        var ga = window.ga;
-
         ga('set', 'location', window.location.href);
         ga('send', 'pageview');
 
@@ -599,7 +598,6 @@ module.exports.HistoryAndTriggers = {
     statics: {
         recordServerStats: function (server_stats, timingVar) {
             // server_stats *_time are microsecond values...
-            var ga = window.ga;
             Object.keys(server_stats).forEach(function (name) {
                 if (name.indexOf('_time') === -1) return;
                 ga('send', 'timing', {
@@ -610,7 +608,6 @@ module.exports.HistoryAndTriggers = {
             });
         },
         recordBrowserStats: function (browser_stats, timingVar) {
-            var ga = window.ga;
             Object.keys(browser_stats).forEach(function (name) {
                 if (name.indexOf('_time') === -1) return;
                 ga('send', 'timing', {

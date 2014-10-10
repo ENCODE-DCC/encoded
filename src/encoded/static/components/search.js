@@ -486,6 +486,7 @@ var cx = React.addons.classSet;
             if(link) {
                 return (
                     <li id="selected" key={term}>
+                        {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
                         <a id="selected" href={link} onClick={this.props.onFilter}>
                             <span className="pull-right">{count} <i className="icon icon-times-circle-o"></i></span>
                             <span className="facet-item">
@@ -498,6 +499,7 @@ var cx = React.addons.classSet;
                 return (
                     <li key={term}>
                         <span className="bar" style={barStyle}></span>
+                        {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
                         <a href={this.props.searchBase + field + '=' + term} onClick={this.props.onFilter}>
                             <span className="pull-right">{count}</span>
                             <span className="facet-item">
