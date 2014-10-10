@@ -114,16 +114,3 @@ dd ul, .multi-value {
 .multi-dd {
     margin-bottom: 10px;
 }
-
-
-.supplementary-data {
-    margin: 20px 0;
-
-    &:first-child {
-        margin-top: 0;
-    }
-
-    &:last-child {
-        margin-bottom: 0;
-    }
-}

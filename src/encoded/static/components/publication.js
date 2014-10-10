@@ -29,12 +29,10 @@ var Publication = module.exports.Panel = React.createClass({
 
                 {context.supplementary_data && context.supplementary_data.length ?
                     <div>
-                        <h3>Supplementary data</h3>
-                        <div className="view-detail panel">
-                            {context.supplementary_data.map(function(data, i) {
-                                return <SupplementaryData data={data} key={i} />;
-                            })}
-                        </div>
+                        <h3>Related data</h3>
+                        {context.supplementary_data.map(function(data, i) {
+                            return <SupplementaryData data={data} key={i} />;
+                        })}
                     </div>
                 : null}
             </div>
@@ -50,7 +48,8 @@ var Citation = module.exports.Citation = React.createClass({
         var context = this.props.context;
         return (
             <span>
-                {context.journal ? <i>{context.journal}. </i> : ''}{context.date_published ? context.date_published + ';' : ''}{context.volume ? context.volume : ''}{context.issue ? '(' + context.issue + ')' : '' }{context.page ? ':' + context.page + '.' : ''}
+                {context.journal ? <i>{context.journal}. </i> : ''}{context.date_published ? context.date_published + ';' : ''}
+                {context.volume ? context.volume : ''}{context.issue ? '(' + context.issue + ')' : '' }{context.page ? ':' + context.page + '.' : ''}
             </span>
         );
     }
@@ -108,12 +107,36 @@ var SupplementaryData = React.createClass({
     render: function() {
         var data = this.props.data;
         return (
-            <div className="supplementary-data" key={this.props.key}>
-                {data.supplementary_data_type ? <span><strong>Available data: </strong>{data.supplementary_data_type}</span> : null}
-                {data.file_format ? <span>{data.supplementary_data_type ? ' ' : ''}{<span>(<strong>File format: </strong>{data.file_format})</span>}</span> : null}
-                {data.url ? <span>{data.supplementary_data_type || data.file_format ? ': ' : ''}<a href={data.url}>{data.url}</a></span> : null}
+            <div className="view-detail panel">
+                <dl className="key-value" key={this.props.key}>
+                    {data.supplementary_data_type ?
+                        <div data-test="availabledata">
+                            <dt>Available data</dt>
+                            <dd>{data.supplementary_data_type}</dd>
+                        </div>
+                    : null}
 
-                {data.data_summary ? <div><strong>Data summary:</strong> {data.data_summary}</div> : null}
+                    {data.file_format ?
+                        <div data-test="fileformat">
+                            <dt>File format</dt>
+                            <dd>{data.file_format}</dd>
+                        </div>
+                    : null}
+
+                    {data.url ?
+                        <div data-test="url">
+                            <dt>URL</dt>
+                            <dd><a href={data.url}>{data.url}</a></dd>
+                        </div>
+                    : null}
+
+                    {data.data_summary ?
+                        <div data-test="datasummary">
+                            <dt>Data summary</dt>
+                            <dd>{data.data_summary}</dd>
+                        </div>
+                    : null}
+                </dl>
             </div>
         );
     }
