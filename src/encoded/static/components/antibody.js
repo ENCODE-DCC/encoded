@@ -258,7 +258,7 @@ var Characterization = module.exports.Characterization = React.createClass({
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
         var attachmentHref, download;
-        if (context.attachment) {
+        if (context.attachment && context.attachment.href && context.attachment.download) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             download = (
                 <dd className="dl-link">

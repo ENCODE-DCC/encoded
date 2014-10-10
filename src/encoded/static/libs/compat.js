@@ -1,11 +1,14 @@
 /*jshint strict:false */
 require('es5-shim');
 require('es5-shim/es5-sham');
+require('html5shiv/dist/html5shiv');
 
 (function () {
 
 if (typeof console === 'undefined') {
-    window.console = {};
+    window.console = {
+        log: function () {}
+    };
 }
 var console_methods = [
     'count',
@@ -15,7 +18,6 @@ var console_methods = [
     'groupCollapsed',
     'groupEnd',
     'info',
-    'log',
     'time',
     'timeEnd',
     'trace',
@@ -24,11 +26,10 @@ var console_methods = [
     'table',
     'assert'
 ];
-function ignore() {}
 for (var i=0, l=console_methods.length; i < l; i++) {
     var name = console_methods[i];
     if (window.console[name] === undefined) {
-        window.console[name] = ignore;
+        window.console[name] = window.console.log;
     }
 }
 

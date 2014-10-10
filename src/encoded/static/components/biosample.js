@@ -775,7 +775,7 @@ var Document = module.exports.Document = React.createClass({
         var figure = <Attachment context={this.props.context} className="characterization" />;
 
         var attachmentHref, download;
-        if (context.attachment) {
+        if (context.attachment && context.attachment.href && context.attachment.download) {
             attachmentHref = url.resolve(context['@id'], context.attachment.href);
             var dlFileTitle = "Download file " + context.attachment.download;
             download = (
