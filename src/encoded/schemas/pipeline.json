@@ -36,22 +36,6 @@
             "comment": "Increments with each change to the series of analysis." ,
             "type": "integer"
         },
-        "valid_for": {
-            "title": "Valid for",
-            "description": "Object with key/value pairs indicating constraints for pipeline input",
-            "type": "object",
-	    "additionalProperties": false,
-	    "properties": {
-	    	"key": {
-		    "title":"Key",
-		    "type": "string"
-		},
-		"value": {
-		    "title": "Value",
-		    "type": "string"
-		}
-	    }
-        },
         "analysis_steps": {
             "title": "Analysis steps",
             "description": "The particular computational analysis steps used by the pipeline.",
