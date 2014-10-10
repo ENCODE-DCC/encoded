@@ -723,7 +723,7 @@ var cx = React.addons.classSet;
                                         
                                         {context['batch_hub'] != '' ?
                                             <span className="pull-right">
-                                                <a className="btn btn-info btn-sm"
+                                                <a data-bypass="true" target="_blank" private-browsing="true" className="btn btn-info btn-sm"
                                                    href={context['batch_hub']}>Visualize</a>&nbsp;
                                             </span>
                                         :null}
