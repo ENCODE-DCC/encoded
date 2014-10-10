@@ -353,5 +353,16 @@
         "lab": "robert-waterston",
         "submitted_by": "uskuf.shyec@doton.danona",
         "uuid": "30705939-d234-4aca-8379-cd355686fd48"
+    },
+    {
+        "aliases": [
+            "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
+        ],
+        "attachment": "Graveley_Group_RNA-Seq_Pipeline_02042013.pdf",
+        "award": "U41HG006992",
+        "document_type": "pipeline protocol",
+        "lab": "brenton-graveley",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "6ab18a00-50aa-11e4-916c-0800200c9a66"
     }
 ]
