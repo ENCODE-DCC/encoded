@@ -1,0 +1,82 @@
+{
+    "title": "Pipeline",
+    "description": "Schema for submitting a series of analysis for a given data type.",
+    "id": "/profiles/pipeline.json",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "required": ["name"],
+    "identifyingProperties": ["uuid", "name", "assay_term_id"],
+    "additionalProperties": false,
+    "mixinProperties": [
+        { "$ref": "mixins.json#/schema_version" },
+        { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/standard_status" },
+        { "$ref": "mixins.json#/notes" },
+        { "$ref": "mixins.json#/submitted"},
+        { "$ref": "mixins.json#/assay" }
+    ],
+    "properties": {
+        "schema_version": {
+            "default": "1"
+        },
+       "name": {
+            "title": "Name",
+            "description": "Unique name of the pipeline.",
+            "type": "string",
+            "pattern": "[a-z][0-9\\-\\_]"
+        },
+        "title": {
+            "title": "Title",
+            "description": "The preferred viewable name of the pipeline.",
+            "type": "string"
+        },
+        "version": {
+            "title": "Version",
+            "description": "The version of a particular pipeline.",
+            "comment": "Increments with each change to the series of analysis." ,
+            "type": "integer"
+        },
+        "valid_for": {
+            "title": "Valid for",
+            "description": "Object with key/value pairs indicating constraints for pipeline input",
+            "type": "object",
+	    "additionalProperties": false,
+	    "properties": {
+	    	"key": {
+		    "title":"Key",
+		    "type": "string"
+		},
+		"value": {
+		    "title": "Value",
+		    "type": "string"
+		}
+	    }
+        },
+        "analysis_steps": {
+            "title": "Analysis steps",
+            "description": "The particular computational analysis steps used by the pipeline.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Analysis step",
+                "description": "A particular computational analysis step used by the pipeline.",
+                "comment": "See analysis_step.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "analysis_step"
+            }
+        },
+        "documents": {
+            "title": "Documents",
+            "description": "Documents that provide additional information about the pipeline.",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "Document",
+                "description": "A document that provides additional information about the pipeline.",
+                "type": "string",
+                "comment": "See document.json for available identifiers.",
+                "linkTo": "document"
+            }
+        }
+    }
+}
