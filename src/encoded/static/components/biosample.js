@@ -120,6 +120,22 @@ var Biosample = module.exports.Biosample = React.createClass({
                             </div>
                         : null}
 
+                        {context.synchronization ?
+                            <div data-test="synchronization-stage">
+                                <dt>Synchronization stage</dt>
+                                <dd>{context.synchronization}</dd>
+                            </div>
+                        : null}
+
+                        {context.post_synchronization_time ?
+                            <div data-test="synchronization-time">
+                                <dt>Post-synchronization time</dt>
+                                <dd className="sentence-case">
+                                    {context.post_synchronization_time}{context.post_synchronization_time_units ? ' ' + context.post_synchronization_time_units : null}
+                                </dd>
+                            </div>
+                        : null}
+
                         {context.subcellular_fraction_term_name ?
                             <div data-test="subcellular-term-name">
                                 <dt>Subcellular fraction</dt>
@@ -219,22 +235,6 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <div data-test="passage-number">
                                 <dt>Passage number</dt>
                                 <dd>{context.passage_number}</dd>
-                            </div>
-                        : null}
-
-                        {context.synchronization ?
-                            <div data-test="synchronization-stage">
-                                <dt>Synchronization stage</dt>
-                                <dd>{context.synchronization}</dd>
-                            </div>
-                        : null}
-
-                        {context.post_synchronization_time ?
-                            <div data-test="synchronization-time">
-                                <dt>Post-synchronization time</dt>
-                                <dd className="sentence-case">
-                                    {context.post_synchronization_time}{context.post_synchronization_time_units ? ' ' + context.post_synchronization_time_units : null}
-                                </dd>
                             </div>
                         : null}
                     </dl>
