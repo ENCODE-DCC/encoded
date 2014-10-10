@@ -1,19 +1,7 @@
 'use strict';
 
-// ie8 compat.
-var tags = [
-"article",
-"aside",
-"figcaption",
-"figure",
-"footer",
-"header",
-"hgroup",
-"nav",
-"section"];
-for (var i=0, l=tags.length; i < l; i++) {
-    document.createElement(tags[i]);
-}
+// Minimal inline IE8 html5 compatibility
+require('shivie8');
 
 // Use a separate tracker for dev / test
 var ga = require('google-analytics');
