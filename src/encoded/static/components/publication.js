@@ -12,7 +12,7 @@ var Dbxref = dbxref.Dbxref;
 var Publication = module.exports.Panel = React.createClass({
     render: function() {
         var context = this.props.context;
-        var itemClass = globals.itemClass(context);
+        var itemClass = globals.itemClass(context, 'view-item');
         return (
             <div className={itemClass}>
                 <h2>{context.title}</h2>
@@ -143,26 +143,64 @@ var SupplementaryData = React.createClass({
 });
 
 
+var SupplementaryDataListing = React.createClass({
+    render: function() {
+        var data = this.props.data;
+        var columns = this.props.columns;
+
+        var summary = (data.data_summary && (data.data_summary.length > 100) ? globals.truncateString(data.data_summary, 100) : undefined);
+        var seeMoreClass = 'btn btn-link' + (summary ? '' : ' collapsed');
+
+        return (
+            <div className="list-supplementary" key={this.props.key}>
+                <strong>{columns['supplementary_data.supplementary_data_type']['title']}</strong>: {data.supplementary_data_type}<br />
+                <strong>{columns['supplementary_data.file_format']['title']}</strong>: {data.file_format}<br />
+                <strong>{columns['supplementary_data.url']['title']}</strong>: <a href={data.url}>{data.url}</a><br />
+                <strong>{columns['supplementary_data.data_summary']['title']}</strong>: {summary ?
+                    <span>{summary}<button type="button" className={seeMoreClass} data-toggle="collapse" onClick={this.handleClick} /></span>
+                : data.data_summary}
+            </div>
+        );
+    }
+});
+
+
 var Listing = React.createClass({
     mixins: [search.PickerActionsMixin],
     render: function() {
-        var context = this.props.context;
-        var authorList = context.authors ? context.authors.split(', ', 4) : [];
-        var authors = authorList.length === 4 ? authorList.splice(0, 3).join(', ') + ', et al' : context.authors;
-        return (<li>
-                    <div>
-                        {this.renderActions()}
-                        <div className="pull-right search-meta">
-                            <p className="type meta-title">Publication</p>
-                            <p className="type meta-status">{' ' + context['status']}</p>
+        var result = this.props.context;
+        var columns = this.props.columns;
+        var authorList = result.authors ? result.authors.split(', ', 4) : [];
+        var authors = authorList.length === 4 ? authorList.splice(0, 3).join(', ') + ', et al' : result.authors;
+
+        // Calculate data_summary excerpts if needed
+        var summaries = [];
+        if (result.supplementary_data && result.supplementary_data.length) {
+            result.supplementary_data.forEach(function(data, i) {
+                summaries[i] = (data.data_summary && (data.data_summary.length > 100) ? globals.truncateString(data.data_summary, 100) : undefined);
+            });
+        }
+
+        return (
+            <li>
+                {this.renderActions()}
+                <div className="pull-right search-meta">
+                    <p className="type meta-title">Publication</p>
+                    <p className="type meta-status">{' ' + result.status}</p>
+                </div>
+                <div className="accession"><a href={result['@id']}>{result.title}</a></div>
+                <div className="data-row">
+                    {authors ? <p className="list-author">{authors}.</p> : null}
+                    <p className="list-citation">{this.transferPropsTo(<Citation />)}</p>
+                    {result.references.length ? <div><DbxrefList values={result.references} className="list-reference" /></div> : '' }
+                    {result.supplementary_data && result.supplementary_data.length ?
+                        <div>
+                            {result.supplementary_data.map(function(data, i) {
+                                return <SupplementaryDataListing data={data} columns={columns} key={i} />;
+                            })}
                         </div>
-                        <div className="accession"><a href={context['@id']}>{context.title}</a></div>
-                    </div>
-                    <div className="data-row">
-                        {authors ? <p className="list-author">{authors}.</p> : null}
-                        <p className="list-citation">{this.transferPropsTo(<Citation />)}</p>
-                        {context.references.length ? <div><DbxrefList values={context.references} className="list-reference" /></div> : '' }
-                    </div>
+                    : null}
+                </div>
             </li>
         );
     }
