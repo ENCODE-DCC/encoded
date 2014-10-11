@@ -52,7 +52,7 @@ var Title = React.createClass({
     },
     componentDidMount: function() {
         var node = document.querySelector('title');
-        if (!node.getAttribute('data-reactid')) {
+        if (node && !node.getAttribute('data-reactid')) {
             node.setAttribute('data-reactid', this._rootNodeID);
         }
     }
