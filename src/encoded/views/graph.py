@@ -7,7 +7,7 @@ from subprocess import Popen, PIPE
 def node(name, props):
     yield '%s [shape=plaintext label=<' % name
     yield '  <table border="1" cellborder="0" cellspacing="0" align="left">'
-    yield '  <tr><td PORT="uuid" border="1" sides="B" bgcolor="lavender">%s</td></tr>' % name
+    yield '  <tr><td PORT="uuid" border="1" sides="B" bgcolor="lavender" href="/profiles/{item_type}.json">{item_type}</td></tr>'.format(item_type=name)
     items = sorted(props.items())
     for name, prop in items:
         if name == 'uuid':
