@@ -30,7 +30,7 @@ var Publication = module.exports.Panel = React.createClass({
                 {context.supplementary_data && context.supplementary_data.length ?
                     <div>
                         <h3>Related data</h3>
-                        <div className="panel view-detail">
+                        <div className="panel view-detail" data-test="supplementarydata">
                             {context.supplementary_data.map(function(data, i) {
                                 return <SupplementaryData data={data} key={i} />;
                             })}
