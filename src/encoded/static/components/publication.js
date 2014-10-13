@@ -30,9 +30,11 @@ var Publication = module.exports.Panel = React.createClass({
                 {context.supplementary_data && context.supplementary_data.length ?
                     <div>
                         <h3>Related data</h3>
-                        {context.supplementary_data.map(function(data, i) {
-                            return <SupplementaryData data={data} key={i} />;
-                        })}
+                        <div className="panel view-detail">
+                            {context.supplementary_data.map(function(data, i) {
+                                return <SupplementaryData data={data} key={i} />;
+                            })}
+                        </div>
                     </div>
                 : null}
             </div>
@@ -107,7 +109,8 @@ var SupplementaryData = React.createClass({
     render: function() {
         var data = this.props.data;
         return (
-            <div className="view-detail panel">
+            <section>
+                {this.props.key > 0 ? <hr /> : null}
                 <dl className="key-value" key={this.props.key}>
                     {data.supplementary_data_type ?
                         <div data-test="availabledata">
@@ -137,7 +140,7 @@ var SupplementaryData = React.createClass({
                         </div>
                     : null}
                 </dl>
-            </div>
+            </section>
         );
     }
 });
