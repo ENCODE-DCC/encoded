@@ -144,21 +144,50 @@ var SupplementaryData = React.createClass({
 
 
 var SupplementaryDataListing = React.createClass({
+    getInitialState: function() {
+        return {excerptExpanded: false};
+    },
+
+    handleClick: function() {
+        this.setState({excerptExpanded: !this.state.excerptExpanded});
+    },
+
     render: function() {
         var data = this.props.data;
         var columns = this.props.columns;
 
-        var summary = (data.data_summary && (data.data_summary.length > 100) ? globals.truncateString(data.data_summary, 100) : undefined);
-        var seeMoreClass = 'btn btn-link' + (summary ? '' : ' collapsed');
+        var summary = data.data_summary;
+        var excerpt = (summary && (summary.length > 100) ? globals.truncateString(summary, 100) : undefined);
+
+        // Make unique ID for ARIA identification
+        var nodeId = this.props.id.replace(/\//g, '') + this.props.key;
 
         return (
             <div className="list-supplementary" key={this.props.key}>
-                <strong>{columns['supplementary_data.supplementary_data_type']['title']}</strong>: {data.supplementary_data_type}<br />
-                <strong>{columns['supplementary_data.file_format']['title']}</strong>: {data.file_format}<br />
-                <strong>{columns['supplementary_data.url']['title']}</strong>: <a href={data.url}>{data.url}</a><br />
-                <strong>{columns['supplementary_data.data_summary']['title']}</strong>: {summary ?
-                    <span>{summary}<button type="button" className={seeMoreClass} data-toggle="collapse" onClick={this.handleClick} /></span>
-                : data.data_summary}
+                {data.supplementary_data_type ?
+                    <span><strong>{columns['supplementary_data.supplementary_data_type']['title']}</strong>: {data.supplementary_data_type}<br /></span>
+                : null}
+
+                {data.file_format ?
+                    <span><strong>{columns['supplementary_data.file_format']['title']}</strong>: {data.file_format}<br /></span>
+                : null}
+
+                {data.url ?
+                    <span><strong>{columns['supplementary_data.url']['title']}</strong>: <a href={data.url}>{data.url}</a><br /></span>
+                : null}
+
+                {summary ?
+                    <span id={nodeId} aria-expanded={excerpt ? this.state.excerptExpanded : true}>
+                        <strong>{columns['supplementary_data.data_summary']['title']}</strong>: {excerpt ?
+                            <span>
+                                {this.state.excerptExpanded ? {summary} : {excerpt}}
+                                <button className="btn btn-link" aria-controls={nodeId} onClick={this.handleClick}>
+                                    {this.state.excerptExpanded ? <span>See less</span> : <span>See more</span>}
+                                </button>
+                            </span>
+                        : <span>{summary}</span>}
+                    </span>
+                : null}
             </div>
         );
     }
@@ -196,7 +225,7 @@ var Listing = React.createClass({
                     {result.supplementary_data && result.supplementary_data.length ?
                         <div>
                             {result.supplementary_data.map(function(data, i) {
-                                return <SupplementaryDataListing data={data} columns={columns} key={i} />;
+                                return <SupplementaryDataListing data={data} columns={columns} id={result['@id']} key={i} />;
                             })}
                         </div>
                     : null}
@@ -205,4 +234,5 @@ var Listing = React.createClass({
         );
     }
 });
+
 globals.listing_views.register(Listing, 'publication');
