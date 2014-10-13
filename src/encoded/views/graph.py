@@ -4,10 +4,12 @@ from pyramid.view import view_config
 from subprocess import Popen, PIPE
 
 
-def node(name, props):
-    yield '%s [shape=plaintext label=<' % name
-    yield '  <table border="1" cellborder="0" cellspacing="0" align="left">'
-    yield '  <tr><td PORT="uuid" border="1" sides="B" bgcolor="lavender" href="/profiles/{item_type}.json">{item_type}</td></tr>'.format(item_type=name)
+def node(item_type, props):
+    yield (
+        '{item_type} [shape=plaintext label=<\n'
+        '  <table border="1" cellborder="0" cellspacing="0" align="left">\n'
+        '  <tr><td PORT="uuid" border="1" sides="B" bgcolor="lavender" href="/profiles/{item_type}.json">{item_type}</td></tr>'
+    ).format(item_type=item_type)
     items = sorted(props.items())
     for name, prop in items:
         if name == 'uuid':
@@ -18,7 +20,7 @@ def node(name, props):
             prop = prop['items']
         if 'linkTo' in prop:
             label = '<b>' + label + '</b>'
-        yield '  <tr><td PORT="%s">%s</td></tr>' % (name, label)
+        yield '  <tr><td PORT="{name}">{label}</td></tr>'.format(name=name, label=label)
     yield '  </table>>];'
 
 
@@ -30,7 +32,7 @@ def edges(source, name, linkTo, exclude, subclasses):
             linkTo = [linkTo]
     exclude = [source] + exclude
     return [
-        '%s:%s -> %s:uuid;' % (source, name, target)
+        '{source}:{name} -> {target}:uuid;'.format(source=source, name=name, target=target)
         for target in linkTo if target not in exclude
     ]
 
