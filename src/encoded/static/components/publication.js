@@ -183,12 +183,12 @@ var SupplementaryDataListing = React.createClass({
                     <span id={nodeId} aria-expanded={excerpt ? this.state.excerptExpanded : true}>
                         <strong>{columns['supplementary_data.data_summary']['title']}</strong>: {excerpt ?
                             <span>
-                                {this.state.excerptExpanded ? {summary} : {excerpt}}
+                                {this.state.excerptExpanded ? summary : excerpt}
                                 <button className="btn btn-link" aria-controls={nodeId} onClick={this.handleClick}>
                                     {this.state.excerptExpanded ? <span>See less</span> : <span>See more</span>}
                                 </button>
                             </span>
-                        : <span>{summary}</span>}
+                        : summary}
                     </span>
                 : null}
             </div>
@@ -202,16 +202,8 @@ var Listing = React.createClass({
     render: function() {
         var result = this.props.context;
         var columns = this.props.columns;
-        var authorList = result.authors ? result.authors.split(', ', 4) : [];
+        var authorList = result.authors && result.authors.length ? result.authors.split(', ', 4) : [];
         var authors = authorList.length === 4 ? authorList.splice(0, 3).join(', ') + ', et al' : result.authors;
-
-        // Calculate data_summary excerpts if needed
-        var summaries = [];
-        if (result.supplementary_data && result.supplementary_data.length) {
-            result.supplementary_data.forEach(function(data, i) {
-                summaries[i] = (data.data_summary && (data.data_summary.length > 100) ? globals.truncateString(data.data_summary, 100) : undefined);
-            });
-        }
 
         return (
             <li>
@@ -224,7 +216,7 @@ var Listing = React.createClass({
                 <div className="data-row">
                     {authors ? <p className="list-author">{authors}.</p> : null}
                     <p className="list-citation">{this.transferPropsTo(<Citation />)}</p>
-                    {result.references.length ? <div><DbxrefList values={result.references} className="list-reference" /></div> : '' }
+                    {result.references && result.references.length ? <DbxrefList values={result.references} className="list-reference" /> : '' }
                     {result.supplementary_data && result.supplementary_data.length ?
                         <div>
                             {result.supplementary_data.map(function(data, i) {
