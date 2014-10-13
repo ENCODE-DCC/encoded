@@ -1,3 +1,4 @@
+import psutil
 import time
 from pyramid.threadlocal import manager as threadlocal_manager
 from sqlalchemy import event
@@ -79,12 +80,15 @@ def after_cursor_execute(
 
 # http://docs.pylonsproject.org/projects/pyramid/en/latest/narr/hooks.html#creating-a-tween-factory
 def stats_tween_factory(handler, registry):
+    process = psutil.Process()
 
     def stats_tween(request):
         stats = request._stats = {}
+        stats['rss_begin'] = process.memory_info().rss
         begin = stats['wsgi_begin'] = int(time.time() * 1e6)
         response = handler(request)
         end = stats['wsgi_end'] = int(time.time() * 1e6)
+        stats['rss_end'] = process.memory_info().rss
         stats['wsgi_time'] = end - begin
 
         environ = request.environ
