@@ -11,6 +11,7 @@ packages:
 - build-essential
 - elasticsearch
 - git
+- graphviz
 - libapache2-mod-wsgi
 - libevent-dev
 - libfreetype6-dev
