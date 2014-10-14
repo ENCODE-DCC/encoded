@@ -3,7 +3,7 @@
     "id": "/profiles/analysis_step.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["analysis_step_type", "software_versions", "input_file_types"],
+    "required": ["analysis_step_types", "software_versions", "input_file_types"],
     "additionalProperties": false,
     "identifyingProperties": ["uuid", "aliases"],
     "mixinProperties": [
