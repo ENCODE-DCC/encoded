@@ -135,6 +135,9 @@ var jsonSchemaToFormSchema = function(p, name) {
                 <ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} />
             );
         }
+        if (name == 'schema_version') {
+            props.input = <input type="text" disabled />;
+        }
         return ReactForms.schema.Property(props);
     }
 }
