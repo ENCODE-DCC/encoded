@@ -102,6 +102,7 @@ class Construct(Collection):
     }
     item_embedded = ['target']
 
+
 @location('talens')
 class Talen(Collection):
     item_type = 'talen'
@@ -122,6 +123,7 @@ class Talen(Collection):
         ),
     }
     item_embedded = ['lab', 'submitted_by']
+
 
 @location('documents')
 class Document(Collection):

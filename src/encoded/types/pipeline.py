@@ -6,16 +6,9 @@ from ..contentbase import (
 )
 from .base import (
     ACCESSION_KEYS,
-    ALLOW_SUBMITTER_ADD,
     ALIAS_KEYS,
     Collection,
-    paths_filtered_by_status,
 )
-from .dataset import Dataset
-from pyramid.traversal import (
-    find_resource,
-)
-import datetime
 
 
 @location('pipelines')
@@ -39,7 +32,7 @@ class Pipeline(Collection):
             'analysis_steps',
             'analysis_steps.software_versions',
             'analysis_steps.software_versions.software',
-             'analysis_steps.software_versions.software.references'
+            'analysis_steps.software_versions.software.references'
         ]
 
 

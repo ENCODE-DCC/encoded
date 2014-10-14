@@ -21,18 +21,18 @@
             "title": "Types",
              "description": "The classification of the software",
              "type": "array",
-	     "items": {
-	     	"title": "Type",
-		"type": "string",
-             	"enum": [
-                            "filtering",
-                            "file format conversion",
-                            "QA calculation",
-                            "peak calling",
-                            "IDR",
-                            "aligner"
-             	]
-	       }
+             "items": {
+                 "title": "Type",
+                 "type": "string",
+                 "enum": [
+                     "filtering",
+                     "file format conversion",
+                     "QA calculation",
+                     "peak calling",
+                     "IDR",
+                     "aligner"
+                 ]
+             }
         },
         "software_versions": {
             "title": "Software version",
