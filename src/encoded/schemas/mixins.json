@@ -144,6 +144,7 @@
             "title": "Document file metadata",
             "type": "object",
             "additionalProperties": false,
+            "formInput": "file",
             "properties": {
                 "download": {
                     "title": "File Name",

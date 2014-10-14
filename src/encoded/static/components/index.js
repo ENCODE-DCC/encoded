@@ -2,6 +2,7 @@
 'use strict';
 
 // Require all components to ensure javascript load ordering
+require('./form');
 require('./antibody');
 require('./app');
 require('./image');

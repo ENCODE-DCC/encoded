@@ -40,6 +40,7 @@ var FetchedItemBlockView = React.createClass({
 var ItemPreview = React.createClass({
     render: function() {
         var context = this.props.data['@graph'][0];
+        if (context === undefined) return null;
         var style = {width: '80%'};
         var Listing = globals.listing_views.lookup(context);
         return (

@@ -6,6 +6,8 @@ var fetched = require('./fetched');
 var Form = require('./form').Form;
 var globals = require('./globals');
 var ObjectPicker = require('./blocks/item').ObjectPicker;
+var FileInput = require('./form/file').FileInput;
+var _ = require('underscore');
 
 
 var Fallback = module.exports.Fallback = React.createClass({
@@ -106,20 +108,29 @@ globals.listing_titles.fallback = function () {
 };
 
 
-var jsonSchemaToFormSchema = function(p, name) {
+var jsonSchemaToFormSchema = function(p, name, required) {
     var props = {};
     if (name) props.name = name;
+    if (required) props.required = true;
     if (p.title) props.label = p.title;
     if (p.description) props.hint = p.description;
     if (p.type == 'object') {
+        if (required) props.component = <ReactForms.Fieldset className="required" />;
+        if (p.formInput == 'file') {
+            props.input = <FileInput />;
+            return ReactForms.schema.Property(props);
+        }
         var properties = [];
         for (var name in p.properties) {
-            properties.push(jsonSchemaToFormSchema(p.properties[name], name));
+            var required = _.contains(p.required || [], name);
+            properties.push(jsonSchemaToFormSchema(p.properties[name], name, required));
         }
         return ReactForms.schema.Schema(props, properties);
     } else if (p.type == 'array') {
+        if (required) props.component = <ReactForms.RepeatingFieldset className="required" />;
         return ReactForms.schema.List(props, jsonSchemaToFormSchema(p.items));
     } else {
+        if (required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
             props.validate = function(v) { return v.match(p.pattern) };
         }
