@@ -241,7 +241,7 @@ var globals = require('./globals');
             var actions = (context.actions || []).map(action =>
                 <span className="table-actions">
                     <a href={action.href}>
-                        <button className={action.className}>{action.title}</button>
+                        <button className={'btn ' + action.className || ''}>{action.title}</button>
                     </a>
                 </span>
             );

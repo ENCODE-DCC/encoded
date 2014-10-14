@@ -66,12 +66,14 @@
  */
 .rf-RepeatingFieldset {
   @extend .form-group;
+  padding: 5px;
 }
 
 .rf-RepeatingFieldset__add {
   @extend .btn;
   @extend .btn-sm;
   @extend .btn-success;
+  display: block;
 }
 
 .rf-RepeatingFieldset__item {

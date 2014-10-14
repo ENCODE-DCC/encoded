@@ -40,7 +40,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                     </div>
                 </header>
                 {this.transferPropsTo(
-                    <FetchedData Component={EditForm} url={url} />
+                    <FetchedData Component={EditForm} url={url} fetched_etag_name="etag" />
                 )}
             </div>
         );
@@ -159,5 +159,4 @@ var EditForm = module.exports.EditForm = React.createClass({
 });
 
 
-globals.content_views.register(ItemEdit, 'item', 'edit');
 globals.content_views.register(ItemEdit, 'item', 'edit-json');

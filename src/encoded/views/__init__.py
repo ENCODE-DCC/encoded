@@ -1,3 +1,4 @@
+import copy
 import os
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config

@@ -31,7 +31,7 @@ def mixinProperties(schema, resolver):
     mixins = schema.get('mixinProperties')
     if mixins is None:
         return schema
-    properties = {}
+    properties = collections.OrderedDict()
     bases = []
     for mixin in reversed(mixins):
         ref = mixin.get('$ref')

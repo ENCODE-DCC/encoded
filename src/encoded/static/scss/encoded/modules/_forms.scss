@@ -4,6 +4,11 @@ $inputBorder: darken(#fff, 20%) !default;
 $inputFocusBgColor: darken(#fff, 2%) !default;
 $inputFocusBorderColor: darken(#fff, 26%) !default;
 
+#content form {
+	margin-bottom: 1em;
+	@include clearfix;
+}
+
 .form-control {
 	padding: 4px 6px;
 }
