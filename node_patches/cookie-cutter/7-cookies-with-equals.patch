@@ -1,0 +1,27 @@
+From 4f735dff87ce2a1a61822ddadd7f64aa69562cb3 Mon Sep 17 00:00:00 2001
+From: Laurence Rowe <l@lrowe.co.uk>
+Date: Tue, 14 Oct 2014 15:26:52 -0700
+Subject: [PATCH] Handle cookies with '=' in value part
+
+Example: "foo=bar=baz" has the value "bar=baz".
+---
+ index.js | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/index.js b/index.js
+index 21a2118..50a1a6c 100644
+--- a/index.js
++++ b/index.js
+@@ -7,9 +7,9 @@ var exports = module.exports = function (doc) {
+     self.get = function (key) {
+         var splat = doc.cookie.split(/;\s*/);
+         for (var i = 0; i < splat.length; i++) {
+-            var ps = splat[i].split('=');
+-            var k = unescape(ps[0]);
+-            if (k === key) return unescape(ps[1]);
++            var m = /(.*?)=(.*)/.exec(splat[i]);
++            var k = unescape(m[1]);
++            if (k === key) return unescape(m[2]);
+         }
+         return undefined;
+     };
