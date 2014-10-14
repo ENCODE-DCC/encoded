@@ -20,7 +20,11 @@ var Lightbox = module.exports.Lightbox = React.createClass({
     },
 
     componentDidMount: function() {
-        window.addEventListener('resize', this.handleResize);
+        if (window.addEventListener) {
+            window.addEventListener('resize', this.handleResize);
+        } else {
+            window.attachEvent('onresize', this.handleResize);
+        }
         this.setState({imgHeight: this.refs.lightbox.getDOMNode().offsetHeight - 40});
     },
 
