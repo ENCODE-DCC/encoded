@@ -41,9 +41,9 @@
         "status": "released",
         "source_url": "http://ccb.jhu.edu/software/tophat/downloads/",
         "uuid": "7868f960-50ac-11e4-916c-0800200c9a66"
-    }
+    },
     {
-        "name": "bedgraohtobigwig",
+        "name": "bedgraphtobigwig",
         "title": "bedGraphToBigWig",
         "description": "Convert bedGraph to bigWig file",
         "used_by": ["ENCODE"],

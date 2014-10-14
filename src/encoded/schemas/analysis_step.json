@@ -53,8 +53,8 @@
                 "description": "A file type used as input for the analysis.",
                 "type": "string",
                 "enum": [
-                    "BAM",
-                    "SAM",
+                    "bam",
+                    "sam",
                     "fastq",
                     "tagAlign",
                     "narrowPeak",
@@ -73,8 +73,8 @@
                 "description": "A file type generated as output for the analysis.",
                 "type": "string",
                 "enum": [
-                    "BAM",
-                    "SAM",
+                    "bam",
+                    "sam",
                     "tagAlign",
                     "narrowPeak",
                     "broadPeak",

@@ -34,6 +34,7 @@ ORDER = [
     'experiment',
     'replicate',
     'dataset',
+    'publication',
     'software',
     'software_version',
     'analysis_step',
@@ -41,7 +42,6 @@ ORDER = [
     'file',
     'image',
     'page',
-    'publication',
 ]
 
 ##############################################################################
