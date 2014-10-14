@@ -69,7 +69,7 @@ var Experiment = module.exports.Experiment = React.createClass({
             organismName = _.uniq(organismName);
         }
 
-        // Build the text of the Treatment string; see if there's at least one synchronization
+        // Build the text of the Treatment string
         var treatmentText = [];
         biosamples.map(function(biosample) {
             treatmentText = treatmentText.concat(biosample.treatments.map(function(treatment) {
@@ -256,8 +256,8 @@ var Experiment = module.exports.Experiment = React.createClass({
                                 <dd>{aliasList}</dd>
                             </div>
                         : null}
-                        {context.references.length ?
 
+                        {context.references.length ?
                             <div data-test="references">
                                 <dt>References</dt>
                                 <dd><DbxrefList values={context.references} className="horizontal-list"/></dd>

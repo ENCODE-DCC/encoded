@@ -109,26 +109,26 @@ var Biosample = module.exports.Biosample = React.createClass({
                         : null}
 
                         {context.subcellular_fraction_term_name ?
-                            <div data-test="subcellular-term-name">
+                            <div data-test="subcellulartermname">
                                 <dt>Subcellular fraction</dt>
                                 <dd>{context.subcellular_fraction_term_name}</dd>
                             </div>
                         : null}
 
-                        <div data-test="source-title">
+                        <div data-test="sourcetitle">
                             <dt>Source</dt>
                             <dd><a href={context.source.url}>{context.source.title}</a></dd>
                         </div>
 
                         {context.product_id ?
-                            <div data-test="product-id">
+                            <div data-test="productid">
                                 <dt>Product ID</dt>
                                 <dd><maybe_link href={context.url}>{context.product_id}</maybe_link></dd>
                             </div>
                         : null}
 
                         {context.lot_id ?
-                            <div data-test="lot-id">
+                            <div data-test="lotid">
                                 <dt>Lot ID</dt>
                                 <dd>{context.lot_id}</dd>
                             </div>
@@ -139,7 +139,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                             <dd>{context.award.project}</dd>
                         </div>
 
-                        <div data-test="submitted-by">
+                        <div data-test="submittedby">
                             <dt>Submitted by</dt>
                             <dd>{context.submitted_by.title}</dd>
                         </div>
@@ -162,7 +162,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         : null}
 
                         {context.dbxrefs.length ?
-                            <div data-test="external-resources">
+                            <div data-test="externalresources">
                                 <dt>External resources</dt>
                                 <dd><DbxrefList values={context.dbxrefs} /></dd>
                             </div>
@@ -176,35 +176,35 @@ var Biosample = module.exports.Biosample = React.createClass({
                         : null}
 
                         {context.date_obtained ?
-                            <div data-test="date-obtained">
+                            <div data-test="dateobtained">
                                 <dt>Date obtained</dt>
                                 <dd>{context.date_obtained}</dd>
                             </div>
                         : null}
 
                         {context.starting_amount ?
-                            <div data-test="starting-amount">
+                            <div data-test="startingamount">
                                 <dt>Starting amount</dt>
                                 <dd>{context.starting_amount}<span className="unit">{context.starting_amount_units}</span></dd>
                             </div>
                         : null}
 
                         {context.culture_start_date ?
-                            <div data-test="culture-start-date">
+                            <div data-test="culturestartdate">
                                 <dt>Culture start date</dt>
                                 <dd>{context.culture_start_date}</dd>
                             </div>
                         : null}
 
                         {context.culture_harvest_date ?
-                            <div data-test="culture-harvest-date">
+                            <div data-test="cultureharvestdate">
                                 <dt>Culture harvest date</dt>
                                 <dd>{context.culture_harvest_date}</dd>
                             </div>
                         : null}
 
                         {context.passage_number ?
-                            <div data-test="passage-number">
+                            <div data-test="passagenumber">
                                 <dt>Passage number</dt>
                                 <dd>{context.passage_number}</dd>
                             </div>
@@ -212,7 +212,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     </dl>
 
                     {context.derived_from ?
-                        <section data-test="derived-from">
+                        <section data-test="derivedfrom">
                             <hr />
                             <h4>Derived from biosample</h4>
                             <a className="non-dl-item" href={context.derived_from['@id']}> {context.derived_from.accession} </a>
@@ -220,7 +220,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     : null}
 
                     {context.part_of ?
-                        <section data-test="separated-from">
+                        <section data-test="separatedfrom">
                             <hr />
                             <h4>Separated from biosample</h4>
                             <a className="non-dl-item" href={context.part_of['@id']}> {context.part_of.accession} </a>
@@ -228,7 +228,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                     : null}
 
                     {context.pooled_from.length ?
-                        <section data-test="pooled-from">
+                        <section data-test="pooledfrom">
                             <hr />
                             <h4>Pooled from biosamples</h4>
                             <ul className="non-dl-list">
@@ -633,12 +633,6 @@ globals.panel_views.register(Treatment, 'treatment');
 var Construct = module.exports.Construct = React.createClass({
     render: function() {
         var context = this.props.context;
-        var embeddedDocs = this.props.embeddedDocs;
-        var construct_documents = {};
-        context.documents.forEach(function (doc) {
-            construct_documents[doc['@id']] = Panel({context: doc, embeddedDocs: embeddedDocs});
-        });
-
         return (
             <div>
                 <dl className="key-value">
@@ -701,16 +695,6 @@ var Construct = module.exports.Construct = React.createClass({
                         </div>
                     : null}
                 </dl>
-
-                {embeddedDocs && Object.keys(construct_documents).length ?
-                    <div>
-                        <hr />
-                        <h4>Construct documents</h4>
-                        <div className="row multi-columns-row">
-                            {construct_documents}
-                        </div>
-                    </div>
-                : null}
             </div>
         );
     }
