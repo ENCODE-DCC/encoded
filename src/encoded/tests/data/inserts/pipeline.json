@@ -1,0 +1,19 @@
+[
+    {
+        "_test": "Gravely pipeline",
+        "accession": "ENCPL001GRV",
+        "assay_term_id": "OBI:0001271",
+        "assay_term_name": "RNA-seq",
+        "analysis_steps": [ 
+            "ab7ec880-50ab-11e4-916c-0800200c9a66", 
+            "c4a33ee0-50ab-11e4-916c-0800200c9a66"
+        ],
+        "documents": [
+        	"brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"
+        ],
+        "name": "gravley_rna_seq",
+        "status": "released",
+        "title": "RNA-seq Analysis",
+        "uuid": "ab640a00-50aa-11e4-916c-0800200c9a66"
+    }
+]

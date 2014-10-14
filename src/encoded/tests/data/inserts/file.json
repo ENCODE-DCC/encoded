@@ -353,6 +353,92 @@
         "submitted_file_name": "set2/fastq/K562-A-6-1_pool6_AGTCAA_L006_R2_001.fastq.gz",
         "uuid": "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf"
     },
+    {
+        "_project": "encode3",
+        "accession": "ENCFF001RCV",
+        "award":"U41HG006992",
+        "dataset": "ENCSR000AEN",
+        "date_created": "2013-05-19",
+        "derived_from": [
+            "9d45ae3a-25ec-435c-bc9e-a70d5ef867cf",
+            "8772d04a-dfa4-4d85-a81d-6bf5fe2abb8f"
+        ],
+        "file_format": "bam",
+        "lab":"j-michael-cherry",
+        "md5sum": "cdf6c42afc135f1f95971e415b8d5fdd",
+        "output_type": "alignments",
+        "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
+        "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
+        "status": "in progress",
+        "step": "ab7ec880-50ab-11e4-916c-0800200c9a66",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "replicate1.bam",
+        "uuid": "80c23c10-52ec-11e4-916c-0800200c9a66"
+   },
+   {
+        "_project": "encode3",
+        "accession": "ENCFF001RCW",
+        "award":"U41HG006992",
+        "dataset": "ENCSR000AEN",
+        "date_created": "2013-05-19",
+        "derived_from": [
+            "34b653f7-6777-49d9-8e06-d76a96a4d10b",
+            "aab79812-71d8-41d1-bd72-1bf5dbcae381"
+        ],
+        "file_format": "bam",
+        "lab":"j-michael-cherry",
+        "md5sum": "ecff397bffc54f01319eb41c6194379b",
+        "output_type": "alignments",
+        "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
+        "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
+        "status": "in progress",
+        "step": "ab7ec880-50ab-11e4-916c-0800200c9a66",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "replicate2.bam",
+        "uuid": "895fef10-52ed-11e4-916c-0800200c9a66"
+   },
+   {
+        "_project": "encode3",
+        "accession": "ENCFF001RCV",
+        "award":"U41HG006992",
+        "dataset": "ENCSR000AEN",
+        "date_created": "2013-05-19",
+        "derived_from": [
+            "80c23c10-52ec-11e4-916c-0800200c9a66"
+        ],
+        "file_format": "bigWig",
+        "lab":"j-michael-cherry",
+        "md5sum": "0fa8f5fdd8eebe55eebf1875e5ac5a3c",
+        "output_type": "signal",
+        "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
+        "replicate": "82f8eb82-7cfb-46a2-9aa8-b72e82dffb14",
+        "status": "in progress",
+        "step": "c4a33ee0-50ab-11e4-916c-0800200c9a66",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "replicate1.bigWig",
+        "uuid": "a182ace0-52ed-11e4-916c-0800200c9a66"
+   },
+   {
+        "_project": "encode3",
+        "accession": "ENCFF001RCW",
+        "award":"U41HG006992",
+        "dataset": "ENCSR000AEN",
+        "date_created": "2013-05-19",
+        "derived_from": [
+            "895fef10-52ed-11e4-916c-0800200c9a66"
+        ],
+        "file_format": "bigWig",
+        "lab":"j-michael-cherry",
+        "md5sum": "3f68ceaa13a380990ca16d8dcaeffd0b",
+        "output_type": "signal",
+        "pipeline": "ab640a00-50aa-11e4-916c-0800200c9a66",
+        "replicate": "e3abd889-053d-44a9-a1f7-90b06bb6d73f",
+        "status": "in progress",
+        "step": "c4a33ee0-50ab-11e4-916c-0800200c9a66",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "submitted_file_name": "replicate2.bigWig",
+        "uuid": "c7794da0-52ed-11e4-916c-0800200c9a66"
+   },  
    {
         "_project": "encode3",
         "accession": "ENCFF001RDR",

@@ -1,0 +1,20 @@
+[
+    {
+    	"software": "TopHat",
+    	"version": "unknown",
+    	"status": "released",
+    	"uuid": "8369c9b0-50ad-11e4-916c-0800200c9a66"
+    },
+    {
+    	"software": "bedtools",
+    	"version": "unknown",
+    	"status": "released",
+    	"uuid": "8eacefa0-50ad-11e4-916c-0800200c9a66"
+    },
+    {
+    	"software": "bedGraphToBigWig",
+    	"version": "unknown",
+    	"status": "released",
+    	"uuid": "956620a0-50ad-11e4-916c-0800200c9a66"
+    }
+]

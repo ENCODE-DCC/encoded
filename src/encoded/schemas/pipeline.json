@@ -4,12 +4,14 @@
     "id": "/profiles/pipeline.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["name"],
-    "identifyingProperties": ["uuid", "name", "assay_term_id"],
+    "required": ["title"],
+    "identifyingProperties": ["uuid", "aliases", "accession"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
+        { "$ref": "mixins.json#/accession" },
+        { "$ref": "mixins.json#/aliases" },
         { "$ref": "mixins.json#/standard_status" },
         { "$ref": "mixins.json#/notes" },
         { "$ref": "mixins.json#/submitted"},
@@ -19,11 +21,8 @@
         "schema_version": {
             "default": "1"
         },
-       "name": {
-            "title": "Name",
-            "description": "Unique name of the pipeline.",
-            "type": "string",
-            "pattern": "[a-z][0-9\\-\\_]"
+        "accession": {
+            "accessionType": "PL"        
         },
         "title": {
             "title": "Title",
@@ -40,7 +39,6 @@
             "title": "Analysis steps",
             "description": "The particular computational analysis steps used by the pipeline.",
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Analysis step",
                 "description": "A particular computational analysis step used by the pipeline.",
@@ -53,7 +51,6 @@
             "title": "Documents",
             "description": "Documents that provide additional information about the pipeline.",
             "type": "array",
-            "default": [],
             "items": {
                 "title": "Document",
                 "description": "A document that provides additional information about the pipeline.",
@@ -62,5 +59,63 @@
                 "linkTo": "document"
             }
         }
+    },
+    "facets": {
+        "assay_term_name": {
+            "title": "Assay",
+            "type": "string"
+        },
+        "status": {
+            "title": "Pipeline status",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.software.title": {
+            "title": "Software",
+            "type": "array"
+        },
+        "analysis_steps.software_versions.software.references.published_by": {
+            "title": "Created by",
+            "type": "array"
+        }  
+    },
+    "columns": {
+        "accession": {
+            "title": "Accession",
+            "type": "string"
+        },
+        "title": {
+            "title": "Pipeline",
+            "type": "string"
+        },
+        "version": {
+            "title": "Version",
+            "type": "string"
+        },
+        "assay_term_name": {
+            "title": "Assay Type",
+            "type": "string"
+        },
+        "status": {
+            "title": "Status",
+            "type": "string"
+        },
+        "analysis_steps.software_versions.software.title": {
+            "title": "Software",
+            "type": "array"
+        }
+    },
+    "boost_values": {
+        "uuid": 1.0,
+        "accession": 1.0,
+        "aliases": 1.0,
+        "analysis_steps.software_versions.software.title": 1.0,
+        "analysis_steps.software_versions.software.name": 1.0,
+        "analysis_steps.software_versions.software.purpose": 1.0,
+        "analysis_steps.software_versions.software.used_by": 1.0,
+        "analysis_steps.software_versions.software.references.title": 1.0,
+        "assay_term_name": 1.0,
+        "assay_term_id": 1.0,
+        "title": 1.0,
+        "version": 1.0
     }
 }
