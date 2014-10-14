@@ -81,7 +81,7 @@
                 "description": "A donor ID of a biological parent, if known.",
                 "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
                 "type": "string",
-                "linkTo": "donor"
+                "linkTo": "human_donor"
             }
         },
         "children": {
@@ -95,7 +95,7 @@
                 "description": "A donor that genetic material was supplied to.",
                 "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
                 "type": "string",
-                "linkTo": "donor"
+                "linkTo": "human_donor"
             }
         },
         "siblings": {
@@ -108,21 +108,21 @@
                 "description": "A donors that has at least one parent in common.",
                 "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
                 "type": "string",
-                "linkTo": "donor"
+                "linkTo": "human_donor"
             }
         },
         "fraternal_twin": {
             "title": "Fraternal twin",
             "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
             "type": "string",
-            "linkTo": "donor"
+            "linkTo": "human_donor"
         },
         "identical_twin": {
             "title": "Identical twin",
             "description": "A donor that have identical genetic material.",
             "comment": "For human biosamples, see human_donor.json for available identifiers. For mouse biosamples, see mouse_donor.json for available identifiers.",
             "type": "string",
-            "linkTo": "donor"
+            "linkTo": "human_donor"
         },
         "organism": {
             "default": "7745b647-ff15-4ff3-9ced-b897d4e2983c",
