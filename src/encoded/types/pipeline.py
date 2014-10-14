@@ -19,13 +19,10 @@ class Pipeline(Collection):
         'title': 'Pipelines',
         'description': 'Listing of Pipelines'
     }
-    unique_key = 'pipeline:title'
 
     class Item(Collection.Item):
         name_key = 'accesion'
-        keys = ACCESSION_KEYS + ALIAS_KEYS + [
-            {'title': '{item_type}:title', 'value': '{title}', '$templated': True},
-        ]
+        keys = ACCESSION_KEYS + ALIAS_KEYS
 
         embedded = [
             'documents',
