@@ -416,6 +416,7 @@ def es_tween_factory(handler, registry):
             allowed = set(source['principals_allowed_edit'])
             if allowed.intersection(request.effective_principals):
                 rendering_val['actions'] = collection.Item.actions
+                rendering_val['audit'] = source['audit']
 
         else:
             rendering_val = source[frame]
