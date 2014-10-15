@@ -4,7 +4,6 @@ from pyramid.threadlocal import manager as threadlocal_manager
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 from urllib import urlencode
-from xml.sax.saxutils import quoteattr
 
 
 def get_root_request():
@@ -84,12 +83,13 @@ def stats_tween_factory(handler, registry):
 
     def stats_tween(request):
         stats = request._stats = {}
-        stats['rss_begin'] = process.memory_info().rss
+        rss_begin = stats['rss_begin'] = process.memory_info().rss
         begin = stats['wsgi_begin'] = int(time.time() * 1e6)
         response = handler(request)
         end = stats['wsgi_end'] = int(time.time() * 1e6)
-        stats['rss_end'] = process.memory_info().rss
+        rss_end = stats['rss_end'] = process.memory_info().rss
         stats['wsgi_time'] = end - begin
+        stats['rss_change'] = rss_end - rss_begin
 
         environ = request.environ
         if 'mod_wsgi.queue_start' in environ:
@@ -99,7 +99,7 @@ def stats_tween_factory(handler, registry):
 
         xs = response.headers['X-Stats'] = urlencode(sorted(stats.items()))
         if getattr(request, '_stats_html_attribute', False):
-            response.body = response.body.replace('<html', '<html data-stats=%s' % quoteattr(xs), 1)
+            response.set_cookie('X-Stats', xs)
         return response
 
     return stats_tween

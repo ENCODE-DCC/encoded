@@ -17,8 +17,7 @@ if (!window.TEST_RUNNER) domready(function ready() {
     var BrowserFeat = require('./components/mixins').BrowserFeat;
     BrowserFeat.setHtmlFeatClass();
     var props = App.getRenderedProps(document);
-    var stats_header = document.documentElement.getAttribute('data-stats') || '';
-    var server_stats = require('querystring').parse(stats_header);
+    var server_stats = require('querystring').parse(window.stats_cookie);
     App.recordServerStats(server_stats, 'html');
 
     var app = React.renderComponent(App(props), document);
