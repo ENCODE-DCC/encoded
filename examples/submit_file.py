@@ -7,6 +7,7 @@ import json
 import os
 import requests
 import subprocess
+import sys
 import time
 
 host = 'http://localhost:6543'
@@ -148,7 +149,13 @@ env.update({
 # ~12-15s/GB from AWS Ireland - AWS Oregon
 print("Uploading file.")
 start = time.time()
-subprocess.check_call(['aws', 's3', 'cp', path, creds['upload_url']], env=env)
-end = time.time()
-duration = end - start
-print("Uploaded in %.2f seconds" % duration)
+try:
+    subprocess.check_call(['aws', 's3', 'cp', path, creds['upload_url']], env=env)
+except subprocess.CalledProcessError as e:
+    # The aws command returns a non-zero exit code on error.
+    print("Upload failed with exit code %d" % e.returncode)
+    sys.exit(e.returncode)
+else:
+    end = time.time()
+    duration = end - start
+    print("Uploaded in %.2f seconds" % duration)

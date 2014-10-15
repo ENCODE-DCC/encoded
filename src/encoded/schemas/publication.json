@@ -260,6 +260,22 @@
             "title": "Abstract",
             "type": "string"
         },
+        "supplementary_data.supplementary_data_type": {
+            "title": "Available data",
+            "type": "string"
+        },
+        "supplementary_data.file_format": {
+            "title": "File format",
+            "type": "string"
+        },
+        "supplementary_data.url": {
+            "title": "URL",
+            "type": "string"
+        },
+        "supplementary_data.data_summary": {
+            "title": "Data summary",
+            "type": "string"
+        },
         "references": {
             "title": "References",
             "type": "array"

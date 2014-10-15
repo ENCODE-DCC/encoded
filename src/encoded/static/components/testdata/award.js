@@ -1,7 +1,7 @@
 module.exports = {
-    "@id": "/awards/U54HG007004/",
+    "@id": "/awards/RC2HG005602/",
     "@type": ["award", "item"],
-    "name": "U54HG007004",
+    "name": "RC2HG005602",
     "project": "ENCODE",
     "rfa": "ENCODE3"
 };

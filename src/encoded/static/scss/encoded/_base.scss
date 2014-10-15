@@ -46,3 +46,9 @@ figure {
     font-weight: normal;
     color: #808080;
 }
+
+*, *:after, *:before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}

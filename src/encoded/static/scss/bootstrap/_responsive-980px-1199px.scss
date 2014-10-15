@@ -1,0 +1,19 @@
+//
+// Responsive: Tablet to desktop
+// --------------------------------------------------
+
+
+@media (min-width: 980px) and (max-width: 1199px) {
+
+  // Fixed grid
+  @include grid-core($gridColumnWidth, $gridGutterWidth);
+
+  // Fluid grid
+  @include grid-fluid($fluidGridColumnWidth, $fluidGridGutterWidth);
+
+  // Input grid
+  @include grid-input($gridColumnWidth, $gridGutterWidth);
+
+  // No need to reset .thumbnails here since it's the same $gridGutterWidth
+
+}
