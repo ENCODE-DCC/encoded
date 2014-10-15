@@ -52,9 +52,9 @@ describe('Publication', function() {
             var panel = TestUtils.findRenderedDOMComponentWithClass(publication, 'panel').getDOMNode();
             var item = panel.querySelector('[data-test="abstract"]');
             expect(item.getElementsByTagName('*').length).toEqual(2);
-            var abstractPart = item.getElementsByTagName('h2');
+            var abstractPart = item.getElementsByTagName('dt');
             expect(abstractPart.length).toEqual(1);
-            abstractPart = item.getElementsByTagName('p');
+            abstractPart = item.getElementsByTagName('dd');
             expect(abstractPart.length).toEqual(1);
             expect(abstractPart[0].textContent).toContain('The human genome encodes the blueprint of life,');
         });
@@ -72,7 +72,7 @@ describe('Publication', function() {
         });
 
         it('has two references', function() {
-            var pubdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
+            var pubdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value').getDOMNode();
             var item = pubdata.querySelector('[data-test="references"]');
             var ul = item.getElementsByTagName('ul');
             var li = ul[0].getElementsByTagName('li');
@@ -96,8 +96,9 @@ describe('Publication', function() {
         });
 
         it('has a data-used field', function() {
-            var references = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
-            var dd = references.getElementsByTagName('dd');
+            var dataused = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value').getDOMNode();
+            var item = dataused.querySelector('[data-test="dataused"]');
+            var dd = item.getElementsByTagName('dd');
             expect(dd[0].textContent).toEqual('ENCODE main paper');
         });
     });
@@ -114,7 +115,7 @@ describe('Publication', function() {
         });
 
         it('has two dataset links', function() {
-            var pubdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value-left').getDOMNode();
+            var pubdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'key-value').getDOMNode();
             var item = pubdata.querySelector('[data-test="datasets"]');
             var itemDescription = item.getElementsByTagName('dd')[0];
             var anchors = itemDescription.getElementsByTagName('a');
@@ -123,6 +124,25 @@ describe('Publication', function() {
             expect(anchors[0].textContent).toEqual('ENCSR000AJW');
             expect(anchors[1].getAttribute('href')).toEqual('/datasets/ENCSR999BLA/');
             expect(anchors[1].textContent).toEqual('ENCSR999BLA');
+        });
+    });
+
+    describe('Publication with supplementary data', function() {
+        var publication;
+
+        beforeEach(function() {
+            var context_sd = _.clone(context);
+            context_sd.supplementary_data = [require('../testdata/publication/supplementary-data-1.js'), require('../testdata/publication/supplementary-data-2.js')];
+            publication = TestUtils.renderIntoDocument(
+                <Panel context={context_sd} />
+            );
+        });
+
+        it('has a supplementary data panel with two items', function() {
+            var supdata = TestUtils.findRenderedDOMComponentWithClass(publication, 'type-publication').getDOMNode();
+            var item = supdata.querySelector('[data-test="supplementarydata"]');
+            var itemSection = item.getElementsByTagName('section');
+            expect(itemSection.length).toEqual(2);
         });
     });
 });

@@ -1,5 +1,4 @@
 /** @jsx React.DOM */
-/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 var _ = require('underscore');
@@ -35,8 +34,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         var documents = {};
         replicates.forEach(function (replicate) {
             if (!replicate.library) return;
-            replicate.library.documents.forEach(function (doc) {
-                documents[doc['@id']] = Panel({context: doc});
+            replicate.library.documents.forEach(function (doc, i) {
+                documents[doc['@id']] = Panel({context: doc, key: i + 1});
             });
         });
 
@@ -103,8 +102,8 @@ var Experiment = module.exports.Experiment = React.createClass({
         }
 
         // Adding experiment specific documents
-        context.documents.forEach(function (document) {
-            documents[document['@id']] = Panel({context: document});
+        context.documents.forEach(function (document, i) {
+            documents[document['@id']] = Panel({context: document, key: i + 1});
         });
         var antibodies = {};
         replicates.forEach(function (replicate) {
@@ -300,8 +299,10 @@ var Experiment = module.exports.Experiment = React.createClass({
 
                 {Object.keys(documents).length ?
                     <div data-test="protocols">
-                        <h3>Protocols</h3>
-                        {documents}
+                        <h3>Documents</h3>
+                        <div className="row multi-columns-row">
+                            {documents}
+                        </div>
                     </div>
                 : null}
 

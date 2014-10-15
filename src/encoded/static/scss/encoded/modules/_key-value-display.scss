@@ -13,8 +13,8 @@ dd.h3, dd.h4 {
 .key-value {
     margin: 0;
 
-    div {
-        @extend .clearfix;
+    > div {
+        clear: left;
     }
 
     dt {
@@ -88,11 +88,33 @@ dd.h3, dd.h4 {
     }
 }
 
+// Left-justified key-value
+.key-value-left {
+    @extend .key-value;
+
+    dt, dd {
+        padding-top: 0 !important;
+    }
+
+    dt {
+        float: none !important;
+        display: block !important;
+        text-align: left !important;
+        margin-bottom: 0px !important;
+    }
+
+    dd {
+        margin-left: 0 !important;
+    }
+}
+
 .unit::before {
     content: " ";
 }
 
 .horizontal-list {
+    @include clearfix;
+
     li {
         float: left;
         margin-right: 0.5em;
@@ -117,4 +139,9 @@ dd ul, .multi-value {
 
 .multi-dd {
     margin-bottom: 10px;
+}
+
+
+.para-text {
+    line-height: 1.6 !important;
 }

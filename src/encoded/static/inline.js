@@ -3,6 +3,11 @@
 // Minimal inline IE8 html5 compatibility
 require('shivie8');
 
+// Read and clear stats cookie
+var cookie = require('cookie-cutter')(document);
+window.stats_cookie = cookie.get('X-Stats') || '';
+cookie.set('X-Stats', '', {path: '/', expires: new Date(0)});
+
 // Use a separate tracker for dev / test
 var ga = require('google-analytics');
 var trackers = {'www.encodeproject.org': 'UA-47809317-1'};
