@@ -83,12 +83,13 @@ def stats_tween_factory(handler, registry):
 
     def stats_tween(request):
         stats = request._stats = {}
-        stats['rss_begin'] = process.memory_info().rss
+        rss_begin = stats['rss_begin'] = process.memory_info().rss
         begin = stats['wsgi_begin'] = int(time.time() * 1e6)
         response = handler(request)
         end = stats['wsgi_end'] = int(time.time() * 1e6)
-        stats['rss_end'] = process.memory_info().rss
+        rss_end = stats['rss_end'] = process.memory_info().rss
         stats['wsgi_time'] = end - begin
+        stats['rss_change'] = rss_end - rss_begin
 
         environ = request.environ
         if 'mod_wsgi.queue_start' in environ:
