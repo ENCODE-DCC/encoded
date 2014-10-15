@@ -188,12 +188,13 @@ var cx = React.addons.classSet;
             });
 
             return (
-                <li>
+                <li className="clearfix">
                     <div>
                         {this.renderActions()}
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Antibody</p>
                             <p className="type">{' ' + result.accession}</p>
+                            <p className="type meta-audit"><button className="audit warning icon icon-warning"></button><button className="meta-audit audit error icon icon-warning"></button></p>
                         </div>
                         <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
@@ -231,13 +232,14 @@ var cx = React.addons.classSet;
             var rnais = (result.rnais[0] && result.rnais[0].target && result.rnais[0].target.label) ? result.rnais[0].target.label : '';
             var constructs = (result.constructs[0] && result.constructs[0].target && result.constructs[0].target.label) ? result.constructs[0].target.label : '';
             var treatment = (result.treatments[0] && result.treatments[0].treatment_term_name) ? result.treatments[0].treatment_term_name : '';
-            return (<li>
+            return (<li className="clearfix">
                         <div>
                             {this.renderActions()}
                             <div className="pull-right search-meta">
                                 <p className="type meta-title">Biosample</p>
                                 <p className="type">{' ' + result['accession']}</p>
                                 <p className="type meta-status">{' ' + result['status']}</p>
+                                <p className="type meta-audit"><button className="audit warning icon icon-warning"></button><button className="meta-audit audit error icon icon-warning"></button></p>
                             </div>
                             <div className="accession">
                                 <a href={result['@id']}>
