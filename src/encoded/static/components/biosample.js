@@ -818,7 +818,7 @@ var Document = module.exports.Document = React.createClass({
         if (caption && caption.length > 100) {
             excerpt = globals.truncateString(caption, 100);
         }
-        var panelClass = 'view-item view-detail status-none' + (this.props.embeddedDocs ? ' panel-embedded' : ' panel');
+        var panelClass = 'view-item view-detail status-none panel';
 
         return (
             // Each section is a panel; name all Bootstrap 3 sizes so .multi-columns-row class works
