@@ -1,13 +1,13 @@
 /* Panels */
 .panel {
     background-color: #fff;
-    border: 1px solid #ced5dc;
+    border: 1px solid #a0a0a0;
     @include border-radius($border-radius-base);
     @include box-shadow(0 0 6px rgba(195, 202, 211, 0.5));
     margin-top: 10px;
     margin-bottom: 20px;
     padding: 15px 30px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .panel-blue {
@@ -117,4 +117,10 @@ a[href^="http://encodedcc.sdsc.edu/warehouse/"]:after {
             right: 0;
         }
     }
+}
+
+.sub-panel {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #e0e0e0;
 }

@@ -109,48 +109,32 @@ describe('Antibody', function() {
             var anchor = figure.getElementsByTagName('a')[0];
             expect(anchor.getAttribute('href')).toEqual('/antibody-characterizations/769cbffe-bb59-4d68-a073-367a6fdd0cef/@@download/attachment/hnRNPA1_aviva-1_WB_HeLa_Fu.TIF');
 
-            var figCaption = panel.getElementsByTagName('figcaption')[0];
+            var figCaption = panel.getElementsByClassName('characterization-badge')[0];
             expect(figCaption.textContent).toEqual('not compliant');
 
-            var charData = panel.getElementsByClassName('characterization-meta-data')[0];
+            var charData = panel.getElementsByClassName('characterization-intro')[0];
             var item = charData.querySelector('[data-test="method"]');
             var itemDescription = item.getElementsByTagName('dd')[0];
             expect(itemDescription.textContent).toEqual('immunoblot');
 
-            item = charData.querySelector('[data-test="targetspecies"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('Homo sapiens');
-
-            item = charData.querySelector('[data-test="caption"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toContain('Western blot analysis of lysates from HeLa cells');
+            charData = panel.getElementsByClassName('characterization-slider')[0];
+            item = charData.querySelector('[data-test="standardsdoc"]');
+            anchor = item.getElementsByTagName('a')[0];
+            expect(anchor.textContent).toEqual('ENCODE:Antibody_characterization_standards_February_2014');
+            expect(anchor.getAttribute('href')).toEqual('/documents/bcb5f3c8-d5e9-40d2-805f-4274f940c36d/@@download/attachment/Antibody_Characterization_ENCODE3_February2014.pdf');
 
             item = charData.querySelector('[data-test="submitted"]');
             itemDescription = item.getElementsByTagName('dd')[0];
             expect(itemDescription.textContent).toEqual('Ad Est');
 
-            item = charData.querySelector('[data-test="lab"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('Thomas Gingeras, CSHL');
-
             item = charData.querySelector('[data-test="grant"]');
             itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('U54HG007004');
-
-            item = charData.querySelector('[data-test="image"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            expect(itemDescription.textContent).toEqual('not compliant');
-
-            item = charData.querySelector('[data-test="standardsdoc"]');
-            itemDescription = item.getElementsByTagName('dd')[0];
-            anchor = itemDescription.getElementsByTagName('a')[0];
-            expect(itemDescription.textContent).toEqual('ENCODE:Antibody_characterization_standards_February_2014');
-            expect(anchor.getAttribute('href')).toEqual('/documents/bcb5f3c8-d5e9-40d2-805f-4274f940c36d/@@download/attachment/Antibody_Characterization_ENCODE3_February2014.pdf');
+            expect(itemDescription.textContent).toEqual('RC2HG005602');
 
             item = charData.querySelector('[data-test="download"]');
             itemDescription = item.getElementsByTagName('dd')[0];
             anchor = itemDescription.getElementsByTagName('a')[0];
-            expect(itemDescription.textContent).toEqual('hnRNPA1_aviva-1_WB_HeLa_Fu.TIF');
+            expect(itemDescription.textContent).toContain('hnRNPA1_aviva-1_WB_HeLa_Fu.TIF');
             expect(anchor.getAttribute('href')).toEqual('/antibody-characterizations/769cbffe-bb59-4d68-a073-367a6fdd0cef/@@download/attachment/hnRNPA1_aviva-1_WB_HeLa_Fu.TIF');
         });
     });
