@@ -597,6 +597,14 @@ var FlyWormDonor = module.exports.FlyDonor = React.createClass({
                     : null}
                 </dl>
 
+                {biosample && biosample.model_organism_donor_constructs && biosample.model_organism_donor_constructs.length ?
+                    <section>
+                        <hr />
+                        <h4>Construct details</h4>
+                        {donor_constructs}
+                    </section>
+                : null}
+
                 {biosample && biosample.donor.characterizations && biosample.donor.characterizations.length ?
                     <section className="multi-columns-row">
                         <hr />
@@ -718,7 +726,7 @@ var Construct = module.exports.Construct = React.createClass({
                     <div>
                         <hr />
                         <h4>Construct documents</h4>
-                        <div>{construct_documents}</div>
+                        <div className="row">{construct_documents}</div>
                     </div>
                 : null}
             </div>
@@ -804,7 +812,6 @@ var Document = module.exports.Document = React.createClass({
             );
         }
 
-        var panelClass = 'view-item view-detail status-none panel';
         var characterization = context['@type'].indexOf('characterization') >= 0;
         var caption = characterization ? context.caption : context.description;
         var excerpt;
