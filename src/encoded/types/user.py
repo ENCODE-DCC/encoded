@@ -7,11 +7,11 @@ from pyramid.security import (
     Everyone,
     effective_principals,
 )
+from .base import Collection
 from ..schema_utils import (
     load_schema,
 )
 from ..contentbase import (
-    Collection,
     Root,
     item_view,
     item_view_edit,
