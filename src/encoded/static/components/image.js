@@ -6,7 +6,7 @@ var ReactForms = require('react-forms');
 var ItemEdit = require('./item').ItemEdit;
 var globals = require('./globals');
 var url = require('url');
-var FileInput = require('./form/file').FileInput;
+var FileInput = require('./inputs').FileInput;
 
 
 // Fixed-position lightbox background and image

@@ -5,8 +5,8 @@ var ReactForms = require('react-forms');
 var fetched = require('./fetched');
 var Form = require('./form').Form;
 var globals = require('./globals');
-var ObjectPicker = require('./blocks/item').ObjectPicker;
-var FileInput = require('./form/file').FileInput;
+var ObjectPicker = require('./inputs').ObjectPicker;
+var FileInput = require('./inputs').FileInput;
 var _ = require('underscore');
 
 
@@ -108,10 +108,10 @@ globals.listing_titles.fallback = function () {
 };
 
 
-var jsonSchemaToFormSchema = function(p, name, required) {
-    var props = {};
-    if (name) props.name = name;
-    if (required) props.required = true;
+var jsonSchemaToFormSchema = function(p, props) {
+    if (props === undefined) {
+        props = {};
+    }
     if (p.title) props.label = p.title;
     if (p.description) props.hint = p.description;
     if (p.type == 'object') {
@@ -123,16 +123,16 @@ var jsonSchemaToFormSchema = function(p, name, required) {
         var properties = [];
         for (var name in p.properties) {
             var required = _.contains(p.required || [], name);
-            properties.push(jsonSchemaToFormSchema(p.properties[name], name, required));
+            properties.push(jsonSchemaToFormSchema(p.properties[name], {name: name, required: required}));
         }
         return ReactForms.schema.Schema(props, properties);
     } else if (p.type == 'array') {
-        if (required) props.component = <ReactForms.RepeatingFieldset className="required" />;
+        if (props.required) props.component = <ReactForms.RepeatingFieldset className="required" />;
         return ReactForms.schema.List(props, jsonSchemaToFormSchema(p.items));
     } else {
-        if (required) props.component = <ReactForms.Field className="required" />;
+        if (props.required) props.component = <ReactForms.Field className="required" />;
         if (p.pattern) {
-            props.validate = function(v) { return v.match(p.pattern) };
+            props.validate = function(v) { return v.match(p.pattern); };
         }
         if (p.enum) {
             props.input = (
@@ -142,16 +142,17 @@ var jsonSchemaToFormSchema = function(p, name, required) {
             );
         }
         if (p.linkTo) {
+            var restrictions = {type: [p.linkTo]};
             props.input = (
-                <ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} />
+                <ObjectPicker searchBase={"?mode=picker&type=" + p.linkTo} restrictions={restrictions} />
             );
         }
-        if (name == 'schema_version') {
+        if (props.name == 'schema_version') {
             props.input = <input type="text" disabled />;
         }
         return ReactForms.schema.Property(props);
     }
-}
+};
 
 
 var ItemEdit = module.exports.ItemEdit = React.createClass({
@@ -159,10 +160,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
         var title = globals.listing_titles.lookup(context)({context: context});
-        var action, form;
+        var action, form, schemaUrl;
         if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
             title = 'Add ' + title;
-            var schemaUrl = context.actions[0].profile;
+            schemaUrl = context.actions[0].profile;
             action = context['@id'];
             form = (
                 <fetched.FetchedData Component={Form} action={action} method="POST">
@@ -172,7 +173,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
         } else {  // edit form
             title = 'Edit ' + title;
             var url = this.props.context['@id'] + '?frame=edit';
-            var schemaUrl = '/profiles/' + context['@type'][0] + '.json';
+            schemaUrl = '/profiles/' + context['@type'][0] + '.json';
             action = this.props.context['@id'];
             form = (
                 <fetched.FetchedData Component={Form} action={action} method="PUT">

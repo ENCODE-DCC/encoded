@@ -58,3 +58,5 @@ var FileInput = module.exports.FileInput = React.createClass({
         }
     }
 });
+
+module.exports = FileInput;

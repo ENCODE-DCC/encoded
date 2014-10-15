@@ -12,7 +12,7 @@ var Schema = ReactForms.schema.Schema;
 var Property = ReactForms.schema.Property;
 
 var ItemBlockView = item.ItemBlockView;
-var ObjectPicker = item.ObjectPicker;
+var ObjectPicker = require('../inputs').ObjectPicker;
 var RichTextBlockView = richtext.RichTextBlockView;
 
 

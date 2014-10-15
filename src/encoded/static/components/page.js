@@ -6,7 +6,7 @@ var Layout = require('./layout').Layout;
 var globals = require('./globals');
 var merge = require('react/lib/merge');
 var ItemEdit = require('./item').ItemEdit;
-var ObjectPicker = require('./blocks/item').ObjectPicker;
+var ObjectPicker = require('./inputs').ObjectPicker;
 
 
 var LayoutType = {
