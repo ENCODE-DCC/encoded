@@ -2,11 +2,8 @@
 'use strict';
 var React = require('react');
 var cx = require('react/lib/cx');
-var ReactForms = require('react-forms');
-var ItemEdit = require('./item').ItemEdit;
 var globals = require('./globals');
 var url = require('url');
-var FileInput = require('./inputs').FileInput;
 
 
 // Fixed-position lightbox background and image
@@ -162,25 +159,3 @@ var Image = React.createClass({
 
 
 globals.content_views.register(Image, 'image');
-
-
-var Schema    = ReactForms.schema.Schema;
-var Property  = ReactForms.schema.Property;
-
-var ImageFormSchema = (
-    <Schema>
-        <Property name="caption" label="Caption" />
-        <Property name="attachment" label="Image" input={FileInput()} />
-    </Schema>
-);
-
-
-var ImageEdit = React.createClass({
-    render: function() {
-        return this.transferPropsTo(<ItemEdit context={this.props.context} schema={ImageFormSchema} />);
-    }
-});
-
-
-globals.content_views.register(ImageEdit, 'image', 'edit');
-globals.content_views.register(ImageEdit, 'image_collection', 'add');
