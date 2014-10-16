@@ -13,7 +13,7 @@ var Dbxref = dbxref.Dbxref;
 
 var cx = React.addons.classSet;
 
-    // Should readlly be singular...
+    // Should really be singular...
     var types = {
         antibody_lot: {title: 'Antibodies'},
         biosample: {title: 'Biosamples'},

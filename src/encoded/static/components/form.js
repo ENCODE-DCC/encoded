@@ -65,7 +65,7 @@ var Form = module.exports.Form = React.createClass({
         var $ = require('jquery');
         var value = this.value().value;
         _.each(value, function(v, k) {
-            if (v === null) {
+            if (v === null || k == 'schema_version') {
                 delete value[k];
             }
         });

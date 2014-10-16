@@ -162,6 +162,17 @@ var jsonSchemaToFormSchema = function(p, props) {
 };
 
 
+var jsonSchemaToDefaultValue = function(schema) {
+    var defaultValue = {};
+    _.each(schema.properties, function(property, name) {
+        if (property.default !== undefined) {
+            defaultValue[name] = property.default;
+        }
+    });
+    return defaultValue;
+};
+
+
 var ItemEdit = module.exports.ItemEdit = React.createClass({
     render: function() {
         var context = this.props.context;
@@ -174,6 +185,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             action = context['@id'];
             form = (
                 <fetched.FetchedData Component={Form} action={action} method="POST">
+                    <fetched.Fetched name="defaultValue" url={schemaUrl} converter={jsonSchemaToDefaultValue} />
                     <fetched.Fetched name="schema" url={schemaUrl} converter={jsonSchemaToFormSchema} />
                 </fetched.FetchedData>
             );
