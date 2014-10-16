@@ -29,9 +29,10 @@ import functools
 import json
 import logging
 import transaction
-import os
 import urllib3
 import csv
+import gzip
+import StringIO
 
 log = logging.getLogger(__name__)
 ELASTIC_SEARCH = __name__ + ':elasticsearch'
@@ -181,7 +182,7 @@ def add_dependent_objects(root, new, existing):
             dependents.update({
                 model.source_rid for model in item.model.revs
             })
-            
+
             item_type = item.item_type
             item_rels = item.model.rels
             for rel in item_rels:
@@ -289,6 +290,8 @@ def es_update_data(event):
 
 @view_config(route_name='file_index', request_method='POST', permission="index")
 def file_index(request):
+    '''Indexes bed files in ENCODE'''
+
     file_index = 'peaks'
     human_doc_type = 'hg19'
     mouse_doc_type = 'mm9'
@@ -336,30 +339,28 @@ def file_index(request):
     except RequestError:
         es.indices.delete(index=file_index)
         es.indices.create(index=file_index)
-    
+
     es.indices.refresh(index=file_index)
     for doc_type in [human_doc_type, mouse_doc_type]:
         create_mapping(doc_type)
 
     http = urllib3.PoolManager()
-    path = 'file_index.bigBed'
-    types = ['narrowPeak', 'broadPeak']
+    types = ['bed_narrowPeak', 'bed_broadPeak']
     collection = request.root.by_item_type['file']
     counter = 1
     for count, uuid in enumerate(collection):
         item = request.root.get_by_uuid(uuid)
         properties = item.__json__(request)
-        if properties['file_format'] in types and 'assembly' in properties:
-            r = http.request('GET', 'https://www.encodedcc.org' + properties['href'])
-            with open(path, 'wb') as out:
-                out.write(r.data)
-            r.release_conn()
-            try:
-                os.system("./bigBedToBed file_index.bigBed file_index.bed")
-            except:
-                log.info("Error converting bigbed to bed %s", properties['accession'])
-            else:
-                file_data = list(csv.reader(open('file_index.bed', 'rb'), delimiter='\t'))
+        if 'assembly' in properties and properties['status'] != 'revoked':
+            if properties['file_format'] in types and properties['assembly'] == 'hg19':
+                print "Downloading and indexing - " + properties['href']
+                r = http.request('GET', 'https://www.encodedcc.org' + properties['href'])
+                comp = StringIO.StringIO()
+                comp.write(r.data)
+                comp.seek(0)
+                f = gzip.GzipFile(fileobj=comp, mode='rb')
+                r.release_conn()
+                file_data = list(csv.reader(f, delimiter='\t'))
                 for row in file_data:
                     result = {
                         'chromosome': row[0],
@@ -380,5 +381,4 @@ def file_index(request):
                     full=True,
                     force=True
                 )
-                es.indices.refresh(index=file_index)
-            os.system("rm file_index.*")
+            es.indices.refresh(index=file_index)
