@@ -34,7 +34,9 @@ var Form = module.exports.Form = React.createClass({
             if (!$error.length) {
                 $error = $('.rf-Message:first').closest('.rf-Field');
             }
-            $('body').animate({scrollTop: $error.offset().top - $('#navbar').height()}, 200);
+            if ($error.length) {
+                $('body').animate({scrollTop: $error.offset().top - $('#navbar').height()}, 200);
+            }
         }
     },
 
@@ -105,8 +107,13 @@ var Form = module.exports.Form = React.createClass({
         var schemaErrors = [];
         if (data.errors !== undefined) {
             data.errors.map(function (error) {
-                if (error.name.length) {
-                    externalValidation.children[error.name[0]] = {validation: {failure: error.description}};
+                var name = error.name;
+                var match = /u'(\w+)' is a required property/.exec(error.description);
+                if (match) {
+                    name = [match[1]];
+                }
+                if (name.length) {
+                    externalValidation.children[name[0]] = {validation: {failure: error.description}};
                 } else {
                     schemaErrors.push(error.description);
                 }
