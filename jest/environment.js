@@ -1,7 +1,5 @@
 'use strict';
-
 require('jest-runtime').mock('scriptjs');
-window.$script = require('scriptjs');
 
 if (window.DOMParser === undefined) {
     // jsdom

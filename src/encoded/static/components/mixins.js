@@ -4,6 +4,9 @@
 var React = require('react');
 var url = require('url');
 var origin = require('../libs/origin');
+var $script = require('scriptjs');
+var ga = require('google-analytics');
+
 
 var parseError = module.exports.parseError = function (xhr, status) {
     var data;
@@ -246,11 +249,49 @@ module.exports.Persona = {
     }
 };
 
+class UnsavedChangesToken {
+    constructor(manager) {
+        this.manager = manager;
+    }
+
+    release() {
+        this.manager.releaseUnsavedChanges(this);
+    }
+}
+
 
 module.exports.HistoryAndTriggers = {
     SLOW_REQUEST_TIME: 750,
     // Detect HTML5 history support
     historyEnabled: !!(typeof window != 'undefined' && window.history && window.history.pushState),
+
+    childContextTypes: {
+        adviseUnsavedChanges: React.PropTypes.func
+    },
+
+    adviseUnsavedChanges: function () {
+        var token = new UnsavedChangesToken(this);
+        this.setState({unsavedChanges: this.state.unsavedChanges.concat([token])});
+        return token;
+    },
+
+    releaseUnsavedChanges: function (token) {
+        console.assert(this.state.unsavedChanges.indexOf(token) != -1);
+        this.setState({unsavedChanges: this.state.unsavedChanges.filter(x => x !== token)});
+    },
+
+    getChildContext: function() {
+        return {
+            adviseUnsavedChanges: this.adviseUnsavedChanges
+        };
+    },
+
+
+    getInitialState: function () {
+        return {
+            unsavedChanges: []
+        };
+    },
 
     componentWillMount: function () {
         if (typeof window !== 'undefined') {
@@ -278,6 +319,7 @@ module.exports.HistoryAndTriggers = {
         } else {
             window.onhashchange = this.onHashChange;
         }
+        window.onbeforeunload = this.handleBeforeUnload;
         if (this.props.href !== window.location.href) {
             this.setProps({href: window.location.href});
         }
@@ -298,7 +340,6 @@ module.exports.HistoryAndTriggers = {
     handleError: function(msg, url, line, column) {
         // When an unhandled exception occurs, reload the page on navigation
         this.historyEnabled = false;
-        var ga = window.ga;
         var parsed = url && require('url').parse(url);
         if (url && parsed.hostname === window.location.hostname) {
             url = parsed.path;
@@ -398,6 +439,10 @@ module.exports.HistoryAndTriggers = {
 
     handlePopState: function (event) {
         if (this.DISABLE_POPSTATE) return;
+        if (!this.confirmNavigation()) {
+            window.history.pushState(window.state, '', this.props.href);
+            return;
+        }
         if (!this.historyEnabled) {
             window.location.reload();
             return;
@@ -419,8 +464,31 @@ module.exports.HistoryAndTriggers = {
         this.navigate(href, {replace: true});
     },
 
+    confirmNavigation: function() {
+        // check for beforeunload confirmation
+        if (this.state.unsavedChanges.length) {
+            var res = window.confirm('You have unsaved changes. Are you sure you want to lose them?');
+            if (res) {
+                this.setState({unsavedChanges: []});
+            }
+            return res;
+        }
+        return true;
+    },
+
+    handleBeforeUnload: function() {
+        if (this.state.unsavedChanges.length) {
+            return 'You have unsaved changes.';
+        }
+    },
+
     navigate: function (href, options) {
         var $ = require('jquery');
+
+        if (!this.confirmNavigation()) {
+            return;
+        }
+
         options = options || {};
         href = url.resolve(this.props.href, href);
         var xhr = this.props.contextRequest;
@@ -473,7 +541,6 @@ module.exports.HistoryAndTriggers = {
             clearTimeout(xhr.slowTimer);
             return;
         }
-        var ga = window.ga;
         var data = parseError(xhr, status);
         ga('send', 'exception', {
             'exDescription': 'contextRequest:' + status + ':' + xhr.statusText,
@@ -504,8 +571,6 @@ module.exports.HistoryAndTriggers = {
         if (!xhr || !xhr.xhr_end || xhr.browser_stats) return;
         var browser_end = 1 * new Date();
 
-        var ga = window.ga;
-
         ga('set', 'location', window.location.href);
         ga('send', 'pageview');
 
@@ -533,7 +598,6 @@ module.exports.HistoryAndTriggers = {
     statics: {
         recordServerStats: function (server_stats, timingVar) {
             // server_stats *_time are microsecond values...
-            var ga = window.ga;
             Object.keys(server_stats).forEach(function (name) {
                 if (name.indexOf('_time') === -1) return;
                 ga('send', 'timing', {
@@ -544,7 +608,6 @@ module.exports.HistoryAndTriggers = {
             });
         },
         recordBrowserStats: function (browser_stats, timingVar) {
-            var ga = window.ga;
             Object.keys(browser_stats).forEach(function (name) {
                 if (name.indexOf('_time') === -1) return;
                 ga('send', 'timing', {

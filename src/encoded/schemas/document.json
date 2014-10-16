@@ -44,6 +44,7 @@
                 "growth protocol",
                 "extraction protocol",
                 "certificate of analysis",
+                "data QA",
                 "differentiation protocol",
                 "dedifferentiation protocol",
                 "data sheet",
@@ -67,6 +68,7 @@
             "default": ""
         },
         "urls": {
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "URLs",
             "description": "External resources with additional information to the document.",
             "type": "array",

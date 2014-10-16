@@ -65,6 +65,8 @@ class ValidationFailure(HTTPUnprocessableEntity):
             assert name is None and description is None and not kw
             self.detail = None
         else:
+            if name is None:
+                name = []
             self.detail = dict(location=location, name=name,
                                description=description, **kw)
 
@@ -95,6 +97,7 @@ def http_error(exc, request):
     if 'response' in vars(request):
         del request.response
     request.response.status = exc.status
+    request.response.headerlist.extend(exc.headerlist)
     result = {
         '@type': [type(exc).__name__, 'error'],
         'status': 'error',

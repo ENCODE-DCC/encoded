@@ -5,6 +5,8 @@ var globals = require('./globals');
 var parseError = require('./mixins').parseError;
 var FetchedData = require('./fetched').FetchedData;
 var _ = require('underscore');
+var $script = require('scriptjs');
+var ga = require('google-analytics');
 
 
 var sorted_json = module.exports.sorted_json = function (obj) {
@@ -62,8 +64,8 @@ var EditForm = module.exports.EditForm = React.createClass({
                     <button onClick={this.save} className="btn btn-success" disabled={this.communicating || this.state.editor_error}>Save</button>
                 </div>
                 <ul style={{clear: 'both'}}>
-                    {error && error.code === 422 ? error.errors.map(function (error) {
-                        return <li className="alert alert-error"><b>{'/' + error.name.join('/') + ': '}</b><span>{error.description}</span></li>;
+                    {error && error.code === 422 ? error.errors.map(error => {
+                        return <li className="alert alert-error"><b>{'/' + (error.name || []).join('/') + ': '}</b><span>{error.description}</span></li>;
                     }) : error ? <li className="alert alert-error">{JSON.stringify(error)}</li> : null}
                 </ul>
             </div>
@@ -138,7 +140,6 @@ var EditForm = module.exports.EditForm = React.createClass({
 
     fail: function (xhr, status, error) {
         if (status == 'abort') return;
-        var ga = window.ga;
         var data = parseError(xhr, status);
         ga('send', 'exception', {
             'exDescription': 'putRequest:' + status + ':' + xhr.statusText,

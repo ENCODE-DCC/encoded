@@ -39,7 +39,7 @@ def includeme(config):
 def finalizer(value, system, version):
     # Update the default properties
     context = system.get('context')
-    if context is None:
+    if context is None or context.schema_version != version:
         value['schema_version'] = version
         return
 

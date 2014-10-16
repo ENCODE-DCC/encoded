@@ -79,7 +79,8 @@ def test_html_pages(workbook, testapp, htmltestapp, item_type):
 def test_html_server_pages(workbook, item_type, server):
     from webtest import TestApp
     testapp = TestApp(server)
-    res = testapp.get('/%s?limit=all' % item_type,
+    res = testapp.get(
+        '/%s?limit=all' % item_type,
         headers={'Accept': 'application/json'},
     ).follow(
         status=200,
@@ -101,8 +102,8 @@ def test_json_basic_auth(anonhtmltestapp):
     import base64
     url = '/'
     value = "Authorization: Basic %s" % base64.b64encode('nobody:pass')
-    res = anonhtmltestapp.get(url, headers={'Authorization': value}, status=200)
-    assert res.json['@id']
+    res = anonhtmltestapp.get(url, headers={'Authorization': value}, status=401)
+    assert res.content_type == 'application/json'
 
 
 def _test_antibody_approval_creation(testapp):
@@ -186,10 +187,10 @@ def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, sou
     location = sources[0]['@id']
 
     res = testapp.get(location)
-    assert any(action for action in res.json['actions'] if action['name'] == 'edit')
+    assert any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
 
     res = authenticated_testapp.get(location)
-    assert not any(action for action in res.json['actions'] if action['name'] == 'edit')
+    assert not any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
 
 
 @pytest.mark.parametrize('item_type', ['organism', 'source'])
@@ -271,3 +272,20 @@ def test_page_collection_default(workbook, anontestapp):
     res = anontestapp.get('/images/', status=200)
     assert 'default_page' in res.json
     assert res.json['default_page']['@id'] == '/pages/images/'
+
+
+def test_antibody_redirect(testapp, antibody_approval):
+    res = testapp.get('/antibodies/%s/?frame=edit' % antibody_approval['uuid'], status=200)
+    assert 'antibody' in res.json
+    res = testapp.get('/antibodies/%s/' % antibody_approval['uuid']).follow(status=200)
+    assert res.json['@type'] == ['antibody_lot', 'item']
+
+
+def test_jsonld_context(testapp):
+    res = testapp.get('/terms/')
+    assert res.json
+
+
+def test_jsonld_term(testapp):
+    res = testapp.get('/terms/submitted_by')
+    assert res.json

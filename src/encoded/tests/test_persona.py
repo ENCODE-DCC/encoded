@@ -16,6 +16,8 @@ def persona_test_data(audience):
     except Exception as e:
         pytest.skip("Error retrieving persona test user: %r" % e)
     data = res.json()
+    if 'email' not in data:
+        pytest.skip("Missing 'email' in persona test user: %r" % data)
     return data
 
 

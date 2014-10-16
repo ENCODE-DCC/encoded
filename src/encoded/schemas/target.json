@@ -4,19 +4,18 @@
     "id": "/profiles/target.json",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["organism", "label"],
+    "required": ["organism", "label", "investigated_as"],
     "identifyingProperties": ["uuid", "label-organism.name", "aliases"],
     "additionalProperties": false,
     "mixinProperties": [
         { "$ref": "mixins.json#/schema_version" },
         { "$ref": "mixins.json#/uuid" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/shared_status" },
         { "$ref": "mixins.json#/notes" }
     ],
     "properties": {
         "schema_version": {
-            "default": "2"
+            "default": "3"
         },
         "dbxref": {
             "title": "External identifiers",
@@ -50,6 +49,36 @@
             "comment": "Submit the common name of the gene with modification (e.g. H3K4me3, eGFP-E2F1, or POLR2AphosphoS2).",
             "type": "string",
             "format": "target_label"
+        },
+        "investigated_as": {
+            "type": "array",
+            "items": {
+                "title": "Target project investigation context",
+                "description": "The context(s) the target was investigated in",
+                "type": "string",
+                "enum": [
+                    "histone modification",
+                    "transcription factor",
+                    "RNA binding protein",
+                    "chromatin remodeller",
+                    "control",
+                    "tag",
+                    "recombinant protein",
+                    "nucleotide modification",
+                    "other context"
+                ]
+            }
+        },
+        "status": {
+            "title": "Status",
+            "type": "string",
+            "default": "proposed",
+            "enum": [
+                "proposed",
+                "current",
+                "deleted",
+                "replaced"
+            ]
         }
     },
     "facets": {

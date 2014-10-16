@@ -1,8 +1,13 @@
+""" Example file submission script
+
+Requires the `aws` command line utility: http://aws.amazon.com/cli/
+"""
 import hashlib
 import json
 import os
 import requests
 import subprocess
+import sys
 import time
 
 host = 'http://localhost:6543'
@@ -10,6 +15,12 @@ encoded_access_key = '...'
 encoded_secret_access_key = '...'
 
 path = 'example.fastq.gz'
+my_lab = '/labs/your-lab-here'
+my_award = '/awards/your-award-here'
+
+# From http://hgwdev.cse.ucsc.edu/~galt/encode3/validatePackage/validateEncode3-latest.tgz
+encValData = 'encValData'
+assembly = 'hg19'
 
 # ~2s/GB
 print("Calculating md5sum.")
@@ -25,6 +36,8 @@ data = {
     "md5sum": md5sum.hexdigest(),
     "output_type": "raw data",
     "submitted_file_name": path,
+    "lab": my_lab,
+    "award": my_award
 }
 
 
@@ -33,6 +46,7 @@ data = {
 
 gzip_types = [
     "CEL",
+    "bam",
     "bed_bed3",
     "bed_bed6",
     "bed_bedLogR",
@@ -57,18 +71,42 @@ if data['file_format'] in gzip_types:
 else:
     assert not is_gzipped, 'Expected un-gzipped file'
 
+chromInfo = '-chromInfo=%s/%s/chrom.sizes' % (encValData, assembly)
 validate_map = {
-    'fastq': 'fastq',
-    'fasta': 'fasta',
+    'bam': ['-type=bam', chromInfo],
+    'bed': ['-type=bed6+', chromInfo],  # if this fails we will drop to bed3+
+    'bedLogR': ['-type=bigBed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
+    'bed_bedLogR': ['-type=bed9+1', chromInfo, '-as=%s/as/bedLogR.as' % encValData],
+    'bedMethyl': ['-type=bigBed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
+    'bed_bedMethyl': ['-type=bed9+2', chromInfo, '-as=%s/as/bedMethyl.as' % encValData],
+    'bigBed': ['-type=bigBed6+', chromInfo],  # if this fails we will drop to bigBed3+
+    'bigWig': ['-type=bigWig', chromInfo],
+    'broadPeak': ['-type=bigBed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
+    'bed_broadPeak': ['-type=bed6+3', chromInfo, '-as=%s/as/broadPeak.as' % encValData],
+    'fasta': ['-type=fasta'],
+    'fastq': ['-type=fastq'],
+    'gtf': None,
+    'idat': ['-type=idat'],
+    'narrowPeak': ['-type=bigBed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
+    'bed_narrowPeak': ['-type=bed6+4', chromInfo, '-as=%s/as/narrowPeak.as' % encValData],
+    'rcc': ['-type=rcc'],
+    'tar': None,
+    'tsv': None,
+    '2bit': None,
+    'csfasta': ['-type=csfasta'],
+    'csqual': ['-type=csqual'],
+    'bedRnaElements': ['-type=bed6+3', chromInfo, '-as=%s/as/bedRnaElements.as' % encValData],
+    'CEL': None,
 }
 
-if data['file_format'] in validate_map:
+validate_args = validate_map.get(data['file_format'])
+if validate_args is not None:
     print("Validating file.")
-    subprocess.check_call([
-        'validateFiles',
-        '-type=%s' % validate_map[data['file_format']],
-        path,
-    ])
+    try:
+        subprocess.check_output(['validateFiles'] + validate_args + [path])
+    except subprocess.CalledProcessError as e:
+        print(e.output)
+        raise
 
 
 ####################
@@ -86,7 +124,12 @@ r = requests.post(
     data=json.dumps(data),
     headers=headers,
 )
-r.raise_for_status()
+try:
+    r.raise_for_status()
+except:
+    print('Submission failed: %s %s' % (r.status_code, r.reason))
+    print(r.text)
+    raise
 item = r.json()['@graph'][0]
 print(json.dumps(item, indent=4, sort_keys=True))
 
@@ -106,7 +149,13 @@ env.update({
 # ~12-15s/GB from AWS Ireland - AWS Oregon
 print("Uploading file.")
 start = time.time()
-subprocess.check_call(['aws', 's3', 'cp', path, creds['upload_url']], env=env)
-end = time.time()
-duration = end - start
-print("Uploaded in %.2f seconds" % duration)
+try:
+    subprocess.check_call(['aws', 's3', 'cp', path, creds['upload_url']], env=env)
+except subprocess.CalledProcessError as e:
+    # The aws command returns a non-zero exit code on error.
+    print("Upload failed with exit code %d" % e.returncode)
+    sys.exit(e.returncode)
+else:
+    end = time.time()
+    duration = end - start
+    print("Uploaded in %.2f seconds" % duration)

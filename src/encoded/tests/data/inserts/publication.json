@@ -16,7 +16,7 @@
         "uuid": "52e85c70-fe2d-11e3-9191-0800200c9a66"
     },
     {
-        "status":"in progress",
+        "status":"in preparation",
         "uuid":"baf202c2-b7af-4c43-b135-15104394daac",
         "title":"DNase-seq: a high-resolution technique for mapping active gene regulatory elements across the genome from mammalian cells.",
         "issue":"2",
@@ -30,7 +30,7 @@
         "categories": ["data standard"]
     },
     {
-        "status":"in progress",
+        "status":"in preparation",
         "uuid":"a63c94e8-4b64-425b-a5b5-86e4f0bdf4c2",
         "title":"The reality of pervasive transcription.",
         "issue":"7",
@@ -43,7 +43,7 @@
         "authors":"Clark MB, Amaral PP, Schlesinger FJ, Dinger ME, Taft RJ, Rinn JL, Ponting CP, Stadler PF, Morris KV, Morillon A, Rozowsky JS, Gerstein MB, Wahlestedt C, Hayashizaki Y, Carninci P, Gingeras TR, Mattick JS"
     },
     {
-        "status":"in progress",
+        "status":"in preparation",
         "uuid":"ef658cdb-8350-44b9-92a8-1125c1e33296",
         "title":"My5C: web tools for chromosome conformation capture studies.",
         "issue":"10",
@@ -56,7 +56,7 @@
         "authors":"Lajoie BR, van Berkum NL, Sanyal A, Dekker J"
     },
     {
-        "status":"in progress",
+        "status":"in preparation",
         "uuid":"e9b33b63-3a85-47cf-9fc5-b1904c56d7ee",
         "title":"Missing lincs in the transcriptome.",
         "issue":"4",
@@ -69,7 +69,7 @@
         "authors":"Gingeras T"
     },
     {
-        "status":"in progress",
+        "status":"in preparation",
         "uuid":"f1d4ec0c-9c90-437e-a6e2-4688791abeea",
         "title":"Molecular biology: RNA discrimination.",
         "issue":"7385",
@@ -83,7 +83,7 @@
         "authors":"Kowalczyk MS, Higgs DR, Gingeras TR"
     },
     {
-        "status":"in progress",
+        "status":"in preparation",
         "uuid":"8c578e87-e4b1-432e-b58a-921c6933c1ea",
         "title":"Nucleosome positioning: bringing order to the eukaryotic genome.",
         "issue":"5",
@@ -97,7 +97,7 @@
         "abstract":"Nucleosomes are an essential component of eukaryotic chromosomes. The impact of nucleosomes is seen not just on processes that directly access the genome, such as transcription, but also on an evolutionary timescale. Recent studies in various organisms have provided high-resolution maps of nucleosomes throughout the genome. Computational analysis, in conjunction with many other kinds of data, has shed light on several aspects of nucleosome biology. Nucleosomes are positioned by several means, including intrinsic sequence biases, by stacking against a fixed barrier, by DNA-binding proteins and by chromatin remodelers. These studies underscore the important organizational role of nucleosomes in all  eukaryotic genomes. This paper reviews recent genomic studies that have shed light on the determinants of nucleosome positioning and their impact on the genome. AU"
     },
     {
-        "status":"in progress",
+        "status":"in preparation",
         "uuid":"46169636-fe8b-4823-bc73-49b6fcd6b484",
         "title":"Cross-talk between site-specific transcription factors and DNA methylation states.",
         "issue":"48",
@@ -111,7 +111,7 @@
         "abstract":"DNA methylation, which occurs predominantly at CpG dinucleotides, is a potent epigenetic repressor of transcription. Because DNA methylation is reversible, there is much interest in understanding the mechanisms by which it can be regulated by DNA-binding transcription factors. We discuss several models that, by incorporating sequence motifs, CpG density, and methylation levels, attempt to link the binding of a transcription factor with the acquisition or loss of DNA methylation at promoters and distal regulatory elements. Additional in vivo genome-wide characterization of transcription factor binding patterns and high-resolution DNA methylation analyses are clearly required for stronger support of each model. AU"
     },
     {
-        "status":"in progress",
+        "status":"in preparation",
         "uuid":"6af11fd9-c0d3-486a-afcb-6c350d20222c",
         "title":"Genome-wide epigenetic data facilitate understanding of disease susceptibility association studies.",
         "issue":"37",
@@ -154,6 +154,7 @@
             "integrative analysis",
             "database"
         ],
+        "datasets": ["ENCSR000AJW", "ENCSR825ZJX"],
         "date_published": "2012 Jan",
         "issue": "Database issue",
         "journal": "Nucleic acids research",
@@ -164,6 +165,32 @@
         "references": [
             "PMID:22064851",
             "PMCID:PMC3245002"
+        ],
+        "supplementary_data":[
+            {
+                "url": "http://encodenets.gersteinlab.org/metatracks/",
+                "supplementary_data_type": "enhancer annotations",
+                "data_summary": "Enhancers are identified as binding active regions (BARs) outside promoter-proximal regulatory modules (PRMs) and more than 10kb away from any GENCODE genes and non-coding genes. A random forest model trained on chromatin accessibility and histone modification has been used to identify BARs, using randomly sampled TF binding regions and non-binding regions as positive and negative training sets. PRMs are identified with a similar model as that for BARs, using TF binding regions at transcription start site (TSS) as positive training set, and non-binding regions or regions far away from TSS or both as negative training sets. This model has been applied to 5 ENCODE cell lines: GM12878, K562, h1-HESC, HeLa-S3, and Hep-G2.",
+                "file_format": "BED"
+            },
+            {
+                "url": "http://funseq2.gersteinlab.org/static/data/ENCODE.annotation.gz",
+                "supplementary_data_type": "enhancer annotations",
+                "data_summary": "An update of the list in 2014 using the same methodology.",
+                "file_format": "BED"
+            },
+            {
+                "url": "http://encodenets.gersteinlab.org/metatracks",
+                "supplementary_data_type": "HOT regions",
+                "data_summary": "The ChIP-Seq signals from various experiments for transcription factors were grouped together into 100 bp bins. The co-binding of different factors were computed based on these signals. The HOT and LOT regions were defined as the top 1% of region-specific co-occurrence and the bottom 1% of non-zero degrees of region-specific co-occurrence.",
+                "file_format": "BED"
+            },
+            {
+                "url": "http://funseq2.gersteinlab.org/static/data/drm.gene.bed",
+                "supplementary_data_type": "connectivity",
+                "data_summary": "The correlation (or anti-correlation) of histone marks at a putative enhancer and the expression of nearby genes was used to determine connectivity. This list was updated in 2014 based on the 2012 methodology. First 3 columns are coordinates of DRM, 4th column is target gene, 5th column in correlation, and 6th column is correlation of histone mark (annotation of the histone mark with high correlation.",
+                "file_format": "BED"
+            }
         ],
         "status": "published",
         "title": "HaploReg: a resource for exploring chromatin states, conservation, and regulatory motif alterations within sets of genetically linked variants.",

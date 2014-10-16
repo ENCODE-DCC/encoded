@@ -2,6 +2,7 @@
 'use strict';
 var React = require('react');
 var globals = require('../globals');
+var $script = require('scriptjs');
 
 var ReactForms = require('react-forms');
 var Schema = ReactForms.schema.Schema;
@@ -31,7 +32,7 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
     },
 
     setupEditor: function() {
-        var ck = window.CKEDITOR;
+        var ck = require('ckeditor');
         ck.disableAutoInline = true;
         this.editor = ck.inline(this.getDOMNode(), {
             language: 'en',
@@ -43,8 +44,10 @@ var RichTextBlockView = module.exports.RichTextBlockView = React.createClass({
                 { name: 'undo', groups: [ 'undo' ], items: [ 'Undo', 'Redo' ] },
                 { name: 'document', groups: [ 'mode' ], items: [ 'Source' ] },
             ],
-            format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;code',
-            format_code: { name: 'Inline Code', element: 'code'}
+            format_tags: 'p;h1;h2;h3;h4;h5;h6;pre;code;cite',
+            format_code: { name: 'Inline Code', element: 'code'},
+            format_cite: { name: 'Citation', element: 'cite'},
+            allowedContent: true
         });
         this.editor.on('change', function() {
             this.state.value.body = this.editor.getData();

@@ -21,7 +21,7 @@ var Footer = React.createClass({
                             <p className="copy-notice">&copy;{new Date().getFullYear()} Stanford University.</p>
                         </div>
                         
-                        <div className="col-sm-7 col-sm-pull-5">
+                    <div className="col-sm-7 col-sm-pull-5">
                             <ul className="footer-logos">
                                 <li><a href="/"><img src="/static/img/encode-logo-small-2x.png" alt="ENCODE" id="encode-logo" height="45px" width="78px" /></a></li>
                                 <li><a href="http://www.ucsc.edu"><img src="/static/img/ucsc-logo-white-alt-2x.png" alt="UC Santa Cruz" id="ucsc-logo" width="107px" height="42px" /></a>

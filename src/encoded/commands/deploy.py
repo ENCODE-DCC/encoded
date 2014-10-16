@@ -23,11 +23,11 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
     if name is None:
         name = 'encoded/%s@%s by %s' % (branch, commit, username)
 
-    conn = boto.ec2.connect_to_region("us-west-1")
+    conn = boto.ec2.connect_to_region("us-west-2")
     bdm = BlockDeviceMapping()
     if persistent:
-        bdm['/dev/xvdf'] = BlockDeviceType(snapshot_id='snap-9bdfcd91', delete_on_termination=True)
-        bdm['/dev/xvdg'] = BlockDeviceType(snapshot_id='snap-9bdfcd91', delete_on_termination=True)
+        bdm['/dev/xvdf'] = BlockDeviceType(snapshot_id='snap-8f90c779', delete_on_termination=True)
+        bdm['/dev/xvdg'] = BlockDeviceType(snapshot_id='snap-8f90c779', delete_on_termination=True)
     else:
         bdm['/dev/xvdf'] = BlockDeviceType(ephemeral_name='ephemeral0')
         bdm['/dev/xvdg'] = BlockDeviceType(ephemeral_name='ephemeral1')
@@ -39,7 +39,7 @@ def run(wale_s3_prefix, branch=None, name=None, persistent=False):
     }
 
     reservation = conn.run_instances(
-        'ami-f64f77b3',  # ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-20140416.1
+        'ami-199add29',  # ubuntu/images/hvm/ubuntu-trusty-14.04-amd64-server-20140829
         instance_type='m3.xlarge',
         security_groups=['ssh-http-https'],
         user_data=user_data,

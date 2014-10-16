@@ -1,8 +1,5 @@
 import re
 from pyramid.view import view_config
-from ..contentbase import (
-    Root
-)
 from ..indexing import ELASTIC_SEARCH
 from pyramid.security import effective_principals
 from urllib import urlencode
@@ -144,18 +141,13 @@ def search_peaks(request, result):
     return result
 
 
-@view_config(name='search', context=Root, request_method='GET',
-             permission='search')
+@view_config(route_name='search', context=Root, request_method='GET', permission='search')
 def search(context, request, search_type=None):
     ''' Search view connects to ElasticSearch and returns the results'''
 
-    uri = request.resource_path(context, request.view_name, '')
-    if request.query_string:
-        uri += '?' + request.query_string
-
     root = request.root
     result = {
-        '@id': uri,
+        '@id': '/search/' + ('?' + request.query_string if request.query_string else ''),
         '@type': ['search'],
         'title': 'Search',
         'facets': [],
@@ -204,7 +196,7 @@ def search(context, request, search_type=None):
         if request.params.get('mode') == 'picker':
             doc_types = []
         else:
-            doc_types = ['antibody_approval', 'biosample',
+            doc_types = ['antibody_lot', 'biosample',
                          'experiment', 'target', 'dataset', 'page']
     else:
         doc_types = [search_type]

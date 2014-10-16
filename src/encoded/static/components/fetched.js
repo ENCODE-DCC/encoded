@@ -3,6 +3,7 @@
 var React = require('react');
 var parseError = require('./mixins').parseError;
 var globals = require('./globals');
+var ga = require('google-analytics');
 
 
 var Fetched = module.exports.Fetched = {
@@ -29,7 +30,7 @@ var Fetched = module.exports.Fetched = {
 
     componentWillReceiveProps: function (nextProps) {
         if (!nextProps.loadingComplete || (
-            this.props.fetchedRequest &&
+            this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
             nextProps.session === this.props.session)) return;
         this.fetch(nextProps.url);
@@ -65,7 +66,6 @@ var Fetched = module.exports.Fetched = {
 
     fail: function (xhr, status, error) {
         if (status == 'abort') return;
-        var ga = window.ga;
         var data = parseError(xhr, status);
         ga('send', 'exception', {
             'exDescription': 'fetchedRequest:' + status + ':' + xhr.statusText,
@@ -86,6 +86,14 @@ var Fetched = module.exports.Fetched = {
 
 var FetchedData = module.exports.FetchedData = React.createClass({
     mixins: [Fetched],
+
+    getDefaultProps: function() {
+        return {
+            fetched_prop_name: 'data',
+            fetched_etag_name: 'etag'
+        };
+    },
+
 
     shouldComponentUpdate: function(nextProps, nextState) {
         if (this.props.showSpinnerOnUpdate === false && nextState.communicating) {
@@ -119,11 +127,17 @@ var FetchedData = module.exports.FetchedData = React.createClass({
             );
         }
         var etag = this.state.fetchedRequest.getResponseHeader('ETag');
+        var props = {
+            Component: undefined,
+            url: undefined,
+            fetched_prop_name: undefined,
+            fetched_etag_name: undefined
+        };
+        props[this.props.fetched_prop_name] = data;
+        props[this.props.fetched_etag_name] = etag;
         return (
             <div key={key} className="done">
-                {this.transferPropsTo(
-                    <Component Component={undefined} url={undefined} data={data} etag={etag} />
-                )}
+                {this.transferPropsTo(Component(props))}
             </div>
         );
     }
@@ -162,7 +176,7 @@ var FetchedItems = module.exports.FetchedItems = React.createClass({
         return (
             <div key={key} className="done">
                 {this.transferPropsTo(
-                    <Component Component={undefined} url={undefined} items={items} />
+                    <Component Component={undefined} items={items} total={data.total} />
                 )}
             </div>
         );

@@ -4,11 +4,11 @@ var React = require('react');
 var _ = require('underscore');
 var globals = require('./globals');
 var dbxref = require('./dbxref');
-var antibody = require('./antibody');
+var statuslabel = require('./statuslabel');
 
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
-var StatusLabel = antibody.StatusLabel;
+var StatusLabel = statuslabel.StatusLabel;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -32,6 +32,12 @@ var Dataset = module.exports.Dataset = React.createClass({
             }
         });
         experiments = _.values(experiments);
+
+        // Build up array of documents attached to this dataset
+        var datasetDocuments = {};
+        context.documents.forEach(function (document, i) {
+            datasetDocuments[document['@id']] = Panel({context: document, key: i});
+        }, this);
 
         // Make string of alternate accessions
         var altacc = context.alternate_accessions.join(', ');
@@ -75,10 +81,12 @@ var Dataset = module.exports.Dataset = React.createClass({
                     </dl>
                 </div>
 
-				{context.documents.length ?
+                {Object.keys(datasetDocuments).length ?
                     <div>
                         <h3>Dataset documents</h3>
-                        {context.documents.map(Panel)}
+                        <div className="row">
+                            {datasetDocuments}
+                        </div>
                     </div>
                 : null}
 
@@ -106,6 +114,18 @@ globals.content_views.register(Dataset, 'dataset');
 
 var ExperimentTable = module.exports.ExperimentTable = React.createClass({
     render: function() {
+        var experiments;
+
+        // If there's a limit on entries to display and the array is greater than that
+        // limit, then clone the array with just that specified number of elements
+        if (this.props.limit && (this.props.limit < this.props.items.length)) {
+            // Limit the experiment list by cloning first {limit} elements
+            experiments = this.props.items.slice(0, this.props.limit);
+        } else {
+            // No limiting; just reference the original array
+            experiments = this.props.items;
+        }
+
         return (
             <div className="table-responsive">
                 <table className="table table-panel table-striped table-hover">
@@ -120,7 +140,7 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
                         </tr>
                     </thead>
                     <tbody>
-                    {this.props.items.map(function (experiment) {
+                    {experiments.map(function (experiment) {
                         // Ensure this can work with search result columns too
                         return (
                             <tr key={experiment['@id']}>
@@ -136,7 +156,13 @@ var ExperimentTable = module.exports.ExperimentTable = React.createClass({
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colSpan="6"></td>
+                            <td colSpan="6">
+                                {this.props.limit && (this.props.limit < this.props.total) ?
+                                    <div>
+                                        {'Displaying '}{this.props.limit}{' experiments out of '}{this.props.total}{' total related experiments'}
+                                    </div>
+                                : ''}
+                            </td>
                         </tr>
                     </tfoot>
                 </table>

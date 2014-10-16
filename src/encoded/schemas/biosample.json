@@ -5,7 +5,7 @@
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
     "required": [ "award", "lab", "biosample_type", "source", "organism", "biosample_term_id"],
-    "calculated_props": ["organ_slims", "system_slims", "developmental_slims", "synonyms", "sex", "age", "age_units", "health_status", "life_stage", "synchronization"],
+    "calculatedProperties": ["model_organism_donor_constructs"],
     "identifyingProperties": ["uuid","accession","aliases"],
     "additionalProperties": false,
     "mixinProperties": [
@@ -24,11 +24,12 @@
         { "$ref": "mixins.json#/notes" }
     ],
     "dependencies": {
+        "transfection_method": ["transfection_type"],
         "depleted_in_term_name": ["depleted_in_term_id"],
         "depleted_in_term_id": {
             "required": ["depleted_in_term_name"],
             "properties": {
-                "biosample_type": {"enum": ["whole organisms"]}
+                "biosample_type": {"enum": ["whole organisms", "tissue"]}
             }
         }
     },
@@ -47,7 +48,7 @@
         },
        "constructs": {
             "title": "DNA constructs",
-            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi).",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi or TALEN).",
             "type": "array",
             "default": [],
             "items": {
@@ -71,6 +72,19 @@
                 "linkTo": "rnai"
             }
         },
+        "talens": {
+            "title": "TALEN constructs",
+            "description": "TALEN constructs used to modify the biosample",
+            "type": "array",
+            "default": [],
+            "items": {
+                "title": "TALEN",
+                "description": "TALEN used to modify the biosample",
+                "comment": "See talen.json for valid identifiers.",
+                "type": "string",
+                "linkTo": "talen"
+            }
+        },
         "treatments": {
             "title": "Treatments",
             "type": "array",
@@ -83,6 +97,8 @@
             }
         },
         "dbxrefs": {
+            "@type": "@id",
+            "rdfs:subPropertyOf": "rdfs:seeAlso",
             "title": "External identifiers",
             "description": "Unique identifiers from external resources.",
             "type": "array",
@@ -125,6 +141,7 @@
             "type": "integer"
         },
         "depleted_in_term_name": {
+            "@id": null,
             "type": "array",
             "items": {
                 "title": "Depleted in term",
@@ -138,16 +155,19 @@
                     "testis",
                     "female gonad",
                     "digestive system",
-                    "arthropod fat body"
+                    "arthropod fat body",
+                    "antenna",
+                    "adult maxillary segment"
                 ]
             }
         },
         "depleted_in_term_id": {
+            "@type": "@id",
             "type": "array",
             "items": {
                 "title": "Depleted in ID",
                 "description": "UBERON (Uber Anatomy Ontology) identifier best matching the tissue(s)/body part(s) that were removed from the biosample.",
-                "comment": "Based on the choice in depleted_in_term_name use the following guide: head - UBERON:0000033, limb - UBERON:0002101, salivary gland - UBERON:0001044 , male accessory sex gland - UBERON:0010147, testis - UBERON:0000473, female gonad - UBERON:0000992, digestive system - UBERON:0001007, arthropod fat body - UBERON:0003917",
+                "comment": "Based on the choice in depleted_in_term_name use the following guide: head - UBERON:0000033, limb - UBERON:0002101, salivary gland - UBERON:0001044 , male accessory sex gland - UBERON:0010147, testis - UBERON:0000473, female gonad - UBERON:0000992, digestive system - UBERON:0001007, arthropod fat body - UBERON:0003917, antenna - UBERON:0000972, adult maxillary segmant - FBbt:00003016",
                 "type": "string",
                 "enum": [
                     "UBERON:0000033",
@@ -157,7 +177,9 @@
                     "UBERON:0000473",
                     "UBERON:0000992",
                     "UBERON:0001007",
-                    "UBERON:0003917"
+                    "UBERON:0003917",
+                    "UBERON:0000972",
+                    "FBbt:00003016"
                 ]
             }
         },
@@ -204,6 +226,7 @@
             "type": "string"
         },
         "subcellular_fraction_term_name": {
+            "@id": null,
             "title": "Subcellular fraction name",
             "description": "The GO (Gene Ontology) term name for cellular component that constitutes the biosample.",
             "type": "string",
@@ -220,6 +243,7 @@
             ]
         },
         "subcellular_fraction_term_id": {
+            "@type": "@id",
             "title": "Subcellular fraction ID",
             "description":  "The GO (Gene Ontology) identifier for cellular component that constitutes the biosample.",
             "comment": "Based on the choice in subcellular_fraction_term_name use the following guide: nucleus - GO:0005634, cytosol - GO:0005829, chromatin - GO:0000785, membrane - GO:0016020, mitochondria - GO:0005739, nuclear matrix - GO:0016363, nucleolus - GO:0005730, nucleoplasm - GO:0005654, polysome - GO:0005844.",
@@ -256,6 +280,14 @@
             "type": "string",
             "enum": [
                 "stable", "transient"
+            ]
+        },
+        "transfection_method": {
+            "title": "Transfection method",
+            "description": "How the transfection was performed on the biosample to introduce the contruct or RNAi.",
+            "type": "string",
+            "enum": [
+                "electroporation", "transduction", "chemical"
             ]
         },
         "culture_harvest_date": {
@@ -342,6 +374,7 @@
             "type": "string",
             "enum": [
                 "embryonic",
+                "larva",
                 "first instar larva",
                 "second instar larva",
                 "third instar larva",
@@ -357,6 +390,9 @@
             "type": "string",
             "enum": [
                 "fertilization",
+                "egg laying",
+                "first larval molt",
+                "second larval molt",
                 "puff stage: PS (1-2), dark blue gut",
                 "puff stage: PS (3-6), light blue gut",
                 "puff stage: PS (7-9), clear gut",
@@ -408,6 +444,7 @@
             "enum": [
                 "fertilization",
                 "egg laying",
+                "egg bleaching",
                 "starved L1 larva",
                 "dauer exit"
             ]
@@ -487,14 +524,6 @@
             "title": "Source",
             "type": "string"
         },
-        "developmental_slims": {
-            "title": "Developmental slim",
-            "type": "array"
-        },
-        "synchronization": {
-            "title": "Synchronization stage",
-            "type": "string" 
-        },
         "lab.title": {
             "title": "Lab",
             "type": "string"
@@ -560,6 +589,61 @@
         "constructs.length": {
             "title": "Constructs",
             "type": "array"
+        }
+    },
+    "calculated_props": {
+        "organ_slims": {
+            "title": "Organ slims",
+            "type": "string"
+        },
+        "system_slims": {
+            "title": "System slims",
+            "type": "string"
+        },
+        "developmental_slims": {
+            "title": "Developmental slims",
+            "type": "string"
+        },
+        "synonyms": {
+            "title": "Ontology synonyms",
+            "type": "string"
+        },
+        "sex": {
+            "title": "Sex",
+            "type": "string"
+        },
+        "age": {
+            "title": "Age",
+            "type": "string"
+        },
+        "age_units": {
+            "title": "Age units",
+            "type": "string"
+        },
+        "health_status": {
+            "title": "Health status",
+            "type": "string"
+        },
+        "life_stage": {
+            "title": "Life stage",
+            "type": "string"
+        },
+        "synchronization": {
+            "title": "Synchronization",
+            "type": "string"
+        },
+        "model_organism_donor_constructs": {
+            "default": [],
+            "items": {
+                "title": "DNA Constructs",
+                "description": "An expression or targeting vector stably or transiently transfected (not RNAi) into a donor organism.",
+                "comment": "See contstruct.json for available identifiers.",
+                "type": "string",
+                "linkTo": "construct"
+            },
+            "type": "array",
+            "description": "Expression or targeting vectors stably or transiently transfected (not RNAi) into a donor organism.",
+            "title": "DNA constructs"
         }
     },
     "boost_values": {

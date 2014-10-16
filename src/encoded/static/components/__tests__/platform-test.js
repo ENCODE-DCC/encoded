@@ -22,8 +22,9 @@ describe('Platform', function() {
         var context = require('../testdata/platform');
 
         // Render platform panel into jsnode
-        var platformPanel = <Panel context={context} />;
-        TestUtils.renderIntoDocument(platformPanel);
+        platformPanel = TestUtils.renderIntoDocument(
+            <Panel context={context} />
+        );
 
         // Get the <dt> and <dd> terms needed for all tests
         defTerms = TestUtils.scryRenderedDOMComponentsWithTag(platformPanel, 'dt');

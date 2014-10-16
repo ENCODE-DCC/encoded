@@ -10,8 +10,12 @@ dd.h3, dd.h4 {
     font-weight: normal;
 }
 
-.key-value, .key-value-left {
+.key-value {
     margin: 0;
+
+    > div {
+        clear: left;
+    }
 
     dt {
         padding-top: 0;
@@ -59,12 +63,58 @@ dd.h3, dd.h4 {
     }
 }
 
+// Left-justified key-value
+.key-value-left {
+    @extend .key-value;
+
+    dt, dd {
+        width: auto;
+        padding-top: 0 !important;
+    }
+
+    dt {
+        float: none !important;
+        display: block !important;
+        text-align: left !important;
+        margin-bottom: 0px !important;
+    }
+
+    dd {
+        margin-left: 0 !important;
+
+        &.key-value-left-indent {
+            margin-left: 20px !important;
+        }
+    }
+}
+
+// Left-justified key-value
+.key-value-left {
+    @extend .key-value;
+
+    dt, dd {
+        padding-top: 0 !important;
+    }
+
+    dt {
+        float: none !important;
+        display: block !important;
+        text-align: left !important;
+        margin-bottom: 0px !important;
+    }
+
+    dd {
+        margin-left: 0 !important;
+    }
+}
 
 .unit::before {
     content: " ";
 }
 
 .horizontal-list {
+    @include clearfix;
+
     li {
         float: left;
         margin-right: 0.5em;
@@ -89,4 +139,9 @@ dd ul, .multi-value {
 
 .multi-dd {
     margin-bottom: 10px;
+}
+
+
+.para-text {
+    line-height: 1.6 !important;
 }

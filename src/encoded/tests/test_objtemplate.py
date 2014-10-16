@@ -19,14 +19,22 @@ def calculated_value(foo):
     return 'calculated ' + foo
 
 
+def dynamic_repeat(foo):
+    assert foo == 'foo'
+    yield 'foo1'
+    yield 'foo2'
+
+
 NAMESPACE = {
     'foo': 'foo',
     'bar_list': ['bar1', 'bar2'],
+    'falsey_list': [False, 0, '', 'truthy'],
     'false_condition': False,
     'true_condition': True,
     'asbool': pyramid.settings.asbool,
     'check_keywords': check_keywords,
     'check_arg': check_arg,
+    'dynamic_repeat': dynamic_repeat,
     'unicode': u'1μM',
 }
 
@@ -78,7 +86,26 @@ TEMPLATE_VALUE = [
     ({'$value': '$value {foo}', '$templated': True}, '$value foo'),
     ([{'$templated': True, '$repeat': 'bar bar_list', '$value': '$value {bar}'}],
      ['$value bar1', '$value bar2']),
+    ([{'$templated': True, '$repeat': 'bar missing',
+       '$value': '$value {bar}', '$condition': 'missing'}],
+     []),
+    ([{'$templated': True, '$repeat': 'rep falsey_list rep', '$value': '$value {rep}'}],
+     ['$value truthy']),
+    ([{'$templated': True, '$repeat': 'bar dynamic_repeat', '$value': '$value {bar}'}],
+     ['$value foo1', '$value foo2']),
+    ([{'$templated': True, '$repeat': ('bar', dynamic_repeat), '$value': '$value {bar}'}],
+     ['$value foo1', '$value foo2']),
+    ([{'$templated': True, '$repeat': ('bar', dynamic_repeat, lambda bar: bar != 'foo1'),
+       '$value': '$value {bar}'}],
+     ['$value foo2']),
     ({'$value': calculated_value, '$templated': True}, 'calculated foo'),
+    ({'key_{foo}': 'value_{foo}', '$templated': True},
+     {'key_foo': 'value_foo'}),
+    ({'a': [{'$templated': True, '$repeat': 'bar bar_list',
+             'key_{bar}': '$value {bar}', 'b': 1}]},
+     {'a': [{'key_bar1': '$value bar1', 'b': 1},
+            {'key_bar2': '$value bar2', 'b': 1},
+            ]}),
 ]
 
 

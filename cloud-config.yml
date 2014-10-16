@@ -11,13 +11,13 @@ packages:
 - build-essential
 - elasticsearch
 - git
+- graphviz
 - libapache2-mod-wsgi
 - libevent-dev
 - libfreetype6-dev
 - libjpeg-dev
 - liblcms2-dev
 - libmagic-dev
-- libmysqlclient-dev
 - libpq-dev
 - libssl-dev
 - libtiff5-dev
@@ -25,7 +25,6 @@ packages:
 - libxml2-dev
 - libxslt1-dev
 - lzop
-- mysql-client 
 - nodejs-dev
 - nodejs-legacy
 - npm
@@ -69,6 +68,7 @@ runcmd:
 # Ideally this would build as a different user so encoded only has read
 # permissions
 - set -e
+- sudo update-rc.d elasticsearch defaults
 - sudo service elasticsearch start
 - chown postgres:postgres /etc/postgresql/9.3/main/recovery.conf
 - sudo -u postgres createuser encoded
@@ -91,12 +91,19 @@ runcmd:
 - sudo -u encoded bin/update-keys-links production.ini
 - sudo -u encoded bin/create-mapping production.ini
 - sudo ln -s /srv/encoded/etc/encoded-apache.conf /etc/apache2/sites-available/encoded.conf
+- sudo ln -s /srv/encoded/etc/logging-apache.conf /etc/apache2/conf-available/logging.conf
 - sudo a2enmod headers
 - sudo a2enmod proxy_http
 - sudo a2enmod rewrite
 - sudo a2enmod ssl
 - sudo a2ensite encoded.conf
 - sudo a2dissite 000-default
+- sudo a2enconf logging
+- sudo a2disconf charset
+- sudo a2disconf javascript-common
+- sudo a2disconf localized-error-pages
+- sudo a2disconf other-vhosts-access-log
+- sudo a2disconf serve-cgi-bin
 - sudo service apache2 reload
 - sleep 10
 - sudo -u encoded bin/upgrade production.ini

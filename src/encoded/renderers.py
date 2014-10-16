@@ -14,7 +14,8 @@ from pyramid.httpexceptions import (
     HTTPUnsupportedMediaType,
 )
 from pyramid.renderers import render_to_response
-from pyramid.security import authenticated_userid
+from pyramid.security import forget
+from pyramid.settings import asbool
 from pyramid.threadlocal import (
     get_current_request,
     manager,
@@ -27,8 +28,10 @@ from urllib import unquote
 from .cache import ManagerLRUCache
 from .validation import CSRFTokenError
 from subprocess_middleware.tween import SubprocessTween
+import json
 import logging
 import os
+import psutil
 import pyramid.renderers
 import time
 import uuid
@@ -40,6 +43,9 @@ log = logging.getLogger(__name__)
 def includeme(config):
     config.add_renderer(None, json_renderer)
     config.add_renderer('null_renderer', NullRenderer)
+    config.add_tween('.renderers.fix_request_method_tween_factory', under=pyramid.tweens.INGRESS)
+    config.add_tween(
+        '.stats.stats_tween_factory', under='.renderers.fix_request_method_tween_factory')
     config.add_tween(
         '.renderers.normalize_cookie_tween_factory', under='.stats.stats_tween_factory')
     config.add_tween('.renderers.page_or_json', under='.renderers.normalize_cookie_tween_factory')
@@ -54,10 +60,22 @@ class JSON(pyramid.renderers.JSON):
     def dumps(self, value):
         request = get_current_request()
         default = self._make_default(request)
-        return self.serializer(value, default=default, **self.kw)
+        return json.dumps(value, default=default, **self.kw)
 
 
-json_renderer = JSON()
+class JSONResult(object):
+    def __init__(self):
+        self.app_iter = []
+        self.write = self.app_iter.append
+
+    @classmethod
+    def serializer(cls, value, **kw):
+        fp = cls()
+        json.dump(value, fp, **kw)
+        return fp.app_iter
+
+
+json_renderer = JSON(serializer=JSONResult.serializer)
 
 
 def uuid_adapter(obj, request):
@@ -114,12 +132,10 @@ def embed(request, path, as_user=False):
     if as_user:
         return _embed(request, path, as_user)
     result = embed_cache.get(path, None)
-    if result is not None:
-        return deepcopy(result)
-    result = _embed(request, path, as_user)
-    if not as_user:
-        embed_cache[path] = deepcopy(result)
-    return result
+    if result is None:
+        result = _embed(request, path, as_user)
+        embed_cache[path] = result
+    return deepcopy(result)
 
 
 def _embed(request, path, as_user=False):
@@ -143,16 +159,41 @@ def maybe_include_embedded(request, result):
         result['_embedded'] = {'resources': embedded}
 
 
+def fix_request_method_tween_factory(handler, registry):
+    """ Fix Request method changed by mod_wsgi.
+
+    See: https://github.com/GrahamDumpleton/mod_wsgi/issues/2
+
+    Apache config:
+        SetEnvIf Request_Method HEAD X_REQUEST_METHOD=HEAD
+    """
+
+    def fix_request_method_tween(request):
+        environ = request.environ
+        if 'X_REQUEST_METHOD' in environ:
+            environ['REQUEST_METHOD'] = environ['X_REQUEST_METHOD']
+        return handler(request)
+
+    return fix_request_method_tween
+
+
 def security_tween_factory(handler, registry):
 
     def security_tween(request):
         login = None
         expected_user = request.headers.get('X-If-Match-User')
         if expected_user is not None:
-            login = authenticated_userid(request)
+            login = request.authenticated_userid
             if login != 'mailto.' + expected_user:
                 detail = 'X-If-Match-User does not match'
                 raise HTTPPreconditionFailed(detail)
+
+        # wget may only send credentials following a challenge response.
+        auth_challenge = asbool(request.headers.get('X-Auth-Challenge', False))
+        if auth_challenge or request.authorization is not None:
+            login = request.authenticated_userid
+            if login is None:
+                raise HTTPUnauthorized(headerlist=forget(request))
 
         if request.method in ('GET', 'HEAD'):
             return handler(request)
@@ -170,13 +211,11 @@ def security_tween_factory(handler, registry):
             raise CSRFTokenError('Incorrect CSRF token')
 
         if login is None:
-            login = authenticated_userid(request)
+            login = request.authenticated_userid
         if login is not None:
             namespace, userid = login.split('.', 1)
             if namespace != 'mailto':
                 return handler(request)
-        if request.authorization is not None:
-            raise HTTPUnauthorized()
         raise CSRFTokenError('Missing CSRF token')
 
     return security_tween
@@ -263,8 +302,16 @@ def should_transform(request, response):
         if request.authorization is not None:
             format = 'json'
         else:
-            mime_type = request.accept.best_match(['text/html', 'application/json'], 'text/html')
+            mime_type = request.accept.best_match(
+                [
+                    'text/html',
+                    'application/ld+json',
+                    'application/json',
+                ],
+                'text/html')
             format = mime_type.split('/', 1)[1]
+            if format == 'ld+json':
+                format = 'json'
     else:
         format = format.lower()
         if format not in ('html', 'json'):
@@ -287,12 +334,27 @@ def after_transform(request, response):
     request._stats_html_attribute = True
 
 
+# Rendering huge pages can make the node process memory usage explode.
+# Ideally we would let the OS handle this with `ulimit` or by calling
+# `resource.setrlimit()` from  a `subprocess.Popen(preexec_fn=...)`.
+# Unfortunately Linux does not enforce RLIMIT_RSS.
+# An alternative would be to use cgroups, but that makes per-process limits
+# tricky to enforce (we would need to create one cgroup per process.)
+# So we just manually check the resource usage after each transform.
+
+rss_limit = 256 * (1024 ** 2)  # MB
+
+
+def reload_process(process):
+    return psutil.Process(process.pid).memory_info().rss > rss_limit
+
 node_env = os.environ.copy()
 node_env['NODE_PATH'] = ''
 
 page_or_json = SubprocessTween(
     should_transform=should_transform,
     after_transform=after_transform,
+    reload_process=reload_process,
     args=['node', resource_filename(__name__, 'static/build/renderer.js')],
     env=node_env,
 )
@@ -354,21 +416,7 @@ def es_tween_factory(handler, registry):
             allowed = set(source['principals_allowed_edit'])
             if allowed.intersection(request.effective_principals):
                 rendering_val['actions'] = collection.Item.actions
-
-            # Add default page
-            default_page_path = None
-            if len(path_tuple) == 0:
-                default_page_path = '/pages/homepage/'
-            elif len(path_tuple) == 1:
-                default_page_path = '/pages' + path
-            if default_page_path:
-                try:
-                    default_page = embed(request, default_page_path)
-                except KeyError:
-                    pass
-                else:
-                    if default_page:
-                        rendering_val['default_page'] = default_page
+                rendering_val['audit'] = source['audit']
 
         else:
             rendering_val = source[frame]

@@ -2,6 +2,7 @@
 
 http://pyramid.readthedocs.org/en/latest/narr/testing.html
 '''
+import pkg_resources
 import pytest
 from pytest import fixture
 
@@ -28,13 +29,12 @@ _app_settings = {
     'allow.traverse': 'Everyone',
     'allow.search': 'Everyone',
     'allow.ALL_PERMISSIONS': 'group.admin',
-    'allow.edw_key_create': 'accesskey.edw',
-    'allow.edw_key_update': 'accesskey.edw',
     'load_test_only': True,
     'load_sample_data': False,
     'testing': True,
     'pyramid.debug_authorization': True,
     'postgresql.statement_timeout': 20,
+    'ontology_path': pkg_resources.resource_filename('encoded', '../../ontology.json'),
 }
 
 
@@ -556,8 +556,13 @@ def organisms(testapp):
 
 
 @pytest.fixture
-def organism(organisms):
+def human(organisms):
     return [o for o in organisms if o['name'] == 'human'][0]
+
+
+@pytest.fixture
+def organism(human):
+    return human
 
 
 @pytest.fixture
@@ -616,7 +621,7 @@ def file(files):
 
 
 @pytest.fixture
-def antibody_lots(testapp, labs, awards, sources, organisms):
+def antibody_lots(testapp, labs, awards, sources, organisms, targets):
     from . import sample_data
     return sample_data.load(testapp, 'antibody_lot')
 
@@ -635,6 +640,28 @@ def targets(testapp,organisms):
 @pytest.fixture
 def target(targets):
     return [t for t in targets if t['label'] == 'ATF4'][0]
+
+
+@pytest.fixture
+def antibody_characterizations(testapp, awards, labs, targets, antibody_lots):
+    from . import sample_data
+    return sample_data.load(testapp, 'antibody_characterization')
+
+
+@pytest.fixture
+def antibody_characterization(antibody_characterizations):
+    return [ac for ac in antibody_characterizations if ac['lab'] == 'myers'][0]
+
+
+@pytest.fixture
+def antibody_approvals(testapp, awards, labs, targets, antibody_lots, antibody_characterizations):
+    from . import sample_data
+    return sample_data.load(testapp, 'antibody_approval')
+
+
+@pytest.fixture
+def antibody_approval(antibody_approvals):
+    return [aa for aa in antibody_approvals if aa['uuid'] == 'a8f94078-2d3b-4647-91a2-8ec91b096708'][0]
 
 
 @pytest.fixture
