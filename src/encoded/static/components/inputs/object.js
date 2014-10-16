@@ -2,7 +2,7 @@
 'use strict';
 var React = require('react');
 var globals = require('../globals');
-var FetchedData = require('../fetched').FetchedData;
+var fetched = require('../fetched');
 var ResultTable = require('../search').ResultTable;
 
 
@@ -11,7 +11,7 @@ var SearchBlockEdit = React.createClass({
         var styles = {maxHeight: 300, overflow: 'scroll' };
         return (
             <div className="well" style={styles}>
-                {this.transferPropsTo(<ResultTable context={this.props.data} mode="picker" />)}
+                {this.transferPropsTo(<ResultTable mode="picker" />)}
             </div>
         );
     }
@@ -61,14 +61,19 @@ var ObjectPicker = React.createClass({
                 <button className="btn btn-primary pull-right" onClick={this.handleBrowse}>Browse&hellip;</button>
                 <div className="item-picker-preview">
                     {url ? <a className="clear" href="#" onClick={this.handleClear}><i className="icon icon-times"></i></a> : ''}
-                    {url ? this.transferPropsTo(<FetchedData url={previewUrl} Component={ItemPreview} loadingComplete={true} showSpinnerOnUpdate={false} />) : ''}
+                    {url ?
+                        <fetched.FetchedData>
+                            <fetched.Param name="data" url={previewUrl} />
+                            {this.transferPropsTo(<ItemPreview />)}
+                        </fetched.FetchedData> : ''}
                 </div>
                 {this.state.browsing ? 
-                    <FetchedData url={searchUrl} Component={SearchBlockEdit}
-                                 loadingComplete={true}
-                                 searchBase={this.state.search} restrictions={this.props.restrictions}
-                                 actions={actions} onChange={this.handleFilter}
-                                 showSpinnerOnUpdate={false} /> : ''}
+                    <fetched.FetchedData>
+                        <fetched.Param name="context" url={searchUrl} />
+                        <SearchBlockEdit
+                            searchBase={this.state.search} restrictions={this.props.restrictions}
+                            actions={actions} onChange={this.handleFilter} />
+                    </fetched.FetchedData> : ''}
             </div>
         );
     },

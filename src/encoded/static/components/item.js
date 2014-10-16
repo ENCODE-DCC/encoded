@@ -184,9 +184,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             schemaUrl = context.actions[0].profile;
             action = context['@id'];
             form = (
-                <fetched.FetchedData Component={Form} action={action} method="POST">
-                    <fetched.Fetched name="defaultValue" url={schemaUrl} converter={jsonSchemaToDefaultValue} />
-                    <fetched.Fetched name="schema" url={schemaUrl} converter={jsonSchemaToFormSchema} />
+                <fetched.FetchedData>
+                    <fetched.Param name="defaultValue" url={schemaUrl} converter={jsonSchemaToDefaultValue} />
+                    <fetched.Param name="schema" url={schemaUrl} converter={jsonSchemaToFormSchema} />
+                    {this.transferPropsTo(<Form action={action} method="POST" />)}
                 </fetched.FetchedData>
             );
         } else {  // edit form
@@ -195,9 +196,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
             schemaUrl = '/profiles/' + context['@type'][0] + '.json';
             action = this.props.context['@id'];
             form = (
-                <fetched.FetchedData Component={Form} action={action} method="PUT">
-                    <fetched.Fetched name="defaultValue" url={url} etagName="etag" />
-                    <fetched.Fetched name="schema" url={schemaUrl} converter={jsonSchemaToFormSchema} />
+                <fetched.FetchedData>
+                    <fetched.Param name="defaultValue" url={url} etagName="etag" />
+                    <fetched.Param name="schema" url={schemaUrl} converter={jsonSchemaToFormSchema} />
+                    {this.transferPropsTo(<Form action={action} method="PUT" />)}
                 </fetched.FetchedData>
             );
         }
@@ -208,7 +210,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                         <h2>{title}</h2>
                     </div>
                 </header>
-                {this.transferPropsTo(form)}
+                {form}
             </div>
         );
     }

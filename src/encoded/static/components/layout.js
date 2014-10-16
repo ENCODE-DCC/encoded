@@ -3,7 +3,6 @@
 var React = require('react/addons');
 var ReactForms = require('react-forms');
 var form = require('./form');
-var FetchedData = require('./fetched').FetchedData;
 var FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 var globals = require('./globals');
 var _ = require('underscore');

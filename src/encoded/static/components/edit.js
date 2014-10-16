@@ -3,7 +3,7 @@
 var React = require('react');
 var globals = require('./globals');
 var parseError = require('./mixins').parseError;
-var FetchedData = require('./fetched').FetchedData;
+var fetched = require('./fetched');
 var _ = require('underscore');
 var $script = require('scriptjs');
 var ga = require('google-analytics');
@@ -39,9 +39,10 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
                         <h2>Edit {title}</h2>
                     </div>
                 </header>
-                {this.transferPropsTo(
-                    <FetchedData Component={EditForm} url={url} fetched_etag_name="etag" />
-                )}
+                <fetched.FetchedData loadingComplete={this.props.loadingComplete}>
+                    <fetched.Param name="data" url={url} etagName="etag" />
+                    {this.transferPropsTo(<EditForm />)}
+                </fetched.FetchedData>
             </div>
         );
     }
@@ -71,8 +72,6 @@ var EditForm = module.exports.EditForm = React.createClass({
             </div>
         );
     },
-
-
 
     componentDidMount: function () {
         $script('brace', this.setupEditor);

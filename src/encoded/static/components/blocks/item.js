@@ -2,15 +2,15 @@
 'use strict';
 var React = require('react');
 var ReactForms = require('react-forms');
-var FetchedData = require('../fetched').FetchedData;
+var fetched = require('../fetched');
 var globals = require('../globals');
 var ObjectPicker = require('../inputs').ObjectPicker;
 
 
 var ItemBlockView = module.exports.ItemBlockView = React.createClass({
     render: function() {
-        var ViewComponent = globals.content_views.lookup(this.props.data);
-        return this.transferPropsTo(<ViewComponent context={this.props.data} />);
+        var ViewComponent = globals.content_views.lookup(this.props.context);
+        return this.transferPropsTo(<ViewComponent context={this.props.context} />);
     }
 });
 
@@ -26,7 +26,12 @@ var FetchedItemBlockView = React.createClass({
         if (url && url.indexOf('/') !== 0) {
             url = '/' + url;
         }
-        return <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />;
+        return (
+            <fetched.FetchedData>
+                <fetched.Param name="context" url={url} />
+                <ItemBlockView />
+            </fetched.FetchedData>
+        );
     }
 });
 
