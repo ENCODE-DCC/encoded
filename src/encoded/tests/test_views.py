@@ -79,7 +79,8 @@ def test_html_pages(workbook, testapp, htmltestapp, item_type):
 def test_html_server_pages(workbook, item_type, server):
     from webtest import TestApp
     testapp = TestApp(server)
-    res = testapp.get('/%s?limit=all' % item_type,
+    res = testapp.get(
+        '/%s?limit=all' % item_type,
         headers={'Accept': 'application/json'},
     ).follow(
         status=200,
@@ -186,10 +187,10 @@ def test_item_actions_filtered_by_permission(testapp, authenticated_testapp, sou
     location = sources[0]['@id']
 
     res = testapp.get(location)
-    assert any(action for action in res.json['actions'] if action['name'] == 'edit')
+    assert any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
 
     res = authenticated_testapp.get(location)
-    assert not any(action for action in res.json['actions'] if action['name'] == 'edit')
+    assert not any(action for action in res.json.get('actions', []) if action['name'] == 'edit')
 
 
 @pytest.mark.parametrize('item_type', ['organism', 'source'])
