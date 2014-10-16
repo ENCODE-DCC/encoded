@@ -145,6 +145,7 @@ var FetchedData = module.exports.FetchedData = React.createClass({
 
         if (this.state.error) {
             var errorView = globals.content_views.lookup(this.state.error);
+            if (!errorView) { return <pre>JSON.stringify(this.state.error)</pre>; }
             return (
                 <div className="error done">
                     {this.transferPropsTo(<errorView context={this.state.error} />)}
