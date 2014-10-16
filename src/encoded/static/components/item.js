@@ -142,11 +142,11 @@ var jsonSchemaToFormSchema = function(p, props) {
             props.validate = function(v) { return v.match(p.pattern); };
         }
         if (p.enum) {
-            props.input = (
-                <select className="form-control">
-                    {p.enum.map(v => <option value={v}>{v}</option>)}
-                </select>
-            );
+            var options = p.enum.map(v => <option value={v}>{v}</option>);
+            if (!props.required) {
+                options = [<option value={null} />].concat(options);
+            }
+            props.input = <select className="form-control">{options}</select>;
         }
         if (p.linkTo) {
             var restrictions = {type: [p.linkTo]};
