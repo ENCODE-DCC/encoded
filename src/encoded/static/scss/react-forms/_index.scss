@@ -103,13 +103,12 @@
 }
 
 .rf-RepeatingFieldset__remove {
-  $padding: 15px;
   @extend .close;
   border: none;
   background: transparent;
   position: absolute;
-  top: $padding;
-  right: $padding;
+  top: 5px;
+  right: 10px;
 }
 
 
