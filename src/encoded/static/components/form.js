@@ -5,6 +5,7 @@ var ReactForms = require('react-forms');
 var parseError = require('./mixins').parseError;
 var globals = require('./globals');
 var ga = require('google-analytics');
+var _ = require('underscore');
 
 
 var FormFor = ReactForms.FormFor;
@@ -24,6 +25,17 @@ var Form = module.exports.Form = React.createClass({
         return {
             onTriggerSave: this.save
         };
+    },
+
+    componentDidUpdate: function(prevProps, prevState) {
+        if (!_.isEqual(prevState.errors, this.state.errors)) {
+            var $ = require('jquery');
+            var $error = $('alert-danger:first');
+            if (!$error.length) {
+                $error = $('.rf-Message:first').closest('.rf-Field');
+            }
+            $('body').animate({scrollTop: $error.offset().top - $('#navbar').height()}, 200);
+        }
     },
 
     render: function() {
@@ -100,6 +112,9 @@ var Form = module.exports.Form = React.createClass({
                 }
             });
         }
+
+        // make sure we scroll to error again
+        this.setState({errors: null});
 
         this.setState({
             data: data,
