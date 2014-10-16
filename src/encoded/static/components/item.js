@@ -180,7 +180,7 @@ var ItemEdit = module.exports.ItemEdit = React.createClass({
         var title = globals.listing_titles.lookup(context)({context: context});
         var action, form, schemaUrl;
         if (context['@type'][0].indexOf('_collection') !== -1) {  // add form
-            title = 'Add ' + title;
+            title = title + ': Add';
             schemaUrl = context.actions[0].profile;
             action = context['@id'];
             form = (
