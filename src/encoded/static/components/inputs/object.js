@@ -8,7 +8,7 @@ var ResultTable = require('../search').ResultTable;
 
 var SearchBlockEdit = React.createClass({
     render: function() {
-        var styles = {maxHeight: 300, overflow: 'scroll' };
+        var styles = {maxHeight: 300, overflow: 'scroll', clear: 'both' };
         return (
             <div className="well" style={styles}>
                 {this.transferPropsTo(<ResultTable mode="picker" />)}

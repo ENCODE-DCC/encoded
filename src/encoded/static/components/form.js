@@ -118,7 +118,9 @@ var Form = module.exports.Form = React.createClass({
                     name = [match[1]];
                 }
                 if (name.length) {
-                    externalValidation.children[name[0]] = {validation: {failure: error.description}};
+                    externalValidation.children[name[0]] = {
+                        validation: {failure: error.description,
+                                     validation: {failure: error.description}}};
                 } else {
                     schemaErrors.push(error.description);
                 }

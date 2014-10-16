@@ -5,8 +5,7 @@
  */
 .rf-Field {
   @extend .form-group;
-  padding: 5px;
-  margin-bottom: 0;
+  margin-bottom: 10px;
 
   textarea,
   input[type="text"],
@@ -54,6 +53,10 @@
       @include box-shadow($shadow);
     }
   }
+
+  .rf-Label {
+    color: darken($border-color, 10%);
+  }
 }
 
 /**
@@ -61,6 +64,10 @@
  */
 .rf-Fieldset {
   @extend .form-group;
+  border: 1px solid #ccc;
+  @include border-radius($border-radius-base);
+  padding: 5px 10px;
+  margin-bottom: 10px;
 }
 
 /**
@@ -68,7 +75,6 @@
  */
 .rf-RepeatingFieldset {
   @extend .form-group;
-  padding: 5px;
 }
 
 .rf-RepeatingFieldset__add {
@@ -79,12 +85,21 @@
 }
 
 .rf-RepeatingFieldset__item {
-  $padding: 15px;
   @extend .form-group;
-
+  
   background: lighten($gray-lighter, 5%);
   position: relative;
-  padding: $padding;
+  border: 1px solid #ccc;
+  @include border-radius($border-radius-base);
+  padding: 5px 10px;
+  margin-bottom: 10px;
+
+  > .rf-Fieldset {
+    padding: 0;
+    border: none;
+    @include border-radius(none);
+    margin-bottom: 0;
+  }
 }
 
 .rf-RepeatingFieldset__remove {
@@ -101,9 +116,15 @@
 /**
  * Label
  */
+.rf-Label {
+  padding-right: 10px;
+}
 .required .rf-Label > span:first-child:after {
   content: " *";
   color: red;
+}
+form > .rf-Fieldset > .rf-Label {
+  font-size: 150%;
 }
 
 /**
