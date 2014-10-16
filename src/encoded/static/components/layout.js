@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 'use strict';
-var React = require('react');
+var React = require('react/addons');
 var ReactForms = require('react-forms');
 var form = require('./form');
 var FetchedData = require('./fetched').FetchedData;

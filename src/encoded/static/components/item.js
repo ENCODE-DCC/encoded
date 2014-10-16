@@ -128,6 +128,7 @@ var jsonSchemaToFormSchema = function(p, props) {
         }
         var properties = [];
         for (var name in p.properties) {
+            if (name == 'uuid') continue;
             var required = _.contains(p.required || [], name);
             properties.push(jsonSchemaToFormSchema(p.properties[name], {name: name, required: required}));
         }

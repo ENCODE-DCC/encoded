@@ -1,6 +1,6 @@
 /** @jsx React.DOM */
 'use strict';
-var React = require('react');
+var React = require('react/addons');
 var cloneWithProps = require('react/lib/cloneWithProps');
 var url = require('url');
 var _ = require('underscore');

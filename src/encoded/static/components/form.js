@@ -64,6 +64,11 @@ var Form = module.exports.Form = React.createClass({
         e.preventDefault();
         var $ = require('jquery');
         var value = this.value().value;
+        _.each(value, function(v, k) {
+            if (v === null) {
+                delete value[k];
+            }
+        });
         var method = this.props.method;
         var url = this.props.action;
         var xhr = $.ajax({
