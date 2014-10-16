@@ -18,6 +18,7 @@ requires = [
     'passlib',
     'psutil',
     'pyramid',
+    'pyramid_localroles',
     'pyramid_multiauth',
     'pyramid_tm',
     'python-magic',
