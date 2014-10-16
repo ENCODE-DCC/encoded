@@ -95,6 +95,12 @@
 		cursor: move;
 	}
 }
+.layout-toolbar.navbar-fixed-top {
+	z-index: 1031;
+	.col-md-12 {
+		outline: 0;
+	}
+}
 
 .modal-dialog {
 	width: $modal-lg;

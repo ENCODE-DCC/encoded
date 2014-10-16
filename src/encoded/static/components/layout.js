@@ -226,8 +226,8 @@ var LayoutToolbar = React.createClass({
 
     render: function() {
         var blocks = globals.blocks.getAll();
-        return (
-            <div className={'layout-toolbar navbar navbar-default' + (this.state.fixed ? ' navbar-fixed-top' : '')}>
+        var toolbar = (
+            <div className={'layout-toolbar navbar navbar-default'}>
               <div className="container-fluid">
                 <div className="navbar-left">
                     {Object.keys(blocks).map(b => <BlockAddButton key={b} blockprops={blocks[b]} /> )}
@@ -240,6 +240,18 @@ var LayoutToolbar = React.createClass({
               </div>
             </div>
         );
+        if (this.state.fixed) {
+            return (
+                <div>
+                    <div className="layout-toolbar navbar navbar-fixed-top">
+                        <div className="container"><div className="col-md-12">{toolbar}</div></div>
+                    </div>
+                    <div className="layout-toolbar navbar navbar-default"></div>
+                </div>
+            );
+        } else {
+            return toolbar;
+        }
     },
 
 });
