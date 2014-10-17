@@ -133,10 +133,12 @@ var Experiment = module.exports.Experiment = React.createClass({
                             Experiment summary for {context.accession}
                         </h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="characterization-status-labels">
-                            <StatusLabel status={statuses} />
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel status={statuses} />
+                            </div>
+                            <AuditSet audits={context.audit} />
                         </div>
-                        <AuditSet audits={context.audit} />
                    </div>
                 </header>
                 <div className="panel data-display">

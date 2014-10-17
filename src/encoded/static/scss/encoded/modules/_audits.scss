@@ -3,18 +3,21 @@ $audit-warning: #ebe310;
 
 .audit-set {
     display: inline-block;
+    vertical-align: top;
 }
 
 %audit-icon {
     display: inline-block;
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     margin: 0 2px;
-    padding: 5px;
+    padding: 0;
+    line-height: 28px;
     @include border-radius(4px);
     background-color: #fff;
     border: 1px solid #a0a0a0;
     font-size: 18px;
+    text-align: center;
 }
 
 .audit-icon-error {

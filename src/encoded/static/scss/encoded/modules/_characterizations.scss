@@ -280,6 +280,7 @@ $characterization-figure-height: 200px;
 
         @media screen and (min-width: $screen-sm-min) {
             display: inline-block;
+            height: 28px;
         }
 
         &:first-child {
@@ -696,4 +697,8 @@ $characterization-figure-height: 200px;
     &.active {
         display: none;
     }
+}
+
+.status-line {
+    vertical-align: top;
 }
