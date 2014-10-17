@@ -136,7 +136,7 @@ var Listing = React.createClass({
                         </div>
                         <div className="accession">
                             <a href={result['@id']}>
-                            	{result['title'] + '-' result['accession']} 
+                            	{result['title']} 
                             </a> 
                         </div>
                     </div>
