@@ -2,6 +2,7 @@
     "title": "Mixin properties",
     "schema_version": {
         "schema_version": {
+            "title": "Schema Version",
             "comment":  "Do not submit, value is assigned by the server. The version of the JSON schema that the server uses to validate the object. Schema version indicates generation of schema used to save version to to enable upgrade steps to work. Individual schemas should set the default.",
             "type": "string",
             "pattern": "^\\d+(\\.\\d+)*$",
@@ -143,6 +144,7 @@
             "title": "Document file metadata",
             "type": "object",
             "additionalProperties": false,
+            "formInput": "file",
             "properties": {
                 "download": {
                     "title": "File Name",
