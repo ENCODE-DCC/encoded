@@ -1,0 +1,30 @@
+$audit-error: #cc0700;
+$audit-warning: #ebe310;
+
+.audit-set {
+    display: inline-block;
+}
+
+%audit-icon {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 0 2px;
+    padding: 5px;
+    @include border-radius(4px);
+    background-color: #fff;
+    border: 1px solid #a0a0a0;
+    font-size: 18px;
+}
+
+.audit-icon-error {
+    @extend .icon-warning;
+    @extend %audit-icon;
+    color: $audit-error;
+}
+
+.audit-icon-warning {
+    @extend .icon-exclamation-circle;
+    @extend %audit-icon;
+    color: $audit-warning;
+}

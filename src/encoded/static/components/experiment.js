@@ -6,10 +6,12 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var statuslabel = require('./statuslabel');
+var auditset = require('./audit');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var StatusLabel = statuslabel.StatusLabel;
+var AuditSet = auditset.AuditSet;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup
@@ -134,6 +136,7 @@ var Experiment = module.exports.Experiment = React.createClass({
                         <div className="characterization-status-labels">
                             <StatusLabel status={statuses} />
                         </div>
+                        <AuditSet audits={context.audit} />
                    </div>
                 </header>
                 <div className="panel data-display">

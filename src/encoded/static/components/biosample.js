@@ -9,14 +9,14 @@ var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
+var auditset = require('./audit');
 var image = require('./image');
 
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
-
+var AuditSet = auditset.AuditSet;
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
-
 var Attachment = image.Attachment;
 
 
@@ -87,6 +87,7 @@ var Biosample = module.exports.Biosample = React.createClass({
                         <div className="characterization-status-labels">
                             <StatusLabel title="Status" status={context.status} />
                         </div>
+                        <AuditSet audits={context.audit} />
                     </div>
                 </header>
                 <div className="panel data-display">
