@@ -23,6 +23,7 @@ require('./statuslabel');
 require('./search');
 require('./target');
 require('./publication');
+require('./pipeline');
 require('./software');
 require('./testing');
 require('./edit');

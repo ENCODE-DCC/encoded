@@ -6,6 +6,7 @@ var dbxref = require('./dbxref');
 var search = require('./search');
 var StatusLabel = require('./statuslabel').StatusLabel;
 var Citation = require('./publication').Citation;
+
 var _ = require('underscore');
 
 var DbxrefList = dbxref.DbxrefList;
@@ -58,15 +59,66 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                             <dt>Assay</dt>
                             <dd>{context.assay_term_name}</dd>
                         </div>
-
                     </dl>
+                      {context.analysis_steps && context.analysis_steps.length ?
+                          <div>
+                              <h3>Steps</h3>
+                              <div className="panel view-detail" data-test="supplementarydata">
+                                  {context.analysis_steps.map(function(props, i) {
+                                      return AnalysisStep (props, i) ;
+                                  })}
+                              </div>
+                          </div>
+                      : null}
                 </div>
+                     {Object.keys(documents).length ?
+                     <div data-test="protocols">
+                         <h3>Documents</h3>
+                         <div className="row multi-columns-row">
+                             {documents}
+                         </div>
+                     </div>
+                      : null}      
             </div>
+
+      
         );
     }
 });
 globals.content_views.register(Pipeline, 'pipeline');
 
+
+var AnalysisStep = module.exports.AnalysisStep = function (props) {
+    var typesList = props.analysis_step_types.join(", ");
+
+    return (
+        <div key={props.key} className="panel-replicate">
+            <dl className="panel key-value">
+                {props.analysis_step_types.length ?
+                    <dl data-test="analysis_step_types">
+                        <dt>Category</dt>
+                        <dd>{typesList}</dd>
+                    </dl>
+                : null}
+                {props.software_versions.length ?
+                	<dl>
+                	<dt> Software</dt>
+                	<dd> 
+                	{props.software_versions.map(function(software_version, i) {
+                		return ( <span> {
+                			i > 0 ? ", ": ""
+                		}
+                		<a href ={software_version.software['@id']}>{software_version.software.title}</a>
+                		</span>)
+                	}
+                	)}
+                	</dd>
+                	</dl>
+                : null}
+            </dl>
+        </div>
+    );
+};
 
 
 
@@ -74,6 +126,7 @@ var Listing = React.createClass({
     mixins: [search.PickerActionsMixin],
     render: function() {
         var context = this.props.context;
+        var result = this.props.context;
         return (<li>
                     <div>
                         {this.renderActions()}
@@ -81,10 +134,11 @@ var Listing = React.createClass({
                             <p className="type meta-title">Pipeline</p>
                             {context.status ? <p className="type meta-status">{' ' + context.status}</p> : ''}
                         </div>
-                    </div>
-                    <div className="data-row">
-                        <div>{context.title}</div>
-
+                        <div className="accession">
+                            <a href={result['@id']}>
+                            	{result['title'] + '-' result['accession']} 
+                            </a> 
+                        </div>
                     </div>
             </li>
         );

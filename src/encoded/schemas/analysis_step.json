@@ -30,7 +30,8 @@
                      "QA calculation",
                      "peak calling",
                      "IDR",
-                     "aligner"
+                     "aligner",
+                     "signal calling"
                  ]
              }
         },
