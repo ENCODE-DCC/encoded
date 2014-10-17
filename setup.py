@@ -13,6 +13,7 @@ requires = [
     'WebTest',
     'boto',
     'elasticsearch',
+    'humanfriendly',
     'jsonschema',
     'loremipsum',
     'passlib',
@@ -85,5 +86,6 @@ setup(
 
         [paste.composite_factory]
         indexer = encoded.commands.es_index_listener:composite
+        memlimit = encoded.memlimit:composite
         ''',
 )
