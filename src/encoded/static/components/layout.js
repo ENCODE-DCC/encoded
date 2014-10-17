@@ -1,13 +1,13 @@
 /** @jsx React.DOM */
 'use strict';
-var React = require('react/addons');
+var React = require('react');
 var ReactForms = require('react-forms');
 var form = require('./form');
 var FallbackBlockEdit = require('./blocks/fallback').FallbackBlockEdit;
 var globals = require('./globals');
 var _ = require('underscore');
 
-var cx = React.addons.classSet;
+var cx = require('react/lib/cx');
 var merge = require('react/lib/merge');
 var ModalTrigger = require('react-bootstrap/ModalTrigger');
 var Modal = require('react-bootstrap/Modal');

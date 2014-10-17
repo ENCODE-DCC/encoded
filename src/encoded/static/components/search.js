@@ -1,7 +1,8 @@
 /** @jsx React.DOM */
 'use strict';
-var React = require('react/addons');
+var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
+var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
@@ -11,7 +12,6 @@ var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
-var cx = React.addons.classSet;
 
     // Should really be singular...
     var types = {
