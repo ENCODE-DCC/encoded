@@ -6,12 +6,12 @@ var globals = require('./globals');
 var dbxref = require('./dbxref');
 var dataset = require('./dataset');
 var statuslabel = require('./statuslabel');
-var auditset = require('./audit');
+var audit = require('./audit');
 
 var DbxrefList = dbxref.DbxrefList;
 var FileTable = dataset.FileTable;
 var StatusLabel = statuslabel.StatusLabel;
-var AuditSet = auditset.AuditSet;
+var AuditSet = audit.AuditSet;
 
 var Panel = function (props) {
     // XXX not all panels have the same markup

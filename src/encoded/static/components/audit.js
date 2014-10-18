@@ -10,7 +10,10 @@ var AuditSet = module.exports.AuditSet = React.createClass({
     },
 
     handleClick: function(i) {
-        console.log('THIS: ' + i);
+        // Clone state array, then set toggled element
+        var detailOpen = this.state.detailOpen.slice(0);
+        detailOpen[i] = detailOpen[i] ? false : true;
+        this.setState({detailOpen: detailOpen});
     },
 
     render: function() {
