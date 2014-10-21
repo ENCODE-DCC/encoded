@@ -9,12 +9,14 @@ var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var statuslabel = require('./statuslabel');
-var auditset = require('./audit');
+var audit = require('./audit');
 var image = require('./image');
 
 var DbxrefList = dbxref.DbxrefList;
 var StatusLabel = statuslabel.StatusLabel;
-var AuditSet = auditset.AuditSet;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 var ExperimentTable = dataset.ExperimentTable;
 var FetchedItems = fetched.FetchedItems;
 var Attachment = image.Attachment;
@@ -32,6 +34,7 @@ var Panel = function (props) {
 
 
 var Biosample = module.exports.Biosample = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
         var itemClass = globals.itemClass(context, 'view-item');
@@ -84,12 +87,15 @@ var Biosample = module.exports.Biosample = React.createClass({
                             {context.accession}{' / '}<span className="sentence-case">{context.biosample_type}</span>
                         </h2>
                         {altacc ? <h4 className="repl-acc">Replaces {altacc}</h4> : null}
-                        <div className="characterization-status-labels">
-                            <StatusLabel title="Status" status={context.status} />
+                        <div className="status-line">
+                            <div className="characterization-status-labels">
+                                <StatusLabel title="Status" status={context.status} />
+                            </div>
+                            <AuditIndicators audits={context.audit} />
                         </div>
-                        <AuditSet audits={context.audit} />
                     </div>
                 </header>
+                <AuditDetail audits={context.audit} />
                 <div className="panel data-display">
                     <dl className="key-value">
                         <div data-test="term-name">

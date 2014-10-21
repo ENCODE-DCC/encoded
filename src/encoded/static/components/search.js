@@ -194,7 +194,6 @@ var cx = React.addons.classSet;
                         <div className="pull-right search-meta">
                             <p className="type meta-title">Antibody</p>
                             <p className="type">{' ' + result.accession}</p>
-                            <p className="type meta-audit"><button className="audit warning icon icon-warning"></button><button className="meta-audit audit error icon icon-warning"></button></p>
                         </div>
                         <div className="accession">
                             {Object.keys(targetTree).map(function(target) {
@@ -239,7 +238,6 @@ var cx = React.addons.classSet;
                                 <p className="type meta-title">Biosample</p>
                                 <p className="type">{' ' + result['accession']}</p>
                                 <p className="type meta-status">{' ' + result['status']}</p>
-                                <p className="type meta-audit"><button className="audit warning icon icon-warning"></button><button className="meta-audit audit error icon icon-warning"></button></p>
                             </div>
                             <div className="accession">
                                 <a href={result['@id']}>

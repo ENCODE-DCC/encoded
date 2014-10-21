@@ -9,9 +9,13 @@ var dataset = require('./dataset');
 var fetched = require('./fetched');
 var dbxref = require('./dbxref');
 var image = require('./image');
+var audit = require('./audit');
 var statuslabel = require('./statuslabel');
 
 var Attachment = image.Attachment;
+var AuditIndicators = audit.AuditIndicators;
+var AuditDetail = audit.AuditDetail;
+var AuditMixin = audit.AuditMixin;
 var DbxrefList = dbxref.DbxrefList;
 var FetchedItems = fetched.FetchedItems;
 var ExperimentTable = dataset.ExperimentTable;
@@ -19,6 +23,7 @@ var StatusLabel = statuslabel.StatusLabel;
 
 
 var Lot = module.exports.Lot = React.createClass({
+    mixins: [AuditMixin],
     render: function() {
         var context = this.props.context;
 
@@ -69,7 +74,11 @@ var Lot = module.exports.Lot = React.createClass({
                             }
                         </h3>
                     </div>
+                     <div className="status-line">
+                        <AuditIndicators audits={context.audit} />
+                    </div>
                 </header>
+                <AuditDetail audits={context.audit} />
 
                 {context.lot_reviews && context.lot_reviews.length ?
                     <div className="antibody-statuses">

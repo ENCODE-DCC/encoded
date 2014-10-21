@@ -1,11 +1,9 @@
-$audit-error: #cc0700;
-$audit-warning: #ebe310;
-
-.audit-set {
+.audit-indicators {
     display: inline-block;
     vertical-align: top;
 }
 
+// Audit icon for display only
 %audit-icon {
     display: inline-block;
     width: 28px;
@@ -13,21 +11,49 @@ $audit-warning: #ebe310;
     margin: 0 2px;
     padding: 0;
     line-height: 28px;
-    @include border-radius(4px);
-    background-color: #fff;
-    border: 1px solid #a0a0a0;
     font-size: 18px;
     text-align: center;
 }
 
-.audit-icon-error {
-    @extend .icon-warning;
+// Audit icon that's clickable as well as displayable
+%audit-active-icon {
     @extend %audit-icon;
-    color: $audit-error;
+    @include border-radius(4px);
+    background-color: #fff;
+    border: 1px solid #a0a0a0;
 }
 
-.audit-icon-warning {
-    @extend .icon-exclamation-circle;
-    @extend %audit-icon;
-    color: $audit-warning;
+// Connect audit types to fontawesome icon suffixes and colors
+$audit-types:
+    (error, warning, #cc0700),
+    (warning, exclamation-circle, #ebe310);
+
+// Generate the audit icon classes for each of the audit types
+@each $audit-type, $suffix, $color in $audit-types {
+    // Audit icons
+    .audit-icon-#{$audit-type} {
+        @extend .icon-#{$suffix}; // FontAwesome icon
+        @extend %audit-icon;
+        color: $color;
+    }
+
+    // Clickable audit icons
+    .audit-activeicon-#{$audit-type} {
+        @extend .icon-#{$suffix}; // FontAwesome icon
+        @extend %audit-active-icon;
+        color: $color;
+
+        &.active {
+            background-color: #a0a0a0;
+        }
+    }
+}
+
+// Area that displays audit detail
+.audit-detail {
+    margin: 0 0 20px;
+
+    .alert {
+        margin: 10px 0;
+    }
 }
