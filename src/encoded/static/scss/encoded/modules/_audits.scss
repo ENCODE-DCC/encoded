@@ -1,6 +1,12 @@
 .audit-indicators {
-    display: inline-block;
-    vertical-align: top;
+    display: block;
+    margin-top: 5px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+        margin: 0 5px;
+        vertical-align: top;
+    }
 }
 
 // Audit icon for display only
@@ -8,16 +14,20 @@
     display: inline-block;
     width: 28px;
     height: 28px;
-    margin: 0 2px;
     padding: 0;
     line-height: 28px;
     font-size: 18px;
     text-align: center;
+
+    &:first-child {
+        margin-left: 0;
+    }
 }
 
 // Audit icon that's clickable as well as displayable
 %audit-active-icon {
     @extend %audit-icon;
+    margin: 0 2px;
     @include border-radius(4px);
     background-color: #fff;
     border: 1px solid #a0a0a0;

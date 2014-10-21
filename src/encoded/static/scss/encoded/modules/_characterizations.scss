@@ -241,9 +241,13 @@ $characterization-figure-height: 200px;
 }
 
 .characterization-status-labels {
-    display: inline-block;
+    display: block;
     font-weight: bold;
     font-size: 20px;
+
+    @media screen and (min-width: $screen-sm-min) {
+        display: inline-block;
+    }
 }
 
 
