@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var FetchedData = require('../fetched').FetchedData;
+var fetched = require('../fetched');
 var globals = require('../globals');
 var item = require('./item');
 var richtext = require('./richtext');
@@ -12,7 +12,7 @@ var Schema = ReactForms.schema.Schema;
 var Property = ReactForms.schema.Property;
 
 var ItemBlockView = item.ItemBlockView;
-var ObjectPicker = item.ObjectPicker;
+var ObjectPicker = require('../inputs').ObjectPicker;
 var RichTextBlockView = richtext.RichTextBlockView;
 
 
@@ -24,7 +24,10 @@ var TeaserCore = React.createClass({
         }
         return (
             <div className="teaser thumbnail clearfix">
-                <FetchedData url={url} Component={ItemBlockView} loadingComplete={true} />
+                <fetched.FetchedData>
+                    <fetched.Param name="context" url={url} />
+                    <ItemBlockView />
+                </fetched.FetchedData>
                 <div className="caption" dangerouslySetInnerHTML={{__html: this.props.value.body}}></div>
             </div>
         );

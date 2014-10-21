@@ -1,23 +1,21 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
+var cloneWithProps = require('react/lib/cloneWithProps');
 var parseError = require('./mixins').parseError;
 var globals = require('./globals');
 var ga = require('google-analytics');
+var merge = require('react/lib/merge');
 
 
-var Fetched = module.exports.Fetched = {
+var Param = module.exports.Param = React.createClass({
     getInitialState: function () {
         return {
-            communicating: !!this.props.url,
-            data: undefined,
             fetchedRequest: undefined,
-            erred: false
         };
     },
 
     componentDidMount: function () {
-        if (!this.props.loadingComplete) return;
         this.fetch(this.props.url);
     },
 
@@ -29,25 +27,21 @@ var Fetched = module.exports.Fetched = {
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (!nextProps.loadingComplete || (
-            this.state.fetchedRequest &&
+        if (this.state.fetchedRequest &&
             nextProps.url === this.props.url &&
-            nextProps.session === this.props.session)) return;
+            nextProps.session === this.props.session) return;
         this.fetch(nextProps.url);
     },
 
     fetch: function (url) {
-        var communicating;
         var xhr = this.state.fetchedRequest;
         if (xhr && xhr.state() == 'pending') {
             xhr.abort();
         }
         if (!url) {
+            this.props.handleFetch();
             this.setState({
-                communicating: false,
-                data: undefined,
                 fetchedRequest: undefined,
-                erred: false
             });
         }
         var $ = require('jquery');
@@ -59,7 +53,6 @@ var Fetched = module.exports.Fetched = {
         .done(this.receive);
         xhr.href = url;
         this.setState({
-            communicating: true,
             fetchedRequest: xhr
         });
     },
@@ -74,111 +67,133 @@ var Fetched = module.exports.Fetched = {
         this.receive(data, status, xhr, true);
     },
 
-    receive: function (data, status, xhr, erred) {
-        this.setState({
-            data: data,
-            communicating: false,
-            erred: erred
-        });
-    }
-};
+    receive: function (res, status, xhr, erred) {
+        var error = erred ? res : null;
+        var data = {};
+        if (!erred) {
+            if (this.props.converter) {
+                res = this.props.converter(res);
+            }
+            data[this.props.name] = res;
+            if (this.props.etagName) {
+                data[this.props.etagName] = xhr.getResponseHeader('ETag');
+            }
+        }
+        this.props.handleFetch(data, error);
+    },
+
+    render: function() { return null; }
+});
 
 
 var FetchedData = module.exports.FetchedData = React.createClass({
-    mixins: [Fetched],
 
     getDefaultProps: function() {
+        return {loadingComplete: true};
+    },
+
+    getInitialState: function() {
         return {
-            fetched_prop_name: 'data',
-            fetched_etag_name: 'etag'
+            error: false,
+            data: {},
         };
     },
 
-
     shouldComponentUpdate: function(nextProps, nextState) {
-        if (this.props.showSpinnerOnUpdate === false && nextState.communicating) {
+        if (!nextProps.loadingComplete) {
             return false;
         } else {
             return true;
         }
     },
 
+    handleFetch: function(data, error) {
+        var nextState = {
+            error: error
+        };
+        if (data) {
+            nextState['data'] = merge(this.state.data, data);
+        }
+        this.setState(nextState);
+    },
+
     render: function () {
-        var url = this.props.url;
-        var data = this.state.data;
-        var key = url;
-        var Component = this.props.Component;
-        if (!url) return (
-            <div key={key} className="empty done" style={{display: 'none'}}></div>
-        );
-        if (this.state.communicating) return (
-            <div key={key} className="communicating">
-                <div className="loading-spinner"></div>
-            </div>
-        );
-        if (this.state.erred) {
-            Component = globals.content_views.lookup(data);
+        var params = [];
+        var communicating = false;
+        var children = [];
+        if (this.props.children) {
+            React.Children.forEach(this.props.children, function(child) {
+                if (child instanceof Param) {
+                    params.push(cloneWithProps(child, {
+                        key: child.props.name,
+                        handleFetch: this.handleFetch,
+                        handleFetchStart: this.handleFetchStart,
+                        session: this.props.session
+                    }));
+                    if (this.state.data[child.props.name] === undefined) {
+                        communicating = true;
+                    }                    
+                } else {
+                    children.push(child);
+                }
+            }, this);
+        }
+
+        if (!this.props.loadingComplete || !params.length) {
+            return null;
+        }
+
+        if (this.state.error) {
+            var errorView = globals.content_views.lookup(this.state.error);
+            if (!errorView) { return <pre>JSON.stringify(this.state.error)</pre>; }
             return (
-                <div key={key} className="error done">
-                    {this.transferPropsTo(
-                        <Component Component={undefined} url={undefined} context={data} />
-                    )}
+                <div className="error done">
+                    {this.transferPropsTo(<errorView context={this.state.error} />)}
                 </div>
             );
         }
-        var etag = this.state.fetchedRequest.getResponseHeader('ETag');
-        var props = {
-            Component: undefined,
-            url: undefined,
-            fetched_prop_name: undefined,
-            fetched_etag_name: undefined
-        };
-        props[this.props.fetched_prop_name] = data;
-        props[this.props.fetched_etag_name] = etag;
+
+        if (communicating) {
+            return (
+                <div className="communicating">
+                    <div className="loading-spinner"></div>
+                    {params}
+                </div>
+            );
+        }
+
         return (
-            <div key={key} className="done">
-                {this.transferPropsTo(Component(props))}
+            <div className="done">
+                {children.map(child => cloneWithProps(child, merge(this.props, this.state.data)))}
+                {params}
             </div>
         );
     }
 });
 
 
-var FetchedItems = module.exports.FetchedItems = React.createClass({
-    mixins: [Fetched],
-    render: function () {
-        var url = this.props.url;
-        var data = this.state.data;
-        var key = url;
+var Items = React.createClass({
+
+    render: function() {
         var Component = this.props.Component;
-        if (!url) return (
-            <div key={key} className="empty done" style={{display: 'none'}}></div>
-        );
-        if (this.state.communicating) return (
-            <div key={key} className="communicating">
-                <div className="loading-spinner"></div>
-            </div>
-        );
-        if (this.state.erred) {
-            Component = globals.content_views.lookup(data);
-            return (
-                <div key={key} className="error done">
-                    {this.transferPropsTo(
-                        <Component Component={undefined} url={undefined} context={data} />
-                    )}
-                </div>
-            );
-        }
-        var items = data && data['@graph'] || [];
-        if (!items.length) return (
-            <div key={key} className="empty done" style={{display: 'none'}}></div>
-        );
+        var data = this.props.data;
+        var items = data ? data['@graph'] : [];
+        if (!items.length) return null;
+        return this.transferPropsTo(<Component items={items} total={data.total} />);
+    }
+
+});
+
+
+var FetchedItems = module.exports.FetchedItems = React.createClass({
+    
+    render: function() {
         return (
-            <div key={key} className="done">
-                {this.transferPropsTo(
-                    <Component Component={undefined} items={items} total={data.total} />
-                )}
-            </div>
+            <FetchedData loadingComplete={this.props.loadingComplete}>
+                <Param name="data" url={this.props.url} />
+                {this.transferPropsTo(<Items />)}
+            </FetchedData>
         );
     }
+
 });
