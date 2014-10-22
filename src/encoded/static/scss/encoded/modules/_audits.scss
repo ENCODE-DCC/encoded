@@ -1,6 +1,11 @@
 .audit-indicators {
     display: block;
     margin-top: 5px;
+    padding: 0 5px;
+    height: 28px;
+    @include border-radius(4px);
+    background-color: #fff;
+    border: 1px solid #a0a0a0;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
@@ -12,12 +17,11 @@
 // Audit icon for display only
 %audit-icon {
     display: inline-block;
-    width: 28px;
-    height: 28px;
-    padding: 0;
     line-height: 28px;
     font-size: 18px;
     text-align: center;
+    border: none;
+    background-color: transparent;
 
     &:first-child {
         margin-left: 0;
@@ -28,9 +32,6 @@
 %audit-active-icon {
     @extend %audit-icon;
     margin: 0 2px;
-    @include border-radius(4px);
-    background-color: #fff;
-    border: 1px solid #a0a0a0;
 }
 
 // Connect audit types to fontawesome icon suffixes and colors
@@ -57,13 +58,28 @@ $audit-types:
             background-color: #a0a0a0;
         }
     }
+
+    // Audit detail
+    .audit-detail-#{$audit-type} {
+        padding: 5px 10px;
+        border-top: 1px solid #a0a0a0;
+        background-color: lighten(desaturate($color,30%),40%);
+
+        &:first-child {
+            border-top: none;
+        }
+    }
 }
 
 // Area that displays audit detail
-.audit-detail {
-    margin: 0 0 20px;
+.audit-details {
+    margin: 10px 0;
+    overflow: hidden;
+    @include border-radius(4px);
+    border: 1px solid #a0a0a0;
 
-    .alert {
-        margin: 10px 0;
+    strong.sentence-case {
+        display: inline-block;
+        margin-left: 10px;
     }
 }
