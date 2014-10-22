@@ -1,4 +1,6 @@
+import copy
 import os
+from collections import OrderedDict
 from pyramid.httpexceptions import HTTPNotFound
 from pyramid.view import view_config
 from ..contentbase import (
@@ -51,4 +53,13 @@ def schema(context, request):
         collection = context.by_item_type[item_type]
     except KeyError:
         raise HTTPNotFound(item_type)
-    return collection.schema
+
+    schema = copy.deepcopy(collection.schema)
+    properties = OrderedDict()
+    for k, v in schema['properties'].items():
+        if 'permission' in v:
+            if not request.has_permission(v['permission'], collection):
+                continue
+        properties[k] = v
+    schema['properties'] = properties
+    return schema

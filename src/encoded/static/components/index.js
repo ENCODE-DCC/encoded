@@ -27,6 +27,7 @@ require('./pipeline');
 require('./software');
 require('./testing');
 require('./edit');
+require('./inputs');
 require('./blocks');
 
 module.exports = require('./app');
