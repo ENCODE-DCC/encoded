@@ -247,6 +247,10 @@ $characterization-figure-height: 200px;
 
     @media screen and (min-width: $screen-sm-min) {
         display: inline-block;
+
+        .status-list li {
+            height: 28px;
+        }
     }
 }
 
@@ -284,7 +288,6 @@ $characterization-figure-height: 200px;
 
         @media screen and (min-width: $screen-sm-min) {
             display: inline-block;
-            height: 28px;
         }
 
         &:first-child {
