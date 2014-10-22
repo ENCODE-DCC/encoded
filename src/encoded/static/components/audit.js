@@ -36,9 +36,10 @@ var AuditIndicators = module.exports.AuditIndicators = React.createClass({
 
     render: function() {
         var audits = this.props.audits;
+        var indicatorClasses = "audit-indicators" + (this.context.auditDetailOpen ? ' active' : '');
         if (audits) {
             return (
-                <button className="audit-indicators" aria-expanded={this.context.auditDetailOpen} aria-controls="#audit-details" onClick={this.context.auditStateToggle}>
+                <button className={indicatorClasses} aria-expanded={this.context.auditDetailOpen} aria-controls="#audit-details" onClick={this.context.auditStateToggle}>
                     {audits.map(function(audit, i) {
                         return <AuditIndicator audit={audit} />;
                     }.bind(this))}

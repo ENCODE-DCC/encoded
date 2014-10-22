@@ -12,6 +12,10 @@
         margin: 0 5px;
         vertical-align: top;
     }
+
+    &.active {
+        background-color: #a0a0a0;
+    }
 }
 
 // Audit icon for display only
