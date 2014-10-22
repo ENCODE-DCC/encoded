@@ -582,6 +582,14 @@
             "title": "Construct",
             "type": "string"
         },
+        "culture_harvest_date": {
+            "title": "Culture harvest date",
+            "type": "string"
+        },
+        "date_obtained": {
+            "title": "Date obtained",
+            "type": "string"
+        },
         "treatments.length": {
             "title": "Treatments length",
             "type": "array"
