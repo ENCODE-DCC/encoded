@@ -50,5 +50,25 @@
         "status": "released",
         "source_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
         "uuid": "e6bf4810-50ac-11e4-916c-0800200c9a66"
+    },
+    {
+        "name": "flux",
+        "title": "Flux Capacitor",
+        "description": "The exonic structure of two spliceforms.",
+        "software_type": ["transcript identification"],
+        "used_by": ["ENCODE"],
+        "status": "released",
+        "source_url": "http://sammeth.net/confluence/display/FLUX/Home",
+        "uuid": "9d85a5b0-5af0-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "name": "npidr",
+        "title": "npIDR",
+        "description": "It essentially takes a pooled sample of all replicas and computes (a) the frequency of seeing count=x; (b) the frequency of seeing count=x given that in *ALL* other replicas the count is equal to zero",
+        "software_type": ["quality metric"],
+        "used_by": ["ENCODE"],
+        "status": "released",
+        "source_url": "https://github.com/pervouchine/npIDR",
+        "uuid": "dd9e0890-5af0-11e4-8ed6-0800200c9a66"
     }
 ]

@@ -15,5 +15,31 @@
     	"status": "released",
         "parents": ["ab7ec880-50ab-11e4-916c-0800200c9a66"],
     	"uuid": "c4a33ee0-50ab-11e4-916c-0800200c9a66"
+    },
+    {
+        "analysis_step_types": ["aligner"],
+        "software_versions": ["577f3f20-5af2-11e4-8ed6-0800200c9a66"],
+        "input_file_types": ["fastq"],
+        "output_file_types": ["bam"],
+        "status": "released",
+        "uuid": "54ae7770-5ae8-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "analysis_step_types": ["quantification"],
+        "software_versions": ["d84714c0-5af2-11e4-8ed6-0800200c9a66"],
+        "input_file_types": ["bam", "gtf"],
+        "output_file_types": ["gtf"],
+        "status": "released",
+        "parents": ["54ae7770-5ae8-11e4-8ed6-0800200c9a66"],
+        "uuid": "1e418e10-5ae9-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "analysis_step_types": ["IDR"],
+        "software_versions": ["d2cde860-5af3-11e4-8ed6-0800200c9a66"],
+        "input_file_types": ["gtf"],
+        "output_file_types": ["csv"],
+        "status": "released",
+        "parents": ["1e418e10-5ae9-11e4-8ed6-0800200c9a66"],
+        "uuid": "27c011e0-5aef-11e4-8ed6-0800200c9a66"
     }
 ]

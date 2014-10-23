@@ -362,7 +362,20 @@
         "award": "U41HG006992",
         "document_type": "pipeline protocol",
         "lab": "brenton-graveley",
+        "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "6ab18a00-50aa-11e4-916c-0800200c9a66"
+    },
+    {
+        "aliases": [
+            "roderic-guigo:GeneQuantificationPipeline"
+        ],
+        "attachment": "GeneQuantificationPipeline.pdf",
+        "award": "U41HG006992",
+        "document_type": "pipeline protocol",
+        "lab": "roderic-guigo",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "d64ef6a0-5ae4-11e4-8ed6-0800200c9a66"
     }
 ]

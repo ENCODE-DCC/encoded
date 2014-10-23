@@ -16,5 +16,25 @@
     	"version": "unknown",
     	"status": "released",
     	"uuid": "956620a0-50ad-11e4-916c-0800200c9a66"
+    },
+    {
+        "software": "0afb6080-1c08-11e4-8c21-0800200c9a66",
+        "version": "2.3.1z12",
+        "downloaded_url": "https://github.com/alexdobin/STAR/releases/tag/STAR_2.3.1z12",
+        "status": "released",
+        "uuid": "577f3f20-5af2-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "software": "9d85a5b0-5af0-11e4-8ed6-0800200c9a66",
+        "version": "1.6.1",
+        "downloaded_url": "http://sammeth.net/artifactory/barna/barna/barna.capacitor/1.6.1/flux-capacitor-1.6.1.tgz",
+        "status": "released",
+        "uuid": "d84714c0-5af2-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "software": "dd9e0890-5af0-11e4-8ed6-0800200c9a66",
+        "version": "unknown",
+        "status": "released",
+        "uuid": "d2cde860-5af3-11e4-8ed6-0800200c9a66"
     }
 ]

@@ -31,7 +31,8 @@
                      "peak calling",
                      "IDR",
                      "aligner",
-                     "signal calling"
+                     "signal calling",
+                     "quantification"
                  ]
              }
         },
@@ -61,7 +62,8 @@
                     "narrowPeak",
                     "broadPeak",
                     "tsv",
-                    "csv"
+                    "csv",
+                    "gtf"
                 ]
             }
         },
@@ -80,7 +82,9 @@
                     "narrowPeak",
                     "broadPeak",
                     "bigWig",
-                    "postScript"
+                    "postScript",
+                    "gtf",
+                    "csv"
                 ]
             }
         },
