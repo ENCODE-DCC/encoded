@@ -13,11 +13,13 @@ requires = [
     'WebTest',
     'boto',
     'elasticsearch',
+    'humanfriendly',
     'jsonschema',
     'loremipsum',
     'passlib',
     'psutil',
     'pyramid',
+    'pyramid_localroles',
     'pyramid_multiauth',
     'pyramid_tm',
     'python-magic',
@@ -85,5 +87,6 @@ setup(
 
         [paste.composite_factory]
         indexer = encoded.commands.es_index_listener:composite
+        memlimit = encoded.memlimit:composite
         ''',
 )

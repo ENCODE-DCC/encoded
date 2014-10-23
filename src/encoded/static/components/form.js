@@ -5,6 +5,7 @@ var ReactForms = require('react-forms');
 var parseError = require('./mixins').parseError;
 var globals = require('./globals');
 var ga = require('google-analytics');
+var _ = require('underscore');
 
 
 var FormFor = ReactForms.FormFor;
@@ -24,6 +25,19 @@ var Form = module.exports.Form = React.createClass({
         return {
             onTriggerSave: this.save
         };
+    },
+
+    componentDidUpdate: function(prevProps, prevState) {
+        if (!_.isEqual(prevState.errors, this.state.errors)) {
+            var $ = require('jquery');
+            var $error = $('alert-danger:first');
+            if (!$error.length) {
+                $error = $('.rf-Message:first').closest('.rf-Field');
+            }
+            if ($error.length) {
+                $('body').animate({scrollTop: $error.offset().top - $('#navbar').height()}, 200);
+            }
+        }
     },
 
     render: function() {
@@ -50,6 +64,11 @@ var Form = module.exports.Form = React.createClass({
         e.preventDefault();
         var $ = require('jquery');
         var value = this.value().value;
+        _.each(value, function(v, k) {
+            if (v === null || k == 'schema_version') {
+                delete value[k];
+            }
+        });
         var method = this.props.method;
         var url = this.props.action;
         var xhr = $.ajax({
@@ -93,13 +112,23 @@ var Form = module.exports.Form = React.createClass({
         var schemaErrors = [];
         if (data.errors !== undefined) {
             data.errors.map(function (error) {
-                if (error.name.length) {
-                    externalValidation.children[error.name[0]] = {validation: {failure: error.description}};
+                var name = error.name;
+                var match = /u'(\w+)' is a required property/.exec(error.description);
+                if (match) {
+                    name = [match[1]];
+                }
+                if (name.length) {
+                    externalValidation.children[name[0]] = {
+                        validation: {failure: error.description,
+                                     validation: {failure: error.description}}};
                 } else {
                     schemaErrors.push(error.description);
                 }
             });
         }
+
+        // make sure we scroll to error again
+        this.setState({errors: null});
 
         this.setState({
             data: data,

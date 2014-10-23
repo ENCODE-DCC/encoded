@@ -235,6 +235,7 @@ def location(name, factory=None):
 class Root(object):
     __name__ = ''
     __parent__ = None
+    schema = None
     builtin_acl = [
         (Allow, 'remoteuser.INDEXER', ('view', 'list', 'traverse', 'index')),
         (Allow, 'remoteuser.EMBED', ('view', 'traverse')),
@@ -585,10 +586,11 @@ class Item(object):
         return properties
 
     def add_actions(self, request, properties):
-        if request.has_permission('edit', self):
-            properties['actions'] = getattr(self, 'actions', [])
-        else:
-            properties['actions'] = []
+        if not request.has_permission('edit', self):
+            return
+        properties['actions'] = getattr(self, 'actions', [])
+        audit = request.audit(properties, properties['@type'], path=resource_path(self))
+        properties['audit'] = audit
 
     @classmethod
     def create(cls, parent, uuid, properties, sheets=None):
@@ -1123,8 +1125,8 @@ def item_view(context, request):
     if frame == 'embedded':
         return properties
 
-    properties = context.expand_page(request, properties)
     context.add_actions(request, properties)
+    properties = context.expand_page(request, properties)
     if hasattr(context, 'add_default_page'):
         context.add_default_page(request, properties)
     return properties
