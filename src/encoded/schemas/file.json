@@ -19,7 +19,7 @@
         { "$ref": "mixins.json#/accession" },
         { "$ref": "mixins.json#/submitted" },
         { "$ref": "mixins.json#/aliases" },
-        { "$ref": "mixins.json#/attribution" },        
+        { "$ref": "mixins.json#/attribution" },
         { "$ref": "mixins.json#/notes" }
     ],
     "facets": {
@@ -388,11 +388,11 @@
             "linkTo": "pipeline"
         },
         "step": {
-            "title": "Analysis step",
-            "description": "The step the file was generated from.",
-            "comment": "For steps, see analysis_step.json for available identifiers.",
+            "title": "Analysis step run",
+            "description": "The instance of the step the file was generated from.",
+            "comment": "For steps, see analysis_step_run.json (and analysis_step.json) for available identifiers.",
             "type": "string",
-            "linkTo": "analysis_step"
+            "linkTo": "analysis_step_run"
         }
     },
     "columns": {
