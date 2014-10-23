@@ -74,28 +74,6 @@ p {
     font-size: floor($font-size-base * 1.1);
 }
 
-.publication-section {
-    margin: 20px 0;
-
-    &:first-child {
-        margin-top: 0;
-    }
-
-    h2 {
-        margin-top: 0;
-        font-size: floor($font-size-base * 1.5);
-    }
-
-    p {
-        margin-top: $line-height-computed / 2;
-        margin-bottom: $line-height-computed / 2;
-    }
-}
-
-.publication-subsection {
-    margin: 15px 0 15px 20px;
-}
-
 .references {
         margin-top: $line-height-computed / 2;
         margin-bottom: $line-height-computed / 2;

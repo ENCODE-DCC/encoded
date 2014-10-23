@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var FetchedData = require('../fetched').FetchedData;
+var fetched = require('../fetched');
 var collection = require('../collection');
 var globals = require('../globals');
 var search = require('../search');
@@ -17,7 +17,7 @@ var Property = ReactForms.schema.Property;
 
 var SearchResultsLayout = React.createClass({
     render: function() {
-        var context = this.props.data;
+        var context = this.props.context;
         var results = context['@graph'];
         var columns = context['columns'];
         return (
@@ -30,15 +30,6 @@ var SearchResultsLayout = React.createClass({
                     : null}
                 </ul>
             </div>
-        );
-    }
-});
-
-
-var TableLayout = React.createClass({
-    render: function() {
-        return (
-            <Table context={this.props.data} href={this.props.href} />
         );
     }
 });
@@ -66,16 +57,21 @@ var SearchBlock = React.createClass({
         if (this.props.mode === 'edit') {
             var searchBase = this.props.value;
             if (!searchBase) searchBase = '?mode=picker';
-            var url = '/search' + searchBase;
-            return <FetchedData url={url} Component={SearchBlockEdit} loadingComplete={true}
-                                searchBase={searchBase} onChange={this.props.onChange} />;
+            return (
+                <fetched.FetchedData>
+                    <fetched.Param name="data" url={'/search/' + searchBase} />
+                    <SearchBlockEdit searchBase={searchBase} onChange={this.props.onChange} />
+                </fetched.FetchedData>
+            );
         } else {
-            var url = '/search' + this.props.value.search;
-            if (this.props.value.display === 'table') {
-                return <FetchedData url={url} Component={TableLayout} loadingComplete={true} href={url} />;
-            } else {
-                return <FetchedData url={url} Component={SearchResultsLayout} loadingComplete={true} />;
-            }
+            var url = '/search/' + this.props.value.search;
+            var Component = this.props.value.display === 'table' ? Table : SearchResultsLayout;
+            return (
+                <fetched.FetchedData> 
+                    <fetched.Param name="context" url={url} />
+                    <Component href={url} />
+                </fetched.FetchedData>
+            );
         }
     }
 });

@@ -22,7 +22,11 @@
             "default": "1"
         },
         "accession": {
+<<<<<<< HEAD
             "accessionType": "PL"
+=======
+            "accessionType": "PL"        
+>>>>>>> origin/1400-lab-pipelines
         },
         "title": {
             "title": "Title",
@@ -37,6 +41,7 @@
         },
         "analysis_steps": {
             "title": "Analysis steps",
+<<<<<<< HEAD
             "description": "The particular computational analysis steps used by the pipeline.",
             "type": "array",
             "items": {
@@ -54,6 +59,13 @@
             "items": {
                 "title": "Endpoint",
                 "description": "An analysis step with no children",
+=======
+            "description": "The particular end step computational analysis steps used by the pipeline.",
+            "type": "array",
+            "items": {
+                "title": "Analysis step",
+                "description": "A particular end step computational analysis step used by the pipeline.",
+>>>>>>> origin/1400-lab-pipelines
                 "comment": "See analysis_step.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "analysis_step"
@@ -88,7 +100,11 @@
         "analysis_steps.software_versions.software.references.published_by": {
             "title": "Created by",
             "type": "array"
+<<<<<<< HEAD
         }
+=======
+        }  
+>>>>>>> origin/1400-lab-pipelines
     },
     "columns": {
         "accession": {

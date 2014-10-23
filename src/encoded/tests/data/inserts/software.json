@@ -32,5 +32,23 @@
         "source_url": "http://code.google.com/p/bedtools/",
         "references": ["bdd1b360-c377-450d-969a-efc1a7e8611f"],
         "uuid": "2adffad0-1c0a-11e4-8c21-0800200c9a66"
+    },
+    {
+        "name": "tophat",
+        "title": "TopHat",
+        "description": "Fast splice junction mapper for RNA-Seq reads. It aligns RNA-Seq reads to mammalian-sized genomes using the ultra high-throughput short read aligner Bowtie, and then analyzes the mapping results to identify splice junctions between exons.",
+        "used_by": ["ENCODE"],
+        "status": "released",
+        "source_url": "http://ccb.jhu.edu/software/tophat/downloads/",
+        "uuid": "7868f960-50ac-11e4-916c-0800200c9a66"
+    },
+    {
+        "name": "bedgraphtobigwig",
+        "title": "bedGraphToBigWig",
+        "description": "Convert bedGraph to bigWig file",
+        "used_by": ["ENCODE"],
+        "status": "released",
+        "source_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
+        "uuid": "e6bf4810-50ac-11e4-916c-0800200c9a66"
     }
 ]

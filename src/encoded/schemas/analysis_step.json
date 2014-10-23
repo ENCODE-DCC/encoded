@@ -96,13 +96,13 @@
             }
         },
         "parents": {
-            "title": "Upstream Analysis Steps",
-            "description": "Steps that feed directly into this step",
+            "title": "Parents",
+            "description": "The precursor steps.",
             "type": "array",
             "items": {
-                "title": "Parent",
-                "description": "Preceeding analysis step",
-                "type:": "string",
+                "description": "A precusor step.",
+                "comment": "See analysis_step.json for available identifiers.",
+                "type": "string",
                 "linkTo": "analysis_step"
             }
         }

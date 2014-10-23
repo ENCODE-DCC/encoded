@@ -1,0 +1,20 @@
+[
+    {
+    	"software": "7868f960-50ac-11e4-916c-0800200c9a66",
+    	"version": "unknown",
+    	"status": "released",
+    	"uuid": "8369c9b0-50ad-11e4-916c-0800200c9a66"
+    },
+    {
+    	"software": "2adffad0-1c0a-11e4-8c21-0800200c9a66",
+    	"version": "unknown",
+    	"status": "released",
+    	"uuid": "8eacefa0-50ad-11e4-916c-0800200c9a66"
+    },
+    {
+    	"software": "e6bf4810-50ac-11e4-916c-0800200c9a66",
+    	"version": "unknown",
+    	"status": "released",
+    	"uuid": "956620a0-50ad-11e4-916c-0800200c9a66"
+    }
+]

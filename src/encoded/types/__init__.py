@@ -102,6 +102,7 @@ class Construct(Collection):
     }
     item_embedded = ['target']
 
+
 @location('talens')
 class Talen(Collection):
     item_type = 'talen'
@@ -122,6 +123,7 @@ class Talen(Collection):
         ),
     }
     item_embedded = ['lab', 'submitted_by']
+
 
 @location('documents')
 class Document(Collection):
@@ -236,3 +238,28 @@ class Software(Collection):
     item_keys = ALIAS_KEYS + [
         {'name': '{item_type}:name', 'value': '{name}', '$templated': True},
     ]
+
+
+@location('software-versions')
+class SoftwareVersion(Collection):
+    item_type = 'software_version'
+    schema = load_schema('software_version.json')
+    properties = {
+        'title': 'Software version',
+        'description': 'Software version pages',
+    }
+    unique_key = 'software_version:name'
+
+    class Item(Collection.Item):
+        namespace_from_path = {
+            'software_name': 'software.name',
+            'software_title': 'software.title'
+        }
+        template = {
+            'name': {'$value': '{software_name}-{version}', '$templated': True},
+            'title': {'$value': '{software_title} ({version})', '$templated': True}
+        }
+        embedded = ['software', 'software.references']
+        keys = ALIAS_KEYS + [
+             {'name': '{item_type}:name', 'value': '{software_name}-{version}', '$templated': True},
+        ]

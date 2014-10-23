@@ -416,21 +416,7 @@ def es_tween_factory(handler, registry):
             allowed = set(source['principals_allowed_edit'])
             if allowed.intersection(request.effective_principals):
                 rendering_val['actions'] = collection.Item.actions
-
-            # Add default page
-            default_page_path = None
-            if len(path_tuple) == 0:
-                default_page_path = '/pages/homepage/'
-            elif len(path_tuple) == 1:
-                default_page_path = '/pages' + path
-            if default_page_path:
-                try:
-                    default_page = embed(request, default_page_path)
-                except KeyError:
-                    pass
-                else:
-                    if default_page:
-                        rendering_val['default_page'] = default_page
+                rendering_val['audit'] = source['audit']
 
         else:
             rendering_val = source[frame]

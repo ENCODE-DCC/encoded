@@ -166,6 +166,32 @@
             "PMID:22064851",
             "PMCID:PMC3245002"
         ],
+        "supplementary_data":[
+            {
+                "url": "http://encodenets.gersteinlab.org/metatracks/",
+                "supplementary_data_type": "enhancer annotations",
+                "data_summary": "Enhancers are identified as binding active regions (BARs) outside promoter-proximal regulatory modules (PRMs) and more than 10kb away from any GENCODE genes and non-coding genes. A random forest model trained on chromatin accessibility and histone modification has been used to identify BARs, using randomly sampled TF binding regions and non-binding regions as positive and negative training sets. PRMs are identified with a similar model as that for BARs, using TF binding regions at transcription start site (TSS) as positive training set, and non-binding regions or regions far away from TSS or both as negative training sets. This model has been applied to 5 ENCODE cell lines: GM12878, K562, h1-HESC, HeLa-S3, and Hep-G2.",
+                "file_format": "BED"
+            },
+            {
+                "url": "http://funseq2.gersteinlab.org/static/data/ENCODE.annotation.gz",
+                "supplementary_data_type": "enhancer annotations",
+                "data_summary": "An update of the list in 2014 using the same methodology.",
+                "file_format": "BED"
+            },
+            {
+                "url": "http://encodenets.gersteinlab.org/metatracks",
+                "supplementary_data_type": "HOT regions",
+                "data_summary": "The ChIP-Seq signals from various experiments for transcription factors were grouped together into 100 bp bins. The co-binding of different factors were computed based on these signals. The HOT and LOT regions were defined as the top 1% of region-specific co-occurrence and the bottom 1% of non-zero degrees of region-specific co-occurrence.",
+                "file_format": "BED"
+            },
+            {
+                "url": "http://funseq2.gersteinlab.org/static/data/drm.gene.bed",
+                "supplementary_data_type": "connectivity",
+                "data_summary": "The correlation (or anti-correlation) of histone marks at a putative enhancer and the expression of nearby genes was used to determine connectivity. This list was updated in 2014 based on the 2012 methodology. First 3 columns are coordinates of DRM, 4th column is target gene, 5th column in correlation, and 6th column is correlation of histone mark (annotation of the histone mark with high correlation.",
+                "file_format": "BED"
+            }
+        ],
         "status": "published",
         "title": "HaploReg: a resource for exploring chromatin states, conservation, and regulatory motif alterations within sets of genetically linked variants.",
         "volume": "40",

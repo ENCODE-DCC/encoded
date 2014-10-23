@@ -34,11 +34,14 @@ ORDER = [
     'experiment',
     'replicate',
     'dataset',
+    'publication',
+    'software',
+    'software_version',
+    'analysis_step',
+    'pipeline',
     'file',
     'image',
     'page',
-    'publication',
-    'software',
 ]
 
 ##############################################################################
