@@ -22,7 +22,7 @@
             "default": "1"
         },
         "accession": {
-            "accessionType": "PL"        
+            "accessionType": "PL"
         },
         "title": {
             "title": "Title",
@@ -42,6 +42,18 @@
             "items": {
                 "title": "Analysis step",
                 "description": "A particular computational analysis step used by the pipeline.",
+                "comment": "See analysis_step.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "analysis_step"
+            }
+        },
+        "end_points": {
+            "title": "End Points of Pipeline",
+            "description": "A subset of analysis steps that represent the end of the pipeline",
+            "type": "array",
+            "items": {
+                "title": "Endpoint",
+                "description": "An analysis step with no children",
                 "comment": "See analysis_step.json for a list of available identifiers.",
                 "type": "string",
                 "linkTo": "analysis_step"
@@ -76,7 +88,7 @@
         "analysis_steps.software_versions.software.references.published_by": {
             "title": "Created by",
             "type": "array"
-        }  
+        }
     },
     "columns": {
         "accession": {

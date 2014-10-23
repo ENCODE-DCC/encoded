@@ -2,7 +2,7 @@
         {
             "name": "prep-bismark",
             "uuid": "a25381ab-1740-42f7-8d5a-20bb2a2b9549",
-            "parents":
+            "parents": []
         },
         {
             "name": "mott-trim",
