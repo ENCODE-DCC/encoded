@@ -26,10 +26,10 @@ class Pipeline(Collection):
 
         embedded = [
             'documents',
-            'analysis_steps.analysis_step',
-            'analysis_steps.analysis_step.software_versions',
-            'analysis_steps.analysis_step.software_versions.software',
-            'analysis_steps.analysis_step.software_versions.software.references'
+            'analysis_steps',
+            'analysis_steps.software_versions',
+            'analysis_steps.software_versions.software',
+            'analysis_steps.software_versions.software.references'
         ]
 
 
@@ -47,5 +47,6 @@ class AnalysisStep(Collection):
 
         embedded = [
             'software_versions',
-            'software_versions.software'
+            'software_versions.software',
+            'parents'
         ]

@@ -64,7 +64,7 @@ var Pipeline = module.exports.Pipeline = React.createClass({
                           <div>
                               <h3>Steps</h3>
                               <div className="panel view-detail" data-test="supplementarydata">
-                                  {context.analysis_steps.analysis_step.map(function(props, i) {
+                                  {context.analysis_steps.map(function(props, i) {
                                       return AnalysisStep (props, i) ;
                                   })}
                               </div>

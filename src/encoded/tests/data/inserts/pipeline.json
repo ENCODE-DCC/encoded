@@ -4,14 +4,7 @@
         "assay_term_id": "OBI:0001271",
         "assay_term_name": "RNA-seq",
         "analysis_steps": [
-            {
-                "analysis_step": "ab7ec880-50ab-11e4-916c-0800200c9a66",
-                "parents": []
-            },
-            {
-                "analysis_step": "c4a33ee0-50ab-11e4-916c-0800200c9a66",
-                "parents": ["ab7ec880-50ab-11e4-916c-0800200c9a66"]
-            }
+            "c4a33ee0-50ab-11e4-916c-0800200c9a66"
         ],
         "documents": [
             "brenton-graveley:Graveley_Group_RNA-Seq_Pipeline_02042013"

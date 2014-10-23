@@ -37,33 +37,14 @@
         },
         "analysis_steps": {
             "title": "Analysis steps",
-            "description": "The particular computational analysis steps used by the pipeline and how they are linked.",
+            "description": "The particular end step computational analysis steps used by the pipeline.",
             "type": "array",
-            "default": [],
             "items": {
-                "title": "Analysis step and links",
-                "description": "A particular computational analysis step used by the pipeline.",
-                "type": "object",
-                "additionalProperties": false,
-                "properties": {
-                    "analysis_step": {
-                         "title": "Analysis step",
-                         "comment": "See analysis_step.json for a list of available identifiers.",
-                         "type": "string",
-                         "linkTo": "analysis_step"
-                    },
-                    "parents": {
-                        "title": "Parent steps",
-                        "type": "array",
-                        "default": [],
-                        "items": {
-                            "title": "Step",
-                            "comment": "See analysis_step.json for a list of available identifiers.",
-                            "type": "string",
-                            "linkTo": "analysis_step"
-                        }
-                    } 
-                }
+                "title": "Analysis step",
+                "description": "A particular end step computational analysis step used by the pipeline.",
+                "comment": "See analysis_step.json for a list of available identifiers.",
+                "type": "string",
+                "linkTo": "analysis_step"
             }
         },
         "documents": {
@@ -88,11 +69,11 @@
             "title": "Pipeline status",
             "type": "string"
         },
-        "analysis_steps.analysis_step.software_versions.software.title": {
+        "analysis_steps.software_versions.software.title": {
             "title": "Software",
             "type": "array"
         },
-        "analysis_steps.analysis_step.software_versions.software.references.published_by": {
+        "analysis_steps.software_versions.software.references.published_by": {
             "title": "Created by",
             "type": "array"
         }  
@@ -118,7 +99,7 @@
             "title": "Status",
             "type": "string"
         },
-        "analysis_steps.analysis_step.software_versions.software.title": {
+        "analysis_steps.software_versions.software.title": {
             "title": "Software",
             "type": "array"
         }
@@ -127,6 +108,11 @@
         "uuid": 1.0,
         "accession": 1.0,
         "aliases": 1.0,
+        "analysis_steps.software_versions.software.title": 1.0,
+        "analysis_steps.software_versions.software.name": 1.0,
+        "analysis_steps.software_versions.software.purpose": 1.0,
+        "analysis_steps.software_versions.software.used_by": 1.0,
+        "analysis_steps.software_versions.software.references.title": 1.0,
         "assay_term_name": 1.0,
         "assay_term_id": 1.0,
         "title": 1.0,
