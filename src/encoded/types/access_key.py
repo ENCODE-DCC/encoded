@@ -6,6 +6,7 @@ from pyramid.security import (
     Deny,
     Everyone,
 )
+from .base import Collection
 from ..authentication import (
     generate_password,
     generate_user,
@@ -13,11 +14,8 @@ from ..authentication import (
 )
 from ..schema_utils import (
     load_schema,
-    schema_validator,
 )
 from ..contentbase import (
-    Collection,
-    Root,
     collection_add,
     item_edit,
     item_view,
@@ -27,7 +25,6 @@ from ..contentbase import (
     validate_item_content_post,
     validate_item_content_put,
 )
-from ..validation import ValidationFailure
 
 
 @location('access-keys')

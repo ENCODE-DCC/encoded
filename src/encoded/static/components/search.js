@@ -2,6 +2,7 @@
 'use strict';
 var React = require('react');
 var cloneWithProps = require('react/lib/cloneWithProps');
+var cx = require('react/lib/cx');
 var url = require('url');
 var _ = require('underscore');
 var globals = require('./globals');
@@ -11,9 +12,8 @@ var dbxref = require('./dbxref');
 var DbxrefList = dbxref.DbxrefList;
 var Dbxref = dbxref.Dbxref;
 
-var cx = React.addons.classSet;
 
-    // Should readlly be singular...
+    // Should really be singular...
     var types = {
         antibody_lot: {title: 'Antibodies'},
         biosample: {title: 'Biosamples'},
@@ -460,13 +460,14 @@ var cx = React.addons.classSet;
     }
 
     // Determine whether any of the given terms are selected
-    function anyTermSelected(terms, field, filters) {
+    function countSelectedTerms(terms, field, filters) {
+        var count = 0;
         for(var oneTerm in terms) {
             if(termSelected(terms[oneTerm].term, field, filters)) {
-                return true;
+                count++;
             }
         }
-        return false;
+        return count;
     }
 
     var Term = search.Term = React.createClass({
@@ -482,33 +483,27 @@ var cx = React.addons.classSet;
             var barStyle = {
                 width:  Math.ceil( (count/this.props.total) * 100) + "%"
             };
-            var link = termSelected(term, field, filters);
-            if(link) {
-                return (
-                    <li id="selected" key={term}>
-                        {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
-                        <a id="selected" href={link} onClick={this.props.onFilter}>
-                            <span className="pull-right">{count} <i className="icon icon-times-circle-o"></i></span>
-                            <span className="facet-item">
-                                {em ? <em>{title}</em> : <span>{title}</span>}
-                            </span>
-                        </a>
-                    </li>
-                );
-            }else {
-                return (
-                    <li key={term}>
-                        <span className="bar" style={barStyle}></span>
-                        {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
-                        <a href={this.props.searchBase + field + '=' + term} onClick={this.props.onFilter}>
-                            <span className="pull-right">{count}</span>
-                            <span className="facet-item">
-                                {em ? <em>{title}</em> : <span>{title}</span>}
-                            </span>
-                        </a>
-                    </li>
-                );
+            var selected = termSelected(term, field, filters);
+            var href;
+            if (selected && !this.props.canDeselect) {
+                href = null;
+            } else if (selected) {
+                href = selected;
+            } else {
+                href = this.props.searchBase + field + '=' + term;
             }
+            return (
+                <li id={selected ? "selected" : null} key={term}>
+                    {selected ? '' : <span className="bar" style={barStyle}></span>}
+                    {field === 'lot_reviews.status' ? <span className={globals.statusClass(term, 'indicator pull-left facet-term-key icon icon-circle')}></span> : null}
+                    <a id={selected ? "selected" : null} href={href} onClick={href ? this.props.onFilter : null}>
+                        <span className="pull-right">{count} {selected && this.props.canDeselect ? <i className="icon icon-times-circle-o"></i> : ''}</span>
+                        <span className="facet-item">
+                            {em ? <em>{title}</em> : <span>{title}</span>}
+                        </span>
+                    </a>
+                </li>
+            );
         }
     });
 
@@ -560,7 +555,9 @@ var cx = React.addons.classSet;
             var total = facet['total'];
             var termID = title.replace(/\s+/g, '');
             var TermComponent = field === 'type' ? TypeTerm : Term;
-            var moreTermSelected = anyTermSelected(moreTerms, field, filters);
+            var selectedTermCount = countSelectedTerms(moreTerms, field, filters);
+            var moreTermSelected = selectedTermCount > 0;
+            var canDeselect = (!facet.restrictions || selectedTermCount >= 2);
             var moreSecClass = 'collapse' + ((moreTermSelected || this.state.facetOpen) ? ' in' : '');
             var seeMoreClass = 'btn btn-link' + ((moreTermSelected || this.state.facetOpen) ? '' : ' collapsed');
             return (
@@ -569,13 +566,13 @@ var cx = React.addons.classSet;
                     <ul className="facet-list nav">
                         <div>
                             {terms.slice(0, 5).map(function (term) {
-                                return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} />);
+                                return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
                             }.bind(this))}
                         </div>
                         {terms.length > 5 ?
                             <div id={termID} className={moreSecClass}>
                                 {moreTerms.map(function (term) {
-                                    return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} />);
+                                    return this.transferPropsTo(<TermComponent key={term.term} term={term} filters={filters} total={total} canDeselect={canDeselect} />);
                                 }.bind(this))}
                             </div>
                         : null}
@@ -732,7 +729,10 @@ var cx = React.addons.classSet;
     var ResultTable = search.ResultTable = React.createClass({
 
         getDefaultProps: function() {
-            return {searchBase: ''};
+            return {
+                restrictions: {},
+                searchBase: ''
+            };
         },
 
         childContextTypes: {actions: React.PropTypes.array},
@@ -752,6 +752,15 @@ var cx = React.addons.classSet;
             var searchBase = this.props.searchBase;
             var trimmedSearchBase = searchBase.replace(/[\?|\&]limit=all/, "");
             
+            _.each(facets, function(facet) {
+                if (this.props.restrictions[facet.field] !== undefined) {
+                    facet.restrictions = this.props.restrictions[facet.field];
+                    facet.terms = facet.terms.filter(function(term) {
+                        return _.contains(facet.restrictions, term.term);
+                    }.bind(this));
+                }
+            }.bind(this));
+
             return (
                     <div>
                         <div className="row">
