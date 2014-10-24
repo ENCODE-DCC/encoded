@@ -80,14 +80,15 @@
         "uuid": "a86c9d15-deaf-4abd-8bce-bfa6595d70bb",
         "status": "released",
         "version": "0.1",
-        "download_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git"
+        "download_checksum": "b1717422b864e71c6e47250f1d09abcf",
+        "download_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/61969e62890868df274f1377ba0d8d729a93c840/DAC/script/mott-trim.py"
     },
     {
-        "sofware": "cx-repo.py",
+        "sofware": "cxrepo-bed.py",
         "uuid": "913f5f5c-7e58-4dd2-9f6d-8fca92d0e91c",
         "status": "released",
         "version": "0.1",
-        "download_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git"
-
+        "download_checksum": "b7f4563ab5b7a4a9874fa927ccce26ea",
+        "download_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/61969e62890868df274f1377ba0d8d729a93c840/DAC/script/cxrepo-bed.py"
     }
 ]

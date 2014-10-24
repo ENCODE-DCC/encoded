@@ -43,12 +43,58 @@
         "uuid": "7868f960-50ac-11e4-916c-0800200c9a66"
     },
     {
-        "name": "bedgraphtobigwig",
-        "title": "bedGraphToBigWig",
-        "description": "Convert bedGraph to bigWig file",
+        "name": "rsem",
+        "title": "RSEM",
+        "description": "",
         "used_by": ["ENCODE"],
         "status": "released",
-        "source_url": "http://hgdownload.cse.ucsc.edu/admin/exe/",
-        "uuid": "e6bf4810-50ac-11e4-916c-0800200c9a66"
+        "source_url": "",
+        "uuid": "151bcaa2-8ffc-4429-b013-ab96a7d359e9"
+    },
+    {
+        "name": "bismark",
+        "title": "Bismark",
+        "description": "",
+        "used_by": ["ENCODE"],
+        "status": "released",
+        "source_url": "",
+        "uuid": "196f6fb8-33d1-4cf3-b2f0-834f3f7e07d8"
+    },
+    {
+        "name": "bowtie",
+        "title": "Bowtie",
+        "software_type": ["aligner"],
+        "description": "",
+        "used_by": ["ENCODE"],
+        "status": "released",
+        "source_url": "",
+        "uuid": "15889957-1025-493a-819d-e985bf326445"
+    },
+    {
+        "name": "samtools",
+        "title": "Samtools",
+        "description": "",
+        "used_by": ["ENCODE"],
+        "status": "released",
+        "source_url": "",
+        "uuid": "db0c3b39-2b02-4ca0-a592-3141e46bc3a0"
+    },
+     {
+        "name": "mott-trimm.py",
+        "title": "Mott Trimmer",
+        "description": "Mott-Trimmer for WGBS reads",
+        "used_by": ["ENCODE"],
+        "status": "released",
+        "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
+        "uuid": "9c537e83-cf5e-4e80-8027-746f31785c99"
+    },
+   {
+        "name": "cx-repo.py",
+        "title": "WGBS output processor",
+        "description": "",
+        "used_by": ["ENCODE"],
+        "status": "released",
+        "source_url": "https://github.com/ENCODE-DCC/dna-me-pipeline.git",
+        "uuid": "32f72d98-bf4d-4408-b448-a0b4168ed320"
     }
 ]
