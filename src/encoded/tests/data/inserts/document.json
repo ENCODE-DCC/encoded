@@ -401,5 +401,17 @@
         "status": "released",
         "submitted_by": "platea.a@volutpat.viverra",
         "uuid": "0f2f78fc-4675-4534-af7a-1c77e03c0cd3"
+    },
+    {
+        "aliases": [
+            "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
+        ],
+        "attachment": "iCLIP_pipeline_ENCODE.pdf",
+        "award": "U54HG007005",
+        "document_type": "pipeline protocol",
+        "lab": "gene-yeo",
+        "status": "released",
+        "submitted_by": "platea.a@volutpat.viverra",
+        "uuid": "b87f5cec-882e-42a5-be82-5932a8ea6166"
     }
 ]

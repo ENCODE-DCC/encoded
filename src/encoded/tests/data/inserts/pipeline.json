@@ -45,5 +45,18 @@
         "status": "released",
         "title": "ENCODE2 ChIP-seq pipeline",
         "uuid": "6e191389-b63d-4986-8d61-2ae4716f84d8"
+    },
+    {
+        "accession": "ENCPL001CLP",
+        "assay_term_id": "NTR:0001449",
+        "assay_term_name": "iCLIP",
+        "analysis_steps": [
+        ],
+        "documents": [
+             "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
+        ],
+        "status": "released",
+        "title": "iCLIP-seq Analysis Pipeline",
+        "uuid": "21934150-5e2f-11e4-9803-0800200c9a66"    
     }
 ]
