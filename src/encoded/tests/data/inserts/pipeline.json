@@ -27,5 +27,23 @@
         "status": "released",
         "title": "Gene Quantification Pipeline",
         "uuid": "fbd1b730-5af5-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "accession": "ENCPL001ENC",
+        "assay_term_id": "OBI:0000716",
+        "assay_term_name": "ChIP-seq",
+        "analysis_steps": [
+             "a4e9f0bf-128f-47e1-8f7a-b5ade07ea2aa",
+             "7bdab3ce-d4e7-47ef-9584-84273adecc08",
+             "11440ed3-1228-4430-aa5a-54cd408ff105",
+             "2bc764b1-1ddc-44ca-a1a4-84e6169d1577"
+        ],
+        "documents": [
+            "ENCODE:ENCODE2_ChIP_seq_pipeline_diagram",
+            "ENCODE:ENCODE2ChIP-seqpipelinespecifications"
+        ],
+        "status": "released",
+        "title": "ENCODE2 ChIP-seq pipeline",
+        "uuid": "6e191389-b63d-4986-8d61-2ae4716f84d8"
     }
 ]

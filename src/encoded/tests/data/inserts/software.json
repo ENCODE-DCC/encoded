@@ -70,5 +70,100 @@
         "status": "released",
         "source_url": "https://github.com/pervouchine/npIDR",
         "uuid": "dd9e0890-5af0-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "name": "bowtie",
+        "title": "Bowtie",
+        "description": "Bowtie is an ultrafast, memory-efficient short read aligner. It aligns short DNA sequences (reads) to the human genome at a rate of over 25 million 35-bp reads per hour. Bowtie indexes the genome with a Burrows-Wheeler index to keep its memory footprint small: typically about 2.2 GB for the human genome (2.9 GB for paired-end).",
+        "software_type": ["aligner"],
+        "source_url": "https://github.com/BenLangmead/bowtie",
+        "url": "http://bowtie-bio.sourceforge.net/index.shtml",
+        "uuid": "d254a874-e832-41ef-ac15-2124aaa15d05"
+    },
+    {
+        "name": "bwa",
+        "title": "bwa",
+        "description": "BWA is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome.",
+        "software_type": ["aligner"],
+        "source_url": "http://sourceforge.net/projects/bio-bwa/files/",
+        "url": "http://bio-bwa.sourceforge.net/",
+        "uuid": "37a517fc-1f47-4fd4-864b-a5f37f6347d8"
+    },
+    {
+        "name": "bwa_wrapper",
+        "title":  "bwa wrapper",
+        "description": "Wrapper to run bwa.",
+        "software_type": ["other"],
+        "source_url": "https://github.com/",
+        "url": "https://www.encodedcc.org",
+        "uuid": "be774ca3-92f5-4492-87b7-81984adde0fb"
+    },
+    {
+        "name": "idr",
+        "title": "IDR",
+        "description": "Measures consistency between replicates in high-throughput experiments.",
+        "software_type": ["quality metric"],
+        "url": "https://sites.google.com/site/anshulkundaje/projects/idr",
+        "uuid": "08dbba16-769e-45e2-97cc-30237f0d19fa"
+    },
+    {
+        "name": "make_pseudoreplicates",
+        "title": "makepseudoreplicates",
+        "description": "Generate psuedoreplicates for self-consistency tests.",
+        "software_type": ["other"],
+        "name": "make_pseudoreplicates",
+        "uuid": "f819726b-364e-4194-b71b-8c95f46e8c3c"
+    },
+    {
+        "name": "phantompeakqualtools",
+        "title": "phantompeakqualtools",
+        "description": "This package computes quick but highly informative enrichment and quality measures for ChIP-seq/DNase-seq/FAIRE-seq/MNase-seq data. It can also be used to obtain robust estimates of the predominant fragment length or characteristic tag shift values in these assays. ",
+        "software_type": ["other"],
+        "source_url": "https://code.google.com/p/phantompeakqualtools/source/checkout",
+        "url": "https://code.google.com/p/phantompeakqualtools/",
+        "uuid": "7729040c-1754-4ae2-b4e6-245007e2755c"
+    },
+    {
+        "name": "picard",
+        "title": "Picard",
+        "description": "A set of tools (in Java) for working with next generation sequencing data in the BAM format.",
+        "software_type": ["other"],
+        "source_url": "https://github.com/broadinstitute/picard",
+        "url": "http://broadinstitute.github.io/picard/",
+        "uuid": "baf75b1a-6b0b-4c84-b2a1-d52b11119ddd"
+    },
+    {
+        "name": "samtools",
+        "title": "Samtools",
+        "description": "Samtools is a suite of programs for interacting with high-throughput sequencing data.",
+        "software_type": ["other"],
+        "source_url": "http://sourceforge.net/projects/samtools/files/samtools/",
+        "url": "http://www.htslib.org/",
+        "uuid": "ce18defa-8989-4067-9ac7-2f13734223da"
+    },
+    {
+        "name": "spp",
+        "title": "SPP",
+        "description": "A ChIP-seq peak calling algorithm, implemented as an R package, that accounts for the offset in forward-strand and reverse-strand reads to improve resolution, compares enrichment in signal to background or control experiments, and can also estimate whether the available number of reads is sufficient to achieve saturation, meaning that additional reads would not allow identification of additional peaks.",
+        "software_type": ["peak caller"],
+        "url": "http://compbio.med.harvard.edu/Supplements/ChIP-seq/",
+        "uuid": "5f18b63e-629a-4963-9897-a67f95e62082"
+    },
+    {
+        "name": "wiggler",
+        "title": "Wiggler",
+        "description": "Creates a consolidated genome-wide signal file using various tag-shift and smoothing parameters as well as various normalization schemes." ,
+        "software_type": ["other"],
+        "url": "https://code.google.com/p/align2rawsignal/",
+        "source_url": "https://code.google.com/p/align2rawsignal/source/checkout",
+        "uuid": "d758a3c4-16f1-4d6f-b905-2703a90633df"
+    },
+    {
+        "name": "hotspot",
+        "title": "Hotspot",
+        "description": "A program for identifying regions of local enrichment of short-read sequence tags mapped to the genome using a binomial distribution model.",
+        "software_type": ["quality metric"],
+        "url": "http://www.uwencode.org/proj/hotspot/",
+        "uuid":  "4219a456-d064-49ac-9383-93c0021e73e0"
     }
 ]

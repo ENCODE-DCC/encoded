@@ -63,7 +63,9 @@
                     "broadPeak",
                     "tsv",
                     "csv",
-                    "gtf"
+                    "gtf",
+                    "fasta",
+                    "bed"
                 ]
             }
         },
