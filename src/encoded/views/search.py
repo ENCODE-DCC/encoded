@@ -37,7 +37,7 @@ def get_filtered_query(term, fields, principals):
                 '_all': {}
             }
         },
-        'facets': {},
+        'aggs': {},
         '_source': list(fields),
     }
 
@@ -220,13 +220,17 @@ def search(context, request, search_type=None):
             query_field = 'audit.category'
         else:
             query_field = 'embedded.' + field
-        query['facets'][field] = {
-            'terms': {
-                'field': query_field,
-                'all_terms': True,
-                'size': 100
+        query['aggs'][field] = {
+            'aggs': {
+                field: {
+                    'terms': {
+                        'field': query_field,
+                        'all_terms': True,
+                        'size': 100
+                    }
+                }
             },
-            'facet_filter': {
+            'filter': {
                 'terms': {
                     'principals_allowed_view': principals
                 }
@@ -240,17 +244,17 @@ def search(context, request, search_type=None):
                     q_field = 'embedded.' + used_facet['field']
                 else:
                     q_field = used_facet['field']
-                if 'terms' in query['facets'][field]['facet_filter']:
-                    old_terms = query['facets'][field]['facet_filter']
+                if 'terms' in query['aggs'][field]['filter']:
+                    old_terms = query['aggs'][field]['filter']
                     new_terms = {'terms': {q_field:
                                            [used_facet['term']]}}
-                    query['facets'][field]['facet_filter'] = {
+                    query['aggs'][field]['filter'] = {
                         'bool': {
                             'must': [old_terms, new_terms]
                         }
                     }
                 else:
-                    terms = query['facets'][field]['facet_filter']['bool']['must']
+                    terms = query['aggs'][field]['filter']['bool']['must']
                     flag = 0
                     for count, term in enumerate(terms):
                         if q_field in term['terms'].keys():
