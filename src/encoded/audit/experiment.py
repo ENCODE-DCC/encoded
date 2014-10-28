@@ -240,7 +240,7 @@ def audit_experiment_biosample_term(value, system):
     
     if 'biosample_type' not in value:
         detail = '{} missing biosample_type'.format(value['accession'])
-        yield AuditFailure('missing biosample type', detail, level='ERROR')  # release error
+        yield AuditFailure('biosample type missing', detail, level='ERROR')  # release error
 
     if 'biosample_term_name' not in value:
         detail = '{} missing biosample_term_name'.format(value['accession'])
