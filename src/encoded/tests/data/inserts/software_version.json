@@ -90,5 +90,67 @@
         "version": "0.1",
         "download_checksum": "b7f4563ab5b7a4a9874fa927ccce26ea",
         "download_url": "https://github.com/ENCODE-DCC/dna-me-pipeline/blob/61969e62890868df274f1377ba0d8d729a93c840/DAC/script/cxrepo-bed.py"
+    },
+    {
+        "software": "9d85a5b0-5af0-11e4-8ed6-0800200c9a66",
+        "version": "1.6.1",
+        "downloaded_url": "http://sammeth.net/artifactory/barna/barna/barna.capacitor/1.6.1/flux-capacitor-1.6.1.tgz",
+        "status": "released",
+        "uuid": "d84714c0-5af2-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "software": "dd9e0890-5af0-11e4-8ed6-0800200c9a66",
+        "version": "unknown",
+        "status": "released",
+        "uuid": "d2cde860-5af3-11e4-8ed6-0800200c9a66"
+    },
+    {
+        "software": "ce18defa-8989-4067-9ac7-2f13734223da",
+        "version": "0.1.19",
+        "status": "released",
+        "uuid": "ad319e06-f4a0-4dce-ba83-0f57be3ab9f5"
+    },
+    {
+        "software":  "baf75b1a-6b0b-4c84-b2a1-d52b11119ddd",
+        "version":  "1.110",
+        "status": "released",
+        "uuid": "c11ff7d0-30b5-4946-9fb5-8a29783bdc0f"
+    },
+    {
+        "software": "7729040c-1754-4ae2-b4e6-245007e2755c",
+        "version":  "v1.1",
+        "status":  "released",
+        "uuid":  "fe17b174-32f9-4e88-9618-57e8973d8868"
+    },
+    {
+        "software": "d758a3c4-16f1-4d6f-b905-2703a90633df",
+        "version": "unknown",
+        "status": "released",
+        "uuid": "09d27175-9479-4684-b055-19491bbfd14f"
+    },
+    {
+        "software":  "f819726b-364e-4194-b71b-8c95f46e8c3c",
+        "version": "unknown",
+        "status": "released",
+        "uuid": "fa8af638-925c-4f94-8972-3d2f4f8b0c21"
+    },
+    {
+        "software": "5f18b63e-629a-4963-9897-a67f95e62082",
+        "version": "1.10.1",
+        "status": "released",
+        "downloaded_url": "https://code.google.com/p/phantompeakqualtools/source/browse/trunk/spp_1.10.1.tar.gz",
+        "uuid": "beb915d5-157c-48d2-9867-7d2bbf8917fe"
+    },
+    {
+        "software":  "08dbba16-769e-45e2-97cc-30237f0d19fa",
+        "version": "unknown",
+        "status": "released",
+        "uuid": "195de123-3300-4485-a862-d301ff35fc4e"
+    },
+    {
+        "software":  "4219a456-d064-49ac-9383-93c0021e73e0",
+        "version": "unknown",
+        "status": "released",
+        "uuid": "d0c7d890-3446-41b5-82f0-388347f7e8dd"
     }
 ]

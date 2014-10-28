@@ -37,7 +37,8 @@
                     "genome segmentation",
                     "qualification",
                     "transcript identification",
-                    "transcriptome assembly"
+                    "transcriptome assembly",
+                    "other"
                 ]
             }
         },
