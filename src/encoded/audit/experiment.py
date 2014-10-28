@@ -225,9 +225,12 @@ def audit_experiment_biosample_term(value, system):
     '''
     The biosample term and id and type information should be present and
     concordent with library biosamples,
-    probably there are assays that are the exception
+    Exception: RNA Bing-n-Seq
     '''
-    if value['status'] in ['deleted', 'proposed']:
+    if value['status'] in ['deleted', 'replaced']:
+        return
+    
+    if value.get('assay_term_name') == 'RNA Bind-n-Seq':
         return
 
     if 'biosample_term_id' not in value:
