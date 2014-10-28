@@ -165,7 +165,7 @@
             "title": "Eligibility status",
             "type": "string"
         },
-        "characterizations.target.organism.scientific_name": {
+        "targets.organism.scientific_name": {
             "title": "Target Organism",
             "type": "string"
         },
