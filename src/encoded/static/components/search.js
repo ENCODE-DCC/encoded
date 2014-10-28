@@ -463,7 +463,7 @@ var Dbxref = dbxref.Dbxref;
     function countSelectedTerms(terms, field, filters) {
         var count = 0;
         for(var oneTerm in terms) {
-            if(termSelected(terms[oneTerm].term, field, filters)) {
+            if(termSelected(terms[oneTerm].key, field, filters)) {
                 count++;
             }
         }
