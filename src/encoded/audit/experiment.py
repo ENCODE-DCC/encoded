@@ -233,26 +233,22 @@ def audit_experiment_biosample_term(value, system):
     if value.get('assay_term_name') == 'RNA Bind-n-Seq':
         return
 
-    if 'biosample_term_id' not in value:
-        return
-
-    if 'biosample_type' not in value:
-        detail = 'biosample type missing'
-        yield AuditFailure('biosample type missing', detail, level='ERROR')
-        return
-
-    if 'target' in value:
-        target = value['target']
-        if 'control' in target['investigated_as']:
-            return
-
-    if 'biosample_term_id' not in value:
-        yield AuditFailure('term id missing', detail, level='ERROR')
-
     ontology = system['registry']['ontology']
     term_id = value.get('biosample_term_id')
     term_type = value.get('biosample_type')
     term_name = value.get('biosample_term_name')
+    
+    if 'biosample_type' not in value:
+        detail = '{} missing biosample_type'.format(value['accession'])
+        yield AuditFailure('missing biosample type', detail, level='ERROR')  # release error
+
+    if 'biosample_term_name' not in value:
+        detail = '{} missing biosample_term_name'.format(value['accession'])
+        yield AuditFailure('missing biosample_term_name', detail, level='ERROR')  # release error
+    # The type and term name should be put into dependancies
+    
+    if term_id is None:
+        return
 
     if term_id.startswith('NTR:'):
         detail = '{} - {}'.format(term_id, term_name)
