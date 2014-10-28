@@ -23,6 +23,17 @@ controlRequiredAssayList = ['ChIP-seq',
 
 
 @audit_checker('experiment')
+def audit_experiment_release_date(value, system):
+    '''
+    Released experiments need release date. 
+    This should eventually go to schema
+    '''
+    if value['status'] == 'released' and 'date_released' not in value :
+        detail = '{} has no release date'.format(value['accession'])
+        raise AuditFailure('missing date_released', detail, level='ERROR') #Change to DCC error
+
+
+@audit_checker('experiment')
 def audit_experiment_description(value, system):
     '''
     Experiments should have descriptions that contain the experimental variables and
