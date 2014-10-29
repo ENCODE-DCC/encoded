@@ -26,7 +26,7 @@ non_seq_assays = ["RNA profiling by array assay",
                   "Genotype",
                   "RIP-chip",
                   "protein sequencing by tandem mass spectrometry assay",
-                  "microRNA Array",
+                  "microRNA profiling by array assay",
                   "Switchgear",
                   "5C"
                   ]
