@@ -119,7 +119,7 @@
                     "title": "Genome assembly",
                     "description": "The GRC genome assembly to which the target coordinates relate. e.g. GRCh38",
                     "type": "string",
-                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|ce\\d{2}|dm\\d{1}\\)$"
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|ce\\d{2}|dm\\d{1})$"
                 },
                 "chromosome": {
                     "title": "Chromosome",
@@ -127,9 +127,9 @@
                     "type": "string",
                     "pattern": "^(\\d{1,2}[RL]?|[XYMU]|I|II|III|IV|V|)$"
                 },
-                "start": {
-                    "title": "Start",
-                    "description": "The starting coordinate.",
+                "position": {
+                    "title": "position",
+                    "description": "The coordinate position of the insertion into the genome.",
                     "type": "integer"
                 }
             }
@@ -150,7 +150,7 @@
                     "title": "Genome assembly",
                     "description": "The GRC genome assembly to which the target coordinates relate. e.g. GRCh38",
                     "type": "string",
-                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|ce\\d{2}|dm\\d{1}\\)$"
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|ce\\d{2}|dm\\d{1})$"
                 },
                 "chromosome": {
                     "title": "Chromosome",
