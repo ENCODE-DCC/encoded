@@ -51,6 +51,7 @@
         "assay_term_id": "NTR:0001449",
         "assay_term_name": "iCLIP",
         "analysis_steps": [
+            "8abc2031-9aab-46a3-b3a0-d800ae44656e"
         ],
         "documents": [
              "gene-yeo:iCLIP_pipeline_ENCODE.pdf"
