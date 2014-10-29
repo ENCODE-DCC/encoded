@@ -117,9 +117,9 @@
             "properties": {
                 "assembly": {
                     "title": "Genome assembly",
-                    "description": "The GRC genome assembly to which the target coordinates relate. e.g. GRCh38",
+                    "description": "The genome assembly to which the target coordinates relate. e.g. GRCh38 or dm6",
                     "type": "string",
-                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|ce\\d{2}|dm\\d{1})$"
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|(ce\\d{2})|(dm\\d{1}))$"
                 },
                 "chromosome": {
                     "title": "Chromosome",
@@ -127,9 +127,14 @@
                     "type": "string",
                     "pattern": "^(\\d{1,2}[RL]?|[XYMU]|I|II|III|IV|V|)$"
                 },
-                "position": {
-                    "title": "position",
-                    "description": "The coordinate position of the insertion into the genome.",
+                "start": {
+                    "title": "Start",
+                    "description": "The starting coordinate.",
+                    "type": "integer"
+                },
+                "end": {
+                    "title": "End",
+                    "description": "The ending coordinate (possibly equal to the starting coordinate for one base.)",
                     "type": "integer"
                 }
             }
@@ -142,15 +147,15 @@
         },
         "insert_genome_coordinates": {
             "title": "Insert genome coordinates",
-            "description": "Genomic coordinates of the insert. Use NCBI assembly version:chromosome number:nucleotide range (e.g. GRCh37:15:2800021-28344458).",
+            "description": "Genomic coordinates of the insert. e.g. GRCh38 or dm6.",
             "type": "object",
             "additionalProperties": false,
             "properties": {
                 "assembly": {
                     "title": "Genome assembly",
-                    "description": "The GRC genome assembly to which the target coordinates relate. e.g. GRCh38",
+                    "description": "The genome assembly to which the target coordinates relate. e.g. GRCh38",
                     "type": "string",
-                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|ce\\d{2}|dm\\d{1})$"
+                    "pattern": "^((GRCh\\d{2})|(GRCm\\d{2})|(WBcel\\d{3})|(ce\\d{2})|(dm\\d{1}))$"
                 },
                 "chromosome": {
                     "title": "Chromosome",
