@@ -221,6 +221,54 @@ def audit_experiment_platform(value, system):
 
 
 @audit_checker('experiment')
+def audit_experiment_spikeins(value, system):
+    '''
+    All ENCODE 3 long (>200) RNA-seq experiments should specify their spikeins.
+    The spikeins specified should have datasets of type spikeins.
+    The spikeins datasets should have a fasta file, a document, and maybe a tsv
+    '''
+
+    if value['status'] in ['deleted', 'replaced']:
+        return
+
+    #if (value['award'].get('rfa') != 'ENCODE3') or (value['replicates'] == []):
+    #    return
+
+    if value.get('assay_term_name') != 'RNA-seq':
+        return
+
+    for i in range(0, len(value['replicates'])):
+        
+        rep = value['replicates'][i]
+        
+        if 'library' not in rep:
+            continue
+        
+        lib = replicate['library']
+        
+        if 'size_range' not in lib:
+            continue
+        
+        if lib['size_range'] is not '>200':
+            continue
+        
+        if ('spikeins_used' not in lib) or (lib['spikeins_used'] == []): 
+            detail = '{} missing spikeins'.format(lib["accession"])
+            raise AuditFailure('missing spikeins', detail, level='WARNING')  # release error
+            # Informattional if ENCODE2 and release error if ENCODE3
+        
+        #for dset in lib['spikeins_used]:
+            #get the dataset
+            # if dset['type'] =! "spikeins":
+            #     detail = '{} not of type spikeins'.format(dset["accession"])
+            #     yield AuditFailure('dataset is not spikeins', detail, level='ERROR')
+            # if dset['documents'] == []:
+            #     detail = '{} missing document'.format(dset["accession"])
+            #     yield AuditFailure('missing spikeins', detail, level='ERROR') # release error
+            # Search through files for a fasta
+        
+
+@audit_checker('experiment')
 def audit_experiment_biosample_term(value, system):
     '''
     The biosample term and id and type information should be present and
